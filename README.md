@@ -29,7 +29,7 @@ Windows users have two options:
 
 Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
 [Apple's Xcode site](http://developer.apple.com/technologies/xcode.html)) and
-[http://mxcl.github.com/homebrew/](Homebrew). Once Homebrew is installed, run `brew install git` to install git,
+[Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
 Linux/BSD users should use their appropriate package managers to install make, git, and node, or build from source
