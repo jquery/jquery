@@ -1,7 +1,7 @@
 
 
 1. [Getting Involved](#getting-involved)
-2. [Core Style Guide](#jquery-core-style-guidelines)
+2. [Core Style Guide](#jquery-core-style-guide)
 3. [Tips For Bug Patching](#tips-for-jquery-bug-patching)
 
 
