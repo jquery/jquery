@@ -1,4 +1,4 @@
-
+# Contributing to jQuery
 
 1. [Getting Involved](#getting-involved)
 2. [Core Style Guide](#jquery-core-style-guide)
