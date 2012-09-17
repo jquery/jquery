@@ -206,7 +206,7 @@ jQuery.fn = jQuery.prototype = {
 		var ret = jQuery.merge( this.constructor(), elems );
 
 		// Add the old object onto the stack (as a reference)
-		ret.prevObject = this.length ? this : this.prevObject;
+		ret.prevObject = this;
 
 		ret.context = this.context;
 

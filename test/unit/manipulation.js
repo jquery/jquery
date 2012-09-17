@@ -590,21 +590,10 @@ test( "jQuery.clean, #12392", function() {
 	equal( elems[ 0 ].innerHTML, "test div", "Content should be preserved" );
 	equal( elems[ 1 ].innerHTML, "test p", "Content should be preserved" );
 
-	elems = jQuery().before("<p>test</p>");
-
-	ok( elems[ 0 ].parentNode == null || elems[ 0 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-	equal( elems[ 0 ].innerHTML, "test", "Content should be preserved" );
-
 	equal( jQuery.clean([ "<span><span>" ]).length, 1, "Incorrect html-strings should not break anything" );
 
 	elems = jQuery.clean([ "<td><td>" ]);
 	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-
-	ok( jQuery.clean([ "<p>test</p>", jQuery("<span>test</span>") ])[ 1 ].parentNode.nodeType === 11,
-		"If parentNode was already set to documentFragment, leave as is" );
-
-	ok( jQuery.clean([ "<p>test</p>", jQuery("<p><span>test</span></p>").children() ])[ 1 ].parentNode.nodeType === 1,
-		"Don't touch parentNode of created node" );
 });
 
 if ( jQuery.css ) {
@@ -897,7 +886,7 @@ test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testBefore = function(val) {
-	expect(10);
+	expect(11);
 	var expected = "This is a normal link: bugaYahoo";
 	jQuery("#yahoo").before(val( "<b>buga</b>" ));
 	equal( jQuery("#en").text(), expected, "Insert String before" );
@@ -934,6 +923,9 @@ var testBefore = function(val) {
 
 	equal( jQuery("<div />").children().before("test").end().length, 1,
 			"Should return div, if prevObject was empty collection" );
+
+	// #11226
+	equal( jQuery().before("<div/>").length, 0, "If collection is empty don't do anything" );
 };
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -942,14 +934,6 @@ test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 test("before(Function)", function() {
 	testBefore(manipulationFunctionReturningObj);
-});
-
-test("before and after w/ empty object (#10812)", function() {
-	expect(2);
-
-	var res = jQuery( "#notInTheDocument" ).before( "(" ).after( ")" );
-	equal( res.length, 2, "didn't choke on empty object" );
-	equal( res.wrapAll("<div/>").parent().text(), "()", "correctly appended text" );
 });
 
 test("before and after on disconnected node (#10517)", function() {
@@ -982,7 +966,7 @@ test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 });
 
 var testAfter = function(val) {
-	expect(10);
+	expect(11);
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery("#yahoo").after(val( "<b>buga</b>" ));
 	equal( jQuery("#en").text(), expected, "Insert String after" );
@@ -1019,6 +1003,9 @@ var testAfter = function(val) {
 
 	equal( jQuery("<div />").children().after("test").end().length, 1,
 			"Should return div, if prevObject was empty collection" );
+
+	// #11226
+	equal( jQuery().after("<div/>").length, 0, "If collection is empty don't do anything" );
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {

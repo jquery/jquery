@@ -1,6 +1,6 @@
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
-	safeFrag = document.createDocumentFragment();
+		safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
 		while ( list.length ) {
@@ -150,7 +150,9 @@ jQuery.fn.extend({
 			});
 		}
 
-		return this.pushStack( jQuery.merge( jQuery.clean( arguments ), this ), "before", this.selector );
+		return this.length ?
+			this.pushStack( jQuery.merge( jQuery.clean( arguments ), this ), "before", this.selector ) :
+			this
 	},
 
 	after: function() {
@@ -162,7 +164,9 @@ jQuery.fn.extend({
 			});
 		}
 
-		return this.pushStack( jQuery.merge( this.toArray(), jQuery.clean( arguments ) ), "after", this.selector );
+		return this.length ?
+			this.pushStack( jQuery.merge( this.toArray(), jQuery.clean( arguments ) ), "after", this.selector ) :
+			this;
 	},
 
 	// keepData is for internal use only--do not document
