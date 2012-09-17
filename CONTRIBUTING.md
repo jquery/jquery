@@ -1,8 +1,10 @@
 # Contributing to jQuery
 
 1. [Getting Involved](#getting-involved)
-2. [Core Style Guide](#jquery-core-style-guide)
-3. [Tips For Bug Patching](#tips-for-jquery-bug-patching)
+2. [Discussion](#discussion)
+3. [How To Report Bugs](#how-to-report-bugs)
+4. [Core Style Guide](#jquery-core-style-guide)
+5. [Tips For Bug Patching](#tips-for-jquery-bug-patching)
 
 
 
