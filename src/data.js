@@ -6,7 +6,7 @@ jQuery.extend({
 
 	deletedIds: [],
 
-	// Please use with caution
+	// Remove at next major release (1.9/2.0)
 	uuid: 0,
 
 	// Unique for each copy of jQuery on the page
@@ -58,7 +58,7 @@ jQuery.extend({
 			// Only DOM nodes need a new unique ID for each element since their data
 			// ends up in the global cache
 			if ( isNode ) {
-				elem[ internalKey ] = id = jQuery.deletedIds.pop() || ++jQuery.uuid;
+				elem[ internalKey ] = id = jQuery.deletedIds.pop() || jQuery.guid++;
 			} else {
 				id = internalKey;
 			}
@@ -232,7 +232,7 @@ jQuery.fn.extend({
 					for ( l = attr.length; i < l; i++ ) {
 						name = attr[i].name;
 
-						if ( name.indexOf( "data-" ) === 0 ) {
+						if ( !name.indexOf( "data-" ) ) {
 							name = jQuery.camelCase( name.substring(5) );
 
 							dataAttr( elem, name, data[ name ] );
