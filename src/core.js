@@ -559,7 +559,7 @@ jQuery.extend({
 	},
 
 	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toUpperCase() === name.toUpperCase();
+		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
 	// args is for internal usage only
