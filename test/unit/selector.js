@@ -29,9 +29,15 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 1 );
+	expect( 2 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
+	// jQuery #12523
+	deepEqual(
+		jQuery.find( "[title]", null, null, jQuery("#qunit-fixture a").get().concat( document.createTextNode("") ) ),
+		q("google"),
+		"Text nodes fail attribute tests without exception"
+	);
 });
 
 if ( jQuery.css ) {
