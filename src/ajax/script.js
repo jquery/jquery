@@ -49,12 +49,12 @@ jQuery.ajaxTransport( "script", function(s) {
 				script.src = s.url;
 
 				// Attach handlers for all browsers
-				script.onload = script.onreadystatechange = function( _, isAbort ) {
+				script.onerror = script.onload = script.onreadystatechange = function( _, isAbort ) {
 
 					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
 
 						// Handle memory leak in IE
-						script.onload = script.onreadystatechange = null;
+						script.onerror = script.onload = script.onreadystatechange = null;
 
 						// Remove the script
 						if ( head && script.parentNode ) {
