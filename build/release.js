@@ -5,7 +5,7 @@
 
 // Debugging variables
 var	debug = false,
-	skipRemote = true;
+	skipRemote = false;
 
 var fs = require("fs"),
 	child = require("child_process"),
@@ -52,6 +52,13 @@ steps(
 );
 
 function initialize( next ) {
+
+	if ( process.argv[2] === "-d" ) {
+		process.argv.shift();
+		debug = true;
+		console.warn("=== DEBUG MODE ===" );
+	}
+
 	// First arg should be the version number being released
 	var newver, oldver,
 		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
@@ -73,9 +80,6 @@ function initialize( next ) {
 	}
 	if ( !(fs.existsSync || path.existsSync)( "package.json" ) ) {
 		die( "No package.json in this directory" );
-	}
-	if ( debug ) {
-		console.warn("=== DEBUG MODE ===" );
 	}
 	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
 
