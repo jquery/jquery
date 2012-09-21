@@ -718,7 +718,7 @@ test("removeProp(String)", function() {
 });
 
 test("val()", function() {
-	expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
+	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -760,6 +760,12 @@ test("val()", function() {
 
 	jQuery("#select5").val(3);
 	equal( jQuery("#select5").val(), "3", "Check value on ambiguous select." );
+
+	strictEqual(
+		jQuery("<select name='select12584' id='select12584'><option value='1' disabled='disabled'>1</option></select>").val(),
+		null,
+		"Select-one with only option disabled (#12584)"
+	);
 
 	if ( jQuery.fn.serialize ) {
 		var checks = jQuery("<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>").appendTo("#form");
