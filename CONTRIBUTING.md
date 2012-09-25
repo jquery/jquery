@@ -19,9 +19,9 @@ This is the best way to contribute to jQuery core. Please read through the full 
 
 ### Forum and IRC
 
-The jQuery core development team frequently tracks posts on the [http://forum.jquery.com/developing-jquery-core jQuery Development Forum]. If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#How-to-Report-Bugs).
+The jQuery core development team frequently tracks posts on the [jQuery Development Forum](http://forum.jquery.com/developing-jquery-core). If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#How-to-Report-Bugs).
 
-Additionally most of the jQuery core development team can be found in the [http://webchat.freenode.net/?channels=jquery-dev #jquery-dev] IRC channel on irc.freenode.net.
+Additionally most of the jQuery core development team can be found in the [#jquery-dev](http://webchat.freenode.net/?channels=jquery-dev) IRC channel on irc.freenode.net.
 
 ### Weekly Status Meetings
 
@@ -38,7 +38,7 @@ The meeting is held in the [#jquery-meeting](http://webchat.freenode.net/?channe
 
 Many bugs reported to our bug tracker are actually bugs in user code, not in jQuery code. Keep in mind that just because your code throws an error and the console points to a line number inside of jQuery, this does *not* mean the bug is a jQuery bug; more often than not, these errors result from providing incorrect arguments when calling a jQuery function.
 
-If you are new to jQuery, it is usually a much better idea to ask for help first in the [http://forum.jquery.com/using-jquery Using jQuery Forum] or the [http://webchat.freenode.net/?channels=%23jquery jQuery IRC channel]. You will get much quicker support, and you will help avoid tying up the jQuery team with invalid bug reports. These same resources can also be useful if you want to confirm that your bug is indeed a bug in jQuery before filing any tickets.
+If you are new to jQuery, it is usually a much better idea to ask for help first in the [Using jQuery Forum](http://forum.jquery.com/using-jquery) or the [jQuery IRC channel](http://webchat.freenode.net/?channels=%23jquery). You will get much quicker support, and you will help avoid tying up the jQuery team with invalid bug reports. These same resources can also be useful if you want to confirm that your bug is indeed a bug in jQuery before filing any tickets.
 
 
 ### Disable any browser extensions
@@ -56,7 +56,7 @@ Sometimes, bugs are introduced in newer versions of jQuery that do not exist in 
 
 ### Reduce, reduce, reduce!
 
-When you are experiencing a problem, the most useful thing you can possibly do is to [http://webkit.org/quality/reduction.html reduce your code] to the bare minimum required to reproduce the issue. This makes it *much* easier to isolate and fix the offending code. Bugs that are reported without reduced test cases take on average 9001% longer to fix than bugs that are submitted with them, so you really should try to do this if at all possible.
+When you are experiencing a problem, the most useful thing you can possibly do is to [reduce your code](http://webkit.org/quality/reduction.html) to the bare minimum required to reproduce the issue. This makes it *much* easier to isolate and fix the offending code. Bugs that are reported without reduced test cases take on average 9001% longer to fix than bugs that are submitted with them, so you really should try to do this if at all possible.
 
 ## jQuery Core Style Guide
 
@@ -74,7 +74,7 @@ The Ajax tests still depend on PHP running locally*, so make sure you have the f
 * Some kind of localhost server program that supports PHP (any will do)
 * Node.js
 * NPM (comes with the latest version of Node.js)
-* Grunt (install with: `npm install grunt -g`
+* Grunt (install with: `npm install grunt -g`)
 
 
 Maintaining a list of platform specific instructions is outside of the scope of this document and there is plenty of existing documentation for the above technologies.
@@ -127,7 +127,7 @@ Now open the jQuery test suite in a browser at http://localhost/test. If there i
 Success! You just built and tested jQuery!
 
 
-### Fix a bug from a ticket filed at bugs.jquery.com: ===
+### Fix a bug from a ticket filed at bugs.jquery.com
 
 **NEVER write your patches to the master branch** - it gets messy (I say this from experience!)
 
@@ -144,9 +144,9 @@ Create and checkout a new branch that includes the ticket #
 ```bash
 $ git checkout -b bug_####
 
-# ( Explanation: this useful command will:
+# (Explanation: this useful command will:
 # "checkout" a "-b" (branch) by the name of "bug_####"
-# or create it if it doesn't exist )
+# or create it if it doesn't exist)
 ```
 
 Now you're on branch: bug_####
@@ -169,7 +169,7 @@ $ git add filename
 ```
 
 
-( I recommend NEVER, EVER using "git add . " )
+(I recommend NEVER, EVER using `git add .`)
 
 Once you've staged all of your changed files, go ahead and commit them
 
