@@ -735,6 +735,13 @@ jQuery.extend({
 		return ret.concat.apply( [], ret );
 	},
 
+	reduce: function(source, accumulator, iteratorFunction) {
+		this.each(source, function(index, value) {
+			accumulator = iteratorFunction.call(source, accumulator, index, value);
+		});
+		return accumulator;
+	},
+
 	// A global GUID counter for objects
 	guid: 1,
 
