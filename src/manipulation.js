@@ -152,7 +152,7 @@ jQuery.fn.extend({
 
 		return this.length ?
 			this.pushStack( jQuery.merge( jQuery.clean( arguments ), this ), "before", this.selector ) :
-			this
+			this;
 	},
 
 	after: function() {
