@@ -1020,6 +1020,24 @@ test("ajax cache", function () {
 	ok( jQuery.ajax({url: "data/text.php?name=David&_=tobereplaced555&washere=true", cache:false}), "test with 2 parameters surrounding _= one" );
 });
 
+asyncTest("ajax cache #12550", 20, function () {
+	var requests = [],
+		stamps = [];
+
+	jQuery("#firstp").on("ajaxSuccess", function (e, xml, s) {
+		var stamp = s.url.split( "_=" )[ 1 ];
+		ok( !~jQuery.inArray( stamp, stamps ) );
+
+		stamps.push( stamp );
+	});
+
+	for ( var i = 0; i < 20; i++ ) {
+		requests.push( jQuery.ajax({url: "data/text.php", cache:false }) );
+	}
+
+	jQuery.when.apply( this, requests ).done( start );
+});
+
 /*
  * Test disabled.
  * The assertions expect that the passed-in object will be modified,
