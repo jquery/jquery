@@ -44,12 +44,14 @@ function vendorPropName( style, name ) {
 }
 
 function isHidden( elem, el ) {
+	// isHidden might be called from jQuery#filter function;
+	// in that case, element will be second argument
 	elem = el || elem;
-	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
+	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
 }
 
 function showHide( elements, show ) {
-	var elem, display,
+	var elem,
 		values = [],
 		index = 0,
 		length = elements.length;
@@ -73,12 +75,8 @@ function showHide( elements, show ) {
 			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
-		} else {
-			display = curCSS( elem, "display" );
-
-			if ( !values[ index ] && display !== "none" ) {
-				jQuery._data( elem, "olddisplay", display );
-			}
+		} else if ( !values[ index ] && !isHidden( elem ) ) {
+			jQuery._data( elem, "olddisplay", curCSS( elem, "display" ) );
 		}
 	}
 
