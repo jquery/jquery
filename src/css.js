@@ -45,9 +45,9 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
-function isHidden( elem, el ) {
-	elem = el || elem;
-	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
+function isHidden() {
+	var elem = arguments[ arguments.length - 1 ];
+	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
 }
 
 function showHide( elements, show ) {
@@ -75,12 +75,8 @@ function showHide( elements, show ) {
 			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
-		} else {
-			display = curCSS( elem, "display" );
-
-			if ( !values[ index ] && display !== "none" ) {
-				jQuery._data( elem, "olddisplay", display );
-			}
+		} else if ( !values[ index ] && !isHidden( elem ) ) {
+			jQuery._data( elem, "olddisplay", curCSS( elem, "display" ) );
 		}
 	}
 
