@@ -654,41 +654,46 @@ test("prop('tabindex')", function() {
 	equal(jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set");
 });
 
-test("prop('tabindex', value)", function() {
-	expect(9);
+test("prop('tabindex', value)", 10, function() {
 
-	var element = jQuery("#divWithNoTabIndex");
+	var element = jQuery("#divWithNoTabIndex"),
+		clone;
+
 	equal(element.prop("tabindex"), undefined, "start with no tabindex");
 
 	// set a positive string
-	element.prop("tabindex", "1");
-	equal(element.prop("tabindex"), 1, "set tabindex to 1 (string)");
+	element.prop( "tabindex", "1" );
+	equal( element.prop("tabindex"), 1, "set tabindex to 1 (string)" );
 
 	// set a zero string
-	element.prop("tabindex", "0");
-	equal(element.prop("tabindex"), 0, "set tabindex to 0 (string)");
+	element.prop( "tabindex", "0" );
+	equal( element.prop("tabindex"), 0, "set tabindex to 0 (string)" );
 
 	// set a negative string
-	element.prop("tabindex", "-1");
-	equal(element.prop("tabindex"), -1, "set tabindex to -1 (string)");
+	element.prop( "tabindex", "-1" );
+	equal( element.prop("tabindex"), -1, "set tabindex to -1 (string)" );
 
 	// set a positive number
-	element.prop("tabindex", 1);
-	equal(element.prop("tabindex"), 1, "set tabindex to 1 (number)");
+	element.prop( "tabindex", 1 );
+	equal( element.prop("tabindex"), 1, "set tabindex to 1 (number)" );
 
 	// set a zero number
-	element.prop("tabindex", 0);
-	equal(element.prop("tabindex"), 0, "set tabindex to 0 (number)");
+	element.prop( "tabindex", 0 );
+	equal( element.prop("tabindex"), 0, "set tabindex to 0 (number)" );
 
 	// set a negative number
-	element.prop("tabindex", -1);
-	equal(element.prop("tabindex"), -1, "set tabindex to -1 (number)");
+	element.prop( "tabindex", -1 );
+	equal( element.prop("tabindex"), -1, "set tabindex to -1 (number)" );
 
 	element = jQuery("#linkWithTabIndex");
-	equal(element.prop("tabindex"), 2, "start with tabindex 2");
+	equal( element.prop("tabindex"), 2, "start with tabindex 2" );
 
-	element.prop("tabindex", -1);
-	equal(element.prop("tabindex"), -1, "set negative tabindex");
+	element.prop( "tabindex", -1 );
+	equal( element.prop("tabindex"), -1, "set negative tabindex" );
+
+	clone = element.clone();
+	clone.prop( "tabindex", 1 );
+	equal( clone[ 0 ].getAttribute("tabindex"), 1, "set tabindex on cloned element" );
 });
 
 test("removeProp(String)", function() {
