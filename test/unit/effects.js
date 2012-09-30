@@ -1689,7 +1689,7 @@ asyncTest( "non-px animation handles non-numeric start (#11971)", 2, function() 
 	var foo = jQuery("#foo"),
 		initial = foo.css("backgroundPositionX");
 
-	if ( initial == null ) {
+	if ( !initial ) {
 		expect(1);
 		ok( true, "Style property not understood" );
 		start();

@@ -290,7 +290,9 @@ if ( window.getComputedStyle ) {
 
 		if ( computed ) {
 
-			ret = computed[ name ];
+			// getPropertyValue is only needed for .css('filter') in IE9, see #12537
+			ret = computed.getPropertyValue( name ) || computed[ name ];
+
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 				ret = jQuery.style( elem, name );
 			}
