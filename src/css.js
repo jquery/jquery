@@ -46,6 +46,9 @@ function vendorPropName( style, name ) {
 }
 
 function isHidden() {
+
+	// isHidden might be called from jQuery#filter function,
+	// in that case, element will be second argument
 	var elem = arguments[ arguments.length - 1 ];
 	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
 }
