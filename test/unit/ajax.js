@@ -814,16 +814,6 @@ test("jQuery.ajax - xml: non-namespace elements inside namespaced elements (over
 	});
 });
 
-// Skip HEAD tests in TestSwarm/Ngnix with Chrome because they consistently hang
-if ( location.search.indexOf("swarmURL=") >= 0 && navigator.userAgent.indexOf("Chrome/") >= 0 ) {
-
-test("jQuery.ajax - HEAD requests (SKIPPED)", function() {
-	expect(1);
-	ok( true, "Skipping HEAD request tests for Chrome in TestSwarm" );
-});
-
-} else {
-
 test("jQuery.ajax - HEAD requests", function() {
 	expect(2);
 
@@ -847,9 +837,8 @@ test("jQuery.ajax - HEAD requests", function() {
 			});
 		}
 	});
-});
 
-}
+});
 
 test("jQuery.ajax - beforeSend", function() {
 	expect(1);
