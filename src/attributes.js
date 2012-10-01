@@ -530,7 +530,15 @@ if ( !getSetAttribute ) {
 				ret = elem.ownerDocument.createAttribute( name );
 				elem.setAttributeNode( ret );
 			}
-			return ( ret.value = value + "" );
+
+			ret.value = value += "";
+
+			// #9646
+			if ( name !== "value" && value !== elem.getAttribute( name ) ) {
+				elem.setAttribute( name, value );
+			}
+
+			return value;
 		}
 	};
 
