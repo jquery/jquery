@@ -693,7 +693,7 @@ test("prop('tabindex', value)", 10, function() {
 
 	clone = element.clone();
 	clone.prop( "tabindex", 1 );
-	equal( clone[ 0 ].getAttribute("tabindex"), 1, "set tabindex on cloned element" );
+	equal( clone[ 0 ].getAttribute("tabindex"), "1", "set tabindex on cloned element" );
 });
 
 test("removeProp(String)", function() {
