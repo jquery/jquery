@@ -626,6 +626,14 @@ test(":visible selector works properly on table elements (bug #4512)", function 
 	equal(jQuery("#table td:visible").length, 1, "hidden cell is not perceived as visible");
 });
 
+test( ":visible selector works properly on svg elements (bug #12587)", 2, function () {
+	var svgVisible = jQuery("<svg xmlns='http://www.w3.org/2000/svg' style='display:block;width:50px;height:50px;' version='1.1'><circle cx='100' cy='50' r='40' stroke='black' stroke-width='2' fill='blue'/></svg>").appendTo("#qunit-fixture"),
+		svgHidden = jQuery("<svg xmlns='http://www.w3.org/2000/svg' style='display:none;' version='1.1'><circle cx='100' cy='50' r='40' stroke='black' stroke-width='2' fill='blue'/></svg>").appendTo("#qunit-fixture");
+
+	ok( svgVisible.is(":visible"), "visible svg is :visible" );
+	ok( svgHidden.is(":hidden"), "visible svg is :hidden" );
+});
+
 test(":visible selector works properly on children with a hidden parent (bug #4512)", function () {
 	expect(1);
 	jQuery("#table").css("display", "none").html("<tr><td>cell</td><td>cell</td></tr>");
