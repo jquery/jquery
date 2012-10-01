@@ -156,6 +156,30 @@ test( "attr(String)", function() {
 
 	$form = jQuery("#form").attr( "enctype", "multipart/form-data" );
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
+
+});
+
+test( "attr(String) on cloned elements, #9646", function() {
+	expect( 4 );
+
+	var div,
+		input = jQuery("<input name='tester' />");
+
+	input.attr("name");
+
+	strictEqual( input.clone( true ).attr( "name", "test" )[ 0 ].name, "test", "Name attribute should be changed on cloned element" );
+
+	div = jQuery("<div id='tester' />");
+	div.attr("id");
+
+	strictEqual( div.clone( true ).attr( "id", "test" )[ 0 ].id, "test", "Id attribute should be changed on cloned element" );
+
+	input = jQuery("<input value='tester' />");
+	input.attr("value");
+
+	strictEqual( input.clone( true ).attr( "value", "test" )[ 0 ].value, "test", "Value attribute should be changed on cloned element" );
+
+	strictEqual( input.clone( true ).attr( "value", 42 )[ 0 ].value, "42", "Value attribute should be changed on cloned element" );
 });
 
 test( "attr(String) in XML Files", function() {
