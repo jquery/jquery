@@ -511,11 +511,21 @@ test(".ajax() - hash", function() {
 
 test("jQuery ajax - cross-domain detection", function() {
 
-	expect( 6 );
+	expect( 7 );
 
 	var loc = document.location,
+		samePort = loc.port || ( loc.protocol === "http:" ? 80 : 443 ),
 		otherPort = loc.port === 666 ? 667 : 666,
 		otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
+
+	jQuery.ajax({
+		dataType: "jsonp",
+		url: loc.protocol + "//" + loc.host + ":" + samePort,
+		beforeSend: function( _ , s ) {
+			ok( !s.crossDomain , "Test matching ports are not detected as cross-domain" );
+			return false;
+		}
+	});
 
 	jQuery.ajax({
 		dataType: "jsonp",
