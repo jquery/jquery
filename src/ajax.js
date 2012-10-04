@@ -3,6 +3,9 @@ var
 	ajaxLocParts,
 	ajaxLocation,
 
+	// private equivalent of jQuery.active
+	counter = 0,
+
 	rhash = /#.*$/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
 	// #7653, #8125, #8152: local protocol detection
@@ -347,7 +350,9 @@ jQuery.extend({
 		// Force options to be an object
 		options = options || {};
 
-		var // ifModified key
+		var // for cache === false
+			ts, ret,
+			// ifModified key
 			ifModifiedKey,
 			// Response headers
 			responseHeadersString,
@@ -538,6 +543,7 @@ jQuery.extend({
 
 			// Complete
 			completeDeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
+			counter--;
 
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
@@ -596,6 +602,8 @@ jQuery.extend({
 		// Apply prefilters
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
+		counter++;
+
 		// If request was aborted inside a prefilter, stop there
 		if ( state === 2 ) {
 			return jqXHR;
@@ -630,10 +638,10 @@ jQuery.extend({
 
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
+				ts = jQuery.now() + counter;
 
-				var ts = jQuery.now(),
-					// try replacing _= if it is there
-					ret = s.url.replace( rts, "$1_=" + ts );
+				// try replacing _= if it is there
+				ret = s.url.replace( rts, "$1_=" + ts );
 
 				// if nothing was replaced, add timestamp to the end
 				s.url = ret + ( ( ret === s.url ) ? ( rquery.test( s.url ) ? "&" : "?" ) + "_=" + ts : "" );
