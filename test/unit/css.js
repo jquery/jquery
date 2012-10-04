@@ -560,6 +560,24 @@ test( "show() resolves correct default display, detached nodes (#10006)", functi
 	div.remove();
 });
 
+test("show() resolves correct default display #10227", function() {
+	expect(2);
+
+	jQuery("html").append(
+		"<p id='ddisplay'>a<style>body{display:none}</style><p>"
+	);
+
+	equal( jQuery("body").css("display"), "none", "Initial display: none" );
+
+	jQuery("body").show();
+
+	equal( jQuery("body").css("display"), "block", "Correct display: block" );
+
+	jQuery("#ddisplay").remove();
+
+	jQuery.cache = {};
+});
+
 test("toggle()", function() {
 	expect(9);
 	var div,

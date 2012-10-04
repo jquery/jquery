@@ -9,7 +9,7 @@ var curCSS, iframe, iframeDoc,
 	rnumsplit = new RegExp( "^(" + core_pnum + ")(.*)$", "i" ),
 	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ),
 	rrelNum = new RegExp( "^([-+])=(" + core_pnum + ")", "i" ),
-	elemdisplay = {},
+	elemdisplay = { BODY: "block" },
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
