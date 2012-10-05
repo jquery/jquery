@@ -14,14 +14,14 @@ Brandon Aaron <brandon.aaron@gmail.com>
 Mike Alsup <malsup@gmail.com>
 Dave Methvin <dave.methvin@gmail.com>
 Ed Engelhardt <edengelhardt@gmail.com>
-Sean Catchpole <littlecooldude@gmail.com>
+Sean Catchpole <sean@sunsean.com>
 Paul Mclanahan <pmclanahan@gmail.com>
 David Serduke <davidserduke@gmail.com>
 Richard D. Worth <rdworth@gmail.com>
 Scott González <scott.gonzalez@gmail.com>
 Ariel Flesler <aflesler@gmail.com>
 Jon Evans <jon@springyweb.com>
-T.J. Holowaychuk <tj@vision-media.ca>
+TJ Holowaychuk <tj@vision-media.ca>
 Michael Bensoussan <mickey@seesmic.com>
 Robert Katić <robert.katic@gmail.com>
 Louis-Rémi Babé <lrbabe@gmail.com>
@@ -34,9 +34,9 @@ Mark Gibson <jollytoad@gmail.com>
 Karl Swedberg <karl@englishrules.com>
 Justin Meyer <justinbmeyer@gmail.com>
 Ben Alman <cowboy@rj3.net>
-James Padolsey <jamespadolsey@gmail.com>
+James Padolsey <cla@padolsey.net>
 David Petersen <public@petersendidit.com>
-Batiste Bieler <batiste.bieler@gmail.com>
+Batiste Bieler <batiste@gmail.com>
 Alexander Farkas <info@corrupt-system.de>
 Rick Waldron <waldron.rick@gmail.com>
 Filipe Fortes <filipe@fortes.com>
@@ -54,7 +54,7 @@ Ralph Whitbeck <ralph.whitbeck@gmail.com>
 Carl Fürstenberg <azatoth@gmail.com>
 Jacob Wright <jacwright@gmail.com>
 J. Ryan Stinnett <jryans@gmail.com>
-Heungsub Lee <lee@heungsub.net>
+Heungsub Lee <h@subl.ee>
 Colin Snover <colin@alpha.zetafleet.com>
 Ryan W Tenney <ryan@10e.us>
 Ron Otten <r.j.g.otten@gmail.com>
@@ -63,11 +63,11 @@ Anton Matzneller <obhvsbypqghgc@gmail.com>
 Alex Sexton <AlexSexton@gmail.com>
 Dan Heberden <danheberden@gmail.com>
 Henri Wiechers <hwiechers@gmail.com>
-Russell Holbrook <russell.holbrook@patch.com>
+Russell Holbrook <russellholbrook@gmail.com>
 Julian Aubourg <aubourg.julian@gmail.com>
-Gianni Chiappetta <gianni@runlevel6.org>
+Gianni Alessandro Chiappetta <gianni@runlevel6.org>
 Scott Jehl <scott@scottjehl.com>
-J.R. Burke <jrburke@gmail.com>
+James Burke <jrburke@gmail.com>
 Jonas Pfenniger <jonas@pfenniger.name>
 Xavi Ramirez <xavi.rmz@gmail.com>
 Jared Grippe <jared@deadlyicon.com>
@@ -82,9 +82,9 @@ Josh Varner <josh.varner@gmail.com>
 Charles McNulty <cmcnulty@kznf.com>
 Jordan Boesch <jboesch26@gmail.com>
 Jess Thrysoee <jess@thrysoee.dk>
-Michael Murray <mmurray.wa@gmail.com>
+Michael Murray <m@murz.net>
 Lee Carpenter <elcarpie@gmail.com>
-Alexis Abril <alexis.abril@gmail.com>
+Alexis Abril <me@alexisabril.com>
 Rob Morgan <robbym@gmail.com>
 John Firebaugh <john_firebaugh@bigfix.com>
 Sam Bisbee <sam@sbisbee.com>
@@ -93,7 +93,7 @@ Brian Brennan <me@brianlovesthings.com>
 Xavier Montillet <xavierm02.net@gmail.com>
 Daniel Pihlstrom <sciolist.se@gmail.com>
 Sahab Yazdani <sahab.yazdani+github@gmail.com>
-Scott Hughes <hi@scott-hughes.me>
+Scott Hughes <shughes@atlassian.com>
 Mike Sherov <mike.sherov@gmail.com>
 Greg Hazel <ghazel@gmail.com>
 Schalk Neethling <schalk@ossreleasefeed.com>
@@ -113,8 +113,8 @@ Joe Presbrey <presbrey@gmail.com>
 Sindre Sorhus <sindresorhus@gmail.com>
 Arne de Bree <arne@bukkie.nl>
 Vladislav Zarakovsky <vlad.zar@gmail.com>
-Andy Monat <amonat@gmail.com>
-Joaoh Bruni <joaohbruni@yahoo.com.br>
+Andrew E Monat <amonat@gmail.com>
+Joao Henrique de Andrade Bruni <joaohbruni@yahoo.com.br>
 Dominik D. Geyer <dominik.geyer@gmail.com>
 Matt Farmer <matt@frmr.me>
 Trey Hunner <treyhunner@gmail.com>
@@ -129,7 +129,7 @@ David Benjamin <davidben@mit.edu>
 Uri Gilad <antishok@gmail.com>
 Chris Faulkner <thefaulkner@gmail.com>
 Elijah Manor <elijah.manor@gmail.com>
-Daniel Chatfield <chatfielddaniel@googlemail.com>
+Daniel Chatfield <chatfielddaniel@gmail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
-Mike Pennisi <mike@mikepennisi.com>
+Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
