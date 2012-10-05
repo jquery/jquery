@@ -564,7 +564,7 @@ test("show() resolves correct default display #10227", function() {
 	expect(2);
 
 	jQuery("html").append(
-		"<p id='ddisplay'>a<style>body{display:none}</style><p>"
+		"<p id='ddisplay'>a<style>body{display:none}</style></p>"
 	);
 
 	equal( jQuery("body").css("display"), "none", "Initial display: none" );
