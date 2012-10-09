@@ -123,7 +123,7 @@ function testSubproject( label, url, risTests ) {
 			}
 
 			fnTest.apply( this, arguments );
-		}
+		};
 	}
 }
 
@@ -166,9 +166,6 @@ QUnit.config.testTimeout = 20 * 1000; // 20 seconds
 	if ( !url || url.indexOf("http") !== 0 ) {
 		return;
 	}
-
-	// (Temporarily) Disable Ajax tests to reduce network strain
-	// isLocal = QUnit.isLocal = true;
 
 	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
 })();
