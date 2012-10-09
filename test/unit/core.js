@@ -2,8 +2,8 @@ module("core", { teardown: moduleTeardown });
 
 test("Unit Testing Environment", function () {
 	expect(2);
-	ok( hasPHP, "Running Unit tests without PHP is unsupported! The AJAX tests won't run without it and don't expect all tests to pass without it!" );
-	ok( !isLocal, "Unit tests shouldn't be run from file://, especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!" );
+	ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
+	ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
 });
 
 test("Basic requirements", function() {
@@ -644,12 +644,12 @@ test("jQuery('html')", function() {
 	var li = "<li>very large html string</li>";
 	var html = ["<ul>"];
 	for ( i = 0; i < 50000; i += 1 ) {
-		html.push(li);
+		html[html.length] = li;
 	}
-	html.push("</ul>");
+	html[html.length] = "</ul>";
 	html = jQuery(html.join(""))[0];
-	equal( html.nodeName.toUpperCase(), "UL");
-	equal( html.firstChild.nodeName.toUpperCase(), "LI");
+	equal( html.nodeName.toLowerCase(), "ul");
+	equal( html.firstChild.nodeName.toLowerCase(), "li");
 	equal( html.childNodes.length, 50000 );
 });
 
