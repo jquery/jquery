@@ -601,7 +601,7 @@ test("isWindow", function() {
 });
 
 test("jQuery('html')", function() {
-	expect( 18 );
+	expect( 15 );
 
 	QUnit.reset();
 	jQuery["foo"] = false;
@@ -638,19 +638,22 @@ test("jQuery('html')", function() {
 	// equal( jQuery("element[attribute=<div></div>]").length, 0, "When html is within brackets, do not recognize as html." );
 	// equal( jQuery("element:not(<div></div>)").length, 0, "When html is within parens, do not recognize as html." );
 	// equal( jQuery("\\<div\\>").length, 0, "Ignore escaped html characters" );
+});
 
-	// Test very large html string #7990
+test("jQuery('massive html #7990')", function() {
+	expect( 3 );
+
 	var i;
-	var li = "<li>very large html string</li>";
+	var li = "<li>very very very very large html string</li>";
 	var html = ["<ul>"];
-	for ( i = 0; i < 50000; i += 1 ) {
+	for ( i = 0; i < 30000; i += 1 ) {
 		html[html.length] = li;
 	}
 	html[html.length] = "</ul>";
 	html = jQuery(html.join(""))[0];
 	equal( html.nodeName.toLowerCase(), "ul");
 	equal( html.firstChild.nodeName.toLowerCase(), "li");
-	equal( html.childNodes.length, 50000 );
+	equal( html.childNodes.length, 30000 );
 });
 
 test("jQuery('html', context)", function() {
