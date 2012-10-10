@@ -605,7 +605,8 @@ jQuery.extend({
 	},
 
 	// Use native String.trim function wherever possible
-	trim: core_trim && !core_trim.call("\uFEFF\xA0") ?
+	// Uglify converts escapes to UTF-8; this circumvents (#12690)
+	trim: core_trim && !core_trim.call( String.fromCharCode( 0xFEFF, 0xA0 ) ) ?
 		function( text ) {
 			return text == null ?
 				"" :
