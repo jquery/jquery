@@ -112,7 +112,11 @@ module.exports = function( grunt ) {
 			],
 			tasks: "dev"
 		},
-		uglify: {}
+		uglify: {
+			codegen: {
+				ascii_only: true
+			}
+		}
 	});
 
 	// Default grunt.
