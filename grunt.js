@@ -416,6 +416,27 @@ module.exports = function( grunt ) {
 			return path !== "*";
 		});
 
+		// Ensure the dist files are pure ASCII
+		var fs = require("fs"),
+			nonascii = false;
+		distpaths.forEach(function( filename ) {
+			var buf = fs.readFileSync( filename, "utf8" ),
+			i, c;
+			if ( buf.length !== Buffer.byteLength( buf, "utf8" ) ) {
+				log.writeln( filename + ": Non-ASCII characters detected:" );
+				for ( i = 0; i < buf.length; i++ ) {
+					c = buf.charCodeAt( i );
+					if ( c > 127 ) {
+						log.writeln( "- position " + i + ": " + c );
+						log.writeln( "-- " + buf.substring( i - 20, i + 20 ) );
+						nonascii = true;
+					}
+				}
+			}
+		});
+		if ( nonascii ) {
+			return false;
+		}
 
 		// Proceed only if there are actual
 		// paths to write to
