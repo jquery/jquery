@@ -1074,6 +1074,66 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
+test("trigger(Multi String)", function() {
+	expect(16);
+
+	var res,
+		$elem = jQuery("#firstp");
+
+	$elem.on("first second getData", function( event ) {
+		ok( true, "Custom event " + event.type + " is triggered" );
+	}).trigger("first second");
+
+	jQuery.event.trigger("first second getData");
+
+	$elem.on("click mousedown", function( event ) {
+		ok( true, "Native event " + event.type + " is triggered" );
+	}).trigger("first second");
+
+	$elem.off().on("click second", function( event ) {
+		ok( true, "Event " + event.type + " is triggered" );
+	}).triggerHandler("click second");
+
+	res = $elem.off().on("first", function() {
+		return false;
+	}).on("second", function() {
+		ok( true, "Second should be triggered" );
+		return true;
+	}).triggerHandler("first second");
+
+	strictEqual( res, true, "TriggerHandler call should return result of the last called function" );
+
+	res = jQuery.event.trigger( "first second", undefined, $elem[ 0 ] );
+	strictEqual( res, true, "jQuery.event.trigger call should return result of the last called function" );
+
+	jQuery.event.special.first = {
+	    trigger: function() {
+	      ok( true, "Special trigger for event first should be executed" );
+
+	      return false;
+	    }
+	};
+
+	jQuery.event.special.second = {
+	    trigger: function() {
+	      ok( true, "Special trigger for event second should be executed" );
+
+	      return true;
+	    }
+	};
+
+	$elem.trigger("first second");
+
+	delete jQuery.event.special.first;
+	delete jQuery.event.special.second;
+
+	$elem.off().on( "first.test", function( event ) {
+		ok( true, "Event " + event.type + " with namespace is triggered" );
+	}).on( "second.test", function( event ) {
+		ok( true, "Event " + event.type + " with namespace is triggered" );
+	}).trigger("first second");
+});
+
 test( "submit event bubbles on copied forms (#11649)", function(){
 	expect( 3 );
 
@@ -2358,7 +2418,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 		.end()
 		.find("a").click().end()
 		.find("#ul0").off();
-	
+
 	// Non-positional selector (#12383)
 	markup = markup.wrap("<div />").parent();
 	markup
@@ -2373,7 +2433,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 			ok( true, "li.test is below the delegation point." );
 		})
 		.find("#a0_0").click();
-	
+
 	markup.remove();
 });
 
