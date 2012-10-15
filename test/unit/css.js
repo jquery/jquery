@@ -676,6 +676,8 @@ test("marginRight computed style (bug #3333)", function() {
 });
 
 test("box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
+	expect( 2 );
+
 	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
 		el = jQuery("<div/>").css({ "width": "50%", "marginRight": "50%" }).appendTo( container ),
 		el2 = jQuery("<div/>").css({ "width": "50%", "minWidth": "300px", "marginLeft": "25%" }).appendTo( container );
@@ -685,6 +687,8 @@ test("box model properties incorrectly returning % instead of px, see #10639 and
 });
 
 test("jQuery.cssProps behavior, (bug #8402)", function() {
+	expect( 2 );
+
 	var div = jQuery( "<div>" ).appendTo(document.body).css({
 		"position": "absolute",
 		"top": 0,
@@ -779,11 +783,15 @@ if ( jQuery.fn.offset ) {
 }
 
 test("Do not append px to 'fill-opacity' #9548", 1, function() {
+	expect( 1 );
+
 	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("fill-opacity", 1);
 	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
 });
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
+	expect( 4 );
+	
 	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
 		el = el_dis.clone().appendTo("#qunit-fixture");
 
@@ -794,6 +802,8 @@ test("css('width') and css('height') should respect box-sizing, see #11004", fun
 });
 
 test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
+	expect ( 2 );
+
 	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;'>test</div>").appendTo("#qunit-fixture");
 
 	ok( jQuery.isNumeric( parseFloat( el.css("letterSpacing") ) ), "css('letterSpacing') not convertable to number, see #8627" );
