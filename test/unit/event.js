@@ -2360,7 +2360,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 		.end()
 		.find("a").click().end()
 		.find("#ul0").off();
-	
+
 	// Non-positional selector (#12383)
 	markup = markup.wrap("<div />").parent();
 	markup
@@ -2375,7 +2375,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 			ok( true, "li.test is below the delegation point." );
 		})
 		.find("#a0_0").click();
-	
+
 	markup.remove();
 });
 
@@ -3024,4 +3024,30 @@ asyncTest("trigger click on checkbox, fires change event", function() {
 		ok( true, "Change event fired as a result of triggered click" );
 		start();
 	}).trigger("click");
+});
+
+test("on(Multi String, variable space width)", function() {
+	expect( 4 );
+	var i = 0,
+		p = jQuery("#firstp");
+
+	p.on( "click  something.bla   hover   ", jQuery.noop );
+
+	jQuery.each( jQuery._data( p[ 0 ], "events" ), function() {
+		i++
+	});
+
+	equal( i, 4, "Only four events should be attached" );
+	try {
+		p.off();
+		ok( true, "All events should be correctly detached" );
+	} catch ( _ ) {
+		ok( false, "All events should be correctly detached" );
+	}
+
+	ok( !jQuery._data( p[ 0 ], "events" ), "Now, not a single event should not be attached" );
+
+	p.on( "click something-with-mouse", jQuery.noop ).off("click  notexisted");
+	ok( jQuery._data( p[ 0 ], "events" ), "Removing events with additional tralling space should not affect other events" );
+
 });
