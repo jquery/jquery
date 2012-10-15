@@ -782,7 +782,7 @@ if ( jQuery.fn.offset ) {
 	});
 }
 
-test("Do not append px to 'fill-opacity' #9548", 1, function() {
+test("Do not append px to 'fill-opacity' #9548", function() {
 	expect( 1 );
 
 	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("fill-opacity", 1);
@@ -791,7 +791,7 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
-	
+
 	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
 		el = el_dis.clone().appendTo("#qunit-fixture");
 
