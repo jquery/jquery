@@ -2,15 +2,7 @@ var rformElems = /^(?:textarea|input|select)$/i,
 	rtypenamespace = /^([^\.]*|)(?:\.(.+)|)$/,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
-<<<<<<< HEAD
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
-=======
-	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rwhitespace = /\s+/,
-	hoverHack = function( events ) {
-		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
-	};
->>>>>>> Handles leading/trailing whitespace in event type list in bind/unbinding multiple events. Fixes #12733.
 
 /*
  * Helper functions for managing events -- not part of the public interface.
@@ -60,11 +52,7 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-<<<<<<< HEAD
-		types = jQuery.trim( types ).split( " " );
-=======
-		types = jQuery.trim( hoverHack(types) ).split( rwhitespace );
->>>>>>> Handles leading/trailing whitespace in event type list in bind/unbinding multiple events. Fixes #12733.
+		types = jQuery.trim( types ).split( core_rspace );
 		for ( t = 0; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
@@ -147,11 +135,7 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-<<<<<<< HEAD
-		types = jQuery.trim( types ).split(" ");
-=======
-		types = jQuery.trim( hoverHack( types || "" ) ).split( rwhitespace );
->>>>>>> Handles leading/trailing whitespace in event type list in bind/unbinding multiple events. Fixes #12733.
+		types = jQuery.trim( types ).split( core_rspace );
 		for ( t = 0; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tns[1];
