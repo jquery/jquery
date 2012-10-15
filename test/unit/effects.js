@@ -1301,6 +1301,8 @@ test( "animate properties missing px w/ opacity as last (#9074)", 2, function() 
 });
 
 test("callbacks should fire in correct order (#9100)", function() {
+	expect( 1 );
+
 	stop();
 	var a = 1,
 		cb = 0,
