@@ -2316,13 +2316,10 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		/* jQuery.each arguments end */
 	);
 
-	test( "jQuery ajax - failing cross-domain", function() {
+	asyncTest( "jQuery ajax - failing cross-domain (non-existing)", function() {
+		expect( 1 );
 
-		expect( 2 );
-
-		stop();
-
-		var i = 2;
+		var i = 1;
 
 		jQuery.ajax({
 			url: "http://somewebsitethatdoesnotexist-67864863574657654.com",
@@ -2333,11 +2330,17 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				ok( true, "file not found: " + xhr.status + " => " + e );
 			},
 			complete: function() {
-				if ( ! --i ) {
+				if ( !--i ) {
 					start();
 				}
 			}
 		});
+	});
+
+	asyncTest( "jQuery ajax - failing cross-domain", function() {
+		expect( 1 );
+
+		var i = 1;
 
 		jQuery.ajax({
 			url: "http://www.google.com",
@@ -2348,12 +2351,11 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				ok( true, "access denied: " + xhr.status + " => " + e );
 			},
 			complete: function() {
-				if ( ! --i ) {
+				if ( !--i ) {
 					start();
 				}
 			}
 		});
-
 	});
 
 	test( "jQuery ajax - atom+xml", function() {
