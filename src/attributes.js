@@ -3,6 +3,7 @@ var nodeHook, boolHook, fixSpecified,
 	rreturn = /\r/g,
 	rtype = /^(?:button|input)$/i,
 	rfocusable = /^(?:button|input|object|select|textarea)$/i,
+	rchangeable = /^(?:checked|selected|value)$/i,
 	rclickable = /^a(?:rea|)$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute;
@@ -10,6 +11,18 @@ var nodeHook, boolHook, fixSpecified,
 jQuery.fn.extend({
 	attr: function( name, value ) {
 		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
+	},
+
+	hasAttr: function( name ) {
+		var i = 0,
+			l = this.length;
+		for ( ; i < l; i++ ) {
+			if ( this[ i ].nodeType === 1 && jQuery.hasAttr( this[ i ], name ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	},
 
 	removeAttr: function( name ) {
@@ -340,6 +353,10 @@ jQuery.extend({
 		}
 	},
 
+	hasAttr:function ( elem, name ) {
+		return rchangeable.test( name ) ? !!elem[ name.toLowerCase() ] : elem.hasAttribute( name );
+	},
+
 	removeAttr: function( elem, value ) {
 		var propName, attrNames, name, isBool,
 			i = 0;
@@ -515,6 +532,7 @@ if ( !getSetAttribute ) {
 	fixSpecified = {
 		name: true,
 		id: true,
+		value: true,
 		coords: true
 	};
 
@@ -537,6 +555,10 @@ if ( !getSetAttribute ) {
 			}
 			return ( ret.value = value + "" );
 		}
+	};
+
+	jQuery.hasAttr = function( elem, name ) {
+		return ( rboolean.test( name ) ? boolHook : nodeHook ).get( elem, name.toLowerCase() ) !== undefined;
 	};
 
 	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
