@@ -1901,6 +1901,8 @@ test("Guard against exceptions when clearing safeChildNodes", function() {
 });
 
 test("Ensure oldIE creates a new set on appendTo (#8894)", function() {
+	expect( 5 );
+
 	strictEqual( jQuery("<div/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.clone" );
 	strictEqual( jQuery("<div/>").find("p").end().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.find" );
 	strictEqual( jQuery("<div/>").text("test").addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.fn.text" );

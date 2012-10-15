@@ -1879,6 +1879,8 @@ test("jQuery.post(String, Hash, Function) - simple with xml", function() {
 });
 
 test("jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
+	expect( 1 );
+
 	stop();
 
 	var passed = 0;
@@ -1913,6 +1915,8 @@ test("jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
 });
 
 test("jQuery.ajaxSetup({timeout: Number}) with localtimeout", function() {
+	expect( 1 );
+
 	stop();
 	jQuery.ajaxSetup({timeout: 50});
 
@@ -1990,6 +1994,8 @@ test("custom timeout does not set error message when timeout occurs, see #970", 
 */
 
 test("data option: evaluate function values (#2806)", function() {
+	expect( 1 );
+
 	stop();
 	jQuery.ajax({
 		url: "data/echoQuery.php",
@@ -2006,6 +2012,8 @@ test("data option: evaluate function values (#2806)", function() {
 });
 
 test("data option: empty bodies for non-GET requests", function() {
+	expect( 1 );
+
 	stop();
 	jQuery.ajax({
 		url: "data/echoData.php",
@@ -2153,6 +2161,7 @@ test("jQuery ajax - failing cross-domain", function() {
 });
 
 test("jQuery ajax - atom+xml", function() {
+	expect( 1 );
 
 	stop();
 
@@ -2442,6 +2451,8 @@ test( "jQuery.domManip - script in comments are properly evaluated (#11402)", fu
 });
 
 test("jQuery.ajax - active counter", function() {
+	expect( 1 );
+	
 	ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 });
 

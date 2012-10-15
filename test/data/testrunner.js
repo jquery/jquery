@@ -156,6 +156,9 @@ function testSubproject( label, url, risTests ) {
 // and start()'s the next test.
 QUnit.config.testTimeout = 20 * 1000; // 20 seconds
 
+// Enforce an "expect" argument or expect() call in all test bodies.
+QUnit.config.requireExpects = true;
+
 /**
  * Load the TestSwarm listener if swarmURL is in the address.
  */
