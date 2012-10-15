@@ -420,8 +420,6 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 });
 
 test("bind(), iframes", function() {
-	expect( 1 );
-
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();
 
@@ -798,8 +796,8 @@ test("unbind(eventObject)", function() {
 	assert( 0 );
 });
 
-test("hover() and hover pseudo-event", function() {
-	expect(3);
+test("hover() mouseenter, mouseleave", function() {
+	expect(1);
 
 	var times = 0,
 		handler1 = function( event ) { ++times; },
@@ -816,31 +814,6 @@ test("hover() and hover pseudo-event", function() {
 		.mouseenter().mouseleave();
 
 	equal( times, 4, "hover handlers fired" );
-
-	var balance = 0;
-	jQuery( "#firstp" )
-		.on( "hovercraft", function() {
-			ok( false, "hovercraft is full of ills" );
-		})
-		.on( "click.hover.me.not", function( e ) {
-			equal( e.handleObj.namespace, "hover.me.not", "hover hack doesn't mangle namespaces" );
-		})
-		.bind("hover", function( e ) {
-			if ( e.type === "mouseenter" ) {
-				balance++;
-			} else if ( e.type === "mouseleave" ) {
-				balance--;
-			} else {
-				ok( false, "hover pseudo: unknown event type "+e.type );
-			}
-		})
-		.trigger("click")
-		.trigger("mouseenter")
-		.trigger("mouseleave")
-		.unbind("hover")
-		.trigger("mouseenter");
-
-	equal( balance, 0, "hover pseudo-event" );
 });
 
 test("mouseover triggers mouseenter", function() {
@@ -2435,8 +2408,6 @@ test("delegate with change", function(){
 });
 
 test("delegate with submit", function() {
-	expect( 2 );
-
 	var count1 = 0, count2 = 0;
 
 	jQuery("#body").delegate("#testForm", "submit", function(ev) {
