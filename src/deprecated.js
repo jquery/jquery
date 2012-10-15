@@ -65,24 +65,28 @@ jQuery.sub = function() {
 	return jQuerySub;
 };
 
-
 // Support for 'hover' type
 eventAdd = jQuery.event.add;
 
-//	Overwrite jQuery.event.add
+//	Duck punch jQuery.event.add, and jquery.event.remove
+//	Signatures:
 //	jQuery.event = {
 //	add: function( elem, types, handler, data, selector ) {
+//	remove: function( elem, types, handler, selector, mappedTypes ) {
 jQuery.event.add = function(elem, types, handler, data, selector){
-	types = hoverHack(types);
+	if(types){
+		types = hoverHack(types);
+	}
 	eventAdd.call(this, elem, types, handler, data, selector);
 };
 
 eventRemove = jQuery.event.remove;
 
 jQuery.event.remove = function(elem, types, handler, selector, mappedTypes){
-	types = hoverHack(types);
-	eventAdd.call(this, elem, types, handler, selector, mappedTypes);
+	if(types){
+		types = hoverHack(types);
+	}
+	eventRemove.call(this, elem, types, handler, selector, mappedTypes);
 };
-
 
 })();
