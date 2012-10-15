@@ -32,7 +32,7 @@ var output,
 			};
 		}
 	};
-	
+
 	function showFlags( flags ) {
 		if ( typeof flags === "string" ) {
 			return '"' + flags + '"';

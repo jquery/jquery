@@ -2358,7 +2358,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 		.end()
 		.find("a").click().end()
 		.find("#ul0").off();
-	
+
 	// Non-positional selector (#12383)
 	markup = markup.wrap("<div />").parent();
 	markup
@@ -2373,7 +2373,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 			ok( true, "li.test is below the delegation point." );
 		})
 		.find("#a0_0").click();
-	
+
 	markup.remove();
 });
 

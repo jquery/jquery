@@ -650,7 +650,7 @@ test( "Only check element attributes once when calling .data() - #8909", functio
 
 test( "JSON data- attributes can have newlines", function() {
 	expect(1);
-	
+
 	var x = jQuery("<div data-some='{\n\"foo\":\n\t\"bar\"\n}'></div>");
 	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
