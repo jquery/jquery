@@ -1,6 +1,6 @@
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
-	safeFrag = document.createDocumentFragment();
+		safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
 		while ( list.length ) {
@@ -48,7 +48,7 @@ wrapMap.th = wrapMap.td;
 // IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
-	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	wrapMap._default = [ 1, "X<div>", "" ];
 }
 
 jQuery.fn.extend({
@@ -144,27 +144,29 @@ jQuery.fn.extend({
 	before: function() {
 		if ( !isDisconnected( this[0] ) ) {
 			return this.domManip(arguments, false, function( elem ) {
-				this.parentNode.insertBefore( elem, this );
+				if ( this.parentNode && this.parentNode.nodeType === 1 ) {
+					this.parentNode.insertBefore( elem, this );
+				}
 			});
 		}
 
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( set, this ), "before", this.selector );
-		}
+		return this.length ?
+			this.pushStack( jQuery.merge( jQuery.clean( arguments ), this ), "before", this.selector ) :
+			this;
 	},
 
 	after: function() {
 		if ( !isDisconnected( this[0] ) ) {
 			return this.domManip(arguments, false, function( elem ) {
-				this.parentNode.insertBefore( elem, this.nextSibling );
+				if ( this.parentNode && this.parentNode.nodeType === 1 ) {
+					this.parentNode.insertBefore( elem, this.nextSibling );
+				}
 			});
 		}
 
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( this, set ), "after", this.selector );
-		}
+		return this.length ?
+			this.pushStack( jQuery.merge( this.toArray(), jQuery.clean( arguments ) ), "after", this.selector ) :
+			this;
 	},
 
 	// keepData is for internal use only--do not document
@@ -638,7 +640,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
+		var i, j, elem, tag, wrap, depth, parent, div, hasBody, tbody, handleScript, jsTags,
 			safe = context === document && safeFragment,
 			ret = [];
 
@@ -664,8 +666,8 @@ jQuery.extend({
 				} else {
 					// Ensure a safe container in which to render the html
 					safe = safe || createSafeFragment( context );
-					div = context.createElement("div");
-					safe.appendChild( div );
+
+					div = div || safe.appendChild( context.createElement("div") );
 
 					// Fix "XHTML"-style tags in all browsers
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
@@ -674,6 +676,7 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
+
 					div.innerHTML = wrap[1] + elem + wrap[2];
 
 					// Move to the right depth
@@ -707,9 +710,10 @@ jQuery.extend({
 					}
 
 					elem = div.childNodes;
+					parent = div;
 
-					// Take out of fragment container (we need a fresh div each time)
-					div.parentNode.removeChild( div );
+					// Remember the top-level container for proper cleanup
+					div = safe.lastChild;
 				}
 			}
 
@@ -717,13 +721,29 @@ jQuery.extend({
 				ret.push( elem );
 			} else {
 				jQuery.merge( ret, elem );
+
+				// Fix #12392
+				if ( parent ) {
+
+					// for WebKit and IE > 9
+					parent.textContent = "";
+
+					// for oldIE
+					while ( parent.firstChild ) {
+						parent.removeChild( parent.firstChild );
+					}
+
+					parent = null;
+				}
 			}
 		}
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
-			elem = div = safe = null;
+			safe.removeChild( div );
 		}
+
+		div = elem = safe = null;
 
 		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
