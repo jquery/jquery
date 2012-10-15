@@ -94,7 +94,7 @@ if ( jQuery.support.ajax ) {
 						for ( i in headers ) {
 							xhr.setRequestHeader( i, headers[ i ] );
 						}
-					} catch( _ ) {}
+					} catch( err ) {}
 
 					// Do send the request
 					// This may raise an exception which is actually
@@ -150,7 +150,7 @@ if ( jQuery.support.ajax ) {
 									// on any attempt to access responseText (#11426)
 									try {
 										responses.text = xhr.responseText;
-									} catch( _ ) {
+									} catch( err ) {
 									}
 
 									// Firefox throws an exception when accessing
