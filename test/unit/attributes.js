@@ -520,7 +520,7 @@ test("removeAttr(String)", function() {
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
-	
+
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
@@ -567,6 +567,91 @@ test("removeAttr(Multi String, variable space width)", function() {
 	jQuery.each( tests, function( key, val ) {
 		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
 	});
+});
+
+test( "hasAttr(String)", function() {
+	//expect( 40 );
+
+	var area,
+		checkbox = jQuery( "<input value='1' tabindex='2' checked type='checkbox'/>" ),
+		jq = jQuery( "<input/>" ).attr({
+			simple: "simple",
+			"for": "for",
+			"class": "class",
+			style: "display: block",
+			"data-data": "data",
+			empty: "",
+			readonly: "readOnly",
+			value: "value",
+			id: "id",
+			name: "name"
+		}),
+		map = jQuery("<map />");
+
+	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
+	equal( area.hasAttr("coords"), !!area.attr("coords"), "Check coords attribute");
+	equal( !area.hasAttr("coOrds"), !area.attr("coords"), "Check coords attribute with case-insensitive argument");
+
+	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
+	equal( !area.hasAttr("coords"), !area.attr("coords"), "Check absent coords attribute");
+	equal( !area.hasAttr("coOrds"), !area.attr("coords"), "Check absent coords attribute with case-insensitive argument");
+
+	jq.get( 0 ).property = "property";
+
+	equal( jq.hasAttr("simple"), typeof jq.attr("simple") === "string", "Check attribute" );
+	equal( jq.hasAttr("for"), typeof jq.attr("for") === "string", 'Check for "for" attribute' );
+	equal( jq.hasAttr("class"), typeof jq.attr("class") === "string", "Check class attribute" );
+	equal( jq.hasAttr("style"), typeof jq.attr("style") === "string", "Check style attribute" );
+	equal( jq.hasAttr("data-data"), typeof jq.attr("data-data") === "string", "Check data-* attribute" );
+	equal( jq.hasAttr("empty"), typeof jq.attr("empty") === "string", "Check empty attribute" );
+	equal( jq.hasAttr("readonly"), typeof jq.attr("readonly") === "string", "Check readOnly attribute" );
+
+	equal( jq.hasAttr("value"), typeof jq.attr("value") === "string", "Check value attribute" );
+	equal( jq.hasAttr("id"), typeof jq.attr("id") === "string", "Check id attribute" );
+	equal( jq.hasAttr("name"), typeof jq.attr("name") === "string", "Check name attribute" );
+	equal( jq.hasAttr("property"), typeof jq.attr("property") === "string", "Check for property" );
+
+	equal( jq.hasAttr("siMPle"), typeof jq.attr("simple") === "string", "Check attribute with case-insensitive argument" );
+	equal( jq.hasAttr("fOR"), typeof jq.attr("for") === "string", 'Check for "for" attribute with case-insensitive argument' );
+	equal( jq.hasAttr("cLAss"), typeof jq.attr("class") === "string", "Check class attribute with case-insensitive argument" );
+	equal( jq.hasAttr("styLe"), typeof jq.attr("style") === "string", "Check style attribute with case-insensitive argument" );
+	equal( jq.hasAttr("daTa-dAta"), typeof jq.attr("data-data") === "string", "Check data-* attribute with case-insensitive argument" );
+	equal( jq.hasAttr("naMe"), typeof jq.attr("name") === "string", "Check name attribute with case-insensitive argument" );
+	equal( jq.hasAttr("vaLue"), typeof jq.attr("value") === "string", "Check value attribute with case-insensitive argument" );
+
+	jq.removeAttr( "class for style data-data readonly value id name empty property" );
+
+	equal( !jq.hasAttr("test"), typeof jq.attr("test") === "undefined", "Check for not existed attribute" );
+	equal( !jq.hasAttr("class"), typeof jq.attr("class") === "undefined", "Check removed class attribute" );
+	equal( !jq.hasAttr("empty"), typeof jq.attr("empty") === "undefined", "Check removed empty attribute" );
+
+	equal( !jq.hasAttr("value"), typeof jq.attr("value") === "string", "Check removed value attribute" );
+	equal( !jq.hasAttr("readonly"), typeof jq.attr("readonly") === "undefined", "Check removed readOnly attribute" );
+	equal( !jq.hasAttr("for"), typeof jq.attr("for") === "undefined", 'Check removed "for" attribute' );
+	equal( !jq.hasAttr("style"), typeof jq.attr("style") === "undefined", "Check removed style attribute" );
+	equal( !jq.hasAttr("data-data"), typeof jq.attr("data-data") === "undefined", "Check removed data-* attribute" );
+	equal( !jq.hasAttr("id"), typeof jq.attr("id") === "undefined", "Check removed id attribute" );
+	equal( !jq.hasAttr("name"), typeof jq.attr("name") === "undefined", "Check removed name attribute" );
+	equal( !jq.hasAttr("property"), typeof jq.attr("property") === "undefined", "Check for removed property" );
+
+	jq.add("<div/>");
+	equal( !jq.hasAttr("empty"), !jq.attr("empty"), "Check whole collection for attribute" );
+
+	equal( checkbox.hasAttr("type"), !!checkbox.attr("type"), "Check for type attribute in checkbox" );
+	equal( checkbox.hasAttr("tabindex"), !!checkbox.attr("tabindex"), "Check tabindex attribute" );
+	equal( checkbox.hasAttr("checked"), !!checkbox.attr("checked"), "Check checked attribute" );
+
+	equal( checkbox.hasAttr("tYPe"), !!checkbox.attr("tYPe"), "Check for type attribute in checkbox with case-insensitive argument" );
+	equal( checkbox.hasAttr("tabIndex"), !!checkbox.attr("tabindex"), "Check tabindex attribute with case-insensitive argument" );
+	equal( checkbox.hasAttr("CheckeD"), !!checkbox.attr("checked"), "Check checked attribute with case-insensitive argument" );
+
+	checkbox.removeAttr( "tabindex", "checked" );
+
+	equal( !checkbox.hasAttr("tabindex"), !checkbox.attr("tabindex"), "Check removed tabindex attribute" );
+	equal( !checkbox.hasAttr("tabIndex"), !checkbox.attr("tabindex"), "Check removed tabIndex attribute" );
+	equal( !checkbox.hasAttr("checked"), !checkbox.attr("checked"), "Check removed checked attribute" );
+	equal( !checkbox.hasAttr("CheckeD"), !checkbox.attr("checked"), "Check removed CheckeD attribute" );
+
 });
 
 test("prop(String, Object)", function() {
