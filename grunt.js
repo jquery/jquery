@@ -370,7 +370,7 @@ module.exports = function( grunt ) {
 				.replace( "@DATE", function () {
 					var date = new Date();
 
-					return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+					return [ date.getFullYear(), date.getMonth() + 1, date.getDate() ].join( "-" );
 				} );
 
 			// Write concatenated source to file
