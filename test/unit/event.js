@@ -112,9 +112,18 @@ test("bind(), multiple events at once", function() {
 		}
 
 	};
-	jQuery("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
-	equal( clickCounter, 1, "bind() with multiple events at once" );
-	equal( mouseoverCounter, 1, "bind() with multiple events at once" );
+
+	jQuery("#firstp")
+		.bind("click mouseover", handler)
+		// Tests trailing whitespace (#12733)
+		.bind("click  mouseover", handler)
+		.bind("  click mouseover", handler)
+		.bind("click mouseover  ", handler)
+		.bind("  click  mouseover  ", handler)
+		.trigger("click").trigger("mouseover");
+
+	equal( clickCounter, 5, "bind() with multiple events at once" );
+	equal( mouseoverCounter, 5, "bind() with multiple events at once" );
 });
 
 test("bind(), five events at once", function() {
