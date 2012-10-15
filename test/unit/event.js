@@ -420,6 +420,8 @@ test("bind/delegate bubbling, isDefaultPrevented", function() {
 });
 
 test("bind(), iframes", function() {
+	expect( 1 );
+
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
 	var doc = jQuery("#loadediframe").contents();
 
@@ -2511,6 +2513,8 @@ test("delegate with change", function(){
 });
 
 test("delegate with submit", function() {
+	expect( 2 );
+
 	var count1 = 0, count2 = 0;
 
 	jQuery("#body").delegate("#testForm", "submit", function(ev) {
