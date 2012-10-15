@@ -364,10 +364,14 @@ module.exports = function( grunt ) {
 				}
 			});
 
-			// Embed Date
 			// Embed Version
-			compiled = compiled.replace( "@DATE", new Date() )
-				.replace( /@VERSION/g, version );
+			// Embed Date
+			compiled = compiled.replace( /@VERSION/g, version )
+				.replace( "@DATE", function () {
+					var date = new Date();
+
+					return [date.getFullYear(), date.getMonth() + 1, date.getDate()].join("-");
+				} );
 
 			// Write concatenated source to file
 			file.write( name, compiled );
