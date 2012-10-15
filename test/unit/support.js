@@ -247,8 +247,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 
 	if ( expected ) {
 		test("Verify that the support tests resolve as expected per browser", function() {
-
-      expect( 30 );
+			expect( 30 );
 
 			for ( var i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
