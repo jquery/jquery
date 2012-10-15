@@ -123,7 +123,7 @@ module.exports = function( grunt ) {
 	});
 
 	// Default grunt.
-	grunt.registerTask( "default", "submodules selector build:*:* lint min dist:* compare_size" );
+	grunt.registerTask( "default", "update_submodules selector build:*:* lint min dist:* compare_size" );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", "selector build:*:* lint" );
@@ -131,6 +131,7 @@ module.exports = function( grunt ) {
 	// Load grunt tasks from NPM packages
 	grunt.loadNpmTasks( "grunt-compare-size" );
 	grunt.loadNpmTasks( "grunt-git-authors" );
+	grunt.loadNpmTasks( "grunt-update-submodules" );
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
 		var testswarm = require( "testswarm" ),
@@ -380,35 +381,6 @@ module.exports = function( grunt ) {
 			// Otherwise, print a success message.
 			log.writeln( "File '" + name + "' created." );
 		});
-
-	grunt.registerTask( "submodules", function() {
-		var done = this.async(),
-			// change pointers for submodules and update them to what is specified in jQuery
-			// --merge	doesn't work when doing an initial clone, thus test if we have non-existing
-			// submodules, then do an real update
-			cmd = "if [ -d .git ]; then \n" +
-				"if git submodule status | grep -q -E '^-'; then \n" +
-					"git submodule update --init --recursive; \n" +
-				"else \n" +
-					"git submodule update --init --recursive --merge; \n" +
-				"fi; \n" +
-			"fi;";
-
-		grunt.verbose.write( "Updating submodules..." );
-
-		child_process.exec( cmd, function( err, stdout, stderr ) {
-			if ( stderr ) {
-				console.log(stderr);
-				grunt.verbose.error();
-				done( stderr );
-				return;
-			}
-
-			grunt.log.writeln( stdout );
-
-			done();
-		});
-	});
 
 	// Allow custom dist file locations
 	grunt.registerTask( "dist", function() {
