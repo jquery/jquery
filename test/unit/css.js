@@ -259,6 +259,7 @@ test("css(String, Object)", function() {
 
 if ( !jQuery.support.opacity ) {
 	test("css(String, Object) for MSIE", function() {
+		expect( 5 );
 		// for #1438, IE throws JS error when filter exists but doesn't have opacity in it
 		jQuery("#foo").css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
 		equal( jQuery("#foo").css("opacity"), "1", "Assert opacity is 1 when a different filter is set in IE, #1438" );
