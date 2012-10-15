@@ -115,7 +115,7 @@ test("bind(), multiple events at once", function() {
 
 	jQuery("#firstp")
 		.bind("click mouseover", handler)
-		// Tests trailing whitespace (#12733)
+		// Tests for extra whitespace (#12733)
 		.bind("click  mouseover", handler)
 		.bind("  click mouseover", handler)
 		.bind("click mouseover  ", handler)
