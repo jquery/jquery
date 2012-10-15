@@ -104,22 +104,21 @@ test("bind(), multiple events at once", function() {
 	var clickCounter = 0,
 		mouseoverCounter = 0;
 	var handler = function(event) {
-		if (event.type == "click") {
+		if ( event.type == "click" ) {
 			clickCounter += 1;
 		}
-		else if (event.type == "mouseover") {
+		else if ( event.type == "mouseover" ) {
 			mouseoverCounter += 1;
 		}
-
 	};
 
 	jQuery("#firstp")
-		.bind("click mouseover", handler)
+		.bind( "click mouseover", handler )
 		// Tests for extra whitespace (#12733)
-		.bind("click  mouseover", handler)
-		.bind("  click mouseover", handler)
-		.bind("click mouseover  ", handler)
-		.bind("  click  mouseover  ", handler)
+		.bind( "click  mouseover", handler )
+		.bind( "  click mouseover", handler )
+		.bind( "click mouseover  ", handler )
+		.bind( "  click  mouseover  ", handler )
 		.trigger("click").trigger("mouseover");
 
 	equal( clickCounter, 5, "bind() with multiple events at once" );
