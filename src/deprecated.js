@@ -1,7 +1,12 @@
 // Limit scope pollution from any deprecated API
 (function() {
 
-var matched, browser;
+var rhoverHack = /(?:^|\s)hover(\.\S+|)\b/,
+	hoverHack = function( events ) {
+		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
+	},
+	matched, browser, eventAdd, eventRemove;
+
 
 // Use of jQuery.browser is frowned upon.
 // More details: http://api.jquery.com/jQuery.browser
@@ -59,5 +64,25 @@ jQuery.sub = function() {
 	var rootjQuerySub = jQuerySub(document);
 	return jQuerySub;
 };
+
+
+// Support for 'hover' type
+eventAdd = jQuery.event.add;
+
+//	Overwrite jQuery.event.add
+//	jQuery.event = {
+//	add: function( elem, types, handler, data, selector ) {
+jQuery.event.add = function(elem, types, handler, data, selector){
+	types = hoverHack(types);
+	eventAdd.call(this, elem, types, handler, data, selector);
+};
+
+eventRemove = jQuery.event.remove;
+
+jQuery.event.remove = function(elem, types, handler, selector, mappedTypes){
+	types = hoverHack(types);
+	eventAdd.call(this, elem, types, handler, selector, mappedTypes);
+};
+
 
 })();
