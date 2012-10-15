@@ -7,7 +7,6 @@ var rhoverHack = /(?:^|\s)hover(\.\S+|)\b/,
 	},
 	matched, browser, eventAdd, eventRemove;
 
-
 // Use of jQuery.browser is frowned upon.
 // More details: http://api.jquery.com/jQuery.browser
 // jQuery.uaMatch maintained for back-compat
