@@ -520,7 +520,7 @@ test("removeAttr(String)", function() {
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
-	
+
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
