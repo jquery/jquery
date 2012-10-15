@@ -359,7 +359,7 @@ test("not(Array)", function() {
 });
 
 test("not(jQuery)", function() {
-	expect(1);
+	expect( 1 );
 
 	deepEqual( jQuery("p").not(jQuery("#ap, #sndp, .result")).get(), q("firstp", "en", "sap", "first"), "not(jQuery)" );
 });
