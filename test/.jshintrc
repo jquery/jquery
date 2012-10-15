@@ -41,6 +41,7 @@
     "testIframe": true,
     "testIframeWithCallback": true,
     "createDashboardXML": true,
+    "createXMLFragment": true,
     "moduleTeardown": true,
     "testFoo": true,
     "foobar": true,

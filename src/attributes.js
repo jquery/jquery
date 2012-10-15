@@ -523,7 +523,7 @@ if ( !getSetAttribute ) {
 			// Set the existing or create a new attribute node
 			var ret = elem.getAttributeNode( name );
 			if ( !ret ) {
-				ret = document.createAttribute( name );
+				ret = elem.ownerDocument.createAttribute( name );
 				elem.setAttributeNode( ret );
 			}
 			return ( ret.value = value + "" );

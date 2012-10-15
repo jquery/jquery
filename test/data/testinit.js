@@ -102,6 +102,21 @@ var createWithFriesXML = function() {
 	return jQuery.parseXML(string);
 };
 
+var createXMLFragment = function() {
+	var xml, frag;
+	if ( window.ActiveXObject ) {
+		xml = new ActiveXObject("msxml2.domdocument");
+	} else {
+		xml = document.implementation.createDocument( "", "", null );
+	}
+
+	if ( xml ) {
+		frag = xml.createElement("data");
+	}
+
+	return frag;
+};
+
 var fireNative;
 if ( document.createEvent ) {
 	fireNative = function( node, type ) {

@@ -522,6 +522,17 @@ test( "attr(String, Object) - Loaded via XML document", function() {
 	equal( titles[ 1 ], "Users", "attr() in XML context: Check second title" );
 });
 
+test( "attr(String, Object) - Loaded via XML fragment", function() {
+	expect( 2 );
+	var frag = createXMLFragment(),
+		$frag = jQuery( frag );
+
+	$frag.attr( "test", "some value" );
+	equal( $frag.attr("test"), "some value", "set attribute" );
+	$frag.attr( "test", null );
+	equal( $frag.attr("test"), undefined, "remove attribute" );
+});
+
 test( "attr('tabindex')", function() {
 	expect( 8 );
 
