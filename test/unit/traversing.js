@@ -346,6 +346,8 @@ test("not(Element)", function() {
 });
 
 test("not(Function)", function() {
+	expect(1);
+
 	deepEqual( jQuery("#qunit-fixture p").not(function() { return jQuery("a", this).length; }).get(), q("sndp", "first"), "not(Function)" );
 });
 
