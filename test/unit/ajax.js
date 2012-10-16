@@ -1451,8 +1451,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 
 	jQuery.each( [ "Same Domain", "Cross Domain" ], function( crossDomain, label ) {
-
-
+	
 		asyncTest( "jQuery.ajax() - JSONP, Query String (?n)" + label, function() {
 			expect( 4 );
 
@@ -1525,7 +1524,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 			var count = 0;
 			function plus() {
-				if ( ++count === 4 ) {
+				if ( ++count === 7 ) {
 					start();
 				}
 			}
@@ -1544,7 +1543,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 					plus();
 				}
 			});
-
+			
 			window["jsonpResults"] = function( data ) {
 				ok( data["data"], "JSON results returned (GET, custom callback function)" );
 				window["jsonpResults"] = undefined;
@@ -1595,6 +1594,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				error: function( data ) {
 					ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
 					plus();
+					plus();
 				}
 			});
 
@@ -1618,7 +1618,6 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 		});
-
 
 		asyncTest( "jQuery.ajax() - JSONP, Callback in data, " + label, function() {
 			expect( 2 );
@@ -2675,7 +2674,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				ok( false, "error callback called" );
 			}
 		}).fail(function( _, reason ) {
-			strictEqual( reason, 'canceled', "Request aborted by the prefilter must fail with 'canceled' status text" );
+			strictEqual( reason, "canceled", "Request aborted by the prefilter must fail with 'canceled' status text" );
 		});
 
 	});

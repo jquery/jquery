@@ -88,43 +88,28 @@ function addToPrefiltersOrTransports( structure ) {
 }
 
 // Base inspection function for prefilters and transports
-function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR,
-		dataType /* internal */, inspected /* internal */ ) {
+function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR ) {
 
-	dataType = dataType || options.dataTypes[ 0 ];
-	inspected = inspected || {};
+	var inspected = {},
+		seekingTransport = ( structure === transports );
 
-	inspected[ dataType ] = true;
-
-	var selection,
-		list = structure[ dataType ],
-		i = 0,
-		length = list ? list.length : 0,
-		executeOnly = ( structure === prefilters );
-
-	for ( ; i < length && ( executeOnly || !selection ); i++ ) {
-		selection = list[ i ]( options, originalOptions, jqXHR );
-		// If we got redirected to another dataType
-		// we try there if executing only and not done already
-		if ( typeof selection === "string" ) {
-			if ( !executeOnly || inspected[ selection ] ) {
-				selection = undefined;
-			} else {
-				options.dataTypes.unshift( selection );
-				selection = inspectPrefiltersOrTransports(
-						structure, options, originalOptions, jqXHR, selection, inspected );
+	function inspect( dataType ) {
+		var selected;
+		inspected[ dataType ] = true;
+		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) {
+			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
+			if( typeof dataTypeOrTransport === "string" && !seekingTransport && !inspected[ dataTypeOrTransport ] ) {
+				options.dataTypes.unshift( dataTypeOrTransport );
+				inspect( dataTypeOrTransport );
+				return false;
+			} else if ( seekingTransport ) {
+				return !( selected = dataTypeOrTransport );
 			}
-		}
+		});
+		return selected;
 	}
-	// If we're only executing or nothing was selected
-	// we try the catchall dataType if not done already
-	if ( ( executeOnly || !selection ) && !inspected[ "*" ] ) {
-		selection = inspectPrefiltersOrTransports(
-				structure, options, originalOptions, jqXHR, "*", inspected );
-	}
-	// unnecessary when only executing (prefilters)
-	// but it'll be ignored by the caller in that case
-	return selection;
+
+	return inspect( options.dataTypes[ 0 ] ) || !inspected[ "*" ] && inspect( "*" );
 }
 
 // A special extend for ajax options

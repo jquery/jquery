@@ -8,11 +8,11 @@
 /*jshint node: true */
 /*global config:true, task:true, process:true*/
 
-"use strict";
-
 var child_process = require("child_process");
 
 module.exports = function( grunt ) {
+
+	"use strict";
 
 	// readOptionalJSON
 	// by Ben Alman
@@ -153,7 +153,7 @@ module.exports = function( grunt ) {
 		}, {
 			authUsername: config.authUsername,
 			authToken: config.authToken,
-			jobName: 'jQuery commit #<a href="https://github.com/jquery/jquery/commit/' + commit + '">' + commit.substr( 0, 10 ) + '</a>',
+			jobName: "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" + commit + "'>" + commit.substr( 0, 10 ) + "</a>",
 			runMax: config.runMax,
 			"runNames[]": tests,
 			"runUrls[]": testUrls,

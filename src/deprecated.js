@@ -60,6 +60,9 @@ jQuery.sub = function() {
 	return jQuerySub;
 };
 
+// Unused in 1.8, left in so attrFn-stabbers won't die; remove in 1.9
+jQuery.attrFn = {};
+
 var oldToggle = jQuery.fn.toggle;
 jQuery.fn.toggle = function( fn, fn2 ) {
 

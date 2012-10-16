@@ -5,6 +5,7 @@
   "expr": true,
   "latedef": true,
   "noarg": true,
+  "quotmark": "double",
   "smarttabs": true,
   "trailing": true,
   "undef": true

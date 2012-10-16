@@ -101,4 +101,10 @@ if ( jQuery.browser ) {
 		// manually clean up detached elements
 		$div.remove();
 	});
+
+	test("attrFn test", function() {
+		expect(1);
+		ok(!!jQuery.attrFn, "attrFnPresent");
+	});
+
 }

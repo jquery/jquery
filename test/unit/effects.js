@@ -429,7 +429,7 @@ asyncTest( "animate option { queue: 'name' }", function() {
 		order = [];
 
 	foo.animate( { width: origWidth + 100 }, {
-		queue: 'name',
+		queue: "name",
 		duration: 1,
 		complete: function() {
 
@@ -1369,10 +1369,10 @@ test("animate will scale margin properties individually", function() {
 
 	// clean up for next test
 	foo.css({
-		"marginLeft": '',
-		"marginRight": '',
-		"marginTop": '',
-		"marginBottom": ''
+		"marginLeft": "",
+		"marginRight": "",
+		"marginTop": "",
+		"marginBottom": ""
 	});
 	start();
 });
@@ -1486,9 +1486,9 @@ test( "animate should set display for disconnected nodes", function() {
 			// parentNode = null
 			jQuery("<div/>"),
 
-			jQuery('<div style="display:inline"/>'),
+			jQuery("<div style='display:inline'/>"),
 
-			jQuery('<div style="display:none"/>')
+			jQuery("<div style='display:none'/>")
 		];
 
 	strictEqual( elems[ 0 ].show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
@@ -1532,7 +1532,7 @@ asyncTest("Animation callback should not show animated element as animated (#715
 	foo.animate({
 		opacity: 0
 	}, 100, function() {
-		ok( !foo.is(':animated'), "The element is not animated" );
+		ok( !foo.is(":animated"), "The element is not animated" );
 		start();
 	});
 });
@@ -1563,7 +1563,7 @@ asyncTest( "hide, fadeOut and slideUp called on element width height and width =
 		elems = jQuery();
 
 	for ( ; i < 5; i++ ) {
-		elems = elems.add('<div style="width:0;height:0;"></div>');
+		elems = elems.add("<div style='width:0;height:0;'></div>");
 	}
 
 	foo.append( elems );

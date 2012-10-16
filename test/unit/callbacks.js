@@ -32,14 +32,14 @@ var output,
 			};
 		}
 	};
-	
+
 	function showFlags( flags ) {
 		if ( typeof flags === "string" ) {
-			return '"' + flags + '"';
+			return "'" + flags + "'";
 		}
 		var output = [], key;
 		for ( key in flags ) {
-			output.push( '"' + key + '": ' + flags[ key ] );
+			output.push( "'" + key + "': " + flags[ key ] );
 		}
 		return "{ " + output.join( ", " ) + " }";
 	}

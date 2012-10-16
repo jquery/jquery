@@ -570,7 +570,10 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
-			"some-json": '{ "foo": "bar" }',
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }",
 			"num-1-middle": true,
 			"num-end-2": true,
 			"2-num-start": true
@@ -597,7 +600,10 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
-			"some-json": '{ "foo": "bar" }'
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }"
 		};
 
 	expect( 27 );
@@ -650,7 +656,7 @@ test( "Only check element attributes once when calling .data() - #8909", functio
 
 test( "JSON data- attributes can have newlines", function() {
 	expect(1);
-	
+
 	var x = jQuery("<div data-some='{\n\"foo\":\n\t\"bar\"\n}'></div>");
 	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
