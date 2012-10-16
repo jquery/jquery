@@ -15,7 +15,6 @@ var rformElems = /^(?:textarea|input|select)$/i,
 jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
-
 		var elemData, eventHandle, events,
 			t, tns, type, namespaces, handleObj,
 			handleObjIn, handlers, special;
@@ -196,7 +195,7 @@ jQuery.event = {
 
 			// removeData also checks for emptiness and clears the expando if empty
 			// so use it instead of delete
-			jQuery.removeData( elem, "events", true );
+			jQuery._removeData( elem, "events" );
 		}
 	},
 

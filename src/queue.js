@@ -58,8 +58,8 @@ jQuery.extend({
 		var key = type + "queueHooks";
 		return jQuery._data( elem, key ) || jQuery._data( elem, key, {
 			empty: jQuery.Callbacks("once memory").add(function() {
-				jQuery.removeData( elem, type + "queue", true );
-				jQuery.removeData( elem, key, true );
+				jQuery._removeData( elem, type + "queue" );
+				jQuery._removeData( elem, key );
 			})
 		});
 	}

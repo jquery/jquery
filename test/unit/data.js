@@ -19,7 +19,7 @@ function dataTests (elem) {
 	}
 
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
-
+	
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
 
@@ -50,7 +50,7 @@ function dataTests (elem) {
 	strictEqual( jQuery.data(elem, "foo"), "foo1", "Passing an object extends the data object instead of replacing it" );
 	equal( jQuery.data(elem, "boom"), "bloz", "Extending the data object works" );
 
-	jQuery._data(elem, "foo", "foo2");
+	jQuery._data(elem, "foo", "foo2", true);
 	equal( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
 	equal( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
 
@@ -66,9 +66,9 @@ function dataTests (elem) {
 	jQuery.removeData(elem);
 	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
-	jQuery.removeData(elem, undefined, true);
+	jQuery._removeData(elem);
 
-	strictEqual( jQuery.data(elem, jQuery.expando), undefined, "jQuery.removeData on internal data works" );
+	strictEqual( jQuery._data(elem, jQuery.expando), undefined, "jQuery.removeData on internal data works" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees all data has been removed from object" );
 
 	jQuery._data(elem, "foo", "foo2");
@@ -79,7 +79,7 @@ function dataTests (elem) {
 
 	// delete the last private data key so we can test removing public data
 	// will destroy the cache
-	jQuery.removeData( elem, "foo", true );
+	jQuery._removeData( elem, "foo" );
 
 	if (elem.nodeType) {
 		oldCacheLength = getCacheLength();
@@ -109,9 +109,9 @@ function dataTests (elem) {
 	equal( jQuery.data(elem, "foo"), "foo1", "(sanity check) Ensure data is set in user data object" );
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
 
-	jQuery.removeData(elem, "foo", true);
+	jQuery._removeData(elem, "foo");
 
-	strictEqual( jQuery.data(elem, jQuery.expando), undefined, "Removing the last item in internal data destroys the internal data object" );
+	strictEqual( jQuery._data(elem, jQuery.expando), undefined, "Removing the last item in internal data destroys the internal data object" );
 
 	jQuery._data(elem, "foo", "foo2");
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
@@ -121,11 +121,11 @@ function dataTests (elem) {
 
 	if ( elem.nodeType ) {
 		oldCacheLength = getCacheLength();
-		jQuery.removeData(elem, "foo", true);
+		jQuery._removeData(elem, "foo");
 		equal( getCacheLength(), oldCacheLength - 1, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
 	}
 	else {
-		jQuery.removeData(elem, "foo", true);
+		jQuery._removeData(elem, "foo");
 
 		if (jQuery.support.deleteExpando) {
 			expected = false;
