@@ -214,7 +214,7 @@ jQuery.extend({
 		return internalData( elem, name, data, true );
 	},
 	
-	_removeData: function( elem, name ){
+	_removeData: function( elem, name ) {
 		return internalRemoveData( elem, name, true );
 	},
 
