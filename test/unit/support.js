@@ -38,6 +38,11 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 	ok( true, "IE8 does not crash" );
 });
 
+testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlocks", "support/shrinkWrapBlocks.html", function( shrinkWrapBlocks ) {
+	expect( 1 );
+	strictEqual( shrinkWrapBlocks, jQuery.support.shrinkWrapBlocks, "jQuery.support.shrinkWrapBlocks properties are the same" );
+});
+
 (function() {
 
 	var userAgent = window.navigator.userAgent,
