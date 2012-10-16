@@ -516,11 +516,11 @@ test("removeAttr(String)", function() {
 
 	try {
 		$first = jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
-		equal( $first.attr('contenteditable'), undefined, "Remove the contenteditable attribute" );
+		equal( $first.attr("contenteditable"), undefined, "Remove the contenteditable attribute" );
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
-	
+
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");

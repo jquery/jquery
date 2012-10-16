@@ -48,30 +48,30 @@ if ( jQuery.css ) {
 		t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
 		t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 
-		var $div = jQuery('<div/>').appendTo("body");
+		var $div = jQuery("<div/>").appendTo("body");
 		$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
 		$div.css( "width", 1 ).css( "height", 0 );
-		t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
-		t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
+		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
 		$div.css( "width", 0 ).css( "height", 1 );
-		t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
-		t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
+		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
 		$div.css( "width", 1 ).css( "height", 1 );
-		t( "Is Visible", '#nothiddendivchild:visible', ['nothiddendivchild'] );
-		t( "Is Not Visible", '#nothiddendivchild:hidden', [] );
+		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
+		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
 		$div.remove();
 	});
 }
 
 test("disconnected nodes", function() {
 	expect( 4 );
-	var $opt = jQuery('<option></option>').attr("value", "whipit").appendTo("#qunit-fixture").detach();
+	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
 	$opt.attr("selected", true);
 	equal( $opt.is(":selected"), true, "selected option" );
 
-	var $div = jQuery( '<div/>' );
+	var $div = jQuery("<div/>");
 	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnect nodes." );
 });
 
@@ -105,7 +105,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 			i = 0;
 
 		for ( ; i < f.length; i++ ) {
-			s += (s && ",") + '"' + f[i].id + '"';
+			s += (s && ",") + "'" + f[i].id + "'";
 		}
 
 		deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
@@ -167,7 +167,7 @@ testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles
 	var $cached = window["$cached"];
 
 	expect(3);
-	deepEqual( $cached('.test a').get(), [ document.getElementById('collision') ], "Select collision anchor with first sizzle" );
-	equal( jQuery('.evil a').length, 0, "Select nothing with second sizzle" );
-	equal( jQuery('.evil a').length, 0, "Select nothing again with second sizzle" );
+	deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
+	equal( jQuery(".evil a").length, 0, "Select nothing with second sizzle" );
+	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
 });

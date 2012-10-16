@@ -10,7 +10,8 @@
     "undef": true,
     "smarttabs": true,
     "maxerr": 100,
-    "sub": true
+    "sub": true,
+    "quotmark": "double"
   },
   "globals": {
     "define": true,

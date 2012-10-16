@@ -567,7 +567,7 @@ test("XSS via location.hash", function() {
 	};
 	try {
 		// This throws an error because it's processed like an id
-		jQuery( '#<img id="check9521" src="no-such-.gif" onerror="jQuery._check9521(false)">' ).appendTo("#qunit-fixture");
+		jQuery( "#<img id='check9521' src='no-such-.gif' onerror='jQuery._check9521(false)'>" ).appendTo("#qunit-fixture");
 	} catch (err) {
 		jQuery["_check9521"](true);
 	}

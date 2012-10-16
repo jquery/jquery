@@ -190,7 +190,7 @@ test("wrap(String) consecutive elements (#10177)", function() {
 	targets.each(function() {
 		var $this = jQuery(this);
 
-		ok( $this.parent().is('.wrapper'), "Check each elements parent is correct (.wrapper)" );
+		ok( $this.parent().is(".wrapper"), "Check each elements parent is correct (.wrapper)" );
 		equal( $this.siblings().length, 0, "Each element should be wrapped individually" );
 	});
 });
@@ -447,7 +447,7 @@ var testAppend = function(valueObj) {
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
 
 	QUnit.reset();
-	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo('#testForm');
+	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo("#testForm");
 	equal( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
 
 	QUnit.reset();
@@ -746,8 +746,8 @@ test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
 
 	if ( jQuery.getScript ) {
 		stop();
-		jQuery.getScript('data/test.js', function() {
-			jQuery('script[src*="data\\/test\\.js"]').remove();
+		jQuery.getScript("data/test.js", function() {
+			jQuery("script[src*='data\\/test\\.js']").remove();
 			start();
 		});
 	}
@@ -919,7 +919,7 @@ test("before and after w/ empty object (#10812)", function() {
 
 test("before and after on disconnected node (#10517)", function() {
 	expect(2);
-	
+
 	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 2, "before() returned all elements" );
 	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 2, "after() returned all elements" );
 });
@@ -1242,7 +1242,7 @@ test("clone()", function() {
 	divEvt.remove();
 
 	// Test both html() and clone() for <embed and <object types
-	div = jQuery("<div/>").html('<embed height="355" width="425" src="http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en"></embed>');
+	div = jQuery("<div/>").html("<embed height='355' width='425' src='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'></embed>");
 
 	clone = div.clone(true);
 	equal( clone.length, 1, "One element cloned" );
@@ -1713,25 +1713,25 @@ test("jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
 	expect( 3 );
 	jQuery( [
-					 '<script type="text/javascript">',
-					 '<!--',
-					 'ok( true, "<!-- handled" );',
-					 '//-->',
-					 '</script>'
+					 "<script type='text/javascript'>",
+					 "<!--",
+					 "ok( true, '<!-- handled' );",
+					 "//-->",
+					 "</script>"
 			 ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
 	jQuery( [
-					 '<script type="text/javascript">',
-					 '<![CDATA[',
-					 'ok( true, "<![CDATA[ handled" );',
-					 '//]]>',
-					 '</script>'
+					 "<script type='text/javascript'>",
+					 "<![CDATA[",
+					 "ok( true, '<![CDATA[ handled' );",
+					 "//]]>",
+					 "</script>"
 			 ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
 	jQuery( [
-					 '<script type="text/javascript">',
-					 '<!--//--><![CDATA[//><!--',
-					 'ok( true, "<!--//--><![CDATA[//><!-- (Drupal case) handled" );',
-					 '//--><!]]>',
-					 '</script>'
+					 "<script type='text/javascript'>",
+					 "<!--//--><![CDATA[//><!--",
+					 "ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+					 "//--><!]]>",
+					 "</script>"
 			 ].join ( "\n" ) ).appendTo( "#qunit-fixture" );
 });
 
@@ -1739,7 +1739,7 @@ test("jQuery.buildFragment - plain objects are not a document #8950", function()
 	expect(1);
 
 	try {
-		jQuery('<input type="hidden">', {});
+		jQuery("<input type='hidden'>", {});
 		ok( true, "Does not allow attribute object to be treated like a doc object");
 	} catch (e) {}
 
@@ -1930,7 +1930,7 @@ test("checked state is cloned with clone()", function(){
 	var elem = jQuery.parseHTML("<input type='checkbox' checked='checked'/>")[0];
 	elem.checked = false;
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, false, "Checked false state correctly cloned" );
-	
+
 	elem = jQuery.parseHTML("<input type='checkbox'/>")[0];
 	elem.checked = true;
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, true, "Checked true state correctly cloned" );
