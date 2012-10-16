@@ -929,8 +929,8 @@ var testBefore = function(val) {
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
 
 	var set = jQuery("<div/>").before("<span>test</span>");
-	equal( set[0].nodeName.toLowerCase(), "span", "Insert the element before the disconnected node." );
-	equal( set.length, 2, "Insert the element before the disconnected node." );
+	equal( set[0].nodeName.toLowerCase(), "div", "Insert before a disconnected node should be a no-op" );
+	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
 };
 
 test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -942,18 +942,35 @@ test("before(Function)", function() {
 });
 
 test("before and after w/ empty object (#10812)", function() {
-	expect(2);
+	expect(1);
 
 	var res = jQuery( "#notInTheDocument" ).before( "(" ).after( ")" );
-	equal( res.length, 2, "didn't choke on empty object" );
-	equal( res.wrapAll("<div/>").parent().text(), "()", "correctly appended text" );
+	equal( res.length, 0, "didn't choke on empty object" );
 });
 
 test("before and after on disconnected node (#10517)", function() {
-	expect(2);
+	expect(6);
+	var expectedBefore = "This is a normal link: bugaYahoo",
+		expectedAfter = "This is a normal link: Yahoobuga";
 
-	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 2, "before() returned all elements" );
-	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 2, "after() returned all elements" );
+	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 1, "before() on disconnected node is no-op" );
+	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 1, "after() on disconnected node is no-op" );
+
+	QUnit.reset();
+	jQuery("#yahoo").add("<span/>").before("<b>buga</b>");
+	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node last" );
+
+	QUnit.reset();
+	jQuery("<span/>").add("#yahoo").before("<b>buga</b>");
+	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node first" );
+
+	QUnit.reset();
+	jQuery("#yahoo").add("<span/>").after("<b>buga</b>");
+	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node last" );
+
+	QUnit.reset();
+	jQuery("<span/>").add("#yahoo").after("<b>buga</b>");
+	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node first" );
 });
 
 test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -1004,9 +1021,9 @@ var testAfter = function(val) {
 	jQuery("#yahoo").after( val( [ jQuery("#first"), jQuery("#mark, #google") ] ) );
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
 
-	var set = jQuery("<div/>").after("<span>test</span>");
-	equal( set[1].nodeName.toLowerCase(), "span", "Insert the element after the disconnected node." );
-	equal( set.length, 2, "Insert the element after the disconnected node." );
+	var set = jQuery("<div/>").before("<span>test</span>");
+	equal( set[0].nodeName.toLowerCase(), "div", "Insert after a disconnected node should be a no-op" );
+	equal( set.length, 1, "Insert the element after the disconnected node should be a no-op" );
 };
 
 test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
@@ -1153,6 +1170,41 @@ test("replaceWith(string) for more than one element", function(){
 	jQuery("#foo p").replaceWith("<span>bar</span>");
 	equal(jQuery("#foo span").length, 3, "verify that all the three original element have been replaced");
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
+});
+
+test("replaceWith(string) for collection with disconnected element", function(){
+	expect(18);
+
+	var elem = jQuery("<div />"),
+		testSet, newSet;
+
+	QUnit.reset();
+	testSet = jQuery("#foo p").add(elem);
+	equal(testSet.length, 4, "ensuring that test data has not changed");
+
+	newSet = testSet.replaceWith("<span>bar</span>");
+	equal(testSet.length, 4, "ensure that we still have the same number of elements");
+	equal(jQuery("#foo span").length, 3, "verify that all the three original elements have been replaced");
+	equal(jQuery("#foo p").length, 0, "verify that all the three original elements have been replaced");
+	equal(testSet.filter("p").length, 3, "ensure we still have the original set of attached elements");
+	equal(testSet.filter("div").length, 0, "ensure the detached element is not in the original set");
+	equal(newSet.filter("p").length, 3, "ensure we still have the original set of attached elements in new set");
+	equal(newSet.filter("div").length, 0, "ensure the detached element has been replaced in the new set");
+	equal(newSet.filter("span").length, 1, "ensure the new element is in the new set");
+
+	QUnit.reset();
+	testSet = elem.add(jQuery("#foo p"));
+	equal(testSet.length, 4, "ensuring that test data has not changed");
+
+	testSet.replaceWith("<span>bar</span>");
+	equal(testSet.length, 4, "ensure that we still have the same number of elements");
+	equal(jQuery("#foo span").length, 3, "verify that all the three original elements have been replaced");
+	equal(jQuery("#foo p").length, 0, "verify that all the three original elements have been replaced");
+	equal(testSet.filter("p").length, 3, "ensure we still have the original set of attached elements");
+	equal(testSet.filter("div").length, 0, "ensure the detached element is not in the original set");
+	equal(newSet.filter("p").length, 3, "ensure we still have the original set of attached elements in new set");
+	equal(newSet.filter("div").length, 0, "ensure the detached element has been replaced in the new set");
+	equal(newSet.filter("span").length, 1, "ensure the new element is in the new set");
 });
 
 test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
