@@ -436,7 +436,7 @@ test( "attr(String, Object)", function() {
 test( "attr(jquery_method)", function() {
 
 	var $elem = jQuery("<div />"),
-		elem = $elem[0],
+		elem = $elem[ 0 ],
 		expected = 2,
 		attrObj = {};
 
@@ -447,21 +447,31 @@ test( "attr(jquery_method)", function() {
 
 	if ( jQuery.fn.offset ) {
 		expected += 2;
-		attrObj["offset"] = { "top": 1, "left": 0 };
+		attrObj["offset"] = {
+			"top": 1,
+			"left": 0
+		};
 	}
 
 	if ( jQuery.css ) {
 		expected += 3;
-		attrObj["css"] = { "paddingLeft": 1, "paddingRight": 1 };
+		attrObj["css"] = {
+			"paddingLeft": 1,
+			"paddingRight": 1
+		};
 	}
 
 	expect( expected );
 
 	// one at a time
-	$elem.attr( { "html": "foo" }, true );
+	$elem.attr({
+		"html": "foo"
+	}, true );
 	equal( elem.innerHTML, "foo", "attr(html)" );
 
-	$elem.attr( { "text": "bar" }, true );
+	$elem.attr({
+		"text": "bar"
+	}, true );
 	equal( elem.innerHTML, "bar", "attr(text)" );
 
 	// Multiple attributes
@@ -470,14 +480,21 @@ test( "attr(jquery_method)", function() {
 	if ( jQuery.fn.width ) {
 		equal( elem.style.width, "10px", "attr({width:})" );
 
-		$elem.attr( { "height": 10 }, true );
+		$elem.attr( {
+			"height": 10
+		}, true );
 		equal( elem.style.height, "10px", "attr(height)" );
 	}
 
 	if ( jQuery.fn.offset ) {
 		equal( elem.style.top, "1px", "attr({offset:})" );
 
-		$elem.attr( { offset: { top: 1, left: 1 } }, true );
+		$elem.attr({
+			offset: {
+				top: 1,
+				left: 1
+			}
+		}, true );
 		equal( elem.style.left, "1px", "attr(offset)" );
 	}
 
@@ -485,7 +502,11 @@ test( "attr(jquery_method)", function() {
 		equal( elem.style.paddingLeft, "1px", "attr({css:})" );
 		equal( elem.style.paddingRight, "1px", "attr({css:})" );
 
-		$elem.attr( { "css": { "color": "red" } }, true );
+		$elem.attr({
+			"css": {
+				"color": "red"
+			}
+		}, true );
 		ok( /^(#ff0000|red)$/i.test( elem.style.color ), "attr(css)" );
 	}
 });
@@ -495,10 +516,10 @@ test( "attr(String, Object) - Loaded via XML document", function() {
 	var xml = createDashboardXML();
 	var titles = [];
 	jQuery( "tab", xml ).each(function() {
-		titles.push( jQuery(this).attr("title") );
+		titles.push( jQuery( this ).attr("title") );
 	});
-	equal( titles[0], "Location", "attr() in XML context: Check first title" );
-	equal( titles[1], "Users", "attr() in XML context: Check second title" );
+	equal( titles[ 0 ], "Location", "attr() in XML context: Check first title" );
+	equal( titles[ 1 ], "Users", "attr() in XML context: Check second title" );
 });
 
 test( "attr('tabindex')", function() {
@@ -526,33 +547,33 @@ test( "attr('tabindex', value)", function() {
 	equal( element.attr("tabindex"), undefined, "start with no tabindex" );
 
 	// set a positive string
-	element.attr("tabindex", "1");
+	element.attr( "tabindex", "1" );
 	equal( element.attr("tabindex"), "1", "set tabindex to 1 (string)" );
 
 	// set a zero string
-	element.attr("tabindex", "0");
+	element.attr( "tabindex", "0" );
 	equal( element.attr("tabindex"), "0", "set tabindex to 0 (string)" );
 
 	// set a negative string
-	element.attr("tabindex", "-1");
+	element.attr( "tabindex", "-1" );
 	equal( element.attr("tabindex"), "-1", "set tabindex to -1 (string)" );
 
 	// set a positive number
-	element.attr("tabindex", 1);
+	element.attr( "tabindex", 1 );
 	equal( element.attr("tabindex"), "1", "set tabindex to 1 (number)" );
 
 	// set a zero number
-	element.attr("tabindex", 0);
+	element.attr( "tabindex", 0 );
 	equal(element.attr("tabindex"), "0", "set tabindex to 0 (number)");
 
 	// set a negative number
-	element.attr("tabindex", -1);
+	element.attr( "tabindex", -1 );
 	equal( element.attr("tabindex"), "-1", "set tabindex to -1 (number)" );
 
 	element = jQuery("#linkWithTabIndex");
 	equal( element.attr("tabindex"), "2", "start with tabindex 2" );
 
-	element.attr("tabindex", -1);
+	element.attr( "tabindex", -1 );
 	equal( element.attr("tabindex"), "-1", "set negative tabindex" );
 });
 
@@ -560,25 +581,25 @@ test( "removeAttr(String)", function() {
 	expect( 12 );
 	var $first;
 
-	equal( jQuery("#mark").removeAttr( "class" ).attr("class"), undefined, "remove class" );
+	equal( jQuery("#mark").removeAttr("class").attr("class"), undefined, "remove class" );
 	equal( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
-	equal( jQuery("#foo").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
-	equal( jQuery("#form").attr("style", "position:absolute;").removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
+	equal( jQuery("#foo").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
+	equal( jQuery("#form").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equal( jQuery("<div style='position: absolute'></div>").appendTo("#foo").removeAttr("style").prop("style").cssText, "", "Check removing style attribute (#9699 Webkit)" );
-	equal( jQuery("#fx-test-group").attr("height", "3px").removeAttr("height").get(0).style.height, "1px", "Removing height attribute has no effect on height set with style attribute" );
+	equal( jQuery("#fx-test-group").attr( "height", "3px" ).removeAttr("height").get( 0 ).style.height, "1px", "Removing height attribute has no effect on height set with style attribute" );
 
-	jQuery("#check1").removeAttr("checked").prop("checked", true).removeAttr("checked");
+	jQuery("#check1").removeAttr("checked").prop( "checked", true ).removeAttr("checked");
 	equal( document.getElementById("check1").checked, false, "removeAttr sets boolean properties to false" );
-	jQuery("#text1").prop("readOnly", true).removeAttr("readonly");
+	jQuery("#text1").prop( "readOnly", true ).removeAttr("readonly");
 	equal( document.getElementById("text1").readOnly, false, "removeAttr sets boolean properties to false" );
 
 	jQuery("#option2c").removeAttr("selected");
-	equal( jQuery("#option2d").attr("selected"), "selected", "Removing `selected` from an option that is not selected does not remove selected from the currently selected option (#10870)");
+	equal( jQuery("#option2d").attr("selected"), "selected", "Removing `selected` from an option that is not selected does not remove selected from the currently selected option (#10870)" );
 
 	try {
-		$first = jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
+		$first = jQuery("#first").attr( "contenteditable", "true" ).removeAttr("contenteditable");
 		equal( $first.attr("contenteditable"), undefined, "Remove the contenteditable attribute" );
-	} catch(e) {
+	} catch( e ) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
 
@@ -620,13 +641,13 @@ test( "removeAttr(Multi String, variable space width)", function() {
 		};
 
 	jQuery.each( tests, function( key, val ) {
-		equal( div.attr(key), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
+		equal( div.attr( key ), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
 	});
 
 	div.removeAttr( "id   alt title  rel  " );
 
 	jQuery.each( tests, function( key, val ) {
-		equal( div.attr(key), undefined, "Attribute `" + key + "` was removed" );
+		equal( div.attr( key ), undefined, "Attribute `" + key + "` was removed" );
 	});
 });
 
@@ -634,30 +655,30 @@ test( "prop(String, Object)", function() {
 	expect( 31 );
 
 	equal( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
-	equal( jQuery("#text1").prop("value", "Test2").prop("defaultValue"), "Test", "Check for defaultValue attribute" );
+	equal( jQuery("#text1").prop( "value", "Test2" ).prop("defaultValue"), "Test", "Check for defaultValue attribute" );
 	equal( jQuery("#select2").prop("selectedIndex"), 3, "Check for selectedIndex attribute" );
 	equal( jQuery("#foo").prop("nodeName").toUpperCase(), "DIV", "Check for nodeName attribute" );
 	equal( jQuery("#foo").prop("tagName").toUpperCase(), "DIV", "Check for tagName attribute" );
 	equal( jQuery("<option/>").prop("selected"), false, "Check selected attribute on disconnected element." );
 
 	equal( jQuery("#listWithTabIndex").prop("tabindex"), 5, "Check retrieving tabindex" );
-	jQuery("#text1").prop("readonly", true);
+	jQuery("#text1").prop( "readonly", true );
 	equal( document.getElementById("text1").readOnly, true, "Check setting readOnly property with 'readonly'" );
 	equal( jQuery("#label-for").prop("for"), "action", "Check retrieving htmlFor" );
 	jQuery("#text1").prop("class", "test");
 	equal( document.getElementById("text1").className, "test", "Check setting className with 'class'" );
 	equal( jQuery("#text1").prop("maxlength"), 30, "Check retrieving maxLength" );
-	jQuery("#table").prop("cellspacing", 1);
+	jQuery("#table").prop( "cellspacing", 1 );
 	equal( jQuery("#table").prop("cellSpacing"), "1", "Check setting and retrieving cellSpacing" );
-	jQuery("#table").prop("cellpadding", 1);
+	jQuery("#table").prop( "cellpadding", 1 );
 	equal( jQuery("#table").prop("cellPadding"), "1", "Check setting and retrieving cellPadding" );
-	jQuery("#table").prop("rowspan", 1);
+	jQuery("#table").prop( "rowspan", 1 );
 	equal( jQuery("#table").prop("rowSpan"), 1, "Check setting and retrieving rowSpan" );
-	jQuery("#table").prop("colspan", 1);
+	jQuery("#table").prop( "colspan", 1 );
 	equal( jQuery("#table").prop("colSpan"), 1, "Check setting and retrieving colSpan" );
-	jQuery("#table").prop("usemap", 1);
+	jQuery("#table").prop( "usemap", 1 );
 	equal( jQuery("#table").prop("useMap"), 1, "Check setting and retrieving useMap" );
-	jQuery("#table").prop("frameborder", 1);
+	jQuery("#table").prop( "frameborder", 1 );
 	equal( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
 	QUnit.reset();
 
@@ -670,30 +691,33 @@ test( "prop(String, Object)", function() {
 	body["foo"] = undefined;
 	ok( $body.prop("foo") === undefined, "Make sure the expando is preferred over the dom attribute, even if undefined" );
 
-	var select = document.createElement("select"), optgroup = document.createElement("optgroup"), option = document.createElement("option");
+	var select = document.createElement("select"),
+		optgroup = document.createElement("optgroup"),
+		option = document.createElement("option");
+
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
 
-	equal( jQuery(option).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
-	equal( jQuery(document).prop("nodeName"), "#document", "prop works correctly on document nodes (bug #7451)." );
+	equal( jQuery( option ).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
+	equal( jQuery( document ).prop("nodeName"), "#document", "prop works correctly on document nodes (bug #7451)." );
 
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),
 		textNode = document.createTextNode("some text"),
 		obj = {};
-	jQuery.each( [document, attributeNode, commentNode, textNode, obj, "#firstp"], function( i, ele ) {
-		strictEqual( jQuery(ele).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
+	jQuery.each( [ document, attributeNode, commentNode, textNode, obj, "#firstp" ], function( i, ele ) {
+		strictEqual( jQuery( ele ).prop("nonexisting"), undefined, "prop works correctly for non existing attributes (bug #7500)." );
 	});
 
 	obj = {};
-	jQuery.each( [document, obj], function( i, ele ) {
+	jQuery.each( [ document, obj ], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" );
 		equal( $ele.prop("nonexisting"), "foo", "prop(name, value) works correctly for non existing attributes (bug #7500)." );
 	});
 	jQuery( document ).removeProp("nonexisting");
 
-	var $form = jQuery("#form").prop("enctype", "multipart/form-data");
+	var $form = jQuery("#form").prop( "enctype", "multipart/form-data" );
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
@@ -701,26 +725,26 @@ test( "prop('tabindex')", function() {
 	expect( 8 );
 
 	// elements not natively tabbable
-	equal(jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
-	equal(jQuery("#divWithNoTabIndex").prop("tabindex"), undefined, "not natively tabbable, no tabindex set");
+	equal( jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0" );
+	equal( jQuery("#divWithNoTabIndex").prop("tabindex"), undefined, "not natively tabbable, no tabindex set" );
 
 	// anchor with href
-	equal(jQuery("#linkWithNoTabIndex").prop("tabindex"), 0, "anchor with href, no tabindex set");
-	equal(jQuery("#linkWithTabIndex").prop("tabindex"), 2, "anchor with href, tabindex set to 2");
-	equal(jQuery("#linkWithNegativeTabIndex").prop("tabindex"), -1, "anchor with href, tabindex set to -1");
+	equal( jQuery("#linkWithNoTabIndex").prop("tabindex"), 0, "anchor with href, no tabindex set" );
+	equal( jQuery("#linkWithTabIndex").prop("tabindex"), 2, "anchor with href, tabindex set to 2" );
+	equal( jQuery("#linkWithNegativeTabIndex").prop("tabindex"), -1, "anchor with href, tabindex set to -1" );
 
 	// anchor without href
-	equal(jQuery("#linkWithNoHrefWithNoTabIndex").prop("tabindex"), undefined, "anchor without href, no tabindex set");
-	equal(jQuery("#linkWithNoHrefWithTabIndex").prop("tabindex"), 1, "anchor without href, tabindex set to 2");
-	equal(jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set");
+	equal( jQuery("#linkWithNoHrefWithNoTabIndex").prop("tabindex"), undefined, "anchor without href, no tabindex set" );
+	equal( jQuery("#linkWithNoHrefWithTabIndex").prop("tabindex"), 1, "anchor without href, tabindex set to 2" );
+	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set" );
 });
 
 test( "prop('tabindex', value)", 10, function() {
 
-	var element = jQuery("#divWithNoTabIndex"),
-		clone;
+	var clone,
+		element = jQuery("#divWithNoTabIndex");
 
-	equal(element.prop("tabindex"), undefined, "start with no tabindex");
+	equal( element.prop("tabindex"), undefined, "start with no tabindex" );
 
 	// set a positive string
 	element.prop( "tabindex", "1" );
@@ -764,16 +788,20 @@ test( "removeProp(String)", function() {
 		textNode = document.createTextNode("some text"),
 		obj = {};
 
-	strictEqual( jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[0]["nonexisting"], undefined, "removeprop works correctly on DOM element nodes" );
+	strictEqual(
+		jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[ 0 ]["nonexisting"],
+		undefined,
+		"removeprop works correctly on DOM element nodes"
+	);
 
-	jQuery.each( [document, obj], function( i, ele ) {
+	jQuery.each( [ document, obj ], function( i, ele ) {
 		var $ele = jQuery( ele );
-		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
+		$ele.prop( "nonexisting", "foo" ).removeProp("nonexisting");
 		strictEqual( ele["nonexisting"], undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});
-	jQuery.each( [commentNode, textNode, attributeNode], function( i, ele ) {
+	jQuery.each( [ commentNode, textNode, attributeNode ], function( i, ele ) {
 		var $ele = jQuery( ele );
-		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
+		$ele.prop( "nonexisting", "foo" ).removeProp("nonexisting");
 		strictEqual( ele["nonexisting"], undefined, "removeProp works correctly on non DOM element nodes (bug #7500)." );
 	});
 });
@@ -791,9 +819,9 @@ test( "val()", function() {
 	equal( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
 	ok( jQuery([]).val() === undefined, "Check an empty jQuery object will return undefined from val" );
 
-	equal( jQuery("#select2").val(), "3", "Call val() on a single=\"single\" select" );
+	equal( jQuery("#select2").val(), "3", "Call val() on a single='single' select" );
 
-	deepEqual( jQuery("#select3").val(), ["1", "2"], "Call val() on a multiple=\"multiple\" select" );
+	deepEqual( jQuery("#select3").val(), [ "1", "2" ], "Call val() on a multiple='multiple' select" );
 
 	equal( jQuery("#option3c").val(), "2", "Call val() on a option element with value" );
 
@@ -804,22 +832,22 @@ test( "val()", function() {
 	equal( jQuery("#option3a").val(), "", "Call val() on a option element with no value attribute" );
 
 	jQuery("#select3").val("");
-	deepEqual( jQuery("#select3").val(), [""], "Call val() on a multiple=\"multiple\" select" );
+	deepEqual( jQuery("#select3").val(), [""], "Call val() on a multiple='multiple' select" );
 
-	deepEqual( jQuery("#select4").val(), [], "Call val() on multiple=\"multiple\" select with all disabled options" );
+	deepEqual( jQuery("#select4").val(), [], "Call val() on multiple='multiple' select with all disabled options" );
 
-	jQuery("#select4 optgroup").add("#select4 > [disabled]").attr("disabled", false);
-	deepEqual( jQuery("#select4").val(), ["2", "3"], "Call val() on multiple=\"multiple\" select with some disabled options" );
+	jQuery("#select4 optgroup").add("#select4 > [disabled]").attr( "disabled", false );
+	deepEqual( jQuery("#select4").val(), [ "2", "3" ], "Call val() on multiple='multiple' select with some disabled options" );
 
-	jQuery("#select4").attr("disabled", true);
-	deepEqual( jQuery("#select4").val(), ["2", "3"], "Call val() on disabled multiple=\"multiple\" select" );
+	jQuery("#select4").attr( "disabled", true );
+	deepEqual( jQuery("#select4").val(), [ "2", "3" ], "Call val() on disabled multiple='multiple' select" );
 
 	equal( jQuery("#select5").val(), "3", "Check value on ambiguous select." );
 
-	jQuery("#select5").val(1);
+	jQuery("#select5").val( 1 );
 	equal( jQuery("#select5").val(), "1", "Check value on ambiguous select." );
 
-	jQuery("#select5").val(3);
+	jQuery("#select5").val( 3 );
 	equal( jQuery("#select5").val(), "3", "Check value on ambiguous select." );
 
 	strictEqual(
@@ -833,7 +861,7 @@ test( "val()", function() {
 
 		deepEqual( checks.serialize(), "", "Get unchecked values." );
 
-		equal( checks.eq(3).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
+		equal( checks.eq( 3 ).val(), "on", "Make sure a value of 'on' is provided if none is specified." );
 
 		checks.val([ "2" ]);
 		deepEqual( checks.serialize(), "test=2", "Get a single checked value." );
@@ -869,12 +897,12 @@ if ( "value" in document.createElement("meter") &&
 
 		try {
 			equal( typeof $meter.val(), "number", "meter, returns a number and does not throw exception" );
-			equal( $meter.val(), $meter[0].value, "meter, api matches host and does not throw exception" );
+			equal( $meter.val(), $meter[ 0 ].value, "meter, api matches host and does not throw exception" );
 
 			equal( typeof $progress.val(), "number", "progress, returns a number and does not throw exception" );
-			equal( $progress.val(), $progress[0].value, "progress, api matches host and does not throw exception" );
+			equal( $progress.val(), $progress[ 0 ].value, "progress, api matches host and does not throw exception" );
 
-		} catch(e) {}
+		} catch( e ) {}
 
 		$meter.remove();
 		$progress.remove();
