@@ -2923,3 +2923,40 @@ asyncTest("trigger click on checkbox, fires change event", function() {
 		start();
 	}).trigger("click");
 });
+
+test( "Namespace preserved when passed an Event (#12739)", function() {
+	expect( 4 );
+
+	var markup = jQuery(
+			"<div id='parent'><div id='child'></div></div>"
+		),
+		triggered = 0,
+		fooEvent;
+
+	markup.find("div")
+		.addBack()
+		.on( "foo.bar", function( e ) {
+			if ( !e.handled ) {
+				triggered++;
+				e.handled = true;
+				equal( e.namespace, "bar", "namespace is bar" );
+				jQuery( e.target ).find("div").each(function() {
+				  jQuery( this ).triggerHandler( e );
+				});
+			}
+		})
+		.on( "foo.bar2", function( e ) {
+			ok( false, "foo.bar2 called on trigger " + triggered + " id " + this.id );
+		});
+
+	markup.trigger("foo.bar");
+	markup.trigger( jQuery.Event("foo.bar") );
+	fooEvent = jQuery.Event("foo");
+	fooEvent.namespace = "bar";
+	markup.trigger( fooEvent );
+	markup.remove();
+
+	equal( triggered, 3, "foo.bar triggered" );
+});
+
+

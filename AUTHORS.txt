@@ -135,3 +135,4 @@ Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
 Daniel Gálvez <dgalvez@editablething.com>
 James Huston <james@jameshuston.net>
+Allen J Schmidt Jr <cobrasoft@gmail.com>

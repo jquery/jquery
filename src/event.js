@@ -212,7 +212,7 @@ jQuery.event = {
 		// Event object or event type
 		var cache, exclusive, i, cur, old, ontype, special, handle, eventPath, bubbleType,
 			type = event.type || event,
-			namespaces = [];
+			namespaces = event.namespace ? event.namespace.split(".") : [];
 
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
 		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
