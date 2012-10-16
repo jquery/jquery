@@ -365,11 +365,6 @@ test("animate resets overflow-x and overflow-y when finished", function() {
 		});
 });
 
-testIframeWithCallback( "box-sizing does not affect support.shrinkWrapBlocks", "support/shrinkWrapBlocks.html", function( shrinkWrapBlocks ) {
-	expect( 1 );
-	strictEqual( shrinkWrapBlocks, jQuery.support.shrinkWrapBlocks, "support.shrinkWrapBlocks properties the same" );
-});
-
 /* // This test ends up being flaky depending upon the CPU load
 test("animate option (queue === false)", function () {
 	expect(1);
