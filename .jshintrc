@@ -9,5 +9,6 @@
   "quotmark": "double",
   "smarttabs": true,
   "trailing": true,
-  "undef": true
+  "undef": true,
+  "unused": true
 }
