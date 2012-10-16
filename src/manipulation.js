@@ -39,7 +39,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		_default: [ 0, "", "" ]
 	},
 	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") ),
+	addMandatoryAttributes = function( elem ) { return elem; };
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -49,6 +50,23 @@ wrapMap.th = wrapMap.td;
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
 	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	// Fixes #11280
+	wrapMap.param = [ 1, "X<object>", "</object>" ];
+	// Fixes #11280. HTMLParam name attribute added to avoid IE6-8 parsing issue.
+	addMandatoryAttributes = function( elem ) {
+		// If it's a param
+		return elem.replace(/<param([^>]*)>/gi, function( m, s1, offset ) {
+			var name = s1.match( /name=["']([^"']*)["']/i );
+			return name ?
+				( name[1].length ?
+				// It has a name attr with a value
+				"<param" + s1 + ">" :
+				// It has name attr without a value
+				"<param" + s1.replace( name[0], "name='_" + offset +  "'" ) + ">" ) :
+				// No name attr
+				"<param name='_" + offset +  "' " + s1 + ">";
+		});
+	};
 }
 
 jQuery.fn.extend({
@@ -261,7 +279,11 @@ jQuery.fn.extend({
 		this.each( function( i ) {
 			var next = this.nextSibling,
 				parent = this.parentNode,
-				val = !isFunc ? value : value.call( this, i, jQuery( this ).html() );
+				// HTML argument replaced by "this" element
+				// 1. There were no supporting tests
+				// 2. There was no internal code relying on this
+				// 3. There was no documentation of an html argument
+				val = !isFunc ? value : value.call( this, i, this );
 
 			if ( isDisconnected( this ) ) {
 				// for disconnected elements, we replace with the new content in the set. We use
@@ -664,7 +686,7 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
-					div.innerHTML = wrap[1] + elem + wrap[2];
+					div.innerHTML = wrap[1] + addMandatoryAttributes( elem ) + wrap[2];
 
 					// Move to the right depth
 					while ( depth-- ) {

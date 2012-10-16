@@ -469,6 +469,38 @@ test("append(Function)", function() {
 	testAppend(manipulationFunctionReturningObj);
 });
 
+test("append(param) to object, see #11280", function() {
+	expect(11);
+
+	var objectElement = document.createElement("object"),
+	    $objectElement = jQuery( objectElement ),
+	    paramElement = jQuery("<param type='wmode' value='transparent'/>"),
+	    paramElement2 = jQuery("<param name='' type='wmode2' value='transparent2' />"),
+	    paramElement3 = jQuery("<param type='wmode' name='foo' >"),
+	    newObject = jQuery("<object><param type='foo' ><param name='' value='foo2'/><param type='baz' name='bar'></object>");
+
+	equal( objectElement.childNodes.length, 0, "object did not have childNodes previously" );
+
+	document.body.appendChild( objectElement );
+
+	$objectElement.append( paramElement );
+	equal( $objectElement.children().length, 1, "param single insertion ok" );
+	equal( jQuery(objectElement.childNodes[0]).attr("type"), "wmode", "param.eq(0) has type=wmode" );
+
+	$objectElement.html( paramElement2 );
+	equal( $objectElement.children().length, 1, "param single insertion ok" );
+	equal( jQuery(objectElement.childNodes[0]).attr("type"), "wmode2", "param.eq(0) has type=wmode2" );
+
+	$objectElement.html( paramElement3 );
+	equal( $objectElement.children().length, 1, "param single insertion ok" );
+	equal( jQuery(objectElement.childNodes[0]).attr("name"), "foo", "param.eq(0) has name=foo" );
+
+	equal( newObject.children().length, 3, "param wrapper multiple insertion ok" );
+	equal( newObject.children().eq(0).attr("type"), "foo", "param.eq(0) has type=foo" );
+	equal( newObject.children().eq(1).attr("value"), "foo2", "param.eq(1) has value=foo2" );
+	equal( newObject.children().eq(2).attr("name"), "bar", "param.eq(2) has name=bar" );
+});
+
 test("append(Function) with incoming value", function() {
 	expect(12);
 
