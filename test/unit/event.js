@@ -861,7 +861,7 @@ test("withinElement implemented with jQuery.contains()", function() {
 
 	expect(1);
 
-	jQuery("#qunit-fixture").append('<div id="jc-outer"><div id="jc-inner"></div></div>');
+	jQuery("#qunit-fixture").append("<div id='jc-outer'><div id='jc-inner'></div></div>");
 
 	jQuery("#jc-outer").bind("mouseenter mouseleave", function( event ) {
 
@@ -934,8 +934,8 @@ test("trigger() shortcuts", function() {
 	elem.remove();
 
 	// test that special handlers do not blow up with VML elements (#7071)
-	jQuery('<xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v" />').appendTo('head');
-	jQuery('<v:oval id="oval" style="width:100pt;height:75pt;" fillcolor="red"> </v:oval>').appendTo('#form');
+	jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
+	jQuery("<v:oval id='oval' style='width:100pt;height:75pt;' fillcolor='red'> </v:oval>").appendTo("#form");
 	jQuery("#oval").click().keydown();
 });
 
@@ -1003,21 +1003,21 @@ test("trigger(type, [data], [fn])", function() {
 	};
 
 
-	$elem.live('mouseenter', function(){
-		ok( true, 'Trigger mouseenter bound by live' );
+	$elem.live("mouseenter", function(){
+		ok( true, "Trigger mouseenter bound by live" );
 	});
 
-	$elem.live('mouseleave', function(){
-		ok( true, 'Trigger mouseleave bound by live' );
+	$elem.live("mouseleave", function(){
+		ok( true, "Trigger mouseleave bound by live" );
 	});
 
-	$elem.trigger('mouseenter');
+	$elem.trigger("mouseenter");
 
-	$elem.trigger('mouseleave');
+	$elem.trigger("mouseleave");
 
-	$elem.die('mouseenter');
+	$elem.die("mouseenter");
 
-	$elem.die('mouseleave');
+	$elem.die("mouseleave");
 
 	// Triggers handlrs and native
 	// Trigger 5
@@ -1264,7 +1264,7 @@ test(".trigger() doesn't bubble load event (#10717)", function() {
 	});
 
 	// It's not an image, but as long as it fires load...
-	jQuery( '<img src="index.html" />' )
+	jQuery("<img src='index.html' />")
 		.appendTo( "body" )
 		.on( "load", function() {
 			ok( true, "load fired on img" );
@@ -1279,10 +1279,10 @@ test("Delegated events in SVG (#10791)", function() {
 	expect(2);
 
 	var svg = jQuery(
-			'<svg height="1" version="1.1" width="1" xmlns="http://www.w3.org/2000/svg">'+
-			'<rect class="svg-by-class" x="10" y="20" width="100" height="60" r="10" rx="10" ry="10"></rect>'+
-			'<rect id="svg-by-id" x="10" y="20" width="100" height="60" r="10" rx="10" ry="10"></rect>'+
-			'</svg>'
+			"<svg height='1' version='1.1' width='1' xmlns='http://www.w3.org/2000/svg'>" +
+			"<rect class='svg-by-class' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect>" +
+			"<rect id='svg-by-id' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect>" +
+			"</svg>"
 		).appendTo( "body" );
 
 	jQuery( "body" )
@@ -1305,9 +1305,9 @@ test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", functi
 
 	// Alias names like "id" cause havoc
 	var form = jQuery(
-			'<form id="myform">'+
-				'<input type="text" name="id" value="secret agent man" />'+
-			'</form>'
+			"<form id='myform'>" +
+				"<input type='text' name='id' value='secret agent man' />" +
+			"</form>"
 		)
 		.on( "submit", function( event ) {
 			event.preventDefault();
@@ -1323,7 +1323,7 @@ test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", functi
 		.end()
 		.off("submit");
 
-	form.append('<input type="text" name="disabled" value="differently abled" />');
+	form.append("<input type='text' name='disabled' value='differently abled' />");
 	jQuery("body")
 		.on( "submit", "#myform", function() {
 			ok( true, "delegated id selector with aliased disabled" );
@@ -1334,7 +1334,7 @@ test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", functi
 		.off("submit");
 
 	form
-		.append( '<button id="nestyDisabledBtn"><span>Zing</span></button>' )
+		.append( "<button id='nestyDisabledBtn'><span>Zing</span></button>" )
 		.on( "click", "#nestyDisabledBtn", function() {
 			ok( true, "click on enabled/disabled button with nesty elements" );
 		})
@@ -1360,10 +1360,10 @@ test("Submit event can be stopped (#11049)", function() {
 
 	// Since we manually bubble in IE, make sure inner handlers get a chance to cancel
 	var form = jQuery(
-			'<form id="myform">'+
-				'<input type="text" name="sue" value="bawls" />'+
-				'<input type="submit" />'+
-			'</form>'
+			"<form id='myform'>" +
+				"<input type='text' name='sue' value='bawls' />" +
+				"<input type='submit' />" +
+			"</form>"
 		)
 		.appendTo("body");
 
@@ -2255,14 +2255,14 @@ test(".delegate()/.undelegate()", function() {
 test("jQuery.off using dispatched jQuery.Event", function() {
 	expect(1);
 
-	var markup = jQuery( '<p><a href="#">target</a></p>' ),
+	var markup = jQuery("<p><a href='#'>target</a></p>"),
 		count = 0;
 	markup
 		.on( "click.name", "a", function( event ) {
 			equal( ++count, 1, "event called once before removal" );
 			jQuery().off( event );
 		})
-		.find( "a" ).click().click().end()
+		.find("a").click().click().end()
 		.remove();
 });
 
@@ -2708,7 +2708,7 @@ test("special bind/delegate name mapping", function() {
 	};
 
 	// Ensure a special event isn't removed by its mapped type
-	jQuery( '<p>Gut Feeling</p>' )
+	jQuery( "<p>Gut Feeling</p>" )
 		.on( "click", jQuery.noop )
 		.on( "gutfeeling", jQuery.noop )
 		.off( "click" )
@@ -2716,14 +2716,14 @@ test("special bind/delegate name mapping", function() {
 		.remove();
 
 	// Ensure special events are removed when only a namespace is provided
-	jQuery( '<p>Gut Feeling</p>' )
+	jQuery( "<p>Gut Feeling</p>" )
 		.on( "gutfeeling.Devo", jQuery.noop )
 		.off( ".Devo" )
 		.trigger( "gutfeeling" )
 		.remove();
 
 	// Ensure .one() events are removed after their maiden voyage
-	jQuery( '<p>Gut Feeling</p>' )
+	jQuery( "<p>Gut Feeling</p>" )
 		.one( "gutfeeling", jQuery.noop )
 		.trigger( "gutfeeling" )	// This one should
 		.trigger( "gutfeeling" )	// This one should not
@@ -2805,7 +2805,7 @@ test("fixHooks extensions", function() {
 	$fixture.bind( "click", function( event ) {
 		ok( !("blurrinessLevel" in event), "event.blurrinessLevel does not exist" );
 	});
-	fireNative( $fixture[0], 'click' );
+	fireNative( $fixture[0], "click" );
 	$fixture.unbind( "click" );
 
 	jQuery.event.fixHooks.click = {
@@ -2819,7 +2819,7 @@ test("fixHooks extensions", function() {
 	$fixture.bind( "click", function( event ) {
 		equal( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
 	});
-	fireNative( $fixture[0], 'click' );
+	fireNative( $fixture[0], "click" );
 
 	delete jQuery.event.fixHooks.click;
 	$fixture.unbind( "click" ).remove();

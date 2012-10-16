@@ -2674,7 +2674,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				ok( false, "error callback called" );
 			}
 		}).fail(function( _, reason ) {
-			strictEqual( reason, 'canceled', "Request aborted by the prefilter must fail with 'canceled' status text" );
+			strictEqual( reason, "canceled", "Request aborted by the prefilter must fail with 'canceled' status text" );
 		});
 
 	});

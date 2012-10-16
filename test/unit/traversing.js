@@ -107,7 +107,7 @@ test("is() with positional selectors", function() {
 	expect(23);
 
 	var html = jQuery(
-				'<p id="posp"><a class="firsta" href="#"><em>first</em></a><a class="seconda" href="#"><b>test</b></a><em></em></p>'
+				"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
 			).appendTo( "body" ),
 		isit = function(sel, match, expect) {
 			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
@@ -234,16 +234,16 @@ test("filter(jQuery)", function() {
 test("filter() with positional selectors", function() {
 	expect(19);
 
-	var html = jQuery('' +
-		'<p id="posp">' +
-			'<a class="firsta" href="#">' +
-				'<em>first</em>' +
-			'</a>' +
-			'<a class="seconda" href="#">' +
-				'<b>test</b>' +
-			'</a>' +
-			'<em></em>' +
-		'</p>').appendTo( "body" ),
+	var html = jQuery( "" +
+		"<p id='posp'>" +
+			"<a class='firsta' href='#'>" +
+				"<em>first</em>" +
+			"</a>" +
+			"<a class='seconda' href='#'>" +
+				"<b>test</b>" +
+			"</a>" +
+			"<em></em>" +
+		"</p>" ).appendTo( "body" ),
 		filterit = function(sel, filter, length) {
 			equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
 		};
