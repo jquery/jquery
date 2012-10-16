@@ -118,12 +118,7 @@ jQuery.fn.extend({
 		if ( jQuery.css(elem, 'position') === 'fixed' ) {
 			// we assume that getBoundingClientRect is available when computed position is fixed
 			offset = elem.getBoundingClientRect();
-			// offset is read only, need to copy out the values we need so we can tweak it later
-			offset = {
-				left: offset.left,
-				top: offset.top
-			};
-		}else{
+		} else {
 			// Get *real* offsetParent
 			offsetParent = this.offsetParent();
 
@@ -138,16 +133,12 @@ jQuery.fn.extend({
 			parentOffset.left += parseFloat( jQuery.css(offsetParent[0], "borderLeftWidth") ) || 0;
 		}
 
-		// Subtract element margins
+		// Subtract parent offsets and element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
 		// are the same in Safari causing offset.left to incorrectly be 0
-		offset.top  -= parseFloat( jQuery.css(elem, "marginTop") ) || 0;
-		offset.left -= parseFloat( jQuery.css(elem, "marginLeft") ) || 0;
-
-		// Subtract the two offsets
 		return {
-			top:  offset.top  - parentOffset.top,
-			left: offset.left - parentOffset.left
+			top:  offset.top  - parentOffset.top - ( parseFloat( jQuery.css(elem, "marginTop") ) || 0 ),
+			left: offset.left - parentOffset.left - ( parseFloat( jQuery.css(elem, "marginLeft") ) || 0 )
 		};
 	},
 
