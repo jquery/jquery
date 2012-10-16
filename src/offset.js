@@ -111,7 +111,8 @@ jQuery.fn.extend({
 			return;
 		}
 
-		var offsetParent, offset, parentOffset = { top: 0, left: 0 },
+		var offsetParent, offset,
+			parentOffset = { top: 0, left: 0 },
 			elem = this[0];
 
 		// fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is it's only offset parent
