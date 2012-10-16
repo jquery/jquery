@@ -1,17 +1,17 @@
 {
   "options": {
-    "evil": true,
     "browser": true,
-    "wsh": true,
-    "eqnull": true,
-    "expr": true,
     "curly": true,
-    "trailing": true,
-    "undef": true,
+    "eqnull": true,
+    "evil": true,
+    "expr": true,
+    "maxerr": 100,
+    "quotmark": "double",
     "smarttabs": true,
     "sub": true,
-    "maxerr": 100,
-    "quotmark": "double"
+    "trailing": true,
+    "undef": true,
+    "wsh": true
   },
   "globals": {
     "define": true,

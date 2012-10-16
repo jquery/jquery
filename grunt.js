@@ -5,9 +5,6 @@
  *
  */
 
-/*jshint node: true */
-/*global config:true, task:true, process:true*/
-
 module.exports = function( grunt ) {
 
 	"use strict";
@@ -24,15 +21,10 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
-	var task = grunt.task;
 	var file = grunt.file;
-	var utils = grunt.utils;
 	var log = grunt.log;
 	var verbose = grunt.verbose;
-	var fail = grunt.fail;
-	var option = grunt.option;
 	var config = grunt.config;
-	var template = grunt.template;
 	var distpaths = [
 		"dist/jquery.js",
 		"dist/jquery.min.js"
@@ -99,7 +91,7 @@ module.exports = function( grunt ) {
 			}
 
 			return {
-				options: jshintrc(),
+				grunt: jshintrc(),
 				dist: jshintrc( "src/" ),
 				tests: jshintrc( "test/" )
 			};
@@ -260,8 +252,7 @@ module.exports = function( grunt ) {
 		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
 		function() {
 			// Concat specified files.
-			var i,
-				compiled = "",
+			var compiled = "",
 				modules = this.flags,
 				explicit = Object.keys(modules).length > 1,
 				optIn = !modules["*"],
