@@ -264,10 +264,10 @@ jQuery.fn.extend({
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
 				return this.each(function( index ) {
-          // HTML argument replaced by "this" element
-          // 1. There were no supporting tests
-          // 2. There was no internal code relying on this
-          // 3. There was no documentation of an html argument
+					// HTML argument replaced by "this" element
+					// 1. There were no supporting tests
+					// 2. There was no internal code relying on this
+					// 3. There was no documentation of an html argument
 					jQuery( this ).replaceWith( value.call( this, index, this ) );
 				});
 			}
