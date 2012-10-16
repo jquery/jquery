@@ -6,12 +6,12 @@ module("offset", { setup: function(){
 	// if the offset method is using the scroll offset
 	// of the parent window
 	var forceScroll = jQuery("<div>").css({ "width": 2000, "height": 2000 });
-	forceScroll.appendTo("body");
-	var checkDiv = jQuery("<div>").appendTo("body")[0];
+	forceScroll.appendTo("#qunit-fixture");
+	var checkDiv = jQuery("<div>").appendTo("#qunit-fixture")[0];
 
-	window.scrollTo(200, 200);
+	window.scrollTo( 200, 200 );
 	window.supportsScroll = ( document.documentElement.scrollTop || document.body.scrollTop );
-	window.scrollTo(1, 1);
+	window.scrollTo( 1, 1 );
 
 	checkDiv.style.position = "fixed";
 	checkDiv.style.top = "20px";
