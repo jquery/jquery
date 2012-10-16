@@ -5,8 +5,6 @@
  *
  */
 
-/*global process:true*/
-
 module.exports = function( grunt ) {
 
 	"use strict";
@@ -93,7 +91,7 @@ module.exports = function( grunt ) {
 			}
 
 			return {
-				options: jshintrc(),
+				grunt: jshintrc(),
 				dist: jshintrc( "src/" ),
 				tests: jshintrc( "test/" )
 			};
