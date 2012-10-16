@@ -1238,7 +1238,7 @@ var testToggleClass = function(valueObj) {
 
 	// Cleanup
 	e.removeClass("testD");
-	jQuery.removeData( e[ 0 ], "__className__", true );
+	jQuery._removeData( e[ 0 ], "__className__" );
 };
 
 test( "toggleClass(String|boolean|undefined[, boolean])", function() {
@@ -1299,7 +1299,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	// Cleanup
 	e.removeClass("test");
-	jQuery.removeData( e[ 0 ], "__className__", true );
+	jQuery._removeData( e[ 0 ], "__className__" );
 });
 
 test( "addClass, removeClass, hasClass", function() {
