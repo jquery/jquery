@@ -39,7 +39,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		_default: [ 0, "", "" ]
 	},
 	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") ),
+	addMandatoryAttributes = function( elem ) { return elem; };
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -49,6 +50,23 @@ wrapMap.th = wrapMap.td;
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
 	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	// Fixes #11280
+	wrapMap.param = [ 1, "X<object>", "</object>" ];
+	// Fixes #11280. HTMLParam name attribute added to avoid IE6-8 parsing issue.
+	addMandatoryAttributes = function( elem ) {
+		// If it's a param
+		return elem.replace(/<param([^>]*)>/gi, function( m, s1, offset ) {
+			var name = s1.match( /name=["']([^"']*)["']/i );
+			return name ?
+				( name[1].length ?
+				// It has a name attr with a value
+				"<param" + s1 + ">" :
+				// It has name attr without a value
+				"<param" + s1.replace( name[0], "name='_" + offset +  "'" ) + ">" ) :
+				// No name attr
+				"<param name='_" + offset +  "' " + s1 + ">";
+		});
+	};
 }
 
 jQuery.fn.extend({
@@ -674,7 +692,7 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
-					div.innerHTML = wrap[1] + elem + wrap[2];
+					div.innerHTML = wrap[1] + addMandatoryAttributes( elem ) + wrap[2];
 
 					// Move to the right depth
 					while ( depth-- ) {
