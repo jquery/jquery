@@ -2759,4 +2759,18 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			start();
 		});
 	});
+	
+	test( "jQuery.ajax - empty json gets to error callback instead of success callback.", function() {
+		expect( 1 );
+
+		stop();
+
+		jQuery.ajax( url("data/echoData.php"), {
+			error: function( _, __, error ) {
+				equal( typeof error === "object", true,  "Didn't get back error object for empty json response" );
+				start();
+			},
+			dataType: "json"
+		});
+	});
 }

@@ -134,3 +134,4 @@ Nikita Govorov <nikita.govorov@gmail.com>
 Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
 Daniel Gálvez <dgalvez@editablething.com>
+James Huston <james@jameshuston.net>
