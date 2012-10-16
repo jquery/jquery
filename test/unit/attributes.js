@@ -909,56 +909,56 @@ if ( "value" in document.createElement("meter") &&
 	});
 }
 
-var testVal = function(valueObj) {
+var testVal = function( valueObj ) {
 	expect( 8 );
 
 	QUnit.reset();
-	jQuery("#text1").val(valueObj( "test" ));
+	jQuery("#text1").val( valueObj("test") );
 	equal( document.getElementById("text1").value, "test", "Check for modified (via val(String)) value of input element" );
 
-	jQuery("#text1").val(valueObj( undefined ));
+	jQuery("#text1").val( valueObj( undefined ) );
 	equal( document.getElementById("text1").value, "", "Check for modified (via val(undefined)) value of input element" );
 
-	jQuery("#text1").val(valueObj( 67 ));
+	jQuery("#text1").val( valueObj( 67 ) );
 	equal( document.getElementById("text1").value, "67", "Check for modified (via val(Number)) value of input element" );
 
-	jQuery("#text1").val(valueObj( null ));
+	jQuery("#text1").val( valueObj( null ) );
 	equal( document.getElementById("text1").value, "", "Check for modified (via val(null)) value of input element" );
 
 	var $select1 = jQuery("#select1");
-	$select1.val(valueObj( "3" ));
+	$select1.val( valueObj("3") );
 	equal( $select1.val(), "3", "Check for modified (via val(String)) value of select element" );
 
-	$select1.val(valueObj( 2 ));
+	$select1.val( valueObj( 2 ) );
 	equal( $select1.val(), "2", "Check for modified (via val(Number)) value of select element" );
 
 	$select1.append("<option value='4'>four</option>");
-	$select1.val(valueObj( 4 ));
+	$select1.val( valueObj( 4 ) );
 	equal( $select1.val(), "4", "Should be possible to set the val() to a newly created option" );
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	j.val(valueObj( "asdf" ));
+	j.val( valueObj( "asdf" ) );
 	equal( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
 };
 
 test( "val(String/Number)", function() {
-	testVal(bareObj);
+	testVal( bareObj );
 });
 
 test( "val(Function)", function() {
-	testVal(functionReturningObj);
+	testVal( functionReturningObj );
 });
 
 test( "val(Array of Numbers) (Bug #7123)", function() {
 	expect( 4 );
 	jQuery("#form").append("<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />");
 	var elements = jQuery("input[name=arrayTest]").val([ 1, 2 ]);
-	ok( elements[0].checked, "First element was checked" );
-	ok( elements[1].checked, "Second element was checked" );
-	ok( !elements[2].checked, "Third element was unchecked" );
-	ok( !elements[3].checked, "Fourth element remained unchecked" );
+	ok( elements[ 0 ].checked, "First element was checked" );
+	ok( elements[ 1 ].checked, "Second element was checked" );
+	ok( !elements[ 2 ].checked, "Third element was unchecked" );
+	ok( !elements[ 3 ].checked, "Fourth element remained unchecked" );
 
 	elements.remove();
 });
@@ -969,7 +969,7 @@ test( "val(Function) with incoming value", function() {
 	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
 
-	jQuery("#text1").val(function(i, val) {
+	jQuery("#text1").val(function( i, val ) {
 		equal( val, oldVal, "Make sure the incoming value is correct." );
 		return "test";
 	});
@@ -978,7 +978,7 @@ test( "val(Function) with incoming value", function() {
 
 	oldVal = jQuery("#text1").val();
 
-	jQuery("#text1").val(function(i, val) {
+	jQuery("#text1").val(function( i, val ) {
 		equal( val, oldVal, "Make sure the incoming value is correct." );
 		return 67;
 	});
@@ -987,7 +987,7 @@ test( "val(Function) with incoming value", function() {
 
 	oldVal = jQuery("#select1").val();
 
-	jQuery("#select1").val(function(i, val) {
+	jQuery("#select1").val(function( i, val ) {
 		equal( val, oldVal, "Make sure the incoming value is correct." );
 		return "3";
 	});
@@ -996,7 +996,7 @@ test( "val(Function) with incoming value", function() {
 
 	oldVal = jQuery("#select1").val();
 
-	jQuery("#select1").val(function(i, val) {
+	jQuery("#select1").val(function( i, val ) {
 		equal( val, oldVal, "Make sure the incoming value is correct." );
 		return 2;
 	});
@@ -1007,7 +1007,7 @@ test( "val(Function) with incoming value", function() {
 
 	oldVal = jQuery("#select1").val();
 
-	jQuery("#select1").val(function(i, val) {
+	jQuery("#select1").val(function( i, val ) {
 		equal( val, oldVal, "Make sure the incoming value is correct." );
 		return 4;
 	});
@@ -1021,27 +1021,27 @@ test( "val(select) after form.reset() (Bug #2551)", function() {
 
 	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
-	jQuery("#kkk").val( "gf" );
+	jQuery("#kkk").val("gf");
 
 	document["kk"].reset();
 
-	equal( jQuery("#kkk")[0].value, "cf", "Check value of select after form reset." );
+	equal( jQuery("#kkk")[ 0 ].value, "cf", "Check value of select after form reset." );
 	equal( jQuery("#kkk").val(), "cf", "Check value of select after form reset." );
 
 	// re-verify the multi-select is not broken (after form.reset) by our fix for single-select
-	deepEqual( jQuery("#select3").val(), ["1", "2"], "Call val() on a multiple=\"multiple\" select" );
+	deepEqual( jQuery("#select3").val(), ["1", "2"], "Call val() on a multiple='multiple' select" );
 
 	jQuery("#kk").remove();
 });
 
-var testAddClass = function(valueObj) {
+var testAddClass = function( valueObj ) {
 	expect( 9 );
 
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
-		if ( !~div.get(i).className.indexOf("test") ) {
+		if ( !~div.get( i ).className.indexOf("test") ) {
 			pass = false;
 		}
 	}
@@ -1057,11 +1057,11 @@ var testAddClass = function(valueObj) {
 	div.addClass( valueObj("test") );
 	equal( div.attr("class"), "test", "Make sure there's no extra whitespace." );
 
-	div.attr("class", " foo");
+	div.attr( "class", " foo" );
 	div.addClass( valueObj("test") );
 	equal( div.attr("class"), "foo test", "Make sure there's no extra whitespace." );
 
-	div.attr("class", "foo");
+	div.attr( "class", "foo" );
 	div.addClass( valueObj("bar baz") );
 	equal( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 
@@ -1080,22 +1080,23 @@ var testAddClass = function(valueObj) {
 };
 
 test( "addClass(String)", function() {
-	testAddClass(bareObj);
+	testAddClass( bareObj );
 });
 
 test( "addClass(Function)", function() {
-	testAddClass(functionReturningObj);
+	testAddClass( functionReturningObj );
 });
 
 test( "addClass(Function) with incoming value", function() {
 	expect( 48 );
-	var div = jQuery("div"), old = div.map(function() {
-		return jQuery(this).attr("class") || "";
-	});
+	var div = jQuery("div"),
+		old = div.map(function() {
+			return jQuery(this).attr("class") || "";
+		});
 
-	div.addClass(function(i, val) {
-		if ( this.id !== "_firebugConsole") {
-			equal( val, old[i], "Make sure the incoming value is correct." );
+	div.addClass(function( i, val ) {
+		if ( this.id !== "_firebugConsole" ) {
+			equal( val, old[ i ], "Make sure the incoming value is correct." );
 			return "test";
 		}
 	});
@@ -1130,11 +1131,11 @@ var testRemoveClass = function(valueObj) {
 	$divs = jQuery("div");
 
 	// Make sure that a null value doesn't cause problems
-	$divs.eq(0).addClass("test").removeClass( valueObj(null) );
-	ok( $divs.eq(0).is(".test"), "Null value passed to removeClass" );
+	$divs.eq( 0 ).addClass("test").removeClass( valueObj( null ) );
+	ok( $divs.eq( 0 ).is(".test"), "Null value passed to removeClass" );
 
-	$divs.eq(0).addClass("test").removeClass( valueObj("") );
-	ok( $divs.eq(0).is(".test"), "Empty string passed to removeClass" );
+	$divs.eq( 0 ).addClass("test").removeClass( valueObj("") );
+	ok( $divs.eq( 0 ).is(".test"), "Empty string passed to removeClass" );
 
 	// using contents will get regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
@@ -1144,33 +1145,33 @@ var testRemoveClass = function(valueObj) {
 	var div = document.createElement("div");
 	div.className = " test foo ";
 
-	jQuery(div).removeClass( valueObj("foo") );
+	jQuery( div ).removeClass( valueObj("foo") );
 	equal( div.className, "test", "Make sure remaining className is trimmed." );
 
 	div.className = " test ";
 
-	jQuery(div).removeClass( valueObj("test") );
+	jQuery( div ).removeClass( valueObj("test") );
 	equal( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
 test( "removeClass(String) - simple", function() {
-	testRemoveClass(bareObj);
+	testRemoveClass( bareObj );
 });
 
 test( "removeClass(Function) - simple", function() {
-	testRemoveClass(functionReturningObj);
+	testRemoveClass( functionReturningObj );
 });
 
 test( "removeClass(Function) with incoming value", function() {
 	expect( 48 );
 
 	var $divs = jQuery("div").addClass("test"), old = $divs.map(function() {
-		return jQuery(this).attr("class");
+		return jQuery( this ).attr("class");
 	});
 
-	$divs.removeClass(function(i, val) {
+	$divs.removeClass(function( i, val ) {
 		if ( this.id !== "_firebugConsole" ) {
-			equal( val, old[i], "Make sure the incoming value is correct." );
+			equal( val, old[ i ], "Make sure the incoming value is correct." );
 			return "test";
 		}
 	});
@@ -1217,35 +1218,35 @@ var testToggleClass = function(valueObj) {
 	ok( (!e.is(".testA") && !e.is(".testB") && !e.is(".testC")), "Assert no class present" );
 
 	// toggleClass storage
-	e.toggleClass(true);
-	ok( e[0].className === "", "Assert class is empty (data was empty)" );
+	e.toggleClass( true );
+	ok( e[ 0 ].className === "", "Assert class is empty (data was empty)" );
 	e.addClass("testD testE");
 	ok( e.is(".testD.testE"), "Assert class present" );
 	e.toggleClass();
 	ok( !e.is(".testD.testE"), "Assert class not present" );
-	ok( jQuery._data(e[0], "__className__") === "testD testE", "Assert data was stored" );
+	ok( jQuery._data(e[ 0 ], "__className__") === "testD testE", "Assert data was stored" );
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
-	e.toggleClass(false);
+	e.toggleClass( false );
 	ok( !e.is(".testD.testE"), "Assert class not present" );
-	e.toggleClass(true);
+	e.toggleClass( true );
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 	e.toggleClass();
-	e.toggleClass(false);
+	e.toggleClass( false );
 	e.toggleClass();
 	ok( e.is(".testD.testE"), "Assert class present (restored from data)" );
 
 	// Cleanup
 	e.removeClass("testD");
-	jQuery.removeData(e[0], "__className__", true);
+	jQuery.removeData( e[ 0 ], "__className__", true );
 };
 
 test( "toggleClass(String|boolean|undefined[, boolean])", function() {
-	testToggleClass(bareObj);
+	testToggleClass( bareObj );
 });
 
 test( "toggleClass(Function[, boolean])", function() {
-	testToggleClass(functionReturningObj);
+	testToggleClass( functionReturningObj );
 });
 
 test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
@@ -1254,7 +1255,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	var e = jQuery("#firstp"), old = e.attr("class") || "";
 	ok( !e.is(".test"), "Assert class not present" );
 
-	e.toggleClass(function(i, val) {
+	e.toggleClass(function( i, val ) {
 		equal( old, val, "Make sure the incoming value is correct." );
 		return "test";
 	});
@@ -1262,7 +1263,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	old = e.attr("class");
 
-	e.toggleClass(function(i, val) {
+	e.toggleClass(function( i, val ) {
 		equal( old, val, "Make sure the incoming value is correct." );
 		return "test";
 	});
@@ -1271,7 +1272,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	old = e.attr("class") || "";
 
 	// class name with a boolean
-	e.toggleClass(function(i, val, state) {
+	e.toggleClass(function( i, val, state ) {
 		equal( old, val, "Make sure the incoming value is correct." );
 		equal( state, false, "Make sure that the state is passed in." );
 		return "test";
@@ -1280,7 +1281,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	old = e.attr("class") || "";
 
-	e.toggleClass(function(i, val, state) {
+	e.toggleClass(function( i, val, state ) {
 		equal( old, val, "Make sure the incoming value is correct." );
 		equal( state, true, "Make sure that the state is passed in." );
 		return "test";
@@ -1289,7 +1290,7 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	old = e.attr("class");
 
-	e.toggleClass(function(i, val, state) {
+	e.toggleClass(function( i, val, state ) {
 		equal( old, val, "Make sure the incoming value is correct." );
 		equal( state, false, "Make sure that the state is passed in." );
 		return "test";
@@ -1298,13 +1299,13 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 
 	// Cleanup
 	e.removeClass("test");
-	jQuery.removeData(e[0], "__className__", true);
+	jQuery.removeData( e[ 0 ], "__className__", true );
 });
 
 test( "addClass, removeClass, hasClass", function() {
 	expect( 17 );
 
-	var jq = jQuery("<p>Hi</p>"), x = jq[0];
+	var jq = jQuery("<p>Hi</p>"), x = jq[ 0 ];
 
 	jq.addClass("hi");
 	equal( x.className, "hi", "Check single added class" );
@@ -1333,13 +1334,13 @@ test( "addClass, removeClass, hasClass", function() {
 	ok( jq.is(".class4"), "Check is with carriage return" );
 
 	jq.removeClass("class2");
-	ok( jq.hasClass("class2")===false, "Check the class has been properly removed" );
+	ok( jq.hasClass("class2") === false, "Check the class has been properly removed" );
 	jq.removeClass("cla");
 	ok( jq.hasClass("cla.ss3"), "Check the dotted class has not been removed" );
 	jq.removeClass("cla.ss3");
-	ok( jq.hasClass("cla.ss3")===false, "Check the dotted class has been removed" );
+	ok( jq.hasClass("cla.ss3") === false, "Check the dotted class has been removed" );
 	jq.removeClass("class4");
-	ok( jq.hasClass("class4")===false, "Check the class has been properly removed" );
+	ok( jq.hasClass("class4") === false, "Check the class has been properly removed" );
 });
 
 test( "contents().hasClass() returns correct values", function() {
@@ -1355,12 +1356,12 @@ test( "contents().hasClass() returns correct values", function() {
 test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	expect( 2 );
 
-	var map = jQuery("<map />"),
-		area;
+	var area,
+		map = jQuery("<map />");
 
 	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
-	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly");
+	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
 
 	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
-	equal( area.attr("coords"), undefined, "did not retrieve coords correctly");
+	equal( area.attr("coords"), undefined, "did not retrieve coords correctly" );
 });
