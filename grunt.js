@@ -21,14 +21,14 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
-	var file = grunt.file;
-	var log = grunt.log;
-	var verbose = grunt.verbose;
-	var config = grunt.config;
-	var distpaths = [
-		"dist/jquery.js",
-		"dist/jquery.min.js"
-	];
+	var file = grunt.file,
+		log = grunt.log,
+		verbose = grunt.verbose,
+		config = grunt.config,
+		distpaths = [
+			"dist/jquery.js",
+			"dist/jquery.min.js"
+		];
 
 	grunt.initConfig({
 		pkg: "<json:package.json>",
