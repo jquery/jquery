@@ -2,6 +2,8 @@ var
 	// Document location
 	ajaxLocParts,
 	ajaxLocation,
+	
+	antiCacheValue = jQuery.now(),
 
 	rhash = /#.*$/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
@@ -618,7 +620,7 @@ jQuery.extend({
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
 
-				var ts = jQuery.now(),
+				var ts = antiCacheValue++,
 					// try replacing _= if it is there
 					ret = s.url.replace( rts, "$1_=" + ts );
 

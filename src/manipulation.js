@@ -39,7 +39,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		_default: [ 0, "", "" ]
 	},
 	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") ),
+	addMandatoryAttributes = function( elem ) { return elem; };
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -49,6 +50,23 @@ wrapMap.th = wrapMap.td;
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
 	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	// Fixes #11280
+	wrapMap.param = [ 1, "X<object>", "</object>" ];
+	// Fixes #11280. HTMLParam name attribute added to avoid IE6-8 parsing issue.
+	addMandatoryAttributes = function( elem ) {
+		// If it's a param
+		return elem.replace(/<param([^>]*)>/gi, function( m, s1, offset ) {
+			var name = s1.match( /name=["']([^"']*)["']/i );
+			return name ?
+				( name[1].length ?
+				// It has a name attr with a value
+				"<param" + s1 + ">" :
+				// It has name attr without a value
+				"<param" + s1.replace( name[0], "name='_" + offset +  "'" ) + ">" ) :
+				// No name attr
+				"<param name='_" + offset +  "' " + s1 + ">";
+		});
+	};
 }
 
 jQuery.fn.extend({
@@ -142,29 +160,19 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		if ( !isDisconnected( this[0] ) ) {
-			return this.domManip(arguments, false, function( elem ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this );
-			});
-		}
-
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( set, this ), "before", this.selector );
-		}
+			}
+		});
 	},
 
 	after: function() {
-		if ( !isDisconnected( this[0] ) ) {
-			return this.domManip(arguments, false, function( elem ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
-			});
-		}
-
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( this, set ), "after", this.selector );
-		}
+			}
+		});
 	},
 
 	// keepData is for internal use only--do not document
@@ -259,37 +267,41 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		if ( !isDisconnected( this[0] ) ) {
-			// Make sure that the elements are removed from the DOM before they are inserted
-			// this can help fix replacing a parent with child elements
-			if ( jQuery.isFunction( value ) ) {
-				return this.each(function(i) {
-					var self = jQuery(this), old = self.html();
-					self.replaceWith( value.call( this, i, old ) );
-				});
-			}
+		var self = this,
+			isFunc = jQuery.isFunction( value );
 
-			if ( typeof value !== "string" ) {
-				value = jQuery( value ).detach();
-			}
-
-			return this.each(function() {
-				var next = this.nextSibling,
-					parent = this.parentNode;
-
-				jQuery( this ).remove();
-
-				if ( next ) {
-					jQuery(next).before( value );
-				} else {
-					jQuery(parent).append( value );
-				}
-			});
+		// Make sure that the elements are removed from the DOM before they are inserted
+		// this can help fix replacing a parent with child elements
+		if ( !isFunc && typeof value !== "string" ) {
+			value = jQuery( value ).detach();
 		}
 
-		return this.length ?
-			this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value ) :
-			this;
+		this.each( function( i ) {
+			var next = this.nextSibling,
+				parent = this.parentNode,
+				// HTML argument replaced by "this" element
+				// 1. There were no supporting tests
+				// 2. There was no internal code relying on this
+				// 3. There was no documentation of an html argument
+				val = !isFunc ? value : value.call( this, i, this );
+
+			if ( isDisconnected( this ) ) {
+				// for disconnected elements, we replace with the new content in the set. We use
+				// clone here to ensure that each replaced instance is unique
+				self[ i ] = jQuery( val ).clone()[ 0 ];
+				return;
+			}
+
+			jQuery( this ).remove();
+
+			if ( next ) {
+				jQuery( next ).before( val );
+			} else {
+				jQuery( parent ).append( val );
+			}
+		});
+
+		return this;
 	},
 
 	detach: function( selector ) {
@@ -674,7 +686,7 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					depth = wrap[0];
-					div.innerHTML = wrap[1] + elem + wrap[2];
+					div.innerHTML = wrap[1] + addMandatoryAttributes( elem ) + wrap[2];
 
 					// Move to the right depth
 					while ( depth-- ) {
