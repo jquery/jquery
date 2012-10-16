@@ -1519,12 +1519,12 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			});
 		});
 
-/*		asyncTest( "jQuery.ajax() - JSONP, Explicit jsonp/Callback param " + label, function() {
+		asyncTest( "jQuery.ajax() - JSONP, Explicit jsonp/Callback param " + label, function() {
 			expect( 9 );
 
 			var count = 0;
 			function plus() {
-				if ( ++count === 4 ) {
+				if ( ++count === 7 ) {
 					start();
 				}
 			}
@@ -1543,7 +1543,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 					plus();
 				}
 			});
-
+			
 			window["jsonpResults"] = function( data ) {
 				ok( data["data"], "JSON results returned (GET, custom callback function)" );
 				window["jsonpResults"] = undefined;
@@ -1594,6 +1594,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				error: function( data ) {
 					ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
 					plus();
+					plus();
 				}
 			});
 
@@ -1617,7 +1618,6 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 		});
-*/
 
 		asyncTest( "jQuery.ajax() - JSONP, Callback in data, " + label, function() {
 			expect( 2 );
