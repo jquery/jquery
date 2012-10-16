@@ -1,7 +1,11 @@
 // Limit scope pollution from any deprecated API
 (function() {
 
-var matched, browser;
+var matched, browser, eventAdd, eventRemove,
+	rhoverHack = /(?:^|\s)hover(\.\S+|)\b/,
+	hoverHack = function( events ) {
+		return jQuery.event.special.hover ? events : events.replace( rhoverHack, "mouseenter$1 mouseleave$1" );
+	};
 
 // Use of jQuery.browser is frowned upon.
 // More details: http://api.jquery.com/jQuery.browser
@@ -94,5 +98,33 @@ jQuery.fn.toggle = function( fn, fn2 ) {
 
 	return this.click( toggler );
 };
+
+
+// Support for 'hover' type
+eventAdd = jQuery.event.add;
+
+//	Duck punch jQuery.event.add, and jquery.event.remove
+//	Signatures:
+//	jQuery.event = {
+//	add: function( elem, types, handler, data, selector ) {
+//	remove: function( elem, types, handler, selector, mappedTypes ) {
+jQuery.event.add = function( elem, types, handler, data, selector ){
+	if ( types ) {
+		types = hoverHack( types );
+	}
+	eventAdd.call( this, elem, types, handler, data, selector );
+};
+
+eventRemove = jQuery.event.remove;
+
+jQuery.event.remove = function( elem, types, handler, selector, mappedTypes ){
+	if ( types ) {
+		types = hoverHack( types );
+	}
+	eventRemove.call( this, elem, types, handler, selector, mappedTypes );
+};
+
+// Unused in 1.8, left in so attrFn-stabbers won't die; remove in 1.9
+jQuery.attrFn = {};
 
 })();
