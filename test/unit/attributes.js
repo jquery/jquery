@@ -1,7 +1,16 @@
-module("attributes", { teardown: moduleTeardown });
+module( "attributes", {
+	teardown: moduleTeardown
+});
 
-var bareObj = function( value ) { return value; };
-var functionReturningObj = function( value ) { return (function() { return value; }); };
+var bareObj = function( value ) {
+	return value;
+};
+
+var functionReturningObj = function( value ) {
+	return (function() {
+		return value;
+	});
+};
 
 /*
 	======== local reference =======
@@ -15,8 +24,8 @@ var functionReturningObj = function( value ) { return (function() { return value
 		Returns a function that returns the value
 */
 
-test("jQuery.propFix integrity test", function() {
-	expect(1);
+test( "jQuery.propFix integrity test", function() {
+	expect( 1 );
 
 	//  This must be maintained and equal jQuery.attrFix when appropriate
 	//  Ensure that accidental or erroneous property
@@ -44,8 +53,8 @@ test("jQuery.propFix integrity test", function() {
 	deepEqual(props, jQuery.propFix, "jQuery.propFix passes integrity check");
 });
 
-test("attr(String)", function() {
-	expect(46);
+test( "attr(String)", function() {
+	expect( 46 );
 
 	equal( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equal( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -138,24 +147,24 @@ test("attr(String)", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-test("attr(String) in XML Files", function() {
-	expect(3);
+test( "attr(String) in XML Files", function() {
+	expect( 3 );
 	var xml = createDashboardXML();
 	equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
 	equal( jQuery( "location", xml ).attr("for"), "bar", "Check for attribute in XML document" );
 	equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
 });
 
-test("attr(String, Function)", function() {
-	expect(2);
+test( "attr(String, Function)", function() {
+	expect( 2 );
 	equal( jQuery("#text1").attr("value", function() { return this.id; })[0].value, "text1", "Set value from id" );
 	equal( jQuery("#text1").attr("title", function(i) { return i; }).attr("title"), "0", "Set value with an index");
 });
 
-test("attr(Hash)", function() {
-	expect(3);
+test( "attr(Hash)", function() {
+	expect( 3 );
 	var pass = true;
-	jQuery("div").attr({"foo": "baz", "zoo": "ping"}).each(function(){
+	jQuery("div").attr({"foo": "baz", "zoo": "ping"}).each(function() {
 		if ( this.getAttribute("foo") != "baz" && this.getAttribute("zoo") != "ping" ) {
 			pass = false;
 		}
@@ -165,14 +174,14 @@ test("attr(Hash)", function() {
 	equal( jQuery("#text1").attr({"title": function(i) { return i; }}).attr("title"), "0", "Set attribute to computed value #2");
 });
 
-test("attr(String, Object)", function() {
-	expect(81);
+test( "attr(String, Object)", function() {
+	expect( 81 );
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
 
 	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).getAttribute("foo") != "bar" ){
+		if ( div.get(i).getAttribute("foo") != "bar" ) {
 			fail = i;
 			break;
 		}
@@ -372,7 +381,7 @@ test("attr(String, Object)", function() {
 	equal( jQuery("#name").attr("nonexisting", undefined).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
-test("attr(jquery_method)", function(){
+test( "attr(jquery_method)", function() {
 
 	var $elem = jQuery("<div />"),
 		elem = $elem[0],
@@ -429,7 +438,7 @@ test("attr(jquery_method)", function(){
 	}
 });
 
-test("attr(String, Object) - Loaded via XML document", function() {
+test( "attr(String, Object) - Loaded via XML document", function() {
 	expect( 2 );
 	var xml = createDashboardXML();
 	var titles = [];
@@ -440,7 +449,7 @@ test("attr(String, Object) - Loaded via XML document", function() {
 	equal( titles[1], "Users", "attr() in XML context: Check second title" );
 });
 
-test("attr('tabindex')", function() {
+test( "attr('tabindex')", function() {
 	expect( 8 );
 
 	// elements not natively tabbable
@@ -458,7 +467,7 @@ test("attr('tabindex')", function() {
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").attr("tabindex"), "-1", "anchor without href, no tabindex set" );
 });
 
-test("attr('tabindex', value)", function() {
+test( "attr('tabindex', value)", function() {
 	expect( 9 );
 
 	var element = jQuery("#divWithNoTabIndex");
@@ -495,7 +504,7 @@ test("attr('tabindex', value)", function() {
 	equal( element.attr("tabindex"), "-1", "set negative tabindex" );
 });
 
-test("removeAttr(String)", function() {
+test( "removeAttr(String)", function() {
 	expect( 12 );
 	var $first;
 
@@ -516,11 +525,11 @@ test("removeAttr(String)", function() {
 
 	try {
 		$first = jQuery("#first").attr("contenteditable", "true").removeAttr("contenteditable");
-		equal( $first.attr('contenteditable'), undefined, "Remove the contenteditable attribute" );
+		equal( $first.attr("contenteditable"), undefined, "Remove the contenteditable attribute" );
 	} catch(e) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
-	
+
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
@@ -528,7 +537,7 @@ test("removeAttr(String)", function() {
 	ok( !$first.attr("Case"), "mixed-case attribute was removed" );
 });
 
-test("removeAttr(String) in XML", function() {
+test( "removeAttr(String) in XML", function() {
 	expect( 7 );
 	var xml = createDashboardXML(),
 		iwt = jQuery( "infowindowtab", xml );
@@ -547,8 +556,8 @@ test("removeAttr(String) in XML", function() {
 	equal( iwt.attr("mixedCase"), undefined, "Removed" );
 });
 
-test("removeAttr(Multi String, variable space width)", function() {
-	expect(8);
+test( "removeAttr(Multi String, variable space width)", function() {
+	expect( 8 );
 
 	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
 		tests = {
@@ -569,8 +578,8 @@ test("removeAttr(Multi String, variable space width)", function() {
 	});
 });
 
-test("prop(String, Object)", function() {
-	expect(31);
+test( "prop(String, Object)", function() {
+	expect( 31 );
 
 	equal( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
 	equal( jQuery("#text1").prop("value", "Test2").prop("defaultValue"), "Test", "Check for defaultValue attribute" );
@@ -636,8 +645,8 @@ test("prop(String, Object)", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-test("prop('tabindex')", function() {
-	expect(8);
+test( "prop('tabindex')", function() {
+	expect( 8 );
 
 	// elements not natively tabbable
 	equal(jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0");
@@ -654,7 +663,7 @@ test("prop('tabindex')", function() {
 	equal(jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set");
 });
 
-test("prop('tabindex', value)", 10, function() {
+test( "prop('tabindex', value)", 10, function() {
 
 	var element = jQuery("#divWithNoTabIndex"),
 		clone;
@@ -696,8 +705,8 @@ test("prop('tabindex', value)", 10, function() {
 	equal( clone[ 0 ].getAttribute("tabindex"), "1", "set tabindex on cloned element" );
 });
 
-test("removeProp(String)", function() {
-	expect(6);
+test( "removeProp(String)", function() {
+	expect( 6 );
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),
 		textNode = document.createTextNode("some text"),
@@ -717,7 +726,7 @@ test("removeProp(String)", function() {
 	});
 });
 
-test("val()", function() {
+test( "val()", function() {
 	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
 	document.getElementById("text1").value = "bla";
@@ -799,9 +808,9 @@ test("val()", function() {
 if ( "value" in document.createElement("meter") &&
 			"value" in document.createElement("progress") ) {
 
-	test("val() respects numbers without exception (Bug #9319)", function() {
+	test( "val() respects numbers without exception (Bug #9319)", function() {
 
-		expect(4);
+		expect( 4 );
 
 		var $meter = jQuery("<meter min='0' max='10' value='5.6'></meter>"),
 			$progress = jQuery("<progress max='10' value='1.5'></progress>");
@@ -821,7 +830,7 @@ if ( "value" in document.createElement("meter") &&
 }
 
 var testVal = function(valueObj) {
-	expect(8);
+	expect( 8 );
 
 	QUnit.reset();
 	jQuery("#text1").val(valueObj( "test" ));
@@ -854,16 +863,16 @@ var testVal = function(valueObj) {
 	j.removeAttr("value");
 };
 
-test("val(String/Number)", function() {
+test( "val(String/Number)", function() {
 	testVal(bareObj);
 });
 
-test("val(Function)", function() {
+test( "val(Function)", function() {
 	testVal(functionReturningObj);
 });
 
 test( "val(Array of Numbers) (Bug #7123)", function() {
-	expect(4);
+	expect( 4 );
 	jQuery("#form").append("<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />");
 	var elements = jQuery("input[name=arrayTest]").val([ 1, 2 ]);
 	ok( elements[0].checked, "First element was checked" );
@@ -874,8 +883,8 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 	elements.remove();
 });
 
-test("val(Function) with incoming value", function() {
-	expect(10);
+test( "val(Function) with incoming value", function() {
+	expect( 10 );
 
 	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
@@ -927,8 +936,8 @@ test("val(Function) with incoming value", function() {
 });
 
 // testing if a form.reset() breaks a subsequent call to a select element's .val() (in IE only)
-test("val(select) after form.reset() (Bug #2551)", function() {
-	expect(3);
+test( "val(select) after form.reset() (Bug #2551)", function() {
+	expect( 3 );
 
 	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
 
@@ -946,7 +955,7 @@ test("val(select) after form.reset() (Bug #2551)", function() {
 });
 
 var testAddClass = function(valueObj) {
-	expect(9);
+	expect( 9 );
 
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
@@ -990,17 +999,17 @@ var testAddClass = function(valueObj) {
 	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
 };
 
-test("addClass(String)", function() {
+test( "addClass(String)", function() {
 	testAddClass(bareObj);
 });
 
-test("addClass(Function)", function() {
+test( "addClass(Function)", function() {
 	testAddClass(functionReturningObj);
 });
 
-test("addClass(Function) with incoming value", function() {
-	expect(48);
-	var div = jQuery("div"), old = div.map(function(){
+test( "addClass(Function) with incoming value", function() {
+	expect( 48 );
+	var div = jQuery("div"), old = div.map(function() {
 		return jQuery(this).attr("class") || "";
 	});
 
@@ -1021,7 +1030,7 @@ test("addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect(7);
+	expect( 7 );
 
 	var $divs = jQuery("div");
 
@@ -1064,18 +1073,18 @@ var testRemoveClass = function(valueObj) {
 	equal( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
-test("removeClass(String) - simple", function() {
+test( "removeClass(String) - simple", function() {
 	testRemoveClass(bareObj);
 });
 
-test("removeClass(Function) - simple", function() {
+test( "removeClass(Function) - simple", function() {
 	testRemoveClass(functionReturningObj);
 });
 
-test("removeClass(Function) with incoming value", function() {
-	expect(48);
+test( "removeClass(Function) with incoming value", function() {
+	expect( 48 );
 
-	var $divs = jQuery("div").addClass("test"), old = $divs.map(function(){
+	var $divs = jQuery("div").addClass("test"), old = $divs.map(function() {
 		return jQuery(this).attr("class");
 	});
 
@@ -1091,8 +1100,8 @@ test("removeClass(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
-test("removeClass() removes duplicates", function() {
-	expect(1);
+test( "removeClass() removes duplicates", function() {
+	expect( 1 );
 
 	var $div = jQuery( jQuery.parseHTML("<div class='x x x'></div>") );
 
@@ -1102,7 +1111,7 @@ test("removeClass() removes duplicates", function() {
 });
 
 var testToggleClass = function(valueObj) {
-	expect(17);
+	expect( 17 );
 
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
@@ -1151,16 +1160,16 @@ var testToggleClass = function(valueObj) {
 	jQuery.removeData(e[0], "__className__", true);
 };
 
-test("toggleClass(String|boolean|undefined[, boolean])", function() {
+test( "toggleClass(String|boolean|undefined[, boolean])", function() {
 	testToggleClass(bareObj);
 });
 
-test("toggleClass(Function[, boolean])", function() {
+test( "toggleClass(Function[, boolean])", function() {
 	testToggleClass(functionReturningObj);
 });
 
-test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
-	expect(14);
+test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
+	expect( 14 );
 
 	var e = jQuery("#firstp"), old = e.attr("class") || "";
 	ok( !e.is(".test"), "Assert class not present" );
@@ -1212,8 +1221,8 @@ test("toggleClass(Fucntion[, boolean]) with incoming value", function() {
 	jQuery.removeData(e[0], "__className__", true);
 });
 
-test("addClass, removeClass, hasClass", function() {
-	expect(17);
+test( "addClass, removeClass, hasClass", function() {
+	expect( 17 );
 
 	var jq = jQuery("<p>Hi</p>"), x = jq[0];
 
@@ -1253,8 +1262,8 @@ test("addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("class4")===false, "Check the class has been properly removed" );
 });
 
-test("contents().hasClass() returns correct values", function() {
-	expect(2);
+test( "contents().hasClass() returns correct values", function() {
+	expect( 2 );
 
 	var $div = jQuery("<div><span class='foo'></span><!-- comment -->text</div>"),
 	$contents = $div.contents();
@@ -1263,8 +1272,8 @@ test("contents().hasClass() returns correct values", function() {
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
 
-test("coords returns correct values in IE6/IE7, see #10828", function() {
-	expect(2);
+test( "coords returns correct values in IE6/IE7, see #10828", function() {
+	expect( 2 );
 
 	var map = jQuery("<map />"),
 		area;
