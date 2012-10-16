@@ -17,9 +17,9 @@ module("offset", { setup: function(){
 	checkDiv.style.position = "fixed";
 	checkDiv.style.top = "20px";
 	// safari subtracts parent border width here which is 5px
-	window.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
+	window.supportsFixedPosition = ( checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15 );
 	checkDiv.style.position = checkDiv.style.top = "";
-	jQuery(checkDiv).remove();
+	jQuery( checkDiv ).remove();
 	forceScroll.remove();
 }, teardown: moduleTeardown });
 
