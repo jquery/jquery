@@ -112,7 +112,7 @@ jQuery.fn.extend({
 
 		// No argument, return index in parent
 		if ( !elem ) {
-			return ( this[0] && this[0].parentNode ) ? this.prevAll().length : -1;
+			return ( this[0] && this[0].parentNode ) ? this.first().prevAll().length : -1;
 		}
 
 		// index in selector
@@ -132,8 +132,7 @@ jQuery.fn.extend({
 				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
 			all = jQuery.merge( this.get(), set );
 
-		// always sort
-		return this.pushStack( jQuery.unique( all ) );
+		return this.pushStack( jQuery.unique(all) );
 	},
 
 	addBack: function( selector ) {

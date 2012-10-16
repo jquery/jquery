@@ -107,7 +107,7 @@ test("is() with positional selectors", function() {
 	expect(23);
 
 	var html = jQuery(
-				'<p id="posp"><a class="firsta" href="#"><em>first</em></a><a class="seconda" href="#"><b>test</b></a><em></em></p>'
+				"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
 			).appendTo( "body" ),
 		isit = function(sel, match, expect) {
 			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
@@ -234,16 +234,16 @@ test("filter(jQuery)", function() {
 test("filter() with positional selectors", function() {
 	expect(19);
 
-	var html = jQuery('' +
-		'<p id="posp">' +
-			'<a class="firsta" href="#">' +
-				'<em>first</em>' +
-			'</a>' +
-			'<a class="seconda" href="#">' +
-				'<b>test</b>' +
-			'</a>' +
-			'<em></em>' +
-		'</p>').appendTo( "body" ),
+	var html = jQuery( "" +
+		"<p id='posp'>" +
+			"<a class='firsta' href='#'>" +
+				"<em>first</em>" +
+			"</a>" +
+			"<a class='seconda' href='#'>" +
+				"<b>test</b>" +
+			"</a>" +
+			"<em></em>" +
+		"</p>" ).appendTo( "body" ),
 		filterit = function(sel, filter, length) {
 			equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
 		};
@@ -582,7 +582,7 @@ test("contents()", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(16);
+	expect( 15 );
 	deepEqual( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	deepEqual( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 
@@ -597,13 +597,10 @@ test("add(String|Element|Array|undefined)", function() {
 	//equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
 
 	var divs = jQuery("<div/>").add("#sndp");
-	ok( !divs[0].parentNode, "Make sure the first element is still the disconnected node." );
-
-	divs = jQuery("<div>test</div>").add("#sndp");
-	equal( divs[0].parentNode.nodeType, 11, "Make sure the first element is still the disconnected node." );
+	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
 
 	divs = jQuery("#sndp").add("<div/>");
-	ok( !divs[1].parentNode, "Make sure the first element is still the disconnected node." );
+	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
 
 	var tmp = jQuery("<div/>");
 
@@ -650,4 +647,13 @@ test("eq('-1') #10616", function() {
 	equal( $divs.eq( -1 ).length, 1, "The number -1 returns a selection that has length 1" );
 	equal( $divs.eq( "-1" ).length, 1, "The string '-1' returns a selection that has length 1" );
 	deepEqual( $divs.eq( "-1" ), $divs.eq( -1 ), "String and number -1 match" );
+});
+
+test("index(no arg) #10977", function() {
+	expect(1);
+	
+	var $list = jQuery("<ul id='indextest'><li>THIS ONE</li><li class='one'>a</li><li class='two'>b</li><li class='three'>c</li></ul>");
+	jQuery("#qunit-fixture").append( $list );
+	strictEqual ( jQuery( "#indextest li:not(.one,.two)" ).index() , 0, "No Argument Index Check" );
+	$list.remove();
 });

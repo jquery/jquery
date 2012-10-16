@@ -1452,7 +1452,6 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 	jQuery.each( [ "Same Domain", "Cross Domain" ], function( crossDomain, label ) {
 
-
 		asyncTest( "jQuery.ajax() - JSONP, Query String (?n)" + label, function() {
 			expect( 4 );
 
@@ -1525,7 +1524,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 			var count = 0;
 			function plus() {
-				if ( ++count === 4 ) {
+				if ( ++count === 7 ) {
 					start();
 				}
 			}
@@ -1595,6 +1594,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				error: function( data ) {
 					ok( false, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
 					plus();
+					plus();
 				}
 			});
 
@@ -1618,7 +1618,6 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 		});
-
 
 		asyncTest( "jQuery.ajax() - JSONP, Callback in data, " + label, function() {
 			expect( 2 );
@@ -2675,7 +2674,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				ok( false, "error callback called" );
 			}
 		}).fail(function( _, reason ) {
-			strictEqual( reason, 'canceled', "Request aborted by the prefilter must fail with 'canceled' status text" );
+			strictEqual( reason, "canceled", "Request aborted by the prefilter must fail with 'canceled' status text" );
 		});
 
 	});
@@ -2725,5 +2724,39 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 	test( "jQuery.ajax - active counter", function() {
 		expect( 1 );
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
+	});
+
+	test("jQuery.ajax - falsy url as argument (#10093)", function() {
+		expect( 4 );
+
+		jQuery.ajaxSetup({ timeout: 0 });
+
+		stop();
+
+		jQuery.when(
+			jQuery.ajax("").success(function(){ ok( true, "settings object - empty string" ); }),
+			jQuery.ajax( false ).success(function(){ ok( true, "false" ); }),
+			jQuery.ajax( null ).success(function(){ ok( true, "null" ); }),
+			jQuery.ajax( undefined ).success(function(){ ok( true, "undefined" ); })
+		).always(function () {
+			start();
+		});
+	});
+
+	test("jQuery.ajax - falsy url in settings object (#10093)", function() {
+		expect( 4 );
+
+		jQuery.ajaxSetup({ timeout: 0 });
+
+		stop();
+
+		jQuery.when(
+			jQuery.ajax({ url: "" }).success(function(){ ok( true, "settings object - empty string" ); }),
+			jQuery.ajax({ url: false }).success(function(){ ok( true, "false" ); }),
+			jQuery.ajax({ url: null }).success(function(){ ok( true, "null" ); }),
+			jQuery.ajax({ url: undefined }).success(function(){ ok( true, "undefined" ); })
+		).always(function () {
+			start();
+		});
 	});
 }
