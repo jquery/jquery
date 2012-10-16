@@ -3,17 +3,17 @@
 <title>Animation tests</title>
 <style>
 	* {
-	    -webkit-box-sizing: border-box;
-	    -moz-box-sizing:    border-box;
-	    box-sizing:         border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing:    border-box;
+		box-sizing:         border-box;
 	}
 	.scroll {
-	    width: 200px;
-	    height: 100px;
-	    overflow: auto;
+		width: 200px;
+		height: 100px;
+		overflow: auto;
 	}
 	p {
-	    margin-top: 20px;
+		margin-top: 20px;
 	}
 </style>
 <script src="../dist/jquery.js"></script>
@@ -21,7 +21,7 @@
 	jQuery(function($) {
 		setTimeout(function() {
 			// Overflow: hidden should be removed from element once animation completes
-		    $(".scroll").animate({ width: 300 }, 1000);    
+			$(".scroll").animate({ width: 300 }, 1000);
 		}, 5000);
 	});
 </script>
