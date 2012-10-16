@@ -1354,13 +1354,13 @@ test("jQuery.camelCase()", function() {
 });
 
 test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure that it throws like JSON.parse", function() {
-	expect( 8 );
+	expect( 10 );
 
-	var goodJson = window.JSON;
+	var jsonParse = window.JSON;
 	window.JSON = null;
 
 	throws(function() {
-		goodJson.parse("''");
+		jsonParse.parse("''");
 	});
 
 	throws(function() {
@@ -1368,7 +1368,7 @@ test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure 
 	});
 
 	throws(function() {
-		goodJson.parse("");
+		jsonParse.parse("");
 	});
 
 	throws(function() {
@@ -1376,7 +1376,7 @@ test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure 
 	});
 
 	throws(function() {
-		goodJson.parse('');
+		jsonParse.parse('');
 	});
 
 	throws(function() {
@@ -1384,14 +1384,20 @@ test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure 
 	});
 
 	throws(function() {
-		goodJson.parse({});
+		jsonParse.parse({});
 	});
 
 	throws(function() {
 		jQuery.parseJSON({});
 	});
 
+	var parsedValue = jsonParse.parse("{}");
+	equal( (typeof parsedValue === 'object'), true );
 
-	window.JSON = goodJson;
+	parsedValue = jQuery.parseJSON("{}");
+	equal( (typeof parsedValue === 'object'), true );
+	
+
+	window.JSON = jsonParse;
 } );
 
