@@ -25,4 +25,9 @@ if ( jQuery.browser && jQuery.uaMatch ) {
 		});
 	}
 }
+
+test("attrFn test", function() {
+	expect(1);
+	ok(!!jQuery.attrFn, "attrFnPresent");
+});
 // End of jQuery.browser tests
