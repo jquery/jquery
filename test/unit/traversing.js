@@ -654,12 +654,7 @@ test("index(no arg) #10977", function() {
 	expect(1);
 	
 	var $list = jQuery("<ul id='indextest'><li>THIS ONE</li><li class='one'>a</li><li class='two'>b</li><li class='three'>c</li></ul>");
-
 	jQuery("#qunit-fixture").append( $list );
-
-	
-
 	strictEqual ( jQuery( "#indextest li:not(.one,.two)" ).index() , 0, "No Argument Index Check" );
-
 	$list.remove();
 });
