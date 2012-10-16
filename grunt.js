@@ -8,6 +8,8 @@
 /*jshint node: true */
 /*global config:true, task:true, process:true*/
 
+"use strict";
+
 var child_process = require("child_process");
 
 module.exports = function( grunt ) {
