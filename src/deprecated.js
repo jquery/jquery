@@ -108,23 +108,23 @@ eventAdd = jQuery.event.add;
 //	jQuery.event = {
 //	add: function( elem, types, handler, data, selector ) {
 //	remove: function( elem, types, handler, selector, mappedTypes ) {
-jQuery.event.add = function(elem, types, handler, data, selector){
-	if(types){
-		types = hoverHack(types);
+jQuery.event.add = function( elem, types, handler, data, selector ){
+	if ( types ) {
+		types = hoverHack( types );
 	}
-	eventAdd.call(this, elem, types, handler, data, selector);
+	eventAdd.call( this, elem, types, handler, data, selector );
 };
 
 eventRemove = jQuery.event.remove;
-// Unused in 1.8, left in so attrFn-stabbers won't die; remove in 1.9
-jQuery.attrFn = {};
 
-jQuery.event.remove = function(elem, types, handler, selector, mappedTypes){
-	if(types){
-		types = hoverHack(types);
+jQuery.event.remove = function( elem, types, handler, selector, mappedTypes ){
+	if ( types ) {
+		types = hoverHack( types );
 	}
-	eventRemove.call(this, elem, types, handler, selector, mappedTypes);
+	eventRemove.call( this, elem, types, handler, selector, mappedTypes );
 };
 
+// Unused in 1.8, left in so attrFn-stabbers won't die; remove in 1.9
+jQuery.attrFn = {};
 
 })();
