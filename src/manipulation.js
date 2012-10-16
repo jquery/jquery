@@ -281,9 +281,12 @@ jQuery.fn.extend({
 			// Make sure that the elements are removed from the DOM before they are inserted
 			// this can help fix replacing a parent with child elements
 			if ( jQuery.isFunction( value ) ) {
-				return this.each(function(i) {
-					var self = jQuery(this), old = self.html();
-					self.replaceWith( value.call( this, i, old ) );
+				return this.each(function( index ) {
+					// HTML argument replaced by "this" element
+					// 1. There were no supporting tests
+					// 2. There was no internal code relying on this
+					// 3. There was no documentation of an html argument
+					jQuery( this ).replaceWith( value.call( this, index, this ) );
 				});
 			}
 

@@ -1014,7 +1014,7 @@ jQuery.checkState = function() {
 	});
 
 	// manually clean data on modified element
-	jQuery.removeData( this, "olddisplay", true );
+	jQuery._removeData( this, "olddisplay" );
 
 	start();
 };
@@ -1148,7 +1148,7 @@ function( method, defProp ) {
 							equal( defProp( $elem ), startVal, "After doing .stop() halfway through show, check that state has been saved for returning to original property value." );
 
 							// Remove olddisplay data from .hide() call
-							jQuery.removeData( this, "olddisplay", true );
+							jQuery._removeData( this, "olddisplay" );
 							start();
 						});
 					}, animTime / 2);
@@ -1498,7 +1498,7 @@ test( "animate should set display for disconnected nodes", function() {
 
 	// cleanup
 	jQuery.each( elems, function() {
-		jQuery.removeData( this[ 0 ], "olddisplay", true );
+		jQuery._removeData( this[ 0 ], "olddisplay" );
 	});
 
 	stop();
@@ -1515,7 +1515,7 @@ test( "animate should set display for disconnected nodes", function() {
 			var callback = [function () {
 					strictEqual( this.style.display, "block", "set display to block with " + name );
 
-					jQuery.removeData( this, "olddisplay", true );
+					jQuery._removeData( this, "olddisplay" );
 
 					if ( ++i === 14 ) {
 						start();
