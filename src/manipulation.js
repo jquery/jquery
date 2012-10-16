@@ -160,29 +160,19 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		if ( !isDisconnected( this[0] ) ) {
-			return this.domManip(arguments, false, function( elem ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this );
-			});
-		}
-
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( set, this ), "before", this.selector );
-		}
+			}
+		});
 	},
 
 	after: function() {
-		if ( !isDisconnected( this[0] ) ) {
-			return this.domManip(arguments, false, function( elem ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
-			});
-		}
-
-		if ( arguments.length ) {
-			var set = jQuery.clean( arguments );
-			return this.pushStack( jQuery.merge( this, set ), "after", this.selector );
-		}
+			}
+		});
 	},
 
 	// keepData is for internal use only--do not document
@@ -277,40 +267,41 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		if ( !isDisconnected( this[0] ) ) {
-			// Make sure that the elements are removed from the DOM before they are inserted
-			// this can help fix replacing a parent with child elements
-			if ( jQuery.isFunction( value ) ) {
-				return this.each(function( index ) {
-					// HTML argument replaced by "this" element
-					// 1. There were no supporting tests
-					// 2. There was no internal code relying on this
-					// 3. There was no documentation of an html argument
-					jQuery( this ).replaceWith( value.call( this, index, this ) );
-				});
-			}
+		var self = this,
+			isFunc = jQuery.isFunction( value );
 
-			if ( typeof value !== "string" ) {
-				value = jQuery( value ).detach();
-			}
-
-			return this.each(function() {
-				var next = this.nextSibling,
-					parent = this.parentNode;
-
-				jQuery( this ).remove();
-
-				if ( next ) {
-					jQuery(next).before( value );
-				} else {
-					jQuery(parent).append( value );
-				}
-			});
+		// Make sure that the elements are removed from the DOM before they are inserted
+		// this can help fix replacing a parent with child elements
+		if ( !isFunc && typeof value !== "string" ) {
+			value = jQuery( value ).detach();
 		}
 
-		return this.length ?
-			this.pushStack( jQuery(jQuery.isFunction(value) ? value() : value), "replaceWith", value ) :
-			this;
+		this.each( function( i ) {
+			var next = this.nextSibling,
+				parent = this.parentNode,
+				// HTML argument replaced by "this" element
+				// 1. There were no supporting tests
+				// 2. There was no internal code relying on this
+				// 3. There was no documentation of an html argument
+				val = !isFunc ? value : value.call( this, i, this );
+
+			if ( isDisconnected( this ) ) {
+				// for disconnected elements, we replace with the new content in the set. We use
+				// clone here to ensure that each replaced instance is unique
+				self[ i ] = jQuery( val ).clone()[ 0 ];
+				return;
+			}
+
+			jQuery( this ).remove();
+
+			if ( next ) {
+				jQuery( next ).before( val );
+			} else {
+				jQuery( parent ).append( val );
+			}
+		});
+
+		return this;
 	},
 
 	detach: function( selector ) {
