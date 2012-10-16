@@ -1,4 +1,6 @@
-module("callbacks", { teardown: moduleTeardown });
+module( "callbacks", {
+	teardown: moduleTeardown
+});
 
 (function() {
 
@@ -8,9 +10,9 @@ var output,
 			output += string;
 		};
 	},
-	outputA = addToOutput( "A" ),
-	outputB = addToOutput( "B" ),
-	outputC = addToOutput( "C" ),
+	outputA = addToOutput("A"),
+	outputB = addToOutput("B"),
+	outputC = addToOutput("C"),
 	tests = {
 		"":                   "XABC   X     XABCABCC  X  XBB X   XABA  X   XX",
 		"once":               "XABC   X     X         X  X   X   XABA  X   XX",
@@ -56,7 +58,10 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 		jQuery.each( filters, function( filterLabel, filter ) {
 
-			jQuery.each( { "string": strFlags, "object": objectFlags }, function( flagsTypes, flags ) {
+			jQuery.each({
+				"string": strFlags,
+				"object": objectFlags
+			}, function( flagsTypes, flags ) {
 
 				test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
 
@@ -75,7 +80,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add(function( str ) {
 						output += str;
 					});
-					cblist.fire( "A" );
+					cblist.fire("A");
 					strictEqual( output, "XA", "Basic binding and firing" );
 					strictEqual( cblist.fired(), true, ".fired() detects firing" );
 					output = "X";
@@ -84,7 +89,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						output += str;
 					});
 					strictEqual( output, "X", "Adding a callback after disabling" );
-					cblist.fire( "A" );
+					cblist.fire("A");
 					strictEqual( output, "X", "Firing after disabling" );
 
 					// Basic binding and firing (context, arguments)
@@ -127,15 +132,15 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Locking
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function( str ) {
+					cblist.add(function( str ) {
 						output += str;
 					});
 					cblist.lock();
-					cblist.add( function( str ) {
+					cblist.add(function( str ) {
 						output += str;
 					});
-					cblist.fire( "A" );
-					cblist.add( function( str ) {
+					cblist.fire("A");
+					cblist.add(function( str ) {
 						output += str;
 					});
 					strictEqual( output, "X", "Lock early" );
@@ -143,7 +148,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Ordering
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function() {
+					cblist.add(function() {
 						cblist.add( outputC );
 						outputA();
 					}, outputB );
@@ -152,7 +157,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 					// Add and fire again
 					output = "X";
-					cblist.add( function() {
+					cblist.add(function() {
 						cblist.add( outputC );
 						outputA();
 					}, outputB );
@@ -165,23 +170,23 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Multiple fire
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function( str ) {
+					cblist.add(function( str ) {
 						output += str;
-					} );
-					cblist.fire( "A" );
+					});
+					cblist.fire("A");
 					strictEqual( output, "XA", "Multiple fire (first fire)" );
 					output = "X";
-					cblist.add( function( str ) {
+					cblist.add(function( str ) {
 						output += str;
-					} );
+					});
 					strictEqual( output, results.shift(), "Multiple fire (first new callback)" );
 					output = "X";
-					cblist.fire( "B" );
+					cblist.fire("B");
 					strictEqual( output, results.shift(), "Multiple fire (second fire)" );
 					output = "X";
-					cblist.add( function( str ) {
+					cblist.add(function( str ) {
 						output += str;
-					} );
+					});
 					strictEqual( output, results.shift(), "Multiple fire (second new callback)" );
 
 					// Return false
@@ -239,7 +244,7 @@ test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 	expect( 1 );
 
 	var cb = jQuery.Callbacks( "memory" ),
-		args = [ "hello" ];
+		args = ["hello"];
 
 	cb.fireWith( null, args );
 	args[ 0 ] = "world";
