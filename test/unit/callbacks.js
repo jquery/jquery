@@ -243,7 +243,7 @@ test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 
 	expect( 1 );
 
-	var cb = jQuery.Callbacks( "memory" ),
+	var cb = jQuery.Callbacks("memory"),
 		args = ["hello"];
 
 	cb.fireWith( null, args );
