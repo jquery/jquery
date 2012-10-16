@@ -488,12 +488,17 @@ jQuery.extend({
 	},
 
 	parseJSON: function( data ) {
-		if ( !data || typeof data !== "string") {
-			return null;
+		if (typeof data !== "string") {
+			jQuery.error( "Invalid JSON not a string: " + data);
+			return;
 		}
 
 		// Make sure leading/trailing whitespace is removed (IE can't handle it)
 		data = jQuery.trim( data );
+
+		if (!data.length) {
+			jQuery.error( "Invalid JSON: empty string");
+		}
 
 		// Attempt to parse using the native JSON parser first
 		if ( window.JSON && window.JSON.parse ) {
