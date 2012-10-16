@@ -1,17 +1,18 @@
 {
   "options": {
-    "evil": true,
     "browser": true,
-    "wsh": true,
-    "eqnull": true,
-    "expr": true,
     "curly": true,
+    "devel": true,
+    "eqnull": true,
+    "evil": true,
+    "expr": true,
+    "maxerr": 100,
+    "quotmark": "double",
+    "smarttabs": true,
+    "sub": true,
     "trailing": true,
     "undef": true,
-    "smarttabs": true,
-    "maxerr": 100,
-    "sub": true,
-    "quotmark": "double"
+    "wsh": true
   },
   "globals": {
     "define": true,
@@ -24,7 +25,6 @@
     "require": true,
     "file": true,
     "log": true,
-    "console": true,
     "QUnit": true,
     "ok": true,
     "equal": true,
