@@ -1,6 +1,26 @@
 if ( jQuery.fn.offset ) {
 
-module("offset", { teardown: moduleTeardown });
+module("offset", { setup: function(){
+	// force a scroll value on the main window
+	// this insures that the results will be wrong
+	// if the offset method is using the scroll offset
+	// of the parent window
+	var forceScroll = jQuery("<div>").css({ "width": 2000, "height": 2000 });
+	forceScroll.appendTo("body");
+	var checkDiv = jQuery("<div>").appendTo("body")[0];
+
+	window.scrollTo(200, 200);
+	window.supportsScroll = ( document.documentElement.scrollTop || document.body.scrollTop );
+	window.scrollTo(1, 1);
+
+	checkDiv.style.position = "fixed";
+	checkDiv.style.top = "20px";
+	// safari subtracts parent border width here which is 5px
+	window.supportsFixedPosition = (checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15);
+	checkDiv.style.position = checkDiv.style.top = "";
+	jQuery(checkDiv).remove();
+	forceScroll.remove();
+}, teardown: moduleTeardown });
 
 /*
 	Closure-compiler will roll static methods off of the jQuery object and so they will
@@ -33,28 +53,11 @@ test("disconnected node", function() {
 	equal( result.left, 0, "Check left" );
 });
 
-var supportsScroll = false;
-
 testIframe("offset/absolute", "absolute", function($, iframe) {
 	expect(4);
 
 	var doc = iframe.document,
-			tests, forceScroll;
-
-	// force a scroll value on the main window
-	// this insures that the results will be wrong
-	// if the offset method is using the scroll offset
-	// of the parent window
-	forceScroll = jQuery("<div>").css({ "width": 2000, "height": 2000 });
-	forceScroll.appendTo("body");
-
-	window.scrollTo(200, 200);
-
-	if ( document.documentElement.scrollTop || document.body.scrollTop ) {
-		supportsScroll = true;
-	}
-
-	window.scrollTo(1, 1);
+			tests;
 
 	// get offset
 	tests = [
@@ -74,8 +77,6 @@ testIframe("offset/absolute", "absolute", function($, iframe) {
 		equal( jQuery( this["id"], doc ).position().top,  this["top"],  "jQuery('" + this["id"] + "').position().top" );
 		equal( jQuery( this["id"], doc ).position().left, this["left"], "jQuery('" + this["id"] + "').position().left" );
 	});
-
-	forceScroll.remove();
 });
 
 testIframe("offset/absolute", "absolute", function( $ ) {
@@ -301,11 +302,11 @@ testIframe("offset/fixed", "fixed", function( $ ) {
 	];
 
 	jQuery.each( tests, function() {
-		if ( !supportsScroll ) {
+		if ( !window.supportsScroll ) {
 			ok( true, "Browser doesn't support scroll position." );
 			ok( true, "Browser doesn't support scroll position." );
 
-		} else if ( jQuery.offset.supportsFixedPosition ) {
+		} else if ( window.supportsFixedPosition ) {
 			equal( $( this["id"] ).offset().top,  this["top"],  "jQuery('" + this["id"] + "').offset().top" );
 			equal( $( this["id"] ).offset().left, this["left"], "jQuery('" + this["id"] + "').offset().left" );
 		} else {
@@ -325,7 +326,7 @@ testIframe("offset/fixed", "fixed", function( $ ) {
 	];
 
 	jQuery.each( tests, function() {
-		if ( jQuery.offset.supportsFixedPosition ) {
+		if ( window.supportsFixedPosition ) {
 			$( this["id"] ).offset({ "top": this["top"], "left": this["left"] });
 			equal( $( this["id"] ).offset().top,  this["top"],  "jQuery('" + this["id"] + "').offset({ top: "  + this["top"]  + " })" );
 			equal( $( this["id"] ).offset().left, this["left"], "jQuery('" + this["id"] + "').offset({ left: " + this["left"] + " })" );
@@ -349,7 +350,7 @@ testIframe("offset/fixed", "fixed", function( $ ) {
 
 	// Bug 8316
 	var $noTopLeft = $("#fixed-no-top-left");
-	if ( jQuery.offset.supportsFixedPosition ) {
+	if ( window.supportsFixedPosition ) {
 		equal( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
 		equal( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
 	} else {
@@ -397,7 +398,7 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 
 	win.name = "test";
 
-	if ( !supportsScroll ) {
+	if ( !window.supportsScroll ) {
 		ok( true, "Browser doesn't support scroll position." );
 		ok( true, "Browser doesn't support scroll position." );
 
