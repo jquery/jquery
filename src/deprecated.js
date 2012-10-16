@@ -60,7 +60,13 @@ jQuery.sub = function() {
 	return jQuerySub;
 };
 
-jQuery.fn.toggle = function( fn ) {
+var oldToggle = jQuery.fn.toggle;
+jQuery.fn.toggle = function( fn, fn2 ) {
+
+	if ( !jQuery.isFunction( fn ) || !jQuery.isFunction( fn2 ) ) {
+		return oldToggle.apply( this, arguments );
+	}
+
 	// Save reference to arguments for access in closure
 	var args = arguments,
 	    guid = fn.guid || jQuery.guid++,
