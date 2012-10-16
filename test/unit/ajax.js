@@ -1451,7 +1451,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 
 	jQuery.each( [ "Same Domain", "Cross Domain" ], function( crossDomain, label ) {
-	
+
 		asyncTest( "jQuery.ajax() - JSONP, Query String (?n)" + label, function() {
 			expect( 4 );
 
@@ -1543,7 +1543,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 					plus();
 				}
 			});
-			
+
 			window["jsonpResults"] = function( data ) {
 				ok( data["data"], "JSON results returned (GET, custom callback function)" );
 				window["jsonpResults"] = undefined;
@@ -2724,5 +2724,39 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 	test( "jQuery.ajax - active counter", function() {
 		expect( 1 );
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
+	});
+
+	test("jQuery.ajax - falsy url as argument (#10093)", function() {
+		expect( 4 );
+
+		jQuery.ajaxSetup({ timeout: 0 });
+
+		stop();
+
+		jQuery.when(
+			jQuery.ajax("").success(function(){ ok( true, "settings object - empty string" ); }),
+			jQuery.ajax( false ).success(function(){ ok( true, "false" ); }),
+			jQuery.ajax( null ).success(function(){ ok( true, "null" ); }),
+			jQuery.ajax( undefined ).success(function(){ ok( true, "undefined" ); })
+		).always(function () {
+			start();
+		});
+	});
+
+	test("jQuery.ajax - falsy url in settings object (#10093)", function() {
+		expect( 4 );
+
+		jQuery.ajaxSetup({ timeout: 0 });
+
+		stop();
+
+		jQuery.when(
+			jQuery.ajax({ url: "" }).success(function(){ ok( true, "settings object - empty string" ); }),
+			jQuery.ajax({ url: false }).success(function(){ ok( true, "false" ); }),
+			jQuery.ajax({ url: null }).success(function(){ ok( true, "null" ); }),
+			jQuery.ajax({ url: undefined }).success(function(){ ok( true, "undefined" ); })
+		).always(function () {
+			start();
+		});
 	});
 }
