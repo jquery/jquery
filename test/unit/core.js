@@ -1153,9 +1153,7 @@ test("jQuery.parseJSON", function(){
 	throws( function() {
 		jQuery.parseJSON();
 	}, null, "parseJson now matches JSON.parse for empty input." );
-	throws( function() {
-		jQuery.parseJSON( null );
-	}, null, "parseJson now matches JSON.parse on null input." );
+	equal(jQuery.parseJSON( null ), null, "parseJson now matches JSON.parse on null input." );
 	throws( function() {
 		jQuery.parseJSON( "" );
 	}, null, "parseJson now matches JSON.parse for empty strings." );
@@ -1354,7 +1352,7 @@ test("jQuery.camelCase()", function() {
 });
 
 test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure that it throws like JSON.parse", function() {
-	expect( 10 );
+	expect( 12 );
 
 	var jsonParse = window.JSON;
 	window.JSON = null;
@@ -1391,7 +1389,13 @@ test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure 
 		jQuery.parseJSON({});
 	});
 
-	var parsedValue = jsonParse.parse("{}");
+	var parsedValue = jsonParse.parse(null);
+	equal( parsedValue, null );
+
+	parsedValue = jQuery.parseJSON(null);
+	equal( parsedValue, null );
+
+	parsedValue = jsonParse.parse("{}");
 	equal( (typeof parsedValue === 'object'), true );
 
 	parsedValue = jQuery.parseJSON("{}");
