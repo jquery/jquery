@@ -6,7 +6,8 @@ module("offset", { setup: function(){
 	// if the offset method is using the scroll offset
 	// of the parent window
 	var forceScroll = jQuery("<div>").css({ "width": 2000, "height": 2000 });
-	forceScroll.appendTo("#qunit-fixture");
+	// this needs to be body, because #qunit-fixture is hidden and elements inside it don't have a scrollTop
+	forceScroll.appendTo("body");
 	var checkDiv = jQuery("<div>").appendTo("#qunit-fixture")[0];
 
 	window.scrollTo( 200, 200 );
@@ -303,6 +304,8 @@ testIframe("offset/fixed", "fixed", function( $ ) {
 
 	jQuery.each( tests, function() {
 		if ( !window.supportsScroll ) {
+			ok( true, "Browser doesn't support scroll position." );
+			ok( true, "Browser doesn't support scroll position." );
 			ok( true, "Browser doesn't support scroll position." );
 			ok( true, "Browser doesn't support scroll position." );
 
