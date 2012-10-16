@@ -142,16 +142,16 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		return this.domManip(arguments, false, function( elem ) {
-			if ( !isDisconnected(this) ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this );
 			}
 		});
 	},
 
 	after: function() {
-		return this.domManip(arguments, false, function( elem ) {
-			if ( !isDisconnected(this) ) {
+		return this.domManip( arguments, false, function( elem ) {
+			if ( !isDisconnected( this ) ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
 		});
@@ -250,7 +250,7 @@ jQuery.fn.extend({
 
 	replaceWith: function( value ) {
 		var self = this,
-			isFunc = jQuery.isFunction(value);
+			isFunc = jQuery.isFunction( value );
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
@@ -258,24 +258,24 @@ jQuery.fn.extend({
 			value = jQuery( value ).detach();
 		}
 
-		this.each(function(i) {
+		this.each( function( i ) {
 			var next = this.nextSibling,
 				parent = this.parentNode,
-				val = !isFunc ? value : value.call( this, i, jQuery(this).html() );
+				val = !isFunc ? value : value.call( this, i, jQuery( this ).html() );
 
-			if ( isDisconnected(this) ) {
+			if ( isDisconnected( this ) ) {
 				// for disconnected elements, we replace with the new content in the set. We use
 				// clone here to ensure that each replaced instance is unique
-				self[i] = jQuery(val).clone()[0];
+				self[ i ] = jQuery( val ).clone()[ 0 ];
 				return;
 			}
 
 			jQuery( this ).remove();
 
 			if ( next ) {
-				jQuery(next).before( val );
+				jQuery( next ).before( val );
 			} else {
-				jQuery(parent).append( val );
+				jQuery( parent ).append( val );
 			}
 		});
 
