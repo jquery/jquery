@@ -132,9 +132,7 @@ jQuery.fn.extend({
 				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
 			all = jQuery.merge( this.get(), set );
 
-		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
-			all :
-			jQuery.unique( all ) );
+		return this.pushStack( jQuery.unique(all) );
 	},
 
 	addBack: function( selector ) {

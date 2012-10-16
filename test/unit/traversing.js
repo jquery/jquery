@@ -582,7 +582,7 @@ test("contents()", function() {
 });
 
 test("add(String|Element|Array|undefined)", function() {
-	expect(16);
+	expect( 15 );
 	deepEqual( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
 	deepEqual( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
 
@@ -597,13 +597,10 @@ test("add(String|Element|Array|undefined)", function() {
 	//equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
 
 	var divs = jQuery("<div/>").add("#sndp");
-	ok( !divs[0].parentNode, "Make sure the first element is still the disconnected node." );
-
-	divs = jQuery("<div>test</div>").add("#sndp");
-	equal( divs[0].parentNode.nodeType, 11, "Make sure the first element is still the disconnected node." );
+	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
 
 	divs = jQuery("#sndp").add("<div/>");
-	ok( !divs[1].parentNode, "Make sure the first element is still the disconnected node." );
+	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
 
 	var tmp = jQuery("<div/>");
 
