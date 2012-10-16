@@ -111,24 +111,38 @@ jQuery.fn.extend({
 			return;
 		}
 
-		var elem = this[0],
+		var offsetParent, offset, parentOffset = { top: 0, left: 0 },
+			elem = this[0];
 
-		// Get *real* offsetParent
-		offsetParent = this.offsetParent(),
+		// fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is it's only offset parent
+		if ( jQuery.css(elem, 'position') === 'fixed' ) {
+			// we assume that getBoundingClientRect is available when computed position is fixed
+			offset = elem.getBoundingClientRect();
+			// offset is read only, need to copy out the values we need so we can tweak it later
+			offset = {
+				left: offset.left,
+				top: offset.top
+			};
+		}else{
+			// Get *real* offsetParent
+			offsetParent = this.offsetParent();
 
-		// Get correct offsets
-		offset       = this.offset(),
-		parentOffset = rroot.test(offsetParent[0].nodeName) ? { top: 0, left: 0 } : offsetParent.offset();
+			// Get correct offsets
+			offset       = this.offset();
+			if ( !rroot.test(offsetParent[0].nodeName) ) {
+				parentOffset = offsetParent.offset();
+			}
+
+			// Add offsetParent borders
+			parentOffset.top  += parseFloat( jQuery.css(offsetParent[0], "borderTopWidth") ) || 0;
+			parentOffset.left += parseFloat( jQuery.css(offsetParent[0], "borderLeftWidth") ) || 0;
+		}
 
 		// Subtract element margins
 		// note: when an element has margin: auto the offsetLeft and marginLeft
 		// are the same in Safari causing offset.left to incorrectly be 0
 		offset.top  -= parseFloat( jQuery.css(elem, "marginTop") ) || 0;
 		offset.left -= parseFloat( jQuery.css(elem, "marginLeft") ) || 0;
-
-		// Add offsetParent borders
-		parentOffset.top  += parseFloat( jQuery.css(offsetParent[0], "borderTopWidth") ) || 0;
-		parentOffset.left += parseFloat( jQuery.css(offsetParent[0], "borderLeftWidth") ) || 0;
 
 		// Subtract the two offsets
 		return {

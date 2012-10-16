@@ -294,11 +294,11 @@ testIframe("offset/static", "static", function( $ ) {
 });
 
 testIframe("offset/fixed", "fixed", function( $ ) {
-	expect(30);
+	expect(34);
 
 	var tests = [
-		{ "id": "#fixed-1", "top": 1001, "left": 1001 },
-		{ "id": "#fixed-2", "top": 1021, "left": 1021 }
+		{ "id": "#fixed-1", "offsetTop": 1001, "offsetLeft": 1001, "positionTop": 0, "positionLeft": 0 },
+		{ "id": "#fixed-2", "offsetTop": 1021, "offsetLeft": 1021, "positionTop": 20, "positionLeft": 20 }
 	];
 
 	jQuery.each( tests, function() {
@@ -307,8 +307,10 @@ testIframe("offset/fixed", "fixed", function( $ ) {
 			ok( true, "Browser doesn't support scroll position." );
 
 		} else if ( window.supportsFixedPosition ) {
-			equal( $( this["id"] ).offset().top,  this["top"],  "jQuery('" + this["id"] + "').offset().top" );
-			equal( $( this["id"] ).offset().left, this["left"], "jQuery('" + this["id"] + "').offset().left" );
+			equal( $( this["id"] ).offset().top,  this["offsetTop"],  "jQuery('" + this["id"] + "').offset().top" );
+			equal( $( this["id"] ).position().top,  this["positionTop"],  "jQuery('" + this["id"] + "').position().top" );
+			equal( $( this["id"] ).offset().left, this["offsetLeft"], "jQuery('" + this["id"] + "').offset().left" );
+			equal( $( this["id"] ).position().left,  this["positionLeft"],  "jQuery('" + this["id"] + "').position().left" );
 		} else {
 			// need to have same number of assertions
 			ok( true, "Fixed position is not supported" );
