@@ -29,5 +29,8 @@
 		"grunt": "~0.3.17",
 		"testswarm": "0.2.2"
 	},
-	"keywords": []
+	"keywords": [],
+    "scripts": {
+        "test": "grunt"
+    }
 }
