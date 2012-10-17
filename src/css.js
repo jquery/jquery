@@ -18,9 +18,7 @@ var curCSS, iframe, iframeDoc,
 	},
 
 	cssExpand = [ "Top", "Right", "Bottom", "Left" ],
-	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ],
-
-	eventsToggle = jQuery.fn.toggle;
+	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
@@ -113,7 +111,7 @@ jQuery.fn.extend({
 	hide: function() {
 		return showHide( this );
 	},
-	toggle: function( state, fn2 ) {
+	toggle: function( state ) {
 		var bool = typeof state === "boolean";
 
 		return this.each(function() {

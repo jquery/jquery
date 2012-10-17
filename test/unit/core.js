@@ -1150,9 +1150,13 @@ test("jQuery.parseHTML", function() {
 test("jQuery.parseJSON", function(){
 	expect(8);
 
-	equal( jQuery.parseJSON(), null, "Nothing in, null out." );
-	equal( jQuery.parseJSON( null ), null, "Nothing in, null out." );
-	equal( jQuery.parseJSON( "" ), null, "Nothing in, null out." );
+	raises(function() {
+		jQuery.parseJSON();
+	}, null, "parseJson now matches JSON.parse for empty input." );
+	equal(jQuery.parseJSON( null ), null, "parseJson now matches JSON.parse on null input." );
+	raises( function() {
+		jQuery.parseJSON( "" );
+	}, null, "parseJson now matches JSON.parse for empty strings." );
 
 	deepEqual( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
 	deepEqual( jQuery.parseJSON("{\"test\":1}"), {"test":1}, "Plain object parsing." );
@@ -1346,3 +1350,50 @@ test("jQuery.camelCase()", function() {
 		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
 	});
 });
+
+test( "JQuery.parseJSON() test internal parseJson (using fallback) to make sure that it throws like JSON.parse", function() {
+	expect( 10 );
+
+	var jsonParse = window.JSON;
+	window.JSON = null;
+
+	raises(function() {
+		jsonParse.parse("''");
+	});
+
+	raises(function() {
+		jQuery.parseJSON("''");
+	});
+
+	raises(function() {
+		jsonParse.parse("");
+	});
+
+	raises(function() {
+		jQuery.parseJSON("");
+	});
+
+	raises(function() {
+		jsonParse.parse({});
+	});
+
+	raises(function() {
+		jQuery.parseJSON({});
+	});
+
+	var parsedValue = jsonParse.parse(null);
+	equal( parsedValue, null );
+
+	parsedValue = jQuery.parseJSON(null);
+	equal( parsedValue, null );
+
+	parsedValue = jsonParse.parse("{}");
+	equal( (typeof parsedValue === "object"), true );
+
+	parsedValue = jQuery.parseJSON("{}");
+	equal( (typeof parsedValue === "object"), true );
+	
+
+	window.JSON = jsonParse;
+} );
+

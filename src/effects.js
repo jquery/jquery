@@ -73,7 +73,6 @@ function createTweens( animation, props ) {
 function Animation( elem, properties, options ) {
 	var result,
 		index = 0,
-		tweenerIndex = 0,
 		length = animationPrefilters.length,
 		deferred = jQuery.Deferred().always( function() {
 			// don't match elem in the :animated selector
@@ -108,7 +107,7 @@ function Animation( elem, properties, options ) {
 			startTime: fxNow || createFxNow(),
 			duration: options.duration,
 			tweens: [],
-			createTween: function( prop, end, easing ) {
+			createTween: function( prop, end ) {
 				var tween = jQuery.Tween( elem, animation.opts, prop, end,
 						animation.opts.specialEasing[ prop ] || animation.opts.easing );
 				animation.tweens.push( tween );

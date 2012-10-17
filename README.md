@@ -197,7 +197,7 @@ Updating Submodules
 Update the submodules to what is probably the latest upstream code.
 
 ```bash
-grunt submodules
+grunt update_submodules
 ```
 
 Note: This task will also be run any time the default `grunt` command is used.

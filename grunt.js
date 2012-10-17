@@ -230,7 +230,7 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Creating custom build...\n" );
 
 		grunt.utils.spawn({
-			cmd: "grunt",
+			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
 			args: [ "build:*:*:" + modules, "min" ]
 		}, function( err, result ) {
 			if ( err ) {
@@ -436,11 +436,6 @@ module.exports = function( grunt ) {
 					}
 
 					created = path + filename.replace( "dist/", "" );
-
-					if ( !/^\//.test( path ) ) {
-						log.error( "File '" + created + "' was NOT created." );
-						return;
-					}
 
 					file.write( created, file.read(filename) );
 

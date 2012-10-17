@@ -60,7 +60,7 @@ function testSubproject( label, url, risTests ) {
 		success: function( data, status, jqXHR ) {
 			var page = jQuery.parseHTML(
 				// replace html/head with dummy elements so they are represented in the DOM
-				( data || "" ).replace( /(<\/?)(?:html|head)\b/g, "$1div" ),
+				( data || "" ).replace( /<\/?((!DOCTYPE|html|head)\b.*?)>/gi, "[$1]" ),
 				document,
 				true
 			);
