@@ -119,7 +119,7 @@ test("callbacks keep their place in the queue", function() {
 
 	div.promise("fx").done(function() {
 		equal(counter, 4, "Deferreds resolved");
-		jQuery._removeData( div[0], "olddisplay" );
+		QUnit.expectJqData( div[0], "olddisplay" );
 		start();
 	});
 });

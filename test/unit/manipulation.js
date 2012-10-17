@@ -80,8 +80,6 @@ test("text(Function) with incoming value", function() {
 	});
 
 	equal( jQuery("#sap").text(), "foobar", "Check for merged text of more then one element." );
-
-	QUnit.reset();
 });
 
 var testWrap = function(val) {
@@ -1518,17 +1516,18 @@ test("html(Function)", function() {
 });
 
 test("html(Function) with incoming value", function() {
-	expect(20);
+	expect(18);
 
-	var div = jQuery("#qunit-fixture > div"), old = div.map(function(){ return jQuery(this).html(); });
+	var els = jQuery("#foo > p"),
+		actualhtml = els.map(function() { return jQuery(this).html(); });
 
-	div.html(function(i, val) {
-		equal( val, old[i], "Make sure the incoming value is correct." );
+	els.html(function(i, val) {
+		equal( val, actualhtml[i], "Make sure the incoming value is correct." );
 		return "<b>test</b>";
 	});
 
 	var pass = true;
-	div.each(function(){
+	els.each(function(){
 		if ( this.childNodes.length !== 1 ) {
 			pass = false;
 		}
@@ -1538,10 +1537,10 @@ test("html(Function) with incoming value", function() {
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	old = j.map(function(){ return jQuery(this).html(); });
+	actualhtml = j.map(function(){ return jQuery(this).html(); });
 
 	j.html(function(i, val) {
-		equal( val, old[i], "Make sure the incoming value is correct." );
+		equal( val, actualhtml[i], "Make sure the incoming value is correct." );
 		return "<b>bold</b>";
 	});
 
@@ -1583,10 +1582,7 @@ test("html(Function) with incoming value", function() {
 });
 
 var testRemove = function(method) {
-	expect(9);
-
-	var cleanUp, count,
-			first = jQuery("#ap").children(":first");
+	var first = jQuery("#ap").children(":first");
 
 	first.data("foo", "bar");
 
@@ -1594,7 +1590,7 @@ var testRemove = function(method) {
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
 
-	equal( first.data("foo"), method == "remove" ? null : "bar" );
+	equal( first.data("foo"), method == "remove" ? null : "bar", 'first data' );
 
 	QUnit.reset();
 	jQuery("#ap").children()[method]("a");
@@ -1614,27 +1610,44 @@ var testRemove = function(method) {
 	if (method === "detach") {
 		first.remove();
 	}
-
-	QUnit.reset();
-
-	count = 0;
-
-	first = jQuery("#ap").children(":first");
-
-	cleanUp = first.click(function() { count++; })[method]().appendTo("#qunit-fixture").click();
-
-	equal( method == "remove" ? 0 : 1, count );
-
-	// manually clean up detached elements
-	cleanUp.remove();
 };
 
 test("remove()", function() {
 	testRemove("remove");
 });
 
+test("remove() event cleaning ", 1, function() {
+	var count, first, cleanUp;
+
+	count = 0;
+	first = jQuery("#ap").children(":first");
+	cleanUp = first.click(function() {
+		count++;
+	}).remove().appendTo("#qunit-fixture").click();
+
+	equal( 0, count, 'Event handler has been removed' );
+
+	// Clean up detached data
+	cleanUp.remove();
+});
+
 test("detach()", function() {
 	testRemove("detach");
+});
+
+test("detach() event cleaning ", 1, function() {
+	var count, first, cleanUp;
+
+	count = 0;
+	first = jQuery("#ap").children(":first");
+	cleanUp = first.click(function() {
+		count++;
+	}).detach().appendTo("#qunit-fixture").click();
+
+	equal( 1, count, 'Event handler has not been removed' );
+
+	// Clean up detached data
+	cleanUp.remove();
 });
 
 test("empty()", function() {
