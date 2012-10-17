@@ -81,7 +81,7 @@ var
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
-		var match, elem, ret, doc;
+		var match, elem, doc;
 
 		// Handle $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {

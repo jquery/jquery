@@ -650,7 +650,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
+		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, handleScript, jsTags,
 			safe = context === document && safeFragment,
 			ret = [];
 
