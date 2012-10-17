@@ -437,11 +437,6 @@ module.exports = function( grunt ) {
 
 					created = path + filename.replace( "dist/", "" );
 
-					if ( !/^\//.test( path ) ) {
-						log.error( "File '" + created + "' was NOT created." );
-						return;
-					}
-
 					file.write( created, file.read(filename) );
 
 					log.writeln( "File '" + created + "' created." );
