@@ -45,7 +45,7 @@ jQuery.fn.extend({
 		}
 
 		if ( value && ( isString || jQuery.isArray( value ) ) ) {
-			classNames = type === "string" ? value.split( core_rspace ) : value;
+			classNames = isString ? value.split( core_rspace ) : value;
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
