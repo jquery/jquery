@@ -23,7 +23,7 @@
 	],
 	"dependencies": {},
 	"devDependencies": {
-		"grunt-compare-size": ">=0.1.0",
+		"grunt-compare-size": "~0.2.0",
 		"grunt-git-authors": ">=1.0.0",
 		"grunt-update-submodules": ">=0.1.2",
 		"grunt": "~0.3.17",
