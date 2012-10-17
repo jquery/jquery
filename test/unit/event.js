@@ -2947,3 +2947,59 @@ asyncTest("trigger click on checkbox, fires change event", function() {
 		start();
 	}).trigger("click");
 });
+
+test("Namespace preserved when passed an Event (#12739)", function() {
+	expect(1);
+
+	var markup = jQuery(
+		"<div id='parent'><div id='child'></div></div>"
+	);
+
+  var incorrect = false;
+
+	markup.find( "div" ).andSelf()
+    .on("foo.bar", function(e) {
+      if (!e.handled) {
+        e.handled = true;
+        jQuery(e.target).find("div").each(function() {
+          jQuery(this).triggerHandler(e);
+        });
+      }
+    })
+    .on("foo.bar", function(e) { })
+    .on("foo.bar2", function(e) {
+      incorrect = true;
+    });
+
+  markup.trigger("foo.bar");
+
+	markup.remove();
+
+  ok(!incorrect, "foo.bar2 not called");
+});
+
+test("Namespace preserved when passed a generated Event (#12739)", function() {
+	expect(2);
+
+	var markup = jQuery(
+		"<div id='parent'></div>"
+	);
+
+	markup
+    .on("foo.bar", function(e) {
+      ok(true, "foo.bar called");
+    })
+    .on("foo.bar2", function(e) {
+      ok(true, "foo.bar2 called");
+    });
+
+  var e = jQuery.Event("foo");
+  e.namespace = "bar";
+  markup.trigger(e);
+
+  e = jQuery.Event("foo.bar");
+  markup.trigger(e);
+
+	markup.remove();
+});
+
