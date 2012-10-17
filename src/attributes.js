@@ -34,9 +34,9 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		var type = typeof value,
-			classNames, i, l, elem,
-			setClass, c, cl;
+		var classNames, i, l, elem,
+			setClass, c, cl,
+			isString = typeof value === "string";
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -44,7 +44,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( value && ( type === "string" || jQuery.isArray( value ) ) ) {
+		if ( value && ( isString || jQuery.isArray( value ) ) ) {
 			classNames = type === "string" ? value.split( core_rspace ) : value;
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
@@ -72,15 +72,15 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		var type = typeof value,
-			removes, className, elem, c, cl, i, l;
+		var removes, className, elem, c, cl, i, l,
+			isString = typeof value === "string";
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
 				jQuery( this ).removeClass( value.call(this, j, this.className) );
 			});
 		}
-		if ( (value && ( type === "string" || jQuery.isArray( value ) ) ) || value === undefined ) {
+		if ( (value && ( isString || jQuery.isArray( value ) ) ) || value === undefined ) {
 			removes = jQuery.isArray( value ) ? value : ( value || "" ).split( core_rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
