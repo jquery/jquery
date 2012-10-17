@@ -7,22 +7,27 @@ test("sanity check", function() {
 	ok( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length === 3, "QUnit state is correct for testing effects" );
 });
 
-test("show()", function() {
-	expect(26);
-
-	var hiddendiv = jQuery("div.hidden");
+test("show() basic", 2, function() {
+	var div,
+		hiddendiv = jQuery("div.hidden");
 
 	hiddendiv.hide().show();
 
 	equal( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
 
-	var div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
+	div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
 
 	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
-	QUnit.reset();
+	// Clean up the detached node
+	div.remove();
 
-	hiddendiv = jQuery("div.hidden");
+	QUnit.expectJqData(hiddendiv, "olddisplay");
+});
+
+test("show()", 27, function () {
+	var div,
+		hiddendiv = jQuery("div.hidden");
 
 	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
 
@@ -34,14 +39,12 @@ test("show()", function() {
 
 	hiddendiv.css("display","");
 
-	var pass = true;
-	div = jQuery("#qunit-fixture div");
-	div.show().each(function(){
-		if ( this.style.display == "none" ) {
-			pass = false;
-		}
+	var displaysActual = [],
+		displaysExpected = [];
+	div = jQuery("#fx-queue div").slice(0, 4);
+	div.show().each(function() {
+		notEqual(this.style.display, "none", "don't change any <div> with display block");
 	});
-	ok( pass, "Show" );
 
 	var speeds = {
 		"null speed": null,
@@ -50,7 +53,7 @@ test("show()", function() {
 	};
 
 	jQuery.each(speeds, function(name, speed) {
-		pass = true;
+		var pass = true;
 		div.hide().show(speed).each(function() {
 			if ( this.style.display == "none" ) {
 				pass = false;
@@ -60,12 +63,15 @@ test("show()", function() {
 	});
 
 	jQuery.each(speeds, function(name, speed) {
-	pass = true;
-	div.hide().show(speed, function() {
+		var pass = true;
+		div.hide().show(speed, function() {
 			pass = false;
 		});
 		ok( pass, "Show with " + name + " does not call animate callback" );
 	});
+
+	// Tolerate data from show()/hide()
+	QUnit.expectJqData(div, "olddisplay");
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
@@ -143,8 +149,6 @@ test("show(Number) - other displays", function() {
 	jQuery("#show-tests").remove();
 });
 
-
-
 // Supports #7397
 test("Persist correct display value", function() {
 	expect(3);
@@ -174,6 +178,8 @@ test("Persist correct display value", function() {
 			});
 		});
 	});
+
+	QUnit.expectJqData($span, "olddisplay");
 });
 
 test("animate(Hash, Object, Function)", function() {
@@ -996,25 +1002,28 @@ jQuery.fn.saveState = function( hiddenOverflow ) {
 	expect(check.length);
 
 	stop();
-	return this.each(function(){
-		var self = this;
-		self.save = {};
+	return this.each(function() {
+		var el = this;
+		el.save = {};
 		jQuery.each(check, function( i, c ) {
-			self.save[ c ] = c === "overflow" && hiddenOverflow ? "hidden" : self.style[ c ] || jQuery.css( self, c );
+			el.save[ c ] = c === "overflow" && hiddenOverflow ? "hidden" : el.style[ c ] || jQuery.css( el, c );
 		});
 	});
 };
 
-/** @expose */
+/**
+ * @expose
+ * @context {HTMLElement}
+ */
 jQuery.checkState = function() {
-	var self = this;
-	jQuery.each(this.save, function( c, v ) {
-		var cur = self.style[ c ] || jQuery.css( self, c );
+	var el = this;
+	jQuery.each(el.save, function( c, v ) {
+		var cur = el.style[ c ] || jQuery.css( el, c );
 		equal( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
 	});
 
-	// manually clean data on modified element
-	jQuery._removeData( this, "olddisplay" );
+	// Clean up
+	jQuery(el).remove();
 
 	start();
 };
@@ -1147,8 +1156,8 @@ function( method, defProp ) {
 						$elem[ method ](animTime, function() {
 							equal( defProp( $elem ), startVal, "After doing .stop() halfway through show, check that state has been saved for returning to original property value." );
 
-							// Remove olddisplay data from .hide() call
-							jQuery._removeData( this, "olddisplay" );
+							// Tolerate olddisplay data from .hide() call
+							QUnit.expectJqData( this, "olddisplay" );
 							start();
 						});
 					}, animTime / 2);
@@ -1478,28 +1487,20 @@ test( "animate should set display for disconnected nodes", function() {
 			show: [ 1 ],
 			animate: [{ width: "show" }]
 		},
-		elems = [
+		$divTest = jQuery("<div>test</div>"),
+		// parentNode = null
+		$divEmpty = jQuery("<div/>"),
+		$divNone = jQuery("<div style='display: none;'/>"),
+		$divInline = jQuery("<div style='display: inline;'/>");
 
-			// parentNode = document fragment
-			jQuery("<div>test</div>"),
+	strictEqual( $divTest.show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
+	strictEqual( $divEmpty.show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = null" );
+	strictEqual( $divNone.show()[ 0 ].style.display, "block", "show() should change display if it already set to none" );
+	strictEqual( $divInline.show()[ 0 ].style.display, "inline", "show() should not change display if it already set" );
 
-			// parentNode = null
-			jQuery("<div/>"),
-
-			jQuery("<div style='display:inline'/>"),
-
-			jQuery("<div style='display:none'/>")
-		];
-
-	strictEqual( elems[ 0 ].show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
-	strictEqual( elems[ 1 ].show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = null" );
-	strictEqual( elems[ 2 ].show()[ 0 ].style.display, "inline", "show() should not change display if it already set" );
-	strictEqual( elems[ 3 ].show()[ 0 ].style.display, "block", "show() should change display if it already set to none" );
-
-	// cleanup
-	jQuery.each( elems, function() {
-		jQuery._removeData( this[ 0 ], "olddisplay" );
-	});
+	QUnit.expectJqData( $divTest[ 0 ], "olddisplay" );
+	QUnit.expectJqData( $divEmpty[ 0 ], "olddisplay" );
+	QUnit.expectJqData( $divNone[ 0 ], "olddisplay" );
 
 	stop();
 	jQuery.each( methods, function( name, opt ) {
@@ -1515,7 +1516,7 @@ test( "animate should set display for disconnected nodes", function() {
 			var callback = [function () {
 					strictEqual( this.style.display, "block", "set display to block with " + name );
 
-					jQuery._removeData( this, "olddisplay" );
+					QUnit.expectJqData( this, "olddisplay" );
 
 					if ( ++i === 14 ) {
 						start();
