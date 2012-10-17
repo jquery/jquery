@@ -257,6 +257,13 @@ jQuery.fn.extend({
 			return data;
 		}
 
+		// Calls callback with index, data
+		if ( jQuery.isFunction( key ) ) {
+			return this.each( function( index ) {
+				key.call( this, index, jQuery( this ).data() );
+			});
+		}
+
 		// Sets multiple values
 		if ( typeof key === "object" ) {
 			return this.each(function() {
