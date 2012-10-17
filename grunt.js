@@ -230,7 +230,7 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Creating custom build...\n" );
 
 		grunt.utils.spawn({
-			cmd: "grunt",
+			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
 			args: [ "build:*:*:" + modules, "min" ]
 		}, function( err, result ) {
 			if ( err ) {
