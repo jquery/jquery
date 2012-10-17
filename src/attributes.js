@@ -34,15 +34,9 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-<<<<<<< HEAD
 		var classNames, i, l, elem,
 			setClass, c, cl,
 			isString = typeof value === "string";
-=======
-		var type = typeof value,
-			classNames, i, l, elem,
-			setClass, c, cl;
->>>>>>> bc98d50bc148511f4256e1b12dc158df4028898c
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -50,13 +44,8 @@ jQuery.fn.extend({
 			});
 		}
 
-<<<<<<< HEAD
 		if ( value && ( isString || jQuery.isArray( value ) ) ) {
 			classNames = isString ? value.split( core_rspace ) : value;
-=======
-		if ( value && ( type === "string" || jQuery.isArray( value ) ) ) {
-			classNames = type === "string" ? value.split( core_rspace ) : value;
->>>>>>> bc98d50bc148511f4256e1b12dc158df4028898c
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
 				elem = this[ i ];
@@ -83,24 +72,15 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-<<<<<<< HEAD
 		var removes, className, elem, c, cl, i, l,
 			isString = typeof value === "string";
-=======
-		var type = typeof value,
-			removes, className, elem, c, cl, i, l;
->>>>>>> bc98d50bc148511f4256e1b12dc158df4028898c
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
 				jQuery( this ).removeClass( value.call(this, j, this.className) );
 			});
 		}
-<<<<<<< HEAD
 		if ( (value && ( isString || jQuery.isArray( value ) ) ) || value === undefined ) {
-=======
-		if ( (value && ( type === "string" || jQuery.isArray( value ) ) ) || value === undefined ) {
->>>>>>> bc98d50bc148511f4256e1b12dc158df4028898c
 			removes = jQuery.isArray( value ) ? value : ( value || "" ).split( core_rspace );
 
 			for ( i = 0, l = this.length; i < l; i++ ) {
