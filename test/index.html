@@ -17,12 +17,20 @@
 		(function() {
 			var src = "../dist/jquery.js";
 
-			QUnit.config.urlConfig.push( "min" );
+			QUnit.config.urlConfig.push( {
+				id: "min",
+				label: "Load minified",
+				tooltip: "Load the minified version of the jQuery build"
+			} );
 			if ( QUnit.urlParams.min ) {
 				src = "../dist/jquery.min.js";
 			}
 
-			QUnit.config.urlConfig.push( "noqsa" );
+			QUnit.config.urlConfig.push( {
+				id: "noqsa",
+				label: "Disable querySelectorAll",
+				tooltip: "Disable the native document.querySelectorAll"
+			} );
 			if ( QUnit.urlParams.noqsa ) {
 				document.querySelectorAll = null;
 			}
@@ -281,34 +289,34 @@ Z</textarea>
 			</em>
 			<span id="siblingspan"></span>
 		</div>
+		<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
+			<div id="fx-queue" name="test">
+				<div id="fadein" class='chain test' name='div'>fadeIn<div>fadeIn</div></div>
+				<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
+
+				<div id="show" class='chain test'>show<div>show</div></div>
+				<div id="hide" class='chain test out'>hide<div>hide</div></div>
+
+				<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
+				<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
+
+
+				<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
+				<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
+
+				<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
+				<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
+
+				<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
+				<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
+
+				<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
+			</div>
+
+			<div id="fx-tests"></div>
+		</div>
 	</div>
 	</dl>
-	<div id="fx-test-group" style="position:absolute;width:1px;height:1px;overflow:hidden;">
-		<div id="fx-queue" name="test">
-			<div id="fadein" class='chain test' name='div'>fadeIn<div>fadeIn</div></div>
-			<div id="fadeout" class='chain test out'>fadeOut<div>fadeOut</div></div>
-
-			<div id="show" class='chain test'>show<div>show</div></div>
-			<div id="hide" class='chain test out'>hide<div>hide</div></div>
-
-			<div id="togglein" class='chain test'>togglein<div>togglein</div></div>
-			<div id="toggleout" class='chain test out'>toggleout<div>toggleout</div></div>
-
-
-			<div id="slideup" class='chain test'>slideUp<div>slideUp</div></div>
-			<div id="slidedown" class='chain test out'>slideDown<div>slideDown</div></div>
-
-			<div id="slidetogglein" class='chain test'>slideToggleIn<div>slideToggleIn</div></div>
-			<div id="slidetoggleout" class='chain test out'>slideToggleOut<div>slideToggleOut</div></div>
-
-			<div id="fadetogglein" class='chain test'>fadeToggleIn<div>fadeToggleIn</div></div>
-			<div id="fadetoggleout" class='chain test out'>fadeToggleOut<div>fadeToggleOut</div></div>
-
-			<div id="fadeto" class='chain test'>fadeTo<div>fadeTo</div></div>
-		</div>
-
-		<div id="fx-tests"></div>
-	</div>
 	<map name="imgmap" id="imgmap">
 		<area shape="rect" coords="0,0,200,50">
 	</map>

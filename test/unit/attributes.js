@@ -1231,7 +1231,7 @@ var testToggleClass = function(valueObj) {
 
 	// multiple class names
 	e.addClass("testA testB");
-	ok( (e.is(".testA.testB")), "Assert 2 different classes present" );
+	ok( e.is(".testA.testB"), "Assert 2 different classes present" );
 	e.toggleClass( valueObj("testB testC") );
 	ok( (e.is(".testA.testC") && !e.is(".testB")), "Assert 1 class added, 1 class removed, and 1 class kept" );
 	e.toggleClass( valueObj("testA testC") );
@@ -1258,7 +1258,7 @@ var testToggleClass = function(valueObj) {
 
 	// Cleanup
 	e.removeClass("testD");
-	jQuery._removeData( e[ 0 ], "__className__" );
+	QUnit.expectJqData( e[ 0 ], "__className__" );
 };
 
 test( "toggleClass(String|boolean|undefined[, boolean])", function() {
@@ -1269,10 +1269,12 @@ test( "toggleClass(Function[, boolean])", function() {
 	testToggleClass( functionReturningObj );
 });
 
-test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
+test( "toggleClass(Function[, boolean]) with incoming value", function() {
 	expect( 14 );
 
-	var e = jQuery("#firstp"), old = e.attr("class") || "";
+	var e = jQuery("#firstp"),
+		old = e.attr("class") || "";
+
 	ok( !e.is(".test"), "Assert class not present" );
 
 	e.toggleClass(function( i, val ) {
@@ -1316,10 +1318,6 @@ test( "toggleClass(Fucntion[, boolean]) with incoming value", function() {
 		return "test";
 	}, false );
 	ok( !e.is(".test"), "Assert class not present" );
-
-	// Cleanup
-	e.removeClass("test");
-	jQuery._removeData( e[ 0 ], "__className__" );
 });
 
 test( "addClass, removeClass, hasClass", function() {

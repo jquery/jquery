@@ -10,6 +10,7 @@ var Sizzle = Sizzle || jQuery.find;
 // Allow subprojects to test against their own fixtures
 var qunitModule = QUnit.module,
 	qunitTest = QUnit.test;
+
 function testSubproject( label, url, risTests ) {
 	var sub, fixture, fixtureHTML,
 		fixtureReplaced = false;
@@ -131,10 +132,152 @@ function testSubproject( label, url, risTests ) {
  * QUnit hooks
  */
 (function() {
-	// jQuery-specific QUnit.reset
-	var reset = QUnit.reset,
+	// Store the old counts so that we only assert on tests that have actually leaked,
+	// instead of asserting every time a test has leaked sometime in the past
+	var oldCacheLength = 0,
+		oldFragmentsLength = 0,
+		oldTimersLength = 0,
+		oldActive = 0,
+
+		expectedDataKeys = {},
+
+		reset = QUnit.reset,
 		ajaxSettings = jQuery.ajaxSettings;
 
+	function keys(o) {
+		var ret, key;
+		if ( Object.keys ) {
+			ret = Object.keys( o );
+		} else {
+			ret = [];
+			for ( key in o ) {
+				ret.push( key );
+			}
+		}
+		ret.sort();
+		return ret;
+	}
+
+	/**
+	 * @param {jQuery|HTMLElement|Object|Array} elems Target (or array of targets) for jQuery.data.
+	 * @param {string} key
+	 */
+	QUnit.expectJqData = function( elems, key ) {
+		var i, elem, expando;
+		QUnit.current_testEnvironment.checkJqData = true;
+
+		if ( elems.jquery && elems.toArray ) {
+			elems = elems.toArray();
+		}
+		if ( !jQuery.isArray( elems ) ) {
+			elems = [ elems ];
+		}
+
+		for ( i = 0; i < elems.length; i++ ) {
+			elem = elems[i];
+
+			// jQuery.data only stores data for nodes in jQuery.cache,
+			// for other data targets the data is stored in the object itself,
+			// in that case we can't test that target for memory leaks.
+			// But we don't have to since in that case the data will/must will
+			// be available as long as the object is not garbage collected by
+			// the js engine, and when it is, the data will be removed with it.
+			if ( !elem.nodeType ) {
+				// Fixes false positives for dataTests(window), dataTests({}).
+				continue;
+			}
+
+			expando = elem[ jQuery.expando ];
+
+			if ( expando === undefined ) {
+				// In this case the element exists fine, but
+				// jQuery.data (or internal data) was never (in)directly
+				// called.
+				// Since this method was called it means some data was
+				// expected to be found, but since there is nothing, fail early
+				// (instead of in teardown).
+				notStrictEqual( expando, undefined, 'Target for expectJqData must have an expando, for else there can be no data to expect.' );
+			} else {
+				if ( expectedDataKeys[expando] ) {
+					expectedDataKeys[expando].push( key );
+				} else {
+					expectedDataKeys[expando] = [ key ];
+				}
+			}
+		}
+	};
+	QUnit.config.urlConfig.push( {
+		id: 'jqdata',
+		label: 'Always check jQuery.data',
+		tooltip: 'Trigger "QUnit.expectJqData" detection for all tests instead of just the ones that call it'
+	} );
+
+	/**
+	 * Ensures that tests have cleaned up properly after themselves. Should be passed as the
+	 * teardown function on all modules' lifecycle object.
+	 */
+	this.moduleTeardown = function() {
+		var i,
+			expectedKeys, actualKeys,
+			fragmentsLength = 0,
+			cacheLength = 0;
+
+		// Only look for jQuery data problems if this test actually
+		// provided some information to compare against.
+		if ( QUnit.urlParams.jqdata || this.checkJqData ) {
+			for ( i in jQuery.cache ) {
+				expectedKeys = expectedDataKeys[i];
+				actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
+				if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
+					deepEqual( actualKeys, expectedKeys, 'Expected keys exist in jQuery.cache' );
+				}
+				delete jQuery.cache[i];
+				delete expectedDataKeys[i];
+			}
+			// In case it was removed from cache before (or never there in the first place)
+			for ( i in expectedDataKeys ) {
+				deepEqual( expectedDataKeys[i], undefined, 'No unexpected keys were left in jQuery.cache (#' + i + ')' );
+				delete expectedDataKeys[i];
+			}
+		}
+
+		// Reset data register
+		expectedDataKeys = {};
+
+		// Allow QUnit.reset to clean up any attached elements before checking for leaks
+		QUnit.reset();
+
+		for ( i in jQuery.cache ) {
+			++cacheLength;
+		}
+
+		jQuery.fragments = {};
+
+		for ( i in jQuery.fragments ) {
+			++fragmentsLength;
+		}
+
+		// Because QUnit doesn't have a mechanism for retrieving the number of expected assertions for a test,
+		// if we unconditionally assert any of these, the test will fail with too many assertions :|
+		if ( cacheLength !== oldCacheLength ) {
+			equal( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
+			oldCacheLength = cacheLength;
+		}
+		if ( fragmentsLength !== oldFragmentsLength ) {
+			equal( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
+			oldFragmentsLength = fragmentsLength;
+		}
+		if ( jQuery.timers && jQuery.timers.length !== oldTimersLength ) {
+			equal( jQuery.timers.length, oldTimersLength, "No timers are still running" );
+			oldTimersLength = jQuery.timers.length;
+		}
+		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
+			equal( jQuery.active, 0, "No AJAX requests are still active" );
+			oldActive = jQuery.active;
+		}
+	};
+
+	// jQuery-specific QUnit.reset
 	QUnit.reset = function() {
 
 		// Ensure jQuery events and data on the fixture are properly removed

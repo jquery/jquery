@@ -7,17 +7,6 @@ test("expando", function(){
 });
 
 function dataTests (elem) {
-	// expect(31)
-
-	function getCacheLength() {
-		var cacheLength = 0;
-		for (var i in jQuery.cache) {
-			++cacheLength;
-		}
-
-		return cacheLength;
-	}
-
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
 
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
@@ -66,50 +55,11 @@ function dataTests (elem) {
 	jQuery.removeData(elem);
 	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
-	jQuery._removeData(elem);
-
-	strictEqual( jQuery._data(elem, jQuery.expando), undefined, "jQuery.removeData on internal data works" );
-	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees all data has been removed from object" );
-
-	jQuery._data(elem, "foo", "foo2");
-	strictEqual( jQuery.hasData(elem), true, "jQuery.hasData shows data exists even if it is only internal data" );
-
-	jQuery.data(elem, "foo", "foo1");
-	equal( jQuery._data(elem, "foo"), "foo2", "Setting user data does not override internal data" );
-
-	// delete the last private data key so we can test removing public data
-	// will destroy the cache
-	jQuery._removeData( elem, "foo" );
-
-	if (elem.nodeType) {
-		oldCacheLength = getCacheLength();
-		jQuery.removeData(elem, "foo");
-
-		equal( getCacheLength(), oldCacheLength - 1, "Removing the last item in the data object destroys it" );
-	}
-	else {
-		jQuery.removeData(elem, "foo");
-
-
-		if (jQuery.support.deleteExpando) {
-			expected = false;
-			actual = jQuery.expando in elem;
-		}
-		else {
-			expected = null;
-			actual = elem[ jQuery.expando ];
-		}
-
-		equal( actual, expected, "Removing the last item in the data object destroys it" );
-	}
-
 	jQuery.data(elem, "foo", "foo1");
 	jQuery._data(elem, "foo", "foo2");
 
 	equal( jQuery.data(elem, "foo"), "foo1", "(sanity check) Ensure data is set in user data object" );
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
-
-	jQuery._removeData(elem, "foo");
 
 	strictEqual( jQuery._data(elem, jQuery.expando), undefined, "Removing the last item in internal data destroys the internal data object" );
 
@@ -118,44 +68,68 @@ function dataTests (elem) {
 
 	jQuery.removeData(elem, "foo");
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
-
-	if ( elem.nodeType ) {
-		oldCacheLength = getCacheLength();
-		jQuery._removeData(elem, "foo");
-		equal( getCacheLength(), oldCacheLength - 1, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
-	}
-	else {
-		jQuery._removeData(elem, "foo");
-
-		if (jQuery.support.deleteExpando) {
-			expected = false;
-			actual = jQuery.expando in elem;
-		}
-		else {
-			expected = null;
-			actual = elem[ jQuery.expando ];
-		}
-
-		equal( actual, expected, "Removing the last item in the internal data object also destroys the user data object when it is empty" );
-	}
 }
 
-test("jQuery.data", function() {
-	expect(124);
-
+test("jQuery.data(div)", 25, function() {
 	var div = document.createElement("div");
 
 	dataTests(div);
-	dataTests({});
 
+	// We stored one key in the private data
+	// assert that nothing else was put in there, and that that
+	// one stayed there.
+	QUnit.expectJqData(div, "foo");
+});
+
+test("jQuery.data({})", 25, function() {
+	dataTests({});
+});
+
+test("jQuery.data(window)", 25, function() {
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
 	jQuery(window).unbind("unload");
 
 	dataTests(window);
+});
+
+test("jQuery.data(document)", 25, function() {
 	dataTests(document);
 
-	// clean up unattached element
+	QUnit.expectJqData(document, "foo");
+});
+
+test("Expando cleanup", 4, function() {
+	var expected, actual,
+		div = document.createElement("div");
+
+	function assertExpandoAbsent(message) {
+		if (jQuery.support.deleteExpando) {
+			expected = false;
+			actual = jQuery.expando in div;
+		} else {
+			expected = null;
+			actual = div[ jQuery.expando ];
+		}
+		equal( actual, expected, message );
+	}
+
+	assertExpandoAbsent("There is no expando on new elements");
+
+	jQuery.data(div, "foo", 100);
+	jQuery.data(div, "bar", 200);
+
+	ok(jQuery.expando in div, "There is an expando on the element after using $.data()");
+
+	jQuery.removeData(div, "foo");
+
+	ok(jQuery.expando in div, "There is still an expando on the element after removing (some) of the data");
+
+	jQuery.removeData(div, "bar");
+
+	assertExpandoAbsent("Removing the last item in the data store deletes the expando");
+
+	// Clean up unattached element
 	jQuery(div).remove();
 });
 
@@ -186,7 +160,7 @@ test(".data()", function() {
 
 	var dataObj = div.data();
 
-	deepEqual( dataObj, {test: "success"}, "data() get the entire data object" );
+	deepEqual( dataObj, {test: "success"}, "data() returns entire data object with expected properties" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
 	var nodiv = jQuery("#unfound");

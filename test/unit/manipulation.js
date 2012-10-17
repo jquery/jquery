@@ -80,8 +80,6 @@ test("text(Function) with incoming value", function() {
 	});
 
 	equal( jQuery("#sap").text(), "foobar", "Check for merged text of more then one element." );
-
-	QUnit.reset();
 });
 
 var testWrap = function(val) {
@@ -461,7 +459,7 @@ var testAppend = function(valueObj) {
 	QUnit.reset();
 };
 
-test("append(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("append(String|Element|Array<Element>|jQuery)", function() {
 	testAppend(manipulationBareObj);
 });
 
@@ -718,7 +716,7 @@ test("append(xml)", function() {
 
 });
 
-test("appendTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("appendTo(String|Element|Array<Element>|jQuery)", function() {
 	expect( 16 + ( jQuery.getScript ? 1 : 0 ) );
 
 	var defaultText = "Try them out:";
@@ -831,7 +829,7 @@ var testPrepend = function(val) {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
 };
 
-test("prepend(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("prepend(String|Element|Array<Element&gt;|jQuery)", function() {
 	testPrepend(manipulationBareObj);
 });
 
@@ -890,7 +888,7 @@ test("prepend(Function) with incoming value", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test("prependTo(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("prependTo(String|Element|Array<Element&gt;|jQuery)", function() {
 	expect(6);
 	var defaultText = "Try them out:";
 	jQuery("<b>buga</b>").prependTo("#first");
@@ -950,7 +948,7 @@ var testBefore = function(val) {
 	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
 };
 
-test("before(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("before(String|Element|Array<Element&gt;|jQuery)", function() {
 	testBefore(manipulationBareObj);
 });
 
@@ -990,7 +988,7 @@ test("before and after on disconnected node (#10517)", function() {
 	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node first" );
 });
 
-test("insertBefore(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("insertBefore(String|Element|Array<Element>|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: bugaYahoo";
 	jQuery("<b>buga</b>").insertBefore("#yahoo");
@@ -1043,7 +1041,7 @@ var testAfter = function(val) {
 	equal( set.length, 1, "Insert the element after the disconnected node should be a no-op" );
 };
 
-test("after(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("after(String|Element|Array<Element>|jQuery)", function() {
 	testAfter(manipulationBareObj);
 });
 
@@ -1051,7 +1049,7 @@ test("after(Function)", function() {
 	testAfter(manipulationFunctionReturningObj);
 });
 
-test("insertAfter(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("insertAfter(String|Element|Array<Element>|jQuery)", function() {
 	expect(4);
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery("<b>buga</b>").insertAfter("#yahoo");
@@ -1161,7 +1159,7 @@ var testReplaceWith = function(val) {
 	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
 };
 
-test("replaceWith(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("replaceWith(String|Element|Array<Element>|jQuery)", function() {
 	testReplaceWith(manipulationBareObj);
 });
 
@@ -1224,7 +1222,7 @@ test("replaceWith(string) for collection with disconnected element", function(){
 	equal(newSet.filter("span").length, 1, "ensure the new element is in the new set");
 });
 
-test("replaceAll(String|Element|Array&lt;Element&gt;|jQuery)", function() {
+test("replaceAll(String|Element|Array<Element>|jQuery)", function() {
 	expect(10);
 	jQuery("<b id='replace'>buga</b>").replaceAll("#yahoo");
 	ok( jQuery("#replace")[0], "Replace element with string" );
@@ -1587,17 +1585,18 @@ test("html(Function)", function() {
 });
 
 test("html(Function) with incoming value", function() {
-	expect(20);
+	expect(18);
 
-	var div = jQuery("#qunit-fixture > div"), old = div.map(function(){ return jQuery(this).html(); });
+	var els = jQuery("#foo > p"),
+		actualhtml = els.map(function() { return jQuery(this).html(); });
 
-	div.html(function(i, val) {
-		equal( val, old[i], "Make sure the incoming value is correct." );
+	els.html(function(i, val) {
+		equal( val, actualhtml[i], "Make sure the incoming value is correct." );
 		return "<b>test</b>";
 	});
 
 	var pass = true;
-	div.each(function(){
+	els.each(function(){
 		if ( this.childNodes.length !== 1 ) {
 			pass = false;
 		}
@@ -1607,10 +1606,10 @@ test("html(Function) with incoming value", function() {
 	QUnit.reset();
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
-	old = j.map(function(){ return jQuery(this).html(); });
+	actualhtml = j.map(function(){ return jQuery(this).html(); });
 
 	j.html(function(i, val) {
-		equal( val, old[i], "Make sure the incoming value is correct." );
+		equal( val, actualhtml[i], "Make sure the incoming value is correct." );
 		return "<b>bold</b>";
 	});
 
@@ -1652,10 +1651,7 @@ test("html(Function) with incoming value", function() {
 });
 
 var testRemove = function(method) {
-	expect(9);
-
-	var cleanUp, count,
-			first = jQuery("#ap").children(":first");
+	var first = jQuery("#ap").children(":first");
 
 	first.data("foo", "bar");
 
@@ -1663,7 +1659,7 @@ var testRemove = function(method) {
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
 
-	equal( first.data("foo"), method == "remove" ? null : "bar" );
+	equal( first.data("foo"), method == "remove" ? null : "bar", "first data" );
 
 	QUnit.reset();
 	jQuery("#ap").children()[method]("a");
@@ -1683,27 +1679,44 @@ var testRemove = function(method) {
 	if (method === "detach") {
 		first.remove();
 	}
-
-	QUnit.reset();
-
-	count = 0;
-
-	first = jQuery("#ap").children(":first");
-
-	cleanUp = first.click(function() { count++; })[method]().appendTo("#qunit-fixture").click();
-
-	equal( method == "remove" ? 0 : 1, count );
-
-	// manually clean up detached elements
-	cleanUp.remove();
 };
 
-test("remove()", function() {
+test("remove()", 8, function() {
 	testRemove("remove");
 });
 
-test("detach()", function() {
+test("remove() event cleaning ", 1, function() {
+	var count, first, cleanUp;
+
+	count = 0;
+	first = jQuery("#ap").children(":first");
+	cleanUp = first.click(function() {
+		count++;
+	}).remove().appendTo("#qunit-fixture").click();
+
+	strictEqual( 0, count, "Event handler has been removed" );
+
+	// Clean up detached data
+	cleanUp.remove();
+});
+
+test("detach()", 8, function() {
 	testRemove("detach");
+});
+
+test("detach() event cleaning ", 1, function() {
+	var count, first, cleanUp;
+
+	count = 0;
+	first = jQuery("#ap").children(":first");
+	cleanUp = first.click(function() {
+		count++;
+	}).detach().appendTo("#qunit-fixture").click();
+
+	strictEqual( 1, count, "Event handler has not been removed" );
+
+	// Clean up detached data
+	cleanUp.remove();
 });
 
 test("empty()", function() {
