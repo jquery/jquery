@@ -9,7 +9,6 @@
     "node": true,
     "quotmark": "double",
     "smarttabs": true,
-    "strict": true,
     "trailing": true,
     "undef": true,
     "unused": true
