@@ -234,11 +234,9 @@ jQuery.fn = jQuery.prototype = {
 		return this;
 	},
 
-	eq: function( i ) {
-		i = +i;
-		return i === -1 ?
-			this.slice( i ) :
-			this.slice( i, i + 1 );
+	slice: function() {
+		return this.pushStack( core_slice.apply( this, arguments ),
+			"slice", core_slice.call(arguments).join(",") );
 	},
 
 	first: function() {
@@ -249,9 +247,10 @@ jQuery.fn = jQuery.prototype = {
 		return this.eq( -1 );
 	},
 
-	slice: function() {
-		return this.pushStack( core_slice.apply( this, arguments ),
-			"slice", core_slice.call(arguments).join(",") );
+	eq: function( i ) {
+		var len = this.length,
+			j = +i + ( i < 0 ? len : 0 );
+		return this.pushStack( j >= 0 && j < len ? [ this[j] ] : [] );
 	},
 
 	map: function( callback ) {
