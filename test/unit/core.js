@@ -150,20 +150,20 @@ test("jQuery()", function() {
 	equal( jQuery(" a<div>" + lng + "</div>b ").length, 1, "Make sure whitespace and other characters are trimmed on long strings." );
 });
 
-test("selector state", function() {
-	expect(31);
+test( "selector state", function() {
+	expect( 18 );
 
 	var test;
 
-	test = jQuery(undefined);
+	test = jQuery( undefined );
 	equal( test.selector, "", "Empty jQuery Selector" );
 	equal( test.context, undefined, "Empty jQuery Context" );
 
-	test = jQuery(document);
+	test = jQuery( document );
 	equal( test.selector, "", "Document Selector" );
 	equal( test.context, document, "Document Context" );
 
-	test = jQuery(document.body);
+	test = jQuery( document.body );
 	equal( test.selector, "", "Body Selector" );
 	equal( test.context, document.body, "Body Context" );
 
@@ -175,53 +175,22 @@ test("selector state", function() {
 	equal( test.selector, "#notfoundnono", "#notfoundnono Selector" );
 	equal( test.context, document, "#notfoundnono Context" );
 
-	test = jQuery("#qunit-fixture", document);
+	test = jQuery( "#qunit-fixture", document );
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
 	equal( test.context, document, "#qunit-fixture Context" );
 
-	test = jQuery("#qunit-fixture", document.body);
+	test = jQuery( "#qunit-fixture", document.body );
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
 	equal( test.context, document.body, "#qunit-fixture Context" );
 
 	// Test cloning
-	test = jQuery(test);
+	test = jQuery( test );
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
 	equal( test.context, document.body, "#qunit-fixture Context" );
 
-	test = jQuery(document.body).find("#qunit-fixture");
+	test = jQuery( document.body ).find("#qunit-fixture");
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture find Selector" );
 	equal( test.context, document.body, "#qunit-fixture find Context" );
-
-	test = jQuery("#qunit-fixture").filter("div");
-	equal( test.selector, "#qunit-fixture.filter(div)", "#qunit-fixture filter Selector" );
-	equal( test.context, document, "#qunit-fixture filter Context" );
-
-	test = jQuery("#qunit-fixture").not("div");
-	equal( test.selector, "#qunit-fixture.not(div)", "#qunit-fixture not Selector" );
-	equal( test.context, document, "#qunit-fixture not Context" );
-
-	test = jQuery("#qunit-fixture").filter("div").not("div");
-	equal( test.selector, "#qunit-fixture.filter(div).not(div)", "#qunit-fixture filter, not Selector" );
-	equal( test.context, document, "#qunit-fixture filter, not Context" );
-
-	test = jQuery("#qunit-fixture").filter("div").not("div").end();
-	equal( test.selector, "#qunit-fixture.filter(div)", "#qunit-fixture filter, not, end Selector" );
-	equal( test.context, document, "#qunit-fixture filter, not, end Context" );
-
-	test = jQuery("#qunit-fixture").parent("body");
-	equal( test.selector, "#qunit-fixture.parent(body)", "#qunit-fixture parent Selector" );
-	equal( test.context, document, "#qunit-fixture parent Context" );
-
-	test = jQuery("#qunit-fixture").eq(0);
-	equal( test.selector, "#qunit-fixture.slice(0,1)", "#qunit-fixture eq Selector" );
-	equal( test.context, document, "#qunit-fixture eq Context" );
-
-	var d = "<div />";
-	equal(
-		jQuery(d).appendTo(jQuery(d)).selector,
-		jQuery(d).appendTo(d).selector,
-		"manipulation methods make same selector for jQuery objects"
-	);
 });
 
 test( "globalEval", function() {
