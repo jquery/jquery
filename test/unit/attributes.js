@@ -73,7 +73,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
 
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
-	var extras = jQuery("<input name='id' name='name' /><input id='target' name='target' />").appendTo("#testForm");
+	var extras = jQuery("<input id='id' name='id' /><input id='name' name='name' /><input id='target' name='target' />").appendTo("#testForm");
 	equal( jQuery("#form").attr("action","newformaction").attr("action"), "newformaction", "Check that action attribute was changed" );
 	equal( jQuery("#testForm").attr("target"), undefined, "Retrieving target does not equal the input with name=target" );
 	equal( jQuery("#testForm").attr("target", "newTarget").attr("target"), "newTarget", "Set target successfully on a form" );
