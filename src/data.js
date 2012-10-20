@@ -38,7 +38,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 		}
 	}
 
-	if ( !cache[ id ] ) {
+	if ( !cache[ id ] || !core_hasOwn.call( cache, id ) ) {
 		cache[ id ] = {};
 
 		// Avoids exposing jQuery metadata on plain JS objects when the object
@@ -110,7 +110,7 @@ function internalRemoveData( elem, name, pvt /* For internal use only */ ){
 
 	// If there is already no cache entry for this object, there is no
 	// purpose in continuing
-	if ( !cache[ id ] ) {
+	if ( !cache[ id ] || !core_hasOwn.call( cache, id ) ) {
 		return;
 	}
 

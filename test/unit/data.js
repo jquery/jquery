@@ -661,3 +661,43 @@ test( "JSON data- attributes can have newlines", function() {
 	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
 });
+
+test( "cache in __proto__", function() {
+	expect(15);
+	function Constructor() {
+		
+	}
+	jQuery.data(Constructor.prototype, "foo", "bar");
+	var obj1 = new Constructor();
+	var obj2 = new Constructor();
+
+	equal(jQuery.data(Constructor.prototype, "foo"), "bar", "__proto__ has own foo");
+	equal(jQuery.data(obj1, "foo"), undefined, "obj1 has no own foo");
+	equal(jQuery.data(obj2, "foo"), undefined, "obj2 has no own foo");
+
+	jQuery.data(obj1, "foo", "baar");
+	jQuery.data(obj2, "foo", "baaar");
+	equal(jQuery.data(Constructor.prototype, "foo"), "bar", "__proto__ has own foo");
+	equal(jQuery.data(obj1, "foo"), "baar", "obj1 has own foo");
+	equal(jQuery.data(obj2, "foo"), "baaar", "obj2 has own foo");
+
+	jQuery.data(obj1, "baz", "qux");
+	jQuery.data(obj2, "baz", "quux");
+	equal(jQuery.data(Constructor.prototype, "baz"), undefined, "__proto__  has no own baz");
+	equal(jQuery.data(obj1, "baz"), "qux", "obj1 has own baz");
+	equal(jQuery.data(obj2, "baz"), "quux", "obj2 has own baz");
+
+
+	var obj3 = new Constructor();
+	jQuery.removeData(obj2, "foo");
+	equal(jQuery.data(Constructor.prototype, "foo"), "bar", "__proto__ has own foo");
+	equal(jQuery.data(obj2, "foo"), undefined, "obj2 has own foo");
+
+	jQuery.removeData(obj3, "foo");
+	equal(jQuery.data(Constructor.prototype, "foo"), "bar", "__proto__ has own foo");
+	equal(jQuery.data(obj3, "foo"), undefined, "obj3 has own foo");
+
+	jQuery.removeData(Constructor.prototype, "foo");
+	equal(jQuery.data(Constructor.prototype, "foo"), undefined, "__proto__ own foo is deleted");
+	equal(jQuery.data(obj1, "foo"), "baar", "obj1 has own foo");
+});
