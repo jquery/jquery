@@ -1148,34 +1148,27 @@ test("jQuery.parseHTML", function() {
 });
 
 test("jQuery.parseJSON", function(){
-	expect(8);
+	expect( 9 );
 
+	equal( jQuery.parseJSON( null ), null, "Actual null returns null" );
+	equal( jQuery.isEmptyObject( jQuery.parseJSON("{}") ), true, "Empty object returns empty object" );
+	deepEqual( jQuery.parseJSON("{\"test\":1}"), { "test": 1 }, "Plain object parses" );
+	deepEqual( jQuery.parseJSON("\n{\"test\":1}"), { "test": 1 }, "Leading whitespaces are ignored." );
 	raises(function() {
 		jQuery.parseJSON();
-	}, null, "parseJson now matches JSON.parse for empty input." );
-	equal(jQuery.parseJSON( null ), null, "parseJson now matches JSON.parse on null input." );
+	}, null, "Undefined raises an error" );
 	raises( function() {
 		jQuery.parseJSON( "" );
-	}, null, "parseJson now matches JSON.parse for empty strings." );
-
-	deepEqual( jQuery.parseJSON("{}"), {}, "Plain object parsing." );
-	deepEqual( jQuery.parseJSON("{\"test\":1}"), {"test":1}, "Plain object parsing." );
-
-	deepEqual( jQuery.parseJSON("\n{\"test\":1}"), {"test":1}, "Make sure leading whitespaces are handled." );
-
-	try {
+	}, null, "Empty string raises an error" );
+	raises(function() {
+		jQuery.parseJSON("''");
+	}, null, "Single-quoted string raises an error" );
+	raises(function() {
 		jQuery.parseJSON("{a:1}");
-		ok( false, "Test malformed JSON string." );
-	} catch( e ) {
-		ok( true, "Test malformed JSON string." );
-	}
-
-	try {
+	}, null, "Unquoted property raises an error" );
+	raises(function() {
 		jQuery.parseJSON("{'a':1}");
-		ok( false, "Test malformed JSON string." );
-	} catch( e ) {
-		ok( true, "Test malformed JSON string." );
-	}
+	}, null, "Single-quoted property raises an error" );
 });
 
 test("jQuery.parseXML", 8, function(){
@@ -1350,53 +1343,3 @@ test("jQuery.camelCase()", function() {
 		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
 	});
 });
-
-// Ensure our window.JSON matches behavior of the native one, if it exists
-if ( window.JSON ) {
-	test( "JQuery.parseJSON() equivalence to JSON.parse", function() {
-		expect( 10 );
-
-		var jsonParse = window.JSON;
-		window.JSON = null;
-
-		raises(function() {
-			jsonParse.parse("''");
-		});
-
-		raises(function() {
-			jQuery.parseJSON("''");
-		});
-
-		raises(function() {
-			jsonParse.parse("");
-		});
-
-		raises(function() {
-			jQuery.parseJSON("");
-		});
-
-		raises(function() {
-			jsonParse.parse({});
-		});
-
-		raises(function() {
-			jQuery.parseJSON({});
-		});
-
-		var parsedValue = jsonParse.parse(null);
-		equal( parsedValue, null, "parsed null" );
-
-		parsedValue = jQuery.parseJSON(null);
-		equal( parsedValue, null, "parsed null" );
-
-		parsedValue = jsonParse.parse("{}");
-		equal( (typeof parsedValue === "object"), true );
-
-		parsedValue = jQuery.parseJSON("{}");
-		equal( (typeof parsedValue === "object"), true );
-		
-
-		window.JSON = jsonParse;
-	});
-}
-
