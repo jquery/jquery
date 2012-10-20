@@ -1035,7 +1035,7 @@ test( "val(select) after form.reset() (Bug #2551)", function() {
 });
 
 var testAddClass = function( valueObj ) {
-	expect( 9 );
+	expect( 10 );
 
 	var div = jQuery("div");
 	div.addClass( valueObj("test") );
@@ -1065,6 +1065,10 @@ var testAddClass = function( valueObj ) {
 	div.addClass( valueObj("bar baz") );
 	equal( div.attr("class"), "foo bar baz", "Make sure there isn't too much trimming." );
 
+	div.attr( "class", "foo" );
+	div.addClass( valueObj( [ "bar", "baz" ] ) );
+	equal( div.attr("class"), "foo bar baz", "Adding multiple classes with Array (#12380)." );
+
 	div.removeClass();
 	div.addClass( valueObj("foo") ).addClass( valueObj("foo") );
 	equal( div.attr("class"), "foo", "Do not add the same class twice in separate calls." );
@@ -1088,7 +1092,7 @@ test( "addClass(Function)", function() {
 });
 
 test( "addClass(Function) with incoming value", function() {
-	expect( 48 );
+	expect( 49 );
 	var div = jQuery("div"),
 		old = div.map(function() {
 			return jQuery(this).attr("class") || "";
@@ -1111,7 +1115,7 @@ test( "addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect( 7 );
+	expect( 8 );
 
 	var $divs = jQuery("div");
 
@@ -1125,7 +1129,15 @@ var testRemoveClass = function(valueObj) {
 	$divs.addClass("test").addClass("foo").addClass("bar");
 	$divs.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
 
-	ok( !$divs.is(".test,.bar,.foo"), "Remove multiple classes" );
+	ok( !$divs.is(".test,.bar,.foo"), "Remove multiple classes with String" );
+
+	QUnit.reset();
+	$divs = jQuery("div");
+
+	$divs.addClass("test").addClass("foo").addClass("bar");
+	$divs.removeClass( valueObj(["test", "foo", "bar"]) );
+
+	ok( !$divs.is(".test,.bar,.foo"), "Remove multiple classes with Array (#12380)" );
 
 	QUnit.reset();
 	$divs = jQuery("div");
@@ -1163,7 +1175,7 @@ test( "removeClass(Function) - simple", function() {
 });
 
 test( "removeClass(Function) with incoming value", function() {
-	expect( 48 );
+	expect( 49 );
 
 	var $divs = jQuery("div").addClass("test"), old = $divs.map(function() {
 		return jQuery( this ).attr("class");
@@ -1192,7 +1204,7 @@ test( "removeClass() removes duplicates", function() {
 });
 
 var testToggleClass = function(valueObj) {
-	expect( 17 );
+	expect( 20 );
 
 	var e = jQuery("#firstp");
 	ok( !e.is(".test"), "Assert class not present" );
@@ -1209,13 +1221,21 @@ var testToggleClass = function(valueObj) {
 	e.toggleClass( valueObj("test"), false );
 	ok( !e.is(".test"), "Assert class not present" );
 
-	// multiple class names
+	// multiple class names added with String
 	e.addClass("testA testB");
 	ok( (e.is(".testA.testB")), "Assert 2 different classes present" );
 	e.toggleClass( valueObj("testB testC") );
 	ok( (e.is(".testA.testC") && !e.is(".testB")), "Assert 1 class added, 1 class removed, and 1 class kept" );
 	e.toggleClass( valueObj("testA testC") );
 	ok( (!e.is(".testA") && !e.is(".testB") && !e.is(".testC")), "Assert no class present" );
+
+	// multiple class names added with Array
+	e.addClass([ "testD", "testE" ]);
+	ok( (e.is(".testD.testE")), "Assert 2 different classes present" );
+	e.toggleClass( valueObj([ "testE", "testF" ]) );
+	ok( (e.is(".testD.testF") && !e.is(".testE")), "Assert 1 class added, 1 class removed, and 1 class kept" );
+	e.toggleClass( valueObj(["testD", "testF"]) );
+	ok( (!e.is(".testD") && !e.is(".testE") && !e.is(".testF")), "Assert no class present" );
 
 	// toggleClass storage
 	e.toggleClass( true );
