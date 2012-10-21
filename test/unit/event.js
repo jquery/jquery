@@ -1372,20 +1372,30 @@ test("Submit event can be stopped (#11049)", function() {
 // Test beforeunload event only if it supported (i.e. not Opera)
 if ( window.onbeforeunload === null ) {
 	asyncTest("on(beforeunload)", 4, function() {
-		var doc,
+		var win,
 			forIE6 = 0,
+			fired = false,
 			iframe = jQuery("<iframe src='data/iframe.html' />");
 
 		iframe.appendTo("#qunit-fixture").one( "load", function() {
-			doc = iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument;
+			win = this.contentWindow || this.contentDocument;
 
-			jQuery( doc ).on( "beforeunload", function() {
+			jQuery( win ).on( "beforeunload", function() {
+				fired = true;
 				ok( true, "beforeunload event is fired" );
 			});
 
-			strictEqual( doc.onbeforeunload, null, "onbeforeunload property on window object still equals null" );
+			strictEqual( win.onbeforeunload, null, "onbeforeunload property on window object still equals null" );
 
-			jQuery( doc ).on( "beforeunload", function() {
+			// In old Safari beforeunload event will not fire on iframes
+			jQuery( win ).on( "unload", function() {
+				if ( !fired ) {
+					ok( true, "This is suppose to be true only in old Safari" );
+					checker();
+				}
+			});
+
+			jQuery( win ).on( "beforeunload", function() {
 
 				// On iframe in IE6 beforeunload event will not fire if event is binded through window object,
 				// nevertheless, test should continue
@@ -1396,7 +1406,7 @@ if ( window.onbeforeunload === null ) {
 				});
 			});
 
-			doc.onbeforeunload = function() {
+			win.onbeforeunload = function() {
 				if ( !forIE6 ) {
 					forIE6++;
 					checker();
@@ -1408,21 +1418,27 @@ if ( window.onbeforeunload === null ) {
 				iframe = jQuery("<iframe src='data/iframe.html' />");
 
 				iframe.appendTo("#qunit-fixture").one( "load", function() {
-					doc = iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument;
+					win = iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument;
 
-					jQuery( doc ).on( "beforeunload", function() {
-						strictEqual( doc.onbeforeunload, null, "Event handler is fired, even when onbeforeunload property on window is nulled" );
+					jQuery( win ).on( "beforeunload", function() {
+						strictEqual( win.onbeforeunload, null, "Event handler is fired, even when onbeforeunload property on window is nulled" );
 
 						start();
 					});
 
-					doc.onbeforeunload = null;
+					jQuery( win ).on( "unload", function() {
+						if ( !fired ) {
+							jQuery( win ).trigger("beforeunload");
+						}
+					})
 
-					doc.location.reload();
+					win.onbeforeunload = null;
+
+					win.location.reload();
 				});
 			}
 
-			doc.location.reload();
+			win.location.reload();
 		});
 	});
 }
