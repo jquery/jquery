@@ -32,7 +32,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 		// Only DOM nodes need a new unique ID for each element since their data
 		// ends up in the global cache
 		if ( isNode ) {
-			elem[ internalKey ] = id = jQuery.deletedIds.pop() || jQuery.guid++;
+			elem[ internalKey ] = id = core_deletedIds.pop() || jQuery.guid++;
 		} else {
 			id = internalKey;
 		}

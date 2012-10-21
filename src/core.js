@@ -36,6 +36,9 @@ var
 	// Used for detecting and trimming whitespace
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
+	
+	// List of deleted data cache ids, so we can reuse them
+	core_deletedIds = [],
 
 	// Make sure we trim BOM and NBSP (here's looking at you, Safari 5.0 and IE)
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
