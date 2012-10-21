@@ -178,11 +178,6 @@ function internalRemoveData( elem, name, pvt /* For internal use only */ ){
 jQuery.extend({
 	cache: {},
 
-	deletedIds: [],
-
-	// Remove at next major release (1.9/2.0)
-	uuid: 0,
-
 	// Unique for each copy of jQuery on the page
 	// Non-digits removed to match rinlinejQuery
 	expando: "jQuery" + ( jQuery.fn.jquery + Math.random() ).replace( /\D/g, "" ),
