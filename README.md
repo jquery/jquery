@@ -211,7 +211,7 @@ As the source code is handled by the version control system Git, it's useful to 
 
 ### Submodules ###
 
-The repository uses submodules, which normally are handled directly by the Makefile, but sometimes you want to
+The repository uses submodules, which normally are handled directly by the `grunt update_submodules` command, but sometimes you want to
 be able to work with them manually.
 
 Following are the steps to manually get the submodules:
