@@ -12,39 +12,42 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var i, l, length, n, r, ret,
-			self = this;
+		var prevLength, n, r,
+			i = 0,
+			ret = [],
+			self = this,
+			selfLength = this.length;
 
 		if ( typeof selector !== "string" ) {
-			return jQuery( selector ).filter(function() {
-				for ( i = 0, l = self.length; i < l; i++ ) {
+			ret = jQuery( selector ).filter(function() {
+				for ( ; i < selfLength; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
 				}
 			});
-		}
+		} else {
+			for ( ; i < selfLength; i++ ) {
+				prevLength = ret.length;
+				jQuery.find( selector, this[ i ], ret );
 
-		ret = this.pushStack( "", "find", selector );
-
-		for ( i = 0, l = this.length; i < l; i++ ) {
-			length = ret.length;
-			jQuery.find( selector, this[i], ret );
-
-			if ( i > 0 ) {
-				// Make sure that the results are unique
-				for ( n = length; n < ret.length; n++ ) {
-					for ( r = 0; r < length; r++ ) {
-						if ( ret[r] === ret[n] ) {
-							ret.splice(n--, 1);
-							break;
+				if ( i > 0 ) {
+					// Make sure that the results are unique
+					// by comparing the newly added elements on the ith
+					// iteration to the elements added by the previous iterations
+					for ( n = prevLength; n < ret.length; n++ ) {
+						for ( r = 0; r < prevLength; r++ ) {
+							if ( ret[ r ] === ret[ n ] ) {
+								ret.splice( n--, 1 );
+								break;
+							}
 						}
 					}
 				}
 			}
 		}
 
-		return ret;
+		return this.pushStack( ret, "find", core_slice.call( arguments ).join(",") );
 	},
 
 	has: function( target ) {
