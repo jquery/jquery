@@ -1430,7 +1430,7 @@ if ( window.onbeforeunload === null ) {
 						if ( !fired ) {
 							jQuery( win ).trigger("beforeunload");
 						}
-					})
+					});
 
 					win.onbeforeunload = null;
 
