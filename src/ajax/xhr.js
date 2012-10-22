@@ -89,7 +89,6 @@ if ( jQuery.support.ajax ) {
 						headers[ "X-Requested-With" ] = "XMLHttpRequest";
 					}
 
-					// Need an extra try/catch for cross domain requests in Firefox 3
 					for ( i in headers ) {
 						xhr.setRequestHeader( i, headers[ i ] );
 					}
