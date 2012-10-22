@@ -131,10 +131,17 @@ Chris Faulkner <thefaulkner@gmail.com>
 Elijah Manor <elijah.manor@gmail.com>
 Daniel Chatfield <chatfielddaniel@gmail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
+Wesley Walser <wwalser@atlassian.com>
 Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
 Daniel Gálvez <dgalvez@editablething.com>
+Benjamin Truyman <bentruyman@gmail.com>
 James Huston <james@jameshuston.net>
 Carl Danley <carldanley@gmail.com>
+Michael Petrovich <michael.c.petrovich@gmail.com>
+Greg Lavallee <greglavallee@wapolabs.com>
+Sai Lung Wong <sai.wong@huffingtonpost.com>
+Roland Eckl <eckl.roland@googlemail.com>
 Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
+Marcel Greter <marcel.greter@ocbnet.ch>
