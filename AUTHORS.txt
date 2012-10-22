@@ -153,3 +153,4 @@ Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
 Marcel Greter <marcel.greter@ocbnet.ch>
 Matthias Jäggli <matthias.jaeggli@gmail.com>
+Yiming He <yiminghe@gmail.com>
