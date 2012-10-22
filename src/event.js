@@ -160,9 +160,9 @@ jQuery.event = {
 				handleObj = eventType[ j ];
 
 				if ( ( mappedTypes || origType === handleObj.origType ) &&
-					 ( !handler || handler.guid === handleObj.guid ) &&
-					 ( !namespaces || namespaces.test( handleObj.namespace ) ) &&
-					 ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+					( !handler || handler.guid === handleObj.guid ) &&
+					( !namespaces || namespaces.test( handleObj.namespace ) ) &&
+					( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
 					eventType.splice( j--, 1 );
 
 					if ( handleObj.selector ) {
