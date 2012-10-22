@@ -858,4 +858,25 @@ test( "cssHooks - expand", function() {
 
 });
 
+test( "css opacity does not behave consistently across browsers, see #12685",function() {
+    var tag = "opacity" + new Date().getTime(),
+        t, t2,
+        fixture = jQuery( "#qunit-fixture" );
+    t2 = jQuery( "<style>." + tag + " { opacity: 0.1; filter: alpha(opacity=10); }</style>" ).appendTo( fixture );
+    t = jQuery( "<div class='" + tag + "'></div>" ).appendTo( fixture );
+    t.css( "opacity", 0.2 );
+    t.css( "opacity", "" );
+    ok( Math.abs( t.css( "opacity" ) - 0.1 ) < 1e-5 );
+    t.remove();
+    t2.remove();
+    
+    tag = "opacity2" + new Date().getTime();
+    t2 = jQuery( "<style>." + tag + " { opacity: 0.1; filter: alpha(opacity = 10); }</style>" ).appendTo( fixture );
+    t = jQuery( "<div class='" + tag + "'></div>" ).appendTo( fixture );
+    ok( Math.abs( t.css( "opacity" ) - 0.1 ) < 1e-5 );
+    t.remove();
+    t2.remove();
+    
+});
+
 }
