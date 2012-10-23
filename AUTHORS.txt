@@ -144,4 +144,8 @@ Sai Lung Wong <sai.wong@huffingtonpost.com>
 Roland Eckl <eckl.roland@googlemail.com>
 Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
+Callum Macrae <callum@lynxphp.com>
+Akintayo Akinwunmi <aakinwunmi@judge.com>
+David Bonner <dbonner@cogolabs.com>
+Dave Riddle <david@joyvuu.com>
 Marcel Greter <marcel.greter@ocbnet.ch>
