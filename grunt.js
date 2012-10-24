@@ -12,6 +12,8 @@ var child_process = require("child_process");
 
 module.exports = function( grunt ) {
 
+	"use strict";
+
 	// readOptionalJSON
 	// by Ben Alman
 	// https://gist.github.com/2876125
