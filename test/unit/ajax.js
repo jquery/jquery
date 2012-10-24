@@ -2217,6 +2217,33 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		});
 	});
 
+	test( "jQuery.ajax - simple get with options.method", function() {
+		expect( 1 );
+		stop();
+		jQuery.ajax({
+			method: "GET",
+			url: url("data/name.php?name=foo"),
+			success: function( msg ) {
+				equal( msg, "bar", "Check for GET" );
+				start();
+			}
+		});
+	});
+
+	test( "jQuery.ajax - simple post with options.method", function() {
+		expect( 1 );
+		stop();
+		jQuery.ajax({
+			method: "POST",
+			url: url("data/name.php"),
+			data: "name=peter",
+			success: function( msg ) {
+				equal( msg, "pan", "Check for POST" );
+				start();
+			}
+		});
+	});
+
 	test( "ajaxSetup()", function() {
 		expect( 1 );
 		stop();
