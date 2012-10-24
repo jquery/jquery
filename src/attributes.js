@@ -276,7 +276,7 @@ jQuery.extend({
 		}
 	},
 
-		attr: function( elem, name, value, pass ) {
+	attr: function( elem, name, value, pass ) {
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
 
