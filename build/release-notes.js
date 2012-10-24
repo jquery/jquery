@@ -9,9 +9,9 @@ var fs = require("fs"),
 	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g;
 
 var opts = {
-	version: "1.8.2",
-	short_version: "1.8.2",
-	final_version: "1.8.2",
+	version: "1.8.3",
+	short_version: "1.8.3",
+	final_version: "1.8.3",
 	categories: []
 };
 

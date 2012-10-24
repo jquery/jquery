@@ -10,18 +10,19 @@ var	debug = false,
 var fs = require("fs"),
 	child = require("child_process"),
 	path = require("path"),
-	which = require('which').sync;
+	which = require("which").sync;
 
 var releaseVersion,
 	nextVersion,
 	finalFiles,
 	isBeta,
 	pkg,
+	branch,
 
 	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 	cdnURL = "http://code.origin.jquery.com/",
-	repoURL = "git://github.com/jquery/jquery.git",
-	branch = "master",
+	repoURL = "git@github.com:dmethvin/jquery.git",
+	//repoURL = "git@github.com:jquery/jquery.git",
 
 	// Windows needs the .cmd version but will find the non-.cmd
 	// On Windows, ensure the HOME environment variable is set
@@ -62,18 +63,18 @@ function initialize( next ) {
 	// First arg should be the version number being released
 	var newver, oldver,
 		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
-		version = ( process.argv[2] || "" ).toLowerCase().match( rversion ) || {},
+		version = ( process.argv[3] || "" ).toLowerCase().match( rversion ) || {},
 		major = version[1],
 		minor = version[2],
 		patch = version[3],
 		xbeta = version[4];
 
-
-	releaseVersion = process.argv[2];
+	branch = process.argv[2];
+	releaseVersion = process.argv[3];
 	isBeta = !!xbeta;
 
-	if ( !major || !minor || !patch ) {
-		die( "Usage: " + process.argv[1] + " releaseVersion" );
+	if ( !branch || !major || !minor || !patch ) {
+		die( "Usage: " + process.argv[1] + " branch releaseVersion" );
 	}
 	if ( xbeta === "pre" ) {
 		die( "Cannot release a 'pre' version!" );
@@ -95,7 +96,11 @@ function initialize( next ) {
 	next();
 }
 function checkGitStatus( next ) {
-	exec( "git status", function( error, stdout, stderr ) {
+	child.execFile( "git", [ "status" ], {}, function( error, stdout, stderr ) {
+		var onBranch = (stdout.match( /On branch (\S+)/ ) || [])[1];
+		if ( onBranch !== branch ) {
+			die( "Branches don't match: Wanted " + branch + ", got " + onBranch );
+		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
 			die( "Please commit changed files before attemping to push a release." );
 		}
@@ -107,12 +112,12 @@ function checkGitStatus( next ) {
 }
 function tagReleaseVersion( next ) {
 	updatePackageVersion( releaseVersion );
-	exec( 'git commit -a -m "Tagging the ' + releaseVersion + ' release."', function(){
-		exec( "git tag " + releaseVersion, next);
+	git( [ "commit", "-a", "-m", "Tagging the " + releaseVersion + " release." ], function(){
+		git( [ "tag", releaseVersion ], next);
 	});
 }
 function gruntBuild( next ) {
-	exec( gruntCmd, next );
+	exec( gruntCmd, [], next );
 }
 function makeReleaseCopies( next ) {
 	finalFiles = {};
@@ -130,17 +135,17 @@ function makeReleaseCopies( next ) {
 }
 function setNextVersion( next ) {
 	updatePackageVersion( nextVersion );
-	exec( 'git commit -a -m "Updating the source version to ' + nextVersion + '"', next );
+	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion ], next );
 }
 function uploadToCDN( next ) {
 	var cmds = [];
 
 	Object.keys( finalFiles ).forEach(function( name ) {
 		cmds.push(function( x ){
-			exec( "scp " + name + " " + scpURL, x, skipRemote );
+			exec( "scp", [ name, scpURL ], x, skipRemote );
 		});
 		cmds.push(function( x ){
-			exec( "curl '" + cdnURL + name + "?reload'", x, skipRemote );
+			exec( "curl", [ cdnURL + name + "?reload" ], x, skipRemote );
 		});
 	});
 	cmds.push( next );
@@ -148,7 +153,7 @@ function uploadToCDN( next ) {
 	steps.apply( this, cmds );
 }
 function pushToGithub( next ) {
-	exec("git push --tags "+ repoURL + " " + branch, next, skipRemote );
+	git( [ "push", "--tags", repoURL, branch ], next, skipRemote );
 }
 
 //==============================
@@ -174,18 +179,23 @@ function copy( oldFile, newFile ) {
 		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
 	}
 }
-function exec( cmd, fn, skip ) {
+function git( args, fn, skip ) {
+	exec( "git", args, fn, skip );
+}
+function exec( cmd, args, fn, skip ) {
 	if ( debug || skip ) {
-		console.log( "# " + cmd );
+		console.log( "# " + cmd + " " + args.join(" ") );
 		fn();
 	} else {
-		console.log( cmd );
-		child.exec( cmd, { env: process.env }, function( err, stdout, stderr ) {
-			if ( err ) {
-				die( stderr || stdout || err );
+		console.log( cmd + " " + args.join(" ") );
+		child.execFile( cmd, args, { env: process.env }, 
+			function( err, stdout, stderr ) {
+				if ( err ) {
+					die( stderr || stdout || err );
+				}
+				fn();
 			}
-			fn();
-		});
+		);
 	}
 }
 function die( msg ) {
