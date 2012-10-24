@@ -149,3 +149,4 @@ Akintayo Akinwunmi <aakinwunmi@judge.com>
 David Bonner <dbonner@cogolabs.com>
 Dave Riddle <david@joyvuu.com>
 Marcel Greter <marcel.greter@ocbnet.ch>
+Matthias Jäggli <matthias.jaeggli@gmail.com>
