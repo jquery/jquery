@@ -25,7 +25,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		ret = this.pushStack( "", "find", selector );
+		ret = this.pushStack( [] );
 
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
@@ -44,6 +44,8 @@ jQuery.fn.extend({
 			}
 		}
 
+		// Needed because $( "selector", context ) becomes $( context ).find( "selector" )
+		ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
 		return ret;
 	},
 
@@ -62,11 +64,11 @@ jQuery.fn.extend({
 	},
 
 	not: function( selector ) {
-		return this.pushStack( winnow(this, selector, false), "not", selector);
+		return this.pushStack( winnow(this, selector, false) );
 	},
 
 	filter: function( selector ) {
-		return this.pushStack( winnow(this, selector, true), "filter", selector );
+		return this.pushStack( winnow(this, selector, true) );
 	},
 
 	is: function( selector ) {
@@ -103,7 +105,7 @@ jQuery.fn.extend({
 
 		ret = ret.length > 1 ? jQuery.unique( ret ) : ret;
 
-		return this.pushStack( ret, "closest", selectors );
+		return this.pushStack( ret );
 	},
 
 	// Determine the position of an element within
@@ -216,7 +218,7 @@ jQuery.each({
 			ret = ret.reverse();
 		}
 
-		return this.pushStack( ret, name, core_slice.call( arguments ).join(",") );
+		return this.pushStack( ret );
 	};
 });
 
