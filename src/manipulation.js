@@ -564,7 +564,7 @@ jQuery.each({
 				ret = ret.concat( elems );
 			}
 
-			return this.pushStack( ret, name, insert.selector );
+			return this.pushStack( ret );
 		}
 	};
 });
