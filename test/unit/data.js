@@ -19,7 +19,7 @@ function dataTests (elem) {
 	}
 
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
-	
+
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
 
@@ -655,7 +655,7 @@ test( "jQuery.fn.removeData supports interoperable removal of hyphenated propert
 	div.data( datas );
 	deepEqual( div.data(), datas, "div.data() returns an object whose values match those of datas (div)" );
 
-	div.removeData( keys.hyphen );
+	div.removeData( keys );
 	ok( jQuery.isEmptyObject( div.data() ), "After removal by array of hyphenated keys, div.data() returns an object with no properties (div)" );
 
 	div.data( "a-a", 1 );
@@ -665,7 +665,6 @@ test( "jQuery.fn.removeData supports interoperable removal of hyphenated propert
 	deepEqual( div.data( "b-b" ), 2, "div.data('b-b') returns value that matches the manually set value (div)" );
 
 	div.removeData([ "a-a", "b-b" ]);
-
 	ok( jQuery.isEmptyObject( div.data() ), "After removal by array of hyphenated keys, div.data() returns an object with no properties (div)" );
 
 	plain = jQuery({});
@@ -674,7 +673,6 @@ test( "jQuery.fn.removeData supports interoperable removal of hyphenated propert
 	deepEqual( plain.data(), datas, "plain.data() returns an object whose values match those of datas (plain)" );
 
 	plain.removeData( keys );
-
 	ok( jQuery.isEmptyObject( plain.data() ), "After removal by array of hyphenated keys, plain.data() returns an object with no properties (plain)" );
 
 
@@ -687,7 +685,6 @@ test( "jQuery.fn.removeData supports interoperable removal of hyphenated propert
 	deepEqual( plain.data( "b-b" ), 2, "plain.data('b-b') returns value that matches the manually set value (plain)" );
 
 	plain.removeData([ "a-a", "b-b" ]);
-
 	ok( jQuery.isEmptyObject( plain.data() ), "After removal by array of hyphenated keys, plain.data() returns an object with no properties (plain)" );
 });
 
