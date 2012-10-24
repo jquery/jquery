@@ -335,6 +335,9 @@ jQuery.extend({
 		// Force options to be an object
 		options = options || {};
 
+		// Alias options.method to options.type as per ticket #12004
+		options.type = options.method || options.type;
+
 		var // ifModified key
 			ifModifiedKey,
 			// Response headers
