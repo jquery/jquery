@@ -134,19 +134,21 @@ Nikita Govorov <nikita.govorov@gmail.com>
 Wesley Walser <wwalser@atlassian.com>
 Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
-Daniel Gálvez <dgalvez@editablething.com>
 Benjamin Truyman <bentruyman@gmail.com>
 James Huston <james@jameshuston.net>
 Carl Danley <carldanley@gmail.com>
 Michael Petrovich <michael.c.petrovich@gmail.com>
+Callum Macrae <callum@lynxphp.com>
+David Bonner <dbonner@cogolabs.com>
+Erick Ruiz de Chávez <erickrdch@gmail.com>
+Akintayo Akinwunmi <aakinwunmi@judge.com>
+Dave Riddle <david@joyvuu.com>
 Greg Lavallee <greglavallee@wapolabs.com>
+Daniel Gálvez <dgalvez@editablething.com>
 Sai Lung Wong <sai.wong@huffingtonpost.com>
+Tom H Fuertes <TomFuertes@gmail.com>
 Roland Eckl <eckl.roland@googlemail.com>
 Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
-Callum Macrae <callum@lynxphp.com>
-Akintayo Akinwunmi <aakinwunmi@judge.com>
-David Bonner <dbonner@cogolabs.com>
-Dave Riddle <david@joyvuu.com>
 Marcel Greter <marcel.greter@ocbnet.ch>
 Matthias Jäggli <matthias.jaeggli@gmail.com>
