@@ -621,71 +621,36 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 	});
 });
 
-test( "jQuery.fn.removeData supports interoperable removal of hyphenated properties via array (#12786)", function() {
-	expect( 10 );
+test( "jQuery.fn.removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
+	expect( 4 );
 
-	var div, plain, datas, keys;
+	var div, plain, compare;
 
-	div = jQuery("<div/>", { id: "test12786" }).appendTo("#qunit-fixture"),
-	datas = {
-		"non-empty": "a string",
-		"empty-string": "",
-		"one-value": 1,
-		"zero-value": 0,
-		"an-array": [],
-		"an-object": {},
-		"bool-true": true,
-		"bool-false": false,
-		// JSHint enforces double quotes,
-		// but JSON strings need double quotes to parse
-		// so we need escaped double quotes here
-		"some-json": "{ \"foo\": \"bar\" }"
+	div = jQuery("<div>").appendTo("#qunit-fixture");
+	plain = jQuery({});
+
+	// When data is batch assigned (via plain object), the properties
+	// are not camel cased as they are with (property, value) calls
+	compare = {
+		// From batch assignment .data({ "a-a": 1 })
+		"a-a": 1,
+		// From property, value assignment .data( "b-b", 1 )
+		"bB": 1
 	};
 
-	keys = jQuery.map( datas, function( _, key ) {
-		return key;
-	});
+	// Mixed assignment
+	div.data({ "a-a": 1 }).data( "b-b", 1 );
+	plain.data({ "a-a": 1 }).data( "b-b", 1 );
 
-	// "keys" is an array that looks like this:
-	// [
-	//   "non-empty", "empty-string", "one-value", "zero-value",
-	//   "an-array", "an-object", "bool-true", "bool-false", "some-json"
-	//  ]
-
-	div.data( datas );
-	deepEqual( div.data(), datas, "div.data() returns an object whose values match those of datas (div)" );
-
-	div.removeData( keys );
-	ok( jQuery.isEmptyObject( div.data() ), "After removal by array of hyphenated keys, div.data() returns an object with no properties (div)" );
-
-	div.data( "a-a", 1 );
-	div.data( "b-b", 2 );
-
-	deepEqual( div.data( "a-a" ), 1, "div.data('a-a') returns value that matches the manually set value (div)" );
-	deepEqual( div.data( "b-b" ), 2, "div.data('b-b') returns value that matches the manually set value (div)" );
+	deepEqual( div.data(), compare, "Data appears as expected. (div)" );
+	deepEqual( plain.data(), compare, "Data appears as expected. (plain)" );
 
 	div.removeData([ "a-a", "b-b" ]);
-	ok( jQuery.isEmptyObject( div.data() ), "After removal by array of hyphenated keys, div.data() returns an object with no properties (div)" );
-
-	plain = jQuery({});
-
-	plain.data( datas );
-	deepEqual( plain.data(), datas, "plain.data() returns an object whose values match those of datas (plain)" );
-
-	plain.removeData( keys );
-	ok( jQuery.isEmptyObject( plain.data() ), "After removal by array of hyphenated keys, plain.data() returns an object with no properties (plain)" );
-
-
-	plain = jQuery({});
-
-	plain.data( "a-a", 1 );
-	plain.data( "b-b", 2 );
-
-	strictEqual( plain.data( "a-a" ), 1, "plain.data('a-a') returns value that matches the manually set value (plain)" );
-	strictEqual( plain.data( "b-b" ), 2, "plain.data('b-b') returns value that matches the manually set value (plain)" );
-
 	plain.removeData([ "a-a", "b-b" ]);
-	ok( jQuery.isEmptyObject( plain.data() ), "After removal by array of hyphenated keys, plain.data() returns an object with no properties (plain)" );
+
+	// NOTE: Timo's proposal for "propEqual" (or similar) would be nice here
+	deepEqual( div.data(), {}, "Data is empty. (div)" );
+	deepEqual( plain.data(), {}, "Data is empty. (plain)" );
 });
 
 // Test originally by Moschel
