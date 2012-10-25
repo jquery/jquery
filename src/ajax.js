@@ -335,9 +335,6 @@ jQuery.extend({
 		// Force options to be an object
 		options = options || {};
 
-		// Alias options.method to options.type as per ticket #12004
-		options.type = options.method || options.type;
-
 		var // ifModified key
 			ifModifiedKey,
 			// Response headers
@@ -428,6 +425,9 @@ jQuery.extend({
 					return this;
 				}
 			};
+
+		// Alias method option to type as per ticket #12004.
+		s.type = s.method || s.type;
 
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
