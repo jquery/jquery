@@ -2217,9 +2217,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		});
 	});
 
-	test( "jQuery.ajax - simple get with options.method", function() {
+	asyncTest( "jQuery.ajax - simple get with options.method", function() {
 		expect( 1 );
-		stop();
+
 		jQuery.ajax({
 			method: "GET",
 			url: url("data/name.php?name=foo"),
@@ -2230,9 +2230,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		});
 	});
 
-	test( "jQuery.ajax - simple post with options.method", function() {
+	asyncTest( "jQuery.ajax - simple post with options.method", function() {
 		expect( 1 );
-		stop();
+
 		jQuery.ajax({
 			method: "POST",
 			url: url("data/name.php"),
