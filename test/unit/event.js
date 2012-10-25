@@ -99,22 +99,30 @@ test("bind(), with data, trigger with data", function() {
 	jQuery("#firstp").bind("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).unbind("click", handler);
 });
 
-test("bind(), multiple events at once", function() {
+test("on(), multiple events at once", function() {
 	expect(2);
 	var clickCounter = 0,
 		mouseoverCounter = 0;
 	var handler = function(event) {
-		if (event.type == "click") {
+		if ( event.type == "click" ) {
 			clickCounter += 1;
 		}
-		else if (event.type == "mouseover") {
+		else if ( event.type == "mouseover" ) {
 			mouseoverCounter += 1;
 		}
-
 	};
-	jQuery("#firstp").bind("click mouseover", handler).trigger("click").trigger("mouseover");
-	equal( clickCounter, 1, "bind() with multiple events at once" );
-	equal( mouseoverCounter, 1, "bind() with multiple events at once" );
+
+	jQuery("#firstp")
+		.on( "click mouseover", handler )
+		// Tests for extra whitespace (#12733)
+		.on( "click  mouseover", handler )
+		.on( "  click mouseover", handler )
+		.on( "click mouseover  ", handler )
+		.on( "  click  mouseover  ", handler )
+		.trigger("click").trigger("mouseover");
+
+	equal( clickCounter, 5, "on() with multiple events at once" );
+	equal( mouseoverCounter, 5, "on() with multiple events at once" );
 });
 
 test("bind(), five events at once", function() {
