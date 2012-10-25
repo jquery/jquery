@@ -681,8 +681,8 @@ test( "jQuery.fn.removeData supports interoperable removal of hyphenated propert
 	plain.data( "a-a", 1 );
 	plain.data( "b-b", 2 );
 
-	deepEqual( plain.data( "a-a" ), 1, "plain.data('a-a') returns value that matches the manually set value (plain)" );
-	deepEqual( plain.data( "b-b" ), 2, "plain.data('b-b') returns value that matches the manually set value (plain)" );
+	strictEqual( plain.data( "a-a" ), 1, "plain.data('a-a') returns value that matches the manually set value (plain)" );
+	strictEqual( plain.data( "b-b" ), 2, "plain.data('b-b') returns value that matches the manually set value (plain)" );
 
 	plain.removeData([ "a-a", "b-b" ]);
 	ok( jQuery.isEmptyObject( plain.data() ), "After removal by array of hyphenated keys, plain.data() returns an object with no properties (plain)" );
