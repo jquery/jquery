@@ -473,11 +473,11 @@ test("append(param) to object, see #11280", function() {
 	expect(11);
 
 	var objectElement = document.createElement("object"),
-	    $objectElement = jQuery( objectElement ),
-	    paramElement = jQuery("<param type='wmode' value='transparent'/>"),
-	    paramElement2 = jQuery("<param name='' type='wmode2' value='transparent2' />"),
-	    paramElement3 = jQuery("<param type='wmode' name='foo' >"),
-	    newObject = jQuery("<object><param type='foo' ><param name='' value='foo2'/><param type='baz' name='bar'></object>");
+		$objectElement = jQuery( objectElement ),
+		paramElement = jQuery("<param type='wmode' value='transparent'/>"),
+		paramElement2 = jQuery("<param name='' type='wmode2' value='transparent2' />"),
+		paramElement3 = jQuery("<param type='wmode' name='foo' >"),
+		newObject = jQuery("<object><param type='foo' ><param name='' value='foo2'/><param type='baz' name='bar'></object>");
 
 	equal( objectElement.childNodes.length, 0, "object did not have childNodes previously" );
 
@@ -611,6 +611,23 @@ test("append HTML5 sectioning elements (Bug #6485)", function () {
 
 	equal( article.get( 0 ).style.fontSize, "10px", "HTML5 elements are styleable");
 	equal( aside.length, 1, "HTML5 elements do not collapse their children");
+});
+
+test( "jQuery.clean, #12392", function() {
+	expect( 6 );
+
+	var elems = jQuery.clean([ "<div>test div</div>", "<p>test p</p>" ]);
+
+	ok( elems[ 0 ].parentNode == null || elems[ 0 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
+	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
+
+	equal( elems[ 0 ].innerHTML, "test div", "Content should be preserved" );
+	equal( elems[ 1 ].innerHTML, "test p", "Content should be preserved" );
+
+	equal( jQuery.clean([ "<span><span>" ]).length, 1, "Incorrect html-strings should not break anything" );
+
+	elems = jQuery.clean([ "<td><td>" ]);
+	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
 });
 
 if ( jQuery.css ) {

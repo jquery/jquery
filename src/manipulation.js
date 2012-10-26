@@ -1,6 +1,6 @@
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
-	safeFrag = document.createDocumentFragment();
+		safeFrag = document.createDocumentFragment();
 
 	if ( safeFrag.createElement ) {
 		while ( list.length ) {
@@ -49,9 +49,9 @@ wrapMap.th = wrapMap.td;
 // IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 // unless wrapped in a div with non-breaking characters in front of it.
 if ( !jQuery.support.htmlSerialize ) {
-	wrapMap._default = [ 1, "X<div>", "</div>" ];
+	wrapMap._default = [ 1, "X<div>", "" ];
 	// Fixes #11280
-	wrapMap.param = [ 1, "X<object>", "</object>" ];
+	wrapMap.param = [ 1, "X<object>", "" ];
 	// Fixes #11280. HTMLParam name attribute added to avoid IE6-8 parsing issue.
 	addMandatoryAttributes = function( elem ) {
 		// If it's a param
@@ -650,7 +650,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, handleScript, jsTags,
+		var i, j, elem, tag, wrap, depth, parent, div, hasBody, tbody, handleScript, jsTags,
 			safe = context === document && safeFragment,
 			ret = [];
 
@@ -676,8 +676,7 @@ jQuery.extend({
 				} else {
 					// Ensure a safe container in which to render the html
 					safe = safe || createSafeFragment( context );
-					div = context.createElement("div");
-					safe.appendChild( div );
+					div = div || safe.appendChild( context.createElement("div") );
 
 					// Fix "XHTML"-style tags in all browsers
 					elem = elem.replace(rxhtmlTag, "<$1></$2>");
@@ -719,9 +718,10 @@ jQuery.extend({
 					}
 
 					elem = div.childNodes;
+					parent = div;
 
-					// Take out of fragment container (we need a fresh div each time)
-					div.parentNode.removeChild( div );
+					// Remember the top-level container for proper cleanup
+					div = safe.lastChild;
 				}
 			}
 
@@ -729,13 +729,30 @@ jQuery.extend({
 				ret.push( elem );
 			} else {
 				jQuery.merge( ret, elem );
+
+				// Fix #12392
+				if ( parent ) {
+
+					// for WebKit and IE > 9
+					parent.textContent = "";
+
+					// for oldIE
+					while ( parent.firstChild ) {
+						parent.removeChild( parent.firstChild );
+					}
+
+					parent = null;
+				}
 			}
 		}
 
 		// Fix #11356: Clear elements from safeFragment
 		if ( div ) {
-			elem = div = safe = null;
+			safe.removeChild( div );
 		}
+
+		elem = div = safe = null;
+
 
 		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
