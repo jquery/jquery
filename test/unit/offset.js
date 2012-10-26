@@ -469,7 +469,7 @@ test("chaining", function() {
 });
 
 test("offsetParent", function(){
-	expect(12);
+	expect(13);
 
 	var body = jQuery("body").offsetParent();
 	equal( body.length, 1, "Only one offsetParent found." );
@@ -496,6 +496,11 @@ test("offsetParent", function(){
 
 	var area = jQuery("#imgmap area").offsetParent();
 	equal( area[0], document.documentElement, "The html element is the offsetParent of the body." );
+
+	div = jQuery("<div>").css({ "position": "absolute" }).appendTo("body");
+	equal( div.offsetParent()[0], document.documentElement, "Absolutely positioned div returns html as offset parent, see #12139" );
+
+	div.remove();
 });
 
 test("fractions (see #7730 and #7885)", function() {
