@@ -1203,12 +1203,14 @@ test( "removeClass() removes duplicates", function() {
 });
 
 test("removeClass(undefined) is a no-op", function() {
-	expect( 1 );
+	expect( 2 );
 
 	var $div = jQuery("<div class='base second'></div>");
 	$div.removeClass( undefined );
 
 	ok( $div.hasClass("base") && $div.hasClass("second"), "Element still has classes after removeClass(undefined)" );
+
+	strictEqual( $div.removeClass( undefined ), $div, "Return of removeClass(undefined) is chainable" );
 });
 
 var testToggleClass = function(valueObj) {
