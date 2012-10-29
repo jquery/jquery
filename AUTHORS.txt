@@ -136,6 +136,7 @@ Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
 Benjamin Truyman <bentruyman@gmail.com>
 James Huston <james@jameshuston.net>
+Ismail Khair <ismail.khair@gmail.com>
 Carl Danley <carldanley@gmail.com>
 Michael Petrovich <michael.c.petrovich@gmail.com>
 Callum Macrae <callum@lynxphp.com>
