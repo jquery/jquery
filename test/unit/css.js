@@ -504,12 +504,10 @@ test("show() resolves correct default display #8099", function() {
 	dfn8099.remove();
 });
 
-test( "show() resolves correct default display, detached nodes (#10006)", function(){
-	// Tests originally contributed by Orkel in
-	// https://github.com/jquery/jquery/pull/458
-	expect( 11 );
+test( "show() resolves correct default display for detached nodes", function(){
+	expect( 13 );
 
-	var div, span;
+	var div, span, tr, trDisplay;
 
 	div = jQuery("<div class='hidden'>");
 	div.show().appendTo("#qunit-fixture");
@@ -559,6 +557,18 @@ test( "show() resolves correct default display, detached nodes (#10006)", functi
 	div.show().appendTo("#qunit-fixture");
 	equal( div.css("display"), "inline", "Make sure that element has same display when it was created." );
 	div.remove();
+
+	tr = jQuery("<tr/>");
+	jQuery("#table").append( tr );
+	trDisplay = tr.css( "display" );
+	tr.detach().hide().show();
+
+	equal( tr[ 0 ].style.display, trDisplay, "For detached tr elements, display should always be like for attached trs" );
+	tr.remove();
+
+	span = span = jQuery("<span/>").hide().show();
+	equal( span[ 0 ].style.display, "inline", "For detached span elements, display should always be inline" );
+	span.remove();
 });
 
 test("show() resolves correct default display #10227", function() {
