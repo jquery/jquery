@@ -1650,6 +1650,19 @@ test("html(Function) with incoming value", function() {
 	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
 });
 
+test("html(DocumentFragment) - executes scripts", function() {
+	expect(1);
+	var className = "test-document-fragment-executes-scripts";
+	var $div = jQuery("<div />").addClass( className ).appendTo("body");
+	var frag = document.createDocumentFragment();
+	var script = document.createElement("script");
+	script.text = "jQuery('." + className + "').html('OK!');";
+	frag.appendChild( script );
+	$div.html( frag );
+	equal( $div.text(), "OK!", "script executed" );
+	$div.remove();
+});
+
 var testRemove = function(method) {
 	var first = jQuery("#ap").children(":first");
 
