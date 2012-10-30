@@ -669,6 +669,11 @@ jQuery.extend({
 				continue;
 			}
 
+			// Unwrap document fragments. Fixes #12813
+			if( elem && elem.nodeType === 11 ) {
+				elem = elem.childNodes;
+			}
+
 			// Convert html string into DOM nodes
 			if ( typeof elem === "string" ) {
 				if ( !rhtml.test( elem ) ) {
