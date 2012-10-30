@@ -1653,10 +1653,10 @@ test("html(Function) with incoming value", function() {
 test("html(DocumentFragment) - executes scripts", function() {
 	expect(1);
 	var className = "test-document-fragment-executes-scripts";
-	var $div = jQuery("<div />").addClass(className).appendTo("body");
-	var frag = jQuery.buildFragment(["<script>jQuery(function() { jQuery('."+className+"').html('OK!') });</script>"]);
+	var $div = jQuery("<div />").addClass( className ).appendTo("body");
+	var frag = jQuery.buildFragment([ "<script>jQuery(function() { jQuery('." + className + "').html('OK!') });</script>" ]);
 	$div.html(frag.fragment);
-	equal($div.text(),"OK!","script executed");
+	equal( $div.text(), "OK!", "script executed" );
 	$div.remove();
 });
 

@@ -670,7 +670,7 @@ jQuery.extend({
 			}
 
 			// Unwrap document fragments. Fixes #12813
-			if( elem && elem.nodeType === 11 ) {
+			if ( elem && elem.nodeType === 11 ) {
 				elem = elem.childNodes;
 			}
 
