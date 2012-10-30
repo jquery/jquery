@@ -487,8 +487,7 @@ function cloneFixAttributes( src, dest ) {
 
 	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
 	if ( nodeName === "script" && dest.text !== src.text ) {
-		disableScript( dest );
-		dest.text = src.text;
+		disableScript( dest ).text = src.text;
 		restoreScript( dest );
 
 	// IE6-10 improperly clones children of object elements using classid.
@@ -701,7 +700,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts ) {
-		var j, elem, tag, wrap, depth, parent, div, hasBody, tbody,
+		var elem, j, tmp, tag, wrap, tbody,
 			ret = [],
 			i = 0,
 			safe = context === document && safeFragment;
@@ -711,96 +710,77 @@ jQuery.extend({
 			context = document;
 		}
 
-		// Use the already-created safe fragment if context permits
 		for ( i = 0; (elem = elems[i]) != null; i++ ) {
-			if ( typeof elem === "number" ) {
-				elem += "";
-			}
+			if ( elem || elem === 0 ) {
+				// Add nodes directly
+				if ( typeof elem === "object" ) {
+					jQuery.merge( ret, elem.nodeType ? [ elem ] : elem );
 
-			if ( !elem ) {
-				continue;
-			}
+				// Convert non-html into a text node
+				} else if ( !rhtml.test( elem ) ) {
+					ret.push( context.createTextNode( elem ) );
 
-			// Convert html string into DOM nodes
-			if ( typeof elem === "string" ) {
-				if ( !rhtml.test( elem ) ) {
-					elem = context.createTextNode( elem );
+				// Convert html into DOM nodes
 				} else {
-					// Ensure a safe container in which to render the html
+					// Ensure a safe container
 					safe = safe || createSafeFragment( context );
-					div = div || safe.appendChild( context.createElement("div") );
+					tmp = tmp || safe.appendChild( context.createElement("div") );
 
-					// Fix "XHTML"-style tags in all browsers
-					elem = elem.replace(rxhtmlTag, "<$1></$2>");
-
-					// Go to html and back, then peel off extra wrappers
+					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
-					depth = wrap[0];
-					div.innerHTML = wrap[1] + addMandatoryAttributes( elem ) + wrap[2];
+					tmp.innerHTML = wrap[1] + addMandatoryAttributes( elem.replace( rxhtmlTag, "<$1></$2>" ) ) + wrap[2];
 
-					// Move to the right depth
-					while ( depth-- ) {
-						div = div.lastChild;
+					// Descend through wrappers to the right content
+					j = wrap[0];
+					while ( j-- ) {
+						tmp = tmp.lastChild;
+					}
+
+					// Manually add leading whitespace removed by IE
+					if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
+						ret.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
 					}
 
 					// Remove IE's autoinserted <tbody> from table fragments
 					if ( !jQuery.support.tbody ) {
 
 						// String was a <table>, *may* have spurious <tbody>
-						hasBody = rtbody.test(elem);
-							tbody = tag === "table" && !hasBody ?
-								div.firstChild && div.firstChild.childNodes :
+						elem = tag === "table" && !rtbody.test( elem ) ?
+							tmp.firstChild :
 
-								// String was a bare <thead> or <tfoot>
-								wrap[1] === "<table>" && !hasBody ?
-									div.childNodes :
-									[];
+							// String was a bare <thead> or <tfoot>
+							wrap[1] === "<table>" && !rtbody.test( elem ) ?
+								tmp :
+								0;
 
-						for ( j = tbody.length - 1; j >= 0 ; --j ) {
-							if ( jQuery.nodeName( tbody[ j ], "tbody" ) && !tbody[ j ].childNodes.length ) {
-								tbody[ j ].parentNode.removeChild( tbody[ j ] );
+						j = elem && elem.childNodes.length;
+						while ( j-- ) {
+							if ( jQuery.nodeName( (tbody = elem.childNodes[j]), "tbody" ) && !tbody.childNodes.length ) {
+								elem.removeChild( tbody );
 							}
 						}
 					}
 
-					// IE completely kills leading whitespace when innerHTML is used
-					if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
-						div.insertBefore( context.createTextNode( rleadingWhitespace.exec(elem)[0] ), div.firstChild );
-					}
+					jQuery.merge( ret, tmp.childNodes );
 
-					elem = div.childNodes;
-					parent = div;
+					// Fix #12392 for WebKit and IE > 9
+					tmp.textContent = "";
+
+					// Fix #12392 for oldIE
+					while ( tmp.firstChild ) {
+						tmp.removeChild( tmp.firstChild );
+					}
 
 					// Remember the top-level container for proper cleanup
-					div = safe.lastChild;
-				}
-			}
-
-			if ( elem.nodeType ) {
-				ret.push( elem );
-			} else {
-				jQuery.merge( ret, elem );
-
-				// Fix #12392
-				if ( parent ) {
-
-					// for WebKit and IE > 9
-					parent.textContent = "";
-
-					// for oldIE
-					while ( parent.firstChild ) {
-						parent.removeChild( parent.firstChild );
-					}
-
-					parent = null;
+					tmp = safe.lastChild;
 				}
 			}
 		}
 
 		// Fix #11356: Clear elements from safeFragment
-		if ( div ) {
-			safe.removeChild( div );
+		if ( tmp ) {
+			safe.removeChild( tmp );
 		}
 
 		// Reset defaultChecked for any radios and checkboxes
@@ -811,28 +791,29 @@ jQuery.extend({
 
 		if ( fragment ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
-				div = getAll( elem, "script" );
+				safe = jQuery.contains( elem.ownerDocument, elem );
+
+				// Append to fragment
+				fragment.appendChild( elem );
+				tmp = getAll( elem, "script" );
 
 				// Preserve script evaluation history
-				if ( jQuery.contains( elem.ownerDocument, elem ) ) {
-					setGlobalEval( div );
+				if ( safe ) {
+					setGlobalEval( tmp );
 				}
 
 				// Capture executables
 				if ( scripts ) {
-					for ( j = 0; (safe = div[j]) != null; j++ ) {
-						if ( rscriptType.test( safe.type || "" ) ) {
-							scripts.push( safe );
+					for ( j = 0; (elem = tmp[j]) != null; j++ ) {
+						if ( rscriptType.test( elem.type || "" ) ) {
+							scripts.push( elem );
 						}
 					}
 				}
-
-				// Append to fragment
-				fragment.appendChild( elem );
 			}
 		}
 
-		div = elem = safe = null;
+		elem = tmp = safe = null;
 
 		return ret;
 	},
