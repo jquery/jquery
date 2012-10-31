@@ -195,14 +195,6 @@ jQuery.event = {
 		}
 	},
 
-	// Events that are safe to short-circuit if no handlers are attached.
-	// Native DOM events should not be added, they may have inline handlers.
-	customEvent: {
-		"getData": true,
-		"setData": true,
-		"changeData": true
-	},
-
 	trigger: function( event, data, elem, onlyHandlers ) {
 		// Don't do events on text and comment nodes
 		if ( elem && (elem.nodeType === 3 || elem.nodeType === 8) ) {
@@ -232,7 +224,7 @@ jQuery.event = {
 			namespaces.sort();
 		}
 
-		if ( (!elem || jQuery.event.customEvent[ type ]) && !jQuery.event.global[ type ] ) {
+		if ( !elem && !jQuery.event.global[ type ] ) {
 			// No jQuery handlers for this event type, and it can't have inline handlers
 			return;
 		}

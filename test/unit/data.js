@@ -175,14 +175,9 @@ test(".data()", function() {
 });
 
 test(".data(String) and .data(String, Object)", function() {
-	expect(29);
+	expect( 12 );
 	var parent = jQuery("<div><div></div></div>"),
 		div = parent.children();
-
-	parent
-		.bind("getData", function(){ ok( false, "getData bubbled." ); })
-		.bind("setData", function(){ ok( false, "setData bubbled." ); })
-		.bind("changeData", function(){ ok( false, "changeData bubbled." ); });
 
 	ok( div.data("test") === undefined, "Check for no data exists" );
 
@@ -198,58 +193,6 @@ test(".data(String) and .data(String, Object)", function() {
 	ok( div.data("test") === null, "Check for null data");
 
 	ok( div.data("notexist") === undefined, "Check for no data exists" );
-
-	div.data("test", "overwritten");
-	var hits = {test:0}, gets = {test:0}, changes = {test:0, value:null};
-
-
-	function logChangeData(e,key,value) {
-		var dataKey = key;
-		if ( e.namespace ) {
-			dataKey = dataKey + "." + e.namespace;
-		}
-		changes[key] += value;
-		changes.value = jQuery.data(e.target, dataKey);
-	}
-
-	div
-		.bind("setData",function(e,key,value){ hits[key] += value; })
-		.bind("setData.foo",function(e,key,value){ hits[key] += value; })
-		.bind("changeData",logChangeData)
-		.bind("changeData.foo",logChangeData)
-		.bind("getData",function(e,key){ gets[key] += 1; })
-		.bind("getData.foo",function(e,key){ gets[key] += 3; });
-
-	div.data("test.foo", 2);
-	equal( div.data("test"), "overwritten", "Check for original data" );
-	equal( div.data("test.foo"), 2, "Check for namespaced data" );
-	equal( div.data("test.bar"), "overwritten", "Check for unmatched namespace" );
-	equal( hits.test, 2, "Check triggered setter functions" );
-	equal( gets.test, 5, "Check triggered getter functions" );
-	equal( changes.test, 2, "Check sets raise changeData");
-	equal( changes.value, 2, "Check changeData after data has been set" );
-
-	hits.test = 0;
-	gets.test = 0;
-	changes.test = 0;
-	changes.value = null;
-
-	div.data("test", 1);
-	equal( div.data("test"), 1, "Check for original data" );
-	equal( div.data("test.foo"), 2, "Check for namespaced data" );
-	equal( div.data("test.bar"), 1, "Check for unmatched namespace" );
-	equal( hits.test, 1, "Check triggered setter functions" );
-	equal( gets.test, 5, "Check triggered getter functions" );
-	equal( changes.test, 1, "Check sets raise changeData" );
-	equal( changes.value, 1, "Check changeData after data has been set" );
-
-	div
-		.bind("getData",function(e,key){ return key + "root"; })
-		.bind("getData.foo",function(e,key){ return key + "foo"; });
-
-	equal( div.data("test"), "testroot", "Check for original data" );
-	equal( div.data("test.foo"), "testfoo", "Check for namespaced data" );
-	equal( div.data("test.bar"), "testroot", "Check for unmatched namespace" );
 
 	// #3748
 	var $elem = jQuery({exists:true});

@@ -232,7 +232,7 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		var parts, part, attr, name, l,
+		var attrs, name,
 			elem = this[0],
 			i = 0,
 			data = null;
@@ -243,9 +243,9 @@ jQuery.fn.extend({
 				data = jQuery.data( elem );
 
 				if ( elem.nodeType === 1 && !jQuery._data( elem, "parsedAttrs" ) ) {
-					attr = elem.attributes;
-					for ( l = attr.length; i < l; i++ ) {
-						name = attr[i].name;
+					attrs = elem.attributes;
+					for ( ; i < attrs.length; i++ ) {
+						name = attrs[i].name;
 
 						if ( !name.indexOf( "data-" ) ) {
 							name = jQuery.camelCase( name.substring(5) );
@@ -267,33 +267,15 @@ jQuery.fn.extend({
 			});
 		}
 
-		parts = key.split( ".", 2 );
-		parts[1] = parts[1] ? "." + parts[1] : "";
-		part = parts[1] + "!";
-
 		return jQuery.access( this, function( value ) {
 
 			if ( value === undefined ) {
-				data = this.triggerHandler( "getData" + part, [ parts[0] ] );
-
 				// Try to fetch any internally stored data first
-				if ( data === undefined && elem ) {
-					data = jQuery.data( elem, key );
-					data = dataAttr( elem, key, data );
-				}
-
-				return data === undefined && parts[1] ?
-					this.data( parts[0] ) :
-					data;
+				return elem ? dataAttr( elem, key, jQuery.data( elem, key ) ) : null;
 			}
 
-			parts[1] = value;
 			this.each(function() {
-				var self = jQuery( this );
-
-				self.triggerHandler( "setData" + part, parts );
 				jQuery.data( this, key, value );
-				self.triggerHandler( "changeData" + part, parts );
 			});
 		}, null, value, arguments.length > 1, null, false );
 	},
