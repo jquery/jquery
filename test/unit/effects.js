@@ -1029,6 +1029,10 @@ jQuery.checkState = function() {
 };
 
 // Chaining Tests
+// We need to pass jQuery.support.shrinkWrapBlocks for all tests that
+// set overflow hidden (which effect.js does for all slide*() methods and
+// show()/hide() if a speed is given).
+
 test("Chain fadeOut fadeIn", function() {
 	jQuery("#fadein div").saveState().fadeOut("fast").fadeIn("fast", jQuery.checkState );
 });
@@ -1043,7 +1047,7 @@ test("Chain show hide", function() {
 	jQuery("#hide div").saveState( jQuery.support.shrinkWrapBlocks ).show("fast").hide("fast", jQuery.checkState );
 });
 test("Chain show hide with easing and callback", function() {
-	jQuery("#hide div").saveState().show("fast").hide("fast","linear", jQuery.checkState );
+	jQuery("#hide div").saveState( jQuery.support.shrinkWrapBlocks ).show("fast").hide("fast","linear", jQuery.checkState );
 });
 
 test("Chain toggle in", function() {

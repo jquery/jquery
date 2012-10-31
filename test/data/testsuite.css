@@ -1,5 +1,8 @@
 /* for testing opacity set in styles in IE */
-ol#empty { opacity: 0; filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff'); }
+ol#empty {
+    opacity: 0;
+    filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff');
+}
 
 div#fx-tests h4 {
         background: red;
@@ -93,14 +96,33 @@ div#fx-tests div.noback {
         background-image: none;
 }
 
-div.chain, div.chain div { width: 100px; height: 20px; position: relative; float: left; }
-div.chain div { position: absolute; top: 0px; left: 0px; }
+.chain-test,
+.chain-test div {
+    width: 100px;
+    height: 20px;
+    position: relative;
+    float: left;
+}
+.chain-test div {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
-div.chain.test { background: red; }
-div.chain.test div { background: green; }
+.chain-test {
+    background: red;
+}
+.chain-test div {
+    background: green;
+}
 
-div.chain.out { background: green; }
-div.chain.out div { background: red; display: none; }
+.chain-test-out {
+    background: green;
+}
+.chain-test-out div {
+    background: red;
+    display: none;
+}
 
 /* tests to ensure jQuery can determine the native display mode of elements
    that have been set as display: none in stylesheets */
