@@ -1491,115 +1491,124 @@ test("html() on empty set", function() {
 	strictEqual( jQuery().html(), undefined, ".html() returns undefined for empty sets (#11962)" );
 });
 
-var testHtml = function(valueObj) {
-	var expected = 36;
-	expect(expected);
+var childNodeNames = function( node ) {
+	return jQuery.map( node.childNodes, function( child ) {
+		return child.nodeName.toUpperCase();
+	}).join(" ");
+};
 
-	jQuery["scriptorder"] = 0;
+var testHtml = function( valueObj ) {
+	expect( 37 );
 
-	var fixture = jQuery("#qunit-fixture"),
-		div = fixture.find("> div");
-	div.html(valueObj("<b>test</b>"));
-	var pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get(i).childNodes.length != 1 ) {
-			pass = false;
-		}
-	}
-	ok( pass, "Set HTML" );
+	var actual, expected, tmp,
+		div = jQuery("<div></div>"),
+		fixture = jQuery("#qunit-fixture");
 
-	div = jQuery("<div/>").html( valueObj("<div id='parent_1'><div id='child_1'/></div><div id='parent_2'/>") );
+	div.html( valueObj("<div id='parent_1'><div id='child_1'/></div><div id='parent_2'/>") );
+	equal( div.children().length, 2, "Found children" );
+	equal( div.children().children().length, 1, "Found grandchild" );
 
-	equal( div.children().length, 2, "Make sure two child nodes exist." );
-	equal( div.children().children().length, 1, "Make sure that a grandchild exists." );
+	actual = []; expected = [];
+	tmp = jQuery("<map/>").html( valueObj("<area alt='area'/>") ).each(function() {
+		expected.push("AREA");
+		actual.push( childNodeNames( this ) );
+	});
+	equal( expected.length, 1, "Expecting one parent" );
+	deepEqual( actual, expected, "Found the inserted area element" );
 
-	var space = jQuery("<div/>").html(valueObj("&#160;"))[0].innerHTML;
-	ok( /^\xA0$|^&nbsp;$/.test( space ), "Make sure entities are passed through correctly." );
-	equal( jQuery("<div/>").html(valueObj("&amp;"))[0].innerHTML, "&amp;", "Make sure entities are passed through correctly." );
+	equal( div.html( valueObj(5) ).html(), "5", "Setting a number as html" );
+	equal( div.html( valueObj(0) ).html(), "0", "Setting a zero as html" );
 
-	fixture.html(valueObj("<style>.foobar{color:green;}</style>"));
+	div.html( valueObj("&#160;&amp;") );
+	equal(
+		div[0].innerHTML.replace( /\xA0/, "&nbsp;" ),
+		"&nbsp;&amp;",
+		"Entities are passed through correctly"
+	);
 
-	equal( fixture.children().length, 1, "Make sure there is a child element." );
-	equal( fixture.children()[0].nodeName.toUpperCase(), "STYLE", "And that a style element was inserted." );
+	tmp = "&lt;div&gt;hello1&lt;/div&gt;";
+	equal( div.html( valueObj( tmp ) ).html().replace( />/g, "&gt;" ), tmp, "Escaped html" );
+	tmp = "x" + tmp;
+	equal( div.html( valueObj( tmp ) ).html().replace( />/g, "&gt;" ), tmp, "Escaped html, leading x" );
+	tmp = " " + tmp.slice(1);
+	equal( div.html( valueObj( tmp ) ).html().replace( />/g, "&gt;" ), tmp, "Escaped html, leading space" );
 
-	QUnit.reset();
-	// using contents will get comments regular, text, and comment nodes
-	var j = jQuery("#nonnodes").contents();
-	j.html(valueObj("<b>bold</b>"));
+	actual = []; expected = []; tmp = {};
+	jQuery("#nonnodes").contents().html( valueObj("<b>bold</b>") ).each(function() {
+		var html = jQuery( this ).html();
+		tmp[ this.nodeType ] = true;
+		expected.push( this.nodeType === 1 ? "<b>bold</b>" : undefined );
+		actual.push( html ? html.toLowerCase() : html );
+	});
+	deepEqual( actual, expected, "Set containing element, text node, comment" );
+	ok( tmp[1], "element" );
+	ok( tmp[3], "text node" );
+	ok( tmp[8], "comment" );
 
-	// this is needed, or the expando added by jQuery unique will yield a different html
-	j.find("b").removeData();
-	equal( j.html().replace(/ xmlns="[^"]+"/g, "").toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
+	actual = []; expected = [];
+	fixture.find("> div").html( valueObj("<b>test</b>") ).each(function() {
+		expected.push("B");
+		actual.push( childNodeNames( this ) );
+	});
+	equal( expected.length, 6, "Expecting many parents" );
+	deepEqual( actual, expected, "Correct childNodes after setting HTML" );
 
-	fixture.html(valueObj("<select/>"));
-	jQuery("#qunit-fixture select").html(valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>"));
+	actual = []; expected = [];
+	fixture.html( valueObj("<style>.foobar{color:green;}</style>") ).each(function() {
+		expected.push("STYLE");
+		actual.push( childNodeNames( this ) );
+	});
+	equal( expected.length, 1, "Expecting one parent" );
+	deepEqual( actual, expected, "Found the inserted style element" );
+
+	fixture.html( valueObj("<select/>") );
+	jQuery("#qunit-fixture select").html( valueObj("<option>O1</option><option selected='selected'>O2</option><option>O3</option>") );
 	equal( jQuery("#qunit-fixture select").val(), "O2", "Selected option correct" );
 
-	var $div = jQuery("<div />");
-	equal( $div.html(valueObj( 5 )).html(), "5", "Setting a number as html" );
-	equal( $div.html(valueObj( 0 )).html(), "0", "Setting a zero as html" );
+	tmp = fixture.html(
+		valueObj([
+			"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
+			"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
+			"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
+			"<script>ok( true, 'evaluated: no type' );</script>",
+			"<div>",
+				"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
+				"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
+				"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
+				"<script>ok( true, 'evaluated: inner no type' );</script>",
+			"</div>"
+		].join(""))
+	).find("script");
+	equal( tmp.length, 8, "All script tags remain." );
+	equal( tmp[0].type, "something/else", "Non-evaluated type." );
+	equal( tmp[1].type, "text/javascript", "Evaluated type." );
 
-	var $div2 = jQuery("<div/>"), insert = "&lt;div&gt;hello1&lt;/div&gt;";
-	equal( $div2.html(insert).html().replace(/>/g, "&gt;"), insert, "Verify escaped insertion." );
-	equal( $div2.html("x" + insert).html().replace(/>/g, "&gt;"), "x" + insert, "Verify escaped insertion." );
-	equal( $div2.html(" " + insert).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
+	fixture.html( valueObj("<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>") );
+	fixture.html( valueObj("<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>") );
+	fixture.html( valueObj("<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>") );
+	fixture.html( valueObj("foo <form><script type='text/javascript'>ok( true, 'Injection of identical script (#975)' );</script></form>") );
 
-	var map = jQuery("<map/>").html(valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>"));
-
-	equal( map[0].childNodes.length, 1, "The area was inserted." );
-	equal( map[0].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
+	jQuery.scriptorder = 0;
+	fixture.html( valueObj([
+		"<script>",
+			"equal( jQuery('#scriptorder').length, 1,'Execute after html' );",
+			"equal( jQuery.scriptorder++, 0, 'Script is executed in order' );",
+		"</script>",
+		"<span id='scriptorder'><script>equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
+		"<script>equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
+	].join("")) );
 
 	QUnit.reset();
-
-	fixture.html(valueObj([
-		"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
-		"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
-		"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
-		"<script>ok( true, 'evaluated: no type' );</script>",
-		"<div>",
-			"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
-			"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
-			"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
-			"<script>ok( true, 'evaluated: inner no type' );</script>",
-		"</div>"
-	].join("")));
-
-	var scripts = fixture.find("script");
-
-	equal( scripts.length, 8, "All script tags remain." );
-	equal( scripts[0].type, "something/else", "Non-evaluated type." );
-	equal( scripts[1].type, "text/javascript", "Evaluated type." );
-
-	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
-	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
-	fixture.html(valueObj("<script>ok( true, 'Test repeated injection of identical content.' );</script>"));
-
-	fixture.html(valueObj("<script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (1)' );</script>"));
-
-	fixture.html(valueObj("foo <form><script type='text/javascript'>ok( true, 'jQuery().html().evalScripts() Evals Scripts Twice in Firefox, see #975 (2)' );</script></form>"));
-
-	fixture.html(valueObj("<script>equal(jQuery.scriptorder++, 0, 'Script is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html (even though appears before)')<\/script><span id='scriptorder'><script>equal(jQuery.scriptorder++, 1, 'Script (nested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script></span><script>equal(jQuery.scriptorder++, 2, 'Script (unnested) is executed in order');equal(jQuery('#scriptorder').length, 1,'Execute after html')<\/script>"));
-
-	return expected;
+	fixture.html( valueObj( fixture.text() ) );
+	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 };
 
 test("html(String)", function() {
-	testHtml(manipulationBareObj);
+	testHtml( manipulationBareObj );
 });
 
 test("html(Function)", function() {
-	var expected = testHtml(manipulationFunctionReturningObj);
-
-	expect( expected + 2 );
-
-	QUnit.reset();
-
-	jQuery("#qunit-fixture").html(function(){
-		return jQuery(this).text();
-	});
-
-	ok( !/</.test( jQuery("#qunit-fixture").html() ), "Replace html with text." );
-	ok( jQuery("#qunit-fixture").html().length > 0, "Make sure text exists." );
+	testHtml( manipulationFunctionReturningObj );
 });
 
 test("html(Function) with incoming value", function() {
