@@ -2129,3 +2129,17 @@ test("script evaluation (#11795)", function() {
 	deepEqual( fixture.find("> script").get(), scriptsOut.get(), "Scripts detached without reevaluation" );
 	objGlobal.ok = isOk;
 });
+
+test("wrapping scripts (#10470)", function() {
+	expect(2);
+
+	var script = document.createElement("script");
+	script.text = script.textContent =
+		"ok( !document.eval10470, 'script evaluated once' ); document.eval10470 = true;";
+
+	document.eval10470 = false;
+	jQuery("#qunit-fixture").empty()[0].appendChild( script );
+	jQuery("#qunit-fixture script").wrap("<b></b>");
+	strictEqual( script.parentNode, jQuery("#qunit-fixture > b")[0], "correctly wrapped" );
+	jQuery( script ).remove();
+});
