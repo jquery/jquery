@@ -2244,6 +2244,54 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		});
 	});
 
+	asyncTest( "jQuery.ajax - Locally defined method or type overrides globally defined method or type", function() {
+		expect( 4 );
+
+		jQuery.ajaxSetup({
+			method: "GET",
+			url: url("data/requestSpecific.php"),
+			data: "name=peter"
+		});
+
+		jQuery.ajax({
+			type: "POST",
+			success: function( msg ) {
+				equal( msg, "pan", "Check that local type setting overrides global method setting." );
+				start();
+			}
+		});
+
+		jQuery.ajax({
+			method: "POST",
+			success: function( msg ) {
+				equal( msg, "pan", "Check that local method setting overrides global method setting." );
+				start();
+			}
+		});
+
+		jQuery.ajaxSetup({
+			type: "GET",
+			url: url("data/requestSpecific.php"),
+			data: "name=peter"
+		});
+
+		jQuery.ajax({
+			type: "POST",
+			success: function( msg ) {
+				equal( msg, "pan", "Check that local type setting overrides global type setting." );
+				start();
+			}
+		});
+
+		jQuery.ajax({
+			method: "POST",
+			success: function( msg ) {
+				equal( msg, "pan", "Check that local method setting overrides global type setting." );
+				start();
+			}
+		});
+	});
+
 	test( "ajaxSetup()", function() {
 		expect( 1 );
 		stop();
