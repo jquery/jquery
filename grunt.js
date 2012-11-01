@@ -63,8 +63,8 @@ module.exports = function( grunt ) {
 				{ flag: "css", src: "src/css.js" },
 				"src/serialize.js",
 				{ flag: "ajax", src: "src/ajax.js" },
-				{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
 				{ flag: "ajax/script", src: "src/ajax/script.js", needs: ["ajax"]  },
+				{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
 				{ flag: "ajax/xhr", src: "src/ajax/xhr.js", needs: ["ajax"]  },
 				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
 				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
@@ -254,23 +254,35 @@ module.exports = function( grunt ) {
 			// Concat specified files.
 			var compiled = "",
 				modules = this.flags,
-				explicit = Object.keys(modules).length > 1,
 				optIn = !modules["*"],
+				explicit = optIn || Object.keys(modules).length > 1,
 				name = this.file.dest,
+				deps = {},
 				excluded = {},
 				version = config( "pkg.version" ),
 				excluder = function( flag, needsFlag ) {
-					// explicit > implicit, so set this first and let it be overridden by explicit
+					// optIn defaults implicit behavior to weak exclusion
 					if ( optIn && !modules[ flag ] && !modules[ "+" + flag ] ) {
 						excluded[ flag ] = false;
 					}
 
+					// explicit or inherited strong exclusion
 					if ( excluded[ needsFlag ] || modules[ "-" + flag ] ) {
-						// explicit exclusion from flag or dependency
 						excluded[ flag ] = true;
-					} else if ( modules[ "+" + flag ] && ( excluded[ needsFlag ] === false ) ) {
-						// explicit inclusion from flag or dependency overriding a weak inclusion
+
+					// explicit inclusion overrides weak exclusion
+					} else if ( excluded[ needsFlag ] === false &&
+						( modules[ flag ] || modules[ "+" + flag ] ) ) {
+
 						delete excluded[ needsFlag ];
+
+						// ...all the way down
+						if ( deps[ needsFlag ] ) {
+							deps[ needsFlag ].forEach(function( subDep ) {
+								modules[ needsFlag ] = true;
+								excluder( needsFlag, subDep );
+							});
+						}
 					}
 				};
 
@@ -280,15 +292,17 @@ module.exports = function( grunt ) {
 			}
 
 			// figure out which files to exclude based on these rules in this order:
-			//  explicit > implicit (explicit also means a dependency/dependent that was explicit)
-			//  exclude > include
+			//  dependency explicit exclude
+			//  > explicit exclude
+			//  > explicit include
+			//  > dependency implicit exclude
+			//  > implicit exclude
 			// examples:
-			//  *:                 none (implicit exclude)
+			//  *                  none (implicit exclude)
 			//  *:*                all (implicit include)
-			//  *:*:-effects       all except effects (explicit > implicit)
-			//  *:*:-css           all except css and its deps (explicit)
-			//  *:*:-css:+effects  all except css and its deps (explicit exclude from dep. trumps explicit include)
-			//  *:+effects         none except effects and its deps (explicit include from dep. trumps implicit exclude)
+			//  *:*:-css           all except css and dependents (explicit > implicit)
+			//  *:*:-css:+effects  same (excludes effects because explicit include is trumped by explicit exclude of dependency)
+			//  *:+effects         none except effects and its dependencies (explicit include trumps implicit exclude of dependency)
 			this.file.src.forEach(function( filepath ) {
 				var flag = filepath.flag;
 
@@ -298,6 +312,7 @@ module.exports = function( grunt ) {
 
 					// check for dependencies
 					if ( filepath.needs ) {
+						deps[ flag ] = filepath.needs;
 						filepath.needs.forEach(function( needsFlag ) {
 							excluder( flag, needsFlag );
 						});
