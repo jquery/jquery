@@ -12,46 +12,26 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var prevLength, n, r, ret,
-			i = 0,
-			self = this,
-			selfLength = this.length;
+		var i, ret, self;
 
 		if ( typeof selector !== "string" ) {
-
-			ret = jQuery( selector ).filter(function() {
-				for ( ; i < selfLength; i++ ) {
+			self = this;
+			return this.pushStack( jQuery( selector ).filter(function() {
+				for ( i = 0; i < self.length; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
 				}
-			});
+			}) );
+		}
 
-		} else {
-
-			ret = [];
-			for ( ; i < selfLength; i++ ) {
-				prevLength = ret.length;
-				jQuery.find( selector, this[ i ], ret );
-
-				if ( i > 0 ) {
-					// Make sure that the results are unique
-					// by comparing the newly added elements on the ith
-					// iteration to the elements added by the previous iterations
-					for ( n = prevLength; n < ret.length; n++ ) {
-						for ( r = 0; r < prevLength; r++ ) {
-							if ( ret[ r ] === ret[ n ] ) {
-								ret.splice( n--, 1 );
-							break;
-							}
-						}
-					}
-				}
-			}
+		ret = [];
+		for ( i = 0; i < this.length; i++ ) {
+			jQuery.find( selector, this[ i ], ret );
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		ret = this.pushStack( ret );
+		ret = this.pushStack( jQuery.unique( ret ) );
 		ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
 		return ret;
 	},
