@@ -22,6 +22,7 @@ function testSubproject( label, url, risTests ) {
 	module( label );
 
 	// Duckpunch QUnit
+	// TODO restore parent fixture on teardown to support reordering
 	module = QUnit.module = function( name ) {
 		var args = arguments;
 
@@ -41,7 +42,7 @@ function testSubproject( label, url, risTests ) {
 
 		// Find test function and wrap to require subproject fixture
 		for ( ; i >= 0; i-- ) {
-			if ( jQuery.isFunction( args[i] ) ) {
+			if ( originaljQuery.isFunction( args[i] ) ) {
 				args[i] = requireFixture( args[i] );
 				break;
 			}
@@ -52,14 +53,14 @@ function testSubproject( label, url, risTests ) {
 
 	// Load tests and fixture from subproject
 	// Test order matters, so we must be synchronous and throw an error on load failure
-	jQuery.ajax( url, {
+	originaljQuery.ajax( url, {
 		async: false,
 		dataType: "html",
 		error: function( jqXHR, status ) {
 			throw new Error( "Could not load: " + url + " (" + status + ")" );
 		},
 		success: function( data, status, jqXHR ) {
-			var page = jQuery.parseHTML(
+			var page = originaljQuery.parseHTML(
 				// replace html/head with dummy elements so they are represented in the DOM
 				( data || "" ).replace( /<\/?((!DOCTYPE|html|head)\b.*?)>/gi, "[$1]" ),
 				document,
@@ -69,15 +70,15 @@ function testSubproject( label, url, risTests ) {
 			if ( !page || !page.length ) {
 				this.error( jqXHR, "no data" );
 			}
-			page = jQuery( page );
+			page = originaljQuery( page );
 
 			// Include subproject tests
 			page.filter("script[src]").add( page.find("script[src]") ).each(function() {
-				var src = jQuery( this ).attr("src"),
+				var src = originaljQuery( this ).attr("src"),
 					html = "<script src='" + url + src + "'></script>";
 				if ( risTests.test( src ) ) {
-					if ( jQuery.isReady ) {
-						jQuery("head").first().append( html );
+					if ( originaljQuery.isReady ) {
+						originaljQuery("head").first().append( html );
 					} else {
 						document.write( html );
 					}
@@ -105,7 +106,7 @@ function testSubproject( label, url, risTests ) {
 				}
 
 				// Replace the current fixture, including content outside of #qunit-fixture
-				var oldFixture = jQuery("#qunit-fixture");
+				var oldFixture = originaljQuery("#qunit-fixture");
 				while ( oldFixture.length && !oldFixture.prevAll("[id^='qunit-']").length ) {
 					oldFixture = oldFixture.parent();
 				}
@@ -115,7 +116,7 @@ function testSubproject( label, url, risTests ) {
 				// WARNING: UNDOCUMENTED INTERFACE
 				QUnit.config.fixture = fixtureHTML;
 				QUnit.reset();
-				if ( jQuery("#qunit-fixture").html() !== fixtureHTML ) {
+				if ( originaljQuery("#qunit-fixture").html() !== fixtureHTML ) {
 					ok( false, "Copied subproject fixture" );
 					return;
 				}
@@ -285,7 +286,11 @@ function testSubproject( label, url, risTests ) {
 
 		// Reset internal jQuery state
 		jQuery.event.global = {};
-		jQuery.ajaxSettings = jQuery.extend( {}, ajaxSettings );
+		if ( ajaxSettings ) {
+			jQuery.ajaxSettings = jQuery.extend( {}, ajaxSettings );
+		} else {
+			delete jQuery.ajaxSettings;
+		}
 
 		// Let QUnit reset the fixture
 		reset.apply( this, arguments );

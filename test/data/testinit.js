@@ -1,14 +1,16 @@
 /*jshint multistr:true */
 
-var jQuery = this.jQuery || "jQuery", // For testing .noConflict()
-	$ = this.$ || "$",
-	originaljQuery = jQuery,
-	original$ = $,
+var originaljQuery = this.jQuery || "jQuery",
+	original$ = this.$ || "$",
 	hasPHP = true,
 	// Disable Ajax tests to reduce network strain
 	// Re-enabled (at least the variable should be declared)
 	isLocal = window.location.protocol === "file:",
 	amdDefined;
+
+// For testing .noConflict()
+this.jQuery = originaljQuery;
+this.$ = original$;
 
 /**
  * Set up a mock AMD define function for testing AMD registration.
