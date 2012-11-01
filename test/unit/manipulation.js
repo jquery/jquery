@@ -829,7 +829,7 @@ var testPrepend = function(val) {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
 };
 
-test("prepend(String|Element|Array<Element&gt;|jQuery)", function() {
+test("prepend(String|Element|Array<Element>|jQuery)", function() {
 	testPrepend(manipulationBareObj);
 });
 
@@ -888,7 +888,7 @@ test("prepend(Function) with incoming value", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test("prependTo(String|Element|Array<Element&gt;|jQuery)", function() {
+test("prependTo(String|Element|Array<Element>|jQuery)", function() {
 	expect(6);
 	var defaultText = "Try them out:";
 	jQuery("<b>buga</b>").prependTo("#first");
@@ -948,7 +948,7 @@ var testBefore = function(val) {
 	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
 };
 
-test("before(String|Element|Array<Element&gt;|jQuery)", function() {
+test("before(String|Element|Array<Element>|jQuery)", function() {
 	testBefore(manipulationBareObj);
 });
 
