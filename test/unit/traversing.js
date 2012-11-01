@@ -1,7 +1,7 @@
 module("traversing", { teardown: moduleTeardown });
 
 test( "find(String)", function() {
-	expect( 6 );
+	expect( 7 );
 	equal( "Yahoo", jQuery("#foo").find(".blogTest").text(), "Check for find" );
 
 	// using contents will get comments regular, text, and comment nodes
@@ -12,6 +12,8 @@ test( "find(String)", function() {
 	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q( "sndp", "en", "sap" ), "find child elements" );
+
+	deepEqual( jQuery("#siblingTest, #siblingfirst").find("+ *").get(), q( "siblingnext", "fx-test-group" ), "ensure document order" );
 });
 
 test( "find(node|jQuery object)", function() {
