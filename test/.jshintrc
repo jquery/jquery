@@ -54,6 +54,7 @@
     "isLocal": true,
     "originaljQuery": true,
     "$": true,
-    "original$": true
+    "original$": true,
+    "externalHost": true,
   }
 }

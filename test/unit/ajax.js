@@ -621,7 +621,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 
 		jQuery.ajax({
 			dataType: "jsonp",
-			url: loc.protocol + "//somewebsitethatdoesnotexist-656329477541.com:" + ( loc.port || 80 ),
+			url: loc.protocol + "//example.invalid:" + ( loc.port || 80 ),
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test different hostnames are detected as cross-domain" );
 				return false;
@@ -2377,7 +2377,8 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		var i = 1;
 
 		jQuery.ajax({
-			url: "http://somewebsitethatdoesnotexist-67864863574657654.com",
+			// see RFC 2606
+			url: "http://example.invalid",
 			success: function() {
 				ok( false, "success" );
 			},
@@ -2398,7 +2399,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		var i = 1;
 
 		jQuery.ajax({
-			url: "http://www.google.com",
+			url: "http://" + externalHost,
 			success: function() {
 				ok( false, "success" );
 			},

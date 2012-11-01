@@ -1,12 +1,12 @@
 /*jshint multistr:true */
 
-var originaljQuery = this.jQuery || "jQuery",
+var amdDefined, fireNative,
+	originaljQuery = this.jQuery || "jQuery",
 	original$ = this.$ || "$",
 	hasPHP = true,
-	// Disable Ajax tests to reduce network strain
-	// Re-enabled (at least the variable should be declared)
 	isLocal = window.location.protocol === "file:",
-	amdDefined;
+	// see RFC 2606
+	externalHost = "example.com";
 
 // For testing .noConflict()
 this.jQuery = originaljQuery;
@@ -58,7 +58,7 @@ function t( a, b, c ) {
 	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
 }
 
-var createDashboardXML = function() {
+function createDashboardXML() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<dashboard> \
 		<locations class="foo"> \
@@ -74,17 +74,17 @@ var createDashboardXML = function() {
 	return jQuery.parseXML(string);
 };
 
-var createWithFriesXML = function() {
+function createWithFriesXML() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" \
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> \
 		<soap:Body> \
-			<jsconf xmlns="http://www.example.com/ns1"> \
-				<response xmlns:ab="http://www.example.com/ns2"> \
+			<jsconf xmlns="http://{{ externalHost }}/ns1"> \
+				<response xmlns:ab="http://{{ externalHost }}/ns2"> \
 					<meta> \
 						<component id="seite1" class="component"> \
-							<properties xmlns:cd="http://www.example.com/ns3"> \
+							<properties xmlns:cd="http://{{ externalHost }}/ns3"> \
 								<property name="prop1"> \
 									<thing /> \
 									<value>1</value> \
@@ -101,10 +101,10 @@ var createWithFriesXML = function() {
 		</soap:Body> \
 	</soap:Envelope>';
 
-	return jQuery.parseXML(string);
+	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
 };
 
-var createXMLFragment = function() {
+function createXMLFragment() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
 		xml = new ActiveXObject("msxml2.domdocument");
@@ -119,19 +119,16 @@ var createXMLFragment = function() {
 	return frag;
 };
 
-var fireNative;
-if ( document.createEvent ) {
-	fireNative = function( node, type ) {
+fireNative = document.createEvent ?
+	function( node, type ) {
 		var event = document.createEvent('HTMLEvents');
 		event.initEvent( type, true, true );
 		node.dispatchEvent( event );
-	};
-} else {
-	fireNative = function( node, type ) {
+	} :
+	function( node, type ) {
 		var event = document.createEventObject();
 		node.fireEvent( 'on' + type, event );
 	};
-}
 
 /**
  * Add random number to url to stop caching
@@ -201,6 +198,8 @@ function url( value ) {
 			).appendTo( "body" );
 		});
 	};
+
+	window.iframeCallback = undefined;
 }());
 
 // Sandbox start for great justice

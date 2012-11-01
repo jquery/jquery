@@ -746,7 +746,7 @@ test("widows & orphans #8936", function () {
 
 test("can't get css for disconnected in IE<9, see #10254 and #8388", function() {
 	expect( 2 );
-	var span = jQuery( "<span/>" ).css( "background-image", "url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif)" );
+	var span = jQuery( "<span/>" ).css( "background-image", "url(data/1x1.jpg)" );
 	notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see #10254" );
 
 	var div = jQuery( "<div/>" ).css( "top", 10 );

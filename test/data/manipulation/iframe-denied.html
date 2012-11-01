@@ -10,7 +10,7 @@
 		<script>
 			var script = document.getElementsByTagName( "script" )[ 0 ],
 				div = document.createElement( "div" ),
-				src = "http://google.com",
+				src = "http://" + window.parent.externalHost,
 				success = true,
 				error = "";
 
@@ -31,6 +31,6 @@
 						( error ? ": " + error : "" )
 				});
 			});
-			</script>
+		</script>
 	</body>
 </html>

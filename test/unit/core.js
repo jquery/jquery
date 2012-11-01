@@ -218,16 +218,16 @@ test("noConflict", function() {
 
 	var $$ = jQuery;
 
-	equal( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
-	equal( window["jQuery"], $$, "Make sure jQuery wasn't touched." );
-	equal( window["$"], original$, "Make sure $ was reverted." );
+	strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
+	strictEqual( window["jQuery"], $$, "Make sure jQuery wasn't touched." );
+	strictEqual( window["$"], original$, "Make sure $ was reverted." );
 
 	jQuery = $ = $$;
 
-	equal( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
-	equal( window["jQuery"], originaljQuery, "Make sure jQuery was reverted." );
-	equal( window["$"], original$, "Make sure $ was reverted." );
-	ok( $$("#qunit-fixture").html("test"), "Make sure that jQuery still works." );
+	strictEqual( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
+	strictEqual( window["jQuery"], originaljQuery, "Make sure jQuery was reverted." );
+	strictEqual( window["$"], original$, "Make sure $ was reverted." );
+	ok( $$().pushStack([]), "Make sure that jQuery still works." );
 
 	window["jQuery"] = jQuery = $$;
 });
