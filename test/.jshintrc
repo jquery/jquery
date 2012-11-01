@@ -55,6 +55,6 @@
     "originaljQuery": true,
     "$": true,
     "original$": true,
-    "externalHost": true,
+    "externalHost": true
   }
 }
