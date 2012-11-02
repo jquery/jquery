@@ -31,8 +31,9 @@ jQuery.fn.extend({
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
+		ret = this.pushStack( jQuery.unique( ret ) );
 		ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
-		return this.pushStack( jQuery.unique( ret ) );
+		return ret;
 	},
 
 	has: function( target ) {
