@@ -3,6 +3,9 @@
  */
 jQuery.noConflict();
 
+// Create a placeholder global for window data
+window[ jQuery.expando ] = undefined;
+
 // Expose Sizzle for Sizzle's selector tests
 // We remove Sizzle's globalization in jQuery
 var Sizzle = Sizzle || jQuery.find;
