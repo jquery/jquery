@@ -36,7 +36,7 @@ var
 	// Used for detecting and trimming whitespace
 	core_rnotwhite = /\S/,
 	core_rspace = /\s+/,
-	
+
 	// List of deleted data cache ids, so we can reuse them
 	core_deletedIds = [],
 
@@ -231,8 +231,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	slice: function() {
-		return this.pushStack( core_slice.apply( this, arguments ),
-			"slice", core_slice.call(arguments).join(",") );
+		return this.pushStack( core_slice.apply( this, arguments ) );
 	},
 
 	first: function() {
@@ -493,7 +492,7 @@ jQuery.extend({
 		}
 
 		if ( typeof data === "string" ) {
-			
+
 			// Make sure leading/trailing whitespace is removed (IE can't handle it)
 			data = jQuery.trim( data );
 

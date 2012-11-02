@@ -31,9 +31,8 @@ jQuery.fn.extend({
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		ret = this.pushStack( jQuery.unique( ret ) );
 		ret.selector = ( this.selector ? this.selector + " " : "" ) + selector;
-		return ret;
+		return this.pushStack( jQuery.unique( ret ) );
 	},
 
 	has: function( target ) {
@@ -90,9 +89,7 @@ jQuery.fn.extend({
 			}
 		}
 
-		ret = ret.length > 1 ? jQuery.unique( ret ) : ret;
-
-		return this.pushStack( ret );
+		return this.pushStack( ret.length > 1 ? jQuery.unique( ret ) : ret );
 	},
 
 	// Determine the position of an element within
