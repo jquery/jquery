@@ -72,7 +72,7 @@ function createDashboardXML() {
 	</dashboard>';
 
 	return jQuery.parseXML(string);
-};
+}
 
 function createWithFriesXML() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
@@ -102,7 +102,7 @@ function createWithFriesXML() {
 	</soap:Envelope>';
 
 	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
-};
+}
 
 function createXMLFragment() {
 	var xml, frag;
@@ -117,7 +117,7 @@ function createXMLFragment() {
 	}
 
 	return frag;
-};
+}
 
 fireNative = document.createEvent ?
 	function( node, type ) {
