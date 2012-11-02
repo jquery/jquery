@@ -54,7 +54,7 @@ test( "jQuery.propFix integrity test", function() {
 });
 
 test( "attr(String)", function() {
-	expect( 46 );
+	expect( 47 );
 
 	equal( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equal( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -92,6 +92,8 @@ test( "attr(String)", function() {
 		"href": "#5"
 	}).appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").attr("href"), "#5", "Check for non-absolute href (an anchor)" );
+	jQuery("<a id='tAnchor6' href='#5' />").appendTo("#qunit-fixture");
+	equal( jQuery("#tAnchor5").prop("href"), jQuery("#tAnchor6").prop("href"), "Check for absolute href prop on an anchor" );
 
 	// list attribute is readonly by default in browsers that support it
 	jQuery("#list-test").attr( "list", "datalist" );

@@ -562,6 +562,7 @@ if ( !getSetAttribute ) {
 
 
 // Some attributes require a special call on IE
+// http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
 if ( !jQuery.support.hrefNormalized ) {
 	jQuery.each([ "href", "src", "width", "height" ], function( i, name ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
@@ -571,6 +572,13 @@ if ( !jQuery.support.hrefNormalized ) {
 			}
 		});
 	});
+
+	// link's href property should get the full normalized URL (#10299)
+	jQuery.propHooks.href = {
+		get: function( elem, name ) {
+			return elem.getAttribute( name, 4 );
+		}
+	};
 }
 
 if ( !jQuery.support.style ) {
