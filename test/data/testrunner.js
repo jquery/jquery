@@ -3,6 +3,11 @@
  */
 jQuery.noConflict();
 
+// For checking globals pollution
+window[ jQuery.expando ] = undefined;
+// ...in Gecko
+this.getInterface = this.getInterface;
+
 // Expose Sizzle for Sizzle's selector tests
 // We remove Sizzle's globalization in jQuery
 var Sizzle = Sizzle || jQuery.find;
@@ -96,7 +101,7 @@ function testSubproject( label, url, risTests ) {
 		}
 	});
 
-	function requireFixture( fnTest ) {
+	function requireFixture( fn ) {
 		return function() {
 			if ( !fixtureReplaced ) {
 				// Make sure that we retrieved a fixture for the subproject
@@ -124,7 +129,7 @@ function testSubproject( label, url, risTests ) {
 				fixtureReplaced = true;
 			}
 
-			fnTest.apply( this, arguments );
+			fn.apply( this, arguments );
 		};
 	}
 }
