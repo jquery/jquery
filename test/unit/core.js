@@ -196,11 +196,11 @@ test( "selector state", function() {
 test( "globalEval", function() {
 	expect( 3 );
 
-	jQuery.globalEval("var globalEvalTest = 1;");
-	equal( window.globalEvalTest, 1, "Test variable declarations are global" );
+	jQuery.globalEval("globalEvalTest = 1;");
+	equal( window.globalEvalTest, 1, "Test variable assignments are global" );
 
-	jQuery.globalEval("globalEvalTest = 2;");
-	equal( window.globalEvalTest, 2, "Test variable assignments are global" );
+	jQuery.globalEval("var globalEvalTest = 2;");
+	equal( window.globalEvalTest, 2, "Test variable declarations are global" );
 
 	jQuery.globalEval("this.globalEvalTest = 3;");
 	equal( window.globalEvalTest, 3, "Test context (this) is the window object" );

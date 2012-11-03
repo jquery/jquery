@@ -340,11 +340,12 @@ test( "attr(String, Object)", function() {
 	});
 
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
-		var oldStatus = elem.status,
+		// use iframeCallback to avoid generating a new global when testing window
+		var oldVal = elem.iframeCallback,
 			$elem = jQuery( elem );
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
-		equal( $elem.attr( "status", "foo" ).attr("status"), "foo", "attr falls back to prop on unsupported arguments" );
-		elem.status = oldStatus;
+		equal( $elem.attr( "iframeCallback", "foo" ).attr("iframeCallback"), "foo", "attr falls back to prop on unsupported arguments" );
+		elem.iframeCallback = oldVal;
 	});
 
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
