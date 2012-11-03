@@ -1208,6 +1208,8 @@ test("trigger(eventObject, [data], [fn])", function() {
 	equal( event.isDefaultPrevented(), false, "default not prevented" );
 });
 
+// Explicitly introduce global variable for oldIE so QUnit doesn't complain if checking globals
+window.onclick = undefined;
 test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	expect(2);
 

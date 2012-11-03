@@ -194,23 +194,18 @@ test( "selector state", function() {
 });
 
 test( "globalEval", function() {
-
 	expect( 3 );
 
-	jQuery.globalEval( "var globalEvalTest = true;" );
-	ok( window.globalEvalTest, "Test variable declarations are global" );
+	jQuery.globalEval("globalEvalTest = 1;");
+	equal( window.globalEvalTest, 1, "Test variable assignments are global" );
 
-	window.globalEvalTest = false;
+	jQuery.globalEval("var globalEvalTest = 2;");
+	equal( window.globalEvalTest, 2, "Test variable declarations are global" );
 
-	jQuery.globalEval( "globalEvalTest = true;" );
-	ok( window.globalEvalTest, "Test variable assignments are global" );
+	jQuery.globalEval("this.globalEvalTest = 3;");
+	equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 
-	window.globalEvalTest = false;
-
-	jQuery.globalEval( "this.globalEvalTest = true;" );
-	ok( window.globalEvalTest, "Test context (this) is the window object" );
-
-	window.globalEvalTest = undefined;
+	jQuery.globalEval("delete globalEvalTest;");
 });
 
 test("noConflict", function() {
@@ -285,75 +280,67 @@ test("type", function() {
 asyncTest("isPlainObject", function() {
 	expect(15);
 
-	var iframe;
+	var pass, iframe, doc,
+		fn = function() {};
 
 	// The use case that we want to match
-	ok(jQuery.isPlainObject({}), "{}");
+	ok( jQuery.isPlainObject({}), "{}" );
 
 	// Not objects shouldn't be matched
-	ok(!jQuery.isPlainObject(""), "string");
-	ok(!jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number");
-	ok(!jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean");
-	ok(!jQuery.isPlainObject(null), "null");
-	ok(!jQuery.isPlainObject(undefined), "undefined");
+	ok( !jQuery.isPlainObject(""), "string" );
+	ok( !jQuery.isPlainObject(0) && !jQuery.isPlainObject(1), "number" );
+	ok( !jQuery.isPlainObject(true) && !jQuery.isPlainObject(false), "boolean" );
+	ok( !jQuery.isPlainObject(null), "null" );
+	ok( !jQuery.isPlainObject(undefined), "undefined" );
 
 	// Arrays shouldn't be matched
-	ok(!jQuery.isPlainObject([]), "array");
+	ok( !jQuery.isPlainObject([]), "array" );
 
 	// Instantiated objects shouldn't be matched
-	ok(!jQuery.isPlainObject(new Date()), "new Date");
-
-	var fnplain = function(){};
+	ok( !jQuery.isPlainObject(new Date()), "new Date" );
 
 	// Functions shouldn't be matched
-	ok(!jQuery.isPlainObject(fnplain), "fn");
-
-	/** @constructor */
-	var fn = function() {};
+	ok( !jQuery.isPlainObject(fn), "fn" );
 
 	// Again, instantiated objects shouldn't be matched
-	ok(!jQuery.isPlainObject(new fn()), "new fn (no methods)");
+	ok( !jQuery.isPlainObject(new fn()), "new fn (no methods)" );
 
 	// Makes the function a little more realistic
 	// (and harder to detect, incidentally)
 	fn.prototype["someMethod"] = function(){};
 
 	// Again, instantiated objects shouldn't be matched
-	ok(!jQuery.isPlainObject(new fn()), "new fn");
+	ok( !jQuery.isPlainObject(new fn()), "new fn" );
 
 	// DOM Element
-	ok(!jQuery.isPlainObject(document.createElement("div")), "DOM Element");
+	ok( !jQuery.isPlainObject( document.createElement("div") ), "DOM Element" );
 
 	// Window
-	ok(!jQuery.isPlainObject(window), "window");
+	ok( !jQuery.isPlainObject( window ), "window" );
 
+	pass = false;
 	try {
 		jQuery.isPlainObject( window.location );
-		ok( true, "Does not throw exceptions on host objects");
-	} catch ( e ) {
-		ok( false, "Does not throw exceptions on host objects -- FAIL");
-	}
+		pass = true;
+	} catch ( e ) {}
+	ok( pass, "Does not throw exceptions on host objects" );
+
+	// Objects from other windows should be matched
+	window.iframeCallback = function( otherObject, detail ) {
+		window.iframeCallback = undefined;
+		iframe.parentNode.removeChild( iframe );
+		ok( jQuery.isPlainObject(new otherObject()), "new otherObject" + ( detail ? " - " + detail : "" ) );
+		start();
+	};
 
 	try {
-		iframe = document.createElement("iframe");
-		document.body.appendChild(iframe);
-
-		window.iframeDone = function(otherObject){
-			// Objects from other windows should be matched
-			ok(jQuery.isPlainObject(new otherObject()), "new otherObject");
-			document.body.removeChild( iframe );
-			start();
-		};
-
-		var doc = iframe.contentDocument || iframe.contentWindow.document;
+		iframe = jQuery("#qunit-fixture")[0].appendChild( document.createElement("iframe") );
+		doc = iframe.contentDocument || iframe.contentWindow.document;
 		doc.open();
-		doc.write("<body onload='window.parent.iframeDone(Object);'>");
+		doc.write("<body onload='window.parent.iframeCallback(Object);'>");
 		doc.close();
 	} catch(e) {
-		document.body.removeChild( iframe );
-
-		ok(true, "new otherObject - iframes not supported");
-		start();
+		window.iframeDone( Object, "iframes not supported" );
 	}
 });
 

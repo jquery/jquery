@@ -1,10 +1,47 @@
-module( "ajax", {
-	teardown: moduleTeardown
-});
+(function() {
 
-if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
+	var isOpera = !!window.opera,
+		jsonpCallbacks = [],
+		jsonpCallback = jQuery.ajaxSettings.jsonpCallback,
+		deleteExpando = jQuery.support.deleteExpando,
 
-	var isOpera = !!window.opera;
+		// Ensure that we can cleanup generated JSONP callback functions if checking globals
+		newjsonpCallback = jsonpCallback && function() {
+			var callback = jsonpCallback.apply( this, arguments );
+
+			// Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
+			jQuery.globalEval( "var " + callback );
+
+			return callback;
+		};
+
+	module( "ajax", {
+		setup: deleteExpando ?
+			function() {} :
+			function() {
+				if ( QUnit.config.noglobals ) {
+					jQuery.ajaxSettings.jsonpCallback = newjsonpCallback;
+				}
+			},
+		teardown: function() {
+			// Cleanup JSONP callback functions
+			jsonpCallbacks = jQuery.map( jsonpCallbacks, QUnit.config.noglobals ?
+				function( callback ) {
+					jQuery.globalEval( "try { " +
+						"delete " + ( deleteExpando ? "window['" + callback + "']" : callback ) +
+					"; } catch( x ) {}" );
+				} :
+				function() {}
+			);
+			jQuery.ajaxSettings.jsonpCallback = jsonpCallback;
+
+			moduleTeardown.apply( this, arguments );
+		}
+	});
+
+	if ( !jQuery.ajax || ( isLocal && !hasPHP ) ) {
+		return;
+	}
 
 	test( "jQuery.ajax() - success callbacks", function() {
 		expect( 8 );
@@ -597,6 +634,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: loc.protocol + "//" + loc.host + ":" + samePort,
 			beforeSend: function( _, s ) {
 				ok( !s.crossDomain, "Test matching ports are not detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -606,6 +644,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: otherProtocol + "//" + loc.host,
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test different protocols are detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -615,6 +654,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: "app:/path",
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Adobe AIR app:/ URL detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -624,6 +664,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: loc.protocol + "//example.invalid:" + ( loc.port || 80 ),
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test different hostnames are detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -633,6 +674,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: loc.protocol + "//" + loc.hostname + ":" + otherPort,
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test different ports are detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -642,6 +684,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			url: "about:blank",
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test about:blank is detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
@@ -652,10 +695,10 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			crossDomain: true,
 			beforeSend: function( _, s ) {
 				ok( s.crossDomain, "Test forced crossDomain is detected as cross-domain" );
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				return false;
 			}
 		});
-
 	});
 
 	test( ".load() - 404 error callbacks", function() {
@@ -899,6 +942,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		jQuery.ajax({
 			url: url("data/with_fries_over_jsonp.php"),
 			dataType: "jsonp xml",
+			beforeSend: function( jqXHR, s ) {
+				jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+			},
 			success: function( resp ) {
 				equal( jQuery( "properties", resp ).length, 1, "properties in responseXML" );
 				equal( jQuery( "jsconf", resp ).length, 1, "jsconf in responseXML" );
@@ -1466,6 +1512,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php?callback=?",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, url callback)" );
 					plus();
@@ -1480,6 +1529,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php?callback=??",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, url context-free callback)" );
 					plus();
@@ -1494,6 +1546,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php/??",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/jsonp\.php\/([^?]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, REST-like)" );
 					plus();
@@ -1508,6 +1563,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php/???json=1",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/jsonp\.php\/([^?]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					strictEqual( jQuery.type( data ), "array", "JSON results returned (GET, REST-like with param)" );
 					plus();
@@ -1534,6 +1592,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				dataType: "jsonp",
 				crossDomain: crossDomain,
 				jsonp: "callback",
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (GET, data obj callback)" );
 					plus();
@@ -1544,9 +1605,10 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 
+			jQuery.globalEval("var jsonpResults;");
 			window["jsonpResults"] = function( data ) {
 				ok( data["data"], "JSON results returned (GET, custom callback function)" );
-				window["jsonpResults"] = undefined;
+				jQuery.globalEval("delete jsonpResults;");
 				plus();
 			};
 
@@ -1565,11 +1627,15 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 
+			jQuery.globalEval("var functionToCleanUp;");
 			jQuery.ajax({
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
 				jsonpCallback: "functionToCleanUp",
+				beforeSend: function() {
+					jsonpCallbacks.push("functionToCleanUp");
+				},
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (GET, custom callback name to be cleaned up)" );
 					strictEqual( window["functionToCleanUp"], undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
@@ -1598,6 +1664,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				}
 			});
 
+			jQuery.globalEval("var XXX;");
 			jQuery.ajax({
 				url: "data/jsonp.php?callback=XXX",
 				dataType: "jsonp",
@@ -1606,6 +1673,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				crossDomain: crossDomain,
 				beforeSend: function() {
 					ok( /^data\/jsonp.php\?callback=XXX&_=\d+$/.test( this.url ), "The URL wasn't messed with (GET, custom callback name with no url manipulation)" );
+					jsonpCallbacks.push("XXX");
 					plus();
 				},
 				success: function( data ) {
@@ -1634,6 +1702,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				dataType: "jsonp",
 				crossDomain: crossDomain,
 				data: "callback=?",
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, data callback)" );
 					plus();
@@ -1649,6 +1720,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				dataType: "jsonp",
 				crossDomain: crossDomain,
 				data: "callback=??",
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, data context-free callback)" );
 					plus();
@@ -1676,6 +1750,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (POST, no callback)" );
 					plus();
@@ -1692,6 +1769,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				data: "callback=?",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( crossDomain ? s.url : s.data ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (POST, data callback)" );
 					plus();
@@ -1708,6 +1788,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				jsonp: "callback",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (POST, data obj callback)" );
 					plus();
@@ -1733,6 +1816,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, "JSON results returned (GET, no callback)" );
 					plus();
@@ -1747,6 +1833,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
+				beforeSend: function( jqXHR, s ) {
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
+				},
 				success: function( data ) {
 					ok( data.data, ( this.alreadyDone ? "this re-used" : "first request" ) + ": JSON results returned (GET, no callback)" );
 					if ( !this.alreadyDone ) {
@@ -1773,8 +1862,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
-				beforeSend: function() {
+				beforeSend: function( jqXHR, s ) {
 					strictEqual( this.cache, false, "cache must be false on JSON request" );
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 					start();
 					return false;
 				}
@@ -1788,8 +1878,9 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 				url: "data/jsonp.php",
 				dataType: "jsonp",
 				crossDomain: crossDomain,
-				beforeSend: function() {
-					this.callback = this.jsonpCallback;
+				beforeSend: function( jqXHR, s ) {
+					s.callback = s.jsonpCallback;
+					jsonpCallbacks.push( (/callback=([^&]*)/.exec( s.url ) || [])[1] );
 				}
 			}).pipe(function() {
 				var previous = this;
@@ -2019,18 +2110,23 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 	asyncTest( "jQuery.getJSON - Using Native JSON", function() {
 		expect( 2 );
 
-		var old = window.JSON;
+		var restore = "JSON" in window,
+			old = window.JSON;
 
+		jQuery.globalEval("var JSON;");
 		window.JSON = {
 			parse: function( str ) {
 				ok( true, "Verifying that parse method was run" );
+				window.JSON = old;
+				if ( !restore ) {
+					jQuery.globalEval("delete JSON;");
+				}
 				return true;
 			}
 		};
 
 		jQuery.getJSON( url("data/json.php"), function( json ) {
-			window.JSON = old;
-			equal( json, true, "Verifying return value" );
+			strictEqual( json, true, "Verifying return value" );
 			start();
 		});
 	});
@@ -2760,7 +2856,7 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			start();
 		});
 	});
-	
+
 	test( "jQuery.ajax - empty json gets to error callback instead of success callback.", function() {
 		expect( 1 );
 
@@ -2774,4 +2870,5 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			dataType: "json"
 		});
 	});
-}
+
+})();

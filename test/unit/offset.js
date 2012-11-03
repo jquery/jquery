@@ -1,26 +1,38 @@
-if ( jQuery.fn.offset ) {
+(function() {
+
+if ( !jQuery.fn.offset ) {
+	return;
+}
+
+var supportsScroll, supportsFixedPosition,
+	forceScroll = jQuery("<div/>").css({ width: 2000, height: 2000 }),
+	checkSupport = function() {
+		// Only run once
+		checkSupport = false;
+
+		var checkFixed = jQuery("<div/>").css({ position: "fixed", top: "20px" }).appendTo("#qunit-fixture");
+
+		// Must append to body because #qunit-fixture is hidden and elements inside it don't have a scrollTop
+		forceScroll.appendTo("body");
+		window.scrollTo( 200, 200 );
+		supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
+		forceScroll.detach();
+
+		// Safari subtracts parent border width here (which is 5px)
+		supportsFixedPosition = checkFixed[0].offsetTop === 20 || checkFixed[0].offsetTop === 15;
+		checkFixed.remove();
+	};
 
 module("offset", { setup: function(){
-	// force a scroll value on the main window
-	// this insures that the results will be wrong
-	// if the offset method is using the scroll offset
-	// of the parent window
-	var forceScroll = jQuery("<div>").css({ "width": 2000, "height": 2000 });
-	// this needs to be body, because #qunit-fixture is hidden and elements inside it don't have a scrollTop
+	if ( typeof checkSupport === "function" ) {
+		checkSupport();
+	}
+
+	// Force a scroll value on the main window to ensure incorrect results
+	// if offset is using the scroll offset of the parent window
 	forceScroll.appendTo("body");
-	var checkDiv = jQuery("<div>").appendTo("#qunit-fixture")[0];
-
-	window.scrollTo( 200, 200 );
-	window.supportsScroll = ( document.documentElement.scrollTop || document.body.scrollTop );
 	window.scrollTo( 1, 1 );
-
-	checkDiv.style.position = "fixed";
-	checkDiv.style.top = "20px";
-	// safari subtracts parent border width here which is 5px
-	window.supportsFixedPosition = ( checkDiv.offsetTop === 20 || checkDiv.offsetTop === 15 );
-	checkDiv.style.position = checkDiv.style.top = "";
-	jQuery( checkDiv ).remove();
-	forceScroll.remove();
+	forceScroll.detach();
 }, teardown: moduleTeardown });
 
 /*
@@ -529,4 +541,4 @@ test("fractions (see #7730 and #7885)", function() {
 	div.remove();
 });
 
-}
+})();
