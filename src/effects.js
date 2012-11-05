@@ -49,12 +49,10 @@ var fxNow, timerId,
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
-	setTimeout( clearFxNow, 0 );
+	setTimeout(function() {
+		fxNow = undefined;
+	}, 0 );
 	return ( fxNow = jQuery.now() );
-}
-
-function clearFxNow() {
-	fxNow = undefined;
 }
 
 function createTweens( animation, props ) {
@@ -81,7 +79,6 @@ function Animation( elem, properties, options ) {
 			delete tick.elem;
 		}),
 		tick = function() {
-			setTimeout( clearFxNow, 0 );
 			var currentTime = fxNow || createFxNow(),
 				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
 				percent = 1 - ( remaining / animation.duration || 0 ),
