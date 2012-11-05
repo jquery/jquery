@@ -84,14 +84,14 @@ var
 jQuery.fn = jQuery.prototype = {
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
-		var match, elem, doc;
+		var match, elem;
 
-		// Handle $(""), $(null), $(undefined), $(false)
+		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
 			return this;
 		}
 
-		// Handle $(DOMElement)
+		// HANDLE: $(DOMElement)
 		if ( selector.nodeType ) {
 			this.context = this[0] = selector;
 			this.length = 1;
@@ -114,15 +114,29 @@ jQuery.fn = jQuery.prototype = {
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
 					context = context instanceof jQuery ? context[0] : context;
-					doc = ( context && context.nodeType ? context.ownerDocument || context : document );
 
 					// scripts is true for back-compat
-					selector = jQuery.parseHTML( match[1], doc, true );
+					jQuery.merge( this, jQuery.parseHTML(
+						match[1],
+						context && context.nodeType ? context.ownerDocument || context : document,
+						true
+					) );
+
+					// HANDLE: $(html, props)
 					if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
-						this.attr.call( selector, context, true );
+						for ( match in context ) {
+							// Properties of context are called as methods if possible
+							if ( jQuery.isFunction( this[ match ] ) ) {
+								this[ match ]( context[ match ] );
+
+							// ...and otherwise set as attributes
+							} else {
+								this.attr( match, context[ match ] );
+							}
+						}
 					}
 
-					return jQuery.merge( this, selector );
+					return this;
 
 				// HANDLE: $(#id)
 				} else {
@@ -768,23 +782,22 @@ jQuery.extend({
 
 	// Multifunctional method to get and set values of a collection
 	// The value/s can optionally be executed if it's a function
-	access: function( elems, fn, key, value, chainable, emptyGet, pass ) {
-		var exec,
+	access: function( elems, fn, key, value, chainable, emptyGet ) {
+		var i = 0,
+			length = elems.length,
 			bulk = key == null,
-			i = 0,
-			length = elems.length;
+			exec = value !== undefined && jQuery.isFunction( value );
 
 		// Sets many values
 		if ( key && typeof key === "object" ) {
+			chainable = true;
 			for ( i in key ) {
-				jQuery.access( elems, fn, i, key[i], 1, emptyGet, value );
+				jQuery.access( elems, fn, i, key[i], true, emptyGet );
 			}
-			chainable = 1;
 
 		// Sets one value
 		} else if ( value !== undefined ) {
-			// Optionally, function values get executed if exec is true
-			exec = pass === undefined && jQuery.isFunction( value );
+			chainable = true;
 
 			if ( bulk ) {
 				// Bulk operations only iterate when executing function values
@@ -802,12 +815,10 @@ jQuery.extend({
 			}
 
 			if ( fn ) {
-				for (; i < length; i++ ) {
-					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value, pass );
+				for ( ; i < length; i++ ) {
+					fn( elems[i], key, exec ? value.call( elems[i], i, fn( elems[i], key ) ) : value );
 				}
 			}
-
-			chainable = 1;
 		}
 
 		return chainable ?
