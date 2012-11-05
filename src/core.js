@@ -792,7 +792,7 @@ jQuery.extend({
 		if ( key && typeof key === "object" ) {
 			chainable = true;
 			for ( i in key ) {
-				jQuery.access( elems, fn, i, key[i], true );
+				jQuery.access( elems, fn, i, key[i], true, emptyGet );
 			}
 
 		// Sets one value
