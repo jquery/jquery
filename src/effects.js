@@ -79,7 +79,7 @@ function Animation( elem, properties, options ) {
 			delete tick.elem;
 		}),
 		tick = function() {
-			var currentTime = fxNow || createFxNow(),
+			var currentTime = jQuery.now(),
 				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
 				percent = 1 - ( remaining / animation.duration || 0 ),
 				index = 0,
