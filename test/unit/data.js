@@ -174,40 +174,53 @@ test(".data()", function() {
 	deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
 
-test(".data(String) and .data(String, Object)", function() {
-	expect( 12 );
+var testDataTypes = function( $obj ) {
+	jQuery.each({
+		"null": null,
+		"true": true,
+		"false": false,
+		"zero": 0,
+		"one": 1,
+		"empty string": "",
+		"empty array": [],
+		"array": [1],
+		"empty object": {},
+		"object": { foo: "bar" },
+		"date": new Date(),
+		"regex": /test/,
+		"function": function() {}
+	}, function( type, value ) {
+		strictEqual( $obj.data( "test", value ).data("test"), value, "Data set to " + type );
+	});
+};
+
+test("jQuery(Element).data(String, Object).data(String)", function() {
+	expect( 18 );
 	var parent = jQuery("<div><div></div></div>"),
 		div = parent.children();
 
-	ok( div.data("test") === undefined, "Check for no data exists" );
+	strictEqual( div.data("test"), undefined, "No data exists initially" );
+	strictEqual( div.data("test", "success").data("test"), "success", "Data added" );
+	strictEqual( div.data("test", "overwritten").data("test"), "overwritten", "Data overwritten" );
+	strictEqual( div.data("test", undefined).data("test"), "overwritten", ".data(key,undefined) does nothing but is chainable (#5571)");
+	strictEqual( div.data("notexist"), undefined, "No data exists for unset key" );
+	testDataTypes( div );
 
-	div.data("test", "success");
-	equal( div.data("test"), "success", "Check for added data" );
+	parent.remove();
+});
 
-	div.data("test", "overwritten");
-	equal( div.data("test"), "overwritten", "Check for overwritten data" );
-
-	equal( div.data("test", undefined).data("test"), "overwritten", "Check that .data('key',undefined) does nothing but is chainable (#5571)");
-
-	div.data("test", null);
-	ok( div.data("test") === null, "Check for null data");
-
-	ok( div.data("notexist") === undefined, "Check for no data exists" );
+test("jQuery(plain Object).data(String, Object).data(String)", function() {
+	expect( 16 );
 
 	// #3748
-	var $elem = jQuery({exists:true});
-	equal( $elem.data("nothing"), undefined, "Non-existent data returns undefined");
-	equal( $elem.data("null", null).data("null"), null, "null's are preserved");
-	equal( $elem.data("emptyString", "").data("emptyString"), "", "Empty strings are preserved");
-	equal( $elem.data("false", false).data("false"), false, "false's are preserved");
-	equal( $elem.data("exists"), undefined, "Existing data is not returned" );
+	var $obj = jQuery({ exists: true });
+	strictEqual( $obj.data("nothing"), undefined, "Non-existent data returns undefined");
+	strictEqual( $obj.data("exists"), undefined, "Object properties are not returned as data" );
+	testDataTypes( $obj );
 
 	// Clean up
-	$elem.removeData();
-	deepEqual( $elem[0], {exists:true}, "removeData does not clear the object" );
-
-	// manually clean up detached elements
-	parent.remove();
+	$obj.removeData();
+	deepEqual( $obj[0], { exists: true }, "removeData does not clear the object" );
 });
 
 test("data-* attributes", function() {

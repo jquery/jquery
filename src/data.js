@@ -277,7 +277,7 @@ jQuery.fn.extend({
 			this.each(function() {
 				jQuery.data( this, key, value );
 			});
-		}, null, value, arguments.length > 1, null, false );
+		}, null, value, arguments.length > 1, null, true );
 	},
 
 	removeData: function( key ) {
