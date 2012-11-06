@@ -281,85 +281,78 @@ test("unwrap()", function() {
 	jQuery("body > span.unwrap").remove();
 });
 
-var getWrappedElement = function() {
-	return jQuery("#sap");
-};
+var testAppendForObject = function(valueObj, isFragment) {
+	var $base,
+		type = isFragment ? " (DocumentFragment)" : " (Element)",
+		text = "This link has class=\"blog\": Simon Willison's Weblog",
+		el = document.getElementById("sap").cloneNode( true ),
+		first = document.getElementById("first"),
+		yahoo = document.getElementById("yahoo");
 
-var getWrappedDocumentFragment = function() {
-	var f = document.createDocumentFragment();
-
-	// copy contents of #sap into new fragment
-	var clone = jQuery("#sap")[0].cloneNode(true);
-	var childs = clone.childNodes;
-	while (clone.childNodes.length) {
-		f.appendChild(clone.childNodes[0]);
+	if ( isFragment ) {
+		$base = document.createDocumentFragment();
+		jQuery( el ).contents().each(function() {
+			$base.appendChild( this );
+		});
+		$base = jQuery( $base );
+	} else {
+		$base = jQuery( el );
 	}
 
-	clone = null;
-	return jQuery(f);
-};
-
-var testAppendForObject = function(valueObj, isFragment) {
-	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
-	var objType = " " + (isFragment ? "(DocumentFragment)" : "(Element)");
-	var getObj = isFragment ? getWrappedDocumentFragment : getWrappedElement;
-
-	var obj = getObj();
-	obj.append(valueObj(document.getElementById("first")));
-	equal( obj.text(), expected, "Check for appending of element" + objType);
-
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	obj = getObj();
-	obj.append(valueObj([document.getElementById("first"), document.getElementById("yahoo")]));
-	equal( obj.text(), expected, "Check for appending of array of elements" + objType );
-
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	obj = getObj();
-	obj.append(valueObj(jQuery("#yahoo, #first")));
-	equal( obj.text(), expected, "Check for appending of jQuery object" + objType );
-
-	QUnit.reset();
-	obj = getObj();
-	obj.append(valueObj( 5 ));
-	ok( obj.text().match( /5$/ ), "Check for appending a number" + objType );
-
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:GoogleYahoo";
-	obj = getObj();
-	obj.append( valueObj( [ jQuery("#first"), jQuery("#yahoo, #google") ] ) );
-	equal( obj.text(), expected, "Check for appending of array of jQuery objects" );
-
-	QUnit.reset();
-	obj = getObj();
-	obj.append(valueObj( " text with spaces " ));
-	ok( obj.text().match(/ text with spaces $/), "Check for appending text with spaces" + objType );
-
-	QUnit.reset();
-	obj = getObj();
-	ok( obj.append(valueObj( [] )), "Check for appending an empty array." + objType );
-	ok( obj.append(valueObj( "" )), "Check for appending an empty string." + objType );
-	ok( obj.append(valueObj( document.getElementsByTagName("foo") )), "Check for appending an empty nodelist." + objType );
-
-	QUnit.reset();
-	obj = getObj();
-	obj.append(valueObj( document.getElementById("form") ));
-	equal( obj.children("form").size(), 1, "Check for appending a form" + objType ); // Bug #910
-
-	QUnit.reset();
-	obj = getObj();
-
-	var prev = obj.children().length;
-
-	obj.append(
-		"<span></span>",
-		"<span></span>",
-		"<span></span>"
+	equal( $base.clone().append( valueObj( first.cloneNode(true) ) ).text(),
+		text + "Try them out:",
+		"Check for appending of element" + type
 	);
 
-	equal( obj.children().length, prev + 3, "Make sure that multiple arguments works." + objType );
-	QUnit.reset();
+	equal( $base.clone().append( valueObj([ first.cloneNode(true), yahoo.cloneNode(true) ]) ).text(),
+		text + "Try them out:Yahoo",
+		"Check for appending of array of elements" + type
+	);
+
+	equal( $base.clone().append( valueObj( jQuery("#yahoo, #first").clone() ) ).text(),
+		text + "YahooTry them out:",
+		"Check for appending of jQuery object" + type
+	);
+
+	equal( $base.clone().append( valueObj(5) ).text(),
+		text + "5",
+		"Check for appending a number" + type
+	);
+
+	equal( $base.clone().append( valueObj( [ jQuery("#first").clone(), jQuery("#yahoo, #google").clone() ] ) ).text(),
+		text + "Try them out:GoogleYahoo",
+		"Check for appending of array of jQuery objects"
+	);
+
+	equal( $base.clone().append( valueObj(" text with spaces ") ).text(),
+		text + " text with spaces ",
+		"Check for appending text with spaces" + type
+	);
+
+	equal( $base.clone().append( valueObj([]) ).text(),
+		text,
+		"Check for appending an empty array" + type
+	);
+
+	equal( $base.clone().append( valueObj("") ).text(),
+		text,
+		"Check for appending an empty string" + type
+	);
+
+	equal( $base.clone().append( valueObj( document.getElementsByTagName("foo") ) ).text(),
+		text,
+		"Check for appending an empty nodelist" + type
+	);
+
+	equal( $base.clone().append( "<span></span>", "<span></span>", "<span></span>").children().length,
+		$base.children().length + 3,
+		"Make sure that multiple arguments works." + type
+	);
+
+	equal( $base.clone().append( valueObj( document.getElementById("form").cloneNode(true) ) ).children("form").length,
+		1,
+		"Check for appending a form (#910)" + type
+	);
 };
 
 var testAppend = function(valueObj) {
@@ -372,65 +365,57 @@ var testAppend = function(valueObj) {
 	equal( result.text(), defaultText + "buga", "Check if text appending works" );
 	equal( jQuery("#select3").append(valueObj("<option value='appendTest'>Append Test</option>")).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element");
 
-	QUnit.reset();
 	jQuery("form").append(valueObj("<input name='radiotest' type='radio' checked='checked' />"));
 	jQuery("form input[name=radiotest]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append checked radio");
 	}).remove();
 
-	QUnit.reset();
-	jQuery("form").append(valueObj("<input name='radiotest' type='radio' checked    =   'checked' />"));
-	jQuery("form input[name=radiotest]").each(function(){
+	jQuery("form").append(valueObj("<input name='radiotest2' type='radio' checked    =   'checked' />"));
+	jQuery("form input[name=radiotest2]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append alternately formated checked radio");
 	}).remove();
 
-	QUnit.reset();
-	jQuery("form").append(valueObj("<input name='radiotest' type='radio' checked />"));
-	jQuery("form input[name=radiotest]").each(function(){
+	jQuery("form").append(valueObj("<input name='radiotest3' type='radio' checked />"));
+	jQuery("form input[name=radiotest3]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append HTML5-formated checked radio");
 	}).remove();
 
-	QUnit.reset();
-	jQuery("form").append(valueObj("<input type='radio' checked='checked' name='radiotest' />"));
-	jQuery("form input[name=radiotest]").each(function(){
+	jQuery("form").append(valueObj("<input type='radio' checked='checked' name='radiotest4' />"));
+	jQuery("form input[name=radiotest4]").each(function(){
 		ok( jQuery(this).is(":checked"), "Append with name attribute after checked attribute");
 	}).remove();
 
-	QUnit.reset();
-	var pass = true;
+	var message = "Test for appending a DOM node to the contents of an iframe",
+		iframe = jQuery("#iframe")[0],
+		iframeDoc = iframe.contentDocument || iframe.contentWindow && iframe.contentWindow.document;
 	try {
-		var body = jQuery("#iframe")[0].contentWindow.document.body;
+		if ( iframeDoc && iframeDoc.body ) {
+			equal( jQuery( iframeDoc.body ).append( valueObj("<div id='success'>test</div>") )[0].lastChild.id, "success", message );
+		} else {
+			ok( true, message + " - can't test" );
+		}
+	} catch(e) {
+		strictEqual( e.message || e, undefined, message );
+	}
 
-		pass = false;
-		jQuery( body ).append(valueObj( "<div>test</div>" ));
-		pass = true;
-	} catch(e) {}
-
-	ok( pass, "Test for appending a DOM node to the contents of an IFrame" );
-
-	QUnit.reset();
-	jQuery("<fieldset/>").appendTo("#form").append(valueObj( "<legend id='legend'>test</legend>" ));
+	jQuery("<fieldset/>").appendTo("#form").append( valueObj("<legend id='legend'>test</legend>") );
 	t( "Append legend", "#legend", ["legend"] );
 
-	QUnit.reset();
-	jQuery("#select1").append(valueObj( "<OPTION>Test</OPTION>" ));
-	equal( jQuery("#select1 option:last").text(), "Test", "Appending &lt;OPTION&gt; (all caps)" );
+	jQuery("#select1").append( valueObj("<OPTION>Test</OPTION>") );
+	equal( jQuery("#select1 option:last").text(), "Test", "Appending OPTION (all caps)" );
 
-	jQuery("#table").append(valueObj( "<colgroup></colgroup>" ));
-	ok( jQuery("#table colgroup").length, "Append colgroup" );
+	jQuery("#table").append( valueObj("<colgroup></colgroup>") );
+	equal( jQuery("#table colgroup").length, 1, "Append colgroup" );
 
-	jQuery("#table colgroup").append(valueObj( "<col/>" ));
-	ok( jQuery("#table colgroup col").length, "Append col" );
+	jQuery("#table colgroup").append( valueObj("<col/>") );
+	equal( jQuery("#table colgroup col").length, 1, "Append col" );
 
-	QUnit.reset();
-	jQuery("#table").append(valueObj( "<caption></caption>" ));
-	ok( jQuery("#table caption").length, "Append caption" );
+	jQuery("#table").append( valueObj("<caption></caption>") );
+	equal( jQuery("#table caption").length, 1, "Append caption" );
 
-	QUnit.reset();
-	jQuery("form:last")
-		.append(valueObj( "<select id='appendSelect1'></select>" ))
-		.append(valueObj( "<select id='appendSelect2'><option>Test</option></select>" ));
-
+	jQuery("#form")
+		.append( valueObj("<select id='appendSelect1'></select>") )
+		.append( valueObj("<select id='appendSelect2'><option>Test</option></select>") );
 	t( "Append Select", "#appendSelect1, #appendSelect2", ["appendSelect1", "appendSelect2"] );
 
 	equal( "Two nodes", jQuery("<div />").append("Two", " nodes").text(), "Appending two text nodes (#4011)" );
@@ -439,24 +424,22 @@ var testAppend = function(valueObj) {
 	var j = jQuery("#nonnodes").contents();
 	var d = jQuery("<div/>").appendTo("#nonnodes").append(j);
 	equal( jQuery("#nonnodes").length, 1, "Check node,textnode,comment append moved leaving just the div" );
-	ok( d.contents().length >= 2, "Check node,textnode,comment append works" );
+	equal( d.contents().length, 3, "Check node,textnode,comment append works" );
 	d.contents().appendTo("#nonnodes");
 	d.remove();
-	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment append cleanup worked" );
+	equal( jQuery("#nonnodes").contents().length, 3, "Check node,textnode,comment append cleanup worked" );
 
-	QUnit.reset();
 	var $input = jQuery("<input />").attr({ "type": "checkbox", "checked": true }).appendTo("#testForm");
 	equal( $input[0].checked, true, "A checked checkbox that is appended stays checked" );
 
-	QUnit.reset();
-	var $radios = jQuery("input:radio[name='R1']"),
-		$radioNot = jQuery("<input type='radio' name='R1' checked='checked'/>").insertAfter( $radios ),
-		$radio = $radios.eq(1).click();
-	$radioNot[0].checked = false;
-	$radios.parent().wrap("<div></div>");
-	equal( $radio[0].checked, true, "Reappending radios uphold which radio is checked" );
-	equal( $radioNot[0].checked, false, "Reappending radios uphold not being checked" );
-	QUnit.reset();
+	var $radioChecked = jQuery("input:radio[name='R1']").eq(1),
+		$radioParent = $radioChecked.parent(),
+		$radioUnchecked = jQuery("<input type='radio' name='R1' checked='checked'/>").appendTo( $radioParent );
+	$radioChecked.click();
+	$radioUnchecked[0].checked = false;
+	$radioParent.wrap("<div></div>");
+	equal( $radioChecked[0].checked, true, "Reappending radios uphold which radio is checked" );
+	equal( $radioUnchecked[0].checked, false, "Reappending radios uphold not being checked" );
 };
 
 test("append(String|Element|Array<Element>|jQuery)", function() {
@@ -1272,49 +1255,36 @@ test("clone() (#8070)", function () {
 });
 
 test("clone()", function() {
-	expect( 44 );
+	expect( 45 );
+	var div, clone;
 
-	equal( "This is a normal link: Yahoo", jQuery("#en").text(), "Assert text for #en" );
-	var clone = jQuery("#yahoo").clone();
-	equal( "Try them out:Yahoo", jQuery("#first").append(clone).text(), "Check for clone" );
-	equal( "This is a normal link: Yahoo", jQuery("#en").text(), "Reassert text for #en" );
+	equal( jQuery("#en").text(), "This is a normal link: Yahoo", "Assert text for #en" );
+	equal( jQuery("#first").append( jQuery("#yahoo").clone() ).text(), "Try them out:Yahoo", "Check for clone" );
+	equal( jQuery("#en").text(), "This is a normal link: Yahoo", "Reassert text for #en" );
 
-	var cloneTags = [
-		"<table/>", "<tr/>", "<td/>", "<div/>",
-		"<button/>", "<ul/>", "<ol/>", "<li/>",
-		"<input type='checkbox' />", "<select/>", "<option/>", "<textarea/>",
-		"<tbody/>", "<thead/>", "<tfoot/>", "<iframe/>"
-	];
-	for (var i = 0; i < cloneTags.length; i++) {
-		var j = jQuery(cloneTags[i]);
-		equal( j[0].tagName, j.clone()[0].tagName, "Clone a " + cloneTags[i]);
-	}
+	jQuery.each( "table thead tbody tfoot tr td div button ul ol li select option textarea iframe".split(" "), function( i, nodeName ) {
+		equal( jQuery( "<" + nodeName + "/>" ).clone()[0].nodeName.toLowerCase(), nodeName, "Clone a " + nodeName );
+	});
+	equal( jQuery("<input type='checkbox' />").clone()[0].nodeName.toLowerCase(), "input", "Clone a <input type='checkbox' />" );
 
-	// using contents will get comments regular, text, and comment nodes
-	var cl = jQuery("#nonnodes").contents().clone();
-	ok( cl.length >= 2, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
+	// Check cloning non-elements
+	equal( jQuery("#nonnodes").contents().clone().length, 3, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
 
-	var div = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
+	// Verify that clones of clones can keep event listeners
+	div = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
 		ok( true, "Bound event still exists." );
 	});
-
-	clone = div.clone(true);
-
-	// manually clean up detached elements
-	div.remove();
-
-	div = clone.clone(true);
-
-	// manually clean up detached elements
-	clone.remove();
+	clone = div.clone(true); div.remove();
+	div = clone.clone(true); clone.remove();
 
 	equal( div.length, 1, "One element cloned" );
 	equal( div[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div.trigger("click");
 
-	// manually clean up detached elements
+	// Manually clean up detached elements
 	div.remove();
 
+	// Verify that cloned children can keep event listeners
 	div = jQuery("<div/>").append([ document.createElement("table"), document.createElement("table") ]);
 	div.find("table").click(function(){
 		ok( true, "Bound event still exists." );
@@ -1323,24 +1293,25 @@ test("clone()", function() {
 	clone = div.clone(true);
 	equal( clone.length, 1, "One element cloned" );
 	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
-	clone.find("table:last").trigger("click");
+	clone.find("table").trigger("click");
 
-	// manually clean up detached elements
+	// Manually clean up detached elements
 	div.remove();
 	clone.remove();
 
-	var divEvt = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
+	// Make sure that doing .clone() doesn't clone event listeners
+	div = jQuery("<div><ul><li>test</li></ul></div>").click(function(){
 		ok( false, "Bound event still exists after .clone()." );
-	}),
-		cloneEvt = divEvt.clone();
+	});
+	clone = div.clone();
 
-	// Make sure that doing .clone() doesn't clone events
-	cloneEvt.trigger("click");
+	clone.trigger("click");
 
-	cloneEvt.remove();
-	divEvt.remove();
+	// Manually clean up detached elements
+	clone.remove();
+	div.remove();
 
-	// Test both html() and clone() for <embed and <object types
+	// Test both html() and clone() for <embed> and <object> types
 	div = jQuery("<div/>").html("<embed height='355' width='425' src='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'></embed>");
 
 	clone = div.clone(true);
@@ -1355,33 +1326,26 @@ test("clone()", function() {
 
 	clone = div.clone(true);
 	equal( clone.length, 1, "One element cloned" );
-	(function checkForAttributes( $ ) {
-		// IE6/7 adds some extra parameters so just test for existance of a defined set
-		var parameters = ["height", "width", "classid"],
-			$divObject = div.find("object"),
-			$cloneObject = clone.find("object");
-
-		$.each( parameters, function(index, parameter)  {
-			equal( $cloneObject.attr(parameter), $divObject.attr(parameter), "Element attributes cloned: " + parameter );
-		});
-	})( jQuery );
-	(function checkForParams() {
-		// IE6/7/8 adds a bunch of extram param elements so just test for those that are trying to clone
+	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
+	div = div.find("object");
+	clone = clone.find("object");
+	// oldIE adds extra attributes and <param> elements, so just test for existence of the defined set
+	jQuery.each([ "height", "width", "classid" ], function( i, attr ) {
+		equal( clone.attr( attr ), div.attr( attr ), "<object> attribute cloned: " + attr );
+	});
+	(function() {
 		var params = {};
 
 		clone.find("param").each(function(index, param) {
-			params[param.attributes.name.nodeValue.toLowerCase()] =
+			params[ param.attributes.name.nodeValue.toLowerCase() ] =
 				param.attributes.value.nodeValue.toLowerCase();
 		});
 
 		div.find("param").each(function(index, param) {
-			var actualValue = params[param.attributes.name.nodeValue.toLowerCase()],
-				expectedValue = param.attributes.value.nodeValue.toLowerCase();
-
-			equal( actualValue, expectedValue, "Param cloned: " + param.attributes.name.nodeValue );
+			var key = param.attributes.name.nodeValue.toLowerCase();
+			equal( params[ key ], param.attributes.value.nodeValue.toLowerCase(), "<param> cloned: " + key );
 		});
 	})();
-	equal( clone[0].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 
 	// and here's a valid one.
 	div = jQuery("<div/>").html("<object height='355' width='425' type='application/x-shockwave-flash' data='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='movie' value='http://www.youtube.com/v/3KANI2dpXLw&amp;hl=en'>  <param name='wmode' value='transparent'> </object>");
