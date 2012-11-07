@@ -1836,4 +1836,74 @@ test( "Animations with 0 duration don't ease (#12273)", 1, function() {
 	delete jQuery.easing.test;
 });
 
+asyncTest( "Animations started in the same JS frame stay in sync (#12837)", 2, function() {
+	var TIMER_COUNT = 20,
+		tickLog = [],
+		completed = 0,
+		nextFrameIdx = 0,
+		currentFrameIdx,
+		// This handler gets called when each animation completes.
+		onComplete = function() {
+			// Check whether all timers have completed.
+			if (++completed === TIMER_COUNT) {
+				// The animations are all over, so perform all the test's assertions.
+				var referenceTimer = tickLog[0],
+					timerIdx = 1;
+				// Make sure the animations didn't try to complete synchronously in a single tick.
+				ok( referenceTimer.length > 1, "Animations should span multple ticks" );
+				// Compare all other timer logs to the reference timer log.
+				// Break out of the timer loop on the first observed discrepancy.
+				timerLoop:
+				for ( ; timerIdx < TIMER_COUNT; timerIdx++ ) {
+					if ( tickLog[timerIdx].length !== referenceTimer.length ) {
+						strictEqual( tickLog[timerIdx].length, referenceTimer.length, "Timers should synchronize the number of ticks" );
+						break timerLoop;
+					}
+					for ( var stepIdx = 0; stepIdx < referenceTimer.length; stepIdx++ ) {
+						var referenceStep = referenceTimer[stepIdx],
+							compareStep = tickLog[timerIdx][stepIdx];
+						if ( compareStep.value !== referenceStep.value ||
+								compareStep.frameIdx !== referenceStep.frameIdx) {
+							strictEqual( compareStep, referenceStep, "Timers should fire in sync" );
+							break timerLoop;
+						}
+					}
+				}
+				// If the timer loop made it through all the timers, then the comparisons must have succeeded.
+				if (timerIdx === TIMER_COUNT) {
+					ok( true, "All timer ticks fired in sync" );
+				}
+				start();
+			}
+		},
+		// This creates a handler for each step of each animation.
+		createStepHandler = function(timerLog) {
+			return function(now, fx) {
+				// At each step, check whether the frame index was initialized.
+				if (currentFrameIdx === undefined) {
+					// Initialize the frame index to a new value, and also make sure it gets
+					// cleared as soon as possible after this event callback completes. If
+					// everything is working, then every timer should tick during the same frame.
+					setTimeout(function() {
+						currentFrameIdx = undefined;
+					}, 0 );
+					currentFrameIdx = nextFrameIdx++;
+				}
+				// Record how far and when the animation had progressed for this step.
+				timerLog.push({ value: now, frameIdx: currentFrameIdx });
+			};
+		};
+
+	// Initialize lots of different timers.
+	for ( var timerIdx = 0; timerIdx < TIMER_COUNT; timerIdx++ ) {
+		tickLog[timerIdx] = [];
+		// Each timer will animate the property of a different object.
+		jQuery({ test: 0 }).animate({ test: 1 }, {
+			duration: 200,
+			complete: onComplete,
+			step: createStepHandler(tickLog[timerIdx])
+		});
+	}
+});
+
 } // if ( jQuery.fx )

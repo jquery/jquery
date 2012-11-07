@@ -1,4 +1,4 @@
-var fxNow, timerId,
+var fxNow, fxTickNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([-+])=|)(" + core_pnum + ")([a-z%]*)$", "i" ),
 	rrun = /queueHooks$/,
@@ -79,8 +79,7 @@ function Animation( elem, properties, options ) {
 			delete tick.elem;
 		}),
 		tick = function() {
-			var currentTime = fxNow || createFxNow(),
-				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
+			var remaining = Math.max( 0, animation.startTime + animation.duration - fxTickNow ),
 				percent = 1 - ( remaining / animation.duration || 0 ),
 				index = 0,
 				length = animation.tweens.length;
@@ -612,6 +611,7 @@ jQuery.fx.tick = function() {
 		timers = jQuery.timers,
 		i = 0;
 
+	fxTickNow = jQuery.now();
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
 		// Checks the timer has not already been removed
@@ -626,6 +626,7 @@ jQuery.fx.tick = function() {
 };
 
 jQuery.fx.timer = function( timer ) {
+	fxTickNow = fxNow || createFxNow();
 	if ( timer() && jQuery.timers.push( timer ) && !timerId ) {
 		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 	}
