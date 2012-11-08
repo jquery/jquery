@@ -81,7 +81,7 @@ function Animation( elem, properties, options ) {
 		tick = function() {
 			var currentTime = fxNow || createFxNow(),
 				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
-				percent = 1 - ( remaining / animation.duration || 0 ),
+				percent = animation.duration ? (1 - (remaining / animation.duration)) : 1,
 				index = 0,
 				length = animation.tweens.length;
 
