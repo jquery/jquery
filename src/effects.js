@@ -640,12 +640,18 @@ jQuery.fx.tick = function() {
 };
 
 jQuery.fx.timer = function( timer ) {
-	if ( timer() && jQuery.timers.push( timer ) && !timerId ) {
-		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+	if ( timer() && jQuery.timers.push( timer ) ) {
+		jQuery.fx.start();
 	}
 };
 
 jQuery.fx.interval = 13;
+
+jQuery.fx.start = function() {
+	if ( !timerId ) {
+		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+	}
+};
 
 jQuery.fx.stop = function() {
 	clearInterval( timerId );
