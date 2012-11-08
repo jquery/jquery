@@ -602,7 +602,7 @@ test("stop() - several in queue", function() {
 
 	var $foo = jQuery("#foo");
 	var w = 0;
-	$foo.hide().css( "width", 200 ).css("width");
+	$foo.hide( 1000 ).css( "width", 200 ).css("width");
 
 	$foo.animate({ "width": "show" }, 1500);
 	$foo.animate({ "width": "hide" }, 1000);
@@ -1882,7 +1882,7 @@ jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
 		var tested,
 			original,
 			check = method === "slideToggle" ? "height" : "opacity",
-			element = jQuery( "#foo" );
+			element = jQuery( "#foo" ).height( 200 );
 
 		expect( 4 );
 
@@ -1892,7 +1892,7 @@ jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
 				if ( fx.pos > 0.1 && fx.prop === check && !tested ) {
 					tested = true;
 					original = fx.start;
-					equal( fx.start !== 0, true, check + " is starting at " + original + " on first toggle" );
+					ok( fx.start !== 0, check + " is starting at " + original + " on first toggle (non-zero)" );
 					equal( fx.end, 0, check + " is ending at 0 on first toggle" );
 					element.stop();
 				}
