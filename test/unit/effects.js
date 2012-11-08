@@ -603,28 +603,37 @@ test("stop()", function() {
 });
 
 test("stop() - several in queue", function() {
-	expect(3);
-	stop();
+	expect( 5 );
 
-	var $foo = jQuery("#foo");
-	var w = 0;
-	$foo.hide( 1000 ).css( "width", 200 ).css("width");
+	var nw, time,
+		$foo = jQuery( "#foo" ),
+		w = 0;
 
-	$foo.animate({ "width": "show" }, 1500);
-	$foo.animate({ "width": "hide" }, 1000);
-	$foo.animate({ "width": "show" }, 1000);
-	setTimeout(function(){
-		equal( $foo.queue().length, 3, "All 3 still in the queue" );
-		var nw = $foo.css("width");
-		notEqual( parseFloat( nw ), w, "An animation occurred " + nw + " " + w + "px");
-		$foo.stop();
+	// default duration is 400ms, so 800px ensures we aren't 0 or 1 after 1ms
+	$foo.hide().css( "width", 800 );
 
-		nw = $foo.css("width");
-		notEqual( parseFloat( nw ), w, "Stop didn't reset the animation " + nw + " " + w + "px");
+	$foo.animate({ "width": "show" }, 400, "linear");
+	$foo.animate({ "width": "hide" });
+	$foo.animate({ "width": "show" });
 
-		$foo.stop(true);
-		start();
-	}, 200);
+	// could be replaced by something nicer using sinon.
+	time = jQuery.now();
+	while( time === jQuery.now() ) {}
+
+	jQuery.fx.tick();
+	equal( $foo.queue().length, 3, "3 in the queue" );
+
+	nw = $foo.css( "width" );
+	notEqual( parseFloat( nw ), 1, "An animation occurred " + nw );
+	$foo.stop();
+
+	equal( $foo.queue().length, 2, "2 in the queue" );
+	nw = $foo.css( "width" );
+	notEqual( parseFloat( nw ), 1, "Stop didn't reset the animation " + nw );
+
+	$foo.stop( true );
+
+	equal( $foo.queue().length, 0, "0 in the queue" );
 });
 
 test("stop(clearQueue)", function() {
