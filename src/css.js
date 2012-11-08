@@ -277,13 +277,34 @@ jQuery.extend({
 if ( window.getComputedStyle ) {
 	curCSS = function( elem, name ) {
 		var ret, width, minWidth, maxWidth,
+			parentComputed, parentRet, hiddenParents = [],
 			computed = window.getComputedStyle( elem, null ),
 			style = elem.style;
 
 		if ( computed ) {
-
+		
 			// getPropertyValue is only needed for .css('filter') in IE9, see #12537
 			ret = computed.getPropertyValue( name ) || computed[ name ];
+
+			// elements with a percentage width, and a hidden container element, need to
+			// properly return the width in pixels - see #9945
+			if( rnumnonpx.test( ret ) && name == "width" ) {
+				// set display = block to all the parent elements in order to get the proper computed style
+				jQuery( elem ).parents().each( function( index, el ) {
+					parentComputed = window.getComputedStyle( el, null );
+					parentRet = parentComputed.getPropertyValue( "display" ) || parentComputed.display;
+					if ( parentRet == "none" ) {
+						hiddenParents.push( el );
+						el.style.display = "block";
+						ret = computed.getPropertyValue( name ) || computed[ name ];
+					}
+				});
+
+				// re set all the previously display = none elements
+				for ( var i = 0; i < hiddenParents.length; i++ ) {
+					hiddenParents[ i ].style.display = "none";
+				}
+			}
 
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 				ret = jQuery.style( elem, name );

@@ -458,4 +458,44 @@ testIframe( "dimensions/documentLarge", "window vs. large document", function( j
 	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
 });
 
+test("percentage width elements in hidden divs not returning width in PX - see #9945", function() {
+	expect(8);
+
+	var el = jQuery( "<div style='width: 500px;'></div>" );
+	var el_child = jQuery( "<div></div>" );
+	var el_child1 = jQuery( "<div></div>" );
+	var el_child2 = jQuery( "<div></div>" );
+	var el_child3 = jQuery( "<div style='width: 50%'></div> ");
+	el.append( el_child );
+	el.append( el_child1 );
+	el.append( el_child2 );
+	el.append( el_child3 );
+	el.appendTo( "#qunit-fixture" );
+
+	// test fourth parent, or root element, with display = none
+	el.css( "display", "none" );
+	equal( el_child3.width(), 250, "element width should be accurate and in px when container element (root) is display = none" );
+	equal( el.css( "display" ), "none", "hidden element should still be hidden" );
+	el.css( "display", "block" );
+
+	// test third parent with display = none
+	el_child.css( "display", "none" );
+	equal( el_child3.width(), 250, "element width should be accurate and in px when container element (first child) is display = none" );
+	equal( el_child.css( "display" ), "none", "hidden element should still be hidden" );
+	el_child.css( "display", "block" );
+
+	// test second parent with display = none
+	el_child1.css( "display", "none" );
+	equal( el_child3.width(), 250, "element width should be accurate and in px when container element (second child) is display = none" );
+	equal( el_child1.css( "display" ), "none", "hidden element should still be hidden" );
+	el_child1.css( "display", "block" );
+
+	// test third parent with display = none
+	el_child2.css( "display", "none" );
+	equal( el_child3.width(), 250, "element width should be accurate and in px when container element (third child) is display = none" );
+	equal( el_child2.css( "display" ), "none", "hidden element should still be hidden" );
+	el_child2.css( "display", "block" );
+
+});
+
 }
