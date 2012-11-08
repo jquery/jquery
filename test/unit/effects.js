@@ -1818,6 +1818,35 @@ test( "Animate properly sets overflow hidden when animating width/height (#12117
 	});
 });
 
+test( "Each tick of the timer loop uses a fresh time (#12837)", function() {
+	var lastVal, current,
+		tmp = jQuery({
+			test: 0
+		});
+	expect( 3 );
+	tmp.animate({
+		test: 100
+	}, {
+		step: function( p, fx ) {
+			ok( fx.now !== lastVal, "Current value is not the last value: " + lastVal + " - " + fx.now );
+			lastVal = fx.now;
+		}
+	});
+	current = jQuery.now();
+	// intentionally empty, we want to spin wheels until the time changes.
+	while ( current === jQuery.now() ) { }
+
+	// now that we have a new time, run another tick
+	jQuery.fx.tick();
+
+	current = jQuery.now();
+	// intentionally empty, we want to spin wheels until the time changes.
+	while ( current === jQuery.now() ) { }
+
+	jQuery.fx.tick();
+	tmp.stop();
+});
+
 test( "Animations with 0 duration don't ease (#12273)", 1, function() {
 	jQuery.easing.test = function() {
 		ok( false, "Called easing" );
