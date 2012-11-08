@@ -8,7 +8,6 @@ var
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 	location = window.location,
-	navigator = window.navigator,
 
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
