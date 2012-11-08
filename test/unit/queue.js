@@ -259,17 +259,16 @@ if ( jQuery.fn.stop ) {
 		expect( 3 );
 		stop();
 
-		var foo = jQuery({}), run = 0;
-
-		foo
+		var done = {};
+		jQuery({})
 			.queue( "alternate", function( next ) {
-				run++;
+				done.alt1 = true;
 				ok( true, "This first function was dequeued" );
 				next();
 			})
 			.delay( 1000, "alternate" )
 			.queue( "alternate", function() {
-				run++;
+				done.alt2 = true;
 				ok( true, "The function was dequeued immediately, the delay was stopped" );
 			})
 			.dequeue( "alternate" )
@@ -278,18 +277,20 @@ if ( jQuery.fn.stop ) {
 			.stop( "alternate", false, false )
 
 			// this test
-			.delay( 1000 )
+			.delay( 1 )
 			.queue(function() {
-				run++;
+				done.default1 = true;
 				ok( false, "This queue should never run" );
 			})
 
 			// stop( clearQueue ) should clear the queue
 			.stop( true, false );
 
-		equal( run, 2, "Queue ran the proper functions" );
+		deepEqual( done, { alt1: true, alt2: true }, "Queue ran the proper functions" );
 
-		setTimeout( start, 2000 );
+		setTimeout(function() {
+			start();
+		}, 1500 );
 	});
 
 	asyncTest( "queue stop hooks", 2, function() {

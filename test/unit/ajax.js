@@ -1481,9 +1481,7 @@
 		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
 			equal( foobar, "bar", "Check if script was evaluated" );
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script (#8082)" );
-			setTimeout(function() {
-				start();
-			}, 1000 );
+			start();
 		});
 	});
 
@@ -2221,7 +2219,7 @@
 	test( "jQuery.ajaxSetup({timeout: Number}) - with global timeout", function() {
 		var passed = 0;
 
-		expect( 1 );
+		expect( 2 );
 
 		stop();
 
@@ -2230,9 +2228,8 @@
 		});
 
 		var pass = function() {
-			passed++;
+			ok( passed++ < 2, "Error callback executed" );
 			if ( passed == 2 ) {
-				ok( true, "Check local and global callbacks after timeout" );
 				jQuery("#qunit-fixture").unbind("ajaxError");
 				start();
 			}
