@@ -1858,4 +1858,48 @@ test( "Animations with 0 duration don't ease (#12273)", 1, function() {
 	delete jQuery.easing.test;
 });
 
+jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
+	// this test would look a lot better if we were using something to override
+	// the default timers
+	asyncTest( "toggle state tests: " + method + " (#8685)", function() {
+		function secondToggle() {
+			var stopped = parseFloat( element.css( check ) );
+			tested = false;
+			element[ method ]({
+				duration: 5000,
+				step: function( p, fx ) {
+					if ( fx.pos > 0.1 && fx.prop === check && !tested ) {
+						tested = true;
+						equal( fx.start, stopped, check + " starts at " + stopped + " where it stopped" );
+						equal( fx.end, original, check + " ending value is " + original );
+						element.stop();
+					}
+				},
+				always: start
+			});
+		}
+
+		var tested,
+			original,
+			check = method === "slideToggle" ? "height" : "opacity",
+			element = jQuery( "#foo" );
+
+		expect( 4 );
+
+		element[ method ]({
+			duration: 5000,
+			step: function( p, fx ) {
+				if ( fx.pos > 0.1 && fx.prop === check && !tested ) {
+					tested = true;
+					original = fx.start;
+					equal( fx.start !== 0, true, check + " is starting at " + original + " on first toggle" );
+					equal( fx.end, 0, check + " is ending at 0 on first toggle" );
+					element.stop();
+				}
+			},
+			always: secondToggle
+		});
+	});
+});
+
 } // if ( jQuery.fx )
