@@ -335,7 +335,7 @@ if ( window.getComputedStyle ) {
 			rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
 
 			// Put in the new values to get a computed value out
-			if ( rsLeft ) {
+			if ( elem.runtimeStyle ) {
 				elem.runtimeStyle.left = elem.currentStyle.left;
 			}
 			style.left = name === "fontSize" ? "1em" : ret;
@@ -343,7 +343,7 @@ if ( window.getComputedStyle ) {
 
 			// Revert the changed values
 			style.left = left;
-			if ( rsLeft ) {
+			if ( elem.runtimeStyle ) {
 				elem.runtimeStyle.left = rsLeft;
 			}
 		}
