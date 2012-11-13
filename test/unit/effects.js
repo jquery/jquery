@@ -997,94 +997,54 @@ jQuery.each({
 	});
 });
 
-jQuery.fn.saveState = function( hiddenOverflow ) {
-	var check = ["opacity", "height", "width", "display", "overflow"];
-	expect(check.length);
+asyncTest("Effects chaining", function() {
+	var remaining = 16,
+		shrinkwrap = jQuery.support.shrinkWrapBlocks,
+		props = [ "opacity", "height", "width", "display", "overflow" ],
+		setup = function( name, selector, hiddenOverflow ) {
+			var $el = jQuery( selector );
+			return $el.data( getProps( $el[0], hiddenOverflow ) ).data( "name", name );
+		},
+		assert = function() {
+			var data = jQuery.data( this ),
+				name = data.name;
+			delete data.name;
 
-	stop();
-	return this.each(function() {
-		var el = this;
-		el.save = {};
-		jQuery.each(check, function( i, c ) {
-			el.save[ c ] = c === "overflow" && hiddenOverflow ? "hidden" : el.style[ c ] || jQuery.css( el, c );
-		});
-	});
-};
+			deepEqual( getProps( this ), data, name );
 
-/**
- * @expose
- * @context {HTMLElement}
- */
-jQuery.checkState = function() {
-	var el = this;
-	jQuery.each(el.save, function( c, v ) {
-		var cur = el.style[ c ] || jQuery.css( el, c );
-		equal( cur, v, "Make sure that " + c + " is reset (Old: " + v + " Cur: " + cur + ")");
-	});
+			jQuery.removeData( this );
+			if ( --remaining === 0 ) {
+				start();
+			}
+		},
+		getProps = function( el, hiddenOverflow ) {
+			var obj = {};
+			jQuery.each( props, function( i, prop ) {
+				obj[ prop ] = prop === "overflow" && hiddenOverflow ? "hidden" : el.style[ prop ] || jQuery.css( el, prop );
+			});
+			return obj;
+		};
 
-	// Clean up
-	jQuery(el).remove();
+	expect( remaining );
 
-	start();
-};
-
-// Chaining Tests
-// We need to pass jQuery.support.shrinkWrapBlocks for all tests that
-// set overflow hidden (which effect.js does for all slide*() methods and
-// show()/hide() if a speed is given).
-
-test("Chain fadeOut fadeIn", function() {
-	jQuery("#fadein div").saveState().fadeOut("fast").fadeIn("fast", jQuery.checkState );
-});
-test("Chain fadeIn fadeOut", function() {
-	jQuery("#fadeout div").saveState().fadeIn("fast").fadeOut("fast", jQuery.checkState );
-});
-
-test("Chain hide show", function() {
-	jQuery("#show div").saveState( jQuery.support.shrinkWrapBlocks ).hide("fast").show("fast", jQuery.checkState );
-});
-test("Chain show hide", function() {
-	jQuery("#hide div").saveState( jQuery.support.shrinkWrapBlocks ).show("fast").hide("fast", jQuery.checkState );
-});
-test("Chain show hide with easing and callback", function() {
-	jQuery("#hide div").saveState( jQuery.support.shrinkWrapBlocks ).show("fast").hide("fast","linear", jQuery.checkState );
-});
-
-test("Chain toggle in", function() {
-	jQuery("#togglein div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast", jQuery.checkState );
-});
-test("Chain toggle out", function() {
-	jQuery("#toggleout div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast", jQuery.checkState );
-});
-test("Chain toggle out with easing and callback", function() {
-	jQuery("#toggleout div").saveState( jQuery.support.shrinkWrapBlocks ).toggle("fast").toggle("fast","linear", jQuery.checkState );
-});
-test("Chain slideDown slideUp", function() {
-	jQuery("#slidedown div").saveState( jQuery.support.shrinkWrapBlocks ).slideDown("fast").slideUp("fast", jQuery.checkState );
-});
-test("Chain slideUp slideDown", function() {
-	jQuery("#slideup div").saveState( jQuery.support.shrinkWrapBlocks ).slideUp("fast").slideDown("fast", jQuery.checkState );
-});
-test("Chain slideUp slideDown with easing and callback", function() {
-	jQuery("#slideup div").saveState( jQuery.support.shrinkWrapBlocks ).slideUp("fast").slideDown("fast","linear", jQuery.checkState );
-});
-
-test("Chain slideToggle in", function() {
-	jQuery("#slidetogglein div").saveState( jQuery.support.shrinkWrapBlocks ).slideToggle("fast").slideToggle("fast", jQuery.checkState );
-});
-test("Chain slideToggle out", function() {
-	jQuery("#slidetoggleout div").saveState( jQuery.support.shrinkWrapBlocks ).slideToggle("fast").slideToggle("fast", jQuery.checkState );
-});
-
-test("Chain fadeToggle in", function() {
-	jQuery("#fadetogglein div").saveState().fadeToggle("fast").fadeToggle("fast", jQuery.checkState );
-});
-test("Chain fadeToggle out", function() {
-	jQuery("#fadetoggleout div").saveState().fadeToggle("fast").fadeToggle("fast", jQuery.checkState );
-});
-
-test("Chain fadeTo 0.5 1.0 with easing and callback)", function() {
-	jQuery("#fadeto div").saveState().fadeTo("fast",0.5).fadeTo("fast",1.0,"linear", jQuery.checkState );
+	// We need to pass jQuery.support.shrinkWrapBlocks for all methods that
+	// set overflow hidden (slide* and show/hide with speed)
+	setup( ".fadeOut().fadeIn()", "#fadein div" ).fadeOut("fast").fadeIn( "fast", assert );
+	setup( ".fadeIn().fadeOut()", "#fadeout div" ).fadeIn("fast").fadeOut( "fast", assert );
+	setup( ".hide().show()", "#show div",  shrinkwrap ).hide("fast").show( "fast", assert );
+	setup( ".show().hide()", "#hide div",  shrinkwrap ).show("fast").hide( "fast", assert );
+	setup( ".show().hide(easing)", "#easehide div", shrinkwrap ).show("fast").hide( "fast", "linear", assert );
+	setup( ".toggle().toggle() - in", "#togglein div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle() - out", "#toggleout div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle(easing) - out", "#easetoggleout div", shrinkwrap ).toggle("fast").toggle( "fast", "linear", assert );
+	setup( ".slideDown().slideUp()", "#slidedown div", shrinkwrap ).slideDown("fast").slideUp( "fast", assert );
+	setup( ".slideUp().slideDown()", "#slideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", assert );
+	setup( ".slideUp().slideDown(easing)", "#easeslideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", "linear", assert );
+	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".fadeToggle().fadeToggle() - in", "#fadetogglein div" ).fadeToggle("fast").fadeToggle( "fast", assert );
+	setup( ".fadeToggle().fadeToggle() - out", "#fadetoggleout div" ).fadeToggle("fast").fadeToggle( "fast", assert );
+	setup( ".fadeTo(0.5).fadeTo(1.0, easing)", "#fadeto div" ).fadeTo( "fast", 0.5 ).fadeTo( "fast", 1.0, "linear", assert );
 });
 
 jQuery.makeTest = function( text ){
@@ -1874,12 +1834,13 @@ test( "Animations with 0 duration don't ease (#12273)", 1, function() {
 jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
 	// this test would look a lot better if we were using something to override
 	// the default timers
+	var duration = 1500;
 	asyncTest( "toggle state tests: " + method + " (#8685)", function() {
 		function secondToggle() {
 			var stopped = parseFloat( element.css( check ) );
 			tested = false;
 			element[ method ]({
-				duration: 5000,
+				duration: duration,
 				step: function( p, fx ) {
 					if ( fx.pos > 0.1 && fx.prop === check && !tested ) {
 						tested = true;
@@ -1895,12 +1856,13 @@ jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
 		var tested,
 			original,
 			check = method === "slideToggle" ? "height" : "opacity",
-			element = jQuery( "#foo" ).height( 200 );
+			element = jQuery("#foo").height( 200 );
 
 		expect( 4 );
 
 		element[ method ]({
-			duration: 5000,
+			duration: duration,
+			easing: "linear",
 			step: function( p, fx ) {
 				if ( fx.pos > 0.1 && fx.prop === check && !tested ) {
 					tested = true;
