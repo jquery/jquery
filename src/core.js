@@ -579,7 +579,7 @@ jQuery.extend({
 		var name,
 			i = 0,
 			length = obj.length,
-			isObj = length === undefined || jQuery.isFunction( obj );
+			isObj = (obj instanceof Object && length !== undefined) || length === undefined || jQuery.isFunction( obj );
 
 		if ( args ) {
 			if ( isObj ) {
