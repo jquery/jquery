@@ -596,8 +596,13 @@ jQuery.extend({
 			clone;
 
 		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
-			clone = elem.cloneNode( true );
+			// Fixes #8909 - By accessing one of the element's computed styles it breaks the
+			// connection with the cloned element's styles in IE9/10
+			if ( !jQuery.support.clearCloneStyle && elem.nodeType === 1 && window.getComputedStyle ) {
+				i = ( window.getComputedStyle( elem, null ) || {} ).backgroundPosition;
+			}
 
+			clone = elem.cloneNode( true );
 		// IE<=8 does not properly clone detached, unknown element nodes
 		} else {
 			fragmentDiv.innerHTML = elem.outerHTML;
