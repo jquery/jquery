@@ -2023,6 +2023,47 @@ test("checked state is cloned with clone()", function(){
 	equal( jQuery(elem).clone().attr("id","clone")[0].checked, true, "Checked true state correctly cloned" );
 });
 
+test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", function() {
+	expect( 16 );
+
+	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" );
+	var styles = [
+		{ name: "backgroundAttachment", value: [ "fixed" ], expected: [ "scroll" ] },
+		{ name: "backgroundColor", value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ], expected: [ "transparent" ] },
+		{ name: "backgroundImage", value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ], expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ] }, // Firefox returns auto's value
+		{ name: "backgroundPosition", value: [ "5% 5%" ], expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ] },
+		{ name: "backgroundRepeat", value: [ "repeat-y" ], expected: [ "repeat", "no-repeat" ] }, // Firefox returns no-repeat
+		{ name: "backgroundClip", value: [ "padding-box" ], expected: [ "border-box" ] },
+		{ name: "backgroundOrigin", value: [ "content-box" ], expected: [ "padding-box" ] },
+		{ name: "backgroundSize", value: [ "80px 60px" ], expected: [ "auto auto" ] }
+	];
+
+	jQuery.each( styles, function(index, style) {
+		var $source, source, $clone;
+
+		style.expected = style.expected.concat( [ "", "auto" ] );
+		$source = jQuery( "<div />" );
+		source = $source[ 0 ];
+		if ( source.style[ style.name ] === undefined ) {
+			ok( true, style.name +  ": style isn't supported and therefore not an issue" );
+			ok( true );
+			return true;
+		}
+		$source.css( style.name, style.value[0] );
+		$clone = $source.clone();
+		$clone.css( style.name, "" );
+
+		ok( ~jQuery.inArray( $source.css( style.name ), style.value ),
+			"Clearing clone.css() doesn't affect source.css(): " + style.name +
+			"; result: " + $source.css( style.name ) +
+			"; expected: " + style.value.join( "," ) );
+		ok( ~jQuery.inArray( $clone.css( style.name ), style.expected ),
+			"Cloned element was reset to its default value: " + style.name +
+			"; result: " + $clone.css( style.name ) +
+			"; expected: " + style.expected.join( "," ) );
+	});
+});
+
 test("manipulate mixed jQuery and text (#12384, #12346)", function() {
 	expect(2);
 
