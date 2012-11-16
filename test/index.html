@@ -14,30 +14,33 @@
 	<script src="data/testinit.js"></script>
 
 	<script src="qunit/qunit/qunit.js"></script>
-	<!-- Loads minified version if min=true is present in the search -->
-	<!-- Nullifies querySelectorAll if noqsa=true is present -->
 	<script>
 		(function() {
 			var src = "../dist/jquery.js";
 
-			QUnit.config.urlConfig.push( {
+			// Config parameter to use minified jQuery
+			QUnit.config.urlConfig.push({
 				id: "min",
 				label: "Load minified",
 				tooltip: "Load the minified version of the jQuery build"
-			} );
+			});
 			if ( QUnit.urlParams.min ) {
 				src = "../dist/jquery.min.js";
 			}
 
-			QUnit.config.urlConfig.push( {
-				id: "noqsa",
-				label: "Disable querySelectorAll",
-				tooltip: "Disable the native document.querySelectorAll"
-			} );
-			if ( QUnit.urlParams.noqsa ) {
+			// Config parameter to force basic code paths
+			QUnit.config.urlConfig.push({
+				id: "basic",
+				label: "Bypass optimizations",
+				tooltip: "Force use of the most basic code by disabling native querySelectorAll; contains; compareDocumentPosition"
+			});
+			if ( QUnit.urlParams.basic ) {
 				document.querySelectorAll = null;
+				document.documentElement.contains = null;
+				document.documentElement.compareDocumentPosition = null;
 			}
 
+			// Load jQuery
 			document.write( "<script src='" + src + "'><\/script>" );
 		})();
 	</script>
