@@ -457,13 +457,16 @@ function css_defaultDisplay( nodeName ) {
 	// get element's real default display by attaching it to a temp iframe
 	if ( display === "none" || display === "" ) {
 		// Use the already-created iframe if possible
-		iframe = document.body.appendChild(
-			iframe || jQuery.extend( document.createElement("iframe"), {
-				frameBorder: 0,
-				width: 0,
-				height: 0
-			})
-		);
+		if ( !iframe )
+		{
+			iframe = document.createElement("iframe");
+			iframe.frameBorder = 0;
+			iframe.width = 0;
+			iframe.height = 0;
+			// Hidden iframes always report display as 'none' in Firefox
+			iframe.style.cssText += "display: block !important;";
+		}
+		document.body.appendChild( iframe );
 
 		// Create a cacheable copy of the iframe document on first call.
 		// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
