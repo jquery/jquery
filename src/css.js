@@ -464,6 +464,7 @@ function css_defaultDisplay( nodeName ) {
 			iframe.width = 0;
 			iframe.height = 0;
 			// Hidden iframes always report display as 'none' in Firefox
+			// Note: Hidden body might still result in a hidden iframe (handled below)
 			iframe.style.cssText += "display: block !important;";
 		}
 		document.body.appendChild( iframe );
@@ -483,8 +484,17 @@ function css_defaultDisplay( nodeName ) {
 		document.body.removeChild( iframe );
 	}
 
-	// Store the correct default display
-	elemdisplay[ nodeName ] = display;
+	if ( display === "none"  &&  curCSS( document.body, "display" ) === "none" )
+	{
+		// document.body won't hide forever,
+		// so let's go for "block" for now, and not cache the result.
+		display = "block";
+	}
+	else
+	{
+		// Store the correct default display
+		elemdisplay[ nodeName ] = display;
+	}
 
 	return display;
 }
