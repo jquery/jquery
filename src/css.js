@@ -456,6 +456,7 @@ function css_defaultDisplay( nodeName ) {
 	// If the simple way fails,
 	// get element's real default display by attaching it to a temp iframe
 	if ( display === "none" || display === "" ) {
+		var body = document.body;
 		// Use the already-created iframe if possible
 		if ( !iframe )
 		{
@@ -464,10 +465,10 @@ function css_defaultDisplay( nodeName ) {
 			iframe.width = 0;
 			iframe.height = 0;
 			// Hidden iframes always report display as 'none' in Firefox
-			// Note: Hidden body might still result in a hidden iframe (handled below)
+			// Note: Hidden <body> or <html> might still result in a hidden iframe (handled below)
 			iframe.style.cssText += "display: block !important;";
 		}
-		document.body.appendChild( iframe );
+		body.appendChild( iframe );
 
 		// Create a cacheable copy of the iframe document on first call.
 		// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
@@ -481,12 +482,12 @@ function css_defaultDisplay( nodeName ) {
 		elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
 
 		display = curCSS( elem, "display" );
-		document.body.removeChild( iframe );
+		body.removeChild( iframe );
 	}
 
-	if ( display === "none"  &&  curCSS( document.body, "display" ) === "none" )
+	if ( display === "none"  &&  (curCSS( body, "display" ) === "none" || curCSS(body.parentNode, "display") === "none") )
 	{
-		// document.body won't hide forever,
+		// <body>/<html> won't hide forever,
 		// so let's go for "block" for now, and not cache the result.
 		display = "block";
 	}
