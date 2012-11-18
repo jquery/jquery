@@ -2028,6 +2028,39 @@ test("manipulate mixed jQuery and text (#12384, #12346)", function() {
 	equal( div.find("*").length, 3, "added 2 paragraphs after inner div" );
 });
 
+test("insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
+	expect(10);
+
+	var elems;
+
+	jQuery.each([
+		"appendTo",
+		"prependTo",
+		"insertBefore",
+		"insertAfter",
+		"replaceAll"
+	], function( index, name ) {
+		elems = jQuery( [
+			"<ul id='test4087-complex'><li class='test4087'><div>c1</div>h1</li><li><div>c2</div>h2</li></ul>",
+			"<div id='test4087-simple'><div class='test4087-1'>1<div class='test4087-2'>2</div><div class='test4087-3'>3</div></div></div>",
+			"<div id='test4087-multiple'><div class='test4087-multiple'>1</div><div class='test4087-multiple'>2</div></div>"
+		] ).appendTo( "#qunit-fixture" );
+		
+		// complex case based on http://jsfiddle.net/pbramos/gZ7vB/
+		jQuery( "#test4087-complex div" )[ name ]( "#test4087-complex li:first-child div:last-child" );
+		equal( jQuery( "#test4087-complex li:first-child div" ).length, 2, name +" a node to itself, complex case." );
+
+		// simple case
+		jQuery( ".test4087-1" )[ name ]( ".test4087-1" );
+		equal( jQuery( ".test4087-1" ).length, 1, name +" a node to itself, simple case. " );
+
+		// clean for next test
+		jQuery( "#test4087-complex" ).remove();
+		jQuery( "#test4087-simple" ).remove();
+		jQuery( "#test4087-multiple" ).remove();
+	});
+});
+
 testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9/10 (#12266)", "manipulation/iframe-denied.html", function( test ) {
 	expect( 1 );
 

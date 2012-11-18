@@ -272,7 +272,8 @@ jQuery.fn.extend({
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" ) {
+		// #4087 - don't detach if original and target are the same (element is removed otherwise)
+		if ( !isFunc && typeof value !== "string" && jQuery( value ).index( this ) == -1 ) {
 			value = jQuery( value ).detach();
 		}
 
@@ -498,6 +499,7 @@ function cloneFixAttributes( src, dest ) {
 
 jQuery.buildFragment = function( args, context, scripts ) {
 	var fragment, cacheable, cachehit,
+		originalContext = context,
 		first = args[ 0 ];
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
@@ -525,7 +527,7 @@ jQuery.buildFragment = function( args, context, scripts ) {
 
 	if ( !fragment ) {
 		fragment = context.createDocumentFragment();
-		jQuery.clean( args, context, fragment, scripts );
+		jQuery.clean( args, context, fragment, scripts, originalContext[0] );
 
 		// Update the cache, but only store false
 		// unless this is a second parsing of the same content
@@ -649,7 +651,7 @@ jQuery.extend({
 		return clone;
 	},
 
-	clean: function( elems, context, fragment, scripts ) {
+	clean: function( elems, context, fragment, scripts, originalContext ) {
 		var i, j, elem, tag, wrap, depth, parent, div, hasBody, tbody, handleScript, jsTags,
 			safe = context === document && safeFragment,
 			ret = [];
@@ -783,6 +785,11 @@ jQuery.extend({
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
 				// Check if we're done after handling an executable script
 				if ( !( jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) ) {
+					// #4087 - dom manipulation not working when destination is original element (element is removed)
+					if ( originalContext && originalContext == elem ) {
+						continue;
+					}
+
 					// Append to fragment and handle embedded scripts
 					fragment.appendChild( elem );
 					if ( typeof elem.getElementsByTagName !== "undefined" ) {
