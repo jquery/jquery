@@ -211,6 +211,12 @@ jQuery.extend({
 				value += "px";
 			}
 
+			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
+			// but it would mean to define eight (for every problematic property) identical functions
+			if ( value === "" && name.indexOf("background") === 0 ) {
+				value = " ";
+			}
+
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
 
@@ -542,15 +548,6 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 		}
 	};
 });
-
-if ( !jQuery.support.clearCloneStyle ) {
-	// #8908, this part for IE9 only; see gh-886
-	jQuery.cssHooks.backgroundPosition = {
-		set: function( elem, value ) {
-			return value === "" ? "0% 0%" : value;
-		}
-	};
-}
 
 if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
