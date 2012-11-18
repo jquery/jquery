@@ -198,6 +198,7 @@ jQuery.extend({
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
+
 				// Wrapped to prevent IE from throwing errors when 'invalid' values are provided
 				// Fixes bug #5509
 				try {
@@ -514,6 +515,15 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 		}
 	};
 });
+
+if ( !jQuery.support.clearCloneStyle ) {
+	// #8908, this part for IE9 only; see gh-886
+	jQuery.cssHooks.backgroundPosition = {
+		set: function( elem, value ) {
+			return value === "" ? "0% 0%" : value;
+		}
+	};
+}
 
 if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
