@@ -544,15 +544,6 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	};
 });
 
-if ( !jQuery.support.clearCloneStyle ) {
-	// #8908, this part for IE9 only; see gh-886
-	jQuery.cssHooks.backgroundPosition = {
-		set: function( elem, value ) {
-			return value === "" ? "0% 0%" : value;
-		}
-	};
-}
-
 if ( !jQuery.support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {

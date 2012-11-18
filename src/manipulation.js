@@ -433,7 +433,7 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-function cloneFixAttributes( src, dest ) {
+function fixCloneNodeIssues( src, dest ) {
 	var nodeName, data, e;
 
 	// We do not need to do anything for non-Elements
@@ -565,12 +565,8 @@ jQuery.extend({
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
 		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
-			// Break the original-clone style connection in IE9/10 (#8909)
-			if ( !jQuery.support.clearCloneStyle && elem.nodeType === 1 ) {
-				i = ( window.getComputedStyle( elem, null ) || {} ).backgroundPosition;
-			}
-
 			clone = elem.cloneNode( true );
+
 		// IE<=8 does not properly clone detached, unknown element nodes
 		} else {
 			fragmentDiv.innerHTML = elem.outerHTML;
@@ -580,7 +576,6 @@ jQuery.extend({
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 
-			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
@@ -588,7 +583,7 @@ jQuery.extend({
 			for ( i = 0; (node = srcElements[i]) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
 				if ( destElements[i] ) {
-					cloneFixAttributes( node, destElements[i] );
+					fixCloneNodeIssues( node, destElements[i] );
 				}
 			}
 		}
