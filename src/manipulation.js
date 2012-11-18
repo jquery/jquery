@@ -451,16 +451,21 @@ function cloneFixAttributes( src, dest ) {
 		return;
 	}
 
-	// clearAttributes removes the attributes, which we don't want,
-	// but also removes the attachEvent events, which we *do* want
-	if ( dest.clearAttributes ) {
+	if ( !jQuery.support.noCloneEvent && dest.clearAttributes ) {
+
+		// clearAttributes removes the attributes, which we don't want,
+		// but also removes the attachEvent events, which we *do* want
 		dest.clearAttributes();
+
+		// mergeAttributes, in contrast, only merges back on the
+		// original attributes, not the events
+		dest.mergeAttributes( src );
 	}
 
-	// mergeAttributes, in contrast, only merges back on the
-	// original attributes, not the events
-	if ( dest.mergeAttributes ) {
-		dest.mergeAttributes( src );
+	// Event data gets referenced instead of copied if the expando
+	// gets copied too
+	if ( dest[ jQuery.expando ] ) {
+		dest.removeAttribute( jQuery.expando );
 	}
 
 	nodeName = dest.nodeName.toLowerCase();
@@ -508,10 +513,6 @@ function cloneFixAttributes( src, dest ) {
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
-
-	// Event data gets referenced instead of copied if the expando
-	// gets copied too
-	dest.removeAttribute( jQuery.expando );
 }
 
 jQuery.buildFragment = function( args, context, scripts ) {
@@ -660,8 +661,8 @@ jQuery.extend({
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {
 			if ( deepDataAndEvents ) {
-				destElements = getAll( clone );
-				srcElements = getAll( elem );
+				srcElements = srcElements || getAll( elem );
+				destElements = destElements || getAll( clone );
 
 				for ( i = 0; (node = srcElements[i]) != null; i++ ) {
 					cloneCopyEvent( node, destElements[i] );
