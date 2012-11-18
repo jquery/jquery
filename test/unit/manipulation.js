@@ -1241,17 +1241,14 @@ test("jQuery.clone() (#8017)", function() {
 	equal( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
-test("clone() (#8070)", function () {
+test("append to multiple elements (#8070)", function () {
 	expect(2);
 
-	jQuery("<select class='test8070'></select><select class='test8070'></select>").appendTo("#qunit-fixture");
-	var selects = jQuery(".test8070");
+	var selects = jQuery("<select class='test8070'></select><select class='test8070'></select>").appendTo("#qunit-fixture");
 	selects.append("<OPTION>1</OPTION><OPTION>2</OPTION>");
 
 	equal( selects[0].childNodes.length, 2, "First select got two nodes" );
 	equal( selects[1].childNodes.length, 2, "Second select got two nodes" );
-
-	selects.remove();
 });
 
 test("clone()", function() {
@@ -1612,6 +1609,18 @@ test("html(Function) with incoming value", function() {
 		equal( val.replace(/>/g, "&gt;"), "x" + insert, "Make sure the incoming value is correct." );
 		return " " + insert;
 	}).html().replace(/>/g, "&gt;"), " " + insert, "Verify escaped insertion." );
+});
+
+test("clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() {
+	expect(2);
+	var $content = jQuery("<div><b><i>text</i></b></div>").appendTo("#qunit-fixture"),
+		expected = /^<b><i>text<\/i><\/b>$/i;
+
+	// Attach jQuery and Sizzle data (the latter by conducting a non-qSA search)
+	$content.find(":nth-child(1):lt(4)").data( "test", true );
+
+	ok( expected.test( $content.clone( false )[0].innerHTML ), "clone()" );
+	ok( expected.test( $content.html() ), "html()" );
 });
 
 var testRemove = function(method) {
