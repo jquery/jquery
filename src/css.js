@@ -212,6 +212,11 @@ jQuery.extend({
 				value += "px";
 			}
 
+			// Fixes #8908
+			if ( value === "" && name.indexOf("background") === 0 ) {
+				value = " ";
+			}
+
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
 
