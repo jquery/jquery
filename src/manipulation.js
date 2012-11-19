@@ -717,7 +717,7 @@ jQuery.extend({
 		for ( i = 0; (elem = elems[i]) != null; i++ ) {
 			if ( elem || elem === 0 ) {
 				// Add nodes directly
-				if ( typeof elem === "object" ) {
+				if ( jQuery.type( elem ) === "object" ) {
 					jQuery.merge( ret, elem.nodeType ? [ elem ] : elem );
 
 				// Convert non-html into a text node
