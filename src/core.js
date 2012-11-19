@@ -463,7 +463,6 @@ jQuery.extend({
 	// context (optional): If specified, the fragment will be created in this context, defaults to document
 	// keepScripts (optional): If true, will include scripts passed in the html string
 	parseHTML: function( data, context, keepScripts ) {
-		var parsed, scripts;
 		if ( !data || typeof data !== "string" ) {
 			return null;
 		}
@@ -473,18 +472,20 @@ jQuery.extend({
 		}
 		context = context || document;
 
+		var parsed = rsingleTag.exec( data ),
+			scripts = !keepScripts && [];
+
 		// Single tag
-		if ( (parsed = rsingleTag.exec( data )) ) {
+		if ( parsed ) {
 			return [ context.createElement( parsed[1] ) ];
 		}
 
-		scripts = !keepScripts && [];
 		parsed = jQuery.buildFragment( [ data ], context, scripts );
 		if ( scripts ) {
 			jQuery( scripts ).remove();
 		}
 		return jQuery.merge( [],
-			(parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment).childNodes );
+			( parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment ).childNodes );
 	},
 
 	parseJSON: function( data ) {
