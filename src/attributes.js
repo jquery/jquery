@@ -568,12 +568,14 @@ if ( !jQuery.support.hrefNormalized ) {
 		});
 	});
 
-	// link's href property should get the full normalized URL (#10299)
-	jQuery.propHooks.href = {
-		get: function( elem, name ) {
-			return elem.getAttribute( name, 4 );
-		}
-	};
+	// href/src property should get the full normalized URL (#10299/#12915)
+	jQuery.each([ "href", "src" ], function( i, name ) {
+		jQuery.propHooks[ name ] = {
+			get: function( elem ) {
+				return elem.getAttribute( name, 4 );
+			}
+		};
+	});
 }
 
 if ( !jQuery.support.style ) {
