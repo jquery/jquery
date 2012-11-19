@@ -16,6 +16,7 @@ var
 	_$ = window.$,
 
 	// Save a reference to some core methods
+	core_concat = Array.prototype.concat,
 	core_push = Array.prototype.push,
 	core_slice = Array.prototype.slice,
 	core_indexOf = Array.prototype.indexOf,
@@ -472,26 +473,31 @@ jQuery.extend({
 
 	// data: string of html
 	// context (optional): If specified, the fragment will be created in this context, defaults to document
-	// scripts (optional): If true, will include scripts passed in the html string
-	parseHTML: function( data, context, scripts ) {
-		var parsed;
+	// keepScripts (optional): If true, will include scripts passed in the html string
+	parseHTML: function( data, context, keepScripts ) {
 		if ( !data || typeof data !== "string" ) {
 			return null;
 		}
 		if ( typeof context === "boolean" ) {
-			scripts = context;
-			context = 0;
+			keepScripts = context;
+			context = false;
 		}
 		context = context || document;
 
+		var parsed = rsingleTag.exec( data ),
+			scripts = !keepScripts && [];
+
 		// Single tag
-		if ( (parsed = rsingleTag.exec( data )) ) {
+		if ( parsed ) {
 			return [ context.createElement( parsed[1] ) ];
 		}
 
-		parsed = jQuery.buildFragment( [ data ], context, scripts ? null : [] );
+		parsed = jQuery.buildFragment( [ data ], context, scripts );
+		if ( scripts ) {
+			jQuery( scripts ).remove();
+		}
 		return jQuery.merge( [],
-			(parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment).childNodes );
+			( parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment ).childNodes );
 	},
 
 	parseJSON: function( data ) {
@@ -744,7 +750,7 @@ jQuery.extend({
 		}
 
 		// Flatten any nested arrays
-		return ret.concat.apply( [], ret );
+		return core_concat.apply( [], ret );
 	},
 
 	// A global GUID counter for objects
