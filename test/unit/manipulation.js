@@ -451,35 +451,19 @@ test("append(Function)", function() {
 });
 
 test("append(param) to object, see #11280", function() {
-	expect(11);
+	expect( 5 );
 
-	var objectElement = document.createElement("object"),
-		$objectElement = jQuery( objectElement ),
-		paramElement = jQuery("<param type='wmode' value='transparent'/>"),
-		paramElement2 = jQuery("<param name='' type='wmode2' value='transparent2' />"),
-		paramElement3 = jQuery("<param type='wmode' name='foo' >"),
-		newObject = jQuery("<object><param type='foo' ><param name='' value='foo2'/><param type='baz' name='bar'></object>");
+	var object = jQuery( document.createElement("object") ).appendTo( document.body );
 
-	equal( objectElement.childNodes.length, 0, "object did not have childNodes previously" );
+	equal( object.children().length, 0, "object does not start with children" );
 
-	document.body.appendChild( objectElement );
+	object.append( jQuery("<param type='wmode' name='foo'>") );
+	equal( object.children().length, 1, "appended param" );
+	equal( object.children().eq(0).attr("name"), "foo", "param has name=foo" );
 
-	$objectElement.append( paramElement );
-	equal( $objectElement.children().length, 1, "param single insertion ok" );
-	equal( jQuery(objectElement.childNodes[0]).attr("type"), "wmode", "param.eq(0) has type=wmode" );
-
-	$objectElement.html( paramElement2 );
-	equal( $objectElement.children().length, 1, "param single insertion ok" );
-	equal( jQuery(objectElement.childNodes[0]).attr("type"), "wmode2", "param.eq(0) has type=wmode2" );
-
-	$objectElement.html( paramElement3 );
-	equal( $objectElement.children().length, 1, "param single insertion ok" );
-	equal( jQuery(objectElement.childNodes[0]).attr("name"), "foo", "param.eq(0) has name=foo" );
-
-	equal( newObject.children().length, 3, "param wrapper multiple insertion ok" );
-	equal( newObject.children().eq(0).attr("type"), "foo", "param.eq(0) has type=foo" );
-	equal( newObject.children().eq(1).attr("value"), "foo2", "param.eq(1) has value=foo2" );
-	equal( newObject.children().eq(2).attr("name"), "bar", "param.eq(2) has name=bar" );
+	object = jQuery("<object><param type='baz' name='bar'></object>");
+	equal( object.children().length, 1, "object created with child param" );
+	equal( object.children().eq(0).attr("name"), "bar", "param has name=bar" );
 });
 
 test("append(Function) with incoming value", function() {

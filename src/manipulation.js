@@ -32,43 +32,23 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 		legend: [ 1, "<fieldset>", "</fieldset>" ],
+		area: [ 1, "<map>", "</map>" ],
+		param: [ 1, "<object>", "</object>" ],
 		thead: [ 1, "<table>", "</table>" ],
 		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
-		area: [ 1, "<map>", "</map>" ],
-		_default: [ 0, "", "" ]
+		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+
+		// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
+		// unless wrapped in a div with non-breaking characters in front of it.
+		_default: jQuery.support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "" ]
 	},
 	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") ),
-	addMandatoryAttributes = function( elem ) { return elem; };
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
-
-// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
-// unless wrapped in a div with non-breaking characters in front of it.
-if ( !jQuery.support.htmlSerialize ) {
-	wrapMap._default = [ 1, "X<div>", "" ];
-	// Fixes #11280
-	wrapMap.param = [ 1, "X<object>", "" ];
-	// Fixes #11280. HTMLParam name attribute added to avoid IE6-8 parsing issue.
-	addMandatoryAttributes = function( elem ) {
-		// If it's a param
-		return elem.replace(/<param([^>]*)>/gi, function( m, s1, offset ) {
-			var name = s1.match( /name=["']([^"']*)["']/i );
-			return name ?
-				( name[1].length ?
-				// It has a name attr with a value
-				"<param" + s1 + ">" :
-				// It has name attr without a value
-				"<param" + s1.replace( name[0], "name='_" + offset +  "'" ) + ">" ) :
-				// No name attr
-				"<param name='_" + offset +  "' " + s1 + ">";
-		});
-	};
-}
 
 jQuery.fn.extend({
 	text: function( value ) {
@@ -733,7 +713,7 @@ jQuery.extend({
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[1] + addMandatoryAttributes( elem.replace( rxhtmlTag, "<$1></$2>" ) ) + wrap[2];
+					tmp.innerHTML = wrap[1] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[2];
 
 					// Descend through wrappers to the right content
 					j = wrap[0];
