@@ -2831,6 +2831,35 @@ test("clone() delegated events (#11076)", function() {
 	clone.remove();
 });
 
+test("checkbox state (#3827)", function() {
+	expect( 9 );
+
+	var markup = jQuery("<div><input type=checkbox><div>").appendTo("#qunit-fixture"),
+		cb = markup.find("input")[0];
+
+	jQuery(cb).on( "click", function(){
+		equal( this.checked, false, "just-clicked checkbox is not checked" );
+	});
+	markup.on( "click", function(){
+		equal( cb.checked, false, "checkbox is not checked in bubbled event" );
+	});
+
+	// Native click
+	cb.checked = true;
+	equal( cb.checked, true, "native - checkbox is initially checked" );
+	cb.click();
+	equal( cb.checked, false, "native - checkbox is no longer checked" );
+
+	// jQuery click
+	cb.checked = true;
+	equal( cb.checked, true, "jQuery - checkbox is initially checked" );
+	jQuery( cb ).click();
+	equal( cb.checked, false, "jQuery - checkbox is no longer checked" );
+
+	// Handlers only; checkbox state remains false
+	jQuery( cb ).triggerHandler( "click" );
+});
+
 test("fixHooks extensions", function() {
 	expect( 2 );
 

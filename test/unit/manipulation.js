@@ -100,7 +100,7 @@ var testWrap = function(val) {
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		jQuery(checkbox).wrap(val( "<div id='c1' style='display:none;'></div>" ));
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
-	}).click();
+	}).prop( "checked", false )[0].click();
 
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();

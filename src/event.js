@@ -263,7 +263,7 @@ jQuery.event = {
 
 		// Allow special events to draw outside the lines
 		special = jQuery.event.special[ type ] || {};
-		if ( special.trigger && special.trigger.apply( elem, data ) === false ) {
+		if ( !onlyHandlers && special.trigger && special.trigger.apply( elem, data ) === false ) {
 			return;
 		}
 
@@ -523,7 +523,15 @@ jQuery.event = {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
-
+		click: {
+			// For checkbox, fire native event so checked state will be right
+			trigger: function() {
+				if ( jQuery.nodeName( this, "input") && this.type === "checkbox" && this.click ) {
+					this.click();
+					return false;
+				}
+			}
+		},
 		focus: {
 			delegateType: "focusin"
 		},
