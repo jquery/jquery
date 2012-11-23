@@ -2860,6 +2860,50 @@ test("checkbox state (#3827)", function() {
 	jQuery( cb ).triggerHandler( "click" );
 });
 
+test("focus-blur order (#12868)", function() {
+	expect( 5 );
+
+	var $text = jQuery("#text1"),
+		$radio = jQuery("#radio1").focus(),
+		order;
+
+	// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+	// IE's browser window must be topmost for this to work properly!!
+	stop();
+	$radio[0].focus();
+
+	setTimeout( function() {
+
+		$text
+			.on( "focus", function(){
+				equal( order++, 1, "text focus" );
+			})
+			.on( "blur", function(){
+				equal( order++, 0, "text blur" );
+			});
+		$radio
+			.on( "focus", function(){
+				equal( order++, 1, "radio focus" );
+			})
+			.on( "blur", function(){
+				equal( order++, 0, "radio blur" );
+			});
+
+		// Enabled input getting focus
+		order = 0;
+		equal( document.activeElement, $radio[0], "radio has focus" );
+		$text.focus();
+		setTimeout( function() {
+			equal( document.activeElement, $text[0], "text has focus" );
+
+			// Run handlers without native method on an input
+			order = 1;
+			$radio.triggerHandler( "focus" );
+			start();
+		}, 50 );
+	}, 50 );
+});
+
 test("fixHooks extensions", function() {
 	expect( 2 );
 

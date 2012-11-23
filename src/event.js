@@ -526,16 +526,34 @@ jQuery.event = {
 		click: {
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
-				if ( jQuery.nodeName( this, "input") && this.type === "checkbox" && this.click ) {
+				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
 					this.click();
 					return false;
 				}
 			}
 		},
 		focus: {
+			// Fire native event if possible so blur/focus sequence is correct
+			trigger: function() {
+				if ( this !== document.activeElement && this.focus ) {
+					try {
+						this.focus();
+						return false;
+					} catch ( e ) {
+						// IE<9 dies on focus to hidden element (#1486,#12518)
+						// If this happens, let .trigger() run the handlers
+					}
+				}
+			},
 			delegateType: "focusin"
 		},
 		blur: {
+			trigger: function() {
+				if ( this === document.activeElement && this.blur ) {
+					this.blur();
+					return false;
+				}
+			},
 			delegateType: "focusout"
 		},
 
