@@ -253,38 +253,24 @@ jQuery.fn.extend({
 		var self = this,
 			isFunc = jQuery.isFunction( value );
 
-		// Make sure that the elements are removed from the DOM before they are inserted
-		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" ) {
-			value = jQuery( value ).detach();
-		}
-
-		this.each( function( i ) {
-			var next = this.nextSibling,
-				parent = this.parentNode,
-				// HTML argument replaced by "this" element
-				// 1. There were no supporting tests
-				// 2. There was no internal code relying on this
-				// 3. There was no documentation of an html argument
+		return this.each(function( i ) {
+			var parsed,
 				val = !isFunc ? value : value.call( this, i, this );
 
 			if ( isDisconnected( this ) ) {
 				// for disconnected elements, we replace with the new content in the set. We use
 				// clone here to ensure that each replaced instance is unique
-				self[ i ] = jQuery( val ).clone()[ 0 ];
-				return;
+				return self[ i ] = jQuery( val ).clone()[ 0 ];
 			}
 
-			jQuery( this ).remove();
-
-			if ( next ) {
-				jQuery( next ).before( val );
-			} else {
-				jQuery( parent ).append( val );
+			if ( !val || !val.nodeType ) {
+				parsed = jQuery.buildFragment( [ val ], this );
+				val = parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment;
 			}
+
+			jQuery.cleanData( getAll( this ) );
+			this.parentNode.replaceChild( val, this );
 		});
-
-		return this;
 	},
 
 	detach: function( selector ) {
