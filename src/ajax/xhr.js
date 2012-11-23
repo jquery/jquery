@@ -1,12 +1,13 @@
-var xhrCallbacks,
+var xhrCallbacks, xhrSupported,
+	xhrId = 0,
 	// #5280: Internet Explorer will keep connections alive if we don't abort on unload
-	xhrOnUnloadAbort = window.ActiveXObject ? function() {
+	xhrOnUnloadAbort = window.ActiveXObject && function() {
 		// Abort all pending requests
-		for ( var key in xhrCallbacks ) {
-			xhrCallbacks[ key ]( 0, 1 );
+		var key;
+		for ( key in xhrCallbacks ) {
+			xhrCallbacks[ key ]( undefined, true );
 		}
-	} : false,
-	xhrId = 0;
+	};
 
 // Functions to create xhrs
 function createStandardXHR() {
@@ -17,7 +18,7 @@ function createStandardXHR() {
 
 function createActiveXHR() {
 	try {
-		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
+		return new window.ActiveXObject("Microsoft.XMLHTTP");
 	} catch( e ) {}
 }
 
@@ -37,15 +38,12 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	createStandardXHR;
 
 // Determine support properties
-(function( xhr ) {
-	jQuery.extend( jQuery.support, {
-		ajax: !!xhr,
-		cors: !!xhr && ( "withCredentials" in xhr )
-	});
-})( jQuery.ajaxSettings.xhr() );
+xhrSupported = jQuery.ajaxSettings.xhr();
+jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+xhrSupported = jQuery.support.ajax = !!xhrSupported;
 
 // Create transport if the browser can provide an xhr
-if ( jQuery.support.ajax ) {
+if ( xhrSupported ) {
 
 	jQuery.ajaxTransport(function( s ) {
 		// Cross domain only allowed if supported through XMLHttpRequest
@@ -86,7 +84,7 @@ if ( jQuery.support.ajax ) {
 					// (it can always be set on a per-request basis or even using ajaxSetup)
 					// For same-domain requests, won't change header if already provided.
 					if ( !s.crossDomain && !headers["X-Requested-With"] ) {
-						headers[ "X-Requested-With" ] = "XMLHttpRequest";
+						headers["X-Requested-With"] = "XMLHttpRequest";
 					}
 
 					// Need an extra try/catch for cross domain requests in Firefox 3
@@ -136,10 +134,10 @@ if ( jQuery.support.ajax ) {
 										xhr.abort();
 									}
 								} else {
-									status = xhr.status;
-									responseHeaders = xhr.getAllResponseHeaders();
 									responses = {};
+									status = xhr.status;
 									xml = xhr.responseXML;
+									responseHeaders = xhr.getAllResponseHeaders();
 
 									// Construct response list
 									if ( xml && xml.documentElement /* #4958 */ ) {
@@ -211,7 +209,7 @@ if ( jQuery.support.ajax ) {
 
 				abort: function() {
 					if ( callback ) {
-						callback(0,1);
+						callback( undefined, true );
 					}
 				}
 			};
