@@ -2904,6 +2904,17 @@ test("focus-blur order (#12868)", function() {
 	}, 50 );
 });
 
+test("hover event no longer special since 1.9", function() {
+	expect( 1 );
+
+	jQuery("<div>craft</div>")
+		.on( "hover", function( e ) {
+			equal( e.type, "hover", "I am hovering!" );
+		})
+		.trigger("hover")
+		.off("hover");
+});
+
 test("fixHooks extensions", function() {
 	expect( 2 );
 
