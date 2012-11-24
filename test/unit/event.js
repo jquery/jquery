@@ -2650,7 +2650,7 @@ test(".on and .off", function() {
 		counter += (e.data || 0) + (trig || 1);
 	};
 	jQuery( "#onandoff" )
-		.on( "click clack cluck", "em", 2, mixfn )
+		.on( " click  clack cluck ", "em", 2, mixfn )
 		.on( "cluck", "b", 7, mixfn )
 		.on( "cluck", mixfn )
 		.trigger( "what!" )
