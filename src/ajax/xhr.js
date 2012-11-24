@@ -44,6 +44,9 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 	});
 })( jQuery.ajaxSettings.xhr() );
 
+// List of simple http headers. http://www.w3.org/TR/cors/
+var simpleHTTPHeaders = ["Cache-Control", "Content-Language", "Content-Type", "Expires", "Last-Modified", "Pragma"];
+
 // Create transport if the browser can provide an xhr
 if ( jQuery.support.ajax ) {
 
@@ -138,6 +141,33 @@ if ( jQuery.support.ajax ) {
 								} else {
 									status = xhr.status;
 									responseHeaders = xhr.getAllResponseHeaders();
+
+									/* #10338 */
+									if ( s.crossDomain && !responseHeaders ) {
+										/* Access-Control-Expose-Headers MUST be exposed by itself */
+										var exposeHeader = xhr.getResponseHeader("Access-Control-Expose-Headers"),
+											exposedHeaders = [];
+
+										if ( exposeHeader ) {
+											exposedHeaders = jQuery.map(
+												exposeHeader.split(','),
+												function(token) {
+													return jQuery.trim(token);
+												}
+											);
+										}
+
+										var headers = simpleHTTPHeaders.concat(exposedHeaders);
+
+										jQuery.each(headers, function(i, header) {
+											var value = xhr.getResponseHeader(header);
+
+											if (value) {
+												responseHeaders += header + ": " + value + "\n";
+											}
+										});
+									}
+																		
 									responses = {};
 									xml = xhr.responseXML;
 
