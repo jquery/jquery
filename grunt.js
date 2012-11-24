@@ -126,10 +126,20 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( "grunt-update-submodules" );
 
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
-		var testswarm = require( "testswarm" ),
+		var jobName,
+			testswarm = require( "testswarm" ),
 			testUrls = [],
+			pull = /PR-(\d+)/.exec( commit ),
 			config = grunt.file.readJSON( configFile ).jquery,
 			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue serialize support traversing Sizzle".split(" ");
+
+		if ( pull ) {
+			jobName = "jQuery Pull Request <a href='https://github.com/jquery/jquery/pull/" +
+				pull[ 2 ] + "'>#" + pull[ 2 ] + "</a>";
+		} else {
+			jobName = "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" +
+				commit + "'>" + commit.substr( 0, 10 ) + "</a>";
+		}
 
 		tests.forEach(function( test ) {
 			testUrls.push( config.testUrl + commit + "/test/index.html?module=" + test );
@@ -143,7 +153,7 @@ module.exports = function( grunt ) {
 		}, {
 			authUsername: config.authUsername,
 			authToken: config.authToken,
-			jobName: "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" + commit + "'>" + commit.substr( 0, 10 ) + "</a>",
+			jobName: jobName,
 			runMax: config.runMax,
 			"runNames[]": tests,
 			"runUrls[]": testUrls,
