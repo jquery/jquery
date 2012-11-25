@@ -2479,7 +2479,7 @@
 				ok( true, "file not found: " + xhr.status + " => " + e );
 			},
 			complete: function() {
-				if ( !(--i) ) {
+				if ( !--i ) {
 					start();
 				}
 			}
@@ -2500,7 +2500,7 @@
 				ok( true, "access denied: " + xhr.status + " => " + e );
 			},
 			complete: function() {
-				if ( !(--i) ) {
+				if ( !--i ) {
 					start();
 				}
 			}
