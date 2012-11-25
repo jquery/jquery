@@ -232,7 +232,7 @@ var Globals = (function() {
 				// Since this method was called it means some data was
 				// expected to be found, but since there is nothing, fail early
 				// (instead of in teardown).
-				notStrictEqual( expando, undefined, 'Target for expectJqData must have an expando, for else there can be no data to expect.' );
+				notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
 			} else {
 				if ( expectedDataKeys[expando] ) {
 					expectedDataKeys[expando].push( key );
@@ -243,9 +243,9 @@ var Globals = (function() {
 		}
 	};
 	QUnit.config.urlConfig.push( {
-		id: 'jqdata',
-		label: 'Always check jQuery.data',
-		tooltip: 'Trigger "QUnit.expectJqData" detection for all tests instead of just the ones that call it'
+		id: "jqdata",
+		label: "Always check jQuery.data",
+		tooltip: "Trigger QUnit.expectJqData detection for all tests instead of just the ones that call it"
 	} );
 
 	/**
@@ -265,14 +265,14 @@ var Globals = (function() {
 				expectedKeys = expectedDataKeys[i];
 				actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
 				if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
-					deepEqual( actualKeys, expectedKeys, 'Expected keys exist in jQuery.cache' );
+					deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
 				}
 				delete jQuery.cache[i];
 				delete expectedDataKeys[i];
 			}
 			// In case it was removed from cache before (or never there in the first place)
 			for ( i in expectedDataKeys ) {
-				deepEqual( expectedDataKeys[i], undefined, 'No unexpected keys were left in jQuery.cache (#' + i + ')' );
+				deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
 				delete expectedDataKeys[i];
 			}
 		}
@@ -359,5 +359,5 @@ QUnit.config.requireExpects = true;
 		return;
 	}
 
-	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
+	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() + "'></scr" + "ipt>");
 })();

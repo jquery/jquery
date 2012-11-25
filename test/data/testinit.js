@@ -1,4 +1,4 @@
-/*jshint multistr:true */
+/*jshint multistr:true, quotmark:false */
 
 var amdDefined, fireNative,
 	originaljQuery = this.jQuery || "jQuery",
@@ -207,7 +207,7 @@ function ajaxTest( title, expect, options ) {
 			}
 		};
 	});
-};
+}
 
 (function () {
 
