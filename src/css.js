@@ -212,7 +212,8 @@ jQuery.extend({
 				value += "px";
 			}
 
-			// Fixes #8908
+			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
+			// but it would mean to define eight (for every problematic property) identical functions
 			if ( value === "" && name.indexOf("background") === 0 ) {
 				value = " ";
 			}
