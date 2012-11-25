@@ -135,7 +135,7 @@ module.exports = function( grunt ) {
 
 		if ( pull ) {
 			jobName = "jQuery Pull Request <a href='https://github.com/jquery/jquery/pull/" +
-				pull[ 2 ] + "'>#" + pull[ 2 ] + "</a>";
+				pull[ 1 ] + "'>#" + pull[ 1 ] + "</a>";
 		} else {
 			jobName = "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" +
 				commit + "'>" + commit.substr( 0, 10 ) + "</a>";
