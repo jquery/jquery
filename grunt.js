@@ -2,7 +2,6 @@
  * Resources
  *
  * https://gist.github.com/2489540
- *
  */
 
 module.exports = function( grunt ) {
@@ -82,7 +81,8 @@ module.exports = function( grunt ) {
 		lint: {
 			dist: "dist/jquery.js",
 			grunt: "grunt.js",
-			tests: "test/unit/**/*.js"
+			// TODO: Once .jshintignore is supported, use that instead.
+			tests: ["test/data/{test,testinit,testrunner}.js", "test/unit/**/*.js"]
 		},
 
 		jshint: (function() {
@@ -91,9 +91,15 @@ module.exports = function( grunt ) {
 			}
 
 			return {
-				grunt: jshintrc(),
-				dist: jshintrc( "src/" ),
-				tests: jshintrc( "test/" )
+				grunt: {
+					options: jshintrc()
+				},
+				dist: {
+					options: jshintrc( "src/" )
+				},
+				tests: {
+					options: jshintrc( "test/" )
+				}
 			};
 		})(),
 
