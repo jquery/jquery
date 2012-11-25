@@ -2244,30 +2244,10 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 		});
 	});
 
-	asyncTest( "jQuery.ajax - Locally defined method or type overrides globally defined method or type", function() {
-		expect( 4 );
+	asyncTest( "jQuery.ajax - Locally defined method/type overrides globally defined type", function() {
+		expect( 2 );
 
-		jQuery.ajaxSetup({
-			method: "GET",
-			url: url("data/requestSpecific.php"),
-			data: "name=peter"
-		});
-
-		jQuery.ajax({
-			type: "POST",
-			success: function( msg ) {
-				equal( msg, "pan", "Check that local type setting overrides global method setting." );
-				start();
-			}
-		});
-
-		jQuery.ajax({
-			method: "POST",
-			success: function( msg ) {
-				equal( msg, "pan", "Check that local method setting overrides global method setting." );
-				start();
-			}
-		});
+		var oldAjaxLocation = jQuery.ajaxSetup().url
 
 		jQuery.ajaxSetup({
 			type: "GET",
@@ -2275,20 +2255,58 @@ if ( jQuery.ajax && ( !isLocal || hasPHP ) ) {
 			data: "name=peter"
 		});
 
-		jQuery.ajax({
-			type: "POST",
-			success: function( msg ) {
-				equal( msg, "pan", "Check that local type setting overrides global type setting." );
-				start();
-			}
+		jQuery.when(
+			jQuery.ajax({ method: "POST" }).done(function( data ) {
+				equal( data, "pan", "Seems like the local method isn't overriding the globally defined type." );
+			}).fail(function() {
+				ok( false, "error" );
+			}),
+
+			jQuery.ajax({ type: "POST" }).done(function( data ) {
+				equal( data, "pan", "Seems like the local type isn't overriding the globally defined type." );
+			}).fail(function() {
+				ok( false, "error" );
+			})
+		).always(function() {
+			jQuery.ajaxSetup({
+				url: oldAjaxLocation,
+				data: null
+			});
+
+			start();
+		});
+	});
+
+	asyncTest( "jQuery.ajax - Locally defined method/type overrides globablly defined method", function() {
+		expect( 2 );
+
+		var oldAjaxLocation = jQuery.ajaxSetup().url
+
+		jQuery.ajaxSetup({
+			method: "GET",
+			url: url("data/requestSpecific.php"),
+			data: "name=peter"
 		});
 
-		jQuery.ajax({
-			method: "POST",
-			success: function( msg ) {
-				equal( msg, "pan", "Check that local method setting overrides global type setting." );
-				start();
-			}
+		jQuery.when(
+			jQuery.ajax({ method: "POST" }).done(function( data ) {
+				equal( data, "pan", "Seems like the local method isn't overriding the globally defined type." );
+			}).fail(function() {
+				ok( false, "error" );
+			}),
+
+			jQuery.ajax({ type: "POST" }).done(function( data ) {
+				equal( data, "pan", "Seems like the local type isn't overriding the globally defined type." );
+			}).fail(function() {
+				ok( false, "error" );
+			})
+		).always(function() {
+			jQuery.ajaxSetup({
+				url: oldAjaxLocation,
+				data: null
+			});
+
+			start();
 		});
 	});
 
