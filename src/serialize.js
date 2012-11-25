@@ -1,8 +1,9 @@
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
-	rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i,
-	rselectTextarea = /^(?:select|textarea)/i;
+	rcheckTypes = /^(?:checkbox|radio)$/i,
+	rsubmitterTypes = /^(?:submit|button|image|reset)$/i,
+	rsubmittable = /^(?:select|textarea|input|keygen)/i;
 
 jQuery.fn.extend({
 	serialize: function() {
@@ -10,12 +11,16 @@ jQuery.fn.extend({
 	},
 	serializeArray: function() {
 		return this.map(function(){
-			return this.elements ? jQuery.makeArray( this.elements ) : this;
+			// Can add propHook for "elements" to filter or add form elements
+			var elements = jQuery.prop( this, "elements" );
+			return elements ? jQuery.makeArray( elements ) : this;
 		})
 		.filter(function(){
-			return this.name && !this.disabled &&
-				( this.checked || rselectTextarea.test( this.nodeName ) ||
-					rinput.test( this.type ) );
+			var type = this.type;
+			// Use .is(":disabled") so that fieldset[disabled] works
+			return this.name && !jQuery( this ).is( ":disabled" ) &&
+				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
+				( this.checked || !rcheckTypes.test( type ) );
 		})
 		.map(function( i, elem ){
 			var val = jQuery( this ).val();
@@ -77,13 +82,7 @@ function buildParams( prefix, obj, traditional, add ) {
 				add( prefix, v );
 
 			} else {
-				// If array item is non-scalar (array or object), encode its
-				// numeric index to resolve deserialization ambiguity issues.
-				// Note that rack (as of 1.0.0) can't currently deserialize
-				// nested arrays properly, and attempting to do so may cause
-				// a server error. Possible fixes are to modify rack's
-				// deserialization algorithm or to provide an option or flag
-				// to force array serialization to be shallow.
+				// Item is non-scalar (array or object), encode its numeric index.
 				buildParams( prefix + "[" + ( typeof v === "object" ? i : "" ) + "]", v, traditional, add );
 			}
 		});
