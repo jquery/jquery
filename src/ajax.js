@@ -426,6 +426,9 @@ jQuery.extend({
 				}
 			};
 
+		// Alias method option to type as per ticket #12004.
+		s.type = options.method || options.type || s.method || s.type;
+
 		// Callback for when everything is done
 		// It is defined here because jslint complains if it is declared
 		// at the end of the function (which would be more logical and readable)
