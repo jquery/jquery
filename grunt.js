@@ -134,7 +134,7 @@ module.exports = function( grunt ) {
 			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue serialize support traversing Sizzle".split(" ");
 
 		if ( pull ) {
-			jobName = "jQuery Pull Request <a href='https://github.com/jquery/jquery/pull/" +
+			jobName = "jQuery pull <a href='https://github.com/jquery/jquery/pull/" +
 				pull[ 1 ] + "'>#" + pull[ 1 ] + "</a>";
 		} else {
 			jobName = "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" +
