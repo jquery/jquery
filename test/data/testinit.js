@@ -144,75 +144,55 @@ function url( value ) {
 }
 
 // Ajax testing helper
-var ajaxTest = (function() {
-	
-	var resolved = $.Deferred().resolve();
-	
-	function getRequests( options ) {
-		var requests = options.requests || options.request || options || [];
-		if ( !jQuery.isArray(requests) ) {
-			requests = [ requests ];
-		}
-		return requests;
+function ajaxTest( title, expect, options ) {
+	var requestOptions;
+	if ( jQuery.isFunction( options ) ) {
+		options = options();
 	}
-		
-	return function( title, expect, options ) {
-		if ( jQuery.isFunction(options) ) {
-			options = options();
+	options = options || [];
+	requestOptions = options.requests || options.request || options;
+	if ( !jQuery.isArray( requestOptions ) ) {
+		requestOptions = [ requestOptions ];
+	}
+	asyncTest( title, expect, function() {
+		if ( options.setup ) {
+			options.setup();
 		}
-		options = options || [];
-		asyncTest( title, expect, function() {
-			setTimeout(function() {
-				if ( options.setup ) {
-					options.setup();
-				}
-				var ajaxSettings = jQuery.ajaxSetup( {}, {} );
-					aborted = false,
-					abort = function( reason ) {
-						if ( !aborted ) {
-							aborted = true;
-							ok( false, "unexpected " + reason );
-							jQuery.each( requests, function( _, request ) {
-								request.abort();
-							});
-						}
-					},
-					requestOptions = getRequests( options ),
-					requests = jQuery.map( requestOptions, function( options ) {
-						var request = ( options.create || jQuery.ajax )( options );
-						if ( options.afterSend ) {
-							options.afterSend( request );
-						}
-						return request;
+		var aborted = false,
+			abort = function( reason ) {
+				if ( !aborted ) {
+					aborted = true;
+					ok( false, "unexpected " + reason );
+					jQuery.each( requests, function( _, request ) {
+						request.abort();
 					});
-				requests = jQuery.map( requests, function( request, index ) {
-					function callIfDefined( type, type2 ) {
-						var handler = requestOptions[ index ][ type ] || !!requestOptions[ index ][ type2 ];
-						return handler ? function() {
-							if ( !aborted && jQuery.isFunction( handler ) ) {
-								handler.apply( this, arguments );
-							}
-							return resolved;
-						} : function() {
-							abort( type );
-							return resolved;
-						}
+				}
+			},
+			requests = jQuery.map( requestOptions, function( options ) {
+				var request = ( options.create || jQuery.ajax )( options );
+				if ( options.afterSend ) {
+					options.afterSend( request );
+				}
+				return request;
+			});
+		jQuery.when.apply( jQuery, jQuery.map( requests, function( request, index ) {
+			function callIfDefined( deferType, optionType ) {
+				var handler = requestOptions[ index ][ deferType ] || !!requestOptions[ index ][ optionType ];
+				return handler ? function() {
+					if ( !aborted && jQuery.isFunction( handler ) ) {
+						handler.apply( this, arguments );
 					}
-					var promise = request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
-					promise.abort = request.abort;
-					return promise;
-				});
-				jQuery.when.apply( jQuery, requests ).done(
-					options.teardown,
-					function() {
-						jQuery.ajaxSetup( ajaxSettings );
-						setTimeout( start, 0 );
-					}
-				);
-			}, 0 );
-		});
-	};
-})();
+				} : function() {
+					abort( optionType );
+				}
+			}
+			return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
+		}) ).always(
+			options.teardown,
+			start
+		);
+	});
+};
 
 (function () {
 
