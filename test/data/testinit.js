@@ -143,6 +143,57 @@ function url( value ) {
 	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
 }
 
+// Ajax testing helper
+function ajaxTest( title, expect, options ) {
+	var requestOptions;
+	if ( jQuery.isFunction( options ) ) {
+		options = options();
+	}
+	options = options || [];
+	requestOptions = options.requests || options.request || options;
+	if ( !jQuery.isArray( requestOptions ) ) {
+		requestOptions = [ requestOptions ];
+	}
+	asyncTest( title, expect, function() {
+		if ( options.setup ) {
+			options.setup();
+		}
+		var aborted = false,
+			abort = function( reason ) {
+				if ( !aborted ) {
+					aborted = true;
+					ok( false, "unexpected " + reason );
+					jQuery.each( requests, function( _, request ) {
+						request.abort();
+					});
+				}
+			},
+			requests = jQuery.map( requestOptions, function( options ) {
+				var request = ( options.create || jQuery.ajax )( options );
+				if ( options.afterSend ) {
+					options.afterSend( request );
+				}
+				return request;
+			});
+		jQuery.when.apply( jQuery, jQuery.map( requests, function( request, index ) {
+			function callIfDefined( deferType, optionType ) {
+				var handler = requestOptions[ index ][ deferType ] || !!requestOptions[ index ][ optionType ];
+				return handler ? function() {
+					if ( !aborted && jQuery.isFunction( handler ) ) {
+						handler.apply( this, arguments );
+					}
+				} : function() {
+					abort( optionType );
+				}
+			}
+			return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
+		}) ).always(
+			options.teardown,
+			start
+		);
+	});
+};
+
 (function () {
 
 	this.testIframe = function( fileName, name, fn ) {
