@@ -8,7 +8,7 @@ var curCSS, iframe, iframeDoc,
 	rmargin = /^margin/,
 	rnumsplit = new RegExp( "^(" + core_pnum + ")(.*)$", "i" ),
 	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ),
-	rrelNum = new RegExp( "^([-+])=(" + core_pnum + ")", "i" ),
+	rrelNum = new RegExp( "^([+-])=(" + core_pnum + ")", "i" ),
 	elemdisplay = { BODY: "block" },
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },

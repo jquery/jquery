@@ -1,9 +1,8 @@
-var rformElems = /^(?:textarea|input|select)$/i,
-	rtypenamespace = /^([^\.]*|)(?:\.(.+)|)$/,
-	reventTypes = /\S+/g,
+var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
-	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
+	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
 
 /*
  * Helper functions for managing events -- not part of the public interface.
@@ -13,8 +12,9 @@ jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
 		var elemData, eventHandle, events,
-			t, tns, type, namespaces, handleObj,
-			handleObjIn, handlers, special;
+			tns, type, namespaces, handleObj,
+			handleObjIn, handlers, special,
+			t = 0;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
 		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
@@ -53,8 +53,8 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = (types || "").match( reventTypes ) || [""];
-		for ( t = 0; t < types.length; t++ ) {
+		types = ( types || "" ).match( core_rnotwhite ) || [""];
+		for ( ; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];
@@ -127,8 +127,9 @@ jQuery.event = {
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
-		var t, tns, type, origType, namespaces, origCount,
+		var tns, type, origType, namespaces, origCount,
 			j, events, special, eventType, handleObj,
+			t = 0,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem );
 
 		if ( !elemData || !(events = elemData.events) ) {
@@ -136,8 +137,8 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = (types || "").match( reventTypes ) || [""];
-		for ( t = 0; t < types.length; t++ ) {
+		types = ( types || "" ).match( core_rnotwhite ) || [""];
+		for ( ; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tns[1];
 			namespaces = tns[2];
