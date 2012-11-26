@@ -134,6 +134,31 @@ function testSubproject( label, url, risTests ) {
 	}
 }
 
+// Register globals for cleanup and the cleanup code itself
+// Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
+var Globals = (function() {
+	var globals = {};
+	return QUnit.config.noglobals ? {
+		register: function( name ) {
+			globals[ name ] = true;
+			jQuery.globalEval( "var " + name );
+		},
+		cleanup: function() {
+			var name,
+				current = globals;
+			globals = {};
+			for ( name in current ) {
+				jQuery.globalEval( "try { " +
+					"delete " + ( jQuery.support.deleteExpando ? "window['" + name + "']" : name ) +
+				"; } catch( x ) {}" );
+			}
+		}
+	} : {
+		register: jQuery.noop,
+		cleanup: jQuery.noop
+	};
+})();
+
 /**
  * QUnit hooks
  */
@@ -292,10 +317,13 @@ function testSubproject( label, url, risTests ) {
 		// Reset internal jQuery state
 		jQuery.event.global = {};
 		if ( ajaxSettings ) {
-			jQuery.ajaxSettings = jQuery.extend( {}, ajaxSettings );
+			jQuery.ajaxSettings = jQuery.extend( true, {}, ajaxSettings );
 		} else {
 			delete jQuery.ajaxSettings;
 		}
+		
+		// Cleanup globals
+		Globals.cleanup();
 
 		// Let QUnit reset the fixture
 		reset.apply( this, arguments );

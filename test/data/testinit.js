@@ -143,6 +143,77 @@ function url( value ) {
 	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
 }
 
+// Ajax testing helper
+var ajaxTest = (function() {
+	
+	var resolved = $.Deferred().resolve();
+	
+	function getRequests( options ) {
+		var requests = options.requests || options.request || options || [];
+		if ( !jQuery.isArray(requests) ) {
+			requests = [ requests ];
+		}
+		return requests;
+	}
+		
+	return function( title, expect, options ) {
+		if ( jQuery.isFunction(options) ) {
+			options = options();
+		}
+		options = options || [];
+		asyncTest( title, expect, function() {
+			setTimeout(function() {
+				if ( options.setup ) {
+					options.setup();
+				}
+				var ajaxSettings = jQuery.ajaxSetup( {}, {} );
+					aborted = false,
+					abort = function( reason ) {
+						if ( !aborted ) {
+							aborted = true;
+							ok( false, "unexpected " + reason );
+							jQuery.each( requests, function( _, request ) {
+								request.abort();
+							});
+						}
+					},
+					requestOptions = getRequests( options ),
+					requests = jQuery.map( requestOptions, function( options ) {
+						var request = ( options.create || jQuery.ajax )( options );
+						if ( options.afterSend ) {
+							options.afterSend( request );
+						}
+						return request;
+					});
+				requests = jQuery.map( requests, function( request, index ) {
+					function callIfDefined( type, type2 ) {
+						var handler = requestOptions[ index ][ type ] || !!requestOptions[ index ][ type2 ];
+						return handler ? function() {
+							if ( !aborted && jQuery.isFunction( handler ) ) {
+								handler.apply( this, arguments );
+							}
+							return resolved;
+						} : function() {
+							abort( type );
+							return resolved;
+						}
+					}
+					var promise = request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
+					promise.abort = request.abort;
+					return promise;
+				});
+				jQuery.when.apply( jQuery, requests ).done(
+					options.teardown,
+					function() {
+						jQuery.ajaxSetup( ajaxSettings );
+						setTimeout( start, 0 );
+					}
+				);
+			}, 0 );
+		});
+	};
+})();
+
 (function () {
 
 	this.testIframe = function( fileName, name, fn ) {
