@@ -7,9 +7,7 @@ module( "ajax", {
 			return callback;
 		};
 	},
-	teardown: function() {
-		moduleTeardown.apply( this, arguments );
-	}
+	teardown: moduleTeardown
 });
 
 (function() {
