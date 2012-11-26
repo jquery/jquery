@@ -8,6 +8,7 @@
     "maxerr": 100,
     "newcap": false,
     "quotmark": "double",
+    "regexdash": true,
     "strict": true,
     "sub": true,
     "trailing": true,

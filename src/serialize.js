@@ -1,9 +1,8 @@
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
-	rcheckTypes = /^(?:checkbox|radio)$/i,
 	rsubmitterTypes = /^(?:submit|button|image|reset)$/i,
-	rsubmittable = /^(?:select|textarea|input|keygen)/i;
+	rsubmittable = /^(?:input|select|textarea|keygen)/i;
 
 jQuery.fn.extend({
 	serialize: function() {
@@ -20,7 +19,7 @@ jQuery.fn.extend({
 			// Use .is(":disabled") so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
-				( this.checked || !rcheckTypes.test( type ) );
+				( this.checked || !manipulation_rcheckableType.test( type ) );
 		})
 		.map(function( i, elem ){
 			var val = jQuery( this ).val();
