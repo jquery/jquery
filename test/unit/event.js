@@ -3104,4 +3104,53 @@ test( "Namespace preserved when passed an Event (#12739)", function() {
 	equal( triggered, 3, "foo.bar triggered" );
 });
 
+test( "make sure events cloned correctly", 18, function() {
+	var clone,
+		fixture = jQuery("#qunit-fixture"),
+		checkbox = jQuery("#check1"),
+		p = jQuery("#firstp");
 
+	fixture.on( "click change", function( event, result ) {
+		ok( result,  event.type + " on original element is fired" );
+
+	}).on( "click", "#firstp", function( event, result ) {
+		ok( result, "Click on original child element though delegation is fired" );
+
+	}).on( "change", "#check1", function( event, result ) {
+		ok( result, "Change on original child element though delegation is fired" );
+	});
+
+	p.on("click", function( event, result ) {
+		ok( true, "Click on original child element is fired" );
+	});
+
+	checkbox.on("change", function( event, result ) {
+		ok( true, "Change on original child element is fired" );
+	});
+
+	fixture.clone().click().change(); // 0 events should be fired
+
+	clone = fixture.clone( true );
+
+	clone.find("p:first").trigger( "click", true ); // 3 events should fire
+	clone.find("#check1").trigger( "change", true ); // 3 events should fire
+	clone.remove();
+
+	clone = fixture.clone( true, true );
+	clone.find("p:first").trigger( "click", true ); // 3 events should fire
+	clone.find("#check1").trigger( "change", true ); // 3 events should fire
+
+	fixture.off();
+	p.off();
+	checkbox.off();
+
+	p.click(); // 0 should be fired
+	checkbox.change(); // 0 should be fired
+
+	clone.find("p:first").trigger( "click", true ); // 3 events should fire
+	clone.find("#check1").trigger( "change", true ); // 3 events should fire
+	clone.remove();
+
+	clone.find("p:first").click(); // 0 should be fired
+	clone.find("#check1").change(); // 0 events should fire
+});

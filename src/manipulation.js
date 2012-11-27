@@ -444,31 +444,26 @@ function cloneCopyEvent( src, dest ) {
 }
 
 function cloneFixAttributes( src, dest ) {
-	var nodeName;
+	var nodeName, data, e;
 
 	// We do not need to do anything for non-Elements
 	if ( dest.nodeType !== 1 ) {
 		return;
 	}
 
-	if ( !jQuery.support.noCloneEvent && dest.clearAttributes ) {
+	nodeName = dest.nodeName.toLowerCase();
 
-		// clearAttributes removes the attributes, which we don't want,
-		// but also removes the attachEvent events, which we *do* want
-		dest.clearAttributes();
+	// IE6-8 copies events bound via attachEvent when using cloneNode.
+	if ( !jQuery.support.noCloneEvent && dest[ jQuery.expando ] ) {
+		data = jQuery._data( dest );
 
-		// mergeAttributes, in contrast, only merges back on the
-		// original attributes, not the events
-		dest.mergeAttributes( src );
-	}
+		for ( e in data.events ) {
+			jQuery.removeEvent( dest, e, data.handle );
+		}
 
-	// Event data gets referenced instead of copied if the expando
-	// gets copied too
-	if ( dest[ jQuery.expando ] ) {
+		// Event data gets referenced instead of copied if the expando gets copied too
 		dest.removeAttribute( jQuery.expando );
 	}
-
-	nodeName = dest.nodeName.toLowerCase();
 
 	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
 	if ( nodeName === "script" && dest.text !== src.text ) {
@@ -637,19 +632,12 @@ jQuery.extend({
 
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
-			// IE copies events bound via attachEvent when using cloneNode.
-			// Calling detachEvent on the clone will also remove the events
-			// from the original. In order to get around this, we use some
-			// proprietary methods to clear the events. Thanks to MooTools
-			// guys for this hotness.
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			// Weird iteration because IE will replace the length property
-			// with an element if you are cloning the body and one of the
-			// elements on the page has a name or id of "length"
+			// Fix all IE cloning issues
 			for ( i = 0; (node = srcElements[i]) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
 				if ( destElements[i] ) {
