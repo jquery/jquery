@@ -356,7 +356,7 @@ var testAppendForObject = function(valueObj, isFragment) {
 };
 
 var testAppend = function(valueObj) {
-	expect(58);
+	expect(59);
 	testAppendForObject(valueObj, false);
 	testAppendForObject(valueObj, true);
 
@@ -440,6 +440,8 @@ var testAppend = function(valueObj) {
 	$radioParent.wrap("<div></div>");
 	equal( $radioChecked[0].checked, true, "Reappending radios uphold which radio is checked" );
 	equal( $radioUnchecked[0].checked, false, "Reappending radios uphold not being checked" );
+
+	equal( jQuery("<div/>").append("option<area/>")[0].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
 };
 
 test("append(String|Element|Array<Element>|jQuery)", function() {
@@ -537,11 +539,11 @@ test("replaceWith on XML document (#9960)", function () {
 		xml2 = jQuery( xmlDoc2 ),
 		scxml1 = jQuery( ":first", xml1 ),
 		scxml2 = jQuery( ":first", xml2 );
-	
+
 	scxml1.replaceWith( scxml2 );
-	
+
 	newNode = jQuery( ":first>state[id='provisioning3']", xml1 );
-	
+
 	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
 });
 
