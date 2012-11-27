@@ -1924,8 +1924,8 @@ module( "ajax", {
 				},
 				function( xml ) {
 					jQuery( "math", xml ).each(function() {
-						equal( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
-						equal( jQuery( "result", this ).text(), "3", "Check for XML" );
+						strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
+						strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
 					});
 				}
 			),
