@@ -1,8 +1,8 @@
-var rformElems = /^(?:textarea|input|select)$/i,
-	rtypenamespace = /^([^\.]*|)(?:\.(.+)|)$/,
+var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
-	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
+	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
 
 /*
  * Helper functions for managing events -- not part of the public interface.
@@ -12,8 +12,9 @@ jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
 		var elemData, eventHandle, events,
-			t, tns, type, namespaces, handleObj,
-			handleObjIn, handlers, special;
+			tns, type, namespaces, handleObj,
+			handleObjIn, handlers, special,
+			t = 0;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
 		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
@@ -52,8 +53,8 @@ jQuery.event = {
 
 		// Handle multiple events separated by a space
 		// jQuery(...).bind("mouseover mouseout", fn);
-		types = jQuery.trim( types ).split( " " );
-		for ( t = 0; t < types.length; t++ ) {
+		types = ( types || "" ).match( core_rnotwhite ) || [""];
+		for ( ; t < types.length; t++ ) {
 
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = tns[1];
@@ -126,8 +127,9 @@ jQuery.event = {
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
-		var t, tns, type, origType, namespaces, origCount,
+		var tns, type, origType, namespaces, origCount,
 			j, events, special, eventType, handleObj,
+			t = 0,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem );
 
 		if ( !elemData || !(events = elemData.events) ) {
@@ -135,8 +137,8 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = jQuery.trim( types ).split(" ");
-		for ( t = 0; t < types.length; t++ ) {
+		types = ( types || "" ).match( core_rnotwhite ) || [""];
+		for ( ; t < types.length; t++ ) {
 			tns = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tns[1];
 			namespaces = tns[2];
@@ -263,7 +265,7 @@ jQuery.event = {
 
 		// Allow special events to draw outside the lines
 		special = jQuery.event.special[ type ] || {};
-		if ( special.trigger && special.trigger.apply( elem, data ) === false ) {
+		if ( !onlyHandlers && special.trigger && special.trigger.apply( elem, data ) === false ) {
 			return;
 		}
 
@@ -523,11 +525,37 @@ jQuery.event = {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
-
+		click: {
+			// For checkbox, fire native event so checked state will be right
+			trigger: function() {
+				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
+					this.click();
+					return false;
+				}
+			}
+		},
 		focus: {
+			// Fire native event if possible so blur/focus sequence is correct
+			trigger: function() {
+				if ( this !== document.activeElement && this.focus ) {
+					try {
+						this.focus();
+						return false;
+					} catch ( e ) {
+						// IE<9 dies on focus to hidden element (#1486,#12518)
+						// If this happens, let .trigger() run the handlers
+					}
+				}
+			},
 			delegateType: "focusin"
 		},
 		blur: {
+			trigger: function() {
+				if ( this === document.activeElement && this.blur ) {
+					this.blur();
+					return false;
+				}
+			},
 			delegateType: "focusout"
 		},
 

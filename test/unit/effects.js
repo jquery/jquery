@@ -1877,4 +1877,31 @@ jQuery.map([ "toggle", "slideToggle", "fadeToggle" ], function ( method ) {
 	});
 });
 
+test( "jQuery.fx.start & jQuery.fx.stop hook points", function() {
+	var oldStart = jQuery.fx.start,
+		oldStop = jQuery.fx.stop,
+		foo = jQuery({ foo: 0 });
+
+	expect( 3 );
+
+	jQuery.fx.start = function() {
+		ok( true, "start called" );
+	};
+	jQuery.fx.stop = function() {
+		ok( true, "stop called" );
+	};
+
+	// calls start
+	foo.animate({ foo: 1 }, { queue: false });
+	// calls start
+	foo.animate({ foo: 2 }, { queue: false });
+	foo.stop();
+	// calls stop
+	jQuery.fx.tick();
+
+	// cleanup
+	jQuery.fx.start = oldStart;
+	jQuery.fx.stop = oldStop;
+});
+
 } // if ( jQuery.fx )

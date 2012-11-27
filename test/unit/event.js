@@ -2650,7 +2650,7 @@ test(".on and .off", function() {
 		counter += (e.data || 0) + (trig || 1);
 	};
 	jQuery( "#onandoff" )
-		.on( "click clack cluck", "em", 2, mixfn )
+		.on( " click  clack cluck ", "em", 2, mixfn )
 		.on( "cluck", "b", 7, mixfn )
 		.on( "cluck", mixfn )
 		.trigger( "what!" )
@@ -2829,6 +2829,90 @@ test("clone() delegated events (#11076)", function() {
 
 	table.remove();
 	clone.remove();
+});
+
+test("checkbox state (#3827)", function() {
+	expect( 9 );
+
+	var markup = jQuery("<div><input type=checkbox><div>").appendTo("#qunit-fixture"),
+		cb = markup.find("input")[0];
+
+	jQuery(cb).on( "click", function(){
+		equal( this.checked, false, "just-clicked checkbox is not checked" );
+	});
+	markup.on( "click", function(){
+		equal( cb.checked, false, "checkbox is not checked in bubbled event" );
+	});
+
+	// Native click
+	cb.checked = true;
+	equal( cb.checked, true, "native - checkbox is initially checked" );
+	cb.click();
+	equal( cb.checked, false, "native - checkbox is no longer checked" );
+
+	// jQuery click
+	cb.checked = true;
+	equal( cb.checked, true, "jQuery - checkbox is initially checked" );
+	jQuery( cb ).click();
+	equal( cb.checked, false, "jQuery - checkbox is no longer checked" );
+
+	// Handlers only; checkbox state remains false
+	jQuery( cb ).triggerHandler( "click" );
+});
+
+test("focus-blur order (#12868)", function() {
+	expect( 5 );
+
+	var $text = jQuery("#text1"),
+		$radio = jQuery("#radio1").focus(),
+		order;
+
+	// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+	// IE's browser window must be topmost for this to work properly!!
+	stop();
+	$radio[0].focus();
+
+	setTimeout( function() {
+
+		$text
+			.on( "focus", function(){
+				equal( order++, 1, "text focus" );
+			})
+			.on( "blur", function(){
+				equal( order++, 0, "text blur" );
+			});
+		$radio
+			.on( "focus", function(){
+				equal( order++, 1, "radio focus" );
+			})
+			.on( "blur", function(){
+				equal( order++, 0, "radio blur" );
+			});
+
+		// Enabled input getting focus
+		order = 0;
+		equal( document.activeElement, $radio[0], "radio has focus" );
+		$text.focus();
+		setTimeout( function() {
+			equal( document.activeElement, $text[0], "text has focus" );
+
+			// Run handlers without native method on an input
+			order = 1;
+			$radio.triggerHandler( "focus" );
+			start();
+		}, 50 );
+	}, 50 );
+});
+
+test("hover event no longer special since 1.9", function() {
+	expect( 1 );
+
+	jQuery("<div>craft</div>")
+		.on( "hover", function( e ) {
+			equal( e.type, "hover", "I am hovering!" );
+		})
+		.trigger("hover")
+		.off("hover");
 });
 
 test("fixHooks extensions", function() {
