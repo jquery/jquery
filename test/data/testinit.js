@@ -252,11 +252,3 @@ function ajaxTest( title, expect, options ) {
 
 	window.iframeCallback = undefined;
 }());
-
-// Sandbox start for great justice
-(function() {
-	var oldStart = window.start;
-	window.start = function() {
-		oldStart();
-	};
-})();
