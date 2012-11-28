@@ -254,7 +254,7 @@ jQuery.fn.extend({
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" ) {
+		if ( !isFunc && typeof value !== "string" && jQuery( value ).index( this ) === -1 ) {
 			value = jQuery( value ).detach();
 		}
 
@@ -310,7 +310,7 @@ jQuery.fn.extend({
 		}
 
 		if ( this[0] ) {
-			results = jQuery.buildFragment( args, this );
+			results = jQuery.buildFragment( args, this, undefined, this );
 			fragment = results;
 			first = fragment.firstChild;
 
@@ -512,7 +512,7 @@ function cloneFixAttributes( src, dest ) {
 	dest.removeAttribute( jQuery.expando );
 }
 
-jQuery.buildFragment = function( args, context, scripts ) {
+jQuery.buildFragment = function( args, context, scripts, selection ) {
 	var fragment;
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
@@ -523,7 +523,7 @@ jQuery.buildFragment = function( args, context, scripts ) {
 	context = context.ownerDocument || context;
 
 	fragment = context.createDocumentFragment();
-	jQuery.clean( args, context, fragment, scripts );
+	jQuery.clean( args, context, fragment, scripts, selection );
 
 	return fragment;
 };
@@ -654,7 +654,7 @@ jQuery.extend({
 		return clone;
 	},
 
-	clean: function( elems, context, fragment, scripts ) {
+	clean: function( elems, context, fragment, scripts, selection ) {
 		var elem, j, tmp, tag, wrap, tbody,
 			ret = [],
 			i = 0,
@@ -749,7 +749,11 @@ jQuery.extend({
 				safe = jQuery.contains( elem.ownerDocument, elem );
 
 				// Append to fragment
-				fragment.appendChild( elem );
+				// #4087 - If origin and destination elements are the same, and this is
+				// that element, do not append to fragment
+				if ( !( selection && jQuery.inArray( elem, selection ) !== -1 ) ) {
+					fragment.appendChild( elem );
+				}
 				tmp = getAll( elem, "script" );
 
 				// Preserve script evaluation history
