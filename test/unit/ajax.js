@@ -1521,6 +1521,40 @@ module( "ajax", {
 		}, "exception bubbled" );
 	});
 
+	jQuery.each( [ "method", "type" ], function( _, globalOption ) {
+
+		function request( option ) {
+			var options = {
+					url: url("data/echoData.php"),
+					data: "hello",
+					success: function( msg ) {
+						strictEqual( msg, "hello", "Check for POST (no override)" );
+					}
+				};
+			if ( option ) {
+				options[ option ] = "GET";
+				options.success = function( msg ) {
+					strictEqual( msg, "", "Check for no POST (overriding with " + option + ")" );
+				};
+			}
+			return options;
+		}
+
+		ajaxTest( "#12004 - jQuery.ajax() - method is an alias of type - " + globalOption + " set globally", 3, {
+			setup: function() {
+				var options = {};
+				options[ globalOption ] = "POST";
+				jQuery.ajaxSetup( options );
+			},
+			requests: [
+				request("type"),
+				request("method"),
+				request()
+			]
+		});
+		
+	});
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
