@@ -1052,38 +1052,36 @@ test( "addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect( 7 );
+	expect( 8 );
 
-	var $divs = jQuery("div");
+	var $set = jQuery("div"),
+		div = document.createElement("div");
 
-	$divs.addClass("test").removeClass( valueObj("test") );
+	$set.addClass("test").removeClass( valueObj("test") );
 
-	ok( !$divs.is(".test"), "Remove Class" );
+	ok( !$set.is(".test"), "Remove Class" );
 
-	QUnit.reset();
-	$divs = jQuery("div");
+	$set.addClass("test").addClass("foo").addClass("bar");
+	$set.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
 
-	$divs.addClass("test").addClass("foo").addClass("bar");
-	$divs.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
-
-	ok( !$divs.is(".test,.bar,.foo"), "Remove multiple classes" );
-
-	QUnit.reset();
-	$divs = jQuery("div");
+	ok( !$set.is(".test,.bar,.foo"), "Remove multiple classes" );
 
 	// Make sure that a null value doesn't cause problems
-	$divs.eq( 0 ).addClass("test").removeClass( valueObj( null ) );
-	ok( $divs.eq( 0 ).is(".test"), "Null value passed to removeClass" );
+	$set.eq( 0 ).addClass("expected").removeClass( valueObj( null ) );
+	ok( $set.eq( 0 ).is(".expected"), "Null value passed to removeClass" );
 
-	$divs.eq( 0 ).addClass("test").removeClass( valueObj("") );
-	ok( $divs.eq( 0 ).is(".test"), "Empty string passed to removeClass" );
+	$set.eq( 0 ).addClass("expected").removeClass( valueObj("") );
+	ok( $set.eq( 0 ).is(".expected"), "Empty string passed to removeClass" );
 
 	// using contents will get regular, text, and comment nodes
-	var j = jQuery("#nonnodes").contents();
-	j.removeClass( valueObj("asdf") );
-	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+	$set = jQuery("#nonnodes").contents();
+	$set.removeClass( valueObj("asdf") );
+	ok( !$set.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
 
-	var div = document.createElement("div");
+
+	jQuery( div ).removeClass( valueObj("foo") );
+	strictEqual( jQuery( div ).attr("class"), undefined, "removeClass doesn't create a class attribute" );
+
 	div.className = " test foo ";
 
 	jQuery( div ).removeClass( valueObj("foo") );

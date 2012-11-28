@@ -51,11 +51,12 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+				cur = elem.nodeType === 1 && ( elem.className ?
+					( " " + elem.className + " " ).replace( rclass, " " ) :
+					" "
+				);
 
-				if ( elem.nodeType === 1 ) {
-					cur = elem.className ?
-						( " " + elem.className + " " ).replace( rclass, " " ) :
-						" ";
+				if ( cur ) {
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
@@ -87,11 +88,13 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				if ( elem.nodeType === 1 ) {
-					// This expression is here for better compressibility (see addClass)
-					cur = elem.className ?
-						( " " + elem.className + " " ).replace( rclass, " " ) :
-						" ";
+				// This expression is here for better compressibility (see addClass)
+				cur = elem.nodeType === 1 && ( elem.className ?
+					( " " + elem.className + " " ).replace( rclass, " " ) :
+					""
+				);
+
+				if ( cur ) {
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
 						// Remove *all* instances
@@ -329,7 +332,7 @@ jQuery.extend({
 			ret = elem.getAttribute( name );
 
 			// Non-existent attributes return null, we normalize to undefined
-			return ret === null ?
+			return ret == null ?
 				undefined :
 				ret;
 		}
@@ -562,7 +565,7 @@ if ( !jQuery.support.hrefNormalized ) {
 		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
 			get: function( elem ) {
 				var ret = elem.getAttribute( name, 2 );
-				return ret === null ? undefined : ret;
+				return ret == null ? undefined : ret;
 			}
 		});
 	});
