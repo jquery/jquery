@@ -530,9 +530,8 @@ jQuery.extend({
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
-				// Abort if not done already and return
-				return jqXHR.abort();
-
+			// Abort if not done already and return
+			return jqXHR.abort();
 		}
 
 		// aborting is no longer a cancellation
