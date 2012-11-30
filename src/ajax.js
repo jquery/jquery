@@ -608,6 +608,11 @@ jQuery.extend({
 			if ( responses ) {
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
+			
+			if ( status === 0 ) {
+			    // Android 2.2+ returns 0 for appcached files sometimes
+			    status = 200;
+			}
 
 			// If successful, handle type chaining
 			if ( status >= 200 && status < 300 || status === 304 ) {
