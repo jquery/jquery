@@ -441,7 +441,7 @@ var testAppend = function(valueObj) {
 	equal( $radioChecked[0].checked, true, "Reappending radios uphold which radio is checked" );
 	equal( $radioUnchecked[0].checked, false, "Reappending radios uphold not being checked" );
 
-	equal( jQuery("<div/>").append("option<area/>")[0].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
+	equal( jQuery("<div/>").append( valueObj("option<area/>") )[0].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
 };
 
 test("append(String|Element|Array<Element>|jQuery)", function() {
