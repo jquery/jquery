@@ -823,11 +823,20 @@ if ( jQuery.fn.offset ) {
 	});
 }
 
-test("Do not append px to 'fill-opacity' #9548", function() {
-	expect( 1 );
+test("Do not append px (#9548, #12990)", function() {
+	expect( 2 );
 
-	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("fill-opacity", 1);
-	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+	var $div = jQuery("<div>").appendTo("#qunit-fixture");
+
+	$div.css( "fill-opacity", 1 );
+	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'" );
+
+	$div.css( "column-count", 1 );
+	if ( $div.css("column-count") ) {
+		equal( $div.css("column-count"), 1, "Do not append px to 'column-count'" );
+	} else {
+		ok( true, "No support for column-count CSS property" );
+	}
 });
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
