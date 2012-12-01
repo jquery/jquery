@@ -140,11 +140,14 @@ jQuery.extend({
 
 	// Exclude the following css properties to add px
 	cssNumber: {
+    "columnCount": true,
 		"fillOpacity": true,
 		"fontWeight": true,
 		"lineHeight": true,
+		"MozColumnCount": true,
 		"opacity": true,
 		"orphans": true,
+		"WebkitColumnCount": true,
 		"widows": true,
 		"zIndex": true,
 		"zoom": true
