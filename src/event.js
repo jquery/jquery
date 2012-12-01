@@ -198,31 +198,28 @@ jQuery.event = {
 	},
 
 	trigger: function( event, data, elem, onlyHandlers ) {
-		// Don't do events on text and comment nodes
-		if ( elem && (elem.nodeType === 3 || elem.nodeType === 8) ) {
-			return;
-		}
 
-		// Event object or event type
-		var cache, i, cur, old, ontype, special, handle, eventPath, bubbleType,
+		var i, cur, old, ontype, special, handle, eventPath, bubbleType,
 			type = event.type || event,
 			namespaces = event.namespace ? event.namespace.split(".") : [];
+
+		elem = elem || document;
+
+		// Don't do events on text and comment nodes
+		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
+			return;
+		}
 
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
 		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
 			return;
 		}
 
-		if ( type.indexOf( "." ) >= 0 ) {
+		if ( type.indexOf(".") >= 0 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
 			type = namespaces.shift();
 			namespaces.sort();
-		}
-
-		if ( !elem && !jQuery.event.global[ type ] ) {
-			// No jQuery handlers for this event type, and it can't have inline handlers
-			return;
 		}
 
 		// Caller can pass in an Event, Object, or just an event type string
@@ -236,22 +233,9 @@ jQuery.event = {
 
 		event.type = type;
 		event.isTrigger = true;
-		event.namespace = namespaces.join( "." );
+		event.namespace = namespaces.join(".");
 		event.namespace_re = event.namespace? new RegExp("(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)") : null;
-		ontype = type.indexOf( ":" ) < 0 ? "on" + type : "";
-
-		// Handle a global trigger
-		if ( !elem ) {
-
-			// TODO: Stop taunting the data cache; remove global events and always attach to document
-			cache = jQuery.cache;
-			for ( i in cache ) {
-				if ( cache[ i ].events && cache[ i ].events[ type ] ) {
-					jQuery.event.trigger( event, data, cache[ i ].handle.elem, true );
-				}
-			}
-			return;
-		}
+		ontype = type.indexOf(":") < 0 ? "on" + type : "";
 
 		// Clean up the event in case it is being reused
 		event.result = undefined;
