@@ -800,15 +800,12 @@ test("Do not append px to 'fill-opacity' #9548", function() {
 	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
 });
 
-// CSS3 Columns not supported in IE prior to version 10
-if ( !document.documentMode || document.documentMode === 10 ) {
-	test("Do not append px to 'column-count' #12990", function() {
-		expect( 1 );
-  
-		var $div = jQuery("<div>").appendTo("#qunit-fixture").css("column-count", 1);
-		equal( $div.css("column-count"), 1, "Do not append px to 'column-count'" );
-	});
-}
+test("Do not append px to 'column-count' #12990", function() {
+	expect( 1 );
+
+	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("column-count", 1);
+	equal( $div.css("column-count"), 1, "Do not append px to 'column-count'");
+});
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
