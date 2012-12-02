@@ -442,7 +442,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - disabled globals", 3, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess"),
+		setup: addGlobalEvents(""),
 		global: false,
 		url: url("data/name.html"),
 		beforeSend: function() {
