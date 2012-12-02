@@ -354,14 +354,7 @@ jQuery.fn.extend({
 
 							if ( node.src ) {
 								// Hope ajax is available...
-								jQuery.ajax({
-									url: node.src,
-									type: "GET",
-									dataType: "script",
-									async: false,
-									global: false,
-									"throws": true
-								});
+								jQuery._evalUrl( node.src );
 							} else {
 								jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
 							}
@@ -798,5 +791,16 @@ jQuery.extend({
 				}
 			}
 		}
+	},
+
+	_evalUrl: function( url ) {
+		return jQuery.ajax({
+			url: url,
+			type: "GET",
+			dataType: "text",
+			async: false,
+			global: false,
+			success: jQuery.globalEval
+		});
 	}
 });
