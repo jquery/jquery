@@ -1682,6 +1682,14 @@ module( "ajax", {
 		});
 	});
 
+//----------- jQuery.getScriptSync()
+
+	test( "jQuery.getScriptSync()", 2, function() {
+		Globals.register("testBar");
+		jQuery.getScriptSync( url("data/test.js") );
+		strictEqual( window["testBar"], "bar", "Script was evaluated" );
+	});
+
 //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
