@@ -194,7 +194,9 @@ function ajaxTest( title, expect, options ) {
 					options.afterSend( request );
 				}
 
-				return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
+				return request
+					.done( callIfDefined( "done", "success" ) )
+					.fail( callIfDefined( "fail", "error" ) );
 			});
 
 		jQuery.when.apply( jQuery, requests ).always( complete, options.teardown, start);

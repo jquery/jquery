@@ -141,7 +141,7 @@ var Globals = (function() {
 	return {
 		register: function( name ) {
 			globals[ name ] = true;
-			jQuery.globalEval( "var " + name );
+			jQuery.globalEval( "var " + name + " = undefined;" );
 		},
 		cleanup: function() {
 			var name,
