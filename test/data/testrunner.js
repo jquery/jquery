@@ -3,10 +3,10 @@
  */
 jQuery.noConflict();
 
-// For checking globals pollution
-window[ jQuery.expando ] = undefined;
-// ...in Gecko
-this.getInterface = this.getInterface;
+// For checking globals pollution despite auto-created globals in various environments
+jQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
+	window[ name ] = window[ name ];
+});
 
 // Expose Sizzle for Sizzle's selector tests
 // We remove Sizzle's globalization in jQuery
@@ -138,7 +138,7 @@ function testSubproject( label, url, risTests ) {
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
 var Globals = (function() {
 	var globals = {};
-	return QUnit.config.noglobals ? {
+	return {
 		register: function( name ) {
 			globals[ name ] = true;
 			jQuery.globalEval( "var " + name );
@@ -153,9 +153,6 @@ var Globals = (function() {
 				"; } catch( x ) {}" );
 			}
 		}
-	} : {
-		register: jQuery.noop,
-		cleanup: jQuery.noop
 	};
 })();
 
@@ -312,6 +309,9 @@ var Globals = (function() {
 		}
 		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
 			equal( jQuery.active, 0, "No AJAX requests are still active" );
+			if ( ajaxTest.abort ) {
+				ajaxTest.abort("active request");
+			}
 			oldActive = jQuery.active;
 		}
 	};

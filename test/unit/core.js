@@ -195,6 +195,7 @@ test( "selector state", function() {
 
 test( "globalEval", function() {
 	expect( 3 );
+	Globals.register("globalEvalTest");
 
 	jQuery.globalEval("globalEvalTest = 1;");
 	equal( window.globalEvalTest, 1, "Test variable assignments are global" );
@@ -204,8 +205,6 @@ test( "globalEval", function() {
 
 	jQuery.globalEval("this.globalEvalTest = 3;");
 	equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
-
-	jQuery.globalEval("delete globalEvalTest;");
 });
 
 test("noConflict", function() {

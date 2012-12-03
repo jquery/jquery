@@ -158,39 +158,46 @@ function ajaxTest( title, expect, options ) {
 		if ( options.setup ) {
 			options.setup();
 		}
-		var aborted = false,
-			abort = function( reason ) {
-				if ( !aborted ) {
-					aborted = true;
+
+		var completed = false,
+			complete = function() {
+				completed = true;
+				delete ajaxTest.abort;
+			},
+			abort = ajaxTest.abort = function( reason ) {
+				if ( !completed ) {
+					complete();
 					ok( false, "unexpected " + reason );
 					jQuery.each( requests, function( _, request ) {
-						request.abort();
+						if ( request && request.abort ) {
+							request.abort();
+						}
 					});
 				}
 			},
-			requests = jQuery.map( requestOptions, function( options ) {
-				var request = ( options.create || jQuery.ajax )( options );
+			requests = jQuery.map( requestOptions, function( options, index ) {
+				var request = ( options.create || jQuery.ajax )( options ),
+					callIfDefined = function( deferType, optionType ) {
+						var handler = options[ deferType ] || !!options[ optionType ];
+						return handler ?
+							function() {
+								if ( !completed && jQuery.isFunction( handler ) ) {
+									handler.apply( this, arguments );
+								}
+							} :
+							function() {
+								abort( optionType );
+							};
+					};
+
 				if ( options.afterSend ) {
 					options.afterSend( request );
 				}
-				return request;
+
+				return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
 			});
-		jQuery.when.apply( jQuery, jQuery.map( requests, function( request, index ) {
-			function callIfDefined( deferType, optionType ) {
-				var handler = requestOptions[ index ][ deferType ] || !!requestOptions[ index ][ optionType ];
-				return handler ? function() {
-					if ( !aborted && jQuery.isFunction( handler ) ) {
-						handler.apply( this, arguments );
-					}
-				} : function() {
-					abort( optionType );
-				}
-			}
-			return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
-		}) ).always(
-			options.teardown,
-			start
-		);
+
+		jQuery.when.apply( jQuery, requests ).always( complete, options.teardown, start);
 	});
 };
 

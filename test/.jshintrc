@@ -45,7 +45,6 @@
     "createXMLFragment": true,
     "moduleTeardown": true,
     "testFoo": true,
-    "foobar": true,
     "url": true,
     "t": true,
     "q": true,

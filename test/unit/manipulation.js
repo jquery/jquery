@@ -704,7 +704,7 @@ test("append(xml)", function() {
 });
 
 test("appendTo(String|Element|Array<Element>|jQuery)", function() {
-	expect( 16 + ( jQuery.getScript ? 1 : 0 ) );
+	expect( 16 );
 
 	var defaultText = "Try them out:";
 
@@ -775,16 +775,6 @@ test("appendTo(String|Element|Array<Element>|jQuery)", function() {
 	div.remove().appendTo("#qunit-fixture");
 
 	equal( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
-
-	QUnit.reset();
-
-	if ( jQuery.getScript ) {
-		stop();
-		jQuery.getScript("data/test.js", function() {
-			jQuery("script[src*='data\\/test\\.js']").remove();
-			start();
-		});
-	}
 });
 
 var testPrepend = function(val) {

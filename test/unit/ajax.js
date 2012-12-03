@@ -533,7 +533,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - dataType html", 5, {
 		setup: function() {
 			Globals.register("testFoo");
-			Globals.register("foobar");
+			Globals.register("testBar");
 		},
 		dataType: "html",
 		url: url("data/test.html"),
@@ -541,7 +541,7 @@ module( "ajax", {
 			ok( data.match( /^html text/ ), "Check content for datatype html" );
 			jQuery("#ap").html( data );
 			strictEqual( window["testFoo"], "foo", "Check if script was evaluated for datatype html" );
-			strictEqual( window["foobar"], "bar", "Check if script src was evaluated for datatype html" );
+			strictEqual( window["testBar"], "bar", "Check if script src was evaluated for datatype html" );
 		}
 	});
 
@@ -588,6 +588,7 @@ module( "ajax", {
 			jQuery( document ).off("ajaxError.passthru");
 			start();
 		});
+		Globals.register("testBar");
 
 		ok( jQuery.get( url(target), success ), "get" );
 		ok( jQuery.post( url(target), success ), "post" );
@@ -836,28 +837,37 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - script, Remote", 2, {
+		setup: function() {
+			Globals.register("testBar");
+		},
 		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
 		dataType: "script",
 		success: function( data ) {
-			ok( window[ "foobar" ], "Script results returned (GET, no callback)" );
+			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
 		}
 	});
 
 	ajaxTest( "jQuery.ajax() - script, Remote with POST", 3, {
+		setup: function() {
+			Globals.register("testBar");
+		},
 		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
 		type: "POST",
 		dataType: "script",
 		success: function( data, status ) {
-			ok( window[ "foobar" ], "Script results returned (POST, no callback)" );
+			strictEqual( window["testBar"], "bar", "Script results returned (POST, no callback)" );
 			strictEqual( status, "success", "Script results returned (POST, no callback)" );
 		}
 	});
 
 	ajaxTest( "jQuery.ajax() - script, Remote with scheme-less URL", 2, {
+		setup: function() {
+			Globals.register("testBar");
+		},
 		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/test.js",
 		dataType: "script",
 		success: function( data ) {
-			ok( window[ "foobar" ], "Script results returned (GET, no callback)" );
+			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
 		}
 	});
 
@@ -1655,17 +1665,20 @@ module( "ajax", {
 //----------- jQuery.getScript()
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
+		Globals.register("testBar");
 		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
-			strictEqual( foobar, "bar", "Check if script was evaluated" );
+			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
 			start();
 		});
 	});
 
 	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
+		Globals.register("testBar");
 		jQuery.getScript( url("data/test.js") ).done( start );
 	});
 
 	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
+		Globals.register("testBar");
 		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
 			start();
@@ -1729,10 +1742,14 @@ module( "ajax", {
 
 	asyncTest( "jQuery.fn.load( String, Function ) - check scripts", 7, function() {
 		var verifyEvaluation = function() {
-			strictEqual( window["foobar"], "bar", "Check if script src was evaluated after load" );
+			strictEqual( window["testBar"], "bar", "Check if script src was evaluated after load" );
 			strictEqual( jQuery("#ap").html(), "bar", "Check if script evaluation has modified DOM");
 			start();
 		};
+
+		Globals.register("testFoo");
+		Globals.register("testBar");
+
 		jQuery("#first").load( url("data/test.html"), function() {
 			ok( jQuery("#first").html().match( /^html text/ ), "Check content after loading html" );
 			strictEqual( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM" );
@@ -1742,6 +1759,8 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag", 3, function() {
+		Globals.register("testFoo");
+
 		jQuery("#first").load( url("data/test2.html"), function() {
 			strictEqual( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM");
 			strictEqual( window["testFoo"], "foo", "Check if script was evaluated after load" );
