@@ -22,7 +22,6 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
-	rnocache = /<(?:script|style|object|embed|applet|option)/i,
 	manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
@@ -516,8 +515,7 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, context, scripts ) {
-	var fragment,
-		first = args[ 0 ];
+	var fragment;
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
 	// Updated to fix #12266 where accessing context[0] could throw an exception in IE9/10 &
@@ -531,8 +529,6 @@ jQuery.buildFragment = function( args, context, scripts ) {
 
 	return fragment;
 };
-
-jQuery.fragments = {};
 
 jQuery.each({
 	appendTo: "append",
