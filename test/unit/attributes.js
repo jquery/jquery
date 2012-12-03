@@ -94,7 +94,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#tAnchor5").attr("href"), "#5", "Check for non-absolute href (an anchor)" );
 	jQuery("<a id='tAnchor6' href='#5' />").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#tAnchor6").prop("href"), "Check for absolute href prop on an anchor" );
-	
+
 	$("<script type='jquery/test' src='#5' id='scriptSrc'></script>").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#scriptSrc").prop("src"), "Check for absolute src prop on a script" );
 
@@ -1298,14 +1298,11 @@ test( "contents().hasClass() returns correct values", function() {
 });
 
 test( "coords returns correct values in IE6/IE7, see #10828", function() {
-	expect( 2 );
+	expect( 1 );
 
 	var area,
 		map = jQuery("<map />");
 
 	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
-
-	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
-	equal( area.attr("coords"), undefined, "did not retrieve coords correctly" );
 });
