@@ -160,34 +160,30 @@ function ajaxTest( title, expect, options ) {
 		}
 
 		var completed = false,
+			remaining = requestOptions.length,
 			complete = function() {
-				completed = true;
-				delete ajaxTest.abort;
-			},
-			abort = ajaxTest.abort = function( reason ) {
-				if ( !completed ) {
-					complete();
-					ok( false, "unexpected " + reason );
-					jQuery.each( requests, function( _, request ) {
-						if ( request && request.abort ) {
-							request.abort();
-						}
-					});
+				if ( !completed && --remaining === 0 ) {
+					completed = true;
+					delete ajaxTest.abort;
+					if ( options.teardown ) {
+						options.teardown();
+					}
+					start();
 				}
 			},
-			requests = jQuery.map( requestOptions, function( options, index ) {
+			requests = jQuery.map( requestOptions, function( options ) {
 				var request = ( options.create || jQuery.ajax )( options ),
 					callIfDefined = function( deferType, optionType ) {
 						var handler = options[ deferType ] || !!options[ optionType ];
-						return handler ?
-							function() {
-								if ( !completed && jQuery.isFunction( handler ) ) {
+						return function( _, status ) {
+							if ( !completed ) {
+								if ( !handler ) {
+									ok( false, "unexpected " + status );
+								} else if ( jQuery.isFunction( handler ) ) {
 									handler.apply( this, arguments );
 								}
-							} :
-							function() {
-								abort( optionType );
-							};
+							}
+						};
 					};
 
 				if ( options.afterSend ) {
@@ -196,10 +192,20 @@ function ajaxTest( title, expect, options ) {
 
 				return request
 					.done( callIfDefined( "done", "success" ) )
-					.fail( callIfDefined( "fail", "error" ) );
+					.fail( callIfDefined( "fail", "error" ) )
+					.always( complete );
 			});
 
-		jQuery.when.apply( jQuery, requests ).always( complete, options.teardown, start);
+		ajaxTest.abort = function( reason ) {
+			if ( !completed ) {
+				completed = true;
+				delete ajaxTest.abort;
+				ok( false, "aborted " + reason );
+				jQuery.each( requests, function( i, request ) {
+					request.abort();
+				});
+			}
+		};
 	});
 };
 

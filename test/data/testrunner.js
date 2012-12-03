@@ -310,7 +310,7 @@ var Globals = (function() {
 		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
 			equal( jQuery.active, 0, "No AJAX requests are still active" );
 			if ( ajaxTest.abort ) {
-				ajaxTest.abort("active request");
+				ajaxTest.abort("active requests");
 			}
 			oldActive = jQuery.active;
 		}
