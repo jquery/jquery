@@ -315,7 +315,7 @@ jQuery.fn.extend({
 
 		if ( this[0] ) {
 			results = jQuery.buildFragment( args, this );
-			fragment = results.fragment;
+			fragment = results;
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -329,9 +329,9 @@ jQuery.fn.extend({
 
 				// Use the original fragment for the last item instead of the first because it can end up
 				// being emptied incorrectly in certain situations (#8070).
-				// Fragments from the fragment cache must always be cloned and never used in place.
-				for ( iNoClone = results.cacheable || l - 1; i < l; i++ ) {
+				for ( iNoClone = l - 1; i < l; i++ ) {
 					node = fragment;
+
 					if ( i !== iNoClone ) {
 						node = jQuery.clone( node, true, true );
 
@@ -340,6 +340,7 @@ jQuery.fn.extend({
 							jQuery.merge( scripts, getAll( node, "script" ) );
 						}
 					}
+
 					callback.call(
 						table && jQuery.nodeName( this[i], "table" ) ?
 							findOrAppend( this[i], "tbody" ) :
@@ -515,7 +516,7 @@ function cloneFixAttributes( src, dest ) {
 }
 
 jQuery.buildFragment = function( args, context, scripts ) {
-	var fragment, cacheable, cachehit,
+	var fragment,
 		first = args[ 0 ];
 
 	// Set context from what may come in as undefined or a jQuery collection or a node
@@ -525,34 +526,10 @@ jQuery.buildFragment = function( args, context, scripts ) {
 	context = !context.nodeType && context[0] || context;
 	context = context.ownerDocument || context;
 
-	// Only cache "small" (1/2 KB) HTML strings that are associated with the main document
-	// Cloning options loses the selected state, so don't cache them
-	// IE 6 doesn't like it when you put <object> or <embed> elements in a fragment
-	// Also, WebKit does not clone 'checked' attributes on cloneNode, so don't cache
-	// Lastly, IE6,7,8 will not correctly reuse cached fragments that were created from unknown elems #10501
-	if ( args.length === 1 && typeof first === "string" && first.length < 512 && context === document &&
-		first.charAt(0) === "<" && !rnocache.test( first ) &&
-		(jQuery.support.checkClone || !rchecked.test( first )) &&
-		(jQuery.support.html5Clone || !rnoshimcache.test( first )) ) {
+	fragment = context.createDocumentFragment();
+	jQuery.clean( args, context, fragment, scripts );
 
-		// Mark cacheable and look for a hit
-		cacheable = true;
-		fragment = jQuery.fragments[ first ];
-		cachehit = fragment !== undefined;
-	}
-
-	if ( !fragment ) {
-		fragment = context.createDocumentFragment();
-		jQuery.clean( args, context, fragment, scripts );
-
-		// Update the cache, but only store false
-		// unless this is a second parsing of the same content
-		if ( cacheable ) {
-			jQuery.fragments[ first ] = cachehit && fragment;
-		}
-	}
-
-	return { fragment: fragment, cacheable: cacheable };
+	return fragment;
 };
 
 jQuery.fragments = {};
