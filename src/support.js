@@ -82,9 +82,6 @@ jQuery.support = (function() {
 		boxModel: ( document.compatMode === "CSS1Compat" ),
 
 		// Will be defined later
-		submitBubbles: true,
-		changeBubbles: true,
-		focusinBubbles: false,
 		deleteExpando: true,
 		noCloneEvent: true,
 		inlineBlockNeedsLayout: false,
@@ -149,24 +146,20 @@ jQuery.support = (function() {
 
 	// Technique from Juriy Zaytsev
 	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
-	// We only care about the case where non-standard event systems
-	// are used, namely in IE. Short-circuiting here helps us to
-	// avoid an eval call (in setAttribute) which can cause CSP
-	// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
-	if ( div.attachEvent ) {
-		for ( i in {
-			submit: true,
-			change: true,
-			focusin: true
-		}) {
-			eventName = "on" + i;
-			isSupported = ( eventName in div );
-			if ( !isSupported ) {
-				div.setAttribute( eventName, "return;" );
-				isSupported = ( typeof div[ eventName ] === "function" );
-			}
-			support[ i + "Bubbles" ] = isSupported;
+	// If you want to change this tests, check it for CSP restrictions (https://developer.mozilla.org/en/Security/CSP), in test/csp.php
+	for ( i in {
+		submit: true,
+		change: true,
+		focusin: true
+	}) {
+		eventName = "on" + i;
+		isSupported = ( eventName in div );
+		if ( !isSupported ) {
+			div.setAttribute( eventName, " " );
+			isSupported = jQuery.isFunction( div[ eventName ] );
 		}
+
+		support[ i + "Bubbles" ] = isSupported;
 	}
 
 	div.style.backgroundClip = "content-box";
@@ -185,12 +178,11 @@ jQuery.support = (function() {
 		}
 
 		container = document.createElement("div");
-		container.style.cssText = "visibility:hidden;border:0;width:0;height:0;position:static;top:0;margin-top:1px";
+		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 		body.insertBefore( container, body.firstChild );
 
 		// Construct the test element
-		div = document.createElement("div");
-		container.appendChild( div );
+		container.appendChild( div = document.createElement("div") );
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
@@ -249,7 +241,6 @@ jQuery.support = (function() {
 			// Check if elements with layout shrink-wrap their children
 			// (IE 6 does this)
 			div.style.display = "block";
-			div.style.overflow = "visible";
 			div.innerHTML = "<div></div>";
 			div.firstChild.style.width = "5px";
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
@@ -259,14 +250,23 @@ jQuery.support = (function() {
 			body.style.zoom = 1;
 		}
 
+		if ( !support.focusinBubbles && div.addEventListener ) {
+			div.addEventListener( "focusin", function() {
+				support.focusinBubbles = true;
+			}, false );
+
+			div.appendChild( input );
+			input.focus();
+		}
+
 		// Null elements to avoid leaks in IE
 		body.removeChild( container );
-		container = div = tds = marginDiv = null;
+		container = div = tds = input = marginDiv = null;
 	});
 
 	// Null elements to avoid leaks in IE
 	fragment.removeChild( div );
-	all = a = select = opt = input = fragment = div = null;
+	all = a = select = opt = fragment = div = null;
 
 	return support;
 })();
