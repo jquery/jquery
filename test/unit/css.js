@@ -804,7 +804,12 @@ test("Do not append px to 'column-count' #12990", function() {
 	expect( 1 );
 
 	var $div = jQuery("<div>").appendTo("#qunit-fixture").css("column-count", 1);
-	equal( $div.css("column-count"), 1, "Do not append px to 'column-count'");
+	if( $div.css("column-count") ) {
+		equal( $div.css("column-count"), 1, "Do not append px to 'column-count'");
+	} else {
+		ok( true, "jQuery not running test due to lack of browser support for column-count CSS property" );
+	}
+	
 });
 
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
