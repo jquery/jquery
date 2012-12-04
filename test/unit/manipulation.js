@@ -2027,7 +2027,7 @@ test("html() - script exceptions bubble (#11743)", function() {
 	}, "exception bubbled from inline script" );
 
 	raises(function() {
-		jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
+		jQuery("#qunit-fixture").html("<script src='" + service("echo?content=undefined()")+ "'></script>");
 		ok( false, "error ignored" );
 	}, "exception bubbled from remote script" );
 });
