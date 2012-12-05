@@ -25,7 +25,7 @@ jQuery.fn.offset = function( options ) {
 
 	// If we don't have gBCR, just use 0,0 rather than error
 	// BlackBerry 5, iOS 3 (original iPhone)
-	if ( typeof elem.getBoundingClientRect !== "undefined" ) {
+	if ( elem.getBoundingClientRect ) {
 		box = elem.getBoundingClientRect();
 	}
 	win = getWindow( doc );
