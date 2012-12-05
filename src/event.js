@@ -4,6 +4,50 @@ var rformElems = /^(?:input|select|textarea)$/i,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
 
+// Fix focusin/focusout events
+function fixFocus() {
+	if ( !jQuery.support.focusinBubbles || !jQuery.support.focusOrder ) {
+		jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
+
+			// Attach a single capturing handler while someone wants focusin/focusout
+			var attaches = 0,
+				handler = function( event ) {
+					jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
+				};
+
+			// Create "bubbling" focus and blur events
+			if ( !jQuery.support.focusinBubbles ) {
+				jQuery.event.special[ fix ] = {
+					setup: function() {
+						if ( attaches++ === 0 ) {
+							document.addEventListener( orig, handler, true );
+						}
+					},
+					teardown: function() {
+						if ( --attaches === 0 ) {
+							document.removeEventListener( orig, handler, true );
+						}
+					}
+				};
+			} else {
+
+				// Correct focusin/focusout "bubbling"
+				jQuery.event.special[ orig ].preDispatch = function( event, handlers ) {
+
+					// If we have corresponded events, wait until they fire first
+					if ( handlers[ fix ] ) {
+						setTimeout(function( self ) {
+							jQuery.event.dispatch.call( self, event );
+						}, 0, this );
+
+						return false;
+					}
+				};
+			}
+		});
+	}
+}
+
 /*
  * Helper functions for managing events -- not part of the public interface.
  * Props to Dean Edwards' addEvent library for many of the ideas.
@@ -328,23 +372,25 @@ jQuery.event = {
 	},
 
 	dispatch: function( event ) {
-
-		// Make a writable jQuery.Event from the native event object
-		event = jQuery.event.fix( event );
-
-		var i, j, cur, ret, selMatch, matched, matches, handleObj, sel,
-			handlers = ( (jQuery._data( this, "events" ) || {} )[ event.type ] || []),
-			delegateCount = handlers.delegateCount,
+		var i, j, cur, ret, selMatch, matched, matches, handleObj, sel, handlers, delegateCount, special,
 			args = core_slice.call( arguments ),
-			special = jQuery.event.special[ event.type ] || {},
-			handlerQueue = [];
+			events = jQuery._data( this, "events" ) || {},
+			handlerQueue = [],
+			isNative = !event[ jQuery.expando ];
+
+		// Make a writable jQuery.Event from the native event object if required
+		event = isNative ? jQuery.event.fix( event ) : event;
+
+		handlers = events[ event.type ] || [];
+		delegateCount = handlers.delegateCount;
+		special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[0] = event;
 		event.delegateTarget = this;
 
 		// Call the preDispatch hook for the mapped type, and let it bail if desired
-		if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
+		if ( isNative && special.preDispatch && special.preDispatch.call( this, event, events ) === false ) {
 			return;
 		}
 
@@ -818,30 +864,9 @@ if ( !jQuery.support.changeBubbles ) {
 	};
 }
 
-// Create "bubbling" focus and blur events
-if ( !jQuery.support.focusinBubbles ) {
-	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
-
-		// Attach a single capturing handler while someone wants focusin/focusout
-		var attaches = 0,
-			handler = function( event ) {
-				jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
-			};
-
-		jQuery.event.special[ fix ] = {
-			setup: function() {
-				if ( attaches++ === 0 ) {
-					document.addEventListener( orig, handler, true );
-				}
-			},
-			teardown: function() {
-				if ( --attaches === 0 ) {
-					document.removeEventListener( orig, handler, true );
-				}
-			}
-		};
-	});
-}
+// We have to wait until document is loaded, support tests rely on that
+// In case jQuery is placed in the end of the document, we have to check for body element
+document.body ? fixFocus() : jQuery( fixFocus );
 
 jQuery.fn.extend({
 

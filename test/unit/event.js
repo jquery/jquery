@@ -3104,4 +3104,30 @@ test( "Namespace preserved when passed an Event (#12739)", function() {
 	equal( triggered, 3, "foo.bar triggered" );
 });
 
+test( "Check order of focusin/focusout events", 2, function() {
+	var focus, blur,
+		input = jQuery("#name");
+
+	input.on("focus", function() {
+		focus = true;
+
+	}).on("focusin", function() {
+		ok( !focus, "Focusin event should fire before focus does" );
+
+	}).on("blur", function() {
+		blur = true;
+
+	}).on("focusout", function() {
+		ok( !blur, "Focusout event should fire before blur does" );
+	});
+
+	// gain focus
+	input.focus();
+
+	// then lose it
+	jQuery("#search").focus();
+
+	// cleanup
+	input.off();
+});
 

@@ -65,6 +65,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": false,
 			"focusinBubbles":true,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -98,6 +99,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": false,
 			"focusinBubbles":true,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -131,6 +133,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": true,
 			"focusinBubbles":true,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -164,6 +167,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": true,
 			"focusinBubbles":true,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -197,6 +201,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":false,
 			"submitBubbles":false,
 			"changeBubbles":false,
+			"focusOrder": true,
 			"focusinBubbles":true,
 			"deleteExpando":false,
 			"noCloneEvent":false,
@@ -227,6 +232,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"deleteExpando": false,
 			"doesNotIncludeMarginInBodyOffset": true,
 			"enctype": true,
+			"focusOrder": true,
 			"focusinBubbles": true,
 			"getSetAttribute": false,
 			"hrefNormalized": false,
@@ -263,6 +269,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":false,
 			"submitBubbles":false,
 			"changeBubbles":false,
+			"focusOrder": true,
 			"focusinBubbles":true,
 			"deleteExpando":false,
 			"noCloneEvent":false,
@@ -296,6 +303,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": true,
 			"focusinBubbles":false,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -329,6 +337,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone":true,
 			"submitBubbles":true,
 			"changeBubbles":true,
+			"focusOrder": true,
 			"focusinBubbles":false,
 			"deleteExpando":true,
 			"noCloneEvent":true,
@@ -350,7 +359,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 
 	if ( expected ) {
 		test("Verify that the support tests resolve as expected per browser", function() {
-			expect( 30 );
+			expect( 31 );
 
 			for ( var i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {

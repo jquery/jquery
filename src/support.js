@@ -10,7 +10,7 @@ jQuery.support = (function() {
 		eventName,
 		i,
 		isSupported,
-		clickFn,
+		loader,
 		div = document.createElement("div");
 
 	// Setup
@@ -82,6 +82,7 @@ jQuery.support = (function() {
 		boxModel: ( document.compatMode === "CSS1Compat" ),
 
 		// Will be defined later
+		focusOrder: true,
 		deleteExpando: true,
 		noCloneEvent: true,
 		inlineBlockNeedsLayout: false,
@@ -109,13 +110,12 @@ jQuery.support = (function() {
 	}
 
 	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-		div.attachEvent( "onclick", clickFn = function() {
+		div.attachEvent( "onclick", function() {
 			// Cloning a node shouldn't copy over any
 			// bound event handlers (IE does this)
 			support.noCloneEvent = false;
 		});
 		div.cloneNode( true ).fireEvent("onclick");
-		div.detachEvent( "onclick", clickFn );
 	}
 
 	// Check if a radio maintains its value
@@ -125,14 +125,13 @@ jQuery.support = (function() {
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "checked", "" );
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "name", "t" );
 
-	div.appendChild( input );
 	fragment = document.createDocumentFragment();
-	fragment.appendChild( div.lastChild );
+	fragment.appendChild( input );
 
 	// WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
@@ -140,9 +139,6 @@ jQuery.support = (function() {
 	// Check if a disconnected checkbox will retain its checked
 	// value of true after appended to the DOM (IE6/7)
 	support.appendChecked = input.checked;
-
-	fragment.removeChild( input );
-	fragment.appendChild( div );
 
 	// Technique from Juriy Zaytsev
 	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
@@ -156,7 +152,7 @@ jQuery.support = (function() {
 		isSupported = ( eventName in div );
 		if ( !isSupported ) {
 			div.setAttribute( eventName, " " );
-			isSupported = jQuery.isFunction( div[ eventName ] );
+			isSupported = typeof div[ eventName ] === "function";
 		}
 
 		support[ i + "Bubbles" ] = isSupported;
@@ -166,9 +162,8 @@ jQuery.support = (function() {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	// Run tests that need a body at doc ready
-	jQuery(function() {
-		var container, div, tds, marginDiv,
+	loader = function() {
+		var container, div, tds, marginDiv, order,
 			divReset = "padding:0;margin:0;border:0;display:block;overflow:hidden;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName("body")[0];
 
@@ -179,10 +174,9 @@ jQuery.support = (function() {
 
 		container = document.createElement("div");
 		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
-		body.insertBefore( container, body.firstChild );
 
 		// Construct the test element
-		container.appendChild( div = document.createElement("div") );
+		div = body.appendChild( container ).appendChild( document.createElement("div") );
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
@@ -220,11 +214,11 @@ jQuery.support = (function() {
 			// info see bug #3333
 			// Fails in WebKit before Feb 2011 nightlies
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-			marginDiv = document.createElement("div");
+			marginDiv = div.appendChild( document.createElement("div") );
 			marginDiv.style.cssText = div.style.cssText = divReset;
 			marginDiv.style.marginRight = marginDiv.style.width = "0";
 			div.style.width = "1px";
-			div.appendChild( marginDiv );
+
 			support.reliableMarginRight =
 				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 		}
@@ -250,22 +244,28 @@ jQuery.support = (function() {
 			body.style.zoom = 1;
 		}
 
-		if ( !support.focusinBubbles && div.addEventListener ) {
-			div.addEventListener( "focusin", function() {
-				support.focusinBubbles = true;
+		if ( div.addEventListener ) {
+			input.addEventListener( "focus", function() {
+				order = true;
 			}, false );
 
-			div.appendChild( input );
-			input.focus();
+			div.addEventListener( "focusin", function() {
+				support.focusinBubbles = true;
+				support.focusOrder = !order;
+			}, false );
+
+			div.appendChild( input ).focus();
 		}
 
 		// Null elements to avoid leaks in IE
 		body.removeChild( container );
 		container = div = tds = input = marginDiv = null;
-	});
+	};
+
+	// Run tests that need a body
+	document.body ? loader() : jQuery( loader );
 
 	// Null elements to avoid leaks in IE
-	fragment.removeChild( div );
 	all = a = select = opt = fragment = div = null;
 
 	return support;
