@@ -64,11 +64,11 @@ function createComplexHTML() {
 	testFoo = "foo"; jQuery("#foo").html("foo"); \
 	ok( true, "inline script executed" ); \
 	/* ]]> */</script> \
-	<script src="' + service("echo", {
+	<script src="' + service("echo/", {
 		content: 'var testBar = "bar"; \
 		jQuery("#ap").html("bar"); \
 		ok( true, "remote script executed");'
-	}) + '"></script> \
+	}).replace( /&/g, "&amp;" ) + '"></script> \
 	blabla';
 }
 
@@ -158,10 +158,10 @@ function url( value ) {
 }
 
 function service( value, data ) {
-	var fragment = url( "data/ajax/" + ( value || "" ) );
+	var fragment = url( "data/ajax/" + value );
 	if ( data ) {
 		if ( typeof data !== "string" ) {
-			data = jQuery.param( data );
+			data = jQuery.param( data, false );
 		}
 		fragment += "&" + data;
 	}
