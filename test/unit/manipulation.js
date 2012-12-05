@@ -2330,7 +2330,7 @@ test("insertAfter, insertBefore, etc do not work when destination is original el
 			"<ul id='test4087-complex'><li class='test4087'><div>c1</div>h1</li><li><div>c2</div>h2</li></ul>",
 			"<div id='test4087-simple'><div class='test4087-1'>1<div class='test4087-2'>2</div><div class='test4087-3'>3</div></div></div>",
 			"<div id='test4087-multiple'><div class='test4087-multiple'>1</div><div class='test4087-multiple'>2</div></div>"
-		] ).appendTo( "body" );
+		] ).appendTo( "#qunit-fixture" );
 		
 		// complex case based on http://jsfiddle.net/pbramos/gZ7vB/
 		jQuery( "#test4087-complex div" )[ name ]( "#test4087-complex li:last-child div:last-child" );
