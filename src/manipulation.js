@@ -254,8 +254,8 @@ jQuery.fn.extend({
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" && jQuery( value ).index( this ) === -1 ) {
-			value = jQuery( value ).detach();
+		if ( !isFunc && typeof value !== "string" ) {
+			value = jQuery( value ).not( this ).detach();
 		}
 
 		return this.domManip( [ value ], true, function( elem, i ) {
