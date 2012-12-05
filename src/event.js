@@ -884,6 +884,14 @@ jQuery.fn.extend({
 			return this;
 		}
 
+		if ( types.indexOf("created") >= 0 ) {
+			data      = data || {};
+			data.fn   = fn;
+			data.one  = one;
+			jQuery.event.add( this, types, fn, data, selector );
+			return this;
+		}
+
 		if ( one === 1 ) {
 			origFn = fn;
 			fn = function( event ) {
@@ -972,6 +980,32 @@ jQuery.fn.extend({
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	}
 });
+
+// Fires when specified element is added to the DOM
+jQuery.event.special.created = {
+	setup: function ( data ) {
+		var found = "jQuery.event.special.created.found";
+		var elem  = this;
+		var one   = data.one === 1;
+
+		( window.created_Intervals = window.created_Intervals || {} )[elem.selector] =
+			window.setInterval( function () {
+				var $elem       = jQuery( elem.selector );
+				var $notFound   = $elem.not( function () { return jQuery(this).data(found); } ).each( data.fn );
+
+				if ( (one ? $notFound.first() : $notFound).data(found, true).length && one )
+				{
+					jQuery.event.special.created.remove( $elem );
+				}
+			}, 500 )
+		;
+	},
+
+	remove: function ( handleObj ) {
+		window.clearInterval( window.created_Intervals[handleObj.selector] );
+		jQuery.event.remove( this, "._created" );
+	}
+};
 
 jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
