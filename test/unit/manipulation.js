@@ -689,21 +689,6 @@ if ( jQuery.css ) {
 	});
 }
 
-test( "html5 clone() cannot use the fragment cache in IE (#6485)", function() {
-	
-	expect( 1 );
-
-	var clone;
-
-	jQuery("<article><section><aside>HTML5 elements</aside></section></article>").appendTo("#qunit-fixture");
-
-	clone = jQuery("article").clone();
-
-	jQuery("#qunit-fixture").append( clone );
-
-	equal( jQuery("aside").length, 2, "clone()ing HTML5 elems does not collapse them" );
-});
-
 test( "html(String) with HTML5 (Bug #6485)", function() {
 	
 	expect( 2 );
@@ -2110,55 +2095,6 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	// Unbind any remaining events
 	$section.unbind("click");
 	$clone.unbind("click");
-});
-
-test( "jQuery.fragments cache expectations", function() {
-
-	expect( 10 );
-
-	jQuery.fragments = {};
-
-	function fragmentCacheSize() {
-		var c,
-			n = 0;
-
-		for ( c in jQuery.fragments ) {
-			n++;
-		}
-		return n;
-	}
-
-	jQuery("<li></li>");
-	jQuery("<li>?</li>");
-	jQuery("<li>whip</li>");
-	jQuery("<li>it</li>");
-	jQuery("<li>good</li>");
-	jQuery("<div></div>");
-	jQuery("<div><div><span></span></div></div>");
-	jQuery("<tr><td></td></tr>");
-	jQuery("<tr><td></tr>");
-	jQuery("<li>aaa</li>");
-	jQuery("<ul><li>?</li></ul>");
-	jQuery("<div><p>arf</p>nnn</div>");
-	jQuery("<div><p>dog</p>?</div>");
-	jQuery("<span><span>");
-
-	equal( fragmentCacheSize(), 12, "12 entries exist in jQuery.fragments, 1" );
-
-	jQuery.each( [
-		"<tr><td></td></tr>",
-		"<ul><li>?</li></ul>",
-		"<div><p>dog</p>?</div>",
-		"<span><span>"
-	], function( i, frag ) {
-
-		jQuery( frag );
-
-		equal( jQuery.fragments[ frag ].nodeType, 11, "Second call with " + frag + " creates a cached DocumentFragment, has nodeType 11" );
-		ok( jQuery.fragments[ frag ].childNodes.length, "Second call with " + frag + " creates a cached DocumentFragment, has childNodes with length" );
-	});
-
-	equal( fragmentCacheSize(), 12, "12 entries exist in jQuery.fragments, 2" );
 });
 
 test( "Guard against exceptions when clearing safeChildNodes", function() {

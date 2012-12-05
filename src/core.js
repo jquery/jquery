@@ -497,8 +497,7 @@ jQuery.extend({
 		if ( scripts ) {
 			jQuery( scripts ).remove();
 		}
-		return jQuery.merge( [],
-			( parsed.cacheable ? jQuery.clone( parsed.fragment ) : parsed.fragment ).childNodes );
+		return jQuery.merge( [], parsed.childNodes );
 	},
 
 	parseJSON: function( data ) {
