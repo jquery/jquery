@@ -621,10 +621,10 @@ test( "replaceWith([]) where replacing element requires cloning", function () {
 
 test( "append the same fragment with events (Bug #6997, 5566)", function() {
 
-	expect( 2 + ( doExtra ? 1 : 0 ) );
-
 	var element, clone,
 		doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
+
+	expect( 2 + ( doExtra ? 1 : 0 ) );
 
 	stop();
 
