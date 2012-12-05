@@ -51,7 +51,7 @@
 		function doLog( message, args ) {
 			jQuery( "<li />").appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
 		}
-		jQuery.ajax( "data/ajax/echo/index.php", {
+		jQuery.ajax( "./data/badjson.js" , {
 			context: jQuery( "#success" ),
 			dataType: "text"
 		}).success(function( data, _, xhr ) {
@@ -61,7 +61,7 @@
 			doLog( "Success (" + xhr.status + ")" , arguments );
 			this.addClass( "error" ).text( "FAIL" );
 		});
-		jQuery.ajax( "error" , {
+		jQuery.ajax( "./data/doesnotexist.ext" , {
 			context: jQuery( "#error" ),
 			dataType: "text"
 		}).error(function( xhr ) {

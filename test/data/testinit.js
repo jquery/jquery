@@ -58,21 +58,7 @@ function t( a, b, c ) {
 	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
 }
 
-function createComplexHTML() {
-	return 'html text<br/> \
-	<script type="text/javascript">/* <![CDATA[ */ \
-	testFoo = "foo"; jQuery("#foo").html("foo"); \
-	ok( true, "inline script executed" ); \
-	/* ]]> */</script> \
-	<script src="' + service("echo", {
-		content: 'var testBar = "bar"; \
-		jQuery("#ap").html("bar"); \
-		ok( true, "remote script executed");'
-	}) + '"></script> \
-	blabla';
-}
-
-function createDashboardXML( noParse ) {
+function createDashboardXML() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<dashboard> \
 		<locations class="foo"> \
@@ -85,10 +71,10 @@ function createDashboardXML( noParse ) {
 		</locations> \
 	</dashboard>';
 
-	return noParse ? string : jQuery.parseXML(string);
+	return jQuery.parseXML(string);
 }
 
-function createWithFriesXML( noParse ) {
+function createWithFriesXML() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" \
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
@@ -113,9 +99,9 @@ function createWithFriesXML( noParse ) {
 				</response> \
 			</jsconf> \
 		</soap:Body> \
-	</soap:Envelope>'.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost );
+	</soap:Envelope>';
 
-	return noParse ? string : jQuery.parseXML( string );
+	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
 }
 
 function createXMLFragment() {
@@ -147,25 +133,14 @@ fireNative = document.createEvent ?
 /**
  * Add random number to url to stop caching
  *
- * @example url("data/iframe.html")
- * @result "data/iframe.html?10538358428943"
+ * @example url("data/test.html")
+ * @result "data/test.html?10538358428943"
  *
- * @example url("data/ajax/echo?foo=bar")
- * @result "data/ajax/echo?foo=bar&10538358345554"
+ * @example url("data/test.php?foo=bar")
+ * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
 	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
-}
-
-function service( value, data ) {
-	var fragment = url( "data/ajax/" + ( value || "" ) );
-	if ( data ) {
-		if ( typeof data !== "string" ) {
-			data = jQuery.param( data );
-		}
-		fragment += "&" + data;
-	}
-	return fragment;
 }
 
 // Ajax testing helper
@@ -192,9 +167,8 @@ function ajaxTest( title, expect, options ) {
 					delete ajaxTest.abort;
 					if ( options.teardown ) {
 						options.teardown();
-					} else {
-						start();
 					}
+					start();
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
