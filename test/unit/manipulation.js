@@ -30,9 +30,9 @@ var manipulationFunctionReturningObj = function( value ) {
 */
 
 test( "text()", function() {
-	
+
 	expect( 5 );
-	
+
 	var expected, frag, $newLineTest;
 
 	expected = "This link has class=\"blog\": Simon Willison's Weblog";
@@ -56,16 +56,16 @@ test( "text()", function() {
 });
 
 test( "text(undefined)", function() {
-	
+
 	expect( 1 );
-	
+
 	equal( jQuery("#foo").text("<div").text(undefined)[ 0 ].innerHTML, "&lt;div", ".text(undefined) is chainable (#5571)" );
 });
 
 var testText = function( valueObj ) {
-	
+
 	expect( 4 );
-	
+
 	var val, j;
 
 	val = valueObj("<div><b>Hello</b> cruel world!</div>");
@@ -90,7 +90,7 @@ test( "text(Function)", function() {
 });
 
 test( "text(Function) with incoming value", function() {
-	
+
 	expect( 2 );
 
 	var old = "This link has class=\"blog\": Simon Willison's Weblog";
@@ -104,14 +104,14 @@ test( "text(Function) with incoming value", function() {
 });
 
 var testWrap = function( val ) {
-	
+
 	expect( 19 );
-		
+
 	var defaultText, result, j, i, cacheLength;
 
 	defaultText = "Try them out:",
 	result = jQuery("#first").wrap( val("<div class='red'><span></span></div>") ).text();
-	
+
 	equal( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 
@@ -123,7 +123,7 @@ var testWrap = function( val ) {
 	QUnit.reset();
 	jQuery("#check1").click(function() {
 		var checkbox = this;
-		
+
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
 		jQuery( checkbox ).wrap( val("<div id='c1' style='display:none;'></div>") );
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
@@ -221,15 +221,15 @@ test( "wrap(String) consecutive elements (#10177)", function() {
 });
 
 var testWrapAll = function( val ) {
-	
+
 	expect( 8 );
-	
+
 	var prev, p, result;
-	
+
 	prev = jQuery("#firstp")[ 0 ].previousSibling;
 	p = jQuery("#firstp,#first")[ 0 ].parentNode;
 	result = jQuery("#firstp,#first").wrapAll( val("<div class='red'><div class='tmp'></div></div>") );
-	
+
 	equal( result.parent().length, 1, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 	ok( jQuery("#firstp").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
@@ -240,7 +240,7 @@ var testWrapAll = function( val ) {
 	prev = jQuery("#firstp")[ 0 ].previousSibling;
 	p = jQuery("#first")[ 0 ].parentNode;
 	result = jQuery("#firstp,#first").wrapAll( val(document.getElementById("empty")) );
-	
+
 	equal( jQuery("#first").parent()[ 0 ], jQuery("#firstp").parent()[ 0 ], "Same Parent" );
 	equal( jQuery("#first").parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 	equal( jQuery("#first").parent()[ 0 ].parentNode, p, "Correct Parent" );
@@ -251,14 +251,14 @@ test( "wrapAll(String|Element)", function() {
 });
 
 var testWrapInner = function( val ) {
-	
+
 	expect( 11 );
-	
+
 	var num, result;
 
 	num = jQuery("#first").children().length;
 	result = jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
-	
+
 	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
@@ -292,7 +292,7 @@ test( "wrapInner(Function)", function() {
 });
 
 test( "unwrap()", function() {
-	
+
 	expect( 9 );
 
 	jQuery("body").append("  <div id='unwrap' style='display: none;'> <div id='unwrap1'> <span class='unwrap'>a</span> <span class='unwrap'>b</span> </div> <div id='unwrap2'> <span class='unwrap'>c</span> <span class='unwrap'>d</span> </div> <div id='unwrap3'> <b><span class='unwrap unwrap3'>e</span></b> <b><span class='unwrap unwrap3'>f</span></b> </div> </div>");
@@ -394,9 +394,9 @@ var testAppendForObject = function( valueObj, isFragment ) {
 };
 
 var testAppend = function( valueObj ) {
-	
+
 	expect( 59 );
-	
+
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
 
@@ -502,7 +502,7 @@ test( "append(Function)", function() {
 });
 
 test( "append(param) to object, see #11280", function() {
-	
+
 	expect( 5 );
 
 	var object = jQuery( document.createElement("object") ).appendTo( document.body );
@@ -519,7 +519,7 @@ test( "append(param) to object, see #11280", function() {
 });
 
 test( "append(Function) with incoming value", function() {
-	
+
 	expect( 12 );
 
 	var defaultText, result, select, old, expected;
@@ -584,7 +584,7 @@ test( "append(Function) with incoming value", function() {
 });
 
 test( "replaceWith on XML document (#9960)", function() {
-	
+
 	expect( 1 );
 
 	var newNode,
@@ -602,13 +602,30 @@ test( "replaceWith on XML document (#9960)", function() {
 	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
 });
 
+// #12449
+test( "replaceWith([]) where replacing element requires cloning", function () {
+	expect(2);
+	jQuery("#qunit-fixture").append(
+		"<div class='replaceable'></div><div class='replaceable'></div>"
+	);
+	// replacing set needs to be cloned so it can cover 3 replacements
+	jQuery("#qunit-fixture .replaceable").replaceWith(
+		jQuery("<span class='replaced'></span><span class='replaced'></span>")
+	);
+	equal( jQuery("#qunit-fixture").find(".replaceable").length, 0,
+		"Make sure replaced elements were removed" );
+	equal( jQuery("#qunit-fixture").find(".replaced").length, 4,
+		"Make sure replacing elements were cloned" );
+});
+
+
 test( "append the same fragment with events (Bug #6997, 5566)", function() {
-	
+
 	expect( 2 + ( doExtra ? 1 : 0 ) );
 
 	var element, clone,
 		doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
-	
+
 	stop();
 
 	// This patch modified the way that cloning occurs in IE; we need to make sure that
@@ -644,7 +661,7 @@ test( "append the same fragment with events (Bug #6997, 5566)", function() {
 });
 
 test( "append HTML5 sectioning elements (Bug #6485)", function() {
-	
+
 	expect( 2 );
 
 	var article, aside;
@@ -659,7 +676,7 @@ test( "append HTML5 sectioning elements (Bug #6485)", function() {
 });
 
 test( "jQuery.clean, #12392", function() {
-	
+
 	expect( 6 );
 
 	var elems = jQuery.clean( [ "<div>test div</div>", "<p>test p</p>" ] );
@@ -678,7 +695,7 @@ test( "jQuery.clean, #12392", function() {
 
 if ( jQuery.css ) {
 	test( "HTML5 Elements inherit styles from style rules (Bug #10501)", function() {
-	
+
 		expect( 1 );
 
 		jQuery("#qunit-fixture").append("<article id='article'></article>");
@@ -690,7 +707,7 @@ if ( jQuery.css ) {
 }
 
 test( "html(String) with HTML5 (Bug #6485)", function() {
-	
+
 	expect( 2 );
 
 	jQuery("#qunit-fixture").html("<article><section><aside>HTML5 elements</aside></section></article>");
@@ -699,7 +716,7 @@ test( "html(String) with HTML5 (Bug #6485)", function() {
 });
 
 test( "IE8 serialization bug", function() {
-	
+
 	expect( 2 );
 	var wrapper = jQuery("<div></div>");
 
@@ -711,7 +728,7 @@ test( "IE8 serialization bug", function() {
 });
 
 test( "html() object element #10324", function() {
-	
+
 	expect( 1 );
 
 	var object = jQuery("<object id='object2'><param name='object2test' value='test'></param></object>?").appendTo("#qunit-fixture"),
@@ -721,7 +738,7 @@ test( "html() object element #10324", function() {
 });
 
 test( "append(xml)", function() {
-	
+
 	expect( 1 );
 
 	var xmlDoc, xml1, xml2;
@@ -875,7 +892,7 @@ test( "prepend(Function)", function() {
 });
 
 test( "prepend(Function) with incoming value", function() {
-	
+
 	expect( 10 );
 
 	var defaultText, old, result, expected;
@@ -931,9 +948,9 @@ test( "prepend(Function) with incoming value", function() {
 });
 
 test( "prependTo(String|Element|Array<Element>|jQuery)", function() {
-	
+
 	expect( 6 );
-	
+
 	var defaultText, expected;
 
 	defaultText = "Try them out:";
@@ -964,9 +981,9 @@ test( "prependTo(String|Element|Array<Element>|jQuery)", function() {
 });
 
 var testBefore = function( val ) {
-	
+
 	expect( 7 );
-	
+
 	var expected, set;
 
 	expected = "This is a normal link: bugaYahoo";
@@ -1007,7 +1024,7 @@ test( "before(Function)", function() {
 });
 
 test( "before and after w/ empty object (#10812)", function() {
-	
+
 	expect( 1 );
 
 	var res;
@@ -1017,9 +1034,9 @@ test( "before and after w/ empty object (#10812)", function() {
 });
 
 test( "before and after on disconnected node (#10517)", function() {
-	
+
 	expect( 6 );
-	
+
 	var expectedBefore = "This is a normal link: bugaYahoo",
 		expectedAfter = "This is a normal link: Yahoobuga";
 
@@ -1044,11 +1061,11 @@ test( "before and after on disconnected node (#10517)", function() {
 });
 
 test( "insertBefore(String|Element|Array<Element>|jQuery)", function() {
-	
+
 	expect( 4 );
-	
+
 	var expected;
-	
+
 	expected = "This is a normal link: bugaYahoo";
 	jQuery("<b>buga</b>").insertBefore("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert String before" );
@@ -1070,11 +1087,11 @@ test( "insertBefore(String|Element|Array<Element>|jQuery)", function() {
 });
 
 var testAfter = function( val ) {
-	
+
 	expect( 7 );
-	
+
 	var set, expected;
-	
+
 	expected = "This is a normal link: Yahoobuga";
 	jQuery("#yahoo").after( val("<b>buga</b>") );
 	equal( jQuery("#en").text(), expected, "Insert String after" );
@@ -1113,9 +1130,9 @@ test( "after(Function)", function() {
 });
 
 test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
-	
+
 	expect( 4 ) ;
-	
+
 	var expected;
 
 	expected = "This is a normal link: Yahoobuga";
@@ -1139,9 +1156,9 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 });
 
 var testReplaceWith = function( val ) {
-	
+
 	expect( 22 );
-	
+
 	var tmp, y, child, child2, set, non_existant, $div;
 
 	jQuery("#yahoo").replaceWith(val( "<b id='replace'>buga</b>" ));
@@ -1261,7 +1278,7 @@ test( "replaceWith(Function)", function() {
 });
 
 test( "replaceWith(string) for more than one element", function() {
-	
+
 	expect( 3 );
 
 	equal( jQuery("#foo p").length, 3, "ensuring that test data has not changed" );
@@ -1272,12 +1289,12 @@ test( "replaceWith(string) for more than one element", function() {
 });
 
 test( "replaceWith(string) for collection with disconnected element", function() {
-	
+
 	expect( 18 );
 
 	var testSet, newSet,
 		elem = jQuery("<div />");
-		
+
 
 	QUnit.reset();
 	testSet = jQuery("#foo p").add( elem );
@@ -1347,7 +1364,7 @@ test( "jQuery.clone() (#8017)", function() {
 });
 
 test( "append to multiple elements (#8070)", function() {
-	
+
 	expect( 2 );
 
 	var selects = jQuery("<select class='test8070'></select><select class='test8070'></select>").appendTo("#qunit-fixture");
@@ -1358,9 +1375,9 @@ test( "append to multiple elements (#8070)", function() {
 });
 
 test( "clone()", function() {
-	
+
 	expect( 45 );
-	
+
 	var div, clone, form, body;
 
 	equal( jQuery("#en").text(), "This is a normal link: Yahoo", "Assert text for #en" );
@@ -1486,12 +1503,12 @@ test( "clone()", function() {
 });
 
 test( "clone(script type=non-javascript) (#11359)", function() {
-	
+
 	expect( 3 );
-	
+
 	var src = jQuery("<script type='text/filler'>Lorem ipsum dolor sit amet</script><q><script type='text/filler'>consectetur adipiscing elit</script></q>"),
 		dest = src.clone();
-	
+
 	equal( dest[ 0 ].text, "Lorem ipsum dolor sit amet", "Cloning preserves script text" );
 	equal( dest.last().html(), src.last().html(), "Cloning preserves nested script text" );
 	ok( /^\s*<scr.pt\s+type=['"]?text\/filler['"]?\s*>consectetur adipiscing elit<\/scr.pt>\s*$/i.test( dest.last().html() ), "Cloning preserves nested script text" );
@@ -1499,9 +1516,9 @@ test( "clone(script type=non-javascript) (#11359)", function() {
 });
 
 test( "clone(form element) (Bug #3879, #6655)", function() {
-	
+
 	expect( 5 );
-	
+
 	var clone,
 		element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
 
@@ -1526,9 +1543,9 @@ test( "clone(form element) (Bug #3879, #6655)", function() {
 });
 
 test( "clone(multiple selected options) (Bug #8129)", function() {
-	
+
 	expect( 1 );
-	
+
 	var element = jQuery("<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>");
 
 	equal( element.clone().find("option:selected").length, element.find("option:selected").length, "Multiple selected options cloned correctly" );
@@ -1536,14 +1553,14 @@ test( "clone(multiple selected options) (Bug #8129)", function() {
 });
 
 test( "clone() on XML nodes", function() {
-	
+
 	expect( 2 );
-	
+
 	var xml = createDashboardXML(),
 		root = jQuery(xml.documentElement).clone(),
 		origTab = jQuery("tab", xml).eq( 0 ),
 		cloneTab = jQuery("tab", root).eq( 0 );
-	
+
 	origTab.text("origval");
 	cloneTab.text("cloneval");
 	equal( origTab.text(), "origval", "Check original XML node was correctly set" );
@@ -1551,7 +1568,7 @@ test( "clone() on XML nodes", function() {
 });
 
 test( "clone() on local XML nodes with html5 nodename", function() {
-	
+
 	expect( 2 );
 
 	var $xmlDoc = jQuery( jQuery.parseXML( "<root><meter /></root>" ) ),
@@ -1562,16 +1579,16 @@ test( "clone() on local XML nodes with html5 nodename", function() {
 });
 
 test( "html(undefined)", function() {
-	
+
 	expect( 1 );
-	
+
 	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html().toLowerCase(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
 });
 
 test( "html() on empty set", function() {
-	
+
 	expect( 1 );
-	
+
 	strictEqual( jQuery().html(), undefined, ".html() returns undefined for empty sets (#11962)" );
 });
 
@@ -1696,7 +1713,7 @@ test( "html(Function)", function() {
 });
 
 test( "html(Function) with incoming value", function() {
-	
+
 	expect( 18 );
 
 	var els, actualhtml, pass, j, $div, $div2, insert;
@@ -1770,9 +1787,9 @@ test( "html(Function) with incoming value", function() {
 });
 
 test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() {
-	
+
 	expect( 2 );
-	
+
 	var $content = jQuery("<div><b><i>text</i></b></div>").appendTo("#qunit-fixture"),
 		expected = /^<b><i>text<\/i><\/b>$/i;
 
@@ -1853,9 +1870,9 @@ test( "detach() event cleaning ", 1, function() {
 });
 
 test("empty()", function() {
-	
+
 	expect( 3 );
-	
+
 	equal( jQuery("#ap").children().empty().text().length, 0, "Check text is removed" );
 	equal( jQuery("#ap").children().length, 4, "Check elements are not removed" );
 
@@ -1866,7 +1883,7 @@ test("empty()", function() {
 });
 
 test( "jQuery.cleanData", function() {
-	
+
 	expect( 14 );
 
 	var type, pos, div, child;
@@ -1944,7 +1961,7 @@ test( "jQuery.cleanData", function() {
 });
 
 test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
-	
+
 	expect( 1 );
 
 	// DOM manipulation fails if added text matches an Object method
@@ -1990,7 +2007,7 @@ test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)"
 });
 
 test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
-	
+
 	expect( 1 );
 
 	try {
@@ -2000,7 +2017,7 @@ test( "jQuery.buildFragment - plain objects are not a document #8950", function(
 });
 
 test( "jQuery.clone - no exceptions for object elements #9587", function() {
-	
+
 	expect( 1 );
 
 	try {
@@ -2012,7 +2029,7 @@ test( "jQuery.clone - no exceptions for object elements #9587", function() {
 });
 
 test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
-	
+
 	expect( 2 );
 
 	var $wraptarget = jQuery( "<div id='wrap-target'>Target</div>" ).appendTo( "#qunit-fixture" ),
@@ -2025,7 +2042,7 @@ test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", functio
 });
 
 test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
-	
+
 	expect( 7 );
 
 	var $clone,
@@ -2098,7 +2115,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 });
 
 test( "Guard against exceptions when clearing safeChildNodes", function() {
-	
+
 	expect( 1 );
 
 	var div;
@@ -2111,7 +2128,7 @@ test( "Guard against exceptions when clearing safeChildNodes", function() {
 });
 
 test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
-	
+
 	expect( 5 );
 
 	strictEqual( jQuery("<div/>").clone().addClass("test").appendTo("<div/>").end().hasClass("test"), false, "Check jQuery.fn.appendTo after jQuery.clone" );
@@ -2122,7 +2139,7 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 });
 
 test( "html() - script exceptions bubble (#11743)", function() {
-	
+
 	expect( 2 );
 
 	raises(function() {
@@ -2137,7 +2154,7 @@ test( "html() - script exceptions bubble (#11743)", function() {
 });
 
 test( "checked state is cloned with clone()", function() {
-	
+
 	expect( 2 );
 
 	var elem = jQuery.parseHTML("<input type='checkbox' checked='checked'/>")[ 0 ];
@@ -2150,7 +2167,7 @@ test( "checked state is cloned with clone()", function() {
 });
 
 test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", function() {
-	
+
 	expect( 16 );
 
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
@@ -2217,12 +2234,12 @@ test( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's 
 });
 
 test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
-	
+
 	expect( 2 );
 
 	var div = jQuery("<div>a</div>").append( "&nbsp;", jQuery("<span>b</span>"), "&nbsp;", jQuery("<span>c</span>") ),
 		nbsp = String.fromCharCode( 160 );
-	
+
 	equal( div.text(), "a" + nbsp + "b" + nbsp+ "c", "Appending mixed jQuery with text nodes" );
 
 	div = jQuery("<div><div></div></div>")
@@ -2239,7 +2256,7 @@ testIframeWithCallback( "buildFragment works even if document[0] is iframe's win
 });
 
 test( "script evaluation (#11795)", function() {
-	
+
 	expect( 11 );
 
 	var scriptsIn, scriptsOut,
@@ -2284,7 +2301,7 @@ test( "script evaluation (#11795)", function() {
 });
 
 test( "wrapping scripts (#10470)", function() {
-	
+
 	expect( 2 );
 
 	var script = document.createElement("script");
