@@ -1,5 +1,5 @@
 <?php
-require_once( '../../_fix_magic_quotes.php' );
+require_once( '../_fix_magic_quotes.php' );
 
 /**
  * Echo

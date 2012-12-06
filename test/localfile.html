@@ -51,7 +51,7 @@
 		function doLog( message, args ) {
 			jQuery( "<li />").appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
 		}
-		jQuery.ajax( "data/ajax/echo/index.php", {
+		jQuery.ajax( "data/ajax/echo.php?content=123", {
 			context: jQuery( "#success" ),
 			dataType: "text"
 		}).success(function( data, _, xhr ) {

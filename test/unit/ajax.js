@@ -32,7 +32,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - GET", 1, {
 		type: "GET",
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "bar"
 		},
@@ -43,7 +43,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - POST", 1, {
 		type: "POST",
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "pan"
 		},
@@ -54,7 +54,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - data option - empty bodies for non-GET requests", 1, {
 		type: "POST",
-		url: service("echo/"),
+		url: service("echo"),
 		data: undefined,
 		success: function( data ) {
 			strictEqual( data, "", "no data given" );
@@ -63,7 +63,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - success", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
-		url: service("echo/"),
+		url: service("echo"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
 		},
@@ -78,7 +78,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - success - (url, options)", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		create: function( options ) {
-			return jQuery.ajax( service("echo/"), options );
+			return jQuery.ajax( service("echo"), options );
 		},
 		beforeSend: function() {
 			ok( true, "beforeSend" );
@@ -93,7 +93,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - success - late binding", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
-		url: service("echo/"),
+		url: service("echo"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
 		},
@@ -111,7 +111,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - success - oncomplete binding", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
-		url: service("echo/"),
+		url: service("echo"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
 		},
@@ -129,7 +129,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - error", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError"),
-		url: service("error/"),
+		url: service("error"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
 		},
@@ -143,7 +143,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - abort - textStatus and errorThrown values", 4, [
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				delay: 1
 			},
@@ -156,7 +156,7 @@ module( "ajax", {
 			}
 		},
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				delay: 1
 			},
@@ -171,7 +171,7 @@ module( "ajax", {
 	]);
 
 	ajaxTest( "jQuery.ajax() - error - responseText", 1, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			statusCode: 400,
 			content: "plain text message"
@@ -185,7 +185,7 @@ module( "ajax", {
 		var previousUrl,
 			firstTime = true;
 		jQuery.ajax({
-			url: service("error/"),
+			url: service("error"),
 			error: function() {
 				if ( firstTime ) {
 					firstTime = false;
@@ -193,7 +193,7 @@ module( "ajax", {
 				} else {
 					ok ( true, "Test retrying with jQuery.ajax(this) works" );
 					jQuery.ajax({
-						url: service("error/"),
+						url: service("error"),
 						data: {
 							"x": 1
 						},
@@ -221,7 +221,7 @@ module( "ajax", {
 				xhr.setRequestHeader( "ajax-send", "test" );
 			});
 		},
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			extend: {
 				headers: ["siMPle", "SometHing-elsE", "OthEr", "ajax-send"]
@@ -247,7 +247,7 @@ module( "ajax", {
 				xhr.setRequestHeader( "ajax-send", "test" );
 			});
 		},
-		url: service("headers/response/"),
+		url: service("headers/response"),
 		data: {
 			"Sample-Header": "sample value",
 			"Sample-Header2": "sample value 2",
@@ -267,7 +267,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - headers - Accept", 1, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			extend: {
 				headers: ["accept"]
@@ -290,7 +290,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - headers - contentType option", 2, [
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				extend: {
 					headers: ["Content-Type"]
@@ -302,7 +302,7 @@ module( "ajax", {
 			}
 		},
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				extend: {
 					headers: ["Content-Type"]
@@ -410,7 +410,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - abort", 9, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxError ajaxComplete"),
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			delay: 1
 		},
@@ -458,12 +458,12 @@ module( "ajax", {
 				}, 0 );
 			},
 			requests: [{
-				url: service("echo/"),
+				url: service("echo"),
 				beforeSend: callback("beforeSend"),
 				success: callback("success"),
 				complete: callback("complete")
 			}, {
-				url: service("error/"),
+				url: service("error"),
 				beforeSend: callback("beforeSend"),
 				error: callback("error"),
 				complete: callback("complete")
@@ -478,7 +478,7 @@ module( "ajax", {
 			};
 		}
 		return {
-			url: service("error/"),
+			url: service("error"),
 			beforeSend: nocallback("beforeSend"),
 			error: nocallback("error"),
 			complete:  nocallback("complete")
@@ -486,7 +486,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - context - modification", 1, {
-		url: service("error/"),
+		url: service("error"),
 		context: {},
 		beforeSend: function() {
 			this.test = "foo";
@@ -507,12 +507,12 @@ module( "ajax", {
 				strictEqual( jQuery.ajaxSettings.context, obj, "Make sure the context is properly set in ajaxSettings." );
 			},
 			requests: [{
-				url: service("error/"),
+				url: service("error"),
 				error: function() {
 					strictEqual( this, obj, "Make sure the original object is maintained." );
 				}
 			}, {
-				url: service("error/"),
+				url: service("error"),
 				context: {},
 				error: function() {
 					ok( this !== obj, "Make sure overidding context is possible." );
@@ -524,7 +524,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - events - disable", 3, {
 		setup: addGlobalEvents(""),
 		global: false,
-		url: service("echo/"),
+		url: service("echo"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
 		},
@@ -537,7 +537,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - xml - non-namespace elements inside namespaced elements", 3, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			contentType: "text/xml",
 			content: createWithFriesXML( true )
@@ -550,7 +550,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - xml - non-namespace elements inside namespaced elements (over JSONP)", 3, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: createWithFriesXML( true )
 		},
@@ -563,7 +563,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - atom+xml", 2, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "<root><element /></root>",
 			contentType: "atom+xml"
@@ -577,7 +577,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - HEAD requests", 2, function() {
 		function request( method ) {
 			return {
-				url: service("echo/"),
+				url: service("echo"),
 				type: method,
 				data: {
 					content: "plain text"
@@ -598,7 +598,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - beforeSend", 1, {
-		url: service("error/"),
+		url: service("error"),
 		beforeSend: function( xml ) {
 			this.check = true;
 		},
@@ -610,7 +610,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - beforeSend, cancel request manually", 2, {
 		create: function() {
 			return jQuery.ajax({
-				url: service("error/"),
+				url: service("error"),
 				beforeSend: function( xhr ) {
 					ok( true, "beforeSend got called, canceling" );
 					xhr.abort();
@@ -636,7 +636,7 @@ module( "ajax", {
 			Globals.register("testFoo");
 			Globals.register("testBar");
 		},
-		url: service("echo/"),
+		url: service("echo"),
 		dataType: "html",
 		data: {
 			content: createComplexHTML()
@@ -650,7 +650,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - synchronous request", 1, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "hello world"
 		},
@@ -663,7 +663,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - synchronous request - callbacks", 2, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "hello world"
 		},
@@ -710,7 +710,7 @@ module( "ajax", {
 				start();
 			});
 
-			jqxhr = jQuery[method]( service( "echo/", { content: "0" } ) );
+			jqxhr = jQuery[method]( service( "echo", { content: "0" } ) );
 
 			assertJqXhr( jqxhr, method );
 
@@ -782,27 +782,27 @@ module( "ajax", {
 						strictEqual( data, "041275", "JSON results returned - " + this.type + " - " + options.title );
 					}
 				}, options );
-			tmp.url = service( "echo/" + ( options.url || "" ) );
+			tmp.url = service( options.url || "echo.php" );
 			return tmp;
 		}
 
 		ajaxTest( "jQuery.ajax() - JSONP - Query string (?n)" + label, 4, [
 			request({
 				title: "URL Callback",
-				url: "?callback=?"
+				url: "echo.php?callback=?"
 			}),
 			request({
 				title: "URL Context-Free Callback",
-				url: "?callback=??"
+				url: "echo.php?callback=??"
 			}),
 			request({
 				// REST-like style
 				title: "Context-Free Callback as Path-Info",
-				url: "index.php/??"
+				url: "echo.php/??"
 			}),
 			request({
 				title: "Callback as Path-Info (with query param)",
-				url: "index.php/???content=\"004\"",
+				url: "echo.php/???content=\"004\"",
 				beforeSend: function() {
 					delete this.data;
 				}
@@ -830,7 +830,7 @@ module( "ajax", {
 				}),
 				request({
 					title: "no URL manipulation",
-					url: "/index.php/XXX",
+					url: "echo.php/XXX",
 					jsonp: false,
 					jsonpCallback: "XXX",
 					beforeSend: function() {
@@ -918,7 +918,7 @@ module( "ajax", {
 				},
 				type: type,
 				crossDomain: crossDomain,
-				url: service("echo/"),
+				url: service("echo"),
 				data: {
 					contentType: "text/javascript",
 					content: "var testBar = true; ok( true, 'script executed' );"
@@ -937,7 +937,7 @@ module( "ajax", {
 							strictEqual( text, "", "content-type detected" );
 						}
 					},
-					url: service("headers/response/"),
+					url: service("headers/response"),
 					data: {
 						"Content-Type": contentType
 					},
@@ -952,7 +952,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - malformed JSON", 2, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: "{bad: toTheBone}"
 		},
@@ -970,7 +970,7 @@ module( "ajax", {
 				return 42;
 			}
 		},
-		url: service("headers/response/"),
+		url: service("headers/response"),
 		data: {
 			"Content-Type": "application/json"
 		},
@@ -985,7 +985,7 @@ module( "ajax", {
 				ok( false, "content-type detected" );
 			}
 		},
-		url: service("headers/response/"),
+		url: service("headers/response"),
 		data: {
 			"Content-Type": "application/json"
 		},
@@ -998,7 +998,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - JSON - empty", 1, {
-		url: service("echo/"),
+		url: service("echo"),
 		dataType: "json",
 		error: function( _, __, error ) {
 			strictEqual( typeof error, "object", "error object for empty json response" );
@@ -1010,7 +1010,7 @@ module( "ajax", {
 	jQuery.each( { " - no cache": false, " - cache": true }, function( label, cache ) {
 		jQuery.each( [ "If-Modified-Since", "If-None-Match" ], function( _, header ) {
 			var isOpera = !!window.opera,
-				url = service("headers/cache/"),
+				url = service("headers/cache"),
 				value = ifModifiedNow++;
 
 			function request() {
@@ -1068,7 +1068,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - statusText", 4, [
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				statusCode: 200,
 				statusText: "Hello"
@@ -1079,7 +1079,7 @@ module( "ajax", {
 			}
 		},
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				statusCode: 404,
 				statusText: "Hello"
@@ -1091,7 +1091,7 @@ module( "ajax", {
 		}
 	]);
 
-	jQuery.each( [ service("error/"), service("echo/") ], function( isSuccess, url ) {
+	jQuery.each( [ service("error"), service("echo") ], function( isSuccess, url ) {
 		function statusCodes( title ) {
 			return {
 				200: function() {
@@ -1133,7 +1133,7 @@ module( "ajax", {
 				dataType = srcType + " " + dataType;
 			}
 			return {
-				url: service("echo/"),
+				url: service("echo"),
 				data: {
 					content: "\"041275\""
 				},
@@ -1155,7 +1155,7 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - overrideMimeType", 2, [
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				content: "42"
 			},
@@ -1167,7 +1167,7 @@ module( "ajax", {
 			}
 		},
 		{
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				content: "42"
 			},
@@ -1202,7 +1202,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "#2806 - jQuery.ajax() - data option - evaluate function values", 1, {
-		url: service("echo/"),
+		url: service("echo"),
 		data: {
 			content: function() {
 				return "value";
@@ -1250,7 +1250,7 @@ module( "ajax", {
 		},
 		{
 			create: function() {
-				return jQuery.ajax( service("echo/") );
+				return jQuery.ajax( service("echo") );
 			},
 			done: function() {
 				ok( true, "With only string URL argument" );
@@ -1258,7 +1258,7 @@ module( "ajax", {
 		},
 		{
 			create: function() {
-				return jQuery.ajax( service("echo/"), {});
+				return jQuery.ajax( service("echo"), {});
 			},
 			done: function() {
 				ok( true, "With string URL param and map" );
@@ -1268,7 +1268,7 @@ module( "ajax", {
 			create: function( options ) {
 				return jQuery.ajax( options );
 			},
-			url: service("echo/"),
+			url: service("echo"),
 			success: function() {
 				ok( true, "With only map" );
 			}
@@ -1277,7 +1277,7 @@ module( "ajax", {
 	
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
 		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				content: "42"
 			},
@@ -1352,7 +1352,7 @@ module( "ajax", {
 	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
 		raises(function() {
 			jQuery.ajax({
-				url: service("echo/"),
+				url: service("echo"),
 				data: {
 					content: "SYNTAX ERROR"
 				},
@@ -1376,7 +1376,7 @@ module( "ajax", {
 
 		function request( option ) {
 			var options = {
-					url: service("echo/"),
+					url: service("echo"),
 					data: {
 						content: "hello",
 						extend: true
@@ -1434,7 +1434,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.ajaxSetup()", 1, function() {
 		jQuery.ajaxSetup({
-			url: service("echo/"),
+			url: service("echo"),
 			data: {
 				content: "bar"
 			},
@@ -1453,7 +1453,7 @@ module( "ajax", {
 				timeout: 50
 			});
 		},
-		url: service("echo/?delay=1"),
+		url: service( "echo", { delay: "1" } ),
 		error: function( _, status ) {
 			strictEqual( status, "timeout", "timed out" );
 		}
@@ -1467,7 +1467,7 @@ module( "ajax", {
 		},
 		type: "GET",
 		timeout: 15000,
-		url: service("echo/?delay=1"),
+		url: service( "echo", { delay: "1" } ),
 		success: function() {
 			ok( true, "Check for local timeout" );
 		}
@@ -1484,13 +1484,13 @@ module( "ajax", {
 			ok( false, "Global event triggered" );
 		});
 
-		jQuery("#qunit-fixture").append("<script src='" + service( "echo/", {
+		jQuery("#qunit-fixture").append("<script src='" + service( "echo", {
 			content: "ok( true, \"script executed\" );"
 		}) + "'></script>");
 	});
 
 	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
-		jQuery("#qunit-fixture").load( service( "echo/", {
+		jQuery("#qunit-fixture").load( service( "echo", {
 			content:
 				"<script>\n<!--\nok( true, \"script within html comments executed\" );\n-->\n</script>\n" +
 				"<script>\n<![CDATA[\nok( true, \"script within CDATA executed\" );\n]]>\n</script>"
@@ -1501,7 +1501,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.get( String, Hash, Function ) - parse xml and use text() on nodes", 2, function() {
 		var tabs = [ "blabla", "blublu" ];
-		jQuery.get( service( "echo/", {
+		jQuery.get( service( "echo", {
 			contentType: "text/xml",
 			content: createDashboardXML( true )
 		}), function( xml ) {
@@ -1518,7 +1518,7 @@ module( "ajax", {
 				content: "helloworld"
 			}
 		});
-		jQuery.get( service("echo/"), function( data ) {
+		jQuery.get( service("echo"), function( data ) {
 			strictEqual( data, "helloworld", "Data from ajaxSettings was used" );
 			start();
 		});
@@ -1528,7 +1528,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getJSON( String, Hash, Function ) - JSON array", 1, function() {
 		jQuery.getJSON(
-			service("echo/"),
+			service("echo"),
 			{
 				"content": "[{ \"name\": \"John\", \"age\": 21 }, { \"name\": \"Peter\", \"age\": 25 }]"
 			},
@@ -1546,7 +1546,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.getJSON( String, Function ) - JSON object", 1, function() {
-		jQuery.getJSON( service( "echo/", {
+		jQuery.getJSON( service( "echo", {
 			content: "{ \"data\": { \"lang\": \"en\", \"length\": 25 } }"
 		}), function( json ) {
 			deepEqual( json, {
@@ -1572,14 +1572,14 @@ module( "ajax", {
 				return true;
 			}
 		};
-		jQuery.getJSON( service("echo/"), function( json ) {
+		jQuery.getJSON( service("echo"), function( json ) {
 			strictEqual( json, true, "Verifying return value" );
 			start();
 		});
 	});
 
 	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 1, function() {
-		jQuery.getJSON( window.location.href.replace( /[^\/]*$/, "" ) + service( "echo/", {
+		jQuery.getJSON( window.location.href.replace( /[^\/]*$/, "" ) + service( "echo", {
 			content: "{ \"data\": { \"lang\": \"en\", \"length\": 25 } }"
 		}), function( json ) {
 			deepEqual( json, {
@@ -1596,7 +1596,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( service("echo/", {
+		jQuery.getScript( service("echo", {
 			content: "var testBar = \"bar\"; ok( true, \"script executed\");"
 		}), function( data, _, jqXHR ) {
 			strictEqual( testBar, "bar", "Check if script was evaluated" );
@@ -1606,14 +1606,14 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
 		Globals.register("testBar");
-		jQuery.getScript( service("echo/", {
+		jQuery.getScript( service("echo", {
 			content: "var testBar = \"bar\"; ok( true, \"script executed\");"
 		}) ).done( start );
 	});
 
 	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( service("echo/", {
+		jQuery.getScript( service("echo", {
 			content: "var testBar = \"bar\"; ok( true, \"script executed\");"
 		}), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
@@ -1630,7 +1630,7 @@ module( "ajax", {
 				strictEqual( this.type, "GET", "no data means GET request" );
 			}
 		});
-		jQuery("#first").load( service( "echo/", {
+		jQuery("#first").load( service( "echo", {
 			content: "<script>ok( true, \"html injected\" )</script>"
 		}), start );
 	});
@@ -1650,7 +1650,7 @@ module( "ajax", {
 				strictEqual( this.type, "GET", "null data means GET request" );
 			}
 		});
-		jQuery("#first").load(  service( "echo/", {
+		jQuery("#first").load(  service( "echo", {
 			content: "<script>ok( true, \"html injected\" )</script>"
 		}), null, start );
 	});
@@ -1662,14 +1662,14 @@ module( "ajax", {
 				strictEqual( this.type, "GET", "undefined data means GET request" );
 			}
 		});
-		jQuery("#first").load(  service( "echo/", {
+		jQuery("#first").load(  service( "echo", {
 			content: "<script>ok( true, \"html injected\" )</script>"
 		}), undefined, start );
 	});
 
 	// check if load can be called with only url
 	asyncTest( "jQuery.fn.load( URL_SELECTOR )", 1, function() {
-		jQuery("#first").load( service("echo/", {
+		jQuery("#first").load( service("echo", {
 			content: "<div class=\"user\"></div><div class=\"user\"></div><div></div>"
 		}) + " div.user", function() {
 			strictEqual( jQuery( this ).children("div").length, 2, "Verify that specific elements were injected" );
@@ -1678,7 +1678,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM", 2, function() {
-		jQuery("#first").load( service( "echo/", {
+		jQuery("#first").load( service( "echo", {
 			content: "INJECTED<script>ok( true, \"html injected\" )</script>"
 		}), function() {
 			ok( /^INJECTED/.test(jQuery("#first").text()), "Check if content was injected into the DOM" );
@@ -1696,7 +1696,7 @@ module( "ajax", {
 		Globals.register("testFoo");
 		Globals.register("testBar");
 
-		jQuery("#first").load( service( "echo/", {
+		jQuery("#first").load( service( "echo", {
 			content: createComplexHTML()
 		}), function() {
 			ok( jQuery("#first").html().match( /^html text/ ), "Check content after loading html" );
@@ -1707,7 +1707,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag", 3, function() {
-		jQuery("#first").load( service("echo/", {
+		jQuery("#first").load( service("echo", {
 			content: "<script>var testFoo = \"foo\"; jQuery(\"#foo\").html(\"foo\"); ok( true, \"script executed\" );</script>"
 		}), function() {
 			strictEqual( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM");
@@ -1722,7 +1722,7 @@ module( "ajax", {
 				return "Hello World";
 			}
 		});
-		jQuery("<div/>").load( service("echo/"), function( responseText ) {
+		jQuery("<div/>").load( service("echo"), function( responseText ) {
 			strictEqual( jQuery( this ).html(), "Hello World", "Test div was filled with filtered data" );
 			strictEqual( responseText, "Hello World", "Test callback receives filtered data" );
 			start();
@@ -1730,7 +1730,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, Object, Function )", 1, function() {
-		jQuery("<div />").load( service("echo/"), {
+		jQuery("<div />").load( service("echo"), {
 			content: "INJECTED"
 		}, function() {
 			strictEqual( jQuery( this ).text(), "INJECTED", "data passed" );
@@ -1739,7 +1739,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, String, Function )", 1, function() {
-		jQuery("<div />").load( service("echo/"), "content=INJECTED", function() {
+		jQuery("<div />").load( service("echo"), "content=INJECTED", function() {
 			strictEqual( jQuery( this ).text(), "INJECTED", "data passed" );
 			start();
 		});
@@ -1763,7 +1763,7 @@ module( "ajax", {
 			jQuery.map([
 				{
 					type: "success",
-					url: service("echo/")
+					url: service("echo")
 				},
 				{
 					type: "error",
@@ -1793,7 +1793,7 @@ module( "ajax", {
 			strictEqual( s.dataType, "html", "Verify the load() dataType was html" );
 			start();
 		});
-		jQuery("#first").load( service("echo/") );
+		jQuery("#first").load( service("echo") );
 	});
 
 	test( "#10524 - jQuery.fn.load() - data specified in ajaxSettings is merged in", 1, function() {
@@ -1816,7 +1816,7 @@ module( "ajax", {
 	asyncTest( "jQuery.post() - data", 3, function() {
 		jQuery.when(
 			jQuery.post(
-				service("echo/"),
+				service("echo"),
 				{
 					contentType: "text/xml",
 					content: "<math><calculation>5-2</calculation><result>3</result></math>"
@@ -1829,7 +1829,7 @@ module( "ajax", {
 				}
 			),
 			jQuery.ajax({
-				url: service("echo/"),
+				url: service("echo"),
 				type: "POST",
 				data: {
 					content: {
@@ -1848,7 +1848,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml in POST data", 2, function() {
 		jQuery.post(
-			service("echo/"),
+			service("echo"),
 			{
 				contentType: "text/xml",
 				content: "<math><calculation>5-2</calculation><result>3</result></math>"
@@ -1863,7 +1863,7 @@ module( "ajax", {
 	});
 	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml in GET query", 2, function() {
 		jQuery.post(
-			service("echo/", {
+			service("echo", {
 				// This is a POST request with the data in GET
 				secondaryParams: true,
 				contentType: "text/xml",
