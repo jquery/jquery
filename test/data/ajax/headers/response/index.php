@@ -1,5 +1,6 @@
 <?php
+require_once( '../../../_fix_magic_quotes.php' );
 
-foreach( $_REQUEST as $header => $value ) {
-	@header("$header: $value");
+foreach( $_GET as $key => $value ) {
+	header( "$key: $value" );
 }

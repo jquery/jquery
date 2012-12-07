@@ -36,8 +36,8 @@ module( "ajax", {
 		data: {
 			content: "bar"
 		},
-		success: function( msg ) {
-			strictEqual( msg, "bar", "Check for GET" );
+		success: function( data ) {
+			strictEqual( data, "bar", "Check for GET" );
 		}
 	});
 
@@ -47,8 +47,8 @@ module( "ajax", {
 		data: {
 			content: "pan"
 		},
-		success: function( msg ) {
-			strictEqual( msg, "pan", "Check for POST" );
+		success: function( data ) {
+			strictEqual( data, "pan", "Check for POST" );
 		}
 	});
 
@@ -56,8 +56,8 @@ module( "ajax", {
 		type: "POST",
 		url: service("echo/"),
 		data: undefined,
-		success: function( result ) {
-			strictEqual( result, "", "no data given" );
+		success: function( data ) {
+			strictEqual( data, "", "no data given" );
 		}
 	});
 
@@ -173,7 +173,7 @@ module( "ajax", {
 	ajaxTest( "jQuery.ajax() - error - responseText", 1, {
 		url: service("echo/"),
 		data: {
-			status: 400,
+			statusCode: 400,
 			content: "plain text message"
 		},
 		error: function( xhr ) {
@@ -221,9 +221,11 @@ module( "ajax", {
 				xhr.setRequestHeader( "ajax-send", "test" );
 			});
 		},
-		url: service("headers/request/"),
+		url: service("echo/"),
 		data: {
-			headers: "siMPle,SometHing-elsE,OthEr,ajax-send"
+			extend: {
+				headers: ["siMPle", "SometHing-elsE", "OthEr", "ajax-send"]
+			}
 		},
 		headers: {
 			"siMPle": "value",
@@ -231,17 +233,11 @@ module( "ajax", {
 			"OthEr": "something else"
 		},
 		success: function( data, _, xhr ) {
-			var i, emptyHeader,
-				requestHeaders = jQuery.extend( this.headers, {
-					"ajax-send": "test"
-				}),
-				tmp = [];
-			for ( i in requestHeaders ) {
-				tmp.push( i, ": ", requestHeaders[ i ], "\n" );
-			}
-			tmp = tmp.join("");
+			var requestHeaders = jQuery.extend( this.headers, {
+				"ajax-send": "test"
+			});
 			
-			strictEqual( data, tmp, "Headers were sent" );
+			deepEqual( data.headers, requestHeaders, "Headers were sent" );
 		}
 	});
 	
@@ -271,9 +267,11 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - headers - Accept", 1, {
-		url: service("headers/request/"),
+		url: service("echo/"),
 		data: {
-			headers: "accept"
+			extend: {
+				headers: ["accept"]
+			}
 		},
 		headers: {
 			Accept: "very wrong accept value"
@@ -282,29 +280,37 @@ module( "ajax", {
 			xhr.setRequestHeader("Accept", "*/*");
 		},
 		success: function( data ) {
-			strictEqual( data, "accept: */*\n", "Test Accept header is set to last value provided" );
+			deepEqual(
+				data.headers,
+				{ "accept": "*/*" },
+				"Test Accept header is set to last value provided"
+			);
 		}
 	});
 
 	ajaxTest( "jQuery.ajax() - headers - contentType option", 2, [
 		{
-			url: service("headers/request/"),
+			url: service("echo/"),
 			data: {
-				headers: "content-type"
+				extend: {
+					headers: ["Content-Type"]
+				}
 			},
 			contentType: "test",
 			success: function( data ) {
-				ok( data, "content-type: test\n", "Test content-type is sent when options.contentType is set" );
+				deepEqual( data.headers, { "Content-Type": "test" }, "Test content-type is sent when options.contentType is set" );
 			}
 		},
 		{
-			url: service("headers/request/"),
+			url: service("echo/"),
 			data: {
-				headers: "content-type"
+				extend: {
+					headers: ["Content-Type"]
+				}
 			},
 			contentType: false,
 			success: function( data ) {
-				strictEqual( data, "content-type: \n", "Test content-type is not sent when options.contentType===false" );
+				deepEqual( data.headers, {}, "Test content-type is not sent when options.contentType===false" );
 			}
 		}
 	]);
@@ -562,9 +568,9 @@ module( "ajax", {
 			content: "<root><element /></root>",
 			contentType: "atom+xml"
 		},
-		success: function( xml ) {
-			strictEqual( jQuery( "root", xml ).length, 1, "root in responseXML" );
-			strictEqual( jQuery( "element", xml ).length, 1, "element in responseXML" );
+		success: function( resp ) {
+			strictEqual( jQuery( "root", resp ).length, 1, "root in responseXML" );
+			strictEqual( jQuery( "element", resp ).length, 1, "element in responseXML" );
 		}
 	});
 
@@ -572,12 +578,16 @@ module( "ajax", {
 		function request( method ) {
 			return {
 				url: service("echo/"),
-				data: {
-					content: "head request"
-				},
 				type: method,
+				data: {
+					content: "plain text"
+				},
 				success: function( data, status, xhr ) {
-					strictEqual( data, method === "HEAD" ? "" : "head request", "Content (" + method + ")" );
+					if ( method === "HEAD" ) {
+						strictEqual( data, "", "Empty content for HEAD request" );
+					} else {
+						strictEqual( data, "plain text", "Content for " + method );
+					}
 				}
 			};
 		}
@@ -626,16 +636,16 @@ module( "ajax", {
 			Globals.register("testFoo");
 			Globals.register("testBar");
 		},
-		dataType: "html",
 		url: service("echo/"),
+		dataType: "html",
 		data: {
 			content: createComplexHTML()
 		},
 		success: function( data ) {
 			ok( data.match( /^html text/ ), "Check content for datatype html" );
 			jQuery("#ap").html( data );
-			strictEqual( window["testFoo"], "foo", "Check if script was evaluated for datatype html" );
-			strictEqual( window["testBar"], "bar", "Check if script src was evaluated for datatype html" );
+			strictEqual( window["testFoo"], "foo", "Check if script was evaluated for dataType html" );
+			strictEqual( window["testBar"], "bar", "Check if script src target was loaded and execeted for dataType html" );
 		}
 	});
 
@@ -670,31 +680,44 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object", 7, function() {
-		var successCount = 0,
-			errorCount = 0,
-			errorEx = [];
-		function success() {
-			successCount++;
-		}
-		jQuery( document ).ajaxError(function( e, xhr, s, ex ) {
-			errorCount++;
-			errorEx.push( s.dataType + " / " + xhr.status + " / " + ex + " " );
-		});
-		jQuery( document ).ajaxStop(function() {
-			strictEqual( successCount, 5, "Check all ajax calls successful" );
-			strictEqual( errorCount, 0, "Check no ajax errors ( " + errorEx.join() + ")" );
-			start();
-		});
+	function assertJqXhr( x, title ) {
+		// Duck type jqXHR:
+		// - subset of native XMLHttpRequest,
+		// - based on a jQuery.Deferred.promise
+		// - provides a overrideMimeType method
+		// - provides back-compate error/success
+		ok(
+			x.setRequestHeader && x.abort &&
+			x.then && x.progress &&
+			x.overrideMimeType && x.error && x.success,
+			title + " returns jqXHR"
+		);
+	}
 
-		ok( jQuery.get( service("echo/"), success ), "get" );
-		ok( jQuery.post( service("echo/"), success ), "post" );
-		ok( jQuery.getScript( service("echo/"), success ), "script" );
-		ok( jQuery.getJSON( service("echo/?content=0"), success ), "json" );
-		ok( jQuery.ajax({
-			url: service("echo/"),
-			success: success
-		}), "generic" );
+	jQuery.each([ "ajax", "get", "post", "getScript", "getJSON" ], function ( _, method ) {
+		asyncTest( "jQuery." + method + " - basic request and return value", 3, function() {
+			var jqxhr,
+				successCount = 0,
+				errorCount = 0,
+				errorEx = [];
+			jQuery( document ).ajaxError(function( e, xhr, s, ex ) {
+				errorCount++;
+				errorEx.push( s.dataType + " / " + xhr.status + " / " + ex + " " );
+			});
+			jQuery( document ).ajaxStop(function() {
+				strictEqual( successCount, 1, "Check all ajax calls successful" );
+				strictEqual( errorCount, 0, "Check no ajax errors ( " + errorEx.join() + ")" );
+				start();
+			});
+
+			jqxhr = jQuery[method]( service( "echo/", { content: "0" } ) );
+
+			assertJqXhr( jqxhr, method );
+
+			jqxhr.done( function() {
+				successCount++;
+			} );
+		});
 	});
 
 	ajaxTest( "jQuery.ajax() - cache", 12, function() {
@@ -746,7 +769,7 @@ module( "ajax", {
 		];
 	});
 
-	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
+	jQuery.each( { " - Same Domain": false, " - Cross Domain": true }, function( label, crossDomain ) {
 		
 		function request( options ) {
 			var tmp = jQuery.extend( true, {
@@ -763,7 +786,7 @@ module( "ajax", {
 			return tmp;
 		}
 
-		ajaxTest( "jQuery.ajax() - JSONP - Query String (?n)" + label, 4, [
+		ajaxTest( "jQuery.ajax() - JSONP - Query string (?n)" + label, 4, [
 			request({
 				title: "URL Callback",
 				url: "?callback=?"
@@ -773,12 +796,13 @@ module( "ajax", {
 				url: "?callback=??"
 			}),
 			request({
-				title: "REST-like",
+				// REST-like style
+				title: "Context-Free Callback as Path-Info",
 				url: "index.php/??"
 			}),
 			request({
-				title: "REST-like (with param)",
-				url: "index.php/???content=\"041275\"",
+				title: "Callback as Path-Info (with query param)",
+				url: "index.php/???content=\"004\"",
 				beforeSend: function() {
 					delete this.data;
 				}
@@ -810,6 +834,7 @@ module( "ajax", {
 					jsonp: false,
 					jsonpCallback: "XXX",
 					beforeSend: function() {
+						// ?d from service()/url(), &_=d from ajax cache nonce
 						ok( /\/XXX\?\d+&content=041275&_=\d+$/.test( this.url ), "The URL wasn't messed with" );
 					}
 				}),
@@ -895,6 +920,7 @@ module( "ajax", {
 				crossDomain: crossDomain,
 				url: service("echo/"),
 				data: {
+					contentType: "text/javascript",
 					content: "var testBar = true; ok( true, 'script executed' );"
 				},
 				dataType: "script",
@@ -979,13 +1005,14 @@ module( "ajax", {
 		}
 	});
 
-	var ifModifiedNow = new Date();
+	var ifModifiedNow = new Date().getTime();
 
-	jQuery.each( [ " - no cache", " - cache" ], function( cache, label ) {
+	jQuery.each( { " - no cache": false, " - cache": true }, function( label, cache ) {
 		jQuery.each( [ "If-Modified-Since", "If-None-Match" ], function( _, header ) {
 			var isOpera = !!window.opera,
 				url = service("headers/cache/"),
 				value = ifModifiedNow++;
+
 			function request() {
 				return jQuery.ajax({
 					url: url,
@@ -994,25 +1021,32 @@ module( "ajax", {
 						value: value
 					},
 					ifModified: true,
-					cache: !!cache
+					cache: cache
 				});
 			}
+
 			asyncTest( "jQuery.ajax() - " + header + label, 3, function() {
-				request().then(function( data, status ) {
-					strictEqual( status, "success" );
-					return request();
-				}).done(function( data, status ) {
-					if ( data === "FAIL" ) {
-						ok( isOpera, "Opera is incapable of doing .setRequestHeader('" + header + "')." );
-						ok( isOpera, "Opera is incapable of doing .setRequestHeader('" + header + "')." );
-					} else {
-						strictEqual( status, "notmodified" );
-						ok( data == null, "response body should be empty" );
-					}
-				}).fail(function() {
-					ok( isOpera, "Opera cannot handle 304" );
-					ok( isOpera, "Opera cannot handle 304" );
-				}).always( start );
+				request().done(function( data, status ) {
+					strictEqual( status, "success", "First request status" );
+					return request()
+						.done(function( data, status ) {
+							if ( data === "FAIL" && isOpera ) {
+								ok( true, "Opera is incapable of doing .setRequestHeader('" + header + "')." );
+								ok( true, "Opera is incapable of doing .setRequestHeader('" + header + "')." );
+							} else {
+								strictEqual( status, "notmodified", "Second request status" );
+								equal( data, null, "Second request body" );
+							}
+						}).fail(function() {
+							if ( isOpera ) {
+								ok( true, "Opera cannot handle 304" );
+								ok( true, "Opera cannot handle 304" );
+							} else {
+								ok( false, "Ajax error on 304" );
+								ok( false, "Ajax error on 304" );
+							}
+						}).always( start );
+				}).fail( start );
 			});
 		});
 	});
@@ -1036,7 +1070,7 @@ module( "ajax", {
 		{
 			url: service("echo/"),
 			data: {
-				status: 200,
+				statusCode: 200,
 				statusText: "Hello"
 			},
 			success: function( _, statusText, jqXHR ) {
@@ -1047,7 +1081,7 @@ module( "ajax", {
 		{
 			url: service("echo/"),
 			data: {
-				status: 404,
+				statusCode: 404,
 				statusText: "Hello"
 			},
 			error: function( jqXHR, statusText ) {
@@ -1344,23 +1378,25 @@ module( "ajax", {
 			var options = {
 					url: service("echo/"),
 					data: {
-						requestArray: "POST",
-						content: "hello"
+						content: "hello",
+						extend: true
 					},
 					success: function( msg ) {
-						strictEqual( msg, "hello", "Check for POST (no override)" );
+						strictEqual( msg.content, "hello", "content (no override)" );
+						strictEqual( msg.method, "POST", "method (no override)" );
 					}
 				};
 			if ( option ) {
 				options[ option ] = "GET";
 				options.success = function( msg ) {
-					strictEqual( msg, "", "Check for no POST (overriding with " + option + ")" );
+					strictEqual( msg.content, "hello", "content (overriding with " + option + " to GET)" );
+					strictEqual( msg.method, "GET", "method (overriding with " + option + " to GET)" );
 				};
 			}
 			return options;
 		}
 
-		ajaxTest( "#12004 - jQuery.ajax() - method is an alias of type - " + globalOption + " set globally", 3, {
+		ajaxTest( "#12004 - jQuery.ajax() - method is an alias of type - " + globalOption + " set globally to POST", 6, {
 			setup: function() {
 				var options = {};
 				options[ globalOption ] = "POST";
@@ -1449,7 +1485,6 @@ module( "ajax", {
 		});
 
 		jQuery("#qunit-fixture").append("<script src='" + service( "echo/", {
-			requestArray: "GET",
 			content: "ok( true, \"script executed\" );"
 		}) + "'></script>");
 	});
@@ -1695,9 +1730,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, Object, Function )", 1, function() {
-		jQuery("<div />").load( service("echo/", {
-			requestArray: "POST"
-		}), {
+		jQuery("<div />").load( service("echo/"), {
 			content: "INJECTED"
 		}, function() {
 			strictEqual( jQuery( this ).text(), "INJECTED", "data passed" );
@@ -1706,9 +1739,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load( String, String, Function )", 1, function() {
-		jQuery("<div />").load( service("echo/", {
-			requestArray: "GET"
-		}), "content=INJECTED", function() {
+		jQuery("<div />").load( service("echo/"), "content=INJECTED", function() {
 			strictEqual( jQuery( this ).text(), "INJECTED", "data passed" );
 			start();
 		});
@@ -1787,7 +1818,6 @@ module( "ajax", {
 			jQuery.post(
 				service("echo/"),
 				{
-					requestArray: "POST",
 					contentType: "text/xml",
 					content: "<math><calculation>5-2</calculation><result>3</result></math>"
 				},
@@ -1802,7 +1832,6 @@ module( "ajax", {
 				url: service("echo/"),
 				type: "POST",
 				data: {
-					requestArray: "POST",
 					content: {
 						test: {
 							"length": 7,
@@ -1817,32 +1846,36 @@ module( "ajax", {
 		).always( start );
 	});
 
-	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
-		jQuery.when(
-			jQuery.post(
-				service("echo/"),
-				{
-					requestArray: "POST",
-					contentType: "text/xml",
-					content: "<math><calculation>5-2</calculation><result>3</result></math>"
-				},
-				function( xml ) {
-					jQuery( "math", xml ).each(function() {
-						strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
-						strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
-					});
-				}
-			),
-			jQuery.post( service("echo/", {
-				requestArray: "GET",
+	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml in POST data", 2, function() {
+		jQuery.post(
+			service("echo/"),
+			{
 				contentType: "text/xml",
 				content: "<math><calculation>5-2</calculation><result>3</result></math>"
-			}), {}, function( xml ) {
+			},
+			function( xml ) {
 				jQuery( "math", xml ).each(function() {
 					strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
 				});
-			})
+			}
+		).always( start );
+	});
+	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml in GET query", 2, function() {
+		jQuery.post(
+			service("echo/", {
+				// This is a POST request with the data in GET
+				secondaryParams: true,
+				contentType: "text/xml",
+				content: "<math><calculation>5-2</calculation><result>3</result></math>"
+			}),
+			{},
+			function( xml ) {
+				jQuery( "math", xml ).each(function() {
+					strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
+					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+				});
+			}
 		).always( start );
 	});
 

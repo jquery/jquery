@@ -158,12 +158,16 @@ function url( value ) {
 }
 
 function service( value, data ) {
-	var fragment = url( "data/ajax/" + value );
+	// Only add url()-timestamp if we don't have '??' in this url,
+	// which is the jsonp callback placeholder. url() would intefer with that
+	// by appending timestamp with & instead of ?, which breaks the url after ??
+	// is replaced.
+	var fragment = "data/ajax/" + ( /\?\?/.test( value ) ? value : url( value ) );
 	if ( data ) {
 		if ( typeof data !== "string" ) {
 			data = jQuery.param( data, false );
 		}
-		fragment += "&" + data;
+		fragment += (/\?/.test(fragment) ? "&" : "?") + data;
 	}
 	return fragment;
 }
