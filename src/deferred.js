@@ -32,7 +32,7 @@ jQuery.extend({
 											.fail( newDefer.reject )
 											.progress( newDefer.notify );
 									} else {
-										newDefer[ action + "With" ]( this === deferred ? newDefer : this, [ returned ] );
+										newDefer[ action + "With" ]( this === promise ? newDefer.promise() : this, [ returned ] );
 									}
 								} :
 								newDefer[ action ]
@@ -70,8 +70,11 @@ jQuery.extend({
 				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
 			}
 
-			// deferred[ resolve | reject | notify ] = list.fire
-			deferred[ tuple[0] ] = list.fire;
+			// deferred[ resolve | reject | notify ]
+			deferred[ tuple[0] ] = function() {
+				deferred[ tuple[0] + "With" ]( promise, arguments );
+				return this;
+			};
 			deferred[ tuple[0] + "With" ] = list.fireWith;
 		});
 

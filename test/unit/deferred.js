@@ -292,7 +292,7 @@ test( "jQuery.Deferred.then - context", function() {
 	defer.resolve( 2 );
 
 	piped.done(function( value ) {
-		strictEqual( this.promise(), piped, "default context gets updated to latest defer in the chain" );
+		strictEqual( this, piped, "default context gets updated to latest promise in the chain" );
 		strictEqual( value, 6, "proper value received" );
 	});
 });
@@ -395,8 +395,8 @@ test( "jQuery.when - joined", function() {
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
 				code = id1 + "/" + id2,
-				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1 : undefined,
-				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2 : undefined;
+				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : undefined,
+				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : undefined;
 
 			jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
