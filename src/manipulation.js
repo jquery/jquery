@@ -292,7 +292,7 @@ jQuery.fn.extend({
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
 
-		var fragment, first, results, scripts, hasScripts, iNoClone, node, doc,
+		var fragment, first, scripts, hasScripts, iNoClone, node, doc,
 			i = 0,
 			l = this.length,
 			value = args[0],
@@ -310,8 +310,9 @@ jQuery.fn.extend({
 		}
 
 		if ( this[0] ) {
-			results = jQuery.buildFragment( args, this );
-			fragment = results;
+			doc = this[0].ownerDocument;
+			fragment = doc.createDocumentFragment();
+			jQuery.clean( args, doc, fragment );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -511,22 +512,6 @@ function cloneFixAttributes( src, dest ) {
 	// gets copied too
 	dest.removeAttribute( jQuery.expando );
 }
-
-jQuery.buildFragment = function( args, context, scripts ) {
-	var fragment;
-
-	// Set context from what may come in as undefined or a jQuery collection or a node
-	// Updated to fix #12266 where accessing context[0] could throw an exception in IE9/10 &
-	// also doubles as fix for #8950 where plain objects caused createDocumentFragment exception
-	context = context || document;
-	context = !context.nodeType && context[0] || context;
-	context = context.ownerDocument || context;
-
-	fragment = context.createDocumentFragment();
-	jQuery.clean( args, context, fragment, scripts );
-
-	return fragment;
-};
 
 jQuery.each({
 	appendTo: "append",
