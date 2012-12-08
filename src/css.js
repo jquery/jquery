@@ -1,4 +1,4 @@
-var curCSS, iframe, iframeDoc,
+var curCSS, iframe,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 	rposition = /^(top|right|bottom|left)$/,
@@ -446,43 +446,37 @@ function getWidthOrHeight( elem, name, extra ) {
 
 // Try to determine the default display value of an element
 function css_defaultDisplay( nodeName ) {
-	if ( elemdisplay[ nodeName ] ) {
-		return elemdisplay[ nodeName ];
-	}
+	var elem,
+		doc = document,
+		display = elemdisplay[ nodeName ];
 
-	var elem = jQuery( "<" + nodeName + ">" ).appendTo( document.body ),
-		display = elem.css("display");
-	elem.remove();
+	if ( !display ) {
+		elem = jQuery( doc.createElement( nodeName ) );
+		display = curCSS( elem.appendTo( doc.body )[0], "display" );
+		elem.remove();
 
-	// If the simple way fails,
-	// get element's real default display by attaching it to a temp iframe
-	if ( display === "none" || display === "" ) {
-		// Use the already-created iframe if possible
-		iframe = document.body.appendChild(
-			iframe || jQuery.extend( document.createElement("iframe"), {
-				frameBorder: 0,
-				width: 0,
-				height: 0
-			})
-		);
+		// If the simple way fails, read from inside an iframe
+		if ( display === "none" || !display ) {
+			// Use the already-created iframe if possible
+			iframe = ( iframe ||
+				jQuery("<iframe frameborder='0' width='0' height='0'/>")
+				.css( "cssText", "display:block !important" )
+			).appendTo( doc.documentElement );
 
-		// Create a cacheable copy of the iframe document on first call.
-		// IE and Opera will allow us to reuse the iframeDoc without re-writing the fake HTML
-		// document to it; WebKit & Firefox won't allow reusing the iframe document.
-		if ( !iframeDoc || !iframe.createElement ) {
-			iframeDoc = ( iframe.contentWindow || iframe.contentDocument ).document;
-			iframeDoc.write("<!doctype html><html><body>");
-			iframeDoc.close();
+			// Always write a new HTML skeleton so Webkit and Firefox don't choke on reuse
+			doc = ( iframe[0].contentWindow || iframe[0].contentDocument ).document;
+			doc.write("<!doctype html><html><body>");
+			doc.close();
+
+			elem = jQuery( doc.createElement( nodeName ) );
+			display = curCSS( elem.appendTo( doc.body )[0], "display" );
+			elem.remove();
+			iframe.detach();
 		}
 
-		elem = iframeDoc.body.appendChild( iframeDoc.createElement(nodeName) );
-
-		display = curCSS( elem, "display" );
-		document.body.removeChild( iframe );
+		// Store the correct default display
+		elemdisplay[ nodeName ] = display;
 	}
-
-	// Store the correct default display
-	elemdisplay[ nodeName ] = display;
 
 	return display;
 }
