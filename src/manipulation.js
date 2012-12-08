@@ -249,8 +249,7 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		var self = this,
-			isFunc = jQuery.isFunction( value );
+		var isFunc = jQuery.isFunction( value );
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
@@ -258,17 +257,10 @@ jQuery.fn.extend({
 			value = jQuery( value ).detach();
 		}
 
-		return this.domManip( [ value ], true, function( elem, i ) {
+		return this.domManip( [ value ], true, function( elem ) {
 			var next, parent;
 
-			if ( isDisconnected( this ) ) {
-				// for disconnected elements, we simply replace
-				// with the new content in the set
-				self[ i ] = elem;
-				return;
-			}
-
-			if ( this.nodeType === 1 || this.nodeType === 11 ) {
+			if ( !isDisconnected( this ) && this.nodeType === 1 || this.nodeType === 11 ) {
 				next = this.nextSibling;
 				parent = this.parentNode;
 
