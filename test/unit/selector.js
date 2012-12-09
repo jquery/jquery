@@ -31,7 +31,7 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 4 );
+	expect( 6 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
 
@@ -52,6 +52,22 @@ test("attributes - jQuery only", function() {
 	);
 	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
 		":input[value=foo] selects text input by attribute"
+	);
+
+	// #11115
+	equal(
+		jQuery("<input type='checkbox' checked='checked'>").prop( "checked", false ).is("[checked]"),
+		jQuery.support.getSetAttribute,
+		jQuery.support.getSetAttribute ?
+			"[checked] selects by attribute (positive)" :
+			"IE<8 does not differentiate checked attribute/property"
+	);
+	equal(
+		jQuery("<input type='checkbox'>").prop( "checked", true ).is("[checked]"),
+		!jQuery.support.getSetAttribute,
+		jQuery.support.getSetAttribute ?
+			"[checked] selects by attribute (negative)" :
+			"IE<8 does not differentiate checked attribute/property"
 	);
 });
 

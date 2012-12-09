@@ -329,7 +329,11 @@ test("not(Selector|undefined)", function() {
 	equal( jQuery("#qunit-fixture > p#ap > a").not("#google").length, 2, "not('selector')" );
 	deepEqual( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	deepEqual( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	deepEqual( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
+	deepEqual(
+		jQuery("#form option").not("option.emptyopt:contains('Nothing'),optgroup *,[value='1']").get(),
+		q("option1c", "option1d", "option2c", "option2d", "option3c", "option3d", "option3e", "option4d", "option4e", "option5a", "option5b"),
+		"not('complex selector')"
+	);
 
 	deepEqual( jQuery("#ap *").not("code").get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	deepEqual( jQuery("#ap *").not("code, #mark").get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );

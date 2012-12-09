@@ -4,7 +4,8 @@ var nodeHook, boolHook,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-	getSetAttribute = jQuery.support.getSetAttribute;
+	getSetAttribute = jQuery.support.getSetAttribute,
+	getSetInput = jQuery.support.input;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -449,36 +450,48 @@ jQuery.extend({
 // Hook for boolean attributes
 boolHook = {
 	get: function( elem, name ) {
-		// Align boolean attributes with corresponding properties
-		// Fall back to attribute presence where some booleans are not supported
-		var attrNode,
-			property = jQuery.prop( elem, name );
-		return property === true || typeof property !== "boolean" && ( attrNode = elem.getAttributeNode(name) ) && attrNode.nodeValue !== false ?
+		var
+			// Use .prop to determine if this attribute is understood as boolean
+			prop = jQuery.prop( elem, name ),
+
+			// fetch it accordingly
+			attr = typeof prop === "boolean" && elem.getAttribute( name ),
+			detail = typeof prop === "boolean" ?
+
+				// oldIE fabricates an empty string for missing boolean attributes
+				getSetInput && getSetAttribute ? attr != null : !!attr :
+
+				elem.getAttributeNode( name );
+
+		return detail && detail.value !== false ?
 			name.toLowerCase() :
 			undefined;
 	},
 	set: function( elem, value, name ) {
-		var propName;
+		// Determine if the property needs to be cleared after setting the attribute
+		var prop = getSetInput || elem[ name ] ||
+
+			// ...but never clear selected in a select-one
+			name === "selected" && jQuery.nodeName( elem, "option" );
+
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else {
-			// value is true since we know at this point it's type boolean and not false
-			// Set boolean attributes to the same name and set the DOM property
-			propName = jQuery.propFix[ name ] || name;
-			if ( propName in elem ) {
-				// Only set the IDL specifically if it already exists on the element
-				elem[ propName ] = true;
-			}
+			// IE<8 needs the *property* name
+			elem.setAttribute( !getSetAttribute && jQuery.propFix[ name ] || name, name.toLowerCase() );
 
-			elem.setAttribute( name, name.toLowerCase() );
+			// IE8 sets the property when updating the attribute
+			if ( !prop ) {
+				elem[ name ] = prop;
+			}
 		}
 		return name;
 	}
 };
 
 // fix oldIE value attroperty
-if ( !getSetAttribute || !jQuery.support.valueAttribute ) {
+if ( !getSetInput || !getSetAttribute ) {
 	jQuery.attrHooks.value = {
 		get: function( elem, name ) {
 			var ret = elem.getAttributeNode( name );

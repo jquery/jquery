@@ -122,7 +122,7 @@ jQuery.support = (function() {
 	// Check if we can trust getAttribute("value")
 	input = document.createElement("input");
 	input.setAttribute( "value", "" );
-	support.valueAttribute = input.getAttribute( "value" ) === "";
+	support.input = input.getAttribute( "value" ) === "";
 
 	// Check if an input maintains its value after becoming a radio
 	input.value = "t";
