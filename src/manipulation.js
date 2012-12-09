@@ -141,7 +141,7 @@ jQuery.fn.extend({
 
 	before: function() {
 		return this.domManip( arguments, false, function( elem ) {
-			if ( !isDisconnected( this ) ) {
+			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
 		});
@@ -149,7 +149,7 @@ jQuery.fn.extend({
 
 	after: function() {
 		return this.domManip( arguments, false, function( elem ) {
-			if ( !isDisconnected( this ) ) {
+			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
 		});
@@ -258,11 +258,10 @@ jQuery.fn.extend({
 		}
 
 		return this.domManip( [ value ], true, function( elem ) {
-			var next, parent;
-
-			if ( !isDisconnected( this ) && this.nodeType === 1 || this.nodeType === 11 ) {
-				next = this.nextSibling;
+			var next = this.nextSibling,
 				parent = this.parentNode;
+
+			if ( parent && this.nodeType === 1 || this.nodeType === 11 ) {
 
 				jQuery( this ).remove();
 
