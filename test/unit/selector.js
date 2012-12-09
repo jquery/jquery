@@ -31,7 +31,7 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 4 );
+	expect( 6 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
 
@@ -52,6 +52,14 @@ test("attributes - jQuery only", function() {
 	);
 	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
 		":input[value=foo] selects text input by attribute"
+	);
+
+	// #11115
+	ok( jQuery("<input type='checkbox' checked='checked'/>").prop( "checked", false ).is("[checked]"),
+		"[checked] selects by attribute (positive)"
+	);
+	ok( !jQuery("<input type='checkbox'/>").prop( "checked", true ).is("[checked]"),
+		"[checked] selects by attribute (negative)"
 	);
 });
 
@@ -83,7 +91,7 @@ test("disconnected nodes", function() {
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
-	$opt.attr("selected", true);
+	$opt.prop("selected", true);
 	equal( $opt.is(":selected"), true, "selected option" );
 
 	var $div = jQuery("<div/>");
