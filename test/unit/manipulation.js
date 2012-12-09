@@ -1230,11 +1230,9 @@ var testReplaceWith = function( val ) {
 	QUnit.reset();
 
 	set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
-	equal( set[0].nodeName.toLowerCase(), "span", "Replace the disconnected node." );
-	equal( set.length, 1, "Replace the disconnected node." );
-
-	// #11338
-	ok( jQuery("<div>1</div>").replaceWith( val("<span/>") ).is("span"), "#11338, Make sure disconnected node with content is replaced" );
+	equal( set[0].nodeName.toLowerCase(), "div", "No effect on a disconnected node." );
+	equal( set.length, 1, "No effect on a disconnected node." );
+	equal( set[0].childNodes.length, 0, "No effect on a disconnected node." );
 
 	non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
 	equal( non_existant.length, 0, "Length of non existant element." );
@@ -1286,43 +1284,6 @@ test( "replaceWith(string) for more than one element", function() {
 	jQuery("#foo p").replaceWith("<span>bar</span>");
 	equal(jQuery("#foo span").length, 3, "verify that all the three original element have been replaced");
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
-});
-
-test( "replaceWith(string) for collection with disconnected element", function() {
-
-	expect( 18 );
-
-	var testSet, newSet,
-		elem = jQuery("<div />");
-
-
-	QUnit.reset();
-	testSet = jQuery("#foo p").add( elem );
-	equal( testSet.length, 4, "ensuring that test data has not changed" );
-
-	newSet = testSet.replaceWith("<span>bar</span>");
-	equal( testSet.length, 4, "ensure that we still have the same number of elements" );
-	equal( jQuery("#foo span").length, 3, "verify that all the three original elements have been replaced" );
-	equal( jQuery("#foo p").length, 0, "verify that all the three original elements have been replaced" );
-	equal( testSet.filter("p").length, 3, "ensure we still have the original set of attached elements" );
-	equal( testSet.filter("div").length, 0, "ensure the detached element is not in the original set" );
-	equal( newSet.filter("p").length, 3, "ensure we still have the original set of attached elements in new set" );
-	equal( newSet.filter("div").length, 0, "ensure the detached element has been replaced in the new set" );
-	equal( newSet.filter("span").length, 1, "ensure the new element is in the new set" );
-
-	QUnit.reset();
-	testSet = elem.add( jQuery("#foo p") );
-	equal( testSet.length, 4, "ensuring that test data has not changed" );
-
-	testSet.replaceWith("<span>bar</span>");
-	equal( testSet.length, 4, "ensure that we still have the same number of elements" );
-	equal( jQuery("#foo span").length, 3, "verify that all the three original elements have been replaced" );
-	equal( jQuery("#foo p").length, 0, "verify that all the three original elements have been replaced" );
-	equal( testSet.filter("p").length, 3, "ensure we still have the original set of attached elements" );
-	equal( testSet.filter("div").length, 0, "ensure the detached element is not in the original set" );
-	equal( newSet.filter("p").length, 3, "ensure we still have the original set of attached elements in new set" );
-	equal( newSet.filter("div").length, 0, "ensure the detached element has been replaced in the new set" );
-	equal( newSet.filter("span").length, 1, "ensure the new element is in the new set" );
 });
 
 test( "replaceAll(String|Element|Array<Element>|jQuery)", function() {
