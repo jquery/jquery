@@ -583,21 +583,28 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( obj, callback, args ) {
-		var name,
+		var value,
 			i = 0,
 			length = obj.length,
-			isObj = length === undefined || jQuery.isFunction( obj );
+			type = jQuery.type( obj ),
+			isArray = type === "array" || type !== "function" &&
+				( length === 0 ||
+				typeof length === "number" && length > 0 && ( length - 1 ) in obj );
 
 		if ( args ) {
-			if ( isObj ) {
-				for ( name in obj ) {
-					if ( callback.apply( obj[ name ], args ) === false ) {
+			if ( isArray ) {
+				for ( ; i < length; i++ ) {
+					value = callback.apply( obj[ i ], args );
+
+					if ( value === false ) {
 						break;
 					}
 				}
 			} else {
-				for ( ; i < length; ) {
-					if ( callback.apply( obj[ i++ ], args ) === false ) {
+				for ( i in obj ) {
+					value = callback.apply( obj[ i ], args );
+
+					if ( value === false ) {
 						break;
 					}
 				}
@@ -605,15 +612,19 @@ jQuery.extend({
 
 		// A special, fast, case for the most common use of each
 		} else {
-			if ( isObj ) {
-				for ( name in obj ) {
-					if ( callback.call( obj[ name ], name, obj[ name ] ) === false ) {
+			if ( isArray ) {
+				for ( ; i < length; i++ ) {
+					value = callback.call( obj[ i ], i, obj[ i ] );
+
+					if ( value === false ) {
 						break;
 					}
 				}
 			} else {
-				for ( ; i < length; ) {
-					if ( callback.call( obj[ i ], i, obj[ i++ ] ) === false ) {
+				for ( i in obj ) {
+					value = callback.call( obj[ i ], i, obj[ i ] );
+
+					if ( value === false ) {
 						break;
 					}
 				}
@@ -722,12 +733,14 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var value, key,
-			ret = [],
+		var value,
 			i = 0,
 			length = elems.length,
-			// jquery objects are treated as arrays
-			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
+			type = jQuery.type( elems ),
+			isArray = type === "array" || type !== "function" &&
+				( length === 0 ||
+				typeof length === "number" && length > 0 && ( length - 1 ) in elems ),
+			ret = [];
 
 		// Go through the array, translating each of the items to their
 		if ( isArray ) {
@@ -741,8 +754,8 @@ jQuery.extend({
 
 		// Go through every key on the object,
 		} else {
-			for ( key in elems ) {
-				value = callback( elems[ key ], key, arg );
+			for ( i in elems ) {
+				value = callback( elems[ i ], i, arg );
 
 				if ( value != null ) {
 					ret[ ret.length ] = value;
