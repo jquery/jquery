@@ -1,4 +1,4 @@
-var curCSS, iframe,
+var curCSS, getStyles, iframe,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 	rposition = /^(top|right|bottom|left)$/,
@@ -47,7 +47,7 @@ function isHidden( elem, el ) {
 	// isHidden might be called from jQuery#filter function;
 	// in that case, element will be second argument
 	elem = el || elem;
-	return curCSS( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
+	return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
 }
 
 function showHide( elements, show ) {
@@ -76,7 +76,7 @@ function showHide( elements, show ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
 			}
 		} else if ( !values[ index ] && !isHidden( elem ) ) {
-			jQuery._data( elem, "olddisplay", curCSS( elem, "display" ) );
+			jQuery._data( elem, "olddisplay", jQuery.css( elem, "display" ) );
 		}
 	}
 
@@ -217,7 +217,7 @@ jQuery.extend({
 		}
 	},
 
-	css: function( elem, name, numeric, extra ) {
+	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
 			origName = jQuery.camelCase( name );
 
@@ -235,7 +235,7 @@ jQuery.extend({
 
 		// Otherwise, if a way to get the computed value exists, use that
 		if ( val === undefined ) {
-			val = curCSS( elem, name );
+			val = curCSS( elem, name, styles );
 		}
 
 		//convert "normal" to computed value
@@ -244,9 +244,9 @@ jQuery.extend({
 		}
 
 		// Return, converting to number if forced or a qualifier was provided and val looks numeric
-		if ( numeric || extra !== undefined ) {
+		if ( extra ) {
 			num = parseFloat( val );
-			return numeric || jQuery.isNumeric( num ) ? num || 0 : val;
+			return extra === true || jQuery.isNumeric( num ) ? num || 0 : val;
 		}
 		return val;
 	},
@@ -273,18 +273,22 @@ jQuery.extend({
 	}
 });
 
-// NOTE: To any future maintainer, we've window.getComputedStyle
+// NOTE: we've included the "window" in window.getComputedStyle
 // because jsdom on node.js will break without it.
 if ( window.getComputedStyle ) {
-	curCSS = function( elem, name ) {
-		var ret, width, minWidth, maxWidth,
-			computed = window.getComputedStyle( elem, null ),
+	getStyles = function( elem ) {
+		return window.getComputedStyle( elem, null );
+	};
+
+	curCSS = function( elem, name, _computed ) {
+		var width, minWidth, maxWidth,
+			computed = _computed || getStyles( elem ),
+
+			// getPropertyValue is only needed for .css('filter') in IE9, see #12537
+			ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined,
 			style = elem.style;
 
 		if ( computed ) {
-
-			// getPropertyValue is only needed for .css('filter') in IE9, see #12537
-			ret = computed.getPropertyValue( name ) || computed[ name ];
 
 			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 				ret = jQuery.style( elem, name );
@@ -295,13 +299,17 @@ if ( window.getComputedStyle ) {
 			// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
 			// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
 			if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+
+				// Remember the original values
 				width = style.width;
 				minWidth = style.minWidth;
 				maxWidth = style.maxWidth;
 
+				// Put in the new values to get a computed value out
 				style.minWidth = style.maxWidth = style.width = ret;
 				ret = computed.width;
 
+				// Revert the changed values
 				style.width = width;
 				style.minWidth = minWidth;
 				style.maxWidth = maxWidth;
@@ -311,9 +319,14 @@ if ( window.getComputedStyle ) {
 		return ret;
 	};
 } else if ( document.documentElement.currentStyle ) {
-	curCSS = function( elem, name ) {
-		var left, rsLeft,
-			ret = elem.currentStyle && elem.currentStyle[ name ],
+	getStyles = function( elem ) {
+		return elem.currentStyle;
+	};
+
+	curCSS = function( elem, name, _computed ) {
+		var left, rs, rsLeft,
+			computed = _computed || getStyles( elem ),
+			ret = computed ? computed[ name ] : undefined,
 			style = elem.style;
 
 		// Avoid setting ret to empty string here
@@ -333,11 +346,12 @@ if ( window.getComputedStyle ) {
 
 			// Remember the original values
 			left = style.left;
-			rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
+			rs = elem.runtimeStyle;
+			rsLeft = rs && rs.left;
 
 			// Put in the new values to get a computed value out
 			if ( rsLeft ) {
-				elem.runtimeStyle.left = elem.currentStyle.left;
+				rs.left = elem.currentStyle.left;
 			}
 			style.left = name === "fontSize" ? "1em" : ret;
 			ret = style.pixelLeft + "px";
@@ -345,7 +359,7 @@ if ( window.getComputedStyle ) {
 			// Revert the changed values
 			style.left = left;
 			if ( rsLeft ) {
-				elem.runtimeStyle.left = rsLeft;
+				rs.left = rsLeft;
 			}
 		}
 
@@ -360,7 +374,7 @@ function setPositiveNumber( elem, value, subtract ) {
 			value;
 }
 
-function augmentWidthOrHeight( elem, name, extra, isBorderBox ) {
+function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 	var i = extra === ( isBorderBox ? "border" : "content" ) ?
 		// If we already have the right measurement, avoid augmentation
 		4 :
@@ -372,29 +386,26 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox ) {
 	for ( ; i < 4; i += 2 ) {
 		// both box models exclude margin, so add it if we want it
 		if ( extra === "margin" ) {
-			// we use jQuery.css instead of curCSS here
-			// because of the reliableMarginRight CSS hook!
-			val += jQuery.css( elem, extra + cssExpand[ i ], true );
+			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
 		}
 
-		// From this point on we use curCSS for maximum performance (relevant in animations)
 		if ( isBorderBox ) {
 			// border-box includes padding, so remove it if we want content
 			if ( extra === "content" ) {
-				val -= parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+				val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 			}
 
 			// at this point, extra isn't border nor margin, so remove border
 			if ( extra !== "margin" ) {
-				val -= parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+				val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		} else {
 			// at this point, extra isn't content, so add padding
-			val += parseFloat( curCSS( elem, "padding" + cssExpand[ i ] ) ) || 0;
+			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 
 			// at this point, extra isn't content nor padding, so add border
 			if ( extra !== "padding" ) {
-				val += parseFloat( curCSS( elem, "border" + cssExpand[ i ] + "Width" ) ) || 0;
+				val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
 	}
@@ -407,14 +418,15 @@ function getWidthOrHeight( elem, name, extra ) {
 	// Start with offset property, which is equivalent to the border-box value
 	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		valueIsBorderBox = true,
-		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box";
+		styles = getStyles( elem ),
+		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
 	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
 	if ( val <= 0 || val == null ) {
 		// Fall back to computed then uncomputed css if necessary
-		val = curCSS( elem, name );
+		val = curCSS( elem, name, styles );
 		if ( val < 0 || val == null ) {
 			val = elem.style[ name ];
 		}
@@ -438,7 +450,8 @@ function getWidthOrHeight( elem, name, extra ) {
 			elem,
 			name,
 			extra || ( isBorderBox ? "border" : "content" ),
-			valueIsBorderBox
+			valueIsBorderBox,
+			styles
 		)
 	) + "px";
 }
@@ -479,7 +492,7 @@ function css_defaultDisplay( nodeName ) {
 function actualDisplay( name, doc ) {
 	var elem, display;
 	elem = jQuery( doc.createElement( name ) );
-	display = curCSS( elem.appendTo( doc.body )[0], "display" );
+	display = jQuery.css( elem.appendTo( doc.body )[0], "display" );
 	elem.remove();
 	return display;
 }
@@ -490,7 +503,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			if ( computed ) {
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
-				if ( elem.offsetWidth === 0 && rdisplayswap.test( curCSS( elem, "display" ) ) ) {
+				if ( elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ) {
 					return jQuery.swap( elem, cssShow, function() {
 						return getWidthOrHeight( elem, name, extra );
 					});
@@ -501,12 +514,14 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 		},
 
 		set: function( elem, value, extra ) {
+			var styles = extra && getStyles( elem );
 			return setPositiveNumber( elem, value, extra ?
 				augmentWidthOrHeight(
 					elem,
 					name,
 					extra,
-					jQuery.support.boxSizing && jQuery.css( elem, "boxSizing" ) === "border-box"
+					jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					styles
 				) : 0
 			);
 		}
@@ -604,7 +619,7 @@ jQuery(function() {
 
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {
-		return ( elem.offsetWidth === 0 && elem.offsetHeight === 0 ) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || curCSS( elem, "display" )) === "none");
+		return ( elem.offsetWidth === 0 && elem.offsetHeight === 0 ) || (!jQuery.support.reliableHiddenOffsets && ((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
 	};
 
 	jQuery.expr.filters.visible = function( elem ) {
