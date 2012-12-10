@@ -145,6 +145,11 @@ jQuery.support = (function() {
 		div.attachEvent( "onclick", function() {
 			support.noCloneEvent = false;
 		});
+
+		// attachEvent method exist in Opera and IE9-10, but for them noCloneEvent property will still be true -
+		// Opera does not clone events, IE9-10 does, but only events binded through attachEvent,
+		// those cloned events cannot be triggered like that, you can do that only though fireEvent method.
+		// And that's good, because for these browsers we use addEventListerner method.
 		div.cloneNode( true ).click();
 	}
 
