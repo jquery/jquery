@@ -1019,6 +1019,7 @@ jQuery.each( ("blur focus focusin focusout load resize scroll unload click dblcl
 // In case jQuery is placed in the end of the document, we have to check for body element
 if ( document.body ) {
 	fixFocus();
+
 } else {
 	jQuery( fixFocus );
 }

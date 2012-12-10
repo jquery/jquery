@@ -1,16 +1,6 @@
 jQuery.support = (function() {
 
-	var support,
-		all,
-		a,
-		select,
-		opt,
-		input,
-		fragment,
-		eventName,
-		i,
-		isSupported,
-		loader,
+	var support, all, a, select, opt, input, fragment, eventName, isSupported, i,
 		div = document.createElement("div");
 
 	// Setup
@@ -109,15 +99,6 @@ jQuery.support = (function() {
 		support.deleteExpando = false;
 	}
 
-	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-		div.attachEvent( "onclick", function() {
-			// Cloning a node shouldn't copy over any
-			// bound event handlers (IE does this)
-			support.noCloneEvent = false;
-		});
-		div.cloneNode( true ).fireEvent("onclick");
-	}
-
 	// Check if a radio maintains its value
 	// after being appended to the DOM
 	input = document.createElement("input");
@@ -125,7 +106,7 @@ jQuery.support = (function() {
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute( "checked", "" );
+	input.setAttribute( "checked", "t" );
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "name", "t" );
@@ -158,13 +139,22 @@ jQuery.support = (function() {
 		support[ i + "Bubbles" ] = isSupported;
 	}
 
+	// Cloning a node shouldn't copy over any
+	// bound event handlers (IE does this)
+	if ( div.attachEvent ) {
+		div.attachEvent( "onclick", function() {
+			support.noCloneEvent = false;
+		});
+		div.cloneNode( true ).click();
+	}
+
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	loader = function() {
+	function withBody() {
 		var container, div, tds, marginDiv, order,
-			divReset = "padding:0;margin:0;border:0;display:block;overflow:hidden;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
+			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName("body")[0];
 
 		if ( !body ) {
@@ -260,10 +250,15 @@ jQuery.support = (function() {
 		// Null elements to avoid leaks in IE
 		body.removeChild( container );
 		container = div = tds = input = marginDiv = null;
-	};
+	}
 
 	// Run tests that need a body
-	document.body ? loader() : jQuery( loader );
+	if ( document.body ) {
+		withBody();
+
+	} else {
+		jQuery( withBody );
+	}
 
 	// Null elements to avoid leaks in IE
 	all = a = select = opt = fragment = div = null;
