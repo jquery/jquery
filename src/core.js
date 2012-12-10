@@ -587,7 +587,9 @@ jQuery.extend({
 			i = 0,
 			length = obj.length,
 			type = jQuery.type( obj ),
-			isArray = type === "array" || type !== "function" && ( length === 0 || typeof length === "number" && length > 0 && ( length - 1 ) in obj );
+			isArray = type === "array" || type !== "function" &&
+				( length === 0 ||
+				typeof length === "number" && length > 0 && ( length - 1 ) in obj );
 
 		if ( args ) {
 			if ( isArray ) {
@@ -735,7 +737,9 @@ jQuery.extend({
 			i = 0,
 			length = elems.length,
 			type = jQuery.type( elems ),
-			isArray = type === "array" || type !== "function" && ( length === 0 || typeof length === "number" && length > 0 && ( length - 1 ) in elems ),
+			isArray = type === "array" || type !== "function" &&
+				( length === 0 ||
+				typeof length === "number" && length > 0 && ( length - 1 ) in elems ),
 			ret = [];
 
 		// Go through the array, translating each of the items to their
