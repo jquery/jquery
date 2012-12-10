@@ -443,17 +443,13 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
-
 // Try to determine the default display value of an element
 function css_defaultDisplay( nodeName ) {
-	var elem,
-		doc = document,
+	var doc = document,
 		display = elemdisplay[ nodeName ];
 
 	if ( !display ) {
-		elem = jQuery( doc.createElement( nodeName ) );
-		display = curCSS( elem.appendTo( doc.body )[0], "display" );
-		elem.remove();
+		display = actualDisplay( nodeName, doc );
 
 		// If the simple way fails, read from inside an iframe
 		if ( display === "none" || !display ) {
@@ -468,9 +464,7 @@ function css_defaultDisplay( nodeName ) {
 			doc.write("<!doctype html><html><body>");
 			doc.close();
 
-			elem = jQuery( doc.createElement( nodeName ) );
-			display = curCSS( elem.appendTo( doc.body )[0], "display" );
-			elem.remove();
+			display = actualDisplay( nodeName, doc );
 			iframe.detach();
 		}
 
@@ -478,6 +472,15 @@ function css_defaultDisplay( nodeName ) {
 		elemdisplay[ nodeName ] = display;
 	}
 
+	return display;
+}
+
+// Called ONLY from within css_defaultDisplay
+function actualDisplay( name, doc ) {
+	var elem, display;
+	elem = jQuery( doc.createElement( name ) );
+	display = curCSS( elem.appendTo( doc.body )[0], "display" );
+	elem.remove();
 	return display;
 }
 
@@ -541,7 +544,7 @@ if ( !jQuery.support.opacity ) {
 			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
 			// if value === "", then remove inline opacity #12685
 			if ( ( value >= 1 || value === "" ) &&
-                jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
+								jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
 				style.removeAttribute ) {
 
 				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
