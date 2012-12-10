@@ -752,79 +752,148 @@ test("first()/last()", function() {
 });
 
 test("map()", function() {
-	expect(8);
+	expect( 2 );
 
 	deepEqual(
-		jQuery("#ap").map(function(){
-			return jQuery(this).find("a").get();
+		jQuery("#ap").map(function() {
+			return jQuery( this ).find("a").get();
 		}).get(),
-		q("google", "groups", "anchor1", "mark"),
+		q( "google", "groups", "anchor1", "mark" ),
 		"Array Map"
 	);
 
 	deepEqual(
-		jQuery("#ap > a").map(function(){
+		jQuery("#ap > a").map(function() {
 			return this.parentNode;
 		}).get(),
-		q("ap","ap","ap"),
+		q( "ap","ap","ap" ),
 		"Single Map"
 	);
+});
 
-	var keys, values, scripts, nonsense, mapped, flat;
-	//for #2616
-	keys = jQuery.map( {"a":1,"b":2}, function( v, k ){
+test("jQuery.map", function() {
+	expect( 25 );
+
+	var i, label, result, callback;
+
+	result = jQuery.map( [ 3, 4, 5 ], function( v, k ) {
 		return k;
 	});
-	equal( keys.join(""), "ab", "Map the keys from a hash to an array" );
+	equal( result.join(""), "012", "Map the keys from an array" );
 
-	values = jQuery.map( {a:1,b:2}, function( v, k ){
+	result = jQuery.map( [ 3, 4, 5 ], function( v, k ) {
 		return v;
 	});
-	equal( values.join(""), "12", "Map the values from a hash to an array" );
+	equal( result.join(""), "345", "Map the values from an array" );
 
-	// object with length prop
-	values = jQuery.map( {a:1,b:2, length:3}, function( v, k ){
+	result = jQuery.map( { a: 1, b: 2 }, function( v, k ) {
+		return k;
+	});
+	equal( result.join(""), "ab", "Map the keys from an object" );
+
+	result = jQuery.map( { a: 1, b: 2 }, function( v, k ) {
 		return v;
 	});
-	equal( values.join(""), "123", "Map the values from a hash with a length property to an array" );
+	equal( result.join(""), "12", "Map the values from an object" );
 
-	scripts = document.getElementsByTagName("script");
-	mapped = jQuery.map( scripts, function( v, k ){
+	result = jQuery.map( [ "a", undefined, null, "b" ], function( v, k ) {
 		return v;
 	});
-	equal( mapped.length, scripts.length, "Map an array(-like) to a hash" );
+	equal( result.join(""), "ab", "Array iteration does not include undefined/null results" );
 
-	nonsense = document.getElementsByTagName("asdf");
-	mapped = jQuery.map( nonsense, function( v, k ){
+	result = jQuery.map( { a: "a", b: undefined, c: null, d: "b" }, function( v, k ) {
 		return v;
 	});
-	equal( mapped.length, nonsense.length, "Map an empty array(-like) to a hash" );
+	equal( result.join(""), "ab", "Object iteration does not include undefined/null results" );
 
-	flat = jQuery.map( Array(4), function( v, k ){
-		return k % 2 ? k : [k,k,k];//try mixing array and regular returns
+	result = {
+		Zero: function() {},
+		One: function( a ) {},
+		Two: function( a, b ) {}
+	};
+	callback = function( v, k ) {
+		equal( k, "foo", label + "-argument function treated like object" );
+	};
+	for ( i in result ) {
+		label = i;
+		result[ i ].foo = "bar";
+		jQuery.map( result[ i ], callback );
+	}
+
+	result = {
+		"undefined": undefined,
+		"null": null,
+		"false": false,
+		"true": true,
+		"empty string": "",
+		"nonempty string": "string",
+		"string \"0\"": "0",
+		"negative": -1,
+		"excess": 1
+	};
+	callback = function( v, k ) {
+		equal( k, "length", "Object with " + label + " length treated like object" );
+	};
+	for ( i in result ) {
+		label = i;
+		jQuery.map( { length: result[ i ] }, callback );
+	}
+
+	result = {
+		"sparse Array": Array( 4 ),
+		"length: 1 plain object": { length: 1, "0": true },
+		"length: 2 plain object": { length: 2, "0": true, "1": true },
+		NodeList: document.getElementsByTagName("html")
+	};
+	callback = function( v, k ) {
+		if ( result[ label ] ) {
+			delete result[ label ];
+			equal( k, "0", label + " treated like array" );
+		}
+	};
+	for ( i in result ) {
+		label = i;
+		jQuery.map( result[ i ], callback );
+	}
+
+	result = false;
+	jQuery.map( { length: 0 }, function( v, k ) {
+		result = true;
 	});
-	equal( flat.join(""), "00012223", "try the new flatten technique(#2616)" );
+	ok( !result, "length: 0 plain object treated like array" );
+
+	result = false;
+	jQuery.map( document.getElementsByTagName("asdf"), function( v, k ) {
+		result = true;
+	});
+	ok( !result, "empty NodeList treated like array" );
+
+	result = jQuery.map( Array(4), function( v, k ){
+		return k % 2 ? k : [k,k,k];
+	});
+	equal( result.join(""), "00012223", "Array results flattened (#2616)" );
 });
 
 test("jQuery.merge()", function() {
 	expect(8);
 
-	var parse = jQuery.merge;
+	deepEqual( jQuery.merge([],[]), [], "Empty arrays" );
 
-	deepEqual( parse([],[]), [], "Empty arrays" );
+	deepEqual( jQuery.merge([ 1 ],[ 2 ]), [ 1, 2 ], "Basic" );
+	deepEqual( jQuery.merge([ 1, 2 ], [ 3, 4 ]), [ 1, 2, 3, 4 ], "Basic" );
 
-	deepEqual( parse([1],[2]), [1,2], "Basic" );
-	deepEqual( parse([1,2],[3,4]), [1,2,3,4], "Basic" );
-
-	deepEqual( parse([1,2],[]), [1,2], "Second empty" );
-	deepEqual( parse([],[1,2]), [1,2], "First empty" );
+	deepEqual( jQuery.merge([ 1, 2 ],[]), [ 1, 2 ], "Second empty" );
+	deepEqual( jQuery.merge([],[ 1, 2 ]), [ 1, 2 ], "First empty" );
 
 	// Fixed at [5998], #3641
-	deepEqual( parse([-2,-1], [0,1,2]), [-2,-1,0,1,2], "Second array including a zero (falsy)");
+	deepEqual( jQuery.merge([ -2, -1 ], [ 0, 1, 2 ]), [ -2, -1 , 0, 1, 2 ],
+		"Second array including a zero (falsy)");
 
 	// After fixing #5527
-	deepEqual( parse([], [null, undefined]), [null, undefined], "Second array including null and undefined values");
-	deepEqual( parse({"length":0}, [1,2]), {length:2, 0:1, 1:2}, "First array like");
+	deepEqual( jQuery.merge([], [ null, undefined ]), [ null, undefined ],
+		"Second array including null and undefined values");
+	deepEqual( jQuery.merge({ length: 0 }, [ 1, 2 ] ), { length: 2, 0: 1, 1: 2},
+		"First array like");
 });
 
 test("jQuery.extend(Object, Object)", function() {
@@ -937,54 +1006,110 @@ test("jQuery.extend(Object, Object)", function() {
 });
 
 test("jQuery.each(Object,Function)", function() {
-	expect(14);
-	jQuery.each( [0,1,2], function(i, n){
-		equal( i, n, "Check array iteration" );
-	});
+	expect( 23 );
 
-	jQuery.each( [5,6,7], function(i, n){
-		equal( i, n - 5, "Check array iteration" );
-	});
+	var i, label, seen, callback;
 
-	jQuery.each( { name: "name", lang: "lang" }, function(i, n){
-		equal( i, n, "Check object iteration" );
+	seen = {};
+	jQuery.each( [ 3, 4, 5 ], function( k, v ) {
+		seen[ k ] = v;
 	});
+	deepEqual( seen, { "0": 3, "1": 4, "2": 5 }, "Array iteration" );
 
-	var total = 0;
-	jQuery.each([1,2,3], function(i,v){ total += v; });
-	equal( total, 6, "Looping over an array" );
-	total = 0;
-	jQuery.each([1,2,3], function(i,v){
-		total += v;
-		if ( i == 1 ) {
+	seen = {};
+	jQuery.each( { name: "name", lang: "lang" }, function( k, v ) {
+		seen[ k ] = v;
+	});
+	deepEqual( seen, { name: "name", lang: "lang" }, "Object iteration" );
+
+	seen = [];
+	jQuery.each( [ 1, 2, 3 ], function( k, v ) {
+		seen.push( v );
+		if ( k === 1 ) {
 			return false;
 		}
 	});
-	equal( total, 3, "Looping over an array, with break" );
-	total = 0;
-	jQuery.each({"a":1,"b":2,"c":3}, function(i,v){ total += v; });
-	equal( total, 6, "Looping over an object" );
-	total = 0;
-	jQuery.each({"a":3,"b":3,"c":3}, function(i,v){ total += v; return false; });
-	equal( total, 3, "Looping over an object, with break" );
+	deepEqual( seen, [ 1, 2 ] , "Broken array iteration" );
 
-	var f = function(){};
-	f.foo = "bar";
-	jQuery.each(f, function(i){
-		f[i] = "baz";
+	seen = [];
+	jQuery.each( {"a": 1, "b": 2,"c": 3 }, function( k, v ) {
+		seen.push( v );
+		return false;
 	});
-	equal( "baz", f.foo, "Loop over a function" );
+	deepEqual( seen, [ 1 ], "Broken object iteration" );
 
-	var stylesheet_count = 0;
-	jQuery.each(document.styleSheets, function(i){
-		stylesheet_count++;
+	seen = {
+		Zero: function() {},
+		One: function( a ) {},
+		Two: function( a, b ) {}
+	};
+	callback = function( k, v ) {
+		equal( k, "foo", label + "-argument function treated like object" );
+	};
+	for ( i in seen ) {
+		label = i;
+		seen[ i ].foo = "bar";
+		jQuery.each( seen[ i ], callback );
+	}
+
+	seen = {
+		"undefined": undefined,
+		"null": null,
+		"false": false,
+		"true": true,
+		"empty string": "",
+		"nonempty string": "string",
+		"string \"0\"": "0",
+		"negative": -1,
+		"excess": 1
+	};
+	callback = function( k, v ) {
+		equal( k, "length", "Object with " + label + " length treated like object" );
+	};
+	for ( i in seen ) {
+		label = i;
+		jQuery.each( { length: seen[ i ] }, callback );
+	}
+
+	seen = {
+		"sparse Array": Array( 4 ),
+		"length: 1 plain object": { length: 1, "0": true },
+		"length: 2 plain object": { length: 2, "0": true, "1": true },
+		NodeList: document.getElementsByTagName("html")
+	};
+	callback = function( k, v ) {
+		if ( seen[ label ] ) {
+			delete seen[ label ];
+			equal( k, "0", label + " treated like array" );
+			return false;
+		}
+	};
+	for ( i in seen ) {
+		label = i;
+		jQuery.each( seen[ i ], callback );
+	}
+
+	seen = false;
+	jQuery.each( { length: 0 }, function( k, v ) {
+		seen = true;
 	});
-	equal(stylesheet_count, 2, "should not throw an error in IE while looping over document.styleSheets and return proper amount");
+	ok( !seen, "length: 0 plain object treated like array" );
 
+	seen = false;
+	jQuery.each( document.getElementsByTagName("asdf"), function( k, v ) {
+		seen = true;
+	});
+	ok( !seen, "empty NodeList treated like array" );
+
+	i = 0;
+	jQuery.each( document.styleSheets, function() {
+		i++;
+	});
+	equal( i, 2, "Iteration over document.styleSheets" );
 });
 
 test("jQuery.makeArray", function(){
-	expect(17);
+	expect(15);
 
 	equal( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
 
@@ -1017,10 +1142,6 @@ test("jQuery.makeArray", function(){
 	equal( jQuery.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
 
 	ok( jQuery.makeArray(document.getElementById("form")).length >= 13, "Pass makeArray a form (treat as elements)" );
-
-	// For #5610
-	deepEqual( jQuery.makeArray({length: "0"}), [], "Make sure object is coerced properly.");
-	deepEqual( jQuery.makeArray({length: "5"}), [], "Make sure object is coerced properly.");
 });
 
 test("jQuery.inArray", function(){
@@ -1072,7 +1193,7 @@ test("jQuery.proxy", function(){
 	// Test old syntax
 	var test4 = { "meth": function( a ){ equal( a, "boom", "Ensure old syntax works." ); } };
 	jQuery.proxy( test4, "meth" )( "boom" );
-	
+
 	// jQuery 1.9 improved currying with `this` object
 	var fn = function() {
 		equal( Array.prototype.join.call( arguments, "," ), "arg1,arg2,arg3", "args passed" );
