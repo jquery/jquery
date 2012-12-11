@@ -386,7 +386,7 @@ jQuery.extend({
 
 		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 		if ( !document.body ) {
-			return setTimeout( jQuery.ready, 1 );
+			return setTimeout( jQuery.ready );
 		}
 
 		// Remember that the DOM is ready
@@ -858,7 +858,7 @@ jQuery.ready.promise = function( obj ) {
 		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
 		if ( document.readyState === "complete" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
-			setTimeout( jQuery.ready, 1 );
+			setTimeout( jQuery.ready );
 
 		// Standards-based browsers support DOMContentLoaded
 		} else if ( document.addEventListener ) {

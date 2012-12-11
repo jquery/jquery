@@ -51,7 +51,7 @@ var fxNow, timerId,
 function createFxNow() {
 	setTimeout(function() {
 		fxNow = undefined;
-	}, 0 );
+	});
 	return ( fxNow = jQuery.now() );
 }
 
