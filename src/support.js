@@ -1,16 +1,6 @@
 jQuery.support = (function() {
 
-	var support,
-		all,
-		a,
-		select,
-		opt,
-		input,
-		fragment,
-		eventName,
-		i,
-		isSupported,
-		clickFn,
+	var support, all, a, select, opt, input, fragment, eventName, isSupported, i,
 		div = document.createElement("div");
 
 	// Setup
@@ -82,9 +72,7 @@ jQuery.support = (function() {
 		boxModel: ( document.compatMode === "CSS1Compat" ),
 
 		// Will be defined later
-		submitBubbles: true,
-		changeBubbles: true,
-		focusinBubbles: false,
+		focusOrder: true,
 		deleteExpando: true,
 		noCloneEvent: true,
 		inlineBlockNeedsLayout: false,
@@ -111,16 +99,6 @@ jQuery.support = (function() {
 		support.deleteExpando = false;
 	}
 
-	if ( !div.addEventListener && div.attachEvent && div.fireEvent ) {
-		div.attachEvent( "onclick", clickFn = function() {
-			// Cloning a node shouldn't copy over any
-			// bound event handlers (IE does this)
-			support.noCloneEvent = false;
-		});
-		div.cloneNode( true ).fireEvent("onclick");
-		div.detachEvent( "onclick", clickFn );
-	}
-
 	// Check if a radio maintains its value
 	// after being appended to the DOM
 	input = document.createElement("input");
@@ -128,14 +106,13 @@ jQuery.support = (function() {
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "checked", "t" );
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "name", "t" );
 
-	div.appendChild( input );
 	fragment = document.createDocumentFragment();
-	fragment.appendChild( div.lastChild );
+	fragment.appendChild( input );
 
 	// WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
@@ -144,39 +121,45 @@ jQuery.support = (function() {
 	// value of true after appended to the DOM (IE6/7)
 	support.appendChecked = input.checked;
 
-	fragment.removeChild( input );
-	fragment.appendChild( div );
-
 	// Technique from Juriy Zaytsev
 	// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
-	// We only care about the case where non-standard event systems
-	// are used, namely in IE. Short-circuiting here helps us to
-	// avoid an eval call (in setAttribute) which can cause CSP
-	// to go haywire. See: https://developer.mozilla.org/en/Security/CSP
-	if ( div.attachEvent ) {
-		for ( i in {
-			submit: true,
-			change: true,
-			focusin: true
-		}) {
-			eventName = "on" + i;
-			isSupported = ( eventName in div );
-			if ( !isSupported ) {
-				div.setAttribute( eventName, "return;" );
-				isSupported = ( typeof div[ eventName ] === "function" );
-			}
-			support[ i + "Bubbles" ] = isSupported;
+	// If you want to change this tests, check it for CSP restrictions (https://developer.mozilla.org/en/Security/CSP), in test/csp.php
+	for ( i in {
+		submit: true,
+		change: true,
+		focusin: true
+	}) {
+		eventName = "on" + i;
+		isSupported = ( eventName in div );
+		if ( !isSupported ) {
+			div.setAttribute( eventName, " " );
+			isSupported = typeof div[ eventName ] === "function";
 		}
+
+		support[ i + "Bubbles" ] = isSupported;
+	}
+
+	// Cloning a node shouldn't copy over any
+	// bound event handlers (IE does this)
+	if ( div.attachEvent ) {
+		div.attachEvent( "onclick", function() {
+			support.noCloneEvent = false;
+		});
+
+		// attachEvent method exist in Opera and IE9-10, but for them noCloneEvent property will still be true -
+		// Opera does not clone events, IE9-10 does, but only events binded through attachEvent,
+		// those cloned events cannot be triggered like that, you can do that only though fireEvent method.
+		// And that's good, because for these browsers we use addEventListerner method.
+		div.cloneNode( true ).click();
 	}
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	// Run tests that need a body at doc ready
-	jQuery(function() {
-		var container, div, tds, marginDiv,
-			divReset = "padding:0;margin:0;border:0;display:block;overflow:hidden;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
+	function withBody() {
+		var container, div, tds, marginDiv, order,
+			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
 			body = document.getElementsByTagName("body")[0];
 
 		if ( !body ) {
@@ -185,12 +168,10 @@ jQuery.support = (function() {
 		}
 
 		container = document.createElement("div");
-		container.style.cssText = "visibility:hidden;border:0;width:0;height:0;position:static;top:0;margin-top:1px";
-		body.insertBefore( container, body.firstChild );
+		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 
 		// Construct the test element
-		div = document.createElement("div");
-		container.appendChild( div );
+		div = body.appendChild( container ).appendChild( document.createElement("div") );
 
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
@@ -228,11 +209,11 @@ jQuery.support = (function() {
 			// info see bug #3333
 			// Fails in WebKit before Feb 2011 nightlies
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-			marginDiv = document.createElement("div");
+			marginDiv = div.appendChild( document.createElement("div") );
 			marginDiv.style.cssText = div.style.cssText = divReset;
 			marginDiv.style.marginRight = marginDiv.style.width = "0";
 			div.style.width = "1px";
-			div.appendChild( marginDiv );
+
 			support.reliableMarginRight =
 				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 		}
@@ -249,7 +230,6 @@ jQuery.support = (function() {
 			// Check if elements with layout shrink-wrap their children
 			// (IE 6 does this)
 			div.style.display = "block";
-			div.style.overflow = "visible";
 			div.innerHTML = "<div></div>";
 			div.firstChild.style.width = "5px";
 			support.shrinkWrapBlocks = ( div.offsetWidth !== 3 );
@@ -259,14 +239,34 @@ jQuery.support = (function() {
 			body.style.zoom = 1;
 		}
 
+		if ( div.addEventListener ) {
+			input.addEventListener( "focus", function() {
+				order = true;
+			}, false );
+
+			div.addEventListener( "focusin", function() {
+				support.focusinBubbles = true;
+				support.focusOrder = !order;
+			}, false );
+
+			div.appendChild( input ).focus();
+		}
+
 		// Null elements to avoid leaks in IE
 		body.removeChild( container );
-		container = div = tds = marginDiv = null;
-	});
+		container = div = tds = input = marginDiv = null;
+	}
+
+	// Run tests that need a body
+	if ( document.body ) {
+		withBody();
+
+	} else {
+		jQuery( withBody );
+	}
 
 	// Null elements to avoid leaks in IE
-	fragment.removeChild( div );
-	all = a = select = opt = input = fragment = div = null;
+	all = a = select = opt = fragment = div = null;
 
 	return support;
 })();
