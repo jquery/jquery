@@ -1459,7 +1459,7 @@ test( "clone()", function() {
 	equal( jQuery(form).clone().children().length, 1, "Make sure we just get the form back." );
 
 	body = jQuery("body").clone();
-	equal( body.children()[ 0 ].id, "qunit-header", "Make sure cloning body works" );
+	equal( body.children()[ 0 ].id, "qunit", "Make sure cloning body works" );
 	body.remove();
 });
 
@@ -1612,7 +1612,7 @@ var testHtml = function( valueObj ) {
 		expected.push("B");
 		actual.push( childNodeNames( this ) );
 	});
-	equal( expected.length, 6, "Expecting many parents" );
+	equal( expected.length, 7, "Expecting many parents" );
 	deepEqual( actual, expected, "Correct childNodes after setting HTML" );
 
 	actual = []; expected = [];
