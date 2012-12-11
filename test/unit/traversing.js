@@ -9,7 +9,7 @@ test( "find(String)", function() {
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 	equal( j.find("div").andSelf().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 
-	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
+	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q( "sndp", "en", "sap" ), "find child elements" );
 
@@ -286,8 +286,8 @@ test("closest()", function() {
 	deepEqual( jQuery("body").closest("div").get(), [], "closest(div)" );
 	deepEqual( jQuery("#qunit-fixture").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
-	deepEqual( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
-	deepEqual( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
+	deepEqual( jQuery("#qunit-fixture").closest("div:first").get(), [], "closest(div:first)" );
+	deepEqual( jQuery("#qunit-fixture div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
 	var jq = jQuery("#nothiddendivchild");
@@ -312,15 +312,15 @@ test("closest(jQuery)", function() {
 	expect(8);
 	var $child = jQuery("#nothiddendivchild"),
 		$parent = jQuery("#nothiddendiv"),
-		$main = jQuery("#qunit-fixture"),
+		$sibling = jQuery("#foo"),
 		$body = jQuery("body");
 	ok( $child.closest( $parent ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') )" );
 	ok( $child.closest( $parent[0] ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') ) :: node" );
 	ok( $child.closest( $child ).is("#nothiddendivchild"), "child is included" );
 	ok( $child.closest( $child[0] ).is("#nothiddendivchild"), "child is included  :: node" );
 	equal( $child.closest( document.createElement("div") ).length, 0, "created element is not related" );
-	equal( $child.closest( $main ).length, 0, "Main not a parent of child" );
-	equal( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
+	equal( $child.closest( $sibling ).length, 0, "Sibling not a parent of child" );
+	equal( $child.closest( $sibling[0] ).length, 0, "Sibling not a parent of child :: node" );
 	ok( $child.closest( $body.add($parent) ).is("#nothiddendiv"), "Closest ancestor retrieved." );
 });
 

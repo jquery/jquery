@@ -94,7 +94,7 @@ function testSubproject( label, url, risTests ) {
 			fixture = page.find("[id='qunit-fixture']");
 			fixtureHTML = fixture.html();
 			fixture.empty();
-			while ( fixture.length && !fixture.prevAll("[id^='qunit-']").length ) {
+			while ( fixture.length && !fixture.prevAll("[id='qunit']").length ) {
 				fixture = fixture.parent();
 			}
 			fixture = fixture.add( fixture.nextAll() );
@@ -112,7 +112,7 @@ function testSubproject( label, url, risTests ) {
 
 				// Replace the current fixture, including content outside of #qunit-fixture
 				var oldFixture = originaljQuery("#qunit-fixture");
-				while ( oldFixture.length && !oldFixture.prevAll("[id^='qunit-']").length ) {
+				while ( oldFixture.length && !oldFixture.prevAll("[id='qunit']").length ) {
 					oldFixture = oldFixture.parent();
 				}
 				oldFixture.nextAll().remove();
