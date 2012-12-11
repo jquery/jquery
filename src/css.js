@@ -477,9 +477,8 @@ function css_defaultDisplay( nodeName ) {
 
 // Called ONLY from within css_defaultDisplay
 function actualDisplay( name, doc ) {
-	var elem, display;
-	elem = jQuery( doc.createElement( name ) );
-	display = curCSS( elem.appendTo( doc.body )[0], "display" );
+	var elem = jQuery( doc.createElement( name ) ).appendTo( doc.body ),
+		display = curCSS( elem[0], "display" );
 	elem.remove();
 	return display;
 }
