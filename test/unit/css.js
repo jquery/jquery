@@ -257,6 +257,22 @@ test("css(String, Object)", function() {
 	ok( success, "Setting RGBA values does not throw Error" );
 });
 
+test( "css(Array)", function() {
+	expect( 2 );
+
+	var expectedMany = {
+			"overflow": "visible",
+			"width": "16px"
+		},
+		expectedSingle = {
+			"width": "16px"
+		},
+		elem = jQuery("<div></div>").appendTo("#qunit-fixture");
+
+	deepEqual( elem.css( expectedMany ).css([ "overflow", "width" ]), expectedMany, "Getting multiple element array" );
+	deepEqual( elem.css( expectedSingle ).css([ "width" ]), expectedSingle, "Getting single element array" );
+});
+
 if ( !jQuery.support.opacity ) {
 	test("css(String, Object) for MSIE", function() {
 		expect( 5 );

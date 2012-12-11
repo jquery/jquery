@@ -798,7 +798,7 @@ jQuery.extend({
 			bulk = key == null;
 
 		// Sets many values
-		if ( key && typeof key === "object" ) {
+		if ( jQuery.type( key ) === "object" ) {
 			chainable = true;
 			for ( i in key ) {
 				jQuery.access( elems, fn, i, key[i], true, emptyGet, raw );
