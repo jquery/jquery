@@ -1206,32 +1206,31 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 11 );
+	expect( 12 );
+
+	var html, nodes;
 
 	equal( jQuery.parseHTML(), null, "Nothing in, null out." );
-	equal( jQuery.parseHTML( null ), null, "Nothing in, null out." );
-	equal( jQuery.parseHTML( "" ), null, "Nothing in, null out." );
+	equal( jQuery.parseHTML( null ), null, "Null in, null out." );
+	equal( jQuery.parseHTML( "" ), null, "Empty string in, null out." );
 	raises(function() {
-		jQuery.parseHTML( "<div>", document.getElementById("form") );
+		jQuery.parseHTML( "<div></div>", document.getElementById("form") );
 	}, "Passing an element as the context raises an exception (context should be a document)");
 
-	var elems = jQuery.parseHTML( jQuery("body").html() );
-	ok( elems.length > 10, "Parse a large html string" );
-	equal( jQuery.type( elems ), "array", "parseHTML returns an array rather than a nodelist" );
+	nodes = jQuery.parseHTML( jQuery("body")[0].innerHTML );
+	ok( nodes.length > 4, "Parse a large html string" );
+	equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
 
-	var script = "<script>undefined()</script>";
-	equal( jQuery.parseHTML( script ).length, 0, "Passing a script is not allowed by default" );
-	raises(function() {
-		jQuery(jQuery.parseHTML( script, true )).appendTo("#qunit-fixture");
-	}, "Passing a script is allowed if allowScripts is true");
+	html = "<script>undefined()</script>";
+	equal( jQuery.parseHTML( html ).length, 0, "Ignore scripts by default" );
+	equal( jQuery.parseHTML( html, true )[0].nodeName.toLowerCase(), "script", "Preserve scripts when requested" );
 
-	var html = script + "<div></div>";
-	equal( jQuery.parseHTML( html )[0].nodeName.toLowerCase(), "div", "Ignore scripts by default" );
-	raises(function() {
-		jQuery(jQuery.parseHTML( html, true )).appendTo("#qunit-fixture");
-	}, "Passing a script is allowed if allowScripts is true");
+	html += "<div></div>";
+	equal( jQuery.parseHTML( html )[0].nodeName.toLowerCase(), "div", "Preserve non-script nodes" );
+	equal( jQuery.parseHTML( html, true )[0].nodeName.toLowerCase(), "script", "Preserve script position");
 
 	equal( jQuery.parseHTML("text")[0].nodeType, 3, "Parsing text returns a text node" );
+	equal( jQuery.parseHTML( "\t<div></div>" )[0].nodeValue, "\t", "Preserve leading whitespace" );
 });
 
 test("jQuery.parseJSON", function(){
