@@ -978,7 +978,7 @@ test( "val(select) after form.reset() (Bug #2551)", function() {
 var testAddClass = function( valueObj ) {
 	expect( 9 );
 
-	var div = jQuery("div");
+	var div = jQuery("#qunit-fixture div");
 	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -1029,8 +1029,8 @@ test( "addClass(Function)", function() {
 });
 
 test( "addClass(Function) with incoming value", function() {
-	expect( 54 );
-	var div = jQuery("div"),
+	expect( 52 );
+	var div = jQuery("#qunit-fixture div"),
 		old = div.map(function() {
 			return jQuery(this).attr("class") || "";
 		});
@@ -1054,7 +1054,7 @@ test( "addClass(Function) with incoming value", function() {
 var testRemoveClass = function(valueObj) {
 	expect( 8 );
 
-	var $set = jQuery("div"),
+	var $set = jQuery("#qunit-fixture div"),
 		div = document.createElement("div");
 
 	$set.addClass("test").removeClass( valueObj("test") );
@@ -1102,9 +1102,9 @@ test( "removeClass(Function) - simple", function() {
 });
 
 test( "removeClass(Function) with incoming value", function() {
-	expect( 54 );
+	expect( 52 );
 
-	var $divs = jQuery("div").addClass("test"), old = $divs.map(function() {
+	var $divs = jQuery("#qunit-fixture div").addClass("test"), old = $divs.map(function() {
 		return jQuery( this ).attr("class");
 	});
 

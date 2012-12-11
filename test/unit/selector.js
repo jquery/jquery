@@ -7,10 +7,12 @@ module("selector - jQuery only", { teardown: moduleTeardown });
 test("element - jQuery only", function() {
 	expect( 7 );
 
-	deepEqual( jQuery("p", document.getElementsByTagName("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("p", "div").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	var fixture = document.getElementById("qunit-fixture");
+
+	deepEqual( jQuery("p", fixture).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a Node context." );
+	deepEqual( jQuery("p", "#qunit-fixture").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a selector context." );
+	deepEqual( jQuery("p", jQuery("#qunit-fixture")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a jQuery object context." );
+	deepEqual( jQuery("#qunit-fixture").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context via .find()." );
 
 	ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 	ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
@@ -44,7 +46,7 @@ if ( jQuery.css ) {
 	test("pseudo - visibility", function() {
 		expect( 9 );
 
-		t( "Is Visible", "div:visible:not(#qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
+		t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
 		t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
 		t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 

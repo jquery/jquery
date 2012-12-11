@@ -487,13 +487,13 @@ test("offsetParent", function(){
 	equal( body.length, 1, "Only one offsetParent found." );
 	equal( body[0], document.documentElement, "The html element is the offsetParent of the body." );
 
-	var header = jQuery("#qunit-header").offsetParent();
+	var header = jQuery("#qunit").offsetParent();
 	equal( header.length, 1, "Only one offsetParent found." );
-	equal( header[0], document.documentElement, "The html element is the offsetParent of the body." );
+	equal( header[0], document.documentElement, "The html element is the offsetParent of #qunit." );
 
 	var div = jQuery("#nothiddendivchild").offsetParent();
 	equal( div.length, 1, "Only one offsetParent found." );
-	equal( div[0], document.documentElement, "The html element is the offsetParent of the body." );
+	equal( div[0], document.getElementById("qunit-fixture"), "The #qunit-fixture is the offsetParent of #nothiddendivchild." );
 
 	jQuery("#nothiddendiv").css("position", "relative");
 
