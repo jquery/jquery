@@ -919,6 +919,10 @@ function isArraylike( obj ) {
 		return false;
 	}
 
+	if ( obj.nodeType === 1 && length ) {
+		return true;
+	}
+
 	return type === "array" || type !== "function" &&
 		( length === 0 ||
 		typeof length === "number" && length > 0 && ( length - 1 ) in obj );

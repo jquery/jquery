@@ -1141,7 +1141,9 @@ test("jQuery.makeArray", function(){
 
 	equal( jQuery.makeArray(/a/)[0].constructor, RegExp, "Pass makeArray a regex" );
 
-	ok( jQuery.makeArray(document.getElementById("form")).length >= 13, "Pass makeArray a form (treat as elements)" );
+	// Some nodes inherit traits of nodelists
+	ok( jQuery.makeArray(document.getElementById("form")).length >= 13,
+		"Pass makeArray a form (treat as elements)" );
 });
 
 test("jQuery.inArray", function(){
