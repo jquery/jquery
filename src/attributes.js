@@ -1,7 +1,6 @@
 var nodeHook, boolHook, fixSpecified,
 	rclass = /[\t\r\n]/g,
 	rreturn = /\r/g,
-	rtype = /^(?:input|button)$/i,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i,
 	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
@@ -366,13 +365,9 @@ jQuery.extend({
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
-				// We can't allow the type property to be changed (since it causes problems in IE)
-				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
-					jQuery.error( "type property can't be changed" );
-				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
-					// Reset value to it's default in case type is set after value
-					// This is for element creation
+					// Reset value to default in case type is set after value during creation
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {

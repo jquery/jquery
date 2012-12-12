@@ -221,7 +221,7 @@ test( "attr(Hash)", function() {
 });
 
 test( "attr(String, Object)", function() {
-	expect( 81 );
+	expect( 79 );
 
 	var div = jQuery("div").attr("foo", "bar"),
 		fail = false;
@@ -379,14 +379,12 @@ test( "attr(String, Object)", function() {
 
 	// Type
 	var type = jQuery("#check2").attr("type");
-	var thrown = false;
 	try {
 		jQuery("#check2").attr( "type", "hidden" );
+		ok( true, "No exception thrown on input type change" );
 	} catch( e ) {
-		thrown = true;
+		ok( true, "Exception thrown on input type change: " + e );
 	}
-	ok( thrown, "Exception thrown when trying to change type property" );
-	equal( type, jQuery("#check2").attr("type"), "Verify that you can't change the type of an input element" );
 
 	var check = document.createElement("input");
 	thrown = true;
@@ -409,14 +407,12 @@ test( "attr(String, Object)", function() {
 	equal( "checkbox", check.attr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
 	var button = jQuery("#button");
-	thrown = false;
 	try {
 		button.attr( "type", "submit" );
+		ok( true, "No exception thrown on button type change" );
 	} catch( e ) {
-		thrown = true;
+		ok( true, "Exception thrown on button type change: " + e );
 	}
-	ok( thrown, "Exception thrown when trying to change type property" );
-	equal( "button", button.attr("type"), "Verify that you can't change the type of a button element" );
 
 	var $radio = jQuery( "<input>", {
 		"value": "sup",
