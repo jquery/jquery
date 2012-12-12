@@ -491,7 +491,7 @@ function cloneFixAttributes( src, dest ) {
 	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
 	} else if ( nodeName === "option" ) {
-		dest.selected = src.defaultSelected;
+		dest.defaultSelected = dest.selected = src.defaultSelected;
 
 	// IE6-8 fails to set the defaultValue to the correct value when
 	// cloning other types of input fields
