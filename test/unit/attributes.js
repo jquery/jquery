@@ -198,7 +198,7 @@ test( "attr(String, Function)", function() {
 	equal(
 		jQuery("#text1").attr( "value", function() {
 			return this.id;
-		})[0].value,
+		}).attr("value"),
 		"text1",
 		"Set value from id"
 	);
@@ -230,7 +230,7 @@ test( "attr(Hash)", function() {
 		jQuery("#text1").attr({
 			"value": function() {
 				return this["id"];
-			}})[0].value,
+			}}).attr("value"),
 		"text1",
 		"Set attribute to computed value #1"
 	);

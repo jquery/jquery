@@ -478,15 +478,25 @@ boolHook = {
 };
 
 // IE8 mishandles value attributes on inputs
-if ( !jQuery.support.valueAttribute ) {
+if ( !getSetAttribute || !jQuery.support.valueAttribute ) {
 	jQuery.attrHooks.value = {
 		get: function( elem, name ) {
 			var ret = elem.getAttributeNode( name );
-			return ret && ret.specified ?
-				ret.value :
-				jQuery.nodeName( elem, "input" ) ?
-					"" :
-					undefined;
+			return jQuery.nodeName( elem, "input" ) ?
+
+				// Ignore the value *property* by using defaultValue
+				elem.defaultValue :
+
+				ret && ret.specified ? ret.value : undefined;
+		},
+		set: function( elem, value, name ) {
+			if ( jQuery.nodeName( elem, "input" ) ) {
+				// Does not return so that setAttribute is also used
+				elem.defaultValue = value;
+			} else {
+				// Use nodeHook if defined (#1954); otherwise setAttribute is fine
+				return nodeHook && nodeHook.set( elem, value, name );
+			}
 		}
 	};
 }
@@ -520,23 +530,6 @@ if ( !getSetAttribute ) {
 			}
 
 			return value;
-		}
-	};
-
-	jQuery.attrHooks.value = {
-		// IE6/7 do not differentiate value attribute and value property
-		get: function( elem, name ) {
-			var ret = elem.getAttributeNode( name );
-			return jQuery.nodeName( elem, "input" ) ?
-				elem.value :
-				ret && ret.specified ? ret.value : undefined;
-		},
-
-		// Use the nodeHook for button elements in IE6/7 (#1954)
-		set: function( elem, value, name ) {
-			if ( jQuery.nodeName( elem, "button" ) ) {
-				return nodeHook.set( elem, value, name );
-			}
 		}
 	};
 

@@ -31,7 +31,7 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 3 );
+	expect( 4 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
 
@@ -45,10 +45,13 @@ test("attributes - jQuery only", function() {
 	// #12600
 	ok(
 		jQuery("<select value='12600'><option value='option' selected='selected'></option><option value=''></option></select>")
-		.prop( "value", "" )
-		.is("[value='12600']"),
+		.prop( "value", "option" )
+		.is(":input[value='12600']"),
 
-		"[value=foo] selects by attribute"
+		":input[value=foo] selects select by attribute"
+	);
+	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
+		":input[value=foo] selects text input by attribute"
 	);
 });
 
