@@ -477,7 +477,7 @@ boolHook = {
 	}
 };
 
-// IE8 mishandles value attributes on inputs
+// fix oldIE value attroperty
 if ( !getSetAttribute || !jQuery.support.valueAttribute ) {
 	jQuery.attrHooks.value = {
 		get: function( elem, name ) {
