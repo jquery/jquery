@@ -350,7 +350,12 @@ jQuery.extend = jQuery.fn.extend = function() {
 jQuery.extend({
 	noConflict: function( deep ) {
 		if ( window.$ === jQuery ) {
-			window.$ = _$;
+			if (_$) {
+				window.$ = _$;
+			}
+			else {
+				delete window.$;
+			}
 		}
 
 		if ( deep && window.jQuery === jQuery ) {
