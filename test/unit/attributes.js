@@ -387,7 +387,7 @@ test( "attr(String, Object)", function() {
 	}
 
 	var check = document.createElement("input");
-	thrown = true;
+	var thrown = true;
 	try {
 		jQuery( check ).attr( "type", "checkbox" );
 	} catch( e ) {
