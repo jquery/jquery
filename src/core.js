@@ -350,7 +350,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 jQuery.extend({
 	noConflict: function( deep ) {
 		if ( window.$ === jQuery ) {
-			if (_$) {
+			if ( typeof _$ === 'undefined' ) {
 				window.$ = _$;
 			}
 			else {
