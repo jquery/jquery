@@ -512,21 +512,15 @@ jQuery.each({
 			i = 0,
 			ret = [],
 			insert = jQuery( selector ),
-			l = insert.length,
-			parent = this.length === 1 && this[0].parentNode;
+			last = insert.length - 1;
 
-		if ( (parent == null || parent && parent.nodeType === 11 && parent.childNodes.length === 1) && l === 1 ) {
-			insert[ original ]( this[0] );
-			return this;
-		} else {
-			for ( ; i < l; i++ ) {
-				elems = ( i > 0 ? this.clone(true) : this ).get();
+			for ( ; i <= last; i++ ) {
+				elems = i === last ? this : this.clone(true);
 				jQuery( insert[i] )[ original ]( elems );
-				ret = ret.concat( elems );
+				core_push.apply( ret, elems.get() );
 			}
 
 			return this.pushStack( ret );
-		}
 	};
 });
 
