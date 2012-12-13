@@ -683,7 +683,7 @@ jQuery.extend({
 		return jQuery.get( url, undefined, callback, "script" );
 	},
 
-	getScriptSync: function( url ) {
+	_evalSrc: function( url ) {
 		return jQuery.ajax({
 			url: url,
 			type: "GET",

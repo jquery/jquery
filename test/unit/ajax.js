@@ -1682,11 +1682,11 @@ module( "ajax", {
 		});
 	});
 
-//----------- jQuery.getScriptSync()
+//----------- jQuery._evalSrc()
 
-	test( "jQuery.getScriptSync()", 2, function() {
+	test( "jQuery._evalSrc()", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScriptSync( url("data/test.js") );
+		jQuery._evalSrc( url("data/test.js") );
 		strictEqual( window["testBar"], "bar", "Script was evaluated" );
 	});
 
