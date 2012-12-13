@@ -106,6 +106,11 @@ module.exports = function( grunt ) {
 		qunit: {
 			files: "test/index.html"
 		},
+
+		testswarm: {
+			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split(" ")
+		},
+
 		watch: {
 			files: [
 				"<config:lint.grunt>", "<config:lint.tests>",
@@ -113,6 +118,7 @@ module.exports = function( grunt ) {
 			],
 			tasks: "dev"
 		},
+
 		uglify: {
 			codegen: {
 				ascii_only: true
@@ -137,7 +143,7 @@ module.exports = function( grunt ) {
 			testUrls = [],
 			pull = /PR-(\d+)/.exec( commit ),
 			config = grunt.file.readJSON( configFile ).jquery,
-			tests = "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue serialize support traversing Sizzle".split(" ");
+			tests = grunt.config([ this.name, "tests" ]);
 
 		if ( pull ) {
 			jobName = "jQuery pull <a href='https://github.com/jquery/jquery/pull/" +

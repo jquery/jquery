@@ -1,4 +1,4 @@
-module("selector - jQuery only", { teardown: moduleTeardown });
+module("selector", { teardown: moduleTeardown });
 
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
