@@ -923,4 +923,81 @@ test( "css opacity consistency across browsers (#12685)", function() {
 		equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
 });
 
+asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 16, function() {
+	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
+	styles = [{
+			name: "backgroundAttachment",
+			value: ["fixed"],
+			expected: [ "scroll" ]
+		},{
+			name: "backgroundColor",
+			value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
+			expected: ["transparent"]
+		}, {
+			// Firefox returns auto's value
+			name: "backgroundImage",
+			value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
+			expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
+		}, {
+			name: "backgroundPosition",
+			value: ["5% 5%"],
+			expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ]
+		}, {
+			// Firefox returns no-repeat
+			name: "backgroundRepeat",
+			value: ["repeat-y"],
+			expected: [ "repeat", "no-repeat" ]
+		}, {
+			name: "backgroundClip",
+			value: ["padding-box"],
+			expected: ["border-box"]
+		}, {
+			name: "backgroundOrigin",
+			value: ["content-box"],
+			expected: ["padding-box"]
+		}, {
+			name: "backgroundSize",
+			value: ["80px 60px"],
+			expected: [ "auto auto" ]
+	}];
+
+	jQuery.each( styles, function(index, style) {
+		var $clone, $clonedChildren,
+			$source = jQuery( "#firstp" ),
+			source = $source[ 0 ],
+			$children = $source.children();
+
+		style.expected = style.expected.concat( [ "", "auto" ] );
+
+		if ( source.style[ style.name ] === undefined ) {
+			ok( true, style.name +  ": style isn't supported and therefore not an issue" );
+			ok( true );
+			return true;
+		}
+
+		$source.css( style.name, style.value[ 0 ] );
+		$children.css( style.name, style.value[ 0 ] );
+
+		$clone = $source.clone();
+		$clonedChildren = $clone.children();
+
+		$clone.css( style.name, "" );
+		$clonedChildren.css( style.name, "" );
+
+		window.setTimeout(function() {
+			ok( jQuery.inArray( $source.css( style.name ) !== -1, style.value ),
+				"Clearing clone.css() doesn't affect source.css(): " + style.name +
+				"; result: " + $source.css( style.name ) +
+				"; expected: " + style.value.join( "," ) );
+
+			ok( jQuery.inArray( $children.css( style.name ) !== -1, style.value ),
+				"Clearing clonedChildren.css() doesn't affect children.css(): " + style.name +
+				"; result: " + $children.css( style.name ) +
+				"; expected: " + style.value.join( "," ) );
+		}, 100 );
+	});
+
+	window.setTimeout( start, 1000 );
+});
+
 }

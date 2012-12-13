@@ -169,10 +169,6 @@ jQuery.support = (function() {
 		}
 	}
 
-	div.style.backgroundClip = "content-box";
-	div.cloneNode( true ).style.backgroundClip = "";
-	support.clearCloneStyle = div.style.backgroundClip === "content-box";
-
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, div, tds, marginDiv,
