@@ -1052,7 +1052,7 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
-test( "submit event bubbles on copied forms (#11649)", function(){
+test( "submit event bubbles on copied forms (#11649)", function() {
 	expect( 3 );
 
 	var $formByClone, $formByHTML,
@@ -1076,7 +1076,7 @@ test( "submit event bubbles on copied forms (#11649)", function(){
 
 	// Copy the form via .clone() and .html()
 	$formByClone = $testForm.clone( true, true ).removeAttr("id");
-	$formByHTML = jQuery( $fixture.html() ).filter("#testForm").removeAttr("id");
+	$formByHTML = jQuery( jQuery.parseHTML($fixture.html()) ).filter("#testForm").removeAttr("id");
 	$wrapperDiv.append( $formByClone, $formByHTML );
 
 	// Check submit bubbling on the copied forms
@@ -1109,7 +1109,7 @@ test( "change event bubbles on copied forms (#11796)", function(){
 
 	// Copy the form via .clone() and .html()
 	$formByClone = $form.clone( true, true ).removeAttr("id");
-	$formByHTML = jQuery( $fixture.html() ).filter("#form").removeAttr("id");
+	$formByHTML = jQuery( jQuery.parseHTML($fixture.html()) ).filter("#form").removeAttr("id");
 	$wrapperDiv.append( $formByClone, $formByHTML );
 
 	// Check change bubbling on the copied forms
