@@ -147,7 +147,6 @@ jQuery.extend({
 					// We should always get a number back from opacity
 					var ret = curCSS( elem, "opacity" );
 					return ret === "" ? "1" : ret;
-
 				}
 			}
 		}
@@ -386,8 +385,9 @@ if ( window.getComputedStyle ) {
 function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
-			Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
-			value;
+		// Guard against undefined "subtract", e.g., when used as in cssHooks
+		Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
+		value;
 }
 
 function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
@@ -432,8 +432,8 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 function getWidthOrHeight( elem, name, extra ) {
 
 	// Start with offset property, which is equivalent to the border-box value
-	var val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
-		valueIsBorderBox = true,
+	var valueIsBorderBox = true,
+		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
 		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
@@ -506,9 +506,8 @@ function css_defaultDisplay( nodeName ) {
 
 // Called ONLY from within css_defaultDisplay
 function actualDisplay( name, doc ) {
-	var elem, display;
-	elem = jQuery( doc.createElement( name ) );
-	display = jQuery.css( elem.appendTo( doc.body )[0], "display" );
+	var elem = jQuery( doc.createElement( name ) ).appendTo( doc.body ),
+		display = jQuery.css( elem[0], "display" );
 	elem.remove();
 	return display;
 }
@@ -575,8 +574,8 @@ if ( !jQuery.support.opacity ) {
 			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
 			// if value === "", then remove inline opacity #12685
 			if ( ( value >= 1 || value === "" ) &&
-								jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
-				style.removeAttribute ) {
+					jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
+					style.removeAttribute ) {
 
 				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
 				// if "filter:" is present at all, clearType is disabled, we want to avoid this
@@ -621,8 +620,9 @@ jQuery(function() {
 		jQuery.each( [ "top", "left" ], function( i, prop ) {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
+					var ret;
 					if ( computed ) {
-						var ret = curCSS( elem, prop );
+						ret = curCSS( elem, prop );
 						// if curCSS returns percentage, fallback to offset
 						return rnumnonpx.test( ret ) ? jQuery( elem ).position()[ prop ] + "px" : ret;
 					}
@@ -651,13 +651,13 @@ jQuery.each({
 }, function( prefix, suffix ) {
 	jQuery.cssHooks[ prefix + suffix ] = {
 		expand: function( value ) {
-			var i,
+			var i = 0,
 
 				// assumes a single number if not a string
 				parts = typeof value === "string" ? value.split(" ") : [ value ],
 				expanded = {};
 
-			for ( i = 0; i < 4; i++ ) {
+			for ( ; i < 4; i++ ) {
 				expanded[ prefix + cssExpand[ i ] + suffix ] =
 					parts[ i ] || parts[ i - 2 ] || parts[ 0 ];
 			}
