@@ -283,9 +283,10 @@ jQuery.fn.extend({
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
 
-		var fragment, first, scripts, hasScripts, iNoClone, node, doc,
+		var fragment, first, scripts, hasScripts, node, doc,
 			i = 0,
 			l = this.length,
+			iNoClone = l - 1,
 			value = args[0],
 			isFunction = jQuery.isFunction( value );
 
@@ -317,7 +318,7 @@ jQuery.fn.extend({
 
 				// Use the original fragment for the last item instead of the first because it can end up
 				// being emptied incorrectly in certain situations (#8070).
-				for ( iNoClone = l - 1; i < l; i++ ) {
+				for ( ; i < l; i++ ) {
 					node = fragment;
 
 					if ( i !== iNoClone ) {
@@ -514,13 +515,15 @@ jQuery.each({
 			insert = jQuery( selector ),
 			last = insert.length - 1;
 
-			for ( ; i <= last; i++ ) {
-				elems = i === last ? this : this.clone(true);
-				jQuery( insert[i] )[ original ]( elems );
-				core_push.apply( ret, elems.get() );
-			}
+		for ( ; i <= last; i++ ) {
+			elems = i === last ? this : this.clone(true);
+			jQuery( insert[i] )[ original ]( elems );
 
-			return this.pushStack( ret );
+			// Modern browsers can apply jQuery collections as arrays, but oldIE needs a .get()
+			core_push.apply( ret, elems.get() );
+		}
+
+		return this.pushStack( ret );
 	};
 });
 
@@ -610,9 +613,8 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts, selection ) {
-		var elem, j, tmp, tag, wrap, tbody,
+		var elem, i, j, tmp, tag, wrap, tbody,
 			ret = [],
-			i = 0,
 			safe = context === document && safeFragment;
 
 		// Ensure that context is a document
@@ -706,7 +708,7 @@ jQuery.extend({
 				// Append to fragment
 				// #4087 - If origin and destination elements are the same, and this is
 				// that element, do not append to fragment
-				if ( !( selection && jQuery.inArray( elem, selection ) !== -1 ) ) {
+				if ( !selection || jQuery.inArray( elem, selection ) === -1 ) {
 					fragment.appendChild( elem );
 				}
 				tmp = getAll( elem, "script" );

@@ -273,7 +273,7 @@ jQuery.extend({
 	},
 
 	// A method for quickly swapping in/out CSS properties to get correct calculations
-	swap: function( elem, options, callback ) {
+	swap: function( elem, options, callback, args ) {
 		var ret, name,
 			old = {};
 
@@ -283,7 +283,7 @@ jQuery.extend({
 			elem.style[ name ] = options[ name ];
 		}
 
-		ret = callback.call( elem );
+		ret = callback.apply( elem, args || [] );
 
 		// Revert the old values
 		for ( name in options ) {
@@ -524,13 +524,11 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			if ( computed ) {
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
-				if ( elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ) {
-					return jQuery.swap( elem, cssShow, function() {
+				return elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ?
+					jQuery.swap( elem, cssShow, function() {
 						return getWidthOrHeight( elem, name, extra );
-					});
-				} else {
-					return getWidthOrHeight( elem, name, extra );
-				}
+					}) :
+					getWidthOrHeight( elem, name, extra );
 			}
 		},
 
@@ -599,13 +597,12 @@ jQuery(function() {
 	if ( !jQuery.support.reliableMarginRight ) {
 		jQuery.cssHooks.marginRight = {
 			get: function( elem, computed ) {
-				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-				// Work around by temporarily setting element display to inline-block
-				return jQuery.swap( elem, { "display": "inline-block" }, function() {
-					if ( computed ) {
-						return curCSS( elem, "marginRight" );
-					}
-				});
+				if ( computed ) {
+					// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+					// Work around by temporarily setting element display to inline-block
+					return jQuery.swap( elem, { "display": "inline-block" },
+						curCSS, [ elem, "marginRight" ] );
+				}
 			}
 		};
 	}
@@ -617,11 +614,12 @@ jQuery(function() {
 		jQuery.each( [ "top", "left" ], function( i, prop ) {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
-					var ret;
 					if ( computed ) {
-						ret = curCSS( elem, prop );
+						computed = curCSS( elem, prop );
 						// if curCSS returns percentage, fallback to offset
-						return rnumnonpx.test( ret ) ? jQuery( elem ).position()[ prop ] + "px" : ret;
+						return rnumnonpx.test( computed ) ?
+							jQuery( elem ).position()[ prop ] + "px" :
+							computed;
 					}
 				}
 			};
@@ -649,10 +647,10 @@ jQuery.each({
 	jQuery.cssHooks[ prefix + suffix ] = {
 		expand: function( value ) {
 			var i = 0,
+				expanded = {},
 
 				// assumes a single number if not a string
-				parts = typeof value === "string" ? value.split(" ") : [ value ],
-				expanded = {};
+				parts = typeof value === "string" ? value.split(" ") : [ value ];
 
 			for ( ; i < 4; i++ ) {
 				expanded[ prefix + cssExpand[ i ] + suffix ] =
