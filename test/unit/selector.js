@@ -31,14 +31,27 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 2 );
+	expect( 4 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
-	// jQuery #12523
+
+	// #12523
 	deepEqual(
 		jQuery.find( "[title]", null, null, jQuery("#qunit-fixture a").get().concat( document.createTextNode("") ) ),
 		q("google"),
 		"Text nodes fail attribute tests without exception"
+	);
+
+	// #12600
+	ok(
+		jQuery("<select value='12600'><option value='option' selected='selected'></option><option value=''></option></select>")
+		.prop( "value", "option" )
+		.is(":input[value='12600']"),
+
+		":input[value=foo] selects select by attribute"
+	);
+	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
+		":input[value=foo] selects text input by attribute"
 	);
 });
 
@@ -74,7 +87,7 @@ test("disconnected nodes", function() {
 	equal( $opt.is(":selected"), true, "selected option" );
 
 	var $div = jQuery("<div/>");
-	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnect nodes." );
+	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
 });
 
 test("jQuery only - broken", 1, function() {

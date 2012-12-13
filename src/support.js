@@ -31,8 +31,11 @@ jQuery.support = (function() {
 
 	a.style.cssText = "top:1px;float:left;opacity:.5";
 	support = {
+		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+		getSetAttribute: div.className !== "t",
+
 		// IE strips leading whitespace when .innerHTML is used
-		leadingWhitespace: ( div.firstChild.nodeType === 3 ),
+		leadingWhitespace: div.firstChild.nodeType === 3,
 
 		// Make sure that tbody elements aren't automatically inserted
 		// IE will insert them into empty tables
@@ -48,7 +51,7 @@ jQuery.support = (function() {
 
 		// Make sure that URLs aren't manipulated
 		// (IE normalizes it by default)
-		hrefNormalized: ( a.getAttribute("href") === "/a" ),
+		hrefNormalized: a.getAttribute("href") === "/a",
 
 		// Make sure that element opacity exists
 		// (IE uses filter instead)
@@ -59,17 +62,12 @@ jQuery.support = (function() {
 		// (IE uses styleFloat instead of cssFloat)
 		cssFloat: !!a.style.cssFloat,
 
-		// Make sure that if no value is specified for a checkbox
-		// that it defaults to "on".
-		// (WebKit defaults to "" instead)
-		checkOn: ( input.value === "on" ),
+		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+		checkOn: !!input.value,
 
 		// Make sure that a selected-by-default option has a working selected property.
 		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 		optSelected: opt.selected,
-
-		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
-		getSetAttribute: div.className !== "t",
 
 		// Tests for enctype support on a form (#6743)
 		enctype: !!document.createElement("form").enctype,
@@ -79,7 +77,7 @@ jQuery.support = (function() {
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
 
 		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-		boxModel: ( document.compatMode === "CSS1Compat" ),
+		boxModel: document.compatMode === "CSS1Compat",
 
 		// Will be defined later
 		submitBubbles: true,
@@ -121,16 +119,18 @@ jQuery.support = (function() {
 		div.detachEvent( "onclick", clickFn );
 	}
 
-	// Check if a radio maintains its value
-	// after being appended to the DOM
+	// Check if we can trust getAttribute("value")
 	input = document.createElement("input");
+	input.setAttribute( "value", "" );
+	support.valueAttribute = input.getAttribute( "value" ) === "";
+
+	// Check if an input maintains its value after becoming a radio
 	input.value = "t";
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 
-	input.setAttribute( "checked", "checked" );
-
 	// #11217 - WebKit loses check when the name is after the checked attribute
+	input.setAttribute( "checked", "checked" );
 	input.setAttribute( "name", "t" );
 
 	div.appendChild( input );

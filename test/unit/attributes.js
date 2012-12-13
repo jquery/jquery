@@ -54,7 +54,7 @@ test( "jQuery.propFix integrity test", function() {
 });
 
 test( "attr(String)", function() {
-	expect( 48 );
+	expect( 50 );
 
 	equal( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equal( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -68,6 +68,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#text1").attr("name"), "action", "Check for name attribute" );
 	ok( jQuery("#form").attr("action").indexOf("formaction") >= 0, "Check for action attribute" );
 	equal( jQuery("#text1").attr("value", "t").attr("value"), "t", "Check setting the value attribute" );
+	equal( jQuery("#text1").attr("value", "").attr("value"), "", "Check setting the value attribute to empty string" );
 	equal( jQuery("<div value='t'></div>").attr("value"), "t", "Check setting custom attr named 'value' on a div" );
 	equal( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
 	equal( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
@@ -133,9 +134,10 @@ test( "attr(String)", function() {
 	ok( !!~jQuery("#foo").attr("style", "position:absolute;").attr("style").indexOf("position"), "Check style setter" );
 
 	// Check value on button element (#1954)
-	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
-	equal( $button.attr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
-	equal( $button.attr("value", "baz").html(), "text", "Setting the value does not change innerHTML" );
+	var $button = jQuery("<button>text</button>").insertAfter("#button");
+	strictEqual( $button.attr("value"), undefined, "Absence of value attribute on a button" );
+	equal( $button.attr( "value", "foobar" ).attr("value"), "foobar", "Value attribute on a button does not return innerHTML" );
+	equal( $button.attr("value", "baz").html(), "text", "Setting the value attribute does not change innerHTML" );
 
 	// Attributes with a colon on a table element (#1591)
 	equal( jQuery("#table").attr("test:attrib"), undefined, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
@@ -152,7 +154,7 @@ test( "attr(String)", function() {
 	equal( jQuery("<div/>").attr( "title", "something" ).attr("title"), "something", "Set the title attribute." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 	equal( jQuery("<div/>").attr("value"), undefined, "An unset value on a div returns undefined." );
-	equal( jQuery("<input/>").attr("value"), "", "An unset value on an input returns current value." );
+	strictEqual( jQuery("<select><option value='property'></option></select>").attr("value"), undefined, "An unset value on a select returns undefined." );
 
 	$form = jQuery("#form").attr( "enctype", "multipart/form-data" );
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
@@ -196,7 +198,7 @@ test( "attr(String, Function)", function() {
 	equal(
 		jQuery("#text1").attr( "value", function() {
 			return this.id;
-		})[0].value,
+		}).attr("value"),
 		"text1",
 		"Set value from id"
 	);
@@ -228,7 +230,7 @@ test( "attr(Hash)", function() {
 		jQuery("#text1").attr({
 			"value": function() {
 				return this["id"];
-			}})[0].value,
+			}}).attr("value"),
 		"text1",
 		"Set attribute to computed value #1"
 	);
@@ -384,7 +386,7 @@ test( "attr(String, Object)", function() {
 	table.attr("cellspacing", "2");
 	equal( table[ 0 ]["cellSpacing"], "2", "Check cellspacing is correctly set" );
 
-	equal( jQuery("#area1").attr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
+	equal( jQuery("#area1").attr("value"), undefined, "Value attribute is distinct from value property." );
 
 	// for #1070
 	jQuery("#name").attr( "someAttr", "0" );
