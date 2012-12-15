@@ -54,7 +54,7 @@ test( "jQuery.propFix integrity test", function() {
 });
 
 test( "attr(String)", function() {
-	expect( 49 );
+	expect( 50 );
 
 	equal( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equal( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -122,6 +122,8 @@ test( "attr(String)", function() {
 
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
+
+	equal( jQuery( option ).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 
 	var $img = jQuery("<img style='display:none' width='215' height='53' src='data/1x1.jpg'/>").appendTo("body");
 	equal( $img.attr("width"), "215", "Retrieve width attribute an an element with display:none." );
@@ -245,10 +247,9 @@ test( "attr(Hash)", function() {
 });
 
 test( "attr(String, Object)", function() {
-	expect( 68 );
+	expect( 67 );
 
-	var getSetAttribute = jQuery.support.getSetAttribute,
-		div = jQuery("div").attr("foo", "bar"),
+	var div = jQuery("div").attr("foo", "bar"),
 		i = 0,
 		fail = false;
 
@@ -282,18 +283,15 @@ test( "attr(String, Object)", function() {
 
 	$input = jQuery("#check2");
 	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
-	if ( getSetAttribute ) {
-		equal( $input[0].checked, false, "Setting checked doesn't affect checked property" );
-	} else {
-		equal( $input[0].checked, true, "IE<8 does not differentiate checked attribute/property" );
-	}
 	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );
+	// equal( $input.prop("checked"), false, "Setting checked doesn't affect checked property (verified by .prop)" );
+	// equal( $input[0].checked, false, "Setting checked doesn't affect checked property (verified by native property)" );
 	$input.prop( "checked", true ).attr( "checked", false );
 	equal( $input.attr("checked"), undefined, "Remove checked (verified by .attr)" );
+	// equal( $input.prop("checked"), true, "Removing checked doesn't affect checked property (verified by .prop)" );
+	// equal( $input[0].checked, true, "Removing checked doesn't affect checked property (verified by native property)" );
 
 	$input = jQuery("#text1").prop( "readOnly", false ).attr( "readonly", true );
-	// Readonly attribute/property are not separable
-	// equal( $input.prop("readOnly"), false, "Setting readonly doesn't affect readonly property" );
 	equal( $input.attr("readonly"), "readonly", "Set readonly (verified by .attr)" );
 	$input.prop( "readOnly", true ).attr( "readonly", false );
 	equal( $input.attr("readonly"), undefined, "Remove readonly (verified by .attr)" );
@@ -301,42 +299,26 @@ test( "attr(String, Object)", function() {
 	$input = jQuery("#check2").attr( "checked", false ).prop( "checked", true );
 	equal( $input[0].checked, true, "Set checked property (verified by native property)" );
 	equal( $input.prop("checked"), true, "Set checked property (verified by .prop)" );
-	if ( getSetAttribute ) {
-		equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute (#11115)" );
-	} else {
-		equal( $input.attr("checked"), "checked", "IE<8 does not differentiate checked attribute/property" );
-	}
+	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute (#11115)" );
 	$input.attr( "checked", true ).prop( "checked", false );
 	equal( $input[0].checked, false, "Clear checked property (verified by native property)" );
 	equal( $input.prop("checked"), false, "Clear checked property (verified by .prop)" );
-	if ( getSetAttribute ) {
-		equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute (#11115)" );
-	} else {
-		equal( $input.attr("checked"), undefined, "IE<8 does not differentiate checked attribute/property" );
-	}
+	equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute (#11115)" );
 
 	$input = jQuery("#check2").attr( "checked", "checked" );
-	equal( $input.attr("checked"), "checked", "Set checked to \"checked\" (verified by .attr)" );
+	equal( $input.attr("checked"), "checked", "Set checked to 'checked' (verified by .attr)" );
 
 	var $radios = jQuery("#checkedtest").find("input[type='radio']");
 	$radios.eq( 1 ).click();
 	equal( $radios.eq( 1 ).prop("checked"), true, "Second radio was checked when clicked" );
-	if ( getSetAttribute ) {
-		equal( $radios.eq( 0 ).attr("checked"), "checked", "First radio is still [checked]" );
-	} else {
-		equal( $radios.eq( 0 ).attr("checked"), undefined, "IE<8 does not differentiate checked attribute/property" );
-	}
+	equal( $radios.eq( 0 ).attr("checked"), "checked", "First radio is still [checked]" );
 
 	$input = jQuery("#text1").attr( "readonly", false ).prop( "readOnly", true );
 	equal( $input[0].readOnly, true, "Set readonly property (verified by native property)" );
 	equal( $input.prop("readOnly"), true, "Set readonly property (verified by .prop)" );
-	// Readonly attribute/property are not separable
-	// equal( $input.attr("readonly"), undefined, "Setting readonly property doesn't affect readonly attribute" );
 	$input.attr( "readonly", true ).prop( "readOnly", false );
 	equal( $input[0].readOnly, false, "Clear readonly property (verified by native property)" );
 	equal( $input.prop("readOnly"), false, "Clear readonly property (verified by .prop)" );
-	// Readonly attribute/property are not separable
-	// equal( $input.attr("readonly"), "readonly", "Clearing readonly property doesn't affect readonly attribute" );
 
 	$input = jQuery("#name").attr( "maxlength", "5" );
 	equal( $input[0].maxLength, 5, "Set maxlength (verified by native property)" );
@@ -348,9 +330,9 @@ test( "attr(String, Object)", function() {
 		"autofocus": true,
 		"required": true
 	});
-	equal( $text.attr("autofocus"), "autofocus", "Reading autofocus attribute yields \"autofocus\"" );
+	equal( $text.attr("autofocus"), "autofocus", "Reading autofocus attribute yields 'autofocus'" );
 	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus to false removes it" );
-	equal( $text.attr("required"), "required", "Reading required attribute yields \"required\"" );
+	equal( $text.attr("required"), "required", "Reading required attribute yields 'required'" );
 	equal( $text.attr( "required", false ).attr("required"), undefined, "Setting required attribute to false removes it" );
 
 	var $details = jQuery("<details open></details>").appendTo("#qunit-fixture");

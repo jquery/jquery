@@ -55,19 +55,11 @@ test("attributes - jQuery only", function() {
 	);
 
 	// #11115
-	equal(
-		jQuery("<input type='checkbox' checked='checked'>").prop( "checked", false ).is("[checked]"),
-		jQuery.support.getSetAttribute,
-		jQuery.support.getSetAttribute ?
-			"[checked] selects by attribute (positive)" :
-			"IE<8 does not differentiate checked attribute/property"
+	ok( jQuery("<input type='checkbox' checked='checked'/>").prop( "checked", false ).is("[checked]"),
+		"[checked] selects by attribute (positive)"
 	);
-	equal(
-		jQuery("<input type='checkbox'>").prop( "checked", true ).is("[checked]"),
-		!jQuery.support.getSetAttribute,
-		jQuery.support.getSetAttribute ?
-			"[checked] selects by attribute (negative)" :
-			"IE<8 does not differentiate checked attribute/property"
+	ok( !jQuery("<input type='checkbox'/>").prop( "checked", true ).is("[checked]"),
+		"[checked] selects by attribute (negative)"
 	);
 });
 
@@ -99,7 +91,7 @@ test("disconnected nodes", function() {
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
-	$opt.attr("selected", true);
+	$opt.prop("selected", true);
 	equal( $opt.is(":selected"), true, "selected option" );
 
 	var $div = jQuery("<div/>");

@@ -3,7 +3,8 @@ var nodeHook, boolHook,
 	rreturn = /\r/g,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i,
-	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
+	rboolean = /^(?:checked|selected|autofocus|autoplay|async|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped)$/i,
+	ruseDefault = /^(?:checked|selected)$/,
 	getSetAttribute = jQuery.support.getSetAttribute,
 	getSetInput = jQuery.support.input;
 
@@ -454,13 +455,19 @@ boolHook = {
 			// Use .prop to determine if this attribute is understood as boolean
 			prop = jQuery.prop( elem, name ),
 
-			// fetch it accordingly
+			// Fetch it accordingly
 			attr = typeof prop === "boolean" && elem.getAttribute( name ),
 			detail = typeof prop === "boolean" ?
 
-				// oldIE fabricates an empty string for missing boolean attributes
-				getSetInput && getSetAttribute ? attr != null : !!attr :
+				getSetInput && getSetAttribute ?
+					attr != null :
+					// oldIE fabricates an empty string for missing boolean attributes
+					// and conflates checked/selected into attroperties
+					ruseDefault.test( name ) ?
+						elem[ jQuery.camelCase( "default-" + name ) ] :
+						!!attr :
 
+				// fetch an attribute node for properties not recognized as boolean
 				elem.getAttributeNode( name );
 
 		return detail && detail.value !== false ?
@@ -468,24 +475,18 @@ boolHook = {
 			undefined;
 	},
 	set: function( elem, value, name ) {
-		// Determine if the property needs to be cleared after setting the attribute
-		var prop = getSetInput || elem[ name ] ||
-
-			// ...but never clear selected in a select-one
-			name === "selected" && jQuery.nodeName( elem, "option" );
-
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
-		} else {
+		} else if ( getSetInput && getSetAttribute || !ruseDefault.test( name ) ) {
 			// IE<8 needs the *property* name
-			elem.setAttribute( !getSetAttribute && jQuery.propFix[ name ] || name, name.toLowerCase() );
+			elem.setAttribute( !getSetAttribute && jQuery.propFix[ name ] || name, name );
 
-			// IE8 sets the property when updating the attribute
-			if ( !prop ) {
-				elem[ name ] = prop;
-			}
+		// Use defaultChecked and defaultSelected for oldIE
+		} else {
+			elem[ jQuery.camelCase( "default-" + name ) ] = true;
 		}
+
 		return name;
 	}
 };
@@ -543,6 +544,18 @@ if ( !getSetAttribute ) {
 			}
 
 			return value;
+		}
+	};
+
+	jQuery.attrHooks.value = {
+		get: nodeHook.get,
+		set: function( elem, value, name ) {
+			var defaultValue = elem.defaultValue;
+			elem[ name ] = value;
+			if ( "defaultValue" in elem ) {
+				elem[ defaultValue ] = defaultValue;
+			}
+			return true;
 		}
 	};
 
