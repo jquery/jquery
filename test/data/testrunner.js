@@ -317,8 +317,8 @@ var Globals = (function() {
 	};
 
 	QUnit.done(function() {
-		// Remove out own fixtures outside #qunit-fixture
-		jQuery( "#nothiddendiv, #loadediframe, #dl" ).remove();
+		// Remove our own fixtures outside #qunit-fixture
+		jQuery("#qunit ~ *").remove();
 	});
 
 	// jQuery-specific QUnit.reset
