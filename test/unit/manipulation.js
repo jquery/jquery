@@ -475,10 +475,7 @@ var testAppend = function( valueObj ) {
 	d.remove();
 	equal( jQuery("#nonnodes").contents().length, 3, "Check node,textnode,comment append cleanup worked" );
 
-	$input = jQuery("<input />").attr({
-		"type": "checkbox",
-		"checked": true
-	}).appendTo("#testForm");
+	$input = jQuery("<input type='checkbox'/>").prop( "checked", true ).appendTo("#testForm");
 	equal( $input[ 0 ].checked, true, "A checked checkbox that is appended stays checked" );
 
 	$radioChecked = jQuery("input:radio[name='R1']").eq( 1 );
