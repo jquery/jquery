@@ -123,7 +123,7 @@ test( "attr(String)", function() {
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
 
-	equal( jQuery( option ).attr("selected"), "selected", "Make sure that a single option is selected, even when in an optgroup." );
+	equal( jQuery( option ).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 
 	var $img = jQuery("<img style='display:none' width='215' height='53' src='data/1x1.jpg'/>").appendTo("body");
 	equal( $img.attr("width"), "215", "Retrieve width attribute an an element with display:none." );
@@ -247,13 +247,14 @@ test( "attr(Hash)", function() {
 });
 
 test( "attr(String, Object)", function() {
-	expect( 79 );
+	expect( 67 );
 
 	var div = jQuery("div").attr("foo", "bar"),
+		i = 0,
 		fail = false;
 
-	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get( i ).getAttribute("foo") != "bar" ) {
+	for ( ; i < div.length; i++ ) {
+		if ( div[ i ].getAttribute("foo") !== "bar" ) {
 			fail = i;
 			break;
 		}
@@ -272,6 +273,7 @@ test( "attr(String, Object)", function() {
 	equal( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr( "name", null );
 	equal( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
+
 	var $input = jQuery( "<input>", {
 		name: "something",
 		id: "specified"
@@ -279,66 +281,55 @@ test( "attr(String, Object)", function() {
 	equal( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
 	equal( $input.attr("id"), "specified", "Check element creation gets/sets the id attribute." );
 
-	jQuery("#check2").prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
-	equal( document.getElementById("check2").checked, true, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
-	jQuery("#check2").attr( "checked", false );
-	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
-	jQuery("#text1").attr( "readonly", true );
-	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
-	jQuery("#text1").attr( "readonly", false );
-	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+	// As of fixing #11115, we make no promises about the effect of .attr on boolean properties
+	$input = jQuery("#check2");
+	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
+	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );
+	$input.prop( "checked", false ).prop( "checked", true ).attr( "checked", false );
+	equal( $input.attr("checked"), undefined, "Remove checked (verified by .attr)" );
 
-	jQuery("#check2").prop( "checked", true );
-	equal( document.getElementById("check2").checked, true, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
-	jQuery("#check2").prop( "checked", false );
-	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
+	$input = jQuery("#text1").prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", true );
+	equal( $input.attr("readonly"), "readonly", "Set readonly (verified by .attr)" );
+	$input.prop( "readOnly", false ).prop( "readOnly", true ).attr( "readonly", false );
+	equal( $input.attr("readonly"), undefined, "Remove readonly (verified by .attr)" );
 
-	jQuery("#check2").attr("checked", "checked");
-	equal( document.getElementById("check2").checked, true, "Set checked attribute with 'checked'" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
+	$input = jQuery("#check2").attr( "checked", true ).attr( "checked", false ).prop( "checked", true );
+	equal( $input[0].checked, true, "Set checked property (verified by native property)" );
+	equal( $input.prop("checked"), true, "Set checked property (verified by .prop)" );
+	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute" );
+	$input.attr( "checked", false ).attr( "checked", true ).prop( "checked", false );
+	equal( $input[0].checked, false, "Clear checked property (verified by native property)" );
+	equal( $input.prop("checked"), false, "Clear checked property (verified by .prop)" );
+	equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute" );
 
-	QUnit.reset();
+	$input = jQuery("#check2").attr( "checked", false ).attr( "checked", "checked" );
+	equal( $input.attr("checked"), "checked", "Set checked to 'checked' (verified by .attr)" );
 
 	var $radios = jQuery("#checkedtest").find("input[type='radio']");
 	$radios.eq( 1 ).click();
 	equal( $radios.eq( 1 ).prop("checked"), true, "Second radio was checked when clicked" );
-	equal( $radios.attr("checked"), $radios[ 0 ].checked ? "checked" : undefined, "Known booleans do not fall back to attribute presence (#10278)" );
+	equal( $radios.eq( 0 ).attr("checked"), "checked", "First radio is still [checked]" );
 
-	jQuery("#text1").prop( "readOnly", true );
-	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
-	jQuery("#text1").prop( "readOnly", false );
-	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+	$input = jQuery("#text1").attr( "readonly", false ).prop( "readOnly", true );
+	equal( $input[0].readOnly, true, "Set readonly property (verified by native property)" );
+	equal( $input.prop("readOnly"), true, "Set readonly property (verified by .prop)" );
+	$input.attr( "readonly", true ).prop( "readOnly", false );
+	equal( $input[0].readOnly, false, "Clear readonly property (verified by native property)" );
+	equal( $input.prop("readOnly"), false, "Clear readonly property (verified by .prop)" );
 
-	jQuery("#name").attr( "maxlength", "5" );
-	equal( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
-	jQuery("#name").attr( "maxLength", "10" );
-	equal( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
+	$input = jQuery("#name").attr( "maxlength", "5" );
+	equal( $input[0].maxLength, 5, "Set maxlength (verified by native property)" );
+	$input.attr( "maxLength", "10" );
+	equal( $input[0].maxLength, 10, "Set maxlength (verified by native property)" );
 
 	// HTML5 boolean attributes
 	var $text = jQuery("#text1").attr({
 		"autofocus": true,
 		"required": true
 	});
-	equal( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name" );
-	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it" );
-	equal( $text.attr("required"), "required", "Set boolean attributes to the same name" );
+	equal( $text.attr("autofocus"), "autofocus", "Reading autofocus attribute yields 'autofocus'" );
+	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus to false removes it" );
+	equal( $text.attr("required"), "required", "Reading required attribute yields 'required'" );
 	equal( $text.attr( "required", false ).attr("required"), undefined, "Setting required attribute to false removes it" );
 
 	var $details = jQuery("<details open></details>").appendTo("#qunit-fixture");
@@ -368,13 +359,14 @@ test( "attr(String, Object)", function() {
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
 	});
 
+	// Register the property name to avoid generating a new global when testing window
+	Globals.register("nonexisting");
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
-		// use iframeCallback to avoid generating a new global when testing window
-		var oldVal = elem.iframeCallback,
+		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
-		equal( $elem.attr( "iframeCallback", "foo" ).attr("iframeCallback"), "foo", "attr falls back to prop on unsupported arguments" );
-		elem.iframeCallback = oldVal;
+		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
+		elem.nonexisting = oldVal;
 	});
 
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
