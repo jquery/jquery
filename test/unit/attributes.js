@@ -281,31 +281,28 @@ test( "attr(String, Object)", function() {
 	equal( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
 	equal( $input.attr("id"), "specified", "Check element creation gets/sets the id attribute." );
 
+	// As of fixing #11115, we make no promises about the effect of .attr on boolean properties
 	$input = jQuery("#check2");
 	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
 	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );
-	// equal( $input.prop("checked"), false, "Setting checked doesn't affect checked property (verified by .prop)" );
-	// equal( $input[0].checked, false, "Setting checked doesn't affect checked property (verified by native property)" );
-	$input.prop( "checked", true ).attr( "checked", false );
+	$input.prop( "checked", false ).prop( "checked", true ).attr( "checked", false );
 	equal( $input.attr("checked"), undefined, "Remove checked (verified by .attr)" );
-	// equal( $input.prop("checked"), true, "Removing checked doesn't affect checked property (verified by .prop)" );
-	// equal( $input[0].checked, true, "Removing checked doesn't affect checked property (verified by native property)" );
 
-	$input = jQuery("#text1").prop( "readOnly", false ).attr( "readonly", true );
+	$input = jQuery("#text1").prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", true );
 	equal( $input.attr("readonly"), "readonly", "Set readonly (verified by .attr)" );
-	$input.prop( "readOnly", true ).attr( "readonly", false );
+	$input.prop( "readOnly", false ).prop( "readOnly", true ).attr( "readonly", false );
 	equal( $input.attr("readonly"), undefined, "Remove readonly (verified by .attr)" );
 
-	$input = jQuery("#check2").attr( "checked", false ).prop( "checked", true );
+	$input = jQuery("#check2").attr( "checked", true ).attr( "checked", false ).prop( "checked", true );
 	equal( $input[0].checked, true, "Set checked property (verified by native property)" );
 	equal( $input.prop("checked"), true, "Set checked property (verified by .prop)" );
-	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute (#11115)" );
-	$input.attr( "checked", true ).prop( "checked", false );
+	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute" );
+	$input.attr( "checked", false ).attr( "checked", true ).prop( "checked", false );
 	equal( $input[0].checked, false, "Clear checked property (verified by native property)" );
 	equal( $input.prop("checked"), false, "Clear checked property (verified by .prop)" );
-	equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute (#11115)" );
+	equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute" );
 
-	$input = jQuery("#check2").attr( "checked", "checked" );
+	$input = jQuery("#check2").attr( "checked", false ).attr( "checked", "checked" );
 	equal( $input.attr("checked"), "checked", "Set checked to 'checked' (verified by .attr)" );
 
 	var $radios = jQuery("#checkedtest").find("input[type='radio']");

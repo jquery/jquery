@@ -4,7 +4,7 @@ var nodeHook, boolHook,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i,
 	rboolean = /^(?:checked|selected|autofocus|autoplay|async|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped)$/i,
-	ruseDefault = /^(?:checked|selected)$/,
+	ruseDefault = /^(?:checked|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute,
 	getSetInput = jQuery.support.input;
 
@@ -340,26 +340,31 @@ jQuery.extend({
 	},
 
 	removeAttr: function( elem, value ) {
-		var name, propName, isBool,
+		var name, propName,
 			i = 0,
 			attrNames = value && value.match( core_rnotwhite );
 
 		if ( attrNames && elem.nodeType === 1 ) {
 			while ( (name = attrNames[i++]) ) {
 				propName = jQuery.propFix[ name ] || name;
-				isBool = rboolean.test( name );
+
+				// Boolean attributes get special treatment (#10870)
+				if ( rboolean.test( name ) ) {
+					// Set corresponding property to false for boolean attributes
+					// Also clear defaultChecked/defaultSelected (if appropriate) for IE<8
+					if ( !getSetAttribute && ruseDefault.test( name ) ) {
+						elem[ jQuery.camelCase( "default-" + name ) ] =
+							elem[ propName ] = false;
+					} else {
+						elem[ propName ] = false;
+					}
 
 				// See #9699 for explanation of this approach (setting first, then removal)
-				// Do not do this for boolean attributes (see #10870)
-				if ( !isBool ) {
+				} else {
 					jQuery.attr( elem, name, "" );
 				}
-				elem.removeAttribute( getSetAttribute ? name : propName );
 
-				// Set corresponding property to false for boolean attributes
-				if ( isBool && propName in elem ) {
-					elem[ propName ] = false;
-				}
+				elem.removeAttribute( getSetAttribute ? name : propName );
 			}
 		}
 	},
@@ -544,18 +549,6 @@ if ( !getSetAttribute ) {
 			}
 
 			return value;
-		}
-	};
-
-	jQuery.attrHooks.value = {
-		get: nodeHook.get,
-		set: function( elem, value, name ) {
-			var defaultValue = elem.defaultValue;
-			elem[ name ] = value;
-			if ( "defaultValue" in elem ) {
-				elem[ defaultValue ] = defaultValue;
-			}
-			return true;
 		}
 	};
 
