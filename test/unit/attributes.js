@@ -247,7 +247,7 @@ test( "attr(Hash)", function() {
 });
 
 test( "attr(String, Object)", function() {
-	expect( 67 );
+	expect( 71 );
 
 	var div = jQuery("div").attr("foo", "bar"),
 		i = 0,
@@ -281,7 +281,14 @@ test( "attr(String, Object)", function() {
 	equal( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
 	equal( $input.attr("id"), "specified", "Check element creation gets/sets the id attribute." );
 
-	// As of fixing #11115, we make no promises about the effect of .attr on boolean properties
+	// As of fixing #11115, we only guarantee boolean property update for checked and selected
+	$input = jQuery("<input type='checkbox'/>").attr( "checked", true );
+	equal( $input.prop("checked"), true, "Setting checked updates property (verified by .prop)" );
+	equal( $input[0].checked, true, "Setting checked updates property (verified by native property)" );
+	$input = jQuery("<option/>").attr( "selected", true );
+	equal( $input.prop("selected"), true, "Setting selected updates property (verified by .prop)" );
+	equal( $input[0].selected, true, "Setting selected updates property (verified by native property)" );
+
 	$input = jQuery("#check2");
 	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
 	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );

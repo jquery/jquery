@@ -489,7 +489,7 @@ boolHook = {
 
 		// Use defaultChecked and defaultSelected for oldIE
 		} else {
-			elem[ jQuery.camelCase( "default-" + name ) ] = true;
+			elem[ jQuery.camelCase( "default-" + name ) ] = elem[ name ] = true;
 		}
 
 		return name;
