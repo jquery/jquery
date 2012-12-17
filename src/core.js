@@ -414,9 +414,7 @@ jQuery.extend({
 		return jQuery.type(obj) === "function";
 	},
 
-	isArray: Array.isArray || function( obj ) {
-		return jQuery.type(obj) === "array";
-	},
+	isArray: Array.isArray,
 
 	isWindow: function( obj ) {
 		return obj != null && obj == obj.window;
