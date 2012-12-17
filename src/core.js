@@ -844,9 +844,7 @@ jQuery.extend({
 				length ? fn( elems[0], key ) : emptyGet;
 	},
 
-	now: function() {
-		return ( new Date() ).getTime();
-	}
+	now: Date.now
 });
 
 jQuery.ready.promise = function( obj ) {
