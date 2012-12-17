@@ -1,26 +1,16 @@
 var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
-	
+
 function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}
 
 	var thisCache, ret,
-		internalKey = jQuery.expando,
+		id = jQuery.expando,
 		getByName = typeof name === "string",
-
-		// We have to handle DOM nodes and JS objects differently because IE6-7
-		// can't GC object references properly across the DOM-JS boundary
-		isNode = elem.nodeType,
-
-		// Only DOM nodes need the global jQuery cache; JS object data is
-		// attached directly to the object so GC can occur automatically
-		cache = isNode ? jQuery.cache : elem,
-
-		// Only defining an ID for JS objects if its cache already exists allows
-		// the code to shortcut on the same path as a DOM node with no cache
-		id = isNode ? elem[ internalKey ] : elem[ internalKey ] && internalKey;
+		// Reassign to |cache| for reader relevance
+		cache = elem;
 
 	// Avoid doing any more work than we need to when trying to get data on an
 	// object that has no data at all
@@ -28,24 +18,9 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 		return;
 	}
 
-	if ( !id ) {
-		// Only DOM nodes need a new unique ID for each element since their data
-		// ends up in the global cache
-		if ( isNode ) {
-			elem[ internalKey ] = id = core_deletedIds.pop() || jQuery.guid++;
-		} else {
-			id = internalKey;
-		}
-	}
-
 	if ( !cache[ id ] ) {
 		cache[ id ] = {};
-
-		// Avoids exposing jQuery metadata on plain JS objects when the object
-		// is serialized using JSON.stringify
-		if ( !isNode ) {
-			cache[ id ].toJSON = jQuery.noop;
-		}
+		cache[ id ].toJSON = jQuery.noop;
 	}
 
 	// An object can be passed to jQuery.data instead of a key/value pair; this gets
@@ -101,12 +76,9 @@ function internalRemoveData( elem, name, pvt /* For internal use only */ ){
 	}
 
 	var thisCache, i, l,
-
-		isNode = elem.nodeType,
-
-		// See jQuery.data for more information
-		cache = isNode ? jQuery.cache : elem,
-		id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
+		id = jQuery.expando,
+		// Reassign to |cache| for reader relevance
+		cache = elem;
 
 	// If there is already no cache entry for this object, there is no
 	// purpose in continuing
@@ -170,17 +142,7 @@ function internalRemoveData( elem, name, pvt /* For internal use only */ ){
 	}
 
 	// Destroy the cache
-	if ( isNode ) {
-		jQuery.cleanData( [ elem ], true );
-
-	// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
-	} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
-		delete cache[ id ];
-
-	// When all else fails, null
-	} else {
-		cache[ id ] = null;
-	}
+	delete cache[ id ];
 }
 
 jQuery.extend({
@@ -200,8 +162,8 @@ jQuery.extend({
 	},
 
 	hasData: function( elem ) {
-		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
-		return !!elem && !isEmptyDataObject( elem );
+		var cache = !!elem && elem[ jQuery.expando ];
+		return !!cache && !isEmptyDataObject( cache );
 	},
 
 	data: function( elem, name, data ) {
@@ -216,7 +178,7 @@ jQuery.extend({
 	_data: function( elem, name, data ) {
 		return internalData( elem, name, data, true );
 	},
-	
+
 	_removeData: function( elem, name ) {
 		return internalRemoveData( elem, name, true );
 	},
