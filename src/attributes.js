@@ -596,19 +596,6 @@ if ( !jQuery.support.hrefNormalized ) {
 	});
 }
 
-if ( !jQuery.support.style ) {
-	jQuery.attrHooks.style = {
-		get: function( elem ) {
-			// Return undefined in the case of empty string
-			// Normalize to lowercase since IE uppercases css property names
-			return elem.style.cssText.toLowerCase() || undefined;
-		},
-		set: function( elem, value ) {
-			return ( elem.style.cssText = value + "" );
-		}
-	};
-}
-
 // Radios and checkboxes getter/setter
 if ( !jQuery.support.checkOn ) {
 	jQuery.each([ "radio", "checkbox" ], function() {

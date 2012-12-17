@@ -19,7 +19,7 @@ jQuery.support = (function() {
 	opt = select.appendChild( document.createElement("option") );
 	input = div.getElementsByTagName("input")[ 0 ];
 
-	a.style.cssText = "top:1px;float:left;opacity:.5";
+	a.style.cssText = "float:left;opacity:.5";
 	support = {
 		// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 		getSetAttribute: div.className !== "t",
@@ -34,10 +34,6 @@ jQuery.support = (function() {
 		// Make sure that link elements get serialized correctly by innerHTML
 		// This requires a wrapper element in IE
 		htmlSerialize: !!div.getElementsByTagName("link").length,
-
-		// Get the style information from getAttribute
-		// (IE uses .cssText instead)
-		style: /top/.test( a.getAttribute("style") ),
 
 		// Make sure that URLs aren't manipulated
 		// (IE normalizes it by default)
