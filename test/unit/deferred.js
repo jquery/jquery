@@ -10,11 +10,20 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	test( "jQuery.Deferred" + withNew, function() {
 
-		expect( 23 );
+		expect( 24 );
 
 		var defer = createDeferred();
 
-		strictEqual( defer.pipe, defer.then, "pipe is an alias of then" );
+		var pipedDefer = createDeferred();
+		pipedDefer.done(function() {
+			ok( true, "Chained deferred resolved when target resolved" );
+		});
+
+		var defer2 = createDeferred();
+		defer2.pipe(pipedDefer);
+		defer2.resolve();
+
+		ok( pipedDefer.state() == "resolved", "Chained deferred is resolved" );
 
 		createDeferred().resolve().done(function() {
 			ok( true, "Success on resolve" );

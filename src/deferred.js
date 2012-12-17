@@ -49,8 +49,24 @@ jQuery.extend({
 			},
 			deferred = {};
 
-		// Keep pipe for back-compat
-		promise.pipe = promise.then;
+		// Synonymous with then when passing done, fail, and progress handlers, but can also be used to chain
+		// deferred objects without filtering
+		promise.pipe = function( /* deferred | fnDone, fnFail, fnProgress */ ) {
+			var args = arguments,
+				deferred;
+
+			// Duck typed check for whether or not this object can be chained
+			function isDeferredObject(obj) {
+				return obj && obj.resolve && obj.reject && obj.notify;
+			}
+
+			if (arguments.length === 1 && isDeferredObject(arguments[0])) {
+				deferred = arguments[0];
+				args = [deferred.resolve, deferred.reject, deferred.notify];
+			}
+
+			return promise.then.apply(this, args);
+		},
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
