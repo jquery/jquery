@@ -482,7 +482,7 @@ jQuery.extend({
 			return null;
 		}
 
-		// IE9 will throw on ill-formed XML
+		// Support: IE9
 		try {
 			tmp = new DOMParser();
 			xml = tmp.parseFromString( data , "text/xml" );
