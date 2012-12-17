@@ -596,6 +596,7 @@ if ( !jQuery.support.hrefNormalized ) {
 	});
 }
 
+<<<<<<< HEAD
 if ( !jQuery.support.style ) {
 	jQuery.attrHooks.style = {
 		get: function( elem ) {
@@ -610,6 +611,8 @@ if ( !jQuery.support.style ) {
 	};
 }
 
+=======
+>>>>>>> 2.0: Remove style->cssText attroproties fallback
 // Radios and checkboxes getter/setter
 if ( !jQuery.support.checkOn ) {
 	jQuery.each([ "radio", "checkbox" ], function() {
