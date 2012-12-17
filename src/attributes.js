@@ -610,26 +610,6 @@ if ( !jQuery.support.style ) {
 	};
 }
 
-// Safari mis-reports the default selected property of an option
-// Accessing the parent's selectedIndex property fixes it
-if ( !jQuery.support.optSelected ) {
-	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
-		get: function( elem ) {
-			var parent = elem.parentNode;
-
-			if ( parent ) {
-				parent.selectedIndex;
-
-				// Make sure that it also works with optgroups, see #5701
-				if ( parent.parentNode ) {
-					parent.parentNode.selectedIndex;
-				}
-			}
-			return null;
-		}
-	});
-}
-
 // Radios and checkboxes getter/setter
 if ( !jQuery.support.checkOn ) {
 	jQuery.each([ "radio", "checkbox" ], function() {

@@ -55,10 +55,6 @@ jQuery.support = (function() {
 		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 		checkOn: !!input.value,
 
-		// Make sure that a selected-by-default option has a working selected property.
-		// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
-		optSelected: opt.selected,
-
 		// Makes sure cloning an html5 element does not cause problems
 		// Where outerHTML is undefined, this still works
 		html5Clone: document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>",
