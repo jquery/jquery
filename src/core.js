@@ -417,7 +417,7 @@ jQuery.extend({
 			return false;
 		}
 
-		// Firefox 17+ will throw on host objects. ie window.location
+		// Support: Firefox >16
 		try {
 			if ( obj.constructor &&
 					!core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
