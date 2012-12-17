@@ -368,11 +368,6 @@ jQuery.extend({
 			return;
 		}
 
-		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
-		if ( !document.body ) {
-			return setTimeout( jQuery.ready );
-		}
-
 		// Remember that the DOM is ready
 		jQuery.isReady = true;
 
