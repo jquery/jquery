@@ -243,7 +243,7 @@ test("trim", function() {
 });
 
 test("type", function() {
-	expect( 24 );
+	expect( 29 );
 
 	equal( jQuery.type(null), "null", "null" );
 	equal( jQuery.type(undefined), "undefined", "undefined" );
@@ -269,6 +269,14 @@ test("type", function() {
 	equal( jQuery.type(document.body), "object", "Element" );
 	equal( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
 	equal( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
+
+	// Lint complains when using new with wrapper objects.
+	// wrap it into an eval until i find a proper solution.
+	equal( jQuery.type(eval("new Boolean(true)")), "boolean", "Boolean" );
+	equal( jQuery.type(eval("new Number(1)")), "number", "Number" );
+	equal( jQuery.type(eval("new Number(1)")), "number", "Number" );
+	equal( jQuery.type(eval("new String(\"a\")")), "string", "String" );
+	equal( jQuery.type(eval("new Object()")), "object", "Object" );
 });
 
 asyncTest("isPlainObject", function() {
