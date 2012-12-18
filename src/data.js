@@ -3,7 +3,6 @@ var user, priv,
 	rmultiDash = /([A-Z])/g;
 
 function Data( label ) {
-	this.label = label || null;
 	// Nodes|Objects
 	this.owners = [];
 	// Data objects
@@ -11,8 +10,6 @@ function Data( label ) {
 }
 
 Data.prototype = {
-	constructor: Data,
-
 	add: function( owner ) {
 		this.owners.push( owner );
 		this.cache[ this.owners.length - 1 ] = {};
