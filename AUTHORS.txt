@@ -156,4 +156,4 @@ Matthias Jäggli <matthias.jaeggli@gmail.com>
 Yiming He <yiminghe@gmail.com>
 Devin Cooper <cooper.semantics@gmail.com>
 Bennett Sorbo <bsorbo@gmail.com>
- 
+Sebastian Burkhard <sebi.burkhard@gmail.com>

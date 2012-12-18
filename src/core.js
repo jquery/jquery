@@ -96,8 +96,8 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
-		// HANDLE: $(DOMElement)
-		if ( selector.nodeType ) {
+		// HANDLE: $(DOMElement); check first that selector is not a primitive
+		if ( typeof selector === "object" && selector.nodeType ) {
 			this.context = this[0] = selector;
 			this.length = 1;
 			return this;
