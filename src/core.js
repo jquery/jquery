@@ -427,7 +427,7 @@ jQuery.extend({
 	},
 
 	type: function( obj ) {
-		if (obj == null) {
+		if ( obj == null ) {
 			return String( obj );
 		}
 		return typeof obj === "object" ?
