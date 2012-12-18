@@ -243,7 +243,7 @@ test("trim", function() {
 });
 
 test("type", function() {
-	expect( 24 );
+	expect( 28 );
 
 	equal( jQuery.type(null), "null", "null" );
 	equal( jQuery.type(undefined), "undefined", "undefined" );
@@ -269,6 +269,16 @@ test("type", function() {
 	equal( jQuery.type(document.body), "object", "Element" );
 	equal( jQuery.type(document.createTextNode("foo")), "object", "TextNode" );
 	equal( jQuery.type(document.getElementsByTagName("*")), "object", "NodeList" );
+
+	// Avoid Lint complaints
+	var MyString = String;
+	var MyNumber = Number;
+	var MyBoolean = Boolean;
+	var MyObject = Object;
+	equal( jQuery.type(new MyBoolean(true)), "boolean", "Boolean" );
+	equal( jQuery.type(new MyNumber(1)), "number", "Number" );
+	equal( jQuery.type(new MyString("a")), "string", "String" );
+	equal( jQuery.type(new MyObject()), "object", "Object" );
 });
 
 asyncTest("isPlainObject", function() {

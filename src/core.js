@@ -427,9 +427,12 @@ jQuery.extend({
 	},
 
 	type: function( obj ) {
-		return obj == null ?
-			String( obj ) :
-			class2type[ core_toString.call(obj) ] || "object";
+		if ( obj == null ) {
+			return String( obj );
+		}
+		return typeof obj === "object" || typeof obj === "function" ?
+			class2type[ core_toString.call(obj) ] || "object" :
+			typeof obj;
 	},
 
 	isPlainObject: function( obj ) {
