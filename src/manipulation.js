@@ -295,7 +295,7 @@ jQuery.fn.extend({
 
 						// Keep references to cloned scripts for later restoration
 						if ( hasScripts ) {
-							jQuery.merge( scripts, getAll( node, "script" ) );
+							core_push.apply( scripts, getAll( node, "script" ) );
 						}
 					}
 
@@ -427,7 +427,7 @@ jQuery.extend({
 			if ( elem || elem === 0 ) {
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
-					jQuery.merge( ret, elem.nodeType ? [ elem ] : elem );
+					core_push.apply( ret, elem.nodeType ? [ elem ] : elem );
 
 				// Convert non-html into a text node
 				} else if ( !rhtml.test( elem ) ) {
@@ -450,7 +450,7 @@ jQuery.extend({
 						tmp = tmp.lastChild;
 					}
 
-					jQuery.merge( ret, tmp.childNodes );
+					core_push.apply( ret, tmp.childNodes );
 
 					// Fix #12392 for WebKit and IE > 9
 					tmp.textContent = "";
