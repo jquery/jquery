@@ -324,6 +324,7 @@ jQuery.fn.extend({
 								// Hope ajax is available...
 								jQuery.ajax({
 									url: node.src,
+									type: "GET",
 									dataType: "script",
 									async: false,
 									global: false,
