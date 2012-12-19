@@ -2,7 +2,7 @@ var user, priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
-function Data( label ) {
+function Data() {
 	// Nodes|Objects
 	this.owners = [];
 	// Data objects
@@ -15,7 +15,7 @@ Data.prototype = {
 		this.cache[ this.owners.length - 1 ] = {};
 		return this;
 	},
-	update: function( owner, data, value ) {
+	set: function( owner, data, value ) {
 		var prop,
 				index = this.owners.indexOf( owner );
 
@@ -117,10 +117,10 @@ Data.prototype = {
 	}
 };
 
-function data_discard( owner ) {
-	user.discard( owner );
-	priv.discard( owner );
-}
+// function data_discard( owner ) {
+	// user.discard( owner );
+	// priv.discard( owner );
+// }
 
 user = new Data();
 priv = new Data();
@@ -174,8 +174,6 @@ jQuery.fn.extend({
 			if ( this.length ) {
 				data = user.get( elem );
 
-				console.log( data );
-
 				if ( elem.nodeType === 1 && !priv.get( elem, "hasDataAttrs" ) ) {
 					attrs = elem.attributes;
 					for ( ; i < attrs.length; i++ ) {
@@ -196,18 +194,16 @@ jQuery.fn.extend({
 		// Sets multiple values
 		if ( typeof key === "object" ) {
 			return this.each(function() {
-				user.update( this, key );
+				user.set( this, key );
 			});
 		}
 
-
-		// console.log( key, value );
 		return jQuery.access( this, function( value ) {
 			var data,
 					camelKey = jQuery.camelCase( key );
 
 			// TODO: THIS IS ONLY A ROUGH PASS
-			// 				BUT SERIOUSLY... THIS IS THE BED WE'VE MADE.
+			//       BUT SERIOUSLY... THIS IS THE BED WE'VE MADE.
 			if ( value === undefined ) {
 				data = user.get( elem, key );
 				if ( data !== undefined ) {
@@ -230,10 +226,10 @@ jQuery.fn.extend({
 			this.each(function() {
 				var data = user.get( this, camelKey );
 
-				user.update( this, camelKey, value );
+				user.set( this, camelKey, value );
 
 				if ( /-/.test( key ) && data ) {
-					user.update( this, key, value );
+					user.set( this, key, value );
 				}
 			});
 		}, null, value, arguments.length > 1, null, true );
@@ -268,7 +264,7 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			user.update( elem, key, data, true );
+			user.set( elem, key, data, true );
 		} else {
 			data = undefined;
 		}
