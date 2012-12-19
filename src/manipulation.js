@@ -1,22 +1,4 @@
-function createSafeFragment( document ) {
-	var list = nodeNames.split( "|" ),
-		safeFrag = document.createDocumentFragment();
-
-	if ( safeFrag.createElement ) {
-		while ( list.length ) {
-			safeFrag.createElement(
-				list.pop()
-			);
-		}
-	}
-	return safeFrag;
-}
-
-var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
-		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
-	rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
-	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
-	rleadingWhitespace = /^\s+/,
+var rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
@@ -37,13 +19,8 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		tr: [ 2, "<table><tbody>" ],
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</table>" ],
 		td: [ 3, "<table><tbody><tr>" ],
-
-		// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
-		// unless wrapped in a div with non-breaking characters in front of it.
-		_default: jQuery.support.htmlSerialize ? [ 0, "" ] : [ 1, "X<div>"  ]
-	},
-	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
+		_default: [ 0, "" ]
+	};
 
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
@@ -213,14 +190,11 @@ jQuery.fn.extend({
 				l = this.length;
 
 			if ( value === undefined ) {
-				return elem.nodeType === 1 ?
-					elem.innerHTML.replace( rinlinejQuery, "" ) :
-					undefined;
+				return elem.nodeType === 1 ? elem.innerHTML: undefined;
 			}
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
-				( jQuery.support.htmlSerialize || !rnoshimcache.test( value )  ) &&
 				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
@@ -559,18 +533,11 @@ function fixDefaultChecked( elem ) {
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var destElements, srcElements, node, i, clone,
-			inPage = jQuery.contains( elem.ownerDocument, elem );
-
-		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+		var destElements, srcElements, node, i,
+			inPage = jQuery.contains( elem.ownerDocument, elem ),
 			clone = elem.cloneNode( true );
 
 		// IE<=8 does not properly clone detached, unknown element nodes
-		} else {
-			fragmentDiv.innerHTML = elem.outerHTML;
-			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
-		}
-
 		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 
@@ -616,7 +583,7 @@ jQuery.extend({
 	clean: function( elems, context, fragment, scripts, selection ) {
 		var elem, i, j, tmp, tag, wrap, tbody,
 			ret = [],
-			safe = context === document && safeFragment;
+			container = context === document && fragment;
 
 		// Ensure that context is a document
 		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
@@ -636,8 +603,8 @@ jQuery.extend({
 				// Convert html into DOM nodes
 				} else {
 					// Ensure a safe container
-					safe = safe || createSafeFragment( context );
-					tmp = tmp || safe.appendChild( context.createElement("div") );
+					container = container || context.createDocumentFragment();
+					tmp = tmp || container.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
@@ -686,14 +653,14 @@ jQuery.extend({
 					}
 
 					// Remember the top-level container for proper cleanup
-					tmp = safe.lastChild;
+					tmp = container.lastChild;
 				}
 			}
 		}
 
-		// Fix #11356: Clear elements from safeFragment
+		// Fix #11356: Clear elements from fragment
 		if ( tmp ) {
-			safe.removeChild( tmp );
+			container.removeChild( tmp );
 		}
 
 		// Reset defaultChecked for any radios and checkboxes
@@ -704,7 +671,7 @@ jQuery.extend({
 
 		if ( fragment ) {
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
-				safe = jQuery.contains( elem.ownerDocument, elem );
+				container = jQuery.contains( elem.ownerDocument, elem );
 
 				// Append to fragment
 				// #4087 - If origin and destination elements are the same, and this is
@@ -715,7 +682,7 @@ jQuery.extend({
 				tmp = getAll( elem, "script" );
 
 				// Preserve script evaluation history
-				if ( safe ) {
+				if ( container ) {
 					setGlobalEval( tmp );
 				}
 
@@ -729,8 +696,6 @@ jQuery.extend({
 				}
 			}
 		}
-
-		elem = tmp = safe = null;
 
 		return ret;
 	},
