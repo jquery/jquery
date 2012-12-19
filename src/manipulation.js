@@ -467,8 +467,7 @@ function getAll( context, tag ) {
 
 	if ( !ret ) {
 		for ( ret = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
-			core_push.apply( ret,
-				!tag || jQuery.nodeName( elem, tag ) ?
+			core_push.apply( ret, !tag || jQuery.nodeName( elem, tag ) ?
 					getAll( elem, tag ) :
 					elems );
 		}
@@ -477,13 +476,6 @@ function getAll( context, tag ) {
 	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
 		jQuery.merge( [ context ], ret ) :
 		ret;
-}
-
-// Used in clean, fixes the defaultChecked property
-function fixDefaultChecked( elem ) {
-	if ( manipulation_rcheckableType.test( elem.type ) ) {
-		elem.defaultChecked = elem.checked;
-	}
 }
 
 jQuery.extend({
@@ -583,12 +575,6 @@ jQuery.extend({
 		// Fix #11356: Clear elements from fragment
 		if ( tmp ) {
 			container.removeChild( tmp );
-		}
-
-		// Reset defaultChecked for any radios and checkboxes
-		// about to be appended to the DOM in IE 6/7 (#8060)
-		if ( !jQuery.support.appendChecked ) {
-			jQuery.grep( getAll( ret, "input" ), fixDefaultChecked );
 		}
 
 		if ( fragment ) {
