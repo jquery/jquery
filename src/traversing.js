@@ -71,7 +71,8 @@ jQuery.fn.extend({
 	},
 
 	closest: function( selectors, context ) {
-		var cur, i = 0,
+		var cur,
+			i = 0,
 			l = this.length,
 			matched = [],
 			pos = ( rneedsContext.test( selectors ) || typeof selectors !== "string" ) ?
