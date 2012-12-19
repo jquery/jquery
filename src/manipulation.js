@@ -191,14 +191,14 @@ jQuery.fn.extend({
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
-				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
+				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[ 1 ].toLowerCase() ] ) {
 
 				value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
 					for (; i < l; i++ ) {
 						// Remove element nodes and prevent memory leaks
-						elem = this[i] || {};
+						elem = this[ i ] || {};
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( getAll( elem, false ) );
 							elem.innerHTML = value;
@@ -301,9 +301,9 @@ jQuery.fn.extend({
 					}
 
 					callback.call(
-						table && jQuery.nodeName( this[i], "table" ) ?
-							findOrAppend( this[i], "tbody" ) :
-							this[i],
+						table && jQuery.nodeName( this[ i ], "table" ) ?
+							findOrAppend( this[ i ], "tbody" ) :
+							this[ i ],
 						node,
 						i
 					);
@@ -360,7 +360,7 @@ function disableScript( elem ) {
 function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
 	if ( match ) {
-		elem.type = match[1];
+		elem.type = match[ 1 ];
 	} else {
 		elem.removeAttribute("type");
 	}
@@ -371,8 +371,8 @@ function restoreScript( elem ) {
 function setGlobalEval( elems, refElements ) {
 	var elem,
 		i = 0;
-	for ( ; (elem = elems[i]) != null; i++ ) {
-		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[i], "globalEval" ) );
+	for ( ; (elem = elems[ i ]) != null; i++ ) {
+		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
 	}
 }
 
@@ -487,7 +487,7 @@ jQuery.each({
 
 		for ( ; i <= last; i++ ) {
 			elems = i === last ? this : this.clone(true);
-			jQuery( insert[i] )[ original ]( elems );
+			jQuery( insert[ i ] )[ original ]( elems );
 
 			// Modern browsers can apply jQuery collections as arrays, but oldIE needs a .get()
 			core_push.apply( ret, elems.get() );
@@ -505,7 +505,7 @@ function getAll( context, tag ) {
 			undefined;
 
 	if ( !found ) {
-		for ( found = [], elems = context.childNodes || context; (elem = elems[i]) != null; i++ ) {
+		for ( found = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
 			if ( !tag || jQuery.nodeName( elem, tag ) ) {
 				found.push( elem );
 			} else {
@@ -541,10 +541,10 @@ jQuery.extend({
 			srcElements = getAll( elem );
 
 			// Fix all IE cloning issues
-			for ( i = 0; (node = srcElements[i]) != null; ++i ) {
+			for ( i = 0; (node = srcElements[ i ]) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
-				if ( destElements[i] ) {
-					fixCloneNodeIssues( node, destElements[i] );
+				if ( destElements[ i ] ) {
+					fixCloneNodeIssues( node, destElements[ i ] );
 				}
 			}
 		}
@@ -555,8 +555,8 @@ jQuery.extend({
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
-				for ( i = 0; (node = srcElements[i]) != null; i++ ) {
-					cloneCopyEvent( node, destElements[i] );
+				for ( i = 0; (node = srcElements[ i ]) != null; i++ ) {
+					cloneCopyEvent( node, destElements[ i ] );
 				}
 			} else {
 				cloneCopyEvent( elem, clone );
@@ -585,7 +585,7 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( i = 0; (elem = elems[i]) != null; i++ ) {
+		for ( i = 0; (elem = elems[ i ]) != null; i++ ) {
 			if ( elem || elem === 0 ) {
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
@@ -602,9 +602,9 @@ jQuery.extend({
 					tmp = tmp || container.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
-					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
+					tag = ( rtagName.exec( elem ) || ["", ""] )[ 1 ].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[1] + elem.replace( rxhtmlTag, "<$1></$2>" ) + ( wrap[2] || "" );
+					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + ( wrap[ 2 ] || "" );
 
 					// Descend through wrappers to the right content
 					j = wrap[0];
@@ -635,7 +635,7 @@ jQuery.extend({
 		}
 
 		if ( fragment ) {
-			for ( i = 0; (elem = ret[i]) != null; i++ ) {
+			for ( i = 0; (elem = ret[ i ]) != null; i++ ) {
 				container = jQuery.contains( elem.ownerDocument, elem );
 
 				// Append to fragment
@@ -653,7 +653,7 @@ jQuery.extend({
 
 				// Capture executables
 				if ( scripts ) {
-					for ( j = 0; (elem = tmp[j]) != null; j++ ) {
+					for ( j = 0; (elem = tmp[ j ]) != null; j++ ) {
 						if ( rscriptType.test( elem.type || "" ) ) {
 							scripts.push( elem );
 						}
@@ -673,7 +673,7 @@ jQuery.extend({
 			deleteExpando = jQuery.support.deleteExpando,
 			special = jQuery.event.special;
 
-		for ( ; (elem = elems[i]) != null; i++ ) {
+		for ( ; (elem = elems[ i ]) != null; i++ ) {
 
 			if ( acceptData || jQuery.acceptData( elem ) ) {
 
