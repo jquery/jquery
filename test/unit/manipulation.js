@@ -2238,3 +2238,11 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 		jQuery("#test4087-multiple").remove();
 	});
 });
+
+test( "Index for function argument should be received (#13094)", 2, function() {
+    var i = 0;
+
+    jQuery("<div/><div/>").before(function( index ) {
+        equal( index, i++, "Index should be correct" );
+    });
+});

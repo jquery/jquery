@@ -286,16 +286,17 @@ jQuery.fn.extend({
 		var fragment, first, scripts, hasScripts, node, doc,
 			i = 0,
 			l = this.length,
+			set = this,
 			iNoClone = l - 1,
 			value = args[0],
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
 		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
-			return this.each(function() {
-				var self = jQuery( this );
+			return this.each(function( index ) {
+				var self = set.eq( index );
 				if ( isFunction ) {
-					args[0] = value.call( this, i, table ? self.html() : undefined );
+					args[0] = value.call( this, index, table ? self.html() : undefined );
 				}
 				self.domManip( args, table, callback );
 			});
