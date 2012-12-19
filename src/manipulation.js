@@ -1,6 +1,5 @@
 var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
-	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
 	manipulation_rcheckableType = /^(?:checkbox|radio)$/i,
@@ -579,7 +578,7 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts, selection ) {
-		var elem, i, j, tmp, tag, wrap, tbody,
+		var elem, i, j, tmp, tag, wrap,
 			ret = [],
 			container = context === document && fragment;
 
