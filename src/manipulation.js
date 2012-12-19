@@ -83,10 +83,10 @@ jQuery.fn.extend({
 	},
 
 	wrap: function( html ) {
-		var isFunc = jQuery.isFunction( html );
+		var isFunction = jQuery.isFunction( html );
 
 		return this.each(function( i ) {
-			jQuery( this ).wrapAll( isFunc ? html.call(this, i) : html );
+			jQuery( this ).wrapAll( isFunction ? html.call(this, i) : html );
 		});
 	},
 
@@ -197,7 +197,6 @@ jQuery.fn.extend({
 
 				try {
 					for (; i < l; i++ ) {
-						// Remove element nodes and prevent memory leaks
 						elem = this[ i ] || {};
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( getAll( elem, false ) );
@@ -208,7 +207,7 @@ jQuery.fn.extend({
 					elem = 0;
 
 				// If using innerHTML throws an exception, use the fallback method
-				} catch(e) {}
+				} catch( e ) {}
 			}
 
 			if ( elem ) {
@@ -218,11 +217,11 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function( value ) {
-		var isFunc = jQuery.isFunction( value );
+		var isFunction = jQuery.isFunction( value );
 
 		// Make sure that the elements are removed from the DOM before they are inserted
 		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" ) {
+		if ( !isFunction && typeof value !== "string" ) {
 			value = jQuery( value ).not( this ).detach();
 		}
 
