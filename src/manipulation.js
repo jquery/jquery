@@ -448,11 +448,10 @@ jQuery.each({
 			last = insert.length - 1;
 
 		for ( ; i <= last; i++ ) {
-			elems = i === last ? this : this.clone(true);
+			elems = i === last ? this : this.clone( true );
 			jQuery( insert[ i ] )[ original ]( elems );
 
-			// Modern browsers can apply jQuery collections as arrays, but oldIE needs a .get()
-			core_push.apply( ret, elems.get() );
+			core_push.apply( ret, elems );
 		}
 
 		return this.pushStack( ret );
@@ -462,23 +461,22 @@ jQuery.each({
 function getAll( context, tag ) {
 	var elems, elem,
 		i = 0,
-		found = typeof context.getElementsByTagName !== "undefined" ? context.getElementsByTagName( tag || "*" ) :
+		ret = typeof context.getElementsByTagName !== "undefined" ? context.getElementsByTagName( tag || "*" ) :
 			typeof context.querySelectorAll !== "undefined" ? context.querySelectorAll( tag || "*" ) :
 			undefined;
 
-	if ( !found ) {
-		for ( found = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
-			if ( !tag || jQuery.nodeName( elem, tag ) ) {
-				found.push( elem );
-			} else {
-				jQuery.merge( found, getAll( elem, tag ) );
-			}
+	if ( !ret ) {
+		for ( ret = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
+			core_push.apply( ret,
+				!tag || jQuery.nodeName( elem, tag ) ?
+					getAll( elem, tag ) :
+					elems );
 		}
 	}
 
 	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], found ) :
-		found;
+		jQuery.merge( [ context ], ret ) :
+		ret;
 }
 
 // Used in clean, fixes the defaultChecked property
