@@ -15,7 +15,7 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 		param: [ 1, "<object>" ],
 		thead: [ 1, "<table>"  ],
 		tr: [ 2, "<table><tbody>" ],
-		col: [ 2, "<table><tbody></tbody><colgroup>", "</table>" ],
+		col: [ 2, "<table><tbody></tbody><colgroup>" ],
 		td: [ 3, "<table><tbody><tr>" ],
 		_default: [ 0, "" ]
 	};
