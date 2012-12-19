@@ -620,11 +620,6 @@ jQuery.extend({
 					// Fix #12392 for WebKit and IE > 9
 					tmp.textContent = "";
 
-					// Fix #12392 for oldIE
-					while ( tmp.firstChild ) {
-						tmp.removeChild( tmp.firstChild );
-					}
-
 					// Remember the top-level container for proper cleanup
 					tmp = container.lastChild;
 				}
