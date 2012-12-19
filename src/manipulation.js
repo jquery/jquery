@@ -115,7 +115,7 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		return this.domManip( arguments, false, function( elem ) {
+		return this.domManip(arguments, false, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
@@ -123,7 +123,7 @@ jQuery.fn.extend({
 	},
 
 	after: function() {
-		return this.domManip( arguments, false, function( elem ) {
+		return this.domManip(arguments, false, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
