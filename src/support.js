@@ -5,7 +5,7 @@ jQuery.support = (function() {
 
 	// Setup
 	div.setAttribute( "className", "t" );
-	div.innerHTML = "<table></table><a href='/a'>a</a><input type='checkbox'/>";
+	div.innerHTML = "<a href='/a'>a</a><input type='checkbox'/>";
 
 	// Support tests won't run in some limited or non-browser environments
 	all = div.getElementsByTagName("*");
