@@ -324,7 +324,6 @@ jQuery.fn.extend({
 								// Hope ajax is available...
 								jQuery.ajax({
 									url: node.src,
-									type: "GET",
 									dataType: "script",
 									async: false,
 									global: false,
@@ -336,9 +335,6 @@ jQuery.fn.extend({
 						}
 					}
 				}
-
-				// Fix #11809: Avoid leaking memory
-				fragment = first = null;
 			}
 		}
 
@@ -567,8 +563,6 @@ jQuery.extend({
 		if ( destElements.length > 0 ) {
 			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
 		}
-
-		destElements = srcElements = node = null;
 
 		// Return the cloned set
 		return clone;
