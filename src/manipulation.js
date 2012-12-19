@@ -264,7 +264,7 @@ jQuery.fn.extend({
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
-					args[0] = value.call( this, index, table ? self.html() : undefined );
+					args[ 0 ] = value.call( this, index, table ? self.html() : undefined );
 				}
 				self.domManip( args, table, callback );
 			});
