@@ -400,7 +400,7 @@ function cloneCopyEvent( src, dest ) {
 }
 
 function fixCloneNodeIssues( src, dest ) {
-	var nodeName, data, e;
+	var nodeName;
 
 	// We do not need to do anything for non-Elements
 	if ( dest.nodeType !== 1 ) {
@@ -409,26 +409,7 @@ function fixCloneNodeIssues( src, dest ) {
 
 	nodeName = dest.nodeName.toLowerCase();
 
-	// IE6-8 copies events bound via attachEvent when using cloneNode.
-	if ( !jQuery.support.noCloneEvent && dest[ jQuery.expando ] ) {
-		data = jQuery._data( dest );
-
-		for ( e in data.events ) {
-			jQuery.removeEvent( dest, e, data.handle );
-		}
-
-		// Event data gets referenced instead of copied if the expando gets copied too
-		dest.removeAttribute( jQuery.expando );
-	}
-
-	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
-	if ( nodeName === "script" && dest.text !== src.text ) {
-		disableScript( dest ).text = src.text;
-		restoreScript( dest );
-
-	// IE6-10 improperly clones children of object elements using classid.
-	// IE10 throws NoModificationAllowedError if parent is null, #12132.
-	} else if ( nodeName === "object" ) {
+	if ( nodeName === "object" ) {
 		if ( dest.parentNode ) {
 			dest.outerHTML = src.outerHTML;
 		}
@@ -437,30 +418,16 @@ function fixCloneNodeIssues( src, dest ) {
 		// element in IE9, the outerHTML strategy above is not sufficient.
 		// If the src has innerHTML and the destination does not,
 		// copy the src.innerHTML into the dest.innerHTML. #10324
-		if ( jQuery.support.html5Clone && ( src.innerHTML && !jQuery.trim(dest.innerHTML) ) ) {
+		if ( src.innerHTML && !jQuery.trim( dest.innerHTML ) ) {
 			dest.innerHTML = src.innerHTML;
 		}
 
+	// IE9-10 fails to persist the checked state of a cloned checkbox or radio button.
 	} else if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
-		// IE6-8 fails to persist the checked state of a cloned checkbox
-		// or radio button. Worse, IE6-7 fail to give the cloned element
-		// a checked appearance if the defaultChecked value isn't also set
+		dest.checked = src.checked;
 
-		dest.defaultChecked = dest.checked = src.checked;
-
-		// IE6-7 get confused and end up setting the value of a cloned
-		// checkbox/radio button to an empty string instead of "on"
-		if ( dest.value !== src.value ) {
-			dest.value = src.value;
-		}
-
-	// IE6-8 fails to return the selected option to the default selected
+	// IE9-10 fails to return the selected option to the default selected
 	// state when cloning options
-	} else if ( nodeName === "option" ) {
-		dest.defaultSelected = dest.selected = src.defaultSelected;
-
-	// IE6-8 fails to set the defaultValue to the correct value when
-	// cloning other types of input fields
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
@@ -528,14 +495,13 @@ jQuery.extend({
 			clone = elem.cloneNode( true );
 
 		// IE<=8 does not properly clone detached, unknown element nodes
-		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
-				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+		if ( !jQuery.support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			// Fix all IE cloning issues
+			// Fix IE cloning issues
 			for ( i = 0; (node = srcElements[ i ]) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
 				if ( destElements[ i ] ) {
