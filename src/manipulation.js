@@ -132,7 +132,8 @@ jQuery.fn.extend({
 
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
-		var elem, i = 0;
+		var elem,
+			i = 0;
 
 		for ( ; ( elem = this[ i ] ) != null; i++ ) {
 			if ( !selector || jQuery.filter( selector, [ elem ] ).length > 0 ) {
@@ -191,12 +192,12 @@ jQuery.fn.extend({
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
-				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[ 1 ].toLowerCase() ] ) {
+				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
 				value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
-					for (; i < l; i++ ) {
+					for ( ; i < l; i++ ) {
 						elem = this[ i ] || {};
 
 						// Remove element nodes and prevent memory leaks
@@ -397,7 +398,7 @@ jQuery.extend({
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
-				for ( i = 0; (node = srcElements[ i ]) != null; i++ ) {
+				for ( i = 0; ( node = srcElements[ i ] ) != null; i++ ) {
 					cloneCopyEvent( node, destElements[ i ] );
 				}
 			} else {
@@ -425,7 +426,7 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( i = 0; (elem = elems[ i ]) != null; i++ ) {
+		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
 			if ( elem || elem === 0 ) {
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
@@ -469,7 +470,7 @@ jQuery.extend({
 		}
 
 		if ( fragment ) {
-			for ( i = 0; (elem = ret[ i ]) != null; i++ ) {
+			for ( i = 0; ( elem = ret[ i ] ) != null; i++ ) {
 				container = jQuery.contains( elem.ownerDocument, elem );
 
 				// Append to fragment
@@ -487,7 +488,7 @@ jQuery.extend({
 
 				// Capture executables
 				if ( scripts ) {
-					for ( j = 0; (elem = tmp[ j ]) != null; j++ ) {
+					for ( j = 0; ( elem = tmp[ j ] ) != null; j++ ) {
 						if ( rscriptType.test( elem.type || "" ) ) {
 							scripts.push( elem );
 						}
@@ -506,7 +507,7 @@ jQuery.extend({
 			cache = jQuery.cache,
 			special = jQuery.event.special;
 
-		for ( ; (elem = elems[ i ]) != null; i++ ) {
+		for ( ; ( elem = elems[ i ] ) != null; i++ ) {
 
 			if ( acceptData || jQuery.acceptData( elem ) ) {
 
@@ -536,7 +537,7 @@ jQuery.extend({
 });
 
 function findOrAppend( elem, tag ) {
-	return elem.getElementsByTagName( tag )[ 0 ] || elem.appendChild( elem.ownerDocument.createElement( tag ) );
+	return elem.getElementsByTagName( tag )[ 0 ] || elem.appendChild( elem.ownerDocument.createElement(tag) );
 }
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
@@ -549,9 +550,11 @@ function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
 	if ( match ) {
 		elem.type = match[ 1 ];
+
 	} else {
 		elem.removeAttribute("type");
 	}
+
 	return elem;
 }
 
@@ -559,7 +562,7 @@ function restoreScript( elem ) {
 function setGlobalEval( elems, refElements ) {
 	var elem,
 		i = 0;
-	for ( ; (elem = elems[ i ]) != null; i++ ) {
+	for ( ; ( elem = elems[ i ] ) != null; i++ ) {
 		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
 	}
 }
@@ -570,7 +573,7 @@ function cloneCopyEvent( src, dest ) {
 		return;
 	}
 
-	var type, i, l,
+	var type, l, i,
 		oldData = jQuery._data( src ),
 		curData = jQuery._data( dest, oldData ),
 		events = oldData.events;
