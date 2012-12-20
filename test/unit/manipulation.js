@@ -2247,3 +2247,12 @@ test( "Index for function argument should be received (#13094)", 2, function() {
     });
 
 });
+
+test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement("div") );
+
+	$( div ).remove();
+
+	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
+});
