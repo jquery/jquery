@@ -452,11 +452,9 @@ module.exports = function( grunt ) {
 	});
 
 	// Load grunt tasks from NPM packages
-	grunt.loadNpmTasks( "grunt-compare-size" );
-	grunt.loadNpmTasks( "grunt-git-authors" );
-	grunt.loadNpmTasks( "grunt-update-submodules" );
-
-	// grunt contrib tasks
+	grunt.loadNpmTasks("grunt-compare-size");
+	grunt.loadNpmTasks("grunt-git-authors");
+	grunt.loadNpmTasks("grunt-update-submodules");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");

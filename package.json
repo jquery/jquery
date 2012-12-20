@@ -21,6 +21,9 @@
 			"url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
 		}
 	],
+	"scripts": {
+		"test" : "./node_modules/.bin/grunt"
+	},
 	"dependencies": {},
 	"devDependencies": {
 		"grunt-compare-size": "0.3.1",
@@ -30,6 +33,7 @@
 		"grunt-contrib-jshint": "~0.1.0",
 		"grunt-contrib-uglify": "~0.1.0",
 		"grunt": "~0.4.0rc4",
+		"grunt-cli": "0.1.6",
 		"testswarm": "0.2.2"
 	},
 	"keywords": []
