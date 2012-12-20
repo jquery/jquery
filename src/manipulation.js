@@ -159,7 +159,7 @@ jQuery.fn.extend({
 		for ( ; ( elem = this[ i ] ) != null; i++ ) {
 			if ( elem.nodeType === 1 ) {
 
-				// Remove element nodes and prevent memory leaks
+				// Prevent memory leaks
 				jQuery.cleanData( getAll( elem, false ) );
 
 				// Remove any remaining nodes
@@ -198,6 +198,8 @@ jQuery.fn.extend({
 				try {
 					for (; i < l; i++ ) {
 						elem = this[ i ] || {};
+
+						// Remove element nodes and prevent memory leaks
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( getAll( elem, false ) );
 							elem.innerHTML = value;
@@ -374,14 +376,13 @@ jQuery.extend({
 			inPage = jQuery.contains( elem.ownerDocument, elem ),
 			clone = elem.cloneNode( true );
 
-		// IE<=8 does not properly clone detached, unknown element nodes
+		// Fix IE cloning issues
 		if ( !jQuery.support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			// Fix IE cloning issues
 			for ( i = 0; (node = srcElements[ i ]) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
 				if ( destElements[ i ] ) {
