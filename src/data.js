@@ -289,7 +289,7 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			user.set( elem, key, data, true );
+			user.set( elem, key, data );
 		} else {
 			data = undefined;
 		}
