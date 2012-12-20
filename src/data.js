@@ -55,7 +55,7 @@ Data.prototype = {
 		} else {
 			// Allow setting or extending (existing objects) with an
 			// object of properties, or a key and val
-			return this.update( owner, key, value );
+			return this.set( owner, key, value );
 		}
 		// Otherwise, this is a read request.
 		return this.get( owner, key );
@@ -117,6 +117,9 @@ Data.prototype = {
 	}
 };
 
+// This will be used by remove() in manipulation to sever
+// remaining references to node objects. One day we'll replace the dual
+// arrays with a WeakMap and this won't be an issue.
 // function data_discard( owner ) {
 	// user.discard( owner );
 	// priv.discard( owner );
@@ -184,7 +187,7 @@ jQuery.fn.extend({
 							dataAttr( elem, name, data[ name ] );
 						}
 					}
-					priv.update( elem, { hasDataAttrs: true });
+					priv.set( elem, { hasDataAttrs: true });
 				}
 			}
 
@@ -202,33 +205,55 @@ jQuery.fn.extend({
 			var data,
 					camelKey = jQuery.camelCase( key );
 
-			// TODO: THIS IS ONLY A ROUGH PASS
-			//       BUT SERIOUSLY... THIS IS THE BED WE'VE MADE.
+			// Get the Data...
 			if ( value === undefined ) {
+
+				// Attempt to get data from the cache
+				// with the key as-is
 				data = user.get( elem, key );
 				if ( data !== undefined ) {
 					return data;
 				}
 
-				data = dataAttr( elem, key, data );
+				// Attempt to "discover" the data in
+				// HTML5 custom data-* attrs
+				data = dataAttr( elem, key, undefined );
 				if ( data !== undefined ) {
 					return data;
 				}
 
+				// As a last resort, attempt to find
+				// the data by checking AGAIN, but with
+				// a camelCased key.
 				data = user.get( elem, camelKey );
 				if ( data !== undefined ) {
 					return data;
 				}
 
-				// Try to fetch any internally stored data first
-				return elem ? dataAttr( elem, key, user.get( elem, key ) ) : null;
+				// One last try, for backward-compatibility sake!
+				if ( elem ) {
+					return dataAttr( elem, key, user.get( elem, key ) );
+				}
+
+				// We tried really hard, but the data doesn't exist.
+				return null;
 			}
+
+			// Set the data...
 			this.each(function() {
+				// First, attempt to store a copy or reference of any
+				// data that might've been store with a camelCased key.
 				var data = user.get( this, camelKey );
 
+				// For HTML5 data-* attribute interop, we have to
+				// store property names with dashes in a camelCase form.
+				// This might not apply to all properties...*
 				user.set( this, camelKey, value );
 
-				if ( /-/.test( key ) && data ) {
+				// *... In the case of properties that might ACTUALLY
+				// have dashes, we need to also store a copy of that
+				// unchanged property.
+				if ( /-/.test( key ) && data !== undefined ) {
 					user.set( this, key, value );
 				}
 			});
