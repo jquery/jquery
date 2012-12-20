@@ -592,6 +592,26 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
+function getAll( context, tag ) {
+	var elems, elem,
+		i = 0,
+		ret = typeof context.getElementsByTagName !== "undefined" ? context.getElementsByTagName( tag || "*" ) :
+			typeof context.querySelectorAll !== "undefined" ? context.querySelectorAll( tag || "*" ) :
+			undefined;
+
+	if ( !ret ) {
+		for ( ret = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
+			core_push.apply( ret, !tag || jQuery.nodeName( elem, tag ) ?
+					getAll( elem, tag ) :
+					elems );
+		}
+	}
+
+	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
+		jQuery.merge( [ context ], ret ) :
+		ret;
+}
+
 function fixCloneNodeIssues( src, dest ) {
 	var nodeName;
 
@@ -624,24 +644,4 @@ function fixCloneNodeIssues( src, dest ) {
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
-}
-
-function getAll( context, tag ) {
-	var elems, elem,
-		i = 0,
-		ret = typeof context.getElementsByTagName !== "undefined" ? context.getElementsByTagName( tag || "*" ) :
-			typeof context.querySelectorAll !== "undefined" ? context.querySelectorAll( tag || "*" ) :
-			undefined;
-
-	if ( !ret ) {
-		for ( ret = [], elems = context.childNodes || context; (elem = elems[ i ]) != null; i++ ) {
-			core_push.apply( ret, !tag || jQuery.nodeName( elem, tag ) ?
-					getAll( elem, tag ) :
-					elems );
-		}
-	}
-
-	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], ret ) :
-		ret;
 }
