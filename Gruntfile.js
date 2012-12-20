@@ -72,6 +72,7 @@ module.exports = function( grunt ) {
 			},
 			tests: {
 				// TODO: Once .jshintignore is supported, use that instead.
+				// issue located here: https://github.com/gruntjs/grunt-contrib-jshint/issues/1
 				src: [ "test/data/{test,testinit,testrunner}.js", "test/unit/**/*.js" ],
 				options: {
 					jshintrc: "test/.jshintrc"
