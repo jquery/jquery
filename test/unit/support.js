@@ -83,7 +83,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true
 		};
-	} else if ( /opera/i.test( userAgent ) ) {
+	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
 			"leadingWhitespace":true,
 			"tbody":true,
