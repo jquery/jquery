@@ -1,9 +1,36 @@
-module("data", { teardown: moduleTeardown });
+module( "data", { teardown: moduleTeardown });
 
-test("expando", function(){
+test( "expando", function() {
 	expect(1);
 
 	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
+});
+
+test( "jQuery.data & removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery.data( document.body, "hello", "world" ), "world",
+		"jjQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery.removeData( document.body, "hello" ), undefined,
+		"jjQuery.removeData( elem, key, value ) returns undefined"
+	);
+
+});
+
+test( "jQuery._data & _removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery._data( document.body, "hello", "world" ), "world",
+		"jjQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery._removeData( document.body, "hello" ), undefined,
+		"jjQuery.removeData( elem, key, value ) returns undefined"
+	);
 });
 
 function dataTests (elem) {

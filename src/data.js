@@ -55,7 +55,8 @@ Data.prototype = {
 		} else {
 			// Allow setting or extending (existing objects) with an
 			// object of properties, or a key and val
-			return this.set( owner, key, value );
+			this.set( owner, key, value );
+			return value;
 		}
 		// Otherwise, this is a read request.
 		return this.get( owner, key );
