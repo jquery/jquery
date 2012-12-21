@@ -12,8 +12,7 @@ function Data() {
 Data.prototype = {
 	add: function( owner ) {
 		this.owners.push( owner );
-		this.cache[ this.owners.length - 1 ] = {};
-		return this;
+		return (this.cache[ this.owners.length - 1 ] = {});
 	},
 	set: function( owner, data, value ) {
 		var prop,
@@ -26,8 +25,13 @@ Data.prototype = {
 		if ( typeof data === "string" ) {
 			this.cache[ index ][ data ] = value;
 		} else {
-			for ( prop in data ) {
-				this.cache[ index ][ prop ] = data[ prop ];
+
+			if ( jQuery.isEmptyObject( this.cache[ index ] ) ) {
+				this.cache[ index ] = data;
+			} else {
+				for ( prop in data ) {
+					this.cache[ index ][ prop ] = data[ prop ];
+				}
 			}
 		}
 		return this;
@@ -36,33 +40,39 @@ Data.prototype = {
 		var cache,
 				index = this.owners.indexOf( owner );
 
-		// If a valid owner is found, return cached data at
-		// specified key, or entire data object if no key was
-		// explicitly specified.
-		if ( index > -1 ) {
-			cache = this.cache[ index ];
+		// A valid cache is found, or needs to be created.
+		// New entries will be added and return the current
+		// empty data object to be used as a return reference
+		// return this.add( owner );
+		cache = index === -1 ?
+			this.add( owner ) : this.cache[ index ];
 
-			return key !== undefined ?
-				cache[ key ] : cache;
-		}
-
-		return this.add( owner ).get( owner, key );
+		return key === undefined ?
+			cache : cache[ key ];
 	},
 	access: function( owner, key, value ) {
-		if ( value === undefined && typeof key !== "object" ) {
+		if ( value === undefined && (key && typeof key !== "object") ) {
 			// Assume this is a request to read the cached data
 			return this.get( owner, key );
 		} else {
+
+			// If only an owner was specified, return the entire
+			// cache object.
+			if ( key === undefined ) {
+				return this.get( owner );
+			}
+
 			// Allow setting or extending (existing objects) with an
 			// object of properties, or a key and val
 			this.set( owner, key, value );
-			return value;
+			return value !== undefined ? value : key;
 		}
 		// Otherwise, this is a read request.
 		return this.get( owner, key );
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
+				camel = jQuery.camelCase,
 				index = this.owners.indexOf( owner ),
 				cache = this.cache[ index ];
 
@@ -79,7 +89,7 @@ Data.prototype = {
 						name = [ key ];
 					} else {
 						// split the camel cased version by spaces unless a key with the spaces exists
-						name = jQuery.camelCase( key );
+						name = camel( key );
 						name = name in cache ?
 							[ name ] : name.split(" ");
 					}
@@ -90,7 +100,7 @@ Data.prototype = {
 					// Since there is no way to tell _how_ a key was added, remove
 					// both plain key and camelCase key. #12786
 					// This will only penalize the array argument path.
-					name = key.concat( key.map( jQuery.camelCase ) );
+					name = key.concat( key.map( camel ) );
 				}
 				i = 0;
 				l = name.length;
