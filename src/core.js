@@ -587,7 +587,7 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, arr, i ) {
-		return core_indexOf.call( arr, elem, i );
+		return arr == null ? -1 : core_indexOf.call( arr, elem, i );
 	},
 
 	merge: function( first, second ) {
