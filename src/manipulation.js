@@ -736,16 +736,18 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
-		var data, cache, elem, type,
+		var data, id, elem, type,
 			i = 0,
-			id = jQuery.expando,
+			internalKey = jQuery.expando,
+			cache = jQuery.cache,
+			deleteExpando = jQuery.support.deleteExpando,
 			special = jQuery.event.special;
 
 		for ( ; (elem = elems[i]) != null; i++ ) {
 
 			if ( acceptData || jQuery.acceptData( elem ) ) {
 
-				cache = elem[ id ];
+				id = elem[ internalKey ];
 				data = id && cache[ id ];
 
 				if ( data ) {
@@ -766,7 +768,20 @@ jQuery.extend({
 
 						delete cache[ id ];
 
-						elem[ id ] = null;
+						// IE does not allow us to delete expando properties from nodes,
+						// nor does it have a removeAttribute function on Document nodes;
+						// we must handle all of these cases
+						if ( deleteExpando ) {
+							delete elem[ internalKey ];
+
+						} else if ( elem.removeAttribute ) {
+							elem.removeAttribute( internalKey );
+
+						} else {
+							elem[ internalKey ] = null;
+						}
+
+						core_deletedIds.push( id );
 					}
 				}
 			}
