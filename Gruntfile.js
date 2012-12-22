@@ -4,7 +4,8 @@ module.exports = function( grunt ) {
 
 	var distpaths = [
 			"dist/jquery.js",
-			"dist/jquery.min.js"
+			"dist/jquery.min.js",
+			"dist/jquery.min.map"
 		],
 		readOptionalJSON = function( filepath ) {
 			var data = {};
@@ -96,7 +97,7 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					banner: "/*! jQuery v<%= pkg.version %> jquery.com | jquery.org/license */",
-					sourceMap: "dist/jquery.source-map.js",
+					sourceMap: "jquery.min.map",
 					beautify: {
 						ascii_only: true
 					}
@@ -220,7 +221,7 @@ module.exports = function( grunt ) {
 
 		grunt.util.spawn({
 			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
-			args: [ "build:*:*:" + modules, "uglify" ]
+			args: [ "build:*:*:" + modules, "uglify", "dist" ]
 		}, function( err, result ) {
 			if ( err ) {
 				grunt.verbose.error();
@@ -387,7 +388,7 @@ module.exports = function( grunt ) {
 			grunt.log.writeln( "File '" + name + "' created." );
 		});
 
-	// Allow custom dist file locations
+	// Process files for distribution
 	grunt.registerTask( "dist", function() {
 		var flags, paths, stored;
 
@@ -408,47 +409,43 @@ module.exports = function( grunt ) {
 			nonascii = false;
 
 		distpaths.forEach(function( filename ) {
-			var buf = fs.readFileSync( filename, "utf8" ),
+			var text = fs.readFileSync( filename, "utf8" ),
 			i, c;
-			if ( buf.length !== Buffer.byteLength( buf, "utf8" ) ) {
+			if ( text.length !== Buffer.byteLength( text, "utf8" ) ) {
 				grunt.log.writeln( filename + ": Non-ASCII characters detected:" );
-				for ( i = 0; i < buf.length; i++ ) {
-					c = buf.charCodeAt( i );
+				for ( i = 0; i < text.length; i++ ) {
+					c = text.charCodeAt( i );
 					if ( c > 127 ) {
 						grunt.log.writeln( "- position " + i + ": " + c );
-						grunt.log.writeln( "-- " + buf.substring( i - 20, i + 20 ) );
+						grunt.log.writeln( "-- " + text.substring( i - 20, i + 20 ) );
 						nonascii = true;
+						break;
 					}
 				}
 			}
-		});
-		if ( nonascii ) {
-			return false;
-		}
 
-		// Proceed only if there are actual
-		// paths to write to
-		if ( paths.length ) {
+			// Modify map so that it points to files in the same folder;
+			// see https://github.com/mishoo/UglifyJS2/issues/47
+			if ( /\.map$/.test( filename ) ) {
+				text = text.replace( /"dist\//g, "\"" );
+				fs.writeFileSync( filename, text, "utf-8" );
+			}
 
-			// 'distpaths' is declared at the top of the
-			// module.exports function scope. It is an array
-			// of default files that jQuery creates
-			distpaths.forEach(function( filename ) {
-				paths.forEach(function( path ) {
-					var created;
+			// Optionally copy dist files to other locations
+			paths.forEach(function( path ) {
+				var created;
 
-					if ( !/\/$/.test( path ) ) {
-						path += "/";
-					}
+				if ( !/\/$/.test( path ) ) {
+					path += "/";
+				}
 
-					created = path + filename.replace( "dist/", "" );
-
-					grunt.file.write( created, grunt.file.read(filename) );
-
-					grunt.log.writeln( "File '" + created + "' created." );
-				});
+				created = path + filename.replace( "dist/", "" );
+				grunt.file.write( created, text );
+				grunt.log.writeln( "File '" + created + "' created." );
 			});
-		}
+		});
+
+		return !nonascii;
 	});
 
 	// Load grunt tasks from NPM packages
