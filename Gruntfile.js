@@ -97,7 +97,7 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					banner: "/*! jQuery v<%= pkg.version %> jquery.com | jquery.org/license */",
-					sourceMap: "jquery.min.map",
+					sourceMap: "dist/jquery.min.map",
 					beautify: {
 						ascii_only: true
 					}
