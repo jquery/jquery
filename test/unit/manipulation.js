@@ -2242,9 +2242,9 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 test( "Index for function argument should be received (#13094)", 2, function() {
     var i = 0;
 
-    jQuery("<div/><div/>").before(function( index ) {
-        equal( index, i++, "Index should be correct" );
-    });
+	jQuery("<div/><div/>").before(function( index ) {
+		equal( index, i++, "Index should be correct" );
+	});
 
 });
 
@@ -2252,7 +2252,7 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement("div") );
 
-	$( div ).remove();
+	jQuery( div ).remove();
 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
