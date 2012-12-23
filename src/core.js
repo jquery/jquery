@@ -96,13 +96,6 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
-		// HANDLE: $(DOMElement); check first that selector is not a primitive
-		if ( typeof selector === "object" && selector.nodeType ) {
-			this.context = this[0] = selector;
-			this.length = 1;
-			return this;
-		}
-
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
@@ -175,6 +168,12 @@ jQuery.fn = jQuery.prototype = {
 			} else {
 				return this.constructor( context ).find( selector );
 			}
+
+		// HANDLE: $(DOMElement)
+		} else if ( selector.nodeType ) {
+			this.context = this[0] = selector;
+			this.length = 1;
+			return this;
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
