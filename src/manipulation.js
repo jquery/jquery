@@ -133,8 +133,8 @@ jQuery.fn.extend({
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
 		var elem,
-			l = this.length,
-			i = 0;
+			i = 0,
+			l = this.length;
 
 		for ( ; i < l; i++ ) {
 			elem = this[ i ];
@@ -158,8 +158,8 @@ jQuery.fn.extend({
 
 	empty: function() {
 		var elem,
-			l = this.length,
-			i = 0;
+			i = 0,
+			l = this.length;
 
 		for ( ; i < l; i++ ) {
 			elem = this[ i ];
@@ -361,10 +361,10 @@ jQuery.each({
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var elems,
-			i = 0,
 			ret = [],
 			insert = jQuery( selector ),
-			last = insert.length - 1;
+			last = insert.length - 1,
+			i = 0;
 
 		for ( ; i <= last; i++ ) {
 			elems = i === last ? this : this.clone( true );
@@ -379,9 +379,9 @@ jQuery.each({
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var destElements, srcElements, i, l,
-			inPage = jQuery.contains( elem.ownerDocument, elem ),
-			clone = elem.cloneNode( true );
+		var i, l, srcElements, destElements,
+			clone = elem.cloneNode( true ),
+			inPage = jQuery.contains( elem.ownerDocument, elem );
 
 		// Support: IE >=9
 		// Fix Cloning issues
@@ -421,7 +421,8 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts, selection ) {
-		var elem, i, j, ll, tmp, tag, wrap,
+		var elem, tmp, tag, wrap, j, ll,
+			i = 0,
 			l = elems.length,
 			ret = [],
 			container = context === document && fragment;
@@ -431,7 +432,7 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( i = 0; i < l; i++ ) {
+		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
 
 			if ( elem || elem === 0 ) {
@@ -513,9 +514,9 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
-		var data, id, elem, type,
-			i = 0,
+		var id, data, elem, type,
 			l = elems.length,
+			i = 0,
 			internalKey = jQuery.expando,
 			cache = jQuery.cache,
 			special = jQuery.event.special;
@@ -575,8 +576,8 @@ function restoreScript( elem ) {
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {
-	var i = 0,
-		l = elems.length;
+	var l = elems.length,
+		i = 0;
 
 	for ( ; i < l; i++ ) {
 		jQuery._data( elems[ i ], "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
@@ -589,7 +590,7 @@ function cloneCopyEvent( src, dest ) {
 		return;
 	}
 
-	var type, l, i,
+	var i, l, type,
 		oldData = jQuery._data( src ),
 		curData = jQuery._data( dest, oldData ),
 		events = oldData.events;
