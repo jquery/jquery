@@ -273,8 +273,8 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( this[0] ) {
-			doc = this[0].ownerDocument;
+		if ( l ) {
+			doc = this[ 0 ].ownerDocument;
 			fragment = doc.createDocumentFragment();
 			jQuery.clean( args, doc, fragment, undefined, this );
 			first = fragment.firstChild;
