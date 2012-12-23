@@ -386,10 +386,7 @@ jQuery.extend({
 			srcElements = getAll( elem );
 
 			for ( i = 0; ( node = srcElements[ i ] ) != null; ++i ) {
-				// Ensure that the destination node is not null; Fixes #9587
-				if ( destElements[ i ] ) {
-					fixCloneNodeIssues( node, destElements[ i ] );
-				}
+				fixCloneNodeIssues( node, destElements[ i ] );
 			}
 		}
 
