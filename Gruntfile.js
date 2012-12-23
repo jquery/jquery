@@ -4,8 +4,8 @@ module.exports = function( grunt ) {
 
 	var distpaths = [
 			"dist/jquery.js",
-			"dist/jquery.min.js",
-			"dist/jquery.min.map"
+			"dist/jquery.min.map",
+			"dist/jquery.min.js"
 		],
 		readOptionalJSON = function( filepath ) {
 			var data = {};
