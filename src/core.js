@@ -96,8 +96,8 @@ jQuery.fn = jQuery.prototype = {
 			return this;
 		}
 
-		// HANDLE: $(DOMElement)
-		if ( selector.nodeType ) {
+		// HANDLE: $(DOMElement) check first that selector is not a primitive
+		if ( typeof selector === "object" && selector.nodeType ) {
 			this.context = this[0] = selector;
 			this.length = 1;
 			return this;
@@ -427,9 +427,12 @@ jQuery.extend({
 	},
 
 	type: function( obj ) {
-		return obj == null ?
-			String( obj ) :
-			class2type[ core_toString.call(obj) ] || "object";
+		if ( obj == null ) {
+			return String( obj );
+		}
+		return typeof obj === "object" || typeof obj === "function" ?
+			class2type[ core_toString.call(obj) ] || "object" :
+			typeof obj;
 	},
 
 	isPlainObject: function( obj ) {
