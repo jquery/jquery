@@ -133,9 +133,12 @@ jQuery.fn.extend({
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
 		var elem,
+			l = this.length,
 			i = 0;
 
-		for ( ; ( elem = this[ i ] ) != null; i++ ) {
+		for ( ; i < l; i++ ) {
+			elem = this[ i ];
+
 			if ( !selector || jQuery.filter( selector, [ elem ] ).length > 0 ) {
 				if ( !keepData && elem.nodeType === 1 ) {
 					jQuery.cleanData( getAll( elem ) );
@@ -155,9 +158,12 @@ jQuery.fn.extend({
 
 	empty: function() {
 		var elem,
+			l = this.length,
 			i = 0;
 
-		for ( ; ( elem = this[ i ] ) != null; i++ ) {
+		for ( ; i < l; i++ ) {
+			elem = this[ i ];
+
 			if ( elem.nodeType === 1 ) {
 
 				// Prevent memory leaks
@@ -373,7 +379,7 @@ jQuery.each({
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var destElements, srcElements, node, i,
+		var destElements, srcElements, i, l,
 			inPage = jQuery.contains( elem.ownerDocument, elem ),
 			clone = elem.cloneNode( true );
 
@@ -385,8 +391,8 @@ jQuery.extend({
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			for ( i = 0; ( node = srcElements[ i ] ) != null; ++i ) {
-				fixCloneNodeIssues( node, destElements[ i ] );
+			for ( i = 0, l = srcElements.length; i < l; i++ ) {
+				fixCloneNodeIssues( srcElements[ i ], destElements[ i ] );
 			}
 		}
 
@@ -396,8 +402,8 @@ jQuery.extend({
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
-				for ( i = 0; ( node = srcElements[ i ] ) != null; i++ ) {
-					cloneCopyEvent( node, destElements[ i ] );
+				for ( i = 0, l = srcElements.length; i < l; i++ ) {
+					cloneCopyEvent( srcElements[ i ], destElements[ i ] );
 				}
 			} else {
 				cloneCopyEvent( elem, clone );
@@ -415,7 +421,8 @@ jQuery.extend({
 	},
 
 	clean: function( elems, context, fragment, scripts, selection ) {
-		var elem, i, j, tmp, tag, wrap,
+		var elem, i, j, ll, tmp, tag, wrap,
+			l = elems.length,
 			ret = [],
 			container = context === document && fragment;
 
@@ -424,8 +431,11 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
+		for ( i = 0; i < l; i++ ) {
+			elem = elems[ i ];
+
 			if ( elem || elem === 0 ) {
+
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
 					core_push.apply( ret, elem.nodeType ? [ elem ] : elem );
@@ -469,7 +479,8 @@ jQuery.extend({
 		}
 
 		if ( fragment ) {
-			for ( i = 0; ( elem = ret[ i ] ) != null; i++ ) {
+			for ( i = 0, l = ret.length; i < l; i++ ) {
+				elem = ret[ i ];
 				container = jQuery.contains( elem.ownerDocument, elem );
 
 				// Append to fragment
@@ -487,7 +498,9 @@ jQuery.extend({
 
 				// Capture executables
 				if ( scripts ) {
-					for ( j = 0; ( elem = tmp[ j ] ) != null; j++ ) {
+					for ( j = 0, ll = tmp.length; j < ll; j++ ) {
+						elem = tmp[ j ];
+
 						if ( rscriptType.test( elem.type || "" ) ) {
 							scripts.push( elem );
 						}
@@ -502,11 +515,13 @@ jQuery.extend({
 	cleanData: function( elems, /* internal */ acceptData ) {
 		var data, id, elem, type,
 			i = 0,
+			l = elems.length,
 			internalKey = jQuery.expando,
 			cache = jQuery.cache,
 			special = jQuery.event.special;
 
-		for ( ; ( elem = elems[ i ] ) != null; i++ ) {
+		for ( ; i < l; i++ ) {
+			elem = elems[ i ];
 
 			if ( acceptData || jQuery.acceptData( elem ) ) {
 
@@ -547,6 +562,7 @@ function disableScript( elem ) {
 }
 function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
+
 	if ( match ) {
 		elem.type = match[ 1 ];
 
@@ -559,10 +575,11 @@ function restoreScript( elem ) {
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {
-	var elem,
-		i = 0;
-	for ( ; ( elem = elems[ i ] ) != null; i++ ) {
-		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
+	var i = 0,
+		l = elems.length;
+
+	for ( ; i < l; i++ ) {
+		jQuery._data( elems[ i ], "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
 	}
 }
 
