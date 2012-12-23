@@ -377,14 +377,15 @@ jQuery.extend({
 			inPage = jQuery.contains( elem.ownerDocument, elem ),
 			clone = elem.cloneNode( true );
 
-		// Fix IE cloning issues
+		// Support: IE >=9
+		// Fix Cloning issues
 		if ( !jQuery.support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			for ( i = 0; (node = srcElements[ i ]) != null; ++i ) {
+			for ( i = 0; ( node = srcElements[ i ] ) != null; ++i ) {
 				// Ensure that the destination node is not null; Fixes #9587
 				if ( destElements[ i ] ) {
 					fixCloneNodeIssues( node, destElements[ i ] );
@@ -438,6 +439,7 @@ jQuery.extend({
 
 				// Convert html into DOM nodes
 				} else {
+
 					// Ensure a safe container
 					container = container || context.createDocumentFragment();
 					tmp = tmp || container.appendChild( context.createElement("div") );
@@ -455,7 +457,7 @@ jQuery.extend({
 
 					core_push.apply( ret, tmp.childNodes );
 
-					// Fix #12392 for WebKit and IE > 9
+					// Fix #12392 - remove childNodes parent
 					tmp.textContent = "";
 
 					// Remember the top-level container for proper cleanup
@@ -630,20 +632,21 @@ function fixCloneNodeIssues( src, dest ) {
 			dest.outerHTML = src.outerHTML;
 		}
 
-		// This path appears unavoidable for IE9. When cloning an object
-		// element in IE9, the outerHTML strategy above is not sufficient.
+		// Support: IE 9
+		// When cloning an object the outerHTML strategy above is not sufficient.
 		// If the src has innerHTML and the destination does not,
 		// copy the src.innerHTML into the dest.innerHTML. #10324
 		if ( src.innerHTML && !jQuery.trim( dest.innerHTML ) ) {
 			dest.innerHTML = src.innerHTML;
 		}
 
-	// IE9-10 fails to persist the checked state of a cloned checkbox or radio button.
+	// Support: IE >= 9
+	// Fails to persist the checked state of a cloned checkbox or radio button.
 	} else if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
 		dest.checked = src.checked;
 
-	// IE9-10 fails to return the selected option to the default selected
-	// state when cloning options
+	// Support: IE >= 9
+	// Fails to return the selected option to the default selected state when cloning options
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
