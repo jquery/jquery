@@ -642,22 +642,9 @@ function fixCloneNodeIssues( src, dest ) {
 
 	nodeName = dest.nodeName.toLowerCase();
 
-	if ( nodeName === "object" ) {
-		if ( dest.parentNode ) {
-			dest.outerHTML = src.outerHTML;
-		}
-
-		// Support: IE 9
-		// When cloning an object the outerHTML strategy above is not sufficient.
-		// If the src has innerHTML and the destination does not,
-		// copy the src.innerHTML into the dest.innerHTML. #10324
-		if ( src.innerHTML && !jQuery.trim( dest.innerHTML ) ) {
-			dest.innerHTML = src.innerHTML;
-		}
-
 	// Support: IE >= 9
 	// Fails to persist the checked state of a cloned checkbox or radio button.
-	} else if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
+	if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
 		dest.checked = src.checked;
 
 	// Support: IE >= 9
