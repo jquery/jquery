@@ -26,7 +26,7 @@ function createOptions( options ) {
  *	options: an optional list of space-separated options that will change how
  *			the callback list behaves or a more traditional option object
  *
- * By default a callback list will self like an event callback list and can be
+ * By default a callback list will act like an event callback list and can be
  * "fired" multiple times.
  *
  * Possible options:
