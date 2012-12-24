@@ -5,7 +5,17 @@ var optionsCache = {};
 function createOptions( options ) {
 	var object = optionsCache[ options ] = {};
 	jQuery.each( options.match( core_rnotwhite ) || [], function( _, flag ) {
-		object[ flag ] = true;
+		var opts = {
+			'once': false,
+			'unique': false,
+			'memory': false,
+			'stopOnFalse': false
+		};
+
+		if ( flag in opts ) {
+			//filter out random nonsense
+			object[ flag ] = true;
+		}
 	});
 	return object;
 }
@@ -16,7 +26,7 @@ function createOptions( options ) {
  *	options: an optional list of space-separated options that will change how
  *			the callback list behaves or a more traditional option object
  *
- * By default a callback list will act like an event callback list and can be
+ * By default a callback list will self like an event callback list and can be
  * "fired" multiple times.
  *
  * Possible options:
@@ -56,6 +66,12 @@ jQuery.Callbacks = function( options ) {
 		list = [],
 		// Stack of fire calls for repeatable lists
 		stack = !options.once && [],
+		// Backups for unlocking/enabling the callbacks list
+		backup = {
+			stack: !options.once && [],
+			list: [],
+			memory: undefined
+		},
 		// Fire callbacks
 		fire = function( data ) {
 			memory = options.memory && data;
@@ -148,8 +164,27 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Have the list do nothing anymore
 			disable: function() {
-				list = stack = memory = undefined;
+				if ( self.disabled ) {
+					stack = backup.stack;
+					list = backup.list;
+					memory = backup.memory;
+				} else {
+					var i;
+					for ( i  in backup ) {
+						backup[ i ] = i;
+					}
+					list = stack = memory = undefined;
+				}
+				
 				return this;
+			},
+			//small shortcut for enabling the list
+			enable: function () {
+				if ( self.disabled ) {
+					self.disable();
+					return true;
+				}
+				return false;
 			},
 			// Is it disabled?
 			disabled: function() {
@@ -157,15 +192,31 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Lock the list in its current state
 			lock: function() {
-				stack = undefined;
-				if ( !memory ) {
-					self.disable();
+				if ( self.locked ) {
+					stack = backup.stack;
+					if ( !memory ) {
+						self.disable();
+					}
+				} else {
+					backup.stack = stack;
+					stack = undefined;
+					if ( !memory ) {
+						self.disable();
+					}
 				}
 				return this;
 			},
 			// Is it locked?
 			locked: function() {
 				return !stack;
+			},
+			//small shortcut for unlocking the list
+			unLock: function () {
+				if ( self.locked ) {
+					self.lock();
+					return true;
+				}
+				return false;
 			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
