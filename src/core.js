@@ -427,7 +427,7 @@ jQuery.extend({
 			return false;
 		}
 
-		return obj === Object( obj );
+		return true;
 	},
 
 	isEmptyObject: function( obj ) {
