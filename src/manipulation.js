@@ -633,14 +633,7 @@ function getAll( context, tag ) {
 }
 
 function fixCloneNodeIssues( src, dest ) {
-	var nodeName;
-
-	// We do not need to do anything for non-Elements
-	if ( dest.nodeType !== 1 ) {
-		return;
-	}
-
-	nodeName = dest.nodeName.toLowerCase();
+	var nodeName = dest.nodeName.toLowerCase();
 
 	// Support: IE >= 9
 	// Fails to persist the checked state of a cloned checkbox or radio button.
