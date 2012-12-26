@@ -291,9 +291,8 @@ jQuery.event = {
 				!(type === "click" && jQuery.nodeName( elem, "a" )) && jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
-				// Can't use an .isFunction() check here because IE6/7 fails that test.
 				// Don't do default actions on window, that's where global variables be (#6170)
-				if ( ontype && elem[ type ] && !jQuery.isWindow( elem ) ) {
+				if ( ontype && jQuery.isFunction( elem[ type ] ) && !jQuery.isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					old = elem[ ontype ];
@@ -304,12 +303,7 @@ jQuery.event = {
 
 					// Prevent re-triggering of the same event, since we already bubbled it above
 					jQuery.event.triggered = type;
-					try {
-						elem[ type ]();
-					} catch ( e ) {
-						// IE<9 dies on focus/blur to hidden element (#1486,#12518)
-						// only reproducible on winXP IE8 native, not IE9 in IE8 mode
-					}
+					elem[ type ]();
 					jQuery.event.triggered = undefined;
 
 					if ( old ) {
@@ -498,13 +492,8 @@ jQuery.event = {
 			// Fire native event if possible so blur/focus sequence is correct
 			trigger: function() {
 				if ( this !== document.activeElement && this.focus ) {
-					try {
-						this.focus();
-						return false;
-					} catch ( e ) {
-						// IE<9 dies on focus to hidden element (#1486,#12518)
-						// If this happens, let .trigger() run the handlers
-					}
+					this.focus();
+					return false;
 				}
 			},
 			delegateType: "focusin"
