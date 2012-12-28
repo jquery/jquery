@@ -20,6 +20,7 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 
 // Support: IE 9
 wrapMap.optgroup = wrapMap.option;
+
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead = wrapMap.col = wrapMap.tr;
 wrapMap.th = wrapMap.td;
 
@@ -391,7 +392,7 @@ jQuery.extend({
 			srcElements = getAll( elem );
 
 			for ( i = 0, l = srcElements.length; i < l; i++ ) {
-				fixCloneNodeIssues( srcElements[ i ], destElements[ i ] );
+				fixInput( srcElements[ i ], destElements[ i ] );
 			}
 		}
 
@@ -621,15 +622,14 @@ function getAll( context, tag ) {
 		ret;
 }
 
-function fixCloneNodeIssues( src, dest ) {
+// Support: IE >= 9
+function fixInput( src, dest ) {
 	var nodeName = dest.nodeName.toLowerCase();
 
-	// Support: IE >= 9
 	// Fails to persist the checked state of a cloned checkbox or radio button.
 	if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
 		dest.checked = src.checked;
 
-	// Support: IE >= 9
 	// Fails to return the selected option to the default selected state when cloning options
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
