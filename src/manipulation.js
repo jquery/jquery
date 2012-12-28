@@ -128,7 +128,7 @@ jQuery.fn.extend({
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.appendChild( elem );
 			}
-		});
+		}, "beforeend" );
 	},
 
 	prepend: function() {
@@ -136,7 +136,7 @@ jQuery.fn.extend({
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
-		});
+		}, "afterbegin" );
 	},
 
 	before: function() {
@@ -278,7 +278,7 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, table, callback ) {
+	domManip: function( args, table, callback, place ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
@@ -290,6 +290,14 @@ jQuery.fn.extend({
 			iNoClone = l - 1,
 			value = args[0],
 			isFunction = jQuery.isFunction( value );
+
+		// Use a quick insert method if possible
+		if ( place && args.length === 1 && this[0].nodeType === 1 &&
+				typeof value === "string" && value.indexOf("<script") < 0 ) {
+			return this.each(function() {
+				this.insertAdjacentHTML( place, value );
+			});
+		}
 
 		// We can't cloneNode fragments that contain checked, in WebKit
 		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
