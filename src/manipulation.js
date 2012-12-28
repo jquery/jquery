@@ -12,7 +12,6 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 
 		// Support: IE 9
 		option: [ 1, "<select multiple='multiple'>" ],
-		legend: [ 1, "<fieldset>" ],
 		param: [ 1, "<object>" ],
 		thead: [ 1, "<table>"  ],
 		tr: [ 2, "<table><tbody>" ],
