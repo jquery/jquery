@@ -395,7 +395,7 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 61 );
+	expect( 63 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
@@ -453,6 +453,10 @@ var testAppend = function( valueObj ) {
 
 	jQuery("#select1").append( valueObj("<OPTION>Test</OPTION>") );
 	equal( jQuery("#select1 option:last").text(), "Test", "Appending OPTION (all caps)" );
+
+	jQuery("#select1").append( valueObj("<optgroup label='optgroup'><option>optgroup</option></optgroup>") );
+	equal( jQuery("#select1 optgroup").attr("label"), "optgroup", "Label attribute in newly inserted optgroup is correct" );
+	equal( jQuery("#select1 option:last").text(), "optgroup", "Appending optgroup" );
 
 	jQuery("#table").append( valueObj("<colgroup></colgroup>") );
 	equal( jQuery("#table colgroup").length, 1, "Append colgroup" );
