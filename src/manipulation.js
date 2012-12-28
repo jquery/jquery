@@ -11,7 +11,6 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	wrapMap = {
 		option: [ 1, "<select multiple='multiple'>" ],
 		legend: [ 1, "<fieldset>" ],
-		area: [ 1, "<map>" ],
 		param: [ 1, "<object>" ],
 		thead: [ 1, "<table>"  ],
 		tr: [ 2, "<table><tbody>" ],

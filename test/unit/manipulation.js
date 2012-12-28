@@ -395,13 +395,13 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 59 );
+	expect( 61 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
 
 	var defaultText, result, message, iframe, iframeDoc, j, d,
-		$input, $radioChecked, $radioUnchecked, $radioParent;
+		$input, $radioChecked, $radioUnchecked, $radioParent, $map;
 
 	defaultText = "Try them out:";
 	result = jQuery("#first").append( valueObj("<b>buga</b>") );
@@ -445,6 +445,11 @@ var testAppend = function( valueObj ) {
 
 	jQuery("<fieldset/>").appendTo("#form").append( valueObj("<legend id='legend'>test</legend>") );
 	t( "Append legend", "#legend", [ "legend" ] );
+
+	$map = jQuery("<map/>").append( valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>") );
+
+	equal( $map[ 0 ].childNodes.length, 1, "The area was inserted." );
+	equal( $map[ 0 ].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
 
 	jQuery("#select1").append( valueObj("<OPTION>Test</OPTION>") );
 	equal( jQuery("#select1 option:last").text(), "Test", "Appending OPTION (all caps)" );
