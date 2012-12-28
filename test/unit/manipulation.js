@@ -395,7 +395,7 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 67 );
+	expect( 68 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
@@ -460,7 +460,7 @@ var testAppend = function( valueObj ) {
 
 	$table = jQuery("#table");
 
-	jQuery.each( "thead tbody tfoot colgroup caption tr".split(" "), function( i, name ) {
+	jQuery.each( "thead tbody tfoot colgroup caption tr td".split(" "), function( i, name ) {
 		$table.append( valueObj( "<" + name + "/>" ) );
 		equal( $table.find( name ).length, 1, "Append " + name );
 	});
