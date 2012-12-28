@@ -395,13 +395,13 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 63 );
+	expect( 66 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
 
 	var defaultText, result, message, iframe, iframeDoc, j, d,
-		$input, $radioChecked, $radioUnchecked, $radioParent, $map;
+		$input, $radioChecked, $radioUnchecked, $radioParent, $map, $table;
 
 	defaultText = "Try them out:";
 	result = jQuery("#first").append( valueObj("<b>buga</b>") );
@@ -458,14 +458,15 @@ var testAppend = function( valueObj ) {
 	equal( jQuery("#select1 optgroup").attr("label"), "optgroup", "Label attribute in newly inserted optgroup is correct" );
 	equal( jQuery("#select1 option:last").text(), "optgroup", "Appending optgroup" );
 
-	jQuery("#table").append( valueObj("<colgroup></colgroup>") );
-	equal( jQuery("#table colgroup").length, 1, "Append colgroup" );
+	$table = jQuery("#table");
+
+	jQuery.each( "thead tbody tfoot colgroup caption".split(" "), function( i, name ) {
+		$table.append( valueObj( "<" + name + "/>" ) );
+		equal( $table.find( name ).length, 1, "Append " + name );
+	});
 
 	jQuery("#table colgroup").append( valueObj("<col/>") );
 	equal( jQuery("#table colgroup col").length, 1, "Append col" );
-
-	jQuery("#table").append( valueObj("<caption></caption>") );
-	equal( jQuery("#table caption").length, 1, "Append caption" );
 
 	jQuery("#form")
 		.append( valueObj("<select id='appendSelect1'></select>") )
