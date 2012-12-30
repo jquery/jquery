@@ -29,7 +29,7 @@
 		"grunt-compare-size": "~0.3.0",
 		"grunt-git-authors": "~1.1.0",
 		"grunt-update-submodules": "~0.2.0",
-		"grunt-contrib-watch": "~0.1.0",
+		"grunt-contrib-watch": "~0.2.0",
 		"grunt-contrib-jshint": "~0.1.0",
 		"grunt-contrib-uglify": "~0.1.0",
 		"grunt-cli": "~0.1.0",
