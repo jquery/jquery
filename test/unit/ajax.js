@@ -199,7 +199,7 @@ module( "ajax", {
 				tmp.push( i, ": ", requestHeaders[ i ], "\n" );
 			}
 			tmp = tmp.join("");
-			
+
 			strictEqual( data, tmp, "Headers were sent" );
 			strictEqual( xhr.getResponseHeader("Sample-Header"), "Hello World", "Sample header received" );
 
@@ -299,7 +299,7 @@ module( "ajax", {
 			samePort = loc.port || ( loc.protocol === "http:" ? 80 : 443 ),
 			otherPort = loc.port === 666 ? 667 : 666,
 			otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
-			
+
 		return [
 			request(
 				loc.protocol + "//" + loc.host + ":" + samePort,
@@ -390,7 +390,7 @@ module( "ajax", {
 			}]
 		};
 	});
-		
+
 	ajaxTest( "jQuery.ajax() - events without context", 3, function() {
 		function nocallback( msg ) {
 			return function() {
@@ -601,9 +601,9 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - cache", 12, function() {
-		
+
 		var re = /_=(.*?)(&|$)/g;
-		
+
 		function request( url, title ) {
 			return {
 				url: url,
@@ -620,7 +620,7 @@ module( "ajax", {
 				error: true
 			};
 		}
-		
+
 		return [
 			request(
 				"data/text.php",
@@ -1356,7 +1356,7 @@ module( "ajax", {
 			}
 		}
 	]);
-	
+
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
 		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
 			url: "data/jsonp.php",
@@ -1401,7 +1401,7 @@ module( "ajax", {
 	});
 
 	jQuery.each( [ "as argument", "in settings object" ], function( inSetting, title ) {
-		
+
 		function request( url, test ) {
 			return {
 				create: function() {
@@ -1412,14 +1412,14 @@ module( "ajax", {
 				}
 			};
 		}
-		
+
 		ajaxTest( "#10093 - jQuery.ajax() - falsy url " + title, 4, [
 			request( "", "empty string" ),
 			request( false ),
 			request( null ),
 			request( undefined )
 		]);
-		
+
 	});
 
 	ajaxTest( "#11426 - jQuery.ajax() - loading binary data shouldn't throw an exception in IE", 1, {
@@ -1480,7 +1480,7 @@ module( "ajax", {
 				request()
 			]
 		});
-		
+
 	});
 
 //----------- jQuery.ajaxPrefilter()
@@ -1635,25 +1635,6 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.getJSON() - Using Native JSON", 2, function() {
-		var restore = "JSON" in window,
-			old = window.JSON;
-		if ( !restore ) {
-			Globals.register("JSON");
-		}
-		window.JSON = {
-			parse: function( str ) {
-				ok( true, "Verifying that parse method was run" );
-				window.JSON = old;
-				return true;
-			}
-		};
-		jQuery.getJSON( url("data/json.php"), function( json ) {
-			strictEqual( json, true, "Verifying return value" );
-			start();
-		});
-	});
-
 	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function() {
 		jQuery.getJSON( url( window.location.href.replace( /[^\/]*$/, "" ) + "data/json.php" ), function( json ) {
 			strictEqual( json.data.lang, "en", "Check JSON: lang" );
@@ -1686,7 +1667,7 @@ module( "ajax", {
 	});
 
 //----------- jQuery.fn.load()
-	
+
 	// check if load can be called with only url
 	asyncTest( "jQuery.fn.load( String )", 2, function() {
 		jQuery.ajaxSetup({
