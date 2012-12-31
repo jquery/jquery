@@ -395,13 +395,13 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 59 );
+	expect( 77 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
 
 	var defaultText, result, message, iframe, iframeDoc, j, d,
-		$input, $radioChecked, $radioUnchecked, $radioParent;
+		$input, $radioChecked, $radioUnchecked, $radioParent, $map, $table;
 
 	defaultText = "Try them out:";
 	result = jQuery("#first").append( valueObj("<b>buga</b>") );
@@ -446,17 +446,28 @@ var testAppend = function( valueObj ) {
 	jQuery("<fieldset/>").appendTo("#form").append( valueObj("<legend id='legend'>test</legend>") );
 	t( "Append legend", "#legend", [ "legend" ] );
 
+	$map = jQuery("<map/>").append( valueObj("<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>") );
+
+	equal( $map[ 0 ].childNodes.length, 1, "The area was inserted." );
+	equal( $map[ 0 ].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
+
 	jQuery("#select1").append( valueObj("<OPTION>Test</OPTION>") );
 	equal( jQuery("#select1 option:last").text(), "Test", "Appending OPTION (all caps)" );
 
-	jQuery("#table").append( valueObj("<colgroup></colgroup>") );
-	equal( jQuery("#table colgroup").length, 1, "Append colgroup" );
+	jQuery("#select1").append( valueObj("<optgroup label='optgroup'><option>optgroup</option></optgroup>") );
+	equal( jQuery("#select1 optgroup").attr("label"), "optgroup", "Label attribute in newly inserted optgroup is correct" );
+	equal( jQuery("#select1 option:last").text(), "optgroup", "Appending optgroup" );
+
+	$table = jQuery("#table");
+
+	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
+		$table.append( valueObj( "<" + name + "/>" ) );
+		equal( $table.find( name ).length, 1, "Append " + name );
+		ok( jQuery.clean( ["<" + name + "/>"] ).length, name + " wrapped correctly" );
+	});
 
 	jQuery("#table colgroup").append( valueObj("<col/>") );
 	equal( jQuery("#table colgroup col").length, 1, "Append col" );
-
-	jQuery("#table").append( valueObj("<caption></caption>") );
-	equal( jQuery("#table caption").length, 1, "Append caption" );
 
 	jQuery("#form")
 		.append( valueObj("<select id='appendSelect1'></select>") )
@@ -2240,9 +2251,19 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 });
 
 test( "Index for function argument should be received (#13094)", 2, function() {
-    var i = 0;
+	var i = 0;
 
-    jQuery("<div/><div/>").before(function( index ) {
-        equal( index, i++, "Index should be correct" );
-    });
+	jQuery("<div/><div/>").before(function( index ) {
+		equal( index, i++, "Index should be correct" );
+	});
+
+});
+
+test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement("div") );
+
+	jQuery( div ).remove();
+
+	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
