@@ -478,3 +478,17 @@ jQuery.each([ "radio", "checkbox" ], function() {
 		}
 	});
 });
+
+// IE9/10 do not see a selected option inside an optgroup unless you access it
+// Support: IE9, IE10
+if ( !jQuery.support.optSelected ) {
+	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
+		get: function( elem ) {
+			var parent = elem.parentNode;
+			if ( parent && parent.parentNode ) {
+				parent.parentNode.selectedIndex;
+			}
+			return null;
+		}
+	});
+}
