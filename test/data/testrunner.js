@@ -200,47 +200,51 @@ var Globals = (function() {
 	 */
 	QUnit.expectJqData = function( elems, key ) {
 		var i, elem, expando;
-		QUnit.current_testEnvironment.checkJqData = true;
 
-		if ( elems.jquery && elems.toArray ) {
-			elems = elems.toArray();
-		}
-		if ( !jQuery.isArray( elems ) ) {
-			elems = [ elems ];
-		}
+		if ( jQuery.cache ) {
+			QUnit.current_testEnvironment.checkJqData = true;
 
-		for ( i = 0; i < elems.length; i++ ) {
-			elem = elems[i];
-
-			// jQuery.data only stores data for nodes in jQuery.cache,
-			// for other data targets the data is stored in the object itself,
-			// in that case we can't test that target for memory leaks.
-			// But we don't have to since in that case the data will/must will
-			// be available as long as the object is not garbage collected by
-			// the js engine, and when it is, the data will be removed with it.
-			if ( !elem.nodeType ) {
-				// Fixes false positives for dataTests(window), dataTests({}).
-				continue;
+			if ( elems.jquery && elems.toArray ) {
+				elems = elems.toArray();
+			}
+			if ( !jQuery.isArray( elems ) ) {
+				elems = [ elems ];
 			}
 
-			expando = elem[ jQuery.expando ];
+			for ( i = 0; i < elems.length; i++ ) {
+				elem = elems[i];
 
-			if ( expando === undefined ) {
-				// In this case the element exists fine, but
-				// jQuery.data (or internal data) was never (in)directly
-				// called.
-				// Since this method was called it means some data was
-				// expected to be found, but since there is nothing, fail early
-				// (instead of in teardown).
-				notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
-			} else {
-				if ( expectedDataKeys[expando] ) {
-					expectedDataKeys[expando].push( key );
+				// jQuery.data only stores data for nodes in jQuery.cache,
+				// for other data targets the data is stored in the object itself,
+				// in that case we can't test that target for memory leaks.
+				// But we don't have to since in that case the data will/must will
+				// be available as long as the object is not garbage collected by
+				// the js engine, and when it is, the data will be removed with it.
+				if ( !elem.nodeType ) {
+					// Fixes false positives for dataTests(window), dataTests({}).
+					continue;
+				}
+
+				expando = elem[ jQuery.expando ];
+
+				if ( expando === undefined ) {
+					// In this case the element exists fine, but
+					// jQuery.data (or internal data) was never (in)directly
+					// called.
+					// Since this method was called it means some data was
+					// expected to be found, but since there is nothing, fail early
+					// (instead of in teardown).
+					notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
 				} else {
-					expectedDataKeys[expando] = [ key ];
+					if ( expectedDataKeys[expando] ) {
+						expectedDataKeys[expando].push( key );
+					} else {
+						expectedDataKeys[expando] = [ key ];
+					}
 				}
 			}
 		}
+
 	};
 	QUnit.config.urlConfig.push( {
 		id: "jqdata",
@@ -258,33 +262,38 @@ var Globals = (function() {
 			fragmentsLength = 0,
 			cacheLength = 0;
 
-		// Only look for jQuery data problems if this test actually
-		// provided some information to compare against.
-		if ( QUnit.urlParams.jqdata || this.checkJqData ) {
-			for ( i in jQuery.cache ) {
-				expectedKeys = expectedDataKeys[i];
-				actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
-				if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
-					deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
+		if ( jQuery.cache ) {
+			// Only look for jQuery data problems if this test actually
+			// provided some information to compare against.
+			if ( QUnit.urlParams.jqdata || this.checkJqData ) {
+				for ( i in jQuery.cache ) {
+					expectedKeys = expectedDataKeys[i];
+					actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
+					if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
+						deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
+					}
+					delete jQuery.cache[i];
+					delete expectedDataKeys[i];
 				}
-				delete jQuery.cache[i];
-				delete expectedDataKeys[i];
+				// In case it was removed from cache before (or never there in the first place)
+				for ( i in expectedDataKeys ) {
+					deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
+					delete expectedDataKeys[i];
+				}
 			}
-			// In case it was removed from cache before (or never there in the first place)
-			for ( i in expectedDataKeys ) {
-				deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
-				delete expectedDataKeys[i];
-			}
+
+			// Reset data register
+			expectedDataKeys = {};
 		}
 
-		// Reset data register
-		expectedDataKeys = {};
 
 		// Allow QUnit.reset to clean up any attached elements before checking for leaks
 		QUnit.reset();
 
-		for ( i in jQuery.cache ) {
-			++cacheLength;
+		if ( jQuery.cache ) {
+			for ( i in jQuery.cache ) {
+				++cacheLength;
+			}
 		}
 
 		jQuery.fragments = {};
@@ -334,7 +343,7 @@ var Globals = (function() {
 		} else {
 			delete jQuery.ajaxSettings;
 		}
-		
+
 		// Cleanup globals
 		Globals.cleanup();
 
