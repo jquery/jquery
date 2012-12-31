@@ -1635,25 +1635,6 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.getJSON() - Using Native JSON", 2, function() {
-		var restore = "JSON" in window,
-			old = window.JSON;
-		if ( !restore ) {
-			Globals.register("JSON");
-		}
-		window.JSON = {
-			parse: function( str ) {
-				ok( true, "Verifying that parse method was run" );
-				window.JSON = old;
-				return true;
-			}
-		};
-		jQuery.getJSON( url("data/json.php"), function( json ) {
-			strictEqual( json, true, "Verifying return value" );
-			start();
-		});
-	});
-
 	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function() {
 		jQuery.getJSON( url( window.location.href.replace( /[^\/]*$/, "" ) + "data/json.php" ), function( json ) {
 			strictEqual( json.data.lang, "en", "Check JSON: lang" );
