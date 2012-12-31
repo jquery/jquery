@@ -241,13 +241,8 @@ jQuery.fn.extend({
 					return data;
 				}
 
-				// One last try, for backward-compatibility sake!
-				if ( elem ) {
-					return dataAttr( elem, key, user.get( elem, key ) );
-				}
-
 				// We tried really hard, but the data doesn't exist.
-				return null;
+				return undefined;
 			}
 
 			// Set the data...
