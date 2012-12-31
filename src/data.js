@@ -1,4 +1,4 @@
-var user, priv,
+var user, priv, data_user, data_priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
@@ -131,13 +131,14 @@ Data.prototype = {
 // This will be used by remove() in manipulation to sever
 // remaining references to node objects. One day we'll replace the dual
 // arrays with a WeakMap and this won't be an issue.
-// function data_discard( owner ) {
-	// user.discard( owner );
-	// priv.discard( owner );
-// }
+function data_discard( owner ) {
+	user.discard( owner );
+	priv.discard( owner );
+}
 
-user = new Data();
-priv = new Data();
+// These may used throughout the jQuery core codebase
+user = data_user = new Data();
+priv = data_priv = new Data();
 
 
 jQuery.extend({
@@ -198,7 +199,7 @@ jQuery.fn.extend({
 							dataAttr( elem, name, data[ name ] );
 						}
 					}
-					priv.set( elem, { hasDataAttrs: true });
+					priv.set( elem, "hasDataAttrs", true );
 				}
 			}
 

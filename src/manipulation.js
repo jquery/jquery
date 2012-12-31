@@ -327,7 +327,7 @@ jQuery.fn.extend({
 					for ( i = 0; i < hasScripts; i++ ) {
 						node = scripts[ i ];
 						if ( rscriptType.test( node.type || "" ) &&
-							!jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+							!data_priv.access( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
 
 							if ( node.src ) {
 								// Hope ajax is available...
@@ -514,20 +514,16 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
-		var id, data, elem, type,
+		var data, elem, type,
 			l = elems.length,
 			i = 0,
-			internalKey = jQuery.expando,
-			cache = jQuery.cache,
 			special = jQuery.event.special;
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
 
 			if ( acceptData || jQuery.acceptData( elem ) ) {
-
-				id = elem[ internalKey ];
-				data = id && cache[ id ];
+				data = data_priv.access( elem );
 
 				if ( data ) {
 					for ( type in data.events ) {
@@ -539,14 +535,12 @@ jQuery.extend({
 							jQuery.removeEvent( elem, type, data.handle );
 						}
 					}
-
-					// Remove cache only if it was not already removed by jQuery.event.remove
-					if ( cache[ id ] ) {
-						delete cache[ id ];
-						delete elem[ internalKey ];
-					}
 				}
 			}
+
+			// Discard any remaining `private` and `user` data
+			// (Splices the data objects out of the internal cache arrays)
+			data_discard( elem );
 		}
 	}
 });
@@ -580,35 +574,45 @@ function setGlobalEval( elems, refElements ) {
 		i = 0;
 
 	for ( ; i < l; i++ ) {
-		jQuery._data( elems[ i ], "globalEval", !refElements || jQuery._data( refElements[ i ], "globalEval" ) );
+		data_priv.set(
+			elems[ i ], "globalEval", !refElements || data_priv.get( refElements[ i ], "globalEval" )
+		);
 	}
 }
 
 function cloneCopyEvent( src, dest ) {
+	var i, l, type, pOld, pCur, uOld, uCur, events;
 
-	if ( dest.nodeType !== 1 || !jQuery.hasData( src ) ) {
+	if ( dest.nodeType !== 1 ) {
 		return;
 	}
 
-	var i, l, type,
-		oldData = jQuery._data( src ),
-		curData = jQuery._data( dest, oldData ),
-		events = oldData.events;
+	// 1. Copy private data: events, handlers, etc.
+	if ( data_priv.hasData( src ) ) {
+		pOld = data_priv.access( src );
+		pCur = jQuery.extend( {}, pOld );
+		events = pOld.events;
 
-	if ( events ) {
-		delete curData.handle;
-		curData.events = {};
+		data_priv.set( dest, pCur );
 
-		for ( type in events ) {
-			for ( i = 0, l = events[ type ].length; i < l; i++ ) {
-				jQuery.event.add( dest, type, events[ type ][ i ] );
+		if ( events ) {
+			delete pCur.handle;
+			pCur.events = {};
+
+			for ( type in events ) {
+				for ( i = 0, l = events[ type ].length; i < l; i++ ) {
+					jQuery.event.add( dest, type, events[ type ][ i ] );
+				}
 			}
 		}
 	}
 
-	// make the cloned public data object a copy from the original
-	if ( curData.data ) {
-		curData.data = jQuery.extend( {}, curData.data );
+	// 2. Copy user data
+	if ( data_user.hasData( src ) ) {
+		uOld = data_user.access( src );
+		uCur = jQuery.extend( {}, uOld );
+
+		data_user.set( dest, uCur );
 	}
 }
 
