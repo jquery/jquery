@@ -85,6 +85,7 @@ jQuery.support = (function() {
 	}
 
 	// Check if an input maintains its value after becoming a radio
+	input = document.createElement("input");
 	input.value = "t";
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
