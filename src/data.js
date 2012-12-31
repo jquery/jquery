@@ -122,8 +122,11 @@ Data.prototype = {
 	},
 	discard: function( owner ) {
 		var index = this.owners.indexOf( owner );
-		this.owners.splice( index, 1 );
-		this.cache.splice( index, 1 );
+
+		if ( index >= 0 ) {
+			this.owners.splice( index, 1 );
+			this.cache.splice( index, 1 );
+		}
 		return this;
 	}
 };
