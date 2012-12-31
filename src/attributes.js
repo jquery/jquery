@@ -573,46 +573,6 @@ if ( !getSetAttribute ) {
 	});
 }
 
-
-// Some attributes require a special call on IE
-// http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
-if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "width", "height" ], function( i, name ) {
-		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
-			get: function( elem ) {
-				var ret = elem.getAttribute( name, 2 );
-				return ret == null ? undefined : ret;
-			}
-		});
-	});
-
-	// href/src property should get the full normalized URL (#10299/#12915)
-	jQuery.each([ "href", "src" ], function( i, name ) {
-		jQuery.propHooks[ name ] = {
-			get: function( elem ) {
-				return elem.getAttribute( name, 4 );
-			}
-		};
-	});
-}
-
-<<<<<<< HEAD
-if ( !jQuery.support.style ) {
-	jQuery.attrHooks.style = {
-		get: function( elem ) {
-			// Return undefined in the case of empty string
-			// Note: IE uppercases css property names, but if we were to .toLowerCase()
-			// .cssText, that would destroy case senstitivity in URL's, like in "background"
-			return elem.style.cssText || undefined;
-		},
-		set: function( elem, value ) {
-			return ( elem.style.cssText = value + "" );
-		}
-	};
-}
-
-=======
->>>>>>> 2.0: Remove style->cssText attroproties fallback
 // Radios and checkboxes getter/setter
 if ( !jQuery.support.checkOn ) {
 	jQuery.each([ "radio", "checkbox" ], function() {
