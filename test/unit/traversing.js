@@ -658,10 +658,15 @@ test("eq('-1') #10616", function() {
 });
 
 test("index(no arg) #10977", function() {
-	expect(1);
-	
+	expect(2);
+
 	var $list = jQuery("<ul id='indextest'><li>THIS ONE</li><li class='one'>a</li><li class='two'>b</li><li class='three'>c</li></ul>");
 	jQuery("#qunit-fixture").append( $list );
 	strictEqual ( jQuery( "#indextest li:not(.one,.two)" ).index() , 0, "No Argument Index Check" );
 	$list.remove();
+
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement("div") );
+
+	equal( jQuery( div ).index(), 0, "If jQuery#index called on element whos parent is fragment, it still should work correctly" );
 });
