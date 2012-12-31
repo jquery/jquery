@@ -130,8 +130,11 @@ test( "attr(String)", function() {
 	equal( $img.attr("height"), "53", "Retrieve height attribute an an element with display:none." );
 
 	// Check for style support
-	ok( !!~jQuery("#dl").attr("style").indexOf("position"), "Check style attribute getter, also normalize css props to lowercase" );
-	ok( !!~jQuery("#foo").attr("style", "position:absolute;").attr("style").indexOf("position"), "Check style setter" );
+	var styleElem = jQuery("<div/>").appendTo("#qunit-fixture").css({
+		background: "url(UPPERlower.gif)"
+	});
+	ok( !!~styleElem.attr("style").indexOf("UPPERlower.gif"), "Check style attribute getter" );
+	ok( !!~styleElem.attr("style", "position:absolute;").attr("style").indexOf("absolute"), "Check style setter" );
 
 	// Check value on button element (#1954)
 	var $button = jQuery("<button>text</button>").insertAfter("#button");
