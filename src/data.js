@@ -1,4 +1,4 @@
-var user, priv, data_user, data_priv,
+var data_user, data_priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
@@ -135,13 +135,13 @@ Data.prototype = {
 // remaining references to node objects. One day we'll replace the dual
 // arrays with a WeakMap and this won't be an issue.
 function data_discard( owner ) {
-	user.discard( owner );
-	priv.discard( owner );
+	data_user.discard( owner );
+	data_priv.discard( owner );
 }
 
 // These may used throughout the jQuery core codebase
-user = data_user = new Data();
-priv = data_priv = new Data();
+data_user = new Data();
+data_priv = new Data();
 
 
 jQuery.extend({
@@ -153,30 +153,30 @@ jQuery.extend({
 	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
 
 	hasData: function( elem ) {
-		return user.hasData( elem ) || priv.hasData( elem );
+		return data_user.hasData( elem ) || data_priv.hasData( elem );
 	},
 
 	data: function( elem, name, data ) {
-		return user.access( elem, name, data );
+		return data_user.access( elem, name, data );
 	},
 
 	removeData: function( elem, name ) {
-		return user.remove( elem, name );
+		return data_user.remove( elem, name );
 	},
 
 	// TODO: Replace all calls to _data and _removeData with direct
 	// calls to
 	//
-	// priv.access( elem, name, data );
+	// data_priv.access( elem, name, data );
 	//
-	// priv.remove( elem, name );
+	// data_priv.remove( elem, name );
 	//
 	_data: function( elem, name, data ) {
-		return priv.access( elem, name, data );
+		return data_priv.access( elem, name, data );
 	},
 
 	_removeData: function( elem, name ) {
-		return priv.remove( elem, name );
+		return data_priv.remove( elem, name );
 	}
 });
 
@@ -190,9 +190,9 @@ jQuery.fn.extend({
 		// Gets all values
 		if ( key === undefined ) {
 			if ( this.length ) {
-				data = user.get( elem );
+				data = data_user.get( elem );
 
-				if ( elem.nodeType === 1 && !priv.get( elem, "hasDataAttrs" ) ) {
+				if ( elem.nodeType === 1 && !data_priv.get( elem, "hasDataAttrs" ) ) {
 					attrs = elem.attributes;
 					for ( ; i < attrs.length; i++ ) {
 						name = attrs[i].name;
@@ -202,7 +202,7 @@ jQuery.fn.extend({
 							dataAttr( elem, name, data[ name ] );
 						}
 					}
-					priv.set( elem, "hasDataAttrs", true );
+					data_priv.set( elem, "hasDataAttrs", true );
 				}
 			}
 
@@ -212,7 +212,7 @@ jQuery.fn.extend({
 		// Sets multiple values
 		if ( typeof key === "object" ) {
 			return this.each(function() {
-				user.set( this, key );
+				data_user.set( this, key );
 			});
 		}
 
@@ -225,7 +225,7 @@ jQuery.fn.extend({
 
 				// Attempt to get data from the cache
 				// with the key as-is
-				data = user.get( elem, key );
+				data = data_user.get( elem, key );
 				if ( data !== undefined ) {
 					return data;
 				}
@@ -240,7 +240,7 @@ jQuery.fn.extend({
 				// As a last resort, attempt to find
 				// the data by checking AGAIN, but with
 				// a camelCased key.
-				data = user.get( elem, camelKey );
+				data = data_user.get( elem, camelKey );
 				if ( data !== undefined ) {
 					return data;
 				}
@@ -253,18 +253,18 @@ jQuery.fn.extend({
 			this.each(function() {
 				// First, attempt to store a copy or reference of any
 				// data that might've been store with a camelCased key.
-				var data = user.get( this, camelKey );
+				var data = data_user.get( this, camelKey );
 
 				// For HTML5 data-* attribute interop, we have to
 				// store property names with dashes in a camelCase form.
 				// This might not apply to all properties...*
-				user.set( this, camelKey, value );
+				data_user.set( this, camelKey, value );
 
 				// *... In the case of properties that might ACTUALLY
 				// have dashes, we need to also store a copy of that
 				// unchanged property.
 				if ( /-/.test( key ) && data !== undefined ) {
-					user.set( this, key, value );
+					data_user.set( this, key, value );
 				}
 			});
 		}, null, value, arguments.length > 1, null, true );
@@ -272,7 +272,7 @@ jQuery.fn.extend({
 
 	removeData: function( key ) {
 		return this.each(function() {
-			user.remove( this, key );
+			data_user.remove( this, key );
 		});
 	}
 });
@@ -299,7 +299,7 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			user.set( elem, key, data );
+			data_user.set( elem, key, data );
 		} else {
 			data = undefined;
 		}
