@@ -232,55 +232,29 @@ test("animate negative padding", function() {
 test("animate block as inline width/height", function() {
 	expect(3);
 
-	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
-		expected = span.css("display");
+	stop();
 
-	span.remove();
-
-	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
-		stop();
-
-		jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
-			equal( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-			equal( this.offsetWidth, 42, "width was animated" );
-			equal( this.offsetHeight, 42, "height was animated" );
-			start();
-		});
-
-	// Browser doesn't support inline-block
-	} else {
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-	}
+	jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
+		equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+		equal( this.offsetWidth, 42, "width was animated" );
+		equal( this.offsetHeight, 42, "height was animated" );
+		start();
+	});
 });
 
 test("animate native inline width/height", function() {
 	expect(3);
 
-	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
-		expected = span.css("display");
-
-	span.remove();
-
-	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
-		stop();
-		jQuery("#foo").css({ display: "", width: "", height: "" })
-			.append("<span>text</span>")
-			.children("span")
-				.animate({ width: 42, height: 42 }, 100, function() {
-					equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-					equal( this.offsetWidth, 42, "width was animated" );
-					equal( this.offsetHeight, 42, "height was animated" );
-					start();
-				});
-
-	// Browser doesn't support inline-block
-	} else {
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-	}
+	stop();
+	jQuery("#foo").css({ display: "", width: "", height: "" })
+		.append("<span>text</span>")
+		.children("span")
+			.animate({ width: 42, height: 42 }, 100, function() {
+				equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+				equal( this.offsetWidth, 42, "width was animated" );
+				equal( this.offsetHeight, 42, "height was animated" );
+				start();
+			});
 });
 
 test("animate block width/height", function() {
@@ -999,11 +973,10 @@ jQuery.each({
 
 asyncTest("Effects chaining", function() {
 	var remaining = 16,
-		shrinkwrap = jQuery.support.shrinkWrapBlocks,
 		props = [ "opacity", "height", "width", "display", "overflow" ],
-		setup = function( name, selector, hiddenOverflow ) {
+		setup = function( name, selector ) {
 			var $el = jQuery( selector );
-			return $el.data( getProps( $el[0], hiddenOverflow ) ).data( "name", name );
+			return $el.data( getProps( $el[0] ) ).data( "name", name );
 		},
 		assert = function() {
 			var data = jQuery.data( this ),
@@ -1017,31 +990,29 @@ asyncTest("Effects chaining", function() {
 				start();
 			}
 		},
-		getProps = function( el, hiddenOverflow ) {
+		getProps = function( el ) {
 			var obj = {};
 			jQuery.each( props, function( i, prop ) {
-				obj[ prop ] = prop === "overflow" && hiddenOverflow ? "hidden" : el.style[ prop ] || jQuery.css( el, prop );
+				obj[ prop ] = prop === "overflow" && el.style[ prop ] || jQuery.css( el, prop );
 			});
 			return obj;
 		};
 
 	expect( remaining );
 
-	// We need to pass jQuery.support.shrinkWrapBlocks for all methods that
-	// set overflow hidden (slide* and show/hide with speed)
 	setup( ".fadeOut().fadeIn()", "#fadein div" ).fadeOut("fast").fadeIn( "fast", assert );
 	setup( ".fadeIn().fadeOut()", "#fadeout div" ).fadeIn("fast").fadeOut( "fast", assert );
-	setup( ".hide().show()", "#show div",  shrinkwrap ).hide("fast").show( "fast", assert );
-	setup( ".show().hide()", "#hide div",  shrinkwrap ).show("fast").hide( "fast", assert );
-	setup( ".show().hide(easing)", "#easehide div", shrinkwrap ).show("fast").hide( "fast", "linear", assert );
-	setup( ".toggle().toggle() - in", "#togglein div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle() - out", "#toggleout div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle(easing) - out", "#easetoggleout div", shrinkwrap ).toggle("fast").toggle( "fast", "linear", assert );
-	setup( ".slideDown().slideUp()", "#slidedown div", shrinkwrap ).slideDown("fast").slideUp( "fast", assert );
-	setup( ".slideUp().slideDown()", "#slideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", assert );
-	setup( ".slideUp().slideDown(easing)", "#easeslideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", "linear", assert );
-	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
-	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".hide().show()", "#show div" ).hide("fast").show( "fast", assert );
+	setup( ".show().hide()", "#hide div" ).show("fast").hide( "fast", assert );
+	setup( ".show().hide(easing)", "#easehide div" ).show("fast").hide( "fast", "linear", assert );
+	setup( ".toggle().toggle() - in", "#togglein div" ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle() - out", "#toggleout div" ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle(easing) - out", "#easetoggleout div" ).toggle("fast").toggle( "fast", "linear", assert );
+	setup( ".slideDown().slideUp()", "#slidedown div" ).slideDown("fast").slideUp( "fast", assert );
+	setup( ".slideUp().slideDown()", "#slideup div" ).slideUp("fast").slideDown( "fast", assert );
+	setup( ".slideUp().slideDown(easing)", "#easeslideup div" ).slideUp("fast").slideDown( "fast", "linear", assert );
+	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div" ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div" ).slideToggle("fast").slideToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - in", "#fadetogglein div" ).fadeToggle("fast").fadeToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - out", "#fadetoggleout div" ).fadeToggle("fast").fadeToggle( "fast", assert );
 	setup( ".fadeTo(0.5).fadeTo(1.0, easing)", "#fadeto div" ).fadeTo( "fast", 0.5 ).fadeTo( "fast", 1.0, "linear", assert );
