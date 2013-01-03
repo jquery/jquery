@@ -141,6 +141,10 @@ jQuery.Callbacks = function( options ) {
 			has: function( fn ) {
 				return jQuery.inArray( fn, list ) > -1;
 			},
+			// Get the number of callbacks currently in the list
+			size: function() {
+				return list.length;
+			},
 			// Remove all callbacks from the list
 			empty: function() {
 				list = [];
