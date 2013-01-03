@@ -36,7 +36,6 @@ jQuery.support = (function() {
 		boxModel: document.compatMode === "CSS1Compat",
 
 		// Will be defined later
-		deleteExpando: true,
 		noCloneEvent: true,
 		reliableMarginRight: true,
 		boxSizingReliable: true,
@@ -51,13 +50,6 @@ jQuery.support = (function() {
 	// (WebKit marks them as disabled)
 	select.disabled = true;
 	support.optDisabled = !opt.disabled;
-
-	// Support: IE<9
-	try {
-		delete div.test;
-	} catch( e ) {
-		support.deleteExpando = false;
-	}
 
 	// Check if an input maintains its value after becoming a radio
 	input = document.createElement("input");
