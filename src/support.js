@@ -1,6 +1,6 @@
 jQuery.support = (function() {
 
-	var support, all, a, select, opt, input, fragment, eventName, i,
+	var support, all, a, select, opt, input, fragment,
 		div = document.createElement("div");
 
 	// Setup
@@ -82,13 +82,10 @@ jQuery.support = (function() {
 		div.cloneNode( true ).click();
 	}
 
-	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
+	// Support: Firefox 17+
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
-	for ( i in { submit: true, change: true, focusin: true }) {
-		div.setAttribute( eventName = "on" + i, "t" );
-
-		support[ i + "Bubbles" ] = eventName in window || div.attributes[ eventName ].expando === false;
-	}
+	div.setAttribute( "onfocusin", "t" );
+	support.focusinBubbles = "onfocusin" in window || div.attributes.onfocusin.expando === false;
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
