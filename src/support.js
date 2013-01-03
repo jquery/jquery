@@ -1,16 +1,13 @@
 jQuery.support = (function() {
 
-	var support, all, a, select, opt, input, fragment,
+	var support, a, select, opt, input, fragment,
 		div = document.createElement("div");
 
-	// Setup
-	div.setAttribute( "className", "t" );
-	div.innerHTML = "  <link/><table></table><a>a</a><input type='checkbox'/>";
+	div.innerHTML = "<a>a</a><input type='checkbox'/>";
 
 	// Support tests won't run in some limited or non-browser environments
-	all = div.getElementsByTagName("*");
 	a = div.getElementsByTagName("a")[ 0 ];
-	if ( !all || !a || !all.length ) {
+	if ( !a ) {
 		return {};
 	}
 
@@ -58,10 +55,6 @@ jQuery.support = (function() {
 
 	fragment = document.createDocumentFragment();
 	fragment.appendChild( input );
-
-	// Check if a disconnected checkbox will retain its checked
-	// value of true after appended to the DOM (IE6/7)
-	support.appendChecked = input.checked;
 
 	// WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
@@ -117,7 +110,7 @@ jQuery.support = (function() {
 	});
 
 	// Null elements to avoid leaks in IE
-	all = select = fragment = opt = a = input = null;
+	select = fragment = opt = a = input = null;
 
 	return support;
 })();
