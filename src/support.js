@@ -36,7 +36,6 @@ jQuery.support = (function() {
 		boxModel: document.compatMode === "CSS1Compat",
 
 		// Will be defined later
-		noCloneEvent: true,
 		reliableMarginRight: true,
 		boxSizingReliable: true,
 		pixelPosition: false
@@ -70,17 +69,6 @@ jQuery.support = (function() {
 
 	// WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
-
-	// Support: IE<9
-	// Opera does not clone events (and typeof div.attachEvent === undefined).
-	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
-	if ( div.attachEvent ) {
-		div.attachEvent( "onclick", function() {
-			support.noCloneEvent = false;
-		});
-
-		div.cloneNode( true ).click();
-	}
 
 	// Support: Firefox 17+
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
