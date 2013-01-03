@@ -21,10 +21,6 @@ jQuery.support = (function() {
 
 	a.style.cssText = "float:left;opacity:.5";
 	support = {
-		// Verify style float existence
-		// (IE uses styleFloat instead of cssFloat)
-		cssFloat: !!a.style.cssFloat,
-
 		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 		checkOn: !!input.value,
 
