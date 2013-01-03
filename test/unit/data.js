@@ -99,40 +99,6 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
-test("Expando cleanup", 4, function() {
-	var expected, actual,
-		div = document.createElement("div");
-
-	function assertExpandoAbsent(message) {
-		if (jQuery.support.deleteExpando) {
-			expected = false;
-			actual = jQuery.expando in div;
-		} else {
-			expected = null;
-			actual = div[ jQuery.expando ];
-		}
-		equal( actual, expected, message );
-	}
-
-	assertExpandoAbsent("There is no expando on new elements");
-
-	jQuery.data(div, "foo", 100);
-	jQuery.data(div, "bar", 200);
-
-	ok(jQuery.expando in div, "There is an expando on the element after using $.data()");
-
-	jQuery.removeData(div, "foo");
-
-	ok(jQuery.expando in div, "There is still an expando on the element after removing (some) of the data");
-
-	jQuery.removeData(div, "bar");
-
-	assertExpandoAbsent("Removing the last item in the data store deletes the expando");
-
-	// Clean up unattached element
-	jQuery(div).remove();
-});
-
 test("jQuery.acceptData", function() {
 	expect(7);
 
