@@ -626,48 +626,6 @@ test( "replaceWith([]) where replacing element requires cloning", function () {
 		"Make sure replacing elements were cloned" );
 });
 
-
-test( "append the same fragment with events (Bug #6997, 5566)", function() {
-
-	var element, clone,
-		doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
-
-	expect( 2 + ( doExtra ? 1 : 0 ) );
-
-	stop();
-
-	// This patch modified the way that cloning occurs in IE; we need to make sure that
-	// native event handlers on the original object don't get disturbed when they are
-	// modified on the clone
-	if ( doExtra ) {
-		element = jQuery("div:first").click(function() {
-			ok( true, "Event exists on original after being unbound on clone" );
-			jQuery( this ).unbind("click");
-		});
-		clone = element.clone( true ).unbind("click");
-		clone[ 0 ].fireEvent("onclick");
-		element[ 0 ].fireEvent("onclick");
-
-		// manually clean up detached elements
-		clone.remove();
-	}
-
-	element = jQuery("<a class='test6997'></a>").click(function() {
-		ok( true, "Append second element events work" );
-	});
-
-	jQuery("#listWithTabIndex li").append( element )
-		.find("a.test6997").eq( 1 ).click();
-
-	element = jQuery("<li class='test6997'></li>").click(function() {
-		ok( true, "Before second element events work" );
-		start();
-	});
-
-	jQuery("#listWithTabIndex li").before( element );
-	jQuery("#listWithTabIndex li.test6997").eq( 1 ).click();
-});
-
 test( "append HTML5 sectioning elements (Bug #6485)", function() {
 
 	expect( 2 );
