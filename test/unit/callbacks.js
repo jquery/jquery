@@ -269,6 +269,53 @@ test( "jQuery.Callbacks.remove - should remove all instances", function() {
 	}).remove( fn ).fire();
 });
 
+test( "jQuery.Callbacks.has", function() {
+
+	expect( 13 );
+
+	var cb = jQuery.Callbacks();
+	function getA() {
+		return "A";
+	}
+	function getB() {
+		return "B";
+	}
+	function getC() {
+		return "C";
+	}
+	cb.add(getA, getB, getC);
+	strictEqual( cb.has(), true, "No arguments to .has() returns whether callback function(s) are attached or not" );
+	strictEqual( cb.has(getA), true, "Check if a specific callback function is in the Callbacks list" );
+
+	cb.remove(getB);
+	strictEqual( cb.has(getB), false, "Remove a specific callback function and make sure its no longer there" );
+	strictEqual( cb.has(getA), true, "Remove a specific callback function and make sure other callback function is still there" );
+
+	cb.empty();
+	strictEqual( cb.has(), false, "Empty list and make sure there are no callback function(s)" );
+	strictEqual( cb.has(getA), false, "Check for a specific function in an empty() list" );
+
+	cb.add(getA, getB, function(){
+		strictEqual( cb.has(), true, "Check if list has callback function(s) from within a callback function" );
+		strictEqual( cb.has(getA), true, "Check if list has a specific callback from within a callback function" );
+	}).fire();
+
+	strictEqual( cb.has(), true, "Callbacks list has callback function(s) after firing" );
+
+	cb.disable();
+	strictEqual( cb.has(), false, "disabled() list has no callback functions (returns false)" );
+	strictEqual( cb.has(getA), false, "Check for a specific function in a disabled() list" );
+
+	cb = jQuery.Callbacks("unique");
+	cb.add(getA);
+	cb.add(getA);
+	strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
+	cb.lock();
+	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
+
+
+});
+
 test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
 
 	expect( 1 );
