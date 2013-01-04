@@ -269,6 +269,48 @@ test( "jQuery.Callbacks.remove - should remove all instances", function() {
 	}).remove( fn ).fire();
 });
 
+test( "jQuery.Callbacks.size", function() {
+
+	expect( 8 );
+
+	var cb = jQuery.Callbacks();
+	function getA() {
+		return "A";
+	}
+	function getB() {
+		return "B";
+	}
+	function getC() {
+		return "C";
+	}
+	cb.add(getA, getB, getC);
+	strictEqual( cb.size(), 3, "Returns list length" );
+
+	cb.remove(getB);
+	strictEqual( cb.size(), 2, "Returns Correct list length after .remove()" );
+
+	cb.empty();
+	strictEqual( cb.size(), 0, "empty() list returns zero length" );
+
+	cb.add(getA, getB, function(){
+		strictEqual( cb.size(), 3, "Access proper list length from within callback function" );
+	}).fire();
+
+	strictEqual( cb.size(), 3, "List length is same after callback is fired" );
+
+	cb.disable();
+	strictEqual( cb.size(), 0, "disabled() list returns zero length" );
+
+	cb = jQuery.Callbacks("unique");
+	cb.add(getA);
+	cb.add(getA);
+	strictEqual( cb.size(), 1, "Unique list returns length with no duplicates" );
+	cb.lock();
+	strictEqual( cb.size(), 0, "locked() list is empty and returns zero length" );
+
+
+});
+
 test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
 
 	expect( 1 );
