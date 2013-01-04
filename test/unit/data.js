@@ -1,36 +1,9 @@
-module( "data", { teardown: moduleTeardown });
+module("data", { teardown: moduleTeardown });
 
-test( "expando", function() {
+test("expando", function(){
 	expect(1);
 
 	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
-});
-
-test( "jQuery.data & removeData, expected returns", function() {
-	expect(2);
-
-	equal(
-		jQuery.data( document.body, "hello", "world" ), "world",
-		"jjQuery.data( elem, key, value ) returns value"
-	);
-	equal(
-		jQuery.removeData( document.body, "hello" ), undefined,
-		"jjQuery.removeData( elem, key, value ) returns undefined"
-	);
-
-});
-
-test( "jQuery._data & _removeData, expected returns", function() {
-	expect(2);
-
-	equal(
-		jQuery._data( document.body, "hello", "world" ), "world",
-		"jjQuery.data( elem, key, value ) returns value"
-	);
-	equal(
-		jQuery._removeData( document.body, "hello" ), undefined,
-		"jjQuery.removeData( elem, key, value ) returns undefined"
-	);
 });
 
 function dataTests (elem) {
@@ -126,7 +99,6 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
-/*
 test("Expando cleanup", 4, function() {
 	var expected, actual,
 		div = document.createElement("div");
@@ -160,8 +132,7 @@ test("Expando cleanup", 4, function() {
 	// Clean up unattached element
 	jQuery(div).remove();
 });
-*/
-/*
+
 test("jQuery.acceptData", function() {
 	expect(7);
 
@@ -179,7 +150,7 @@ test("jQuery.acceptData", function() {
 	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
 	ok( !jQuery.acceptData( applet ), "applet" );
 });
-*/
+
 test(".data()", function() {
 	expect(5);
 
@@ -494,8 +465,8 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 
 	div.data("foo-bar", "d");
 
-	equal( div.data("fooBar"), "d", "Verify updated data-* key (fooBar)" );
-	equal( div.data("foo-bar"), "d", "Verify updated data-* key (foo-bar)" );
+	equal( div.data("fooBar"), "d", "Verify updated data-* key" );
+	equal( div.data("foo-bar"), "d", "Verify updated data-* key" );
 
 	div.remove();
 });

@@ -16,7 +16,7 @@ jQuery.event = {
 			t = 0;
 
 		// Don't attach events to noData or text/comment nodes (allow plain objects tho)
-		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = data_priv.get( elem )) ) {
+		if ( elem.nodeType === 3 || elem.nodeType === 8 || !types || !handler || !(elemData = jQuery._data( elem )) ) {
 			return;
 		}
 
@@ -124,7 +124,7 @@ jQuery.event = {
 		var tns, type, origType, namespaces, origCount,
 			j, events, special, eventType, handleObj,
 			t = 0,
-			elemData = data_priv.hasData( elem ) && data_priv.get( elem );
+			elemData = jQuery.hasData( elem ) && jQuery._data( elem );
 
 		if ( !elemData || !(events = elemData.events) ) {
 			return;
