@@ -143,7 +143,7 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Get the number of callbacks currently in the list
 			size: function() {
-				return list.length;
+				return list ? list.length : 0;
 			},
 			// Remove all callbacks from the list
 			empty: function() {
