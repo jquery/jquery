@@ -667,6 +667,40 @@ test("stop(clearQueue, gotoEnd)", function() {
 	}, 100);
 });
 
+test("finish()", function() {
+	expect( 6 );
+	stop();
+
+	var cw,
+		minWidth = 100,
+		maxWidth = 500
+		$foo = jQuery("#foo");
+
+	$foo.css( "width", minWidth );
+	$foo.animate({ width: maxWidth }, 2000);
+	$foo.animate({ width: minWidth }, 2000);
+	$foo.animate({ width: maxWidth }, 2000);
+
+	setTimeout(function(){
+		cw = $foo.width(),
+		notEqual( cw, 0, "Animation occurred " + cw );
+		$foo.finish();
+		equal( $foo.width(), maxWidth, "finish() completed the first animation" );
+
+		setTimeout(function(){
+			equal( $foo.queue().length, 2, "The next animation continued" );
+			cw = $foo.width(),
+			notEqual( cw, maxWidth, "Animation occurred " + cw );
+
+			$foo.clearQueue().finish();
+			equal( $foo.width(), minWidth, "finish() completed the second animation" );
+			equal( $foo.queue().length, 0, "The animation queue is empty" );
+
+			start();
+		}, 250);
+	}, 250);
+});
+
 asyncTest( "stop( queue, ..., ... ) - Stop single queues", function() {
 	expect( 3 );
 	var saved,

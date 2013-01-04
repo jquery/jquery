@@ -479,6 +479,9 @@ jQuery.fn.extend({
 			this.each( doAnimation ) :
 			this.queue( optall.queue, doAnimation );
 	},
+	finish: function( type ) {
+		return this.stop( type || "fx", false, true );
+	},
 	stop: function( type, clearQueue, gotoEnd ) {
 		var stopQueue = function( hooks ) {
 			var stop = hooks.stop;
