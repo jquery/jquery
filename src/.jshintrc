@@ -8,6 +8,7 @@
     "curly": true,
     "trailing": true,
     "undef": true,
+	"regexdash": true,
     "smarttabs": true,
     "sub": true,
     "maxerr": 100
