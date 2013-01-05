@@ -8,7 +8,8 @@ var xhrSupported = jQuery.ajaxSettings.xhr(),
 	xhrSuccessStatus = {
 		// file protocol always yields status code 0, assume 200
 		0: 200,
-		// IE - #1450: sometimes returns 1223 when it should be 204
+		// Support: IE9
+		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
 	};
 	
@@ -23,7 +24,6 @@ jQuery.ajaxTransport(function( options ) {
 			send: function( headers, complete ) {
 				var i,
 					xhr = options.xhr();
-				// Open the socket
 				xhr.open( options.type, options.url, options.async, options.username, options.password );
 				// Apply custom fields if provided
 				if ( options.xhrFields ) {
@@ -55,13 +55,18 @@ jQuery.ajaxTransport(function( options ) {
 							if ( type === "abort" ) {
 								xhr.abort();
 							} else if ( type === "error" ) {
-								complete( xhr.status, xhr.statusText );
+								complete(
+									// file protocol always yields status 0, assume 404
+									xhr.status || 404,
+									xhr.statusText
+								);
 							} else {
 								complete(
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
-									// IE - #11426: When requesting binary data, IE9 will
-									// throw an exception on any attempt to access responseText
+									// Support: IE9
+									// #11426: When requesting binary data, IE9 will throw an exception
+									// on any attempt to access responseText
 									typeof xhr.responseText === "string" ? {
 										text: xhr.responseText
 									} : undefined,
@@ -81,7 +86,6 @@ jQuery.ajaxTransport(function( options ) {
 				// handled in jQuery.ajax (so no try/catch here)
 				xhr.send( options.hasContent && options.data || null );
 			},
-
 			abort: function() {
 				if ( callback ) {
 					callback();
