@@ -189,8 +189,8 @@ module.exports = function( grunt ) {
 
 		grunt.verbose.write("Injected sizzle-jquery.js into sizzle.js");
 
-		// Write concatenated source to file
-		grunt.file.write( name, compiled );
+		// Write concatenated source to file, and ensure newline-only termination
+		grunt.file.write( name, compiled.replace( /\x0d\x0a/g, "\x0a" ) );
 
 		// Fail task if errors were logged.
 		if ( this.errorCount ) {
@@ -409,8 +409,17 @@ module.exports = function( grunt ) {
 			nonascii = false;
 
 		distpaths.forEach(function( filename ) {
-			var text = fs.readFileSync( filename, "utf8" ),
-			i, c;
+			var i, c,
+				text = fs.readFileSync( filename, "utf8" );
+
+			// Ensure files use only \n for line endings, not \r\n
+			if ( /\x0d\x0a/.test( text ) ) {
+				grunt.log.writeln( filename + ": Incorrect line endings (\\r\\n)" );
+				nonascii = true;
+				return;
+			}
+
+			// Ensure only ASCII chars so script tags don't need a charset attribute
 			if ( text.length !== Buffer.byteLength( text, "utf8" ) ) {
 				grunt.log.writeln( filename + ": Non-ASCII characters detected:" );
 				for ( i = 0; i < text.length; i++ ) {
@@ -418,10 +427,10 @@ module.exports = function( grunt ) {
 					if ( c > 127 ) {
 						grunt.log.writeln( "- position " + i + ": " + c );
 						grunt.log.writeln( "-- " + text.substring( i - 20, i + 20 ) );
-						nonascii = true;
 						break;
 					}
 				}
+				nonascii = true;
 			}
 
 			// Modify map so that it points to files in the same folder;
