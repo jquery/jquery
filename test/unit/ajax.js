@@ -30,6 +30,11 @@ module( "ajax", {
 
 //----------- jQuery.ajax()
 
+	testIframeWithCallback( "XMLHttpRequest - Attempt to block tests because of dangling XHR requests (IE)", "ajax/unreleasedXHR.html", function() {
+		expect( 1 );
+		ok( true, "done" );
+	});
+
 	ajaxTest( "jQuery.ajax() - success callbacks", 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
