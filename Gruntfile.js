@@ -416,7 +416,6 @@ module.exports = function( grunt ) {
 			if ( /\x0d\x0a/.test( text ) ) {
 				grunt.log.writeln( filename + ": Incorrect line endings (\\r\\n)" );
 				nonascii = true;
-				return;
 			}
 
 			// Ensure only ASCII chars so script tags don't need a charset attribute
