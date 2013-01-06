@@ -27,9 +27,13 @@ wrapMap.th = wrapMap.td;
 jQuery.fn.extend({
 	text: function( value ) {
 		return jQuery.access( this, function( value ) {
-			return value === undefined ?
-				jQuery.text( this ) :
-				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
+			if (value !== undefined) {
+                		this.empty();
+                		this[0].textContent = value;
+            		}
+            		return value === undefined ?
+                		jQuery.text( this ) :
+                		this;
 		}, null, value, arguments.length );
 	},
 
