@@ -35,7 +35,9 @@ jQuery.extend({
 										newDefer[ action + "With" ]( this === promise ? newDefer.promise() : this, [ returned ] );
 									}
 								} :
-								newDefer[ action ]
+								function() {
+									newDefer[ action + "With" ]( this === promise ? newDefer.promise() : this, arguments );
+								}
 							);
 						});
 						fns = null;
@@ -72,7 +74,7 @@ jQuery.extend({
 
 			// deferred[ resolve | reject | notify ]
 			deferred[ tuple[0] ] = function() {
-				deferred[ tuple[0] + "With" ]( promise, arguments );
+				deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
 				return this;
 			};
 			deferred[ tuple[0] + "With" ] = list.fireWith;

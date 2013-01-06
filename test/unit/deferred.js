@@ -273,7 +273,7 @@ test( "jQuery.Deferred.then - deferred (progress)", function() {
 
 test( "jQuery.Deferred.then - context", function() {
 
-	expect( 4 );
+	expect( 7 );
 
 	var context = {};
 
@@ -282,6 +282,12 @@ test( "jQuery.Deferred.then - context", function() {
 	}).done(function( value ) {
 		strictEqual( this, context, "custom context correctly propagated" );
 		strictEqual( value, 6, "proper value received" );
+	});
+
+	jQuery.Deferred().resolve().then(function() {
+		return jQuery.Deferred().resolveWith(context);
+	}).done(function() {
+		strictEqual( this, context, "custom context of returned deferred correctly propagated" );
 	});
 
 	var defer = jQuery.Deferred(),
@@ -294,6 +300,16 @@ test( "jQuery.Deferred.then - context", function() {
 	piped.done(function( value ) {
 		strictEqual( this, piped, "default context gets updated to latest promise in the chain" );
 		strictEqual( value, 6, "proper value received" );
+	});
+
+	var defer2 = jQuery.Deferred(),
+		piped2 = defer2.then();
+
+	defer2.resolve( 2 );
+
+	piped2.done(function( value ) {
+		strictEqual( this, piped2, "default context gets updated to latest promise in the chain (without passing function)" );
+		strictEqual( value, 2, "proper value received (without passing function)" );
 	});
 });
 
