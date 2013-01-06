@@ -11,8 +11,22 @@ var xhrSupported = jQuery.ajaxSettings.xhr(),
 		// Support: IE9
 		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
-	};
-	
+	},
+	// Support: IE9
+	// We need to keep track of outbound xhr and abort them manually
+	// because IE is not smart enough to do it all by itself
+	xhrId = 0,
+	xhrCallbacks = {};
+
+if ( window.ActiveXObject ) {
+	jQuery( window ).on( "unload", function() {
+		for( var key in xhrCallbacks ) {
+			xhrCallbacks[ key ]();
+		}
+		xhrCallbacks = undefined;
+	});
+}
+
 jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
 jQuery.support.ajax = xhrSupported = !!xhrSupported;
 
@@ -22,7 +36,7 @@ jQuery.ajaxTransport(function( options ) {
 	if ( jQuery.support.cors || xhrSupported && !options.crossDomain ) {
 		return {
 			send: function( headers, complete ) {
-				var i,
+				var i, id,
 					xhr = options.xhr();
 				xhr.open( options.type, options.url, options.async, options.username, options.password );
 				// Apply custom fields if provided
@@ -51,6 +65,7 @@ jQuery.ajaxTransport(function( options ) {
 				callback = function( type ) {
 					return function() {
 						if ( callback ) {
+							delete xhrCallbacks[ id ];
 							callback = xhr.onload = xhr.onerror = null;
 							if ( type === "abort" ) {
 								xhr.abort();
@@ -80,7 +95,7 @@ jQuery.ajaxTransport(function( options ) {
 				xhr.onload = callback();
 				xhr.onerror = callback("error");
 				// Create the abort callback
-				callback = callback("abort");
+				callback = xhrCallbacks[( id = xhrId++ )] = callback("abort");
 				// Do send the request
 				// This may raise an exception which is actually
 				// handled in jQuery.ajax (so no try/catch here)
