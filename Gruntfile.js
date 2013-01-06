@@ -51,6 +51,7 @@ module.exports = function( grunt ) {
 				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
 				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
 				{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
+				{ flag: "event-alias", src: "src/event-alias.js" },
 				{ flag: "deprecated", src: "src/deprecated.js" },
 
 				"src/exports.js",

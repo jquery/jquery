@@ -19,6 +19,8 @@
 
 	"predef": [
 		"define",
+		"MouseEvent",
+		"KeyboardEvent",
 		"jQuery"
 	]
 }
