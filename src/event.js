@@ -470,6 +470,12 @@ jQuery.event = {
 			event[ prop ] = originalEvent[ prop ];
 		}
 
+		// Target should not be a text node (#504, #13143)
+		// Support: Chrome 23+, Safari?
+		if ( event.target.nodeType === 3 ) {
+			event.target = event.target.parentNode;
+		}
+
 		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
 	},
 
