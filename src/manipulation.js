@@ -192,6 +192,12 @@ jQuery.fn.extend({
 			while ( elem.firstChild ) {
 				elem.removeChild( elem.firstChild );
 			}
+
+			// If this is a select, ensure that it displays empty (#12336)
+			// Support: IE<9
+			if ( elem.options && jQuery.nodeName( elem, "select" ) ) {
+				elem.options.length = 0;
+			}
 		}
 
 		return this;

@@ -1829,7 +1829,7 @@ test( "detach() event cleaning ", 1, function() {
 
 test("empty()", function() {
 
-	expect( 3 );
+	expect( 6 );
 
 	equal( jQuery("#ap").children().empty().text().length, 0, "Check text is removed" );
 	equal( jQuery("#ap").children().length, 4, "Check elements are not removed" );
@@ -1838,7 +1838,13 @@ test("empty()", function() {
 	var j = jQuery("#nonnodes").contents();
 	j.empty();
 	equal( j.html(), "", "Check node,textnode,comment empty works" );
-});
+
+	// Ensure oldIE empties selects (#12336)
+	notEqual( $("#select1").find("option").length, 0, "Have some initial options" );
+	$("#select1").empty();
+	equal( $("#select1").find("option").length, 0, "No more option elements found" );
+	equal( $("#select1")[0].options.length, 0, "options.length cleared as well" );
+	});
 
 test( "jQuery.cleanData", function() {
 
