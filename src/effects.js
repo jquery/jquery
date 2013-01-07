@@ -480,7 +480,7 @@ jQuery.fn.extend({
 				};
 				// Empty animations, or finishing resolves immediately
 				if ( empty || jQuery._data( this, "finish" ) ) {
-					doAnimation.finish();
+					anim.stop( true );
 				}
 			};
 			doAnimation.finish = doAnimation;
