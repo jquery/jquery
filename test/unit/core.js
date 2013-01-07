@@ -1244,7 +1244,8 @@ test("jQuery.parseHTML", function() {
 	equal( html[ 0 ].innerHTML, "test div", "Content should be preserved" );
 
 	equal( jQuery.parseHTML("<span><span>").length, 1, "Incorrect html-strings should not break anything" );
-	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
+	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11,
+		"parentNode should be documentFragment for wrapMap (variable in manipulation module) elements too" );
 });
 
 test("jQuery.parseJSON", function(){
