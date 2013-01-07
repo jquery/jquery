@@ -422,16 +422,12 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
-		var elem, tmp, tag, wrap, j, ll, contains,
-			fragment = context.createDocumentFragment(),
+		var elem, tmp, tag, wrap, contains, j,
 			i = 0,
-			l = elems.length,
+			fragment = context.createDocumentFragment(),
 			nodes = [];
 
-		for ( ; i < l; i++ ) {
-			elem = elems[ i ];
-
-			if ( elem || elem === 0 ) {
+		while ( ( elem = elems[ i++ ] ) || elem === 0 ) {
 
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
@@ -465,14 +461,13 @@ jQuery.extend({
 					// Support: Webkit, IE
 					tmp.textContent = "";
 				}
-			}
 		}
 
 		// Remove wrapper from fragment
 		fragment.textContent = "";
 
-		for ( i = 0, l = nodes.length; i < l; i++ ) {
-			elem = nodes[ i ];
+		i = 0;
+		while ( (elem = nodes[ i++ ]) ) {
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// #4087 - If origin and destination elements are the same, and this is
@@ -491,9 +486,9 @@ jQuery.extend({
 
 			// Capture executables
 			if ( scripts ) {
-				for ( j = 0, ll = tmp.length; j < ll; j++ ) {
-					elem = tmp[ j ];
 
+				j = 0;
+				while ( (elem = tmp[ j++ ]) ) {
 					if ( rscriptType.test( elem.type || "" ) ) {
 						core_push.call( scripts, elem );
 					}
