@@ -294,6 +294,11 @@ jQuery.extend({
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
+		
+		if ( value === null ) {
+			jQuery.removeAttr( elem, name );
+			return;
+		}
 
 		// Fallback to prop when attributes are not supported
 		if ( typeof elem.getAttribute === "undefined" ) {
@@ -311,10 +316,7 @@ jQuery.extend({
 
 		if ( value !== undefined ) {
 
-			if ( value === null ) {
-				jQuery.removeAttr( elem, name );
-
-			} else if ( hooks && notxml && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			if ( hooks && notxml && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
