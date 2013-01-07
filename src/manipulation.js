@@ -439,7 +439,7 @@ jQuery.extend({
 
 				// Convert non-html into a text node
 				} else if ( !rhtml.test( elem ) ) {
-					nodes.push( context.createTextNode( elem ) );
+					core_push.call( nodes, context.createTextNode( elem ) );
 
 				// Convert html into DOM nodes
 				} else {
@@ -495,7 +495,7 @@ jQuery.extend({
 					elem = tmp[ j ];
 
 					if ( rscriptType.test( elem.type || "" ) ) {
-						scripts.push( elem );
+						core_push.call( scripts, elem );
 					}
 				}
 			}
