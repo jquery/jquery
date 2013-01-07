@@ -268,7 +268,7 @@ jQuery.fn.extend({
 			l = this.length,
 			set = this,
 			iNoClone = l - 1,
-			value = args[0],
+			value = args[ 0 ],
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
@@ -283,9 +283,7 @@ jQuery.fn.extend({
 		}
 
 		if ( l ) {
-			doc = this[ 0 ].ownerDocument;
-			fragment = doc.createDocumentFragment();
-			jQuery.clean( args, doc, fragment, undefined, this );
+			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -423,17 +421,12 @@ jQuery.extend({
 		return clone;
 	},
 
-	clean: function( elems, context, fragment, scripts, selection ) {
-		var elem, tmp, tag, wrap, j, ll,
+	buildFragment: function( elems, context, scripts, selection ) {
+		var elem, tmp, tag, wrap, j, ll, contains,
+			fragment = context.createDocumentFragment(),
 			i = 0,
 			l = elems.length,
-			ret = [],
-			container = context === document && fragment;
-
-		// Ensure that context is a document
-		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
-			context = document;
-		}
+			nodes = [];
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
@@ -442,18 +435,15 @@ jQuery.extend({
 
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
-					core_push.apply( ret, elem.nodeType ? [ elem ] : elem );
+					core_push.apply( nodes, elem.nodeType ? [ elem ] : elem );
 
 				// Convert non-html into a text node
 				} else if ( !rhtml.test( elem ) ) {
-					ret.push( context.createTextNode( elem ) );
+					nodes.push( context.createTextNode( elem ) );
 
 				// Convert html into DOM nodes
 				} else {
-
-					// Ensure a safe container
-					container = container || context.createDocumentFragment();
-					tmp = tmp || container.appendChild( context.createElement("div") );
+					tmp = tmp || fragment.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[ 1 ].toLowerCase();
@@ -461,59 +451,57 @@ jQuery.extend({
 					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" );
 
 					// Descend through wrappers to the right content
-					j = wrap[0];
+					j = wrap[ 0 ];
 					while ( j-- ) {
-						tmp = tmp.lastChild;
+						tmp = tmp.firstChild;
 					}
 
-					core_push.apply( ret, tmp.childNodes );
+					core_push.apply( nodes, tmp.childNodes );
 
-					// Fix #12392 - remove childNodes parent
+					// Remember the top-level container
+					tmp = fragment.firstChild;
+
+					// Fixes #12346
+					// Support: Webkit, IE
 					tmp.textContent = "";
-
-					// Remember the top-level container for proper cleanup
-					tmp = container.lastChild;
 				}
 			}
 		}
 
-		// Fix #11356: Clear elements from fragment
-		if ( tmp ) {
-			container.removeChild( tmp );
-		}
+		// Remove wrapper from fragment
+		fragment.textContent = "";
 
-		if ( fragment ) {
-			for ( i = 0, l = ret.length; i < l; i++ ) {
-				elem = ret[ i ];
-				container = jQuery.contains( elem.ownerDocument, elem );
+		for ( i = 0, l = nodes.length; i < l; i++ ) {
+			elem = nodes[ i ];
+			contains = jQuery.contains( elem.ownerDocument, elem );
 
-				// Append to fragment
-				// #4087 - If origin and destination elements are the same, and this is
-				// that element, do not append to fragment
-				if ( !selection || jQuery.inArray( elem, selection ) === -1 ) {
-					fragment.appendChild( elem );
-				}
-				tmp = getAll( elem, "script" );
+			// #4087 - If origin and destination elements are the same, and this is
+			// that element, do not do anything
+			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
+				continue;
+			}
 
-				// Preserve script evaluation history
-				if ( container ) {
-					setGlobalEval( tmp );
-				}
+			// Append to fragment
+			tmp = getAll( fragment.appendChild( elem ), "script" );
 
-				// Capture executables
-				if ( scripts ) {
-					for ( j = 0, ll = tmp.length; j < ll; j++ ) {
-						elem = tmp[ j ];
+			// Preserve script evaluation history
+			if ( contains ) {
+				setGlobalEval( tmp );
+			}
 
-						if ( rscriptType.test( elem.type || "" ) ) {
-							scripts.push( elem );
-						}
+			// Capture executables
+			if ( scripts ) {
+				for ( j = 0, ll = tmp.length; j < ll; j++ ) {
+					elem = tmp[ j ];
+
+					if ( rscriptType.test( elem.type || "" ) ) {
+						scripts.push( elem );
 					}
 				}
 			}
 		}
 
-		return ret;
+		return fragment;
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
