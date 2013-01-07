@@ -780,7 +780,7 @@ jQuery.extend({
 						if ( deleteExpando ) {
 							delete elem[ internalKey ];
 
-						} else if ( elem.removeAttribute ) {
+						} else if ( typeof elem.removeAttribute !== "undefined" ) {
 							elem.removeAttribute( internalKey );
 
 						} else {
