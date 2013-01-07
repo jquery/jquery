@@ -1875,4 +1875,53 @@ test( "jQuery.fx.start & jQuery.fx.stop hook points", function() {
 	jQuery.fx.stop = oldStop;
 });
 
+test( ".finish() completes all queued animations", function() {
+	var animations = {
+			top: 100,
+			left: 100,
+			height: 100,
+			width: 100
+		},
+		div = jQuery("<div>");
+
+	expect( 11 );
+
+	jQuery.each( animations, function( prop, value ) {
+		var anim = {};
+		anim[ prop ] = value;
+		// the delay shouldn't matter at all!
+		div.css( prop, 1 ).animate( anim, function() {
+			ok( true, "Called animation callback" );
+		}).delay( 100 );
+	});
+	equal( div.queue().length, 8, "8 animations in the queue" );
+	div.finish();
+	jQuery.each( animations, function( prop, value ) {
+		equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
+	});
+	equal( div.queue().length, 0, "empty queue when done" );
+	equal( div.is(":animated"), false, ":animated doesn't match" );
+
+	// cleanup
+	div.remove();
+	// leaves a "shadow timer" which does nothing around, need to force a tick
+	jQuery.fx.tick();
+});
+
+test( ".finish() calls finish of custom queue functions", function() {
+	function queueTester( next ) {
+
+	}
+	var div = jQuery( "<div>" );
+
+	expect( 3 );
+	queueTester.finish = function() {
+		ok( true, "Finish called on custom queue function" );
+	};
+
+	div.queue( queueTester ).queue( queueTester ).queue( queueTester ).finish();
+
+	div.remove();
+});
+
 } // if ( jQuery.fx )
