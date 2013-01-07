@@ -138,6 +138,10 @@ jQuery.support = (function() {
 		support[ i + "Bubbles" ] = eventName in window || div.attributes[ eventName ].expando === false;
 	}
 
+	div.style.backgroundClip = "content-box";
+	div.cloneNode().style.backgroundClip = "";
+	support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv, tds,
