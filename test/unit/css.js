@@ -883,7 +883,7 @@ test( "css opacity consistency across browsers (#12685)", function() {
 		equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
 });
 
-asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 16, function() {
+asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
 	styles = [{
 			name: "backgroundAttachment",
@@ -921,7 +921,7 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 			expected: [ "auto auto" ]
 	}];
 
-	jQuery.each( styles, function(index, style) {
+	jQuery.each(styles, function( index, style ) {
 		var $clone, $clonedChildren,
 			$source = jQuery( "#firstp" ),
 			source = $source[ 0 ],
@@ -932,6 +932,7 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 		if ( source.style[ style.name ] === undefined ) {
 			ok( true, style.name +  ": style isn't supported and therefore not an issue" );
 			ok( true );
+
 			return true;
 		}
 
@@ -945,6 +946,8 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 		$clonedChildren.css( style.name, "" );
 
 		window.setTimeout(function() {
+			notEqual( $clone.css( style.name ), style.value[ 0 ], "Cloned css was changed" );
+
 			ok( jQuery.inArray( $source.css( style.name ) !== -1, style.value ),
 				"Clearing clone.css() doesn't affect source.css(): " + style.name +
 				"; result: " + $source.css( style.name ) +

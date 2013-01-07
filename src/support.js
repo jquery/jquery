@@ -64,6 +64,10 @@ jQuery.support = (function() {
 	div.setAttribute( "onfocusin", "t" );
 	support.focusinBubbles = "onfocusin" in window || div.attributes.onfocusin.expando === false;
 
+	div.style.backgroundClip = "content-box";
+	div.cloneNode().style.backgroundClip = "";
+	support.clearCloneStyle = div.style.backgroundClip === "content-box";
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv, tds,
