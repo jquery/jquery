@@ -544,11 +544,11 @@ jQuery.fn.extend({
 			type = type || "fx";
 		}
 		return this.each(function() {
-			var data = jQuery._data( this ),
+			var index,
+				data = jQuery._data( this ),
 				queue = data[ type + "queue" ],
 				hooks = data[ type + "queueHooks" ],
 				timers = jQuery.timers,
-				index = 0,
 				length = queue ? queue.length : 0;
 
 			// enable finishing flag on private data
@@ -570,7 +570,7 @@ jQuery.fn.extend({
 			}
 
 			// look for any animations in the old queue and finish them
-			for ( index = 0; index < length ; index++ ) {
+			for ( index = 0; index < length; index++ ) {
 				if ( queue[ index ] && queue[ index ].finish ) {
 					queue[ index ].finish.call( this );
 				}
