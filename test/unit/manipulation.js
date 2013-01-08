@@ -2050,17 +2050,21 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 
 test( "html() - script exceptions bubble (#11743)", function() {
 
-	expect( 2 );
+	expect( 3 );
 
 	raises(function() {
-		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'error not thrown' );</script>");
-		ok( false, "error ignored" );
-	}, "exception bubbled from inline script" );
+		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
+		ok( false, "Exception ignored" );
+	}, "Exception bubbled from inline script" );
 
-	raises(function() {
-		jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
-		ok( false, "error ignored" );
-	}, "exception bubbled from remote script" );
+	var onerror = window.onerror;
+	window.onerror = function() {
+		ok( true, "Exception thrown in remote script" );
+		window.onerror = onerror;
+	};
+
+	jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
+	ok( true, "Exception ignored" );
 });
 
 test( "checked state is cloned with clone()", function() {
