@@ -138,12 +138,12 @@ jQuery.Callbacks = function( options ) {
 				return this;
 			},
 			// Control if a given callback is in the list
-			has: function( fn ) {
-				return jQuery.inArray( fn, list ) > -1;
-			},
-			// Get the number of callbacks currently in the list
-			size: function() {
-				return list ? list.length : 0;
+			has: function(fn) {
+				if (arguments.length < 1){
+					return list ? list.length > 0 : false;
+				} else {
+					return jQuery.inArray( fn, list ) > -1;
+				}
 			},
 			// Remove all callbacks from the list
 			empty: function() {

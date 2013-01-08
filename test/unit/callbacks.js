@@ -269,9 +269,9 @@ test( "jQuery.Callbacks.remove - should remove all instances", function() {
 	}).remove( fn ).fire();
 });
 
-test( "jQuery.Callbacks.size", function() {
+test( "jQuery.Callbacks.has", function() {
 
-	expect( 8 );
+	expect( 13 );
 
 	var cb = jQuery.Callbacks();
 	function getA() {
@@ -284,29 +284,34 @@ test( "jQuery.Callbacks.size", function() {
 		return "C";
 	}
 	cb.add(getA, getB, getC);
-	strictEqual( cb.size(), 3, "Returns list length" );
+	strictEqual( cb.has(), true, "No arguments to .has() returns whether callback(s) are attached or not" );
+	strictEqual( cb.has(getA), true, "Check if a specific function is in the Callbacks list" );
 
 	cb.remove(getB);
-	strictEqual( cb.size(), 2, "Returns Correct list length after .remove()" );
+	strictEqual( cb.has(getB), false, "Remove a specific function and make sure its no longer there" );
+	strictEqual( cb.has(getA), true, "Remove a specific function and make sure another function is still there" );
 
 	cb.empty();
-	strictEqual( cb.size(), 0, "empty() list returns zero length" );
+	strictEqual( cb.has(), false, "Empty list and make sure there are no functions" );
+	strictEqual( cb.has(getA), false, "Check for a specific function in an empty() list" );
 
 	cb.add(getA, getB, function(){
-		strictEqual( cb.size(), 3, "Access proper list length from within callback function" );
+		strictEqual( cb.has(), true, "Check if list has callback(s) from within a callback function" );
+		strictEqual( cb.has(getA), true, "Check if list has a specific callback from within a callback function" );
 	}).fire();
 
-	strictEqual( cb.size(), 3, "List length is same after callback is fired" );
+	strictEqual( cb.has(), true, "Callbacks list has functions after firing" );
 
 	cb.disable();
-	strictEqual( cb.size(), 0, "disabled() list returns zero length" );
+	strictEqual( cb.has(), false, "disabled() list has no functions (returns false)" );
+	strictEqual( cb.has(getA), false, "check for a specific function in a disabled() list" );
 
 	cb = jQuery.Callbacks("unique");
 	cb.add(getA);
 	cb.add(getA);
-	strictEqual( cb.size(), 1, "Unique list returns length with no duplicates" );
+	strictEqual( cb.has(), true, "Unique list returns length with no duplicates" );
 	cb.lock();
-	strictEqual( cb.size(), 0, "locked() list is empty and returns zero length" );
+	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
 
 
 });
