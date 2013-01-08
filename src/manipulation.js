@@ -29,30 +29,33 @@ jQuery.fn.extend({
 		return jQuery.access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
-				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
+				this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
 		}, null, value, arguments.length );
 	},
 
 	wrapAll: function( html ) {
+		var wrap;
+
 		if ( jQuery.isFunction( html ) ) {
-			return this.each(function(i) {
-				jQuery(this).wrapAll( html.call(this, i) );
+			return this.each(function( i ) {
+				jQuery( this ).wrapAll( html.call(this, i) );
 			});
 		}
 
-		if ( this[0] ) {
-			// The elements to wrap the target around
-			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
+		if ( this[ 0 ] ) {
 
-			if ( this[0].parentNode ) {
-				wrap.insertBefore( this[0] );
+			// The elements to wrap the target around
+			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+
+			if ( this[ 0 ].parentNode ) {
+				wrap.insertBefore( this[ 0 ] );
 			}
 
 			wrap.map(function() {
 				var elem = this;
 
-				while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
-					elem = elem.firstChild;
+				while ( elem.firstElementChild ) {
+					elem = elem.firstElementChild;
 				}
 
 				return elem;
@@ -188,7 +191,7 @@ jQuery.fn.extend({
 
 	html: function( value ) {
 		return jQuery.access( this, function( value ) {
-			var elem = this[0] || {},
+			var elem = this[ 0 ] || {},
 				i = 0,
 				l = this.length;
 
