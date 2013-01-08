@@ -213,8 +213,8 @@ jQuery.extend({
 
 			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
 			// but it would mean to define eight (for every problematic property) identical functions
-			if ( value === "" && name.indexOf("background") === 0 ) {
-				value = " ";
+			if ( !jQuery.support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
+				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
