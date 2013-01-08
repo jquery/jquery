@@ -27,6 +27,12 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 	if ( (!id || !cache[id] || (!pvt && !cache[id].data)) && getByName && data === undefined ) {
 		return;
 	}
+	
+	// Do not set data on non-element (e. g. comments, text nodes) because it will not be 
+	// cleared (#8335).
+	if (isNode && elem.nodeType != 1) {
+		return;
+	}
 
 	if ( !id ) {
 		// Only DOM nodes need a new unique ID for each element since their data
