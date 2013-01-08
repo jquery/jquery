@@ -972,93 +972,62 @@ module( "ajax", {
 			" (no cache)": false
 		},
 		function( label, cache ) {
+			// Support: Opera 12.0
+			// Old Opera's XHR doesn't support 304/If-Modified-Since/If-None-Match
 			var isOpera = !!window.opera;
-
 			asyncTest( "jQuery.ajax() - If-Modified-Since support" + label, 3, function() {
 				var url = "data/if_modified_since.php?ts=" + ifModifiedNow++;
-
 				jQuery.ajax({
 					url: url,
 					ifModified: true,
 					cache: cache,
 					success: function( data, status ) {
 						strictEqual( status, "success" );
-
 						jQuery.ajax({
 							url: url,
 							ifModified: true,
 							cache: cache,
 							success: function( data, status ) {
-								if ( data === "FAIL" ) {
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
+								if ( status === "success" ) {
+									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
+									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
 								} else {
 									strictEqual( status, "notmodified" );
 									ok( data == null, "response body should be empty" );
 								}
-								start();
 							},
-							error: function() {
-								// Do this because opera simply refuses to implement 304 handling :(
-								// A feature-driven way of detecting this would be appreciated
-								// See: http://gist.github.com/599419
-								ok( isOpera, "error" );
-								ok( isOpera, "error" );
+							complete: function() {
 								start();
 							}
 						});
-					},
-					error: function() {
-						strictEqual( false, "error" );
-						// Do this because opera simply refuses to implement 304 handling :(
-						// A feature-driven way of detecting this would be appreciated
-						// See: http://gist.github.com/599419
-						ok( isOpera, "error" );
-						start();
 					}
 				});
 			});
-
 			asyncTest( "jQuery.ajax() - Etag support" + label, 3, function() {
 				var url = "data/etag.php?ts=" + ifModifiedNow++;
-
 				jQuery.ajax({
 					url: url,
 					ifModified: true,
 					cache: cache,
 					success: function( data, status ) {
 						strictEqual( status, "success" );
-
 						jQuery.ajax({
 							url: url,
 							ifModified: true,
 							cache: cache,
 							success: function( data, status ) {
-								if ( data === "FAIL" ) {
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match')." );
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match')." );
+								if ( status === "success" ) {
+									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-None-Match')." );
+									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-None-Match')." );
 								} else {
 									strictEqual( status, "notmodified" );
 									ok( data == null, "response body should be empty" );
 								}
-								start();
 							},
-							error: function() {
-								// Do this because opera simply refuses to implement 304 handling :(
-								// A feature-driven way of detecting this would be appreciated
-								// See: http://gist.github.com/599419
-								ok( isOpera, "error" );
-								ok( isOpera, "error" );
+							complete: function() {
 								start();
 							}
 						});
-					},
-					error: function() {
-						// Do this because opera simply refuses to implement 304 handling :(
-						// A feature-driven way of detecting this would be appreciated
-						// See: http://gist.github.com/599419
-						ok( isOpera, "error" );
-						start();
 					}
 				});
 			});
