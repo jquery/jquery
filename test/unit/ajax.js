@@ -973,64 +973,46 @@ module( "ajax", {
 		},
 		function( label, cache ) {
 			// Support: Opera 12.0
-			// Old Opera's XHR doesn't support 304/If-Modified-Since/If-None-Match
-			var isOpera = !!window.opera;
-			asyncTest( "jQuery.ajax() - If-Modified-Since support" + label, 3, function() {
-				var url = "data/if_modified_since.php?ts=" + ifModifiedNow++;
-				jQuery.ajax({
-					url: url,
-					ifModified: true,
-					cache: cache,
-					success: function( data, status ) {
-						strictEqual( status, "success" );
+			// In Opera 12.0, XHR doesn't notify 304 back to the user properly
+			var opera = window.opera && window.opera.version();
+			jQuery.each(
+				{
+					"If-Modified-Since": "if_modified_since.php",
+					"Etag": "etag.php"
+				},
+				function( type, url ) {
+					url = "data/" + url + "?ts=" + ifModifiedNow++;
+					asyncTest( "jQuery.ajax() - " + type + " support" + label, 4, function() {
 						jQuery.ajax({
 							url: url,
 							ifModified: true,
 							cache: cache,
-							success: function( data, status ) {
-								if ( status === "success" ) {
-									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
-									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
-								} else {
-									strictEqual( status, "notmodified" );
-									ok( data == null, "response body should be empty" );
-								}
-							},
-							complete: function() {
-								start();
+							success: function( _, status ) {
+								strictEqual( status, "success", "Initial status is 'success'" );
+								jQuery.ajax({
+									url: url,
+									ifModified: true,
+									cache: cache,
+									success: function( data, status, jqXHR ) {
+										if ( status === "success" && opera === "12.00" ) {
+											strictEqual( status, "success", "Opera 12.0: Following status is 'success'" );
+											strictEqual( jqXHR.status, 200, "Opera 12.0: XHR status is 200, not 304" );
+											strictEqual( data, "", "Opera 12.0: response body is empty" );
+										} else {
+											strictEqual( status, "notmodified", "Following status is 'notmodified'" );
+											strictEqual( jqXHR.status, 304, "XHR status is 304" );
+											equal( data, null, "no response body is given" );
+										}
+									},
+									complete: function() {
+										start();
+									}
+								});
 							}
 						});
-					}
-				});
-			});
-			asyncTest( "jQuery.ajax() - Etag support" + label, 3, function() {
-				var url = "data/etag.php?ts=" + ifModifiedNow++;
-				jQuery.ajax({
-					url: url,
-					ifModified: true,
-					cache: cache,
-					success: function( data, status ) {
-						strictEqual( status, "success" );
-						jQuery.ajax({
-							url: url,
-							ifModified: true,
-							cache: cache,
-							success: function( data, status ) {
-								if ( status === "success" ) {
-									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-None-Match')." );
-									ok( isOpera, "Old Opera is incapable of doing .setRequestHeader('If-None-Match')." );
-								} else {
-									strictEqual( status, "notmodified" );
-									ok( data == null, "response body should be empty" );
-								}
-							},
-							complete: function() {
-								start();
-							}
-						});
-					}
-				});
-			});
+					});
+				}
+			);
 		}
 		/* jQuery.each arguments end */
 	);
