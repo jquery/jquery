@@ -1891,7 +1891,7 @@ test( ".finish() completes all queued animations", function() {
 		anim[ prop ] = value;
 		// the delay shouldn't matter at all!
 		div.css( prop, 1 ).animate( anim, function() {
-			ok( true, "Called animation callback" );
+			ok( true, "Called animation callback for " + prop );
 		}).delay( 100 );
 	});
 	equal( div.queue().length, 8, "8 animations in the queue" );
@@ -1900,6 +1900,77 @@ test( ".finish() completes all queued animations", function() {
 		equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	});
 	equal( div.queue().length, 0, "empty queue when done" );
+	equal( div.is(":animated"), false, ":animated doesn't match" );
+
+	// cleanup
+	div.remove();
+	// leaves a "shadow timer" which does nothing around, need to force a tick
+	jQuery.fx.tick();
+});
+
+test( ".finish( false ) - unqueued animations", function() {
+	var animations = {
+			top: 100,
+			left: 100,
+			height: 100,
+			width: 100
+		},
+		div = jQuery("<div>");
+
+	expect( 10 );
+
+	jQuery.each( animations, function( prop, value ) {
+		var anim = {};
+		anim[ prop ] = value;
+		div.css( prop, 1 ).animate( anim, {
+			queue: false,
+			complete: function() {
+				ok( true, "Called animation callback for " + prop );
+			}
+		});
+	});
+	equal( div.queue().length, 0, "0 animations in the queue" );
+	div.finish( false );
+	jQuery.each( animations, function( prop, value ) {
+		equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
+	});
+	equal( div.is(":animated"), false, ":animated doesn't match" );
+
+	// cleanup
+	div.remove();
+	// leaves a "shadow timer" which does nothing around, need to force a tick
+	jQuery.fx.tick();
+});
+
+test( ".finish( \"custom\" ) - custom queue animations", function() {
+	var animations = {
+			top: 100,
+			left: 100,
+			height: 100,
+			width: 100
+		},
+		div = jQuery("<div>");
+
+	expect( 11 );
+
+	jQuery.each( animations, function( prop, value ) {
+		var anim = {};
+		anim[ prop ] = value;
+		div.css( prop, 1 ).animate( anim, {
+			queue: "custom",
+			complete: function() {
+				ok( true, "Called animation callback for " + prop );
+			}
+		});
+	});
+	equal( div.queue( "custom" ).length, 4, "4 animations in the queue" );
+	// start the first animation
+	div.dequeue( "custom" );
+	equal( div.is(":animated"), true, ":animated matches" );
+	div.finish( "custom" );
+	jQuery.each( animations, function( prop, value ) {
+		equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
+	});
 	equal( div.is(":animated"), false, ":animated doesn't match" );
 
 	// cleanup
