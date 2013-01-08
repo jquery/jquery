@@ -672,24 +672,6 @@ test( "append HTML5 sectioning elements (Bug #6485)", function() {
 	equal( aside.length, 1, "HTML5 elements do not collapse their children" );
 });
 
-test( "jQuery.clean, #12392", function() {
-
-	expect( 6 );
-
-	var elems = jQuery.clean( [ "<div>test div</div>", "<p>test p</p>" ] );
-
-	ok( elems[ 0 ].parentNode == null || elems[ 0 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-
-	equal( elems[ 0 ].innerHTML, "test div", "Content should be preserved" );
-	equal( elems[ 1 ].innerHTML, "test p", "Content should be preserved" );
-
-	equal( jQuery.clean([ "<span><span>" ]).length, 1, "Incorrect html-strings should not break anything" );
-
-	elems = jQuery.clean([ "<td><td>" ]);
-	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-});
-
 if ( jQuery.css ) {
 	test( "HTML5 Elements inherit styles from style rules (Bug #10501)", function() {
 

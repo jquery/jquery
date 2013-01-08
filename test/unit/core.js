@@ -1210,7 +1210,7 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 13 );
+	expect( 17 );
 
 	var html, nodes;
 
@@ -1237,6 +1237,13 @@ test("jQuery.parseHTML", function() {
 	equal( jQuery.parseHTML( "\t<div></div>" )[0].nodeValue, "\t", "Preserve leading whitespace" );
 
 	equal( jQuery.parseHTML(" <div/> ")[0].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
+
+	html = jQuery.parseHTML( "<div>test div</div>" );
+	equal( html[ 0 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
+	equal( html[ 0 ].innerHTML, "test div", "Content should be preserved" );
+
+	equal( jQuery.parseHTML("<span><span>").length, 1, "Incorrect html-strings should not break anything" );
+	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 });
 
 test("jQuery.parseJSON", function(){

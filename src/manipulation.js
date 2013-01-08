@@ -310,8 +310,7 @@ jQuery.fn.extend({
 
 		if ( this[0] ) {
 			doc = this[0].ownerDocument;
-			fragment = doc.createDocumentFragment();
-			jQuery.clean( args, doc, fragment, undefined, this );
+			fragment = jQuery.buildFragment( args, doc, false, this );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -556,7 +555,7 @@ function getAll( context, tag ) {
 		found;
 }
 
-// Used in clean, fixes the defaultChecked property
+// Used in buildFragment, fixes the defaultChecked property
 function fixDefaultChecked( elem ) {
 	if ( manipulation_rcheckableType.test( elem.type ) ) {
 		elem.defaultChecked = elem.checked;
@@ -619,9 +618,10 @@ jQuery.extend({
 		return clone;
 	},
 
-	clean: function( elems, context, fragment, scripts, selection ) {
+	buildFragment: function( elems, context, scripts, selection ) {
 		var elem, i, j, tmp, tag, wrap, tbody,
 			ret = [],
+			fragment = context.createDocumentFragment(),
 			safe = context === document && safeFragment;
 
 		// Ensure that context is a document
@@ -708,29 +708,27 @@ jQuery.extend({
 			jQuery.grep( getAll( ret, "input" ), fixDefaultChecked );
 		}
 
-		if ( fragment ) {
-			for ( i = 0; (elem = ret[i]) != null; i++ ) {
-				safe = jQuery.contains( elem.ownerDocument, elem );
+		for ( i = 0; (elem = ret[i]) != null; i++ ) {
+			safe = jQuery.contains( elem.ownerDocument, elem );
 
-				// Append to fragment
-				// #4087 - If origin and destination elements are the same, and this is
-				// that element, do not append to fragment
-				if ( !selection || jQuery.inArray( elem, selection ) === -1 ) {
-					fragment.appendChild( elem );
-				}
-				tmp = getAll( elem, "script" );
+			// Append to fragment
+			// #4087 - If origin and destination elements are the same, and this is
+			// that element, do not append to fragment
+			if ( !selection || jQuery.inArray( elem, selection ) === -1 ) {
+				fragment.appendChild( elem );
+			}
+			tmp = getAll( elem, "script" );
 
-				// Preserve script evaluation history
-				if ( safe ) {
-					setGlobalEval( tmp );
-				}
+			// Preserve script evaluation history
+			if ( safe ) {
+				setGlobalEval( tmp );
+			}
 
-				// Capture executables
-				if ( scripts ) {
-					for ( j = 0; (elem = tmp[j]) != null; j++ ) {
-						if ( rscriptType.test( elem.type || "" ) ) {
-							scripts.push( elem );
-						}
+			// Capture executables
+			if ( scripts ) {
+				for ( j = 0; (elem = tmp[j]) != null; j++ ) {
+					if ( rscriptType.test( elem.type || "" ) ) {
+						scripts.push( elem );
 					}
 				}
 			}
@@ -738,7 +736,7 @@ jQuery.extend({
 
 		elem = tmp = safe = null;
 
-		return ret;
+		return fragment;
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {

@@ -496,8 +496,7 @@ jQuery.extend({
 			return [ context.createElement( parsed[1] ) ];
 		}
 
-		parsed = context.createDocumentFragment();
-		jQuery.clean( [ data ], context, parsed, scripts );
+		parsed = jQuery.buildFragment( [ data ], context, scripts );
 		if ( scripts ) {
 			jQuery( scripts ).remove();
 		}
