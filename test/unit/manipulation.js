@@ -463,11 +463,12 @@ var testAppend = function( valueObj ) {
 	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
 		$table.append( valueObj( "<" + name + "/>" ) );
 		equal( $table.find( name ).length, 1, "Append " + name );
-		ok( jQuery.clean( ["<" + name + "/>"] ).length, name + " wrapped correctly" );
+		ok( jQuery.parseHTML( "<" + name + "/>" ).length, name + " wrapped correctly" );
 	});
 
 	jQuery("#table colgroup").append( valueObj("<col/>") );
 	equal( jQuery("#table colgroup col").length, 1, "Append col" );
+
 
 	jQuery("#form")
 		.append( valueObj("<select id='appendSelect1'></select>") )
@@ -639,24 +640,6 @@ test( "append HTML5 sectioning elements (Bug #6485)", function() {
 
 	equal( article.get( 0 ).style.fontSize, "10px", "HTML5 elements are styleable" );
 	equal( aside.length, 1, "HTML5 elements do not collapse their children" );
-});
-
-test( "jQuery.clean, #12392", function() {
-
-	expect( 6 );
-
-	var elems = jQuery.clean( [ "<div>test div</div>", "<p>test p</p>" ] );
-
-	ok( elems[ 0 ].parentNode == null || elems[ 0 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
-
-	equal( elems[ 0 ].innerHTML, "test div", "Content should be preserved" );
-	equal( elems[ 1 ].innerHTML, "test p", "Content should be preserved" );
-
-	equal( jQuery.clean([ "<span><span>" ]).length, 1, "Incorrect html-strings should not break anything" );
-
-	elems = jQuery.clean([ "<td><td>" ]);
-	ok( elems[ 1 ].parentNode == null || elems[ 1 ].parentNode.nodeType === 11, "parentNode should be documentFragment or null" );
 });
 
 if ( jQuery.css ) {
