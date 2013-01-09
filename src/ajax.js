@@ -472,14 +472,14 @@ jQuery.extend({
 		s.type = s.type.toUpperCase();
 
 		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
+		s.hasContent = rnoContent.test( s.type ) && s.processData;
 
 		// Save the URL in case we're toying with the If-Modified-Since
 		// and/or If-None-Match header later on
 		cacheURL = s.url;
 
 		// More options handling for requests with no content
-		if ( !s.hasContent ) {
+		if ( s.hasContent ) {
 
 			// If data is available, append data to url
 			if ( s.data ) {
