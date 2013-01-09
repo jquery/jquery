@@ -395,7 +395,7 @@ var testAppendForObject = function( valueObj, isFragment ) {
 
 var testAppend = function( valueObj ) {
 
-	expect( 77 );
+	expect( 78 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
@@ -469,13 +469,13 @@ var testAppend = function( valueObj ) {
 	jQuery("#table colgroup").append( valueObj("<col/>") );
 	equal( jQuery("#table colgroup col").length, 1, "Append col" );
 
-
 	jQuery("#form")
 		.append( valueObj("<select id='appendSelect1'></select>") )
 		.append( valueObj("<select id='appendSelect2'><option>Test</option></select>") );
 	t( "Append Select", "#appendSelect1, #appendSelect2", [ "appendSelect1", "appendSelect2" ] );
 
 	equal( "Two nodes", jQuery("<div />").append( "Two", " nodes" ).text(), "Appending two text nodes (#4011)" );
+	equal( jQuery("<div />").append( "1", "", 3 ).text(), "13", "If median is false-like value, subsequent arguments should not be ignored" );
 
 	// using contents will get comments regular, text, and comment nodes
 	j = jQuery("#nonnodes").contents();
