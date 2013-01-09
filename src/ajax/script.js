@@ -25,30 +25,27 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 });
 
 // Bind script tag hack transport
-jQuery.ajaxTransport( "script", function(s) {
+jQuery.ajaxTransport( "script", function( s ) {
 	// This transport only deals with cross domain requests
 	if ( s.crossDomain ) {
-		var callback;
+		var script, callback;
 		return {
 			send: function( _, complete ) {
-				callback = function( type ) {
-					return function() {
-						callback = script.onload = script.onerror = null;
-						jQuery( script ).remove();
-						if ( type ) {
-							complete( type === "success" ? 200 : 404, type );
+				script = jQuery("<script>").prop({
+					async: true,
+					charset: s.scriptCharset,
+					src: s.url
+				}).on(
+					"load error",
+					callback = function( evt ) {
+						script.off().remove();
+						callback = null;
+						if ( evt ) {
+							complete( evt.type === "error" ? 404 : 200, evt.type );
 						}
-					};
-				};
-				var script = jQuery.extend( document.createElement("script"), {
-						async: true,
-						charset: s.scriptCharset,
-						src: s.url,
-						onload: callback("success"),
-						onerror: callback("error")
-					});
-				callback = callback();
-				document.head.appendChild( script );
+					}
+				);
+				document.head.appendChild( script[ 0 ] );
 			},
 			abort: function() {
 				if ( callback ) {
