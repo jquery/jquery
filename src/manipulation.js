@@ -424,10 +424,13 @@ jQuery.extend({
 	buildFragment: function( elems, context, scripts, selection ) {
 		var elem, tmp, tag, wrap, contains, j,
 			i = 0,
+			l = elems.length,
 			fragment = context.createDocumentFragment(),
 			nodes = [];
 
-		for ( ; (elem = elems[ i ]) != null; i++ ) {
+		for ( ; i < l; i++ ) {
+			elem = elems[ i ];
+
 			if ( elem || elem === 0 ) {
 
 				// Add nodes directly
