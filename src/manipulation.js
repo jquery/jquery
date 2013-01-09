@@ -619,8 +619,10 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
-		var elem, i, j, tmp, tag, wrap, tbody,
-			ret = [],
+		var elem, j, tmp, tag, wrap, tbody,
+			nodes = [],
+			i = 0,
+			l = elems.length,
 			fragment = context.createDocumentFragment(),
 			safe = context === document && safeFragment;
 
@@ -629,15 +631,16 @@ jQuery.extend({
 			context = document;
 		}
 
-		for ( i = 0; (elem = elems[i]) != null; i++ ) {
+		for ( ; i < l; i++ ) {
+			elem = elems[ i ];
 			if ( elem || elem === 0 ) {
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
-					jQuery.merge( ret, elem.nodeType ? [ elem ] : elem );
+					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 				// Convert non-html into a text node
 				} else if ( !rhtml.test( elem ) ) {
-					ret.push( context.createTextNode( elem ) );
+					nodes.push( context.createTextNode( elem ) );
 
 				// Convert html into DOM nodes
 				} else {
@@ -658,7 +661,7 @@ jQuery.extend({
 
 					// Manually add leading whitespace removed by IE
 					if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
-						ret.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
+						nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
 					}
 
 					// Remove IE's autoinserted <tbody> from table fragments
@@ -681,7 +684,7 @@ jQuery.extend({
 						}
 					}
 
-					jQuery.merge( ret, tmp.childNodes );
+					jQuery.merge( nodes, tmp.childNodes );
 
 					// Fix #12392 for WebKit and IE > 9
 					tmp.textContent = "";
@@ -705,10 +708,11 @@ jQuery.extend({
 		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
 		if ( !jQuery.support.appendChecked ) {
-			jQuery.grep( getAll( ret, "input" ), fixDefaultChecked );
+			jQuery.grep( getAll( nodes, "input" ), fixDefaultChecked );
 		}
 
-		for ( i = 0; (elem = ret[i]) != null; i++ ) {
+		i = 0;
+		while ( (elem = nodes[ i++ ]) ) {
 			safe = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
@@ -726,7 +730,8 @@ jQuery.extend({
 
 			// Capture executables
 			if ( scripts ) {
-				for ( j = 0; (elem = tmp[j]) != null; j++ ) {
+				j = 0;
+				while ( (elem = tmp[ j++ ]) ) {
 					if ( rscriptType.test( elem.type || "" ) ) {
 						scripts.push( elem );
 					}
