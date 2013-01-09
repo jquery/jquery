@@ -33,7 +33,7 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 		legend: [ 1, "<fieldset>" ],
 		area: [ 1, "<map>" ],
 		param: [ 1, "<object>" ],
-		thead: [ 1, "<table>"  ],
+		thead: [ 1, "<table>" ],
 		tr: [ 2, "<table><tbody>" ],
 		col: [ 2, "<table><tbody></tbody><colgroup>", "</table>" ],
 		td: [ 3, "<table><tbody><tr>" ],
@@ -308,9 +308,8 @@ jQuery.fn.extend({
 			});
 		}
 
-		if ( this[0] ) {
-			doc = this[0].ownerDocument;
-			fragment = jQuery.buildFragment( args, doc, false, this );
+		if ( l ) {
+			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -619,21 +618,20 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
-		var elem, j, tmp, tag, wrap, tbody,
-			nodes = [],
-			i = 0,
+		var contains, elem, tag, tmp, wrap, tbody, j,
 			l = elems.length,
-			fragment = context.createDocumentFragment(),
-			safe = context === document && safeFragment;
 
-		// Ensure that context is a document
-		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
-			context = document;
-		}
+			// Ensure a safe fragment
+			safe = createSafeFragment( context ),
+
+			nodes = [],
+			i = 0;
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
+
 			if ( elem || elem === 0 ) {
+
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
 					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
@@ -644,8 +642,6 @@ jQuery.extend({
 
 				// Convert html into DOM nodes
 				} else {
-					// Ensure a safe container
-					safe = safe || createSafeFragment( context );
 					tmp = tmp || safe.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
@@ -700,7 +696,7 @@ jQuery.extend({
 			}
 		}
 
-		// Fix #11356: Clear elements from safeFragment
+		// Fix #11356: Clear elements from fragment
 		if ( tmp ) {
 			safe.removeChild( tmp );
 		}
@@ -713,18 +709,20 @@ jQuery.extend({
 
 		i = 0;
 		while ( (elem = nodes[ i++ ]) ) {
-			safe = jQuery.contains( elem.ownerDocument, elem );
+
+			// #4087 - If origin and destination elements are the same, and this is
+			// that element, do not do anything
+			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
+				continue;
+			}
+
+			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-			// #4087 - If origin and destination elements are the same, and this is
-			// that element, do not append to fragment
-			if ( !selection || jQuery.inArray( elem, selection ) === -1 ) {
-				fragment.appendChild( elem );
-			}
-			tmp = getAll( elem, "script" );
+			tmp = getAll( safe.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
-			if ( safe ) {
+			if ( contains ) {
 				setGlobalEval( tmp );
 			}
 
@@ -739,9 +737,9 @@ jQuery.extend({
 			}
 		}
 
-		elem = tmp = safe = null;
+		tmp = null;
 
-		return fragment;
+		return safe;
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
