@@ -427,7 +427,8 @@ jQuery.extend({
 			fragment = context.createDocumentFragment(),
 			nodes = [];
 
-		while ( ( elem = elems[ i++ ] ) || elem === 0 ) {
+		for ( ; (elem = elems[ i ]) != null; i++ ) {
+			if ( elem || elem === 0 ) {
 
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
@@ -461,6 +462,7 @@ jQuery.extend({
 					// Support: Webkit, IE
 					tmp.textContent = "";
 				}
+			}
 		}
 
 		// Remove wrapper from fragment
@@ -486,7 +488,6 @@ jQuery.extend({
 
 			// Capture executables
 			if ( scripts ) {
-
 				j = 0;
 				while ( (elem = tmp[ j++ ]) ) {
 					if ( rscriptType.test( elem.type || "" ) ) {
