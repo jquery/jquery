@@ -432,10 +432,13 @@ module.exports = function( grunt ) {
 				nonascii = true;
 			}
 
-			// Modify map so that it points to files in the same folder;
+			// Modify map/min so that it points to files in the same folder;
 			// see https://github.com/mishoo/UglifyJS2/issues/47
 			if ( /\.map$/.test( filename ) ) {
 				text = text.replace( /"dist\//g, "\"" );
+				fs.writeFileSync( filename, text, "utf-8" );
+			} else if ( /\.min\.js$/.test( filename ) ) {
+				text = text.replace( /sourceMappingURL=dist\//, "sourceMappingURL=" );
 				fs.writeFileSync( filename, text, "utf-8" );
 			}
 
