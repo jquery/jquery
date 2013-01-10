@@ -708,18 +708,18 @@ jQuery.extend({
 		}
 
 		i = 0;
-        while ( (elem = nodes[ i++ ]) ) {
+		while ( (elem = nodes[ i++ ]) ) {
 
 			// #4087 - If origin and destination elements are the same, and this is
-            // that element, do not do anything
-            if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
-                continue;
-            }
+			// that element, do not do anything
+			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
+				continue;
+			}
 
-            contains = jQuery.contains( elem.ownerDocument, elem );
+			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-            tmp = getAll( safe.appendChild( elem ), "script" );
+			tmp = getAll( safe.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
 			if ( contains ) {
@@ -729,7 +729,7 @@ jQuery.extend({
 			// Capture executables
 			if ( scripts ) {
 				j = 0;
-                while ( (elem = tmp[ j++ ]) ) {
+				while ( (elem = tmp[ j++ ]) ) {
 					if ( rscriptType.test( elem.type || "" ) ) {
 						scripts.push( elem );
 					}
