@@ -99,8 +99,17 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
+test("Setting data on comment and text node doest not cause leak", function() {
+	expect(1);
+
+	jQuery("<!-- comment --><span></span>").data("foo", 0).removeData();
+	jQuery("<span><!-- comment --> text</span>").contents().data("foo", 0).removeData();
+
+	ok( true, "moduleTeardown will check thet there are no leaks" );
+});
+
 test("jQuery.acceptData", function() {
-	expect(7);
+	expect(9);
 
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
@@ -115,6 +124,9 @@ test("jQuery.acceptData", function() {
 	var applet = document.createElement("object");
 	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
 	ok( !jQuery.acceptData( applet ), "applet" );
+
+	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
 });
 
 test(".data()", function() {
