@@ -99,13 +99,12 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
-test("Setting data on comment and text node doest not cause leak", function() {
-	expect(1);
+test("Data is not being set on comment and text nodes", function() {
+	expect(2);
 
-	jQuery("<!-- comment --><span></span>").data("foo", 0).removeData();
-	jQuery("<span><!-- comment --> text</span>").contents().data("foo", 0).removeData();
+	ok( !jQuery.hasData( jQuery("<!-- comment -->").data("foo", 0) ) );
+	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
 
-	ok( true, "moduleTeardown will check thet there are no leaks" );
 });
 
 test("jQuery.acceptData", function() {
