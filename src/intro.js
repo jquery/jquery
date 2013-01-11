@@ -5,7 +5,7 @@
  * Includes Sizzle.js
  * http://sizzlejs.com/
  *
- * Copyright 2013 jQuery Foundation and other contributors
+ * Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors
  * Released under the MIT license
  * http://jquery.org/license
  *
