@@ -133,8 +133,16 @@ test("Expando cleanup", 4, function() {
 	jQuery(div).remove();
 });
 
+test("Data is not being set on comment and text nodes", function() {
+	expect(2);
+
+	ok( !jQuery.hasData( jQuery("<!-- comment -->").data("foo", 0) ) );
+	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
+
+});
+
 test("jQuery.acceptData", function() {
-	expect(7);
+	expect(9);
 
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
@@ -149,6 +157,9 @@ test("jQuery.acceptData", function() {
 	var applet = document.createElement("object");
 	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
 	ok( !jQuery.acceptData( applet ), "applet" );
+
+	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
 });
 
 test(".data()", function() {
