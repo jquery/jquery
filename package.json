@@ -30,10 +30,10 @@
 		"grunt-git-authors": "~1.1.0",
 		"grunt-update-submodules": "~0.2.0",
 		"grunt-contrib-watch": "~0.2.0",
-		"grunt-contrib-jshint": "~0.1.0",
-		"grunt-contrib-uglify": "~0.1.0",
+		"grunt-contrib-jshint": "git://github.com/gruntjs/grunt-contrib-jshint.git#7fd70e86c5a8d489095fa81589d95dccb8eb3a46",
+		"grunt-contrib-uglify": "git://github.com/gruntjs/grunt-contrib-uglify.git#f8da4ff90c7e8f74c81d8e5d3834e6011a90611c",
 		"grunt-cli": "~0.1.0",
-		"grunt": "~0.4.0",
+		"grunt": "0.4.0rc4",
 		"testswarm": "0.2.2"
 	},
 	"keywords": []
