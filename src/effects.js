@@ -161,9 +161,9 @@ function Animation( elem, properties, options ) {
 
 	jQuery.fx.timer(
 		jQuery.extend( tick, {
+			elem: elem,
 			anim: animation,
-			queue: animation.opts.queue,
-			elem: elem
+			queue: animation.opts.queue
 		})
 	);
 
