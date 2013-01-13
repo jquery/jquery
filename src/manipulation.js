@@ -11,11 +11,11 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	wrapMap = {
 
 		// Support: IE 9
-		option: [ 1, "<select multiple='multiple'>" ],
+		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 
-		tr: [ 1, "<table>" ],
-		td: [ 3, "<table><tbody><tr>" ],
-		_default: [ 0, "" ]
+		tr: [ 1, "<table>", "</table>" ],
+		td: [ 3, "<table><tr>", "</tr></table>" ],
+		_default: [ 0, "", "" ]
 	};
 
 // Support: IE 9
@@ -448,7 +448,7 @@ jQuery.extend({
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[ 1 ].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" );
+					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
 
 					// Descend through wrappers to the right content
 					j = wrap[ 0 ];
