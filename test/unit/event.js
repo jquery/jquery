@@ -1231,17 +1231,21 @@ test(".trigger() doesn't bubble load event (#10717)", function() {
 	jQuery( window ).off( "load" );
 });
 
-test("Delegated events in SVG (#10791)", function() {
+test("Delegated events in SVG (#10791; #13180)", function() {
 	expect(2);
 
-	var svg = jQuery(
+	var e,
+		svg = jQuery(
 			"<svg height='1' version='1.1' width='1' xmlns='http://www.w3.org/2000/svg'>" +
+			"<defs><rect id='ref' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect></defs>" +
 			"<rect class='svg-by-class' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect>" +
 			"<rect id='svg-by-id' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect>" +
+			"<use id='use' xlink:href='#ref'></use>" +
 			"</svg>"
-		).appendTo( "body" );
+		);
 
-	jQuery( "body" )
+	jQuery("#qunit-fixture")
+		.append( svg )
 		.on( "click", "#svg-by-id", function() {
 			ok( true, "delegated id selector" );
 		})
@@ -1249,11 +1253,18 @@ test("Delegated events in SVG (#10791)", function() {
 			ok( true, "delegated class selector" );
 		})
 		.find( "#svg-by-id, [class~='svg-by-class']" )
-			.trigger( "click" )
-		.end()
-		.off( "click" );
+			.trigger("click")
+		.end();
 
-	svg.remove();
+	// Fire a native click on an SVGElementInstance (the instance tree of an SVG <use>)
+	// to confirm that it doesn't break our event delegation handling (#13180)
+	if ( document.createEvent ) {
+		e = document.createEvent("MouseEvents");
+		e.initEvent( "click", true, true );
+		svg.find("#use")[0].instanceRoot.dispatchEvent( e );
+	}
+
+	jQuery("#qunit-fixture").off("click");
 });
 
 test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function() {
