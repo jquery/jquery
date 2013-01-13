@@ -359,7 +359,7 @@ jQuery.event = {
 			return;
 		}
 
-		// Determine handlers that should run if there are delegated events
+		// Determine handlers
 		handlerQueue = jQuery.event.handlers.call( this, event, handlers );
 
 		// Run delegates first; they may want to stop propagation beneath us
@@ -399,30 +399,30 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
-		var i, cur, selMatch, matches, handleObj, sel,
+		var i, matches, sel, handleObj,
 			handlerQueue = [],
-			delegateCount = handlers.delegateCount;
+			delegateCount = handlers.delegateCount,
+			cur = event.target;
 
+		// Find delegate handlers
 		// Avoid non-left-click bubbling in Firefox (#3861)
-		if ( delegateCount && !(event.button && event.type === "click") ) {
+		if ( delegateCount && (!event.button || event.type !== "click") ) {
 
-			for ( cur = event.target; cur != this; cur = cur.parentNode || this ) {
+			for ( ; cur != this; cur = cur.parentNode || this ) {
 
-				// Don't process clicks (ONLY) on disabled elements (#6911, #8165, #11382, #11764)
+				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
 				if ( cur.disabled !== true || event.type !== "click" ) {
-					selMatch = {};
 					matches = [];
-					i = 0;
-					for ( ; i < delegateCount; i++ ) {
+					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
 						sel = handleObj.selector;
 
-						if ( selMatch[ sel ] === undefined ) {
-							selMatch[ sel ] = handleObj.needsContext ?
+						if ( matches[ sel ] === undefined ) {
+							matches[ sel ] = handleObj.needsContext ?
 								jQuery( sel, this ).index( cur ) >= 0 :
 								jQuery.find( sel, this, null, [ cur ] ).length;
 						}
-						if ( selMatch[ sel ] ) {
+						if ( matches[ sel ] ) {
 							matches.push( handleObj );
 						}
 					}
@@ -434,7 +434,7 @@ jQuery.event = {
 		}
 
 		// Add the remaining (directly-bound) handlers
-		if ( handlers.length > delegateCount ) {
+		if ( delegateCount < handlers.length ) {
 			handlerQueue.push({ elem: this, handlers: handlers.slice( delegateCount ) });
 		}
 
