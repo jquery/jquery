@@ -237,7 +237,6 @@ jQuery.event = {
 			new jQuery.Event( type, typeof event === "object" && event );
 
 		event.isTrigger = true;
-		event.type = type;
 		event.namespace = namespaces.join(".");
 		event.namespace_re = event.namespace ?
 			new RegExp( "(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)" ) :
@@ -467,8 +466,8 @@ jQuery.event = {
 			event.target = originalEvent.srcElement || document;
 		}
 
-		// Support: Safari
-		// Target should not be a text node (#504)
+		// Support: Chrome 23+, Safari?
+		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
