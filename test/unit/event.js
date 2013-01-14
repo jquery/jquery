@@ -1797,6 +1797,20 @@ test( "delegated event with delegateTarget-relative selector", function() {
 	markup.remove();
 });
 
+test( "delegated event with selector matching Object.prototype property (#13203)", function() {
+	expect(1);
+
+	var matched = 0;
+
+	jQuery("#foo").on( "click", "toString", function( e ) {
+		matched++;
+	});
+
+	jQuery("#anchor2").trigger("click");
+
+	equal( matched, 0, "Nothing matched 'toString'" );
+});
+
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 
