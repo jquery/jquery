@@ -4,7 +4,7 @@
 2. [Discussion](#discussion)
 3. [How To Report Bugs](#how-to-report-bugs)
 4. [Core Style Guide](#jquery-core-style-guide)
-5. [Tips For Bug Patching](#tips-for-jquery-bug-patching)
+5. [Tips For Bug Patching](#tips-for-bug-patching)
 
 
 
@@ -12,13 +12,13 @@
 
 There are a number of ways to get involved with the development of jQuery core. Even if you've never contributed code to an Open Source project before, we're always looking for help identifying bugs, writing and reducing test cases and documentation.
 
-This is the best way to contribute to jQuery core. Please read through the full guide detailing [How to Report Bugs](#How-to-Report-Bugs).
+This is the best way to contribute to jQuery core. Please read through the full guide detailing [How to Report Bugs](#how-to-report-bugs).
 
 ## Discussion
 
 ### Forum and IRC
 
-The jQuery core development team frequently tracks posts on the [jQuery Development Forum](http://forum.jquery.com/developing-jquery-core). If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#How-to-Report-Bugs).
+The jQuery core development team frequently tracks posts on the [jQuery Development Forum](http://forum.jquery.com/developing-jquery-core). If you have longer posts or questions please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#how-to-report-bugs).
 
 Additionally most of the jQuery core development team can be found in the [#jquery-dev](http://webchat.freenode.net/?channels=jquery-dev) IRC channel on irc.freenode.net.
 
