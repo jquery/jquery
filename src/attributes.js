@@ -290,6 +290,11 @@ jQuery.extend({
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
 
+		if ( value === null ) {
+			jQuery.removeAttr( elem, name );
+			return;
+		}
+
 		// don't get/set attributes on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return;
@@ -311,10 +316,7 @@ jQuery.extend({
 
 		if ( value !== undefined ) {
 
-			if ( value === null ) {
-				jQuery.removeAttr( elem, name );
-
-			} else if ( hooks && notxml && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			if ( hooks && notxml && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
