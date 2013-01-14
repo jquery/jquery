@@ -31,7 +31,7 @@ Mac OS users should install Xcode (comes on your Mac OS install DVD, or download
 [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
-Linux/BSD users should use their appropriate package managers to install make, git, and node, or build from source
+Linux/BSD users should use their appropriate package managers to install make, git, and Node.js, or build from source
 if you swing that way. Easy-peasy.
 
 
