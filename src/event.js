@@ -403,7 +403,9 @@ jQuery.event = {
 					matches = [];
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
-						sel = handleObj.selector;
+
+						// Don't conflict with Object.prototype properties (#13203)
+						sel = handleObj.selector + " ";
 
 						if ( matches[ sel ] === undefined ) {
 							matches[ sel ] = handleObj.needsContext ?
