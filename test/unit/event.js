@@ -1234,7 +1234,7 @@ test(".trigger() doesn't bubble load event (#10717)", function() {
 test("Delegated events in SVG (#10791; #13180)", function() {
 	expect(2);
 
-	var instanceRoot, e,
+	var useElem, e,
 		svg = jQuery(
 			"<svg height='1' version='1.1' width='1' xmlns='http://www.w3.org/2000/svg'>" +
 			"<defs><rect id='ref' x='10' y='20' width='100' height='60' r='10' rx='10' ry='10'></rect></defs>" +
@@ -1258,11 +1258,11 @@ test("Delegated events in SVG (#10791; #13180)", function() {
 
 	// Fire a native click on an SVGElementInstance (the instance tree of an SVG <use>)
 	// to confirm that it doesn't break our event delegation handling (#13180)
-	instanceRoot = svg.find("#use")[0].instanceRoot;
-	if ( instanceRoot && document.createEvent ) {
+	useElem = svg.find("#use")[0];
+	if ( document.createEvent && useElem && useElem.instanceRoot ) {
 		e = document.createEvent("MouseEvents");
 		e.initEvent( "click", true, true );
-		instanceRoot.dispatchEvent( e );
+		useElem.instanceRoot.dispatchEvent( e );
 	}
 
 	jQuery("#qunit-fixture").off("click");
