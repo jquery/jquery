@@ -2,7 +2,7 @@
 	"name": "jquery",
 	"title": "jQuery",
 	"description": "JavaScript library for DOM operations",
-	"version": "2.0.0pre",
+	"version": "2.0.0b1",
 	"homepage": "http://jquery.com",
 	"author": {
 		"name": "jQuery Foundation and other contributors",
@@ -22,7 +22,7 @@
 		}
 	],
 	"scripts": {
-		"test" : "./node_modules/.bin/grunt"
+		"test": "./node_modules/.bin/grunt"
 	},
 	"dependencies": {},
 	"devDependencies": {
