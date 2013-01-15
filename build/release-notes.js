@@ -5,21 +5,20 @@
 
 var fs = require("fs"),
 	http = require("http"),
-	tmpl = require("mustache"),
-	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g;
+	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g,
+	categories = [],
+	version = process.argv[2];
 
-var opts = {
-	version: "1.9 Beta 1",
-	short_version: "1.9b1",
-	final_version: "1.9",
-	categories: []
-};
+if ( !/^\d+\.\d+/.test( version ) ) {
+	console.error( "Invalid version number: " + version );
+	process.exit( 1 );
+}
 
 http.request({
 	host: "bugs.jquery.com",
 	port: 80,
 	method: "GET",
-	path: "/query?status=closed&resolution=fixed&max=400&component=!web&order=component&milestone=" + opts.final_version
+	path: "/query?status=closed&resolution=fixed&max=400&component=!web&order=component&milestone=" + version
 }, function (res) {
 	var data = [];
 
@@ -36,19 +35,25 @@ http.request({
 			if ( "#" + match[1] !== match[2] ) {
 				var cat = match[3];
 
-				if ( !cur || cur.name !== cat ) {
-					cur = { name: match[3], niceName: match[3].replace(/^./, function(a){ return a.toUpperCase(); }), bugs: [] };
-					opts.categories.push( cur );
+				if ( !cur || cur !== cat ) {
+					if ( cur ) {
+						console.log("</ul>");
+					}
+					cur = cat;
+					console.log( "<h2>" + cat.charAt(0).toUpperCase() + cat.slice(1) + "</h2>" );
+					console.log("<ul>");
 				}
 
-				cur.bugs.push({ ticket: match[1], title: match[2] });
+				console.log(
+					"  <li><a href=\"http://bugs.jquery.com/ticket/" + match[1] + "\">#" +
+					match[1] + ": " + match[2] + "</a></li>"
+				);
 			}
 		}
+		if ( cur ) {
+			console.log("</ul>");
+		}
 
-		buildNotes();
 	});
 }).end();
 
-function buildNotes() {
-	console.log( tmpl.to_html( fs.readFileSync("release-notes.txt", "utf8"), opts ) );
-}
