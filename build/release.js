@@ -33,13 +33,14 @@ var releaseVersion,
 	releaseFiles = {
 		"jquery-VER.js": devFile,
 		"jquery-VER.min.js": minFile,
-		"jquery-VER.min.map": mapFile,
-		"jquery.js": devFile,
-		"jquery.min.js": minFile,
-		"jquery.min.map": mapFile,
-		"jquery-latest.js": devFile,
-		"jquery-latest.min.js": minFile,
-		"jquery-latest.min.map": mapFile
+		"jquery-VER.min.map": mapFile //,
+// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY
+//		"jquery.js": devFile,
+//		"jquery.min.js": minFile,
+//		"jquery.min.map": mapFile,
+//		"jquery-latest.js": devFile,
+//		"jquery-latest.min.js": minFile,
+//		"jquery-latest.min.map": mapFile
 	};
 
 steps(
