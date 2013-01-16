@@ -269,15 +269,9 @@ jQuery.fn.extend({
 			var next = this.nextSibling,
 				parent = this.parentNode;
 
-			if ( parent && this.nodeType === 1 || this.nodeType === 11 ) {
-
+			if ( parent ) {
 				jQuery( this ).remove();
-
-				if ( next ) {
-					next.parentNode.insertBefore( elem, next );
-				} else {
-					parent.appendChild( elem );
-				}
+				parent.insertBefore( elem, next );
 			}
 		});
 	},
