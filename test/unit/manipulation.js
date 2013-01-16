@@ -1149,7 +1149,7 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 var testReplaceWith = function( val ) {
 
 	var tmp, y, child, child2, set, non_existent, $div,
-		expected = 22;
+		expected = 23;
 
 	expect( expected );
 
@@ -1175,6 +1175,10 @@ var testReplaceWith = function( val ) {
 	ok( jQuery("#first")[ 0 ], "Replace element with set of elements" );
 	ok( jQuery("#mark")[ 0 ], "Replace element with set of elements" );
 	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after set of elements" );
+
+	tmp = jQuery("<b>content</b>")[0];
+	jQuery("#anchor1").contents().replaceWith( val(tmp) );
+	deepEqual( jQuery("#anchor1").contents().get(), [ tmp ], "Replace text node with element" );
 
 
 	tmp = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
