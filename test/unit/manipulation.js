@@ -2196,3 +2196,32 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
+
+test( "Make sure specific elements with content created correctly (#13232)", 20, function() {
+	var results = [],
+		args = [],
+		elems = {
+			thead: "<tr><td>thead</td></tr>",
+			tbody: "<tr><td>tbody</td></tr>",
+			tfoot: "<tr><td>tfoot</td></tr>",
+			colgroup: "<col span='5' />",
+			caption: "caption",
+			tr: "<td>tr</td>",
+			th: "th",
+			td: "<div>td</div>",
+			optgroup: "<option>optgroup</option>",
+			option: "option"
+		};
+
+	jQuery.each( elems, function( name, value ) {
+		var html = "<" + name + ">" + value + "</" + name + ">";
+		ok( jQuery.nodeName( jQuery.parseHTML( "<" + name + ">" + value + "</" + name + ">" )[ 0 ], name ), name + " is created correctly" );
+
+		results.push( name );
+		args.push( html );
+	});
+
+	jQuery.fn.append.apply( jQuery("<div/>"), args ).children().each(function( i ) {
+		ok( jQuery.nodeName( this, results[ i ] ) );
+	});
+});
