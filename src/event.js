@@ -25,9 +25,9 @@ jQuery.event = {
 		var handleObjIn, eventHandle, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
-			// Don't attach events to noData or text/comment nodes (but allow plain objects)
-			elemData = elem.nodeType !== 3 && elem.nodeType !== 8 && jQuery._data( elem );
+			elemData = jQuery._data( elem );
 
+		// Don't attach events to noData or text/comment nodes (but allow plain objects)
 		if ( !elemData ) {
 			return;
 		}
