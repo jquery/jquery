@@ -1148,104 +1148,88 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 
 var testReplaceWith = function( val ) {
 
-	expect( 22 );
+	var tmp, y, child, child2, set, non_existent, $div,
+		expected = 22;
 
-	var tmp, y, child, child2, set, non_existant, $div;
+	expect( expected );
 
-	jQuery("#yahoo").replaceWith(val( "<b id='replace'>buga</b>" ));
-	ok( jQuery("#replace")[ 0 ], "Replace element with string" );
+	jQuery("#yahoo").replaceWith( val("<b id='replace'>buga</b>") );
+	ok( jQuery("#replace")[ 0 ], "Replace element with element from string" );
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after string" );
 
-	QUnit.reset();
-	jQuery("#yahoo").replaceWith(val( document.getElementById("first") ));
+	jQuery("#anchor2").replaceWith( val(document.getElementById("first")) );
 	ok( jQuery("#first")[ 0 ], "Replace element with element" );
-	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after element" );
+	ok( !jQuery("#anchor2")[ 0 ], "Verify that original element is gone, after element" );
 
-	QUnit.reset();
-	jQuery("#qunit-fixture").append("<div id='bar'><div id='baz'</div></div>");
-	jQuery("#baz").replaceWith("Baz");
+	jQuery("#qunit-fixture").append("<div id='bar'><div id='baz'></div></div>");
+	jQuery("#baz").replaceWith( val("Baz") );
 	equal( jQuery("#bar").text(),"Baz", "Replace element with text" );
 	ok( !jQuery("#baz")[ 0 ], "Verify that original element is gone, after element" );
 
-	QUnit.reset();
-	jQuery("#yahoo").replaceWith( val([ document.getElementById("first"), document.getElementById("mark") ]) );
+	jQuery("#google").replaceWith( val([ document.getElementById("first"), document.getElementById("mark") ]) );
 	ok( jQuery("#first")[ 0 ], "Replace element with array of elements" );
 	ok( jQuery("#mark")[ 0 ], "Replace element with array of elements" );
-	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after array of elements" );
+	ok( !jQuery("#google")[ 0 ], "Verify that original element is gone, after array of elements" );
 
-	QUnit.reset();
-	jQuery("#yahoo").replaceWith( val(jQuery("#mark, #first")) );
+	jQuery("#groups").replaceWith( val(jQuery("#mark, #first")) );
 	ok( jQuery("#first")[ 0 ], "Replace element with set of elements" );
 	ok( jQuery("#mark")[ 0 ], "Replace element with set of elements" );
-	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after set of elements" );
+	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after set of elements" );
 
-	QUnit.reset();
-		tmp = jQuery("<div/>").appendTo("body").click(function() {
+
+	tmp = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
 		ok( true, "Newly bound click run." );
 	});
-	y = jQuery("<div/>").appendTo("body").click(function() {
-		ok( true, "Previously bound click run." );
+	y = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
+		ok( false, "Previously bound click run." );
 	});
 	child = y.append("<b>test</b>").find("b").click(function() {
 		ok( true, "Child bound click run." );
 		return false;
 	});
 
-	y.replaceWith( tmp );
+	y.replaceWith( val(tmp) );
 
 	tmp.click();
 	y.click(); // Shouldn't be run
 	child.click(); // Shouldn't be run
 
-	tmp.remove();
-	y.remove();
-	child.remove();
 
-	QUnit.reset();
-
-	y = jQuery("<div/>").appendTo("body").click(function() {
-		ok( true, "Previously bound click run." );
+	y = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
+		ok( false, "Previously bound click run." );
 	});
 	child2 = y.append("<u>test</u>").find("u").click(function() {
 		ok( true, "Child 2 bound click run." );
 		return false;
 	});
 
-	y.replaceWith( child2 );
+	y.replaceWith( val(child2) );
 
 	child2.click();
 
-	y.remove();
-	child2.remove();
 
-	QUnit.reset();
-
-	set = jQuery("<div/>").replaceWith(val("<span>test</span>"));
+	set = jQuery("<div/>").replaceWith( val("<span>test</span>") );
 	equal( set[0].nodeName.toLowerCase(), "div", "No effect on a disconnected node." );
 	equal( set.length, 1, "No effect on a disconnected node." );
 	equal( set[0].childNodes.length, 0, "No effect on a disconnected node." );
 
-	non_existant = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
-	equal( non_existant.length, 0, "Length of non existant element." );
 
-	$div = jQuery("<div class='replacewith'></div>").appendTo("body");
-	// TODO: Work on jQuery(...) inline script execution
-	//$div.replaceWith("<div class='replacewith'></div><script>" +
-		//"equal(jQuery('.replacewith').length, 1, 'Check number of elements in page.');" +
-		//"</script>");
-	equal(jQuery(".replacewith").length, 1, "Check number of elements in page.");
-	jQuery(".replacewith").remove();
+	non_existent = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
+	equal( non_existent.length, 0, "Length of non existent element." );
 
-	QUnit.reset();
+	$div = jQuery("<div class='replacewith'></div>").appendTo("#qunit-fixture");
+	$div.replaceWith( val("<div class='replacewith'></div><script>" +
+		"equal( jQuery('.replacewith').length, 1, 'Check number of elements in page.' );" +
+		"</script>") );
 
 	jQuery("#qunit-fixture").append("<div id='replaceWith'></div>");
 	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
-
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
-
+	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists after replacement." );
 	jQuery("#replaceWith").replaceWith( val("<div id='replaceWith'></div>") );
-	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists." );
+	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists after subsequent replacement." );
+
+	return expected;
 };
 
 test( "replaceWith(String|Element|Array<Element>|jQuery)", function() {
@@ -1253,17 +1237,13 @@ test( "replaceWith(String|Element|Array<Element>|jQuery)", function() {
 });
 
 test( "replaceWith(Function)", function() {
-	testReplaceWith( manipulationFunctionReturningObj );
+	expect( testReplaceWith(manipulationFunctionReturningObj) + 1 );
 
-	expect( 23 );
+	var y = jQuery("#foo")[ 0 ];
 
-	var y = jQuery("#yahoo")[ 0 ];
-
-	jQuery(y).replaceWith(function() {
+	jQuery( y ).replaceWith(function() {
 		equal( this, y, "Make sure the context is coming in correctly." );
 	});
-
-	QUnit.reset();
 });
 
 test( "replaceWith(string) for more than one element", function() {
