@@ -1811,6 +1811,17 @@ test( "delegated event with selector matching Object.prototype property (#13203)
 	equal( matched, 0, "Nothing matched 'toString'" );
 });
 
+test( "delegated event with intermediate DOM manipulation (#13208)", function() {
+	expect(1);
+
+	jQuery("#foo").on( "click", "#sap", function() {});
+	jQuery("#sap").on( "click", "#anchor2", function() {
+		jQuery( this.parentNode ).remove();
+		ok( true, "Element removed" );
+	});
+	jQuery("#anchor2").trigger("click");
+});
+
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 
