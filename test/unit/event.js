@@ -1878,9 +1878,9 @@ test( "delegated event with selector matching Object.prototype property (#13203)
 test( "delegated event with intermediate DOM manipulation (#13208)", function() {
 	expect(1);
 
-	jQuery("#foo").on( "click", "#sap", function() {});
-	jQuery("#sap").on( "click", "#anchor2", function() {
-		jQuery( this.parentNode ).remove();
+	jQuery("#foo").on( "click", "[id=sap]", function() {});
+	jQuery("#sap").on( "click", "[id=anchor2]", function() {
+		document.createDocumentFragment().appendChild( this.parentNode );
 		ok( true, "Element removed" );
 	});
 	jQuery("#anchor2").trigger("click");
