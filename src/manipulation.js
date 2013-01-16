@@ -15,15 +15,17 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 		// Support: IE 9
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 
-		tr: [ 1, "<table>", "</table>" ],
-		td: [ 3, "<table><tr>", "</tr></table>" ],
+		thead: [ 1, "<table>", "</table>" ],
+		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
+		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+
 		_default: [ 0, "", "" ]
 	};
 
 // Support: IE 9
 wrapMap.optgroup = wrapMap.option;
 
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead = wrapMap.col = wrapMap.tr;
+wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.col = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
 jQuery.fn.extend({
