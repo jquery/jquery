@@ -283,14 +283,31 @@ test("animate native inline width/height", function() {
 	}
 });
 
-test("animate block width/height", function() {
-	expect(3);
+test( "animate block width/height", function() {
+	expect( 3 );
 	stop();
-	jQuery("#foo").css({ display: "block", width: 20, height: 20 }).animate({ width: 42, height: 42 }, 100, function() {
-		equal( jQuery(this).css("display"), "block", "inline-block was not set on block element when animating width/height" );
-		equal( this.offsetWidth, 42, "width was animated" );
-		equal( this.offsetHeight, 42, "height was animated" );
-		start();
+
+	jQuery("<div>").appendTo("#qunit-fixture").css({
+		display: "block",
+		width: 20,
+		height: 20,
+		paddingLeft: 60
+	}).animate({
+		width: 42,
+		height: 42
+	}, {
+		duration: 100,
+		step: function() {
+			if ( jQuery( this ).width() > 42 ) {
+				ok( false, "width was incorrectly augmented during animation" );
+			}
+		},
+		complete: function() {
+			equal( jQuery( this ).css("display"), "block", "inline-block was not set on block element when animating width/height" );
+			equal( jQuery( this ).width(), 42, "width was animated" );
+			equal( jQuery( this ).height(), 42, "height was animated" );
+			start();
+		}
 	});
 });
 
