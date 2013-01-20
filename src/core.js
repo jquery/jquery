@@ -62,8 +62,9 @@ var
 	},
 
 	// The ready event handler and self cleanup method
-	DOMContentLoaded = function() {
-		document.removeEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+	completed = function() {
+		document.removeEventListener( "DOMContentLoaded", completed, false );
+		window.removeEventListener( "load", completed, false );
 		jQuery.ready();
 	};
 
@@ -770,13 +771,13 @@ jQuery.ready.promise = function( obj ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready );
 
-		// Standards-based browsers support DOMContentLoaded
 		} else {
+
 			// Use the handy event callback
-			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+			document.addEventListener( "DOMContentLoaded", completed, false );
 
 			// A fallback to window.onload, that will always work
-			window.addEventListener( "load", jQuery.ready, false );
+			window.addEventListener( "load", completed, false );
 		}
 	}
 	return readyList.promise( obj );
