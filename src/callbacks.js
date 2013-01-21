@@ -139,12 +139,8 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Check if a given callback is in the list.
 			// If no argument is given, return whether or not list has callbacks attached.
-			has: function(fn) {
-				if (fn){
-					return jQuery.inArray( fn, list ) > -1;
-				} else {
-					return list ? list.length > 0 : false;
-				}
+			has: function( fn ) {
+				return fn ? jQuery.inArray( fn, list ) > -1 : !!( list && list.length );
 			},
 			// Remove all callbacks from the list
 			empty: function() {
