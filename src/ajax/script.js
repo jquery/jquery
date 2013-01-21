@@ -38,7 +38,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 				}).on(
 					"load error",
 					callback = function( evt ) {
-						script.off().remove();
+						script.remove();
 						callback = null;
 						if ( evt ) {
 							complete( evt.type === "error" ? 404 : 200, evt.type );
