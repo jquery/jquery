@@ -897,7 +897,7 @@ test( "css opacity consistency across browsers (#12685)", function() {
 });
 
 test( ":visible/:hidden selectors", function() {
-	expect( 13 );
+	expect( 16 );
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
 	jQuery("#nothiddendiv").css({ display: "none" });
@@ -924,6 +924,10 @@ test( ":visible/:hidden selectors", function() {
 	equal(jQuery("#table td:visible").length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements");
 	$table.css("display", "none").html("<tr><td>cell</td><td>cell</td></tr>");
 	equal(jQuery("#table td:visible").length, 0, "hidden cell children not perceived as visible (#4512)");
+
+	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
+	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
+	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 });
 
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
