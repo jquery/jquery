@@ -1483,6 +1483,22 @@ module( "ajax", {
 		
 	});
 
+	ajaxTest( "#13276 - jQuery.ajax() - compatibility between XML documents from ajax requests and parsed string", 1, {
+		url: "data/dashboard.xml",
+		dataType: "xml",
+		success: function( ajaxXML ) {
+			var parsedXML = jQuery( jQuery.parseXML("<tab title=\"Added\">blibli</tab>") ).find("tab");
+			ajaxXML = jQuery( ajaxXML );
+			try {
+				ajaxXML.find("infowindowtab").append( parsedXML );
+			} catch( e ) {
+				strictEqual( e, undefined, "error" );
+				return;
+			}
+			strictEqual( ajaxXML.find("tab").length, 3, "Parsed node was added properly" );
+		}
+	});
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
