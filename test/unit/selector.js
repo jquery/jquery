@@ -63,29 +63,6 @@ test("attributes - jQuery only", function() {
 	);
 });
 
-if ( jQuery.css ) {
-	test("pseudo - visibility", function() {
-		expect( 9 );
-
-		t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
-		t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
-		t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
-
-		var $div = jQuery("<div/>").appendTo("body");
-		$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
-		$div.css( "width", 1 ).css( "height", 0 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.css( "width", 0 ).css( "height", 1 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.css( "width", 1 ).css( "height", 1 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.remove();
-	});
-}
-
 test("disconnected nodes", function() {
 	expect( 4 );
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
