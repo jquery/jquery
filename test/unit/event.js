@@ -2666,3 +2666,17 @@ test( "Check order of focusin/focusout events", 2, function() {
 	input.off();
 });
 
+test(".trigger() with function 'namespace' defined on String.prototype", function() {
+	expect(1);
+	var errored = false;
+	String.prototype.namespace = function() {
+		return 'test';
+	};
+	try {
+		jQuery("<p/>").trigger( "click" );
+	} catch (e) {
+		errored = true;
+	}
+	equal( errored, false, ".trigger() should not trigger an error" );
+	delete String.prototype.namespace;
+});
