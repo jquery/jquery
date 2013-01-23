@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script>
+		var cc_on = false,
+			errors = [];
+/*@cc_on
+		cc_on = true;
+@*/
+		window.onerror = function( errorMessage, filePath, lineNumber ) {
+			errors.push( errorMessage );
+		};
+	</script>
+	<script src="../../../dist/jquery.min.js"></script>
+</head>
+<body>
+	<script>
+		window.parent.iframeCallback( cc_on, errors, jQuery );
+	</script>
+</body>
+</html>
