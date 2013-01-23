@@ -112,8 +112,9 @@ test("serialize()", function() {
 
 	// Add html5 elements only for serialize because selector can't yet find them on non-html5 browsers
 	jQuery("#search").after(
-		"<input type='email' id='html5email' name='email' value='dave@jquery.com' />"+
-		"<input type='number' id='html5number' name='number' value='43' />"
+		"<input type='email' id='html5email' name='email' value='dave@jquery.com' />" +
+		"<input type='number' id='html5number' name='number' value='43' />" +
+		"<input type='file' name='fileupload' />"
 	);
 
 	equal( jQuery("#form").serialize(),
