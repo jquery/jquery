@@ -17,6 +17,13 @@ test("Basic requirements", function() {
 	ok( $, "$" );
 });
 
+testIframeWithCallback( "Conditional compilation compatibility (#13274)", "core/cc_on.html", function( cc_on, errors, $ ) {
+	expect( 3 );
+	ok( true, "JScript conditional compilation " + ( cc_on ? "supported" : "not supported" ) );
+	deepEqual( errors, [], "No errors" );
+	ok( $(), "jQuery executes" );
+});
+
 test("jQuery()", function() {
 
 	var elem, i,

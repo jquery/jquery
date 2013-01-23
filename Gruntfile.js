@@ -409,7 +409,7 @@ module.exports = function( grunt ) {
 			nonascii = false;
 
 		distpaths.forEach(function( filename ) {
-			var i, c,
+			var i, c, map,
 				text = fs.readFileSync( filename, "utf8" );
 
 			// Ensure files use only \n for line endings, not \r\n
@@ -438,7 +438,18 @@ module.exports = function( grunt ) {
 				text = text.replace( /"dist\//g, "\"" );
 				fs.writeFileSync( filename, text, "utf-8" );
 			} else if ( /\.min\.js$/.test( filename ) ) {
-				text = text.replace( /sourceMappingURL=dist\//, "sourceMappingURL=" );
+				// Wrap sourceMap directive in multiline comments (#13274)
+				text = text.replace( /\n?(\/\/@\s*sourceMappingURL=)(.*)/,
+					function( _, directive, path ) {
+						map = "\n" + directive + path.replace( /^dist\//, "" );
+						return "";
+					});
+				if ( map ) {
+					text = text.replace( /(^\/\*[\w\W]*?)\s*\*\/|$/,
+						function( _, comment ) {
+							return ( comment || "\n/*" ) + map + "\n*/";
+						});
+				}
 				fs.writeFileSync( filename, text, "utf-8" );
 			}
 
