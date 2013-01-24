@@ -1498,6 +1498,26 @@ module( "ajax", {
 			strictEqual( ajaxXML.find("tab").length, 3, "Parsed node was added properly" );
 		}
 	});
+	
+	ajaxTest( "#13292 - jQuery.ajax() - converter is bypassed for 204 requests", 3, {
+		url: "data/nocontent.php",
+		dataType: "testing",
+		converters: {
+			"* testing": function() {
+				throw "converter was called";
+			}
+		},
+		success: function( data, status, jqXHR ) {
+			strictEqual( jqXHR.status, 204, "status code is 204" );
+			strictEqual( status, "nocontent", "status text is 'nocontent'" );
+			strictEqual( data, undefined, "data is undefined" );
+		},
+		error: function( _, status, error ) {
+			ok( false, "error" );
+			strictEqual( status, "parsererror", "Parser Error" );
+			strictEqual( error, "converter was called", "Converter was called" );
+		}
+	});
 
 //----------- jQuery.ajaxPrefilter()
 
