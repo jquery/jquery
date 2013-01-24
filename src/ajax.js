@@ -624,12 +624,17 @@ jQuery.extend({
 					}
 				}
 
-				// If not modified
-				if ( status === 304 ) {
+				// if no content
+				if ( status === 204 ) {
+					isSuccess = true;
+					statusText = "nocontent";
+
+				// if not modified
+				} else if ( status === 304 ) {
 					isSuccess = true;
 					statusText = "notmodified";
 
-				// If we have data
+				// If we have data, let's convert it
 				} else {
 					isSuccess = ajaxConvert( s, response );
 					statusText = isSuccess.state;
