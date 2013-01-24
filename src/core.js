@@ -5,6 +5,10 @@ var
 	// The deferred used on DOM ready
 	readyList,
 
+	// Support: IE9
+	// For `typeof xmlNode.method` instead of `xmlNode.method !== undefined`
+	core_strundefined = typeof undefined,
+
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 	location = window.location,
