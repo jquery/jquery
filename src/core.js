@@ -93,7 +93,7 @@ jQuery.fn = jQuery.prototype = {
 
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
-		var match, elem;
+		var elem, match;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
@@ -288,7 +288,7 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
-	var options, name, src, copy, copyIsArray, clone,
+	var copy, options, src, copyIsArray, name, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
@@ -770,7 +770,7 @@ jQuery.extend({
 	// Bind a function to a context, optionally partially applying any
 	// arguments.
 	proxy: function( fn, context ) {
-		var tmp, args, proxy;
+		var args, proxy, tmp;
 
 		if ( typeof context === "string" ) {
 			tmp = fn[ context ];

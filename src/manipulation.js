@@ -285,7 +285,7 @@ jQuery.fn.extend({
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
 
-		var fragment, first, scripts, hasScripts, node, doc,
+		var scripts, node, doc, fragment, hasScripts, first,
 			i = 0,
 			l = this.length,
 			set = this,
@@ -559,7 +559,7 @@ function fixDefaultChecked( elem ) {
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var destElements, srcElements, node, i, clone,
+		var clone, node, srcElements, i, destElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
 		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
@@ -614,7 +614,7 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
-		var contains, elem, tag, tmp, wrap, tbody, j,
+		var contains, elem, j, tmp, tag, wrap, tbody,
 			l = elems.length,
 
 			// Ensure a safe fragment
@@ -740,7 +740,7 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems, /* internal */ acceptData ) {
-		var data, id, elem, type,
+		var elem, id, type, data,
 			i = 0,
 			internalKey = jQuery.expando,
 			cache = jQuery.cache,
