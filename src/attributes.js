@@ -166,7 +166,7 @@ jQuery.fn.extend({
 	},
 
 	val: function( value ) {
-		var hooks, ret, isFunction,
+		var ret, hooks, isFunction,
 			elem = this[0];
 
 		if ( !arguments.length ) {

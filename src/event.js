@@ -22,9 +22,9 @@ jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
 
-		var handleObjIn, eventHandle, tmp,
-			events, t, handleObj,
-			special, handlers, type, namespaces, origType,
+		var handleObjIn, tmp, eventHandle,
+			t, handleObj, special,
+			events, handlers, type, namespaces, origType,
 			elemData = jQuery._data( elem );
 
 		// Don't attach events to noData or text/comment nodes (but allow plain objects)
@@ -133,8 +133,8 @@ jQuery.event = {
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
-		var j, origCount, tmp,
-			events, t, handleObj,
+		var events, handleObj, tmp,
+			j, t, origCount,
 			special, handlers, type, namespaces, origType,
 			elemData = jQuery.hasData( elem ) && jQuery._data( elem );
 
@@ -206,7 +206,7 @@ jQuery.event = {
 
 	trigger: function( event, data, elem, onlyHandlers ) {
 
-		var i, cur, tmp, bubbleType, ontype, handle, special,
+		var i, handle, ontype, bubbleType, tmp, special, cur,
 			eventPath = [ elem || document ],
 			type = event.type || event,
 			namespaces = event.namespace ? event.namespace.split(".") : [];
@@ -343,7 +343,7 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event );
 
-		var i, j, ret, matched, handleObj,
+		var ret, j, handleObj, matched, i,
 			handlerQueue = [],
 			args = core_slice.call( arguments ),
 			handlers = ( jQuery._data( this, "events" ) || {} )[ event.type ] || [],
@@ -876,7 +876,7 @@ if ( !jQuery.support.focusinBubbles ) {
 jQuery.fn.extend({
 
 	on: function( types, selector, data, fn, /*INTERNAL*/ one ) {
-		var origFn, type;
+		var type, origFn;
 
 		// Types can be a map of types/handlers
 		if ( typeof types === "object" ) {
