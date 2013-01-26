@@ -16,16 +16,16 @@
 	<script src="qunit/qunit/qunit.js"></script>
 	<script>
 		(function() {
-			var src = "../dist/jquery.js";
+			var src = "../dist/jquery.min.js";
 
 			// Config parameter to use minified jQuery
 			QUnit.config.urlConfig.push({
-				id: "min",
-				label: "Load minified",
-				tooltip: "Load the minified version of the jQuery build"
+				id: "dev",
+				label: "Load unminified",
+				tooltip: "Load the development (unminified) jQuery file"
 			});
-			if ( QUnit.urlParams.min ) {
-				src = "../dist/jquery.min.js";
+			if ( QUnit.urlParams.dev ) {
+				src = "../dist/jquery.js";
 			}
 
 			// Config parameter to force basic code paths
