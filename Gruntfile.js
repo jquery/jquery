@@ -22,40 +22,42 @@ module.exports = function( grunt ) {
 			files: distpaths
 		},
 		selector: {
-			"src/selector.js": [
-				"src/sizzle-jquery.js",
-				"src/sizzle/sizzle.js"
-			]
+			destFile: "src/selector.js",
+			apiFile: "src/sizzle-jquery.js",
+			srcFile: "src/sizzle/sizzle.js"
 		},
 		build: {
-			"dist/jquery.js": [
-				"src/intro.js",
-				"src/core.js",
-				"src/callbacks.js",
-				"src/deferred.js",
-				"src/support.js",
-				"src/data.js",
-				"src/queue.js",
-				"src/attributes.js",
-				"src/event.js",
-				"src/selector.js",
-				"src/traversing.js",
-				"src/manipulation.js",
+			all:{
+				dest: "dist/jquery.js",
+				src: [
+					"src/intro.js",
+					"src/core.js",
+					"src/callbacks.js",
+					"src/deferred.js",
+					"src/support.js",
+					"src/data.js",
+					"src/queue.js",
+					"src/attributes.js",
+					"src/event.js",
+					"src/selector.js",
+					"src/traversing.js",
+					"src/manipulation.js",
 
-				{ flag: "css", src: "src/css.js" },
-				"src/serialize.js",
-				{ flag: "ajax", src: "src/ajax.js" },
-				{ flag: "ajax/script", src: "src/ajax/script.js", needs: ["ajax"]  },
-				{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
-				{ flag: "ajax/xhr", src: "src/ajax/xhr.js", needs: ["ajax"]  },
-				{ flag: "effects", src: "src/effects.js", needs: ["css"] },
-				{ flag: "offset", src: "src/offset.js", needs: ["css"] },
-				{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
-				{ flag: "deprecated", src: "src/deprecated.js" },
+					{ flag: "css", src: "src/css.js" },
+					"src/serialize.js",
+					{ flag: "ajax", src: "src/ajax.js" },
+					{ flag: "ajax/script", src: "src/ajax/script.js", needs: ["ajax"]  },
+					{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },
+					{ flag: "ajax/xhr", src: "src/ajax/xhr.js", needs: ["ajax"]  },
+					{ flag: "effects", src: "src/effects.js", needs: ["css"] },
+					{ flag: "offset", src: "src/offset.js", needs: ["css"] },
+					{ flag: "dimensions", src: "src/dimensions.js", needs: ["css"] },
+					{ flag: "deprecated", src: "src/deprecated.js" },
 
-				"src/exports.js",
-				"src/outro.js"
-			]
+					"src/exports.js",
+					"src/outro.js"
+				]
+			}
 		},
 
 		jshint: {
@@ -143,15 +145,15 @@ module.exports = function( grunt ) {
 	});
 
 	// Build src/selector.js
-	grunt.registerMultiTask( "selector", "Build src/selector.js", function() {
+	grunt.registerTask( "selector", "Build src/selector.js", function() {
 
-		var name = this.file.dest,
-				files = this.file.src,
-				sizzle = {
-					api: grunt.file.read( files[0] ),
-					src: grunt.file.read( files[1] )
-				},
-				compiled, parts;
+		var cfg = grunt.config("selector"),
+			name = cfg.destFile,
+			sizzle = {
+				api: grunt.file.read( cfg.apiFile ),
+				src: grunt.file.read( cfg.srcFile )
+			},
+			compiled, parts;
 
 		/**
 
@@ -241,13 +243,14 @@ module.exports = function( grunt ) {
 		"build",
 		"Concatenate source (include/exclude modules with +/- flags), embed date/version",
 		function() {
+
 			// Concat specified files.
 			var compiled = "",
 				modules = this.flags,
 				optIn = !modules["*"],
 				explicit = optIn || Object.keys(modules).length > 1,
-				name = this.file.dest,
-				src = this.file.srcRaw,
+				name = this.data.dest,
+				src = this.data.src,
 				deps = {},
 				excluded = {},
 				version = grunt.config( "pkg.version" ),
@@ -479,7 +482,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	// Default grunt
-	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "uglify", "dist:*" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "selector", "build:*:*", "jshint" ] );
