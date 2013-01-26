@@ -1,7 +1,7 @@
 var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
-	
-function internalData( elem, name, data, pvt /* Internal Use Only */ ){
+
+function internalData( elem, name, data, pvt ) {
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}
@@ -95,7 +95,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ){
 	return ret;
 }
 
-function internalRemoveData( elem, name, pvt /* For internal use only */ ){
+function internalRemoveData( elem, name, pvt ) {
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}
@@ -205,18 +205,18 @@ jQuery.extend({
 	},
 
 	data: function( elem, name, data ) {
-		return internalData( elem, name, data, false );
+		return internalData( elem, name, data );
 	},
 
 	removeData: function( elem, name ) {
-		return internalRemoveData( elem, name, false );
+		return internalRemoveData( elem, name );
 	},
 
 	// For internal use only.
 	_data: function( elem, name, data ) {
 		return internalData( elem, name, data, true );
 	},
-	
+
 	_removeData: function( elem, name ) {
 		return internalRemoveData( elem, name, true );
 	},
@@ -304,12 +304,12 @@ function dataAttr( elem, key, data ) {
 		if ( typeof data === "string" ) {
 			try {
 				data = data === "true" ? true :
-				data === "false" ? false :
-				data === "null" ? null :
-				// Only convert to a number if it doesn't change the string
-				+data + "" === data ? +data :
-				rbrace.test( data ) ? jQuery.parseJSON( data ) :
-					data;
+					data === "false" ? false :
+					data === "null" ? null :
+					// Only convert to a number if it doesn't change the string
+					+data + "" === data ? +data :
+					rbrace.test( data ) ? jQuery.parseJSON( data ) :
+						data;
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
