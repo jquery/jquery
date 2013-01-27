@@ -1758,16 +1758,18 @@ asyncTest("Animation callbacks (#11797)", 15, function() {
 	});
 });
 
-test( "Animate properly sets overflow hidden when animating width/height (#12117)", 4, function() {
+test( "Animate properly sets overflow hidden when animating width/height (#12117)", 8, function() {
 	jQuery.each( [ "height", "width" ], function( _, prop ) {
 		jQuery.each( [ 100, 0 ], function( _, value ) {
-			var div = jQuery("<div>"),
+			var div = jQuery("<div>").css( "overflow", "auto" ),
 				props = {};
 			props[ prop ] = value;
 			div.animate( props, 1 );
 			equal( div.css( "overflow" ), "hidden",
 				"overflow: hidden set when animating " + prop + " to " + value );
 			div.stop();
+			equal( div.css( "overflow" ), "auto",
+				"overflow: auto restored after animating " + prop + " to " + value );
 		});
 	});
 });
