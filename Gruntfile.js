@@ -45,6 +45,7 @@ module.exports = function( grunt ) {
 
 					{ flag: "css", src: "src/css.js" },
 					"src/serialize.js",
+					{ flag: "event-alias", src: "src/event-alias.js" },
 					{ flag: "ajax", src: "src/ajax.js" },
 					{ flag: "ajax/script", src: "src/ajax/script.js", needs: ["ajax"]  },
 					{ flag: "ajax/jsonp", src: "src/ajax/jsonp.js", needs: [ "ajax", "ajax/script" ]  },

@@ -34,9 +34,8 @@ test("jQuery()", function() {
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		lng = "",
-		expected = 22,
+		expected = 21,
 		attrObj = {
-			"click": function() { ok( exec, "Click executed." ); },
 			"text": "test",
 			"class": "test2",
 			"id": "test3"
@@ -44,6 +43,10 @@ test("jQuery()", function() {
 
 	// The $(html, props) signature can stealth-call any $.fn method, check for a
 	// few here but beware of modular builds where these methods may be excluded.
+	if ( jQuery.fn.click ) {
+		expected++;
+		attrObj["click"] = function() { ok( exec, "Click executed." ); };
+	}
 	if ( jQuery.fn.width ) {
 		expected++;
 		attrObj["width"] = 10;
@@ -133,7 +136,7 @@ test("jQuery()", function() {
 	equal( elem[0].id, "test3", "jQuery() quick setter id");
 
 	exec = true;
-	elem.click();
+	elem.trigger("click");
 
 	// manually clean up detached elements
 	elem.remove();

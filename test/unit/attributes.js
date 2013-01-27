@@ -316,7 +316,7 @@ test( "attr(String, Object)", function() {
 	equal( $input.attr("checked"), "checked", "Set checked to 'checked' (verified by .attr)" );
 
 	var $radios = jQuery("#checkedtest").find("input[type='radio']");
-	$radios.eq( 1 ).click();
+	$radios.eq( 1 ).trigger("click");
 	equal( $radios.eq( 1 ).prop("checked"), true, "Second radio was checked when clicked" );
 	equal( $radios.eq( 0 ).attr("checked"), "checked", "First radio is still [checked]" );
 
