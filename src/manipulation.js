@@ -563,7 +563,6 @@ function restoreScript( elem ) {
 
 	if ( match ) {
 		elem.type = match[ 1 ];
-
 	} else {
 		elem.removeAttribute("type");
 	}
