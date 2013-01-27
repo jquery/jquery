@@ -121,7 +121,7 @@ var testWrap = function( val ) {
 	equal( result.text(), defaultText, "Check for element wrapping" );
 
 	QUnit.reset();
-	jQuery("#check1").click(function() {
+	jQuery("#check1").on( "click", function() {
 		var checkbox = this;
 
 		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
@@ -168,7 +168,7 @@ var testWrap = function( val ) {
 	equal( j[ 0 ].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	// Wrap an element with a jQuery set and event
-	result = jQuery("<div></div>").click(function() {
+	result = jQuery("<div></div>").on( "click", function() {
 		ok( true, "Event triggered." );
 
 		// Remove handlers on detached elements
@@ -493,7 +493,7 @@ var testAppend = function( valueObj ) {
 	$radioChecked = jQuery("input:radio[name='R1']").eq( 1 );
 	$radioParent = $radioChecked.parent();
 	$radioUnchecked = jQuery("<input type='radio' name='R1' checked='checked'/>").appendTo( $radioParent );
-	$radioChecked.click();
+	$radioChecked.trigger("click");
 	$radioUnchecked[ 0 ].checked = false;
 	$radioParent.wrap("<div></div>");
 	equal( $radioChecked[ 0 ].checked, true, "Reappending radios uphold which radio is checked" );
@@ -766,13 +766,13 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	t( "Append select", "#foo select", [ "select1" ] );
 
 	QUnit.reset();
-	div = jQuery("<div/>").click(function() {
+	div = jQuery("<div/>").on( "click", function() {
 		ok( true, "Running a cloned click." );
 	});
 	div.appendTo("#qunit-fixture, #moretests");
 
-	jQuery("#qunit-fixture div:last").click();
-	jQuery("#moretests div:last").click();
+	jQuery("#qunit-fixture div:last").trigger("click");
+	jQuery("#moretests div:last").trigger("click");
 
 	QUnit.reset();
 	div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
@@ -1139,35 +1139,35 @@ var testReplaceWith = function( val ) {
 	deepEqual( jQuery("#anchor1").contents().get(), [ tmp ], "Replace text node with element" );
 
 
-	tmp = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
+	tmp = jQuery("<div/>").appendTo("#qunit-fixture").on( "click", function() {
 		ok( true, "Newly bound click run." );
 	});
-	y = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
+	y = jQuery("<div/>").appendTo("#qunit-fixture").on( "click", function() {
 		ok( false, "Previously bound click run." );
 	});
-	child = y.append("<b>test</b>").find("b").click(function() {
+	child = y.append("<b>test</b>").find("b").on( "click", function() {
 		ok( true, "Child bound click run." );
 		return false;
 	});
 
 	y.replaceWith( val(tmp) );
 
-	tmp.click();
-	y.click(); // Shouldn't be run
-	child.click(); // Shouldn't be run
+	tmp.trigger("click");
+	y.trigger("click"); // Shouldn't be run
+	child.trigger("click"); // Shouldn't be run
 
 
-	y = jQuery("<div/>").appendTo("#qunit-fixture").click(function() {
+	y = jQuery("<div/>").appendTo("#qunit-fixture").on( "click", function() {
 		ok( false, "Previously bound click run." );
 	});
-	child2 = y.append("<u>test</u>").find("u").click(function() {
+	child2 = y.append("<u>test</u>").find("u").on( "click", function() {
 		ok( true, "Child 2 bound click run." );
 		return false;
 	});
 
 	y.replaceWith( val(child2) );
 
-	child2.click();
+	child2.trigger("click");
 
 
 	set = jQuery("<div/>").replaceWith( val("<span>test</span>") );
@@ -1287,7 +1287,7 @@ test( "clone()", function() {
 	equal( jQuery("#nonnodes").contents().clone().length, 3, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
 
 	// Verify that clones of clones can keep event listeners
-	div = jQuery("<div><ul><li>test</li></ul></div>").click(function() {
+	div = jQuery("<div><ul><li>test</li></ul></div>").on( "click", function() {
 		ok( true, "Bound event still exists." );
 	});
 	clone = div.clone( true ); div.remove();
@@ -1302,7 +1302,7 @@ test( "clone()", function() {
 
 	// Verify that cloned children can keep event listeners
 	div = jQuery("<div/>").append([ document.createElement("table"), document.createElement("table") ]);
-	div.find("table").click(function() {
+	div.find("table").on( "click", function() {
 		ok( true, "Bound event still exists." );
 	});
 
@@ -1316,7 +1316,7 @@ test( "clone()", function() {
 	clone.remove();
 
 	// Make sure that doing .clone() doesn't clone event listeners
-	div = jQuery("<div><ul><li>test</li></ul></div>").click(function() {
+	div = jQuery("<div><ul><li>test</li></ul></div>").on( "click", function() {
 		ok( false, "Bound event still exists after .clone()." );
 	});
 	clone = div.clone();
@@ -1734,9 +1734,9 @@ test( "remove() event cleaning ", 1, function() {
 
 	count = 0;
 	first = jQuery("#ap").children(":first");
-	cleanUp = first.click(function() {
+	cleanUp = first.on( "click", function() {
 		count++;
-	}).remove().appendTo("#qunit-fixture").click();
+	}).remove().appendTo("#qunit-fixture").trigger("click");
 
 	strictEqual( 0, count, "Event handler has been removed" );
 
@@ -1753,9 +1753,9 @@ test( "detach() event cleaning ", 1, function() {
 
 	count = 0;
 	first = jQuery("#ap").children(":first");
-	cleanUp = first.click(function() {
+	cleanUp = first.on( "click", function() {
 		count++;
-	}).detach().appendTo("#qunit-fixture").click();
+	}).detach().appendTo("#qunit-fixture").trigger("click");
 
 	strictEqual( 1, count, "Event handler has not been removed" );
 
@@ -1832,13 +1832,13 @@ test( "jQuery.cleanData", function() {
 	div.remove();
 
 	function getDiv() {
-		var div = jQuery("<div class='outer'><div class='inner'></div></div>").click(function() {
+		var div = jQuery("<div class='outer'><div class='inner'></div></div>").on( "click", function() {
 			ok( true, type + " " + pos + " Click event fired." );
-		}).focus(function() {
+		}).on( "focus", function() {
 			ok( true, type + " " + pos + " Focus event fired." );
-		}).find("div").click(function() {
+		}).find("div").on( "click", function() {
 			ok( false, type + " " + pos + " Click event fired." );
-		}).focus(function() {
+		}).on( "focus", function() {
 			ok( false, type + " " + pos + " Focus event fired." );
 		}).end().appendTo("body");
 
