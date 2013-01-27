@@ -407,7 +407,7 @@ jQuery.extend({
 		if ( obj == null ) {
 			return String( obj );
 		}
-		return typeof obj === "object" || typeof obj === "function" ?
+		return typeof obj === "object" ?
 			class2type[ core_toString.call(obj) ] || "object" :
 			typeof obj;
 	},
