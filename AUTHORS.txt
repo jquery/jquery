@@ -157,3 +157,6 @@ Yiming He <yiminghe@gmail.com>
 Devin Cooper <cooper.semantics@gmail.com>
 Bennett Sorbo <bsorbo@gmail.com>
 Sebastian Burkhard <sebi.burkhard@gmail.com>
+Danil Somsikov <danilasomsikov@gmail.com>
+Jean Boussier <jean.boussier@gmail.com>
+Adam Coulombe <me@adam.co>
