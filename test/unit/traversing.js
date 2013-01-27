@@ -279,7 +279,9 @@ test("filter() with positional selectors", function() {
 });
 
 test("closest()", function() {
-	expect( 14 );
+	expect( 15 );
+
+	var jq;
 
 	deepEqual( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	deepEqual( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
@@ -290,7 +292,7 @@ test("closest()", function() {
 	deepEqual( jQuery("#qunit-fixture div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
-	var jq = jQuery("#nothiddendivchild");
+	jq = jQuery("#nothiddendivchild");
 	deepEqual( jq.closest("html", document.body).get(), [], "Context limited." );
 	deepEqual( jq.closest("body", document.body).get(), [], "Context limited." );
 	deepEqual( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
@@ -306,6 +308,9 @@ test("closest()", function() {
 	equal( jQuery("<div>text</div>").closest("[lang]").length, 0, "Disconnected nodes with text and non-existent attribute selector" );
 
 	ok( !jQuery(document).closest("#foo").length, "Calling closest on a document fails silently" );
+
+	jq = jQuery("<div>text</div>");
+	deepEqual( jq.contents().closest("*").get(), jq.get(), "Text node input (#13332)" );
 });
 
 test("closest(jQuery)", function() {
@@ -430,8 +435,9 @@ test("addBack()", function() {
 });
 
 test("siblings([String])", function() {
-	expect(7);
+	expect(8);
 	deepEqual( jQuery("#en").siblings().get(), q("sndp", "sap"), "Check for siblings" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).siblings().get(), q("nonnodesElement"), "Check for text node siblings" );
 	deepEqual( jQuery("#sndp").siblings(":has(code)").get(), q("sap"), "Check for filtered siblings (has code child element)" );
 	deepEqual( jQuery("#sndp").siblings(":has(a)").get(), q("en", "sap"), "Check for filtered siblings (has anchor child element)" );
 	deepEqual( jQuery("#foo").siblings("form, b").get(), q("form", "floatTest", "lengthtest", "name-tests", "testForm"), "Check for multiple filters" );
@@ -449,17 +455,24 @@ test("children([String])", function() {
 });
 
 test("parent([String])", function() {
-	expect(5);
+	expect(6);
+
+	var $el;
+
 	equal( jQuery("#groups").parent()[0].id, "ap", "Simple parent check" );
 	equal( jQuery("#groups").parent("p")[0].id, "ap", "Filtered parent check" );
 	equal( jQuery("#groups").parent("div").length, 0, "Filtered parent check, no match" );
 	equal( jQuery("#groups").parent("div, p")[0].id, "ap", "Check for multiple filters" );
 	deepEqual( jQuery("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
+
+	$el = jQuery("<div>text</div>");
+	deepEqual( $el.contents().parent().get(), $el.get(), "Check for parent of text node (#13265)" );
 });
 
 test("parents([String])", function() {
-	expect(5);
+	expect(6);
 	equal( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).parents().eq(0).get(), q("nonnodes"), "Text node parents check" );
 	equal( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equal( jQuery("#groups").parents("div")[0].id, "qunit-fixture", "Filtered parents check2" );
 	deepEqual( jQuery("#groups").parents("p, div").get(), q("ap", "qunit-fixture"), "Check for multiple filters" );
@@ -467,7 +480,7 @@ test("parents([String])", function() {
 });
 
 test("parentsUntil([String])", function() {
-	expect(9);
+	expect(10);
 
 	var parents = jQuery("#groups").parents();
 
@@ -475,6 +488,7 @@ test("parentsUntil([String])", function() {
 	deepEqual( jQuery("#groups").parentsUntil(".foo").get(), parents.get(), "parentsUntil with invalid selector (nextAll)" );
 	deepEqual( jQuery("#groups").parentsUntil("#html").get(), parents.not(":last").get(), "Simple parentsUntil check" );
 	equal( jQuery("#groups").parentsUntil("#ap").length, 0, "Simple parentsUntil check" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).parentsUntil("#html").eq(0).get(), q("nonnodes"), "Text node parentsUntil check" );
 	deepEqual( jQuery("#groups").parentsUntil("#html, #body").get(), parents.slice( 0, 3 ).get(), "Less simple parentsUntil check" );
 	deepEqual( jQuery("#groups").parentsUntil("#html", "div").get(), jQuery("#qunit-fixture").get(), "Filtered parentsUntil check" );
 	deepEqual( jQuery("#groups").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multiple-filtered parentsUntil check" );
@@ -483,8 +497,9 @@ test("parentsUntil([String])", function() {
 });
 
 test("next([String])", function() {
-	expect(5);
+	expect(6);
 	equal( jQuery("#ap").next()[0].id, "foo", "Simple next check" );
+	equal( jQuery("<div>text<a id='element'></a></div>").contents().eq(0).next().attr("id"), "element", "Text node next check" );
 	equal( jQuery("#ap").next("div")[0].id, "foo", "Filtered next check" );
 	equal( jQuery("#ap").next("p").length, 0, "Filtered next check, no match" );
 	equal( jQuery("#ap").next("div, p")[0].id, "foo", "Multiple filters" );
@@ -492,41 +507,45 @@ test("next([String])", function() {
 });
 
 test("prev([String])", function() {
-	expect(4);
+	expect(5);
 	equal( jQuery("#foo").prev()[0].id, "ap", "Simple prev check" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).prev().get(), q("nonnodesElement"), "Text node prev check" );
 	equal( jQuery("#foo").prev("p")[0].id, "ap", "Filtered prev check" );
 	equal( jQuery("#foo").prev("div").length, 0, "Filtered prev check, no match" );
 	equal( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
 });
 
 test("nextAll([String])", function() {
-	expect(4);
+	expect(5);
 
 	var elems = jQuery("#form").children();
 
 	deepEqual( jQuery("#label-for").nextAll().get(), elems.not(":first").get(), "Simple nextAll check" );
+	equal( jQuery("<div>text<a id='element'></a></div>").contents().eq(0).nextAll().attr("id"), "element", "Text node nextAll check" );
 	deepEqual( jQuery("#label-for").nextAll("input").get(), elems.not(":first").filter("input").get(), "Filtered nextAll check" );
 	deepEqual( jQuery("#label-for").nextAll("input,select").get(), elems.not(":first").filter("input,select").get(), "Multiple-filtered nextAll check" );
 	deepEqual( jQuery("#label-for, #hidden1").nextAll("input,select").get(), elems.not(":first").filter("input,select").get(), "Multi-source, multiple-filtered nextAll check" );
 });
 
 test("prevAll([String])", function() {
-	expect(4);
+	expect(5);
 
 	var elems = jQuery( jQuery("#form").children().slice(0, 12).get().reverse() );
 
 	deepEqual( jQuery("#area1").prevAll().get(), elems.get(), "Simple prevAll check" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).prevAll().get(), q("nonnodesElement"), "Text node prevAll check" );
 	deepEqual( jQuery("#area1").prevAll("input").get(), elems.filter("input").get(), "Filtered prevAll check" );
 	deepEqual( jQuery("#area1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multiple-filtered prevAll check" );
 	deepEqual( jQuery("#area1, #hidden1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multi-source, multiple-filtered prevAll check" );
 });
 
 test("nextUntil([String])", function() {
-	expect(11);
+	expect(12);
 
 	var elems = jQuery("#form").children().slice( 2, 12 );
 
 	deepEqual( jQuery("#text1").nextUntil().get(), jQuery("#text1").nextAll().get(), "nextUntil with no selector (nextAll)" );
+	equal( jQuery("<div>text<a id='element'></a></div>").contents().eq(0).nextUntil().attr("id"), "element", "Text node nextUntil with no selector (nextAll)" );
 	deepEqual( jQuery("#text1").nextUntil(".foo").get(), jQuery("#text1").nextAll().get(), "nextUntil with invalid selector (nextAll)" );
 	deepEqual( jQuery("#text1").nextUntil("#area1").get(), elems.get(), "Simple nextUntil check" );
 	equal( jQuery("#text1").nextUntil("#text2").length, 0, "Simple nextUntil check" );
@@ -541,11 +560,12 @@ test("nextUntil([String])", function() {
 });
 
 test("prevUntil([String])", function() {
-	expect(10);
+	expect(11);
 
 	var elems = jQuery("#area1").prevAll();
 
 	deepEqual( jQuery("#area1").prevUntil().get(), elems.get(), "prevUntil with no selector (prevAll)" );
+	deepEqual( jQuery("#nonnodes").contents().eq(1).prevUntil().get(), q("nonnodesElement"), "Text node prevUntil with no selector (prevAll)" );
 	deepEqual( jQuery("#area1").prevUntil(".foo").get(), elems.get(), "prevUntil with invalid selector (prevAll)" );
 	deepEqual( jQuery("#area1").prevUntil("label").get(), elems.not(":last").get(), "Simple prevUntil check" );
 	equal( jQuery("#area1").prevUntil("#button").length, 0, "Simple prevUntil check" );
