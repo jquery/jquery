@@ -80,14 +80,18 @@ jQuery.fn.extend({
 				0;
 
 		for ( ; i < l; i++ ) {
-			cur = this[ i ];
+			for ( cur = this[i]; cur && cur !== context; cur = cur.parentNode ) {
+				// Always skip document fragments
+				if ( cur.nodeType < 11 && (pos ?
+					pos.index(cur) > -1 :
 
-			while ( cur && cur.ownerDocument && cur !== context ) {
-				if ( pos ? pos.index( cur ) > -1 : jQuery.find.matchesSelector( cur, selectors ) ) {
-					matched.push( cur );
+					// Don't pass non-elements to Sizzle
+					cur.nodeType === 1 &&
+						jQuery.find.matchesSelector(cur, selectors)) ) {
+
+					cur = matched.push( cur );
 					break;
 				}
-				cur = cur.parentElement;
 			}
 		}
 
@@ -134,42 +138,46 @@ jQuery.fn.extend({
 
 jQuery.fn.andSelf = jQuery.fn.addBack;
 
+function sibling( cur, dir ) {
+	while ( (cur = cur[dir]) && cur.nodeType !== 1 ) {}
+
+	return cur;
+}
+
 jQuery.each({
 	parent: function( elem ) {
-		return elem.parentElement;
+		var parent = elem.parentNode;
+		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
-		return jQuery.dir( elem, "parentElement" );
+		return jQuery.dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "parentElement", until );
+		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
-		return elem.nextElementSibling;
+		return sibling( elem, "nextSibling" );
 	},
 	prev: function( elem ) {
-		return elem.previousElementSibling;
+		return sibling( elem, "previousSibling" );
 	},
 	nextAll: function( elem ) {
-		return jQuery.dir( elem, "nextElementSibling" );
+		return jQuery.dir( elem, "nextSibling" );
 	},
 	prevAll: function( elem ) {
-		return jQuery.dir( elem, "previousElementSibling" );
+		return jQuery.dir( elem, "previousSibling" );
 	},
 	nextUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "nextElementSibling", until );
+		return jQuery.dir( elem, "nextSibling", until );
 	},
 	prevUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "previousElementSibling", until );
+		return jQuery.dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
 		return jQuery.sibling( ( elem.parentNode || {} ).firstChild, elem );
 	},
 	children: function( elem ) {
-		var children = elem.children;
-
-		// documentFragment or document does not have children property
-		return children ? jQuery.merge( [], children ) : jQuery.sibling( elem.firstChild );
+		return jQuery.sibling( elem.firstChild );
 	},
 	contents: function( elem ) {
 		return jQuery.nodeName( elem, "iframe" ) ?
@@ -214,14 +222,17 @@ jQuery.extend({
 	},
 
 	dir: function( elem, dir, until ) {
-		var cur = elem[ dir ],
-			matched = [];
+		var matched = [],
+			truncate = until !== undefined;
 
-		while ( cur && ( !until || !jQuery( cur ).is( until ) ) ) {
-			matched.push( cur );
-			cur = cur[ dir ];
+		while ( (elem = elem[ dir ]) && elem.nodeType !== 9 ) {
+			if ( elem.nodeType === 1 ) {
+				if ( truncate && jQuery( elem ).is( until ) ) {
+					break;
+				}
+				matched.push( elem );
+			}
 		}
-
 		return matched;
 	},
 
