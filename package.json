@@ -2,7 +2,7 @@
 	"name": "jquery",
 	"title": "jQuery",
 	"description": "JavaScript library for DOM operations",
-	"version": "1.9.1pre",
+	"version": "2.0.1pre",
 	"homepage": "http://jquery.com",
 	"author": {
 		"name": "jQuery Foundation and other contributors",
@@ -21,18 +21,15 @@
 			"url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
 		}
 	],
-	"scripts": {
-		"test": "./node_modules/.bin/grunt"
-	},
 	"dependencies": {},
 	"devDependencies": {
-		"grunt-compare-size": "~0.3.0",
-		"grunt-git-authors": "~1.1.0",
-		"grunt-update-submodules": "~0.2.0",
-		"grunt-contrib-watch": "~0.1.1",
-		"grunt-contrib-jshint": "~0.1.1",
-		"grunt-contrib-uglify": "~0.1.1",
-		"grunt": "0.4.0rc4",
+		"grunt-compare-size": "0.3.1",
+		"grunt-git-authors": "1.0.0",
+		"grunt-update-submodules": "0.2.0",
+		"grunt-contrib-watch": "0.1.4",
+		"grunt-contrib-jshint": "0.1.1rc6",
+		"grunt-contrib-uglify": "0.1.1rc6",
+		"grunt": "0.4.0rc5",
 		"testswarm": "0.2.2"
 	},
 	"keywords": []
