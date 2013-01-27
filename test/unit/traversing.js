@@ -279,7 +279,9 @@ test("filter() with positional selectors", function() {
 });
 
 test("closest()", function() {
-	expect( 14 );
+	expect( 15 );
+
+	var jq;
 
 	deepEqual( jQuery("body").closest("body").get(), q("body"), "closest(body)" );
 	deepEqual( jQuery("body").closest("html").get(), q("html"), "closest(html)" );
@@ -290,7 +292,7 @@ test("closest()", function() {
 	deepEqual( jQuery("#qunit-fixture div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
-	var jq = jQuery("#nothiddendivchild");
+	jq = jQuery("#nothiddendivchild");
 	deepEqual( jq.closest("html", document.body).get(), [], "Context limited." );
 	deepEqual( jq.closest("body", document.body).get(), [], "Context limited." );
 	deepEqual( jq.closest("#nothiddendiv", document.body).get(), q("nothiddendiv"), "Context not reached." );
@@ -306,6 +308,9 @@ test("closest()", function() {
 	equal( jQuery("<div>text</div>").closest("[lang]").length, 0, "Disconnected nodes with text and non-existent attribute selector" );
 
 	ok( !jQuery(document).closest("#foo").length, "Calling closest on a document fails silently" );
+
+	jq = jQuery("<div>text</div>");
+	deepEqual( jq.contents().closest("*").get(), jq.get(), "Text node input (#13332)" );
 });
 
 test("closest(jQuery)", function() {
@@ -449,12 +454,18 @@ test("children([String])", function() {
 });
 
 test("parent([String])", function() {
-	expect(5);
+	expect(6);
+
+	var $el;
+
 	equal( jQuery("#groups").parent()[0].id, "ap", "Simple parent check" );
 	equal( jQuery("#groups").parent("p")[0].id, "ap", "Filtered parent check" );
 	equal( jQuery("#groups").parent("div").length, 0, "Filtered parent check, no match" );
 	equal( jQuery("#groups").parent("div, p")[0].id, "ap", "Check for multiple filters" );
 	deepEqual( jQuery("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
+
+	$el = jQuery("<div>text</div>");
+	strictEqual( $el.contents().parent()[0], $el[0], "Check for parent of text node (#13265)" );
 });
 
 test("parents([String])", function() {
