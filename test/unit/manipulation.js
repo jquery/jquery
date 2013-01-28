@@ -2240,3 +2240,14 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
+
+// Only run this test in Shadow DOM-capable browsers (currently, Chrome v26+).
+if ( HTMLElement.prototype.webkitCreateShadowRoot !== undefined ) {
+	test( "html(string) can work on shadow root", 2, function() {
+		var element = document.createElement( "div" );
+		var shadowRoot = element.webkitCreateShadowRoot();
+		equal( shadowRoot.childNodes.length, 0, "new shadow root has no children" );
+		jQuery( shadowRoot ).html( "<div>Hello</div>" );
+		equal( shadowRoot.childNodes.length, 1, "node was added to shadow root" );
+	});
+}
