@@ -4,18 +4,25 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>jQuery selector - sizzle cache</title>
 
-	<script src="../../../dist/jquery.js"></script>
 	<script>
-		var $cached = jQuery.noConflict(true);
+		var jqURL = window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
+			window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) );
+		document.write( "<script src='" + jqURL + "'><\x2Fscript>" );
 	</script>
-	<script src="../../../dist/jquery.min.js"></script>
+	<script>
+		document.write(
+			"<script>var $cached = jQuery.noConflict(true);<\x2Fscript>" +
+			"<script src='" + jqURL + "?overwrite'><\x2Fscript>"
+		);
+	</script>
 
 </head>
 <body>
-
 	<div class="test">
 		<a href="#" id="collision">Worlds collide</a>
 	</div>
-
+	<script>
+		window.parent.iframeCallback( $cached, jQuery, document );
+	</script>
 </body>
 </html>

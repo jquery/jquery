@@ -1,7 +1,12 @@
 <html>
 <head>
 <title>Hover tests</title>
-<script src="../dist/jquery.min.js"></script>
+<script>
+	document.write( "<script id='jquery-js' src='" +
+		window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
+			window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) ) +
+	"'><\x2Fscript>" );
+</script>
 <style>
 /* Remove body dimensions so we can test enter/leave to surrounding browser chrome */
 body, html {
