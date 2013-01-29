@@ -101,6 +101,12 @@ module.exports = function( grunt ) {
 				options: {
 					banner: "/*! jQuery v<%= pkg.version %> | (c) 2005, 2012 jQuery Foundation, Inc. | jquery.org/license */",
 					sourceMap: "dist/jquery.min.map",
+					compress: {
+						hoist_funs: false,
+						join_vars: false,
+						loops: false,
+						unused: false
+					},
 					beautify: {
 						ascii_only: true
 					}

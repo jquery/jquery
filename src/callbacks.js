@@ -46,12 +46,12 @@ jQuery.Callbacks = function( options ) {
 		memory,
 		// Flag to know if list was already fired
 		fired,
-		// First callback to fire (used internally by add and fireWith)
-		firingStart,
-		// Index of currently firing callback (modified by remove if needed)
-		firingIndex,
 		// End of the loop when firing
 		firingLength,
+		// Index of currently firing callback (modified by remove if needed)
+		firingIndex,
+		// First callback to fire (used internally by add and fireWith)
+		firingStart,
 		// Actual callback list
 		list = [],
 		// Stack of fire calls for repeatable lists

@@ -175,7 +175,7 @@ function Animation( elem, properties, options ) {
 }
 
 function propFilter( props, specialEasing ) {
-	var index, name, easing, value, hooks;
+	var value, name, index, easing, hooks;
 
 	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
@@ -243,7 +243,9 @@ jQuery.Animation = jQuery.extend( Animation, {
 
 function defaultPrefilter( elem, props, opts ) {
 	/*jshint validthis:true */
-	var index, prop, value, length, dataShow, toggle, tween, hooks, oldfire,
+	var prop, index, length,
+		value, dataShow, toggle,
+		tween, hooks, oldfire,
 		anim = this,
 		style = elem.style,
 		orig = {},

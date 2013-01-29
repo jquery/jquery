@@ -290,7 +290,7 @@ jQuery.extend({
 	},
 
 	attr: function( elem, name, value ) {
-		var ret, hooks, notxml,
+		var hooks, notxml, ret,
 			nType = elem.nodeType;
 
 		// don't get/set attributes on text, comment and attribute nodes

@@ -101,11 +101,7 @@ if ( xhrSupported ) {
 
 					// Listener
 					callback = function( _, isAbort ) {
-
-						var status,
-							statusText,
-							responseHeaders,
-							responses;
+						var status, responseHeaders, statusText, responses;
 
 						// Firefox throws exceptions when accessing properties
 						// of an xhr when a network error occurred
