@@ -1,6 +1,8 @@
 jQuery.support = (function() {
 
-	var support, all, a, select, opt, input, fragment, eventName, isSupported, i,
+	var support, all, a,
+		input, select, fragment,
+		opt, eventName, isSupported, i,
 		div = document.createElement("div");
 
 	// Setup

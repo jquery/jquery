@@ -1,9 +1,9 @@
 var
-	// A central reference to the root jQuery(document)
-	rootjQuery,
-
 	// The deferred used on DOM ready
 	readyList,
+
+	// A central reference to the root jQuery(document)
+	rootjQuery,
 
 	// Support: IE<9
 	// For `typeof node.method` instead of `node.method !== undefined`
@@ -93,7 +93,7 @@ jQuery.fn = jQuery.prototype = {
 
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
-		var elem, match;
+		var match, elem;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
@@ -288,7 +288,7 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
-	var copy, options, src, copyIsArray, name, clone,
+	var src, copyIsArray, copy, name, options, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,

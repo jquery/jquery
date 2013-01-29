@@ -1,4 +1,4 @@
-var curCSS, getStyles, iframe,
+var iframe, getStyles, curCSS,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 	rposition = /^(top|right|bottom|left)$/,
@@ -98,7 +98,7 @@ function showHide( elements, show ) {
 jQuery.fn.extend({
 	css: function( name, value ) {
 		return jQuery.access( this, function( elem, name, value ) {
-			var styles, len,
+			var len, styles,
 				map = {},
 				i = 0;
 
@@ -239,7 +239,7 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra, styles ) {
-		var val, num, hooks,
+		var num, val, hooks,
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
