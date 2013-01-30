@@ -32,7 +32,7 @@ jQuery.fn.extend({
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		matched = this.pushStack( jQuery.unique( matched ) );
+		matched = this.pushStack( l > 1 ? jQuery.unique( matched ) : matched );
 		matched.selector = ( this.selector ? this.selector + " " : "" ) + selector;
 		return matched;
 	},
