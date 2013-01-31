@@ -208,8 +208,8 @@ jQuery.event = {
 
 		var i, cur, tmp, bubbleType, ontype, handle, special,
 			eventPath = [ elem || document ],
-			type = typeof event.type === 'string' ? event.type : event,
-			namespaces = typeof event.namespace === 'string' ? event.namespace.split(".") : [];
+			type = core_hasOwn( event, "type" ) ? event.type : event,
+			namespaces = core_hasOwn( event, "namespace" ) ? event.namespace.split(".") : [];
 
 		cur = tmp = elem = elem || document;
 
