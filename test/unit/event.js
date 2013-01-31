@@ -2685,8 +2685,12 @@ test(".trigger() with function 'namespace' defined on String.prototype", functio
 	try {
 		jQuery.each( [ "foo", "foo.bar", "moo" ], function(i, str) {
 			var split = str.split(".");
+			var obj = { type: split[0] };
+			if(split[1]) {
+				obj["namespace"] = split[1];
+			}
 			el.trigger(str, false);
-			el.trigger( { "type": split[0], namespace: split[1] }, true);
+			el.trigger(obj, true);
 		});
 	} catch (e) {
 		errored = true;
