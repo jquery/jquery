@@ -2674,3 +2674,41 @@ test( "Check order of focusin/focusout events", 2, function() {
 	input.off();
 });
 
+test(".trigger() with function 'namespace' defined on String.prototype", function() {
+	expect(13);
+	var errored = false, triggered = [], el, expected;
+	expected = [
+		{ type: "foo", namespace: "", isObject: false },
+		{ type: "foo", namespace: "", isObject: true  },
+		{ type: "foo", namespace: "bar", isObject: false },
+		{ type: "foo", namespace: "bar", isObject: true  }
+	];
+	String.prototype.namespace = function() {
+		return "test";
+	};
+		el = jQuery("<p/>");
+		el.bind("foo.bar", function(event, object) {
+			triggered.push({ type: event.type, namespace: event.namespace, isObject: object });
+		});
+	try {
+		jQuery.each( [ "foo", "foo.bar", "moo" ], function(i, str) {
+			var split = str.split(".");
+			var obj = { type: split[0] };
+			if(split[1]) {
+				obj["namespace"] = split[1];
+			}
+			el.trigger(str, false);
+			el.trigger(obj, true);
+		});
+	} catch (e) {
+		errored = true;
+	}
+	el.unbind("foo.bar");
+	equal( errored, false, ".trigger() should not trigger an error" );
+	jQuery.each( expected, function(i, str) {
+		equal(this.type, triggered[i][ "type" ], "Triggered " + i + " should have type " + this.type );
+		equal(this.namespace, triggered[i][ "namespace" ], "Triggered " + i + " should have namespace " + this.namespace );
+		equal(this.isObject, triggered[i][ "isObject" ], "Triggered " + i + " should have have isObject " + this.isObject );
+	});
+	delete String.prototype.namespace;
+});
