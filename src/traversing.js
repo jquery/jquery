@@ -180,7 +180,13 @@ jQuery.each({
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
-		var ret = jQuery.map( this, fn, until );
+		var ret = jQuery.map( this, function( elem ) {
+			var type = elem.nodeType;
+
+			if ( type === 1 || type === 11 || type === 9 ) {
+				return fn.apply( this, arguments );
+			}
+		}, until );
 
 		if ( !runtil.test( name ) ) {
 			selector = until;
