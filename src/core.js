@@ -78,7 +78,7 @@ var
 	completed = function( event ) {
 
 		// readyState === "complete" is good enough for us to call the dom ready in oldIE
-		if ( document.addEventListener || event.type == "load" || document.readyState === "complete" ) {
+		if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
 			detach();
 			jQuery.ready();
 		}
