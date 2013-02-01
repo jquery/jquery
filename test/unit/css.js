@@ -970,4 +970,27 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 	window.setTimeout( start, 1000 );
 });
 
+asyncTest( "Make sure initialized display value for disconnected nodes is correct (#13310)", 4, function() {
+	var display = jQuery("#display").css("display"),
+		div = jQuery("<div/>");
+
+	equal( div.css( "display", "inline" ).hide().show().appendTo("body").css( "display" ), "inline", "Initialized display value has returned" );
+	div.remove();
+
+	div.css( "display", "none" ).hide();
+	equal( jQuery._data( div[ 0 ], "olddisplay" ), undefined, "olddisplay is undefined after hiding a detached and hidden element" );
+	div.remove();
+
+	div.css( "display", "inline-block" ).hide().appendTo("body").fadeIn(function() {
+		equal( div.css( "display" ), "inline-block", "Initialized display value has returned" );
+		div.remove();
+
+		start();
+	});
+
+	equal( jQuery._data( jQuery("#display").css( "display", "inline" ).hide()[ 0 ], "olddisplay" ), display,
+	"display: * !Important value should used as initialized display" );
+	jQuery._removeData( jQuery("#display")[ 0 ] );
+});
+
 }
