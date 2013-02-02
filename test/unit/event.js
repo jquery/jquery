@@ -1432,21 +1432,42 @@ test("jQuery.Event( type, props )", function() {
 
 });
 
-test("jQuery.Event.currentTarget", function(){
-	expect(2);
+test("jQuery.Event properties", function(){
+	expect(12);
 
-	jQuery("<div><p><button>shiny</button></p></div>")
-		.on( "click", "p", function( e ){
-				equal( e.currentTarget, this, "Check delegated currentTarget on event" );
-		})
-		.find( "button" )
-			.on( "click", function( e ){
-				equal( e.currentTarget, this, "Check currentTarget on event" );
-			})
-			.trigger("click")
-			.off( "click" )
-		.end()
-		.off( "click" );
+	var handler,
+		$structure = jQuery("<div id='ancestor'><p id='delegate'><span id='target'>shiny</span></p></div>"),
+		$target = $structure.find("#target");
+
+	handler = function( e ) {
+		strictEqual( e.currentTarget, this, "currentTarget at " + this.id );
+		equal( e.isTrigger, 3, "trigger at " + this.id );
+	};
+	$structure.one( "click", handler );
+	$structure.one( "click", "p", handler );
+	$target.one( "click", handler );
+	$target[0].onclick = function( e ) {
+		strictEqual( e.currentTarget, this, "currentTarget at target (native handler)" );
+		equal( e.isTrigger, 3, "trigger at target (native handler)" );
+	};
+	$target.trigger("click");
+
+	$target.one( "click", function( e ) {
+		equal( e.isTrigger, 2, "triggerHandler at target" );
+	});
+	$target[0].onclick = function( e ) {
+		equal( e.isTrigger, 2, "triggerHandler at target (native handler)" );
+	};
+	$target.triggerHandler("click");
+
+	handler = function( e ) {
+		strictEqual( e.isTrigger, undefined, "native event at " + this.id );
+	};
+	$target.one( "click", handler );
+	$target[0].onclick = function( e ) {
+		strictEqual( e.isTrigger, undefined, "native event at target (native handler)" );
+	};
+	fireNative( $target[0], "click" );
 });
 
 test(".delegate()/.undelegate()", function() {
