@@ -1019,6 +1019,27 @@ test("jQuery.extend(Object, Object)", function() {
 	deepEqual( options2, options2Copy, "Check if not modified: options2 must not be modified" );
 });
 
+test("jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed by object", function() {
+	expect(2);
+
+	var result, initial = {
+		// This will make "copyIsArray" true
+		array: [ 1, 2, 3, 4 ],
+		// If "copyIsArray" doesn't get reset to false, the check
+		// will evaluate true and enter the array copy block
+		// instead of the object copy block. Since the ternary in the
+		// "copyIsArray" block will will evaluate to false
+		// (check if operating on an array with ), this will be
+		// replaced by an empty array.
+		object: {}
+	};
+
+	result = jQuery.extend( true, {}, initial );
+
+	deepEqual( result, initial, "The [result] and [initial] have equal shape and values" );
+	ok( !jQuery.isArray( result.object ), "result.object wasn't paved with an empty array" );
+});
+
 test("jQuery.each(Object,Function)", function() {
 	expect( 23 );
 
