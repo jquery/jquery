@@ -135,7 +135,7 @@ Data.prototype = {
 	discard: function( owner ) {
 		var index = Data.index( this.owners, owner );
 
-		if ( index >= 0 ) {
+		if ( index !== -1 ) {
 			this.owners.splice( index, 1 );
 			this.cache.splice( index, 1 );
 		}
