@@ -103,10 +103,11 @@ Data.prototype = {
 					if ( key in cache ) {
 						name = [ key ];
 					} else {
-						// Split the camel cased version by spaces unless a key with the spaces exists
+						// If a key with the spaces exists, use it.
+						// Otherwise, create an array by matching non-whitespace
 						name = camel( key );
 						name = name in cache ?
-							[ name ] : name.split(" ");
+							[ name ] : ( name.match( core_rnotwhite ) || [] );
 					}
 				} else {
 					// If "name" is an array of keys...
