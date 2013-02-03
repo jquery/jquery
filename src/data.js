@@ -130,10 +130,7 @@ Data.prototype = {
 	hasData: function( owner ) {
 		var index = Data.index( this.owners, owner );
 
-		if ( index > -1 ) {
-			return !jQuery.isEmptyObject( this.cache[ index ] );
-		}
-		return false;
+		return index !== -1 && jQuery.isEmptyObject( this.cache[ index ] );
 	},
 	discard: function( owner ) {
 		var index = Data.index( this.owners, owner );
