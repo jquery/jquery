@@ -6,6 +6,15 @@ test("boxModel", function() {
 	equal( jQuery.support.boxModel, document.compatMode === "CSS1Compat" , "jQuery.support.boxModel is sort of tied to quirks mode but unstable since 1.8" );
 });
 
+test( "zoom of doom (#13089)", function() {
+	expect( 1 );
+
+	if ( jQuery.support.inlineBlockNeedsLayout ) {
+		ok( document.body.style.zoom, "Added a zoom to the body (#11048, #12869)" );
+	} else {
+		ok( !document.body.style.zoom, "No zoom added to the body" );
+	}
+});
 if ( jQuery.css ) {
 	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9239)", "support/bodyBackground.html", function( color, support ) {
 		expect( 2 );
