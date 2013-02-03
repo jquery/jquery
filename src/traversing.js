@@ -133,9 +133,7 @@ jQuery.fn.extend({
 jQuery.fn.andSelf = jQuery.fn.addBack;
 
 function sibling( cur, dir ) {
-	do {
-		cur = cur[ dir ];
-	} while ( cur && cur.nodeType !== 1 );
+	while ( (cur = cur[dir]) && cur.nodeType !== 1 ) {}
 
 	return cur;
 }
@@ -182,7 +180,13 @@ jQuery.each({
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
-		var ret = jQuery.map( this, fn, until );
+		var ret = jQuery.map( this, function( elem ) {
+			var type = elem.nodeType;
+
+			if ( type === 1 || type === 11 || type === 9 ) {
+				return fn.apply( this, arguments );
+			}
+		}, until );
 
 		if ( !runtil.test( name ) ) {
 			selector = until;
@@ -192,10 +196,14 @@ jQuery.each({
 			ret = jQuery.filter( selector, ret );
 		}
 
-		ret = this.length > 1 && !guaranteedUnique[ name ] ? jQuery.unique( ret ) : ret;
+		if ( this.length > 1 ) {
+			if ( !guaranteedUnique[ name ] ) {
+				jQuery.unique( ret );
+			}
 
-		if ( this.length > 1 && rparentsprev.test( name ) ) {
-			ret = ret.reverse();
+			if ( rparentsprev.test( name ) ) {
+				ret.reverse();
+			}
 		}
 
 		return this.pushStack( ret );

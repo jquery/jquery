@@ -442,32 +442,38 @@ test("siblings([String])", function() {
 });
 
 test("children([String])", function() {
-	expect(3);
+	expect(5);
 	deepEqual( jQuery("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
 	deepEqual( jQuery("#foo").children(":has(code)").get(), q("sndp", "sap"), "Check for filtered children" );
 	deepEqual( jQuery("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
+
+	equal( jQuery( jQuery.parseXML("<root><test/></root>" ) ).children().length, 1, "Check xml" );
+	equal( jQuery( document.createDocumentFragment() ).append("<div/>").children().length, 1, "Check document fragment" );
 });
 
 test("parent([String])", function() {
-	expect(5);
+	expect(6);
 	equal( jQuery("#groups").parent()[0].id, "ap", "Simple parent check" );
 	equal( jQuery("#groups").parent("p")[0].id, "ap", "Filtered parent check" );
 	equal( jQuery("#groups").parent("div").length, 0, "Filtered parent check, no match" );
 	equal( jQuery("#groups").parent("div, p")[0].id, "ap", "Check for multiple filters" );
+	equal( jQuery("#groups").contents().parent().length, 0, "Text/comment node parent check" );
+
 	deepEqual( jQuery("#en, #sndp").parent().get(), q("foo"), "Check for unique results from parent" );
 });
 
 test("parents([String])", function() {
-	expect(5);
+	expect(6);
 	equal( jQuery("#groups").parents()[0].id, "ap", "Simple parents check" );
 	equal( jQuery("#groups").parents("p")[0].id, "ap", "Filtered parents check" );
 	equal( jQuery("#groups").parents("div")[0].id, "qunit-fixture", "Filtered parents check2" );
+	equal( jQuery("#groups").contents().parents().length, 0, "Text/comment node parent check" );
 	deepEqual( jQuery("#groups").parents("p, div").get(), q("ap", "qunit-fixture"), "Check for multiple filters" );
 	deepEqual( jQuery("#en, #sndp").parents().get(), q("foo", "qunit-fixture", "dl", "body", "html"), "Check for unique results from parents" );
 });
 
 test("parentsUntil([String])", function() {
-	expect(9);
+	expect(10);
 
 	var parents = jQuery("#groups").parents();
 
@@ -480,27 +486,32 @@ test("parentsUntil([String])", function() {
 	deepEqual( jQuery("#groups").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multiple-filtered parentsUntil check" );
 	equal( jQuery("#groups").parentsUntil("#html", "span").length, 0, "Filtered parentsUntil check, no match" );
 	deepEqual( jQuery("#groups, #ap").parentsUntil("#html", "p,div,dl").get(), parents.slice( 0, 3 ).get(), "Multi-source, multiple-filtered parentsUntil check" );
+	equal( jQuery("#groups").contents().parentsUntil("#html").length, 0, "Text/comment node parentsUntil check" );
 });
 
 test("next([String])", function() {
-	expect(5);
+	expect(7);
 	equal( jQuery("#ap").next()[0].id, "foo", "Simple next check" );
 	equal( jQuery("#ap").next("div")[0].id, "foo", "Filtered next check" );
 	equal( jQuery("#ap").next("p").length, 0, "Filtered next check, no match" );
 	equal( jQuery("#ap").next("div, p")[0].id, "foo", "Multiple filters" );
 	equal( jQuery("body").next().length, 0, "Simple next check, no match" );
+	equal( jQuery("<div>text<span></span></div>").contents().eq( 0 ).next().length, 0, "Text node next check" );
+	equal( jQuery("<div><!-- comment --><span></span></div>").contents().eq( 0 ).next().length, 0, "Comment node next check" );
 });
 
 test("prev([String])", function() {
-	expect(4);
+	expect(6);
 	equal( jQuery("#foo").prev()[0].id, "ap", "Simple prev check" );
 	equal( jQuery("#foo").prev("p")[0].id, "ap", "Filtered prev check" );
 	equal( jQuery("#foo").prev("div").length, 0, "Filtered prev check, no match" );
 	equal( jQuery("#foo").prev("p, div")[0].id, "ap", "Multiple filters" );
+	equal( jQuery("#nonnodes").contents().eq( 1 ).prev().length, 0, "Text node prev check" );
+	equal( jQuery("<div><span></span><!-- comment --></div>").contents().eq( 1 ).prev().length, 0, "Comment node next check" );
 });
 
 test("nextAll([String])", function() {
-	expect(4);
+	expect(6);
 
 	var elems = jQuery("#form").children();
 
@@ -508,10 +519,13 @@ test("nextAll([String])", function() {
 	deepEqual( jQuery("#label-for").nextAll("input").get(), elems.not(":first").filter("input").get(), "Filtered nextAll check" );
 	deepEqual( jQuery("#label-for").nextAll("input,select").get(), elems.not(":first").filter("input,select").get(), "Multiple-filtered nextAll check" );
 	deepEqual( jQuery("#label-for, #hidden1").nextAll("input,select").get(), elems.not(":first").filter("input,select").get(), "Multi-source, multiple-filtered nextAll check" );
+
+	equal( jQuery("<div>text<span></span></div>").contents().eq( 0 ).nextAll().length, 0, "Text node nextAll check" );
+	equal( jQuery("<div><!-- comment --><span></span></div>").contents().eq( 0 ).nextAll().length, 0, "Comment node nextAll check" );
 });
 
 test("prevAll([String])", function() {
-	expect(4);
+	expect(6);
 
 	var elems = jQuery( jQuery("#form").children().slice(0, 12).get().reverse() );
 
@@ -519,10 +533,13 @@ test("prevAll([String])", function() {
 	deepEqual( jQuery("#area1").prevAll("input").get(), elems.filter("input").get(), "Filtered prevAll check" );
 	deepEqual( jQuery("#area1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multiple-filtered prevAll check" );
 	deepEqual( jQuery("#area1, #hidden1").prevAll("input,select").get(), elems.filter("input,select").get(), "Multi-source, multiple-filtered prevAll check" );
+
+	equal( jQuery("#nonnodes").contents().eq( 1 ).prevAll().length, 0, "Text node prevAll check" );
+	equal( jQuery("#nonnodes").contents().eq( 2 ).prevAll().length, 0, "Comment node prevAll check" );
 });
 
 test("nextUntil([String])", function() {
-	expect(11);
+	expect(13);
 
 	var elems = jQuery("#form").children().slice( 2, 12 );
 
@@ -538,10 +555,13 @@ test("nextUntil([String])", function() {
 	deepEqual( jQuery("#text1, #hidden1").nextUntil("#area1", "button,input").get(), elems.get(), "Multi-source, multiple-filtered nextUntil check" );
 
 	deepEqual( jQuery("#text1").nextUntil("[class=foo]").get(), jQuery("#text1").nextAll().get(), "Non-element nodes must be skipped, since they have no attributes" );
+
+	equal( jQuery("<div>text<span></span></div>").contents().eq( 0 ).nextUntil().length, 0, "Text node nextUntil check" );
+	equal( jQuery("<div><!-- comment --><span></span></div>").contents().eq( 0 ).nextUntil().length, 0, "Comment node nextUntil check" );
 });
 
 test("prevUntil([String])", function() {
-	expect(10);
+	expect(12);
 
 	var elems = jQuery("#area1").prevAll();
 
@@ -555,6 +575,9 @@ test("prevUntil([String])", function() {
 	deepEqual( jQuery("#area1").prevUntil("label", "button,input").get(), elems.not(":last").get(), "Multiple-filtered prevUntil check" );
 	equal( jQuery("#area1").prevUntil("label", "div").length, 0, "Filtered prevUntil check, no match" );
 	deepEqual( jQuery("#area1, #hidden1").prevUntil("label", "button,input").get(), elems.not(":last").get(), "Multi-source, multiple-filtered prevUntil check" );
+
+	equal( jQuery("#nonnodes").contents().eq( 1 ).prevUntil().length, 0, "Text node prevAll check" );
+	equal( jQuery("#nonnodes").contents().eq( 2 ).prevUntil().length, 0, "Comment node prevAll check" );
 });
 
 test("contents()", function() {
@@ -659,7 +682,7 @@ test("eq('-1') #10616", function() {
 
 test("index(no arg) #10977", function() {
 	expect(1);
-	
+
 	var $list = jQuery("<ul id='indextest'><li>THIS ONE</li><li class='one'>a</li><li class='two'>b</li><li class='three'>c</li></ul>");
 	jQuery("#qunit-fixture").append( $list );
 	strictEqual ( jQuery( "#indextest li:not(.one,.two)" ).index() , 0, "No Argument Index Check" );
