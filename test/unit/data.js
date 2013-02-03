@@ -6,6 +6,33 @@ test("expando", function(){
 	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
 });
 
+test( "jQuery.data & removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery.data( document.body, "hello", "world" ), "world",
+		"jQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery.removeData( document.body, "hello" ), undefined,
+		"jQuery.removeData( elem, key, value ) returns undefined"
+	);
+
+});
+
+test( "jQuery._data & _removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery._data( document.body, "hello", "world" ), "world",
+		"jQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery._removeData( document.body, "hello" ), undefined,
+		"jQuery.removeData( elem, key, value ) returns undefined"
+	);
+});
+
 function dataTests (elem) {
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
 
@@ -106,6 +133,10 @@ test("Data is not being set on comment and text nodes", function() {
 	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
 
 });
+/*
+// Since the new data system does not rely on exandos, limiting the type of
+// nodes that can have data is no longer necessary. jQuery.acceptData is now irrelevant
+// and should be removed from the library.
 
 test("jQuery.acceptData", function() {
 	expect(9);
@@ -127,7 +158,7 @@ test("jQuery.acceptData", function() {
 	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
 	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
 });
-
+*/
 test(".data()", function() {
 	expect(5);
 
@@ -424,7 +455,7 @@ if (window.JSON && window.JSON.stringify) {
 }
 
 test("jQuery.data should follow html5 specification regarding camel casing", function() {
-	expect(10);
+	expect(12);
 
 	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
 		.prependTo("body");
@@ -444,6 +475,9 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 
 	equal( div.data("fooBar"), "d", "Verify updated data-* key" );
 	equal( div.data("foo-bar"), "d", "Verify updated data-* key" );
+
+	equal( div.data("fooBar"), "d", "Verify updated data-* key (fooBar)" );
+	equal( div.data("foo-bar"), "d", "Verify updated data-* key (foo-bar)" );
 
 	div.remove();
 });

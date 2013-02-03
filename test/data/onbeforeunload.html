@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+	<script src="/dist/jquery.js"></script>
+	<script>
+		function report( event ) {
+			var payload = {
+				event: event.type
+			};
+			return top.postMessage( JSON.stringify(payload), "*" );
+		}
+
+		jQuery( window ).on( "beforeunload", function( event ) {
+			report( event );
+		}).on( "load", function( event ) {
+			setTimeout(function() {
+				window.location.reload();
+			}, 50);
+		});
+	</script>
+</html>
