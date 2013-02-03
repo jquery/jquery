@@ -6,7 +6,7 @@
 			var payload = {
 				event: event.type
 			};
-			return top.postMessage( JSON.stringify(payload), "*" );
+			return parent.postMessage( JSON.stringify(payload), "*" );
 		}
 
 		jQuery( window ).on( "beforeunload", function( event ) {
