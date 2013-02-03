@@ -1797,8 +1797,12 @@ test( "Animate properly sets overflow hidden when animating width/height (#12117
 			equal( div.css( "overflow" ), "hidden",
 				"overflow: hidden set when animating " + prop + " to " + value );
 			div.stop();
-			equal( div.css( "overflow" ), "auto",
-				"overflow: auto restored after animating " + prop + " to " + value );
+			if ( jQuery.support.shrinkWrapBlocks ) {
+				ok( true, "cannot restore overflow, shrinkWrapBlocks" );
+			} else {
+				equal( div.css( "overflow" ), "auto",
+					"overflow: auto restored after animating " + prop + " to " + value );
+			}
 		});
 	});
 });
