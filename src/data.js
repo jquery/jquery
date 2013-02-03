@@ -16,8 +16,7 @@ Data.index = function( array, node ) {
 
 Data.prototype = {
 	add: function( owner ) {
-		this.owners.push( owner );
-		return (this.cache[ this.owners.length - 1 ] = {});
+		return (this.cache[ this.owners.push( owner ) - 1 ] = {});
 	},
 	set: function( owner, data, value ) {
 		var prop,
