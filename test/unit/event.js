@@ -1372,7 +1372,7 @@ test("Submit event can be stopped (#11049)", function() {
 // Test beforeunload event only if it supported (i.e. not Opera)
 if ( window.onbeforeunload === null ) {
 	asyncTest("on(beforeunload)", 1, function() {
-		var iframe = jQuery(jQuery.parseHTML("<iframe src='data/onbeforeunload.html'><iframe>"));
+		var iframe = jQuery(jQuery.parseHTML("<iframe src='data/event/onbeforeunload.html'><iframe>"));
 
 		window.onmessage = function( event ) {
 			var payload = JSON.parse( event.data );
