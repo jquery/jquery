@@ -274,7 +274,6 @@ jQuery.fn.extend({
 				if ( data !== undefined ) {
 					return data;
 				}
-				// console.log( data_priv.access(elem), key, data );
 				// Attempt to "discover" the data in
 				// HTML5 custom data-* attrs
 				data = dataAttr( elem, key, undefined );
