@@ -131,7 +131,7 @@ Data.prototype = {
 	hasData: function( owner ) {
 		var index = Data.index( this.owners, owner );
 
-		return index !== -1 && jQuery.isEmptyObject( this.cache[ index ] );
+		return index !== -1 && !jQuery.isEmptyObject( this.cache[ index ] );
 	},
 	discard: function( owner ) {
 		var index = Data.index( this.owners, owner );
