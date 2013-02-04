@@ -151,3 +151,5 @@ section { background:#f0f; display:block; }
 
 /* #11971 */
 #foo { background: url(1x1.jpg) right bottom no-repeat; }
+
+#display { display: list-item !important; }
