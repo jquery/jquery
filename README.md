@@ -14,25 +14,23 @@ In the spirit of open source software development, jQuery always encourages comm
 What you need to build your own jQuery
 --------------------------------------
 
-In order to build jQuery, you need to have GNU make 3.8 or later, Node.js/npm latest, and git 1.7 or later.
+In order to build jQuery, you need to have Node.js/npm latest and git 1.7 or later.
 (Earlier versions might work OK, but are not tested.)
 
 Windows users have two options:
 
-1. Install [msysgit](https://code.google.com/p/msysgit/) (Full installer for official Git),
-   [GNU make for Windows](http://gnuwin32.sourceforge.net/packages/make.htm), and a
-   [binary version of Node.js](http://node-js.prcn.co.cc/). Make sure all three packages are installed to the same
+1. Install [msysgit](https://code.google.com/p/msysgit/) (Full installer for official Git) and a
+   [binary version of Node.js](http://nodejs.org). Make sure all two packages are installed to the same
    location (by default, this is C:\Program Files\Git).
-2. Install [Cygwin](http://cygwin.com/) (make sure you install the git, make, and which packages), then either follow
-   the [Node.js build instructions](https://github.com/ry/node/wiki/Building-node.js-on-Cygwin-%28Windows%29) or install
-   the [binary version of Node.js](http://node-js.prcn.co.cc/).
+2. Install [Cygwin](http://cygwin.com/) (make sure you install the git and which packages), and
+   a [binary version of Node.js](http://nodejs.org/).
 
 Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
 [Apple's Xcode site](http://developer.apple.com/technologies/xcode.html)) and
 [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
-Linux/BSD users should use their appropriate package managers to install make, git, and node, or build from source
+Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
 if you swing that way. Easy-peasy.
 
 
@@ -45,12 +43,17 @@ First, clone a copy of the main jQuery git repo by running:
 git clone git://github.com/jquery/jquery.git
 ```
 
-Enter the directory and install the Node dependencies:
+Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:
+
+```bash
+npm install -g grunt-cli
+```
+
+Enter the jquery directory and install the Node dependencies, this time *without* specifying a global install:
 
 ```bash
 cd jquery && npm install
 ```
-
 
 Make sure you have `grunt` installed by testing:
 
@@ -58,16 +61,13 @@ Make sure you have `grunt` installed by testing:
 grunt -version
 ```
 
-
-
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
 ```bash
 grunt
 ```
 
-
-The built version of jQuery will be put in the `dist/` subdirectory.
+The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
 
 ### Modules (new in 1.8)
@@ -165,7 +165,7 @@ Run the unit tests with a local server that supports PHP. No database is require
 Building to a different directory
 ---------------------------------
 
-If you want to build jQuery to a directory that is different from the default location:
+To copy the built jQuery files from `/dist` to another directory:
 
 ```bash
 grunt && grunt dist:/path/to/special/location/
@@ -177,7 +177,7 @@ With this example, the output files would be:
 /path/to/special/location/jquery.min.js
 ```
 
-If you want to add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
+To add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
 
 ```json
 
@@ -185,7 +185,6 @@ If you want to add a permanent copy destination, create a file in `dist/` called
   "/Absolute/path/to/other/destination": true
 }
 ```
-
 
 Additionally, both methods can be combined.
 
@@ -204,8 +203,8 @@ Note: This task will also be run any time the default `grunt` command is used.
 
 
 
-Git for dummies
----------------
+Essential Git
+-------------
 
 As the source code is handled by the version control system Git, it's useful to know some features used.
 

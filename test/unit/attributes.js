@@ -46,15 +46,11 @@ test( "jQuery.propFix integrity test", function() {
 		"contenteditable": "contentEditable"
 	};
 
-	if ( !jQuery.support.enctype ) {
-		props.enctype = "encoding";
-	}
-
 	deepEqual( props, jQuery.propFix, "jQuery.propFix passes integrity check" );
 });
 
 test( "attr(String)", function() {
-	expect( 48 );
+	expect( 50 );
 
 	equal( jQuery("#text1").attr("type"), "text", "Check for type attribute" );
 	equal( jQuery("#radio1").attr("type"), "radio", "Check for type attribute" );
@@ -68,6 +64,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#text1").attr("name"), "action", "Check for name attribute" );
 	ok( jQuery("#form").attr("action").indexOf("formaction") >= 0, "Check for action attribute" );
 	equal( jQuery("#text1").attr("value", "t").attr("value"), "t", "Check setting the value attribute" );
+	equal( jQuery("#text1").attr("value", "").attr("value"), "", "Check setting the value attribute to empty string" );
 	equal( jQuery("<div value='t'></div>").attr("value"), "t", "Check setting custom attr named 'value' on a div" );
 	equal( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
 	equal( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
@@ -94,7 +91,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#tAnchor5").attr("href"), "#5", "Check for non-absolute href (an anchor)" );
 	jQuery("<a id='tAnchor6' href='#5' />").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#tAnchor6").prop("href"), "Check for absolute href prop on an anchor" );
-	
+
 	$("<script type='jquery/test' src='#5' id='scriptSrc'></script>").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#scriptSrc").prop("src"), "Check for absolute src prop on a script" );
 
@@ -122,20 +119,24 @@ test( "attr(String)", function() {
 	optgroup.appendChild( option );
 	select.appendChild( optgroup );
 
-	equal( jQuery( option ).attr("selected"), "selected", "Make sure that a single option is selected, even when in an optgroup." );
+	equal( jQuery( option ).prop("selected"), true, "Make sure that a single option is selected, even when in an optgroup." );
 
 	var $img = jQuery("<img style='display:none' width='215' height='53' src='data/1x1.jpg'/>").appendTo("body");
 	equal( $img.attr("width"), "215", "Retrieve width attribute an an element with display:none." );
 	equal( $img.attr("height"), "53", "Retrieve height attribute an an element with display:none." );
 
 	// Check for style support
-	ok( !!~jQuery("#dl").attr("style").indexOf("position"), "Check style attribute getter, also normalize css props to lowercase" );
-	ok( !!~jQuery("#foo").attr("style", "position:absolute;").attr("style").indexOf("position"), "Check style setter" );
+	var styleElem = jQuery("<div/>").appendTo("#qunit-fixture").css({
+		background: "url(UPPERlower.gif)"
+	});
+	ok( !!~styleElem.attr("style").indexOf("UPPERlower.gif"), "Check style attribute getter" );
+	ok( !!~styleElem.attr("style", "position:absolute;").attr("style").indexOf("absolute"), "Check style setter" );
 
 	// Check value on button element (#1954)
-	var $button = jQuery("<button value='foobar'>text</button>").insertAfter("#button");
-	equal( $button.attr("value"), "foobar", "Value retrieval on a button does not return innerHTML" );
-	equal( $button.attr("value", "baz").html(), "text", "Setting the value does not change innerHTML" );
+	var $button = jQuery("<button>text</button>").insertAfter("#button");
+	strictEqual( $button.attr("value"), undefined, "Absence of value attribute on a button" );
+	equal( $button.attr( "value", "foobar" ).attr("value"), "foobar", "Value attribute on a button does not return innerHTML" );
+	equal( $button.attr("value", "baz").html(), "text", "Setting the value attribute does not change innerHTML" );
 
 	// Attributes with a colon on a table element (#1591)
 	equal( jQuery("#table").attr("test:attrib"), undefined, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
@@ -152,10 +153,34 @@ test( "attr(String)", function() {
 	equal( jQuery("<div/>").attr( "title", "something" ).attr("title"), "something", "Set the title attribute." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
 	equal( jQuery("<div/>").attr("value"), undefined, "An unset value on a div returns undefined." );
-	equal( jQuery("<input/>").attr("value"), "", "An unset value on an input returns current value." );
+	strictEqual( jQuery("<select><option value='property'></option></select>").attr("value"), undefined, "An unset value on a select returns undefined." );
 
 	$form = jQuery("#form").attr( "enctype", "multipart/form-data" );
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
+
+});
+
+test( "attr(String) on cloned elements, #9646", function() {
+	expect( 4 );
+
+	var div,
+		input = jQuery("<input name='tester' />");
+
+	input.attr("name");
+
+	strictEqual( input.clone( true ).attr( "name", "test" )[ 0 ].name, "test", "Name attribute should be changed on cloned element" );
+
+	div = jQuery("<div id='tester' />");
+	div.attr("id");
+
+	strictEqual( div.clone( true ).attr( "id", "test" )[ 0 ].id, "test", "Id attribute should be changed on cloned element" );
+
+	input = jQuery("<input value='tester' />");
+	input.attr("value");
+
+	strictEqual( input.clone( true ).attr( "value", "test" )[ 0 ].value, "test", "Value attribute should be changed on cloned element" );
+
+	strictEqual( input.clone( true ).attr( "value", 42 )[ 0 ].value, "42", "Value attribute should be changed on cloned element" );
 });
 
 test( "attr(String) in XML Files", function() {
@@ -172,7 +197,7 @@ test( "attr(String, Function)", function() {
 	equal(
 		jQuery("#text1").attr( "value", function() {
 			return this.id;
-		})[0].value,
+		}).attr("value"),
 		"text1",
 		"Set value from id"
 	);
@@ -204,7 +229,7 @@ test( "attr(Hash)", function() {
 		jQuery("#text1").attr({
 			"value": function() {
 				return this["id"];
-			}})[0].value,
+			}}).attr("value"),
 		"text1",
 		"Set attribute to computed value #1"
 	);
@@ -221,13 +246,14 @@ test( "attr(Hash)", function() {
 });
 
 test( "attr(String, Object)", function() {
-	expect( 81 );
+	expect( 71 );
 
 	var div = jQuery("div").attr("foo", "bar"),
+		i = 0,
 		fail = false;
 
-	for ( var i = 0; i < div.size(); i++ ) {
-		if ( div.get( i ).getAttribute("foo") != "bar" ) {
+	for ( ; i < div.length; i++ ) {
+		if ( div[ i ].getAttribute("foo") !== "bar" ) {
 			fail = i;
 			break;
 		}
@@ -246,6 +272,7 @@ test( "attr(String, Object)", function() {
 	equal( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr( "name", null );
 	equal( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
+
 	var $input = jQuery( "<input>", {
 		name: "something",
 		id: "specified"
@@ -253,66 +280,62 @@ test( "attr(String, Object)", function() {
 	equal( $input.attr("name"), "something", "Check element creation gets/sets the name attribute." );
 	equal( $input.attr("id"), "specified", "Check element creation gets/sets the id attribute." );
 
-	jQuery("#check2").prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
-	equal( document.getElementById("check2").checked, true, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
-	jQuery("#check2").attr( "checked", false );
-	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
-	jQuery("#text1").attr( "readonly", true );
-	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
-	jQuery("#text1").attr( "readonly", false );
-	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+	// As of fixing #11115, we only guarantee boolean property update for checked and selected
+	$input = jQuery("<input type='checkbox'/>").attr( "checked", true );
+	equal( $input.prop("checked"), true, "Setting checked updates property (verified by .prop)" );
+	equal( $input[0].checked, true, "Setting checked updates property (verified by native property)" );
+	$input = jQuery("<option/>").attr( "selected", true );
+	equal( $input.prop("selected"), true, "Setting selected updates property (verified by .prop)" );
+	equal( $input[0].selected, true, "Setting selected updates property (verified by native property)" );
 
-	jQuery("#check2").prop( "checked", true );
-	equal( document.getElementById("check2").checked, true, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
-	jQuery("#check2").prop( "checked", false );
-	equal( document.getElementById("check2").checked, false, "Set checked attribute" );
-	equal( jQuery("#check2").prop("checked"), false, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), undefined, "Set checked attribute" );
+	$input = jQuery("#check2");
+	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
+	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );
+	$input.prop( "checked", false ).prop( "checked", true ).attr( "checked", false );
+	equal( $input.attr("checked"), undefined, "Remove checked (verified by .attr)" );
 
-	jQuery("#check2").attr("checked", "checked");
-	equal( document.getElementById("check2").checked, true, "Set checked attribute with 'checked'" );
-	equal( jQuery("#check2").prop("checked"), true, "Set checked attribute" );
-	equal( jQuery("#check2").attr("checked"), "checked", "Set checked attribute" );
+	$input = jQuery("#text1").prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", true );
+	equal( $input.attr("readonly"), "readonly", "Set readonly (verified by .attr)" );
+	$input.prop( "readOnly", false ).prop( "readOnly", true ).attr( "readonly", false );
+	equal( $input.attr("readonly"), undefined, "Remove readonly (verified by .attr)" );
 
-	QUnit.reset();
+	$input = jQuery("#check2").attr( "checked", true ).attr( "checked", false ).prop( "checked", true );
+	equal( $input[0].checked, true, "Set checked property (verified by native property)" );
+	equal( $input.prop("checked"), true, "Set checked property (verified by .prop)" );
+	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute" );
+	$input.attr( "checked", false ).attr( "checked", true ).prop( "checked", false );
+	equal( $input[0].checked, false, "Clear checked property (verified by native property)" );
+	equal( $input.prop("checked"), false, "Clear checked property (verified by .prop)" );
+	equal( $input.attr("checked"), "checked", "Clearing checked property doesn't affect checked attribute" );
+
+	$input = jQuery("#check2").attr( "checked", false ).attr( "checked", "checked" );
+	equal( $input.attr("checked"), "checked", "Set checked to 'checked' (verified by .attr)" );
 
 	var $radios = jQuery("#checkedtest").find("input[type='radio']");
-	$radios.eq( 1 ).click();
+	$radios.eq( 1 ).trigger("click");
 	equal( $radios.eq( 1 ).prop("checked"), true, "Second radio was checked when clicked" );
-	equal( $radios.attr("checked"), $radios[ 0 ].checked ? "checked" : undefined, "Known booleans do not fall back to attribute presence (#10278)" );
+	equal( $radios.eq( 0 ).attr("checked"), "checked", "First radio is still [checked]" );
 
-	jQuery("#text1").prop( "readOnly", true );
-	equal( document.getElementById("text1").readOnly, true, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), true, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), "readonly", "Set readonly attribute" );
-	jQuery("#text1").prop( "readOnly", false );
-	equal( document.getElementById("text1").readOnly, false, "Set readonly attribute" );
-	equal( jQuery("#text1").prop("readOnly"), false, "Set readonly attribute" );
-	equal( jQuery("#text1").attr("readonly"), undefined, "Set readonly attribute" );
+	$input = jQuery("#text1").attr( "readonly", false ).prop( "readOnly", true );
+	equal( $input[0].readOnly, true, "Set readonly property (verified by native property)" );
+	equal( $input.prop("readOnly"), true, "Set readonly property (verified by .prop)" );
+	$input.attr( "readonly", true ).prop( "readOnly", false );
+	equal( $input[0].readOnly, false, "Clear readonly property (verified by native property)" );
+	equal( $input.prop("readOnly"), false, "Clear readonly property (verified by .prop)" );
 
-	jQuery("#name").attr( "maxlength", "5" );
-	equal( document.getElementById("name").maxLength, 5, "Set maxlength attribute" );
-	jQuery("#name").attr( "maxLength", "10" );
-	equal( document.getElementById("name").maxLength, 10, "Set maxlength attribute" );
+	$input = jQuery("#name").attr( "maxlength", "5" );
+	equal( $input[0].maxLength, 5, "Set maxlength (verified by native property)" );
+	$input.attr( "maxLength", "10" );
+	equal( $input[0].maxLength, 10, "Set maxlength (verified by native property)" );
 
 	// HTML5 boolean attributes
 	var $text = jQuery("#text1").attr({
 		"autofocus": true,
 		"required": true
 	});
-	equal( $text.attr("autofocus"), "autofocus", "Set boolean attributes to the same name" );
-	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus attribute to false removes it" );
-	equal( $text.attr("required"), "required", "Set boolean attributes to the same name" );
+	equal( $text.attr("autofocus"), "autofocus", "Reading autofocus attribute yields 'autofocus'" );
+	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus to false removes it" );
+	equal( $text.attr("required"), "required", "Reading required attribute yields 'required'" );
 	equal( $text.attr( "required", false ).attr("required"), undefined, "Setting required attribute to false removes it" );
 
 	var $details = jQuery("<details open></details>").appendTo("#qunit-fixture");
@@ -342,13 +365,14 @@ test( "attr(String, Object)", function() {
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
 	});
 
+	// Register the property name to avoid generating a new global when testing window
+	Globals.register("nonexisting");
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
-		// use iframeCallback to avoid generating a new global when testing window
-		var oldVal = elem.iframeCallback,
+		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
-		equal( $elem.attr( "iframeCallback", "foo" ).attr("iframeCallback"), "foo", "attr falls back to prop on unsupported arguments" );
-		elem.iframeCallback = oldVal;
+		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
+		elem.nonexisting = oldVal;
 	});
 
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
@@ -360,7 +384,7 @@ test( "attr(String, Object)", function() {
 	table.attr("cellspacing", "2");
 	equal( table[ 0 ]["cellSpacing"], "2", "Check cellspacing is correctly set" );
 
-	equal( jQuery("#area1").attr("value"), "foobar", "Value attribute retrieves the property for backwards compatibility." );
+	equal( jQuery("#area1").attr("value"), undefined, "Value attribute is distinct from value property." );
 
 	// for #1070
 	jQuery("#name").attr( "someAttr", "0" );
@@ -379,17 +403,15 @@ test( "attr(String, Object)", function() {
 
 	// Type
 	var type = jQuery("#check2").attr("type");
-	var thrown = false;
 	try {
 		jQuery("#check2").attr( "type", "hidden" );
+		ok( true, "No exception thrown on input type change" );
 	} catch( e ) {
-		thrown = true;
+		ok( true, "Exception thrown on input type change: " + e );
 	}
-	ok( thrown, "Exception thrown when trying to change type property" );
-	equal( type, jQuery("#check2").attr("type"), "Verify that you can't change the type of an input element" );
 
 	var check = document.createElement("input");
-	thrown = true;
+	var thrown = true;
 	try {
 		jQuery( check ).attr( "type", "checkbox" );
 	} catch( e ) {
@@ -409,14 +431,12 @@ test( "attr(String, Object)", function() {
 	equal( "checkbox", check.attr("type"), "Verify that you can change the type of an input element that isn't in the DOM" );
 
 	var button = jQuery("#button");
-	thrown = false;
 	try {
 		button.attr( "type", "submit" );
+		ok( true, "No exception thrown on button type change" );
 	} catch( e ) {
-		thrown = true;
+		ok( true, "Exception thrown on button type change: " + e );
 	}
-	ok( thrown, "Exception thrown when trying to change type property" );
-	equal( "button", button.attr("type"), "Verify that you can't change the type of a button element" );
 
 	var $radio = jQuery( "<input>", {
 		"value": "sup",
@@ -978,7 +998,7 @@ test( "val(select) after form.reset() (Bug #2551)", function() {
 var testAddClass = function( valueObj ) {
 	expect( 9 );
 
-	var div = jQuery("div");
+	var div = jQuery("#qunit-fixture div");
 	div.addClass( valueObj("test") );
 	var pass = true;
 	for ( var i = 0; i < div.size(); i++ ) {
@@ -1029,8 +1049,8 @@ test( "addClass(Function)", function() {
 });
 
 test( "addClass(Function) with incoming value", function() {
-	expect( 54 );
-	var div = jQuery("div"),
+	expect( 52 );
+	var div = jQuery("#qunit-fixture div"),
 		old = div.map(function() {
 			return jQuery(this).attr("class") || "";
 		});
@@ -1052,38 +1072,36 @@ test( "addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect( 7 );
+	expect( 8 );
 
-	var $divs = jQuery("div");
+	var $set = jQuery("#qunit-fixture div"),
+		div = document.createElement("div");
 
-	$divs.addClass("test").removeClass( valueObj("test") );
+	$set.addClass("test").removeClass( valueObj("test") );
 
-	ok( !$divs.is(".test"), "Remove Class" );
+	ok( !$set.is(".test"), "Remove Class" );
 
-	QUnit.reset();
-	$divs = jQuery("div");
+	$set.addClass("test").addClass("foo").addClass("bar");
+	$set.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
 
-	$divs.addClass("test").addClass("foo").addClass("bar");
-	$divs.removeClass( valueObj("test") ).removeClass( valueObj("bar") ).removeClass( valueObj("foo") );
-
-	ok( !$divs.is(".test,.bar,.foo"), "Remove multiple classes" );
-
-	QUnit.reset();
-	$divs = jQuery("div");
+	ok( !$set.is(".test,.bar,.foo"), "Remove multiple classes" );
 
 	// Make sure that a null value doesn't cause problems
-	$divs.eq( 0 ).addClass("test").removeClass( valueObj( null ) );
-	ok( $divs.eq( 0 ).is(".test"), "Null value passed to removeClass" );
+	$set.eq( 0 ).addClass("expected").removeClass( valueObj( null ) );
+	ok( $set.eq( 0 ).is(".expected"), "Null value passed to removeClass" );
 
-	$divs.eq( 0 ).addClass("test").removeClass( valueObj("") );
-	ok( $divs.eq( 0 ).is(".test"), "Empty string passed to removeClass" );
+	$set.eq( 0 ).addClass("expected").removeClass( valueObj("") );
+	ok( $set.eq( 0 ).is(".expected"), "Empty string passed to removeClass" );
 
 	// using contents will get regular, text, and comment nodes
-	var j = jQuery("#nonnodes").contents();
-	j.removeClass( valueObj("asdf") );
-	ok( !j.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
+	$set = jQuery("#nonnodes").contents();
+	$set.removeClass( valueObj("asdf") );
+	ok( !$set.hasClass("asdf"), "Check node,textnode,comment for removeClass" );
 
-	var div = document.createElement("div");
+
+	jQuery( div ).removeClass( valueObj("foo") );
+	strictEqual( jQuery( div ).attr("class"), undefined, "removeClass doesn't create a class attribute" );
+
 	div.className = " test foo ";
 
 	jQuery( div ).removeClass( valueObj("foo") );
@@ -1104,9 +1122,9 @@ test( "removeClass(Function) - simple", function() {
 });
 
 test( "removeClass(Function) with incoming value", function() {
-	expect( 54 );
+	expect( 52 );
 
-	var $divs = jQuery("div").addClass("test"), old = $divs.map(function() {
+	var $divs = jQuery("#qunit-fixture div").addClass("test"), old = $divs.map(function() {
 		return jQuery( this ).attr("class");
 	});
 
@@ -1300,14 +1318,11 @@ test( "contents().hasClass() returns correct values", function() {
 });
 
 test( "coords returns correct values in IE6/IE7, see #10828", function() {
-	expect( 2 );
+	expect( 1 );
 
 	var area,
 		map = jQuery("<map />");
 
 	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
-
-	area = map.html("<area shape='rect' href='#' alt='a' /></map>").find("area");
-	equal( area.attr("coords"), undefined, "did not retrieve coords correctly" );
 });

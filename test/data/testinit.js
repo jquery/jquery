@@ -1,4 +1,4 @@
-/*jshint multistr:true */
+/*jshint multistr:true, quotmark:false */
 
 var amdDefined, fireNative,
 	originaljQuery = this.jQuery || "jQuery",
@@ -158,41 +158,56 @@ function ajaxTest( title, expect, options ) {
 		if ( options.setup ) {
 			options.setup();
 		}
-		var aborted = false,
-			abort = function( reason ) {
-				if ( !aborted ) {
-					aborted = true;
-					ok( false, "unexpected " + reason );
-					jQuery.each( requests, function( _, request ) {
-						request.abort();
-					});
+
+		var completed = false,
+			remaining = requestOptions.length,
+			complete = function() {
+				if ( !completed && --remaining === 0 ) {
+					completed = true;
+					delete ajaxTest.abort;
+					if ( options.teardown ) {
+						options.teardown();
+					}
+					start();
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
-				var request = ( options.create || jQuery.ajax )( options );
+				var request = ( options.create || jQuery.ajax )( options ),
+					callIfDefined = function( deferType, optionType ) {
+						var handler = options[ deferType ] || !!options[ optionType ];
+						return function( _, status ) {
+							if ( !completed ) {
+								if ( !handler ) {
+									ok( false, "unexpected " + status );
+								} else if ( jQuery.isFunction( handler ) ) {
+									handler.apply( this, arguments );
+								}
+							}
+						};
+					};
+
 				if ( options.afterSend ) {
 					options.afterSend( request );
 				}
-				return request;
+
+				return request
+					.done( callIfDefined( "done", "success" ) )
+					.fail( callIfDefined( "fail", "error" ) )
+					.always( complete );
 			});
-		jQuery.when.apply( jQuery, jQuery.map( requests, function( request, index ) {
-			function callIfDefined( deferType, optionType ) {
-				var handler = requestOptions[ index ][ deferType ] || !!requestOptions[ index ][ optionType ];
-				return handler ? function() {
-					if ( !aborted && jQuery.isFunction( handler ) ) {
-						handler.apply( this, arguments );
-					}
-				} : function() {
-					abort( optionType );
-				}
+
+		ajaxTest.abort = function( reason ) {
+			if ( !completed ) {
+				completed = true;
+				delete ajaxTest.abort;
+				ok( false, "aborted " + reason );
+				jQuery.each( requests, function( i, request ) {
+					request.abort();
+				});
 			}
-			return request.then( callIfDefined( "done", "success" ), callIfDefined( "fail", "error" ) );
-		}) ).always(
-			options.teardown,
-			start
-		);
+		};
 	});
-};
+}
 
 (function () {
 

@@ -1,16 +1,14 @@
 {
-  "options": {
-    "curly": true,
-    "eqeqeq": true,
-    "eqnull": true,
-    "expr": true,
-    "latedef": true,
-    "noarg": true,
-    "node": true,
-    "quotmark": "double",
-    "smarttabs": true,
-    "trailing": true,
-    "undef": true,
-    "unused": true
-  }
+	"curly": true,
+	"eqeqeq": true,
+	"latedef": true,
+	"noarg": true,
+	"noempty": true,
+	"quotmark": "double",
+	"undef": true,
+	"unused": true,
+	"strict": true,
+	"trailing": true,
+
+	"node": true
 }

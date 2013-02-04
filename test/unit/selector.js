@@ -1,4 +1,4 @@
-module("selector - jQuery only", { teardown: moduleTeardown });
+module("selector", { teardown: moduleTeardown });
 
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
@@ -7,15 +7,17 @@ module("selector - jQuery only", { teardown: moduleTeardown });
 test("element - jQuery only", function() {
 	expect( 7 );
 
-	deepEqual( jQuery("p", document.getElementsByTagName("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("p", "div").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("p", jQuery("div")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
-	deepEqual( jQuery("div").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context." );
+	var fixture = document.getElementById("qunit-fixture");
+
+	deepEqual( jQuery("p", fixture).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a Node context." );
+	deepEqual( jQuery("p", "#qunit-fixture").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a selector context." );
+	deepEqual( jQuery("p", jQuery("#qunit-fixture")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a jQuery object context." );
+	deepEqual( jQuery("#qunit-fixture").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context via .find()." );
 
 	ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 	ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 
-	//#7533
+	// #7533
 	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 });
 
@@ -29,50 +31,60 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 2 );
+	expect( 6 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
-	// jQuery #12523
+
+	// #12523
 	deepEqual(
 		jQuery.find( "[title]", null, null, jQuery("#qunit-fixture a").get().concat( document.createTextNode("") ) ),
 		q("google"),
 		"Text nodes fail attribute tests without exception"
 	);
+
+	// #12600
+	ok(
+		jQuery("<select value='12600'><option value='option' selected='selected'></option><option value=''></option></select>")
+		.prop( "value", "option" )
+		.is(":input[value='12600']"),
+
+		":input[value=foo] selects select by attribute"
+	);
+	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
+		":input[value=foo] selects text input by attribute"
+	);
+
+	// #11115
+	ok( jQuery("<input type='checkbox' checked='checked'/>").prop( "checked", false ).is("[checked]"),
+		"[checked] selects by attribute (positive)"
+	);
+	ok( !jQuery("<input type='checkbox'/>").prop( "checked", true ).is("[checked]"),
+		"[checked] selects by attribute (negative)"
+	);
 });
-
-if ( jQuery.css ) {
-	test("pseudo - visibility", function() {
-		expect( 9 );
-
-		t( "Is Visible", "div:visible:not(#qunit-testrunner-toolbar):lt(2)", ["nothiddendiv", "nothiddendivchild"] );
-		t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
-		t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
-
-		var $div = jQuery("<div/>").appendTo("body");
-		$div.css({ fontSize: 0, lineHeight: 0 });// IE also needs to set font-size and line-height to 0
-		$div.css( "width", 1 ).css( "height", 0 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.css( "width", 0 ).css( "height", 1 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.css( "width", 1 ).css( "height", 1 );
-		t( "Is Visible", "#nothiddendivchild:visible", ["nothiddendivchild"] );
-		t( "Is Not Visible", "#nothiddendivchild:hidden", [] );
-		$div.remove();
-	});
-}
 
 test("disconnected nodes", function() {
 	expect( 4 );
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
-	$opt.attr("selected", true);
+	$opt.prop("selected", true);
 	equal( $opt.is(":selected"), true, "selected option" );
 
 	var $div = jQuery("<div/>");
-	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnect nodes." );
+	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
+});
+
+test("jQuery only - broken", 1, function() {
+	raises(function() {
+		// Setting context to null here somehow avoids QUnit's window.error handling
+		// making the e & e.message correct
+		// For whatever reason, without this,
+		// Sizzle.error will be called but no error will be seen in oldIE
+		jQuery.call( null, " <div/> " );
+	}, function( e ) {
+		return e.message.indexOf("Syntax error") >= 0;
+	}, "leading space invalid: $(' <div/> ')" );
 });
 
 testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {

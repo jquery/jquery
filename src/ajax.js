@@ -317,8 +317,8 @@ jQuery.extend({
 		options = options || {};
 
 		var transport,
-			// ifModified key
-			ifModifiedKey,
+			// URL without anti-cache param
+			cacheURL,
 			// Response headers
 			responseHeadersString,
 			responseHeaders,
@@ -431,6 +431,9 @@ jQuery.extend({
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
+		// Alias method option to type as per ticket #12004
+		s.type = options.method || options.type || s.method || s.type;
+
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().match( core_rnotwhite ) || [""];
 
@@ -471,39 +474,39 @@ jQuery.extend({
 		// Determine if request has content
 		s.hasContent = !rnoContent.test( s.type );
 
+		// Save the URL in case we're toying with the If-Modified-Since
+		// and/or If-None-Match header later on
+		cacheURL = s.url;
+
 		// More options handling for requests with no content
 		if ( !s.hasContent ) {
 
 			// If data is available, append data to url
 			if ( s.data ) {
-				s.url += ( ajax_rquery.test( s.url ) ? "&" : "?" ) + s.data;
+				cacheURL = ( s.url += ( ajax_rquery.test( cacheURL ) ? "&" : "?" ) + s.data );
 				// #9682: remove data so that it's not used in an eventual retry
 				delete s.data;
 			}
 
-			// Get ifModifiedKey before adding the anti-cache parameter
-			ifModifiedKey = s.url;
-
 			// Add anti-cache in url if needed
 			if ( s.cache === false ) {
-				s.url = rts.test( ifModifiedKey ) ?
+				s.url = rts.test( cacheURL ) ?
 
 					// If there is already a '_' parameter, set its value
-					ifModifiedKey.replace( rts, "$1_=" + ajax_nonce++ ) :
+					cacheURL.replace( rts, "$1_=" + ajax_nonce++ ) :
 
 					// Otherwise add one to the end
-					ifModifiedKey + ( ajax_rquery.test( ifModifiedKey ) ? "&" : "?" ) + "_=" + ajax_nonce++;
+					cacheURL + ( ajax_rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ajax_nonce++;
 			}
 		}
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 		if ( s.ifModified ) {
-			ifModifiedKey = ifModifiedKey || s.url;
-			if ( jQuery.lastModified[ ifModifiedKey ] ) {
-				jqXHR.setRequestHeader( "If-Modified-Since", jQuery.lastModified[ ifModifiedKey ] );
+			if ( jQuery.lastModified[ cacheURL ] ) {
+				jqXHR.setRequestHeader( "If-Modified-Since", jQuery.lastModified[ cacheURL ] );
 			}
-			if ( jQuery.etag[ ifModifiedKey ] ) {
-				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ ifModifiedKey ] );
+			if ( jQuery.etag[ cacheURL ] ) {
+				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ cacheURL ] );
 			}
 		}
 
@@ -527,9 +530,8 @@ jQuery.extend({
 
 		// Allow custom headers/mimetypes and early abort
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
-				// Abort if not done already and return
-				return jqXHR.abort();
-
+			// Abort if not done already and return
+			return jqXHR.abort();
 		}
 
 		// aborting is no longer a cancellation
@@ -614,20 +616,25 @@ jQuery.extend({
 				if ( s.ifModified ) {
 					modified = jqXHR.getResponseHeader("Last-Modified");
 					if ( modified ) {
-						jQuery.lastModified[ ifModifiedKey ] = modified;
+						jQuery.lastModified[ cacheURL ] = modified;
 					}
 					modified = jqXHR.getResponseHeader("etag");
 					if ( modified ) {
-						jQuery.etag[ ifModifiedKey ] = modified;
+						jQuery.etag[ cacheURL ] = modified;
 					}
 				}
 
-				// If not modified
-				if ( status === 304 ) {
+				// if no content
+				if ( status === 204 ) {
+					isSuccess = true;
+					statusText = "nocontent";
+
+				// if not modified
+				} else if ( status === 304 ) {
 					isSuccess = true;
 					statusText = "notmodified";
 
-				// If we have data
+				// If we have data, let's convert it
 				} else {
 					isSuccess = ajaxConvert( s, response );
 					statusText = isSuccess.state;

@@ -6,6 +6,33 @@ test("expando", function(){
 	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
 });
 
+test( "jQuery.data & removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery.data( document.body, "hello", "world" ), "world",
+		"jQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery.removeData( document.body, "hello" ), undefined,
+		"jQuery.removeData( elem, key, value ) returns undefined"
+	);
+
+});
+
+test( "jQuery._data & _removeData, expected returns", function() {
+	expect(2);
+
+	equal(
+		jQuery._data( document.body, "hello", "world" ), "world",
+		"jQuery.data( elem, key, value ) returns value"
+	);
+	equal(
+		jQuery._removeData( document.body, "hello" ), undefined,
+		"jQuery.removeData( elem, key, value ) returns undefined"
+	);
+});
+
 function dataTests (elem) {
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
 
@@ -99,42 +126,20 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
-test("Expando cleanup", 4, function() {
-	var expected, actual,
-		div = document.createElement("div");
+test("Data is not being set on comment and text nodes", function() {
+	expect(2);
 
-	function assertExpandoAbsent(message) {
-		if (jQuery.support.deleteExpando) {
-			expected = false;
-			actual = jQuery.expando in div;
-		} else {
-			expected = null;
-			actual = div[ jQuery.expando ];
-		}
-		equal( actual, expected, message );
-	}
+	ok( !jQuery.hasData( jQuery("<!-- comment -->").data("foo", 0) ) );
+	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
 
-	assertExpandoAbsent("There is no expando on new elements");
-
-	jQuery.data(div, "foo", 100);
-	jQuery.data(div, "bar", 200);
-
-	ok(jQuery.expando in div, "There is an expando on the element after using $.data()");
-
-	jQuery.removeData(div, "foo");
-
-	ok(jQuery.expando in div, "There is still an expando on the element after removing (some) of the data");
-
-	jQuery.removeData(div, "bar");
-
-	assertExpandoAbsent("Removing the last item in the data store deletes the expando");
-
-	// Clean up unattached element
-	jQuery(div).remove();
 });
+/*
+// Since the new data system does not rely on exandos, limiting the type of
+// nodes that can have data is no longer necessary. jQuery.acceptData is now irrelevant
+// and should be removed from the library.
 
 test("jQuery.acceptData", function() {
-	expect(7);
+	expect(9);
 
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
@@ -149,8 +154,11 @@ test("jQuery.acceptData", function() {
 	var applet = document.createElement("object");
 	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
 	ok( !jQuery.acceptData( applet ), "applet" );
-});
 
+	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
+});
+*/
 test(".data()", function() {
 	expect(5);
 
@@ -447,7 +455,7 @@ if (window.JSON && window.JSON.stringify) {
 }
 
 test("jQuery.data should follow html5 specification regarding camel casing", function() {
-	expect(10);
+	expect(12);
 
 	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
 		.prependTo("body");
@@ -467,6 +475,9 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 
 	equal( div.data("fooBar"), "d", "Verify updated data-* key" );
 	equal( div.data("foo-bar"), "d", "Verify updated data-* key" );
+
+	equal( div.data("fooBar"), "d", "Verify updated data-* key (fooBar)" );
+	equal( div.data("foo-bar"), "d", "Verify updated data-* key (foo-bar)" );
 
 	div.remove();
 });

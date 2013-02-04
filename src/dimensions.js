@@ -31,7 +31,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 
 				return value === undefined ?
 					// Get width or height on the element, requesting but not forcing parseFloat
-					jQuery.css( elem, type, value, extra ) :
+					jQuery.css( elem, type, extra ) :
 
 					// Set width or height on the element
 					jQuery.style( elem, type, value, extra );

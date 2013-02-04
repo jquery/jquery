@@ -9,7 +9,7 @@ test( "find(String)", function() {
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
 	equal( j.find("div").andSelf().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 
-	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
+	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo > p").get(), q( "sndp", "en", "sap" ), "find child elements" );
 
@@ -114,7 +114,7 @@ test("is() with positional selectors", function() {
 				"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
 			).appendTo( "body" ),
 		isit = function(sel, match, expect) {
-			equal( jQuery( sel ).is( match ), expect, "jQuery( " + sel + " ).is( " + match + " )" );
+			equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
 		};
 
 	isit( "#posp", "#posp:first", true );
@@ -286,8 +286,8 @@ test("closest()", function() {
 	deepEqual( jQuery("body").closest("div").get(), [], "closest(div)" );
 	deepEqual( jQuery("#qunit-fixture").closest("span,#html").get(), q("html"), "closest(span,#html)" );
 
-	deepEqual( jQuery("div:eq(1)").closest("div:first").get(), [], "closest(div:first)" );
-	deepEqual( jQuery("div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
+	deepEqual( jQuery("#qunit-fixture").closest("div:first").get(), [], "closest(div:first)" );
+	deepEqual( jQuery("#qunit-fixture div").closest("body:first div:last").get(), q("fx-tests"), "closest(body:first div:last)" );
 
 	// Test .closest() limited by the context
 	var jq = jQuery("#nothiddendivchild");
@@ -312,15 +312,15 @@ test("closest(jQuery)", function() {
 	expect(8);
 	var $child = jQuery("#nothiddendivchild"),
 		$parent = jQuery("#nothiddendiv"),
-		$main = jQuery("#qunit-fixture"),
+		$sibling = jQuery("#foo"),
 		$body = jQuery("body");
 	ok( $child.closest( $parent ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') )" );
 	ok( $child.closest( $parent[0] ).is("#nothiddendiv"), "closest( jQuery('#nothiddendiv') ) :: node" );
 	ok( $child.closest( $child ).is("#nothiddendivchild"), "child is included" );
 	ok( $child.closest( $child[0] ).is("#nothiddendivchild"), "child is included  :: node" );
 	equal( $child.closest( document.createElement("div") ).length, 0, "created element is not related" );
-	equal( $child.closest( $main ).length, 0, "Main not a parent of child" );
-	equal( $child.closest( $main[0] ).length, 0, "Main not a parent of child :: node" );
+	equal( $child.closest( $sibling ).length, 0, "Sibling not a parent of child" );
+	equal( $child.closest( $sibling[0] ).length, 0, "Sibling not a parent of child :: node" );
 	ok( $child.closest( $body.add($parent) ).is("#nothiddendiv"), "Closest ancestor retrieved." );
 });
 
@@ -329,7 +329,11 @@ test("not(Selector|undefined)", function() {
 	equal( jQuery("#qunit-fixture > p#ap > a").not("#google").length, 2, "not('selector')" );
 	deepEqual( jQuery("p").not(".result").get(), q("firstp", "ap", "sndp", "en", "sap", "first"), "not('.class')" );
 	deepEqual( jQuery("p").not("#ap, #sndp, .result").get(), q("firstp", "en", "sap", "first"), "not('selector, selector')" );
-	deepEqual( jQuery("#form option").not("option.emptyopt:contains('Nothing'),[selected],[value='1']").get(), q("option1c", "option1d", "option2c", "option3d", "option3e", "option4e","option5b"), "not('complex selector')");
+	deepEqual(
+		jQuery("#form option").not("option.emptyopt:contains('Nothing'),optgroup *,[value='1']").get(),
+		q("option1c", "option1d", "option2c", "option2d", "option3c", "option3d", "option3e", "option4d", "option4e", "option5a", "option5b"),
+		"not('complex selector')"
+	);
 
 	deepEqual( jQuery("#ap *").not("code").get(), q("google", "groups", "anchor1", "mark"), "not('tag selector')" );
 	deepEqual( jQuery("#ap *").not("code, #mark").get(), q("google", "groups", "anchor1"), "not('tag, ID selector')" );
@@ -654,10 +658,15 @@ test("eq('-1') #10616", function() {
 });
 
 test("index(no arg) #10977", function() {
-	expect(1);
-	
+	expect(2);
+
 	var $list = jQuery("<ul id='indextest'><li>THIS ONE</li><li class='one'>a</li><li class='two'>b</li><li class='three'>c</li></ul>");
 	jQuery("#qunit-fixture").append( $list );
 	strictEqual ( jQuery( "#indextest li:not(.one,.two)" ).index() , 0, "No Argument Index Check" );
 	$list.remove();
+
+	var fragment = document.createDocumentFragment(),
+		div = fragment.appendChild( document.createElement("div") );
+
+	equal( jQuery( div ).index(), 0, "If jQuery#index called on element whos parent is fragment, it still should work correctly" );
 });

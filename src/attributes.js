@@ -1,11 +1,9 @@
-var nodeHook, boolHook, fixSpecified,
+var nodeHook, boolHook,
 	rclass = /[\t\r\n]/g,
 	rreturn = /\r/g,
-	rtype = /^(?:input|button)$/i,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i,
-	rboolean = /^(?:autofocus|autoplay|async|checked|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped|selected)$/i,
-	getSetAttribute = jQuery.support.getSetAttribute;
+	rboolean = /^(?:checked|selected|autofocus|autoplay|async|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped)$/i;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -51,11 +49,12 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+				cur = elem.nodeType === 1 && ( elem.className ?
+					( " " + elem.className + " " ).replace( rclass, " " ) :
+					" "
+				);
 
-				if ( elem.nodeType === 1 ) {
-					cur = elem.className ?
-						( " " + elem.className + " " ).replace( rclass, " " ) :
-						" ";
+				if ( cur ) {
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
@@ -87,11 +86,13 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				if ( elem.nodeType === 1 ) {
-					// This expression is here for better compressibility (see addClass)
-					cur = elem.className ?
-						( " " + elem.className + " " ).replace( rclass, " " ) :
-						" ";
+				// This expression is here for better compressibility (see addClass)
+				cur = elem.nodeType === 1 && ( elem.className ?
+					( " " + elem.className + " " ).replace( rclass, " " ) :
+					""
+				);
+
+				if ( cur ) {
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
 						// Remove *all* instances
@@ -133,7 +134,7 @@ jQuery.fn.extend({
 				}
 
 			// Toggle whole class name
-			} else if ( type === "undefined" || type === "boolean" ) {
+			} else if ( type === core_strundefined || type === "boolean" ) {
 				if ( this.className ) {
 					// store className if set
 					jQuery._data( this, "__className__", this.className );
@@ -295,7 +296,7 @@ jQuery.extend({
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( typeof elem.getAttribute === "undefined" ) {
+		if ( typeof elem.getAttribute === core_strundefined ) {
 			return jQuery.prop( elem, name, value );
 		}
 
@@ -326,36 +327,35 @@ jQuery.extend({
 
 		} else {
 
-			ret = elem.getAttribute( name );
+			// In IE9+, Flash objects don't have .getAttribute (#12945)
+			// Support: IE9+
+			if ( typeof elem.getAttribute !== core_strundefined ) {
+				ret =  elem.getAttribute( name );
+			}
 
 			// Non-existent attributes return null, we normalize to undefined
-			return ret === null ?
+			return ret == null ?
 				undefined :
 				ret;
 		}
 	},
 
 	removeAttr: function( elem, value ) {
-		var name, propName, isBool,
+		var name, propName,
 			i = 0,
 			attrNames = value && value.match( core_rnotwhite );
 
 		if ( attrNames && elem.nodeType === 1 ) {
 			while ( (name = attrNames[i++]) ) {
 				propName = jQuery.propFix[ name ] || name;
-				isBool = rboolean.test( name );
 
-				// See #9699 for explanation of this approach (setting first, then removal)
-				// Do not do this for boolean attributes (see #10870)
-				if ( !isBool ) {
-					jQuery.attr( elem, name, "" );
-				}
-				elem.removeAttribute( getSetAttribute ? name : propName );
-
+				// Boolean attributes get special treatment (#10870)
 				// Set corresponding property to false for boolean attributes
-				if ( isBool && propName in elem ) {
+				if ( rboolean.test( name ) ) {
 					elem[ propName ] = false;
 				}
+
+				elem.removeAttribute( name );
 			}
 		}
 	},
@@ -363,13 +363,9 @@ jQuery.extend({
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
-				// We can't allow the type property to be changed (since it causes problems in IE)
-				if ( rtype.test( elem.nodeName ) && elem.parentNode ) {
-					jQuery.error( "type property can't be changed" );
-				} else if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
-					// Reset value to it's default in case type is set after value
-					// This is for element creation
+					// Reset value to default in case type is set after value during creation
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -377,25 +373,6 @@ jQuery.extend({
 					}
 					return value;
 				}
-			}
-		},
-		// Use the value property for back compat
-		// Use the nodeHook for button elements in IE6/7 (#1954)
-		value: {
-			get: function( elem, name ) {
-				if ( nodeHook && jQuery.nodeName( elem, "button" ) ) {
-					return nodeHook.get( elem, name );
-				}
-				return name in elem ?
-					elem.value :
-					null;
-			},
-			set: function( elem, value, name ) {
-				if ( nodeHook && jQuery.nodeName( elem, "button" ) ) {
-					return nodeHook.set( elem, value, name );
-				}
-				// Does not return so that setAttribute is also used
-				elem.value = value;
 			}
 		}
 	},
@@ -470,150 +447,20 @@ jQuery.extend({
 // Hook for boolean attributes
 boolHook = {
 	get: function( elem, name ) {
-		// Align boolean attributes with corresponding properties
-		// Fall back to attribute presence where some booleans are not supported
-		var attrNode,
-			property = jQuery.prop( elem, name );
-		return property === true || typeof property !== "boolean" && ( attrNode = elem.getAttributeNode(name) ) && attrNode.nodeValue !== false ?
+		return elem.getAttribute( name ) !== null ?
 			name.toLowerCase() :
 			undefined;
 	},
 	set: function( elem, value, name ) {
-		var propName;
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else {
-			// value is true since we know at this point it's type boolean and not false
-			// Set boolean attributes to the same name and set the DOM property
-			propName = jQuery.propFix[ name ] || name;
-			if ( propName in elem ) {
-				// Only set the IDL specifically if it already exists on the element
-				elem[ propName ] = true;
-			}
-
-			elem.setAttribute( name, name.toLowerCase() );
+			elem.setAttribute( name, name );
 		}
 		return name;
 	}
 };
-
-// IE6/7 do not support getting/setting some attributes with get/setAttribute
-if ( !getSetAttribute ) {
-
-	fixSpecified = {
-		name: true,
-		id: true,
-		coords: true
-	};
-
-	// Use this for any attribute in IE6/7
-	// This fixes almost every IE6/7 issue
-	nodeHook = jQuery.valHooks.button = {
-		get: function( elem, name ) {
-			var ret;
-			ret = elem.getAttributeNode( name );
-			return ret && ( fixSpecified[ name ] ? ret.value !== "" : ret.specified ) ?
-				ret.value :
-				undefined;
-		},
-		set: function( elem, value, name ) {
-			// Set the existing or create a new attribute node
-			var ret = elem.getAttributeNode( name );
-			if ( !ret ) {
-				ret = elem.ownerDocument.createAttribute( name );
-				elem.setAttributeNode( ret );
-			}
-			return ( ret.value = value + "" );
-		}
-	};
-
-	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
-	// This is for removals
-	jQuery.each([ "width", "height" ], function( i, name ) {
-		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
-			set: function( elem, value ) {
-				if ( value === "" ) {
-					elem.setAttribute( name, "auto" );
-					return value;
-				}
-			}
-		});
-	});
-
-	// Set contenteditable to false on removals(#10429)
-	// Setting to empty string throws an error as an invalid value
-	jQuery.attrHooks.contenteditable = {
-		get: nodeHook.get,
-		set: function( elem, value, name ) {
-			if ( value === "" ) {
-				value = "false";
-			}
-			nodeHook.set( elem, value, name );
-		}
-	};
-}
-
-
-// Some attributes require a special call on IE
-// http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
-if ( !jQuery.support.hrefNormalized ) {
-	jQuery.each([ "href", "src", "width", "height" ], function( i, name ) {
-		jQuery.attrHooks[ name ] = jQuery.extend( jQuery.attrHooks[ name ], {
-			get: function( elem ) {
-				var ret = elem.getAttribute( name, 2 );
-				return ret === null ? undefined : ret;
-			}
-		});
-	});
-
-	// href/src property should get the full normalized URL (#10299/#12915)
-	jQuery.each([ "href", "src" ], function( i, name ) {
-		jQuery.propHooks[ name ] = {
-			get: function( elem ) {
-				return elem.getAttribute( name, 4 );
-			}
-		};
-	});
-}
-
-if ( !jQuery.support.style ) {
-	jQuery.attrHooks.style = {
-		get: function( elem ) {
-			// Return undefined in the case of empty string
-			// Normalize to lowercase since IE uppercases css property names
-			return elem.style.cssText.toLowerCase() || undefined;
-		},
-		set: function( elem, value ) {
-			return ( elem.style.cssText = value + "" );
-		}
-	};
-}
-
-// Safari mis-reports the default selected property of an option
-// Accessing the parent's selectedIndex property fixes it
-if ( !jQuery.support.optSelected ) {
-	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
-		get: function( elem ) {
-			var parent = elem.parentNode;
-
-			if ( parent ) {
-				parent.selectedIndex;
-
-				// Make sure that it also works with optgroups, see #5701
-				if ( parent.parentNode ) {
-					parent.parentNode.selectedIndex;
-				}
-			}
-			return null;
-		}
-	});
-}
-
-// IE6/7 call enctype encoding
-if ( !jQuery.support.enctype ) {
-	jQuery.propFix.enctype = "encoding";
-}
 
 // Radios and checkboxes getter/setter
 if ( !jQuery.support.checkOn ) {
@@ -635,3 +482,17 @@ jQuery.each([ "radio", "checkbox" ], function() {
 		}
 	});
 });
+
+// IE9/10 do not see a selected option inside an optgroup unless you access it
+// Support: IE9, IE10
+if ( !jQuery.support.optSelected ) {
+	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
+		get: function( elem ) {
+			var parent = elem.parentNode;
+			if ( parent && parent.parentNode ) {
+				parent.parentNode.selectedIndex;
+			}
+			return null;
+		}
+	});
+}

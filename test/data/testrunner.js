@@ -3,10 +3,10 @@
  */
 jQuery.noConflict();
 
-// For checking globals pollution
-window[ jQuery.expando ] = undefined;
-// ...in Gecko
-this.getInterface = this.getInterface;
+// For checking globals pollution despite auto-created globals in various environments
+jQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
+	window[ name ] = window[ name ];
+});
 
 // Expose Sizzle for Sizzle's selector tests
 // We remove Sizzle's globalization in jQuery
@@ -94,7 +94,7 @@ function testSubproject( label, url, risTests ) {
 			fixture = page.find("[id='qunit-fixture']");
 			fixtureHTML = fixture.html();
 			fixture.empty();
-			while ( fixture.length && !fixture.prevAll("[id^='qunit-']").length ) {
+			while ( fixture.length && !fixture.prevAll("[id='qunit']").length ) {
 				fixture = fixture.parent();
 			}
 			fixture = fixture.add( fixture.nextAll() );
@@ -112,7 +112,7 @@ function testSubproject( label, url, risTests ) {
 
 				// Replace the current fixture, including content outside of #qunit-fixture
 				var oldFixture = originaljQuery("#qunit-fixture");
-				while ( oldFixture.length && !oldFixture.prevAll("[id^='qunit-']").length ) {
+				while ( oldFixture.length && !oldFixture.prevAll("[id='qunit']").length ) {
 					oldFixture = oldFixture.parent();
 				}
 				oldFixture.nextAll().remove();
@@ -138,10 +138,10 @@ function testSubproject( label, url, risTests ) {
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
 var Globals = (function() {
 	var globals = {};
-	return QUnit.config.noglobals ? {
+	return {
 		register: function( name ) {
 			globals[ name ] = true;
-			jQuery.globalEval( "var " + name );
+			jQuery.globalEval( "var " + name + " = undefined;" );
 		},
 		cleanup: function() {
 			var name,
@@ -153,9 +153,6 @@ var Globals = (function() {
 				"; } catch( x ) {}" );
 			}
 		}
-	} : {
-		register: jQuery.noop,
-		cleanup: jQuery.noop
 	};
 })();
 
@@ -203,52 +200,58 @@ var Globals = (function() {
 	 */
 	QUnit.expectJqData = function( elems, key ) {
 		var i, elem, expando;
-		QUnit.current_testEnvironment.checkJqData = true;
 
-		if ( elems.jquery && elems.toArray ) {
-			elems = elems.toArray();
-		}
-		if ( !jQuery.isArray( elems ) ) {
-			elems = [ elems ];
-		}
+		// As of jQuery 2.0, there will be no "cache"-data is
+		// stored and managed completely below the API surface
+		if ( jQuery.cache ) {
+			QUnit.current_testEnvironment.checkJqData = true;
 
-		for ( i = 0; i < elems.length; i++ ) {
-			elem = elems[i];
-
-			// jQuery.data only stores data for nodes in jQuery.cache,
-			// for other data targets the data is stored in the object itself,
-			// in that case we can't test that target for memory leaks.
-			// But we don't have to since in that case the data will/must will
-			// be available as long as the object is not garbage collected by
-			// the js engine, and when it is, the data will be removed with it.
-			if ( !elem.nodeType ) {
-				// Fixes false positives for dataTests(window), dataTests({}).
-				continue;
+			if ( elems.jquery && elems.toArray ) {
+				elems = elems.toArray();
+			}
+			if ( !jQuery.isArray( elems ) ) {
+				elems = [ elems ];
 			}
 
-			expando = elem[ jQuery.expando ];
+			for ( i = 0; i < elems.length; i++ ) {
+				elem = elems[i];
 
-			if ( expando === undefined ) {
-				// In this case the element exists fine, but
-				// jQuery.data (or internal data) was never (in)directly
-				// called.
-				// Since this method was called it means some data was
-				// expected to be found, but since there is nothing, fail early
-				// (instead of in teardown).
-				notStrictEqual( expando, undefined, 'Target for expectJqData must have an expando, for else there can be no data to expect.' );
-			} else {
-				if ( expectedDataKeys[expando] ) {
-					expectedDataKeys[expando].push( key );
+				// jQuery.data only stores data for nodes in jQuery.cache,
+				// for other data targets the data is stored in the object itself,
+				// in that case we can't test that target for memory leaks.
+				// But we don't have to since in that case the data will/must will
+				// be available as long as the object is not garbage collected by
+				// the js engine, and when it is, the data will be removed with it.
+				if ( !elem.nodeType ) {
+					// Fixes false positives for dataTests(window), dataTests({}).
+					continue;
+				}
+
+				expando = elem[ jQuery.expando ];
+
+				if ( expando === undefined ) {
+					// In this case the element exists fine, but
+					// jQuery.data (or internal data) was never (in)directly
+					// called.
+					// Since this method was called it means some data was
+					// expected to be found, but since there is nothing, fail early
+					// (instead of in teardown).
+					notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
 				} else {
-					expectedDataKeys[expando] = [ key ];
+					if ( expectedDataKeys[expando] ) {
+						expectedDataKeys[expando].push( key );
+					} else {
+						expectedDataKeys[expando] = [ key ];
+					}
 				}
 			}
 		}
+
 	};
 	QUnit.config.urlConfig.push( {
-		id: 'jqdata',
-		label: 'Always check jQuery.data',
-		tooltip: 'Trigger "QUnit.expectJqData" detection for all tests instead of just the ones that call it'
+		id: "jqdata",
+		label: "Always check jQuery.data",
+		tooltip: "Trigger QUnit.expectJqData detection for all tests instead of just the ones that call it"
 	} );
 
 	/**
@@ -268,14 +271,14 @@ var Globals = (function() {
 				expectedKeys = expectedDataKeys[i];
 				actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
 				if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
-					deepEqual( actualKeys, expectedKeys, 'Expected keys exist in jQuery.cache' );
+					deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
 				}
 				delete jQuery.cache[i];
 				delete expectedDataKeys[i];
 			}
 			// In case it was removed from cache before (or never there in the first place)
 			for ( i in expectedDataKeys ) {
-				deepEqual( expectedDataKeys[i], undefined, 'No unexpected keys were left in jQuery.cache (#' + i + ')' );
+				deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
 				delete expectedDataKeys[i];
 			}
 		}
@@ -312,9 +315,17 @@ var Globals = (function() {
 		}
 		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
 			equal( jQuery.active, 0, "No AJAX requests are still active" );
+			if ( ajaxTest.abort ) {
+				ajaxTest.abort("active requests");
+			}
 			oldActive = jQuery.active;
 		}
 	};
+
+	QUnit.done(function() {
+		// Remove our own fixtures outside #qunit-fixture
+		jQuery("#qunit ~ *").remove();
+	});
 
 	// jQuery-specific QUnit.reset
 	QUnit.reset = function() {
@@ -329,7 +340,7 @@ var Globals = (function() {
 		} else {
 			delete jQuery.ajaxSettings;
 		}
-		
+
 		// Cleanup globals
 		Globals.cleanup();
 
@@ -359,5 +370,5 @@ QUnit.config.requireExpects = true;
 		return;
 	}
 
-	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date).getTime() + "'></scr" + "ipt>");
+	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() + "'></scr" + "ipt>");
 })();

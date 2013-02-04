@@ -273,7 +273,7 @@ test( "jQuery.Deferred.then - deferred (progress)", function() {
 
 test( "jQuery.Deferred.then - context", function() {
 
-	expect( 4 );
+	expect( 7 );
 
 	var context = {};
 
@@ -284,6 +284,12 @@ test( "jQuery.Deferred.then - context", function() {
 		strictEqual( value, 6, "proper value received" );
 	});
 
+	jQuery.Deferred().resolve().then(function() {
+		return jQuery.Deferred().resolveWith(context);
+	}).done(function() {
+		strictEqual( this, context, "custom context of returned deferred correctly propagated" );
+	});
+
 	var defer = jQuery.Deferred(),
 		piped = defer.then(function( value ) {
 			return value * 3;
@@ -292,8 +298,18 @@ test( "jQuery.Deferred.then - context", function() {
 	defer.resolve( 2 );
 
 	piped.done(function( value ) {
-		strictEqual( this.promise(), piped, "default context gets updated to latest defer in the chain" );
+		strictEqual( this, piped, "default context gets updated to latest promise in the chain" );
 		strictEqual( value, 6, "proper value received" );
+	});
+
+	var defer2 = jQuery.Deferred(),
+		piped2 = defer2.then();
+
+	defer2.resolve( 2 );
+
+	piped2.done(function( value ) {
+		strictEqual( this, piped2, "default context gets updated to latest promise in the chain (without passing function)" );
+		strictEqual( value, 2, "proper value received (without passing function)" );
 	});
 });
 
@@ -395,8 +411,8 @@ test( "jQuery.when - joined", function() {
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
 				code = id1 + "/" + id2,
-				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1 : undefined,
-				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2 : undefined;
+				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : undefined,
+				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : undefined;
 
 			jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {

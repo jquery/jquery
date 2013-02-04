@@ -9,19 +9,18 @@ var	debug = false,
 
 var fs = require("fs"),
 	child = require("child_process"),
-	path = require("path"),
-	which = require('which').sync;
+	path = require("path");
 
 var releaseVersion,
 	nextVersion,
-	finalFiles,
+	CDNFiles,
 	isBeta,
 	pkg,
+	branch,
 
 	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 	cdnURL = "http://code.origin.jquery.com/",
-	repoURL = "git://github.com/jquery/jquery.git",
-	branch = "master",
+	repoURL = "git@github.com:jquery/jquery.git",
 
 	// Windows needs the .cmd version but will find the non-.cmd
 	// On Windows, ensure the HOME environment variable is set
@@ -29,14 +28,19 @@ var releaseVersion,
 
 	devFile = "dist/jquery.js",
 	minFile = "dist/jquery.min.js",
+	mapFile = "dist/jquery.min.map",
 
 	releaseFiles = {
 		"jquery-VER.js": devFile,
 		"jquery-VER.min.js": minFile,
-		"jquery.js": devFile,
-		"jquery-latest.js": devFile,
-		"jquery.min.js": minFile,
-		"jquery-latest.min.js": minFile
+		"jquery-VER.min.map": mapFile //,
+// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY
+//		"jquery.js": devFile,
+//		"jquery.min.js": minFile,
+//		"jquery.min.map": mapFile,
+//		"jquery-latest.js": devFile,
+//		"jquery-latest.min.js": minFile,
+//		"jquery-latest.min.map": mapFile
 	};
 
 steps(
@@ -62,18 +66,18 @@ function initialize( next ) {
 	// First arg should be the version number being released
 	var newver, oldver,
 		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
-		version = ( process.argv[2] || "" ).toLowerCase().match( rversion ) || {},
+		version = ( process.argv[3] || "" ).toLowerCase().match( rversion ) || {},
 		major = version[1],
 		minor = version[2],
 		patch = version[3],
 		xbeta = version[4];
 
-
-	releaseVersion = process.argv[2];
+	branch = process.argv[2];
+	releaseVersion = process.argv[3];
 	isBeta = !!xbeta;
 
-	if ( !major || !minor || !patch ) {
-		die( "Usage: " + process.argv[1] + " releaseVersion" );
+	if ( !branch || !major || !minor || !patch ) {
+		die( "Usage: " + process.argv[1] + " branch releaseVersion" );
 	}
 	if ( xbeta === "pre" ) {
 		die( "Cannot release a 'pre' version!" );
@@ -94,8 +98,13 @@ function initialize( next ) {
 	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "pre";
 	next();
 }
+
 function checkGitStatus( next ) {
-	exec( "git status", function( error, stdout, stderr ) {
+	git( [ "status" ], function( error, stdout, stderr ) {
+		var onBranch = ((stdout||"").match( /On branch (\S+)/ ) || [])[1];
+		if ( onBranch !== branch ) {
+			die( "Branches don't match: Wanted " + branch + ", got " + onBranch );
+		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
 			die( "Please commit changed files before attemping to push a release." );
 		}
@@ -105,50 +114,79 @@ function checkGitStatus( next ) {
 		next();
 	});
 }
+
 function tagReleaseVersion( next ) {
 	updatePackageVersion( releaseVersion );
-	exec( 'git commit -a -m "Tagging the ' + releaseVersion + ' release."', function(){
-		exec( "git tag " + releaseVersion, next);
-	});
+	git( [ "commit", "-a", "-m", "Tagging the " + releaseVersion + " release." ], function(){
+		git( [ "tag", releaseVersion ], next, debug);
+	}, debug);
 }
+
 function gruntBuild( next ) {
-	exec( gruntCmd, next );
+	exec( gruntCmd, [], function( error, stdout ) {
+		if ( error ) {
+			die( error + stderr );
+		}
+		console.log( stdout );
+		next();
+	}, debug);
 }
+
 function makeReleaseCopies( next ) {
-	finalFiles = {};
+	CDNFiles = {};
 	Object.keys( releaseFiles ).forEach(function( key ) {
-		var builtFile = releaseFiles[ key ],
+		var text,
+			builtFile = releaseFiles[ key ],
 			releaseFile = key.replace( /VER/g, releaseVersion );
 
 		// Beta releases don't update the jquery-latest etc. copies
 		if ( !isBeta || key !== releaseFile ) {
-			copy( builtFile, releaseFile );
-			finalFiles[ releaseFile ] = builtFile;
+
+			if ( /\.map$/.test( releaseFile ) ) {
+				// Map files need to reference the new uncompressed name;
+				// assume that all files reside in the same directory.
+				// "file":"jquery.min.js","sources":["jquery.js"]
+				text = fs.readFileSync( builtFile, "utf8" )
+					.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
+						"\"file\":\"" + releaseFile.replace( /\.min\.map/, ".min.js" ) +
+						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+				console.log( "Modifying map " + builtFile + " to " + releaseFile );
+				if ( !debug ) {
+					fs.writeFileSync( releaseFile, text );
+				}
+			} else {
+				copy( builtFile, releaseFile );
+			}
+
+			CDNFiles[ releaseFile ] = builtFile;
 		}
 	});
 	next();
 }
+
 function setNextVersion( next ) {
 	updatePackageVersion( nextVersion );
-	exec( 'git commit -a -m "Updating the source version to ' + nextVersion + '"', next );
+	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion ], next, debug );
 }
+
 function uploadToCDN( next ) {
 	var cmds = [];
 
-	Object.keys( finalFiles ).forEach(function( name ) {
-		cmds.push(function( x ){
-			exec( "scp " + name + " " + scpURL, x, skipRemote );
+	Object.keys( CDNFiles ).forEach(function( name ) {
+		cmds.push(function( nxt ){
+			exec( "scp", [ name, scpURL ], nxt, debug || skipRemote );
 		});
-		cmds.push(function( x ){
-			exec( "curl '" + cdnURL + name + "?reload'", x, skipRemote );
+		cmds.push(function( nxt ){
+			exec( "curl", [ cdnURL + name + "?reload" ], nxt, debug || skipRemote );
 		});
 	});
 	cmds.push( next );
 	
 	steps.apply( this, cmds );
 }
+
 function pushToGithub( next ) {
-	exec("git push --tags "+ repoURL + " " + branch, next, skipRemote );
+	git( [ "push", "--tags", repoURL, branch ], next, debug || skipRemote );
 }
 
 //==============================
@@ -157,10 +195,12 @@ function steps() {
 	var cur = 0,
 		steps = arguments;
 	(function next(){
-		var step = steps[ cur++ ];
-		step( next );
+		process.nextTick(function(){
+			steps[ cur++ ]( next );
+		});
 	})();
 }
+
 function updatePackageVersion( ver ) {
 	console.log( "Updating package.json version to " + ver );
 	pkg.version = ver;
@@ -168,30 +208,40 @@ function updatePackageVersion( ver ) {
 		fs.writeFileSync( "package.json", JSON.stringify( pkg, null, "\t" ) + "\n" );
 	}
 }
+
 function copy( oldFile, newFile ) {
 	console.log( "Copying " + oldFile + " to " + newFile );
 	if ( !debug ) {
 		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
 	}
 }
-function exec( cmd, fn, skip ) {
-	if ( debug || skip ) {
-		console.log( "# " + cmd );
-		fn();
+
+function git( args, fn, skip ) {
+	exec( "git", args, fn, skip );
+}
+
+function exec( cmd, args, fn, skip ) {
+	if ( skip ) {
+		console.log( "# " + cmd + " " + args.join(" ") );
+		fn( "", "", "" );
 	} else {
-		console.log( cmd );
-		child.exec( cmd, { env: process.env }, function( err, stdout, stderr ) {
-			if ( err ) {
-				die( stderr || stdout || err );
+		console.log( cmd + " " + args.join(" ") );
+		child.execFile( cmd, args, { env: process.env }, 
+			function( err, stdout, stderr ) {
+				if ( err ) {
+					die( stderr || stdout || err );
+				}
+				fn.apply( this, arguments );
 			}
-			fn();
-		});
+		);
 	}
 }
+
 function die( msg ) {
 	console.error( "ERROR: " + msg );
 	process.exit( 1 );
 }
+
 function exit() {
 	process.exit( 0 );
 }
