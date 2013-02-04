@@ -1,0 +1,8 @@
+{
+    "name": "jquery/jquery",
+    "description": "jQuery JavaScript Library",
+    "keywords": ["jquery"],
+    "homepage": "http://jquery.com/",
+    "type": "library",
+    "license": "MIT"
+}
