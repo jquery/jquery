@@ -126,6 +126,12 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
+
+/*
+// Since the new data system does not rely on expandos, limiting the type of
+// nodes that can have data is no longer necessary. jQuery.acceptData is now irrelevant
+// and should eventually be removed from the library.
+
 test("Data is not being set on comment and text nodes", function() {
 	expect(2);
 
@@ -133,10 +139,7 @@ test("Data is not being set on comment and text nodes", function() {
 	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
 
 });
-/*
-// Since the new data system does not rely on exandos, limiting the type of
-// nodes that can have data is no longer necessary. jQuery.acceptData is now irrelevant
-// and should be removed from the library.
+
 
 test("jQuery.acceptData", function() {
 	expect(9);
