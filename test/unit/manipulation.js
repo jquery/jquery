@@ -2225,3 +2225,14 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 		ok( jQuery.nodeName( this, results[ i ] ) );
 	});
 });
+
+// Only run this test in Shadow DOM-capable browsers (currently, Chrome v26+).
+if ( HTMLElement.prototype.webkitCreateShadowRoot !== undefined ) {
+	test( "html(string) can work on shadow root", 2, function() {
+		var element = document.createElement( "div" );
+		var shadowRoot = element.webkitCreateShadowRoot();
+		equal( shadowRoot.childNodes.length, 0, "new shadow root has no children" );
+		jQuery( shadowRoot ).html( "<div>Hello</div>" );
+		equal( shadowRoot.childNodes.length, 1, "node was added to shadow root" );
+	});
+}

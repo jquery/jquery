@@ -214,7 +214,9 @@ jQuery.fn.extend({
 						elem = this[ i ] || {};
 
 						// Remove element nodes and prevent memory leaks
-						if ( elem.nodeType === 1 ) {
+						// Only process nodes with innerHTML: in addition to
+						// normal elements, this also picks up shadow roots.
+						if ( elem.innerHTML !== undefined ) {
 							jQuery.cleanData( getAll( elem, false ) );
 							elem.innerHTML = value;
 						}
