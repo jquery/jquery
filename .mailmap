@@ -1,131 +1,114 @@
-# The last item overrides previous entries.
 # Names can be checked with:
 #    git shortlog -ns
+#    git shortlog -nse
 # command.
 #
 
-
+<obhvsbypqghgc@gmail.com> <haskell_noob-github@yahoo.de>
 Anton M <haskell_noob-github@yahoo.de>
 Anton M <obhvsbypqghgc@gmail.com>
 
 
-#Azatoth <azatoth@gmail.com>
+<azatoth@gmail.com> <carl@excito.com>
 Carl Fürstenberg <azatoth@gmail.com>
 Carl Fürstenberg <carl@excito.com>
 
 
 Brandon Aaron <brandon.aaron@gmail.com>
-#brandonaaron <brandon.aaron@gmail.com>
 
 
+<colin@alpha.zetafleet.com> <github.com@zetafleet.com>
 Colin Snover <colin@alpha.zetafleet.com>
 Colin Snover <github.com@zetafleet.com>
 
 
 Corey Frang <gnarf@gnarf.net>
-#gnarf <gnarf@gnarf.net>
 
 
 Dan Heberden <danheberden@gmail.com>
-#danheberden <danheberden@gmail.com>
 
 
 Daniel Gálvez <dgalvez@editablething.com>
-#Daniel Galvez <dgalvez@editablething.com>
 
 
 Dave Methvin <dave.methvin@gmail.com>
-#dmethvin <dave.methvin@gmail.com>
 
 
 Dave Reed <dareed@microsoft.com>
-#InfinitiesLoop <dareed@microsoft.com>
 
 
-#Erick Ruiz <erickrdch@gmail.com>
 Erick Ruiz de Chavez <erickrdch@gmail.com>
 
 
 Iraê Carvalho <irae@irae.pro.br>
-#Irae Brasil <irae@irae.pro.br>
 
-
+<joern.zaefferer@gmail.com> <joern.zaefferer@googlemail.com>
+<joern.zaefferer@gmail.com> <JZA@.(none)>
 Jörn Zaefferer <joern.zaefferer@gmail.com>
 Jörn Zaefferer <joern.zaefferer@googlemail.com>
-#jzaefferer <joern.zaefferer@gmail.com>
 Jörn Zaefferer <JZA@.(none)>
 
 
+<aubourg.julian@gmail.com> <j@ubourg.net>
 Julian Aubourg <aubourg.julian@gmail.com>
-#jaubourg <j@ubourg.net>
 Julian Aubourg <j@ubourg.net>
 
 
-#jeresig <jeresig@gmail.com>
+<jeresig@gmail.com> <jeresig@Archimedes.local>
 John Resig <jeresig@Archimedes.local>
 John Resig <jeresig@gmail.com>
 
-
+<jboesch26@gmail.com> <jordan@boedesign.com>
 Jordan Boesch <jboesch26@gmail.com>
 Jordan Boesch <jordan@boedesign.com>
 
 
+<kswedberg@gmail.com> <karl@englishrules.com>
 Karl Swedberg <karl@englishrules.com>
 Karl Swedberg <kswedberg@gmail.com>
 
 
-#Krinkle <krinklemail@gmail.com>
 Timo Tijhof <krinklemail@gmail.com>
 
 
+<lrbabe@gmail.com> <lrbabe@lrbabe-laptop>
+<lrbabe@gmail.com> <lrbabe@lrbabe-laptop.(none)>
 lrbabe <lrbabe@gmail.com>
 lrbabe <lrbabe@lrbabe-laptop>
 lrbabe <lrbabe@lrbabe-laptop.(none)>
-#louisremi <louisremi@louisremi-laptop.(none)>
 
 
-#malsup <malsup@gmail.com>
 Mike Alsup <malsup@gmail.com>
-#Mike Alup <malsup@gmail.com>
 
 
 nanto <nanto@moon.email.ne.jp>
-#nanto_vi <nanto@moon.email.ne.jp>
 
 
-#Oleg <markelog@gmail.com>
 Oleg Gaidarenko <markelog@gmail.com>
 
 
 Richard D. Worth <rdworth@gmail.com>
-#Richard Worth <rdworth@gmail.com>
 
 
 Rick Waldron <waldron.rick@gmail.com>
-#Rick Waldron waldron.rick@gmail.com <waldron.rick@gmail.com>
-#rwldrn <waldron.rick@gmail.com>
 
 
-#rkatic <robert.katic@gmail.com>
 Robert Katić <robert.katic@gmail.com>
-#Robert Katic <robert.katic@gmail.com>
 
 
+<scott.gonzalez@gmail.com> <sgonzale@sgonzale-laptop.local>
+Scott González <sgonzale@sgonzale-laptop.local>
 Scott González <scott.gonzalez@gmail.com>
-Scott Gonzalez <sgonzale@sgonzale-laptop.local>
 
 
+<timmywillisn@gmail.com> <tim.willison@thisismedium.com>
 Timmy Willison <tim.willison@thisismedium.com>
 Timmy Willison <timmywillisn@gmail.com>
-#timmywil <tim.willison@thisismedium.com>
-#timmywil <timmywillisn@gmail.com>
 
 
-unknown <Igen005@.upcorp.ad.uprr.com>
-unknown <Julian@.(none)>
-
-
-#wycats <wycats@gmail.com>
+<wycats@gmail.com> <wycats@12-189-125-93.att-inc.com>
+<wycats@gmail.com> <wycats@mobile005.mycingular.net>
+<wycats@gmail.com> <wycats@Yehuda-Katz.local>
 Yehuda Katz <wycats@12-189-125-93.att-inc.com>
 Yehuda Katz <wycats@gmail.com>
 Yehuda Katz <wycats@mobile005.mycingular.net>
