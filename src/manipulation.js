@@ -433,7 +433,7 @@ jQuery.extend({
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
 
-			if ( elem || elem === 0 ) {
+			if ( elem || typeof elem === "string" || elem === 0 ) {
 
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
