@@ -175,7 +175,9 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
 });
 
-testIframeWithCallback("Sizzle cache collides with multiple Sizzles on a page", "selector/sizzle_cache.html", function( $cached, jQuery, document ) {
+testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
+	var $cached = window["$cached"];
+
 	expect(4);
 	notStrictEqual( jQuery, $cached, "Loaded two engines" );
 	deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
