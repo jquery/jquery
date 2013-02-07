@@ -4,15 +4,11 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>jQuery selector - sizzle cache</title>
 
-	<script>
-		var jqURL = window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
-			window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) );
-		document.write( "<script src='" + jqURL + "'><\x2Fscript>" );
-	</script>
+	<script src="../../jquery.js"></script>
 	<script>
 		document.write(
 			"<script>var $cached = jQuery.noConflict(true);<\x2Fscript>" +
-			"<script src='" + jqURL + "?overwrite'><\x2Fscript>"
+			"<script src='" + document.getElementById("jquery-js").src + "?overwrite'><\x2Fscript>"
 		);
 	</script>
 

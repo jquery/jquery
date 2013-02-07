@@ -176,7 +176,8 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 });
 
 testIframeWithCallback("Sizzle cache collides with multiple Sizzles on a page", "selector/sizzle_cache.html", function( $cached, jQuery, document ) {
-	expect(3);
+	expect(4);
+	notStrictEqual( jQuery, $cached, "Loaded two engines" );
 	deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
 	equal( jQuery(".evil a").length, 0, "Select nothing with second sizzle" );
 	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );

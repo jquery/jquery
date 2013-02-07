@@ -14,12 +14,7 @@
 		#output { background-color: green }
 		#expectedOutput { background-color: green }
 	</style>
-	<script>
-		document.write( "<script id='jquery-js' src='" +
-			window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
-				window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) ) +
-		"'><\x2Fscript>" );
-	</script>
+	<script src="jquery.js"></script>
 
 	<!-- Load the script loader that uses
 		jQuery.readyWait -->

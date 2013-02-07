@@ -6,12 +6,7 @@
 	</head>
 	<body>
 		<div id="qunit-fixture"></div>
-		<script>
-			document.write( "<script id='jquery-js' src='" +
-				window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
-					window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) ) +
-			"'><\x2Fscript>" );
-		</script>
+		<script src="../../jquery.js"></script>
 		<script>
 			var script = document.getElementsByTagName( "script" )[ 0 ],
 				div = document.createElement( "div" ),

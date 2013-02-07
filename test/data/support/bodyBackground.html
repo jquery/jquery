@@ -17,12 +17,7 @@
 </head>
 <body>
 	<div>
-		<script>
-			document.write( "<script id='jquery-js' src='" +
-				window.parent.document.getElementById("jquery-js").src.replace( /^(?![^\/?#]+:)/,
-					window.parent.location.pathname.replace( /[^\/]$/, "$0/" ) ) +
-			"'><\x2Fscript>" );
-		</script>
+		<script src="../../jquery.js"></script>
 	</div>
 	<script>
 		jQuery(function() {
