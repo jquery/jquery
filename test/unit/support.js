@@ -1,25 +1,5 @@
 module("support", { teardown: moduleTeardown });
 
-function checkSupport( support ) {
-	var i,
-		passed = true;
-
-	for ( i in jQuery.support ) {
-		if ( jQuery.support[ i ] !== support[ i ] ) {
-			passed = false;
-			strictEqual( jQuery.support[ i ], support[ i ], "Support property " + i + " is different" );
-		}
-	}
-	for ( i in support ) {
-		if ( !( i in jQuery.support ) ) {
-			passed = false;
-			strictEqual( jQuery.support[ i ], support[ i ], "Unexpected property: " + i );
-		}
-	}
-
-	return passed;
-}
-
 test("boxModel", function() {
 	expect( 1 );
 
@@ -35,7 +15,7 @@ if ( jQuery.css ) {
 			};
 		ok( okValue[ color ], "color was not reset (" + color + ")" );
 
-		ok( checkSupport( support ), "Same support properties" );
+		deepEqual( jQuery.extend( {}, support ), jQuery.support, "Same support properties" );
 	});
 }
 
@@ -51,5 +31,5 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 
 testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions", "support/csp.php", function( support ) {
 	expect( 1 );
-	ok( checkSupport( support ), "No violations of CSP polices" );
+	deepEqual( jQuery.extend( {}, support ), jQuery.support, "No violations of CSP polices" );
 });
