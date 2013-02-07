@@ -241,6 +241,12 @@ jQuery.fn.extend({
 			value = jQuery( value ).not( this ).detach();
 		}
 
+		if ( value === "" ) {
+			return this.each(function() {
+				jQuery( this ).remove();
+			});
+		}
+
 		return this.domManip( [ value ], true, function( elem ) {
 			var next = this.nextSibling,
 				parent = this.parentNode;
