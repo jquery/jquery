@@ -2225,3 +2225,20 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 		ok( jQuery.nodeName( this, results[ i ] ) );
 	});
 });
+
+test( "jQuery.buildFragment - Handle the case of an empty string (#13401)", 4, function() {
+    var div = jQuery( "<div/>" ),
+        p = jQuery( "<p/>" );
+
+    div.html( p );
+    equal( div.html(), "<p></p>", "Check element exists" );
+
+    p.replaceWith( " " );
+    equal( div.html(), " ", "Check element is replaced" );
+
+    div.html( p );
+    equal( div.html(), "<p></p>", "Check element exists" );
+
+    p.replaceWith( "" );
+    equal( div.html(), "", "Check element is replaced" );
+});
