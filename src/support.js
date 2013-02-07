@@ -60,7 +60,7 @@ jQuery.support = (function() {
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
 	// Support: Firefox 17+
-	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
 	div.setAttribute( "onfocusin", "t" );
 	support.focusinBubbles = "onfocusin" in window || div.attributes.onfocusin.expando === false;
 
