@@ -1219,6 +1219,15 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
+test( "replaceWith(\"\") (#13401)", 4, function() {
+	expect( 1 );
+
+	var div = jQuery("<div><p></p></div>");
+
+	div.children().replaceWith("");
+	equal( div.html().toLowerCase(), "", "Replacing with empty string removes element" );
+});
+
 test( "replaceAll(String|Element|Array<Element>|jQuery)", function() {
 
 	expect( 10 );

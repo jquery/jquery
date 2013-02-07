@@ -241,15 +241,17 @@ jQuery.fn.extend({
 			value = jQuery( value ).not( this ).detach();
 		}
 
-		return this.domManip( [ value ], true, function( elem ) {
-			var next = this.nextSibling,
-				parent = this.parentNode;
+		return value !== "" ?
+			this.domManip( [ value ], true, function( elem ) {
+				var next = this.nextSibling,
+					parent = this.parentNode;
 
-			if ( parent ) {
-				jQuery( this ).remove();
-				parent.insertBefore( elem, next );
-			}
-		});
+				if ( parent ) {
+					jQuery( this ).remove();
+					parent.insertBefore( elem, next );
+				}
+			}) :
+			this.remove();
 	},
 
 	detach: function( selector ) {
