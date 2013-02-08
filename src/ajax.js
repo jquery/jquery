@@ -776,8 +776,10 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 		}
 	}
 
+	current = dataTypes.shift();
+
 	// Convert to each sequential dataType
-	for ( current = dataTypes.shift(); current; ) {
+	while ( current ) {
 
 		if ( s.responseFields[ current ] ) {
 			jqXHR[ s.responseFields[ current ] ] = response;
@@ -789,8 +791,9 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 		}
 
 		prev = current;
+		current = dataTypes.shift();
 
-		if ( ( current = dataTypes.shift() ) ) {
+		if ( current ) {
 
 			// There's only work to do if current dataType is non-auto
 			if ( current === "*" ) {
