@@ -4,18 +4,18 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>jQuery selector - sizzle cache</title>
 
-	<script src="../../../dist/jquery.js"></script>
+	<script src="../../jquery.js"></script>
 	<script>
-		var $cached = jQuery.noConflict(true);
+		document.write(
+			"<script>var $cached = jQuery.noConflict(true);<\x2Fscript>" +
+			"<script src='" + document.getElementById("jquery-js").src + "?overwrite'><\x2Fscript>"
+		);
 	</script>
-	<script src="../../../dist/jquery.min.js"></script>
 
 </head>
 <body>
-
 	<div class="test">
 		<a href="#" id="collision">Worlds collide</a>
 	</div>
-
 </body>
 </html>

@@ -133,7 +133,7 @@ jQuery.support = (function() {
 	}
 
 	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
-	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP), test/csp.php
+	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
 	for ( i in { submit: true, change: true, focusin: true }) {
 		div.setAttribute( eventName = "on" + i, "t" );
 
