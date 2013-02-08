@@ -1378,6 +1378,18 @@ module( "ajax", {
 
 	});
 
+	ajaxTest( "#11151 - jQuery.ajax() - parse error body", 2, {
+		url: url("data/errorWithJSON.php"),
+		dataFilter: function( string ) {
+			ok( false, "dataFilter called" );
+			return string;
+		},
+		error: function( jqXHR ) {
+			strictEqual( jqXHR.responseText, "{ \"code\": 40, \"message\": \"Bad Request\" }", "Error body properly set" );
+			deepEqual( jqXHR.responseJSON, { code: 40, message: "Bad Request" }, "Error body properly parsed" );
+		}
+	});
+
 	ajaxTest( "#11426 - jQuery.ajax() - loading binary data shouldn't throw an exception in IE", 1, {
 		url: url("data/1x1.jpg"),
 		success: function( data ) {
@@ -1474,6 +1486,16 @@ module( "ajax", {
 			ok( false, "error" );
 			strictEqual( status, "parsererror", "Parser Error" );
 			strictEqual( error, "converter was called", "Converter was called" );
+		}
+	});
+
+	ajaxTest( "#13388 - jQuery.ajax() - responseXML", 3, {
+		url: url("data/with_fries.xml"),
+		dataType: "xml",
+		success: function( resp, _, jqXHR ) {
+			notStrictEqual( resp, undefined, "XML document exists" );
+			ok( "responseXML" in jqXHR, "jqXHR.responseXML exists" );
+			strictEqual( resp, jqXHR.responseXML, "jqXHR.responseXML is set correctly" );
 		}
 	});
 
