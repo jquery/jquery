@@ -89,15 +89,11 @@ Data.prototype = {
 		return this;
 	},
 	get: function( owner, key ) {
-		var cache, unlock;
-
-		// A valid cache is found, or needs to be created.
-		// New entries will be added and return the current
-		// empty data object to be used as a return reference
-		// This logic was required by expectations made of the
-		// old data system.
-		unlock = this.locker( owner );
-		cache = this.cache[ unlock ];
+		// Either a valid cache is found, or will be created.
+		// New caches will be created and the unlock returned,
+		// allowing direct access to the newly created
+		// empty data object.
+		var cache = this.cache[ this.locker( owner ) ];
 
 		return key === undefined ?
 			cache : cache[ key ];
