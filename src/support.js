@@ -1,21 +1,23 @@
 jQuery.support = (function( support ) {
-
-	var a, select, opt, input, fragment,
+	var support, select, opt, input, fragment,
 		div = document.createElement("div");
 
-	// Finish early in limited (non-browser) environments
-	div.innerHTML = "<a>a</a><input type='checkbox'/>";
-	a = div.getElementsByTagName("a")[ 0 ];
-	if ( !a ) {
+	div.innerHTML = "<input type='checkbox'/>";
+
+	// Support tests won't run in some limited or non-browser environments
+	input = div.getElementsByTagName("input")[ 0 ];
+	if ( !input ) {
 		return support;
 	}
 
 	// First batch of tests
 	select = document.createElement("select");
 	opt = select.appendChild( document.createElement("option") );
-	input = div.getElementsByTagName("input")[ 0 ];
 
-	a.style.cssText = "float:left;opacity:.5";
+	support = {
+
+	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+	checkOn: !!input.value,
 
 	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 	support.checkOn = !!input.value;
@@ -59,8 +61,7 @@ jQuery.support = (function( support ) {
 
 	// Support: Firefox 17+
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
-	div.setAttribute( "onfocusin", "t" );
-	support.focusinBubbles = "onfocusin" in window || div.attributes.onfocusin.expando === false;
+	support.focusinBubbles = "onfocusin" in window;
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
@@ -68,9 +69,9 @@ jQuery.support = (function( support ) {
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, marginDiv, tds,
+		var container, marginDiv,
 			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
-			body = document.getElementsByTagName("body")[0];
+			body = document.getElementsByTagName("body")[ 0 ];
 
 		if ( !body ) {
 			// Return for frameset docs that don't have a body
@@ -84,8 +85,9 @@ jQuery.support = (function( support ) {
 		body.appendChild( container ).appendChild( div );
 		div.innerHTML = "";
 		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
-		support.boxSizing = ( div.offsetWidth === 4 );
-		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
+
+		support.boxSizing = div.offsetWidth === 4;
+		support.doesNotIncludeMarginInBodyOffset = body.offsetTop !== 1;
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
@@ -106,13 +108,7 @@ jQuery.support = (function( support ) {
 		}
 
 		body.removeChild( container );
-
-		// Null elements to avoid leaks in IE
-		container = div = tds = marginDiv = null;
 	});
-
-	// Null elements to avoid leaks in IE
-	select = fragment = opt = a = input = null;
 
 	return support;
 })({});
