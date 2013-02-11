@@ -10,7 +10,6 @@
 	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 */
 var data_user, data_priv,
-	ref = {},
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
@@ -25,12 +24,11 @@ Data.uid = 1;
 Data.prototype = {
 	locker: function( owner ) {
 		var ovalueOf,
-		// Check if the owner object has already been
-		// outfitted with a valueOf "locker". The "ref" is an
-		// empty plain object, scoped to the IIFE that wraps
-		// jQuery, which prevents outside tampering with the
+		// Check if the owner object has already been outfitted with a valueOf
+		// "locker". They "key" is the "Data" constructor itself, which is scoped
+		// to the IIFE that wraps jQuery. This prevents outside tampering with the
 		// "valueOf" locker.
-		unlock = owner.valueOf( ref );
+		unlock = owner.valueOf( Data );
 
 		// If no "unlock" string exists, then create a valueOf "locker"
 		// for storing the unlocker key. Since valueOf normally does not accept any
@@ -41,7 +39,7 @@ Data.prototype = {
 
 			Object.defineProperty( owner, "valueOf", {
 				value: function( pick ) {
-					if ( pick === ref ) {
+					if ( pick === Data ) {
 						return unlock;
 					}
 					return ovalueOf.apply( owner );
