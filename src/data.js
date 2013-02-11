@@ -1,66 +1,108 @@
+/*
+	Implementation Summary
+
+	1. Enforce API surface and semantic compatibility with 1.9.x branch
+	2. Improve the module's maintainability by reducing the storage
+		paths to a single mechanism.
+	3. Use the same single mechanism to support "private" and "user" data.
+	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
+	5. Avoid exposing implementation details on user objects (eg. expando properties)
+	6. Provide a clear path for implementation upgrade to WeakMap in 2014
+*/
 var data_user, data_priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 function Data() {
-	// Nodes|Objects
-	this.owners = [];
-	// Data objects
-	this.cache = [];
+	// Data objects. Keys correspond to the
+	// unlocker that is accessible via "locker" method
+	this.cache = {};
 }
 
-Data.index = function( array, node ) {
-	return array.indexOf( node );
-};
-
+Data.uid = 1;
 
 Data.prototype = {
-	add: function( owner ) {
-		return (this.cache[ this.owners.push( owner ) - 1 ] = {});
+	locker: function( owner ) {
+		var ovalueOf,
+		// Check if the owner object has already been outfitted with a valueOf
+		// "locker". They "key" is the "Data" constructor itself, which is scoped
+		// to the IIFE that wraps jQuery. This prevents outside tampering with the
+		// "valueOf" locker.
+		unlock = owner.valueOf( Data );
+
+		// If no "unlock" string exists, then create a valueOf "locker"
+		// for storing the unlocker key. Since valueOf normally does not accept any
+		// arguments, extant calls to valueOf will still behave as expected.
+		if ( typeof unlock !== "string" ) {
+			unlock = jQuery.expando + Data.uid++;
+			ovalueOf = owner.valueOf;
+
+			Object.defineProperty( owner, "valueOf", {
+				value: function( pick ) {
+					if ( pick === Data ) {
+						return unlock;
+					}
+					return ovalueOf.apply( owner );
+				}
+				// By omitting explicit [ enumerable, writable, configurable ]
+				// they will default to "false"
+			});
+		}
+
+		// If private or user data already create a valueOf locker
+		// then we'll reuse the unlock key, but still need to create
+		// a cache object for this instance (could be private or user)
+		if ( !this.cache[ unlock ] ) {
+			this.cache[ unlock ] = {};
+		}
+
+		return unlock;
 	},
 	set: function( owner, data, value ) {
-		var prop,
-				index = Data.index( this.owners, owner );
+		var prop, cache, unlock;
 
-		// If there is no entry for this "owner", create one inline
-		// and set the index as though an owner entry had always existed
-		if ( index === -1 ) {
-			this.add( owner );
-			index = this.owners.length - 1;
-		}
+		// There may be an unlock assigned to this node,
+		// if there is no entry for this "owner", create one inline
+		// and set the unlock as though an owner entry had always existed
+		unlock = this.locker( owner );
+		cache = this.cache[ unlock ];
+
 		// Handle: [ owner, key, value ] args
 		if ( typeof data === "string" ) {
-			this.cache[ index ][ data ] = value;
+			cache[ data ] = value;
 
 		// Handle: [ owner, { properties } ] args
 		} else {
-			// In the case where there was actually no "owner" entry and
-			// this.add( owner ) was called to create one, there will be
+			// [*] In the case where there was actually no "owner" entry and
+			// this.locker( owner ) was called to create one, there will be
 			// a corresponding empty plain object in the cache.
-			if ( jQuery.isEmptyObject( this.cache[ index ] ) ) {
-				this.cache[ index ] = data;
-
+			//
+			// Note, this will kill the reference between
+			// "this.cache[ unlock ]" and "cache"
+			if ( jQuery.isEmptyObject( cache ) ) {
+				cache = data;
 			// Otherwise, copy the properties one-by-one to the cache object
 			} else {
 				for ( prop in data ) {
-					this.cache[ index ][ prop ] = data[ prop ];
+					cache[ prop ] = data[ prop ];
 				}
 			}
 		}
+
+		// [*] This is required to support an expectation made possible by the old
+		// data system where plain objects used to initialize would be
+		// set to the cache by reference, instead of having properties and
+		// values copied.
+		this.cache[ unlock ] = cache;
+
 		return this;
 	},
 	get: function( owner, key ) {
-		var cache,
-				index = Data.index( this.owners, owner );
-
-		// A valid cache is found, or needs to be created.
-		// New entries will be added and return the current
-		// empty data object to be used as a return reference
-		// return this.add( owner );
-		// This logic was required by expectations made of the
-		// old data system.
-		cache = index === -1 ?
-			this.add( owner ) : this.cache[ index ];
+		// Either a valid cache is found, or will be created.
+		// New caches will be created and the unlock returned,
+		// allowing direct access to the newly created
+		// empty data object.
+		var cache = this.cache[ this.locker( owner ) ];
 
 		return key === undefined ?
 			cache : cache[ key ];
@@ -87,9 +129,8 @@ Data.prototype = {
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
-				camel = jQuery.camelCase,
-				index = Data.index( this.owners, owner ),
-				cache = this.cache[ index ];
+				unlock = this.locker( owner ),
+				cache = this.cache[ unlock ];
 
 		if ( key === undefined ) {
 			cache = {};
@@ -98,14 +139,12 @@ Data.prototype = {
 				// Support array or space separated string of keys
 				if ( !Array.isArray( key ) ) {
 					// Try the string as a key before any manipulation
-					//
-
 					if ( key in cache ) {
 						name = [ key ];
 					} else {
 						// If a key with the spaces exists, use it.
 						// Otherwise, create an array by matching non-whitespace
-						name = camel( key );
+						name = jQuery.camelCase( key );
 						name = name in cache ?
 							[ name ] : ( name.match( core_rnotwhite ) || [] );
 					}
@@ -116,7 +155,7 @@ Data.prototype = {
 					// Since there is no way to tell _how_ a key was added, remove
 					// both plain key and camelCase key. #12786
 					// This will only penalize the array argument path.
-					name = key.concat( key.map( camel ) );
+					name = key.concat( key.map( jQuery.camelCase ) );
 				}
 				i = 0;
 				l = name.length;
@@ -126,21 +165,15 @@ Data.prototype = {
 				}
 			}
 		}
-		this.cache[ index ] = cache;
+		this.cache[ unlock ] = cache;
 	},
 	hasData: function( owner ) {
-		var index = Data.index( this.owners, owner );
-
-		return index !== -1 && !jQuery.isEmptyObject( this.cache[ index ] );
+		return !jQuery.isEmptyObject(
+			this.cache[ this.locker( owner ) ]
+		);
 	},
 	discard: function( owner ) {
-		var index = Data.index( this.owners, owner );
-
-		if ( index !== -1 ) {
-			this.owners.splice( index, 1 );
-			this.cache.splice( index, 1 );
-		}
-		return this;
+		delete this.cache[ this.locker( owner ) ];
 	}
 };
 
@@ -159,14 +192,15 @@ data_priv = new Data();
 
 
 jQuery.extend({
+	// Unique for each copy of jQuery on the page
+	// Non-digits removed to match rinlinejQuery
+	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
+
 	// This is no longer relevant to jQuery core, but must remain
 	// supported for the sake of jQuery 1.9.x API surface compatibility.
 	acceptData: function() {
 		return true;
 	},
-	// Unique for each copy of jQuery on the page
-	// Non-digits removed to match rinlinejQuery
-	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
 
 	hasData: function( elem ) {
 		return data_user.hasData( elem ) || data_priv.hasData( elem );
@@ -245,7 +279,6 @@ jQuery.fn.extend({
 				if ( data !== undefined ) {
 					return data;
 				}
-
 				// Attempt to "discover" the data in
 				// HTML5 custom data-* attrs
 				data = dataAttr( elem, key, undefined );
@@ -320,6 +353,5 @@ function dataAttr( elem, key, data ) {
 			data = undefined;
 		}
 	}
-
 	return data;
 }
