@@ -11,3 +11,7 @@ dist/.destination.json
 dist/.sizecache.json
 build/.sizecache.json
 node_modules
+
+# Vim recovery files
+*.swp
+*.swo
