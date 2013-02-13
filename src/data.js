@@ -124,8 +124,6 @@ Data.prototype = {
 			this.set( owner, key, value );
 			return value !== undefined ? value : key;
 		}
-		// Otherwise, this is a read request.
-		return this.get( owner, key );
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
