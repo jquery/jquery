@@ -7,29 +7,47 @@ test("expando", function(){
 });
 
 test( "jQuery.data & removeData, expected returns", function() {
-	expect(2);
+	expect(4);
+	var elem = document.body;
 
 	equal(
-		jQuery.data( document.body, "hello", "world" ), "world",
+		jQuery.data( elem, "hello", "world" ), "world",
 		"jQuery.data( elem, key, value ) returns value"
 	);
 	equal(
-		jQuery.removeData( document.body, "hello" ), undefined,
+		jQuery.data( elem, "hello" ), "world",
+		"jQuery.data( elem, key ) returns value"
+	);
+	deepEqual(
+		jQuery.data( elem, { goodnight: "moon" }), { goodnight: "moon" },
+		"jQuery.data( elem, key, obj ) returns obj"
+	);
+	equal(
+		jQuery.removeData( elem, "hello" ), undefined,
 		"jQuery.removeData( elem, key, value ) returns undefined"
 	);
 
 });
 
 test( "jQuery._data & _removeData, expected returns", function() {
-	expect(2);
+	expect(4);
+	var elem = document.body;
 
 	equal(
-		jQuery._data( document.body, "hello", "world" ), "world",
-		"jQuery.data( elem, key, value ) returns value"
+		jQuery._data( elem, "hello", "world" ), "world",
+		"jQuery._data( elem, key, value ) returns value"
 	);
 	equal(
-		jQuery._removeData( document.body, "hello" ), undefined,
-		"jQuery.removeData( elem, key, value ) returns undefined"
+		jQuery._data( elem, "hello" ), "world",
+		"jQuery._data( elem, key ) returns value"
+	);
+	deepEqual(
+		jQuery._data( elem, { goodnight: "moon" }), { goodnight: "moon" },
+		"jQuery._data( elem, obj ) returns obj"
+	);
+	equal(
+		jQuery._removeData( elem, "hello" ), undefined,
+		"jQuery._removeData( elem, key, value ) returns undefined"
 	);
 });
 

@@ -108,24 +108,33 @@ Data.prototype = {
 			cache : cache[ key ];
 	},
 	access: function( owner, key, value ) {
-		if ( value === undefined && (key && typeof key !== "object") ) {
-			// Assume this is a request to read the cached data
+		// In cases where either:
+		//
+		//   1. No key was specified
+		//   2. A string key was specified, but no value provided
+		//
+		// Take the "read" path and allow the get method to determine
+		// which value to return, respectively either:
+		//
+		//   1. The entire cache object
+		//   2. The data stored at the key
+		//
+		if ( key === undefined ||
+				((key && typeof key === "string") && value === undefined) ) {
 			return this.get( owner, key );
-		} else {
-
-			// If only an owner was specified, return the entire
-			// cache object.
-			if ( key === undefined ) {
-				return this.get( owner );
-			}
-
-			// Allow setting or extending (existing objects) with an
-			// object of properties, or a key and val
-			this.set( owner, key, value );
-			return value !== undefined ? value : key;
 		}
-		// Otherwise, this is a read request.
-		return this.get( owner, key );
+
+		// [*]When the key is not a string, or both a key and value
+		// are specified, set or extend (existing objects) with either:
+		//
+		//   1. An object of properties
+		//   2. A key and value
+		//
+		this.set( owner, key, value );
+
+		// Since the "set" path can have two possible entry points
+		// return the expected data based on which path was taken[*]
+		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
