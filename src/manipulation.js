@@ -9,6 +9,8 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
 
+	cache = {}, // Store objects in a local cache.
+
 	// We have to close these tags to support XHTML (#13200)
 	wrapMap = {
 
@@ -540,8 +542,31 @@ jQuery.extend({
 			// Discard any remaining `private` and `user` data
 			data_discard( elem );
 		}
+	},
+
+	cache: function( label, selector ) {
+		if (selector) {
+			cache[label] = jQuery(selector);
+			cache[label].selector = selector;
+			cache[label].update = updateElements;
+		}
+		return cache[label];
 	}
 });
+
+function updateElements() {
+	var coll = jQuery(this.selector),
+		count = Math.max(this.length,coll.length);
+	while (count--) {
+		if (coll[count]) {
+			this[count] = coll[count];
+		} else if (this[count]) {
+			delete this[count];
+		}
+	}
+	this.length = coll.length;
+	return this;
+}
 
 function findOrAppend( elem, tag ) {
 	return elem.getElementsByTagName( tag )[ 0 ] || elem.appendChild( elem.ownerDocument.createElement(tag) );
