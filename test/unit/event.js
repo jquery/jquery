@@ -2624,13 +2624,24 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 });
 
 test("off() method dose not throw (#13471)", function() {
-  var errored = false;
+  expect( 2 );
+
+  var errored = false,
+      handlered = false;
 
   try {
-    $(document).on(".test", function() { /* do someting */ }).off(".test");
+    jQuery(document)
+      .on(".test", function() {
+        handlered = true;
+      })
+      .off(".test")
+      .trigger(".test");
   } catch( e ) {
-    errored = true;
+    if (e instanceof RangeError) {
+      errored = true;
+    }
   }
 
 	equal( errored, false, "off() did not throw exception" );
+	equal( handlered, false, "unbinded handler did not called" );
 });

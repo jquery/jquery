@@ -129,8 +129,30 @@ jQuery.event = {
 
 		var j, origCount, tmp,
 			events, t, handleObj,
-			special, handlers, type, namespaces, origType,
+			special, handlers, type, namespaces, origType, removeMatchEvents,
 			elemData = data_priv.hasData( elem ) && data_priv.get( elem );
+
+    removeMatchEvents = function( handlers, origType, special, namespaceRE ) {
+      // Remove matching events
+      origCount = j = handlers.length;
+      while ( j-- ) {
+        handleObj = handlers[ j ];
+
+        if ( ( mappedTypes || origType === handleObj.origType ) &&
+          ( !handler || handler.guid === handleObj.guid ) &&
+          ( !namespaceRE || namespaceRE.test( handleObj.namespace ) ) &&
+          ( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+          handlers.splice( j, 1 );
+
+          if ( handleObj.selector ) {
+            handlers.delegateCount--;
+          }
+          if ( special.remove ) {
+            special.remove.call( elem, handleObj );
+          }
+        }
+      }
+    };
 
 		if ( !elemData || !(events = elemData.events) ) {
 			return;
@@ -144,38 +166,24 @@ jQuery.event = {
 			type = origType = tmp[1];
 			namespaces = ( tmp[2] || "" ).split( "." ).sort();
 
-			// Unbind all events (on this namespace, if provided) for the element
-			if ( !type ) {
-				for ( type in events ) {
-					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
-				}
-				continue;
-			}
-
 			special = jQuery.event.special[ type ] || {};
 			type = ( selector ? special.delegateType : special.bindType ) || type;
 			handlers = events[ type ] || [];
 			tmp = tmp[2] && new RegExp( "(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)" );
 
-			// Remove matching events
-			origCount = j = handlers.length;
-			while ( j-- ) {
-				handleObj = handlers[ j ];
-
-				if ( ( mappedTypes || origType === handleObj.origType ) &&
-					( !handler || handler.guid === handleObj.guid ) &&
-					( !tmp || tmp.test( handleObj.namespace ) ) &&
-					( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
-					handlers.splice( j, 1 );
-
-					if ( handleObj.selector ) {
-						handlers.delegateCount--;
-					}
-					if ( special.remove ) {
-						special.remove.call( elem, handleObj );
-					}
+			// Unbind all events (on this namespace, if provided) for the element
+			if ( !type ) {
+				for ( type in events ) {
+          if ( !type ) {
+            removeMatchEvents( events[ type ], origType, special, tmp );
+            continue;
+          }
+					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
 				}
+				continue;
 			}
+
+      removeMatchEvents( handlers, origType, special, tmp );
 
 			// Remove generic event handler if we removed something and no more handlers exist
 			// (avoids potential for endless recursion during removal of special event handlers)
