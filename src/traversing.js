@@ -136,8 +136,6 @@ jQuery.fn.extend({
 	}
 });
 
-jQuery.fn.andSelf = jQuery.fn.addBack;
-
 function sibling( cur, dir ) {
 	while ( (cur = cur[dir]) && cur.nodeType !== 1 ) {}
 

@@ -184,7 +184,7 @@ test("clearQueue() clears the fx queue", function() {
 });
 
 asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
-	var foo = jQuery( "#foo" ).clone().andSelf(),
+	var foo = jQuery( "#foo" ).clone().addBack(),
 		promised = false;
 
 	foo.queue( function( next ) {
