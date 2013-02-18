@@ -2622,3 +2622,15 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	equal( errored, false, "trigger() did not throw exception" );
 	delete String.prototype.namespace;
 });
+
+test("off() method dose not throw (#13471)", function() {
+  var errored = false;
+
+  try {
+    $(document).on(".test", function() { /* do someting */ }).off(".test");
+  } catch( e ) {
+    errored = true;
+  }
+
+	equal( errored, false, "off() did not throw exception" );
+});
