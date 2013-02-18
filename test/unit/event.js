@@ -2007,6 +2007,22 @@ test("undelegate() with only namespaces", function() {
 	equal( count, 1, "no more .ns after undelegate");
 });
 
+test("No RangeError when jQuery.on(.ns, ...).off(.ns) #13471", function() {
+	expect(1);
+	var result,
+			was = "not ";
+
+	try {
+		jQuery({}).on( ".ns", jQuery.noop ).off( ".ns" );
+		result = true;
+	} catch ( e ) {
+		result = false;
+		was = "";
+	}
+
+	ok( result, "RangeError " + was + "thrown" );
+});
+
 test("Non DOM element events", function() {
 	expect(1);
 

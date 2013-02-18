@@ -128,7 +128,6 @@ jQuery.event = {
 		// Nullify elem to prevent memory leaks in IE
 		elem = null;
 	},
-
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 		var j, handleObj, tmp,
@@ -152,6 +151,15 @@ jQuery.event = {
 			// Unbind all events (on this namespace, if provided) for the element
 			if ( !type ) {
 				for ( type in events ) {
+					// Bug #13471
+					// In cases where no "type" was ever specified, the recursive call to
+					// jQuery.event.remove() will bring us right back to the same place, eventually
+					// resulting in a RangeError or stack overflow.
+					// This is avoided by with a continue statement whenever
+					// the "type" is an empty string
+					if ( type === "" ) {
+						continue;
+					}
 					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
 				}
 				continue;
