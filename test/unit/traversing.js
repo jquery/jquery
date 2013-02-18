@@ -7,7 +7,7 @@ test( "find(String)", function() {
 	// using contents will get comments regular, text, and comment nodes
 	var j = jQuery("#nonnodes").contents();
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
-	equal( j.find("div").andSelf().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
+	equal( j.find("div").addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 
 	deepEqual( jQuery("#qunit-fixture").find("> div").get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
 	deepEqual( jQuery("#qunit-fixture").find("> #foo, > #moretests").get(), q( "foo", "moretests" ), "find child elements" );
@@ -38,7 +38,7 @@ test( "find(node|jQuery object)", function() {
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two" );
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
 
-	equal( $two.find( $foo[ 0 ] ).andSelf().length, 2, "find preserves the pushStack, see #12009" );
+	equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see #12009" );
 });
 
 test("is(String|undefined)", function() {
@@ -689,4 +689,10 @@ test("index(no arg) #10977", function() {
 		div = fragment.appendChild( document.createElement("div") );
 
 	equal( jQuery( div ).index(), 0, "If jQuery#index called on element whos parent is fragment, it still should work correctly" );
+});
+
+test("drop addSelf support #13283", function() {
+	expect( 1 );
+
+	ok( typeof jQuery.fn.andSelf === "undefined", jQuery.fn.andSelf);
 });
