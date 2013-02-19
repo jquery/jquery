@@ -904,23 +904,26 @@ jQuery.ready.promise = function( obj ) {
 			} catch(e) {}
 
 			if ( top && top.doScroll ) {
-				(function doScrollCheck() {
-					if ( !jQuery.isReady ) {
+				(function() {
+					var doScrollCheck = function() {
+						if ( !jQuery.isReady ) {
 
-						try {
-							// Use the trick by Diego Perini
-							// http://javascript.nwbox.com/IEContentLoaded/
-							top.doScroll("left");
-						} catch(e) {
-							return setTimeout( doScrollCheck, 50 );
+							try {
+								// Use the trick by Diego Perini
+								// http://javascript.nwbox.com/IEContentLoaded/
+								top.doScroll("left");
+							} catch(e) {
+								return setTimeout( doScrollCheck, 50 );
+							}
+
+							// detach all dom ready events
+							detach();
+
+							// and execute any waiting functions
+							jQuery.ready();
 						}
-
-						// detach all dom ready events
-						detach();
-
-						// and execute any waiting functions
-						jQuery.ready();
-					}
+					};
+					doScrollCheck();
 				})();
 			}
 		}
