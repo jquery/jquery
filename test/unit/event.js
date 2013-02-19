@@ -2623,25 +2623,17 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	delete String.prototype.namespace;
 });
 
-test("off() method dose not throw (#13471)", function() {
-  expect( 2 );
+test("on() method should throw TypeError alert must specify a type name (#13471)", function() {
+	expect( 2 );
 
-  var errored = false,
-      handlered = false;
+	var error = null;
 
-  try {
-    jQuery(document)
-      .on(".test", function() {
-        handlered = true;
-      })
-      .off(".test")
-      .trigger(".test");
-  } catch( e ) {
-    if (e instanceof RangeError) {
-      errored = true;
-    }
-  }
+	try {
+		jQuery(document).on(".test", function() { /* do something */ });
+	} catch( e ) {
+		error = e;
+	}
 
-	equal( errored, false, "off() did not throw exception" );
-	equal( handlered, false, "unbinded handler did not called" );
+	equal( error instanceof TypeError, true, "on() did throw exception" );
+	equal( error.message, "Event type '.test' is invalid, You must specify a type name.", "on() method did alert message" );
 });
