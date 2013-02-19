@@ -656,12 +656,12 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	expect(4);
 
 	var $checkedtest = jQuery("#checkedtest");
-	// IE6 was clearing "checked" in jQuery.css(elem, "height");
 	jQuery.css($checkedtest[0], "height");
-	ok( !! jQuery(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
-	ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
-	ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
-	ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+
+	ok( jQuery("input[type='radio']", $checkedtest).first().attr("checked"), "Check first radio still checked." );
+	ok( !jQuery("input[type='radio']", $checkedtest).last().attr("checked"), "Check last radio still NOT checked." );
+	ok( jQuery("input[type='checkbox']", $checkedtest).first().attr("checked"), "Check first checkbox still checked." );
+	ok( !jQuery("input[type='checkbox']", $checkedtest).last().attr("checked"), "Check last checkbox still NOT checked." );
 });
 
 test("internal ref to elem.runtimeStyle (bug #7608)", function () {

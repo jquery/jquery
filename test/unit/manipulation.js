@@ -300,7 +300,7 @@ test( "unwrap()", function() {
 	var abcd = jQuery("#unwrap1 > span, #unwrap2 > span").get(),
 		abcdef = jQuery("#unwrap span").get();
 
-	equal( jQuery("#unwrap1 span").add("#unwrap2 span:first").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
+	equal( jQuery("#unwrap1 span").add("#unwrap2 span:first-child").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
 	deepEqual( jQuery("#unwrap > span").get(), abcd, "all four spans should still exist" );
 
 	deepEqual( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap3 > span").get(), "make all b in #unwrap3 go away" );
@@ -452,11 +452,11 @@ var testAppend = function( valueObj ) {
 	equal( $map[ 0 ].firstChild.nodeName.toLowerCase(), "area", "The area was inserted." );
 
 	jQuery("#select1").append( valueObj("<OPTION>Test</OPTION>") );
-	equal( jQuery("#select1 option:last").text(), "Test", "Appending OPTION (all caps)" );
+	equal( jQuery("#select1 option:last-child").text(), "Test", "Appending OPTION (all caps)" );
 
 	jQuery("#select1").append( valueObj("<optgroup label='optgroup'><option>optgroup</option></optgroup>") );
 	equal( jQuery("#select1 optgroup").attr("label"), "optgroup", "Label attribute in newly inserted optgroup is correct" );
-	equal( jQuery("#select1 option:last").text(), "optgroup", "Appending optgroup" );
+	equal( jQuery("#select1 option").last().text(), "optgroup", "Appending optgroup" );
 
 	$table = jQuery("#table").empty();
 
@@ -490,7 +490,7 @@ var testAppend = function( valueObj ) {
 	$input = jQuery("<input type='checkbox'/>").prop( "checked", true ).appendTo("#testForm");
 	equal( $input[ 0 ].checked, true, "A checked checkbox that is appended stays checked" );
 
-	$radioChecked = jQuery("input:radio[name='R1']").eq( 1 );
+	$radioChecked = jQuery("input[type='radio'][name='R1']").eq( 1 );
 	$radioParent = $radioChecked.parent();
 	$radioUnchecked = jQuery("<input type='radio' name='R1' checked='checked'/>").appendTo( $radioParent );
 	$radioChecked.trigger("click");
@@ -601,12 +601,12 @@ test( "replaceWith on XML document (#9960)", function() {
 		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
 		xml1 = jQuery( xmlDoc1 ),
 		xml2 = jQuery( xmlDoc2 ),
-		scxml1 = jQuery( ":first", xml1 ),
-		scxml2 = jQuery( ":first", xml2 );
+		scxml1 = jQuery( "scxml", xml1 ),
+		scxml2 = jQuery( "scxml", xml2 );
 
 	scxml1.replaceWith( scxml2 );
 
-	newNode = jQuery( ":first>state[id='provisioning3']", xml1 );
+	newNode = jQuery( "scxml>state[id='provisioning3']", xml1 );
 
 	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
 });
@@ -776,7 +776,6 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#first").text(), defaultText + "buga", "Check if text appending works" );
 	equal( jQuery("<option value='appendTest'>Append Test</option>").appendTo("#select3").parent().find("option:last-child").attr("value"), "appendTest", "Appending html options to select element" );
 
-	QUnit.reset();
 	l = jQuery("#first").children().length + 2;
 	jQuery("<strong>test</strong>");
 	jQuery("<strong>test</strong>");
@@ -790,7 +789,6 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	jQuery( document.getElementById("first") ).appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 
-	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
 	jQuery([ document.getElementById("first"), document.getElementById("yahoo") ]).appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
@@ -798,35 +796,29 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	QUnit.reset();
 	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
 
-	QUnit.reset();
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
 	jQuery("#yahoo, #first").appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 
-	QUnit.reset();
 	jQuery("#select1").appendTo("#foo");
 	t( "Append select", "#foo select", [ "select1" ] );
 
-	QUnit.reset();
 	div = jQuery("<div/>").on( "click", function() {
 		ok( true, "Running a cloned click." );
 	});
 	div.appendTo("#qunit-fixture, #moretests");
 
-	jQuery("#qunit-fixture div:last").trigger("click");
-	jQuery("#moretests div:last").trigger("click");
+	jQuery("#qunit-fixture div").last().trigger("click");
+	jQuery("#moretests div").last().trigger("click");
 
-	QUnit.reset();
 	div = jQuery("<div/>").appendTo("#qunit-fixture, #moretests");
 
 	equal( div.length, 2, "appendTo returns the inserted elements" );
 
 	div.addClass("test");
 
-	ok( jQuery("#qunit-fixture div:last").hasClass("test"), "appendTo element was modified after the insertion" );
-	ok( jQuery("#moretests div:last").hasClass("test"), "appendTo element was modified after the insertion" );
-
-	QUnit.reset();
+	ok( jQuery("#qunit-fixture div").last().hasClass("test"), "appendTo element was modified after the insertion" );
+	ok( jQuery("#moretests div").last().hasClass("test"), "appendTo element was modified after the insertion" );
 
 	div = jQuery("<div/>");
 	jQuery("<span>a</span><b>b</b>").filter("span").appendTo( div );
@@ -965,8 +957,8 @@ test( "prependTo(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 
 	QUnit.reset();
-	jQuery("<select id='prependSelect1'></select>").prependTo("form:last");
-	jQuery("<select id='prependSelect2'><option>Test</option></select>").prependTo("form:last");
+	jQuery("<select id='prependSelect1'></select>").prependTo("#form");
+	jQuery("<select id='prependSelect2'><option>Test</option></select>").prependTo("#form");
 
 	t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
 });
@@ -1464,19 +1456,17 @@ test( "clone(form element) (Bug #3879, #6655)", function() {
 
 	expect( 5 );
 
-	var clone,
-		element = jQuery("<select><option>Foo</option><option selected>Bar</option></select>");
+	var clone, element;
 
-	equal( element.clone().find("option:selected").val(), element.find("option:selected").val(), "Selected option cloned correctly" );
+	element = jQuery("<select><option>Foo</option><option value='selected' selected>Bar</option></select>");
+
+	equal( element.clone().find("option").filter(function() { return this.selected; }).val(), "selected", "Selected option cloned correctly" );
 
 	element = jQuery("<input type='checkbox' value='foo'>").attr( "checked", "checked" );
 	clone = element.clone();
 
 	equal( clone.is(":checked"), element.is(":checked"), "Checked input cloned correctly" );
 	equal( clone[ 0 ].defaultValue, "foo", "Checked input defaultValue cloned correctly" );
-
-	// defaultChecked also gets set now due to setAttribute in attr, is this check still valid?
-	// equal( clone[0].defaultChecked, !jQuery.support.noCloneChecked, "Checked input defaultChecked cloned correctly" );
 
 	element = jQuery("<input type='text' value='foo'>");
 	clone = element.clone();
@@ -1592,7 +1582,7 @@ var testHtml = function( valueObj ) {
 	ok( tmp[ 8 ], "comment" );
 
 	actual = []; expected = [];
-	fixture.find("> div").html( valueObj("<b>test</b>") ).each(function() {
+	fixture.children("div").html( valueObj("<b>test</b>") ).each(function() {
 		expected.push("B");
 		actual.push( childNodeNames( this ) );
 	});
@@ -1698,7 +1688,6 @@ test( "html(Function) with incoming value", function() {
 		equal( null, null, "Make sure the incoming value is correct." );
 	}
 
-	j.find("b").removeData();
 	equal( j.html().replace( / xmlns="[^"]+"/g, "" ).toLowerCase(), "<b>bold</b>", "Check node,textnode,comment with html()" );
 
 	$div = jQuery("<div />");
@@ -1738,15 +1727,21 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 	var $content = jQuery("<div><b><i>text</i></b></div>").appendTo("#qunit-fixture"),
 		expected = /^<b><i>text<\/i><\/b>$/i;
 
-	// Attach jQuery and Sizzle data (the latter by conducting a non-qSA search)
-	$content.find(":nth-child(1):lt(4)").data( "test", true );
+	// Attach jQuery and Sizzle data (the latter with a non-qSA nth-child)
+	try {
+		$content.find(":nth-child(1):lt(4)").data( "test", true );
+
+	// But don't break on a non-Sizzle build
+	} catch( e ) {
+		$content.find("*").data( "test", true );
+	}
 
 	ok( expected.test( $content.clone( false )[ 0 ].innerHTML ), "clone()" );
 	ok( expected.test( $content.html() ), "html()" );
 });
 
 var testRemove = function( method ) {
-	var first = jQuery("#ap").children(":first");
+	var first = jQuery("#ap").children().first();
 
 	first.data("foo", "bar");
 
@@ -1784,7 +1779,7 @@ test( "remove() event cleaning ", 1, function() {
 	var count, first, cleanUp;
 
 	count = 0;
-	first = jQuery("#ap").children(":first");
+	first = jQuery("#ap").children().first();
 	cleanUp = first.on( "click", function() {
 		count++;
 	}).remove().appendTo("#qunit-fixture").trigger("click");
@@ -1803,7 +1798,7 @@ test( "detach() event cleaning ", 1, function() {
 	var count, first, cleanUp;
 
 	count = 0;
-	first = jQuery("#ap").children(":first");
+	first = jQuery("#ap").children().first();
 	cleanUp = first.on( "click", function() {
 		count++;
 	}).detach().appendTo("#qunit-fixture").trigger("click");
@@ -2180,7 +2175,7 @@ test( "script evaluation (#11795)", function() {
 	scriptsOut = scriptsOut.add( scriptsOut.clone() ).appendTo( fixture.find("div") );
 	deepEqual( fixture.find("div script").get(), scriptsOut.get(), "Scripts cloned without reevaluation" );
 	fixture.append( scriptsOut.detach() );
-	deepEqual( fixture.find("> script").get(), scriptsOut.get(), "Scripts detached without reevaluation" );
+	deepEqual( fixture.children("script").get(), scriptsOut.get(), "Scripts detached without reevaluation" );
 	objGlobal.ok = isOk;
 });
 
