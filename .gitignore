@@ -2,6 +2,7 @@ src/selector.js
 dist
 .project
 .settings
+*.swp
 *~
 *.diff
 *.patch
