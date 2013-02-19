@@ -28,13 +28,12 @@ test("jQuery()", function() {
 
 	var elem, i,
 		obj = jQuery("div"),
-		main = jQuery("#qunit-fixture"),
 		code = jQuery("<code/>"),
 		img = jQuery("<img/>"),
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		lng = "",
-		expected = 21,
+		expected = 20,
 		attrObj = {
 			"text": "test",
 			"class": "test2",
@@ -77,8 +76,6 @@ test("jQuery()", function() {
 
 	// can actually yield more than one, when iframes are included, the window is an array as well
 	equal( jQuery(window).length, 1, "Correct number of elements generated for jQuery(window)" );
-
-	deepEqual( jQuery("div p", main).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 
 /*
 	// disabled since this test was doing nothing. i tried to fix it but i'm not sure
@@ -152,6 +149,13 @@ test("jQuery()", function() {
 	for ( i = 0; i < 128; i++ ) {
 		lng += "12345678";
 	}
+});
+
+test("jQuery(selector, context)", function() {
+	expect(3);
+	deepEqual( jQuery("div p", "#qunit-fixture").get(), q("sndp", "en", "sap"), "Basic selector with string as context" );
+	deepEqual( jQuery("div p", q("qunit-fixture")[0]).get(), q("sndp", "en", "sap"), "Basic selector with element as context" );
+	deepEqual( jQuery("div p", jQuery("#qunit-fixture")).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 });
 
 test( "selector state", function() {

@@ -172,11 +172,11 @@ var Globals = (function() {
 	// instead of asserting every time a test has leaked sometime in the past
 	var oldCacheLength = 0,
 		oldFragmentsLength = 0,
-		oldTimersLength = 0,
 		oldActive = 0,
 
 		expectedDataKeys = {},
 
+		splice = [].splice,
 		reset = QUnit.reset,
 		ajaxSettings = jQuery.ajaxSettings;
 
@@ -286,6 +286,20 @@ var Globals = (function() {
 		// Reset data register
 		expectedDataKeys = {};
 
+		// Check for (and clean up, if possible) incomplete animations/requests/etc.
+		if ( jQuery.timers && jQuery.timers.length !== 0 ) {
+			equal( jQuery.timers.length, 0, "No timers are still running" );
+			splice.call( jQuery.timers, 0, jQuery.timers.length );
+			jQuery.fx.stop();
+		}
+		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
+			equal( jQuery.active, oldActive, "No AJAX requests are still active" );
+			if ( ajaxTest.abort ) {
+				ajaxTest.abort("active requests");
+			}
+			oldActive = jQuery.active;
+		}
+
 		// Allow QUnit.reset to clean up any attached elements before checking for leaks
 		QUnit.reset();
 
@@ -308,17 +322,6 @@ var Globals = (function() {
 		if ( fragmentsLength !== oldFragmentsLength ) {
 			equal( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
 			oldFragmentsLength = fragmentsLength;
-		}
-		if ( jQuery.timers && jQuery.timers.length !== oldTimersLength ) {
-			equal( jQuery.timers.length, oldTimersLength, "No timers are still running" );
-			oldTimersLength = jQuery.timers.length;
-		}
-		if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
-			equal( jQuery.active, 0, "No AJAX requests are still active" );
-			if ( ajaxTest.abort ) {
-				ajaxTest.abort("active requests");
-			}
-			oldActive = jQuery.active;
 		}
 	};
 

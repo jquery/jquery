@@ -1,6 +1,18 @@
-if ( jQuery.fx ) {
+(function() {
 
-module("effects", { teardown: moduleTeardown });
+// Can't test what ain't there
+if ( !jQuery.fx ) {
+	return;
+}
+
+var off = jQuery.fx.off;
+
+module("effects", {
+	teardown: function() {
+		jQuery.fx.off = off;
+		return moduleTeardown.apply( this, arguments );
+	}
+});
 
 test("sanity check", function() {
 	expect(1);
@@ -1055,12 +1067,11 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 	stop();
 
 	var $checkedtest = jQuery("#checkedtest");
-	// IE6 was clearing "checked" in jQuery(elem).show("fast");
 	$checkedtest.hide().show("fast", function() {
-		ok( !! jQuery(":radio:first", $checkedtest).attr("checked"), "Check first radio still checked." );
-		ok( ! jQuery(":radio:last", $checkedtest).attr("checked"), "Check last radio still NOT checked." );
-		ok( !! jQuery(":checkbox:first", $checkedtest).attr("checked"), "Check first checkbox still checked." );
-		ok( ! jQuery(":checkbox:last", $checkedtest).attr("checked"), "Check last checkbox still NOT checked." );
+		ok( jQuery("input[type='radio']", $checkedtest).first().attr("checked"), "Check first radio still checked." );
+		ok( !jQuery("input[type='radio']", $checkedtest).last().attr("checked"), "Check last radio still NOT checked." );
+		ok( jQuery("input[type='checkbox']", $checkedtest).first().attr("checked"), "Check first checkbox still checked." );
+		ok( !jQuery("input[type='checkbox']", $checkedtest).last().attr("checked"), "Check last checkbox still NOT checked." );
 		start();
 	});
 });
@@ -1485,7 +1496,7 @@ test( "animate should set display for disconnected nodes", function() {
 	});
 });
 
-asyncTest("Animation callback should not show animated element as animated (#7157)", 1, function() {
+asyncTest("Animation callback should not show animated element as :animated (#7157)", 1, function() {
 	var foo = jQuery( "#foo" );
 
 	foo.animate({
@@ -2014,4 +2025,4 @@ test( ".finish() calls finish of custom queue functions", function() {
 	div.remove();
 });
 
-} // if ( jQuery.fx )
+})();

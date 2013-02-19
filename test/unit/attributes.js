@@ -376,7 +376,7 @@ test( "attr(String, Object)", function() {
 	});
 
 	var table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>"),
-		td = table.find("td:first");
+		td = table.find("td").eq(0);
 	td.attr( "rowspan", "2" );
 	equal( td[ 0 ]["rowSpan"], 2, "Check rowspan is correctly set" );
 	td.attr( "colspan", "2" );

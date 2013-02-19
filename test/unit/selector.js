@@ -64,15 +64,20 @@ test("attributes - jQuery only", function() {
 });
 
 test("disconnected nodes", function() {
-	expect( 4 );
+	expect( 1 );
+
+	var $div = jQuery("<div/>");
+	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
+});
+
+test("disconnected nodes - jQuery only", function() {
+	expect( 3 );
+
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
 	equal( $opt.val(), "whipit", "option value" );
 	equal( $opt.is(":selected"), false, "unselected option" );
 	$opt.prop("selected", true);
 	equal( $opt.is(":selected"), true, "selected option" );
-
-	var $div = jQuery("<div/>");
-	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
 });
 
 test("jQuery only - broken", 1, function() {
@@ -83,7 +88,7 @@ test("jQuery only - broken", 1, function() {
 		// Sizzle.error will be called but no error will be seen in oldIE
 		jQuery.call( null, " <div/> " );
 	}, function( e ) {
-		return e.message.indexOf("Syntax error") >= 0;
+		return (/syntax.err/i).test( e.message );
 	}, "leading space invalid: $(' <div/> ')" );
 });
 

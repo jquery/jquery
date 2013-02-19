@@ -310,8 +310,10 @@ test("bind/one/unbind(Object)", function(){
 test("on/off(Object), delegate/undelegate(String, Object)", function() {
 	expect(6);
 
-	var clickCounter = 0, mouseoverCounter = 0,
-		$p = jQuery("#firstp"), $a = $p.find("a:first");
+	var clickCounter = 0,
+		mouseoverCounter = 0,
+		$p = jQuery("#firstp"),
+		$a = $p.find("a").eq(0);
 
 	var events = {
 		"click": function( event ) {
@@ -326,7 +328,7 @@ test("on/off(Object), delegate/undelegate(String, Object)", function() {
 		$a.trigger("click").trigger("mouseover");
 	}
 
-	jQuery( document ).on( events, "#firstp a:first" );
+	jQuery( document ).on( events, "#firstp a" );
 	$p.delegate( "a", events, 2 );
 
 	trigger();
@@ -339,7 +341,7 @@ test("on/off(Object), delegate/undelegate(String, Object)", function() {
 	equal( clickCounter, 4, "undelegate" );
 	equal( mouseoverCounter, 4, "undelegate" );
 
-	jQuery( document ).off( events, "#firstp a:first" );
+	jQuery( document ).off( events, "#firstp a" );
 
 	trigger();
 	equal( clickCounter, 4, "off" );
@@ -349,19 +351,21 @@ test("on/off(Object), delegate/undelegate(String, Object)", function() {
 test("on/delegate immediate propagation", function() {
 	expect(2);
 
-	var $p = jQuery("#firstp"), $a = $p.find("a:first"), lastClick;
+	var lastClick,
+		$p = jQuery("#firstp"),
+		$a = $p.find("a").eq(0);
 
 	lastClick = "";
-	jQuery( document ).on( "click", "#firstp a:first", function(e) {
+	jQuery( document ).on( "click", "#firstp a", function(e) {
 		lastClick = "click1";
 		e.stopImmediatePropagation();
 	});
-	jQuery( document ).on( "click", "#firstp a:first", function(e) {
+	jQuery( document ).on( "click", "#firstp a", function(e) {
 		lastClick = "click2";
 	});
 	$a.trigger( "click" );
 	equal( lastClick, "click1", "on stopImmediatePropagation" );
-	jQuery( document ).off( "click", "#firstp a:first" );
+	jQuery( document ).off( "click", "#firstp a" );
 
 	lastClick = "";
 	$p.delegate( "a", "click", function(e) {
@@ -490,7 +494,7 @@ test("bind(), namespaced events, cloned events", 18, function() {
 
 	// Make sure events stick with appendTo'd elements (which are cloned) #2027
 	jQuery("<a href='#fail' class='test'>test</a>").on( "click", function(){ return false; }).appendTo("#qunit-fixture");
-	ok( jQuery("a.test:first").triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
+	ok( jQuery("a.test").eq(0).triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
 test("bind(), multi-namespaced events", function() {
@@ -996,7 +1000,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	var pass = true, elem2;
 	try {
-		elem2 = jQuery("#form input:first");
+		elem2 = jQuery("#form input").eq(0);
 		elem2.get(0).style.display = "none";
 		elem2.trigger("focus");
 	} catch(e) {
@@ -1006,7 +1010,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	pass = true;
 	try {
-		jQuery("#qunit-fixture table:first").bind("test:test", function(){}).trigger("test:test");
+		jQuery("#qunit-fixture table").eq(0).bind("test:test", function(){}).trigger("test:test");
 	} catch (e) {
 		pass = false;
 	}
@@ -1717,10 +1721,24 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 
 test( "delegated event with delegateTarget-relative selector", function() {
 	expect(3);
-	var markup = jQuery("<ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul>").appendTo("#qunit-fixture");
+	var markup = jQuery("<div><ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul></div>").appendTo("#qunit-fixture");
+
+	// Non-positional selector (#12383)
+	markup.find("#ul0")
+		.on( "click", "div li a", function() {
+			ok( false, "div is ABOVE the delegation point!" );
+		})
+		.on( "click", "ul a", function() {
+			ok( false, "ul IS the delegation point!" );
+		})
+		.on( "click", "li.test a", function() {
+			ok( true, "li.test is below the delegation point." );
+		})
+		.find("#a0_0").trigger("click").end()
+		.off("click");
 
 	// Positional selector (#11315)
-	markup
+	markup.find("ul").eq(0)
 		.on( "click", ">li>a", function() {
 			ok( this.id === "a0", "child li was clicked" );
 		})
@@ -1731,21 +1749,6 @@ test( "delegated event with delegateTarget-relative selector", function() {
 		.end()
 		.find("a").trigger("click").end()
 		.find("#ul0").off();
-
-	// Non-positional selector (#12383)
-	markup = markup.wrap("<div />").parent();
-	markup
-		.find("#ul0")
-		.on( "click", "div li a", function() {
-			ok( false, "div is ABOVE the delegation point!" );
-		})
-		.on( "click", "ul a", function() {
-			ok( false, "ul is the delegation point!" );
-		})
-		.on( "click", "li.test a", function() {
-			ok( true, "li.test is below the delegation point." );
-		})
-		.find("#a0_0").trigger("click");
 
 	markup.remove();
 });
@@ -2558,12 +2561,12 @@ test( "make sure events cloned correctly", 18, function() {
 
 	clone = fixture.clone( true );
 
-	clone.find("p:first").trigger( "click", true ); // 3 events should fire
+	clone.find("p").eq(0).trigger( "click", true ); // 3 events should fire
 	clone.find("#check1").trigger( "change", true ); // 3 events should fire
 	clone.remove();
 
 	clone = fixture.clone( true, true );
-	clone.find("p:first").trigger( "click", true ); // 3 events should fire
+	clone.find("p").eq(0).trigger( "click", true ); // 3 events should fire
 	clone.find("#check1").trigger( "change", true ); // 3 events should fire
 
 	fixture.off();
@@ -2573,11 +2576,11 @@ test( "make sure events cloned correctly", 18, function() {
 	p.trigger("click"); // 0 should be fired
 	checkbox.trigger("change"); // 0 should be fired
 
-	clone.find("p:first").trigger( "click", true );  // 3 events should fire
+	clone.find("p").eq(0).trigger( "click", true );  // 3 events should fire
 	clone.find("#check1").trigger( "change", true ); // 3 events should fire
 	clone.remove();
 
-	clone.find("p:first").trigger("click");  // 0 should be fired
+	clone.find("p").eq(0).trigger("click");  // 0 should be fired
 	clone.find("#check1").trigger("change"); // 0 events should fire
 });
 
