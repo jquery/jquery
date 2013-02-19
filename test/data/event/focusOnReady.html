@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+
+    <head>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title>jQuery Test</title>
+	<script src="../../jquery.js"></script>
+
+    </head>
+
+    <body>
+
+	<script>
+
+	    jQuery( document ).ready(function() {
+
+		var error = false,
+		    a = jQuery( "#a" ),
+		    b = jQuery( "#b" );
+
+		jQuery( "input" ).focus(function() {
+		    jQuery( this ).next( "span" )
+				  .css( "display","inline" )
+				  .fadeOut(1000);
+		});
+
+		a.click(function() {
+			b.focus();
+		});
+
+		b.click(function() {
+			a.focus();
+		});
+
+		try {
+		    b.focus();
+		} catch ( e ) {
+		    error = true;
+		}
+
+		window.parent.iframeCallback( ! error );
+
+	    });
+
+	</script>
+
+	<p>
+	    <input id="a" type="text" />
+	    <span>focus fire</span>
+	</p>
+	<p>
+	    <input id="b" type="password" />
+	    <span>focus fire</span>
+	</p>
+
+    </body>
+
+</html>
+
