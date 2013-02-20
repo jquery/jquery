@@ -266,7 +266,7 @@ jQuery.extend({
 		converters: {
 
 			// Convert anything to text
-			"* text": window.String,
+			"* text": String,
 
 			// Text to html (true = no transformation)
 			"text html": true,
