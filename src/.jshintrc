@@ -17,7 +17,8 @@
 	"wsh": true,
 
 	"predef": [
+		"jQuery",
 		"define",
-		"jQuery"
+		"module"
 	]
 }
