@@ -152,7 +152,7 @@ cd jquery && grunt watch
 ```
 
 
-Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
 - Mac: [MAMP download](http://www.mamp.info/en/index.html)
