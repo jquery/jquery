@@ -438,3 +438,47 @@ test( "jQuery.when - joined", function() {
 	deferreds.futureSuccess.resolve( 1 );
 	deferreds.futureError.reject( 0 );
 });
+
+test( "jQuery.deferred custom", function() {
+
+	expect(1);
+
+	var def = jQuery.Deferred(function() {}, [["mycustom", "mycustomcb"]]);
+
+	def.promise().mycustomcb(function(str) {
+		
+		if (str == "test_string") {
+			ok( true, "Called back with right value" );
+		} else {
+			ok( false, "Called back with wrong value");
+		}
+		
+	});
+
+	def.mycustom("test_string");
+
+});
+
+test( "jQuery.deferred custom chained", function() {
+
+	expect(2);
+
+	var def = jQuery.Deferred(function() {}, [["mycustom", "mycustomcb"]]);
+
+	def.promise().done(function() {
+		
+		ok(true, "Done was called");
+		
+	}).mycustomcb(function(str) {
+		
+		if (str == "test_string") {
+			ok( true, "Called back with right value" );
+		} else {
+			ok( false, "Called back with wrong value");
+		}
+		
+	});
+
+	def.mycustom("test_string").resolve();
+
+});
