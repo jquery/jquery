@@ -6,8 +6,17 @@ jQuery.extend({
 				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
 				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
 				[ "notify", "progress", jQuery.Callbacks("memory") ]
-			],
-			state = "pending",
+			];
+		
+		// Add in custom methods
+		var orig_tuples = tuples.slice(0);
+		if (customs) {
+			jQuery.each(customs, function(i, custom) {
+				tuples.unshift( [ custom[0], custom[1], jQuery.Callbacks("memory")  ] );
+			});
+		}
+		
+		var state = "pending",
 			promise = {
 				state: function() {
 					return state;
@@ -19,7 +28,7 @@ jQuery.extend({
 				then: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
 					return jQuery.Deferred(function( newDefer ) {
-						jQuery.each( tuples, function( i, tuple ) {
+						jQuery.each( orig_tuples, function( i, tuple ) {
 							var action = tuple[ 0 ],
 								fn = jQuery.isFunction( fns[ i ] ) && fns[ i ];
 							// deferred[ done | fail | progress ] for forwarding actions to newDefer
@@ -36,7 +45,7 @@ jQuery.extend({
 							});
 						});
 						fns = null;
-					}).promise();
+					}, customs).promise();
 				},
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
@@ -48,13 +57,6 @@ jQuery.extend({
 
 		// Keep pipe for back-compat
 		promise.pipe = promise.then;
-
-		// Add in custom methods
-		if (customs) {
-			jQuery.each(customs, function(i, custom) {
-				tuples.unshift( [ custom[0], custom[1], jQuery.Callbacks("memory")  ] );
-			});
-		}
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
