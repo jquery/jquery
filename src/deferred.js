@@ -1,6 +1,6 @@
 jQuery.extend({
 
-	Deferred: function( func ) {
+	Deferred: function( func, customs ) {
 		var tuples = [
 				// action, add listener, listener list, final state
 				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
@@ -48,6 +48,13 @@ jQuery.extend({
 
 		// Keep pipe for back-compat
 		promise.pipe = promise.then;
+
+		// Add in custom methods
+		if (customs) {
+			jQuery.each(customs, function(i, custom) {
+				tuples.unshift( [ custom[0], custom[1], jQuery.Callbacks("memory")  ] );
+			});
+		}
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
