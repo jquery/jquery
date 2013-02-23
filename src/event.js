@@ -537,8 +537,9 @@ jQuery.event = {
 
 				if ( document.readyState !== "complete" ) {
 					document.body.focus();
-					jQuery.event.special.focus.trigger = focusTrigger;
 				}
+
+				jQuery.event.special.focus.trigger = focusTrigger;
 
 				return focusTrigger.call( this );
 			},
