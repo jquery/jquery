@@ -1,8 +1,7 @@
 var rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/,
-	bodySetToActive = false;
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
 
 function returnTrue() {
 	return true;
@@ -529,15 +528,19 @@ jQuery.event = {
 		focus: {
 			// Fire native event if possible so blur/focus sequence is correct
 			trigger: function() {
-				if ( ! bodySetToActive && document.readyState !== "complete" ) {
+				var focusTrigger = function() {
+					if ( this !== document.activeElement && this.focus ) {
+						this.focus();
+						return false;
+					}
+				};
+
+				if ( document.readyState !== "complete" ) {
 					document.body.focus();
-					bodySetToActive = true;
+					jQuery.event.special.focus.trigger = focusTrigger;
 				}
 
-				if ( this !== document.activeElement && this.focus ) {
-					this.focus();
-					return false;
-				}
+				return focusTrigger.call( this );
 			},
 			delegateType: "focusin"
 		},
