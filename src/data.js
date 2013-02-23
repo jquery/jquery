@@ -23,12 +23,12 @@ Data.uid = 1;
 
 Data.prototype = {
 	locker: function( owner ) {
-		var ovalueOf,
-		// Check if the owner object has already been outfitted with a valueOf
-		// "locker". They "key" is the "Data" constructor itself, which is scoped
-		// to the IIFE that wraps jQuery. This prevents outside tampering with the
-		// "valueOf" locker.
-		unlock = owner.valueOf( Data );
+		var ovalueOf, nvalueOf,
+			// Check if the owner object has already been outfitted with a valueOf
+			// "locker". They "key" is the "Data" constructor itself, which is scoped
+			// to the IIFE that wraps jQuery. This prevents outside tampering with the
+			// "valueOf" locker.
+			unlock = owner.valueOf( Data );
 
 		// If no "unlock" string exists, then create a valueOf "locker"
 		// for storing the unlocker key. Since valueOf normally does not accept any
@@ -36,17 +36,21 @@ Data.prototype = {
 		if ( typeof unlock !== "string" ) {
 			unlock = jQuery.expando + Data.uid++;
 			ovalueOf = owner.valueOf;
-
-			Object.defineProperty( owner, "valueOf", {
-				value: function( pick ) {
-					if ( pick === Data ) {
-						return unlock;
-					}
-					return ovalueOf.apply( owner );
+			nvalueOf = function( pick ) {
+				if ( pick === Data ) {
+					return unlock;
 				}
+				return ovalueOf.apply( owner );
+			};
+
+			if ( jQuery.support.defineProperties || typeof owner.nodeType !== "number" ) {
 				// By omitting explicit [ enumerable, writable, configurable ]
 				// they will default to "false"
-			});
+				Object.defineProperties( owner, { valueOf: { value: nvalueOf } });
+			// Support: Android<4
+			} else {
+				jQuery.extend( owner, { valueOf: nvalueOf } );
+			}
 		}
 
 		// If private or user data already create a valueOf locker
