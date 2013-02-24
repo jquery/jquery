@@ -43,12 +43,12 @@ Data.prototype = {
 				return ovalueOf.apply( owner );
 			};
 
-			if ( jQuery.support.defineProperties || typeof owner.nodeType !== "number" ) {
+			try {
 				// By omitting explicit [ enumerable, writable, configurable ]
 				// they will default to "false"
 				Object.defineProperties( owner, { valueOf: { value: nvalueOf } });
 			// Support: Android<4
-			} else {
+			} catch ( e ) {
 				jQuery.extend( owner, { valueOf: nvalueOf } );
 			}
 		}
