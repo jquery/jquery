@@ -14,8 +14,6 @@ var data_user, data_priv,
 	rmultiDash = /([A-Z])/g;
 
 function Data( type ) {
-	// Data objects. Keys correspond to the
-	// unlocker that is accessible via "locker" method
 	this.cache = {};
 	this.expando = jQuery.expando + type;
 }
@@ -23,7 +21,7 @@ function Data( type ) {
 Data.uid = 1;
 
 Data.prototype = {
-	locker: function( owner ) {
+	key: function( owner ) {
 		var descriptor = {},
 			// Check if the owner object already has a cache key
 			unlock = owner[ this.expando ];
@@ -58,7 +56,7 @@ Data.prototype = {
 		// There may be an unlock assigned to this node,
 		// if there is no entry for this "owner", create one inline
 		// and set the unlock as though an owner entry had always existed
-		unlock = this.locker( owner );
+		unlock = this.key( owner );
 		cache = this.cache[ unlock ];
 
 		// Handle: [ owner, key, value ] args
@@ -68,7 +66,7 @@ Data.prototype = {
 		// Handle: [ owner, { properties } ] args
 		} else {
 			// [*] In the case where there was actually no "owner" entry and
-			// this.locker( owner ) was called to create one, there will be
+			// this.key( owner ) was called to create one, there will be
 			// a corresponding empty plain object in the cache.
 			//
 			// Note, this will kill the reference between
@@ -96,7 +94,7 @@ Data.prototype = {
 		// New caches will be created and the unlock returned,
 		// allowing direct access to the newly created
 		// empty data object.
-		var cache = this.cache[ this.locker( owner ) ];
+		var cache = this.cache[ this.key( owner ) ];
 
 		return key === undefined ?
 			cache : cache[ key ];
@@ -132,7 +130,7 @@ Data.prototype = {
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
-				unlock = this.locker( owner ),
+				unlock = this.key( owner ),
 				cache = this.cache[ unlock ];
 
 		if ( key === undefined ) {
@@ -172,11 +170,11 @@ Data.prototype = {
 	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
-			this.cache[ this.locker( owner ) ]
+			this.cache[ this.key( owner ) ]
 		);
 	},
 	discard: function( owner ) {
-		delete this.cache[ this.locker( owner ) ];
+		delete this.cache[ this.key( owner ) ];
 	}
 };
 
