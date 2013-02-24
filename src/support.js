@@ -6,7 +6,7 @@ jQuery.support = (function( support ) {
 	try {
 		Object.defineProperties( div, { x: { value: 1 } });
 	} catch ( e ) {}
-	support = { defineProperties: !!div.x };
+	support.defineProperties = !!div.x;
 
 	// Finish early in limited (non-browser) environments
 	div.innerHTML = "<a>a</a><input type='checkbox'/>";
