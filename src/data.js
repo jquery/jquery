@@ -13,49 +13,39 @@ var data_user, data_priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
-function Data() {
+function Data( type ) {
 	// Data objects. Keys correspond to the
 	// unlocker that is accessible via "locker" method
 	this.cache = {};
+	this.expando = jQuery.expando + type;
 }
 
 Data.uid = 1;
 
 Data.prototype = {
 	locker: function( owner ) {
-		var ovalueOf, nvalueOf,
-			// Check if the owner object has already been outfitted with a valueOf
-			// "locker". They "key" is the "Data" constructor itself, which is scoped
-			// to the IIFE that wraps jQuery. This prevents outside tampering with the
-			// "valueOf" locker.
-			unlock = owner.valueOf( Data );
+		var descriptor = {},
+			// Check if the owner object already has a cache key
+			unlock = owner[ this.expando ];
 
-		// If no "unlock" string exists, then create a valueOf "locker"
-		// for storing the unlocker key. Since valueOf normally does not accept any
-		// arguments, extant calls to valueOf will still behave as expected.
-		if ( typeof unlock !== "string" ) {
-			unlock = jQuery.expando + Data.uid++;
-			ovalueOf = owner.valueOf;
-			nvalueOf = function( pick ) {
-				if ( pick === Data ) {
-					return unlock;
-				}
-				return ovalueOf.apply( owner );
-			};
-
+		// If not, create one
+		if ( typeof unlock !== "number" ) {
+			unlock = Data.uid++;
+			descriptor[ this.expando ] = { value: unlock };
+			
+			// Secure it in a non-enumerable, non-writable property
 			try {
-				// By omitting explicit [ enumerable, writable, configurable ]
-				// they will default to "false"
-				Object.defineProperties( owner, { valueOf: { value: nvalueOf } });
+				Object.defineProperties( owner, descriptor );
+
 			// Support: Android<4
+			// Fallback to a less secure definition
 			} catch ( e ) {
-				jQuery.extend( owner, { valueOf: nvalueOf } );
+				descriptor[ this.expando ] = unlock;
+				jQuery.extend( owner, descriptor );
 			}
 		}
 
-		// If private or user data already create a valueOf locker
-		// then we'll reuse the unlock key, but still need to create
-		// a cache object for this instance (could be private or user)
+		// Ensure the cache object
 		if ( !this.cache[ unlock ] ) {
 			this.cache[ unlock ] = {};
 		}
@@ -200,8 +190,8 @@ function data_discard( owner ) {
 }
 
 // These may be used throughout the jQuery core codebase
-data_user = new Data();
-data_priv = new Data();
+data_user = new Data(1);
+data_priv = new Data(0);
 
 
 jQuery.extend({
