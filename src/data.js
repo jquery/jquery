@@ -201,10 +201,6 @@ data_priv = new Data();
 
 
 jQuery.extend({
-	// Unique for each copy of jQuery on the page
-	// Non-digits removed to match rinlinejQuery
-	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
-
 	// This is no longer relevant to jQuery core, but must remain
 	// supported for the sake of jQuery 1.9.x API surface compatibility.
 	acceptData: function() {
