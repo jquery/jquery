@@ -13,9 +13,9 @@ var data_user, data_priv,
 	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
-function Data( type ) {
+function Data() {
 	this.cache = {};
-	this.expando = jQuery.expando + type;
+	this.expando = jQuery.expando + Math.random();
 }
 
 Data.uid = 1;
@@ -27,7 +27,7 @@ Data.prototype = {
 			unlock = owner[ this.expando ];
 
 		// If not, create one
-		if ( typeof unlock !== "number" ) {
+		if ( !unlock ) {
 			unlock = Data.uid++;
 			descriptor[ this.expando ] = { value: unlock };
 			
@@ -188,8 +188,8 @@ function data_discard( owner ) {
 }
 
 // These may be used throughout the jQuery core codebase
-data_user = new Data(1);
-data_priv = new Data(0);
+data_user = new Data();
+data_priv = new Data();
 
 
 jQuery.extend({
