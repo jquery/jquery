@@ -1,14 +1,13 @@
-jQuery.support = (function() {
+jQuery.support = (function( support ) {
 
-	var support, a, select, opt, input, fragment,
+	var a, select, opt, input, fragment,
 		div = document.createElement("div");
 
+	// Finish early in limited (non-browser) environments
 	div.innerHTML = "<a>a</a><input type='checkbox'/>";
-
-	// Support tests won't run in some limited or non-browser environments
 	a = div.getElementsByTagName("a")[ 0 ];
 	if ( !a ) {
-		return {};
+		return support;
 	}
 
 	// First batch of tests
@@ -17,22 +16,21 @@ jQuery.support = (function() {
 	input = div.getElementsByTagName("input")[ 0 ];
 
 	a.style.cssText = "float:left;opacity:.5";
-	support = {
-		// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
-		checkOn: !!input.value,
 
-		// Must access the parent to make an option select properly
-		// Support: IE9, IE10
-		optSelected: opt.selected,
+	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+	support.checkOn = !!input.value;
 
-		// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-		boxModel: document.compatMode === "CSS1Compat",
+	// Must access the parent to make an option select properly
+	// Support: IE9, IE10
+	support.optSelected = opt.selected;
 
-		// Will be defined later
-		reliableMarginRight: true,
-		boxSizingReliable: true,
-		pixelPosition: false
-	};
+	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
+	support.boxModel = document.compatMode === "CSS1Compat";
+
+	// Will be defined later
+	support.reliableMarginRight = true;
+	support.boxSizingReliable = true;
+	support.pixelPosition = false;
 
 	// Make sure checked status is properly cloned
 	input.checked = true;
@@ -117,5 +115,5 @@ jQuery.support = (function() {
 	select = fragment = opt = a = input = null;
 
 	return support;
-})();
+})({});
 
