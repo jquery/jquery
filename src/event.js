@@ -602,7 +602,8 @@ jQuery.event = {
 		var e = jQuery.extend(
 			new jQuery.Event(),
 			event,
-			{ type: type,
+			{
+				type: type,
 				isSimulated: true,
 				originalEvent: {}
 			}
