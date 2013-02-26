@@ -555,6 +555,22 @@ test("bind(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
+test("namespace-only event binding is a no-op", function(){
+	expect(2);
+
+	jQuery("#firstp")
+		.on( ".whoops", function() {
+			ok( false, "called a namespace-only event" );
+		})
+		.on( "whoops", function() {
+			ok( true, "called whoops" );
+		})
+		.trigger("whoops")	// 1
+		.off(".whoops")
+		.trigger("whoops")	// 2
+		.off("whoops");
+});
+
 test("bind(), with same function", function() {
 	expect(2);
 
