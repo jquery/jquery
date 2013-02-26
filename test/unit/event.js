@@ -2641,3 +2641,18 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	equal( errored, false, "trigger() did not throw exception" );
 	delete String.prototype.namespace;
 });
+
+test("on() method should throw TypeError alert must specify a type name (#13471)", function() {
+	expect( 2 );
+
+	var error = null;
+
+	try {
+		jQuery(document).on(".test", function() { /* do something */ });
+	} catch( e ) {
+		error = e;
+	}
+
+	equal( error instanceof TypeError, true, "on() did throw exception" );
+	equal( error.message, "Event type '.test' is invalid, You must specify a type name.", "on() method did alert message" );
+});

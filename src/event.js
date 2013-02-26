@@ -72,6 +72,10 @@ jQuery.event = {
 				continue;
 			}
 
+			if ( !type ) {
+				throw new TypeError("Event type '" + types[t] + "' is invalid, You must specify a type name.");
+			}
+
 			// If event changes its type, use the special event handlers for the changed type
 			special = jQuery.event.special[ type ] || {};
 
