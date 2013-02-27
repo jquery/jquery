@@ -14,44 +14,36 @@ var data_user, data_priv,
 	rmultiDash = /([A-Z])/g;
 
 function Data() {
-	// Data objects. Keys correspond to the
-	// unlocker that is accessible via "locker" method
 	this.cache = {};
+	this.expando = jQuery.expando + Math.random();
 }
 
 Data.uid = 1;
 
 Data.prototype = {
-	locker: function( owner ) {
-		var ovalueOf,
-		// Check if the owner object has already been outfitted with a valueOf
-		// "locker". They "key" is the "Data" constructor itself, which is scoped
-		// to the IIFE that wraps jQuery. This prevents outside tampering with the
-		// "valueOf" locker.
-		unlock = owner.valueOf( Data );
+	key: function( owner ) {
+		var descriptor = {},
+			// Check if the owner object already has a cache key
+			unlock = owner[ this.expando ];
 
-		// If no "unlock" string exists, then create a valueOf "locker"
-		// for storing the unlocker key. Since valueOf normally does not accept any
-		// arguments, extant calls to valueOf will still behave as expected.
-		if ( typeof unlock !== "string" ) {
-			unlock = jQuery.expando + Data.uid++;
-			ovalueOf = owner.valueOf;
+		// If not, create one
+		if ( !unlock ) {
+			unlock = Data.uid++;
+			descriptor[ this.expando ] = { value: unlock };
+			
+			// Secure it in a non-enumerable, non-writable property
+			try {
+				Object.defineProperties( owner, descriptor );
 
-			Object.defineProperty( owner, "valueOf", {
-				value: function( pick ) {
-					if ( pick === Data ) {
-						return unlock;
-					}
-					return ovalueOf.apply( owner );
-				}
-				// By omitting explicit [ enumerable, writable, configurable ]
-				// they will default to "false"
-			});
+			// Support: Android<4
+			// Fallback to a less secure definition
+			} catch ( e ) {
+				descriptor[ this.expando ] = unlock;
+				jQuery.extend( owner, descriptor );
+			}
 		}
 
-		// If private or user data already create a valueOf locker
-		// then we'll reuse the unlock key, but still need to create
-		// a cache object for this instance (could be private or user)
+		// Ensure the cache object
 		if ( !this.cache[ unlock ] ) {
 			this.cache[ unlock ] = {};
 		}
@@ -64,7 +56,7 @@ Data.prototype = {
 		// There may be an unlock assigned to this node,
 		// if there is no entry for this "owner", create one inline
 		// and set the unlock as though an owner entry had always existed
-		unlock = this.locker( owner );
+		unlock = this.key( owner );
 		cache = this.cache[ unlock ];
 
 		// Handle: [ owner, key, value ] args
@@ -74,7 +66,7 @@ Data.prototype = {
 		// Handle: [ owner, { properties } ] args
 		} else {
 			// [*] In the case where there was actually no "owner" entry and
-			// this.locker( owner ) was called to create one, there will be
+			// this.key( owner ) was called to create one, there will be
 			// a corresponding empty plain object in the cache.
 			//
 			// Note, this will kill the reference between
@@ -102,7 +94,7 @@ Data.prototype = {
 		// New caches will be created and the unlock returned,
 		// allowing direct access to the newly created
 		// empty data object.
-		var cache = this.cache[ this.locker( owner ) ];
+		var cache = this.cache[ this.key( owner ) ];
 
 		return key === undefined ?
 			cache : cache[ key ];
@@ -138,7 +130,7 @@ Data.prototype = {
 	},
 	remove: function( owner, key ) {
 		var i, l, name,
-				unlock = this.locker( owner ),
+				unlock = this.key( owner ),
 				cache = this.cache[ unlock ];
 
 		if ( key === undefined ) {
@@ -178,11 +170,11 @@ Data.prototype = {
 	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
-			this.cache[ this.locker( owner ) ]
+			this.cache[ this.key( owner ) ]
 		);
 	},
 	discard: function( owner ) {
-		delete this.cache[ this.locker( owner ) ];
+		delete this.cache[ this.key( owner ) ];
 	}
 };
 
