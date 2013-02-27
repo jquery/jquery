@@ -1557,7 +1557,7 @@ asyncTest( "hide, fadeOut and slideUp called on element width height and width =
 });
 
 asyncTest( "Handle queue:false promises", 10, function() {
-	var foo = jQuery( "#foo" ).clone().andSelf(),
+	var foo = jQuery( "#foo" ).clone().addBack(),
 		step = 1;
 
 	foo.animate({

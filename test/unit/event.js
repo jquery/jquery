@@ -43,7 +43,7 @@ test("Handler changes and .trigger() order", function() {
 	path = "";
 
 	markup
-		.find( "*" ).andSelf().on( "click", function( e ) {
+		.find( "*" ).addBack().on( "click", function( e ) {
 			path += this.nodeName.toLowerCase() + " ";
 		})
 		.filter( "b" ).on( "click", function( e ) {

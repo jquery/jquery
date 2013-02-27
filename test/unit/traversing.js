@@ -10,7 +10,7 @@ test( "find(String) under non-elements", function() {
 
 	var j = jQuery("#nonnodes").contents();
 	equal( j.find("div").length, 0, "Check node,textnode,comment to find zero divs" );
-	equal( j.find("div").andSelf().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
+	equal( j.find("div").addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 });
 
 test( "find(leading combinator)", function() {
@@ -45,7 +45,7 @@ test( "find(node|jQuery object)", function() {
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two" );
 	equal( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
 
-	equal( $two.find( $foo[ 0 ] ).andSelf().length, 2, "find preserves the pushStack, see #12009" );
+	equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see #12009" );
 });
 
 test("is(String|undefined)", function() {
