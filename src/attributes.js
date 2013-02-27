@@ -329,7 +329,7 @@ jQuery.extend({
 
 			// In IE9+, Flash objects don't have .getAttribute (#12945)
 			// Support: IE9+
-			if ( typeof elem.getAttribute !== core_strundefined ) {
+			if (( typeof elem.getAttribute !== core_strundefined ) && (elem.getAttribute !== null)) {
 				ret =  elem.getAttribute( name );
 			}
 
