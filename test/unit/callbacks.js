@@ -92,6 +92,22 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.fire("A");
 					strictEqual( output, "X", "Firing after disabling" );
 
+					// #13517 - Emptying while firing
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( cblist.empty );
+					cblist.add( function() {
+						ok( false, "not emptied" );
+					} );
+					cblist.fire();
+
+					// Disabling while firing
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( cblist.disable );
+					cblist.add( function() {
+						ok( false, "not disabled" );
+					} );
+					cblist.fire();
+
 					// Basic binding and firing (context, arguments)
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
