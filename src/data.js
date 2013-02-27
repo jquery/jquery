@@ -51,13 +51,12 @@ Data.prototype = {
 		return unlock;
 	},
 	set: function( owner, data, value ) {
-		var prop, cache, unlock;
-
-		// There may be an unlock assigned to this node,
-		// if there is no entry for this "owner", create one inline
-		// and set the unlock as though an owner entry had always existed
-		unlock = this.key( owner );
-		cache = this.cache[ unlock ];
+		var prop,
+			// There may be an unlock assigned to this node,
+			// if there is no entry for this "owner", create one inline
+			// and set the unlock as though an owner entry had always existed
+			unlock = this.key( owner ),
+			cache = this.cache[ unlock ];
 
 		// Handle: [ owner, key, value ] args
 		if ( typeof data === "string" ) {
@@ -65,14 +64,13 @@ Data.prototype = {
 
 		// Handle: [ owner, { properties } ] args
 		} else {
-			// [*] In the case where there was actually no "owner" entry and
-			// this.key( owner ) was called to create one, there will be
-			// a corresponding empty plain object in the cache.
-			//
-			// Note, this will kill the reference between
+			// Support an expectation from the old data system where plain
+			// objects used to initialize would be set to the cache by
+			// reference, instead of having properties and values copied.
+			// Note, this will kill the connection between
 			// "this.cache[ unlock ]" and "cache"
 			if ( jQuery.isEmptyObject( cache ) ) {
-				cache = data;
+				this.cache[ unlock ] = data;
 			// Otherwise, copy the properties one-by-one to the cache object
 			} else {
 				for ( prop in data ) {
@@ -80,12 +78,6 @@ Data.prototype = {
 				}
 			}
 		}
-
-		// [*] This is required to support an expectation made possible by the old
-		// data system where plain objects used to initialize would be
-		// set to the cache by reference, instead of having properties and
-		// values copied.
-		this.cache[ unlock ] = cache;
 
 		return this;
 	},
@@ -129,44 +121,40 @@ Data.prototype = {
 		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
-		var i, l, name,
+		var i, name,
 				unlock = this.key( owner ),
 				cache = this.cache[ unlock ];
 
 		if ( key === undefined ) {
-			cache = {};
+			this.cache[ unlock ] = {};
 		} else {
-			if ( cache ) {
-				// Support array or space separated string of keys
-				if ( !Array.isArray( key ) ) {
-					// Try the string as a key before any manipulation
-					if ( key in cache ) {
-						name = [ key ];
-					} else {
-						// If a key with the spaces exists, use it.
-						// Otherwise, create an array by matching non-whitespace
-						name = jQuery.camelCase( key );
-						name = name in cache ?
-							[ name ] : ( name.match( core_rnotwhite ) || [] );
-					}
+			// Support array or space separated string of keys
+			if ( jQuery.isArray( key ) ) {
+				// If "name" is an array of keys...
+				// When data is initially created, via ("key", "val") signature,
+				// keys will be converted to camelCase.
+				// Since there is no way to tell _how_ a key was added, remove
+				// both plain key and camelCase key. #12786
+				// This will only penalize the array argument path.
+				name = key.concat( key.map( jQuery.camelCase ) );
+			} else {
+				// Try the string as a key before any manipulation
+				if ( key in cache ) {
+					name = [ key ];
 				} else {
-					// If "name" is an array of keys...
-					// When data is initially created, via ("key", "val") signature,
-					// keys will be converted to camelCase.
-					// Since there is no way to tell _how_ a key was added, remove
-					// both plain key and camelCase key. #12786
-					// This will only penalize the array argument path.
-					name = key.concat( key.map( jQuery.camelCase ) );
-				}
-				i = 0;
-				l = name.length;
-
-				for ( ; i < l; i++ ) {
-					delete cache[ name[i] ];
+					// If a key with the spaces exists, use it.
+					// Otherwise, create an array by matching non-whitespace
+					name = jQuery.camelCase( key );
+					name = name in cache ?
+						[ name ] : ( name.match( core_rnotwhite ) || [] );
 				}
 			}
+
+			i = name.length;
+			while ( i-- ) {
+				delete cache[ name[i] ];
+			}
 		}
-		this.cache[ unlock ] = cache;
 	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
