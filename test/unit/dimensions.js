@@ -68,7 +68,7 @@ test("width(Function(args))", function() {
 
 	var $div = jQuery("#nothiddendiv");
 	$div.width( 30 ).width(function(i, width) {
-		equal( width, 30, "Make sure previous value is corrrect." );
+		equal( width, 30, "Make sure previous value is correct." );
 		return width + 1;
 	});
 
@@ -119,7 +119,7 @@ test("height(Function(args))", function() {
 
 	var $div = jQuery("#nothiddendiv");
 	$div.height( 30 ).height(function(i, height) {
-		equal( height, 30, "Make sure previous value is corrrect." );
+		equal( height, 30, "Make sure previous value is correct." );
 		return height + 1;
 	});
 
@@ -271,7 +271,7 @@ test("child of a hidden elem (or unconnected node) has accurate inner/outer/Widt
 	$divNormal.remove();
 });
 
-test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
+test("getting dimensions shouldn't modify runtimeStyle see #9233", function() {
 	expect( 1 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
@@ -288,7 +288,7 @@ test("getting dimensions shouldnt modify runtimeStyle see #9233", function() {
 	if ( runtimeStyle ) {
 		equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see #9233" );
 	} else {
-		ok( true, "this browser doesnt support runtimeStyle, see #9233" );
+		ok( true, "this browser doesn't support runtimeStyle, see #9233" );
 	}
 
 	$div.remove();

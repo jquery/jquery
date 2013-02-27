@@ -39,14 +39,14 @@ test( "text()", function() {
 	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
 
 	// Check serialization of text values
-	equal( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retreived from .text()." );
+	equal( jQuery(document.createTextNode("foo")).text(), "foo", "Text node was retrieved from .text()." );
 	notEqual( jQuery(document).text(), "", "Retrieving text for the document retrieves all text (#10724)." );
 
 	// Retrieve from document fragments #10864
 	frag = document.createDocumentFragment();
 	frag.appendChild( document.createTextNode("foo") );
 
-	equal( jQuery(frag).text(), "foo", "Document Fragment Text node was retreived from .text()." );
+	equal( jQuery(frag).text(), "foo", "Document Fragment Text node was retrieved from .text()." );
 
 	$newLineTest = jQuery("<div>test<br/>testy</div>").appendTo("#moretests");
 	$newLineTest.find("br").replaceWith("\n");

@@ -70,7 +70,7 @@ test( "attr(String)", function() {
 	equal( jQuery("#text1").attr("value", "t").attr("value"), "t", "Check setting the value attribute" );
 	equal( jQuery("#text1").attr("value", "").attr("value"), "", "Check setting the value attribute to empty string" );
 	equal( jQuery("<div value='t'></div>").attr("value"), "t", "Check setting custom attr named 'value' on a div" );
-	equal( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existant attribute on a form" );
+	equal( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existent attribute on a form" );
 	equal( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
 
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
@@ -343,7 +343,7 @@ test( "attr(String, Object)", function() {
 	equal( $text.attr( "required", false ).attr("required"), undefined, "Setting required attribute to false removes it" );
 
 	var $details = jQuery("<details open></details>").appendTo("#qunit-fixture");
-	equal( $details.attr("open"), "open", "open attribute presense indicates true" );
+	equal( $details.attr("open"), "open", "open attribute presence indicates true" );
 	equal( $details.attr( "open", false ).attr("open"), undefined, "Setting open attribute to false removes it" );
 
 	$text.attr( "data-something", true );

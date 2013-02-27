@@ -71,11 +71,11 @@ test("is(String|undefined)", function() {
 	ok( !jQuery("#foo").is(undefined), "Expected false for an invalid expression - undefined" );
 	ok( !jQuery("#foo").is({ plain: "object" }), "Check passing invalid object" );
 
-	// test is() with comma-seperated expressions
-	ok( jQuery("#en").is("[lang=\"en\"],[lang=\"de\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
-	ok( jQuery("#en").is("[lang=\"de\"],[lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
-	ok( jQuery("#en").is("[lang=\"en\"] , [lang=\"de\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
-	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-seperated; Check for lang attribute: Expect en or de" );
+	// test is() with comma-separated expressions
+	ok( jQuery("#en").is("[lang=\"en\"],[lang=\"de\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
+	ok( jQuery("#en").is("[lang=\"de\"],[lang=\"en\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
+	ok( jQuery("#en").is("[lang=\"en\"] , [lang=\"de\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
+	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
 });
 
 test("is() against window|document (#10178)", function() {
@@ -606,9 +606,9 @@ test("prevUntil([String])", function() {
 test("contents()", function() {
 	expect(12);
 	equal( jQuery("#ap").contents().length, 9, "Check element contents" );
-	ok( jQuery("#iframe").contents()[0], "Check existance of IFrame document" );
+	ok( jQuery("#iframe").contents()[0], "Check existence of IFrame document" );
 	var ibody = jQuery("#loadediframe").contents()[0].body;
-	ok( ibody, "Check existance of IFrame body" );
+	ok( ibody, "Check existence of IFrame body" );
 
 	equal( jQuery("span", ibody).text(), "span text", "Find span in IFrame and check its text" );
 
