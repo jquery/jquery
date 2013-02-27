@@ -440,7 +440,7 @@ module( "ajax", {
 				url: url("data/name.html"),
 				context: {},
 				success: function() {
-					ok( this !== obj, "Make sure overidding context is possible." );
+					ok( this !== obj, "Make sure overriding context is possible." );
 				}
 			}]
 		};
@@ -1194,14 +1194,14 @@ module( "ajax", {
 				xhr.overrideMimeType( "application/json" );
 			},
 			success: function( json ) {
-				ok( json.data, "Mimetype overriden using beforeSend" );
+				ok( json.data, "Mimetype overridden using beforeSend" );
 			}
 		},
 		{
 			url: url("data/json.php"),
 			mimeType: "application/json",
 			success: function( json ) {
-				ok( json.data, "Mimetype overriden using mimeType option" );
+				ok( json.data, "Mimetype overridden using mimeType option" );
 			}
 		}
 	]);
