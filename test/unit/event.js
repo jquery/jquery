@@ -1001,7 +1001,7 @@ test("trigger(type, [data], [fn])", function() {
 
 	jQuery( document ).off( "mouseenter mouseleave", "#firstp");
 
-	// Triggers handlrs and native
+	// Triggers handlers and native
 	// Trigger 5
 	$elem.bind("click", handler).trigger("click", [1, "2", "abc"]);
 
@@ -1515,7 +1515,7 @@ test(".delegate()/.undelegate()", function() {
 	equal( livea, 1, "undelegate Click on inner div" );
 	equal( liveb, 0, "undelegate Click on inner div" );
 
-	// Make sure that stopPropgation doesn't stop live events
+	// Make sure that stopPropagation doesn't stop live events
 	submit = 0; div = 0; livea = 0; liveb = 0;
 	jQuery("#body").delegate("div#nothiddendivchild", "click", function(e){ liveb++; e.stopPropagation(); });
 	jQuery("div#nothiddendivchild").trigger("click");
@@ -1646,7 +1646,7 @@ test(".delegate()/.undelegate()", function() {
 	// Cleanup
 	jQuery("#body").undelegate("#nothiddendivchild", "click");
 
-	// Verify that .live() ocurs and cancel buble in the same order as
+	// Verify that .live() occurs and cancel bubble in the same order as
 	// we would expect .bind() and .click() without delegation
 	var lived = 0, livee = 0;
 
