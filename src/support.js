@@ -1,4 +1,4 @@
-jQuery.support = function( support ) {
+jQuery.support = (function( support ) {
 	var input = document.createElement("input"),
 		fragment = document.createDocumentFragment(),
 		div = document.createElement("div"),
@@ -100,5 +100,5 @@ jQuery.support = function( support ) {
 	});
 
 	return support;
-}( {} );
+})( {} );
 
