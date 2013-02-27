@@ -22,7 +22,7 @@ module.exports = function( grunt ) {
 			files: distpaths
 		},
 		selector: {
-			destFile: "src/selector.js",
+			destFile: "src/selector-sizzle.js",
 			apiFile: "src/sizzle-jquery.js",
 			srcFile: "src/sizzle/dist/sizzle.js"
 		},
@@ -39,10 +39,9 @@ module.exports = function( grunt ) {
 					"src/queue.js",
 					"src/attributes.js",
 					"src/event.js",
-					"src/selector.js",
+					"src/selector-sizzle.js",
 					"src/traversing.js",
 					"src/manipulation.js",
-
 					{ flag: "css", src: "src/css.js" },
 					"src/serialize.js",
 					{ flag: "event-alias", src: "src/event-alias.js" },
@@ -151,8 +150,7 @@ module.exports = function( grunt ) {
 		});
 	});
 
-	// Build src/selector.js
-	grunt.registerTask( "selector", "Build src/selector.js", function() {
+	grunt.registerTask( "selector", "Build Sizzle-based selector module", function() {
 
 		var cfg = grunt.config("selector"),
 			name = cfg.destFile,
@@ -196,7 +194,7 @@ module.exports = function( grunt ) {
 		// Rejoin the pieces
 		compiled = parts.join("");
 
-		grunt.verbose.write("Injected sizzle-jquery.js into sizzle.js");
+		grunt.verbose.writeln("Injected " + cfg.apiFile + " into " + cfg.srcFile);
 
 		// Write concatenated source to file, and ensure newline-only termination
 		grunt.file.write( name, compiled.replace( /\x0d\x0a/g, "\x0a" ) );
@@ -334,23 +332,36 @@ module.exports = function( grunt ) {
 				var flag = filepath.flag,
 						specified = false,
 						omit = false,
-						message = "";
+						messages = [];
 
 				if ( flag ) {
 					if ( excluded[ flag ] !== undefined ) {
-						message = ( "Excluding " + flag ).red;
+						messages.push([
+							( "Excluding " + flag ).red,
+							( "(" + filepath.src + ")" ).grey
+						]);
 						specified = true;
-						omit = true;
-					} else {
-						message = ( "Including " + flag ).green;
+						omit = !filepath.alt;
+						if ( !omit ) {
+							flag += " alternate";
+							filepath.src = filepath.alt;
+						}
+					}
+					if ( excluded[ flag ] === undefined ) {
+						messages.push([
+							( "Including " + flag ).green,
+							( "(" + filepath.src + ")" ).grey
+						]);
 
 						// If this module was actually specified by the
-						// builder, then st the flag to include it in the
+						// builder, then set the flag to include it in the
 						// output list
 						if ( modules[ "+" + flag ] ) {
 							specified = true;
 						}
 					}
+
+					filepath = filepath.src;
 
 					// Only display the inclusion/exclusion list when handling
 					// an explicit list.
@@ -358,13 +369,10 @@ module.exports = function( grunt ) {
 					// Additionally, only display modules that have been specified
 					// by the user
 					if ( explicit && specified ) {
-						grunt.log.writetableln([ 27, 30 ], [
-							message,
-							( "(" + filepath.src + ")").grey
-						]);
+						messages.forEach(function( message ) {
+							grunt.log.writetableln( [ 27, 30 ], message );
+						});
 					}
-
-					filepath = filepath.src;
 				}
 
 				if ( !omit ) {
