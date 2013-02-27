@@ -1,26 +1,14 @@
-jQuery.support = (function( support ) {
-	var support, select, opt, input, fragment,
-		div = document.createElement("div");
+jQuery.support = function( support ) {
+	var input = document.createElement("input"),
+		fragment = document.createDocumentFragment(),
+		div = document.createElement("div"),
+		select = document.createElement("select"),
+		opt = select.appendChild( document.createElement("option") );
 
-	div.innerHTML = "<input type='checkbox'/>";
+	input.type = "checkbox";
 
-	// Support tests won't run in some limited or non-browser environments
-	input = div.getElementsByTagName("input")[ 0 ];
-	if ( !input ) {
-		return support;
-	}
-
-	// First batch of tests
-	select = document.createElement("select");
-	opt = select.appendChild( document.createElement("option") );
-
-	support = {
-
-	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
-	checkOn: !!input.value,
-
-	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
-	support.checkOn = !!input.value;
+	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
+	support.checkOn = input.value === "";
 
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
@@ -35,6 +23,7 @@ jQuery.support = (function( support ) {
 	support.pixelPosition = false;
 
 	// Make sure checked status is properly cloned
+	// Support: IE9, IE10
 	input.checked = true;
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
@@ -44,19 +33,19 @@ jQuery.support = (function( support ) {
 	support.optDisabled = !opt.disabled;
 
 	// Check if an input maintains its value after becoming a radio
+	// Support: IE9, IE10, Opera
 	input = document.createElement("input");
 	input.value = "t";
-	input.setAttribute( "type", "radio" );
+	input.type = "radio";
 	support.radioValue = input.value === "t";
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "checked", "t" );
 	input.setAttribute( "name", "t" );
 
-	fragment = document.createDocumentFragment();
 	fragment.appendChild( input );
 
-	// WebKit doesn't clone checked state correctly in fragments
+	// old WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
 	// Support: Firefox 17+
@@ -111,5 +100,5 @@ jQuery.support = (function( support ) {
 	});
 
 	return support;
-})({});
+}( {} );
 
