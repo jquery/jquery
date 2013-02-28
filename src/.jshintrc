@@ -16,9 +16,9 @@
 	"browser": true,
 	"wsh": true,
 
-	"predef": [
-		"jQuery",
-		"define",
-		"module"
-	]
+	"globals": {
+		"jQuery": true,
+		"define": true,
+		"module": true
+	}
 }
