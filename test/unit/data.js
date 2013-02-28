@@ -144,42 +144,36 @@ test("jQuery.data(document)", 25, function() {
 	QUnit.expectJqData(document, "foo");
 });
 
-
-/*
-// Since the new data system does not rely on expandos, limiting the type of
-// nodes that can have data is no longer necessary. jQuery.acceptData is now irrelevant
-// and should eventually be removed from the library.
-
-test("Data is not being set on comment and text nodes", function() {
-	expect(2);
-
-	ok( !jQuery.hasData( jQuery("<!-- comment -->").data("foo", 0) ) );
-	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
-
+test("jQuery.data(<embed>)", 25, function() {
+	dataTests( document.createElement("embed") );
 });
 
+test("jQuery.data(<applet>)", 25, function() {
+	dataTests( document.createElement("applet") );
+});
 
-test("jQuery.acceptData", function() {
-	expect(9);
-
-	ok( jQuery.acceptData( document ), "document" );
-	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
-	ok( jQuery.acceptData( {} ), "object" );
-	ok( !jQuery.acceptData( document.createElement("embed") ), "embed" );
-	ok( !jQuery.acceptData( document.createElement("applet") ), "applet" );
-
+test("jQuery.data(object/flash)", 25, function() {
 	var flash = document.createElement("object");
-	flash.setAttribute("classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000");
-	ok( jQuery.acceptData( flash ), "flash" );
+	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
 
-	var applet = document.createElement("object");
-	applet.setAttribute("classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93");
-	ok( !jQuery.acceptData( applet ), "applet" );
-
-	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
-	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
+	dataTests( flash );
 });
-*/
+
+test("jQuery.data(object/applet)", 25, function() {
+	var applet = document.createElement("object");
+	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
+
+	dataTests( applet );
+});
+
+test("jQuery.data(comment)", 25, function() {
+	dataTests( document.createComment("") );
+});
+
+test("jQuery.data(text)", 25, function() {
+	dataTests( document.createTextNode("") );
+});
+
 test(".data()", function() {
 	expect(5);
 
