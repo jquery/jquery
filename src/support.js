@@ -5,6 +5,11 @@ jQuery.support = (function( support ) {
 		select = document.createElement("select"),
 		opt = select.appendChild( document.createElement("option") );
 
+	// Finish early in limited environments
+	if ( !input.type ) {
+		return support;
+	}
+
 	input.type = "checkbox";
 
 	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
