@@ -1,24 +1,19 @@
 jQuery.support = (function( support ) {
+	var input = document.createElement("input"),
+		fragment = document.createDocumentFragment(),
+		div = document.createElement("div"),
+		select = document.createElement("select"),
+		opt = select.appendChild( document.createElement("option") );
 
-	var a, select, opt, input, fragment,
-		div = document.createElement("div");
-
-	// Finish early in limited (non-browser) environments
-	div.innerHTML = "<a>a</a><input type='checkbox'/>";
-	a = div.getElementsByTagName("a")[ 0 ];
-	if ( !a ) {
+	// Finish early in limited environments
+	if ( !input.type ) {
 		return support;
 	}
 
-	// First batch of tests
-	select = document.createElement("select");
-	opt = select.appendChild( document.createElement("option") );
-	input = div.getElementsByTagName("input")[ 0 ];
+	input.type = "checkbox";
 
-	a.style.cssText = "float:left;opacity:.5";
-
-	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
-	support.checkOn = !!input.value;
+	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
+	support.checkOn = input.value === "";
 
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
@@ -33,6 +28,7 @@ jQuery.support = (function( support ) {
 	support.pixelPosition = false;
 
 	// Make sure checked status is properly cloned
+	// Support: IE9, IE10
 	input.checked = true;
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
@@ -42,25 +38,24 @@ jQuery.support = (function( support ) {
 	support.optDisabled = !opt.disabled;
 
 	// Check if an input maintains its value after becoming a radio
+	// Support: IE9, IE10, Opera
 	input = document.createElement("input");
 	input.value = "t";
-	input.setAttribute( "type", "radio" );
+	input.type = "radio";
 	support.radioValue = input.value === "t";
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	input.setAttribute( "checked", "t" );
 	input.setAttribute( "name", "t" );
 
-	fragment = document.createDocumentFragment();
 	fragment.appendChild( input );
 
-	// WebKit doesn't clone checked state correctly in fragments
+	// old WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
 	// Support: Firefox 17+
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
-	div.setAttribute( "onfocusin", "t" );
-	support.focusinBubbles = "onfocusin" in window || div.attributes.onfocusin.expando === false;
+	support.focusinBubbles = "onfocusin" in window;
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
@@ -68,9 +63,9 @@ jQuery.support = (function( support ) {
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, marginDiv, tds,
+		var container, marginDiv,
 			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
-			body = document.getElementsByTagName("body")[0];
+			body = document.getElementsByTagName("body")[ 0 ];
 
 		if ( !body ) {
 			// Return for frameset docs that don't have a body
@@ -84,8 +79,9 @@ jQuery.support = (function( support ) {
 		body.appendChild( container ).appendChild( div );
 		div.innerHTML = "";
 		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
-		support.boxSizing = ( div.offsetWidth === 4 );
-		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
+
+		support.boxSizing = div.offsetWidth === 4;
+		support.doesNotIncludeMarginInBodyOffset = body.offsetTop !== 1;
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
@@ -106,14 +102,8 @@ jQuery.support = (function( support ) {
 		}
 
 		body.removeChild( container );
-
-		// Null elements to avoid leaks in IE
-		container = div = tds = marginDiv = null;
 	});
 
-	// Null elements to avoid leaks in IE
-	select = fragment = opt = a = input = null;
-
 	return support;
-})({});
+})( {} );
 
