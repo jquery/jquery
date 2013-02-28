@@ -70,18 +70,27 @@ grunt
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
 
-### Modules (new in 1.8)
+### Modules
 
-Starting in jQuery 1.8, special builds can now be created that optionally exclude or include any of the following modules:
+Special builds can be created that exclude subsets of jQuery functionality.
+This allows for smaller custom builds when the builder is certain that those parts of jQuery are not being used.
+For example, an app that only used JSONP for `$.ajax()` and did not need to calculate offsets or positions of elements could exclude the offset and ajax/xhr modules. The current modules that can be excluded are:
 
-- ajax
-- css
-- dimensions
-- effects
-- offset
+- **ajax**: All AJAX functionality: `$.ajax()`, `$.get()`, `$.post()`, `$.ajaxSetup()`, `.load()`, transports, and ajax event shorthands such as `.ajaxStart()`.
+- **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
+- **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
+- **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
+- **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`.
+- **deprecated**: Methods documented as deprecated but not yet removed; currently only `.andSelf()`.
+- **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
+- **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`. 
+- **event-alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
+- **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
+- **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the selector-native.js file for details.
 
+The grunt build process is aware of dependencies across modules. If you explicitly remove a module, its dependent modules will be removed as well. For example, excluding the css module also excludes effects, since the effects module uses `.css()` to animate CSS properties. These dependencies are listed in Gruntfile.js and the build process shows a message for each dependent module it excludes.
 
-Before creating a custom build for use in production, be sure to check out the latest stable version:
+To create a custom build of the latest stable version, first check out the version:
 
 ```bash
 git pull; git checkout $(git describe --abbrev=0 --tags)
@@ -93,57 +102,30 @@ Then, make sure all Node dependencies are installed and all Git submodules are c
 npm install && grunt
 ```
 
-To create a custom build, use the following special `grunt` commands:
+Create the custom build, use the `grunt custom` option, listing the modules to be excluded. Examples:
 
-Exclude **ajax**:
+Exclude all **ajax** functionality:
 
 ```bash
 grunt custom:-ajax
 ```
 
-Exclude **css**:
+Exclude **css**, **effects**, **offset**, **dimensions**, and **position**. Excluding **css** automatically excludes its dependent modules:
 
 ```bash
-grunt custom:-css
+grunt custom:-css:-position
 ```
 
-Exclude **deprecated**:
+Exclude **all** optional modules and use the `querySelectorAll`-based selector engine:
 
 ```bash
-grunt custom:-deprecated
+grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event-alias,-offset,-sizzle
 ```
 
-Exclude **dimensions**:
-
-```bash
-grunt custom:-dimensions
-```
-
-Exclude **effects**:
-
-```bash
-grunt custom:-effects
-```
-
-Exclude **offset**:
-
-```bash
-grunt custom:-offset
-```
-
-Exclude **all** optional modules:
-
-```bash
-grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-offset
-```
-
-
-Note: dependencies will be handled internally, by the build process.
-
+For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process. The non-Sizzle selector engine currently does not pass unit tests because it is missing too much essential functionality.
 
 Running the Unit Tests
 --------------------------------------
-
 
 Start grunt to auto-build jQuery as you work:
 
