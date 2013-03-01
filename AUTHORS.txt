@@ -165,3 +165,4 @@ Nguyen Phuc Lam <ruado1987@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
 Michał Gołębiowski <m.goleb@gmail.com>
 Steven Benner <admin@stevenbenner.com>
+Li Xudong <istonelee@gmail.com>
