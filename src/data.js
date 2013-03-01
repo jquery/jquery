@@ -29,10 +29,10 @@ Data.prototype = {
 		// If not, create one
 		if ( !unlock ) {
 			unlock = Data.uid++;
-			descriptor[ this.expando ] = { value: unlock };
 
 			// Secure it in a non-enumerable, non-writable property
 			try {
+				descriptor[ this.expando ] = { value: unlock };
 				Object.defineProperties( owner, descriptor );
 
 			// Support: Android<4
