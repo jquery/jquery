@@ -274,7 +274,7 @@ jQuery.fn.extend({
 
 				// Attempt to "discover" the data in
 				// HTML5 custom data-* attrs
-				data = dataAttr( elem, key, undefined );
+				data = dataAttr( elem, camelKey, undefined );
 				if ( data !== undefined ) {
 					return data;
 				}
@@ -312,8 +312,7 @@ jQuery.fn.extend({
 });
 
 function dataAttr( elem, key, data ) {
-	var name,
-			camelKey = jQuery.camelCase( key );
+	var name;
 
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
@@ -334,7 +333,7 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			data_user.set( elem, camelKey, data );
+			data_user.set( elem, key, data );
 		} else {
 			data = undefined;
 		}
