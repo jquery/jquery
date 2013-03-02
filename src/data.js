@@ -264,6 +264,14 @@ jQuery.fn.extend({
 				if ( data !== undefined ) {
 					return data;
 				}
+
+				// Attempt to get data from the cache
+				// with the key camelized
+				data = data_user.get( elem, camelKey );
+				if ( data !== undefined ) {
+					return data;
+				}
+
 				// Attempt to "discover" the data in
 				// HTML5 custom data-* attrs
 				data = dataAttr( elem, key, undefined );

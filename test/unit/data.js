@@ -497,7 +497,7 @@ test("jQuery.data should follow html5 specification regarding camel casing", fun
 	div.remove();
 });
 
-test("jQuery.data should not miss data with preset hyphenated property names", function() {
+test(".data should not miss preset data-* w/ hyphenated property names", function() {
 
 	expect(2);
 
@@ -512,6 +512,17 @@ test("jQuery.data should not miss data with preset hyphenated property names", f
 	jQuery.each( test , function(i, k) {
 		equal( div.data(k), k, "data with property '"+k+"' was correctly found");
 	});
+});
+
+test(".data should not miss attr() set data-* with hyphenated property names", function() {
+	expect(1);
+
+	var div = jQuery("<div/>").appendTo("#qunit-fixture");
+
+	div.attr( "data-long-param", "test" );
+	div.data( "long-param", { a: 2 });
+
+	deepEqual( div.data("long-param"), { a: 2 }, "data with property long-param was found" );
 });
 
 test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
