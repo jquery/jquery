@@ -279,14 +279,6 @@ jQuery.fn.extend({
 					return data;
 				}
 
-				// As a last resort, attempt to find
-				// the data by checking AGAIN, but with
-				// a camelCased key.
-				data = data_user.get( elem, camelKey );
-				if ( data !== undefined ) {
-					return data;
-				}
-
 				// We tried really hard, but the data doesn't exist.
 				return undefined;
 			}
