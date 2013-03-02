@@ -49,19 +49,24 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
-					" "
-				);
 
-				if ( cur ) {
+				if ( elem.nodeType === 1 ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
-						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
-							cur += clazz + " ";
+					if ( jQuery.support.classList ) {
+						while ( (clazz = classes[j++]) ) {
+							elem.classList.add( clazz );
 						}
+					} else {
+						cur = elem.className ?
+							( " " + elem.className + " " ).replace( rclass, " " ) :
+							" ";
+						while ( (clazz = classes[j++]) ) {
+							if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
+								cur += clazz + " ";
+							}
+						}
+						elem.className = jQuery.trim( cur );
 					}
-					elem.className = jQuery.trim( cur );
 
 				}
 			}
@@ -86,21 +91,29 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				// This expression is here for better compressibility (see addClass)
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
-					""
-				);
 
-				if ( cur ) {
+				if ( elem.nodeType === 1 && elem.className) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
-						// Remove *all* instances
-						while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
-							cur = cur.replace( " " + clazz + " ", " " );
+					if ( jQuery.support.classList ) {
+						if ( !value ) {
+							elem.className = "";
 						}
+						while ( (clazz = classes[j++]) ) {
+							elem.classList.remove( clazz );
+						}
+					} else {
+						// This expression is here for better compressibility (see addClass)
+						cur = elem.className ?
+							( " " + elem.className + " " ).replace( rclass, " " ) :
+							" ";
+						while ( (clazz = classes[j++]) ) {
+							// Remove *all* instances
+							while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
+								cur = cur.replace( " " + clazz + " ", " " );
+							}
+						}
+						elem.className = value ? jQuery.trim( cur ) : "";
 					}
-					elem.className = value ? jQuery.trim( cur ) : "";
 				}
 			}
 		}
@@ -120,17 +133,28 @@ jQuery.fn.extend({
 
 		return this.each(function() {
 			if ( type === "string" ) {
-				// toggle individual class names
+				// Toggle individual class names
 				var className,
 					i = 0,
 					self = jQuery( this ),
 					state = stateVal,
 					classNames = value.match( core_rnotwhite ) || [];
 
-				while ( (className = classNames[ i++ ]) ) {
-					// check each className given, space separated list
-					state = isBool ? state : !self.hasClass( className );
-					self[ state ? "addClass" : "removeClass" ]( className );
+				// Check each className given, space separated list
+				if ( jQuery.support.classList ) {
+					while ( (className = classNames[ i++ ]) ) {
+						if ( isBool ) {
+							this.classList.toggle( className, state );
+						} else {
+							this.classList.toggle( className );
+						}
+					}
+				// Support: IE9
+				} else {
+					while ( (className = classNames[ i++ ]) ) {
+						state = isBool ? state : !self.hasClass( className );
+						self[ state ? "addClass" : "removeClass" ]( className );
+					}
 				}
 
 			// Toggle whole class name
@@ -149,13 +173,18 @@ jQuery.fn.extend({
 		});
 	},
 
-	hasClass: function( selector ) {
-		var className = " " + selector + " ",
-			i = 0,
+	hasClass: function( value ) {
+		var i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
-				return true;
+			if ( this[i].nodeType === 1 ) {
+				if ( jQuery.support.classList ) {
+					return this[i].classList.contains(value);
+				} else {
+					if ( (" " + this[i].className + " ").replace(rclass, " ").indexOf( " " + value + " " ) >= 0 ) {
+						return true;
+					}
+				}
 			}
 		}
 
