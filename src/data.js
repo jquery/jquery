@@ -30,7 +30,7 @@ Data.prototype = {
 		if ( !unlock ) {
 			unlock = Data.uid++;
 			descriptor[ this.expando ] = { value: unlock };
-			
+
 			// Secure it in a non-enumerable, non-writable property
 			try {
 				Object.defineProperties( owner, descriptor );
@@ -312,7 +312,8 @@ jQuery.fn.extend({
 });
 
 function dataAttr( elem, key, data ) {
-	var name;
+	var name,
+			camelKey = jQuery.camelCase( key );
 
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
@@ -333,7 +334,7 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			data_user.set( elem, key, data );
+			data_user.set( elem, camelKey, data );
 		} else {
 			data = undefined;
 		}
