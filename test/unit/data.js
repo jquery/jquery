@@ -515,14 +515,22 @@ test(".data should not miss preset data-* w/ hyphenated property names", functio
 });
 
 test(".data should not miss attr() set data-* with hyphenated property names", function() {
-	expect(1);
+	expect(2);
 
-	var div = jQuery("<div/>").appendTo("#qunit-fixture");
+	var div1 = jQuery("<div/>").appendTo("#qunit-fixture");
 
-	div.attr( "data-long-param", "test" );
-	div.data( "long-param", { a: 2 });
+	div1.attr( "data-long-param", "test" );
+	div1.data( "long-param", { a: 2 });
 
-	deepEqual( div.data("long-param"), { a: 2 }, "data with property long-param was found" );
+	deepEqual( div1.data("long-param"), { a: 2 }, "data with property long-param was found" );
+
+	var div2 = jQuery("<div/>").appendTo("#qunit-fixture");
+
+	div2.attr( "data-long-param", "test" );
+	div2.data( "long-param" );
+	div2.data( "long-param", { a: 2 });
+
+	deepEqual( div2.data("long-param"), { a: 2 }, "data with property long-param was found" );
 });
 
 test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
