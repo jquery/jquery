@@ -61,6 +61,8 @@ jQuery.support = (function( support ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+	support.classList = "classList" in div;
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv,
