@@ -280,6 +280,12 @@ jQuery.extend({
 
 				if ( !values.length ) {
 					elem.selectedIndex = -1;
+				} else {
+					// IE 9 doesn't select a dropdown-list's first option
+					// when value doesnt match with one of its options' value
+					if ( elem.selectedIndex < 0 ) {
+						elem.selectedIndex = 0;
+					}
 				}
 				return values;
 			}

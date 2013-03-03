@@ -768,7 +768,7 @@ test( "removeProp(String)", function() {
 });
 
 test( "val()", function() {
-	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
+	expect( 22 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -844,6 +844,9 @@ test( "val()", function() {
 	equal( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
 
 	equal( jQuery("<option/>").val("test").attr("value"), "test", "Setting value sets the value attribute" );
+
+	jQuery("#select5").val( "" );
+	equal( jQuery("#select5").val(), "3", "IE9 should select the first option if empty string is set as its dropdown-list's value" );
 });
 
 if ( "value" in document.createElement("meter") &&
