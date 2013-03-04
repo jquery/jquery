@@ -670,3 +670,14 @@ test( "JSON data- attributes can have newlines", function() {
 	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
 });
+
+test(".data doesn't throw when calling selection is empty. #13551", function() {
+	expect(1);
+
+	try {
+		jQuery( null ).data( "prop" );
+		ok( true, "jQuery(null).data('prop') does not throw" );
+	} catch ( e ) {
+		ok( false, e.message );
+	}
+});
