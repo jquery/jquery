@@ -133,7 +133,7 @@ test("jQuery.data({})", 25, function() {
 test("jQuery.data(window)", 25, function() {
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
-	jQuery(window).unbind("unload");
+	jQuery(window).off("unload");
 
 	dataTests(window);
 });
@@ -635,7 +635,7 @@ test(".removeData should not throw exceptions. (#10080)", function() {
 	expect(1);
 	stop();
 	var frame = jQuery("#loadediframe");
-	jQuery(frame[0].contentWindow).bind("unload", function() {
+	jQuery(frame[0].contentWindow).on("unload", function() {
 		ok(true, "called unload");
 		start();
 	});

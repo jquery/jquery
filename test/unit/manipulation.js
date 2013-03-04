@@ -172,8 +172,8 @@ var testWrap = function( val ) {
 		ok( true, "Event triggered." );
 
 		// Remove handlers on detached elements
-		result.unbind();
-		jQuery(this).unbind();
+		result.off();
+		jQuery(this).off();
 	});
 
 	j = jQuery("<span/>").wrap( result );
@@ -1960,7 +1960,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	}
 
 	// Bind an event
-	$section.bind( "click", function( event ) {
+	$section.on( "click", function( event ) {
 		ok( true, "clone fired event" );
 	});
 
@@ -1969,7 +1969,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 
 	// Trigger an event from the first clone
 	$clone.trigger("click");
-	$clone.unbind("click");
+	$clone.off("click");
 
 	// Add a child node with text to the original
 	$section.append("<p>Hello</p>");
@@ -1981,7 +1981,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 
 	// Trigger an event from the third clone
 	$clone.trigger("click");
-	$clone.unbind("click");
+	$clone.off("click");
 
 	// Add attributes to copy
 	$section.attr({
@@ -2008,8 +2008,8 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	$section.trigger("click");
 
 	// Unbind any remaining events
-	$section.unbind("click");
-	$clone.unbind("click");
+	$section.off("click");
+	$clone.off("click");
 });
 
 test( "Guard against exceptions when clearing safeChildNodes", function() {
