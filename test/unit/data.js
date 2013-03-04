@@ -469,7 +469,7 @@ if (window.JSON && window.JSON.stringify) {
 	});
 }
 
-test("jQuery.data should follow html5 specification regarding camel casing", function() {
+test(".data should follow html5 specification regarding camel casing", function() {
 	expect(12);
 
 	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
@@ -535,7 +535,7 @@ test(".data should not miss attr() set data-* with hyphenated property names", f
 	deepEqual( b.data("long-param"), { a: 2 }, "data with property long-param was found, 2" );
 });
 
-test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
+test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
 
 	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
 		datas = {
@@ -566,7 +566,7 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 	});
 });
 
-test("jQuery.data supports interoperable removal of hyphenated/camelCase properties", function() {
+test(".data supports interoperable removal of hyphenated/camelCase properties", function() {
 	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
 		datas = {
 			"non-empty": "a string",
@@ -598,7 +598,7 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 	});
 });
 
-test( "jQuery.fn.removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
+test( ".removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
 	expect( 4 );
 
 	var div, plain, compare;
@@ -631,7 +631,7 @@ test( "jQuery.fn.removeData supports removal of hyphenated properties via array 
 });
 
 // Test originally by Moschel
-test("Triggering the removeData should not throw exceptions. (#10080)", function() {
+test(".removeData should not throw exceptions. (#10080)", function() {
 	expect(1);
 	stop();
 	var frame = jQuery("#loadediframe");
@@ -643,7 +643,7 @@ test("Triggering the removeData should not throw exceptions. (#10080)", function
 	frame.attr("src", "data/iframe.html?param=true");
 });
 
-test( "Only check element attributes once when calling .data() - #8909", function() {
+test( ".data only checks element attributes once. #8909", function() {
 	expect( 2 );
 	var testing = {
 			"test": "testing",
@@ -663,7 +663,7 @@ test( "Only check element attributes once when calling .data() - #8909", functio
 	element.remove();
 });
 
-test( "JSON data- attributes can have newlines", function() {
+test( "data-* with JSON value can have newlines", function() {
 	expect(1);
 
 	var x = jQuery("<div data-some='{\n\"foo\":\n\t\"bar\"\n}'></div>");
