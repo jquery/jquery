@@ -85,7 +85,7 @@ Data.prototype = {
 		// Either a valid cache is found, or will be created.
 		// New caches will be created and the unlock returned,
 		// allowing direct access to the newly created
-		// empty data object.
+		// empty data object. A valid owner object must be provided.
 		var cache = this.cache[ this.key( owner ) ];
 
 		return key === undefined ?
@@ -255,9 +255,12 @@ jQuery.fn.extend({
 			var data,
 					camelKey = jQuery.camelCase( key );
 
-			// Get the Data...
-			if ( value === undefined ) {
-
+			// The calling jQuery object (element matches) is not empty
+			// (and therefore has an element appears at this[0]) and the
+			// `value` parameter was not undefined. An empty jQuery object
+			// will result in `undefined` for elem = this[0] which will
+			// throw an exception if an attempt to read a data cache is made.
+			if ( elem && value === undefined ) {
 				// Attempt to get data from the cache
 				// with the key as-is
 				data = data_user.get( elem, key );
