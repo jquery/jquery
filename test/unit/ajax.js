@@ -1627,13 +1627,13 @@ module( "ajax", {
 			type: "POST"
 		});
 
-		jQuery( document ).bind( "ajaxStart ajaxStop", function() {
+		jQuery( document ).on( "ajaxStart ajaxStop", function() {
 			ok( false, "Global event triggered" );
 		});
 
 		jQuery("#qunit-fixture").append("<script src='data/evalScript.php'></script>");
 
-		jQuery( document ).unbind("ajaxStart ajaxStop");
+		jQuery( document ).off("ajaxStart ajaxStop");
 	});
 
 	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
@@ -1906,7 +1906,7 @@ module( "ajax", {
 		});
 		jQuery( document ).ajaxComplete(function( e, xml, s ) {
 			strictEqual( s.dataType, "html", "Verify the load() dataType was html" );
-			jQuery( document ).unbind("ajaxComplete");
+			jQuery( document ).off("ajaxComplete");
 			start();
 		});
 		jQuery("#first").load("data/test3.html");
