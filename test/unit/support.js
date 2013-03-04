@@ -28,6 +28,11 @@ if ( jQuery.css ) {
 	});
 }
 
+testIframeWithCallback( "A non-1 zoom on body doesn't cause WebKit to fail box-sizing test", "support/boxSizing.html", function( boxSizing ) {
+	expect( 1 );
+	equal( boxSizing, jQuery.support.boxSizing, "box-sizing properly detected on page with non-1 body zoom" );
+});
+
 testIframeWithCallback( "A background on the testElement does not cause IE8 to crash (#9823)", "support/testElementCrash.html", function() {
 	expect( 1 );
 	ok( true, "IE8 does not crash" );
