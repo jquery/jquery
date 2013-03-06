@@ -8,6 +8,7 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	rscriptType = /^$|\/(?:java|ecma)script/i,
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
+	riAH = /<script|\[object/i,
 
 	// We have to close these tags to support XHTML (#13200)
 	wrapMap = {
@@ -27,6 +28,8 @@ wrapMap.optgroup = wrapMap.option;
 
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.col = wrapMap.thead;
 wrapMap.th = wrapMap.td;
+
+wrapMap.style = wrapMap.table = wrapMap._default;
 
 jQuery.fn.extend({
 	text: function( value ) {
@@ -110,7 +113,7 @@ jQuery.fn.extend({
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.appendChild( elem );
 			}
-		});
+		}, "beforeend" );
 	},
 
 	prepend: function() {
@@ -118,7 +121,7 @@ jQuery.fn.extend({
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
-		});
+		}, "afterbegin" );
 	},
 
 	before: function() {
@@ -126,7 +129,7 @@ jQuery.fn.extend({
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
-		});
+		}, "beforebegin" );
 	},
 
 	after: function() {
@@ -134,7 +137,7 @@ jQuery.fn.extend({
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
-		});
+		}, "afterend" );
 	},
 
 	// keepData is for internal use only--do not document
@@ -258,31 +261,54 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, table, callback ) {
+	domManip: function( args, table, callback, place ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
 
-		var fragment, first, scripts, hasScripts, node, doc,
+		var fragment, first, scripts, hasScripts, node, doc, iAH, tag,
 			i = 0,
-			l = this.length,
 			set = this,
+			l = set.length,
 			iNoClone = l - 1,
 			value = args[ 0 ],
 			isFunction = jQuery.isFunction( value );
 
-		// We can't cloneNode fragments that contain checked, in WebKit
+		// We can't cloneNode fragments that contain checked, in old WebKit
 		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
 					args[ 0 ] = value.call( this, index, table ? self.html() : undefined );
 				}
-				self.domManip( args, table, callback );
+				self.domManip( args, table, callback, place );
 			});
 		}
 
 		if ( l ) {
+
+			// Use a quick insert method if possible
+			if ( place ) {
+				iAH = args.join("");
+				tag = ( rtagName.exec( iAH ) || ["", ""] )[ 1 ].toLowerCase();
+
+				// Object or HTML-string with declaration of a script element must not be passed to iAH,
+				// also, we do not wrap HTML-string if needed - it's jQuery.buildFragment job
+				if ( !riAH.test( iAH ) && !wrapMap[ tag ] ) {
+					return this.each(function( index ) {
+
+						// Check for presence of insertAdjacentHTML method is needed in case of non-elements ending up in jQuery set
+						// Check for parent element is needed in case of "beforebegin" or "afterend" is passed as first argument to iAH otherwise it will throw an error
+						if ( this.insertAdjacentHTML && this.parentNode && this.parentNode.nodeType === 1 ) {
+							this.insertAdjacentHTML( place, iAH.replace( rxhtmlTag, "<$1></$2>" ) );
+
+						} else {
+							set.eq( index ).domManip( args, table, callback );
+						}
+					});
+				}
+			}
+
 			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
 			first = fragment.firstChild;
 

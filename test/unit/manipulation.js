@@ -2229,3 +2229,101 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 		ok( jQuery.nodeName( this, results[ i ] ) );
 	});
 });
+
+test( "Test insertAdjacentHTML implementation (#10515)", 39, function() {
+	var mark = jQuery("#mark"),
+		fragment = document.createDocumentFragment(),
+		p = jQuery("#firstp"),
+		table = jQuery("#table"),
+		set = jQuery("<div><div/></div>").children().add( fragment );
+
+	set.append( "<div/>", "text" );
+	equal( set[ 0 ].childNodes.length, 2, "Test append to element" );
+	equal( set[ 1 ].childNodes.length, 2, "Test append to document fragment" );
+
+	equal( set[ 0 ].childNodes[ 0 ].nodeType, 1, "Check first appended node type to element" );
+	equal( set[ 0 ].childNodes[ 1 ].nodeType, 3, "Check second appended node type to element" );
+
+	equal( set[ 1 ].childNodes[ 0 ].nodeType, 1, "Check first appended node type to document fragment" );
+	equal( set[ 1 ].childNodes[ 1 ].nodeType, 3, "Check second appended node type to document fragment" );
+
+	set = jQuery( document.createDocumentFragment() ).add( "<div/>" );
+	set.append( document.createElement("div") );
+
+	equal( set[ 0 ].childNodes[ 0 ].nodeType, 1, "Test append of an element and the text node to element" );
+	equal( set[ 1 ].childNodes[ 0 ].nodeType, 1, "Test append of an element and the text node to document fragment" );
+
+	set = jQuery( "<div><div/></div>" ).children().add( document.createTextNode("text") );
+
+	set.append( "<div/>", "text" );
+	equal( set[ 0 ].childNodes.length, 2, "Test append of an element and the text node to element" );
+	equal( set[ 0 ].childNodes.length, 2, "Test append of an element and the text node to document fragment" );
+
+	equal( set[ 0 ].childNodes[ 0 ].nodeType, 1, "Check first appended node type to element" );
+	equal( set[ 0 ].childNodes[ 1 ].nodeType, 3, "Check second appended node type to element" );
+
+	set = jQuery( document.createTextNode("text") );
+	set.append("test");
+
+	table.append("<tr><td>first</td></tr>", "<tr><td>second</td></tr>");
+	equal( table.find("td").length, 2, "Two td elements was correctly appended" );
+	equal( table.find("td:first").text(), "first", "Sequance of appended td elements is correct" );
+
+	table.empty();
+	table.prepend("<tr><td>first</td></tr>", "<tr><td>second</td></tr>");
+	equal( table.find("td").length, 2, "Two td elements was correctly prepended" );
+	equal( table.find("td:first").text(), "first", "Sequance of prepended td elements is correct" );
+
+	table.find("tr").append("<td>second</td>");
+	equal( table.find("td").length, 4, "td elements was correctly appended to tr element" );
+
+	table.find("tr").prepend("<td>second</td>");
+	equal( table.find("td").length, 6, "td elements was correctly prepended to tr element" );
+
+	p.after( "<script>ok( true, 'script element was added correctly' )</script>" );
+	p.before( "<script>ok( true, 'script element was added correctly' )</script>" );
+	p.prev().remove();
+
+	fragment = document.createDocumentFragment();
+
+	fragment.appendChild( jQuery("<div>test</div>")[ 0 ] );
+	p.before( "<script>ok( true, 'script element was added correctly' )</script>", fragment );
+
+	equal( p.prevAll().length, 2, "script element and document fragment was added correctly" );
+
+	ok( jQuery( p.prevAll()[ 1 ].nodeName, "script" ), "script element was added correctly" );
+	ok( jQuery( p.prevAll()[ 0 ].nodeName, "div" ), "div element inside of document fragment was added correctly" );
+
+	fragment.appendChild( jQuery("<div>test</div>")[ 0 ] );
+	p.before( fragment, "<script>ok( true, 'script element was added correctly' )</script>" );
+	ok( jQuery( p.prevAll()[ 1 ].nodeName, "script" ), "script element was added correctly" );
+	ok( jQuery( p.prevAll()[ 0 ].nodeName, "div" ), "div element inside of document fragment was added correctly" );
+
+	fragment.appendChild( jQuery("<div>test</div>")[ 0 ] );
+	mark.after( "<script>ok( true, 'script element was added correctly' )<\/script>", fragment );
+
+	equal( mark.nextAll().length, 2, "script element and document fragment was added correctly" );
+
+	ok( jQuery( mark.nextAll()[ 1 ].nodeName, "script" ), "script element was added correctly" );
+	ok( jQuery( mark.nextAll()[ 0 ].nodeName, "div" ), "div element inside of document fragment was added correctly" );
+
+	fragment.appendChild( jQuery("<div>test</div>")[ 0 ] );
+	mark.after( fragment, "<script>ok( true, 'script element was added correctly' )</script>" );
+	ok( jQuery( mark.nextAll()[ 1 ].nodeName, "script" ), "script element was added correctly" );
+	ok( jQuery( mark.nextAll()[ 0 ].nodeName, "div" ), "div element inside of document fragment was added correctly" );
+
+	ok( p.contents().append("<div/>"), "If append is applied to text node it should not throw exception" );
+
+	jQuery("head").append("<style>#firstp{height:1px;}</style>");
+
+	equal( p.css("height"), "1px", "style element appended correctly" );
+
+	set = jQuery("<div><div/></div>").children();
+
+	set.append( "<div>test</div>", document.createElement("div") );
+
+	equal( set.children().length, 2, "DOM-manip methods should work correctly with multiple type arguments" );
+
+	p.empty().prepend( "<div />", "<p><script>ok( true, 'script element was added correctly' );<\/script></p>" );
+	equal( p.find("*").length, 3, "DOM-manip methods should work correctly if one of the arguments has a script declaration" );
+});
