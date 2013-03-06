@@ -163,23 +163,22 @@ jQuery.fn.extend({
 	},
 
 	hasAnyClass: function( classesToCheck, all) {
-		if(typeof all == undefined) {
+		if ( typeof all == undefined ) {
 			all = false;
 		}
 
 		returnClasses = [];
 
-		for (var i = 0; i < classesToCheck.length; i++) {
+		for ( var i = 0; i < classesToCheck.length; i++ ) {
 
-			console.log(this.hasClass(classesToCheck[i]));
-			if (this.hasClass(classesToCheck[i])) {
-				if(all == false) {
+			if ( this.hasClass(classesToCheck[i]) ) {
+				if ( all == false ) {
 					return true;
 				}
-				returnClasses.push(classesToCheck[i]);
+				returnClasses.push( classesToCheck[i] );
 			}
         }
-        if(returnClasses.length < 1) {
+        if ( returnClasses.length < 1 ) {
         	return false;
         }
         return returnClasses;
