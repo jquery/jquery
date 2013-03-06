@@ -296,9 +296,9 @@ test("type", function() {
 });
 
 asyncTest("isPlainObject", function() {
-	expect(15);
+	expect(16);
 
-	var pass, iframe, doc,
+	var pass, iframe, doc, c, extended,
 		fn = function() {};
 
 	// The use case that we want to match
@@ -360,6 +360,45 @@ asyncTest("isPlainObject", function() {
 	} catch(e) {
 		window.iframeDone( Object, "iframes not supported" );
 	}
+
+	// #13571
+	function C() {}
+	C.prototype = {
+		x: 1
+	};
+	c = new C();
+
+	extended = jQuery.extend( true, {}, {
+		target: c
+	});
+
+	strictEqual(
+		extended.target, c,
+		"Instances, whose constructor defined its prototype by assigning a plain object, " +
+		"will lie about their true identity to preserve a broken user-code expectation"
+	);
+	//
+	// The test above is broken and tests a broken feature, to support a misinformed
+	// assumption, as documented here:
+	//
+	// http://bugs.jquery.com/ticket/13571#comment:4
+	//
+	// It will not pass if the object being assigned as the prototype
+	// has no properties:
+	//
+	// function C() {}
+	// C.prototype = {};
+	// c = new C();
+
+	// extended = jQuery.extend( true, {}, {
+	// 	target: c
+	// });
+
+	// strictEqual( extended.target, c, "Undetectable, will fail every time" );
+	//
+	// The solution is to reset the constructor property of your plain object prototypes.
+	//
+	//
 });
 
 test("isFunction", function() {
