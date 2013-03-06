@@ -162,6 +162,29 @@ jQuery.fn.extend({
 		return false;
 	},
 
+	hasAnyClass: function( classesToCheck, all) {
+		if(typeof all == undefined) {
+			all = false;
+		}
+
+		returnClasses = [];
+
+		for (var i = 0; i < classesToCheck.length; i++) {
+
+			console.log(this.hasClass(classesToCheck[i]));
+			if (this.hasClass(classesToCheck[i])) {
+				if(all == false) {
+					return true;
+				}
+				returnClasses.push(classesToCheck[i]);
+			}
+        }
+        if(returnClasses.length < 1) {
+        	return false;
+        }
+        return returnClasses;
+	},
+
 	val: function( value ) {
 		var hooks, ret, isFunction,
 			elem = this[0];
