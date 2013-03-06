@@ -76,7 +76,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": false
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
@@ -110,7 +111,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": false
 		};
 	} else if ( /msie 10\.0/i.test( userAgent ) ) {
 		expected = {
@@ -144,7 +146,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": false
+			"clearCloneStyle": false,
+			"iteratesOwnLast": false
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -178,7 +181,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":false,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": false
+			"clearCloneStyle": false,
+			"iteratesOwnLast": false
 		};
 	} else if ( /msie 8\.0/i.test( userAgent ) ) {
 		expected = {
@@ -212,7 +216,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":false,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": true
 		};
 	} else if ( /msie 7\.0/i.test( userAgent ) ) {
 		expected = {
@@ -246,7 +251,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"submitBubbles": false,
 			"tbody": false,
 			"style": false,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": true
 		};
 	} else if ( /msie 6\.0/i.test( userAgent ) ) {
 		expected = {
@@ -280,7 +286,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":false,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": true
 		};
 	} else if ( /5\.1\.1 safari/i.test( userAgent ) ) {
 		expected = {
@@ -314,7 +321,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": false
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -348,13 +356,14 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"ajax":true,
 			"cors":true,
 			"doesNotIncludeMarginInBodyOffset":true,
-			"clearCloneStyle": true
+			"clearCloneStyle": true,
+			"iteratesOwnLast": false
 		};
 	}
 
 	if ( expected ) {
 		test("Verify that the support tests resolve as expected per browser", function() {
-			expect( 31 );
+			expect( 32 );
 
 			for ( var i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {

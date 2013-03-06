@@ -1,6 +1,7 @@
 jQuery.support = (function( support ) {
 
-	var all, a, input, select, fragment, opt, eventName, isSupported, i,
+	var all, a, input, select, fragment, opt, eventName, isSupported, i, func,
+		props,
 		div = document.createElement("div");
 
 	// Setup
@@ -141,6 +142,20 @@ jQuery.support = (function( support ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+	// Support: IE<9
+	// Iteration over object's inherited properties before its own.
+	func = function() {
+		this.a = 0;
+	};
+	func.prototype = {
+		b: 1
+	};
+	props = [];
+	for( i in new func() ) {
+		props.push( i );
+	}
+	support.iteratesOwnLast = props[0] !== "a";
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv, tds,
@@ -231,7 +246,7 @@ jQuery.support = (function( support ) {
 	});
 
 	// Null elements to avoid leaks in IE
-	all = select = fragment = opt = a = input = null;
+	all = select = fragment = opt = a = input = func = props = null;
 
 	return support;
 })({});
