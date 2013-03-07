@@ -475,7 +475,7 @@ jQuery.extend({
 
 		// Support: IE<9
 		// Handle iteration over inherited properties before own properties.
-		if ( jQuery.support.iteratesOwnLast ) {
+		if ( jQuery.support.ownLast ) {
 			for( key in obj ) {
 				return core_hasOwn.call( obj, key );
 			}
