@@ -64,7 +64,7 @@ function createComplexHTML() {
 	testFoo = "foo"; jQuery("#foo").html("foo"); \
 	ok( true, "inline script executed" ); \
 	/* ]]> */</script> \
-	<script src="' + service("echo/", {
+	<script src="' + service("echo", {
 		content: 'var testBar = "bar"; \
 		jQuery("#ap").html("bar"); \
 		ok( true, "remote script executed");'
@@ -151,21 +151,40 @@ fireNative = document.createEvent ?
  * @result "data/iframe.html?10538358428943"
  *
  * @example url("data/ajax/echo?foo=bar")
- * @result "data/ajax/echo?foo=bar&10538358345554"
+ * @result "data/ajax/echo?foo=bar&10538358428943"
  */
-function url( value ) {
-	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
+function url( path ) {
+	return path + ( /\?/.test(path) ? "&" : "?" ) + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
 }
 
-function service( value, data ) {
-	var fragment = url( "data/ajax/" + value );
+/**
+ * Get url to an AJAX service.
+ *
+ * @example service("echo", { extend: true })
+ * @result "data/ajax/echo.php?10538358428943&extend=true"
+ *
+ * @example service("echo.php/foo", "extend=true")
+ * @result "data/ajax/echo.php/foo?10538358428943&extend=true"
+ *
+ * @param {string} script: Canonical name of script or valid file path
+ * @param {string|Object} data: Query string (GET)
+ */
+function service( script, data ) {
+	if ( script.indexOf( '.php' ) === -1 ) {
+		script += '.php';
+	}
+	// Only add url()-timestamp if we don't have '??' in this url,
+	// which is the jsonp callback placeholder. url() would intefer with that
+	// by appending timestamp with & instead of ?, which breaks the url after ??
+	// is replaced.
+	var path = "data/ajax/" + ( /\?\?/.test( script ) ? script : url( script ) );
 	if ( data ) {
 		if ( typeof data !== "string" ) {
 			data = jQuery.param( data, false );
 		}
-		fragment += "&" + data;
+		path += ( /\?/.test(path) ? "&" : "?" ) + data;
 	}
-	return fragment;
+	return path;
 }
 
 // Ajax testing helper
