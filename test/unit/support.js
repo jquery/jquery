@@ -29,6 +29,149 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 	strictEqual( shrinkWrapBlocks, jQuery.support.shrinkWrapBlocks, "jQuery.support.shrinkWrapBlocks properties are the same" );
 });
 
+(function() {
+	var expected,
+		userAgent = window.navigator.userAgent;
+
+	if ( /chrome/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":true,
+			"optDisabled":true,
+			"focusinBubbles":false,
+			"reliableMarginRight":true,
+			"noCloneChecked":true,
+			"radioValue":true,
+			"checkClone":true,
+			"boxModel":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": true,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"pixelPosition": false
+		};
+	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":true,
+			"optDisabled":true,
+			"focusinBubbles":false,
+			"reliableMarginRight":true,
+			"noCloneChecked":true,
+			"radioValue":false,
+			"checkClone":true,
+			"boxModel":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": true,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"pixelPosition": true
+		};
+	} else if ( /msie 10\.0/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":false,
+			"optDisabled":true,
+			"focusinBubbles":true,
+			"reliableMarginRight":true,
+			"noCloneChecked":false,
+			"radioValue":false,
+			"checkClone":true,
+			"boxModel":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": false,
+			"boxSizing": true,
+			"boxSizingReliable": false,
+			"pixelPosition": true
+		};
+	} else if ( /msie 9\.0/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":false,
+			"optDisabled":true,
+			"focusinBubbles":true,
+			"reliableMarginRight":true,
+			"noCloneChecked":false,
+			"radioValue":false,
+			"checkClone":true,
+			"boxModel":true,
+			"ajax":true,
+			"cors":false,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": false,
+			"boxSizing": true,
+			"boxSizingReliable": false,
+			"pixelPosition": true
+		};
+	} else if ( /5\.1\.\d+ safari/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":false,
+			"optSelected":true,
+			"optDisabled":true,
+			"focusinBubbles":false,
+			"reliableMarginRight":true,
+			"noCloneChecked":true,
+			"radioValue":true,
+			"checkClone":false,
+			"boxModel":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": true,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"pixelPosition": false
+		};
+	} else if ( /firefox/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":true,
+			"optDisabled":true,
+			"focusinBubbles":false,
+			"reliableMarginRight":true,
+			"noCloneChecked":true,
+			"radioValue":true,
+			"checkClone":true,
+			"boxModel":true,
+			"ajax":true,
+			"cors":true,
+			"doesNotIncludeMarginInBodyOffset":true,
+			"clearCloneStyle": true,
+			"boxSizing": true,
+			"boxSizingReliable": false,
+			"pixelPosition": true
+		};
+	}
+
+	if ( expected ) {
+		test("Verify that the support tests resolve as expected per browser", function() {
+			var i, prop,
+				j = 0;
+
+			for ( prop in jQuery.support ) {
+				j++;
+			}
+
+			expect( j );
+
+			for ( i in expected ) {
+				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
+					equal( jQuery.support[i], expected[i], "jQuery.support['" + i + "']: " + jQuery.support[i] + ", expected['" + i + "']: " + expected[i]);
+				} else {
+					ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
+				}
+			}
+		});
+	}
+
+})();
+
 // Support: Safari 5.1
 // Shameless browser-sniff, but Safari 5.1 mishandles CSP
 if ( !( typeof navigator !== "undefined" &&

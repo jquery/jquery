@@ -13,7 +13,7 @@ jQuery.support = (function( support ) {
 	input.type = "checkbox";
 
 	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
-	support.checkOn = input.value === "";
+	support.checkOn = input.value !== "";
 
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
