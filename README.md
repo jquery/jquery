@@ -81,7 +81,7 @@ For example, an app that only used JSONP for `$.ajax()` and did not need to calc
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
 - **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`.
-- **deprecated**: Methods documented as deprecated but not yet removed; currently only `.andSelf()`.
+- **deprecated**: Methods documented as deprecated but not yet removed.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`. 
 - **event-alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.

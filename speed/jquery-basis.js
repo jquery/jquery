@@ -3835,10 +3835,6 @@ jQuery.fn.extend({
 		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
 			all :
 			jQuery.unique( all ) );
-	},
-
-	andSelf: function() {
-		return this.add( this.prevObject );
 	}
 });
 
