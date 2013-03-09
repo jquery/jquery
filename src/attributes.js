@@ -272,18 +272,20 @@ jQuery.extend({
 			},
 
 			set: function( elem, value ) {
-				var values = jQuery.makeArray( value );
+				var optionSet = false,
+					options = elem.options,
+					values = jQuery.makeArray( value );
 
-				jQuery(elem).find("option").each(function() {
+				jQuery.each(options, function()  {
 					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
+					optionSet = optionSet || this.selected;
 				});
 
 				if ( !values.length ) {
 					elem.selectedIndex = -1;
 				} else {
-					// IE 9 doesn't select a dropdown-list's first option
-					// when value doesnt match with one of its options' value
-					if ( elem.selectedIndex < 0 ) {
+					// fix IE9 bug when non-matching value is set
+					if ( elem.type === "select-one" && !optionSet ) {
 						elem.selectedIndex = 0;
 					}
 				}

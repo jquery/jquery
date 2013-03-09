@@ -768,7 +768,7 @@ test( "removeProp(String)", function() {
 });
 
 test( "val()", function() {
-	expect( 22 + ( jQuery.fn.serialize ? 6 : 0 ) );
+	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
@@ -844,9 +844,23 @@ test( "val()", function() {
 	equal( $button.val("baz").html(), "text", "Setting the value does not change innerHTML" );
 
 	equal( jQuery("<option/>").val("test").attr("value"), "test", "Setting value sets the value attribute" );
+});
 
+test("val() with non-matching values on dropdown list", function() {
+	expect( 3 );
+	
 	jQuery("#select5").val( "" );
-	equal( jQuery("#select5").val(), "3", "IE9 should select the first option if empty string is set as its dropdown-list's value" );
+	equal( jQuery("#select5").val(), "3", "Non-matching set on select-one" );
+	
+	var select6 = jQuery("<select multiple id=\"select6\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
+		.appendTo("#form");
+	jQuery(select6).val( "nothing" );
+	equal( jQuery(select6).val(), null, "Non-matching set (single value) on select-multiple" );
+	
+	jQuery(select6).val( ["nothing1", "nothing2"] );
+	equal( jQuery(select6).val(), null, "Non-matching set (array of values) on select-multiple" );
+	
+	select6.remove();
 });
 
 if ( "value" in document.createElement("meter") &&
