@@ -2,7 +2,7 @@ var
 	// Document location
 	ajaxLocParts,
 	ajaxLocation,
-	
+
 	ajax_nonce = jQuery.now(),
 
 	ajax_rquery = /\?/,

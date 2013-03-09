@@ -1468,7 +1468,7 @@ module( "ajax", {
 			strictEqual( ajaxXML.find("tab").length, 3, "Parsed node was added properly" );
 		}
 	});
-	
+
 	ajaxTest( "#13292 - jQuery.ajax() - converter is bypassed for 204 requests", 3, {
 		url: "data/nocontent.php",
 		dataType: "testing",
