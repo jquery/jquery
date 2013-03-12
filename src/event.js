@@ -66,7 +66,7 @@ jQuery.event = {
 			tmp = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tmp[1];
 			namespaces = ( tmp[2] || "" ).split( "." ).sort();
-			
+
 			// There *must* be a type, no attaching namespace-only handlers
 			if ( !type ) {
 				continue;
