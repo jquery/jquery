@@ -163,4 +163,4 @@ Adam Coulombe <me@adam.co>
 Andrew Plummer <plummer.andrew@gmail.com>
 Nguyen Phuc Lam <ruado1987@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
-Michał Z. Gołębiowski <michal.golebiowski@laboratorium.ee>
+Michał Gołębiowski <m.goleb@gmail.com>
