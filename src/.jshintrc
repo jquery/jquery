@@ -3,15 +3,17 @@
 	"expr": true,
 	"newcap": false,
 	"quotmark": "double",
-	"regexdash": true,
 	"trailing": true,
 	"undef": true,
 	"unused": true,
+	"latedef": false,
+	"eqeqeq": true,
 	"maxerr": 100,
 
 	"eqnull": true,
 	"evil": true,
 	"sub": true,
+	"boss": true,
 
 	"browser": true,
 	"wsh": true,
