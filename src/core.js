@@ -435,6 +435,7 @@ jQuery.extend({
 	},
 
 	isWindow: function( obj ) {
+		/* jshint eqeqeq: false */
 		return obj != null && obj == obj.window;
 	},
 

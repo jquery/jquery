@@ -67,7 +67,7 @@ jQuery.event = {
 			tmp = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tmp[1];
 			namespaces = ( tmp[2] || "" ).split( "." ).sort();
-			
+
 			// There *must* be a type, no attaching namespace-only handlers
 			if ( !type ) {
 				continue;
@@ -412,7 +412,9 @@ jQuery.event = {
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
 
+			/* jshint eqeqeq: false */
 			for ( ; cur != this; cur = cur.parentNode || this ) {
+				/* jshint eqeqeq: true */
 
 				// Don't check non-elements (#13208)
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)

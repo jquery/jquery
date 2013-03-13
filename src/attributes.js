@@ -279,14 +279,14 @@ jQuery.extend({
 					options = elem.options,
 					values = jQuery.makeArray( value ),
 					i = options.length;
-				
+
 				while ( i-- ) {
 					option = options[ i ];
 					if ( (option.selected = jQuery.inArray( jQuery(option).val(), values ) >= 0) ) {
 						optionSet = true;
 					}
 				}
-				
+
 				// force browsers to behave consistently when non-matching value is set
 				if ( !optionSet ) {
 					elem.selectedIndex = -1;
