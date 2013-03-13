@@ -11,12 +11,11 @@
 	"maxerr": 100,
 
 	"eqnull": true,
-	"evil": true,
 	"sub": true,
 	"boss": true,
 
 	"browser": true,
-	"wsh": true,
+	"es5": true,
 
 	"globals": {
 		"jQuery": true,
