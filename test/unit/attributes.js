@@ -852,8 +852,7 @@ test("val() with non-matching values on dropdown list", function() {
 	jQuery("#select5").val( "" );
 	equal( jQuery("#select5").val(), "3", "Non-matching set on select-one" );
 	
-	var select6 = jQuery("<select multiple id=\"select6\"><option value=\"1\">A</option><option value=\"2\">B</option></select>")
-		.appendTo("#form");
+	var select6 = jQuery("<select multiple id=\"select6\"><option value=\"1\">A</option><option value=\"2\">B</option></select>").appendTo("#form");
 	jQuery(select6).val( "nothing" );
 	equal( jQuery(select6).val(), null, "Non-matching set (single value) on select-multiple" );
 	

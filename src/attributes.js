@@ -272,22 +272,20 @@ jQuery.extend({
 			},
 
 			set: function( elem, value ) {
-				var optionSet = false,
+				var optionSet, option, i,
 					options = elem.options,
 					values = jQuery.makeArray( value );
-
-				jQuery.each(options, function()  {
-					this.selected = jQuery.inArray( jQuery(this).val(), values ) >= 0;
-					optionSet = optionSet || this.selected;
-				});
-
-				if ( !values.length ) {
-					elem.selectedIndex = -1;
-				} else {
-					// fix IE9 bug when non-matching value is set
-					if ( elem.type === "select-one" && !optionSet ) {
-						elem.selectedIndex = 0;
+				
+				for ( i = options.length; i--; ) {
+					option = options[ i ];
+					if ( (option.selected = jQuery.inArray( jQuery(option).val(), values ) >= 0) ) {
+						optionSet = true;
 					}
+				}
+												
+				if ( !optionSet ) {
+					// force IE9 to behave like other browsers when a non-matching value is set on a select-one element
+					elem.selectedIndex = elem.type === "select-one" ? 0 : -1;
 				}
 				return values;
 			}
