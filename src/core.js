@@ -404,6 +404,7 @@ jQuery.extend({
 	isArray: Array.isArray,
 
 	isWindow: function( obj ) {
+		/* jshint eqeqeq: false */
 		return obj != null && obj == obj.window;
 	},
 
