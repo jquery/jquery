@@ -446,7 +446,7 @@ test( "attr(String, Object)", function() {
 
 	// Setting attributes on svg elements (bug #3116)
 	var $svg = jQuery(
-		"<svg xmlns='http://www.w3.org/2000/svg'   xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1'  baseProfile='full' width='200' height='200'>" +
+		"<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' baseProfile='full' width='200' height='200'>" +
 
 			"<circle cx='200' cy='200' r='150' />" +
 			"</svg>"
