@@ -304,21 +304,29 @@ function defaultPrefilter( elem, props, opts ) {
 
 
 	// show/hide pass
+	dataShow = jQuery._data( elem, "fxshow" ) || jQuery._data( elem, "fxshow", {} );
 	for ( index in props ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
 			delete props[ index ];
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
+
+				// If there is dataShow left over from a stopped hide or show and we are going to proceed with show, we should pretend to be hidden
+				if( value === "show" && dataShow[ index ] !== undefined ) {
+					hidden = true;
+				} else {
 				continue;
+			}
 			}
 			handled.push( index );
 		}
 	}
 
 	length = handled.length;
-	if ( length ) {
+	if ( !length ) {
 		dataShow = data_priv.get( elem, "fxshow" ) || data_priv.access( elem, "fxshow", {} );
+	} else {
 		if ( "hidden" in dataShow ) {
 			hidden = dataShow.hidden;
 		}
