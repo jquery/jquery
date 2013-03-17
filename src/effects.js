@@ -304,21 +304,31 @@ function defaultPrefilter( elem, props, opts ) {
 
 
 	// show/hide pass
+	dataShow = jQuery._data( elem, "fxshow" ) || jQuery._data( elem, "fxshow", {} );
 	for ( index in props ) {
 		value = props[ index ];
 		if ( rfxtypes.exec( value ) ) {
 			delete props[ index ];
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
-				continue;
+				//handle shown property if there is stored data, this means the slideDown() animation did not finish yet
+				if( value === "show" && dataShow[ index ] !== undefined ) {
+					//set the params so that the animation can proceed as if it was not stopped
+					style.display =	"hidden";
+					hidden = true;
+				} else {
+					continue;
+				}
 			}
 			handled.push( index );
 		}
 	}
 
 	length = handled.length;
-	if ( length ) {
-		dataShow = jQuery._data( elem, "fxshow" ) || jQuery._data( elem, "fxshow", {} );
+	if ( !length ) {
+		jQuery._removeData( elem, "fxshow" );
+	}
+	else {
 		if ( "hidden" in dataShow ) {
 			hidden = dataShow.hidden;
 		}

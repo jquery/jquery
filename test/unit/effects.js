@@ -2025,4 +2025,45 @@ test( ".finish() calls finish of custom queue functions", function() {
 	div.remove();
 });
 
+test( "continue slideDown animation after stop() (#13483)", 1, function() {
+	var value,
+		index,
+		props = {
+			height: "show",
+			marginBottom: "show",
+			marginTop: "show",
+			paddingBottom: "show",
+			paddingTop: "show"
+		},
+		dataShow = {
+			height: 100,
+			marginBottom: 16,
+			marginTop: 16,
+			paddingBottom: 0,
+			paddingTop: 0
+		},
+		rfxtypes = /^(?:toggle|show|hide)$/,
+		toggle = false,
+		handled = [],
+		hidden = false;
+
+	for ( index in props ) {
+		value = props[ index ];
+		if ( rfxtypes.exec( value ) ) {
+			delete props[ index ];
+			toggle = toggle || value === "toggle";
+			if ( value === ( hidden ? "hide" : "show" ) ) {
+				if( value === "show" && dataShow[ index ] !== undefined ) {
+					hidden = true;
+				} else {
+					continue;
+				}
+			}
+			handled.push( index );
+		}
+	}
+	
+	equal( handled.length, 5, "Proceeded with slideDown() animation after stop()" );
+});
+
 })();
