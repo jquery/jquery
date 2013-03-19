@@ -24,7 +24,7 @@ module.exports = function( grunt ) {
 		selector: {
 			destFile: "src/selector.js",
 			apiFile: "src/sizzle-jquery.js",
-			srcFile: "src/sizzle/sizzle.js"
+			srcFile: "src/sizzle/dist/sizzle.js"
 		},
 		build: {
 			all:{
