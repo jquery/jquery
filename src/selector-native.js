@@ -24,7 +24,7 @@
  */
 
 var selector_hasDuplicate,
-	matches = docElem.matchesSelector ||
+	matches = docElem.matches ||
 		docElem.mozMatchesSelector ||
 		docElem.webkitMatchesSelector ||
 		docElem.oMatchesSelector ||
