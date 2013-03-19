@@ -2025,45 +2025,66 @@ test( ".finish() calls finish of custom queue functions", function() {
 	div.remove();
 });
 
-test( "continue slideDown animation after stop() (#13483)", 1, function() {
-	var value,
-		index,
-		props = {
-			height: "show",
-			marginBottom: "show",
-			marginTop: "show",
-			paddingBottom: "show",
-			paddingTop: "show"
-		},
-		dataShow = {
-			height: 100,
-			marginBottom: 16,
-			marginTop: 16,
-			paddingBottom: 0,
-			paddingTop: 0
-		},
-		rfxtypes = /^(?:toggle|show|hide)$/,
-		toggle = false,
-		handled = [],
-		hidden = false;
-
-	for ( index in props ) {
-		value = props[ index ];
-		if ( rfxtypes.exec( value ) ) {
-			delete props[ index ];
-			toggle = toggle || value === "toggle";
-			if ( value === ( hidden ? "hide" : "show" ) ) {
-				if( value === "show" && dataShow[ index ] !== undefined ) {
-					hidden = true;
-				} else {
-					continue;
-				}
-			}
-			handled.push( index );
-		}
-	}
+asyncTest( "slideDown() after stop() (#13483)", 2, function() {
+	var ul = jQuery( "<ul style='height: 100px;display: block'></ul>" ),
+		origHeight = ul.height();
 	
-	equal( handled.length, 5, "Proceeded with slideDown() animation after stop()" );
+	//First test. slideUp() -> stop() in the middle -> slideDown() until the end
+	ul.slideUp(1000);
+	setTimeout( function() {
+		ul.stop(true);
+		ul.slideDown( 1, function() {
+			equal( ul.height(), origHeight, "slideDown() after interrupting slideUp() with stop(). Height must be in original value" );
+			
+			//Second test. slideDown() -> stop() in the middle -> slideDown() until the end
+			ul.slideUp( 1, function() {
+				ul.slideDown(1000);
+				setTimeout( function() {
+					ul.stop(true);
+					ul.slideDown( 1, function() {
+						equal( ul.height(), origHeight, "slideDown() after interrupting slideDown() with stop(). Height must be in original value" );
+						//cleanup
+						ul.remove();
+						start();
+					});
+				},
+				500);
+			});
+				
+		});
+	},
+	500);
+});
+
+asyncTest( "fadeIn() after stop() (related to #13483)", 2, function() {
+	var ul = jQuery( "<ul style='height: 100px;display: block; opacity: 1'></ul>" ),
+		origOpacity = ul.css("opacity");
+	
+	//First test. fadeOut() -> stop() in the middle -> fadeIn() until the end
+	ul.fadeOut(1000);
+	setTimeout( function() {
+		ul.stop(true);
+		ul.fadeIn( 1, function() {
+			equal( ul.css("opacity"), origOpacity, "fadeIn() after interrupting fadeOut() with stop(). Opacity must be in original value" );
+			
+			//Second test. fadeIn() -> stop() in the middle -> fadeIn() until the end
+			ul.fadeOut( 1, function() {
+				ul.fadeIn(1000);
+				setTimeout( function() {
+					ul.stop(true);
+					ul.fadeIn( 1, function() {
+						equal( ul.css("opacity"), origOpacity, "fadeIn() after interrupting fadeIn() with stop(). Opacity must be in original value" );
+						//cleanup
+						ul.remove();
+						start();
+					});
+				},
+				500);
+			});
+			
+		});
+	},
+	500);
 });
 
 })();

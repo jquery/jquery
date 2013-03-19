@@ -314,7 +314,6 @@ function defaultPrefilter( elem, props, opts ) {
 				//handle shown property if there is stored data, this means the slideDown() animation did not finish yet
 				if( value === "show" && dataShow[ index ] !== undefined ) {
 					//set the params so that the animation can proceed as if it was not stopped
-					style.display =	"hidden";
 					hidden = true;
 				} else {
 					continue;
