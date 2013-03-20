@@ -1,8 +1,7 @@
 jQuery.support = (function( support ) {
 
 	var all, a, input, select, fragment, opt, eventName, isSupported, i,
-		div = document.createElement("div"),
-		$div = jQuery( div );
+		div = document.createElement("div");
 
 	// Setup
 	div.setAttribute( "className", "t" );
@@ -144,10 +143,10 @@ jQuery.support = (function( support ) {
 
 	// Support: IE<9
 	// Iteration over object's inherited properties before its own.
-	for ( i in $div ) {
+	for ( i in jQuery( support ) ) {
 		break;
 	}
-	support.ownLast = !core_hasOwn.call( $div, i );
+	support.ownLast = i !== "0";
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
@@ -239,7 +238,7 @@ jQuery.support = (function( support ) {
 	});
 
 	// Null elements to avoid leaks in IE
-	all = select = fragment = opt = a = input = $div = null;
+	all = select = fragment = opt = a = input = null;
 
 	return support;
 })({});
