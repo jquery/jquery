@@ -311,9 +311,9 @@ function defaultPrefilter( elem, props, opts ) {
 			delete props[ index ];
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
-				//handle shown property if there is stored data, this means the slideDown() animation did not finish yet
-				if( value === "show" && dataShow[ index ] !== undefined ) {
-					//set the params so that the animation can proceed as if it was not stopped
+			
+				// If there is dataShow left over from a stopped hide or show and we are going to proceed with show, we should pretend to be hidden
+				if ( value === "show" && dataShow[ index ] !== undefined ) {
 					hidden = true;
 				} else {
 					continue;
@@ -326,8 +326,7 @@ function defaultPrefilter( elem, props, opts ) {
 	length = handled.length;
 	if ( !length ) {
 		jQuery._removeData( elem, "fxshow" );
-	}
-	else {
+	} else {
 		if ( "hidden" in dataShow ) {
 			hidden = dataShow.hidden;
 		}
