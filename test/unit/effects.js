@@ -2048,11 +2048,11 @@ asyncTest( "slideDown() after stop() (#13483)", 2, function() {
 						ul.remove();
 						start();
 					});
-				}, 500);
+				}, 500 );
 			});
 				
 		});
-	}, 500);
+	}, 500 );
 });
 
 asyncTest( "fadeIn() after stop() (related to #13483)", 2, function() {
@@ -2078,11 +2078,11 @@ asyncTest( "fadeIn() after stop() (related to #13483)", 2, function() {
 						ul.remove();
 						start();
 					});
-				}, 500);
+				}, 500 );
 			});
 			
 		});
-	}, 500);
+	}, 500 );
 });
 
 })();
