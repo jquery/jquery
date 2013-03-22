@@ -133,6 +133,10 @@ if ( xhrSupported ) {
 									status = xhr.status;
 									responseHeaders = xhr.getAllResponseHeaders();
 
+									if ( "object" === typeof xhr.responseXML ) {
+										responses.xml = xhr.responseXML;
+									}
+
 									// When requesting binary data, IE6-9 will throw an exception
 									// on any attempt to access responseText (#11426)
 									if ( typeof xhr.responseText === "string" ) {
