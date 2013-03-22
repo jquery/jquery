@@ -282,10 +282,10 @@ jQuery.extend({
 						optionSet = true;
 					}
 				}
-												
+				
+				// force browsers to behave consistently when non-matching value is set
 				if ( !optionSet ) {
-					// force IE9 to behave like other browsers when a non-matching value is set on a select-one element
-					elem.selectedIndex = elem.type === "select-one" ? 0 : -1;
+					elem.selectedIndex = -1;
 				}
 				return values;
 			}
