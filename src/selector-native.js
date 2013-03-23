@@ -24,9 +24,8 @@
  */
 
 var selector_hasDuplicate,
-	matches = docElem.matchesSelector ||
+	matches = docElem.webkitMatchesSelector ||
 		docElem.mozMatchesSelector ||
-		docElem.webkitMatchesSelector ||
 		docElem.oMatchesSelector ||
 		docElem.msMatchesSelector,
 	selector_sortOrder = function( a, b ) {
