@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="../../jquery.js"></script>
+	<script>var $j = jQuery.noConflict();</script>
+</head>
+<body>
+<iframe id="dont_return" src="dont_return.php"></iframe>
+<script>
+	var timeoutId, $,
+		timeoutFired = false;
+
+	setTimeout(function () {
+		// Load another jQuery copy using the first one.
+		$j.getScript( "../../../dist/jquery.js", function () {
+			$j( "#dont_return" ).attr( "src", "about:blank" );
+
+			// document ready handled by the just-loaded jQuery copy.
+			$(function () {
+				clearTimeout( timeoutId );
+				if ( !timeoutFired ) {
+					window.parent.iframeCallback( true );
+				}
+			});
+		});
+
+		timeoutId = setTimeout(function () {
+			timeoutFired = true;
+			window.parent.iframeCallback( false );
+		}, 3000);
+	});
+</script>
+</body>
+</html>
