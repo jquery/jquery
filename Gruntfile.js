@@ -19,7 +19,10 @@ module.exports = function( grunt ) {
 		pkg: grunt.file.readJSON("package.json"),
 		dst: readOptionalJSON("dist/.destination.json"),
 		compare_size: {
-			files: distpaths
+			files: distpaths,
+			options: {
+				cache: "dist/.sizecache.json"
+			}
 		},
 		selector: {
 			destFile: "src/selector-sizzle.js",
