@@ -7,6 +7,7 @@ module.exports = function( grunt ) {
 			"dist/jquery.min.map",
 			"dist/jquery.min.js"
 		],
+    gzip = require("gzip-js"),
 		readOptionalJSON = function( filepath ) {
 			var data = {};
 			try {
@@ -19,7 +20,15 @@ module.exports = function( grunt ) {
 		pkg: grunt.file.readJSON("package.json"),
 		dst: readOptionalJSON("dist/.destination.json"),
 		compare_size: {
-			files: distpaths
+			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
+			options: {
+				compress: {
+					gz: function( contents ) {
+						return gzip.zip( contents, {} ).length;
+					}
+				},
+				cache: "dist/.sizecache.json"
+			}
 		},
 		selector: {
 			destFile: "src/selector-sizzle.js",
