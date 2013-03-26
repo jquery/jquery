@@ -85,7 +85,6 @@ jQuery.support = (function( support ) {
 		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
 			support.boxSizing = div.offsetWidth === 4;
 		});
-		support.doesNotIncludeMarginInBodyOffset = body.offsetTop !== 1;
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
