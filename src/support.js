@@ -180,7 +180,6 @@ jQuery.support = (function( support ) {
 		div.innerHTML = "";
 		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
 		support.boxSizing = ( div.offsetWidth === 4 );
-		support.doesNotIncludeMarginInBodyOffset = ( body.offsetTop !== 1 );
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
