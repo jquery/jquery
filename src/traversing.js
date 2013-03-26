@@ -246,7 +246,7 @@ jQuery.extend({
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, keep ) {
 
-	// Can't pass null or undefined to indexOf in Firefox 4
+	// Can't pass null or undefined to indexOf
 	// Set to 0 to skip string check
 	qualifier = qualifier || 0;
 
