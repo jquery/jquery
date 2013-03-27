@@ -78,10 +78,29 @@ test("is(String|undefined)", function() {
 	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
 });
 
-test("is() against window|document (#10178)", function() {
-	expect(2);
-	ok( !jQuery(window).is("a"), "Checking is on a window does not throw an exception" );
-	ok( !jQuery(document).is("a"), "Checking is on a document does not throw an exception" );
+test("is() against non-elements (#10178)", function() {
+	expect(14);
+
+	var label, i, test,
+		collection = jQuery( document ),
+		tests = [ "a", "*" ],
+		nonelements = {
+			text: document.createTextNode(""),
+			comment: document.createComment(""),
+			document: document,
+			window: window,
+			array: [],
+			"plain object": {},
+			"function": function() {}
+		};
+
+	for ( label in nonelements ) {
+		collection[ 0 ] = nonelements[ label ];
+		for ( i = 0; i < tests.length; i++ ) {
+			test = tests[ i ];
+			ok( !collection.is( test ), label + " does not match \"" + test + "\"" );
+		}
+	}
 });
 
 test("is(jQuery)", function() {
@@ -715,4 +734,16 @@ test("index(no arg) #10977", function() {
 		div = fragment.appendChild( document.createElement("div") );
 
 	equal( jQuery( div ).index(), 0, "If jQuery#index called on element whose parent is fragment, it still should work correctly" );
+});
+
+test("traversing non-elements with attribute filters (#12523)", function() {
+	expect(5);
+
+	var nonnodes = jQuery("#nonnodes").contents();
+
+	equal( nonnodes.filter("[id]").length, 1, ".filter" );
+	equal( nonnodes.find("[id]").length, 0, ".find" );
+	strictEqual( nonnodes.is("[id]"), true, ".is" );
+	deepEqual( nonnodes.closest("[id='nonnodes']").get(), q("nonnodes"), ".closest" );
+	deepEqual( nonnodes.parents("[id='nonnodes']").get(), q("nonnodes"), ".parents" );
 });

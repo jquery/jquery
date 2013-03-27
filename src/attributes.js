@@ -2,8 +2,7 @@ var nodeHook, boolHook,
 	rclass = /[\t\r\n]/g,
 	rreturn = /\r/g,
 	rfocusable = /^(?:input|select|textarea|button|object)$/i,
-	rclickable = /^(?:a|area)$/i,
-	rboolean = /^(?:checked|selected|autofocus|autoplay|async|controls|defer|disabled|hidden|loop|multiple|open|readonly|required|scoped)$/i;
+	rclickable = /^(?:a|area)$/i;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -291,7 +290,7 @@ jQuery.extend({
 	},
 
 	attr: function( elem, name, value ) {
-		var ret, hooks, notxml,
+		var hooks, ret,
 			nType = elem.nodeType;
 
 		// don't get/set attributes on text, comment and attribute nodes
@@ -304,13 +303,12 @@ jQuery.extend({
 			return jQuery.prop( elem, name, value );
 		}
 
-		notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
-
 		// All attributes are lowercase
 		// Grab necessary hook if one is defined
-		if ( notxml ) {
+		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			name = name.toLowerCase();
-			hooks = jQuery.attrHooks[ name ] || ( rboolean.test( name ) ? boolHook : nodeHook );
+			hooks = jQuery.attrHooks[ name ] ||
+				( jQuery.expr.match.boolean.test( name ) ? boolHook : nodeHook );
 		}
 
 		if ( value !== undefined ) {
@@ -318,7 +316,7 @@ jQuery.extend({
 			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
 
-			} else if ( hooks && notxml && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			} else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
 			} else {
@@ -326,16 +324,11 @@ jQuery.extend({
 				return value;
 			}
 
-		} else if ( hooks && notxml && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
+		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
 
 		} else {
-
-			// In IE9+, Flash objects don't have .getAttribute (#12945)
-			// Support: IE9+
-			if ( typeof elem.getAttribute !== core_strundefined ) {
-				ret =  elem.getAttribute( name );
-			}
+			ret = jQuery.find.attr( elem, name );
 
 			// Non-existent attributes return null, we normalize to undefined
 			return ret == null ?
@@ -354,8 +347,8 @@ jQuery.extend({
 				propName = jQuery.propFix[ name ] || name;
 
 				// Boolean attributes get special treatment (#10870)
-				// Set corresponding property to false for boolean attributes
-				if ( rboolean.test( name ) ) {
+				if ( jQuery.expr.match.boolean.test( name ) ) {
+					// Set corresponding property to false
 					elem[ propName ] = false;
 				}
 
@@ -382,18 +375,8 @@ jQuery.extend({
 	},
 
 	propFix: {
-		tabindex: "tabIndex",
-		readonly: "readOnly",
 		"for": "htmlFor",
-		"class": "className",
-		maxlength: "maxLength",
-		cellspacing: "cellSpacing",
-		cellpadding: "cellPadding",
-		rowspan: "rowSpan",
-		colspan: "colSpan",
-		usemap: "useMap",
-		frameborder: "frameBorder",
-		contenteditable: "contentEditable"
+		"class": "className"
 	},
 
 	prop: function( elem, name, value ) {
@@ -448,13 +431,8 @@ jQuery.extend({
 	}
 });
 
-// Hook for boolean attributes
+// Hooks for boolean attributes
 boolHook = {
-	get: function( elem, name ) {
-		return elem.getAttribute( name ) !== null ?
-			name.toLowerCase() :
-			undefined;
-	},
 	set: function( elem, value, name ) {
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
@@ -465,32 +443,32 @@ boolHook = {
 		return name;
 	}
 };
+jQuery.each( jQuery.expr.match.boolean.source.match( /\w+/g ), function( i, name ) {
+	var getter = jQuery.expr.attrHandle[ name ] || jQuery.find.attr;
 
-// Radios and checkboxes getter/setter
-if ( !jQuery.support.checkOn ) {
-	jQuery.each([ "radio", "checkbox" ], function() {
-		jQuery.valHooks[ this ] = {
-			get: function( elem ) {
-				// Handle the case where in Webkit "" is returned instead of "on" if a value isn't specified
-				return elem.getAttribute("value") === null ? "on" : elem.value;
-			}
-		};
-	});
-}
-jQuery.each([ "radio", "checkbox" ], function() {
-	jQuery.valHooks[ this ] = jQuery.extend( jQuery.valHooks[ this ], {
-		set: function( elem, value ) {
-			if ( jQuery.isArray( value ) ) {
-				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
-			}
-		}
-	});
+	jQuery.expr.attrHandle[ name ] = function( elem, name, isXML ) {
+		var fn = jQuery.expr.attrHandle[ name ],
+			ret = isXML ?
+				undefined :
+				/* jshint eqeqeq: false */
+				// Temporarily disable this handler to check existence
+				(jQuery.expr.attrHandle[ name ] = undefined) !=
+					getter( elem, name, isXML ) ?
+
+					name.toLowerCase() :
+					null;
+
+		// Restore handler
+		jQuery.expr.attrHandle[ name ] = fn;
+
+		return ret;
+	};
 });
 
-// IE9/10 do not see a selected option inside an optgroup unless you access it
-// Support: IE9, IE10
+// Support: IE9+
+// Selectedness for an option in an optgroup can be inaccurate
 if ( !jQuery.support.optSelected ) {
-	jQuery.propHooks.selected = jQuery.extend( jQuery.propHooks.selected, {
+	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
 			if ( parent && parent.parentNode ) {
@@ -498,5 +476,38 @@ if ( !jQuery.support.optSelected ) {
 			}
 			return null;
 		}
-	});
+	};
 }
+
+jQuery.each([
+	"tabIndex",
+	"readOnly",
+	"maxLength",
+	"cellSpacing",
+	"cellPadding",
+	"rowSpan",
+	"colSpan",
+	"useMap",
+	"frameBorder",
+	"contentEditable"
+], function() {
+	jQuery.propFix[ this.toLowerCase() ] = this;
+});
+
+// Radios and checkboxes getter/setter
+jQuery.each([ "radio", "checkbox" ], function() {
+	jQuery.valHooks[ this ] = {
+		set: function( elem, value ) {
+			if ( jQuery.isArray( value ) ) {
+				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+			}
+		}
+	};
+	if ( !jQuery.support.checkOn ) {
+		jQuery.valHooks[ this ].get = function( elem ) {
+			// Support: Webkit
+			// "" is returned instead of "on" if a value isn't specified
+			return elem.getAttribute("value") === null ? "on" : elem.value;
+		};
+	}
+});

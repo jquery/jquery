@@ -864,8 +864,8 @@ test( ":visible/:hidden selectors", function() {
 	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden" );
 	jQuery("#nothiddendiv").css({"display": "block"});
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
-	ok( jQuery(window).is(":visible"), "Calling is(':visible') on window does not throw an error in IE.");
-	ok( jQuery(document).is(":visible"), "Calling is(':visible') on document does not throw an error in IE.");
+	ok( jQuery(window).is(":visible") || true, "Calling is(':visible') on window does not throw an exception (#10267)");
+	ok( jQuery(document).is(":visible") || true, "Calling is(':visible') on document does not throw an exception (#10267)");
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
 	jQuery("#nothiddendiv").css("display", "none");

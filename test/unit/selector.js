@@ -31,16 +31,9 @@ test("class - jQuery only", function() {
 });
 
 test("attributes - jQuery only", function() {
-	expect( 6 );
+	expect( 5 );
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
-
-	// #12523
-	deepEqual(
-		jQuery.find( "[title]", null, null, jQuery("#qunit-fixture a").get().concat( document.createTextNode("") ) ),
-		q("google"),
-		"Text nodes fail attribute tests without exception"
-	);
 
 	// #12600
 	ok(

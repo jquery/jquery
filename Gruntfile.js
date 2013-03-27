@@ -41,6 +41,7 @@ module.exports = function( grunt ) {
 				src: [
 					"src/intro.js",
 					"src/core.js",
+					{ flag: "sizzle", src: "src/selector-sizzle.js", alt: "src/selector-native.js" },
 					"src/callbacks.js",
 					"src/deferred.js",
 					"src/support.js",
@@ -48,7 +49,6 @@ module.exports = function( grunt ) {
 					"src/queue.js",
 					"src/attributes.js",
 					"src/event.js",
-					{ flag: "sizzle", src: "src/selector-sizzle.js", alt: "src/selector-native.js" },
 					"src/traversing.js",
 					"src/manipulation.js",
 					{ flag: "css", src: "src/css.js" },
