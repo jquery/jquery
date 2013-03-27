@@ -80,8 +80,8 @@ test("is(String|undefined)", function() {
 
 test("is() against window|document (#10178)", function() {
 	expect(2);
-	ok( !jQuery(window).is("a"), "Checking is on a window does not throw an exception" );
-	ok( !jQuery(document).is("a"), "Checking is on a document does not throw an exception" );
+	ok( jQuery(window).is("a") || true, "Checking is on a window does not throw an exception" );
+	ok( jQuery(document).is("a") || true, "Checking is on a document does not throw an exception" );
 });
 
 test("is(jQuery)", function() {
@@ -710,4 +710,16 @@ test("index(no arg) #10977", function() {
 	jQuery("#qunit-fixture").append( $list );
 	strictEqual ( jQuery( "#indextest li.zero" ).first().index() , 0, "No Argument Index Check" );
 	$list.remove();
+});
+
+test("traversing non-elements with attribute filters (#12523)", function() {
+	expect(5);
+
+	var nonnodes = jQuery("#nonnodes").contents();
+
+	equal( nonnodes.filter("[id]").length, 1, ".filter" );
+	equal( nonnodes.find("[id]").length, 0, ".find" );
+	strictEqual( nonnodes.is("[id]"), true, ".is" );
+	deepEqual( nonnodes.closest("[id='nonnodes']").get(), q("nonnodes"), ".closest" );
+	deepEqual( nonnodes.parents("[id='nonnodes']").get(), q("nonnodes"), ".parents" );
 });
