@@ -649,6 +649,25 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	equal( tab.text(), "newtext", "Verify new text correct" );
 });
 
+test("inheriting from jQuery", function() {
+	expect( 1 );
+
+	// Set up Inheritor constructor to inherit from jQuery
+	function Inheritor(arg) {
+		if (arg !== "from test") {
+			throw new Error( "Inheritor called somewhere other than this test" );
+		}
+		jQuery.fn.init.call( this, "<div>dom <span class='test'>fragment</span></div>" );
+	}
+	Inheritor.prototype = new jQuery();
+	Inheritor.prototype.constructor = Inheritor;
+
+	// Build an instance
+	var inheritor = new Inheritor( "from test" );
+	// Calling `find` on instance should *not* invoke Inheritor constructor again
+	equal( inheritor.find( ".test" ).text(), "fragment" );
+});
+
 test("end()", function() {
 	expect(3);
 	equal( "Yahoo", jQuery("#yahoo").parent().end().text(), "Check for end" );
