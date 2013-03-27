@@ -649,23 +649,19 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	equal( tab.text(), "newtext", "Verify new text correct" );
 });
 
-test("inheriting from jQuery", function() {
-	expect( 1 );
+test("new jQuery wrappers constructed by jQuery inheritors", function() {
+	expect( 2 );
 
 	// Set up Inheritor constructor to inherit from jQuery
-	function Inheritor(arg) {
-		if (arg !== "from test") {
-			throw new Error( "Inheritor called somewhere other than this test" );
-		}
-		jQuery.fn.init.call( this, "<div>dom <span class='test'>fragment</span></div>" );
+	function Inheritor() {
+		jQuery.fn.init.call(this, "<div>dom fragment</div>" );
 	}
 	Inheritor.prototype = new jQuery();
 	Inheritor.prototype.constructor = Inheritor;
 
-	// Build an instance
-	var inheritor = new Inheritor( "from test" );
-	// Calling `find` on instance should *not* invoke Inheritor constructor again
-	equal( inheritor.find( ".test" ).text(), "fragment" );
+	var inheritor = new Inheritor();
+	ok( inheritor.eq(0) instanceof jQuery, "uses jQuery constructor to build new wrappers" );
+	ok( !(inheritor.eq(0) instanceof Inheritor), "does *not* use Inheritor constructor to build new wrappers" );
 });
 
 test("end()", function() {
