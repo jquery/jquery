@@ -649,6 +649,21 @@ test("jQuery(selector, xml).text(str) - Loaded via XML document", function() {
 	equal( tab.text(), "newtext", "Verify new text correct" );
 });
 
+test("new jQuery wrappers constructed by jQuery inheritors", function() {
+	expect( 2 );
+
+	// Set up Inheritor constructor to inherit from jQuery
+	function Inheritor() {
+		jQuery.fn.init.call(this, "<div>dom fragment</div>" );
+	}
+	Inheritor.prototype = new jQuery();
+	Inheritor.prototype.constructor = Inheritor;
+
+	var inheritor = new Inheritor();
+	ok( inheritor.eq(0) instanceof jQuery, "uses jQuery constructor to build new wrappers" );
+	ok( !(inheritor.eq(0) instanceof Inheritor), "does *not* use Inheritor constructor to build new wrappers" );
+});
+
 test("end()", function() {
 	expect(3);
 	equal( "Yahoo", jQuery("#yahoo").parent().end().text(), "Check for end" );
