@@ -41,6 +41,7 @@ module.exports = function( grunt ) {
 				src: [
 					"src/intro.js",
 					"src/core.js",
+					"src/selector-sizzle.js",
 					"src/callbacks.js",
 					"src/deferred.js",
 					"src/support.js",
@@ -48,7 +49,6 @@ module.exports = function( grunt ) {
 					"src/queue.js",
 					"src/attributes.js",
 					"src/event.js",
-					"src/selector-sizzle.js",
 					"src/traversing.js",
 					"src/manipulation.js",
 					{ flag: "css", src: "src/css.js" },
