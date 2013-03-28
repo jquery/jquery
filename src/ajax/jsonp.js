@@ -52,8 +52,8 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			responseContainer = arguments;
 		};
 
-		// Clean-up function (fires after converters)
-		jqXHR.always(function() {
+
+		var resolveJsonpCallback = function() {
 			// Restore preexisting value
 			window[ callbackName ] = overwritten;
 
@@ -72,6 +72,23 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			}
 
 			responseContainer = overwritten = undefined;
+		},
+		nop = function() {
+			resolveJsonpCallback();
+		};
+
+		// Clean-up function (fires after converters)
+		jqXHR.always(function( _, statusText ) {
+			
+			if ( /abort/.test( statusText ) ) {
+				// If the request is being aborted, maintain the function to avoid a javascript error and clean up when the browser executes the script
+				window[ callbackName ] = nop;
+
+			}else {
+				// The request was not aborted. Just remove the function
+				resolveJsonpCallback();
+
+			}
 		});
 
 		// Delegate to script
