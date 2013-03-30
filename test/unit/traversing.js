@@ -78,10 +78,29 @@ test("is(String|undefined)", function() {
 	ok( jQuery("#en").is("[lang=\"de\"] , [lang=\"en\"]"), "Comma-separated; Check for lang attribute: Expect en or de" );
 });
 
-test("is() against window|document (#10178)", function() {
-	expect(2);
-	ok( jQuery(window).is("a") || true, "Checking is on a window does not throw an exception" );
-	ok( jQuery(document).is("a") || true, "Checking is on a document does not throw an exception" );
+test("is() against non-elements (#10178)", function() {
+	expect(14);
+
+	var label, i, test,
+		collection = jQuery( document ),
+		tests = [ "a", "*" ],
+		nonelements = {
+			text: document.createTextNode(""),
+			comment: document.createComment(""),
+			document: document,
+			window: window,
+			array: [],
+			"plain object": {},
+			"function": function() {}
+		};
+
+	for ( label in nonelements ) {
+		collection[ 0 ] = nonelements[ label ];
+		for ( i = 0; i < tests.length; i++ ) {
+			test = tests[ i ];
+			ok( !collection.is( test ), label + " does not match \"" + test + "\"" );
+		}
+	}
 });
 
 test("is(jQuery)", function() {
