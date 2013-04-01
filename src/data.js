@@ -21,16 +21,10 @@ function Data() {
 Data.uid = 1;
 
 Data.prototype = {
-	key: function( owner, options ) {
+	key: function( owner ) {
 		var descriptor = {},
 			// Check if the owner object already has a cache key
 			unlock = owner[ this.expando ];
-
-		// `readonly` calls from hasData, on owners with no key
-		// should not create new/empty cache records
-		if ( !unlock && (options && options.readonly) ) {
-			return null;
-		}
 
 		// If not, create one
 		if ( !unlock ) {
@@ -164,7 +158,7 @@ Data.prototype = {
 	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
-			this.cache[ this.key( owner, { readonly: true }) ] || {}
+			this.cache[ owner[ this.expando ] ] || {}
 		);
 	},
 	discard: function( owner ) {
