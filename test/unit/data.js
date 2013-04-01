@@ -51,6 +51,17 @@ test( "jQuery._data & _removeData, expected returns", function() {
 	);
 });
 
+test( "jQuery.hasData no side effects", function() {
+	expect(1);
+	var obj = {};
+
+	jQuery.hasData( obj );
+
+	equal( Object.getOwnPropertyNames( obj ).length, 0,
+		"No data expandos where added when calling jQuery.hasData(o)"
+	);
+});
+
 function dataTests (elem) {
 	var oldCacheLength, dataObj, internalDataObj, expected, actual;
 
