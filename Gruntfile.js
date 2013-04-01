@@ -393,14 +393,8 @@ module.exports = function( grunt ) {
 			// Embed Date
 			compiled = compiled.replace( /@VERSION/g, version )
 				.replace( "@DATE", function () {
-					var date = new Date();
-
 					// YYYY-MM-DD
-					return [
-						date.getFullYear(),
-						date.getMonth() + 1,
-						date.getDate()
-					].join( "-" );
+					return ( new Date() ).toISOString().replace( /T.*/, "" );
 				});
 
 			// Write concatenated source to file
