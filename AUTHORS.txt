@@ -31,7 +31,7 @@ Rich Dougherty <rich@rd.gen.nz>
 Kim Dalsgaard <kim@kimdalsgaard.com>
 Andrea Giammarchi <andrea.giammarchi@gmail.com>
 Mark Gibson <jollytoad@gmail.com>
-Karl Swedberg <karl@englishrules.com>
+Karl Swedberg <kswedberg@gmail.com>
 Justin Meyer <justinbmeyer@gmail.com>
 Ben Alman <cowboy@rj3.net>
 James Padolsey <cla@padolsey.net>
@@ -147,7 +147,7 @@ Dave Riddle <david@joyvuu.com>
 Greg Lavallee <greglavallee@wapolabs.com>
 Daniel Gálvez <dgalvez@editablething.com>
 Sai Lung Wong <sai.wong@huffingtonpost.com>
-Tom H Fuertes <TomFuertes@gmail.com>
+Tom H Fuertes <tomfuertes@gmail.com>
 Roland Eckl <eckl.roland@googlemail.com>
 Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
