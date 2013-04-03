@@ -256,33 +256,35 @@ jQuery.fn.extend({
 		}, null, value, arguments.length );
 	},
 
-	replaceWith: function( value ) {
-		var isFunc = jQuery.isFunction( value );
+	replaceWith: function() {
+		var
+			// Snapshot the DOM in case .domManip sweeps something relevant into its fragment
+			args = jQuery.map( this, function( elem ) {
+				return [ elem.nextSibling, elem.parentNode ];
+			}),
+			i = 0;
 
-		// Make sure that the elements are removed from the DOM before they are inserted
-		// this can help fix replacing a parent with child elements
-		if ( !isFunc && typeof value !== "string" ) {
-			value = jQuery( value ).not( this ).detach();
-		}
+		// Make the changes, replacing each context element with the new content
+		this.domManip( arguments, true, function( elem ) {
+			var next = args[i++],
+				parent = args[i++];
 
-		return value !== "" ?
-			this.domManip( [ value ], true, function( elem ) {
-				var next = this.nextSibling,
-					parent = this.parentNode;
+			if ( parent ) {
+				jQuery( this ).remove();
+				parent.insertBefore( elem, next );
+			}
+		// Allow new content to include elements from the context set
+		}, true );
 
-				if ( parent ) {
-					jQuery( this ).remove();
-					parent.insertBefore( elem, next );
-				}
-			}) :
-			this.remove();
+		// Force removal if there was no new content (e.g., from empty arguments)
+		return i ? this : this.remove();
 	},
 
 	detach: function( selector ) {
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, table, callback ) {
+	domManip: function( args, table, callback, allowIntersection ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
@@ -308,7 +310,7 @@ jQuery.fn.extend({
 		}
 
 		if ( l ) {
-			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
+			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, !allowIntersection && this );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
@@ -720,7 +722,12 @@ jQuery.extend({
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-			tmp = getAll( safe.appendChild( elem ), "script" );
+			tmp = getAll(
+				// Support: Safari<5.1
+				// XML elements must first be detached
+				safe.appendChild( elem.parentNode ? elem.parentNode.removeChild( elem ) : elem ),
+				"script"
+			);
 
 			// Preserve script evaluation history
 			if ( contains ) {

@@ -611,23 +611,6 @@ test( "replaceWith on XML document (#9960)", function() {
 	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
 });
 
-// #12449
-test( "replaceWith([]) where replacing element requires cloning", function () {
-	expect(2);
-	jQuery("#qunit-fixture").append(
-		"<div class='replaceable'></div><div class='replaceable'></div>"
-	);
-	// replacing set needs to be cloned so it can cover 3 replacements
-	jQuery("#qunit-fixture .replaceable").replaceWith(
-		jQuery("<span class='replaced'></span><span class='replaced'></span>")
-	);
-	equal( jQuery("#qunit-fixture").find(".replaceable").length, 0,
-		"Make sure replaced elements were removed" );
-	equal( jQuery("#qunit-fixture").find(".replaced").length, 4,
-		"Make sure replacing elements were cloned" );
-});
-
-
 test( "append the same fragment with events (Bug #6997, 5566)", function() {
 
 	var element, clone,
@@ -1141,7 +1124,7 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 var testReplaceWith = function( val ) {
 
 	var tmp, y, child, child2, set, non_existent, $div,
-		expected = 23;
+		expected = 26;
 
 	expect( expected );
 
@@ -1158,15 +1141,22 @@ var testReplaceWith = function( val ) {
 	equal( jQuery("#bar").text(),"Baz", "Replace element with text" );
 	ok( !jQuery("#baz")[ 0 ], "Verify that original element is gone, after element" );
 
+	jQuery("#bar").replaceWith( "<div id='yahoo'></div>", "...", "<div id='baz'></div>" );
+	deepEqual( jQuery("#yahoo, #baz").get(), q( "yahoo", "baz" ),  "Replace element with multiple arguments (#13722)" );
+	strictEqual( jQuery("#yahoo")[0].nextSibling, jQuery("#baz")[0].previousSibling, "Argument order preserved" );
+	deepEqual( jQuery("#bar").get(), [], "Verify that original element is gone, after multiple arguments" );
+
 	jQuery("#google").replaceWith( val([ document.getElementById("first"), document.getElementById("mark") ]) );
-	ok( jQuery("#first")[ 0 ], "Replace element with array of elements" );
-	ok( jQuery("#mark")[ 0 ], "Replace element with array of elements" );
+	deepEqual( jQuery("#mark, #first").get(), q( "first", "mark" ),  "Replace element with array of elements" );
 	ok( !jQuery("#google")[ 0 ], "Verify that original element is gone, after array of elements" );
 
 	jQuery("#groups").replaceWith( val(jQuery("#mark, #first")) );
-	ok( jQuery("#first")[ 0 ], "Replace element with set of elements" );
-	ok( jQuery("#mark")[ 0 ], "Replace element with set of elements" );
-	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after set of elements" );
+	deepEqual( jQuery("#mark, #first").get(), q( "first", "mark" ),  "Replace element with jQuery collection" );
+	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after jQuery collection" );
+
+	jQuery("#mark, #first").replaceWith( val("<span class='replacement'></span><span class='replacement'></span>") );
+	equal( jQuery("#qunit-fixture .replacement").length, 4, "Replace multiple elements (#12449)" );
+	deepEqual( jQuery("#mark, #first").get(), [], "Verify that original elements are gone, after replace multiple" );
 
 	tmp = jQuery("<b>content</b>")[0];
 	jQuery("#anchor1").contents().replaceWith( val(tmp) );
@@ -1253,13 +1243,22 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "replaceWith(\"\") (#13401)", 4, function() {
-	expect( 1 );
+test( "empty replaceWith (#13401; #13596)", 4, function() {
+	expect( 6 );
 
-	var div = jQuery("<div><p></p></div>");
+	var $el = jQuery("<div/>"),
+		tests = {
+			"empty string": "",
+			"empty array": [],
+			"empty collection": jQuery("#nonexistent")
+		};
 
-	div.children().replaceWith("");
-	equal( div.html().toLowerCase(), "", "Replacing with empty string removes element" );
+	jQuery.each( tests, function( label, input ) {
+		$el.html("<a/>").children().replaceWith( input );
+		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
+		$el.html("<b/>").children().replaceWith(function() { return input; });
+		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
+	});
 });
 
 test( "replaceAll(String|Element|Array<Element>|jQuery)", function() {
