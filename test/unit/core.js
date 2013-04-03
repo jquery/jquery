@@ -215,6 +215,14 @@ test( "globalEval", function() {
 	equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 });
 
+test( "globalEval with 'use strict'", function() {
+	expect( 1 );
+	Globals.register("strictEvalTest");
+
+	jQuery.globalEval("'use strict'; var strictEvalTest = 1;");
+	equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
+});
+
 test("noConflict", function() {
 	expect(7);
 
