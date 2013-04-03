@@ -519,7 +519,7 @@ jQuery.extend({
 		var script,
 				indirect = eval;
 
-		code = jQuery.trim( code ) + ";";
+		code = jQuery.trim( code );
 
 		if ( code ) {
 			// If the code includes a valid, prologue position
