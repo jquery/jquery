@@ -1490,7 +1490,7 @@ test("jQuery.Event( type, props )", function() {
 test("jQuery.Event properties", function(){
 	expect(12);
 
-	var handler,
+	var handler, event,
 		$structure = jQuery("<div id='ancestor'><p id='delegate'><span id='target'>shiny</span></p></div>"),
 		$target = $structure.find("#target");
 
@@ -1517,12 +1517,19 @@ test("jQuery.Event properties", function(){
 
 	handler = function( e ) {
 		strictEqual( e.isTrigger, undefined, "native event at " + this.id );
+		event = e;
 	};
 	$target.one( "click", handler );
 	$target[0].onclick = function( e ) {
 		strictEqual( e.isTrigger, undefined, "native event at target (native handler)" );
+		$target[0].onclick = null;
 	};
 	fireNative( $target[0], "click" );
+
+	// Make sure that even oldIE executes the inline handler
+	if ( $target[0].onclick ) {
+		$target[0].onclick( event );
+	}
 });
 
 test(".delegate()/.undelegate()", function() {
