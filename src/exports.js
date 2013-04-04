@@ -17,7 +17,8 @@ if ( typeof module === "object" && typeof module.exports === "object" ) {
 	}
 }
 
-// If there is a window object, define a jQuery and $
-if ( typeof window === "object" ) {
+// If there is a window object, that at least has a document property,
+// define jQuery and $ identifiers
+if ( typeof window === "object" && typeof window.document === "object" ) {
 	window.jQuery = window.$ = jQuery;
 }
