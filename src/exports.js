@@ -5,9 +5,6 @@ if ( typeof module === "object" && typeof module.exports === "object" ) {
 	// upon in the Node module world.
 	module.exports = jQuery;
 } else {
-	// Otherwise expose jQuery to the global object as usual
-	window.jQuery = window.$ = jQuery;
-
 	// Register as a named AMD module, since jQuery can be concatenated with other
 	// files that may use define, but not via a proper concatenation script that
 	// understands anonymous AMD modules. A named AMD is safest and most robust
@@ -18,4 +15,9 @@ if ( typeof module === "object" && typeof module.exports === "object" ) {
 	if ( typeof define === "function" && define.amd ) {
 		define( "jquery", [], function () { return jQuery; } );
 	}
+}
+
+// If there is a window object, define a jQuery and $
+if ( typeof window === "object" ) {
+	window.jQuery = window.$ = jQuery;
 }
