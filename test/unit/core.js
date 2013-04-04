@@ -296,7 +296,7 @@ test("type", function() {
 });
 
 asyncTest("isPlainObject", function() {
-	expect(15);
+	expect(16);
 
 	var pass, iframe, doc,
 		fn = function() {};
@@ -329,6 +329,16 @@ asyncTest("isPlainObject", function() {
 
 	// Again, instantiated objects shouldn't be matched
 	ok( !jQuery.isPlainObject(new fn()), "new fn" );
+
+	// Make it even harder to detect in IE < 9
+	fn = function() {
+		this.a = "a";
+	};
+	fn.prototype = {
+		b: "b"
+	};
+
+	ok( !jQuery.isPlainObject(new fn()), "fn (inherited and own properties)");
 
 	// DOM Element
 	ok( !jQuery.isPlainObject( document.createElement("div") ), "DOM Element" );

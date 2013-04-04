@@ -141,6 +141,13 @@ jQuery.support = (function( support ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+	// Support: IE<9
+	// Iteration over object's inherited properties before its own.
+	for ( i in jQuery( support ) ) {
+		break;
+	}
+	support.ownLast = i !== "0";
+
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv, tds,
