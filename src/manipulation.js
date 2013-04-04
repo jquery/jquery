@@ -334,7 +334,7 @@ jQuery.fn.extend({
 
 							if ( node.src ) {
 								// Hope ajax is available...
-								jQuery._evalSrc( node.src );
+								jQuery._evalUrl( node.src );
 							} else {
 								jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
 							}
@@ -533,6 +533,17 @@ jQuery.extend({
 			// Discard any remaining `private` and `user` data
 			data_discard( elem );
 		}
+	},
+
+	_evalUrl: function( url ) {
+		return jQuery.ajax({
+			url: url,
+			type: "GET",
+			dataType: "text",
+			async: false,
+			global: false,
+			success: jQuery.globalEval
+		});
 	}
 });
 

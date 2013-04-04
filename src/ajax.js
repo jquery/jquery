@@ -681,17 +681,6 @@ jQuery.extend({
 
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
-	},
-
-	_evalSrc: function( url ) {
-		return jQuery.ajax({
-			url: url,
-			type: "GET",
-			dataType: "text",
-			async: false,
-			global: false,
-			success: jQuery.globalEval
-		});
 	}
 });
 

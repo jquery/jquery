@@ -1682,14 +1682,6 @@ module( "ajax", {
 		});
 	});
 
-//----------- jQuery._evalSrc()
-
-	test( "jQuery._evalSrc()", 2, function() {
-		Globals.register("testBar");
-		jQuery._evalSrc( url("data/test.js") );
-		strictEqual( window["testBar"], "bar", "Script was evaluated" );
-	});
-
 //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
