@@ -337,7 +337,7 @@ var Globals = (function() {
 		} else {
 			delete jQuery.ajaxSettings;
 		}
-		
+
 		// Cleanup globals
 		Globals.cleanup();
 

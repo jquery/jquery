@@ -199,7 +199,7 @@ module( "ajax", {
 				tmp.push( i, ": ", requestHeaders[ i ], "\n" );
 			}
 			tmp = tmp.join("");
-			
+
 			strictEqual( data, tmp, "Headers were sent" );
 			strictEqual( xhr.getResponseHeader("Sample-Header"), "Hello World", "Sample header received" );
 
@@ -299,7 +299,7 @@ module( "ajax", {
 			samePort = loc.port || ( loc.protocol === "http:" ? 80 : 443 ),
 			otherPort = loc.port === 666 ? 667 : 666,
 			otherProtocol = loc.protocol === "http:" ? "https:" : "http:";
-			
+
 		return [
 			request(
 				loc.protocol + "//" + loc.host + ":" + samePort,
@@ -390,7 +390,7 @@ module( "ajax", {
 			}]
 		};
 	});
-		
+
 	ajaxTest( "jQuery.ajax() - events without context", 3, function() {
 		function nocallback( msg ) {
 			return function() {
@@ -601,9 +601,9 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - cache", 12, function() {
-		
+
 		var re = /_=(.*?)(&|$)/g;
-		
+
 		function request( url, title ) {
 			return {
 				url: url,
@@ -620,7 +620,7 @@ module( "ajax", {
 				error: true
 			};
 		}
-		
+
 		return [
 			request(
 				"data/text.php",
@@ -1356,7 +1356,7 @@ module( "ajax", {
 			}
 		}
 	]);
-	
+
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
 		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
 			url: "data/jsonp.php",
@@ -1401,7 +1401,7 @@ module( "ajax", {
 	});
 
 	jQuery.each( [ "as argument", "in settings object" ], function( inSetting, title ) {
-		
+
 		function request( url, test ) {
 			return {
 				create: function() {
@@ -1412,14 +1412,14 @@ module( "ajax", {
 				}
 			};
 		}
-		
+
 		ajaxTest( "#10093 - jQuery.ajax() - falsy url " + title, 4, [
 			request( "", "empty string" ),
 			request( false ),
 			request( null ),
 			request( undefined )
 		]);
-		
+
 	});
 
 	ajaxTest( "#11151 - jQuery.ajax() - parse error body", 2, {
@@ -1492,7 +1492,7 @@ module( "ajax", {
 				request()
 			]
 		});
-		
+
 	});
 
 	ajaxTest( "#13276 - jQuery.ajax() - compatibility between XML documents from ajax requests and parsed string", 1, {
@@ -1510,7 +1510,7 @@ module( "ajax", {
 			strictEqual( ajaxXML.find("tab").length, 3, "Parsed node was added properly" );
 		}
 	});
-	
+
 	ajaxTest( "#13292 - jQuery.ajax() - converter is bypassed for 204 requests", 3, {
 		url: "data/nocontent.php",
 		dataType: "testing",
@@ -1744,7 +1744,7 @@ module( "ajax", {
 	});
 
 //----------- jQuery.fn.load()
-	
+
 	// check if load can be called with only url
 	asyncTest( "jQuery.fn.load( String )", 2, function() {
 		jQuery.ajaxSetup({

@@ -169,7 +169,9 @@ function internalRemoveData( elem, name, pvt ) {
 		jQuery.cleanData( [ elem ], true );
 
 	// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
+	/* jshint eqeqeq: false */
 	} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
+		/* jshint eqeqeq: true */
 		delete cache[ id ];
 
 	// When all else fails, null

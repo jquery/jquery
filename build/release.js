@@ -180,7 +180,7 @@ function uploadToCDN( next ) {
 		});
 	});
 	cmds.push( next );
-	
+
 	steps.apply( this, cmds );
 }
 
