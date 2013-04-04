@@ -453,6 +453,8 @@ jQuery.extend({
 	},
 
 	isPlainObject: function( obj ) {
+		var key;
+
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
@@ -472,10 +474,16 @@ jQuery.extend({
 			return false;
 		}
 
+		// Support: IE<9
+		// Handle iteration over inherited properties before own properties.
+		if ( jQuery.support.ownLast ) {
+			for ( key in obj ) {
+				return core_hasOwn.call( obj, key );
+			}
+		}
+
 		// Own properties are enumerated firstly, so to speed up,
 		// if last one is own, then all properties are own.
-
-		var key;
 		for ( key in obj ) {}
 
 		return key === undefined || core_hasOwn.call( obj, key );
