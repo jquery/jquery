@@ -23,11 +23,8 @@ jQuery.fn.extend({
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
-			// try/catch handles cases where IE balks (such as removing a property on window)
-			try {
-				this[ name ] = undefined;
-				delete this[ name ];
-			} catch( e ) {}
+			this[ name ] = undefined;
+			delete this[ name ];
 		});
 	},
 
@@ -249,7 +246,7 @@ jQuery.extend({
 				for ( ; i < max; i++ ) {
 					option = options[ i ];
 
-					// oldIE doesn't update selected after form reset (#2551)
+					// IE6-9 doesn't update selected after form reset (#2551)
 					if ( ( option.selected || i === index ) &&
 							// Don't return options that are disabled or in a disabled optgroup
 							( jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null ) &&
