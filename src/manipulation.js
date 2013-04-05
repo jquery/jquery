@@ -268,8 +268,8 @@ jQuery.fn.extend({
 
 		// Make the changes, replacing each context element with the new content
 		this.domManip( arguments, function( elem ) {
-			var next = args[i++],
-				parent = args[i++];
+			var next = args[ i++ ],
+				parent = args[ i++ ];
 
 			if ( parent ) {
 				jQuery( this ).remove();
