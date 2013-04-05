@@ -141,22 +141,20 @@ jQuery.fn.extend({
 	remove: function( selector, keepData ) {
 		var elem,
 			i = 0,
-			l = this.length;
+			elems = selector ? jQuery.filter( selector, this ) : this;
 
-		for ( ; i < l; i++ ) {
-			elem = this[ i ];
+		for ( ; i < elems.length; i++ ) {
+			elem = elems[ i ];
 
-			if ( !selector || jQuery.filter( selector, [ elem ] ).length > 0 ) {
-				if ( !keepData && elem.nodeType === 1 ) {
-					jQuery.cleanData( getAll( elem ) );
+			if ( !keepData && elem.nodeType === 1 ) {
+				jQuery.cleanData( getAll( elem ) );
+			}
+
+			if ( elem.parentNode ) {
+				if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
+					setGlobalEval( getAll( elem, "script" ) );
 				}
-
-				if ( elem.parentNode ) {
-					if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
-						setGlobalEval( getAll( elem, "script" ) );
-					}
-					elem.parentNode.removeChild( elem );
-				}
+				elem.parentNode.removeChild( elem );
 			}
 		}
 
