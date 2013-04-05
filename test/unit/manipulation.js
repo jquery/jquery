@@ -1713,7 +1713,8 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 });
 
 var testRemove = function( method ) {
-	var first = jQuery("#ap").children().first();
+	var markup, div,
+		first = jQuery("#ap").children().first();
 
 	first.data("foo", "bar");
 
@@ -1731,6 +1732,18 @@ var testRemove = function( method ) {
 	jQuery("#ap").children()[ method ]("a, code");
 	equal( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
 
+	// Positional and relative selectors
+	markup = "<div><span>1</span><span>2</span><span>3</span><span>4</span></div>";
+	div = jQuery( markup );
+	div.children().remove("span:nth-child(2n)");
+	equal( div.text(), "13", "relative selector in " + method );
+	div = jQuery( markup );
+	div.children().remove("span:first");
+	equal( div.text(), "234", "positional selector in " + method );
+	div = jQuery( markup );
+	div.children().remove("span:last");
+	equal( div.text(), "123", "positional selector in " + method );
+
 	// using contents will get comments regular, text, and comment nodes
 	// Handle the case where no comment is in the document
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment remove works" );
@@ -1743,7 +1756,7 @@ var testRemove = function( method ) {
 	}
 };
 
-test( "remove()", 8, function() {
+test( "remove()", 11, function() {
 	testRemove("remove");
 });
 
@@ -1762,7 +1775,7 @@ test( "remove() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
-test( "detach()", 8, function() {
+test( "detach()", 11, function() {
 	testRemove("detach");
 });
 
