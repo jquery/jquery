@@ -592,23 +592,33 @@ test( "append(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
-test( "replaceWith on XML document (#9960)", function() {
+test( "XML DOM manipulation (#9960)", function() {
 
-	expect( 1 );
+	expect( 5 );
 
-	var newNode,
+	var
 		xmlDoc1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
 		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
 		xml1 = jQuery( xmlDoc1 ),
 		xml2 = jQuery( xmlDoc2 ),
 		scxml1 = jQuery( "scxml", xml1 ),
-		scxml2 = jQuery( "scxml", xml2 );
+		scxml2 = jQuery( "scxml", xml2 ),
+		state = scxml2.find("state");
 
-	scxml1.replaceWith( scxml2 );
+	scxml1.append( state );
+	strictEqual( scxml1[0].lastChild, state[0], "append" );
 
-	newNode = jQuery( "scxml>state[id='provisioning3']", xml1 );
+	scxml1.prepend( state );
+	strictEqual( scxml1[0].firstChild, state[0], "prepend" );
 
-	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
+	scxml1.find("#finished").after( state );
+	strictEqual( scxml1[0].lastChild, state[0], "after" );
+
+	scxml1.find("#provisioning").before( state );
+	strictEqual( scxml1[0].firstChild, state[0], "before" );
+
+	scxml2.replaceWith( scxml1 );
+	deepEqual( jQuery( "state", xml2 ).get(), scxml1.find("state").get(), "replaceWith" );
 });
 
 test( "append the same fragment with events (Bug #6997, 5566)", function() {

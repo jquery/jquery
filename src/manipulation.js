@@ -722,12 +722,7 @@ jQuery.extend({
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-			tmp = getAll(
-				// Support: Safari<5.1
-				// XML elements must first be detached
-				safe.appendChild( elem.parentNode ? elem.parentNode.removeChild( elem ) : elem ),
-				"script"
-			);
+			tmp = getAll( safe.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
 			if ( contains ) {
