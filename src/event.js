@@ -508,7 +508,7 @@ jQuery.event = {
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Support: Safari <=6, Chrome <28
+		// Support: Safari 6.0+, Chrome < 28
 		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
