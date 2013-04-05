@@ -160,10 +160,12 @@ jQuery.fn.extend({
 	// keepData is for internal use only--do not document
 	remove: function( selector, keepData ) {
 		var elem,
-			i = 0;
+			elems = selector ? jQuery.filter( selector, this ) : this,
+			i = elems.length;
 
-		for ( ; (elem = this[i]) != null; i++ ) {
-			if ( !selector || jQuery.filter( selector, [ elem ] ).length > 0 ) {
+		while ( i-- ) {
+			elem = elems[ i ];
+
 				if ( !keepData && elem.nodeType === 1 ) {
 					jQuery.cleanData( getAll( elem ) );
 				}
@@ -175,7 +177,6 @@ jQuery.fn.extend({
 					elem.parentNode.removeChild( elem );
 				}
 			}
-		}
 
 		return this;
 	},
