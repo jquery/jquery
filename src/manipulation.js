@@ -126,19 +126,19 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
-		return this.domManip( arguments, function( elem ) {
+		return this.domManip(arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.appendChild( elem );
 			}
-		});
+		}, true );
 	},
 
 	prepend: function() {
-		return this.domManip( arguments, function( elem ) {
+		return this.domManip(arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
-		});
+		}, true );
 	},
 
 	before: function() {
@@ -274,7 +274,7 @@ jQuery.fn.extend({
 				parent.insertBefore( elem, next );
 			}
 		// Allow new content to include elements from the context set
-		}, true );
+		}, true, true );
 
 		// Force removal if there was no new content (e.g., from empty arguments)
 		return i ? this : this.remove();
@@ -284,7 +284,7 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, callback, allowIntersection ) {
+	domManip: function( args, callback, table, allowIntersection ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
@@ -303,9 +303,9 @@ jQuery.fn.extend({
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
-					args[0] = value.call( this, index, self.html() );
+					args[0] = value.call( this, index, table ? self.html() : undefined );
 				}
-				self.domManip( args, callback, allowIntersection );
+				self.domManip( args, callback, table, allowIntersection );
 			});
 		}
 
@@ -318,6 +318,7 @@ jQuery.fn.extend({
 			}
 
 			if ( first ) {
+				table = table && jQuery.nodeName( first, "tr" );
 				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 				hasScripts = scripts.length;
 
@@ -335,7 +336,13 @@ jQuery.fn.extend({
 						}
 					}
 
-					callback.call( this[i], node, i );
+					callback.call(
+						table && jQuery.nodeName( this[i], "table" ) ?
+							findOrAppend( this[i], "tbody" ) :
+							this[i],
+						node,
+						i
+					);
 				}
 
 				if ( hasScripts ) {
@@ -375,6 +382,10 @@ jQuery.fn.extend({
 		return this;
 	}
 });
+
+function findOrAppend( elem, tag ) {
+	return elem.getElementsByTagName( tag )[0] || elem.appendChild( elem.ownerDocument.createElement( tag ) );
+}
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {

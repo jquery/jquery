@@ -1320,6 +1320,21 @@ test( "append to multiple elements (#8070)", function() {
 	equal( selects[ 1 ].childNodes.length, 2, "Second select got two nodes" );
 });
 
+test( "table manipulation", function() {
+	expect( 2 );
+
+	var table = jQuery("<table style='font-size:16px'></table>").appendTo("#qunit-fixture").empty(),
+		height = table[0].offsetHeight;
+
+	table.append("<tr><td>DATA</td></tr>");
+	ok( table[0].offsetHeight - height >= 15, "appended rows are visible" );
+
+	table.empty();
+	height = table[0].offsetHeight;
+	table.prepend("<tr><td>DATA</td></tr>");
+	ok( table[0].offsetHeight - height >= 15, "prepended rows are visible" );
+});
+
 test( "clone()", function() {
 
 	expect( 45 );
