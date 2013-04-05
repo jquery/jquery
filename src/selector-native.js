@@ -133,7 +133,9 @@ jQuery.extend({
 		return (elem.ownerDocument || elem).documentElement.nodeName !== "HTML";
 	},
 	expr: {
+		attrHandle: {},
 		match: {
+			boolean: /^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$/i,
 			needsContext: /^[\x20\t\r\n\f]*[>+~]/
 		}
 	}
@@ -145,5 +147,8 @@ jQuery.extend( jQuery.find, {
 	},
 	matchesSelector: function( elem, expr ) {
 		return matches.call( elem, expr );
+	},
+	attr: function( elem, name ) {
+		return elem.getAttribute( name );
 	}
 });
