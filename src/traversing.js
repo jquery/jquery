@@ -255,23 +255,28 @@ jQuery.extend({
 function winnow( elements, qualifier, not ) {
 	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep( elements, function( elem, i ) {
-			return qualifier.call( elem, i, elem ) ? !not : not;
+                        /* jshint -W018 */
+                        return !!qualifier.call( elem, i, elem ) !== not;
 		});
 
-	} else if ( qualifier.nodeType ) {
+	}
+
+	if ( qualifier.nodeType ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( elem === qualifier ) !== not;
 		});
 
-	} else if ( typeof qualifier === "string" ) {
-		if ( isSimple.test( qualifier ) ) {
-			return jQuery.filter( qualifier, elements, not );
-		} else {
-			qualifier = jQuery.filter( qualifier, elements );
-		}
 	}
 
-	return jQuery.grep(elements, function( elem ) {
+	if ( typeof qualifier === "string" ) {
+		if ( isSimple.test( qualifier ) ) {
+			return jQuery.filter( qualifier, elements, not );
+		}
+
+		qualifier = jQuery.filter( qualifier, elements );
+	}
+
+	return jQuery.grep( elements, function( elem ) {
 		return ( jQuery.inArray( elem, qualifier ) >= 0 ) !== not;
 	});
 }

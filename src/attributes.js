@@ -354,7 +354,7 @@ jQuery.extend({
 
 				// Boolean attributes get special treatment (#10870)
 				if ( jQuery.expr.match.boolean.test( name ) ) {
-					// Set corresponding property to false for boolean attributes
+					// Set corresponding property to false
 					if ( getSetInput && getSetAttribute || !ruseDefault.test( name ) ) {
 						elem[ propName ] = false;
 					// Support: IE<9
