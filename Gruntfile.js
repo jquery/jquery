@@ -51,6 +51,7 @@ module.exports = function( grunt ) {
 					{ flag: "sizzle", src: "src/selector-sizzle.js", alt: "src/selector-native.js" },
 					"src/traversing.js",
 					"src/manipulation.js",
+					{ flag: "wrap", src: "src/wrap.js" },
 					{ flag: "css", src: "src/css.js" },
 					"src/serialize.js",
 					{ flag: "event-alias", src: "src/event-alias.js" },
