@@ -126,7 +126,7 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
-		return this.domManip(arguments, true, function( elem ) {
+		return this.domManip( arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.appendChild( elem );
 			}
@@ -134,7 +134,7 @@ jQuery.fn.extend({
 	},
 
 	prepend: function() {
-		return this.domManip(arguments, true, function( elem ) {
+		return this.domManip( arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				this.insertBefore( elem, this.firstChild );
 			}
@@ -142,7 +142,7 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		return this.domManip( arguments, false, function( elem ) {
+		return this.domManip( arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
@@ -150,7 +150,7 @@ jQuery.fn.extend({
 	},
 
 	after: function() {
-		return this.domManip( arguments, false, function( elem ) {
+		return this.domManip( arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
@@ -265,7 +265,7 @@ jQuery.fn.extend({
 			i = 0;
 
 		// Make the changes, replacing each context element with the new content
-		this.domManip( arguments, true, function( elem ) {
+		this.domManip( arguments, function( elem ) {
 			var next = args[i++],
 				parent = args[i++];
 
@@ -284,7 +284,7 @@ jQuery.fn.extend({
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, table, callback, allowIntersection ) {
+	domManip: function( args, callback, allowIntersection ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
@@ -303,9 +303,9 @@ jQuery.fn.extend({
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
-					args[0] = value.call( this, index, table ? self.html() : undefined );
+					args[0] = value.call( this, index, self.html() );
 				}
-				self.domManip( args, table, callback );
+				self.domManip( args, callback, allowIntersection );
 			});
 		}
 
@@ -318,7 +318,6 @@ jQuery.fn.extend({
 			}
 
 			if ( first ) {
-				table = table && jQuery.nodeName( first, "tr" );
 				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 				hasScripts = scripts.length;
 
@@ -336,13 +335,7 @@ jQuery.fn.extend({
 						}
 					}
 
-					callback.call(
-						table && jQuery.nodeName( this[i], "table" ) ?
-							findOrAppend( this[i], "tbody" ) :
-							this[i],
-						node,
-						i
-					);
+					callback.call( this[i], node, i );
 				}
 
 				if ( hasScripts ) {
@@ -382,10 +375,6 @@ jQuery.fn.extend({
 		return this;
 	}
 });
-
-function findOrAppend( elem, tag ) {
-	return elem.getElementsByTagName( tag )[0] || elem.appendChild( elem.ownerDocument.createElement( tag ) );
-}
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {
