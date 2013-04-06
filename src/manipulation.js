@@ -166,17 +166,17 @@ jQuery.fn.extend({
 		while ( i-- ) {
 			elem = elems[ i ];
 
-				if ( !keepData && elem.nodeType === 1 ) {
-					jQuery.cleanData( getAll( elem ) );
-				}
-
-				if ( elem.parentNode ) {
-					if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
-						setGlobalEval( getAll( elem, "script" ) );
-					}
-					elem.parentNode.removeChild( elem );
-				}
+			if ( !keepData && elem.nodeType === 1 ) {
+				jQuery.cleanData( getAll( elem ) );
 			}
+
+			if ( elem.parentNode ) {
+				if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
+					setGlobalEval( getAll( elem, "script" ) );
+				}
+				elem.parentNode.removeChild( elem );
+			}
+		}
 
 		return this;
 	},
