@@ -409,7 +409,7 @@ jQuery.extend({
 		if ( obj == null ) {
 			return String( obj );
 		}
-		// Support: Safari <=5.1 (functionish RegExp)
+		// Support: Safari <= 5.1 (functionish RegExp)
 		return typeof obj === "object" || typeof obj === "function" ?
 			class2type[ core_toString.call(obj) ] || "object" :
 			typeof obj;
@@ -424,9 +424,10 @@ jQuery.extend({
 			return false;
 		}
 
-		// Support: Firefox >16
+		// Support: Firefox <20
 		// The try/catch suppresses exceptions thrown when attempting to access
 		// the "constructor" property of certain host objects, ie. |window.location|
+		// https://bugzilla.mozilla.org/show_bug.cgi?id=814622
 		try {
 			if ( obj.constructor &&
 					!core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
