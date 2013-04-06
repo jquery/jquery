@@ -106,8 +106,6 @@ test( "text(Function) with incoming value", function() {
 if ( jQuery.fn.wrap ) {
 
 	var testWrap = function( val ) {
-
-		expect( 19 );
 		expect( 19 );
 
 		var defaultText, result, j, i, cacheLength;
