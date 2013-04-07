@@ -1,11 +1,5 @@
 module("support", { teardown: moduleTeardown });
 
-test("boxModel", function() {
-	expect( 1 );
-
-	equal( jQuery.support.boxModel, document.compatMode === "CSS1Compat" , "jQuery.support.boxModel is sort of tied to quirks mode but unstable since 1.8" );
-});
-
 if ( jQuery.css ) {
 	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9239)", "support/bodyBackground.html", function( color, support ) {
 		expect( 2 );
@@ -48,7 +42,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":true,
 			"radioValue":true,
 			"checkClone":true,
-			"boxModel":true,
 			"ajax":true,
 			"cors":true,
 			"clearCloneStyle": true,
@@ -66,7 +59,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":true,
 			"radioValue":false,
 			"checkClone":true,
-			"boxModel":true,
 			"ajax":true,
 			"cors":true,
 			"clearCloneStyle": true,
@@ -84,7 +76,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":false,
 			"radioValue":false,
 			"checkClone":true,
-			"boxModel":true,
 			"ajax":true,
 			"cors":true,
 			"clearCloneStyle": false,
@@ -102,7 +93,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":false,
 			"radioValue":false,
 			"checkClone":true,
-			"boxModel":true,
 			"ajax":true,
 			"cors":false,
 			"clearCloneStyle": false,
@@ -120,7 +110,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":true,
 			"radioValue":true,
 			"checkClone":false,
-			"boxModel":true,
 			"ajax":true,
 			"cors":true,
 			"clearCloneStyle": true,
@@ -138,7 +127,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"noCloneChecked":true,
 			"radioValue":true,
 			"checkClone":true,
-			"boxModel":true,
 			"ajax":true,
 			"cors":true,
 			"clearCloneStyle": true,
