@@ -20,10 +20,8 @@ jQuery.fn.extend({
 	},
 
 	removeProp: function( name ) {
-		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
-			this[ name ] = undefined;
-			delete this[ name ];
+			delete this[ jQuery.propFix[ name ] || name ];
 		});
 	},
 
