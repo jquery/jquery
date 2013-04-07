@@ -20,9 +20,6 @@ jQuery.support = (function( support ) {
 	// Support: IE9, IE10
 	support.optSelected = opt.selected;
 
-	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-	support.boxModel = document.compatMode === "CSS1Compat";
-
 	// Will be defined later
 	support.reliableMarginRight = true;
 	support.boxSizingReliable = true;
