@@ -132,8 +132,6 @@ jQuery.fn.extend({
 	}
 });
 
-jQuery.fn.andSelf = jQuery.fn.addBack;
-
 function sibling( cur, dir ) {
 	do {
 		cur = cur[ dir ];

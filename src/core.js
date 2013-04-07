@@ -208,11 +208,6 @@ jQuery.fn = jQuery.prototype = {
 	// The default length of a jQuery object is 0
 	length: 0,
 
-	// The number of elements contained in the matched element set
-	size: function() {
-		return this.length;
-	},
-
 	toArray: function() {
 		return core_slice.call( this );
 	},
