@@ -1,11 +1,5 @@
 module("support", { teardown: moduleTeardown });
 
-test("boxModel", function() {
-	expect( 1 );
-
-	equal( jQuery.support.boxModel, document.compatMode === "CSS1Compat" , "jQuery.support.boxModel is sort of tied to quirks mode but unstable since 1.8" );
-});
-
 test( "zoom of doom (#13089)", function() {
 	expect( 1 );
 
@@ -76,7 +70,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":true,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
@@ -110,7 +103,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":false,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
@@ -144,7 +136,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":false,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
@@ -178,7 +169,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":false,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":false,
@@ -212,7 +202,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":false,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
@@ -223,7 +212,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
-			"boxModel": true,
 			"changeBubbles": false,
 			"checkClone": false,
 			"checkOn": true,
@@ -280,7 +268,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":false,
 			"checkClone":false,
 			"appendChecked":false,
-			"boxModel":true,
 			"reliableHiddenOffsets":false,
 			"ajax":true,
 			"cors":false,
@@ -314,7 +301,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":true,
 			"checkClone":false,
 			"appendChecked":false,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
@@ -348,7 +334,6 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"radioValue":true,
 			"checkClone":true,
 			"appendChecked":true,
-			"boxModel":true,
 			"reliableHiddenOffsets":true,
 			"ajax":true,
 			"cors":true,
@@ -359,7 +344,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 
 	if ( expected ) {
 		test("Verify that the support tests resolve as expected per browser", function() {
-			expect( 31 );
+			expect( 30 );
 
 			for ( var i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {

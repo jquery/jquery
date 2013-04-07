@@ -66,9 +66,6 @@ jQuery.support = (function( support ) {
 	// Where outerHTML is undefined, this still works
 	support.html5Clone = document.createElement("nav").cloneNode( true ).outerHTML !== "<:nav></:nav>";
 
-	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-	support.boxModel = document.compatMode === "CSS1Compat";
-
 	// Will be defined later
 	support.inlineBlockNeedsLayout = false;
 	support.shrinkWrapBlocks = false;
