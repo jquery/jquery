@@ -253,6 +253,12 @@ test( ".promise(obj)", function() {
 	strictEqual( promise, obj, ".promise(type, obj) returns obj" );
 });
 
+test( "jQuery.queue should return array while manipulating the queue", 1, function() {
+	var div = document.createElement("div");
+
+	ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
+});
+
 
 if ( jQuery.fn.stop ) {
 	test("delay() can be stopped", function() {
@@ -312,5 +318,4 @@ if ( jQuery.fn.stop ) {
 
 		foo.stop( false, true );
 	});
-
 } // if ( jQuery.fn.stop )
