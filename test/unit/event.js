@@ -177,58 +177,57 @@ test("on(), multiple events at once and namespaces", function() {
 test("on(), namespace with special add", function() {
 	expect(27);
 
-	var div = jQuery("<div/>").on("test", function(e) {
-		ok( true, "Test event fired." );
-	});
-
-	var i = 0;
+	var i = 0,
+		div = jQuery("<div/>").appendTo("#qunit-fixture").on( "test", function(e) {
+			ok( true, "Test event fired." );
+		});
 
 	jQuery.event.special["test"] = {
-		_default: function(e, data) {
-			equal( this, document, "Make sure we're at the top of the chain." );
-			equal( e.type, "test", "And that we're still dealing with a test event." );
-			equal( e.target, div[0], "And that the target is correct." );
-			ok( data !== undefined , "And that trigger data was passed." );
+		_default: function( e, data ) {
+			equal( e.type, "test", "Make sure we're dealing with a test event." );
+			ok( data, "And that trigger data was passed." );
+			strictEqual( e.target, div[0], "And that the target is correct." );
+			equal( this, window, "And that the context is correct." );
 		},
-		setup: function(){},
-		teardown: function(){
-			ok(true, "Teardown called.");
+		setup: function() {},
+		teardown: function() {
+			ok( true, "Teardown called." );
 		},
 		add: function( handleObj ) {
 			var handler = handleObj.handler;
-			handleObj.handler = function(e) {
+			handleObj.handler = function( e ) {
 				e.xyz = ++i;
 				handler.apply( this, arguments );
 			};
 		},
 		remove: function() {
-			ok(true, "Remove called.");
+			ok( true, "Remove called." );
 		}
 	};
 
-	div.on("test.a", {"x": 1}, function(e) {
+	div.on( "test.a", { x: 1 }, function( e ) {
 		ok( !!e.xyz, "Make sure that the data is getting passed through." );
 		equal( e.data["x"], 1, "Make sure data is attached properly." );
 	});
 
-	div.on("test.b", {"x": 2}, function(e) {
+	div.on( "test.b", { x: 2 }, function( e ) {
 		ok( !!e.xyz, "Make sure that the data is getting passed through." );
 		equal( e.data["x"], 2, "Make sure data is attached properly." );
 	});
 
 	// Should trigger 5
-	div.trigger("test", 33.33);
+	div.trigger( "test", 33.33 );
 
 	// Should trigger 2
-	div.trigger("test.a", "George Harrison");
+	div.trigger( "test.a", "George Harrison" );
 
 	// Should trigger 2
-	div.trigger("test.b", { year: 1982 });
+	div.trigger( "test.b", { year: 1982 } );
 
 	// Should trigger 4
 	div.off("test");
 
-	div = jQuery("<div/>").on("test", function(e) {
+	div = jQuery("<div/>").on( "test", function( e ) {
 		ok( true, "Test event fired." );
 	});
 
