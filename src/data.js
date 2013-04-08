@@ -15,7 +15,8 @@ var data_user, data_priv,
 
 function Data() {
 	// Support: Android < 4,
-	// Old WebKit does not have Object.preventExtensions/freeze method, return new empty object instead
+	// Old WebKit does not have Object.preventExtensions/freeze method,
+	// return new empty object instead with no [[set]] accessor
 	Object.defineProperty( this.cache = {}, 0, {
 		get: function() {
 			return {};
@@ -27,14 +28,25 @@ function Data() {
 
 Data.uid = 1;
 
+Data.accepts = function( owner ) {
+	// Accepts only:
+	//  - Node
+	//    - Node.ELEMENT_NODE
+	//    - Node.DOCUMENT_NODE
+	//  - Object
+	//    - Any
+	return owner.nodeType ?
+		owner.nodeType === 1 || owner.nodeType === 9 : true;
+};
+
 Data.prototype = {
 	key: function( owner ) {
-		// We can accept data for non-element nodes in modern browsers, but we should not, see #8335.
-		// Always return key for "freezed" object for such cases
-		if ( !this.accept( owner ) ) {
+		// We can accept data for non-element nodes in modern browsers,
+		// but we should not, see #8335.
+		// Always return the key for a frozen object.
+		if ( !Data.accepts( owner ) ) {
 			return 0;
 		}
-
 
 		var descriptor = {},
 			// Check if the owner object already has a cache key
@@ -169,10 +181,6 @@ Data.prototype = {
 			}
 		}
 	},
-	accept: function( owner ) {
-		// Do not set data on non-element because it will not be cleared (#8335).
-		return owner.nodeType ? owner.nodeType === 1 || owner.nodeType === 9 : true;
-	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
 			this.cache[ owner[ this.expando ] ] || {}
@@ -189,7 +197,7 @@ data_priv = new Data();
 
 
 jQuery.extend({
-	acceptData: data_user.accept,
+	acceptData: Data.accepts,
 
 	hasData: function( elem ) {
 		return data_user.hasData( elem ) || data_priv.hasData( elem );
