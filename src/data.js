@@ -14,7 +14,14 @@ var data_user, data_priv,
 	rmultiDash = /([A-Z])/g;
 
 function Data() {
-	this.cache = {};
+	// Support: Android < 4,
+	// Old WebKit does not have Object.preventExtensions/freeze method, return new empty object instead
+	Object.defineProperty( this.cache = {}, 0, {
+		get: function() {
+			return {};
+		}
+	});
+
 	this.expando = jQuery.expando + Math.random();
 }
 
@@ -22,6 +29,13 @@ Data.uid = 1;
 
 Data.prototype = {
 	key: function( owner ) {
+		// We can accept data for non-element nodes in modern browsers, but we should not, see #8335.
+		// Always return key for "freezed" object for such cases
+		if ( !this.accept( owner ) ) {
+			return 0;
+		}
+
+
 		var descriptor = {},
 			// Check if the owner object already has a cache key
 			unlock = owner[ this.expando ];
@@ -156,6 +170,10 @@ Data.prototype = {
 			}
 		}
 	},
+	accept: function( owner ) {
+		// Do not set data on non-element because it will not be cleared (#8335).
+		return owner.nodeType ? owner.nodeType === 1 || owner.nodeType === 9 : true;
+	},
 	hasData: function( owner ) {
 		return !jQuery.isEmptyObject(
 			this.cache[ owner[ this.expando ] ] || {}
@@ -181,11 +199,7 @@ data_priv = new Data();
 
 
 jQuery.extend({
-	// This is no longer relevant to jQuery core, but must remain
-	// supported for the sake of jQuery 1.9.x API surface compatibility.
-	acceptData: function() {
-		return true;
-	},
+	acceptData: data_user.accept,
 
 	hasData: function( elem ) {
 		return data_user.hasData( elem ) || data_priv.hasData( elem );
