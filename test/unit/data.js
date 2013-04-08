@@ -170,13 +170,6 @@ test("jQuery.data(object/flash)", 25, function() {
 	dataTests( flash );
 });
 
-test("jQuery.data(object/applet)", 25, function() {
-	var applet = document.createElement("object");
-	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
-
-	dataTests( applet );
-});
-
 test("jQuery.data(comment)", 25, function() {
 	dataTests( document.createComment("") );
 });
