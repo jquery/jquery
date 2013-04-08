@@ -534,7 +534,15 @@ jQuery.event = {
 		focus: {
 			// Fire native event if possible so blur/focus sequence is correct
 			trigger: function() {
-				if ( this !== document.activeElement && this.focus ) {
+				var activeElement;
+
+				try {
+					activeElement = document.activeElement;
+				} catch( e ) {
+					activeElement = document.documentElement.activeElement;
+				}
+
+				if ( this !== activeElement && this.focus ) {
 					this.focus();
 					return false;
 				}

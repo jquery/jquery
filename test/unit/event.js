@@ -2661,3 +2661,10 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	equal( errored, false, "trigger() did not throw exception" );
 	delete String.prototype.namespace;
 });
+
+testIframeWithCallback( "jQuery.fn.focus when document is loading", "event/focusOnReady.html", function( isOk ) {
+	expect(1);
+
+	ok( isOk, "elem.focus before document.readyState === 'complete' is working and not throwing errors" );
+});
+
