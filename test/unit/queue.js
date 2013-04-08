@@ -123,6 +123,12 @@ test("callbacks keep their place in the queue", function() {
 	});
 });
 
+test( "jQuery.queue should return array while manipulating the queue", 1, function() {
+    var div = document.createElement("div");
+
+    ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
+});
+
 test("delay()", function() {
 	expect(2);
 	stop();
