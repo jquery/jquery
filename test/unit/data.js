@@ -63,7 +63,7 @@ test( "jQuery.hasData no side effects", function() {
 });
 
 function dataTests (elem) {
-	var oldCacheLength, dataObj, internalDataObj, expected, actual;
+	var dataObj, internalDataObj;
 
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );

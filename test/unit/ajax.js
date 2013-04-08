@@ -1799,8 +1799,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load() - callbacks get the correct parameters", 8, function() {
-		var slice = [].slice,
-			completeArgs = {};
+		var completeArgs = {};
 
 		jQuery.ajaxSetup({
 			success: function( _, status, jqXHR ) {

@@ -27,7 +27,7 @@ test( "queue() with other types", 14, function() {
 			equal( ++counter, 4, "Dequeuing" );
 		});
 
-	defer = $div.promise("foo").done(function() {
+	$div.promise("foo").done(function() {
 		equal( counter, 4, "Testing previous call to dequeue in deferred"  );
 		start();
 	});
@@ -81,7 +81,6 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 
 	div.queue(function(next) {
 		equal(++counter, 1, "Dequeueing");
-		var self = this;
 		setTimeout(function() { next(); }, 500);
 	}).queue(function(next) {
 		equal(++counter, 2, "Next was called");
@@ -156,7 +155,7 @@ test("clearQueue(name) clears the queue", function() {
 		counter++;
 		jQuery(this).clearQueue("foo");
 		next();
-	}).queue("foo", function(next) {
+	}).queue("foo", function( next ) {
 		counter++;
 	});
 
@@ -180,7 +179,7 @@ test("clearQueue() clears the fx queue", function() {
 		counter++;
 		var self = this;
 		setTimeout(function() { jQuery(self).clearQueue(); next(); }, 50);
-	}).queue(function(next) {
+	}).queue(function( next ) {
 		counter++;
 	});
 

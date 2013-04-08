@@ -143,12 +143,13 @@ test("is() with :has() selectors", function() {
 test("is() with positional selectors", function() {
 	expect(24);
 
-	var html = jQuery(
-				"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
-			).appendTo( "#qunit-fixture" ),
-		isit = function(sel, match, expect) {
-			equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
-		};
+	var isit = function(sel, match, expect) {
+		equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
+	};
+
+	jQuery(
+		"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
+	).appendTo( "#qunit-fixture" );
 
 	isit( "#posp", "#posp:first", true );
 	isit( "#posp", "#posp:eq(2)", false );
@@ -271,7 +272,11 @@ test("filter(jQuery)", function() {
 test("filter() with positional selectors", function() {
 	expect(19);
 
-	var html = jQuery( "" +
+	var filterit = function(sel, filter, length) {
+		equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
+	};
+
+	jQuery( "" +
 		"<p id='posp'>" +
 			"<a class='firsta' href='#'>" +
 				"<em>first</em>" +
@@ -280,10 +285,7 @@ test("filter() with positional selectors", function() {
 				"<b>test</b>" +
 			"</a>" +
 			"<em></em>" +
-		"</p>" ).appendTo( "#qunit-fixture" ),
-		filterit = function(sel, filter, length) {
-			equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
-		};
+		"</p>" ).appendTo( "#qunit-fixture" );
 
 	filterit( "#posp", "#posp:first", 1);
 	filterit( "#posp", "#posp:eq(2)", 0 );
@@ -424,7 +426,7 @@ test("has(Element)", function() {
 	deepEqual( detached.has( detached.find("i")[0] ).get(), detached.get(), "...Even when detached" );
 
 	var multipleParent = jQuery("#qunit-fixture, #header").has(jQuery("#sndp")[0]);
-	deepEqual( obj.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
+	deepEqual( multipleParent.get(), q("qunit-fixture"), "Does not include elements that do not have the element as a descendant" );
 });
 
 test("has(Selector)", function() {
@@ -459,7 +461,7 @@ test("has(Arrayish)", function() {
 	deepEqual( multipleParent.get(), q("qunit-fixture"), "Does not include elements that do not have an element in the jQuery list as a descendant" );
 
 	var multipleHas = jQuery("#qunit-fixture").has(jQuery("#sndp, #first"));
-	deepEqual( simple.get(), q("qunit-fixture"), "Only adds elements once" );
+	deepEqual( multipleHas.get(), q("qunit-fixture"), "Only adds elements once" );
 });
 
 test("addBack()", function() {
