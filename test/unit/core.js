@@ -677,11 +677,6 @@ test("length", function() {
 	equal( jQuery("#qunit-fixture p").length, 6, "Get Number of Elements Found" );
 });
 
-test("size()", function() {
-	expect(1);
-	equal( jQuery("#qunit-fixture p").size(), 6, "Get Number of Elements Found" );
-});
-
 test("get()", function() {
 	expect(1);
 	deepEqual( jQuery("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
@@ -747,7 +742,7 @@ test("each(Function)", function() {
 	var div = jQuery("div");
 	div.each(function(){this.foo = "zoo";});
 	var pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
+	for ( var i = 0; i < div.length; i++ ) {
 		if ( div.get(i).foo != "zoo" ) {
 			pass = false;
 		}

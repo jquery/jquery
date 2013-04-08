@@ -1017,7 +1017,7 @@ var testAddClass = function( valueObj ) {
 	var div = jQuery("#qunit-fixture div");
 	div.addClass( valueObj("test") );
 	var pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
+	for ( var i = 0; i < div.length; i++ ) {
 		if ( !~div.get( i ).className.indexOf("test") ) {
 			pass = false;
 		}

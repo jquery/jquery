@@ -528,7 +528,7 @@ test( "show() resolves correct default display for detached nodes", function(){
 	equal( tr[ 0 ].style.display, trDisplay, "For detached tr elements, display should always be like for attached trs" );
 	tr.remove();
 
-	span = span = jQuery("<span/>").hide().show();
+	span = jQuery("<span/>").hide().show();
 	equal( span[ 0 ].style.display, "inline", "For detached span elements, display should always be inline" );
 	span.remove();
 });
