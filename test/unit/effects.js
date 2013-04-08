@@ -51,8 +51,6 @@ test("show()", 27, function () {
 
 	hiddendiv.css("display","");
 
-	var displaysActual = [],
-		displaysExpected = [];
 	div = jQuery("#fx-queue div").slice(0, 4);
 	div.show().each(function() {
 		notEqual(this.style.display, "none", "don't change any <div> with display block");
@@ -172,7 +170,7 @@ test("Persist correct display value", function() {
 
 	var $span = jQuery("#show-tests span"),
 		displayNone = $span.css("display"),
-		display = "", num = 0;
+		display = "";
 
 	$span.show();
 
@@ -609,8 +607,7 @@ test("stop() - several in queue", function() {
 	expect( 5 );
 
 	var nw, time,
-		$foo = jQuery( "#foo" ),
-		w = 0;
+		$foo = jQuery( "#foo" );
 
 	// default duration is 400ms, so 800px ensures we aren't 0 or 1 after 1ms
 	$foo.hide().css( "width", 800 );
@@ -1283,17 +1280,18 @@ test("callbacks should fire in correct order (#9100)", function() {
 
 	stop();
 	var a = 1,
-		cb = 0,
-		$lis = jQuery("<p data-operation='*2'></p><p data-operation='^2'></p>").appendTo("#qunit-fixture")
-			// The test will always pass if no properties are animated or if the duration is 0
-			.animate({fontSize: 12}, 13, function() {
-				a *= jQuery(this).data("operation") === "*2" ? 2 : a;
-				cb++;
-				if ( cb === 2 ) {
-					equal( a, 4, "test value has been *2 and _then_ ^2");
-					start();
-				}
-			});
+		cb = 0;
+
+	jQuery("<p data-operation='*2'></p><p data-operation='^2'></p>").appendTo("#qunit-fixture")
+		// The test will always pass if no properties are animated or if the duration is 0
+		.animate({fontSize: 12}, 13, function() {
+			a *= jQuery(this).data("operation") === "*2" ? 2 : a;
+			cb++;
+			if ( cb === 2 ) {
+				equal( a, 4, "test value has been *2 and _then_ ^2");
+				start();
+			}
+		});
 });
 
 asyncTest( "callbacks that throw exceptions will be removed (#5684)", function() {
@@ -1301,11 +1299,11 @@ asyncTest( "callbacks that throw exceptions will be removed (#5684)", function()
 
 	var foo = jQuery( "#foo" );
 
-	function testException() {
+	function TestException() {
 	}
 
 	foo.animate({ height: 1 }, 1, function() {
-		throw new testException();
+		throw new TestException();
 	});
 
 	// this test thoroughly abuses undocumented methods - please feel free to update
@@ -1317,7 +1315,7 @@ asyncTest( "callbacks that throw exceptions will be removed (#5684)", function()
 	setTimeout(function() {
 
 		// the first call to fx.tick should raise the callback exception
-		raises( jQuery.fx.tick, testException, "Exception was thrown" );
+		raises( jQuery.fx.tick, TestException, "Exception was thrown" );
 
 		// the second call shouldn't
 		jQuery.fx.tick();

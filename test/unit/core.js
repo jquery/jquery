@@ -742,7 +742,7 @@ test("each(Function)", function() {
 	var div = jQuery("div");
 	div.each(function(){this.foo = "zoo";});
 	var pass = true;
-	for ( var i = 0; i < div.size(); i++ ) {
+	for ( var i = 0; i < div.length; i++ ) {
 		if ( div.get(i).foo != "zoo" ) {
 			pass = false;
 		}
