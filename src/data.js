@@ -183,15 +183,6 @@ Data.prototype = {
 	}
 };
 
-// This will be used by remove()/cleanData() in manipulation to sever
-// remaining references to node objects. One day we'll replace the dual
-// arrays with a WeakMap and this won't be an issue.
-// (Splices the data objects out of the internal cache arrays)
-function data_discard( owner ) {
-	data_user.discard( owner );
-	data_priv.discard( owner );
-}
-
 // These may be used throughout the jQuery core codebase
 data_user = new Data();
 data_priv = new Data();

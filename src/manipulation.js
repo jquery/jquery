@@ -442,7 +442,7 @@ jQuery.extend({
 		return fragment;
 	},
 
-	cleanData: function( elems, /* internal */ acceptData ) {
+	cleanData: function( elems ) {
 		var data, elem, type,
 			l = elems.length,
 			i = 0,
@@ -451,7 +451,7 @@ jQuery.extend({
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
 
-			if ( acceptData || jQuery.acceptData( elem ) ) {
+			if ( jQuery.acceptData( elem ) ) {
 
 				data = data_priv.access( elem );
 
@@ -468,7 +468,10 @@ jQuery.extend({
 				}
 			}
 			// Discard any remaining `private` and `user` data
-			data_discard( elem );
+			// One day we'll replace the dual arrays with a WeakMap and this won't be an issue.
+			// (Splices the data objects out of the internal cache arrays)
+			data_user.discard( elem );
+			data_priv.discard( elem );
 		}
 	}
 });
