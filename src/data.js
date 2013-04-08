@@ -35,7 +35,7 @@ Data.prototype = {
 				descriptor[ this.expando ] = { value: unlock };
 				Object.defineProperties( owner, descriptor );
 
-			// Support: Android<4
+			// Support: Android < 4
 			// Fallback to a less secure definition
 			} catch ( e ) {
 				descriptor[ this.expando ] = unlock;
@@ -78,8 +78,6 @@ Data.prototype = {
 				}
 			}
 		}
-
-		return this;
 	},
 	get: function( owner, key ) {
 		// Either a valid cache is found, or will be created.
@@ -122,11 +120,12 @@ Data.prototype = {
 	},
 	remove: function( owner, key ) {
 		var i, name,
-				unlock = this.key( owner ),
-				cache = this.cache[ unlock ];
+			unlock = this.key( owner ),
+			cache = this.cache[ unlock ];
 
 		if ( key === undefined ) {
 			this.cache[ unlock ] = {};
+
 		} else {
 			// Support array or space separated string of keys
 			if ( jQuery.isArray( key ) ) {
@@ -152,7 +151,7 @@ Data.prototype = {
 
 			i = name.length;
 			while ( i-- ) {
-				delete cache[ name[i] ];
+				delete cache[ name[ i ] ];
 			}
 		}
 	},
@@ -196,7 +195,7 @@ jQuery.extend({
 	},
 
 	removeData: function( elem, name ) {
-		return data_user.remove( elem, name );
+		data_user.remove( elem, name );
 	},
 
 	// TODO: Replace all calls to _data and _removeData with direct
@@ -211,14 +210,14 @@ jQuery.extend({
 	},
 
 	_removeData: function( elem, name ) {
-		return data_priv.remove( elem, name );
+		data_priv.remove( elem, name );
 	}
 });
 
 jQuery.fn.extend({
 	data: function( key, value ) {
 		var attrs, name,
-			elem = this[0],
+			elem = this[ 0 ],
 			i = 0,
 			data = null;
 
@@ -230,7 +229,7 @@ jQuery.fn.extend({
 				if ( elem.nodeType === 1 && !data_priv.get( elem, "hasDataAttrs" ) ) {
 					attrs = elem.attributes;
 					for ( ; i < attrs.length; i++ ) {
-						name = attrs[i].name;
+						name = attrs[ i ].name;
 
 						if ( name.indexOf( "data-" ) === 0 ) {
 							name = jQuery.camelCase( name.substring(5) );
@@ -253,12 +252,12 @@ jQuery.fn.extend({
 
 		return jQuery.access( this, function( value ) {
 			var data,
-					camelKey = jQuery.camelCase( key );
+				camelKey = jQuery.camelCase( key );
 
 			// The calling jQuery object (element matches) is not empty
-			// (and therefore has an element appears at this[0]) and the
+			// (and therefore has an element appears at this[ 0 ]) and the
 			// `value` parameter was not undefined. An empty jQuery object
-			// will result in `undefined` for elem = this[0] which will
+			// will result in `undefined` for elem = this[ 0 ] which will
 			// throw an exception if an attempt to read a data cache is made.
 			if ( elem && value === undefined ) {
 				// Attempt to get data from the cache
@@ -283,7 +282,7 @@ jQuery.fn.extend({
 				}
 
 				// We tried really hard, but the data doesn't exist.
-				return undefined;
+				return;
 			}
 
 			// Set the data...
@@ -297,10 +296,10 @@ jQuery.fn.extend({
 				// This might not apply to all properties...*
 				data_user.set( this, camelKey, value );
 
-				// *... In the case of properties that might ACTUALLY
+				// *... In the case of properties that might _actually_
 				// have dashes, we need to also store a copy of that
 				// unchanged property.
-				if ( /-/.test( key ) && data !== undefined ) {
+				if ( key.indexOf("-") !== -1 && data !== undefined ) {
 					data_user.set( this, key, value );
 				}
 			});
@@ -320,7 +319,6 @@ function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-
 		name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
 		data = elem.getAttribute( name );
 
