@@ -143,13 +143,13 @@ test("is() with :has() selectors", function() {
 test("is() with positional selectors", function() {
 	expect(24);
 
-	jQuery(
-		"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
-	).appendTo( "#qunit-fixture" );
-
 	var isit = function(sel, match, expect) {
 		equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
 	};
+
+	jQuery(
+		"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
+	).appendTo( "#qunit-fixture" );
 
 	isit( "#posp", "#posp:first", true );
 	isit( "#posp", "#posp:eq(2)", false );
@@ -272,20 +272,20 @@ test("filter(jQuery)", function() {
 test("filter() with positional selectors", function() {
 	expect(19);
 
-	jQuery( "" +
-	"<p id='posp'>" +
-		"<a class='firsta' href='#'>" +
-			"<em>first</em>" +
-		"</a>" +
-		"<a class='seconda' href='#'>" +
-			"<b>test</b>" +
-		"</a>" +
-		"<em></em>" +
-	"</p>" ).appendTo( "#qunit-fixture" );
-
 	var filterit = function(sel, filter, length) {
 		equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
 	};
+
+	jQuery( "" +
+		"<p id='posp'>" +
+			"<a class='firsta' href='#'>" +
+				"<em>first</em>" +
+			"</a>" +
+			"<a class='seconda' href='#'>" +
+				"<b>test</b>" +
+			"</a>" +
+			"<em></em>" +
+		"</p>" ).appendTo( "#qunit-fixture" );
 
 	filterit( "#posp", "#posp:first", 1);
 	filterit( "#posp", "#posp:eq(2)", 0 );
