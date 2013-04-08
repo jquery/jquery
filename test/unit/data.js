@@ -170,14 +170,6 @@ test("jQuery.data(object/flash)", 25, function() {
 	dataTests( flash );
 });
 
-test("jQuery.data(comment)", 25, function() {
-	dataTests( document.createComment("") );
-});
-
-test("jQuery.data(text)", 25, function() {
-	dataTests( document.createTextNode("") );
-});
-
 test(".data()", function() {
 	expect(5);
 
