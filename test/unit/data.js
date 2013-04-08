@@ -685,3 +685,23 @@ test(".data doesn't throw when calling selection is empty. #13551", function() {
 		ok( false, e.message );
 	}
 });
+
+test("jQuery.acceptData", 6, function() {
+	ok( jQuery.acceptData( document ), "document" );
+	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
+	ok( jQuery.acceptData( {} ), "object" );
+
+	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
+	ok( !jQuery.acceptData( document.createDocumentFragment() ), "documentFragment" );
+});
+
+test("Check proper data removal of non-element descendants nodes (#8335)", 1, function() {
+	var div = jQuery("<div>text</div>"),
+		text = div.contents();
+
+	text.data( "test", "test" ); // This should be a noop.
+	div.remove();
+
+	ok( !text.data("test"), "Be sure data is not stored in non-element" );
+});
