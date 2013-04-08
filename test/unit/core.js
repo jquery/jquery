@@ -677,11 +677,6 @@ test("length", function() {
 	equal( jQuery("#qunit-fixture p").length, 6, "Get Number of Elements Found" );
 });
 
-test("size()", function() {
-	expect(1);
-	equal( jQuery("#qunit-fixture p").size(), 6, "Get Number of Elements Found" );
-});
-
 test("get()", function() {
 	expect(1);
 	deepEqual( jQuery("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
