@@ -308,7 +308,7 @@ jQuery.event = {
 		// If nobody prevented the default action, do it now
 		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
 
-			if ( (!special._default || special._default.apply( elem, data ) === false) &&
+			if ( (!special._default || special._default.apply( eventPath.pop(), data ) === false) &&
 				jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
@@ -587,8 +587,8 @@ jQuery.event = {
 			},
 
 			// For cross-browser consistency, don't fire native .click() on links
-			_default: function() {
-				return jQuery.nodeName( this, "a" );
+			_default: function( event ) {
+				return jQuery.nodeName( event.target, "a" );
 			}
 		},
 

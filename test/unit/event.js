@@ -180,7 +180,7 @@ test("bind(), namespace with special add", function() {
 	expect(27);
 
 	var i = 0,
-		div = jQuery("<div/>").bind( "test", function(e) {
+		div = jQuery("<div/>").appendTo("#qunit-fixture").bind( "test", function(e) {
 			ok( true, "Test event fired." );
 		});
 
@@ -189,7 +189,7 @@ test("bind(), namespace with special add", function() {
 			equal( e.type, "test", "Make sure we're dealing with a test event." );
 			ok( data, "And that trigger data was passed." );
 			strictEqual( e.target, div[0], "And that the target is correct." );
-			strictEqual( this, div[0], "And that the context element is correct." );
+			equal( this, window, "And that the context is correct." );
 		},
 		setup: function() {},
 		teardown: function() {
