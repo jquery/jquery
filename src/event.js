@@ -12,6 +12,12 @@ function returnFalse() {
 	return false;
 }
 
+function safeActiveElement() {
+	try {
+		return document.activeElement;
+	} catch ( err ) { }
+}
+
 /*
  * Helper functions for managing events -- not part of the public interface.
  * Props to Dean Edwards' addEvent library for many of the ideas.
@@ -555,7 +561,7 @@ jQuery.event = {
 		focus: {
 			// Fire native event if possible so blur/focus sequence is correct
 			trigger: function() {
-				if ( this !== document.activeElement && this.focus ) {
+				if ( this !== safeActiveElement() && this.focus ) {
 					try {
 						this.focus();
 						return false;
@@ -570,7 +576,7 @@ jQuery.event = {
 		},
 		blur: {
 			trigger: function() {
-				if ( this === document.activeElement && this.blur ) {
+				if ( this === safeActiveElement() && this.blur ) {
 					this.blur();
 					return false;
 				}

@@ -2489,6 +2489,11 @@ testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", funct
 	ok( isOk, "$.when( $.ready ) works" );
 });
 
+testIframeWithCallback( "Focusing iframe element", "event/focusElem.html", function( isOk ) {
+	expect(1);
+	ok( isOk, "Focused an element in an iframe" );
+});
+
 // need PHP here to make the incepted IFRAME hang
 if ( hasPHP ) {
 	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady.html", function( isOk ) {
