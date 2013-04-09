@@ -65,8 +65,8 @@ function initialize( next ) {
 
 	// First arg should be the version number being released
 	var newver, oldver,
-		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
-		version = ( process.argv[3] || "" ).toLowerCase().match( rversion ) || {},
+		rsemver = /^(\d+)\.(\d+)\.(\d+)(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/,
+		version = ( process.argv[3] || "" ).toLowerCase().match( rsemver ) || {},
 		major = version[1],
 		minor = version[2],
 		patch = version[3],
@@ -88,14 +88,14 @@ function initialize( next ) {
 	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
 
 	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
-	version = pkg.version.match( rversion );
+	version = pkg.version.match( rsemver );
 	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] )
 	newver = ( +major ) * 10000 + ( +minor * 100 ) + ( +patch );
 	if ( newver < oldver ) {
 		die( "Next version is older than current version!" );
 	}
 
-	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "pre";
+	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "-pre";
 	next();
 }
 
