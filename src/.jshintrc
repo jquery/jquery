@@ -8,7 +8,6 @@
 	"unused": true,
 	"latedef": false,
 	"eqeqeq": true,
-	"maxerr": 100,
 
 	"eqnull": true,
 	"sub": true,
