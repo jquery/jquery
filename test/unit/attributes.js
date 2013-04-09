@@ -683,7 +683,12 @@ test( "prop(String, Object)", function() {
 });
 
 test( "prop('tabindex')", function() {
-	expect( 8 );
+	expect( 11 );
+
+	// inputs without tabIndex attribute
+	equal( jQuery("#inputWithoutTabIndex").prop("tabindex"), 0, "input without tabindex" );
+	equal( jQuery("#buttonWithoutTabIndex").prop("tabindex"), 0, "button without tabindex" );
+	equal( jQuery("#textareaWithoutTabIndex").prop("tabindex"), 0, "textarea without tabindex" );
 
 	// elements not natively tabbable
 	equal( jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0" );
