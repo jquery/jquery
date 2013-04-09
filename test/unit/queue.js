@@ -1,12 +1,12 @@
 module( "queue", { teardown: moduleTeardown });
 
 test( "queue() with other types", 14, function() {
-	var counter = 0;
-
 	stop();
 
-	var $div = jQuery({}),
-		defer;
+	var defer,
+		$div = jQuery({}),
+		counter = 0;
+
 	$div.promise( "foo" ).done(function() {
 		equal( counter, 0, "Deferred for collection with no queue is automatically resolved" );
 	});
@@ -56,8 +56,8 @@ test( "queue() with other types", 14, function() {
 test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
 
-	var div = jQuery({});
-	var counter = 0;
+	var div = jQuery({}),
+		counter = 0;
 
 	div.queue("foo", function(next) {
 		equal(++counter, 1, "Dequeueing");
@@ -76,12 +76,11 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 	expect(3);
 	stop();
 
-	var div = jQuery({});
-	var counter = 0;
+	var div = jQuery({}),
+		counter = 0;
 
-	div.queue(function(next) {
+	div.queue(function( next ) {
 		equal(++counter, 1, "Dequeueing");
-		var self = this;
 		setTimeout(function() { next(); }, 500);
 	}).queue(function(next) {
 		equal(++counter, 2, "Next was called");
@@ -143,14 +142,14 @@ test("clearQueue(name) clears the queue", function() {
 
 	stop();
 
-	var div = jQuery({});
-	var counter = 0;
+	var div = jQuery({}),
+		counter = 0;
 
-	div.queue("foo", function(next) {
+	div.queue("foo", function( next ) {
 		counter++;
 		jQuery(this).clearQueue("foo");
 		next();
-	}).queue("foo", function(next) {
+	}).queue("foo", function() {
 		counter++;
 	});
 
@@ -167,14 +166,14 @@ test("clearQueue(name) clears the queue", function() {
 test("clearQueue() clears the fx queue", function() {
 	expect(1);
 
-	var div = jQuery({});
-	var counter = 0;
+	var div = jQuery({}),
+		counter = 0;
 
-	div.queue(function(next) {
+	div.queue(function( next ) {
 		counter++;
 		var self = this;
 		setTimeout(function() { jQuery(self).clearQueue(); next(); }, 50);
-	}).queue(function(next) {
+	}).queue(function() {
 		counter++;
 	});
 
@@ -246,8 +245,8 @@ asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before res
 test( ".promise(obj)", function() {
 	expect(2);
 
-	var obj = {};
-	var promise = jQuery( "#foo" ).promise( "promise", obj );
+	var obj = {},
+		promise = jQuery( "#foo" ).promise( "promise", obj );
 
 	ok( jQuery.isFunction( promise.promise ), ".promise(type, obj) returns a promise" );
 	strictEqual( promise, obj, ".promise(type, obj) returns obj" );

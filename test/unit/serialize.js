@@ -3,9 +3,11 @@ module("serialize", { teardown: moduleTeardown });
 test("jQuery.param()", function() {
 	expect(22);
 
+	var params, settings;
+
 	equal( !( jQuery.ajaxSettings && jQuery.ajaxSettings.traditional ), true, "traditional flag, falsy by default" );
 
-	var params = {"foo":"bar", "baz":42, "quux":"All your base are belong to us"};
+	params = {"foo":"bar", "baz":42, "quux":"All your base are belong to us"};
 	equal( jQuery.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
 
 	params = {"string":"foo","null":null,"undefined":undefined};
@@ -37,7 +39,7 @@ test("jQuery.param()", function() {
 	// #7945
 	equal( jQuery.param({"jquery": "1.4.2"}), "jquery=1.4.2", "Check that object with a jQuery property get serialized correctly" );
 
-	var settings = { traditional: true };
+	settings = { traditional: true };
 
 	if ( jQuery.ajaxSettings ) {
 		jQuery.ajaxSetup( settings );

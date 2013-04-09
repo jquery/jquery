@@ -3,19 +3,19 @@ module( "manipulation", {
 });
 
 // Ensure that an extended Array prototype doesn't break jQuery
-Array.prototype.arrayProtoFn = function( arg ) {
+Array.prototype.arrayProtoFn = function() {
 	throw("arrayProtoFn should not be called");
 };
 
-var manipulationBareObj = function( value ) {
+function manipulationBareObj( value ) {
 	return value;
-};
+}
 
-var manipulationFunctionReturningObj = function( value ) {
-	return (function() {
+function manipulationFunctionReturningObj( value ) {
+	return function() {
 		return value;
-	});
-};
+	};
+}
 
 /*
 	======== local reference =======
@@ -62,7 +62,7 @@ test( "text(undefined)", function() {
 	equal( jQuery("#foo").text("<div").text(undefined)[ 0 ].innerHTML, "&lt;div", ".text(undefined) is chainable (#5571)" );
 });
 
-var testText = function( valueObj ) {
+function testText( valueObj ) {
 
 	expect( 4 );
 
@@ -79,7 +79,7 @@ var testText = function( valueObj ) {
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equal( jQuery("#nonnodes")[ 0 ].childNodes.length < 3 ? 8 : j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
-};
+}
 
 test( "text(String)", function() {
 	testText( manipulationBareObj );
@@ -103,7 +103,7 @@ test( "text(Function) with incoming value", function() {
 	equal( jQuery("#sap").text(), "foobar", "Check for merged text of more then one element." );
 });
 
-var testWrap = function( val ) {
+function testWrap( val ) {
 
 	expect( 19 );
 
@@ -183,7 +183,7 @@ var testWrap = function( val ) {
 
 	// clean up attached elements
 	QUnit.reset();
-};
+}
 
 test( "wrap(String|Element)", function() {
 	testWrap( manipulationBareObj );
@@ -220,7 +220,7 @@ test( "wrap(String) consecutive elements (#10177)", function() {
 	});
 });
 
-var testWrapAll = function( val ) {
+function testWrapAll( val ) {
 
 	expect( 8 );
 
@@ -244,17 +244,17 @@ var testWrapAll = function( val ) {
 	equal( jQuery("#first").parent()[ 0 ], jQuery("#firstp").parent()[ 0 ], "Same Parent" );
 	equal( jQuery("#first").parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 	equal( jQuery("#first").parent()[ 0 ].parentNode, p, "Correct Parent" );
-};
+}
 
 test( "wrapAll(String|Element)", function() {
 	testWrapAll( manipulationBareObj );
 });
 
-var testWrapInner = function( val ) {
+function testWrapInner( val ) {
 
 	expect( 11 );
 
-	var num, result;
+	var num, result, div;
 
 	num = jQuery("#first").children().length;
 	result = jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
@@ -277,11 +277,11 @@ var testWrapInner = function( val ) {
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 
-	var div = jQuery("<div/>");
+	div = jQuery("<div/>");
 	div.wrapInner( val("<span></span>") );
 	equal( div.children().length, 1, "The contents were wrapped." );
 	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
-};
+}
 
 test( "wrapInner(String|Element)", function() {
 	testWrapInner( manipulationBareObj );
@@ -319,7 +319,7 @@ test( "unwrap()", function() {
 	jQuery("body > span.unwrap").remove();
 });
 
-var testAppendForObject = function( valueObj, isFragment ) {
+function testAppendForObject( valueObj, isFragment ) {
 	var $base,
 		type = isFragment ? " (DocumentFragment)" : " (Element)",
 		text = "This link has class=\"blog\": Simon Willison's Weblog",
@@ -391,9 +391,9 @@ var testAppendForObject = function( valueObj, isFragment ) {
 		1,
 		"Check for appending a form (#910)" + type
 	);
-};
+}
 
-var testAppend = function( valueObj ) {
+function testAppend( valueObj ) {
 
 	expect( 78 );
 
@@ -500,7 +500,7 @@ var testAppend = function( valueObj ) {
 	equal( $radioUnchecked[ 0 ].checked, false, "Reappending radios uphold not being checked" );
 
 	equal( jQuery("<div/>").append( valueObj("option<area/>") )[ 0 ].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
-};
+}
 
 test( "append(String|Element|Array<Element>|jQuery)", function() {
 	testAppend( manipulationBareObj );
@@ -833,7 +833,7 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 });
 
-var testPrepend = function( val ) {
+function testPrepend( val ) {
 
 	expect( 6 );
 
@@ -864,7 +864,7 @@ var testPrepend = function( val ) {
 	expected = "Try them out:GoogleYahooThis link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#sap").prepend( val([ jQuery("#first"), jQuery("#yahoo, #google") ]) );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
-};
+}
 
 test( "prepend(String|Element|Array<Element>|jQuery)", function() {
 	testPrepend( manipulationBareObj );
@@ -963,7 +963,7 @@ test( "prependTo(String|Element|Array<Element>|jQuery)", function() {
 	t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
 });
 
-var testBefore = function( val ) {
+function testBefore( val ) {
 
 	expect( 7 );
 
@@ -996,7 +996,7 @@ var testBefore = function( val ) {
 	set = jQuery("<div/>").before("<span>test</span>");
 	equal( set[ 0 ].nodeName.toLowerCase(), "div", "Insert before a disconnected node should be a no-op" );
 	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
-};
+}
 
 test( "before(String|Element|Array<Element>|jQuery)", function() {
 	testBefore( manipulationBareObj );
@@ -1069,7 +1069,7 @@ test( "insertBefore(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
-var testAfter = function( val ) {
+function testAfter( val ) {
 
 	expect( 7 );
 
@@ -1102,7 +1102,7 @@ var testAfter = function( val ) {
 	set = jQuery("<div/>").before("<span>test</span>");
 	equal( set[ 0 ].nodeName.toLowerCase(), "div", "Insert after a disconnected node should be a no-op" );
 	equal( set.length, 1, "Insert the element after the disconnected node should be a no-op" );
-};
+}
 
 test( "after(String|Element|Array<Element>|jQuery)", function() {
 	testAfter( manipulationBareObj );
@@ -1138,7 +1138,7 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
 });
 
-var testReplaceWith = function( val ) {
+function testReplaceWith( val ) {
 
 	var tmp, y, child, child2, set, non_existent, $div,
 		expected = 23;
@@ -1226,7 +1226,7 @@ var testReplaceWith = function( val ) {
 	equal( jQuery("#qunit-fixture").find("div[id=replaceWith]").length, 1, "Make sure only one div exists after subsequent replacement." );
 
 	return expected;
-};
+}
 
 test( "replaceWith(String|Element|Array<Element>|jQuery)", function() {
 	testReplaceWith( manipulationBareObj );
@@ -1527,13 +1527,13 @@ test( "html() on empty set", function() {
 	strictEqual( jQuery().html(), undefined, ".html() returns undefined for empty sets (#11962)" );
 });
 
-var childNodeNames = function( node ) {
+function childNodeNames( node ) {
 	return jQuery.map( node.childNodes, function( child ) {
 		return child.nodeName.toUpperCase();
 	}).join(" ");
-};
+}
 
-var testHtml = function( valueObj ) {
+function testHtml( valueObj ) {
 	expect( 37 );
 
 	var actual, expected, tmp,
@@ -1637,7 +1637,7 @@ var testHtml = function( valueObj ) {
 	QUnit.reset();
 	fixture.html( valueObj( fixture.text() ) );
 	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
-};
+}
 
 test( "html(String)", function() {
 	testHtml( manipulationBareObj );
@@ -1740,7 +1740,7 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 	ok( expected.test( $content.html() ), "html()" );
 });
 
-var testRemove = function( method ) {
+function testRemove( method ) {
 	var markup, div,
 		first = jQuery("#ap").children().first();
 
@@ -1750,7 +1750,7 @@ var testRemove = function( method ) {
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
 
-	equal( first.data("foo"), method == "remove" ? null : "bar", "first data" );
+	equal( first.data("foo"), method === "remove" ? null : "bar", "first data" );
 
 	QUnit.reset();
 	jQuery("#ap").children()[ method ]("a");
@@ -1782,7 +1782,7 @@ var testRemove = function( method ) {
 	if (method === "detach") {
 		first.remove();
 	}
-};
+}
 
 test( "remove()", 11, function() {
 	testRemove("remove");
@@ -2021,7 +2021,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	}
 
 	// Bind an event
-	$section.on( "click", function( event ) {
+	$section.on( "click", function() {
 		ok( true, "clone fired event" );
 	});
 

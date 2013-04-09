@@ -1,3 +1,3 @@
-var testBar = "bar";
+this.testBar = "bar";
 jQuery("#ap").html("bar");
 ok( true, "test.js executed");

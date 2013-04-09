@@ -56,7 +56,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 			}
 		});
 
-		jQuery.each( filters, function( filterLabel, filter ) {
+		jQuery.each( filters, function( filterLabel ) {
 
 			jQuery.each({
 				"string": strFlags,
@@ -220,7 +220,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 					// Callbacks are not iterated
 					output = "";
-					function handler( tmp ) {
+					function handler() {
 						output += "X";
 					}
 					handler.method = function() {

@@ -411,7 +411,7 @@ module.exports = function( grunt ) {
 
 	// Process files for distribution
 	grunt.registerTask( "dist", function() {
-		var flags, paths, stored;
+		var stored, flags, paths, fs, nonascii;
 
 		// Check for stored destination paths
 		// ( set in dist/.destination.json )
@@ -426,8 +426,8 @@ module.exports = function( grunt ) {
 		});
 
 		// Ensure the dist files are pure ASCII
-		var fs = require("fs"),
-			nonascii = false;
+		fs = require("fs");
+		nonascii = false;
 
 		distpaths.forEach(function( filename ) {
 			var i, c, map,
