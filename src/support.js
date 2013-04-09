@@ -8,9 +8,9 @@ jQuery.support = (function( support ) {
 	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
 
 	// Finish early in limited (non-browser) environments
-	all = div.getElementsByTagName("*");
+	all = div.getElementsByTagName("*") || [];
 	a = div.getElementsByTagName("a")[ 0 ];
-	if ( !all || !a || !all.length ) {
+	if ( !a || !a.style || !all.length ) {
 		return support;
 	}
 
