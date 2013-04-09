@@ -14,7 +14,12 @@ module.exports = function( grunt ) {
 				data = grunt.file.readJSON( filepath );
 			} catch(e) {}
 			return data;
-		};
+		},
+		srcHintOptions = readOptionalJSON("src/.jshintrc");
+
+	// The concatenated file won't pass onevar
+	// But our modules can
+	delete srcHintOptions.onevar;
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
@@ -73,9 +78,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			dist: {
 				src: [ "dist/jquery.js" ],
-				options: {
-					jshintrc: "src/.jshintrc"
-				}
+				options: srcHintOptions
 			},
 			grunt: {
 				src: [ "Gruntfile.js" ],
