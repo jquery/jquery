@@ -683,11 +683,16 @@ test( "prop(String, Object)", function() {
 });
 
 test( "prop('tabindex')", function() {
-	expect( 8 );
+	expect( 11 );
+
+	// inputs without tabIndex attribute
+	equal( jQuery("#inputWithoutTabIndex").prop("tabindex"), 0, "input without tabindex" );
+	equal( jQuery("#buttonWithoutTabIndex").prop("tabindex"), 0, "button without tabindex" );
+	equal( jQuery("#textareaWithoutTabIndex").prop("tabindex"), 0, "textarea without tabindex" );
 
 	// elements not natively tabbable
 	equal( jQuery("#listWithTabIndex").prop("tabindex"), 5, "not natively tabbable, with tabindex set to 0" );
-	equal( jQuery("#divWithNoTabIndex").prop("tabindex"), undefined, "not natively tabbable, no tabindex set" );
+	equal( jQuery("#divWithNoTabIndex").prop("tabindex"), -1, "not natively tabbable, no tabindex set" );
 
 	// anchor with href
 	equal( jQuery("#linkWithNoTabIndex").prop("tabindex"), 0, "anchor with href, no tabindex set" );
@@ -695,7 +700,7 @@ test( "prop('tabindex')", function() {
 	equal( jQuery("#linkWithNegativeTabIndex").prop("tabindex"), -1, "anchor with href, tabindex set to -1" );
 
 	// anchor without href
-	equal( jQuery("#linkWithNoHrefWithNoTabIndex").prop("tabindex"), undefined, "anchor without href, no tabindex set" );
+	equal( jQuery("#linkWithNoHrefWithNoTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set" );
 	equal( jQuery("#linkWithNoHrefWithTabIndex").prop("tabindex"), 1, "anchor without href, tabindex set to 2" );
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set" );
 });
@@ -705,7 +710,7 @@ test( "prop('tabindex', value)", 10, function() {
 	var clone,
 		element = jQuery("#divWithNoTabIndex");
 
-	equal( element.prop("tabindex"), undefined, "start with no tabindex" );
+	equal( element.prop("tabindex"), -1, "start with no tabindex" );
 
 	// set a positive string
 	element.prop( "tabindex", "1" );
