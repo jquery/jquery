@@ -6,12 +6,12 @@ test("null or undefined handler", function() {
 	try {
 		jQuery("#firstp").on( "click", null );
 		ok(true, "Passing a null handler will not throw an exception");
-	} catch (e) {}
+	} catch ( e ) {}
 
 	try {
 		jQuery("#firstp").on( "click", undefined );
 		ok(true, "Passing an undefined handler will not throw an exception");
-	} catch (e) {}
+	} catch ( e ) {}
 });
 
 test("on() with non-null,defined data", function() {
@@ -41,7 +41,7 @@ test("Handler changes and .trigger() order", function() {
 	path = "";
 
 	markup
-		.find( "*" ).addBack().on( "click", function( e ) {
+		.find( "*" ).addBack().on( "click", function() {
 			path += this.nodeName.toLowerCase() + " ";
 		})
 		.filter( "b" ).on( "click", function( e ) {
@@ -60,7 +60,9 @@ test("Handler changes and .trigger() order", function() {
 
 test("on(), with data", function() {
 	expect(4);
-	var handler = function(event) {
+	var test, handler, handler2;
+
+	handler = function(event) {
 		ok( event.data, "on() with data, check passed data exists" );
 		equal( event.data["foo"], "bar", "on() with data, Check value of passed data" );
 	};
@@ -68,8 +70,8 @@ test("on(), with data", function() {
 
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 
-	var test = function(){};
-	var handler2 = function(event) {
+	test = function(){};
+	handler2 = function(event) {
 		equal( event.data, test, "on() with function data, Check value of passed data" );
 	};
 	jQuery("#firstp").on("click", test, handler2).trigger("click").off("click", handler2);
@@ -99,17 +101,18 @@ test("on(), with data, trigger with data", function() {
 
 test("on(), multiple events at once", function() {
 	expect(2);
-	var clickCounter = 0,
+	var handler,
+		clickCounter = 0,
 		mouseoverCounter = 0;
-	var handler = function(event) {
-		if (event.type == "click") {
+	handler = function(event) {
+		if (event.type === "click") {
 			clickCounter += 1;
 		}
-		else if (event.type == "mouseover") {
+		else if (event.type === "mouseover") {
 			mouseoverCounter += 1;
 		}
-
 	};
+
 	jQuery("#firstp").on("click mouseover", handler).trigger("click").trigger("mouseover");
 	equal( clickCounter, 1, "on() with multiple events at once" );
 	equal( mouseoverCounter, 1, "on() with multiple events at once" );
@@ -119,7 +122,7 @@ test("on(), five events at once", function() {
 	expect(1);
 
 	var count = 0,
-		handler = function(event) {
+		handler = function() {
 			count++;
 		};
 
@@ -134,9 +137,10 @@ test("on(), five events at once", function() {
 test("on(), multiple events at once and namespaces", function() {
 	expect(7);
 
-	var cur, obj = {};
+	var cur, div,
+		obj = {};
 
-	var div = jQuery("<div/>").on("focusin.a", function(e) {
+	div = jQuery("<div/>").on("focusin.a", function(e) {
 		equal( e.type, cur, "Verify right single event was fired." );
 	});
 
@@ -178,7 +182,7 @@ test("on(), namespace with special add", function() {
 	expect(27);
 
 	var i = 0,
-		div = jQuery("<div/>").appendTo("#qunit-fixture").on( "test", function(e) {
+		div = jQuery("<div/>").appendTo("#qunit-fixture").on( "test", function() {
 			ok( true, "Test event fired." );
 		});
 
@@ -227,7 +231,7 @@ test("on(), namespace with special add", function() {
 	// Should trigger 4
 	div.off("test");
 
-	div = jQuery("<div/>").on( "test", function( e ) {
+	div = jQuery("<div/>").on( "test", function() {
 		ok( true, "Test event fired." );
 	});
 
@@ -248,23 +252,22 @@ test("on(), no data", function() {
 test("on/one/off(Object)", function(){
 	expect(6);
 
-	var clickCounter = 0, mouseoverCounter = 0;
-	function handler(event) {
-		if (event.type == "click") {
+	var $elem,
+		clickCounter = 0,
+		mouseoverCounter = 0;
 
+	function handler(event) {
+		if (event.type === "click") {
 			clickCounter++;
-		}
-		else if (event.type == "mouseover") {
+		} else if (event.type === "mouseover") {
 			mouseoverCounter++;
 		}
-
 	}
 
 	function handlerWithData(event) {
-		if (event.type == "click") {
+		if (event.type === "click") {
 			clickCounter += event.data;
-		}
-		else if (event.type == "mouseover") {
+		} else if (event.type === "mouseover") {
 			mouseoverCounter += event.data;
 		}
 	}
@@ -273,7 +276,7 @@ test("on/one/off(Object)", function(){
 		$elem.trigger("click").trigger("mouseover");
 	}
 
-	var $elem = jQuery("#firstp")
+	$elem = jQuery("#firstp")
 		// Regular bind
 		.on({
 			"click":handler,
@@ -307,12 +310,13 @@ test("on/one/off(Object)", function(){
 test("on/off(Object), on/off(Object, String)", function() {
 	expect(6);
 
-	var clickCounter = 0,
+	var events,
+		clickCounter = 0,
 		mouseoverCounter = 0,
 		$p = jQuery("#firstp"),
 		$a = $p.find("a").eq(0);
 
-	var events = {
+	events = {
 		"click": function( event ) {
 			clickCounter += ( event.data || 1 );
 		},
@@ -357,7 +361,7 @@ test("on immediate propagation", function() {
 		lastClick = "click1";
 		e.stopImmediatePropagation();
 	});
-	jQuery( document ).on( "click", "#firstp a", function(e) {
+	jQuery( document ).on( "click", "#firstp a", function() {
 		lastClick = "click2";
 	});
 	$a.trigger( "click" );
@@ -369,7 +373,7 @@ test("on immediate propagation", function() {
 		lastClick = "click1";
 		e.stopImmediatePropagation();
 	});
-	$p.on( "click", "a", function(e) {
+	$p.on( "click", "a", function() {
 		lastClick = "click2";
 	});
 	$a.trigger( "click" );
@@ -409,7 +413,7 @@ test("on bubbling, isDefaultPrevented", function() {
 	fakeClick( $anchor2 );
 	$anchor2.off( "click" );
 	$main.off( "click", "**" );
-	$anchor2.on( "click", function(e) {
+	$anchor2.on( "click", function() {
 		// Let the default action occur
 	});
 	$main.on("click", "#foo", function(e) {
@@ -445,7 +449,7 @@ test("on(), trigger change on select", function() {
 test("on(), namespaced events, cloned events", 18, function() {
 	var firstp = jQuery( "#firstp" );
 
-	firstp.on("custom.test",function(e){
+	firstp.on("custom.test",function(){
 		ok(false, "Custom event triggered");
 	});
 
@@ -507,22 +511,22 @@ test("on(), multi-namespaced events", function() {
 	];
 
 	function check(name, msg){
-		deepEqual(name, order.shift(), msg);
+		deepEqual( name, order.shift(), msg );
 	}
 
-	jQuery("#firstp").on("custom.test",function(e){
+	jQuery("#firstp").on("custom.test",function() {
 		check("custom.test", "Custom event triggered");
 	});
 
-	jQuery("#firstp").on("custom.test2",function(e){
+	jQuery("#firstp").on("custom.test2",function() {
 		check("custom.test2", "Custom event triggered");
 	});
 
-	jQuery("#firstp").on("click.test",function(e){
+	jQuery("#firstp").on("click.test",function() {
 		check("click.test", "Normal click triggered");
 	});
 
-	jQuery("#firstp").on("click.test.abc",function(e){
+	jQuery("#firstp").on("click.test.abc",function() {
 		check("click.test.abc", "Namespaced click triggered");
 	});
 
@@ -611,7 +615,7 @@ test("on(), with different this object", function() {
 	expect(4);
 	var thisObject = { myThis: true },
 		data = { myData: true },
-		handler1 = function( event ) {
+		handler1 = function() {
 			equal( this, thisObject, "on() with different this object" );
 		},
 		handler2 = function( event ) {
@@ -630,7 +634,7 @@ test("on(name, false), off(name, false)", function() {
 	expect(3);
 
 	var main = 0;
-	jQuery("#qunit-fixture").on("click", function(e){ main++; });
+	jQuery("#qunit-fixture").on("click", function(){ main++; });
 	jQuery("#ap").trigger("click");
 	equal( main, 1, "Verify that the trigger happened correctly." );
 
@@ -653,7 +657,7 @@ test("on(name, selector, false), off(name, selector, false)", function() {
 
 	var main = 0;
 
-	jQuery("#qunit-fixture").on("click", "#ap", function(e){ main++; });
+	jQuery("#qunit-fixture").on("click", "#ap", function(){ main++; });
 	jQuery("#ap").trigger("click");
 	equal( main, 1, "Verify that the trigger happened correctly." );
 
@@ -672,7 +676,8 @@ test("on(name, selector, false), off(name, selector, false)", function() {
 test("on()/trigger()/off() on plain object", function() {
 	expect( 7 );
 
-	var obj = {};
+	var events,
+		obj = {};
 
 	// Make sure it doesn't complain when no events are found
 	jQuery(obj).trigger("test");
@@ -689,7 +694,7 @@ test("on()/trigger()/off() on plain object", function() {
 		}
 	});
 
-	var events = jQuery._data(obj, "events");
+	events = jQuery._data(obj, "events");
 	ok( events, "Object has events bound." );
 	equal( obj["events"], undefined, "Events object on plain objects is not events" );
 	equal( obj["test"], undefined, "Make sure that test event is not on the plain object." );
@@ -716,8 +721,8 @@ test("on()/trigger()/off() on plain object", function() {
 test("off(type)", function() {
 	expect( 1 );
 
-	var $elem = jQuery("#firstp"),
-		message;
+	var message, func,
+		$elem = jQuery("#firstp");
 
 	function error(){
 		ok( false, message );
@@ -751,7 +756,7 @@ test("off(type)", function() {
 	jQuery( document ).on( "click", function(){
 		ok( true, "called handler after selective removal");
 	});
-	var func = function(){ };
+	func = function() {};
 	jQuery( document )
 		.on( "click", func )
 		.off( "click", func )
@@ -800,8 +805,8 @@ if ( jQuery.fn.hover ) {
 		expect(1);
 
 		var times = 0,
-			handler1 = function( event ) { ++times; },
-			handler2 = function( event ) { ++times; };
+			handler1 = function() { ++times; },
+			handler2 = function() { ++times; };
 
 		jQuery("#firstp")
 			.hover(handler1, handler2)
@@ -876,7 +881,8 @@ if ( jQuery.fn.click ) {
 	test("trigger() shortcuts", function() {
 		expect(6);
 
-		var elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
+		var counter, clickCounter,
+			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
 		elem.find("a").on("click", function() {
 			var close = jQuery("spanx", this); // same with jQuery(this).find("span");
 			equal( close.length, 0, "Context element does not exist, length must be zero" );
@@ -891,15 +897,15 @@ if ( jQuery.fn.click ) {
 			ok( true, "click event handler for checkbox gets fired twice, see #815" );
 		}).click();
 
-		var counter = 0;
-		jQuery("#firstp")[0].onclick = function(event) {
+		counter = 0;
+		jQuery("#firstp")[0].onclick = function() {
 			counter++;
 		};
 		jQuery("#firstp").click();
 		equal( counter, 1, "Check that click, triggers onclick event handler also" );
 
-		var clickCounter = 0;
-		jQuery("#simon1")[0].onclick = function(event) {
+		clickCounter = 0;
+		jQuery("#simon1")[0].onclick = function() {
 			clickCounter++;
 		};
 		jQuery("#simon1").click();
@@ -925,11 +931,11 @@ test("trigger() bubbling", function() {
 
 	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
 
-	jQuery(window).on("click", function(e){ win++; });
-	jQuery(document).on("click", function(e){ if ( e.target !== document) { doc++; } });
-	jQuery("html").on("click", function(e){ html++; });
-	jQuery("body").on("click", function(e){ body++; });
-	jQuery("#qunit-fixture").on("click", function(e){ main++; });
+	jQuery(window).on("click", function(){ win++; });
+	jQuery(document).on("click", function( e ){ if ( e.target !== document) { doc++; } });
+	jQuery("html").on("click", function(){ html++; });
+	jQuery("body").on("click", function(){ body++; });
+	jQuery("#qunit-fixture").on("click", function(){ main++; });
 	jQuery("#ap").on("click", function(){ ap++; return false; });
 
 	jQuery("html").trigger("click");
@@ -968,7 +974,8 @@ test("trigger() bubbling", function() {
 test("trigger(type, [data], [fn])", function() {
 	expect(16);
 
-	var handler = function(event, a, b, c) {
+	var $elem, pass, form, elem2,
+		handler = function(event, a, b, c) {
 		equal( event.type, "click", "check passed data" );
 		equal( a, 1, "check passed data" );
 		equal( b, "2", "check passed data" );
@@ -976,7 +983,7 @@ test("trigger(type, [data], [fn])", function() {
 		return "test";
 	};
 
-	var $elem = jQuery("#firstp");
+	$elem = jQuery("#firstp");
 
 	// Simulate a "native" click
 	$elem[0].click = function(){
@@ -1011,12 +1018,12 @@ test("trigger(type, [data], [fn])", function() {
 	// Triggers 5
 	equal( $elem.triggerHandler("click", [1, "2", "abc"]), "test", "Verify handler response" );
 
-	var pass = true, elem2;
+	pass = true;
 	try {
 		elem2 = jQuery("#form input").eq(0);
 		elem2.get(0).style.display = "none";
 		elem2.trigger("focus");
-	} catch(e) {
+	} catch( e ) {
 		pass = false;
 	}
 	ok( pass, "Trigger focus on hidden element" );
@@ -1024,12 +1031,12 @@ test("trigger(type, [data], [fn])", function() {
 	pass = true;
 	try {
 		jQuery("#qunit-fixture table").eq(0).on("test:test", function(){}).trigger("test:test");
-	} catch (e) {
+	} catch ( e ) {
 		pass = false;
 	}
 	ok( pass, "Trigger on a table with a colon in the even type, see #3533" );
 
-	var form = jQuery("<form action=''></form>").appendTo("body");
+	form = jQuery("<form action=''></form>").appendTo("body");
 
 	// Make sure it can be prevented locally
 	form.on( "submit", function(){
@@ -1126,13 +1133,14 @@ test( "change event bubbles on copied forms (#11796)", function(){
 test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
-	var $parent = jQuery("<div id='par' />").appendTo("body"),
+	var event,
+		$parent = jQuery("<div id='par' />").appendTo("body"),
 		$child = jQuery("<p id='child'>foo</p>").appendTo( $parent );
 
 	$parent.get( 0 ).style.display = "none";
 
-	var event = jQuery.Event("noNew");
-	ok( event != window, "Instantiate jQuery.Event without the 'new' keyword" );
+	event = jQuery.Event("noNew");
+	ok( event !== window, "Instantiate jQuery.Event without the 'new' keyword" );
 	equal( event.type, "noNew", "Verify its type" );
 
 	equal( event.isDefaultPrevented(), false, "Verify isDefaultPrevented" );
@@ -1149,7 +1157,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 	equal( event.isPropagationStopped(), true, "Verify isPropagationStopped" );
 	equal( event.isImmediatePropagationStopped(), true, "Verify isPropagationStopped" );
 
-	$parent.on("foo",function(e){
+	$parent.on("foo",function( e ) {
 		// Tries bubbling
 		equal( e.type, "foo", "Verify event type when passed passing an event object" );
 		equal( e.target.id, "child", "Verify event.target when passed passing an event object" );
@@ -1470,7 +1478,8 @@ test("jQuery.Event properties", function(){
 test(".on()/.off()", function() {
 	expect(65);
 
-	var submit = 0, div = 0, livea = 0, liveb = 0;
+	var event, clicked, hash, called, livec, lived, livee,
+		submit = 0, div = 0, livea = 0, liveb = 0;
 
 	jQuery("#body").on("submit", "#qunit-fixture div", function(){ submit++; return false; });
 	jQuery("#body").on("click", "#qunit-fixture div", function(){ div++; });
@@ -1535,7 +1544,7 @@ test(".on()/.off()", function() {
 
 	// Make sure that stopPropagation doesn't stop live events
 	submit = 0; div = 0; livea = 0; liveb = 0;
-	jQuery("#body").on("click", "div#nothiddendivchild", function(e){ liveb++; e.stopPropagation(); });
+	jQuery("#body").on("click", "div#nothiddendivchild", function( e ){ liveb++; e.stopPropagation(); });
 	jQuery("div#nothiddendivchild").trigger("click");
 	equal( submit, 0, "stopPropagation Click on inner div" );
 	equal( div, 1, "stopPropagation Click on inner div" );
@@ -1544,7 +1553,7 @@ test(".on()/.off()", function() {
 
 	// Make sure click events only fire with primary click
 	submit = 0; div = 0; livea = 0; liveb = 0;
-	var event = jQuery.Event("click");
+	event = jQuery.Event("click");
 	event.button = 1;
 	jQuery("div#nothiddendiv").trigger(event);
 
@@ -1556,8 +1565,8 @@ test(".on()/.off()", function() {
 	jQuery("#body").off("submit", "#qunit-fixture div");
 
 	// Test binding with a different context
-	var clicked = 0;
-	jQuery("#qunit-fixture").on("click", "#foo", function(e){ clicked++; });
+	clicked = 0;
+	jQuery("#qunit-fixture").on("click", "#foo", function(){ clicked++; });
 	jQuery("#qunit-fixture div").trigger("click");
 	jQuery("#foo").trigger("click");
 	jQuery("#qunit-fixture").trigger("click");
@@ -1570,7 +1579,7 @@ test(".on()/.off()", function() {
 	equal( clicked, 2, "off with a context");
 
 	// Test binding with event data
-	jQuery("#body").on("click", "#foo", true, function(e){ equal( e.data, true, "on with event data" ); });
+	jQuery("#body").on("click", "#foo", true, function( e ){ equal( e.data, true, "on with event data" ); });
 	jQuery("#foo").trigger("click");
 	jQuery("#body").off("click", "#foo");
 
@@ -1580,7 +1589,7 @@ test(".on()/.off()", function() {
 	jQuery("#body").off("click", "#foo");
 
 	// Test binding with different this object
-	jQuery("#body").on("click", "#foo", jQuery.proxy(function(e){ equal( this["foo"], "bar", "on with event scope" ); }, { "foo": "bar" }));
+	jQuery("#body").on("click", "#foo", jQuery.proxy(function(){ equal( this["foo"], "bar", "on with event scope" ); }, { "foo": "bar" }));
 	jQuery("#foo").trigger("click");
 	jQuery("#body").off("click", "#foo");
 
@@ -1595,7 +1604,7 @@ test(".on()/.off()", function() {
 
 	// Verify that return false prevents default action
 	jQuery("#body").on("click", "#anchor2", function(){ return false; });
-	var hash = window.location.hash;
+	hash = window.location.hash;
 	jQuery("#anchor2").trigger("click");
 	equal( window.location.hash, hash, "return false worked" );
 	jQuery("#body").off("click", "#anchor2");
@@ -1608,7 +1617,7 @@ test(".on()/.off()", function() {
 	jQuery("#body").off("click", "#anchor2");
 
 	// Test binding the same handler to multiple points
-	var called = 0;
+	called = 0;
 	function callback(){ called++; return false; }
 
 	jQuery("#body").on("click", "#nothiddendiv", callback);
@@ -1652,10 +1661,10 @@ test(".on()/.off()", function() {
 
 	// Make sure we don't loose the target by DOM modifications
 	// after the bubble already reached the liveHandler
-	var livec = 0;
+	livec = 0;
 	jQuery("#nothiddendivchild").html("<span></span>");
 
-	jQuery("#body").on("click", "#nothiddendivchild", function(e){ jQuery("#nothiddendivchild").html(""); });
+	jQuery("#body").on("click", "#nothiddendivchild", function(){ jQuery("#nothiddendivchild").html(""); });
 	jQuery("#body").on("click", "#nothiddendivchild", function(e){ if(e.target) {livec++;} });
 
 	jQuery("#nothiddendiv span").trigger("click");
@@ -1667,7 +1676,8 @@ test(".on()/.off()", function() {
 
 	// Verify that .live() occurs and cancel bubble in the same order as
 	// we would expect .on() and .click() without delegation
-	var lived = 0, livee = 0;
+	lived = 0;
+	livee = 0;
 
 	// bind one pair in one order
 	jQuery("#body").on("click", "span#liveSpan1 a", function(){ lived++; return false; });
@@ -1691,7 +1701,7 @@ test(".on()/.off()", function() {
 	jQuery("#body").off("click", "**");
 
 	// Test this, target and currentTarget are correct
-	jQuery("#body").on("click", "span#liveSpan1", function(e){
+	jQuery("#body").on("click", "span#liveSpan1", function( e ) {
 		equal( this.id, "liveSpan1", "Check the this within a on handler" );
 		equal( e.currentTarget.id, "liveSpan1", "Check the event.currentTarget within a on handler" );
 		equal( e.delegateTarget, document.body, "Check the event.delegateTarget within a on handler" );
@@ -1705,7 +1715,7 @@ test(".on()/.off()", function() {
 	// Work with deep selectors
 	livee = 0;
 
-	function clickB(){ livee++; }
+	function clickB() { livee++; }
 
 	jQuery("#body").on("click", "#nothiddendiv div", function(){ livee++; });
 	jQuery("#body").on("click", "#nothiddendiv div", clickB);
@@ -1793,7 +1803,7 @@ test( "delegated event with selector matching Object.prototype property (#13203)
 
 	var matched = 0;
 
-	jQuery("#foo").on( "click", "toString", function( e ) {
+	jQuery("#foo").on( "click", "toString", function() {
 		matched++;
 	});
 
@@ -1842,8 +1852,8 @@ test("off all bound delegated events", function(){
 test("on with multiple delegated events", function(){
 	expect(1);
 
-	var count = 0;
-	var div = jQuery("#body");
+	var count = 0,
+		div = jQuery("#body");
 
 	div.on("click submit", "div#nothiddendivchild", function(){ count++; });
 
@@ -1858,17 +1868,21 @@ test("on with multiple delegated events", function(){
 test("delegated on with change", function(){
 	expect(8);
 
-	var selectChange = 0, checkboxChange = 0;
+	var select, checkbox, checkboxFunction,
+		text, textChange, oldTextVal,
+		password, passwordChange, oldPasswordVal,
+		selectChange = 0,
+		checkboxChange = 0;
 
-	var select = jQuery("select[name='S1']");
+	select = jQuery("select[name='S1']");
 	jQuery("#body").on("change", "select[name='S1']", function() {
 		selectChange++;
 	});
 
-	var checkbox = jQuery("#check2"),
-		checkboxFunction = function(){
-			checkboxChange++;
-		};
+	checkbox = jQuery("#check2");
+	checkboxFunction = function(){
+		checkboxChange++;
+	};
 	jQuery("#body").on("change", "#check2", checkboxFunction);
 
 	// test click on select
@@ -1890,7 +1904,10 @@ test("delegated on with change", function(){
 	equal( checkboxChange, 1, "Change on checkbox." );
 
 	// test blur/focus on text
-	var text = jQuery("#name"), textChange = 0, oldTextVal = text.val();
+	text = jQuery("#name");
+	textChange = 0;
+	oldTextVal = text.val();
+
 	jQuery("#body").on("change", "#name", function() {
 		textChange++;
 	});
@@ -1903,7 +1920,9 @@ test("delegated on with change", function(){
 	jQuery("#body").off("change", "#name");
 
 	// test blur/focus on password
-	var password = jQuery("#name"), passwordChange = 0, oldPasswordVal = password.val();
+	password = jQuery("#name");
+	passwordChange = 0;
+	oldPasswordVal = password.val();
 	jQuery("#body").on("change", "#name", function() {
 		passwordChange++;
 	});
@@ -1964,7 +1983,7 @@ test("delegated off() with only namespaces", function() {
 	var $delegate = jQuery("#liveHandlerOrder"),
 		count = 0;
 
-	$delegate.on("click.ns", "a", function(e) {
+	$delegate.on("click.ns", "a", function() {
 		count++;
 	});
 
@@ -1984,7 +2003,7 @@ test("Non DOM element events", function() {
 
 	var o = {};
 
-	jQuery(o).on("nonelementobj", function(e) {
+	jQuery(o).on("nonelementobj", function() {
 		ok( true, "Event on non-DOM object triggered" );
 	});
 
@@ -2065,9 +2084,8 @@ test("custom events with colons (#3533, #8272)", function() {
 
 test(".on and .off", function() {
 	expect(9);
-	var counter, mixfn;
-
-	var $onandoff = jQuery("<div id=\"onandoff\"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>").appendTo("body");
+	var counter, mixfn, data,
+		$onandoff = jQuery("<div id=\"onandoff\"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>").appendTo("body");
 
 	// Simple case
 	jQuery( "#onandoff" )
@@ -2156,7 +2174,7 @@ test(".on and .off", function() {
 		.off( "click cluck" );
 
 	// We should have removed all the event handlers ... kinda hacky way to check this
-	var data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
+	data = jQuery.data[ jQuery( "#onandoff" )[0].expando ] || {};
 	equal( data["events"], undefined, "no events left" );
 
 	$onandoff.remove();
@@ -2236,10 +2254,9 @@ test("special on name mapping", function() {
 test(".on and .off, selective mixed removal (#10705)", function() {
 	expect(7);
 
-	var clockout = 0,
-		timingx = function( e ) {
-			ok( true, "triggered " + e.type );
-		};
+	var timingx = function( e ) {
+		ok( true, "triggered " + e.type );
+	};
 
 	jQuery( "<p>Strange Pursuit</p>" )
 		.on( "click", timingx )
@@ -2276,7 +2293,7 @@ test("clone() delegated events (#11076)", function() {
 	expect(3);
 
 	var counter = { "center": 0, "fold": 0, "centerfold": 0 },
-		clicked = function( event ) {
+		clicked = function() {
 			counter[ jQuery(this).text().replace(/\s+/, "") ]++;
 		},
 		table =
@@ -2327,9 +2344,9 @@ test("checkbox state (#3827)", function() {
 test("focus-blur order (#12868)", function() {
 	expect( 5 );
 
-	var $text = jQuery("#text1"),
-		$radio = jQuery("#radio1").trigger("focus"),
-		order;
+	var order,
+		$text = jQuery("#text1"),
+		$radio = jQuery("#radio1").trigger("focus");
 
 	// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
 	// IE's browser window must be topmost for this to work properly!!
@@ -2394,7 +2411,7 @@ test("fixHooks extensions", function() {
 	$fixture.off( "click" );
 
 	jQuery.event.fixHooks.click = {
-		filter: function( event, originalEvent ) {
+		filter: function( event ) {
 			event.blurrinessLevel = 42;
 			return event;
 		}
@@ -2505,19 +2522,17 @@ if ( hasPHP ) {
 test("change handler should be detached from element", function() {
 	expect( 2 );
 
-	var $fixture = jQuery( "<input type='text' id='change-ie-leak' />" ).appendTo( "body" );
-
-	var originRemoveEvent =  jQuery.removeEvent;
-
-	var wrapperRemoveEvent =  function(elem, type, handle){
-		equal("change", type, "Event handler for 'change' event should be removed");
-		equal("change-ie-leak", jQuery(elem).attr("id"), "Event handler for 'change' event should be removed from appropriate element");
-		originRemoveEvent(elem, type, handle);
-	};
+	var $fixture = jQuery( "<input type='text' id='change-ie-leak' />" ).appendTo( "body" ),
+		originRemoveEvent = jQuery.removeEvent,
+		wrapperRemoveEvent =  function(elem, type, handle){
+			equal("change", type, "Event handler for 'change' event should be removed");
+			equal("change-ie-leak", jQuery(elem).attr("id"), "Event handler for 'change' event should be removed from appropriate element");
+			originRemoveEvent(elem, type, handle);
+		};
 
 	jQuery.removeEvent = wrapperRemoveEvent ;
 
-	$fixture.on( "change", function( event ) {});
+	$fixture.on( "change", function() {});
 	$fixture.off( "change" );
 
 	$fixture.remove();
@@ -2559,7 +2574,7 @@ test( "Namespace preserved when passed an Event (#12739)", function() {
 				});
 			}
 		})
-		.on( "foo.bar2", function( e ) {
+		.on( "foo.bar2", function() {
 			ok( false, "foo.bar2 called on trigger " + triggered + " id " + this.id );
 		});
 
@@ -2589,11 +2604,11 @@ test( "make sure events cloned correctly", 18, function() {
 		ok( result, "Change on original child element though delegation is fired" );
 	});
 
-	p.on("click", function( event, result ) {
+	p.on("click", function() {
 		ok( true, "Click on original child element is fired" );
 	});
 
-	checkbox.on("change", function( event, result ) {
+	checkbox.on("change", function() {
 		ok( true, "Change on original child element is fired" );
 	});
 

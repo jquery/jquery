@@ -9,17 +9,17 @@ module( "wrap", {
 });
 
 // See test/unit/manipulation.js for explanation about these 2 functions
-var manipulationBareObj = function( value ) {
+function manipulationBareObj( value ) {
 	return value;
-};
+}
 
-var manipulationFunctionReturningObj = function( value ) {
-	return (function() {
+function manipulationFunctionReturningObj( value ) {
+	return function() {
 		return value;
-	});
-};
+	};
+}
 
-var testWrap = function( val ) {
+function testWrap( val ) {
 
 	expect( 19 );
 
@@ -99,7 +99,7 @@ var testWrap = function( val ) {
 
 	// clean up attached elements
 	QUnit.reset();
-};
+}
 
 test( "wrap(String|Element)", function() {
 	testWrap( manipulationBareObj );
@@ -136,7 +136,7 @@ test( "wrap(String) consecutive elements (#10177)", function() {
 	});
 });
 
-var testWrapAll = function( val ) {
+function testWrapAll( val ) {
 
 	expect( 8 );
 
@@ -160,17 +160,18 @@ var testWrapAll = function( val ) {
 	equal( jQuery("#first").parent()[ 0 ], jQuery("#firstp").parent()[ 0 ], "Same Parent" );
 	equal( jQuery("#first").parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 	equal( jQuery("#first").parent()[ 0 ].parentNode, p, "Correct Parent" );
-};
+}
 
 test( "wrapAll(String|Element)", function() {
 	testWrapAll( manipulationBareObj );
 });
 
-var testWrapInner = function( val ) {
+function testWrapInner( val ) {
 
 	expect( 11 );
 
-	var num;
+	var num,
+		div = jQuery("<div/>");
 
 	num = jQuery("#first").children().length;
 	jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
@@ -193,11 +194,10 @@ var testWrapInner = function( val ) {
 	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 
-	var div = jQuery("<div/>");
 	div.wrapInner( val("<span></span>") );
 	equal( div.children().length, 1, "The contents were wrapped." );
 	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
-};
+}
 
 test( "wrapInner(String|Element)", function() {
 	testWrapInner( manipulationBareObj );

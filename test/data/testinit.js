@@ -3,10 +3,11 @@
 var amdDefined, fireNative,
 	originaljQuery = this.jQuery || "jQuery",
 	original$ = this.$ || "$",
-	hasPHP = true,
-	isLocal = window.location.protocol === "file:",
 	// see RFC 2606
 	externalHost = "example.com";
+
+this.hasPHP = true;
+this.isLocal = window.location.protocol === "file:";
 
 // For testing .noConflict()
 this.jQuery = originaljQuery;
@@ -26,7 +27,7 @@ define.amd = {};
  * @example q("main", "foo", "bar")
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
-function q() {
+this.q = function() {
 	var r = [],
 		i = 0;
 
@@ -34,7 +35,7 @@ function q() {
 		r.push( document.getElementById( arguments[i] ) );
 	}
 	return r;
-}
+};
 
 /**
  * Asserts that a select matches the given IDs
@@ -44,7 +45,7 @@ function q() {
  * @example t("Check for something", "//[a]", ["foo", "baar"]);
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
-function t( a, b, c ) {
+this.t = function( a, b, c ) {
 	var f = jQuery(b).get(),
 		s = "",
 		i = 0;
@@ -54,9 +55,9 @@ function t( a, b, c ) {
 	}
 
 	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
-}
+};
 
-function createDashboardXML() {
+this.createDashboardXML = function() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<dashboard> \
 		<locations class="foo"> \
@@ -70,9 +71,9 @@ function createDashboardXML() {
 	</dashboard>';
 
 	return jQuery.parseXML(string);
-}
+};
 
-function createWithFriesXML() {
+this.createWithFriesXML = function() {
 	var string = '<?xml version="1.0" encoding="UTF-8"?> \
 	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" \
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
@@ -100,9 +101,9 @@ function createWithFriesXML() {
 	</soap:Envelope>';
 
 	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
-}
+};
 
-function createXMLFragment() {
+this.createXMLFragment = function() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
 		xml = new ActiveXObject("msxml2.domdocument");
@@ -115,7 +116,7 @@ function createXMLFragment() {
 	}
 
 	return frag;
-}
+};
 
 fireNative = document.createEvent ?
 	function( node, type ) {
@@ -142,7 +143,7 @@ function url( value ) {
 }
 
 // Ajax testing helper
-function ajaxTest( title, expect, options ) {
+this.ajaxTest = function( title, expect, options ) {
 	var requestOptions;
 	if ( jQuery.isFunction( options ) ) {
 		options = options();
@@ -205,63 +206,59 @@ function ajaxTest( title, expect, options ) {
 			}
 		};
 	});
-}
+};
 
-(function () {
 
-	this.testIframe = function( fileName, name, fn ) {
+this.testIframe = function( fileName, name, fn ) {
 
-		test(name, function() {
-			// pause execution for now
-			stop();
+	test(name, function() {
+		// pause execution for now
+		stop();
 
-			// load fixture in iframe
-			var iframe = loadFixture(),
-				win = iframe.contentWindow,
-				interval = setInterval( function() {
-					if ( win && win.jQuery && win.jQuery.isReady ) {
-						clearInterval( interval );
-						// continue
-						start();
-						// call actual tests passing the correct jQuery instance to use
-						fn.call( this, win.jQuery, win, win.document );
-						document.body.removeChild( iframe );
-						iframe = null;
-					}
-				}, 15 );
-		});
-
-		function loadFixture() {
-			var src = url("./data/" + fileName + ".html"),
-				iframe = jQuery("<iframe />").appendTo("body")[0];
-				iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
-			iframe.contentWindow.location = src;
-			return iframe;
-		}
-	};
-
-	this.testIframeWithCallback = function( title, fileName, func ) {
-
-		test( title, function() {
-			var iframe;
-
-			stop();
-			window.iframeCallback = function() {
-				var self = this,
-					args = arguments;
-				setTimeout(function() {
-					window.iframeCallback = undefined;
-					iframe.remove();
-					func.apply( self, args );
-					func = function() {};
+		// load fixture in iframe
+		var iframe = loadFixture(),
+			win = iframe.contentWindow,
+			interval = setInterval( function() {
+				if ( win && win.jQuery && win.jQuery.isReady ) {
+					clearInterval( interval );
+					// continue
 					start();
-				}, 0 );
-			};
-			iframe = jQuery( "<div/>" ).append(
-				jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) )
-			).appendTo( "body" );
-		});
-	};
+					// call actual tests passing the correct jQuery instance to use
+					fn.call( this, win.jQuery, win, win.document );
+					document.body.removeChild( iframe );
+					iframe = null;
+				}
+			}, 15 );
+	});
 
-	window.iframeCallback = undefined;
-}());
+	function loadFixture() {
+		var src = url("./data/" + fileName + ".html"),
+			iframe = jQuery("<iframe />").appendTo("body")[0];
+			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
+		iframe.contentWindow.location = src;
+		return iframe;
+	}
+};
+
+this.testIframeWithCallback = function( title, fileName, func ) {
+
+	test( title, function() {
+		var iframe;
+
+		stop();
+		window.iframeCallback = function() {
+			var self = this,
+				args = arguments;
+			setTimeout(function() {
+				window.iframeCallback = undefined;
+				iframe.remove();
+				func.apply( self, args );
+				func = function() {};
+				start();
+			}, 0 );
+		};
+		iframe = jQuery( "<div/>" ).append(
+			jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) )
+		).appendTo( "body" );
+	});
+};

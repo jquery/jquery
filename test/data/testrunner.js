@@ -10,13 +10,13 @@ jQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ],
 
 // Expose Sizzle for Sizzle's selector tests
 // We remove Sizzle's globalization in jQuery
-var Sizzle = Sizzle || jQuery.find;
+var Sizzle = Sizzle || jQuery.find,
 
 // Allow subprojects to test against their own fixtures
-var qunitModule = QUnit.module,
+	qunitModule = QUnit.module,
 	qunitTest = QUnit.test;
 
-function testSubproject( label, url, risTests ) {
+this.testSubproject = function( label, url, risTests ) {
 	var sub, fixture, fixtureHTML,
 		fixtureReplaced = false;
 
@@ -132,11 +132,11 @@ function testSubproject( label, url, risTests ) {
 			fn.apply( this, arguments );
 		};
 	}
-}
+};
 
 // Register globals for cleanup and the cleanup code itself
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
-var Globals = (function() {
+this.Globals = (function() {
 	var globals = {};
 	return {
 		register: function( name ) {
