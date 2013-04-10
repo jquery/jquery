@@ -115,6 +115,10 @@ module.exports = function( grunt ) {
 					sourceMap: "dist/jquery.min.map",
 					beautify: {
 						ascii_only: true
+					},
+					mangle: {
+						// saves some bytes when gzipped
+						except: [ "undefined" ]
 					}
 				}
 			}
