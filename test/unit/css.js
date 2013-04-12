@@ -856,6 +856,17 @@ test( "css opacity consistency across browsers (#12685)", function() {
 	equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
 });
 
+
+test( "left px value across browser (#12685)", function() {
+    expect( 1 );
+
+    var fixture = jQuery("#qunit-fixture"),
+        el = jQuery("<div style='position: absolute;padding: 20px;'>" +
+            "<div style='position: absolute'></div></div>").appendTo(fixture);
+
+    equal( el.find("div").css("left"), "20px" );
+});
+
 test( ":visible/:hidden selectors", function() {
 	expect( 13 );
 

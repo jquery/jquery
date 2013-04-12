@@ -78,14 +78,14 @@ jQuery.support = (function( support ) {
 		// Check box-sizing and margin behavior
 		body.appendChild( container ).appendChild( div );
 		div.innerHTML = "";
-		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
+		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;";
 
 		support.boxSizing = div.offsetWidth === 4;
 		support.doesNotIncludeMarginInBodyOffset = body.offsetTop !== 1;
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
-			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "auto";
 			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
 
 			// Check if div with explicit width and no margin-right incorrectly
