@@ -7,7 +7,7 @@ module.exports = function( grunt ) {
 			"dist/jquery.min.map",
 			"dist/jquery.min.js"
 		],
-    gzip = require("gzip-js"),
+		gzip = require("gzip-js"),
 		readOptionalJSON = function( filepath ) {
 			var data = {};
 			try {
