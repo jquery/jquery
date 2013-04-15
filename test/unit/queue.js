@@ -3,8 +3,7 @@ module( "queue", { teardown: moduleTeardown });
 test( "queue() with other types", 14, function() {
 	stop();
 
-	var defer,
-		$div = jQuery({}),
+	var $div = jQuery({}),
 		counter = 0;
 
 	$div.promise( "foo" ).done(function() {
@@ -27,7 +26,7 @@ test( "queue() with other types", 14, function() {
 			equal( ++counter, 4, "Dequeuing" );
 		});
 
-	defer = $div.promise("foo").done(function() {
+	$div.promise("foo").done(function() {
 		equal( counter, 4, "Testing previous call to dequeue in deferred"  );
 		start();
 	});
@@ -183,7 +182,7 @@ test("clearQueue() clears the fx queue", function() {
 });
 
 asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
-	var foo = jQuery( "#foo" ).clone().andSelf(),
+	var foo = jQuery( "#foo" ).clone().addBack(),
 		promised = false;
 
 	foo.queue( function( next ) {
