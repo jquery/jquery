@@ -506,15 +506,15 @@ jQuery(function() {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
 					if ( computed ) {
-						var el = jQuery(elem),
-							position = el.css("position"),
-							isAutoPosition;
-						if( position === "static" ) {
+						var	isAutoPosition,
+							elStyles = getStyles(elem),
+							position = curCSS( elem, "position", elStyles );
+						if ( position === "static" ) {
 							return "auto";
 						}
-						computed = curCSS( elem, prop );
+						computed = curCSS( elem, prop, elStyles );
 						isAutoPosition = computed === "auto";
-						if( isAutoPosition && position === "relative" ) {
+						if ( isAutoPosition && position === "relative" ) {
 							return "0px";
 						}
 						// if curCSS returns percentage or auto, fallback to offset

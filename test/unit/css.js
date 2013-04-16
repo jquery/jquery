@@ -884,7 +884,7 @@ test( "css left/top auto consistency across browsers (#13767)", function() {
 	equal( el.css("left"), "0px" );
 	equal( el.find("div").css("top"), "20px" );
 	equal( el.find("span").css("top"), "auto" );
-	equal( el.find("s").css("top").indexOf("px") != -1, true );
+	notEqual( el.find("s").css("top").indexOf("px"), -1 );
 });
 
 test( ":visible/:hidden selectors", function() {
