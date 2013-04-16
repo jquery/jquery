@@ -95,10 +95,9 @@ jQuery.fn.extend({
 
 	empty: function() {
 		var elem,
-			i = 0,
-			l = this.length;
+			i = this.length;
 
-		for ( ; i < l; i++ ) {
+		while( i-- ) {
 			elem = this[ i ];
 
 			if ( elem.nodeType === 1 ) {
