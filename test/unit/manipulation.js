@@ -592,41 +592,34 @@ test( "append(Function) with incoming value", function() {
 	QUnit.reset();
 });
 
-test( "replaceWith on XML document (#9960)", function() {
+test( "XML DOM manipulation (#9960)", function() {
 
-	expect( 1 );
+	expect( 5 );
 
-	var newNode,
+	var
 		xmlDoc1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
 		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
 		xml1 = jQuery( xmlDoc1 ),
 		xml2 = jQuery( xmlDoc2 ),
 		scxml1 = jQuery( "scxml", xml1 ),
-		scxml2 = jQuery( "scxml", xml2 );
+		scxml2 = jQuery( "scxml", xml2 ),
+		state = scxml2.find("state");
 
-	scxml1.replaceWith( scxml2 );
+	scxml1.append( state );
+	strictEqual( scxml1[0].lastChild, state[0], "append" );
 
-	newNode = jQuery( "scxml>state[id='provisioning3']", xml1 );
+	scxml1.prepend( state );
+	strictEqual( scxml1[0].firstChild, state[0], "prepend" );
 
-	equal( newNode.length, 1, "ReplaceWith not working on document nodes." );
+	scxml1.find("#finished").after( state );
+	strictEqual( scxml1[0].lastChild, state[0], "after" );
+
+	scxml1.find("#provisioning").before( state );
+	strictEqual( scxml1[0].firstChild, state[0], "before" );
+
+	scxml2.replaceWith( scxml1 );
+	deepEqual( jQuery( "state", xml2 ).get(), scxml1.find("state").get(), "replaceWith" );
 });
-
-// #12449
-test( "replaceWith([]) where replacing element requires cloning", function () {
-	expect(2);
-	jQuery("#qunit-fixture").append(
-		"<div class='replaceable'></div><div class='replaceable'></div>"
-	);
-	// replacing set needs to be cloned so it can cover 3 replacements
-	jQuery("#qunit-fixture .replaceable").replaceWith(
-		jQuery("<span class='replaced'></span><span class='replaced'></span>")
-	);
-	equal( jQuery("#qunit-fixture").find(".replaceable").length, 0,
-		"Make sure replaced elements were removed" );
-	equal( jQuery("#qunit-fixture").find(".replaced").length, 4,
-		"Make sure replacing elements were cloned" );
-});
-
 
 test( "append the same fragment with events (Bug #6997, 5566)", function() {
 
@@ -1141,7 +1134,7 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 function testReplaceWith( val ) {
 
 	var tmp, y, child, child2, set, non_existent, $div,
-		expected = 23;
+		expected = 26;
 
 	expect( expected );
 
@@ -1158,15 +1151,22 @@ function testReplaceWith( val ) {
 	equal( jQuery("#bar").text(),"Baz", "Replace element with text" );
 	ok( !jQuery("#baz")[ 0 ], "Verify that original element is gone, after element" );
 
+	jQuery("#bar").replaceWith( "<div id='yahoo'></div>", "...", "<div id='baz'></div>" );
+	deepEqual( jQuery("#yahoo, #baz").get(), q( "yahoo", "baz" ),  "Replace element with multiple arguments (#13722)" );
+	strictEqual( jQuery("#yahoo")[0].nextSibling, jQuery("#baz")[0].previousSibling, "Argument order preserved" );
+	deepEqual( jQuery("#bar").get(), [], "Verify that original element is gone, after multiple arguments" );
+
 	jQuery("#google").replaceWith( val([ document.getElementById("first"), document.getElementById("mark") ]) );
-	ok( jQuery("#first")[ 0 ], "Replace element with array of elements" );
-	ok( jQuery("#mark")[ 0 ], "Replace element with array of elements" );
+	deepEqual( jQuery("#mark, #first").get(), q( "first", "mark" ),  "Replace element with array of elements" );
 	ok( !jQuery("#google")[ 0 ], "Verify that original element is gone, after array of elements" );
 
 	jQuery("#groups").replaceWith( val(jQuery("#mark, #first")) );
-	ok( jQuery("#first")[ 0 ], "Replace element with set of elements" );
-	ok( jQuery("#mark")[ 0 ], "Replace element with set of elements" );
-	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after set of elements" );
+	deepEqual( jQuery("#mark, #first").get(), q( "first", "mark" ),  "Replace element with jQuery collection" );
+	ok( !jQuery("#groups")[ 0 ], "Verify that original element is gone, after jQuery collection" );
+
+	jQuery("#mark, #first").replaceWith( val("<span class='replacement'></span><span class='replacement'></span>") );
+	equal( jQuery("#qunit-fixture .replacement").length, 4, "Replace multiple elements (#12449)" );
+	deepEqual( jQuery("#mark, #first").get(), [], "Verify that original elements are gone, after replace multiple" );
 
 	tmp = jQuery("<b>content</b>")[0];
 	jQuery("#anchor1").contents().replaceWith( val(tmp) );
@@ -1253,13 +1253,22 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "replaceWith(\"\") (#13401)", 4, function() {
-	expect( 1 );
+test( "empty replaceWith (#13401; #13596)", 4, function() {
+	expect( 6 );
 
-	var div = jQuery("<div><p></p></div>");
+	var $el = jQuery("<div/>"),
+		tests = {
+			"empty string": "",
+			"empty array": [],
+			"empty collection": jQuery("#nonexistent")
+		};
 
-	div.children().replaceWith("");
-	equal( div.html().toLowerCase(), "", "Replacing with empty string removes element" );
+	jQuery.each( tests, function( label, input ) {
+		$el.html("<a/>").children().replaceWith( input );
+		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
+		$el.html("<b/>").children().replaceWith(function() { return input; });
+		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
+	});
 });
 
 test( "replaceAll(String|Element|Array<Element>|jQuery)", function() {
@@ -1309,6 +1318,21 @@ test( "append to multiple elements (#8070)", function() {
 
 	equal( selects[ 0 ].childNodes.length, 2, "First select got two nodes" );
 	equal( selects[ 1 ].childNodes.length, 2, "Second select got two nodes" );
+});
+
+test( "table manipulation", function() {
+	expect( 2 );
+
+	var table = jQuery("<table style='font-size:16px'></table>").appendTo("#qunit-fixture").empty(),
+		height = table[0].offsetHeight;
+
+	table.append("<tr><td>DATA</td></tr>");
+	ok( table[0].offsetHeight - height >= 15, "appended rows are visible" );
+
+	table.empty();
+	height = table[0].offsetHeight;
+	table.prepend("<tr><td>DATA</td></tr>");
+	ok( table[0].offsetHeight - height >= 15, "prepended rows are visible" );
 });
 
 test( "clone()", function() {
