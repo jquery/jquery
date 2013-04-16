@@ -507,7 +507,7 @@ jQuery(function() {
 				get: function( elem, computed ) {
 					if ( computed ) {
 						var isAutoPosition,
-							elStyles = getStyles(elem),
+							elStyles = getStyles( elem ),
 							position = curCSS( elem, "position", elStyles );
 						if ( position === "static" ) {
 							return "auto";
