@@ -9,7 +9,7 @@
 	<!-- Includes -->
 
 	<!-- Allows us to fetch submodule tests when using a no-ajax build -->
-	<script src="data/jquery-1.8.2.ajax_xhr.min.js"></script>
+	<script src="data/jquery-1.9.1.ajax_xhr.min.js"></script>
 
 	<script src="data/testinit.js"></script>
 
@@ -57,6 +57,7 @@
 	<script src="unit/selector.js"></script>
 	<script src="unit/traversing.js"></script>
 	<script src="unit/manipulation.js"></script>
+	<script src="unit/wrap.js"></script>
 	<script src="unit/css.js"></script>
 	<script src="unit/serialize.js"></script>
 	<script src="unit/ajax.js"></script>
@@ -272,6 +273,12 @@ Z</textarea>
 			<span>...</span><a id="linkWithNoHrefWithNoTabIndex">Eat a burger</a><span>...</span>
 			<span>...</span><a id="linkWithNoHrefWithTabIndex" tabindex="1">Eat some funyuns</a><span>...</span>
 			<span>...</span><a id="linkWithNoHrefWithNegativeTabIndex" tabindex="-1">Eat some funyuns</a><span>...</span>
+			<input id="inputWithoutTabIndex"/>
+			<button id="buttonWithoutTabIndex"></button>
+			<textarea id="textareaWithoutTabIndex"></textarea>
+			<menu type="popup">
+				<menuitem id="menuitemWithoutTabIndex" command="submitbutton" default/>
+			</menu>
 		</div>
 
 		<div id="liveHandlerOrder">

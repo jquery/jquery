@@ -20,7 +20,7 @@ test( "jQuery.data & removeData, expected returns", function() {
 	);
 	deepEqual(
 		jQuery.data( elem, { goodnight: "moon" }), { goodnight: "moon" },
-		"jQuery.data( elem, key, obj ) returns obj"
+		"jQuery.data( elem, obj ) returns obj"
 	);
 	equal(
 		jQuery.removeData( elem, "hello" ), undefined,
@@ -51,8 +51,19 @@ test( "jQuery._data & _removeData, expected returns", function() {
 	);
 });
 
+test( "jQuery.hasData no side effects", function() {
+	expect(1);
+	var obj = {};
+
+	jQuery.hasData( obj );
+
+	equal( Object.getOwnPropertyNames( obj ).length, 0,
+		"No data expandos where added when calling jQuery.hasData(o)"
+	);
+});
+
 function dataTests (elem) {
-	var oldCacheLength, dataObj, internalDataObj, expected, actual;
+	var dataObj, internalDataObj;
 
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
 	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
@@ -133,7 +144,7 @@ test("jQuery.data({})", 25, function() {
 test("jQuery.data(window)", 25, function() {
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
-	jQuery(window).unbind("unload");
+	jQuery(window).off("unload");
 
 	dataTests(window);
 });
@@ -159,37 +170,24 @@ test("jQuery.data(object/flash)", 25, function() {
 	dataTests( flash );
 });
 
-test("jQuery.data(object/applet)", 25, function() {
-	var applet = document.createElement("object");
-	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
-
-	dataTests( applet );
-});
-
-test("jQuery.data(comment)", 25, function() {
-	dataTests( document.createComment("") );
-});
-
-test("jQuery.data(text)", 25, function() {
-	dataTests( document.createTextNode("") );
-});
-
 test(".data()", function() {
 	expect(5);
 
-	var div = jQuery("#foo");
+	var div, dataObj, nodiv, obj;
+
+	div = jQuery("#foo");
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
 	div.data("test", "success");
 
-	var dataObj = div.data();
+	dataObj = div.data();
 
 	deepEqual( dataObj, {test: "success"}, "data() returns entire data object with expected properties" );
 	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
 
-	var nodiv = jQuery("#unfound");
+	nodiv = jQuery("#unfound");
 	equal( nodiv.data(), null, "data() on empty set returns null" );
 
-	var obj = { foo: "bar" };
+	obj = { foo: "bar" };
 	jQuery(obj).data("foo", "baz");
 
 	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
@@ -197,7 +195,7 @@ test(".data()", function() {
 	deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
 });
 
-var testDataTypes = function( $obj ) {
+function testDataTypes( $obj ) {
 	jQuery.each({
 		"null": null,
 		"true": true,
@@ -215,7 +213,7 @@ var testDataTypes = function( $obj ) {
 	}, function( type, value ) {
 		strictEqual( $obj.data( "test", value ).data("test"), value, "Data set to " + type );
 	});
-};
+}
 
 test("jQuery(Element).data(String, Object).data(String)", function() {
 	expect( 18 );
@@ -248,7 +246,9 @@ test("jQuery(plain Object).data(String, Object).data(String)", function() {
 
 test("data-* attributes", function() {
 	expect(40);
-	var div = jQuery("<div>"),
+	var prop, i, l, metadata, elem,
+		obj, obj2, check, num, num2,
+		div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
 
@@ -274,16 +274,15 @@ test("data-* attributes", function() {
 	child.data("ignored", "cache");
 	equal( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
 
-	var prop,
-			obj = child.data(),
-			obj2 = dummy.data(),
-			check = [ "myobj", "ignored", "other" ],
-			num = 0,
-			num2 = 0;
+	obj = child.data();
+	obj2 = dummy.data();
+	check = [ "myobj", "ignored", "other" ];
+	num = 0;
+	num2 = 0;
 
 	dummy.remove();
 
-	for ( var i = 0, l = check.length; i < l; i++ ) {
+	for ( i = 0, l = check.length; i < l; i++ ) {
 		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );
 		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
 	}
@@ -365,8 +364,8 @@ test("data-* attributes", function() {
 		}
 	}
 
-	var metadata = "<ol><li class='test test2' data-foo='bar' data-bar='baz' data-arr='[1,2]'>Some stuff</li><li class='test test2' data-test='bar' data-bar='baz'>Some stuff</li><li class='test test2' data-zoooo='bar' data-bar='{\"test\":\"baz\"}'>Some stuff</li><li class='test test2' data-number=true data-stuff='[2,8]'>Some stuff</li></ol>",
-		elem = jQuery(metadata).appendTo("#qunit-fixture");
+	metadata = "<ol><li class='test test2' data-foo='bar' data-bar='baz' data-arr='[1,2]'>Some stuff</li><li class='test test2' data-test='bar' data-bar='baz'>Some stuff</li><li class='test test2' data-zoooo='bar' data-bar='{\"test\":\"baz\"}'>Some stuff</li><li class='test test2' data-number=true data-stuff='[2,8]'>Some stuff</li></ol>";
+	elem = jQuery(metadata).appendTo("#qunit-fixture");
 
 	elem.find("li").each(testData);
 	elem.remove();
@@ -375,14 +374,16 @@ test("data-* attributes", function() {
 test(".data(Object)", function() {
 	expect(4);
 
-	var div = jQuery("<div/>");
+	var obj, jqobj,
+		div = jQuery("<div/>");
 
 	div.data({ "test": "in", "test2": "in2" });
 	equal( div.data("test"), "in", "Verify setting an object in data" );
 	equal( div.data("test2"), "in2", "Verify setting an object in data" );
 
-	var obj = {test:"unset"},
-		jqobj = jQuery(obj);
+	obj = {test:"unset"};
+	jqobj = jQuery(obj);
+
 	jqobj.data("test", "unset");
 	jqobj.data({ "test": "in", "test2": "in2" });
 	equal( jQuery.data(obj)["test"], "in", "Verify setting an object on an object extends the data object" );
@@ -394,7 +395,9 @@ test(".data(Object)", function() {
 
 test("jQuery.removeData", function() {
 	expect(10);
-	var div = jQuery("#foo")[0];
+
+	var obj,
+		div = jQuery("#foo")[0];
 	jQuery.data(div, "test", "testing");
 	jQuery.removeData(div, "test");
 	equal( jQuery.data(div, "test"), undefined, "Check removal of data" );
@@ -426,7 +429,7 @@ test("jQuery.removeData", function() {
 	ok( !jQuery.data(div, "test3 test4"), "Multiple delete with spaces deleted key with exact name" );
 	ok( jQuery.data(div, "test3"), "Left the partial matched key alone" );
 
-	var obj = {};
+	obj = {};
 	jQuery.data(obj, "test", "testing");
 	equal( jQuery(obj).data("test"), "testing", "verify data on plain object");
 	jQuery.removeData(obj, "test");
@@ -598,7 +601,7 @@ test(".data supports interoperable removal of hyphenated/camelCase properties", 
 	});
 });
 
-test( ".removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
+test( ".removeData supports removal of hyphenated properties via array (#12786)", function() {
 	expect( 4 );
 
 	var div, plain, compare;
@@ -635,7 +638,7 @@ test(".removeData should not throw exceptions. (#10080)", function() {
 	expect(1);
 	stop();
 	var frame = jQuery("#loadediframe");
-	jQuery(frame[0].contentWindow).bind("unload", function() {
+	jQuery(frame[0].contentWindow).on("unload", function() {
 		ok(true, "called unload");
 		start();
 	});
@@ -680,4 +683,24 @@ test(".data doesn't throw when calling selection is empty. #13551", function() {
 	} catch ( e ) {
 		ok( false, e.message );
 	}
+});
+
+test("jQuery.acceptData", 6, function() {
+	ok( jQuery.acceptData( document ), "document" );
+	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
+	ok( jQuery.acceptData( {} ), "object" );
+
+	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
+	ok( !jQuery.acceptData( document.createDocumentFragment() ), "documentFragment" );
+});
+
+test("Check proper data removal of non-element descendants nodes (#8335)", 1, function() {
+	var div = jQuery("<div>text</div>"),
+		text = div.contents();
+
+	text.data( "test", "test" ); // This should be a noop.
+	div.remove();
+
+	ok( !text.data("test"), "Be sure data is not stored in non-element" );
 });

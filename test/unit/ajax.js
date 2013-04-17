@@ -503,10 +503,10 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - beforeSend", 1, {
 		url: url("data/name.html"),
-		beforeSend: function( xml ) {
+		beforeSend: function() {
 			this.check = true;
 		},
-		success: function( data ) {
+		success: function() {
 			ok( this.check, "check beforeSend was executed" );
 		}
 	});
@@ -576,14 +576,14 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object", 8, function() {
-		var target = "data/name.html";
-		var successCount = 0;
-		var errorCount = 0;
-		var errorEx = "";
-		var success = function() {
-			successCount++;
-		};
-		jQuery( document ).on( "ajaxError.passthru", function( e, xml, s, ex ) {
+		var target = "data/name.html",
+			successCount = 0,
+			errorCount = 0,
+			errorEx = "",
+			success = function() {
+				successCount++;
+			};
+		jQuery( document ).on( "ajaxError.passthru", function( e, xml ) {
 			errorCount++;
 			errorEx += ": " + xml.status;
 		});
@@ -847,7 +847,7 @@ module( "ajax", {
 		},
 		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
 		dataType: "script",
-		success: function( data ) {
+		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
 		}
 	});
@@ -871,7 +871,7 @@ module( "ajax", {
 		},
 		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/test.js",
 		dataType: "script",
-		success: function( data ) {
+		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
 		}
 	});
@@ -1045,7 +1045,6 @@ module( "ajax", {
 			ok( jqXHR.statusText === "Hello" || jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
 			jQuery.ajax( url("data/statusText.php?status=404&text=World") ).fail(function( jqXHR, statusText ) {
 				strictEqual( statusText, "error", "callback status text ok for error" );
-				// ok( jqXHR.statusText === "World" || jQuery.browser.safari && jqXHR.statusText === "Not Found", "jqXHR status text ok for error (" + jqXHR.statusText + ")" );
 				start();
 			});
 		});
@@ -1251,9 +1250,10 @@ module( "ajax", {
 	});
 
 	test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
-		var success = false;
+		var xhr,
+			success = false;
 		try {
-			var xhr = jQuery.ajax({
+			xhr = jQuery.ajax({
 				url: window.location
 			});
 			success = true;
@@ -1269,7 +1269,7 @@ module( "ajax", {
 			url: "data/jsonp.php",
 			dataType: "jsonp",
 			crossDomain: crossDomain,
-			beforeSend: function( jqXHR, s ) {
+			beforeSend: function() {
 				strictEqual( this.cache, false, "cache must be false on JSON request" );
 				return false;
 			},
@@ -1535,12 +1535,12 @@ module( "ajax", {
 		var passed = 0,
 			pass = function() {
 				ok( passed++ < 2, "Error callback executed" );
-				if ( passed == 2 ) {
+				if ( passed === 2 ) {
 					jQuery( document ).off("ajaxError.setupTest");
 					start();
 				}
 			},
-			fail = function( a, b, c ) {
+			fail = function( a, b ) {
 				ok( false, "Check for timeout failed " + a + " " + b );
 				start();
 			};
@@ -1585,13 +1585,13 @@ module( "ajax", {
 			type: "POST"
 		});
 
-		jQuery( document ).bind( "ajaxStart ajaxStop", function() {
+		jQuery( document ).on( "ajaxStart ajaxStop", function() {
 			ok( false, "Global event triggered" );
 		});
 
 		jQuery("#qunit-fixture").append("<script src='data/evalScript.php'></script>");
 
-		jQuery( document ).unbind("ajaxStart ajaxStop");
+		jQuery( document ).off("ajaxStart ajaxStop");
 	});
 
 	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
@@ -1663,7 +1663,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
+		jQuery.getScript( url("data/test.js"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
 			start();
 		});
@@ -1800,8 +1800,7 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery.fn.load() - callbacks get the correct parameters", 8, function() {
-		var slice = [].slice,
-			completeArgs = {};
+		var completeArgs = {};
 
 		jQuery.ajaxSetup({
 			success: function( _, status, jqXHR ) {
@@ -1845,7 +1844,7 @@ module( "ajax", {
 		});
 		jQuery( document ).ajaxComplete(function( e, xml, s ) {
 			strictEqual( s.dataType, "html", "Verify the load() dataType was html" );
-			jQuery( document ).unbind("ajaxComplete");
+			jQuery( document ).off("ajaxComplete");
 			start();
 		});
 		jQuery("#first").load("data/test3.html");

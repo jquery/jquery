@@ -47,7 +47,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 				funcPromise = defer.promise( func );
 			strictEqual( defer.promise(), promise, "promise is always the same" );
 			strictEqual( funcPromise, func, "non objects get extended" );
-			jQuery.each( promise, function( key, value ) {
+			jQuery.each( promise, function( key ) {
 				if ( !jQuery.isFunction( promise[ key ] ) ) {
 					ok( false, key + " is a function (" + jQuery.type( promise[ key ] ) + ")" );
 				}
@@ -275,7 +275,8 @@ test( "jQuery.Deferred.then - context", function() {
 
 	expect( 7 );
 
-	var context = {};
+	var defer, piped, defer2, piped2,
+		context = {};
 
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).then(function( value ) {
 		return value * 3;
@@ -290,10 +291,10 @@ test( "jQuery.Deferred.then - context", function() {
 		strictEqual( this, context, "custom context of returned deferred correctly propagated" );
 	});
 
-	var defer = jQuery.Deferred(),
-		piped = defer.then(function( value ) {
-			return value * 3;
-		});
+	defer = jQuery.Deferred();
+	piped = defer.then(function( value ) {
+		return value * 3;
+	});
 
 	defer.resolve( 2 );
 
@@ -302,8 +303,8 @@ test( "jQuery.Deferred.then - context", function() {
 		strictEqual( value, 6, "proper value received" );
 	});
 
-	var defer2 = jQuery.Deferred(),
-		piped2 = defer2.then();
+	defer2 = jQuery.Deferred();
+	piped2 = defer2.then();
 
 	defer2.resolve( 2 );
 
@@ -319,7 +320,6 @@ test( "jQuery.when", function() {
 
 	// Some other objects
 	jQuery.each({
-
 		"an empty string": "",
 		"a non-empty string": "some string",
 		"zero": 0,
@@ -329,9 +329,7 @@ test( "jQuery.when", function() {
 		"null": null,
 		"undefined": undefined,
 		"a plain object": {}
-
 	}, function( message, value ) {
-
 		ok(
 			jQuery.isFunction(
 				jQuery.when( value ).done(function( resolveValue ) {
@@ -341,8 +339,7 @@ test( "jQuery.when", function() {
 			),
 			"Test " + message + " triggers the creation of a new Promise"
 		);
-
-	} );
+	});
 
 	ok(
 		jQuery.isFunction(
@@ -354,13 +351,12 @@ test( "jQuery.when", function() {
 		"Test calling when with no parameter triggers the creation of a new Promise"
 	);
 
-	var context = {};
+	var cache,
+		context = {};
 
 	jQuery.when( jQuery.Deferred().resolveWith( context ) ).done(function() {
 		strictEqual( this, context, "when( promise ) propagates context" );
 	});
-
-	var cache;
 
 	jQuery.each([ 1, 2, 3 ], function( k, i ) {
 

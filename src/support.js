@@ -12,15 +12,13 @@ jQuery.support = (function( support ) {
 
 	input.type = "checkbox";
 
+	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
 	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
-	support.checkOn = input.value === "";
+	support.checkOn = input.value !== "";
 
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
 	support.optSelected = opt.selected;
-
-	// jQuery.support.boxModel DEPRECATED in 1.8 since we don't support Quirks Mode
-	support.boxModel = document.compatMode === "CSS1Compat";
 
 	// Will be defined later
 	support.reliableMarginRight = true;
@@ -38,7 +36,7 @@ jQuery.support = (function( support ) {
 	support.optDisabled = !opt.disabled;
 
 	// Check if an input maintains its value after becoming a radio
-	// Support: IE9, IE10, Opera
+	// Support: IE9, IE10
 	input = document.createElement("input");
 	input.value = "t";
 	input.type = "radio";
@@ -50,10 +48,11 @@ jQuery.support = (function( support ) {
 
 	fragment.appendChild( input );
 
+	// Support: Safari 5.1, Android 4.x, Android 2.3
 	// old WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
-	// Support: Firefox 17+
+	// Support: Firefox, Chrome, Safari
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
 	support.focusinBubbles = "onfocusin" in window;
 
@@ -64,7 +63,8 @@ jQuery.support = (function( support ) {
 	// Run tests that need a body at doc ready
 	jQuery(function() {
 		var container, marginDiv,
-			divReset = "padding:0;margin:0;border:0;display:block;box-sizing:content-box;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;",
+			// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
 			body = document.getElementsByTagName("body")[ 0 ];
 
 		if ( !body ) {
@@ -75,22 +75,26 @@ jQuery.support = (function( support ) {
 		container = document.createElement("div");
 		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 
-		// Check box-sizing and margin behavior
+		// Check box-sizing and margin behavior.
 		body.appendChild( container ).appendChild( div );
 		div.innerHTML = "";
-		div.style.cssText = "box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%;";
+		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+		div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%";
 
-		support.boxSizing = div.offsetWidth === 4;
-		support.doesNotIncludeMarginInBodyOffset = body.offsetTop !== 1;
+		// Workaround failing boxSizing test due to offsetWidth returning wrong value
+		// with some non-1 values of body zoom, ticket #13543
+		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
+			support.boxSizing = div.offsetWidth === 4;
+		});
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
 			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
 			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
 
+			// Support: Android 2.3
 			// Check if div with explicit width and no margin-right incorrectly
 			// gets computed margin-right based on width of container. (#3333)
-			// Fails in WebKit before Feb 2011 nightlies
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 			marginDiv = div.appendChild( document.createElement("div") );
 			marginDiv.style.cssText = div.style.cssText = divReset;

@@ -7,24 +7,38 @@ module.exports = function( grunt ) {
 			"dist/jquery.min.map",
 			"dist/jquery.min.js"
 		],
+		gzip = require("gzip-js"),
 		readOptionalJSON = function( filepath ) {
 			var data = {};
 			try {
 				data = grunt.file.readJSON( filepath );
 			} catch(e) {}
 			return data;
-		};
+		},
+		srcHintOptions = readOptionalJSON("src/.jshintrc");
+
+	// The concatenated file won't pass onevar
+	// But our modules can
+	delete srcHintOptions.onevar;
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON("package.json"),
 		dst: readOptionalJSON("dist/.destination.json"),
 		compare_size: {
-			files: distpaths
+			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
+			options: {
+				compress: {
+					gz: function( contents ) {
+						return gzip.zip( contents, {} ).length;
+					}
+				},
+				cache: "dist/.sizecache.json"
+			}
 		},
 		selector: {
 			destFile: "src/selector-sizzle.js",
 			apiFile: "src/sizzle-jquery.js",
-			srcFile: "src/sizzle/sizzle.js"
+			srcFile: "src/sizzle/dist/sizzle.js"
 		},
 		build: {
 			all:{
@@ -32,6 +46,7 @@ module.exports = function( grunt ) {
 				src: [
 					"src/intro.js",
 					"src/core.js",
+					{ flag: "sizzle", src: "src/selector-sizzle.js", alt: "src/selector-native.js" },
 					"src/callbacks.js",
 					"src/deferred.js",
 					"src/support.js",
@@ -39,9 +54,9 @@ module.exports = function( grunt ) {
 					"src/queue.js",
 					"src/attributes.js",
 					"src/event.js",
-					{ flag: "sizzle", src: "src/selector-sizzle.js", alt: "src/selector-native.js" },
 					"src/traversing.js",
 					"src/manipulation.js",
+					{ flag: "wrap", src: "src/wrap.js" },
 					{ flag: "css", src: "src/css.js" },
 					"src/serialize.js",
 					{ flag: "event-alias", src: "src/event-alias.js" },
@@ -63,9 +78,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			dist: {
 				src: [ "dist/jquery.js" ],
-				options: {
-					jshintrc: "src/.jshintrc"
-				}
+				options: srcHintOptions
 			},
 			grunt: {
 				src: [ "Gruntfile.js" ],
@@ -102,6 +115,10 @@ module.exports = function( grunt ) {
 					sourceMap: "dist/jquery.min.map",
 					beautify: {
 						ascii_only: true
+					},
+					mangle: {
+						// saves some bytes when gzipped
+						except: [ "undefined" ]
 					}
 				}
 			}
@@ -378,14 +395,8 @@ module.exports = function( grunt ) {
 			// Embed Date
 			compiled = compiled.replace( /@VERSION/g, version )
 				.replace( "@DATE", function () {
-					var date = new Date();
-
 					// YYYY-MM-DD
-					return [
-						date.getFullYear(),
-						date.getMonth() + 1,
-						date.getDate()
-					].join( "-" );
+					return ( new Date() ).toISOString().replace( /T.*/, "" );
 				});
 
 			// Write concatenated source to file
@@ -402,7 +413,7 @@ module.exports = function( grunt ) {
 
 	// Process files for distribution
 	grunt.registerTask( "dist", function() {
-		var flags, paths, stored;
+		var stored, flags, paths, fs, nonascii;
 
 		// Check for stored destination paths
 		// ( set in dist/.destination.json )
@@ -417,8 +428,8 @@ module.exports = function( grunt ) {
 		});
 
 		// Ensure the dist files are pure ASCII
-		var fs = require("fs"),
-			nonascii = false;
+		fs = require("fs");
+		nonascii = false;
 
 		distpaths.forEach(function( filename ) {
 			var i, c, map,
