@@ -163,10 +163,9 @@ jQuery.fn.extend({
 	remove: function( selector, keepData ) {
 		var elem,
 			elems = selector ? jQuery.filter( selector, this ) : this,
-			i = elems.length;
+			i = 0;
 
-		while ( i-- ) {
-			elem = elems[ i ];
+		for ( ; (elem = elems[i]) != null; i++ ) {
 
 			if ( !keepData && elem.nodeType === 1 ) {
 				jQuery.cleanData( getAll( elem ) );

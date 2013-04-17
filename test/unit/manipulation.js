@@ -1827,6 +1827,30 @@ test( "remove() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
+test( "remove() in document order #13779", 1, function() {
+	var last,
+		cleanData = jQuery.cleanData;
+
+	jQuery.cleanData = function( nodes ) {
+		last = nodes[0].textContent;
+		cleanData.call( this, nodes );
+	};
+
+	jQuery("#qunit-fixture").append(
+		jQuery.parseHTML(
+			"<div class='removal-fixture'>1</div>" +
+			"<div class='removal-fixture'>2</div>" +
+			"<div class='removal-fixture'>3</div>"
+		)
+	);
+
+	jQuery(".removal-fixture").remove();
+
+	equal( last, 3, "The removal fixtures were removed in document order" );
+
+	jQuery.cleanData = cleanData;
+});
+
 test( "detach()", 11, function() {
 	testRemove("detach");
 });
