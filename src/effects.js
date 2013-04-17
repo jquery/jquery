@@ -317,7 +317,6 @@ function defaultPrefilter( elem, props, opts ) {
 					hidden = true;
 				} else {
 				continue;
-
 			}
 			}
 			handled.push( index );
