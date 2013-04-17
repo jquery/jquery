@@ -75,12 +75,9 @@ jQuery.fn.extend({
 	remove: function( selector, keepData ) {
 		var elem,
 			elems = selector ? jQuery.filter( selector, this ) : this,
-			i = 0,
-			l = elems.length;
+			i = 0;
 
-		for ( ; i < l; i++ ) {
-			elem = elems[ i ];
-
+		for ( ; (elem = elems[i]) != null; i++ ) {
 			if ( !keepData && elem.nodeType === 1 ) {
 				jQuery.cleanData( getAll( elem ) );
 			}
@@ -98,12 +95,9 @@ jQuery.fn.extend({
 
 	empty: function() {
 		var elem,
-			i = 0,
-			l = this.length;
+			i = 0;
 
-		for ( ; i < l; i++ ) {
-			elem = this[ i ];
-
+		for ( ; (elem = this[i]) != null; i++ ) {
 			if ( elem.nodeType === 1 ) {
 
 				// Prevent memory leaks
