@@ -56,6 +56,7 @@ module.exports = function( grunt ) {
 					"src/event.js",
 					"src/traversing.js",
 					"src/manipulation.js",
+					{ flag: "wrap", src: "src/wrap.js" },
 					{ flag: "css", src: "src/css.js" },
 					"src/serialize.js",
 					{ flag: "event-alias", src: "src/event-alias.js" },
