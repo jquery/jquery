@@ -1577,7 +1577,7 @@ test( "remove() in document order #13779", 1, function() {
 		cleanData = jQuery.cleanData;
 
 	jQuery.cleanData = function( nodes ) {
-		last = nodes[0].textContent;
+		last = jQuery.text( nodes[0] );
 		cleanData.call( this, nodes );
 	};
 
