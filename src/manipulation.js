@@ -75,9 +75,10 @@ jQuery.fn.extend({
 	remove: function( selector, keepData ) {
 		var elem,
 			elems = selector ? jQuery.filter( selector, this ) : this,
-			i = elems.length;
+			i = 0,
+			l = elems.length;
 
-		while ( i-- ) {
+		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
 
 			if ( !keepData && elem.nodeType === 1 ) {
