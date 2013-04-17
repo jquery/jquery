@@ -1880,14 +1880,19 @@ test( "html() - script exceptions bubble (#11743)", function() {
 		ok( false, "Exception ignored" );
 	}, "Exception bubbled from inline script" );
 
-	var onerror = window.onerror;
-	window.onerror = function() {
-		ok( true, "Exception thrown in remote script" );
-		window.onerror = onerror;
-	};
+	if ( jQuery.ajax ) {
+		var onerror = window.onerror;
+		window.onerror = function() {
+			ok( true, "Exception thrown in remote script" );
+			window.onerror = onerror;
+		};
 
-	jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
-	ok( true, "Exception ignored" );
+		jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
+		ok( true, "Exception ignored" );
+	} else {
+		ok( true, "No jQuery.ajax" );
+		ok( true, "No jQuery.ajax" );
+	}
 });
 
 test( "checked state is cloned with clone()", function() {
@@ -1927,7 +1932,7 @@ testIframeWithCallback( "buildFragment works even if document[0] is iframe's win
 
 test( "script evaluation (#11795)", function() {
 
-	expect( 11 );
+	expect( 13 );
 
 	var scriptsIn, scriptsOut,
 		fixture = jQuery("#qunit-fixture").empty(),
@@ -1968,6 +1973,44 @@ test( "script evaluation (#11795)", function() {
 	fixture.append( scriptsOut.detach() );
 	deepEqual( fixture.children("script").get(), scriptsOut.get(), "Scripts detached without reevaluation" );
 	objGlobal.ok = isOk;
+
+	if ( jQuery.ajax ) {
+		Globals.register("testBar");
+		jQuery("#qunit-fixture").append( "<script src='" + url("data/test.js") + "'/>" );
+		strictEqual( window["testBar"], "bar", "Global script evaluation" );
+	} else {
+		ok( true, "No jQuery.ajax" );
+		ok( true, "No jQuery.ajax" );
+	}
+});
+
+test( "jQuery._evalUrl (#12838)", function() {
+
+	expect( 5 );
+
+	var message, expectedArgument,
+		ajax = jQuery.ajax,
+		evalUrl = jQuery._evalUrl;
+
+	message = "jQuery.ajax implementation";
+	expectedArgument = 1;
+	jQuery.ajax = function( input ) {
+		equal( ( input.url || input ).slice( -1 ), expectedArgument, message );
+		expectedArgument++;
+	};
+	jQuery("#qunit-fixture").append("<script src='1'/><script src='2'/>");
+	equal( expectedArgument, 3, "synchronous execution" );
+
+	message = "custom implementation";
+	expectedArgument = 3;
+	jQuery._evalUrl = jQuery.ajax;
+	jQuery.ajax = function( options ) {
+		strictEqual( options, {}, "Unexpected call to jQuery.ajax" );
+	};
+	jQuery("#qunit-fixture").append("<script src='3'/><script src='4'/>");
+
+	jQuery.ajax = ajax;
+	jQuery._evalUrl = evalUrl;
 });
 
 test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
