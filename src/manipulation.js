@@ -433,35 +433,35 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, elem, type,
-			l = elems.length,
-			i = 0,
-			special = jQuery.event.special;
+		var data, elem, events, type, key, j,
+			special = jQuery.event.special,
+			i = 0;
 
-		for ( ; i < l; i++ ) {
-			elem = elems[ i ];
+		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
+			if ( Data.accepts( elem ) ) {
+				key = elem[ data_priv.expando ];
 
-			if ( jQuery.acceptData( elem ) ) {
+				if ( key && (data = data_priv.cache[ key ]) ) {
+					events = Object.keys( data.events || {} );
+					if ( events.length ) {
+						for ( j = 0; (type = events[j]) !== undefined; j++ ) {
+							if ( special[ type ] ) {
+								jQuery.event.remove( elem, type );
 
-				data = data_priv.access( elem );
-
-				if ( data ) {
-					for ( type in data.events ) {
-						if ( special[ type ] ) {
-							jQuery.event.remove( elem, type );
-
-						// This is a shortcut to avoid jQuery.event.remove's overhead
-						} else {
-							jQuery.removeEvent( elem, type, data.handle );
+							// This is a shortcut to avoid jQuery.event.remove's overhead
+							} else {
+								jQuery.removeEvent( elem, type, data.handle );
+							}
 						}
+					}
+					if ( data_priv.cache[ key ] ) {
+						// Discard any remaining `private` data
+						delete data_priv.cache[ key ];
 					}
 				}
 			}
-			// Discard any remaining `private` and `user` data
-			// One day we'll replace the dual arrays with a WeakMap and this won't be an issue.
-			// (Splices the data objects out of the internal cache arrays)
-			data_user.discard( elem );
-			data_priv.discard( elem );
+			// Discard any remaining `user` data
+			delete data_user.cache[ elem[ data_user.expando ] ];
 		}
 	},
 
