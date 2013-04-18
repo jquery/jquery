@@ -513,12 +513,8 @@ jQuery(function() {
 							return "auto";
 						}
 						computed = curCSS( elem, prop, elStyles );
-						isAutoPosition = computed === "auto";
-						if ( isAutoPosition && position === "relative" ) {
-							return "0px";
-						}
 						// if curCSS returns percentage or auto, fallback to offset
-						return isAutoPosition || rnumnonpx.test( computed ) ?
+						return computed === "auto" && position !== "relative" || rnumnonpx.test( computed ) ?
 							jQuery( elem ).position()[ prop ] + "px" :
 							computed;
 					}
