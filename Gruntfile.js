@@ -116,6 +116,12 @@ module.exports = function( grunt ) {
 					beautify: {
 						ascii_only: true
 					},
+					compress: {
+						hoist_funs: false,
+						join_vars: false,
+						loops: false,
+						unused: false
+					},
 					mangle: {
 						// saves some bytes when gzipped
 						except: [ "undefined" ]
