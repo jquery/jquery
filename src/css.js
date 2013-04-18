@@ -506,8 +506,7 @@ jQuery(function() {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
 					if ( computed ) {
-						var isAutoPosition,
-							elStyles = getStyles( elem ),
+						var elStyles = getStyles( elem ),
 							position = curCSS( elem, "position", elStyles );
 						if ( position === "static" ) {
 							return "auto";
