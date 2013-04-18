@@ -319,8 +319,7 @@ function manipulationTarget( elem, content ) {
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {
-	var attr = elem.getAttributeNode("type");
-	elem.type = ( attr && attr.specified ) + "/" + elem.type;
+	elem.type = !!jQuery.find.attr( elem, "type" ) + "/" + elem.type;
 	return elem;
 }
 function restoreScript( elem ) {

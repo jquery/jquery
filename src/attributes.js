@@ -229,10 +229,11 @@ jQuery.extend({
 	valHooks: {
 		option: {
 			get: function( elem ) {
-				// attributes.value is undefined in Blackberry 4.7 but
-				// uses .value. See #6932
-				var val = elem.attributes.value;
-				return !val || val.specified ? elem.value : elem.text;
+				// Use proper attribute retrieval(#6932, #12072)
+				var val = jQuery.find.attr( elem, "value" );
+				return val != null ?
+					val :
+					elem.text;
 			}
 		},
 		select: {
@@ -430,10 +431,11 @@ jQuery.extend({
 			get: function( elem ) {
 				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
 				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
-				var attributeNode = elem.getAttributeNode("tabindex");
+				// Use proper attribute retrieval(#12072)
+				var tabindex = jQuery.find.attr( elem, "tabindex" );
 
-				return attributeNode && attributeNode.specified ?
-					parseInt( attributeNode.value, 10 ) :
+				return tabindex ?
+					parseInt( tabindex, 10 ) :
 					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
 						0 :
 						-1;
@@ -489,13 +491,12 @@ jQuery.each( jQuery.expr.match.boolean.source.match( /\w+/g ), function( i, name
 // fix oldIE attroperties
 if ( !getSetInput || !getSetAttribute ) {
 	jQuery.expr.attrHandle.value = function( elem, name, isXML ) {
-		var ret = elem.getAttributeNode( name );
-		return isXML ? undefined : jQuery.nodeName( elem, "input" ) ?
-
-			// Ignore the value *property* by using defaultValue
-			elem.defaultValue :
-
-			ret && ret.specified ? ret.value : undefined;
+		var ret;
+		return isXML ? undefined :
+			// Ignore the value *property* on inputs by using defaultValue
+			jQuery.nodeName( elem, "input" ) ? elem.defaultValue :
+			// Retrieve the attribute
+			(ret = elem.getAttributeNode( name )) && ret.specified ? ret.value : undefined;
 	};
 	jQuery.attrHooks.value = {
 		set: function( elem, value, name ) {
