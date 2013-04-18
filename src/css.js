@@ -509,16 +509,13 @@ jQuery(function() {
 						var isAutoPosition,
 							elStyles = getStyles( elem ),
 							position = curCSS( elem, "position", elStyles );
-						if ( position === "static" ) {
-							return "auto";
-						}
 						computed = curCSS( elem, prop, elStyles );
 						isAutoPosition = computed === "auto";
 						if ( isAutoPosition && position === "relative" ) {
 							return "0px";
 						}
 						// if curCSS returns percentage or auto, fallback to offset
-						return isAutoPosition || rnumnonpx.test( computed ) ?
+						return isAutoPosition && position !== "static" || rnumnonpx.test( computed ) ?
 							jQuery( elem ).position()[ prop ] + "px" :
 							computed;
 					}
