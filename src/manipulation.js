@@ -433,29 +433,31 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
-		var data, elem, events, type, j,
+		var data, elem, events, type, key, j,
 			special = jQuery.event.special,
 			i = 0;
 
 		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
 			if ( Data.accepts( elem ) ) {
-				if ( data_priv.hasData( elem ) ) {
-					if ( (data = data_priv.get( elem )) ) {
-						events = Object.keys( data.events || {} );
-						if ( events.length ) {
-							for ( j = 0; (type = events[j]) !== undefined; j++ ) {
-								if ( special[ type ] ) {
-									jQuery.event.remove( elem, type );
+				key = elem[ data_priv.expando ];
 
-								// This is a shortcut to avoid jQuery.event.remove's overhead
-								} else {
-									jQuery.removeEvent( elem, type, data.handle );
-								}
+				if ( key && (data = data_priv.cache[ key ]) ) {
+					events = Object.keys( data.events || {} );
+					if ( events.length ) {
+						for ( j = 0; (type = events[j]) !== undefined; j++ ) {
+							if ( special[ type ] ) {
+								jQuery.event.remove( elem, type );
+
+							// This is a shortcut to avoid jQuery.event.remove's overhead
+							} else {
+								jQuery.removeEvent( elem, type, data.handle );
 							}
 						}
 					}
-					// Discard any remaining `private` data
-					delete data_priv.cache[ elem[ data_priv.expando ] ];
+					if ( data_priv.cache[ key ] ) {
+						// Discard any remaining `private` data
+						delete data_priv.cache[ key ];
+					}
 				}
 			}
 			// Discard any remaining `user` data
