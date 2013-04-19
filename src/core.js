@@ -221,6 +221,14 @@ jQuery.fn = jQuery.prototype = {
 		// Add the callback
 		jQuery.ready.promise().done( fn );
 
+		// TODO: Need to understand why promise doesn't execute fn, couldn't get my head around the whole Deferred/Promise design here
+		// The below FIX helps address #13193 where document.ready doesn't fire if XML/XSLT with output="xml" is used
+		// Since promise ensures that an already fired ready doesn't re-fire again, this is a safe & working fix.
+		// On another hand, why is readyList directly manipulated? The promise should keep this abstracted.
+		if( readyList.state() === 'pending' ) {
+			readyList.resolveWith( document, [ jQuery ] );
+		}
+
 		return this;
 	},
 
