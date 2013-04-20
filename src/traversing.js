@@ -58,14 +58,16 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return !!selector && (
-			typeof selector === "string" ?
-				// If this is a positional/relative selector, check membership in the returned set
-				// so $("p:first").is("p:last") won't return true for a doc with two "p".
-				rneedsContext.test( selector ) ?
-					jQuery( selector, this.context ).index( this[ 0 ] ) >= 0 :
-					jQuery.filter( selector, this ).length > 0 :
-				this.filter( selector ).length > 0 );
+		return !!winnow(
+			this,
+
+			// If this is a positional/relative selector, check membership in the returned set
+			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			typeof selector === "string" && rneedsContext.test( selector ) ?
+				jQuery( selector ) :
+				selector || [],
+			false
+		).length;
 	},
 
 	closest: function( selectors, context ) {
