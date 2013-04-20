@@ -487,9 +487,9 @@ testIframe("offset/body", "body", function( $ ) {
 test("chaining", function() {
 	expect(3);
 	var coords = { "top":  1, "left":  1 };
-	equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
-	equal( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
-	equal( jQuery("#absolute-1").offset(undefined).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
+	equal( jQuery("#absolute-1").offset(coords).jquery, jQuery.fn.jquery, "offset(coords) returns jQuery object" );
+	equal( jQuery("#non-existent").offset(coords).jquery, jQuery.fn.jquery, "offset(coords) with empty jQuery set returns jQuery object" );
+	equal( jQuery("#absolute-1").offset(undefined).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
 });
 
 test("offsetParent", function(){

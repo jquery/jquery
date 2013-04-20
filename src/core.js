@@ -167,8 +167,6 @@ jQuery.fn = jQuery.prototype = {
 						this[0] = elem;
 					}
 
-					this.context = document;
-					this.selector = selector;
 					return this;
 				}
 
@@ -184,8 +182,8 @@ jQuery.fn = jQuery.prototype = {
 
 		// HANDLE: $(DOMElement)
 		} else if ( selector.nodeType ) {
-			this.context = this[0] = selector;
 			this.length = 1;
+			this[0] = selector;
 			return this;
 
 		// HANDLE: $(function)
@@ -194,16 +192,8 @@ jQuery.fn = jQuery.prototype = {
 			return rootjQuery.ready( selector );
 		}
 
-		if ( selector.selector !== undefined ) {
-			this.selector = selector.selector;
-			this.context = selector.context;
-		}
-
 		return jQuery.makeArray( selector, this );
 	},
-
-	// Start with an empty selector
-	selector: "",
 
 	// The default length of a jQuery object is 0
 	length: 0,
@@ -233,7 +223,6 @@ jQuery.fn = jQuery.prototype = {
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
-		ret.context = this.context;
 
 		// Return the newly-formed element set
 		return ret;

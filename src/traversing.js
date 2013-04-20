@@ -29,10 +29,7 @@ jQuery.fn.extend({
 			jQuery.find( selector, self[ i ], ret );
 		}
 
-		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		ret = this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
-		ret.selector = this.selector ? this.selector + " " + selector : selector;
-		return ret;
+		return this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
 	},
 
 	has: function( target ) {
@@ -70,26 +67,25 @@ jQuery.fn.extend({
 		).length;
 	},
 
-	closest: function( selectors, context ) {
+	closest: function( selector, context ) {
 		var cur,
 			i = 0,
 			l = this.length,
 			ret = [],
-			pos = rneedsContext.test( selectors ) || typeof selectors !== "string" ?
-				jQuery( selectors, context || this.context ) :
-				0;
+			pos = ( typeof selector !== "string" || rneedsContext.test( selector ) ) &&
+				jQuery( selector, context );
 
 		for ( ; i < l; i++ ) {
 			for ( cur = this[i]; cur && cur !== context; cur = cur.parentNode ) {
 				// Always skip document fragments
 				if ( cur.nodeType < 11 && (pos ?
-					pos.index(cur) > -1 :
+					pos.index(cur) >= 0 :
 
 					// Don't pass non-elements to Sizzle
 					cur.nodeType === 1 &&
-						jQuery.find.matchesSelector(cur, selectors)) ) {
+						jQuery.find.matchesSelector(cur, selector)) ) {
 
-					cur = ret.push( cur );
+					ret.push( cur );
 					break;
 				}
 			}
