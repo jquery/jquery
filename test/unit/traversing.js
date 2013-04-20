@@ -141,16 +141,22 @@ test("is() with :has() selectors", function() {
 });
 
 test("is() with positional selectors", function() {
-	expect(24);
+	expect(27);
 
-	var isit = function(sel, match, expect) {
-		equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
-	};
+	var
+		posp = jQuery(
+			"<p id='posp'><a class='firsta' href='#'><em>first</em></a>" +
+			"<a class='seconda' href='#'><b>test</b></a><em></em></p>"
+		).appendTo( "#qunit-fixture" ),
+		isit = function( sel, match, expect ) {
+			equal(
+				jQuery( sel ).is( match ),
+				expect,
+				"jQuery('" + sel + "').is('" + match + "')"
+			);
+		};
 
-	jQuery(
-		"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
-	).appendTo( "#qunit-fixture" );
-
+	isit( "#posp", "p:last", true );
 	isit( "#posp", "#posp:first", true );
 	isit( "#posp", "#posp:eq(2)", false );
 	isit( "#posp", "#posp a:first", false );
@@ -179,6 +185,9 @@ test("is() with positional selectors", function() {
 	isit( "#posp em", "#posp a em:eq(2)", false );
 
 	ok( jQuery("#option1b").is("#select1 option:not(:first)"), "POS inside of :not() (#10970)" );
+
+	ok( jQuery( posp[0] ).is("p:last"), "context constructed from a single node (#13797)" );
+	ok( !jQuery( posp[0] ).find("#firsta").is("a:first"), "context derived from a single node (#13797)" );
 });
 
 test("index()", function() {
