@@ -261,7 +261,7 @@ module.exports = function( grunt ) {
 
 		grunt.util.spawn({
 			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
-			args: [ "build:*:*:" + modules, "pre-uglify", "uglify", "dist" ]
+			args: [ "build:*:*:" + modules, "pre-uglify", "uglify", "dist", "compare_size" ]
 		}, function( err, result ) {
 			if ( err ) {
 				grunt.verbose.error();
