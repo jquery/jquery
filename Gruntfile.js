@@ -246,7 +246,9 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "custom", function() {
 		var done = this.async(),
 				args = [].slice.call(arguments),
-				modules = args.length ? args[0].replace(/,/g, ":") : "";
+				modules = args[0] ? args[0].replace(/,/g, ":") : "",
+				settings = args[1] ? args[1].split(",") : [],
+				buildArgs;
 
 
 		// Translation example
@@ -259,9 +261,31 @@ module.exports = function( grunt ) {
 
 		grunt.log.writeln( "Creating custom build...\n" );
 
+		buildArgs = [ "build:*:*:" + modules, "pre-uglify", "uglify", "dist" ];
+
+		// Settings example
+		//
+		//   grunt custom:-effects
+		//
+		// Becomes:
+		//
+		//   grunt build:*:*:-effects pre-uglify uglify dist compare_size
+		//
+		// But
+		//
+		//   grunt custom:-effects:-compare_size
+		//
+		// Becomes:
+		//
+		//   grunt build:*:*:-effects pre-uglify uglify dist
+
+		if (settings.indexOf("-compare_size") === -1) {
+			buildArgs.push("compare_size");
+		}
+
 		grunt.util.spawn({
 			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
-			args: [ "build:*:*:" + modules, "pre-uglify", "uglify", "dist", "compare_size" ]
+			args: buildArgs
 		}, function( err, result ) {
 			if ( err ) {
 				grunt.verbose.error();
