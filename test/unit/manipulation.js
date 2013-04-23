@@ -920,7 +920,7 @@ test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
 function testReplaceWith( val ) {
 
 	var tmp, y, child, child2, set, non_existent, $div,
-		expected = 26;
+		expected = 29;
 
 	expect( expected );
 
@@ -994,6 +994,18 @@ function testReplaceWith( val ) {
 	equal( set[0].nodeName.toLowerCase(), "div", "No effect on a disconnected node." );
 	equal( set.length, 1, "No effect on a disconnected node." );
 	equal( set[0].childNodes.length, 0, "No effect on a disconnected node." );
+
+
+	child = jQuery("#qunit-fixture").children().first();
+	$div = jQuery("<div class='pathological'/>").insertBefore( child );
+	$div.replaceWith( $div );
+	deepEqual( jQuery( ".pathological", "#qunit-fixture" ).get(), $div.get(),
+		"Self-replacement" );
+	$div.replaceWith( child );
+	deepEqual( jQuery("#qunit-fixture").children().first().get(), child.get(),
+		"Replacement with following sibling (#13810)" );
+	deepEqual( jQuery( ".pathological", "#qunit-fixture" ).get(), [],
+		"Replacement with following sibling (context removed)" );
 
 
 	non_existent = jQuery("#does-not-exist").replaceWith( val("<b>should not throw an error</b>") );
