@@ -165,3 +165,4 @@ Dmitry Gusev <dmitry.gusev@gmail.com>
 Michał Gołębiowski <m.goleb@gmail.com>
 Brandon Johnson <bjohn465+github@gmail.com>
 Jason Bedard <jason+jquery@jbedard.ca>
+Kyle Robinson Young <kyle@dontkry.com>

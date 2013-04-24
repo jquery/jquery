@@ -256,7 +256,7 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Creating custom build...\n" );
 
 		grunt.util.spawn({
-			cmd: process.platform === "win32" ? "grunt.cmd" : "grunt",
+			grunt: true,
 			args: [ "build:*:*:" + modules, "pre-uglify", "uglify", "dist" ]
 		}, function( err, result ) {
 			if ( err ) {
