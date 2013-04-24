@@ -201,7 +201,7 @@ jQuery.each({
 			}
 
 			// Reverse order for parents* and prev*
-			if ( name.charAt(0) === "p" ) {
+			if ( name.charAt(0) === "p" && name !== "parent" ) {
 				ret = ret.reverse();
 			}
 		}

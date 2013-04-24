@@ -673,6 +673,32 @@ test("contents()", function() {
 	equal( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 });
 
+test("sort direction", function() {
+	expect( 12 );
+
+	var elems = jQuery("#ap, #select1 > *, #moretests > form"),
+		methodDirections = {
+			parent: false,
+			parents: true,
+			parentsUntil: true,
+			next: false,
+			prev: true,
+			nextAll: false,
+			prevAll: true,
+			nextUntil: false,
+			prevUntil: true,
+			siblings: false,
+			children: false,
+			contents: false
+		};
+
+	jQuery.each( methodDirections, function( method, reversed ) {
+		var actual = elems[ method ]().get(),
+			forward = jQuery.unique( [].concat( actual ) );
+		deepEqual( actual, reversed ? forward.reverse() : forward, "Correct sort direction for " + method );
+	});
+});
+
 test("add(String|Element|Array|undefined)", function() {
 	expect( 15 );
 
