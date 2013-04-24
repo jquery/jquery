@@ -244,6 +244,18 @@ test("jQuery(plain Object).data(String, Object).data(String)", function() {
 	deepEqual( $obj[0], { exists: true }, "removeData does not clear the object" );
 });
 
+test(".data(object) does not retain references. #13815", function() {
+	expect( 2 );
+
+	var $divs = jQuery("<div></div><div></div>").appendTo("#qunit-fixture");
+
+	$divs.data({ "type": "foo" });
+	$divs.eq( 0 ).data( "type", "bar" );
+
+	equal( $divs.eq( 0 ).data("type"), "bar", "Correct updated value" );
+	equal( $divs.eq( 1 ).data("type"), "foo", "Original value retained" );
+});
+
 test("data-* attributes", function() {
 	expect(40);
 	var prop, i, l, metadata, elem,
