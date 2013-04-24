@@ -2105,3 +2105,17 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 		ok( jQuery.nodeName( this, results[ i ] ) );
 	});
 });
+
+test( "Validate creation of multiple quantities of certain elements (#13818)", 44, function() {
+	var tags = [ "thead", "tbody", "tfoot", "colgroup", "col", "caption", "tr", "th", "td", "optgroup", "option" ];
+
+	jQuery.each( tags, function( index, tag ) {
+		jQuery( "<" + tag + "/><" + tag + "/>" ).each(function() {
+			ok( jQuery.nodeName( this, tag ), tag + " empty elements created correctly" );
+		});
+
+		jQuery( "<" + this + "></" + tag + "><" + tag + "></" + tag + ">" ).each(function() {
+			ok( jQuery.nodeName( this, tag ), tag + " elements with closing tag created correctly" );
+		});
+	});
+});
