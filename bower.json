@@ -17,7 +17,8 @@
   },
   "devDependencies": {
     "requirejs": "~2.1.8",
-    "qunit": "~1.12.0"
+    "qunit": "~1.12.0",
+    "sinon": "~1.7.3"
   },
   "exportsOverride": {
     "sizzle": {
@@ -29,6 +30,9 @@
     },
     "qunit": {
       "qunit": "qunit"
+    },
+    "sinon": {
+      "sinon": "**/*.js"
     }
   },
   "keywords": [
