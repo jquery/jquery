@@ -18,6 +18,44 @@ function safeActiveElement() {
 }
 
 /*
+ * List of keyCodes
+ */
+jQuery.keyCode = {
+	BACKSPACE: 8,
+	TAB: 9,
+	ENTER: 13,
+	SHIFT: 16,
+	CONTROL: 17,
+	ALT: 18,
+	CAPS_LOCK: 20,
+	ESCAPE: 27,
+	SPACE: 32,
+	PAGE_UP: 33,
+	PAGE_DOWN: 34,
+	END: 35,
+	HOME: 36,
+	LEFT: 37,
+	UP: 38,
+	RIGHT: 39,
+	DOWN: 40,
+	INSERT: 45,
+	DELETE: 46,
+	COMMAND: 91,
+	COMMAND_LEFT: 91,
+	WINDOWS: 91,
+	COMMAND_RIGHT: 93,
+	MENU: 93,
+	NUMPAD_MULTIPLY: 106,
+	NUMPAD_ADD: 107,
+	NUMPAD_ENTER: 108,
+	NUMPAD_SUBTRACT: 109,
+	NUMPAD_DECIMAL: 110,
+	NUMPAD_DIVIDE: 111,
+	COMMA: 188,
+	PERIOD: 190
+};
+
+/*
  * Helper functions for managing events -- not part of the public interface.
  * Props to Dean Edwards' addEvent library for many of the ideas.
  */
