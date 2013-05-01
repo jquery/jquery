@@ -682,7 +682,7 @@ test("sort direction", function() {
 			parents: true,
 			parentsUntil: true,
 			next: false,
-			prev: true,
+			prev: false,
 			nextAll: false,
 			prevAll: true,
 			nextUntil: false,

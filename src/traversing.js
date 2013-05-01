@@ -1,4 +1,5 @@
 var isSimple = /^.[^:#\[\.,]*$/,
+	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
@@ -200,8 +201,8 @@ jQuery.each({
 				ret = jQuery.unique( ret );
 			}
 
-			// Reverse order for parents* and prev*
-			if ( name.charAt(0) === "p" && name !== "parent" ) {
+			// Reverse order for parents* and prev-derivatives
+			if ( rparentsprev.test( name ) ) {
 				ret = ret.reverse();
 			}
 		}
