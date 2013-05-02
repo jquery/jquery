@@ -142,7 +142,7 @@ Data.prototype = {
 		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
-		var i, name,
+		var i, name, camel,
 			unlock = this.key( owner ),
 			cache = this.cache[ unlock ];
 
@@ -160,13 +160,14 @@ Data.prototype = {
 				// This will only penalize the array argument path.
 				name = key.concat( key.map( jQuery.camelCase ) );
 			} else {
+				camel = jQuery.camelCase( key );
 				// Try the string as a key before any manipulation
 				if ( key in cache ) {
-					name = [ key ];
+					name = [ key, camel ];
 				} else {
 					// If a key with the spaces exists, use it.
 					// Otherwise, create an array by matching non-whitespace
-					name = jQuery.camelCase( key );
+					name = camel;
 					name = name in cache ?
 						[ name ] : ( name.match( core_rnotwhite ) || [] );
 				}

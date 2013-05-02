@@ -613,6 +613,35 @@ test(".data supports interoperable removal of hyphenated/camelCase properties", 
 	});
 });
 
+test(".data supports interoperable removal of properties SET TWICE #13850", function() {
+	var div = jQuery("<div>").appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }"
+		};
+
+	expect( 9 );
+
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
+		div.data( key, val );
+
+		div.removeData( key );
+
+		equal( div.data( key ), undefined, "removal: " + key );
+	});
+});
+
 test( ".removeData supports removal of hyphenated properties via array (#12786)", function() {
 	expect( 4 );
 
