@@ -167,3 +167,4 @@ Michał Gołębiowski <m.goleb@gmail.com>
 Steven Benner <admin@stevenbenner.com>
 Li Xudong <istonelee@gmail.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
+Jason Bedard <jason+jquery@jbedard.ca>
