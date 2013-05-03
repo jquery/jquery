@@ -238,7 +238,7 @@ jQuery.fn.extend({
 						name = attrs[ i ].name;
 
 						if ( name.indexOf( "data-" ) === 0 ) {
-							name = jQuery.camelCase( name.substring(5) );
+							name = jQuery.camelCase( name.slice(5) );
 							dataAttr( elem, name, data[ name ] );
 						}
 					}
