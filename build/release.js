@@ -106,10 +106,10 @@ function checkGitStatus( next ) {
 			die( "Branches don't match: Wanted " + branch + ", got " + onBranch );
 		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
-			die( "Please commit changed files before attemping to push a release." );
+			dieIfReal( "Please commit changed files before attemping to push a release." );
 		}
 		if ( /Changes not staged for commit/i.test( stdout ) ) {
-			die( "Please stash files before attempting to push a release." );
+			dieIfReal( "Please stash files before attempting to push a release." );
 		}
 		next();
 	});
@@ -166,7 +166,7 @@ function makeReleaseCopies( next ) {
 
 function setNextVersion( next ) {
 	updatePackageVersion( nextVersion );
-	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion ], next, debug );
+	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion + "✓™" ], next, debug );
 }
 
 function uploadToCDN( next ) {
@@ -226,7 +226,7 @@ function exec( cmd, args, fn, skip ) {
 		fn( "", "", "" );
 	} else {
 		console.log( cmd + " " + args.join(" ") );
-		child.execFile( cmd, args, { env: process.env }, 
+		child.execFile( cmd, args, { env: process.env },
 			function( err, stdout, stderr ) {
 				if ( err ) {
 					die( stderr || stdout || err );
@@ -240,6 +240,14 @@ function exec( cmd, args, fn, skip ) {
 function die( msg ) {
 	console.error( "ERROR: " + msg );
 	process.exit( 1 );
+}
+
+function dieIfReal( msg ) {
+	if ( debug ) {
+		console.log ( "DIE: " + msg );
+	} else {
+		die( msg );
+	}
 }
 
 function exit() {
