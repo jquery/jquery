@@ -43,12 +43,17 @@ First, clone a copy of the main jQuery git repo by running:
 git clone git://github.com/jquery/jquery.git
 ```
 
-Enter the directory and install the Node dependencies:
+Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:
+
+```bash
+npm install -g grunt-cli
+```
+
+Enter the jquery directory and install the Node dependencies, this time *without* specifying a global install:
 
 ```bash
 cd jquery && npm install
 ```
-
 
 Make sure you have `grunt` installed by testing:
 
@@ -56,16 +61,13 @@ Make sure you have `grunt` installed by testing:
 grunt -version
 ```
 
-
-
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
 
 ```bash
 grunt
 ```
 
-
-The built version of jQuery will be put in the `dist/` subdirectory.
+The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
 
 ### Modules
@@ -117,7 +119,7 @@ grunt custom:-css:-position
 Exclude **all** optional modules:
 
 ```bash
-grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event-alias,-offset
+grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event-alias,-offset,-wrap
 ```
 
 For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.
@@ -132,7 +134,7 @@ cd jquery && grunt watch
 ```
 
 
-Run the unit tests with a local server that supports PHP. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
 - Mac: [MAMP download](http://www.mamp.info/en/index.html)
@@ -145,7 +147,7 @@ Run the unit tests with a local server that supports PHP. No database is require
 Building to a different directory
 ---------------------------------
 
-If you want to build jQuery to a directory that is different from the default location:
+To copy the built jQuery files from `/dist` to another directory:
 
 ```bash
 grunt && grunt dist:/path/to/special/location/
@@ -157,7 +159,7 @@ With this example, the output files would be:
 /path/to/special/location/jquery.min.js
 ```
 
-If you want to add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
+To add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
 
 ```json
 
@@ -165,7 +167,6 @@ If you want to add a permanent copy destination, create a file in `dist/` called
   "/Absolute/path/to/other/destination": true
 }
 ```
-
 
 Additionally, both methods can be combined.
 
@@ -184,8 +185,8 @@ Note: This task will also be run any time the default `grunt` command is used.
 
 
 
-Git for dummies
----------------
+Essential Git
+-------------
 
 As the source code is handled by the version control system Git, it's useful to know some features used.
 
