@@ -490,14 +490,6 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) 
 
 // fix oldIE attroperties
 if ( !getSetInput || !getSetAttribute ) {
-	jQuery.expr.attrHandle.value = function( elem, name, isXML ) {
-		var ret;
-		return isXML ? undefined :
-			// Ignore the value *property* on inputs by using defaultValue
-			jQuery.nodeName( elem, "input" ) ? elem.defaultValue :
-			// Retrieve the attribute
-			(ret = elem.getAttributeNode( name )) && ret.specified ? ret.value : undefined;
-	};
 	jQuery.attrHooks.value = {
 		set: function( elem, value, name ) {
 			if ( jQuery.nodeName( elem, "input" ) ) {
