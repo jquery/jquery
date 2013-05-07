@@ -655,6 +655,7 @@ jQuery.Event.prototype = {
 		if ( e && e.preventDefault ) {
 			e.preventDefault();
 		}
+		return this;
 	},
 	stopPropagation: function() {
 		var e = this.originalEvent;
@@ -664,10 +665,11 @@ jQuery.Event.prototype = {
 		if ( e && e.stopPropagation ) {
 			e.stopPropagation();
 		}
+		return this;
 	},
 	stopImmediatePropagation: function() {
 		this.isImmediatePropagationStopped = returnTrue;
-		this.stopPropagation();
+		return this.stopPropagation();
 	}
 };
 
