@@ -1371,6 +1371,37 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	});
 });
 
+test("line-height animates appropriately (#13855)", function() {
+	expect( 6 );
+	stop();
+
+	var
+		animated = jQuery("#firstp").css( "line-height", "50px" ).add(
+			jQuery("#sndp").css( "line-height", 4 )
+		),
+		getHeight = function( el ) {
+			return jQuery( el ).height();
+		},
+		initialHeight = jQuery.map( animated, getHeight );
+
+	animated.animate( { "line-height": "hide" }, 1500 );
+	setTimeout(function() {
+		var height = jQuery.map( animated, getHeight );
+		ok( height[ 0 ] < initialHeight[ 0 ], "Pixel: upper bound" );
+		ok( height[ 0 ] > initialHeight[ 0 ] / 2, "Pixel: lower bound" );
+		ok( height[ 1 ] < initialHeight[ 1 ], "Unitless: upper bound" );
+		ok( height[ 1 ] > initialHeight[ 1 ] / 2, "Unitless: lower bound" );
+		animated.stop( true, true ).hide().animate( { "line-height": "show" }, 1500 );
+		setTimeout(function() {
+			var height = jQuery.map( animated, getHeight );
+			ok( height[ 0 ] < initialHeight[ 0 ] / 2, "Pixel: upper bound" );
+			ok( height[ 1 ] < initialHeight[ 1 ] / 2, "Unitless: upper bound" );
+			animated.stop( true, true );
+			start();
+		}, 500 );
+	}, 500 );
+});
+
 // Start 1.8 Animation tests
 asyncTest( "jQuery.Animation( object, props, opts )", 4, function() {
 	var animation,
