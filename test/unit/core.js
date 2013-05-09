@@ -38,7 +38,7 @@ test("jQuery()", function() {
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
 		lng = "",
-		expected = 20,
+		expected = 22,
 		attrObj = {
 			"text": "test",
 			"class": "test2",
@@ -112,6 +112,12 @@ test("jQuery()", function() {
 	equal( jQuery([1,2,3]).get(1), 2, "Test passing an array to the factory" );
 
 	equal( jQuery(document.body).get(0), jQuery("body").get(0), "Test passing an html node to the factory" );
+
+	elem = jQuery("  <em>hello</em>")[0];
+	equal( elem.nodeName.toLowerCase(), "em", "leading space" );
+
+	elem = jQuery("\n\n<em>world</em>")[0];
+	equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
 	elem = jQuery("<div/>", attrObj );
 
