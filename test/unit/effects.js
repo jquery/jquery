@@ -1371,35 +1371,42 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	});
 });
 
-test("line-height animates appropriately (#13855)", function() {
-	expect( 6 );
+test("line-height animates correctly (#13855)", function() {
+	expect( 12 );
 	stop();
 
 	var
-		animated = jQuery("#firstp").css( "line-height", "50px" ).add(
-			jQuery("#sndp").css( "line-height", 4 )
-		),
-		getHeight = function( el ) {
+		animated = jQuery(
+			"<p style='line-height: 4;'>unitless</p>" +
+			"<p style='line-height: 50px;'>px</p>" +
+			"<p style='line-height: 120%;'>percent</p>" +
+			"<p style='line-height: 1.5em;'>em</p>"
+		).appendTo("#qunit-fixture"),
+		initialHeight = jQuery.map( animated, function( el ) {
 			return jQuery( el ).height();
-		},
-		initialHeight = jQuery.map( animated, getHeight );
+		});
 
 	animated.animate( { "line-height": "hide" }, 1500 );
 	setTimeout(function() {
-		var height = jQuery.map( animated, getHeight );
-		ok( height[ 0 ] < initialHeight[ 0 ], "Pixel: upper bound" );
-		ok( height[ 0 ] > initialHeight[ 0 ] / 2, "Pixel: lower bound" );
-		ok( height[ 1 ] < initialHeight[ 1 ], "Unitless: upper bound" );
-		ok( height[ 1 ] > initialHeight[ 1 ] / 2, "Unitless: lower bound" );
+		animated.each(function( i ) {
+			var label = jQuery.text( this ),
+				initial = initialHeight[ i ],
+				height = jQuery( this ).height();
+			ok( height < initial, "hide " + label + ": upper bound" );
+			ok( height > initial / 2, "hide " + label + ": lower bound" );
+		});
 		animated.stop( true, true ).hide().animate( { "line-height": "show" }, 1500 );
 		setTimeout(function() {
-			var height = jQuery.map( animated, getHeight );
-			ok( height[ 0 ] < initialHeight[ 0 ] / 2, "Pixel: upper bound" );
-			ok( height[ 1 ] < initialHeight[ 1 ] / 2, "Unitless: upper bound" );
+			animated.each(function( i ) {
+				var label = jQuery.text( this ),
+					initial = initialHeight[ i ],
+					height = jQuery( this ).height();
+				ok( height < initial / 2, "show " + label + ": upper bound" );
+			});
 			animated.stop( true, true );
 			start();
-		}, 500 );
-	}, 500 );
+		}, 400 );
+	}, 400 );
 });
 
 // Start 1.8 Animation tests
