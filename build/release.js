@@ -13,7 +13,6 @@ var fs = require("fs"),
 
 var releaseVersion,
 	nextVersion,
-	CDNFiles,
 	isBeta,
 	pkg,
 	branch,
@@ -40,7 +39,18 @@ var releaseVersion,
 		"jquery-latest.js": devFile,
 		"jquery-latest.min.js": minFile,
 		"jquery-latest.min.map": mapFile
-	};
+	},
+
+	jQueryFilesCDN = [],
+
+	googleFilesCDN = [
+		"jquery.js", "jquery.min.js", "jquery.min.map"
+	],
+
+	msFilesCDN = [
+		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map"
+	];
+
 
 steps(
 	initialize,
@@ -49,7 +59,9 @@ steps(
 	gruntBuild,
 	makeReleaseCopies,
 	setNextVersion,
-	uploadToCDN,
+	copyTojQueryCDN,
+	buildGoogleCDN,
+	buildMicrosoftCDN,
 	pushToGithub,
 	exit
 );
@@ -64,8 +76,8 @@ function initialize( next ) {
 
 	// First arg should be the version number being released
 	var newver, oldver,
-		rversion = /^(\d)\.(\d+)\.(\d)((?:a|b|rc)\d|pre)?$/,
-		version = ( process.argv[3] || "" ).toLowerCase().match( rversion ) || {},
+		rsemver = /^(\d+)\.(\d+)\.(\d+)(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/,
+		version = ( process.argv[3] || "" ).toLowerCase().match( rsemver ) || {},
 		major = version[1],
 		minor = version[2],
 		patch = version[3],
@@ -87,14 +99,14 @@ function initialize( next ) {
 	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
 
 	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
-	version = pkg.version.match( rversion );
+	version = pkg.version.match( rsemver );
 	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] )
 	newver = ( +major ) * 10000 + ( +minor * 100 ) + ( +patch );
 	if ( newver < oldver ) {
 		die( "Next version is older than current version!" );
 	}
 
-	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "pre";
+	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "-pre";
 	next();
 }
 
@@ -105,10 +117,10 @@ function checkGitStatus( next ) {
 			die( "Branches don't match: Wanted " + branch + ", got " + onBranch );
 		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
-			die( "Please commit changed files before attemping to push a release." );
+			dieIfReal( "Please commit changed files before attemping to push a release." );
 		}
 		if ( /Changes not staged for commit/i.test( stdout ) ) {
-			die( "Please stash files before attempting to push a release." );
+			dieIfReal( "Please stash files before attempting to push a release." );
 		}
 		next();
 	});
@@ -132,7 +144,6 @@ function gruntBuild( next ) {
 }
 
 function makeReleaseCopies( next ) {
-	CDNFiles = {};
 	Object.keys( releaseFiles ).forEach(function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
@@ -157,7 +168,7 @@ function makeReleaseCopies( next ) {
 				copy( builtFile, releaseFile );
 			}
 
-			CDNFiles[ releaseFile ] = builtFile;
+			jQueryFilesCDN.push( releaseFile );
 		}
 	});
 	next();
@@ -168,10 +179,10 @@ function setNextVersion( next ) {
 	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion ], next, debug );
 }
 
-function uploadToCDN( next ) {
+function copyTojQueryCDN( next ) {
 	var cmds = [];
 
-	Object.keys( CDNFiles ).forEach(function( name ) {
+	jQueryFilesCDN.forEach(function( name ) {
 		cmds.push(function( nxt ){
 			exec( "scp", [ name, scpURL ], nxt, debug || skipRemote );
 		});
@@ -182,6 +193,14 @@ function uploadToCDN( next ) {
 	cmds.push( next );
 
 	steps.apply( this, cmds );
+}
+
+function buildGoogleCDN( next ) {
+	makeArchive( "googlecdn", googleFilesCDN, next );
+}
+
+function buildMicrosoftCDN( next ) {
+	makeArchive( "mscdn", msFilesCDN, next );
 }
 
 function pushToGithub( next ) {
@@ -206,6 +225,25 @@ function updatePackageVersion( ver ) {
 	if ( !debug ) {
 		fs.writeFileSync( "package.json", JSON.stringify( pkg, null, "\t" ) + "\n" );
 	}
+}
+
+function makeArchive( cdn, files, fn ) {
+
+	if ( isBeta ) {
+		console.log( "Skipping archive creation for " + cdn + "; " + releaseVersion + " is beta" );
+		process.nextTick( fn );
+		return
+	}
+	console.log("Creating production archive for " + cdn );
+	files = files.map(function( item ) {
+		return "dist/" + item.replace( /VER/g, releaseVersion );
+	});
+	var md5file = "dist/" + cdn + "-md5.txt";
+	exec( "md5sum", files, function( err, stdout, stderr ) {
+		fs.writeFileSync( md5file, stdout );
+		files.push( md5file );
+		exec( "tar", [ "-czvf", "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" ].concat( files ), fn, false );
+	}, false );
 }
 
 function copy( oldFile, newFile ) {
@@ -233,6 +271,14 @@ function exec( cmd, args, fn, skip ) {
 				fn.apply( this, arguments );
 			}
 		);
+	}
+}
+
+function dieIfReal( msg ) {
+	if ( debug ) {
+		console.log ( "DIE: " + msg );
+	} else {
+		die( msg );
 	}
 }
 
