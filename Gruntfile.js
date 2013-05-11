@@ -415,10 +415,8 @@ module.exports = function( grunt ) {
 			// Embed Version
 			// Embed Date
 			compiled = compiled.replace( /@VERSION/g, version )
-				.replace( "@DATE", function () {
-					// YYYY-MM-DD
-					return ( new Date() ).toISOString().replace( /T.*/, "" );
-				});
+				// yyyy-mm-ddThh:mmZ
+				.replace( /@DATE/g, ( new Date() ).toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 			// Write concatenated source to file
 			grunt.file.write( name, compiled );
