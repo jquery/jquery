@@ -163,10 +163,10 @@ function makeReleaseCopies( next ) {
 						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 				console.log( "Modifying map " + builtFile + " to " + releaseFile );
 				if ( !debug ) {
-					fs.writeFileSync( releaseFile, text );
+					fs.writeFileSync( "dist/" + releaseFile, text );
 				}
 			} else {
-				copy( builtFile, releaseFile );
+				copy( builtFile, "dist/" + releaseFile );
 			}
 
 			jQueryFilesCDN.push( releaseFile );
@@ -229,16 +229,18 @@ function updatePackageVersion( ver ) {
 }
 
 function makeArchive( cdn, files, fn ) {
-
 	if ( isBeta ) {
 		console.log( "Skipping archive creation for " + cdn + "; " + releaseVersion + " is beta" );
 		process.nextTick( fn );
-		return
+		return;
 	}
-	console.log("Creating production archive for " + cdn );
+
+	console.log( "Creating production archive for " + cdn );
+
 	files = files.map(function( item ) {
 		return "dist/" + item.replace( /VER/g, releaseVersion );
 	});
+
 	var md5file = "dist/" + cdn + "-md5.txt";
 	exec( "md5sum", files, function( err, stdout, stderr ) {
 		fs.writeFileSync( md5file, stdout );
