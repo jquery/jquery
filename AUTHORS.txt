@@ -163,7 +163,7 @@ Adam Coulombe <me@adam.co>
 Andrew Plummer <plummer.andrew@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
 Michał Gołębiowski <m.goleb@gmail.com>
-Brandon Johnson <bjohn465+github@gmail.com>
 Jason Bedard <jason+jquery@jbedard.ca>
 Kyle Robinson Young <kyle@dontkry.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
+Chris Talkington <chris@talkingtontech.com>

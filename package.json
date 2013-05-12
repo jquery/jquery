@@ -31,7 +31,8 @@
 		"grunt-contrib-uglify": "0.2.0",
 		"grunt": "0.4.1",
 		"gzip-js": "0.3.1",
-		"testswarm": "0.2.2"
+		"testswarm": "0.2.2",
+		"archiver": "~0.4.2"
 	},
 	"keywords": []
 }

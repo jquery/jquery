@@ -9,7 +9,13 @@ var	debug = false,
 
 var fs = require("fs"),
 	child = require("child_process"),
-	path = require("path");
+	path = require("path"),
+	zlib = require("zlib");
+
+var archiver = require("archiver");
+var gzipOptions = {
+  level: 9
+};
 
 var releaseVersion,
 	nextVersion,
@@ -236,6 +242,19 @@ function makeArchive( cdn, files, fn ) {
 
 	console.log( "Creating production archive for " + cdn );
 
+	var gzipper = zlib.createGzip( gzipOptions );
+	var output = fs.createWriteStream( "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" );
+
+	var archive = archiver( "tar" );
+
+	archive.on( "error", function( err ) {
+		throw err;
+	});
+
+	output.on( "close", fn );
+
+	archive.pipe( gzipper ).pipe( output );
+
 	files = files.map(function( item ) {
 		return "dist/" + item.replace( /VER/g, releaseVersion );
 	});
@@ -244,7 +263,12 @@ function makeArchive( cdn, files, fn ) {
 	exec( "md5sum", files, function( err, stdout, stderr ) {
 		fs.writeFileSync( md5file, stdout );
 		files.push( md5file );
-		exec( "tar", [ "-czvf", "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" ].concat( files ), fn, false );
+
+		files.forEach(function( file ) {
+			archive.append( fs.createReadStream( file ), { name: file } );
+		});
+
+		archive.finalize();
 	}, false );
 }
 
