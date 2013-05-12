@@ -9,7 +9,13 @@ var	debug = false,
 
 var fs = require("fs"),
 	child = require("child_process"),
-	path = require("path");
+	path = require("path"),
+	zlib = require("zlib");
+
+var archiver = require("archiver");
+var gzipOptions = {
+  level: 9
+};
 
 var releaseVersion,
 	nextVersion,
@@ -163,10 +169,10 @@ function makeReleaseCopies( next ) {
 						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 				console.log( "Modifying map " + builtFile + " to " + releaseFile );
 				if ( !debug ) {
-					fs.writeFileSync( releaseFile, text );
+					fs.writeFileSync( "dist/" + releaseFile, text );
 				}
 			} else {
-				copy( builtFile, releaseFile );
+				copy( builtFile, "dist/" + releaseFile );
 			}
 
 			jQueryFilesCDN.push( releaseFile );
@@ -229,21 +235,41 @@ function updatePackageVersion( ver ) {
 }
 
 function makeArchive( cdn, files, fn ) {
-
 	if ( isBeta ) {
 		console.log( "Skipping archive creation for " + cdn + "; " + releaseVersion + " is beta" );
 		process.nextTick( fn );
-		return
+		return;
 	}
-	console.log("Creating production archive for " + cdn );
+
+	console.log( "Creating production archive for " + cdn );
+
+	var gzipper = zlib.createGzip( gzipOptions );
+	var output = fs.createWriteStream( "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" );
+
+	var archive = archiver( "tar" );
+
+	archive.on( "error", function( err ) {
+		throw err;
+	});
+
+	output.on( "close", fn );
+
+	archive.pipe( gzipper ).pipe( output );
+
 	files = files.map(function( item ) {
 		return "dist/" + item.replace( /VER/g, releaseVersion );
 	});
+
 	var md5file = "dist/" + cdn + "-md5.txt";
 	exec( "md5sum", files, function( err, stdout, stderr ) {
 		fs.writeFileSync( md5file, stdout );
 		files.push( md5file );
-		exec( "tar", [ "-czvf", "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" ].concat( files ), fn, false );
+
+		files.forEach(function( file ) {
+			archive.append( fs.createReadStream( file ), { name: file } );
+		});
+
+		archive.finalize();
 	}, false );
 }
 
