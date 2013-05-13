@@ -243,6 +243,21 @@ test( "jQuery.Deferred.then - deferred (fail)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
+test( "jQuery.Deferred.then - throw Error (fail)", function() {
+
+	expect( 3 );
+
+	jQuery.Deferred().resolve().then(function() {
+		throw new Error( "error message" );
+	}).done(function() {
+		ok( false, "Success on reject" );
+	}).fail(function( err ) {
+		ok( true, "Error on reject" );
+		strictEqual( this.state(), "rejected", "Deferred is rejected (state)" );
+		strictEqual( err.message, "error message", "catch error" );
+	});
+});
+
 test( "jQuery.Deferred.then - deferred (progress)", function() {
 
 	expect( 3 );
