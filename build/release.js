@@ -10,12 +10,7 @@ var	debug = false,
 var fs = require("fs"),
 	child = require("child_process"),
 	path = require("path"),
-	zlib = require("zlib");
-
-var archiver = require("archiver");
-var gzipOptions = {
-  level: 9
-};
+	archiver = require("archiver");
 
 var releaseVersion,
 	nextVersion,
@@ -120,7 +115,7 @@ function checkGitStatus( next ) {
 	git( [ "status" ], function( error, stdout, stderr ) {
 		var onBranch = ((stdout||"").match( /On branch (\S+)/ ) || [])[1];
 		if ( onBranch !== branch ) {
-			die( "Branches don't match: Wanted " + branch + ", got " + onBranch );
+			dieIfReal( "Branches don't match: Wanted " + branch + ", got " + onBranch );
 		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
 			dieIfReal( "Please commit changed files before attemping to push a release." );
@@ -146,7 +141,7 @@ function gruntBuild( next ) {
 		}
 		console.log( stdout );
 		next();
-	}, debug);
+	}, false );
 }
 
 function makeReleaseCopies( next ) {
@@ -167,9 +162,7 @@ function makeReleaseCopies( next ) {
 						"\"file\":\"" + releaseFile.replace( /\.min\.map/, ".min.js" ) +
 						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 				console.log( "Modifying map " + builtFile + " to " + releaseFile );
-				if ( !debug ) {
-					fs.writeFileSync( "dist/" + releaseFile, text );
-				}
+				fs.writeFileSync( "dist/" + releaseFile, text );
 			} else {
 				copy( builtFile, "dist/" + releaseFile );
 			}
@@ -242,24 +235,21 @@ function makeArchive( cdn, files, fn ) {
 
 	console.log( "Creating production archive for " + cdn );
 
-	var gzipper = zlib.createGzip( gzipOptions );
-	var output = fs.createWriteStream( "dist/" + cdn + "-jquery-" + releaseVersion + ".tar.gz" );
-
-	var archive = archiver( "tar" );
+	var archive = archiver( "zip" ),
+		md5file = "dist/" + cdn + "-md5.txt",
+		output = fs.createWriteStream( "dist/" + cdn + "-jquery-" + releaseVersion + ".zip" );
 
 	archive.on( "error", function( err ) {
 		throw err;
 	});
 
 	output.on( "close", fn );
-
-	archive.pipe( gzipper ).pipe( output );
+	archive.pipe( output );
 
 	files = files.map(function( item ) {
 		return "dist/" + item.replace( /VER/g, releaseVersion );
 	});
 
-	var md5file = "dist/" + cdn + "-md5.txt";
 	exec( "md5sum", files, function( err, stdout, stderr ) {
 		fs.writeFileSync( md5file, stdout );
 		files.push( md5file );
@@ -272,9 +262,9 @@ function makeArchive( cdn, files, fn ) {
 	}, false );
 }
 
-function copy( oldFile, newFile ) {
+function copy( oldFile, newFile, skip ) {
 	console.log( "Copying " + oldFile + " to " + newFile );
-	if ( !debug ) {
+	if ( !skip ) {
 		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
 	}
 }
