@@ -1353,6 +1353,26 @@ test( "contents().hasClass() returns correct values", function() {
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
 
+test( "hasClass correctly interprets non-space separators (#13835)", function() {
+	expect( 4 );
+
+	var
+		map = {
+			tab: "&#9;",
+			"line-feed": "&#10;",
+			"form-feed": "&#12;",
+			"carriage-return": "&#13;"
+		},
+		classes = jQuery.map( map, function( separator, label ) {
+			return " " + separator + label + separator + " ";
+		}),
+		$div = jQuery( "<div class='" + classes + "'></div>" );
+
+	jQuery.each( map, function( label ) {
+		ok( $div.hasClass( label ), label.replace( "-", " " ) );
+	});
+});
+
 test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	expect( 1 );
 
