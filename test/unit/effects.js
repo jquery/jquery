@@ -1379,8 +1379,8 @@ test("line-height animates correctly (#13855)", function() {
 		animated = jQuery(
 			"<p style='line-height: 4;'>unitless</p>" +
 			"<p style='line-height: 50px;'>px</p>" +
-			"<p style='line-height: 120%;'>percent</p>" +
-			"<p style='line-height: 1.5em;'>em</p>"
+			"<p style='line-height: 420%;'>percent</p>" +
+			"<p style='line-height: 2.5em;'>em</p>"
 		).appendTo("#qunit-fixture"),
 		initialHeight = jQuery.map( animated, function( el ) {
 			return jQuery( el ).height();
