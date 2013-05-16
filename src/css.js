@@ -140,7 +140,7 @@ jQuery.fn.extend({
 		if ( typeof state === "boolean" ) {
 			return state ? this.show() : this.hide();
 		}
-		
+
 		return this.each(function() {
 			if ( isHidden( this ) ) {
 				jQuery( this ).show();
