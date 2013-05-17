@@ -148,10 +148,10 @@ function makeReleaseCopies( next ) {
 	Object.keys( releaseFiles ).forEach(function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
-			releaseFile = key.replace( /VER/g, releaseVersion );
+			releaseFile = "dist/" + key.replace( /VER/g, releaseVersion );
 
 		// Beta releases don't update the jquery-latest etc. copies
-		if ( !isBeta || key !== releaseFile ) {
+		if ( !isBeta || key.indexOf( "VER" ) >= 0 ) {
 
 			if ( /\.map$/.test( releaseFile ) ) {
 				// Map files need to reference the new uncompressed name;
@@ -161,10 +161,17 @@ function makeReleaseCopies( next ) {
 					.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
 						"\"file\":\"" + releaseFile.replace( /\.min\.map/, ".min.js" ) +
 						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
-				console.log( "Modifying map " + builtFile + " to " + releaseFile );
-				fs.writeFileSync( "dist/" + releaseFile, text );
-			} else {
-				copy( builtFile, "dist/" + releaseFile );
+				fs.writeFileSync( releaseFile, text );
+			} else if ( /\.min\.js$/.test( releaseFile ) ) {
+				// Minified files point back to the corresponding map;
+				// again assume one big happy directory.
+				// "//@ sourceMappingURL=jquery.min.map"
+				text = fs.readFileSync( builtFile, "utf8" )
+					.replace( /\/\/@ sourceMappingURL=\S+/,
+						"//@ sourceMappingURL=" + releaseFile.replace( /\.js$/, ".map" ) );
+				fs.writeFileSync( releaseFile, text );
+			} else if ( builtFile !== releaseFile ) {
+				copy( builtFile, releaseFile );
 			}
 
 			jQueryFilesCDN.push( releaseFile );
@@ -279,7 +286,7 @@ function exec( cmd, args, fn, skip ) {
 		fn( "", "", "" );
 	} else {
 		console.log( cmd + " " + args.join(" ") );
-		child.execFile( cmd, args, { env: process.env }, 
+		child.execFile( cmd, args, { env: process.env },
 			function( err, stdout, stderr ) {
 				if ( err ) {
 					die( stderr || stdout || err );
