@@ -535,10 +535,16 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
+	grunt.loadNpmTasks("grunt-contrib-compress");
+
+	// Load release task
+	require("./build/release")(grunt);
 
 	// Default grunt
 	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "dist:*", "compare_size" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "selector", "build:*:*", "jshint" ] );
+
+	grunt.registerTask( "rls", [ "release:preflight", "default", "release:core" ] );
 };

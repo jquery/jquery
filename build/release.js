@@ -1,316 +1,288 @@
-#!/usr/bin/env node
 /*
  * jQuery Core Release Management
  */
+var shell = require("shelljs");
+var semver = require("semver");
 
-// Debugging variables
-var	debug = false,
-	skipRemote = false;
+module.exports = function(grunt) {
+	var devFile = "dist/jquery.js",
+		minFile = "dist/jquery.min.js",
+		mapFile = "dist/jquery.min.map",
 
-var fs = require("fs"),
-	child = require("child_process"),
-	path = require("path"),
-	archiver = require("archiver");
-
-var releaseVersion,
-	nextVersion,
-	isBeta,
-	pkg,
-	branch,
-
-	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
-	cdnURL = "http://code.origin.jquery.com/",
-	repoURL = "git@github.com:jquery/jquery.git",
-
-	// Windows needs the .cmd version but will find the non-.cmd
-	// On Windows, ensure the HOME environment variable is set
-	gruntCmd = process.platform === "win32" ? "grunt.cmd" : "grunt",
-
-	devFile = "dist/jquery.js",
-	minFile = "dist/jquery.min.js",
-	mapFile = "dist/jquery.min.map",
-
-	releaseFiles = {
-		"jquery-VER.js": devFile,
-		"jquery-VER.min.js": minFile,
-		"jquery-VER.min.map": mapFile //,
-// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY
+		releaseFiles = {
+			"jquery-VER.js": devFile,
+			"jquery-VER.min.js": minFile,
+			"jquery-VER.min.map": mapFile
+// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY,
 //		"jquery.js": devFile,
 //		"jquery.min.js": minFile,
 //		"jquery.min.map": mapFile,
 //		"jquery-latest.js": devFile,
 //		"jquery-latest.min.js": minFile,
 //		"jquery-latest.min.map": mapFile
-	},
+		},
 
-	jQueryFilesCDN = [],
+		jQueryFilesCDN = [
+		],
 
-	googleFilesCDN = [
-		"jquery.js", "jquery.min.js", "jquery.min.map"
-	],
+		otherCDNs = {
+			googlecdn: {
+				files: [
+					"jquery.js",
+					"jquery.min.js",
+					"jquery.min.map"
+				]
+			},
+			mscdn: {
+				files: [
+					"jquery-VER.js",
+					"jquery-VER.min.js",
+					"jquery-VER.min.map"
+				]
+			}
+		};
 
-	msFilesCDN = [
-		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map"
-	];
-
-
-steps(
-	initialize,
-	checkGitStatus,
-	tagReleaseVersion,
-	gruntBuild,
-	makeReleaseCopies,
-	setNextVersion,
-	copyTojQueryCDN,
-	buildGoogleCDN,
-	buildMicrosoftCDN,
-	pushToGithub,
-	exit
-);
-
-function initialize( next ) {
-
-	if ( process.argv[2] === "-d" ) {
-		process.argv.shift();
-		debug = true;
-		console.warn("=== DEBUG MODE ===" );
-	}
-
-	// First arg should be the version number being released
-	var newver, oldver,
-		rsemver = /^(\d+)\.(\d+)\.(\d+)(?:-([\dA-Za-z\-]+(?:\.[\dA-Za-z\-]+)*))?$/,
-		version = ( process.argv[3] || "" ).toLowerCase().match( rsemver ) || {},
-		major = version[1],
-		minor = version[2],
-		patch = version[3],
-		xbeta = version[4];
-
-	branch = process.argv[2];
-	releaseVersion = process.argv[3];
-	isBeta = !!xbeta;
-
-	if ( !branch || !major || !minor || !patch ) {
-		die( "Usage: " + process.argv[1] + " branch releaseVersion" );
-	}
-	if ( xbeta === "pre" ) {
-		die( "Cannot release a 'pre' version!" );
-	}
-	if ( !(fs.existsSync || path.existsSync)( "package.json" ) ) {
-		die( "No package.json in this directory" );
-	}
-	pkg = JSON.parse( fs.readFileSync( "package.json" ) );
-
-	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
-	version = pkg.version.match( rsemver );
-	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] )
-	newver = ( +major ) * 10000 + ( +minor * 100 ) + ( +patch );
-	if ( newver < oldver ) {
-		die( "Next version is older than current version!" );
-	}
-
-	nextVersion = major + "." + minor + "." + ( isBeta ? patch : +patch + 1 ) + "-pre";
-	next();
-}
-
-function checkGitStatus( next ) {
-	git( [ "status" ], function( error, stdout, stderr ) {
-		var onBranch = ((stdout||"").match( /On branch (\S+)/ ) || [])[1];
-		if ( onBranch !== branch ) {
-			dieIfReal( "Branches don't match: Wanted " + branch + ", got " + onBranch );
+	grunt.registerTask("release", "jQuery Core Release Management", function(subtask) {
+		if (!subtask) {
+			grunt.fail.fatal("Task requires subtask to be passed.");
 		}
-		if ( /Changes to be committed/i.test( stdout ) ) {
-			dieIfReal( "Please commit changed files before attemping to push a release." );
-		}
-		if ( /Changes not staged for commit/i.test( stdout ) ) {
-			dieIfReal( "Please stash files before attempting to push a release." );
-		}
-		next();
-	});
-}
 
-function tagReleaseVersion( next ) {
-	updatePackageVersion( releaseVersion );
-	git( [ "commit", "-a", "-m", "Tagging the " + releaseVersion + " release." ], function(){
-		git( [ "tag", releaseVersion ], next, debug);
-	}, debug);
-}
+		var options = this.options({
+				file: "package.json",
+				skipGit: false,
+				skipRemote: false,
+				scpURL: "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
+				cdnURL: "http://code.origin.jquery.com/",
+				gitRepo: "git@github.com:jquery/jquery.git"
+			}),
+			passedSemver = grunt.option("semver") || "patch",
+			skipGit = grunt.option("skip-git") || options.skipGit || false,
+			skipRemote = grunt.option("skip-remote") || options.skipRemote || false,
+			tagName = grunt.config.getRaw("release.options.tagName") || "<%= version %>",
+			releaseMessage = grunt.config.getRaw("release.options.releaseMessage") || "Tagging the <%= version %> release.",
+			nextMessage = grunt.config.getRaw("release.options.nextMessage") || "Updating the source version to <%= version %>",
+			pkgObj = {},
+			releaseVersion,
+			nextVersion,
+			isBetaRelease = false,
+			templateOptions = {
+				data: {}
+			};
 
-function gruntBuild( next ) {
-	exec( gruntCmd, [], function( error, stdout ) {
-		if ( error ) {
-			die( error + stderr );
-		}
-		console.log( stdout );
-		next();
-	}, false );
-}
+		grunt.verbose.writeflags({
+			"semver": passedSemver,
+			"skipGit": skipGit,
+			"skipRemote": skipRemote
+		});
 
-function makeReleaseCopies( next ) {
-	Object.keys( releaseFiles ).forEach(function( key ) {
-		var text,
-			builtFile = releaseFiles[ key ],
-			releaseFile = "dist/" + key.replace( /VER/g, releaseVersion );
+		setup();
 
-		// Beta releases don't update the jquery-latest etc. copies
-		if ( !isBeta || key.indexOf( "VER" ) >= 0 ) {
-
-			if ( /\.map$/.test( releaseFile ) ) {
-				// Map files need to reference the new uncompressed name;
-				// assume that all files reside in the same directory.
-				// "file":"jquery.min.js","sources":["jquery.js"]
-				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
-						"\"file\":\"" + releaseFile.replace( /\.min\.map/, ".min.js" ) +
-						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
-				fs.writeFileSync( releaseFile, text );
-			} else if ( /\.min\.js$/.test( releaseFile ) ) {
-				// Minified files point back to the corresponding map;
-				// again assume one big happy directory.
-				// "//@ sourceMappingURL=jquery.min.map"
-				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /\/\/@ sourceMappingURL=\S+/,
-						"//@ sourceMappingURL=" + releaseFile.replace( /\.js$/, ".map" ) );
-				fs.writeFileSync( releaseFile, text );
-			} else if ( builtFile !== releaseFile ) {
-				copy( builtFile, releaseFile );
+		if (subtask === "preflight") {
+			if (skipGit === false) {
+				checkGitStatus();
 			}
 
-			jQueryFilesCDN.push( releaseFile );
-		}
-	});
-	next();
-}
+			grunt.config.set("pkg.version", releaseVersion);
+		} else if (subtask === "core") {
+			bumpVersion();
 
-function setNextVersion( next ) {
-	updatePackageVersion( nextVersion );
-	git( [ "commit", "-a", "-m", "Updating the source version to " + nextVersion + "✓™" ], next, debug );
-}
+			if (skipGit === false) {
+				gitAdd();
+				gitCommit();
+				gitTag();
+			}
 
-function copyTojQueryCDN( next ) {
-	var cmds = [];
+			makeReleaseCopies();
 
-	jQueryFilesCDN.forEach(function( name ) {
-		cmds.push(function( nxt ){
-			exec( "scp", [ name, scpURL ], nxt, debug || skipRemote );
-		});
-		cmds.push(function( nxt ){
-			exec( "curl", [ cdnURL + name + "?reload" ], nxt, debug || skipRemote );
-		});
-	});
-	cmds.push( next );
+			bumpVersionNext();
 
-	steps.apply( this, cmds );
-}
+			if (skipGit === false) {
+				gitCommitNext();
+			}
 
-function buildGoogleCDN( next ) {
-	makeArchive( "googlecdn", googleFilesCDN, next );
-}
+			if (!isBetaRelease) {
+				prepForCDNs();
+			}
 
-function buildMicrosoftCDN( next ) {
-	makeArchive( "mscdn", msFilesCDN, next );
-}
+			if (skipRemote === false) {
+				copyTojQueryCDN();
 
-function pushToGithub( next ) {
-	git( [ "push", "--tags", repoURL, branch ], next, debug || skipRemote );
-}
-
-//==============================
-
-function steps() {
-	var cur = 0,
-		steps = arguments;
-	(function next(){
-		process.nextTick(function(){
-			steps[ cur++ ]( next );
-		});
-	})();
-}
-
-function updatePackageVersion( ver ) {
-	console.log( "Updating package.json version to " + ver );
-	pkg.version = ver;
-	if ( !debug ) {
-		fs.writeFileSync( "package.json", JSON.stringify( pkg, null, "\t" ) + "\n" );
-	}
-}
-
-function makeArchive( cdn, files, fn ) {
-	if ( isBeta ) {
-		console.log( "Skipping archive creation for " + cdn + "; " + releaseVersion + " is beta" );
-		process.nextTick( fn );
-		return;
-	}
-
-	console.log( "Creating production archive for " + cdn );
-
-	var archive = archiver( "zip" ),
-		md5file = "dist/" + cdn + "-md5.txt",
-		output = fs.createWriteStream( "dist/" + cdn + "-jquery-" + releaseVersion + ".zip" );
-
-	archive.on( "error", function( err ) {
-		throw err;
-	});
-
-	output.on( "close", fn );
-	archive.pipe( output );
-
-	files = files.map(function( item ) {
-		return "dist/" + item.replace( /VER/g, releaseVersion );
-	});
-
-	exec( "md5sum", files, function( err, stdout, stderr ) {
-		fs.writeFileSync( md5file, stdout );
-		files.push( md5file );
-
-		files.forEach(function( file ) {
-			archive.append( fs.createReadStream( file ), { name: file } );
-		});
-
-		archive.finalize();
-	}, false );
-}
-
-function copy( oldFile, newFile, skip ) {
-	console.log( "Copying " + oldFile + " to " + newFile );
-	if ( !skip ) {
-		fs.writeFileSync( newFile, fs.readFileSync( oldFile, "utf8" ) );
-	}
-}
-
-function git( args, fn, skip ) {
-	exec( "git", args, fn, skip );
-}
-
-function exec( cmd, args, fn, skip ) {
-	if ( skip ) {
-		console.log( "# " + cmd + " " + args.join(" ") );
-		fn( "", "", "" );
-	} else {
-		console.log( cmd + " " + args.join(" ") );
-		child.execFile( cmd, args, { env: process.env },
-			function( err, stdout, stderr ) {
-				if ( err ) {
-					die( stderr || stdout || err );
+				if (skipGit === false) {
+					gitPushGithub();
 				}
-				fn.apply( this, arguments );
 			}
-		);
-	}
-}
+		}
 
-function die( msg ) {
-	console.error( "ERROR: " + msg );
-	process.exit( 1 );
-}
+		function run(cmd, msg) {
+			var result = shell.exec(cmd, {silent:true});
 
-function dieIfReal( msg ) {
-	if ( debug ) {
-		console.log ( "DIE: " + msg );
-	} else {
-		die( msg );
-	}
-}
+			if (msg && result.code === 0) {
+				if (msg.length > 0) {
+					grunt.log.ok(msg);
+				} else {
+					grunt.log.oklns(result.output);
+				}
+			} else {
+				grunt.fail.fatal(result.output);
+			}
 
-function exit() {
-	process.exit( 0 );
-}
+			return result;
+		}
+
+		function checkGitStatus() {
+			var status = run("git status");
+
+			if (/Changes to be committed/i.test(status.output)) {
+				grunt.fail.fatal("Please commit changed files before attemping to push a release.");
+			}
+
+			if (/Changes not staged for commit/i.test(status.output)) {
+				grunt.fail.fatal("Please commit changed files before attemping to push a release.");
+			}
+		}
+
+		function setup() {
+			var pkg = grunt.file.readJSON(options.file),
+				semverKeywords = ["major", "minor", "patch", "build"],
+				semverIncrement = (semverKeywords.indexOf(passedSemver) !== -1),
+				parsedVersion;
+
+			if (semverIncrement) {
+				releaseVersion = semver.inc(pkg.version, passedSemver);
+			} else if (semver.valid(passedSemver)) {
+				parsedVersion = semver.parse(passedSemver);
+
+				if (parsedVersion[5] === "-pre") {
+					grunt.fail.fatal("Pre-release versions can't be published!");
+				}
+
+				if (semver.lt(passedSemver, pkg.version)) {
+					grunt.fail.fatal("Release version is older than current version!");
+				}
+
+				releaseVersion = passedSemver;
+				isBetaRelease = !!parsedVersion[5];
+			} else {
+				grunt.fail.fatal("Release version doesn't conform to semver standards!");
+			}
+
+			nextVersion = semver.inc(releaseVersion, "patch") + "-pre";
+			pkgObj = pkg;
+		}
+
+		function bumpVersion() {
+			pkgObj.version = releaseVersion;
+			grunt.file.write(options.file, JSON.stringify(pkgObj, null, "	") + "\n");
+			grunt.log.ok("Release version bumped to " + releaseVersion);
+		}
+
+		function bumpVersionNext() {
+			pkgObj.version = nextVersion;
+			grunt.file.write(options.file, JSON.stringify(pkgObj, null, "	") + "\n");
+			grunt.log.ok("Source version bumped to " + nextVersion);
+		}
+
+		function makeReleaseCopies() {
+			var builtFile,
+				releaseFile;
+
+			Object.keys(releaseFiles).forEach(function(key) {
+				builtFile = releaseFiles[key],
+				releaseFile = "dist/" + key.replace(/VER/g, releaseVersion);
+
+				if (!isBetaRelease || key.indexOf("VER") >= 0) {
+					if (/\.map$/.test(releaseFile)) {
+						// Map files need to reference the new uncompressed name;
+						// assume that all files reside in the same directory.
+						// "file":"jquery.min.js","sources":["jquery.js"]
+						grunt.file.copy(builtFile, releaseFile, {
+							process: function(contents) {
+								contents = contents.replace(/"file":"([^"]+)","sources":\["([^"]+)"\]/,
+								"\"file\":\"" + releaseFile.replace(/\.min\.map/, ".min.js") +
+								"\",\"sources\":[\"" + releaseFile.replace(/\.min\.map/, ".js") + "\"]");
+
+								return contents;
+							}
+						});
+					} else if (/\.min\.js$/.test(releaseFile)) {
+						// Minified files point back to the corresponding map;
+						// again assume one big happy directory.
+						// "//@ sourceMappingURL=jquery.min.map"
+						grunt.file.copy(builtFile, releaseFile, {
+							process: function(contents) {
+								contents = contents.replace(/\/\/@ sourceMappingURL=\S+/,
+								"//@ sourceMappingURL=" + releaseFile.replace(/\.js$/, ".map"));
+
+								return contents;
+							}
+						});
+					} else if (builtFile !== releaseFile) {
+						grunt.file.copy(builtFile, releaseFile);
+					}
+
+					jQueryFilesCDN.push(releaseFile);
+				}
+			});
+		}
+
+		function copyTojQueryCDN() {
+			jQueryFilesCDN.forEach(function(name) {
+				run("scp " + name + " " + options.scpURL, true);
+				run("curl " + options.cdnURL +  name + "?reload", true);
+			});
+		}
+
+		function prepForCDNs() {
+			var taskList = [],
+				cdnData,
+				cdnFiles;
+
+			Object.keys(otherCDNs).forEach(function(cdn) {
+				cdnData = otherCDNs[cdn];
+				cdnFiles = [];
+
+				cdnData.files.forEach(function(file, index) {
+					cdnFiles[index] = file.replace(/VER/g, releaseVersion);
+				});
+
+				grunt.config.set("compress.rls" + cdn, {
+					options: {
+						archive: "dist/" + cdn + "-jquery-" + releaseVersion + ".zip"
+					},
+					files: [
+						{ expand: true, cwd: "dist", src: cdnFiles }
+					]
+				});
+
+				taskList.push("compress:rls" + cdn);
+			});
+
+			grunt.task.run(taskList);
+		}
+
+		function gitAdd() {
+			run("git add " + options.file);
+		}
+
+		function gitCommit() {
+			templateOptions.data.version = releaseVersion;
+			var message = grunt.template.process(releaseMessage, templateOptions);
+			run("git commit " + options.file + " -m " + "\"" + message + "\"", options.file + " committed");
+		}
+
+		function gitCommitNext() {
+			templateOptions.data.version = nextVersion;
+			var message = grunt.template.process(nextMessage, templateOptions);
+			run("git commit " + options.file + " -m " + "\"" + message + "\"", options.file + " committed");
+		}
+
+		function gitTag() {
+			var name = grunt.template.process(tagName, templateOptions);
+			run("git tag " + name, "New git tag created: " + name);
+		}
+
+		function gitPushGithub() {
+			run("git push --tags " + options.gitRepo, true);
+		}
+	});
+};
