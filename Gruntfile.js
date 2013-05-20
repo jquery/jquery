@@ -2,7 +2,12 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
-	var distpaths = [
+	var commonvars = {
+			devFile: "dist/jquery.js",
+			minFile: "dist/jquery.min.js",
+			mapFile: "dist/jquery.min.map"
+		},
+		distpaths = [
 			"dist/jquery.js",
 			"dist/jquery.min.map",
 			"dist/jquery.min.js"
@@ -143,6 +148,38 @@ module.exports = function( grunt ) {
 						// saves some bytes when gzipped
 						except: [ "undefined" ]
 					}
+				}
+			}
+		},
+		release: {
+			options: {
+				cdnMap: {
+					googlecdn: {
+						files: [
+							"jquery.js",
+							"jquery.min.js",
+							"jquery.min.map"
+						]
+					},
+					mscdn: {
+						files: [
+							"jquery-VER.js",
+							"jquery-VER.min.js",
+							"jquery-VER.min.map"
+						]
+					}
+				},
+				releaseFilesMap: {
+					"jquery-VER.js": commonvars.devFile,
+					"jquery-VER.min.js": commonvars.minFile,
+					"jquery-VER.min.map": commonvars.mapFile
+					// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY,
+					//"jquery.js": commonvars.devFile,
+					//"jquery.min.js": commonvars.minFile,
+					//"jquery.min.map": commonvars.mapFile,
+					//"jquery-latest.js": commonvars.devFile,
+					//"jquery-latest.min.js": commonvars.minFile,
+					//"jquery-latest.min.map": commonvars.mapFile
 				}
 			}
 		}

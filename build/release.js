@@ -1,47 +1,10 @@
 /*
  * jQuery Core Release Management
  */
-var shell = require("shelljs");
-var semver = require("semver");
+var shell = require("shelljs"),
+	semver = require("semver");
 
 module.exports = function(grunt) {
-	var devFile = "dist/jquery.js",
-		minFile = "dist/jquery.min.js",
-		mapFile = "dist/jquery.min.map",
-
-		releaseFiles = {
-			"jquery-VER.js": devFile,
-			"jquery-VER.min.js": minFile,
-			"jquery-VER.min.map": mapFile
-// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY,
-//		"jquery.js": devFile,
-//		"jquery.min.js": minFile,
-//		"jquery.min.map": mapFile,
-//		"jquery-latest.js": devFile,
-//		"jquery-latest.min.js": minFile,
-//		"jquery-latest.min.map": mapFile
-		},
-
-		jQueryFilesCDN = [
-		],
-
-		otherCDNs = {
-			googlecdn: {
-				files: [
-					"jquery.js",
-					"jquery.min.js",
-					"jquery.min.map"
-				]
-			},
-			mscdn: {
-				files: [
-					"jquery-VER.js",
-					"jquery-VER.min.js",
-					"jquery-VER.min.map"
-				]
-			}
-		};
-
 	grunt.registerTask("release", "jQuery Core Release Management", function(subtask) {
 		if (!subtask) {
 			grunt.fail.fatal("Task requires subtask to be passed.");
@@ -53,7 +16,9 @@ module.exports = function(grunt) {
 				skipRemote: false,
 				scpURL: "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 				cdnURL: "http://code.origin.jquery.com/",
-				gitRepo: "git@github.com:jquery/jquery.git"
+				gitRepo: "git@github.com:jquery/jquery.git",
+				releaseFilesMap: {},
+				cdnMap: {}
 			}),
 			passedSemver = grunt.option("semver") || "patch",
 			skipGit = grunt.option("skip-git") || options.skipGit || false,
@@ -65,6 +30,7 @@ module.exports = function(grunt) {
 			releaseVersion,
 			nextVersion,
 			isBetaRelease = false,
+			jQueryFilesCDN = [],
 			templateOptions = {
 				data: {}
 			};
@@ -186,8 +152,8 @@ module.exports = function(grunt) {
 			var builtFile,
 				releaseFile;
 
-			Object.keys(releaseFiles).forEach(function(key) {
-				builtFile = releaseFiles[key],
+			Object.keys(options.releaseFilesMap).forEach(function(key) {
+				builtFile = options.releaseFilesMap[key],
 				releaseFile = "dist/" + key.replace(/VER/g, releaseVersion);
 
 				if (!isBetaRelease || key.indexOf("VER") >= 0) {
@@ -237,8 +203,8 @@ module.exports = function(grunt) {
 				cdnData,
 				cdnFiles;
 
-			Object.keys(otherCDNs).forEach(function(cdn) {
-				cdnData = otherCDNs[cdn];
+			Object.keys(options.cdnMap).forEach(function(cdn) {
+				cdnData = options.cdnMap[cdn];
 				cdnFiles = [];
 
 				cdnData.files.forEach(function(file, index) {
