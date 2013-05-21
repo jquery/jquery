@@ -937,7 +937,7 @@ test("jQuery.merge()", function() {
 });
 
 test("jQuery.extend(Object, Object)", function() {
-	expect(28);
+	expect(29);
 
 	var empty, optionsWithLength, optionsWithDate, myKlass,
 		customObject, optionsWithCustomObject, MyNumber, ret,
@@ -947,6 +947,9 @@ test("jQuery.extend(Object, Object)", function() {
 		options = { "xnumber2": 1, "xstring2": "x", "xxx": "newstring" },
 		optionsCopy = { "xnumber2": 1, "xstring2": "x", "xxx": "newstring" },
 		merged = { "xnumber1": 5, "xnumber2": 1, "xstring1": "peter", "xstring2": "x", "xxx": "newstring" },
+		deepSkipKeys1 = {},
+		deepSkipKeys2 = { 1:1, 2:2, 3:{ 1:11, 2:22, 3:{ 1:111, 2:222}}},
+		deepSkipKeysResult = { 2:2, 3:{ 2:22, 3:{ 2:222}}},
 		deep1 = { "foo": { "bar": true } },
 		deep2 = { "foo": { "baz": true }, "foo2": document },
 		deep2copy = { "foo": { "baz": true }, "foo2": document },
@@ -966,6 +969,9 @@ test("jQuery.extend(Object, Object)", function() {
 	deepEqual( deep1["foo"], deepmerged["foo"], "Check if foo: settings must be extended" );
 	deepEqual( deep2["foo"], deep2copy["foo"], "Check if not deep2: options must not be modified" );
 	equal( deep1["foo2"], document, "Make sure that a deep clone was not attempted on the document" );
+
+	jQuery.extend(true, "1", deepSkipKeys1, deepSkipKeys2);
+	deepEqual( deepSkipKeys1, deepSkipKeysResult, "Check if skipKey has been skipped deeply" );
 
 	ok( jQuery.extend(true, {}, nestedarray)["arr"] !== arr, "Deep extend of object must clone child array" );
 
