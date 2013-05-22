@@ -111,11 +111,12 @@ module.exports = function( grunt ) {
 					"dist/jquery.pre-min.js": [ "dist/jquery.js" ]
 				},
 				options: {
-					banner: "/*! jQuery v<%= pkg.version %> | " +
+					banner: "\n\n\n\n\n\n\n\n\n\n" + // banner line size must be preserved
+						"/*! jQuery v<%= pkg.version %> | " +
 						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
 						"jquery.org/license\n" +
 						"//@ sourceMappingURL=jquery.min.map\n" +
-						"*/"
+						"*/\n"
 				}
 			}
 		},
@@ -139,6 +140,17 @@ module.exports = function( grunt ) {
 						loops: false,
 						unused: false
 					}
+				}
+			}
+		},
+		"post-uglify": {
+			all: {
+				files: {
+					"dist/jquery.min.map.tmp": [ "dist/jquery.min.map" ],
+					"dist/jquery.min.js.tmp": [ "dist/jquery.min.js" ]
+				},
+				options: {
+					tempFiles: [ "dist/jquery.min.map.tmp", "dist/jquery.min.js.tmp", "dist/jquery.pre-min.js" ]
 				}
 			}
 		}
@@ -432,7 +444,7 @@ module.exports = function( grunt ) {
 
 		// Check for stored destination paths
 		// ( set in dist/.destination.json )
-		stored = Object.keys( grunt.config("dst") );
+		stored = Object.keys( grunt.config( "dst" ) );
 
 		// Allow command line input as well
 		flags = Object.keys( this.flags );
@@ -443,7 +455,7 @@ module.exports = function( grunt ) {
 		});
 
 		// Ensure the dist files are pure ASCII
-		fs = require("fs");
+		fs = require( "fs" );
 		nonascii = false;
 
 		distpaths.forEach(function( filename ) {
@@ -516,11 +528,43 @@ module.exports = function( grunt ) {
 				var contents = grunt.file.read( file );
 
 				// Strip banners
-				return contents.replace( /^\/\*!(?:.|\n)*?\*\/\n?/gm, "" );
+				return contents
+					// Remove the main jQuery banner, it'll be replaced by the new banner anyway.
+					.replace( /^\/\*!(?:.|\n)*?\*\/\n?/g, "" )
+					// Strip other banners preserving line count.
+					.replace( /^\/\*!(?:.|\n)*?\*\/\n?/gm, function ( match ) {
+						return match.replace( /[^\n]/gm, "" );
+					});
 			}).join("\n");
 
 			// Write temp file (with optional banner)
 			grunt.file.write( mapping.dest, ( banner || "" ) + input );
+		});
+	});
+
+	// Change the map file to point back to jquery.js instead of jquery.pre-min.js.
+	// The problem is caused by the pre-uglify task.
+	// Also, remove temporary files.
+	grunt.registerMultiTask( "post-uglify", function() {
+		var fs = require( "fs" );
+
+		this.files.forEach(function( mapping ) {
+			var mapFileName = mapping.src[ 0 ];
+
+			// Rename the file to a temporary name.
+			fs.renameSync( mapFileName, mapping.dest);
+			grunt.file.write( mapFileName, grunt.file.read( mapping.dest )
+				// The uglify task erroneously prepends dist/ to file names.
+				.replace( /"dist\//g, "\"" )
+				// Refer to the source jquery.js, not the temporary jquery.pre-min.js.
+				.replace( /\.pre-min\./g, "." )
+				// There's already a pragma at the beginning of the file, remove the one at the end.
+				.replace( /\/\/@ sourceMappingURL=jquery\.min\.map$/g, "" ));
+		});
+
+		// Remove temporary files.
+		this.options().tempFiles.forEach(function( fileName ) {
+			fs.unlink( fileName );
 		});
 	});
 
@@ -533,7 +577,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	// Default grunt
-	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "selector", "build:*:*", "jshint" ] );
