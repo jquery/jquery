@@ -614,7 +614,7 @@ jQuery.extend({
 				}
 
 				// if no content
-				if ( status === 204 ) {
+				if ( status === 204 || s.type === "HEAD" ) {
 					statusText = "nocontent";
 
 				// if not modified

@@ -1499,6 +1499,29 @@ module( "ajax", {
 		}
 	});
 
+	ajaxTest( "#13922 - jQuery.ajax() - converter is bypassed for HEAD requests", 3, {
+		url: "data/json.php",
+		method: "HEAD",
+		data: {
+			header: "yes"
+		},
+		converters: {
+			"text json": function() {
+				throw "converter was called";
+			}
+		},
+		success: function( data, status ) {
+			ok( true, "success" );
+			strictEqual( status, "nocontent", "data is undefined" );
+			strictEqual( data, undefined, "data is undefined" );
+		},
+		error: function( _, status, error ) {
+			ok( false, "error" );
+			strictEqual( status, "parsererror", "Parser Error" );
+			strictEqual( error, "converter was called", "Converter was called" );
+		}
+	} );
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
