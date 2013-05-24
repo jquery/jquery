@@ -149,7 +149,8 @@ function makeReleaseCopies( next ) {
 	Object.keys( releaseFiles ).forEach(function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
-			releaseFile = "dist/" + key.replace( /VER/g, releaseVersion );
+			unpathedFile = key.replace( /VER/g, releaseVersion ),
+			releaseFile = "dist/" + unpathedFile;
 
 		// Beta releases don't update the jquery-latest etc. copies
 		if ( !isBeta || key.indexOf( "VER" ) >= 0 ) {
@@ -160,8 +161,8 @@ function makeReleaseCopies( next ) {
 				// "file":"jquery.min.js","sources":["jquery.js"]
 				text = fs.readFileSync( builtFile, "utf8" )
 					.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
-						"\"file\":\"" + releaseFile.replace( /\.min\.map/, ".min.js" ) +
-						"\",\"sources\":[\"" + releaseFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+						"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
+						"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( /\.min\.js$/.test( releaseFile ) ) {
 				// Minified files point back to the corresponding map;
@@ -169,7 +170,7 @@ function makeReleaseCopies( next ) {
 				// "//@ sourceMappingURL=jquery.min.map"
 				text = fs.readFileSync( builtFile, "utf8" )
 					.replace( /\/\/@ sourceMappingURL=\S+/,
-						"//@ sourceMappingURL=" + releaseFile.replace( /\.js$/, ".map" ) );
+						"//@ sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( builtFile !== releaseFile ) {
 				copy( builtFile, releaseFile );
