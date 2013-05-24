@@ -161,38 +161,28 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function() {
-		var
-			// Snapshot the DOM in case .domManip sweeps something relevant into its fragment
-			args = jQuery.map( this, function( elem ) {
-				return [ elem.nextSibling, elem.parentNode ];
-			}),
-			i = 0;
+		var arg = arguments[ 0 ];
 
 		// Make the changes, replacing each context element with the new content
 		this.domManip( arguments, function( elem ) {
-			var next = args[ i++ ],
-				parent = args[ i++ ];
+			arg = this.parentNode;
 
-			if ( parent ) {
-				// Don't use the snapshot next if it has moved (#13810)
-				if ( next && next.parentNode !== parent ) {
-					next = this.nextSibling;
-				}
-				jQuery( this ).remove();
-				parent.insertBefore( elem, next );
+			jQuery.cleanData( getAll( this ) );
+
+			if ( arg ) {
+				arg.replaceChild( elem, this );
 			}
-		// Allow new content to include elements from the context set
-		}, true );
+		});
 
 		// Force removal if there was no new content (e.g., from empty arguments)
-		return i ? this : this.remove();
+		return arg && (arg.length || arg.nodeType) ? this : this.remove();
 	},
 
 	detach: function( selector ) {
 		return this.remove( selector, true );
 	},
 
-	domManip: function( args, callback, allowIntersection ) {
+	domManip: function( args, callback ) {
 
 		// Flatten any nested arrays
 		args = core_concat.apply( [], args );
@@ -212,12 +202,12 @@ jQuery.fn.extend({
 				if ( isFunction ) {
 					args[ 0 ] = value.call( this, index, self.html() );
 				}
-				self.domManip( args, callback, allowIntersection );
+				self.domManip( args, callback );
 			});
 		}
 
 		if ( l ) {
-			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, !allowIntersection && this );
+			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {
