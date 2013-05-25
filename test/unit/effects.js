@@ -2096,19 +2096,45 @@ test( ".finish( \"custom\" ) - custom queue animations", function() {
 });
 
 test( ".finish() calls finish of custom queue functions", function() {
-	function queueTester() {
-
+	function queueTester( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			inside++;
+			equal( this, div[0] );
+			ok( gotoEnd, "hooks.stop(true) called");
+		};
 	}
-	var div = jQuery( "<div>" );
+	var div = jQuery( "<div>" ),
+		inside = 0,
+		outside = 0;
 
-	expect( 3 );
+	expect( 6 );
 	queueTester.finish = function() {
+		outside++;
 		ok( true, "Finish called on custom queue function" );
 	};
 
 	div.queue( queueTester ).queue( queueTester ).queue( queueTester ).finish();
 
+	equal( inside, 1, "1 stop(true) callback" );
+	equal( outside, 2, "2 finish callbacks" );
+
 	div.remove();
+});
+
+asyncTest( ".finish() is applied correctly when multiple elements were animated (#13937)", function() {
+	expect( 3 );
+
+	var elems = jQuery("<a>0</a><a>1</a><a>2</a>");
+
+	elems.animate( { opacity: 0 }, 1500 ).animate( { opacity: 1 }, 1500 );
+	setTimeout(function() {
+		elems.eq( 1 ).finish();
+		ok( !elems.eq( 1 ).queue().length, "empty queue for .finish()ed element" );
+		ok( elems.eq( 0 ).queue().length, "non-empty queue for preceding element" );
+		ok( elems.eq( 2 ).queue().length, "non-empty queue for following element" );
+		elems.stop( true );
+		start();
+	}, 100 );
 });
 
 asyncTest( "slideDown() after stop() (#13483)", 2, function() {

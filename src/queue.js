@@ -35,7 +35,6 @@ jQuery.extend({
 			startLength--;
 		}
 
-		hooks.cur = fn;
 		if ( fn ) {
 
 			// Add a progress sentinel to prevent the fx queue from being
