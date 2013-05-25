@@ -2109,6 +2109,22 @@ test( ".finish() calls finish of custom queue functions", function() {
 	div.remove();
 });
 
+asyncTest( ".finish() is applied correctly when multiple elements were animated (#13937)", function() {
+	expect( 3 );
+
+	var elems = jQuery("<a>0</a><a>1</a><a>2</a>");
+
+	elems.animate( { opacity: 0 }, 1500 ).animate( { opacity: 1 }, 1500 );
+	setTimeout(function() {
+		elems.eq( 1 ).finish();
+		ok( !elems.eq( 1 ).queue().length, "empty queue for .finish()ed element" );
+		ok( elems.eq( 0 ).queue().length, "non-empty queue for preceding element" );
+		ok( elems.eq( 2 ).queue().length, "non-empty queue for following element" );
+		elems.stop( true );
+		start();
+	}, 100 );
+});
+
 asyncTest( "slideDown() after stop() (#13483)", 2, function() {
 	var ul = jQuery( "<ul style='height: 100px;display: block'></ul>" ),
 		origHeight = ul.height();

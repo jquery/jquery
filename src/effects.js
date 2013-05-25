@@ -485,24 +485,33 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var empty = jQuery.isEmptyObject( prop ),
+		var elems = [],
+			anims = [],
+			empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
-				// Operate on a copy of prop so per-property easing won't be lost
-				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
-				doAnimation.finish = function() {
-					anim.stop( true );
-				};
+				var anim,
+					index = jQuery.inArray( this, elems );
+
+				if ( index < 0 ) {
+					// Create the animation for this element
+					// Operate on a copy of prop so per-property easing won't be lost
+					anims.push( anim = Animation( this, jQuery.extend( {}, prop ), optall ) );
+					elems.push( this );
+				} else {
+					// Retrieve an existing animation for early finish
+					anim = anims[ index ];
+				}
+
 				// Empty animations, or finishing resolves immediately
 				if ( empty || jQuery._data( this, "finish" ) ) {
 					anim.stop( true );
 				}
 			};
-			doAnimation.finish = doAnimation;
 
 		return empty || optall.queue === false ?
 			this.each( doAnimation ) :
-			this.queue( optall.queue, doAnimation );
+			this.queue( optall.queue, (doAnimation.finish = doAnimation) );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
 		var stopQueue = function( hooks ) {
