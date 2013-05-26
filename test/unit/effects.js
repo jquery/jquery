@@ -204,6 +204,46 @@ test("animate(Hash, Object, Function)", function() {
 	});
 });
 
+test("animate relative values", function() {
+	stop();
+
+	var value = 40,
+		bases = [ "%", "px", "em" ],
+		adjustments = [ "px", "em" ],
+		container = jQuery("<div></div>")
+			.css({ position: "absolute", height: "50em", width: "50em" }),
+		animations = bases.length * adjustments.length;
+
+	expect( 2 * animations );
+
+	jQuery.each( bases, function( _, baseUnit ) {
+		jQuery.each( adjustments, function( _, adjustUnit ) {
+			var base = value + baseUnit,
+				adjust = { height: "+=2" + adjustUnit, width: "-=2" + adjustUnit },
+				elem = jQuery("<div></div>")
+					.appendTo( container.clone().appendTo("#qunit-fixture") )
+					.css({
+						position: "absolute",
+						height: base,
+						width: value + adjustUnit
+					}),
+				baseScale = elem[ 0 ].offsetHeight / value,
+				adjustScale = elem[ 0 ].offsetWidth / value;
+
+			elem.css( "width", base ).animate( adjust, 100, function() {
+				equal( this.offsetHeight, value * baseScale + 2 * adjustScale,
+					baseUnit + "+=" + adjustUnit );
+				equal( this.offsetWidth, value * baseScale - 2 * adjustScale,
+					baseUnit + "-=" + adjustUnit );
+
+				if ( --animations === 0 ) {
+					start();
+				}
+			});
+		});
+	});
+});
+
 test("animate negative height", function() {
 	expect(1);
 	stop();
