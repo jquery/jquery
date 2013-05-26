@@ -485,22 +485,25 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var elems = [],
-			anims = [],
+		var started = [],
 			empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
 				var anim,
-					index = jQuery.inArray( this, elems );
+					i = started.length;
 
-				if ( index < 0 ) {
-					// Create the animation for this element
+				// Retrieve an existing animation for early finish
+				while ( i-- ) {
+					if ( started[ i ].elem === this ) {
+						anim = started[ i ];
+						break;
+					}
+				}
+
+				// ...or create an animation
+				if ( !anim ) {
 					// Operate on a copy of prop so per-property easing won't be lost
-					anims.push( anim = Animation( this, jQuery.extend( {}, prop ), optall ) );
-					elems.push( this );
-				} else {
-					// Retrieve an existing animation for early finish
-					anim = anims[ index ];
+					started.push( anim = Animation( this, jQuery.extend( {}, prop ), optall ) );
 				}
 
 				// Empty animations, or finishing resolves immediately
