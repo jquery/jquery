@@ -485,36 +485,26 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		var started = [],
-			empty = jQuery.isEmptyObject( prop ),
+		var empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
-			doAnimation = function() {
-				var anim,
-					i = started.length;
-
-				// Retrieve an existing animation for early finish
-				while ( i-- ) {
-					if ( started[ i ].elem === this ) {
-						anim = started[ i ];
-						break;
-					}
+			doAnimation = function( next, hooks ) {
+				// Operate on a copy of prop so per-property easing won't be lost
+				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
+				if ( hooks ) {
+					hooks.finish = function() {
+						anim.stop( true );
+					};
 				}
-
-				// ...or create an animation
-				if ( !anim ) {
-					// Operate on a copy of prop so per-property easing won't be lost
-					started.push( anim = Animation( this, jQuery.extend( {}, prop ), optall ) );
-				}
-
 				// Empty animations, or finishing resolves immediately
 				if ( empty || jQuery._data( this, "finish" ) ) {
 					anim.stop( true );
 				}
 			};
+			doAnimation.finish = doAnimation;
 
 		return empty || optall.queue === false ?
 			this.each( doAnimation ) :
-			this.queue( optall.queue, (doAnimation.finish = doAnimation) );
+			this.queue( optall.queue, doAnimation );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
 		var stopQueue = function( hooks ) {
@@ -584,8 +574,12 @@ jQuery.fn.extend({
 			// empty the queue first
 			jQuery.queue( this, type, [] );
 
-			if ( hooks && hooks.cur && hooks.cur.finish ) {
-				hooks.cur.finish.call( this );
+			if ( hooks ) {
+				if ( hooks.finish ) {
+					hooks.finish.call( this );
+				} else if ( hooks.cur && hooks.cur.finish ) {
+					hooks.cur.finish.call( this );
+				}
 			}
 
 			// look for any active animations, and finish them
