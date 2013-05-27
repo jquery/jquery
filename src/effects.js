@@ -574,12 +574,8 @@ jQuery.fn.extend({
 			// empty the queue first
 			jQuery.queue( this, type, [] );
 
-			if ( hooks ) {
-				if ( hooks.finish ) {
-					hooks.finish.call( this );
-				} else if ( hooks.cur && hooks.cur.finish ) {
-					hooks.cur.finish.call( this );
-				}
+			if ( hooks && hooks.finish ) {
+				hooks.finish.call( this );
 			}
 
 			// look for any active animations, and finish them
