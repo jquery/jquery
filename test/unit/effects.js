@@ -2094,17 +2094,27 @@ test( ".finish( \"custom\" ) - custom queue animations", function() {
 });
 
 test( ".finish() calls finish of custom queue functions", function() {
-	function queueTester() {
-
+	function queueTester( next, hooks ) {
+		hooks.finish = function() {
+			// 1
+			inside++;
+			ok( true, "Finish on currently running queue function called");
+		};
 	}
-	var div = jQuery( "<div>" );
+	var div = jQuery( "<div>" ),
+		inside = 0,
+		outside = 0;
 
-	expect( 3 );
+	expect( 5 );
 	queueTester.finish = function() {
+		outside++;
 		ok( true, "Finish called on custom queue function" );
 	};
 
 	div.queue( queueTester ).queue( queueTester ).queue( queueTester ).finish();
+
+	equal( inside, 1 );
+	equal( outside, 2 );
 
 	div.remove();
 });
