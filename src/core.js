@@ -267,6 +267,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
+		skipKeys = "",
 		deep = false;
 
 	// Handle a deep copy situation
@@ -275,6 +276,13 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = arguments[1] || {};
 		// skip the boolean and the target
 		i = 2;
+
+    // Keys to skip
+    if ( typeof target === "string" ) {
+      skipKeys = target;
+      target = arguments[2] || {};
+      i = 3;
+    }
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
@@ -293,6 +301,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 		if ( (options = arguments[ i ]) != null ) {
 			// Extend the base object
 			for ( name in options ) {
+				// Skip keys
+				if ( name && skipKeys.indexOf(name) !== -1 ) {
+					continue;
+				}
+
 				src = target[ name ];
 				copy = options[ name ];
 
@@ -307,12 +320,15 @@ jQuery.extend = jQuery.fn.extend = function() {
 						copyIsArray = false;
 						clone = src && jQuery.isArray(src) ? src : [];
 
+						// Never move original objects, clone them
+						target[ name ] = jQuery.extend( deep, clone, copy );
+
 					} else {
 						clone = src && jQuery.isPlainObject(src) ? src : {};
-					}
 
-					// Never move original objects, clone them
-					target[ name ] = jQuery.extend( deep, clone, copy );
+						// Never move original objects, clone them
+						target[ name ] = jQuery.extend( deep, skipKeys,  clone, copy );
+					}
 
 				// Don't bring in undefined values
 				} else if ( copy !== undefined ) {
