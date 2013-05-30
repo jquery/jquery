@@ -114,7 +114,7 @@ grunt custom:-ajax
 Exclude **css**, **effects**, **offset**, **dimensions**, and **position**. Excluding **css** automatically excludes its dependent modules:
 
 ```bash
-grunt custom:-css:-position
+grunt custom:-css,-position
 ```
 
 Exclude **all** optional modules and use the `querySelectorAll`-based selector engine:
