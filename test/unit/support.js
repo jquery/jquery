@@ -29,7 +29,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 });
 
 (function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
@@ -118,6 +118,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"pixelPosition": false
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"checkOn":true,
 			"optSelected":true,
@@ -131,7 +132,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"cors":true,
 			"clearCloneStyle": true,
 			"boxSizing": true,
-			"boxSizingReliable": false,
+			"boxSizingReliable": version >= 23,
 			"pixelPosition": true
 		};
 	}
