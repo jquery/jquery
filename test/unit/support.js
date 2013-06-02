@@ -117,6 +117,23 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"boxSizingReliable": true,
 			"pixelPosition": false
 		};
+	} else if ( /firefox\/23/i.test( userAgent ) ) {
+		expected = {
+			"checkOn":true,
+			"optSelected":true,
+			"optDisabled":true,
+			"focusinBubbles":false,
+			"reliableMarginRight":true,
+			"noCloneChecked":true,
+			"radioValue":true,
+			"checkClone":true,
+			"ajax":true,
+			"cors":true,
+			"clearCloneStyle": true,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"pixelPosition": true
+		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
 			"checkOn":true,
