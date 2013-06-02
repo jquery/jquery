@@ -1272,7 +1272,7 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 17 );
+	expect( 18 );
 
 	var html, nodes;
 
@@ -1308,6 +1308,8 @@ test("jQuery.parseHTML", function() {
 	equal( jQuery.parseHTML("<span><span>").length, 1, "Incorrect html-strings should not break anything" );
 	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11,
 		"parentNode should be documentFragment for wrapMap (variable in manipulation module) elements too" );
+	equal( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>")[0].nodeName.toLowerCase(), "tr",
+		"garbage input should not cause error");
 });
 
 test("jQuery.parseJSON", function(){
