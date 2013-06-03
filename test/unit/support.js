@@ -29,7 +29,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 });
 
 (function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
@@ -117,24 +117,8 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"boxSizingReliable": true,
 			"pixelPosition": false
 		};
-	} else if ( /firefox\/23/i.test( userAgent ) ) {
-		expected = {
-			"checkOn":true,
-			"optSelected":true,
-			"optDisabled":true,
-			"focusinBubbles":false,
-			"reliableMarginRight":true,
-			"noCloneChecked":true,
-			"radioValue":true,
-			"checkClone":true,
-			"ajax":true,
-			"cors":true,
-			"clearCloneStyle": true,
-			"boxSizing": true,
-			"boxSizingReliable": true,
-			"pixelPosition": true
-		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"checkOn":true,
 			"optSelected":true,
@@ -148,7 +132,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"cors":true,
 			"clearCloneStyle": true,
 			"boxSizing": true,
-			"boxSizingReliable": false,
+			"boxSizingReliable": version >= 23,
 			"pixelPosition": true
 		};
 	}
