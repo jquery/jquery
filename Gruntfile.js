@@ -159,7 +159,8 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "testswarm", function( commit, configFile ) {
 		var jobName,
 			testswarm = require( "testswarm" ),
-			testUrls = [],
+			runs = {},
+			done = this.async(),
 			pull = /PR-(\d+)/.exec( commit ),
 			config = grunt.file.readJSON( configFile ).jquery,
 			tests = grunt.config([ this.name, "tests" ]);
@@ -173,23 +174,32 @@ module.exports = function( grunt ) {
 		}
 
 		tests.forEach(function( test ) {
-			testUrls.push( config.testUrl + commit + "/test/index.html?module=" + test );
+			runs[test] = config.testUrl + commit + "/test/index.html?module=" + test;
 		});
 
-		testswarm({
+		testswarm.createClient( {
 			url: config.swarmUrl,
 			pollInterval: 10000,
-			timeout: 1000 * 60 * 30,
-			done: this.async()
-		}, {
-			authUsername: config.authUsername,
-			authToken: config.authToken,
-			jobName: jobName,
-			runMax: config.runMax,
-			"runNames[]": tests,
-			"runUrls[]": testUrls,
-			"browserSets[]": config.browserSets
-		});
+			timeout: 1000 * 60 * 30
+		} )
+		.addReporter( testswarm.reporters.cli )
+		.auth( {
+			id: config.authUsername,
+			token: config.authToken
+		})
+		.addjob(
+			{
+				name: jobName,
+				runs: runs,
+				runMax: config.runMax,
+				browserSets: config.browserSets
+			}, function( err, passed ) {
+				if ( err ) {
+					grunt.log.error( err );
+				}
+				done( passed );
+			}
+		);
 	});
 
 	grunt.registerTask( "selector", "Build Sizzle-based selector module", function() {
