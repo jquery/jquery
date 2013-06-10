@@ -414,7 +414,7 @@ jQuery.extend({
 
 		// Trigger any bound ready events
 		if ( jQuery.fn.trigger ) {
-			jQuery( document ).trigger("ready").off("ready");
+			jQuery( document ).trigger( "ready" ).off( "ready" );
 		}
 	},
 
@@ -655,7 +655,7 @@ jQuery.extend({
 	},
 
 	// Use native String.trim function wherever possible
-	trim: core_trim && !core_trim.call("\uFEFF\xA0") ?
+	trim: core_trim && !core_trim.call( "\uFEFF\xA0" ) ?
 		function( text ) {
 			return text == null ?
 				"" :
@@ -937,7 +937,7 @@ jQuery.ready.promise = function( obj ) {
 						try {
 							// Use the trick by Diego Perini
 							// http://javascript.nwbox.com/IEContentLoaded/
-							top.doScroll("left");
+							top.doScroll( "left" );
 						} catch(e) {
 							return setTimeout( doScrollCheck, 50 );
 						}
@@ -956,7 +956,7 @@ jQuery.ready.promise = function( obj ) {
 };
 
 // Populate the class2type map
-jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
+jQuery.each( "Boolean Number String Function Array Date RegExp Object Error".split( " " ), function(i, name ) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
