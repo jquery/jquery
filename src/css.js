@@ -511,12 +511,12 @@ jQuery(function() {
 					  var elStyles = getStyles(elem);
 						computed = curCSS( elem, prop );
 						// if curCSS returns percentage, fallback to offset.
-						// Since we can't handle right and top with offset, let's work around it
+						// Since we can't handle right and bottom with offset, let's work around it
 						if ( rnumnonpx.test( computed ) ) {
 						  if (prop === "bottom" ) {
 						    return jQuery( elem ).postion().top + parseFloat( elStyles.height ) + "px";
 						  } else if ( prop === "right" ) {
-						    return jQuery( elem ).position().left + parseFloat( elStyles.top ) + "px";
+						    return jQuery( elem ).position().left + parseFloat( elStyles.width ) + "px";
 						  } else {
 						    return jQuery( elem ).position[ prop ] + "px";
 						  }
