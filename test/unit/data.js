@@ -529,6 +529,17 @@ test(".data should not miss preset data-* w/ hyphenated property names", functio
 	});
 });
 
+test("jQuery.data should not miss data-* w/ hyphenated property names #14047", function() {
+
+	expect(1);
+
+	var div = jQuery("<div/>");
+
+	div.data( "foo-bar", "baz" );
+
+	equal( jQuery.data(div[0], "foo-bar"), "baz", "data with property 'foo-bar' was correctly found");
+});
+
 test(".data should not miss attr() set data-* with hyphenated property names", function() {
 	expect(2);
 
