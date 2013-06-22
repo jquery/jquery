@@ -2,14 +2,14 @@ var
 	// The deferred used on DOM ready
 	readyList,
 
-	// A central reference to the root jQuery(document)
+	// A central reference to the root jQuery( document )
 	rootjQuery,
 
 	// Support: IE<10
 	// For `typeof xmlNode.method` instead of `xmlNode.method !== undefined`
 	core_strundefined = typeof undefined,
 
-	// Use the correct document accordingly with window argument (sandbox)
+	// Use the correct document accordingly with window argument ( sandbox )
 	location = window.location,
 	document = window.document,
 	docElem = document.documentElement,
@@ -104,14 +104,14 @@ jQuery.fn = jQuery.prototype = {
 	init: function( selector, context, rootjQuery ) {
 		var match, elem;
 
-		// HANDLE: $(""), $(null), $(undefined), $(false)
+		// HANDLE: $( "" ), $( null ), $( undefined ), $( false )
 		if ( !selector ) {
 			return this;
 		}
 
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
-			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+			if ( selector.charAt( 0 ) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
 				// Assume that strings that start and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
 
@@ -120,9 +120,9 @@ jQuery.fn = jQuery.prototype = {
 			}
 
 			// Match html or make sure no context is specified for #id
-			if ( match && (match[1] || !context) ) {
+			if ( match && ( match[1] || !context ) ) {
 
-				// HANDLE: $(html) -> $(array)
+				// HANDLE: $( html ) -> $( array )
 				if ( match[1] ) {
 					context = context instanceof jQuery ? context[0] : context;
 
@@ -133,7 +133,7 @@ jQuery.fn = jQuery.prototype = {
 						true
 					) );
 
-					// HANDLE: $(html, props)
+					// HANDLE: $( html, props )
 					if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
 						for ( match in context ) {
 							// Properties of context are called as methods if possible
@@ -149,7 +149,7 @@ jQuery.fn = jQuery.prototype = {
 
 					return this;
 
-				// HANDLE: $(#id)
+				// HANDLE: $( #id )
 				} else {
 					elem = document.getElementById( match[2] );
 
@@ -172,17 +172,17 @@ jQuery.fn = jQuery.prototype = {
 					return this;
 				}
 
-			// HANDLE: $(expr, $(...))
+			// HANDLE: $( expr, $( ... ) )
 			} else if ( !context || context.jquery ) {
 				return ( context || rootjQuery ).find( selector );
 
-			// HANDLE: $(expr, context)
-			// (which is just equivalent to: $(context).find(expr)
+			// HANDLE: $( expr, context )
+			// (which is just equivalent to: $( context ).find( expr )
 			} else {
 				return this.constructor( context ).find( selector );
 			}
 
-		// HANDLE: $(DOMElement)
+		// HANDLE: $( DOMElement )
 		} else if ( selector.nodeType ) {
 			this.context = this[0] = selector;
 			this.length = 1;
@@ -272,13 +272,13 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	map: function( callback ) {
-		return this.pushStack( jQuery.map(this, function( elem, i ) {
+		return this.pushStack(jQuery.map( this, function( elem, i ) {
 			return callback.call( elem, i, elem );
 		}));
 	},
 
 	end: function() {
-		return this.prevObject || this.constructor(null);
+		return this.prevObject || this.constructor( null );
 	},
 
 	// For internal use only.
@@ -307,7 +307,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !jQuery.isFunction(target) ) {
+	if ( typeof target !== "object" && !jQuery.isFunction( target ) ) {
 		target = {};
 	}
 
@@ -319,7 +319,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 	for ( ; i < length; i++ ) {
 		// Only deal with non-null/undefined values
-		if ( (options = arguments[ i ]) != null ) {
+		if ( ( options = arguments[ i ] ) != null ) {
 			// Extend the base object
 			for ( name in options ) {
 				src = target[ name ];
@@ -331,13 +331,13 @@ jQuery.extend = jQuery.fn.extend = function() {
 				}
 
 				// Recurse if we're merging plain objects or arrays
-				if ( deep && copy && ( jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)) ) ) {
+				if ( deep && copy && ( jQuery.isPlainObject( copy ) || ( copyIsArray = jQuery.isArray( copy ) ) ) ) {
 					if ( copyIsArray ) {
 						copyIsArray = false;
-						clone = src && jQuery.isArray(src) ? src : [];
+						clone = src && jQuery.isArray( src ) ? src : [];
 
 					} else {
-						clone = src && jQuery.isPlainObject(src) ? src : {};
+						clone = src && jQuery.isPlainObject( src ) ? src : {};
 					}
 
 					// Never move original objects, clone them
@@ -414,7 +414,7 @@ jQuery.extend({
 
 		// Trigger any bound ready events
 		if ( jQuery.fn.trigger ) {
-			jQuery( document ).trigger("ready").off("ready");
+			jQuery( document ).trigger( "ready" ).off( "ready" );
 		}
 	},
 
@@ -422,11 +422,11 @@ jQuery.extend({
 	// Since version 1.3, DOM methods and functions like alert
 	// aren't supported. They return false on IE (#2968).
 	isFunction: function( obj ) {
-		return jQuery.type(obj) === "function";
+		return jQuery.type( obj ) === "function";
 	},
 
 	isArray: Array.isArray || function( obj ) {
-		return jQuery.type(obj) === "array";
+		return jQuery.type( obj ) === "array";
 	},
 
 	isWindow: function( obj ) {
@@ -435,7 +435,7 @@ jQuery.extend({
 	},
 
 	isNumeric: function( obj ) {
-		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+		return !isNaN( parseFloat( obj ) ) && isFinite( obj );
 	},
 
 	type: function( obj ) {
@@ -443,7 +443,7 @@ jQuery.extend({
 			return String( obj );
 		}
 		return typeof obj === "object" || typeof obj === "function" ?
-			class2type[ core_toString.call(obj) ] || "object" :
+			class2type[ core_toString.call( obj ) ] || "object" :
 			typeof obj;
 	},
 
@@ -453,15 +453,15 @@ jQuery.extend({
 		// Must be an Object.
 		// Because of IE, we also have to check the presence of the constructor property.
 		// Make sure that DOM nodes and window objects don't pass through, as well
-		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
+		if ( !obj || jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
 			return false;
 		}
 
 		try {
 			// Not own constructor property must be Object
 			if ( obj.constructor &&
-				!core_hasOwn.call(obj, "constructor") &&
-				!core_hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+				!core_hasOwn.call( obj, "constructor" ) &&
+				!core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
 				return false;
 			}
 		} catch ( e ) {
@@ -544,7 +544,7 @@ jQuery.extend({
 				// Logic borrowed from http://json.org/json2.js
 				if ( rvalidchars.test( data.replace( rvalidescape, "@" )
 					.replace( rvalidtokens, "]" )
-					.replace( rvalidbraces, "")) ) {
+					.replace( rvalidbraces, "" ) ) ) {
 
 					return ( new Function( "return " + data ) )();
 				}
@@ -655,7 +655,7 @@ jQuery.extend({
 	},
 
 	// Use native String.trim function wherever possible
-	trim: core_trim && !core_trim.call("\uFEFF\xA0") ?
+	trim: core_trim && !core_trim.call( "\uFEFF\xA0" ) ?
 		function( text ) {
 			return text == null ?
 				"" :
@@ -674,7 +674,7 @@ jQuery.extend({
 		var ret = results || [];
 
 		if ( arr != null ) {
-			if ( isArraylike( Object(arr) ) ) {
+			if ( isArraylike( Object( arr ) ) ) {
 				jQuery.merge( ret,
 					typeof arr === "string" ?
 					[ arr ] : arr
@@ -899,7 +899,7 @@ jQuery.ready.promise = function( obj ) {
 
 		readyList = jQuery.Deferred();
 
-		// Catch cases where $(document).ready() is called after the browser event has already occurred.
+		// Catch cases where $( document ).ready() is called after the browser event has already occurred.
 		// we once tried to use readyState "interactive" here, but it caused issues like the one
 		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
 		if ( document.readyState === "complete" ) {
@@ -928,7 +928,7 @@ jQuery.ready.promise = function( obj ) {
 
 			try {
 				top = window.frameElement == null && document.documentElement;
-			} catch(e) {}
+			} catch( e ) {}
 
 			if ( top && top.doScroll ) {
 				(function doScrollCheck() {
@@ -937,8 +937,12 @@ jQuery.ready.promise = function( obj ) {
 						try {
 							// Use the trick by Diego Perini
 							// http://javascript.nwbox.com/IEContentLoaded/
-							top.doScroll("left");
+							top.doScroll( "left" );
+<<<<<<< HEAD
+						} catch( e ) {
+=======
 						} catch(e) {
+>>>>>>> 68178ff366b6e59f85ad772c0711f826b5b494ef
 							return setTimeout( doScrollCheck, 50 );
 						}
 
@@ -956,7 +960,11 @@ jQuery.ready.promise = function( obj ) {
 };
 
 // Populate the class2type map
-jQuery.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
+<<<<<<< HEAD
+jQuery.each( "Boolean Number String Function Array Date RegExp Object Error".split( " " ), function( i, name ) {
+=======
+jQuery.each( "Boolean Number String Function Array Date RegExp Object Error".split( " " ), function(i, name ) {
+>>>>>>> 68178ff366b6e59f85ad772c0711f826b5b494ef
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
@@ -978,4 +986,4 @@ function isArraylike( obj ) {
 }
 
 // All jQuery objects should point back to these
-rootjQuery = jQuery(document);
+rootjQuery = jQuery( document );
