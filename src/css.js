@@ -514,7 +514,7 @@ jQuery(function() {
 						// Since we can't handle right and bottom with offset, let's work around it
 						if ( rnumnonpx.test( computed ) ) {
 						  if (prop === "bottom" ) {
-						    return jQuery( elem ).postion().top + parseFloat( elStyles.height ) + "px";
+						    return jQuery( elem ).position().top + parseFloat( elStyles.height ) + "px";
 						  } else if ( prop === "right" ) {
 						    return jQuery( elem ).position().left + parseFloat( elStyles.width ) + "px";
 						  } else {
