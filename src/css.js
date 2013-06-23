@@ -518,7 +518,7 @@ jQuery(function() {
 						  } else if ( prop === "right" ) {
 						    return jQuery( elem ).position().left + parseFloat( elStyles.width ) + "px";
 						  } else {
-						    return jQuery( elem ).position[ prop ] + "px";
+						    return jQuery( elem ).position()[ prop ] + "px";
 						  }
 						} else {
 						  return computed;
