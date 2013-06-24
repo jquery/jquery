@@ -519,9 +519,8 @@ jQuery(function() {
 						    return jQuery( elem ).position().left + parseFloat( elStyles.width ) + "px";
 						  }
 						  return jQuery( elem ).position()[ prop ] + "px";
-						} else {
-						  return computed;
 						}
+						return computed;
 					}
 				}
 			};
