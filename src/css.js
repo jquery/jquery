@@ -508,18 +508,17 @@ jQuery(function() {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
 					if ( computed ) {
-					  var elStyles = getStyles(elem);
+					  var elStyles = getStyles( elem );
 						computed = curCSS( elem, prop );
-						// if curCSS returns percentage, fallback to offset.
-						// Since we can't handle right and bottom with offset, let's work around it
+						// if curCSS returns percentage, fallback to offset
 						if ( rnumnonpx.test( computed ) ) {
-						  if (prop === "bottom" ) {
+					    // Since we can't handle right and bottom with offset, let's work around it
+						  if ( prop === "bottom" ) {
 						    return jQuery( elem ).position().top + parseFloat( elStyles.height ) + "px";
 						  } else if ( prop === "right" ) {
 						    return jQuery( elem ).position().left + parseFloat( elStyles.width ) + "px";
-						  } else {
-						    return jQuery( elem ).position()[ prop ] + "px";
 						  }
+						  return jQuery( elem ).position()[ prop ] + "px";
 						} else {
 						  return computed;
 						}
