@@ -2171,7 +2171,11 @@ asyncTest( ".finish() is applied correctly when multiple elements were animated 
 		ok( elems.eq( 0 ).queue().length, "non-empty queue for preceding element" );
 		ok( elems.eq( 2 ).queue().length, "non-empty queue for following element" );
 		elems.stop( true );
-		start();
+
+		// setTimeout needed in order to avoid setInterval/setTimeout execution bug in FF
+		window.setTimeout(function() {
+			start();
+		}, 1000 );
 	}, 100 );
 });
 
