@@ -111,7 +111,7 @@ test("css(String|Hash)", function() {
 });
 
 test("css() explicit and relative values", function() {
-	expect(29);
+	expect( 30 );
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
@@ -196,6 +196,9 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "opacity", "+=0.5" );
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
+
+	$elem.css( "order", 2 );
+	equal( $elem.css("order"), "2", "2 on order" );
 });
 
 test("css(String, Object)", function() {
