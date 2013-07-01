@@ -379,7 +379,7 @@ jQuery.extend({
 					// Descend through wrappers to the right content
 					j = wrap[ 0 ];
 					while ( j-- ) {
-						tmp = tmp.firstChild;
+						tmp = tmp.lastChild;
 					}
 
 					// Support: QtWebKit
