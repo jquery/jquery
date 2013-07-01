@@ -167,3 +167,4 @@ Jason Bedard <jason+jquery@jbedard.ca>
 Kyle Robinson Young <kyle@dontkry.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
 Chris Talkington <chris@talkingtontech.com>
+Jason Merino <jasonmerino@gmail.com>
