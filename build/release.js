@@ -166,10 +166,10 @@ function makeReleaseCopies( next ) {
 			} else if ( /\.min\.js$/.test( releaseFile ) ) {
 				// Minified files point back to the corresponding map;
 				// again assume one big happy directory.
-				// "//# sourceMappingURL=jquery.min.map"
+				// "//@ sourceMappingURL=jquery.min.map"
 				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /\/\/# sourceMappingURL=\S+/,
-						"//# sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
+					.replace( /\/\/@ sourceMappingURL=\S+/,
+						"//@ sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( builtFile !== releaseFile ) {
 				copy( builtFile, releaseFile );
