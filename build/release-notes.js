@@ -40,7 +40,7 @@ http.request({
 						console.log("</ul>");
 					}
 					cur = cat;
-					console.log( "<h2>" + cat.charAt(0).toUpperCase() + cat.slice(1) + "</h2>" );
+					console.log( "<h3>" + cat.charAt(0).toUpperCase() + cat.slice(1) + "</h3>" );
 					console.log("<ul>");
 				}
 
