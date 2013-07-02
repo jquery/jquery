@@ -115,7 +115,7 @@ module.exports = function( grunt ) {
 						"/*! jQuery v<%= pkg.version %> | " +
 						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
 						"jquery.org/license\n" +
-						"//# sourceMappingURL=jquery.min.map\n" +
+						"//@ sourceMappingURL=jquery.min.map\n" +
 						"*/\n"
 				}
 			}
