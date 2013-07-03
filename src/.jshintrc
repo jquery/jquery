@@ -16,12 +16,13 @@
 	"evil": true,
 	"sub": true,
 
+	"es3": true,
 	"browser": true,
 	"wsh": true,
 
 	"globals": {
+		"jQuery": true,
 		"define": true,
-		"module": true,
-		"jQuery": true
+		"module": true
 	}
 }
