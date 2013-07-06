@@ -407,7 +407,7 @@ jQuery.extend({
 	
 	strHasWord: function(str, word){
 		var found = str.indexOf(word);
-		if(found >= 0) {
+		while(found >= 0) {
 			if(found == 0){
 				if( (str.length == word.length) ||
 					(jQuery.isSpace(str[word.length])) ) return true;
@@ -417,7 +417,9 @@ jQuery.extend({
 						(jQuery.isSpace(str[found+word.length]))) return true;
 				}
 			}
+			found = str.indexOf(word, found+1);
 		}
+		return false;
 	},
 	
 	type: function( obj ) {
