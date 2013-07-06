@@ -400,6 +400,11 @@ jQuery.extend({
 		return !isNaN( parseFloat(obj) ) && isFinite( obj );
 	},
 
+	isSpace: function( ch ) {
+		return (ch == ' ') || (ch == '\t') || (ch == '\n') || 
+			(ch == '\v') || (ch == '\f')  || (ch == '\r') ;
+	},
+	
 	type: function( obj ) {
 		if ( obj == null ) {
 			return String( obj );
