@@ -405,6 +405,21 @@ jQuery.extend({
 			(ch == '\v') || (ch == '\f')  || (ch == '\r') ;
 	},
 	
+	strHasWord: function(str, word){
+		var found = str.indexOf(word);
+		if(found >= 0) {
+			if(found == 0){
+				if( (str.length == word.length) ||
+					(jQuery.isSpace(str[word.length])) ) return true;
+			} else {
+				if( jQuery.isSpace(str[found-1]) ) {
+					if( (str.length == found+word.length) ||
+						(jQuery.isSpace(str[found+word.length]))) return true;
+				}
+			}
+		}
+	},
+	
 	type: function( obj ) {
 		if ( obj == null ) {
 			return String( obj );
