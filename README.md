@@ -267,7 +267,7 @@ Following are some commands that can be used there:
 * `Ctrl + Alt + M` - automerge as much as possible
 * `b` - jump to next merge conflict
 * `s` - change the order of the conflicted lines
-* `u` - undo an merge
+* `u` - undo a merge
 * `left mouse button` - mark a block to be the winner
 * `middle mouse button` - mark a line to be the winner
 * `Ctrl + S` - save
