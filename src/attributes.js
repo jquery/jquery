@@ -147,12 +147,11 @@ jQuery.fn.extend({
 		});
 	},
 
-	hasClass: function( selector ) {
-		var className = " " + selector + " ",
-			i = 0,
+	hasClass: function( className ) {
+		var 	i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
+			if ( this[i].nodeType === 1 && (jQuery.strHasWord(this[i].className, className ) ) ) {
 				return true;
 			}
 		}
