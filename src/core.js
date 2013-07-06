@@ -400,6 +400,28 @@ jQuery.extend({
 		return !isNaN( parseFloat(obj) ) && isFinite( obj );
 	},
 
+	isSpace: function( ch ) {
+		return (ch == ' ') || (ch == '\t') || (ch == '\n') || 
+			(ch == '\v') || (ch == '\f')  || (ch == '\r') ;
+	},
+	
+	strHasWord: function(str, word){
+		var found = str.indexOf(word);
+		while(found >= 0) {
+			if(found == 0){
+				if( (str.length == word.length) ||
+					(jQuery.isSpace(str[word.length])) ) return true;
+			} else {
+				if( jQuery.isSpace(str[found-1]) ) {
+					if( (str.length == found+word.length) ||
+						(jQuery.isSpace(str[found+word.length]))) return true;
+				}
+			}
+			found = str.indexOf(word, found+1);
+		}
+		return false;
+	},
+	
 	type: function( obj ) {
 		if ( obj == null ) {
 			return String( obj );
