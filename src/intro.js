@@ -45,7 +45,7 @@
 	}
 
 // Pass this, window may not be defined yet
-}(this, function ( window, undefined ) {
+}(this, function ( window ) {
 
 // Can't do this because several apps including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if
