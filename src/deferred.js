@@ -90,7 +90,7 @@ jQuery.extend({
 	// Deferred helper
 	when: function( subordinate /* , ..., subordinateN */ ) {
 		var i = 0,
-			resolveValues = core_slice.call( arguments ),
+			resolveValues = $.isArray( subordinate ) ? subordinate : core_slice.call( arguments ),
 			length = resolveValues.length,
 
 			// the count of uncompleted subordinates
