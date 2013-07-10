@@ -43,22 +43,29 @@ First, clone a copy of the main jQuery git repo by running:
 git clone git://github.com/jquery/jquery.git
 ```
 
-Install the grunt-cli package so that you will have the correct version of grunt available from any project that needs it. This should be done as a global install:
+Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) and [bower](http://bower.io/) packages if you haven't before. These should be done as global installs:
 
 ```bash
-npm install -g grunt-cli
+npm install -g grunt-cli bower
 ```
 
-Enter the jquery directory and install the Node dependencies, this time *without* specifying a global install:
+Enter the jquery directory and install the Node dependencies, this time *without* specifying a global(-g) install:
 
 ```bash
 cd jquery && npm install
 ```
 
-Make sure you have `grunt` installed by testing:
+Make sure you have `grunt` and `bower` installed by testing:
 
 ```bash
 grunt -version
+bower --version
+```
+
+Install `bower` dependencies:
+
+```bash
+bower install
 ```
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
@@ -128,7 +135,13 @@ For questions or requests regarding custom builds, please start a thread on the 
 Running the Unit Tests
 --------------------------------------
 
-Start grunt to auto-build jQuery as you work:
+Make sure you have the necessary dependencies:
+
+```bash
+bower install
+```
+
+Start `grunt watch` to auto-build jQuery as you work:
 
 ```bash
 cd jquery && grunt watch
