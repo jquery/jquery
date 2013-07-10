@@ -1,0 +1,17 @@
+{
+  "name": "jquery",
+  "version": "2.0.4-pre",
+  "ignore": [
+    "**/.*",
+    "build",
+    "speed",
+    "test",
+    "CONTRIBUTING.md",
+    "*.txt",
+    "bower.json"
+  ],
+  "dependencies": {
+    "sizzle": "~1.10.4",
+    "qunit": "~1.11.0"
+  }
+}
