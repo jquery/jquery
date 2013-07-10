@@ -96,10 +96,10 @@ To create a custom build of the latest stable version, first check out the versi
 git pull; git checkout $(git describe --abbrev=0 --tags)
 ```
 
-Then, make sure all Node dependencies are installed and all Git submodules are checked out:
+Then, make sure all Node dependencies are installed:
 
 ```bash
-npm install && grunt
+npm install
 ```
 
 Create the custom build, use the `grunt custom` option, listing the modules to be excluded. Examples:
@@ -172,71 +172,10 @@ Additionally, both methods can be combined.
 
 
 
-Updating Submodules
--------------------
-
-Update the submodules to what is probably the latest upstream code.
-
-```bash
-grunt update_submodules
-```
-
-Note: This task will also be run any time the default `grunt` command is used.
-
-
-
 Essential Git
 -------------
 
 As the source code is handled by the version control system Git, it's useful to know some features used.
-
-### Submodules ###
-
-The repository uses submodules, which normally are handled directly by the `grunt update_submodules` command, but sometimes you want to
-be able to work with them manually.
-
-Following are the steps to manually get the submodules:
-
-```bash
-git clone https://github.com/jquery/jquery.git
-cd jquery
-git submodule init
-git submodule update
-```
-
-Or:
-
-```bash
-git clone https://github.com/jquery/jquery.git
-cd jquery
-git submodule update --init
-```
-
-Or:
-
-```bash
-git clone --recursive https://github.com/jquery/jquery.git
-cd jquery
-```
-
-If you want to work inside a submodule, it is possible, but first you need to checkout a branch:
-
-```bash
-cd src/sizzle
-git checkout master
-```
-
-After you've committed your changes to the submodule, you'll update the jquery project to point to the new commit,
-but remember to push the submodule changes before pushing the new jquery commit:
-
-```bash
-cd src/sizzle
-git push origin master
-cd ..
-git add src/sizzle
-git commit
-```
-
 
 ### cleaning ###
 

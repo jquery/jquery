@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<title>jQuery Test Suite</title>
-	<link rel="Stylesheet" media="screen" href="qunit/qunit/qunit.css" />
+	<link rel="Stylesheet" media="screen" href="../bower_components/qunit/qunit.css" />
 	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<!-- Includes -->
 
@@ -13,7 +13,7 @@
 
 	<script src="data/testinit.js"></script>
 
-	<script src="qunit/qunit/qunit.js"></script>
+	<script src="../bower_components/qunit/qunit.js"></script>
 	<script>
 		(function() {
 			var src = "../dist/jquery.min.js";
@@ -69,7 +69,7 @@
 
 	<!-- Subproject tests must be last because they replace our test fixture -->
 	<script>
-		testSubproject( "Sizzle", "../src/sizzle/test/", /^unit\/.*\.js$/ );
+		testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/ );
 	</script>
 
 	<script>

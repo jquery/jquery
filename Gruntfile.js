@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
 		selector: {
 			destFile: "src/selector-sizzle.js",
 			apiFile: "src/sizzle-jquery.js",
-			srcFile: "src/sizzle/dist/sizzle.js"
+			srcFile: "bower_components/sizzle/dist/sizzle.js"
 		},
 		build: {
 			all: {
@@ -579,13 +579,12 @@ module.exports = function( grunt ) {
 	// Load grunt tasks from NPM packages
 	grunt.loadNpmTasks("grunt-compare-size");
 	grunt.loadNpmTasks("grunt-git-authors");
-	grunt.loadNpmTasks("grunt-update-submodules");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
 
 	// Default grunt
-	grunt.registerTask( "default", [ "update_submodules", "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "selector", "build:*:*", "jshint" ] );
