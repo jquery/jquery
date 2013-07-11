@@ -15,7 +15,8 @@ module.exports = function( grunt ) {
 			} catch(e) {}
 			return data;
 		},
-		srcHintOptions = readOptionalJSON("src/.jshintrc");
+		fs = require( "fs" ),
+		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
 	// But our modules can
@@ -85,9 +86,7 @@ module.exports = function( grunt ) {
 				}
 			},
 			tests: {
-				// TODO: Once .jshintignore is supported, use that instead.
-				// issue located here: https://github.com/gruntjs/grunt-contrib-jshint/issues/1
-				src: [ "test/data/{test,testinit,testrunner}.js", "test/unit/**/*.js" ],
+				src: [ "test/**/*.js" ],
 				options: {
 					jshintrc: "test/.jshintrc"
 				}
@@ -448,7 +447,7 @@ module.exports = function( grunt ) {
 
 	// Process files for distribution
 	grunt.registerTask( "dist", function() {
-		var stored, flags, paths, fs, nonascii;
+		var stored, flags, paths, nonascii;
 
 		// Check for stored destination paths
 		// ( set in dist/.destination.json )
@@ -463,7 +462,6 @@ module.exports = function( grunt ) {
 		});
 
 		// Ensure the dist files are pure ASCII
-		fs = require( "fs" );
 		nonascii = false;
 
 		distpaths.forEach(function( filename ) {
@@ -554,8 +552,6 @@ module.exports = function( grunt ) {
 	// The problem is caused by the pre-uglify task.
 	// Also, remove temporary files.
 	grunt.registerMultiTask( "post-uglify", function() {
-		var fs = require( "fs" );
-
 		this.files.forEach(function( mapping ) {
 			var mapFileName = mapping.src[ 0 ];
 
