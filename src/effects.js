@@ -1,4 +1,7 @@
-var fxNow, timerId,
+jQuery.fx.interval = 13;
+var fxNow,
+	rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+		function(fn){setTimeout(fn, jQuery.fx.interval);};
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([+-])=|)(" + core_pnum + ")([a-z%]*)$", "i" ),
 	rrun = /queueHooks$/,
@@ -686,8 +689,8 @@ jQuery.fx.tick = function() {
 		}
 	}
 
-	if ( !timers.length ) {
-		jQuery.fx.stop();
+	if ( timers.length ) {
+		rAF(jQuery.fx.tick);
 	}
 	fxNow = undefined;
 };
@@ -698,17 +701,8 @@ jQuery.fx.timer = function( timer ) {
 	}
 };
 
-jQuery.fx.interval = 13;
-
 jQuery.fx.start = function() {
-	if ( !timerId ) {
-		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
-	}
-};
-
-jQuery.fx.stop = function() {
-	clearInterval( timerId );
-	timerId = null;
+	rAF(jQuery.fx.tick);
 };
 
 jQuery.fx.speeds = {
