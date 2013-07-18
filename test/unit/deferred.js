@@ -434,3 +434,22 @@ test( "jQuery.when - joined", function() {
 	deferreds.futureSuccess.resolve( 1 );
 	deferreds.futureError.reject( 0 );
 });
+
+test( "jQuery.when - array", function() {
+	var deferreds = [
+			jQuery.Deferred().resolve(1),
+			jQuery.Deferred().resolve(2),
+			jQuery.Deferred().resolve("test"),
+			jQuery.Deferred().resolve(false)
+		];
+
+	expect(4);
+
+	jQuery.when(deferreds)
+		.then(function(val1, val2, val3, val4) {
+			equal(val1, 1, "The first value resolved");
+			equal(val2, 2, "The second value resolved");
+			equal(val3, "test", "The third value resolved");
+			equal(val4, false, "The fourth value resolved");
+		});
+});
