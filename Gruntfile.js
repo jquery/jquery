@@ -73,7 +73,14 @@ module.exports = function( grunt ) {
 				]
 			}
 		},
-
+		jsonlint: {
+			pkg: {
+				src: [ "package.json" ]
+			},
+			bower: {
+				src: [ "bower.json" ]
+			}
+		},
 		jshint: {
 			dist: {
 				src: [ "dist/jquery.js" ],
@@ -92,16 +99,13 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-
 		testswarm: {
 			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split(" ")
 		},
-
 		watch: {
 			files: [ "<%= jshint.grunt.src %>", "<%= jshint.tests.src %>", "src/**/*.js" ],
 			tasks: "dev"
 		},
-
 		"pre-uglify": {
 			all: {
 				files: {
@@ -583,10 +587,11 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-uglify");
-
-	// Default grunt
-	grunt.registerTask( "default", [ "selector", "build:*:*", "jshint", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
+	grunt.loadNpmTasks("grunt-jsonlint");
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "selector", "build:*:*", "jshint" ] );
+
+	// Default grunt
+	grunt.registerTask( "default", [ "jsonlint", "dev", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
 };
