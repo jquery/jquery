@@ -49,23 +49,17 @@ Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) a
 npm install -g grunt-cli bower
 ```
 
-Enter the jquery directory and install the Node dependencies, this time *without* specifying a global(-g) install:
-
-```bash
-cd jquery && npm install
-```
-
 Make sure you have `grunt` and `bower` installed by testing:
 
 ```bash
 grunt -version
-bower --version
+bower -version
 ```
 
-Install `bower` dependencies:
+Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
 
 ```bash
-bower install
+cd jquery && npm install
 ```
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
@@ -90,7 +84,7 @@ For example, an app that only used JSONP for `$.ajax()` and did not need to calc
 - **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`.
 - **deprecated**: Methods documented as deprecated but not yet removed; currently only `.andSelf()`.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
-- **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`. 
+- **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
 - **event-alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.

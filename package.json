@@ -34,5 +34,10 @@
 		"archiver": "~0.4.6",
 		"grunt-jsonlint": "~1.0.0"
 	},
+
+	"scripts": {
+		"install": "bower install"
+	},
+
 	"keywords": []
 }
