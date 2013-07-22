@@ -17,17 +17,9 @@ What you need to build your own jQuery
 In order to build jQuery, you need to have Node.js/npm latest and git 1.7 or later.
 (Earlier versions might work OK, but are not tested.)
 
-Windows users have two options:
+For Windows you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
 
-1. Install [msysgit](https://code.google.com/p/msysgit/) (Full installer for official Git) and a
-   [binary version of Node.js](http://nodejs.org). Make sure all two packages are installed to the same
-   location (by default, this is C:\Program Files\Git).
-2. Install [Cygwin](http://cygwin.com/) (make sure you install the git and which packages), and
-   a [binary version of Node.js](http://nodejs.org/).
-
-Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
-[Apple's Xcode site](http://developer.apple.com/technologies/xcode.html)) and
-[Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
+Mac OS users should install [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
@@ -49,23 +41,17 @@ Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) a
 npm install -g grunt-cli bower
 ```
 
-Enter the jquery directory and install the Node dependencies, this time *without* specifying a global(-g) install:
-
-```bash
-cd jquery && npm install
-```
-
 Make sure you have `grunt` and `bower` installed by testing:
 
 ```bash
 grunt -version
-bower --version
+bower -version
 ```
 
-Install `bower` dependencies:
+Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
 
 ```bash
-bower install
+cd jquery && npm install
 ```
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
@@ -90,7 +76,7 @@ For example, an app that only used JSONP for `$.ajax()` and did not need to calc
 - **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`.
 - **deprecated**: Methods documented as deprecated but not yet removed; currently only `.andSelf()`.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
-- **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`. 
+- **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
 - **event-alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
