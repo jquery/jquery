@@ -25,9 +25,7 @@ Windows users have two options:
 2. Install [Cygwin](http://cygwin.com/) (make sure you install the git and which packages), and
    a [binary version of Node.js](http://nodejs.org/).
 
-Mac OS users should install Xcode (comes on your Mac OS install DVD, or downloadable from
-[Apple's Xcode site](http://developer.apple.com/technologies/xcode.html)) and
-[Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
+Mac OS users should install [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
