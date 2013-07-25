@@ -14,6 +14,6 @@
     "sizzle": "~1.10.5"
   },
   "devDependencies": {
-    "qunit": "~1.11.0"
+    "qunit": "~1.12.0"
   }
 }
