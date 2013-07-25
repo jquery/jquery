@@ -518,7 +518,8 @@ jQuery.extend({
 		}
 
 		parsed = jQuery.buildFragment( [ data ], context, scripts );
-		if ( scripts ) {
+
+		if ( scripts && scripts.length ) {
 			jQuery( scripts ).remove();
 		}
 		return jQuery.merge( [], parsed.childNodes );
