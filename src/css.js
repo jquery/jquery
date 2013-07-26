@@ -386,7 +386,10 @@ function getWidthOrHeight( elem, name, extra ) {
 		// Fall back to computed then uncomputed css if necessary
 		val = curCSS( elem, name, styles );
 		if ( val < 0 || val == null ) {
-			val = elem.style[ name ];
+			//This is a svg bug, style may be null
+			if(elem.style){
+				val = elem.style[ name ];
+			}
 		}
 
 		// Computed unit is not pixels. Stop here and return.
