@@ -50,7 +50,12 @@ function isHidden( elem, el ) {
 // NOTE: we've included the "window" in window.getComputedStyle
 // because jsdom on node.js will break without it.
 function getStyles( elem ) {
-	return window.getComputedStyle( elem, null );
+	//fixed firefox error: NS_ERROR_FAILURE: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE) [nsIDOMWindow.getComputedStyle]
+	try{
+		return window.getComputedStyle( elem, null );
+	}catch(e){
+		return null;
+	}
 }
 
 function showHide( elements, show ) {
