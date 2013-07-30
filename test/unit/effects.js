@@ -308,6 +308,19 @@ test("animate native inline width/height", function() {
 			});
 });
 
+test("animate native inline element width while showing it", function() {
+	expect(3);
+
+	stop();
+	jQuery("#foo").css({ display: "", width: "", height: "" })
+		.append("<span>text</span>")
+		.children("span")
+			.animate({ width: "show" }, 100, function() {
+				equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width on showing it" );
+				start();
+			});
+});
+
 test( "animate block width/height", function() {
 	expect( 3 );
 	stop();
