@@ -171,3 +171,4 @@ Jason Bedard <jason+jquery@jbedard.ca>
 Kyle Robinson Young <kyle@dontkry.com>
 Chris Talkington <chris@talkingtontech.com>
 Jason Merino <jasonmerino@gmail.com>
+Terry Jones <terry@jon.es>
