@@ -33,6 +33,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
+		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"checkOn":true,
 			"optSelected":true,
@@ -47,7 +48,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"clearCloneStyle": true,
 			"boxSizing": true,
 			"boxSizingReliable": true,
-			"pixelPosition": false
+			"pixelPosition": version >= 28
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
