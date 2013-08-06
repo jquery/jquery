@@ -118,7 +118,7 @@ jQuery.support = (function( support ) {
 	// Support: IE<9
 	// Opera does not clone events (and typeof div.attachEvent === undefined).
 	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
-	if ( div.attachEvent ) {
+	if ( div.attachEvent && div.fireEvent ) {
 		div.attachEvent( "onclick", function() {
 			support.noCloneEvent = false;
 		});
