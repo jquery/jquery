@@ -110,8 +110,7 @@ test("css(String|Hash)", function() {
 	equal( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
 });
 
-test("css() explicit and relative values", function() {
-	expect( 30 );
+test( "css() explicit and relative values", 29, function() {
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
@@ -196,9 +195,6 @@ test("css() explicit and relative values", function() {
 
 	$elem.css( "opacity", "+=0.5" );
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
-
-	$elem.css( "order", 2 );
-	equal( $elem.css("order"), "2", "2 on order" );
 });
 
 test("css(String, Object)", function() {
@@ -1014,4 +1010,31 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	jQuery._removeData( jQuery("#display")[ 0 ] );
 });
 
+// Support: IE, Firefox < 22, Safari
+// We have to jump through the hoops here in order to test work with "order" CSS property,
+// that some browsers do not support, this test is not, strictly speaking, correct,
+// but it's the best that we can do.
+(function() {
+	var style = document.createElement( "div" ).style,
+		prefixes = [ "Webkit", "O", "Moz", "ms" ],
+		exist = "order" in style,
+		i = 0;
+
+	if ( !exist ) {
+		for ( ; i < prefixes.length; i++ ) {
+			if ( exist = prefixes[ i ] + "Order" in style ) {
+				break;
+			}
+		}
+	}
+
+	if ( exist ) {
+		test( "Don't append px to CSS \"order\" value (#14049)", 1, function() {
+			var $elem = jQuery( "<div/>" );
+
+			$elem.css( "order", 2 );
+			equal( $elem.css( "order" ), "2", "2 on order" );
+		});
+	}
+})();
 }
