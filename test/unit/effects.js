@@ -1411,16 +1411,13 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	});
 });
 
-test("line-height animates correctly (#13855)", function() {
-	expect( 12 );
-	stop();
-
+asyncTest("line-height animates correctly (#13855)", 12, function() {
 	var
 		animated = jQuery(
-			"<p style='line-height: 4;'>unitless</p>" +
-			"<p style='line-height: 50px;'>px</p>" +
-			"<p style='line-height: 420%;'>percent</p>" +
-			"<p style='line-height: 2.5em;'>em</p>"
+			"<p style='line-height: 5000;'>unitless</p>" +
+			"<p style='line-height: 5000px;'>px</p>" +
+			"<p style='line-height: 5000%;'>percent</p>" +
+			"<p style='line-height: 5000em;'>em</p>"
 		).appendTo("#qunit-fixture"),
 		initialHeight = jQuery.map( animated, function( el ) {
 			return jQuery( el ).height();
@@ -1432,8 +1429,8 @@ test("line-height animates correctly (#13855)", function() {
 			var label = jQuery.text( this ),
 				initial = initialHeight[ i ],
 				height = jQuery( this ).height();
-			ok( height < initial, "hide " + label + ": upper bound" );
-			ok( height > initial / 2, "hide " + label + ": lower bound" );
+			ok( height < initial, "hide " + label + ": upper bound; height:" + height + "; intitial: " + initial );
+			ok( height > initial / 2, "hide " + label + ": lower bound; height:"  + height + "; intitial/2: " + initial / 2 );
 		});
 		animated.stop( true, true ).hide().animate( { "line-height": "show" }, 1500 );
 		setTimeout(function() {
@@ -1441,7 +1438,7 @@ test("line-height animates correctly (#13855)", function() {
 				var label = jQuery.text( this ),
 					initial = initialHeight[ i ],
 					height = jQuery( this ).height();
-				ok( height < initial / 2, "show " + label + ": upper bound" );
+				ok( height < initial / 2, "show " + label + ": upper bound; height:" + height + "; intitial/2: " + initial / 2 );
 			});
 			animated.stop( true, true );
 			start();
