@@ -28,6 +28,12 @@
 				src = "../dist/jquery.js";
 			}
 
+			// In old Safari ajax request might execute longer then they should be,
+			// that's a dirty and quick fix, but soon Safari 7 will be released and that would not matter
+			if ( /5\.1\.\d+ safari/i.test( window.navigator.userAgent ) ) {
+				QUnit.config.testTimeout = 60000;
+			}
+
 			// Config parameter to force basic code paths
 			QUnit.config.urlConfig.push({
 				id: "basic",
