@@ -6,7 +6,7 @@ var curCSS, iframe,
 	rnumsplit = new RegExp( "^(" + core_pnum + ")(.*)$", "i" ),
 	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ),
 	rrelNum = new RegExp( "^([+-])=(" + core_pnum + ")", "i" ),
-	elemdisplay = { BODY: "block" },
+	elemdisplay = {},
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
@@ -78,7 +78,7 @@ function showHide( elements, show ) {
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
 			if ( elem.style.display === "" && isHidden( elem ) ) {
-				values[ index ] = data_priv.access( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
+				values[ index ] = data_priv.access( elem, "olddisplay", defaultDisplay(elem.nodeName) );
 			}
 		} else {
 
@@ -415,7 +415,7 @@ function getWidthOrHeight( elem, name, extra ) {
 }
 
 // Try to determine the default display value of an element
-function css_defaultDisplay( nodeName ) {
+function defaultDisplay( nodeName ) {
 	var doc = document,
 		display = elemdisplay[ nodeName ];
 
@@ -424,15 +424,16 @@ function css_defaultDisplay( nodeName ) {
 
 		// If the simple way fails, read from inside an iframe
 		if ( display === "none" || !display ) {
+
 			// Use the already-created iframe if possible
 			iframe = ( iframe ||
 				jQuery("<iframe frameborder='0' width='0' height='0'/>")
-				.css( "cssText", "display:block !important" )
 			).appendTo( doc.documentElement );
 
-			// Always write a new HTML skeleton so Webkit and Firefox don't choke on reuse
-			doc = ( iframe[0].contentWindow || iframe[0].contentDocument ).document;
-			doc.write("<!doctype html><html><body>");
+			doc = iframe[ 0 ].contentDocument;
+
+			// Support: IE
+			doc.write();
 			doc.close();
 
 			display = actualDisplay( nodeName, doc );
@@ -446,11 +447,18 @@ function css_defaultDisplay( nodeName ) {
 	return display;
 }
 
-// Called ONLY from within css_defaultDisplay
+// Called only from within defaultDisplay
 function actualDisplay( name, doc ) {
 	var elem = jQuery( doc.createElement( name ) ).appendTo( doc.body ),
-		display = jQuery.css( elem[0], "display" );
-	elem.remove();
+
+		// getDefaultComputedStyle might be reliably used only on attached element
+		display = window.getDefaultComputedStyle ?
+			window.getDefaultComputedStyle( elem[ 0 ] ).display : jQuery.css( elem[ 0 ], "display" );
+
+	// We don't have any data stored on the element,
+	// so use "detach" method as fast way to get rid of the element
+	elem.detach();
+
 	return display;
 }
 

@@ -547,21 +547,29 @@ test( "show() resolves correct default display for detached nodes", function(){
 	span.remove();
 });
 
-test("show() resolves correct default display #10227", function() {
-	expect(2);
+test("show() resolves correct default display #10227", 4, function() {
 
-	var body = jQuery("body");
+	var html = jQuery( document.documentElement ),
+		body = jQuery("body");
 	body.append(
-		"<p id='ddisplay'>a<style>body{display:none}</style></p>"
+		"<p class='ddisplay'>a<style>body{display:none}</style></p>"
 	);
 
-	equal( body.css("display"), "none", "Initial display: none" );
+	equal( body.css("display"), "none", "Initial display for body element: none" );
 
 	body.show();
-	equal( body.css("display"), "block", "Correct display: block" );
+	equal( body.css("display"), "block", "Correct display for body element: block" );
 
-	jQuery("#ddisplay").remove();
-	QUnit.expectJqData( body[0], "olddisplay" );
+	body.append(
+		"<p class='ddisplay'>a<style>html{display:none}</style></p>"
+	);
+
+	equal( html.css("display"), "none", "Initial display for html element: none" );
+
+	html.show();
+	equal( html.css("display"), "block", "Correct display for html element: block" );
+
+	jQuery(".ddisplay").remove();
 });
 
 test("show() resolves correct default display when iframe display:none #12904", function() {
