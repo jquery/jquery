@@ -25,7 +25,7 @@ jQuery.fn.extend({
 	},
 
 	addClass: function( value ) {
-		var classes, elem, cur, clazz, j,
+		var classes, elem, cur, clazz, j, finalValue,
 			i = 0,
 			len = this.length,
 			proceed = typeof value === "string" && value;
@@ -54,7 +54,12 @@ jQuery.fn.extend({
 							cur += clazz + " ";
 						}
 					}
-					elem.className = jQuery.trim( cur );
+
+					// only assign if different to avoid unneeded rendering.
+					finalValue = jQuery.trim( cur );
+					if ( elem.className !== finalValue ) {
+						elem.className = finalValue;
+					}
 
 				}
 			}
@@ -64,7 +69,7 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		var classes, elem, cur, clazz, j,
+		var classes, elem, cur, clazz, j, finalValue,
 			i = 0,
 			len = this.length,
 			proceed = arguments.length === 0 || typeof value === "string" && value;
@@ -93,7 +98,12 @@ jQuery.fn.extend({
 							cur = cur.replace( " " + clazz + " ", " " );
 						}
 					}
-					elem.className = value ? jQuery.trim( cur ) : "";
+
+					// only assign if different to avoid unneeded rendering.
+					finalValue = value ? jQuery.trim( cur ) : "";
+					if ( elem.className !== finalValue ) {
+						elem.className = finalValue;
+					}
 				}
 			}
 		}
