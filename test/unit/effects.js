@@ -1430,7 +1430,7 @@ asyncTest("line-height animates correctly (#13855)", 12, function() {
 				initial = initialHeight[ i ],
 				height = jQuery( this ).height();
 			ok( height < initial, "hide " + label + ": upper bound; height: " + height + "; intitial: " + initial );
-			ok( height > initial / 3, "hide " + label + ": lower bound; height: "  + height + "; intitial/3: " + initial );
+			ok( height > initial / 2, "hide " + label + ": lower bound; height: "  + height + "; intitial/2: " + initial / 2 );
 		});
 		animated.stop( true, true ).hide().animate( { "line-height": "show" }, 1500 );
 		setTimeout(function() {
