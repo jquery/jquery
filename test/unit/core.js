@@ -17,18 +17,6 @@ test("Basic requirements", function() {
 	ok( $, "$" );
 });
 
-testIframeWithCallback( "Conditional compilation compatibility (#13274)", "core/cc_on.html", function( cc_on, errors, $ ) {
-	expect( 3 );
-	ok( true, "JScript conditional compilation " + ( cc_on ? "supported" : "not supported" ) );
-	deepEqual( errors, [], "No errors" );
-	ok( $(), "jQuery executes" );
-});
-
-testIframeWithCallback( "document ready when jQuery loaded asynchronously (#13655)", "core/dynamic_ready.html", function( ready ) {
-	expect( 1 );
-	equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
-});
-
 test("jQuery()", function() {
 
 	var elem, i,
@@ -1384,4 +1372,16 @@ test("jQuery.camelCase()", function() {
 	jQuery.each( tests, function( key, val ) {
 		equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
 	});
+});
+
+testIframeWithCallback( "Conditional compilation compatibility (#13274)", "core/cc_on.html", function( cc_on, errors, $ ) {
+	expect( 3 );
+	ok( true, "JScript conditional compilation " + ( cc_on ? "supported" : "not supported" ) );
+	deepEqual( errors, [], "No errors" );
+	ok( $(), "jQuery executes" );
+});
+
+testIframeWithCallback( "document ready when jQuery loaded asynchronously (#13655)", "core/dynamic_ready.html", function( ready ) {
+	expect( 1 );
+	equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
 });

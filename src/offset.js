@@ -1,3 +1,12 @@
+define([
+	"./core",
+	"./var/strundefined",
+	"./css",
+	"./selector"
+], function( jQuery, strundefined ) {
+
+var docElem = window.document.documentElement;
+
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -25,7 +34,7 @@ jQuery.fn.offset = function( options ) {
 
 	// If we don't have gBCR, just use 0,0 rather than error
 	// BlackBerry 5, iOS 3 (original iPhone)
-	if ( typeof elem.getBoundingClientRect !== core_strundefined ) {
+	if ( typeof elem.getBoundingClientRect !== strundefined ) {
 		box = elem.getBoundingClientRect();
 	}
 	win = getWindow( doc );
@@ -136,6 +145,12 @@ jQuery.fn.extend({
 	}
 });
 
+/**
+ * Gets a window from an element
+ */
+function getWindow( elem ) {
+	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
+}
 
 // Create scrollLeft and scrollTop methods
 jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( method, prop ) {
@@ -162,6 +177,4 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 	};
 });
 
-function getWindow( elem ) {
-	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
-}
+});

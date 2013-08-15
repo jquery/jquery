@@ -12,6 +12,11 @@
 		"type": "git",
 		"url": "https://github.com/jquery/jquery.git"
 	},
+	"keywords": [
+		"jquery",
+		"javascript",
+		"library"
+	],
 	"bugs": {
 		"url": "http://bugs.jquery.com"
 	},
@@ -32,12 +37,10 @@
 		"gzip-js": "0.3.2",
 		"testswarm": "~1.1.0",
 		"archiver": "~0.4.6",
-		"grunt-jsonlint": "~1.0.0"
+		"grunt-jsonlint": "~1.0.0",
+		"requirejs": "~2.1.8"
 	},
-
 	"scripts": {
 		"install": "bower install"
-	},
-
-	"keywords": []
+	}
 }

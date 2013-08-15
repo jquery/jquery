@@ -1,6 +1,6 @@
 /*jshint multistr:true, quotmark:false */
 
-var amdDefined, fireNative,
+var fireNative,
 	originaljQuery = this.jQuery || "jQuery",
 	original$ = this.$ || "$",
 	// see RFC 2606
@@ -12,15 +12,6 @@ this.isLocal = window.location.protocol === "file:";
 // For testing .noConflict()
 this.jQuery = originaljQuery;
 this.$ = original$;
-
-/**
- * Set up a mock AMD define function for testing AMD registration.
- */
-function define( name, dependencies, callback ) {
-	amdDefined = callback();
-}
-
-define.amd = {};
 
 /**
  * Returns an array of elements with the given IDs

@@ -1,3 +1,8 @@
+define([
+	"./core",
+	"./var/indexOf",
+	"./selector"
+], function( jQuery, indexOf ) {
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
@@ -110,11 +115,11 @@ jQuery.fn.extend({
 
 		// index in selector
 		if ( typeof elem === "string" ) {
-			return core_indexOf.call( jQuery( elem ), this[ 0 ] );
+			return indexOf.call( jQuery( elem ), this[ 0 ] );
 		}
 
 		// Locate the position of the desired element
-		return core_indexOf.call( this,
+		return indexOf.call( this,
 
 			// If it receives a jQuery object, the first element is used
 			elem.jquery ? elem[ 0 ] : elem
@@ -278,6 +283,7 @@ function winnow( elements, qualifier, not ) {
 	}
 
 	return jQuery.grep( elements, function( elem ) {
-		return ( core_indexOf.call( qualifier, elem ) >= 0 ) !== not;
+		return ( indexOf.call( qualifier, elem ) >= 0 ) !== not;
 	});
 }
+});

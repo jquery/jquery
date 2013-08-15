@@ -248,11 +248,11 @@ this.Globals = (function() {
 		}
 
 	};
-	QUnit.config.urlConfig.push( {
+	QUnit.config.urlConfig.push({
 		id: "jqdata",
 		label: "Always check jQuery.data",
 		tooltip: "Trigger QUnit.expectJqData detection for all tests instead of just the ones that call it"
-	} );
+	});
 
 	/**
 	 * Ensures that tests have cleaned up properly after themselves. Should be passed as the

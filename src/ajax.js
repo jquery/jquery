@@ -1,11 +1,16 @@
+define([
+	"./core",
+	"./var/rnotwhite",
+	"./ajax/var/nonce",
+	"./ajax/var/rquery",
+	"./deferred"
+], function( jQuery, rnotwhite, nonce, rquery ) {
+
 var
 	// Document location
 	ajaxLocParts,
 	ajaxLocation,
 
-	ajax_nonce = jQuery.now(),
-
-	ajax_rquery = /\?/,
 	rhash = /#.*$/,
 	rts = /([?&])_=[^&]*/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
@@ -14,9 +19,6 @@ var
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rurl = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/,
-
-	// Keep a copy of the old load method
-	_load = jQuery.fn.load,
 
 	/* Prefilters
 	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
@@ -67,7 +69,7 @@ function addToPrefiltersOrTransports( structure ) {
 
 		var dataType,
 			i = 0,
-			dataTypes = dataTypeExpression.toLowerCase().match( core_rnotwhite ) || [];
+			dataTypes = dataTypeExpression.toLowerCase().match( rnotwhite ) || [];
 
 		if ( jQuery.isFunction( func ) ) {
 			// For each dataType in the dataTypeExpression
@@ -129,63 +131,6 @@ function ajaxExtend( target, src ) {
 
 	return target;
 }
-
-jQuery.fn.load = function( url, params, callback ) {
-	if ( typeof url !== "string" && _load ) {
-		return _load.apply( this, arguments );
-	}
-
-	var selector, type, response,
-		self = this,
-		off = url.indexOf(" ");
-
-	if ( off >= 0 ) {
-		selector = url.slice( off );
-		url = url.slice( 0, off );
-	}
-
-	// If it's a function
-	if ( jQuery.isFunction( params ) ) {
-
-		// We assume that it's the callback
-		callback = params;
-		params = undefined;
-
-	// Otherwise, build a param string
-	} else if ( params && typeof params === "object" ) {
-		type = "POST";
-	}
-
-	// If we have elements to modify, make the request
-	if ( self.length > 0 ) {
-		jQuery.ajax({
-			url: url,
-
-			// if "type" variable is undefined, then "GET" method will be used
-			type: type,
-			dataType: "html",
-			data: params
-		}).done(function( responseText ) {
-
-			// Save response for use in complete callback
-			response = arguments;
-
-			self.html( selector ?
-
-				// If a selector was specified, locate the right elements in a dummy div
-				// Exclude scripts to avoid IE 'Permission Denied' errors
-				jQuery("<div>").append( jQuery.parseHTML( responseText ) ).find( selector ) :
-
-				// Otherwise use the full result
-				responseText );
-
-		}).complete( callback && function( jqXHR, status ) {
-			self.each( callback, response || [ jqXHR.responseText, status, jqXHR ] );
-		});
-	}
-
-	return this;
-};
 
 // Attach a bunch of functions for handling common AJAX events
 jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ){
@@ -418,7 +363,7 @@ jQuery.extend({
 		s.type = options.method || options.type || s.method || s.type;
 
 		// Extract dataTypes list
-		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().match( core_rnotwhite ) || [""];
+		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().match( rnotwhite ) || [""];
 
 		// A cross-domain request is in order when we have a protocol:host:port mismatch
 		if ( s.crossDomain == null ) {
@@ -466,7 +411,7 @@ jQuery.extend({
 
 			// If data is available, append data to url
 			if ( s.data ) {
-				cacheURL = ( s.url += ( ajax_rquery.test( cacheURL ) ? "&" : "?" ) + s.data );
+				cacheURL = ( s.url += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data );
 				// #9682: remove data so that it's not used in an eventual retry
 				delete s.data;
 			}
@@ -476,10 +421,10 @@ jQuery.extend({
 				s.url = rts.test( cacheURL ) ?
 
 					// If there is already a '_' parameter, set its value
-					cacheURL.replace( rts, "$1_=" + ajax_nonce++ ) :
+					cacheURL.replace( rts, "$1_=" + nonce++ ) :
 
 					// Otherwise add one to the end
-					cacheURL + ( ajax_rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ajax_nonce++;
+					cacheURL + ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + nonce++;
 			}
 		}
 
@@ -853,3 +798,6 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 	return { state: "success", data: response };
 }
+
+return jQuery;
+});
