@@ -11,7 +11,8 @@
     "bower.json"
   ],
   "dependencies": {
-    "sizzle": "~1.10.5"
+    "sizzle": "~1.10.5",
+    "requirejs": "~2.1.8"
   },
   "devDependencies": {
     "qunit": "~1.12.0"

@@ -1,3 +1,8 @@
+define([
+	"./core",
+	"./var/indexOf",
+	"./selector"
+], function( jQuery, indexOf ) {
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
@@ -281,3 +286,4 @@ function winnow( elements, qualifier, not ) {
 		return ( jQuery.inArray( elem, qualifier ) >= 0 ) !== not;
 	});
 }
+});

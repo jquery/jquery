@@ -12,13 +12,18 @@ test( "zoom of doom (#13089)", function() {
 if ( jQuery.css ) {
 	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9239)", "support/bodyBackground.html", function( color, support ) {
 		expect( 2 );
-			var okValue = {
-				"#000000": true,
-				"rgb(0, 0, 0)": true
-			};
+		var okValue = {
+			"#000000": true,
+			"rgb(0, 0, 0)": true
+		};
 		ok( okValue[ color ], "color was not reset (" + color + ")" );
 
-		deepEqual( jQuery.extend( {}, support ), jQuery.support, "Same support properties" );
+		stop();
+		// Run doc ready tests as well
+		jQuery(function() {
+			deepEqual( jQuery.extend( {}, support ), jQuery.support, "Same support properties" );
+			start();
+		});
 	});
 }
 

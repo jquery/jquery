@@ -67,21 +67,34 @@ The built version of jQuery will be put in the `dist/` subdirectory, along with 
 
 Special builds can be created that exclude subsets of jQuery functionality.
 This allows for smaller custom builds when the builder is certain that those parts of jQuery are not being used.
-For example, an app that only used JSONP for `$.ajax()` and did not need to calculate offsets or positions of elements could exclude the offset and ajax/xhr modules. The current modules that can be excluded are:
+For example, an app that only used JSONP for `$.ajax()` and did not need to calculate offsets or positions of elements could exclude the offset and ajax/xhr modules.
+
+Any module may be excluded except for `core`, and `selector`. To exclude a module, pass its path relative to the `src` folder (without the `.js` extension).
+
+Some example modules that can be excluded are:
 
 - **ajax**: All AJAX functionality: `$.ajax()`, `$.get()`, `$.post()`, `$.ajaxSetup()`, `.load()`, transports, and ajax event shorthands such as `.ajaxStart()`.
 - **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
-- **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`.
+- **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
 - **deprecated**: Methods documented as deprecated but not yet removed; currently only `.andSelf()`.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
-- **event-alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
+- **event**: The `.on()` and `.off()` methods and all event functionality. Also removes `event/alias`.
+- **event/alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
+- **exports/amd**: Exclude the AMD definition.
+- **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks will simply be called immediately.
+- **deferred**: Exclude jQuery.Deferred. This also removes jQuery.Callbacks. *Note* that modules that depend on jQuery.Deferred(AJAX, effects, core/ready) will not be removed and will still expect jQuery.Deferred to be there. Include your own jQuery.Deferred implementation or exclude those modules as well (`grunt custom:-deferred,-ajax,-effects,-core/ready`).
+- **support**: Excluding the support module is not recommended, but possible. It's your responsibility to either remove modules that use jQuery.support (many of them) or replace the values wherever jQuery.support is used. This is mainly only useful when building a barebones version of jQuery.
 
-The grunt build process is aware of dependencies across modules. If you explicitly remove a module, its dependent modules will be removed as well. For example, excluding the css module also excludes effects, since the effects module uses `.css()` to animate CSS properties. These dependencies are listed in Gruntfile.js and the build process shows a message for each dependent module it excludes.
+Removing sizzle is not supported on the 1.x branch.
+
+*Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animated-selector` and `css/hidden-visible-selectors`).
+
+The build process shows a message for each dependent module it excludes or includes.
 
 To create a custom build of the latest stable version, first check out the version:
 
@@ -103,16 +116,16 @@ Exclude all **ajax** functionality:
 grunt custom:-ajax
 ```
 
-Exclude **css**, **effects**, **offset**, **dimensions**, and **position**. Excluding **css** automatically excludes its dependent modules:
+Excluding **css** removes modules depending on CSS: **effects**, **offset**, **dimensions**.
 
 ```bash
-grunt custom:-css,-position
+grunt custom:-css
 ```
 
-Exclude **all** optional modules:
+Exclude a bunch of modules:
 
 ```bash
-grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event-alias,-offset,-wrap
+grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event/alias,-offset,-wrap
 ```
 
 For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.

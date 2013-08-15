@@ -6,7 +6,7 @@ test("expando", function(){
 	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
 });
 
-function dataTests (elem) {
+function dataTests( elem ) {
 	var dataObj, internalDataObj;
 
 	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
@@ -73,30 +73,30 @@ function dataTests (elem) {
 test("jQuery.data(div)", 25, function() {
 	var div = document.createElement("div");
 
-	dataTests(div);
+	dataTests( div );
 
 	// We stored one key in the private data
 	// assert that nothing else was put in there, and that that
 	// one stayed there.
-	QUnit.expectJqData(div, "foo");
+	QUnit.expectJqData( div, "foo" );
 });
 
 test("jQuery.data({})", 25, function() {
-	dataTests({});
+	dataTests( {} );
 });
 
 test("jQuery.data(window)", 25, function() {
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
-	jQuery(window).off("unload");
+	jQuery( window ).off( "unload" );
 
-	dataTests(window);
+	dataTests( window );
 });
 
 test("jQuery.data(document)", 25, function() {
-	dataTests(document);
+	dataTests( document );
 
-	QUnit.expectJqData(document, "foo");
+	QUnit.expectJqData( document, "foo" );
 });
 
 test("Expando cleanup", 4, function() {

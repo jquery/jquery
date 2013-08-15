@@ -1,3 +1,10 @@
+define([
+	"./core",
+	"./manipulation/var/rcheckableType",
+	"./traversing", // filter
+	"./attributes/prop"
+], function( jQuery, rcheckableType ) {
+
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
@@ -19,7 +26,7 @@ jQuery.fn.extend({
 			// Use .is(":disabled") so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
-				( this.checked || !manipulation_rcheckableType.test( type ) );
+				( this.checked || !rcheckableType.test( type ) );
 		})
 		.map(function( i, elem ){
 			var val = jQuery( this ).val();
@@ -35,8 +42,8 @@ jQuery.fn.extend({
 	}
 });
 
-//Serialize an array of form elements or a set of
-//key/values into a query string
+// Serialize an array of form elements or a set of
+// key/values into a query string
 jQuery.param = function( a, traditional ) {
 	var prefix,
 		s = [],
@@ -97,3 +104,4 @@ function buildParams( prefix, obj, traditional, add ) {
 		add( prefix, obj );
 	}
 }
+});
