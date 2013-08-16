@@ -38,6 +38,7 @@ module.exports = function( grunt ) {
 					"selector"
 				],
 				removeWith: {
+					ajax: [ "manipulation/_evalUrl" ],
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ]
 				}
