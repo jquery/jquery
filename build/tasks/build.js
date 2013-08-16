@@ -5,11 +5,13 @@
 
 module.exports = function( grunt ) {
 
-	var fs = require("fs"),
+	"use strict";
+
+	var fs = require( "fs" ),
 		srcFolder = __dirname + "/../src/",
 		rdefineEnd = /\}\);[^}\w]*$/,
 		// This is temporary until the skipSemiColonInsertion option makes it to NPM
-		requirejs = require("./r"),
+		requirejs = require( "../r" ),
 		config = {
 			baseUrl: "src",
 			name: "jquery",
@@ -114,8 +116,8 @@ module.exports = function( grunt ) {
 			 */
 			excluder = function( flag ) {
 				var m = /^(\+|\-|)([\w\/-]+)$/.exec( flag ),
-					exclude = m[1] === "-",
-					module = m[2];
+					exclude = m[ 1 ] === "-",
+					module = m[ 2 ];
 
 				if ( exclude ) {
 					// Can't exclude certain modules
@@ -172,7 +174,7 @@ module.exports = function( grunt ) {
 
 		// Handle Sizzle exclusion
 		// Replace with selector-native
-		if ( (index = excluded.indexOf("sizzle")) > -1 ) {
+		if ( (index = excluded.indexOf( "sizzle" )) > -1 ) {
 			config.rawText = {
 				selector: "define(['./selector-native']);"
 			};
@@ -228,8 +230,8 @@ module.exports = function( grunt ) {
 	//
 	//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
 	grunt.registerTask( "custom", function() {
-		var args = [].slice.call(arguments),
-			modules = args.length ? args[0].replace(/,/g, ":") : "";
+		var args = [].slice.call( arguments ),
+			modules = args.length ? args[ 0 ].replace( /,/g, ":" ) : "";
 
 		grunt.log.writeln( "Creating custom build...\n" );
 
