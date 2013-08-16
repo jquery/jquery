@@ -8,7 +8,8 @@ define([
 	"./data/accepts",
 	"./selector",
 	"./traversing",
-	"./event"
+	"./event",
+	"./support"
 ], function( jQuery, concat, push, rcheckableType, data_priv, data_user ){
 
 var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,

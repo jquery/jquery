@@ -86,7 +86,7 @@ Some example modules that can be excluded are:
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
 - **exports/amd**: Exclude the AMD definition.
-- **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks will simply be called immediately.
+- **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks bound with `jQuery()` will simply be called immediately. However, `jQuery(document).ready()` will not be a function and `.on("ready", ...)` or similar will not be triggered.
 - **deferred**: Exclude jQuery.Deferred. This also removes jQuery.Callbacks. *Note* that modules that depend on jQuery.Deferred(AJAX, effects, core/ready) will not be removed and will still expect jQuery.Deferred to be there. Include your own jQuery.Deferred implementation or exclude those modules as well (`grunt custom:-deferred,-ajax,-effects,-core/ready`).
 - **support**: Excluding the support module is not recommended, but possible. It's your responsibility to either remove modules that use jQuery.support (many of them) or replace the values wherever jQuery.support is used. This is mainly only useful when building a barebones version of jQuery.
 

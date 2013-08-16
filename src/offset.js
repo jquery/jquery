@@ -2,7 +2,7 @@ define([
 	"./core",
 	"./var/strundefined",
 	"./css",
-	"./selector"
+	"./selector" // contains
 ], function( jQuery, strundefined ) {
 
 var docElem = window.document.documentElement;
@@ -136,7 +136,7 @@ jQuery.fn.extend({
 		return this.map(function() {
 			var offsetParent = this.offsetParent || docElem;
 
-			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) && jQuery.css( offsetParent, "position") === "static" ) ) {
+			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) && jQuery.css( offsetParent, "position" ) === "static" ) ) {
 				offsetParent = offsetParent.offsetParent;
 			}
 
