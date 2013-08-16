@@ -53,11 +53,10 @@ module.exports = function( grunt ) {
 			// Ignore jQuery's return statement (the only necessary one)
 			if ( name !== "jquery" ) {
 				contents = contents
-					.replace( /return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" );
+					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" );
 			}
 
 			// Remove define wrappers, closure ends, and empty declarations
-			// Unless it's the proper AMD define
 			contents = contents
 				.replace( /define\([^{]*?{/, "" )
 				.replace( rdefineEnd, "" );
