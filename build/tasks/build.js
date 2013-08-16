@@ -8,7 +8,7 @@ module.exports = function( grunt ) {
 	"use strict";
 
 	var fs = require( "fs" ),
-		srcFolder = __dirname + "/../src/",
+		srcFolder = __dirname + "/../../src/",
 		rdefineEnd = /\}\);[^}\w]*$/,
 		// This is temporary until the skipSemiColonInsertion option makes it to NPM
 		requirejs = require( "../r" ),
