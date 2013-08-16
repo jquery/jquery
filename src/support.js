@@ -1,7 +1,9 @@
 define([
 	"./core",
 	"./var/strundefined",
-	"./core/swap"
+	"./core/swap",
+	// This is listed as a dependency for build order, but it's still optional in builds
+	"./core/ready"
 ], function( jQuery, strundefined ) {
 
 jQuery.support = (function( support ) {

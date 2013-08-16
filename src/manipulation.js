@@ -7,7 +7,8 @@ define([
 	"./data/accepts",
 	"./selector",
 	"./traversing",
-	"./event"
+	"./event",
+	"./support"
 ], function( jQuery, concat, push, deletedIds, rcheckableType ){
 
 function createSafeFragment( document ) {

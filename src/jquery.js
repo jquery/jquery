@@ -1,10 +1,11 @@
 define([
 	"./core",
 	"./selector",
+	"./traversing",
 	"./callbacks",
 	"./deferred",
 	"./core/ready",
-	"./traversing",
+	"./support",
 	"./data",
 	"./queue",
 	"./queue/delay",
@@ -26,7 +27,6 @@ define([
 	"./effects/animated-selector",
 	"./offset",
 	"./dimensions",
-	"./support",
 	"./deprecated"
 ], function( jQuery ) {
 

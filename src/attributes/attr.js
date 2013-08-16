@@ -2,7 +2,8 @@ define([
 	"../core",
 	"../var/rnotwhite",
 	"../var/strundefined",
-	"../selector"
+	"../selector",
+	"../support"
 ], function( jQuery, rnotwhite, strundefined ) {
 
 var nodeHook, boolHook,

@@ -5,7 +5,8 @@ define([
 	"./css/var/isHidden",
 	"./css/defaultDisplay",
 	"./core/swap",
-	"./selector" // contains
+	"./selector", // contains
+	"./support"
 ], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay ) {
 
 var getStyles, curCSS,

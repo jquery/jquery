@@ -1,6 +1,7 @@
 define([
 	"../core",
-	"../ajax"
+	"../ajax",
+	"../support"
 ], function( jQuery ) {
 
 var xhrCallbacks, xhrSupported,

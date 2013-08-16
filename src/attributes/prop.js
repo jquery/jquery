@@ -1,5 +1,6 @@
 define([
-	"../core"
+	"../core",
+	"../support"
 ], function( jQuery ) {
 
 var rfocusable = /^(?:input|select|textarea|button|object)$/i,
