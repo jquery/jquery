@@ -57,10 +57,13 @@ module.exports = function( grunt ) {
 			}
 
 			// Remove define wrappers, closure ends, and empty declarations
+			// Unless it's the proper AMD define
 			contents = contents
 				.replace( /define\([^{]*?{/, "" )
-				.replace( rdefineEnd, "" )
-				// Remove empty definitions
+				.replace( rdefineEnd, "" );
+
+			// Remove empty definitions
+			contents = contents
 				.replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
 		}
 		return contents;

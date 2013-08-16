@@ -27,7 +27,8 @@ define([
 	"./effects/animated-selector",
 	"./offset",
 	"./dimensions",
-	"./deprecated"
+	"./deprecated",
+	"./exports/amd"
 ], function( jQuery ) {
 
 // Expose jQuery and $ identifiers, even in
