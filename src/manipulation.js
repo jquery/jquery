@@ -3,13 +3,14 @@ define([
 	"./var/concat",
 	"./var/push",
 	"./var/deletedIds",
+	"./var/strundefined",
 	"./manipulation/var/rcheckableType",
 	"./data/accepts",
 	"./selector",
 	"./traversing",
 	"./event",
 	"./support"
-], function( jQuery, concat, push, deletedIds, rcheckableType ){
+], function( jQuery, concat, push, deletedIds, strundefined, rcheckableType ){
 
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
