@@ -2521,6 +2521,12 @@ if ( hasPHP ) {
 
 (function(){
 	// This code must be run before DOM ready!
+	if ( QUnit.urlParams.amd ) {
+
+		// If we load jQuery through requirejs DOM will be already loaded
+		return;
+	}
+
 	var notYetReady, noEarlyExecution,
 		order = [],
 		args = {};
