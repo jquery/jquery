@@ -3,7 +3,9 @@ define([
 	"./var/rnotwhite",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
-	"./deferred"
+	"./deferred",
+	// This is listed as a dependency for build order
+	"./support"
 ], function( jQuery, rnotwhite, nonce, rquery ) {
 
 var
