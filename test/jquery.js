@@ -4,7 +4,7 @@
 	/* jshint eqeqeq: false */
 
 	var i, len,
-		src = /^(.*)test\//.exec( window.location.pathname )[1],
+		src = window.location.pathname.split( "test" )[ 0 ],
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require;
 
