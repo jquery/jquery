@@ -53,7 +53,7 @@ function vendorPropName( style, name ) {
 // NOTE: we've included the "window" in window.getComputedStyle
 // because jsdom on node.js will break without it.
 function getStyles( elem ) {
-	return window.getComputedStyle( elem, null );
+	return elem.ownerDocument.defaultView.getComputedStyle( elem, null );
 }
 
 function showHide( elements, show ) {
