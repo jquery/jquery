@@ -16,5 +16,3 @@ foreach( $_SERVER as $key => $value ) {
 foreach( explode( "_" , $_GET[ "keys" ] ) as $key ) {
 	echo "$key: " . @$headers[ strtoupper( $key ) ] . "\n";
 }
-
-?>
