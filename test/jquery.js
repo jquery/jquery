@@ -4,10 +4,9 @@
 	/* jshint eqeqeq: false */
 
 	var i, len,
-		// Parent is the current window if not an iframe, which is fine
-		src = /^(.*)test\//.exec( parent.location.pathname )[1],
-		QUnit = QUnit || parent.QUnit,
-		require = require || parent.require;
+		src = /^(.*)test\//.exec( window.location.pathname )[1],
+		QUnit = window.QUnit || parent.QUnit,
+		require = window.require || parent.require;
 
 	// Config parameter to force basic code paths
 	QUnit.config.urlConfig.push({
