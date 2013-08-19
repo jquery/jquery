@@ -1016,17 +1016,7 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 // but it's the best that we can do.
 (function() {
 	var style = document.createElement( "div" ).style,
-		prefixes = [ "Webkit", "O", "Moz", "ms" ],
-		exist = "order" in style,
-		i = 0;
-
-	if ( !exist ) {
-		for ( ; i < prefixes.length; i++ ) {
-			if ( exist = prefixes[ i ] + "Order" in style ) {
-				break;
-			}
-		}
-	}
+		exist = "order" in style || "WebkitOrder" in style;
 
 	if ( exist ) {
 		test( "Don't append px to CSS \"order\" value (#14049)", 1, function() {
