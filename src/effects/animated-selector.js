@@ -1,7 +1,7 @@
 define([
 	"../core",
 	"../selector",
-	"../effects",
+	"../effects"
 ], function( jQuery ) {
 	jQuery.expr.filters.animated = function( elem ) {
 		return jQuery.grep(jQuery.timers, function( fn ) {
