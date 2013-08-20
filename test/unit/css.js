@@ -1010,7 +1010,7 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	jQuery._removeData( jQuery("#display")[ 0 ] );
 });
 
-// Support: Safari
+// Support: IE < 11, Safari < 7
 // We have to jump through the hoops here in order to test work with "order" CSS property,
 // that some browsers do not support. This test is not, strictly speaking, correct,
 // but it's the best that we can do.
