@@ -51,7 +51,7 @@ bower -version
 Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
 
 ```bash
-cd jquery && npm install
+cd jquery && npm install && bower install
 ```
 
 Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
