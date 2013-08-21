@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		#test {
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+			width: 100px;
+			height: 100px;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+<div id="test"></div>
+<script src="../../jquery.js"></script>
+<script>
+	var testWidth = jQuery( "#test" ).css( 'width' );
+	jQuery(function() {
+		window.parent.iframeCallback( testWidth );
+	});
+</script>
+</body>
+</html>

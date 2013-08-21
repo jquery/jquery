@@ -6,7 +6,11 @@ define([
 ], function( jQuery ) {
 
 jQuery.support = (function( support ) {
-	var input = document.createElement("input"),
+	var container, marginDiv, divStyle,
+		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+		divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
+		docElem = document.documentElement,
+		input = document.createElement("input"),
 		fragment = document.createDocumentFragment(),
 		div = document.createElement("div"),
 		select = document.createElement("select"),
@@ -26,6 +30,10 @@ jQuery.support = (function( support ) {
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
 	support.optSelected = opt.selected;
+
+	// This is hard-coded to true for compatibility reasons,
+	// all supported browsers passed the test.
+	support.boxSizing = true;
 
 	// Will be defined later
 	support.reliableMarginRight = true;
@@ -67,53 +75,35 @@ jQuery.support = (function( support ) {
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	// Run tests that need a body at doc ready
-	jQuery(function() {
-		var container, marginDiv,
-			// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
-			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
-			body = document.getElementsByTagName("body")[ 0 ];
+	container = document.createElement("div");
+	container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 
-		if ( !body ) {
-			// Return for frameset docs that don't have a body
-			return;
-		}
+	// Check box-sizing and margin behavior.
+	docElem.appendChild( container ).appendChild( div );
+	div.innerHTML = "";
+	// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+	div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%";
 
-		container = document.createElement("div");
-		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
+	// Use window.getComputedStyle because jsdom on node.js will break without it.
+	if ( window.getComputedStyle ) {
+		divStyle = window.getComputedStyle( div, null );
+		support.pixelPosition = ( divStyle || {} ).top !== "1%";
+		support.boxSizingReliable = ( divStyle || { width: "4px" } ).width === "4px";
 
-		// Check box-sizing and margin behavior.
-		body.appendChild( container ).appendChild( div );
-		div.innerHTML = "";
-		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
-		div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%";
+		// Support: Android 2.3
+		// Check if div with explicit width and no margin-right incorrectly
+		// gets computed margin-right based on width of container. (#3333)
+		// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+		marginDiv = div.appendChild( document.createElement( "div" ) );
+		marginDiv.style.cssText = div.style.cssText = divReset;
+		marginDiv.style.marginRight = marginDiv.style.width = "0";
+		div.style.width = "1px";
 
-		// Workaround failing boxSizing test due to offsetWidth returning wrong value
-		// with some non-1 values of body zoom, ticket #13543
-		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
-			support.boxSizing = div.offsetWidth === 4;
-		});
+		support.reliableMarginRight =
+			!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
+	}
 
-		// Use window.getComputedStyle because jsdom on node.js will break without it.
-		if ( window.getComputedStyle ) {
-			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
-			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
-
-			// Support: Android 2.3
-			// Check if div with explicit width and no margin-right incorrectly
-			// gets computed margin-right based on width of container. (#3333)
-			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-			marginDiv = div.appendChild( document.createElement("div") );
-			marginDiv.style.cssText = div.style.cssText = divReset;
-			marginDiv.style.marginRight = marginDiv.style.width = "0";
-			div.style.width = "1px";
-
-			support.reliableMarginRight =
-				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
-		}
-
-		body.removeChild( container );
-	});
+	docElem.removeChild( container );
 
 	return support;
 })( {} );
