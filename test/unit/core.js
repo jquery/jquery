@@ -383,7 +383,6 @@ test("isFunction", function() {
 	ok( !jQuery.isFunction( 0 ), "0 Value" );
 
 	// Check built-ins
-	// Safari uses "(Internal Function)"
 	ok( jQuery.isFunction(String), "String Function("+String+")" );
 	ok( jQuery.isFunction(Array), "Array Function("+Array+")" );
 	ok( jQuery.isFunction(Object), "Object Function("+Object+")" );

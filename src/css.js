@@ -303,9 +303,9 @@ curCSS = function( elem, name, _computed ) {
 			ret = jQuery.style( elem, name );
 		}
 
-		// Support: Safari 5.1
+		// Support: iOS < 6
 		// A tribute to the "awesome hack by Dean Edwards"
-		// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
+		// iOS < 6 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
 		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
 		if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 

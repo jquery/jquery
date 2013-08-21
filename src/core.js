@@ -342,7 +342,7 @@ jQuery.extend({
 		if ( obj == null ) {
 			return String( obj );
 		}
-		// Support: Safari <= 5.1 (functionish RegExp)
+		// Support: Android < 4.0, iOS < 6 (functionish RegExp)
 		return typeof obj === "object" || typeof obj === "function" ?
 			class2type[ toString.call(obj) ] || "object" :
 			typeof obj;

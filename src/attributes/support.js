@@ -9,7 +9,7 @@ define([
 
 	input.type = "checkbox";
 
-	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
+	// Support: iOS 5.1, Android 4.x, Android 2.3
 	// Check the default checkbox/radio value ("" on old WebKit; "on" elsewhere)
 	support.checkOn = input.value !== "";
 

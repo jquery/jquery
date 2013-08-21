@@ -19,7 +19,7 @@ define([
 
 	fragment.appendChild( input );
 
-	// Support: Safari 5.1, Android 4.x, Android 2.3
+	// Support: iOS 5.1, Android 4.x, Android 2.3
 	// old WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
 })();
