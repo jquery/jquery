@@ -1446,7 +1446,8 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 });
 
 asyncTest("line-height animates correctly (#13855)", 12, function() {
-	var
+	var longDuration = 2000,
+		shortDuration = 500,
 		animated = jQuery(
 			"<p style='line-height: 100;'>unitless</p>" +
 			"<p style='line-height: 5000px;'>px</p>" +
@@ -1455,29 +1456,43 @@ asyncTest("line-height animates correctly (#13855)", 12, function() {
 		).appendTo("#qunit-fixture"),
 		initialHeight = jQuery.map( animated, function( el ) {
 			return jQuery( el ).height();
-		});
+		}),
+		tolerance = 1.5,
+		t0 = +(new Date());
 
-	animated.animate( { "line-height": "hide" }, 1500 );
+	animated.animate( { "line-height": "hide" }, longDuration );
 	setTimeout(function() {
+		var progress = ( (new Date()) - t0 ) / longDuration;
+
 		animated.each(function( i ) {
 			var label = jQuery.text( this ),
 				initial = initialHeight[ i ],
-				height = jQuery( this ).height();
-			ok( height < initial, "hide " + label + ": upper bound; height: " + height + "; intitial: " + initial );
-			ok( height > initial / 2, "hide " + label + ": lower bound; height: "  + height + "; intitial/2: " + initial / 2 );
+				height = jQuery( this ).height(),
+				lower = initial * ( 1 - progress ) / tolerance;
+			ok( height < initial, "hide " + label + ": upper bound; " +
+				height + " < " + initial + " @ " + ( progress * 100 ) + "%" );
+			ok( height > lower, "hide " + label + ": lower bound; "  +
+				height + " > " + lower + " @ " + ( progress * 100 ) + "%" );
 		});
-		animated.stop( true, true ).hide().animate( { "line-height": "show" }, 1500 );
+
+		t0 = +(new Date());
+		animated.stop( true, true ).hide().animate( { "line-height": "show" }, longDuration );
 		setTimeout(function() {
+			var progress = ( (new Date()) - t0 ) / longDuration;
+
 			animated.each(function( i ) {
 				var label = jQuery.text( this ),
 					initial = initialHeight[ i ],
-					height = jQuery( this ).height();
-				ok( height < initial / 2, "show " + label + ": upper bound; height: " + height + "; intitial/2: " + initial / 2 );
+					height = jQuery( this ).height(),
+					upper = initial * progress * tolerance;
+				ok( height < upper, "show " + label + ": upper bound; " +
+					height + " < " + upper + " @ " + ( progress * 100 ) + "%" );
 			});
+
 			animated.stop( true, true );
 			start();
-		}, 400 );
-	}, 400 );
+		}, shortDuration );
+	}, shortDuration );
 });
 
 // Start 1.8 Animation tests
