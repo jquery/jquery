@@ -448,21 +448,6 @@ test("setters with and without box-sizing:border-box", function(){
 	equal( el.outerHeight( 129, true ).height(), expected + 5, "test border-box innerHeight(int, true) by roundtripping" );
 });
 
-testIframe( "dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
-	// this test is practically tautological, but there is a bug in IE8
-	// with no simple workaround, so this test exposes the bug and works around it
-	if ( document.body.offsetWidth >= document.documentElement.offsetWidth ) {
-		expect( 2 );
-
-		equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
-		equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
-	} else {
-		// all tests should have at least one assertion
-		expect( 1 );
-		ok( true, "skipping test (conditions not satisfied)" );
-	}
-});
-
 testIframe( "dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {
 	expect(2);
 

@@ -17,10 +17,7 @@
 <div id="test"></div>
 <script src="../../jquery.js"></script>
 <script>
-	var testWidth = jQuery( "#test" ).css( 'width' );
-	jQuery(function() {
-		window.parent.iframeCallback( testWidth );
-	});
+	window.parent.iframeCallback( jQuery( "#test" ).css( 'width' ) );
 </script>
 </body>
 </html>

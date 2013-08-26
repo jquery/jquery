@@ -1,7 +1,7 @@
 define([
 	"../core",
-	"../support"
-], function( jQuery ) {
+	"./support"
+], function( jQuery, support ) {
 
 var rreturn = /\r/g;
 
@@ -95,7 +95,7 @@ jQuery.extend({
 					// IE6-9 doesn't update selected after form reset (#2551)
 					if ( ( option.selected || i === index ) &&
 							// Don't return options that are disabled or in a disabled optgroup
-							( jQuery.support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null ) &&
+							( support.optDisabled ? !option.disabled : option.getAttribute( "disabled" ) === null ) &&
 							( !option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
 
 						// Get the specific value for the option
@@ -146,7 +146,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-	if ( !jQuery.support.checkOn ) {
+	if ( support.checkOn ) {
 		jQuery.valHooks[ this ].get = function( elem ) {
 			// Support: Webkit
 			// "" is returned instead of "on" if a value isn't specified

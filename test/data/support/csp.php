@@ -15,6 +15,7 @@
 	<title>CSP Test Page</title>
 	<script src="../../jquery.js"></script>
 	<script src="csp.js"></script>
+	<script src="getComputedSupport.js"></script>
 </head>
 <body>
 	<p>CSP Test Page</p>

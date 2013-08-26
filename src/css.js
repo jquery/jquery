@@ -3,15 +3,15 @@ define([
 	"./var/pnum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
+	"./css/support",
 	"./css/defaultDisplay",
 	"./data/var/data_priv",
-	"./core/swap",
+	"./css/swap",
 	"./core/ready",
 	"./selector", // contains
-	"./support",
 	// Optional
 	"./offset"
-], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay, data_priv ) {
+], function( jQuery, pnum, cssExpand, isHidden, support, defaultDisplay, data_priv ) {
 var curCSS,
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
@@ -233,7 +233,7 @@ jQuery.extend({
 
 			// Fixes #8908, it can be done more correctly by specifying setters in cssHooks,
 			// but it would mean to define eight (for every problematic property) identical functions
-			if ( !jQuery.support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
+			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
 				style[ name ] = "inherit";
 			}
 
@@ -382,7 +382,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
-		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
@@ -401,7 +401,8 @@ function getWidthOrHeight( elem, name, extra ) {
 
 		// we need the check for style in case a browser which returns unreliable values
 		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = isBorderBox && ( jQuery.support.boxSizingReliable || val === elem.style[ name ] );
+		valueIsBorderBox = isBorderBox &&
+			( support.boxSizingReliable() || val === elem.style[ name ] );
 
 		// Normalize "", auto, and prepare for extra
 		val = parseFloat( val ) || 0;
@@ -440,7 +441,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 					elem,
 					name,
 					extra,
-					jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 					styles
 				) : 0
 			);
@@ -448,42 +449,49 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	};
 });
 
-// These hooks cannot be added until DOM ready because the support test
-// for it is not run until after DOM ready
-jQuery(function() {
-	// Support: Android 2.3
-	if ( !jQuery.support.reliableMarginRight ) {
-		jQuery.cssHooks.marginRight = {
-			get: function( elem, computed ) {
-				if ( computed ) {
-					// Support: Android 2.3
-					// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-					// Work around by temporarily setting element display to inline-block
-					return jQuery.swap( elem, { "display": "inline-block" },
-						curCSS, [ elem, "marginRight" ] );
-				}
-			}
-		};
+// Support: Android 2.3
+jQuery.cssHooks.marginRight = {
+	get: function( elem, computed ) {
+		if ( support.reliableMarginRight() ) {
+			// Hook not needed, remove it.
+			// Since there are no other hooks for marginRight, remove the whole object.
+			delete jQuery.cssHooks.marginRight;
+			return;
+		}
+		if ( computed ) {
+			// Support: Android 2.3
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			// Work around by temporarily setting element display to inline-block
+			return jQuery.swap( elem, { "display": "inline-block" },
+				curCSS, [ elem, "marginRight" ] );
+		}
 	}
+};
 
-	// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-	// getComputedStyle returns percent when specified for top/left/bottom/right
-	// rather than make the css module depend on the offset module, we just check for it here
-	if ( !jQuery.support.pixelPosition && jQuery.fn.position ) {
-		jQuery.each( [ "top", "left" ], function( i, prop ) {
-			jQuery.cssHooks[ prop ] = {
-				get: function( elem, computed ) {
-					if ( computed ) {
-						computed = curCSS( elem, prop );
-						// if curCSS returns percentage, fallback to offset
-						return rnumnonpx.test( computed ) ?
-							jQuery( elem ).position()[ prop ] + "px" :
-							computed;
-					}
+// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
+// getComputedStyle returns percent when specified for top/left/bottom/right
+// rather than make the css module depend on the offset module, we just check for it here
+jQuery.each( [ "top", "left" ], function( i, prop ) {
+	jQuery.cssHooks[ prop ] = {
+		get: function( elem, computed ) {
+			if ( support.pixelPosition() || !jQuery.fn.position ) {
+				// Hook not needed, remove it.
+				// Since there are no other hooks for prop, remove the whole object.
+				delete jQuery.cssHooks[ prop ];
+				return;
+			}
+			jQuery.cssHooks[ prop ].get = function ( i, prop ) {
+				if ( computed ) {
+					computed = curCSS( elem, prop );
+					// if curCSS returns percentage, fallback to offset
+					return rnumnonpx.test( computed ) ?
+						jQuery( elem ).position()[ prop ] + "px" :
+						computed;
 				}
 			};
-		});
-	}
+			return jQuery.cssHooks[ prop ].get( i, prop );
+		}
+	};
 });
 
 // These hooks are used by animate to expand properties

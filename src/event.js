@@ -4,11 +4,11 @@ define([
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
+	"./event/support",
 	"./data/var/data_priv",
 	"./data/accepts",
-	"./selector",
-	"./support"
-], function( jQuery, strundefined, rnotwhite, hasOwn, slice, data_priv ) {
+	"./selector"
+], function( jQuery, strundefined, rnotwhite, hasOwn, slice, support, data_priv ) {
 
 var rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
@@ -716,7 +716,8 @@ jQuery.each({
 
 // Create "bubbling" focus and blur events
 // Support: Firefox, Chrome, Safari
-if ( !jQuery.support.focusinBubbles ) {
+// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+if ( !support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
 		// Attach a single capturing handler while someone wants focusin/focusout

@@ -1,8 +1,8 @@
 define([
 	"../core",
-	"../ajax",
-	"../support"
-], function( jQuery ) {
+	"../var/support",
+	"../ajax"
+], function( jQuery, support ) {
 
 jQuery.ajaxSettings.xhr = function() {
 	try {
@@ -33,13 +33,13 @@ if ( window.ActiveXObject ) {
 	});
 }
 
-jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-jQuery.support.ajax = xhrSupported = !!xhrSupported;
+support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+support.ajax = xhrSupported = !!xhrSupported;
 
 jQuery.ajaxTransport(function( options ) {
 	var callback;
 	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( jQuery.support.cors || xhrSupported && !options.crossDomain ) {
+	if ( support.cors || xhrSupported && !options.crossDomain ) {
 		return {
 			send: function( headers, complete ) {
 				var i, id,

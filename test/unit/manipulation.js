@@ -1796,15 +1796,9 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	// First clone
 	$clone = $section.clone();
 
-	// Infer that the test is being run in IE<=8
-	if ( $clone[ 0 ].outerHTML && !jQuery.support.opacity ) {
-		// This branch tests cloning nodes by reading the outerHTML, used only in IE<=8
-		equal( $clone[ 0 ].outerHTML, "<section></section>", "detached clone outerHTML matches '<section></section>'" );
-	} else {
-		// This branch tests a known behaviour in modern browsers that should never fail.
-		// Included for expected test count symmetry (expecting 1)
-		equal( $clone[ 0 ].nodeName, "SECTION", "detached clone nodeName matches 'SECTION' in modern browsers" );
-	}
+	// This branch tests a known behaviour in modern browsers that should never fail.
+	// Included for expected test count symmetry (expecting 1)
+	equal( $clone[ 0 ].nodeName, "SECTION", "detached clone nodeName matches 'SECTION'" );
 
 	// Bind an event
 	$section.on( "click", function() {
