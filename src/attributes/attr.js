@@ -2,6 +2,7 @@ define([
 	"../core",
 	"../var/rnotwhite",
 	"../var/strundefined",
+	"./val",
 	"../selector",
 	"../support"
 ], function( jQuery, rnotwhite, strundefined ) {
