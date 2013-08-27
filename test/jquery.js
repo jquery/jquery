@@ -26,7 +26,9 @@
 		label: "Load with AMD",
 		tooltip: "Load the AMD jQuery file (and its dependencies)"
 	});
-	if ( QUnit.urlParams.amd && parent == window ) {
+	// If QUnit is on window, this is the main window
+	// This detection allows AMD tests to be run in an iframe
+	if ( QUnit.urlParams.amd && window.QUnit ) {
 		require.config({ baseUrl: src });
 		src = "src/jquery";
 		// Include tests if specified
