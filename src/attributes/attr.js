@@ -8,6 +8,7 @@ define([
 ], function( jQuery, rnotwhite, strundefined ) {
 
 var nodeHook, boolHook,
+	attrHandle = jQuery.expr.attrHandle,
 	ruseDefault = /^(?:checked|selected)$/i,
 	getSetAttribute = jQuery.support.getSetAttribute,
 	getSetInput = jQuery.support.input;
@@ -143,28 +144,27 @@ boolHook = {
 
 // Retrieve booleans specially
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
-	var getter = jQuery.expr.attrHandle[ name ] || jQuery.find.attr;
 
-	jQuery.expr.attrHandle[ name ] = getSetInput && getSetAttribute || !ruseDefault.test( name ) ?
+	var getter = attrHandle[ name ] || jQuery.find.attr,
+	fn = attrHandle[ name ] = getSetInput && getSetAttribute || !ruseDefault.test( name ) ?
 		function( elem, name, isXML ) {
-			var fn = jQuery.expr.attrHandle[ name ],
-				ret = isXML ?
-					undefined :
-					/* jshint eqeqeq: false */
-					(jQuery.expr.attrHandle[ name ] = undefined) !=
-						getter( elem, name, isXML ) ?
-
-						name.toLowerCase() :
-						null;
-			jQuery.expr.attrHandle[ name ] = fn;
+			var ret;
+			if ( !isXML ) {
+				// Avoid an infinite loop by temporarily removing this function from the getter
+				attrHandle[ name ] = ret;
+				ret = getter( elem, name, isXML ) != null ?
+					name.toLowerCase() :
+					null;
+				attrHandle[ name ] = fn;
+			}
 			return ret;
 		} :
 		function( elem, name, isXML ) {
-			return isXML ?
-				undefined :
-				elem[ jQuery.camelCase( "default-" + name ) ] ?
+			if ( !isXML ) {
+				return elem[ jQuery.camelCase( "default-" + name ) ] ?
 					name.toLowerCase() :
 					null;
+			}
 		};
 });
 
@@ -201,30 +201,30 @@ if ( !getSetAttribute ) {
 			ret.value = value += "";
 
 			// Break association with cloned elements by also using setAttribute (#9646)
-			return name === "value" || value === elem.getAttribute( name ) ?
-				value :
-				undefined;
+			if ( name === "value" || value === elem.getAttribute( name ) ) {
+				return value;
+			}
 		}
 	};
 
 	// Some attributes are constructed with empty-string values when not defined
-	jQuery.expr.attrHandle.id = jQuery.expr.attrHandle.name = jQuery.expr.attrHandle.coords =
+	attrHandle.id = attrHandle.name = attrHandle.coords =
 		function( elem, name, isXML ) {
 			var ret;
-			return isXML ?
-				undefined :
-				(ret = elem.getAttributeNode( name )) && ret.value !== "" ?
+			if ( !isXML ) {
+				return (ret = elem.getAttributeNode( name )) && ret.value !== "" ?
 					ret.value :
 					null;
+			}
 		};
 
 	// Fixing value retrieval on a button requires this module
 	jQuery.valHooks.button = {
 		get: function( elem, name ) {
 			var ret = elem.getAttributeNode( name );
-			return ret && ret.specified ?
-				ret.value :
-				undefined;
+			if ( ret && ret.specified ) {
+				return ret.value;
+			}
 		},
 		set: nodeHook.set
 	};
