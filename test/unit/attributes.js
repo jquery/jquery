@@ -470,6 +470,20 @@ test( "attr(String, Object)", function() {
 	equal( jQuery("#name").attr( "nonexisting", undefined ).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
+test( "attr - extending the boolean attrHandle", function() {
+	expect( 1 );
+	var called = false,
+		_handle = jQuery.expr.attrHandle.checked || $.noop;
+	jQuery.expr.attrHandle.checked = function() {
+		called = true;
+		_handle.apply( this, arguments );
+	};
+	jQuery( "input" ).attr( "checked" );
+	called = false;
+	jQuery( "input" ).attr( "checked" );
+	ok( called, "The boolean attrHandle does not drop custom attrHandles" );
+});
+
 test( "attr(String, Object) - Loaded via XML document", function() {
 	expect( 2 );
 	var xml = createDashboardXML(),
