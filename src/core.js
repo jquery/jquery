@@ -629,15 +629,17 @@ jQuery.extend({
 	},
 
 	merge: function( first, second ) {
-		var l = second.length,
-			i = first.length,
-			j = 0;
+		var len = +second.length,
+			j = 0,
+			i = first.length;
 
-		if ( typeof l === "number" ) {
-			for ( ; j < l; j++ ) {
-				first[ i++ ] = second[ j ];
-			}
-		} else {
+		while ( j < len ) {
+			first[ i++ ] = second[ j++ ];
+		}
+
+		// Support: IE<9
+		// Workaround non-numeric length overrides of otherwise arraylike objects (e.g., NodeLists)
+		if ( len !== len ) {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
 			}

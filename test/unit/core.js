@@ -905,25 +905,65 @@ test("jQuery.map", function() {
 });
 
 test("jQuery.merge()", function() {
-	expect(8);
+	expect( 10 );
 
-	deepEqual( jQuery.merge([],[]), [], "Empty arrays" );
+	deepEqual(
+		jQuery.merge( [], [] ),
+		[],
+		"Empty arrays"
+	);
 
-	deepEqual( jQuery.merge([ 1 ],[ 2 ]), [ 1, 2 ], "Basic" );
-	deepEqual( jQuery.merge([ 1, 2 ], [ 3, 4 ]), [ 1, 2, 3, 4 ], "Basic" );
+	deepEqual(
+		jQuery.merge( [ 1 ], [ 2 ] ),
+		[ 1, 2 ],
+		"Basic (single-element)"
+	);
+	deepEqual(
+		jQuery.merge( [ 1, 2 ], [ 3, 4 ] ),
+		[ 1, 2, 3, 4 ],
+		"Basic (multiple-element)"
+	);
 
-	deepEqual( jQuery.merge([ 1, 2 ],[]), [ 1, 2 ], "Second empty" );
-	deepEqual( jQuery.merge([],[ 1, 2 ]), [ 1, 2 ], "First empty" );
+	deepEqual(
+		jQuery.merge( [ 1, 2 ], [] ),
+		[ 1, 2 ],
+		"Second empty"
+	);
+	deepEqual(
+		jQuery.merge( [], [ 1, 2 ] ),
+		[ 1, 2 ],
+		"First empty"
+	);
 
 	// Fixed at [5998], #3641
-	deepEqual( jQuery.merge([ -2, -1 ], [ 0, 1, 2 ]), [ -2, -1 , 0, 1, 2 ],
-		"Second array including a zero (falsy)");
+	deepEqual(
+		jQuery.merge( [ -2, -1 ], [ 0, 1, 2 ] ),
+		[ -2, -1 , 0, 1, 2 ],
+		"Second array including a zero (falsy)"
+	);
 
 	// After fixing #5527
-	deepEqual( jQuery.merge([], [ null, undefined ]), [ null, undefined ],
-		"Second array including null and undefined values");
-	deepEqual( jQuery.merge({ length: 0 }, [ 1, 2 ] ), { length: 2, 0: 1, 1: 2},
-		"First array like");
+	deepEqual(
+		jQuery.merge( [], [ null, undefined ] ),
+		[ null, undefined ],
+		"Second array including null and undefined values"
+	);
+	deepEqual(
+		jQuery.merge( { length: 0 }, [ 1, 2 ] ),
+		{ length: 2, 0: 1, 1: 2 },
+		"First array like"
+	);
+	deepEqual(
+		jQuery.merge( [ 1, 2 ], { length: 1, 0: 3 } ),
+		[ 1, 2, 3 ],
+		"Second array like"
+	);
+
+	deepEqual(
+		jQuery.merge( [], document.getElementById("lengthtest").getElementsByTagName("input") ),
+		[ document.getElementById("length"), document.getElementById("idTest") ],
+		"Second NodeList"
+	);
 });
 
 test("jQuery.extend(Object, Object)", function() {
