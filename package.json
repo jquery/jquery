@@ -15,7 +15,9 @@
 	"keywords": [
 		"jquery",
 		"javascript",
-		"library"
+		"library",
+		"lib"
+		
 	],
 	"bugs": {
 		"url": "http://bugs.jquery.com"
