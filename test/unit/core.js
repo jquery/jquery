@@ -924,6 +924,33 @@ test("jQuery.merge()", function() {
 		"First array like");
 });
 
+test("jQuery.grep()", function() {
+	expect(7);
+
+	var search = function (v) {
+		if(v % 2 === 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+
+	};
+	deepEqual( jQuery.grep([], search), [], "Empty array" );
+
+	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search), [ 2, 4, 6 ], "Satisfying elements present" );
+	deepEqual( jQuery.grep([ 1, 3, 5, 7], search), [], "Satisfying elements absent" );
+
+
+	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search, true), [ 1, 3, 5 ], "Satisfying elements present but selection inverted" );
+	deepEqual( jQuery.grep([ 1, 3, 5, 7], search, true), [1, 3, 5, 7], "Satisfying elements absent and selection inverted" );
+
+	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search, false), [ 2, 4, 6 ], "Satisfying elements present but selection explicitly uninverted" );
+	deepEqual( jQuery.grep([ 1, 3, 5, 7], search, false), [], "Satisfying elements absent and selection explicitly uninverted" );
+
+
+});
+
 test("jQuery.extend(Object, Object)", function() {
 	expect(28);
 
