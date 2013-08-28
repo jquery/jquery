@@ -145,17 +145,19 @@ boolHook = {
 // Retrieve booleans specially
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
 
-	var getter = attrHandle[ name ] || jQuery.find.attr,
-	fn = attrHandle[ name ] = getSetInput && getSetAttribute || !ruseDefault.test( name ) ?
+	var getter = attrHandle[ name ] || jQuery.find.attr;
+
+	attrHandle[ name ] = getSetInput && getSetAttribute || !ruseDefault.test( name ) ?
 		function( elem, name, isXML ) {
-			var ret;
+			var ret, handle;
 			if ( !isXML ) {
 				// Avoid an infinite loop by temporarily removing this function from the getter
+				handle = attrHandle[ name ];
 				attrHandle[ name ] = ret;
 				ret = getter( elem, name, isXML ) != null ?
 					name.toLowerCase() :
 					null;
-				attrHandle[ name ] = fn;
+				attrHandle[ name ] = handle;
 			}
 			return ret;
 		} :
