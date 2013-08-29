@@ -16,7 +16,13 @@ var Sizzle = Sizzle || jQuery.find,
 	qunitModule = QUnit.module,
 	qunitTest = QUnit.test;
 
-this.testSubproject = function( label, url, risTests ) {
+/**
+ * Test a subproject with its own fixture
+ * @param {String} label Project name
+ * @param {String} url Test folder location
+ * @param {RegExp} risTests To filter script sources
+ */
+this.testSubproject = function( label, url, risTests, complete ) {
 	var sub, fixture, fixtureHTML,
 		fixtureReplaced = false;
 
@@ -65,7 +71,8 @@ this.testSubproject = function( label, url, risTests ) {
 			throw new Error( "Could not load: " + url + " (" + status + ")" );
 		},
 		success: function( data, status, jqXHR ) {
-			var page = originaljQuery.parseHTML(
+			var sources = [],
+				page = originaljQuery.parseHTML(
 				// replace html/head with dummy elements so they are represented in the DOM
 				( data || "" ).replace( /<\/?((!DOCTYPE|html|head)\b.*?)>/gi, "[$1]" ),
 				document,
@@ -78,17 +85,22 @@ this.testSubproject = function( label, url, risTests ) {
 			page = originaljQuery( page );
 
 			// Include subproject tests
-			page.filter("script[src]").add( page.find("script[src]") ).each(function() {
-				var src = originaljQuery( this ).attr("src"),
-					html = "<script src='" + url + src + "'></script>";
+			page.filter("script[src]").add( page.find("script[src]") ).map(function() {
+				var src = originaljQuery( this ).attr("src");
 				if ( risTests.test( src ) ) {
-					if ( originaljQuery.isReady ) {
-						originaljQuery("head").first().append( html );
-					} else {
-						document.write( html );
-					}
+					sources.push( src );
 				}
 			});
+
+			// Ensure load order
+			(function loadDep() {
+				var dep = sources.shift();
+				if ( dep ) {
+					require( [ url + dep ], loadDep );
+				} else if ( complete ) {
+					complete();
+				}
+			})();
 
 			// Get the fixture, including content outside of #qunit-fixture
 			fixture = page.find("[id='qunit-fixture']");
@@ -156,6 +168,11 @@ this.Globals = (function() {
 	};
 })();
 
+
+/**
+ * QUnit hooks
+ */
+
 // Sandbox start for great justice
 (function() {
 	var oldStart = window.start;
@@ -164,9 +181,6 @@ this.Globals = (function() {
 	};
 })();
 
-/**
- * QUnit hooks
- */
 (function() {
 	// Store the old counts so that we only assert on tests that have actually leaked,
 	// instead of asserting every time a test has leaked sometime in the past
