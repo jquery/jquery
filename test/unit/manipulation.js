@@ -179,7 +179,7 @@ function testAppendForObject( valueObj, isFragment ) {
 
 function testAppend( valueObj ) {
 
-	expect( 78 );
+	expect( 79 );
 
 	testAppendForObject( valueObj, false );
 	testAppendForObject( valueObj, true );
@@ -286,6 +286,8 @@ function testAppend( valueObj ) {
 	equal( $radioUnchecked[ 0 ].checked, false, "Reappending radios uphold not being checked" );
 
 	equal( jQuery("<div/>").append( valueObj("option<area/>") )[ 0 ].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
+
+	equal( jQuery("<table></table>").append( valueObj("text value") )[ 0 ].childNodes.length, 1, "Append text value should be processed correctly" );
 }
 
 test( "append(String|Element|Array<Element>|jQuery)", function() {
