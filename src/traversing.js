@@ -1,8 +1,7 @@
 define([
 	"./core",
-	"./var/indexOf",
 	"./selector"
-], function( jQuery, indexOf ) {
+], function( jQuery ) {
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,

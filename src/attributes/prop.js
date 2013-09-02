@@ -1,7 +1,7 @@
 define([
 	"../core",
-	"../support"
-], function( jQuery ) {
+	"./support"
+], function( jQuery, support ) {
 
 var rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i;
@@ -78,7 +78,7 @@ jQuery.extend({
 
 // Some attributes require a special call on IE
 // http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
-if ( !jQuery.support.hrefNormalized ) {
+if ( !support.hrefNormalized ) {
 	// href/src property should get the full normalized URL (#10299/#12915)
 	jQuery.each([ "href", "src" ], function( i, name ) {
 		jQuery.propHooks[ name ] = {
@@ -92,7 +92,7 @@ if ( !jQuery.support.hrefNormalized ) {
 // Support: Safari, IE9+
 // mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
-if ( !jQuery.support.optSelected ) {
+if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
@@ -126,7 +126,7 @@ jQuery.each([
 });
 
 // IE6/7 call enctype encoding
-if ( !jQuery.support.enctype ) {
+if ( !support.enctype ) {
 	jQuery.propFix.enctype = "encoding";
 }
 

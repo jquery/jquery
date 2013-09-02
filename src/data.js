@@ -1,8 +1,9 @@
 define([
 	"./core",
 	"./var/deletedIds",
+	"./data/support",
 	"./data/accepts"
-], function( jQuery, deletedIds ) {
+], function( jQuery, deletedIds, support ) {
 
 var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
 	rmultiDash = /([A-Z])/g;
@@ -225,7 +226,7 @@ function internalRemoveData( elem, name, pvt ) {
 
 	// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
 	/* jshint eqeqeq: false */
-	} else if ( jQuery.support.deleteExpando || cache != cache.window ) {
+	} else if ( support.deleteExpando || cache != cache.window ) {
 		/* jshint eqeqeq: true */
 		delete cache[ id ];
 
