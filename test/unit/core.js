@@ -927,21 +927,21 @@ test("jQuery.merge()", function() {
 test("jQuery.grep()", function() {
 	expect(8);
 
-	var search = function (v) {
-		return v % 2 === 0;
+	var searchCriterion = function( value ) {
+		return value % 2 === 0;
 	};
 
-	deepEqual( jQuery.grep([], search), [], "Empty array" );
-	deepEqual( jQuery.grep(new Array(4), search), [], "Sparse array" );
+	deepEqual( jQuery.grep( [], searchCriterion ), [], "Empty array" );
+	deepEqual( jQuery.grep( new Array(4), searchCriterion ), [], "Sparse array" );
 
-	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search), [ 2, 4, 6 ], "Satisfying elements present" );
-	deepEqual( jQuery.grep([ 1, 3, 5, 7], search), [], "Satisfying elements absent" );
+	deepEqual( jQuery.grep( [ 1, 2, 3, 4, 5, 6 ], searchCriterion ), [ 2, 4, 6 ], "Satisfying elements present" );
+	deepEqual( jQuery.grep( [ 1, 3, 5, 7], searchCriterion ), [], "Satisfying elements absent" );
 
-	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search, true), [ 1, 3, 5 ], "Satisfying elements present and grep inverted" );
-	deepEqual( jQuery.grep([ 1, 3, 5, 7], search, true), [1, 3, 5, 7], "Satisfying elements absent and grep inverted" );
+	deepEqual( jQuery.grep( [ 1, 2, 3, 4, 5, 6 ], searchCriterion, true ), [ 1, 3, 5 ], "Satisfying elements present and grep inverted" );
+	deepEqual( jQuery.grep( [ 1, 3, 5, 7], searchCriterion, true ), [1, 3, 5, 7], "Satisfying elements absent and grep inverted" );
 
-	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search, false), [ 2, 4, 6 ], "Satisfying elements present but grep explicitly uninverted" );
-	deepEqual( jQuery.grep([ 1, 3, 5, 7], search, false), [], "Satisfying elements absent and grep explicitly uninverted" );
+	deepEqual( jQuery.grep( [ 1, 2, 3, 4, 5, 6 ], searchCriterion, false ), [ 2, 4, 6 ], "Satisfying elements present but grep explicitly uninverted" );
+	deepEqual( jQuery.grep( [ 1, 3, 5, 7 ], searchCriterion, false ), [], "Satisfying elements absent and grep explicitly uninverted" );
 });
 
 test("jQuery.extend(Object, Object)", function() {
