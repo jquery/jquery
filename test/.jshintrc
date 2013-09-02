@@ -21,6 +21,7 @@
 	"wsh": true,
 
 	"globals": {
+		"require": false,
 		"DOMParser": false,
 		"QUnit": false,
 		"ok": false,

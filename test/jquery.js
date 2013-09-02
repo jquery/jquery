@@ -1,10 +1,9 @@
 // Use the right jQuery source on the test page (and iframes)
 (function() {
-	/* global loadTests: true, testSubproject: false */
-	/* jshint eqeqeq: false */
+	/* global loadTests: false */
 
-	var i, len,
-		src = window.location.pathname.split( "test" )[ 0 ],
+	var src,
+		path = window.location.pathname.split( "test" )[ 0 ],
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require;
 
@@ -26,26 +25,14 @@
 		label: "Load with AMD",
 		tooltip: "Load the AMD jQuery file (and its dependencies)"
 	});
-	if ( QUnit.urlParams.amd && parent == window ) {
-		require.config({ baseUrl: src });
+	// If QUnit is on window, this is the main window
+	// This detection allows AMD tests to be run in an iframe
+	if ( QUnit.urlParams.amd && window.QUnit ) {
+		require.config({ baseUrl: path });
 		src = "src/jquery";
 		// Include tests if specified
 		if ( typeof loadTests !== "undefined" ) {
-			QUnit.config.autostart = false;
-			require( [ src ], function() {
-				// Ensure load order (to preserve test numbers)
-				(function loadDep() {
-					var dep = loadTests.shift();
-					if ( dep ) {
-						require( [ dep ], loadDep );
-					} else {
-						// Subproject tests must be last because they replace our test fixture
-						testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/ );
-
-						QUnit.start();
-					}
-				})();
-			});
+			require( [ src ], loadTests );
 		} else {
 			require( [ src ] );
 		}
@@ -59,18 +46,20 @@
 		tooltip: "Load the development (unminified) jQuery file"
 	});
 	if ( QUnit.urlParams.dev ) {
-		src += "dist/jquery.js";
+		src = "dist/jquery.js";
 	} else {
-		src += "dist/jquery.min.js";
+		src = "dist/jquery.min.js";
 	}
 
 	// Load jQuery
-	document.write( "<script id='jquery-js' src='" + src + "'><\x2Fscript>" );
+	document.write( "<script id='jquery-js' src='" + path + src + "'><\x2Fscript>" );
 
-	// Load tests synchronously if available
+	// Load tests if available
+	// These can be loaded async as QUnit won't start until finished
 	if ( typeof loadTests !== "undefined" ) {
-		for ( i = 0, len = loadTests.length; i < len; i++ ) {
-			document.write( "<script src='" + loadTests.shift() + "'><\x2Fscript>" );
-		}
+		loadTests();
+		// Synchronous-only tests
+		document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>");
 	}
+
 })();

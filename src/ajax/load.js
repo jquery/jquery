@@ -2,7 +2,10 @@ define([
 	"../core",
 	"../ajax",
 	"../traversing",
-	"../selector"
+	"../manipulation",
+	"../selector",
+	// Optional event/alias dependency
+	"../event/alias"
 ], function( jQuery ) {
 
 // Keep a copy of the old load method

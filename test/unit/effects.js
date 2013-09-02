@@ -2154,7 +2154,8 @@ asyncTest( ".finish() is applied correctly when multiple elements were animated 
 });
 
 asyncTest( "slideDown() after stop() (#13483)", 2, function() {
-	var ul = jQuery( "<ul style='height: 100px;display: block'></ul>" ),
+	var ul = jQuery( "<ul style='height: 100px; display: block;'></ul>" )
+			.appendTo("#qunit-fixture"),
 		origHeight = ul.height();
 
 	// First test. slideUp() -> stop() in the middle -> slideDown() until the end
@@ -2183,24 +2184,28 @@ asyncTest( "slideDown() after stop() (#13483)", 2, function() {
 	}, 500 );
 });
 
-asyncTest( "fadeIn() after stop() (related to #13483)", 2, function() {
-	var ul = jQuery( "<ul style='height: 100px;display: block; opacity: 1'></ul>" ),
+asyncTest( "fadeIn() after stop() (related to #13483)", 5, function() {
+	var ul = jQuery( "<ul style='height: 100px; display: block;'></ul>" )
+			.appendTo("#qunit-fixture").css( "opacity", 1 ),
 		origOpacity = ul.css( "opacity" );
 
 	// First test. fadeOut() -> stop() in the middle -> fadeIn() until the end
-	ul.fadeOut( 1000 );
+	ul.fadeOut( 2000 );
 	setTimeout( function() {
 		ul.stop( true );
+		ok( ul.css( "opacity" ) > 0, "fadeOut() interrupted" );
 		ul.fadeIn( 1, function() {
-			equal( ul.css( "opacity" ), origOpacity, "fadeIn() after interrupting fadeOut() with stop(). Opacity must be in original value" );
+			equal( ul.css( "opacity" ), origOpacity, "fadeIn() restored original opacity after interrupted fadeOut()" );
 
 			// Second test. fadeIn() -> stop() in the middle -> fadeIn() until the end
 			ul.fadeOut( 1, function() {
-				ul.fadeIn( 1000 );
+				equal( ul.css( "opacity" ), origOpacity, "fadeOut() completed" );
+				ul.fadeIn( 2000 );
 				setTimeout( function() {
 					ul.stop( true );
+					ok( ul.css( "opacity" ) < origOpacity, "fadeIn() interrupted" );
 					ul.fadeIn( 1, function() {
-						equal( ul.css("opacity"), origOpacity, "fadeIn() after interrupting fadeIn() with stop(). Opacity must be in original value" );
+						equal( ul.css("opacity"), origOpacity, "fadeIn() restored original opacity after interrupted fadeIn()" );
 
 						// Cleanup
 						ul.remove();
