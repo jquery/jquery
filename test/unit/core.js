@@ -937,7 +937,6 @@ test("jQuery.grep()", function() {
 	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search), [ 2, 4, 6 ], "Satisfying elements present" );
 	deepEqual( jQuery.grep([ 1, 3, 5, 7], search), [], "Satisfying elements absent" );
 
-
 	deepEqual( jQuery.grep([ 1, 2, 3, 4, 5, 6 ], search, true), [ 1, 3, 5 ], "Satisfying elements present and grep inverted" );
 	deepEqual( jQuery.grep([ 1, 3, 5, 7], search, true), [1, 3, 5, 7], "Satisfying elements absent and grep inverted" );
 
