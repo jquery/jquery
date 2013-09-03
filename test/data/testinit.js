@@ -1,17 +1,17 @@
 /*jshint multistr:true, quotmark:false */
 
-var fireNative,
-	originaljQuery = this.jQuery || "jQuery",
-	original$ = this.$ || "$",
+var fireNative, originaljQuery, original$,
+	supportjQuery = this.jQuery,
 	// see RFC 2606
 	externalHost = "example.com";
 
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
 
-// For testing .noConflict()
-this.jQuery = originaljQuery;
-this.$ = original$;
+// Setup global variables before loading jQuery for testing .noConflict()
+supportjQuery.noConflict( true );
+originaljQuery = this.jQuery = undefined;
+original$ = this.$ = "replaced";
 
 /**
  * Returns an array of elements with the given IDs
@@ -253,3 +253,4 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 		).appendTo( "body" );
 	});
 };
+this.iframeCallback = undefined;
