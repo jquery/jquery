@@ -1,19 +1,21 @@
-/**
- * Allow the test suite to run with other libs or jQuery's.
- */
-jQuery.noConflict();
+if ( typeof jQuery !== "undefined" ) {
+	/**
+	 * Allow the test suite to run with other libs or jQuery's.
+	 */
+	jQuery.noConflict();
+	
+	// Expose Sizzle for Sizzle's selector tests
+	// We remove Sizzle's globalization in jQuery
+	this.Sizzle = this.Sizzle || jQuery.find;
+}
 
 // For checking globals pollution despite auto-created globals in various environments
-jQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
+supportjQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
 	window[ name ] = window[ name ];
 });
 
-// Expose Sizzle for Sizzle's selector tests
-// We remove Sizzle's globalization in jQuery
-var Sizzle = Sizzle || jQuery.find,
-
 // Allow subprojects to test against their own fixtures
-	qunitModule = QUnit.module,
+var qunitModule = QUnit.module,
 	qunitTest = QUnit.test;
 
 /**
@@ -53,7 +55,7 @@ this.testSubproject = function( label, url, risTests, complete ) {
 
 		// Find test function and wrap to require subproject fixture
 		for ( ; i >= 0; i-- ) {
-			if ( originaljQuery.isFunction( args[i] ) ) {
+			if ( supportjQuery.isFunction( args[i] ) ) {
 				args[i] = requireFixture( args[i] );
 				break;
 			}
@@ -64,7 +66,7 @@ this.testSubproject = function( label, url, risTests, complete ) {
 
 	// Load tests and fixture from subproject
 	// Test order matters, so we must be synchronous and throw an error on load failure
-	originaljQuery.ajax( url, {
+	supportjQuery.ajax( url, {
 		async: false,
 		dataType: "html",
 		error: function( jqXHR, status ) {
@@ -72,7 +74,7 @@ this.testSubproject = function( label, url, risTests, complete ) {
 		},
 		success: function( data, status, jqXHR ) {
 			var sources = [],
-				page = originaljQuery.parseHTML(
+				page = supportjQuery.parseHTML(
 				// replace html/head with dummy elements so they are represented in the DOM
 				( data || "" ).replace( /<\/?((!DOCTYPE|html|head)\b.*?)>/gi, "[$1]" ),
 				document,
@@ -82,11 +84,11 @@ this.testSubproject = function( label, url, risTests, complete ) {
 			if ( !page || !page.length ) {
 				this.error( jqXHR, "no data" );
 			}
-			page = originaljQuery( page );
+			page = supportjQuery( page );
 
 			// Include subproject tests
 			page.filter("script[src]").add( page.find("script[src]") ).map(function() {
-				var src = originaljQuery( this ).attr("src");
+				var src = supportjQuery( this ).attr("src");
 				if ( risTests.test( src ) ) {
 					sources.push( src );
 				}
@@ -123,7 +125,7 @@ this.testSubproject = function( label, url, risTests, complete ) {
 				}
 
 				// Replace the current fixture, including content outside of #qunit-fixture
-				var oldFixture = originaljQuery("#qunit-fixture");
+				var oldFixture = supportjQuery("#qunit-fixture");
 				while ( oldFixture.length && !oldFixture.prevAll("[id='qunit']").length ) {
 					oldFixture = oldFixture.parent();
 				}
@@ -133,7 +135,7 @@ this.testSubproject = function( label, url, risTests, complete ) {
 				// WARNING: UNDOCUMENTED INTERFACE
 				QUnit.config.fixture = fixtureHTML;
 				QUnit.reset();
-				if ( originaljQuery("#qunit-fixture").html() !== fixtureHTML ) {
+				if ( supportjQuery("#qunit-fixture").html() !== fixtureHTML ) {
 					ok( false, "Copied subproject fixture" );
 					return;
 				}
@@ -153,15 +155,15 @@ this.Globals = (function() {
 	return {
 		register: function( name ) {
 			globals[ name ] = true;
-			jQuery.globalEval( "var " + name + " = undefined;" );
+			supportjQuery.globalEval( "var " + name + " = undefined;" );
 		},
 		cleanup: function() {
 			var name,
 				current = globals;
 			globals = {};
 			for ( name in current ) {
-				jQuery.globalEval( "try { " +
-					"delete " + ( jQuery.support.deleteExpando ? "window['" + name + "']" : name ) +
+				supportjQuery.globalEval( "try { " +
+					"delete " + ( supportjQuery.support.deleteExpando ? "window['" + name + "']" : name ) +
 				"; } catch( x ) {}" );
 			}
 		}
@@ -335,7 +337,7 @@ this.Globals = (function() {
 
 	QUnit.done(function() {
 		// Remove our own fixtures outside #qunit-fixture
-		jQuery("#qunit ~ *").remove();
+		supportjQuery("#qunit ~ *").remove();
 	});
 
 	// jQuery-specific QUnit.reset
@@ -343,6 +345,8 @@ this.Globals = (function() {
 
 		// Ensure jQuery events and data on the fixture are properly removed
 		jQuery("#qunit-fixture").empty();
+		// ...even if the jQuery under test has a broken .empty()
+		supportjQuery("#qunit-fixture").empty();
 
 		// Reset internal jQuery state
 		jQuery.event.global = {};

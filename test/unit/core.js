@@ -353,8 +353,9 @@ asyncTest("isPlainObject", function() {
 	ok( pass, "Does not throw exceptions on host objects" );
 
 	// Objects from other windows should be matched
-	window.iframeCallback = function( otherObject, detail ) {
-		window.iframeCallback = undefined;
+	Globals.register("iframeDone");
+	window.iframeDone = function( otherObject, detail ) {
+		window.iframeDone = undefined;
 		iframe.parentNode.removeChild( iframe );
 		ok( jQuery.isPlainObject(new otherObject()), "new otherObject" + ( detail ? " - " + detail : "" ) );
 		start();
@@ -364,7 +365,7 @@ asyncTest("isPlainObject", function() {
 		iframe = jQuery("#qunit-fixture")[0].appendChild( document.createElement("iframe") );
 		doc = iframe.contentDocument || iframe.contentWindow.document;
 		doc.open();
-		doc.write("<body onload='window.parent.iframeCallback(Object);'>");
+		doc.write("<body onload='window.parent.iframeDone(Object);'>");
 		doc.close();
 	} catch(e) {
 		window.iframeDone( Object, "iframes not supported" );

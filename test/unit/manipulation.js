@@ -1681,11 +1681,11 @@ test("empty()", function() {
 	equal( j.html(), "", "Check node,textnode,comment empty works" );
 
 	// Ensure oldIE empties selects (#12336)
-	notEqual( $("#select1").find("option").length, 0, "Have some initial options" );
-	$("#select1").empty();
-	equal( $("#select1").find("option").length, 0, "No more option elements found" );
-	equal( $("#select1")[0].options.length, 0, "options.length cleared as well" );
-	});
+	notEqual( jQuery("#select1").find("option").length, 0, "Have some initial options" );
+	jQuery("#select1").empty();
+	equal( jQuery("#select1").find("option").length, 0, "No more option elements found" );
+	equal( jQuery("#select1")[0].options.length, 0, "options.length cleared as well" );
+});
 
 test( "jQuery.cleanData", function() {
 

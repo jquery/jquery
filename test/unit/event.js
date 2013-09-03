@@ -2453,6 +2453,7 @@ test("focus-blur order (#12868)", function() {
 			// Run handlers without native method on an input
 			order = 1;
 			$radio.triggerHandler( "focus" );
+			$text.off();
 			start();
 		}, 50 );
 	}, 50 );
