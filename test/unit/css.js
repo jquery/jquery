@@ -758,13 +758,16 @@ test("percentage properties for bottom and right in IE<9 should not be incorrect
 });
 
 if ( jQuery.fn.offset ) {
-	test("percentage properties for left and top should be transformed to pixels, see #9505", function() {
-		expect( 2 );
+	test("percentage properties for left, top, bottom, and right should be transformed to pixels, see #9505 #13956", function() {
+		expect( 4 );
 		var parent = jQuery("<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>").appendTo( "#qunit-fixture" ),
-			div = jQuery("<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%'></div>").appendTo( parent );
+			div = jQuery("<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%;'></div>").appendTo( parent ),
+			div2 = jQuery("<div style='position: absolute; width: 20px; height: 20px; right: 50%; bottom: 50%;'></div>").appendTo( parent );
 
 		equal( div.css("top"), "100px", "position properties not transformed to pixels, see #9505" );
 		equal( div.css("left"), "100px", "position properties not transformed to pixels, see #9505" );
+		equal( div2.css("bottom"), "100px", "position properties not transformed to pixels, see #13956" );
+		equal( div2.css("right"), "100px", "position properties not transformed to pixels, see #13956" );
 	});
 }
 
