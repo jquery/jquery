@@ -26,6 +26,9 @@ var
 	// Map over the $ in case of overwrite
 	_$ = window.$,
 
+	// References to ES5 native methods
+	nativeFilter = Array.prototype.filter,
+
 	version = "@VERSION",
 
 	// Define a local copy of jQuery
@@ -651,21 +654,37 @@ jQuery.extend({
 	},
 
 	grep: function( elems, callback, inv ) {
-		var retVal,
-			ret = [],
-			i = 0,
-			length = elems.length;
+		var ret = [],
+			i,
+			length,
+			validatorWrap = function( elem, index ) {
+				var retVal;
+				retVal = !!callback( elem, index );
+
+				// Either `inv` or `retVal` should be `true` but not both.
+				// Usage of Ex-OR operator instead of `!==` saves a couple of bytes
+				return inv ^ retVal;
+			};
 		inv = !!inv;
 
-		// Go through the array, only saving the items
-		// that pass the validator function
-		for ( ; i < length; i++ ) {
-			retVal = !!callback( elems[ i ], i );
-			if ( inv !== retVal ) {
-				ret.push( elems[ i ] );
+		// If browser supports ES5, use the native Array.filter
+		// to take advantage of browser-level optimization
+		if ( nativeFilter ) {
+			ret = nativeFilter.call( elems, validatorWrap );
+
+		} else {
+			// If ES5 methods aren`t supported,
+			// go through the array, only saving the items that pass the validator function.
+			// Ideally, this else should never be executed
+			i = 0;
+			length = elems.length;
+
+			for ( ; i < length; i++ ) {
+				if ( validatorWrap( elems[ i ], i ) ) {
+					ret.push( elems[ i ] );
+				}
 			}
 		}
-
 		return ret;
 	},
 
