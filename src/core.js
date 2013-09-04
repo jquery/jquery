@@ -28,6 +28,9 @@ var
 
 	version = "@VERSION",
 
+	// References to ES5 native methods
+	nativeFilter = Array.prototype.filter,
+
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
 		// The jQuery object is actually just the init constructor 'enhanced'
@@ -566,22 +569,20 @@ jQuery.extend({
 	},
 
 	grep: function( elems, callback, inv ) {
-		var retVal,
-			ret = [],
-			i = 0,
-			length = elems.length;
+		var validatorWrap = function( elem, index ) {
+				var retVal;
+				retVal = !!callback( elem, index );
+				// Either `inv` or `retVal` should be `true`
+				// but not both. Hence Ex-OR.
+				// Saves a couple of bytes in comparison to `!==`
+				return inv ^ retVal;
+			};
 		inv = !!inv;
 
-		// Go through the array, only saving the items
-		// that pass the validator function
-		for ( ; i < length; i++ ) {
-			retVal = !!callback( elems[ i ], i );
-			if ( inv !== retVal ) {
-				ret.push( elems[ i ] );
-			}
-		}
-
-		return ret;
+		// Since jQuery 2.x supports only ES5 browsers,
+		// use the native Array.filter
+		// to take advantage of browser-level optimizations
+		return nativeFilter.call( elems, validatorWrap );
 	},
 
 	// arg is for internal usage only
