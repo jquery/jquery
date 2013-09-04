@@ -69,7 +69,7 @@ jQuery.support = (function( support ) {
 
 	// Run tests that need a body at doc ready
 	jQuery(function() {
-		var container, marginDiv,
+		var container, marginDiv, divStyle,
 			// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
 			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
 			body = document.getElementsByTagName("body")[ 0 ];
@@ -96,8 +96,9 @@ jQuery.support = (function( support ) {
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
-			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
-			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+			divStyle = window.getComputedStyle( div, null ) || { width: "4px" };
+			support.pixelPosition = divStyle.top !== "1%" && divStyle.left !== "auto";
+			support.boxSizingReliable = divStyle.width === "4px";
 
 			// Support: Android 2.3
 			// Check if div with explicit width and no margin-right incorrectly

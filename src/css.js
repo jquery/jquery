@@ -474,9 +474,16 @@ jQuery(function() {
 			jQuery.cssHooks[ prop ] = {
 				get: function( elem, computed ) {
 					if ( computed ) {
-						computed = curCSS( elem, prop );
-						// if curCSS returns percentage, fallback to offset
-						return rnumnonpx.test( computed ) ?
+						var isAutoPosition,
+							elStyles = getStyles( elem ),
+							position = curCSS( elem, "position", elStyles );
+						computed = curCSS( elem, prop, elStyles );
+						isAutoPosition = computed === "auto";
+						if ( isAutoPosition && position === "relative" ) {
+							return "0px";
+						}
+						// if curCSS returns percentage or auto, fallback to offset
+						return isAutoPosition && position !== "static" || rnumnonpx.test( computed ) ?
 							jQuery( elem ).position()[ prop ] + "px" :
 							computed;
 					}

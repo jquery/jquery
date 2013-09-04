@@ -873,6 +873,19 @@ test( "css opacity consistency across browsers (#12685)", function() {
 	equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
 });
 
+test( "css left/top auto consistency across browsers (#13767)", function() {
+	expect( 4 );
+
+	var fixture = jQuery("#qunit-fixture"),
+			el = jQuery("<div style='position: relative;padding: 20px;'>" +
+			"<div style='position: absolute'></div><span></span><s style='position: fixed'></s></div>").appendTo(fixture);
+
+	equal( el.css("left"), "0px" );
+	equal( el.find("div").css("top"), "20px" );
+	equal( el.find("span").css("top"), "auto" );
+	notEqual( el.find("s").css("top").indexOf("px"), -1 );
+});
+
 test( ":visible/:hidden selectors", function() {
 	expect( 13 );
 
