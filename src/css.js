@@ -272,8 +272,8 @@ jQuery.extend({
 				type = "number";
 			}
 
-			// Make sure that NaN and null values aren't set. See: #7116
-			if ( value == null || type === "number" && isNaN( value ) ) {
+			// Make sure that null and NaN values aren't set. See: #7116
+			if ( value == null || value !== value ) {
 				return;
 			}
 
