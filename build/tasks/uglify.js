@@ -38,12 +38,8 @@ module.exports = function( grunt ) {
 			// Rename the file to a temporary name.
 			fs.renameSync( mapFileName, mapping.dest);
 			grunt.file.write( mapFileName, grunt.file.read( mapping.dest )
-				// The uglify task erroneously prepends dist/ to file names.
-				.replace( /"dist\//g, "\"" )
 				// Refer to the source jquery.js, not the temporary jquery.pre-min.js.
-				.replace( /\.pre-min\./g, "." )
-				// There's already a pragma at the beginning of the file, remove the one at the end.
-				.replace( /\/\/@ sourceMappingURL=jquery\.min\.map$/g, "" ));
+				.replace( /\.pre-min\./g, "." ));
 		});
 
 		// Remove temporary files.

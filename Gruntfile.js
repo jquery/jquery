@@ -85,12 +85,10 @@ module.exports = function( grunt ) {
 					"dist/jquery.pre-min.js": [ "dist/jquery.js" ]
 				},
 				options: {
-					banner: "\n\n\n\n\n\n\n\n\n\n" + // banner line size must be preserved
+					banner: "\n\n\n\n\n\n\n\n\n\n\n\n" + // banner line size must be preserved
 						"/*! jQuery v<%= pkg.version %> | " +
 						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
-						"jquery.org/license\n" +
-						"//@ sourceMappingURL=jquery.min.map\n" +
-						"*/\n"
+						"jquery.org/license */\n"
 				}
 			}
 		},
