@@ -352,7 +352,10 @@ jQuery.extend({
 	},
 
 	isNumeric: function( obj ) {
-		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+		// parseFloat NaNs numeric-cast false positives (null|true|false|"")
+		// ...but misinterprets hex literals ("0x...") and other leading-number strings
+		// subtraction forces infinities to NaN
+		return obj - parseFloat( obj ) >= 0;
 	},
 
 	type: function( obj ) {
@@ -638,7 +641,7 @@ jQuery.extend({
 		}
 
 		// Support: IE<9
-		// Workaround non-numeric length overrides of otherwise arraylike objects (e.g., NodeLists)
+		// Workaround casting of .length to NaN on otherwise arraylike objects (e.g., NodeLists)
 		if ( len !== len ) {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];
