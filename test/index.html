@@ -19,7 +19,9 @@
 	// Tests are always loaded async
 	QUnit.config.autostart = false;
 	function loadTests() {
-		var tests = [
+		var loadSwarm,
+			url = window.location.search,
+			tests = [
 			"data/testrunner.js",
 			"unit/core.js",
 			"unit/callbacks.js",
@@ -40,6 +42,9 @@
 			"unit/offset.js",
 			"unit/dimensions.js"
 		];
+		url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
+		loadSwarm = url && url.indexOf("http") === 0;
+
 		// Ensure load order (to preserve test numbers)
 		(function loadDep() {
 			var dep = tests.shift();
@@ -50,7 +55,15 @@
 				testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
 					// Call load to build module filter select element
 					QUnit.load();
-					QUnit.start();
+
+					// Load the TestSwarm listener if swarmURL is in the address.
+					if ( loadSwarm ) {
+						require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
+							QUnit.start();
+						});
+					} else {
+						QUnit.start();
+					}
 				});
 			}
 		})();
