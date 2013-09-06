@@ -29,6 +29,13 @@
 		).replace(/\w+/g, function(n) {
 			document.createElement(n);
 		});
+
+		// Load tests if they have not been loaded
+		// This is in a different script tag to ensure that
+		// jQuery is on the page when the testrunner executes
+		if ( !QUnit.urlParams.amd ) {
+			loadTests();
+		}
 	</script>
 </head>
 

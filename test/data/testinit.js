@@ -259,65 +259,68 @@ this.iframeCallback = undefined;
 QUnit.config.autostart = false;
 this.loadTests = function() {
 	var loadSwarm,
-		url = window.location.search,
-		tests = [
-		"data/testrunner.js",
-		"unit/core.js",
-		"unit/callbacks.js",
-		"unit/deferred.js",
-		"unit/support.js",
-		"unit/data.js",
-		"unit/queue.js",
-		"unit/attributes.js",
-		"unit/event.js",
-		"unit/selector.js",
-		"unit/traversing.js",
-		"unit/manipulation.js",
-		"unit/wrap.js",
-		"unit/css.js",
-		"unit/serialize.js",
-		"unit/ajax.js",
-		"unit/effects.js",
-		"unit/offset.js",
-		"unit/dimensions.js"
-	];
+		url = window.location.search;
 	url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
 	loadSwarm = url && url.indexOf("http") === 0;
 
-	// Ensure load order (to preserve test numbers)
-	(function loadDep() {
-		var dep = tests.shift();
-		if ( dep ) {
-			require( [ dep ], loadDep );
-		} else {
-			// Subproject tests must be last because they replace our test fixture
-			window.testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
-				// Call load to build module filter select element
-				QUnit.load();
+	// Get testSubproject from testrunner first
+	require([ "data/testrunner.js" ], function( testSubproject ) {
+		var tests = [
+			"unit/core.js",
+			"unit/callbacks.js",
+			"unit/deferred.js",
+			"unit/support.js",
+			"unit/data.js",
+			"unit/queue.js",
+			"unit/attributes.js",
+			"unit/event.js",
+			"unit/selector.js",
+			"unit/traversing.js",
+			"unit/manipulation.js",
+			"unit/wrap.js",
+			"unit/css.js",
+			"unit/serialize.js",
+			"unit/ajax.js",
+			"unit/effects.js",
+			"unit/offset.js",
+			"unit/dimensions.js"
+		];
 
-				// Load the TestSwarm listener if swarmURL is in the address.
-				if ( loadSwarm ) {
-					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
-						QUnit.start();
+		// Ensure load order (to preserve test numbers)
+		(function loadDep() {
+			var dep = tests.shift();
+			if ( dep ) {
+				require( [ dep ], loadDep );
+			} else {
+				// Subproject tests must be last because they replace our test fixture
+				testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
+					// Call load to build module filter select element
+					QUnit.load();
+
+					/**
+					 * Run in noConflict mode
+					 */
+					jQuery.noConflict();
+
+					// Expose Sizzle for Sizzle's selector tests
+					// We remove Sizzle's globalization in jQuery
+					window.Sizzle = window.Sizzle || jQuery.find;
+
+					// For checking globals pollution despite auto-created globals in various environments
+					supportjQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
+						window[ name ] = window[ name ];
 					});
-				} else {
-					QUnit.start();
-				}
 
-				/**
-				 * Run in noConflict mode
-				 */
-				jQuery.noConflict();
-
-				// Expose Sizzle for Sizzle's selector tests
-				// We remove Sizzle's globalization in jQuery
-				window.Sizzle = window.Sizzle || jQuery.find;
-
-				// For checking globals pollution despite auto-created globals in various environments
-				supportjQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
-					window[ name ] = window[ name ];
+					// Load the TestSwarm listener if swarmURL is in the address.
+					if ( loadSwarm ) {
+						require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
+							QUnit.start();
+						});
+					} else {
+						QUnit.start();
+					}
 				});
-			});
-		}
-	})();
+			}
+		})();
+	});
 };

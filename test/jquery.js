@@ -54,11 +54,9 @@
 	// Load jQuery
 	document.write( "<script id='jquery-js' src='" + path + src + "'><\x2Fscript>" );
 
-	// Load tests if available
-	// These can be loaded async as QUnit won't start until finished
+	// Synchronous-only tests
+	// Other tests are loaded from the test page
 	if ( typeof loadTests !== "undefined" ) {
-		loadTests();
-		// Synchronous-only tests
 		document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>");
 	}
 
