@@ -589,22 +589,20 @@ jQuery.each( [ "top", "left" ], function( i, prop ) {
 				return;
 			}
 
-			if ( pixelPosition ) {
-				// Hook not needed, remove it.
+			if ( pixelPosition || !jQuery.fn.position ) {
+				// Hook not needed or impossible to apply due to a missing module, remove it.
 				// Since there are no other hooks for prop, remove the whole object.
 				delete jQuery.cssHooks[ prop ];
 				return;
 			}
 
 			jQuery.cssHooks[ prop ].get = function ( elem, computed ) {
-				if ( !support.pixelPosition() && jQuery.fn.position ) {
-					if ( computed ) {
-						computed = curCSS( elem, prop );
-						// if curCSS returns percentage, fallback to offset
-						return rnumnonpx.test( computed ) ?
-							jQuery( elem ).position()[ prop ] + "px" :
-							computed;
-					}
+				if ( computed ) {
+					computed = curCSS( elem, prop );
+					// if curCSS returns percentage, fallback to offset
+					return rnumnonpx.test( computed ) ?
+						jQuery( elem ).position()[ prop ] + "px" :
+						computed;
 				}
 			};
 
