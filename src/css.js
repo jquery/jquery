@@ -8,9 +8,7 @@ define([
 	"./data/var/data_priv",
 	"./css/swap",
 	"./core/ready",
-	"./selector", // contains
-	// Optional
-	"./offset"
+	"./selector" // contains
 ], function( jQuery, pnum, cssExpand, isHidden, support, defaultDisplay, data_priv ) {
 var curCSS,
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
