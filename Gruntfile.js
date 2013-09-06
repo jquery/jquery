@@ -53,6 +53,12 @@ module.exports = function( grunt ) {
 			}
 		},
 		jshint: {
+			src: {
+				src: [ "src/**/*.js" ],
+				options: {
+					jshintrc: "src/.jshintrc"
+				}
+			},
 			dist: {
 				src: [ "dist/jquery.js" ],
 				options: srcHintOptions
