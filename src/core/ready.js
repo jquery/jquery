@@ -89,4 +89,7 @@ jQuery.ready.promise = function( obj ) {
 	return readyList.promise( obj );
 };
 
+// Kick off the DOM ready check even if the user does not
+jQuery.ready.promise();
+
 });
