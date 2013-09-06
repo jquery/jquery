@@ -1,3 +1,3 @@
 define(function() {
-	return /^(?:checkbox|radio)$/i;
+	return (/^(?:checkbox|radio)$/i);
 });

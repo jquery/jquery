@@ -1,3 +1,5 @@
+src/intro.js
+src/outro.js
 test/qunit/**
 test/data/jquery-1.9.1.ajax_xhr.min.js
 test/data/badcall.js
