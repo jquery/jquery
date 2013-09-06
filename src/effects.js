@@ -305,7 +305,7 @@ function defaultPrefilter( elem, props, opts ) {
 
 		// Set display property to inline-block for height/width
 		// animations on inline elements that are having width/height animated
-		if ( jQuery.css( elem, "display" ) === "inline" &&
+		if ( jQuery.isPlainObject(elemdisplay) && elemdisplay[elem.tagName] === "inline" &&
 				jQuery.css( elem, "float" ) === "none" ) {
 
 			style.display = "inline-block";
