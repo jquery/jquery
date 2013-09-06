@@ -4,10 +4,10 @@ define([
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
+	"./event/support",
 	"./data/accepts",
-	"./selector",
-	"./support"
-], function( jQuery, strundefined, rnotwhite, hasOwn, slice ) {
+	"./selector"
+], function( jQuery, strundefined, rnotwhite, hasOwn, slice, support ) {
 
 var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
@@ -772,7 +772,7 @@ jQuery.each({
 });
 
 // IE submit delegation
-if ( !jQuery.support.submitBubbles ) {
+if ( !support.submitBubbles ) {
 
 	jQuery.event.special.submit = {
 		setup: function() {
@@ -819,7 +819,7 @@ if ( !jQuery.support.submitBubbles ) {
 }
 
 // IE change delegation and checkbox/radio fix
-if ( !jQuery.support.changeBubbles ) {
+if ( !support.changeBubbles ) {
 
 	jQuery.event.special.change = {
 
@@ -878,7 +878,7 @@ if ( !jQuery.support.changeBubbles ) {
 }
 
 // Create "bubbling" focus and blur events
-if ( !jQuery.support.focusinBubbles ) {
+if ( !support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
 		// Attach a single capturing handler while someone wants focusin/focusout

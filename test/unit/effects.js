@@ -1078,7 +1078,7 @@ jQuery.each({
 
 asyncTest("Effects chaining", function() {
 	var remaining = 16,
-		shrinkwrap = jQuery.support.shrinkWrapBlocks,
+		shrinkwrap = jQuery.support.shrinkWrapBlocks(),
 		props = [ "opacity", "height", "width", "display", "overflow" ],
 		setup = function( name, selector, hiddenOverflow ) {
 			var $el = jQuery( selector );

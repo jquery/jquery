@@ -3,12 +3,14 @@ define([
 	"./var/pnum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
+	"./css/defaultDisplay",
+	"./effects/support",
 	"./effects/Tween",
 	"./queue",
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, pnum, cssExpand, isHidden, Tween ) {
+], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay, support) {
 
 var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
@@ -309,9 +311,8 @@ function defaultPrefilter( elem, props, opts ) {
 
 			// inline-level elements accept inline-block;
 			// block-level elements need to be inline with layout
-			if ( !jQuery.support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
+			if ( !support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
 				style.display = "inline-block";
-
 			} else {
 				style.zoom = 1;
 			}
@@ -320,7 +321,7 @@ function defaultPrefilter( elem, props, opts ) {
 
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
-		if ( !jQuery.support.shrinkWrapBlocks ) {
+		if ( !support.shrinkWrapBlocks() ) {
 			anim.always(function() {
 				style.overflow = opts.overflow[ 0 ];
 				style.overflowX = opts.overflow[ 1 ];

@@ -5,12 +5,12 @@ define([
 	"./var/deletedIds",
 	"./var/strundefined",
 	"./manipulation/var/rcheckableType",
+	"./manipulation/support",
 	"./data/accepts",
 	"./selector",
 	"./traversing",
-	"./event",
-	"./support"
-], function( jQuery, concat, push, deletedIds, strundefined, rcheckableType ){
+	"./event"
+], function( jQuery, concat, push, deletedIds, strundefined, rcheckableType, support ){
 
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
@@ -55,7 +55,7 @@ var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figca
 
 		// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
 		// unless wrapped in a div with non-breaking characters in front of it.
-		_default: jQuery.support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>"  ]
+		_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>"  ]
 	},
 	safeFragment = createSafeFragment( document ),
 	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
@@ -177,8 +177,8 @@ jQuery.fn.extend({
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
-				( jQuery.support.htmlSerialize || !rnoshimcache.test( value )  ) &&
-				( jQuery.support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
+				( support.htmlSerialize || !rnoshimcache.test( value )  ) &&
+				( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
 				value = value.replace( rxhtmlTag, "<$1></$2>" );
@@ -252,7 +252,7 @@ jQuery.fn.extend({
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
-		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
+		if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone || !rchecked.test( value ) ) ) {
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
@@ -398,7 +398,7 @@ function fixCloneNodeIssues( src, dest ) {
 	nodeName = dest.nodeName.toLowerCase();
 
 	// IE6-8 copies events bound via attachEvent when using cloneNode.
-	if ( !jQuery.support.noCloneEvent && dest[ jQuery.expando ] ) {
+	if ( !support.noCloneEvent && dest[ jQuery.expando ] ) {
 		data = jQuery._data( dest );
 
 		for ( e in data.events ) {
@@ -425,7 +425,7 @@ function fixCloneNodeIssues( src, dest ) {
 		// element in IE9, the outerHTML strategy above is not sufficient.
 		// If the src has innerHTML and the destination does not,
 		// copy the src.innerHTML into the dest.innerHTML. #10324
-		if ( jQuery.support.html5Clone && ( src.innerHTML && !jQuery.trim(dest.innerHTML) ) ) {
+		if ( support.html5Clone && ( src.innerHTML && !jQuery.trim(dest.innerHTML) ) ) {
 			dest.innerHTML = src.innerHTML;
 		}
 
@@ -514,7 +514,7 @@ jQuery.extend({
 		var destElements, node, clone, i, srcElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
-		if ( jQuery.support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+		if ( support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
 			clone = elem.cloneNode( true );
 
 		// IE<=8 does not properly clone detached, unknown element nodes
@@ -523,7 +523,7 @@ jQuery.extend({
 			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
 		}
 
-		if ( (!jQuery.support.noCloneEvent || !jQuery.support.noCloneChecked) &&
+		if ( (!support.noCloneEvent || !support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
@@ -606,12 +606,12 @@ jQuery.extend({
 					}
 
 					// Manually add leading whitespace removed by IE
-					if ( !jQuery.support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
+					if ( !support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
 						nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
 					}
 
 					// Remove IE's autoinserted <tbody> from table fragments
-					if ( !jQuery.support.tbody ) {
+					if ( !support.tbody ) {
 
 						// String was a <table>, *may* have spurious <tbody>
 						elem = tag === "table" && !rtbody.test( elem ) ?
@@ -653,7 +653,7 @@ jQuery.extend({
 
 		// Reset defaultChecked for any radios and checkboxes
 		// about to be appended to the DOM in IE 6/7 (#8060)
-		if ( !jQuery.support.appendChecked ) {
+		if ( !support.appendChecked ) {
 			jQuery.grep( getAll( nodes, "input" ), fixDefaultChecked );
 		}
 
@@ -697,7 +697,7 @@ jQuery.extend({
 			i = 0,
 			internalKey = jQuery.expando,
 			cache = jQuery.cache,
-			deleteExpando = jQuery.support.deleteExpando,
+			deleteExpando = support.deleteExpando,
 			special = jQuery.event.special;
 
 		for ( ; (elem = elems[i]) != null; i++ ) {

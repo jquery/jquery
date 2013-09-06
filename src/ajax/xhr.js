@@ -1,8 +1,8 @@
 define([
 	"../core",
-	"../ajax",
-	"../support"
-], function( jQuery ) {
+	"../var/support",
+	"../ajax"
+], function( jQuery, support ) {
 
 var xhrCallbacks, xhrSupported,
 	xhrId = 0,
@@ -45,15 +45,15 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject ?
 
 // Determine support properties
 xhrSupported = jQuery.ajaxSettings.xhr();
-jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-xhrSupported = jQuery.support.ajax = !!xhrSupported;
+support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+xhrSupported = support.ajax = !!xhrSupported;
 
 // Create transport if the browser can provide an xhr
 if ( xhrSupported ) {
 
 	jQuery.ajaxTransport(function( s ) {
 		// Cross domain only allowed if supported through XMLHttpRequest
-		if ( !s.crossDomain || jQuery.support.cors ) {
+		if ( !s.crossDomain || support.cors ) {
 
 			var callback;
 

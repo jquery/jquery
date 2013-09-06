@@ -2,16 +2,16 @@ define([
 	"../core",
 	"../var/rnotwhite",
 	"../var/strundefined",
+	"./support",
 	"./val",
-	"../selector",
-	"../support"
-], function( jQuery, rnotwhite, strundefined ) {
+	"../selector"
+], function( jQuery, rnotwhite, strundefined, support ) {
 
 var nodeHook, boolHook,
 	attrHandle = jQuery.expr.attrHandle,
 	ruseDefault = /^(?:checked|selected)$/i,
-	getSetAttribute = jQuery.support.getSetAttribute,
-	getSetInput = jQuery.support.input;
+	getSetAttribute = support.getSetAttribute,
+	getSetInput = support.input;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -108,7 +108,7 @@ jQuery.extend({
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
-				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+				if ( !support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
 					// Reset value to default in case type is set after value during creation
 					var val = elem.value;
@@ -253,7 +253,7 @@ if ( !getSetAttribute ) {
 	});
 }
 
-if ( !jQuery.support.style ) {
+if ( !support.style ) {
 	jQuery.attrHooks.style = {
 		get: function( elem ) {
 			// Return undefined in the case of empty string
