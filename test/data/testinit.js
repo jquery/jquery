@@ -291,7 +291,7 @@ this.loadTests = function() {
 			require( [ dep ], loadDep );
 		} else {
 			// Subproject tests must be last because they replace our test fixture
-			testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
+			window.testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
 				// Call load to build module filter select element
 				QUnit.load();
 
