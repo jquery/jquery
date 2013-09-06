@@ -458,13 +458,18 @@ jQuery.cssHooks.marginRight = {
 			delete jQuery.cssHooks.marginRight;
 			return;
 		}
-		if ( computed ) {
-			// Support: Android 2.3
-			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-			// Work around by temporarily setting element display to inline-block
-			return jQuery.swap( elem, { "display": "inline-block" },
-				curCSS, [ elem, "marginRight" ] );
-		}
+
+		jQuery.cssHooks.marginRight.get = function( elem, computed ) {
+			if ( computed ) {
+				// Support: Android 2.3
+				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+				// Work around by temporarily setting element display to inline-block
+				return jQuery.swap( elem, { "display": "inline-block" },
+					curCSS, [ elem, "marginRight" ] );
+			}
+		};
+
+		return jQuery.cssHooks.marginRight.get( elem, computed );
 	}
 };
 
@@ -480,6 +485,7 @@ jQuery.each( [ "top", "left" ], function( i, prop ) {
 				delete jQuery.cssHooks[ prop ];
 				return;
 			}
+
 			jQuery.cssHooks[ prop ].get = function ( i, prop ) {
 				if ( computed ) {
 					computed = curCSS( elem, prop );
@@ -489,6 +495,7 @@ jQuery.each( [ "top", "left" ], function( i, prop ) {
 						computed;
 				}
 			};
+
 			return jQuery.cssHooks[ prop ].get( i, prop );
 		}
 	};
