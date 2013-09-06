@@ -78,6 +78,8 @@ define([
 			// Check if empty table cells still have offsetWidth/Height
 			reliableHiddenOffsetsVal = isSupported && ( tds[ 0 ].offsetHeight === 0 );
 
+			body.removeChild( container );
+
 			// Null elements to avoid leaks in IE.
 			div = body = null;
 
