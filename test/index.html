@@ -13,62 +13,9 @@
 
 	<script src="../bower_components/qunit/qunit/qunit.js"></script>
 	<script src="../bower_components/requirejs/require.js"></script>
+	<!-- See testinit for the list of tests -->
 	<script src="data/testinit.js"></script>
 
-	<script>
-	// Tests are always loaded async
-	QUnit.config.autostart = false;
-	function loadTests() {
-		var loadSwarm,
-			url = window.location.search,
-			tests = [
-			"data/testrunner.js",
-			"unit/core.js",
-			"unit/callbacks.js",
-			"unit/deferred.js",
-			"unit/support.js",
-			"unit/data.js",
-			"unit/queue.js",
-			"unit/attributes.js",
-			"unit/event.js",
-			"unit/selector.js",
-			"unit/traversing.js",
-			"unit/manipulation.js",
-			"unit/wrap.js",
-			"unit/css.js",
-			"unit/serialize.js",
-			"unit/ajax.js",
-			"unit/effects.js",
-			"unit/offset.js",
-			"unit/dimensions.js"
-		];
-		url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
-		loadSwarm = url && url.indexOf("http") === 0;
-
-		// Ensure load order (to preserve test numbers)
-		(function loadDep() {
-			var dep = tests.shift();
-			if ( dep ) {
-				require( [ dep ], loadDep );
-			} else {
-				// Subproject tests must be last because they replace our test fixture
-				testSubproject( "Sizzle", "../bower_components/sizzle/test/", /^unit\/.*\.js$/, function() {
-					// Call load to build module filter select element
-					QUnit.load();
-
-					// Load the TestSwarm listener if swarmURL is in the address.
-					if ( loadSwarm ) {
-						require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
-							QUnit.start();
-						});
-					} else {
-						QUnit.start();
-					}
-				});
-			}
-		})();
-	}
-	</script>
 	<!-- A script that includes jQuery min, dev, or AMD -->
 	<!-- Adds "basic" URL option, even to iframes -->
 	<!-- iframes will not load AMD as loading needs to be synchronous for some tests -->

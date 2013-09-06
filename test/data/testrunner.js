@@ -1,18 +1,3 @@
-if ( typeof jQuery !== "undefined" ) {
-	/**
-	 * Allow the test suite to run with other libs or jQuery's.
-	 */
-	jQuery.noConflict();
-	
-	// Expose Sizzle for Sizzle's selector tests
-	// We remove Sizzle's globalization in jQuery
-	this.Sizzle = this.Sizzle || jQuery.find;
-}
-
-// For checking globals pollution despite auto-created globals in various environments
-supportjQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
-	window[ name ] = window[ name ];
-});
 
 // Allow subprojects to test against their own fixtures
 var qunitModule = QUnit.module,
