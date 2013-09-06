@@ -379,17 +379,3 @@ QUnit.config.testTimeout = 20 * 1000; // 20 seconds
 
 // Enforce an "expect" argument or expect() call in all test bodies.
 QUnit.config.requireExpects = true;
-
-/**
- * Load the TestSwarm listener if swarmURL is in the address.
- */
-(function() {
-	var url = window.location.search;
-	url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
-
-	if ( !url || url.indexOf("http") !== 0 ) {
-		return;
-	}
-
-	document.write("<scr" + "ipt src='http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() + "'></scr" + "ipt>");
-})();
