@@ -471,34 +471,6 @@ jQuery.cssHooks.marginRight = {
 	}
 };
 
-// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// getComputedStyle returns percent when specified for top/left/bottom/right
-// rather than make the css module depend on the offset module, we just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
-	jQuery.cssHooks[ prop ] = {
-		get: function( elem, computed ) {
-			if ( support.pixelPosition() || !jQuery.fn.position ) {
-				// Hook not needed, remove it.
-				// Since there are no other hooks for prop, remove the whole object.
-				delete jQuery.cssHooks[ prop ];
-				return;
-			}
-
-			jQuery.cssHooks[ prop ].get = function ( i, prop ) {
-				if ( computed ) {
-					computed = curCSS( elem, prop );
-					// if curCSS returns percentage, fallback to offset
-					return rnumnonpx.test( computed ) ?
-						jQuery( elem ).position()[ prop ] + "px" :
-						computed;
-				}
-			};
-
-			return jQuery.cssHooks[ prop ].get( i, prop );
-		}
-	};
-});
-
 // These hooks are used by animate to expand properties
 jQuery.each({
 	margin: "",
