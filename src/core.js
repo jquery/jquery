@@ -9,9 +9,10 @@ define([
 	"./var/class2type",
 	"./var/toString",
 	"./var/hasOwn",
-	"./var/trim"
+	"./var/trim",
+	"./var/support"
 ], function( strundefined, arr, slice, concat, push, indexOf,
-	class2type, toString, hasOwn, trim ) {
+	class2type, toString, hasOwn, trim, support ) {
 
 var
 	// A central reference to the root jQuery(document)
@@ -702,7 +703,11 @@ jQuery.extend({
 				length ? fn( elems[0], key ) : emptyGet;
 	},
 
-	now: Date.now
+	now: Date.now,
+
+	// jQuery.support is not used in Core but other projects attach their
+	// properties to it so it needs to exist.
+	support: support
 });
 
 // Populate the class2type map

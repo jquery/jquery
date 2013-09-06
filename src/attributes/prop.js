@@ -1,7 +1,7 @@
 define([
 	"../core",
-	"../support"
-], function( jQuery ) {
+	"./support"
+], function( jQuery, support ) {
 
 var rfocusable = /^(?:input|select|textarea|button)$/i;
 
@@ -65,7 +65,7 @@ jQuery.extend({
 
 // Support: IE9+
 // Selectedness for an option in an optgroup can be inaccurate
-if ( !jQuery.support.optSelected ) {
+if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;

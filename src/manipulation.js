@@ -3,14 +3,14 @@ define([
 	"./var/concat",
 	"./var/push",
 	"./manipulation/var/rcheckableType",
+	"./manipulation/support",
 	"./data/var/data_priv",
 	"./data/var/data_user",
 	"./data/accepts",
 	"./selector",
 	"./traversing",
-	"./event",
-	"./support"
-], function( jQuery, concat, push, rcheckableType, data_priv, data_user ){
+	"./event"
+], function( jQuery, concat, push, rcheckableType, support, data_priv, data_user ){
 
 var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
@@ -218,7 +218,8 @@ jQuery.fn.extend({
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
-		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
+		if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone ||
+				!rchecked.test( value ) ) ) {
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
@@ -324,7 +325,8 @@ jQuery.extend({
 
 		// Support: IE >= 9
 		// Fix Cloning issues
-		if ( !jQuery.support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
+		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
+				!jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
