@@ -751,12 +751,6 @@ test("can't get background-position in IE<9, see #10796", function() {
 	}
 });
 
-test("percentage properties for bottom and right in IE<9 should not be incorrectly transformed to pixels, see #11311", function() {
-	expect( 1 );
-	var div = jQuery("<div style='position: absolute; width: 1px; height: 20px; bottom:50%;'></div>").appendTo( "#qunit-fixture" );
-	ok( window.getComputedStyle || div.css( "bottom" ) === "50%", "position properties get incorrectly transformed in IE<8, see #11311" );
-});
-
 if ( jQuery.fn.offset ) {
 	test("percentage properties for left and top should be transformed to pixels, see #9505", function() {
 		expect( 2 );

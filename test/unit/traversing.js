@@ -715,7 +715,7 @@ test("add(String|Element|Array|undefined)", function() {
 
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
 	// use jQuery([]).add(form.elements) instead.
-	//equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
+	// equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
 
 	divs = jQuery("<div/>").add("#sndp");
 	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );

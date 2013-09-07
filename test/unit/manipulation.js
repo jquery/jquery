@@ -77,8 +77,7 @@ function testText( valueObj ) {
 	equal( jQuery( j[ 0 ] ).text(), "hi!", "Check node,textnode,comment with text()" );
 	equal( j[ 1 ].nodeValue, " there ", "Check node,textnode,comment with text()" );
 
-	// Blackberry 4.6 doesn't maintain comments in the DOM
-	equal( jQuery("#nonnodes")[ 0 ].childNodes.length < 3 ? 8 : j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
+	equal( j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
 }
 
 test( "text(String)", function() {
@@ -473,26 +472,8 @@ test( "append(xml)", function() {
 	var xmlDoc, xml1, xml2;
 
 	function createXMLDoc() {
-		// Initialize DOM based upon latest installed MSXML or Netscape
-		var elem, n, len,
-			aActiveX =
-				[ "MSXML6.DomDocument",
-				"MSXML3.DomDocument",
-				"MSXML2.DomDocument",
-				"MSXML.DomDocument",
-				"Microsoft.XmlDom" ];
-
-		if ( document.implementation && "createDocument" in document.implementation ) {
-			return document.implementation.createDocument( "", "", null );
-		} else {
-			// IE
-			for ( n = 0, len = aActiveX.length; n < len; n++ ) {
-				try {
-					elem = new ActiveXObject( aActiveX[ n ] );
-					return elem;
-				} catch(_) {}
-			}
-		}
+		// Initialize DOM
+		return document.implementation.createDocument( "", "", null );
 	}
 
 	xmlDoc = createXMLDoc();
@@ -1169,7 +1150,7 @@ test( "clone()", function() {
 	equal( clone[ 0 ].nodeName.toUpperCase(), "DIV", "DIV element cloned" );
 	div = div.find("object");
 	clone = clone.find("object");
-	// oldIE adds extra attributes and <param> elements, so just test for existence of the defined set
+
 	jQuery.each( [ "height", "width", "classid" ], function( i, attr ) {
 		equal( clone.attr( attr ), div.attr( attr ), "<object> attribute cloned: " + attr );
 	} );
@@ -1866,7 +1847,7 @@ test( "Guard against exceptions when clearing safeChildNodes", function() {
 	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
 });
 
-test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
+test( "Ensure a new set is created on appendTo (#8894)", function() {
 
 	expect( 5 );
 
