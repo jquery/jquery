@@ -168,3 +168,7 @@ Kyle Robinson Young <kyle@dontkry.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
 Chris Talkington <chris@talkingtontech.com>
 Jason Merino <jasonmerino@gmail.com>
+Terry Jones <terry@jon.es>
+Jeremy Dunck <jdunck@gmail.com>
+Chris Price <price.c@gmail.com>
+Amey Sakhadeo <me@ameyms.com>
