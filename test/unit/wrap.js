@@ -49,7 +49,6 @@ function testWrap( val ) {
 	j = jQuery("#nonnodes").contents();
 	j.wrap( val("<i></i>") );
 
-	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equal( jQuery("#nonnodes > i").length, jQuery("#nonnodes")[ 0 ].childNodes.length, "Check node,textnode,comment wraps ok" );
 	equal( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
