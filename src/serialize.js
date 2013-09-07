@@ -32,12 +32,9 @@ jQuery.fn.extend({
 			var val = jQuery( this ).val();
 
 			return val == null ?
-				null :
-				jQuery.isArray( val ) ?
-					jQuery.map( val, function( val ){
-						return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
-					}) :
-					{ name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+				null : jQuery.map( jQuery.isArray( val ) ? val : [ val ], function( val ){
+					return { name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
+				});
 		}).get();
 	}
 });
