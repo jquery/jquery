@@ -585,7 +585,7 @@ test("isWindow", function() {
 });
 
 test("jQuery('html')", function() {
-	expect( 15 );
+	expect( 18 );
 
 	var s, div, j;
 
@@ -620,10 +620,13 @@ test("jQuery('html')", function() {
 	ok( jQuery("<div></div>")[0], "Create a div with closing tag." );
 	ok( jQuery("<table></table>")[0], "Create a table with closing tag." );
 
-	// equal( jQuery("element[attribute='<div></div>']").length, 0, "When html is within brackets, do not recognize as html." );
-	// equal( jQuery("element[attribute=<div></div>]").length, 0, "When html is within brackets, do not recognize as html." );
-	// equal( jQuery("element:not(<div></div>)").length, 0, "When html is within parens, do not recognize as html." );
-	// equal( jQuery("\\<div\\>").length, 0, "Ignore escaped html characters" );
+	equal( jQuery( "element[attribute='<div></div>']" ).length, 0,
+		"When html is within brackets, do not recognize as html." );
+	//equal( jQuery( "element[attribute=<div></div>]" ).length, 0,
+	//	"When html is within brackets, do not recognize as html." );
+	equal( jQuery( "element:not(<div></div>)" ).length, 0,
+		"When html is within parens, do not recognize as html." );
+	equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 });
 
 test("jQuery('massive html #7990')", function() {

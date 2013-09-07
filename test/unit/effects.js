@@ -348,40 +348,32 @@ test("animate table width/height", function() {
 	});
 });
 
-test("animate table-row width/height", function() {
+test( "animate table-row width/height", function() {
 	expect(3);
 	stop();
-	var displayMode,
-		tr = jQuery("#table")
+	var tr = jQuery( "#table" )
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
-			.html("<tr style='height:42px;'><td style='padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
-			.find("tr");
-
-	// IE<8 uses "block" instead of the correct display type
-	displayMode = tr.css("display") !== "table-row" ? "block" : "table-row";
+			.html( "<tr style='height:42px;'><td style='padding:0;'><div style='width:20px;height:20px;'></div></td></tr>" )
+			.find( "tr" );
 
 	tr.animate({ width: 10, height: 10 }, 100, function() {
-		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( jQuery(this).css( "display" ), "table-row", "display mode is correct" );
 		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
 		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 		start();
 	});
 });
 
-test("animate table-cell width/height", function() {
+test( "animate table-cell width/height", function() {
 	expect(3);
 	stop();
-	var displayMode,
-		td = jQuery("#table")
+	var td = jQuery( "#table" )
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
-			.html("<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
-			.find("td");
-
-	// IE<8 uses "block" instead of the correct display type
-	displayMode = td.css("display") !== "table-cell" ? "block" : "table-cell";
+			.html( "<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>" )
+			.find( "td" );
 
 	td.animate({ width: 10, height: 10 }, 100, function() {
-		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( jQuery(this).css( "display" ), "table-cell", "display mode is correct" );
 		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
 		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 		start();
