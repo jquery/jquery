@@ -141,6 +141,7 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( "grunt-contrib-jshint" );
 	grunt.loadNpmTasks( "grunt-contrib-uglify" );
 	grunt.loadNpmTasks( "grunt-jsonlint" );
+	grunt.loadNpmTasks( "grunt-update-submodules" );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
