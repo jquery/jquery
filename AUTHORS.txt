@@ -172,3 +172,7 @@ Kyle Robinson Young <kyle@dontkry.com>
 Chris Talkington <chris@talkingtontech.com>
 Jason Merino <jasonmerino@gmail.com>
 Terry Jones <terry@jon.es>
+Jeremy Dunck <jdunck@gmail.com>
+Chris Price <price.c@gmail.com>
+Guy Bedford <guybedford@gmail.com>
+Amey Sakhadeo <me@ameyms.com>
