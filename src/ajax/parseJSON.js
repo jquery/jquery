@@ -2,7 +2,8 @@ define([
 	"../core"
 ], function( jQuery ) {
 
-	jQuery.parseJSON = JSON.parse;
+jQuery.parseJSON = JSON.parse;
 
-	return jQuery.parseJSON;
+return jQuery.parseJSON;
+
 });
