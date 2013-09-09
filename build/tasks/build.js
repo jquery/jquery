@@ -62,6 +62,14 @@ module.exports = function( grunt ) {
 				.replace( /define\([^{]*?{/, "" )
 				.replace( rdefineEnd, "" );
 
+			// Remove CommonJS-style require calls
+			// Keep an ending semicolon
+			contents = contents
+				.replace( /\w+ = require\(\s*(")[\w\.\/]+\1\s*\)([,;])/g,
+					function( all, quote, commaSemicolon ) {
+						return commaSemicolon === ";" ? ";" : "";
+					});
+
 			// Remove empty definitions
 			contents = contents
 				.replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
