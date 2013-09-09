@@ -18,6 +18,9 @@ module.exports = function( grunt ) {
 			out: "dist/jquery.js",
 			// We have multiple minify steps
 			optimize: "none",
+			// Include dependencies loaded with require
+			findNestedDependencies: true,
+			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
 				startFile: "src/intro.js",
@@ -65,7 +68,7 @@ module.exports = function( grunt ) {
 			// Remove CommonJS-style require calls
 			// Keep an ending semicolon
 			contents = contents
-				.replace( /\w+ = require\(\s*(")[\w\.\/]+\1\s*\)([,;])/g,
+				.replace( /(?:\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\1\s*\)([,;])/g,
 					function( all, quote, commaSemicolon ) {
 						return commaSemicolon === ";" ? ";" : "";
 					});

@@ -1,16 +1,12 @@
-define([
-	"./core",
-	"./var/concat",
-	"./var/push",
-	"./var/deletedIds",
-	"./var/strundefined",
-	"./manipulation/var/rcheckableType",
-	"./manipulation/support",
-	"./data/accepts",
-	"./selector",
-	"./traversing",
-	"./event"
-], function( jQuery, concat, push, deletedIds, strundefined, rcheckableType, support ){
+// Require more than a few needed variables
+// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
+define(function( require ){
+
+// Dependencies not needed as variables
+require( "./data/accepts" );
+require( "./traversing" );
+require( "./selector" );
+require( "./event" );
 
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
@@ -26,11 +22,22 @@ function createSafeFragment( document ) {
 	return safeFrag;
 }
 
-var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
+var
+	jQuery = require( "./core" ),
+	strundefined = require( "./var/strundefined" ),
+	concat = require( "./var/concat" ),
+	push = require( "./var/push" ),
+	deletedIds = require( "./var/deletedIds" ),
+	access = require( "./core/access" ),
+	rcheckableType = require( "./manipulation/var/rcheckableType" ),
+	support = require( "./manipulation/support" ),
+
+	nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
 	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
 	rleadingWhitespace = /^\s+/,
+
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
@@ -66,7 +73,7 @@ wrapMap.th = wrapMap.td;
 
 jQuery.fn.extend({
 	text: function( value ) {
-		return jQuery.access( this, function( value ) {
+		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
 				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
@@ -164,8 +171,8 @@ jQuery.fn.extend({
 	},
 
 	html: function( value ) {
-		return jQuery.access( this, function( value ) {
-			var elem = this[0] || {},
+		return access( this, function( value ) {
+			var elem = this[ 0 ] || {},
 				i = 0,
 				l = this.length;
 

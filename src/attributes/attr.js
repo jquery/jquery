@@ -2,10 +2,11 @@ define([
 	"../core",
 	"../var/rnotwhite",
 	"../var/strundefined",
+	"../core/access",
 	"./support",
 	"./val",
 	"../selector"
-], function( jQuery, rnotwhite, strundefined, support ) {
+], function( jQuery, rnotwhite, strundefined, access, support ) {
 
 var nodeHook, boolHook,
 	attrHandle = jQuery.expr.attrHandle,
@@ -15,7 +16,7 @@ var nodeHook, boolHook,
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
-		return jQuery.access( this, jQuery.attr, name, value, arguments.length > 1 );
+		return access( this, jQuery.attr, name, value, arguments.length > 1 );
 	},
 
 	removeAttr: function( name ) {

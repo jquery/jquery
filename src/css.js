@@ -1,20 +1,21 @@
-define([
-	"./core",
-	"./var/pnum",
-	"./css/var/cssExpand",
-	"./css/var/isHidden",
-	"./css/defaultDisplay",
-	"./css/support",
-	"./css/swap",
-	"./selector", // contains
-	// Optional
-	"./offset"
-], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay, support ) {
+// Require more than a few needed variables
+// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
+define(function( require ) {
 
-var getStyles, curCSS,
+var
+	jQuery = require( "./core" ),
+	pnum = require( "./var/pnum" ),
+	access = require( "./core/access" ),
+	cssExpand = require( "./css/var/cssExpand" ),
+	isHidden = require( "./css/var/isHidden" ),
+	support = require( "./css/support" ),
+	defaultDisplay = require( "./css/defaultDisplay" ),
+
+	getStyles, curCSS,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 	rposition = /^(top|right|bottom|left)$/,
+
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
@@ -30,6 +31,14 @@ var getStyles, curCSS,
 	},
 
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
+
+// Dependencies not needed as vars
+require( "./css/swap" );
+require( "./core/ready" );
+require( "./selector" ); // contains
+// Optional
+require( "./offset" );
+
 
 // NOTE: we've included the "window" in window.getComputedStyle
 // because jsdom on node.js will break without it.
@@ -598,8 +607,8 @@ jQuery.each({
 
 jQuery.fn.extend({
 	css: function( name, value ) {
-		return jQuery.access( this, function( elem, name, value ) {
-			var len, styles,
+		return access( this, function( elem, name, value ) {
+			var styles, len,
 				map = {},
 				i = 0;
 

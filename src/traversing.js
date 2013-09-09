@@ -2,6 +2,7 @@ define([
 	"./core",
 	"./selector"
 ], function( jQuery ) {
+
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
