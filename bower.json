@@ -3,6 +3,7 @@
   "version": "2.0.4-pre",
   "ignore": [
     "**/.*",
+    "build",
     "speed",
     "test",
     "CONTRIBUTING.md",
