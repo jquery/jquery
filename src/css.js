@@ -453,4 +453,6 @@ jQuery.each({
 	}
 });
 
+return jQuery;
+
 });
