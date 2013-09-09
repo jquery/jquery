@@ -10,9 +10,10 @@ define([
 	"./var/toString",
 	"./var/hasOwn",
 	"./var/trim",
+	"./var/rsingleTag",
 	"./var/support"
 ], function( strundefined, arr, slice, concat, push, indexOf,
-	class2type, toString, hasOwn, trim, support ) {
+	class2type, toString, hasOwn, trim, rsingleTag, support ) {
 
 var
 	// A central reference to the root jQuery(document)
@@ -39,9 +40,6 @@ var
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
-
-	// Match a standalone tag
-	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
 
 	// Matches dashed string for camelizing
 	rmsPrefix = /^-ms-/,
@@ -84,6 +82,7 @@ jQuery.fn = jQuery.prototype = {
 					context = context instanceof jQuery ? context[0] : context;
 
 					// scripts is true for back-compat
+					// Intentionally let the error be thrown if parseHTML is not present
 					jQuery.merge( this, jQuery.parseHTML(
 						match[1],
 						context && context.nodeType ? context.ownerDocument || context : document,
@@ -385,60 +384,6 @@ jQuery.extend({
 
 	error: function( msg ) {
 		throw new Error( msg );
-	},
-
-	// data: string of html
-	// context (optional): If specified, the fragment will be created in this context, defaults to document
-	// keepScripts (optional): If true, will include scripts passed in the html string
-	// TODO: Circular reference core -> manipulation -> core
-	parseHTML: function( data, context, keepScripts ) {
-		if ( !data || typeof data !== "string" ) {
-			return null;
-		}
-		if ( typeof context === "boolean" ) {
-			keepScripts = context;
-			context = false;
-		}
-		context = context || document;
-
-		var parsed = rsingleTag.exec( data ),
-			scripts = !keepScripts && [];
-
-		// Single tag
-		if ( parsed ) {
-			return [ context.createElement( parsed[1] ) ];
-		}
-
-		parsed = jQuery.buildFragment( [ data ], context, scripts );
-
-		if ( scripts && scripts.length ) {
-			jQuery( scripts ).remove();
-		}
-
-		return jQuery.merge( [], parsed.childNodes );
-	},
-
-	parseJSON: JSON.parse,
-
-	// Cross-browser xml parsing
-	parseXML: function( data ) {
-		var xml, tmp;
-		if ( !data || typeof data !== "string" ) {
-			return null;
-		}
-
-		// Support: IE9
-		try {
-			tmp = new DOMParser();
-			xml = tmp.parseFromString( data , "text/xml" );
-		} catch ( e ) {
-			xml = undefined;
-		}
-
-		if ( !xml || xml.getElementsByTagName( "parsererror" ).length ) {
-			jQuery.error( "Invalid XML: " + data );
-		}
-		return xml;
 	},
 
 	noop: function() {},
