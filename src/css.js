@@ -3,22 +3,22 @@ define([
 	"./var/pnum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
+	"./css/var/rnumnonpx",
+	"./css/var/rmargin",
 	"./css/support",
 	"./css/defaultDisplay",
+	"./css/curCSS",
+	"./css/getStyles",
 	"./data/var/data_priv",
 	"./css/swap",
 	"./core/ready",
-	"./selector", // contains
-	// Optional
-	"./offset"
-], function( jQuery, pnum, cssExpand, isHidden, support, defaultDisplay, data_priv ) {
-var curCSS,
+	"./selector" // contains
+], function( jQuery, pnum, cssExpand, isHidden, rnumnonpx, rmargin,
+	support, defaultDisplay, curCSS, getStyles, data_priv ) {
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-	rmargin = /^margin/,
+var rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rnumsplit = new RegExp( "^(" + pnum + ")(.*)$", "i" ),
-	rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" ),
 	rrelNum = new RegExp( "^([+-])=(" + pnum + ")", "i" ),
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
@@ -50,12 +50,6 @@ function vendorPropName( style, name ) {
 	}
 
 	return origName;
-}
-
-// NOTE: we've included the "window" in window.getComputedStyle
-// because jsdom on node.js will break without it.
-function getStyles( elem ) {
-	return elem.ownerDocument.defaultView.getComputedStyle( elem, null );
 }
 
 function showHide( elements, show ) {
@@ -288,47 +282,6 @@ jQuery.extend({
 	}
 });
 
-curCSS = function( elem, name, _computed ) {
-	var width, minWidth, maxWidth,
-		computed = _computed || getStyles( elem ),
-
-		// Support: IE9
-		// getPropertyValue is only needed for .css('filter') in IE9, see #12537
-		ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined,
-		style = elem.style;
-
-	if ( computed ) {
-
-		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
-			ret = jQuery.style( elem, name );
-		}
-
-		// Support: iOS < 6
-		// A tribute to the "awesome hack by Dean Edwards"
-		// iOS < 6 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
-		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
-
-			// Remember the original values
-			width = style.width;
-			minWidth = style.minWidth;
-			maxWidth = style.maxWidth;
-
-			// Put in the new values to get a computed value out
-			style.minWidth = style.maxWidth = style.width = ret;
-			ret = computed.width;
-
-			// Revert the changed values
-			style.width = width;
-			style.minWidth = minWidth;
-			style.maxWidth = maxWidth;
-		}
-	}
-
-	return ret;
-};
-
-
 function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
@@ -473,34 +426,6 @@ jQuery.cssHooks.marginRight = {
 	}
 };
 
-// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// getComputedStyle returns percent when specified for top/left/bottom/right
-// rather than make the css module depend on the offset module, we just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
-	jQuery.cssHooks[ prop ] = {
-		get: function( elem, computed ) {
-			if ( support.pixelPosition() || !jQuery.fn.position ) {
-				// Hook not needed, remove it.
-				// Since there are no other hooks for prop, remove the whole object.
-				delete jQuery.cssHooks[ prop ];
-				return;
-			}
-
-			jQuery.cssHooks[ prop ].get = function ( i, prop ) {
-				if ( computed ) {
-					computed = curCSS( elem, prop );
-					// if curCSS returns percentage, fallback to offset
-					return rnumnonpx.test( computed ) ?
-						jQuery( elem ).position()[ prop ] + "px" :
-						computed;
-				}
-			};
-
-			return jQuery.cssHooks[ prop ].get( i, prop );
-		}
-	};
-});
-
 // These hooks are used by animate to expand properties
 jQuery.each({
 	margin: "",
@@ -530,4 +455,5 @@ jQuery.each({
 });
 
 return jQuery;
+
 });
