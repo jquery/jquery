@@ -23,6 +23,7 @@ module.exports = function( grunt ) {
 				startFile: "src/intro.js",
 				endFile: "src/outro.js"
 			},
+			rawText: {},
 			onBuildWrite: convert
 		};
 
@@ -75,6 +76,7 @@ module.exports = function( grunt ) {
 		var flag, index,
 			done = this.async(),
 			flags = this.flags,
+			optIn = flags[ "*" ],
 			name = this.data.dest,
 			minimum = this.data.minimum,
 			removeWith = this.data.removeWith,
@@ -168,18 +170,15 @@ module.exports = function( grunt ) {
 		//  *:*:-css           all except css and dependents (explicit > implicit)
 		//  *:*:-css:+effects  same (excludes effects because explicit include is trumped by explicit exclude of dependency)
 		//  *:+effects         none except effects and its dependencies (explicit include trumps implicit exclude of dependency)
+		delete flags[ "*" ];
 		for ( flag in flags ) {
-			if ( flag !== "*" ) {
-				excluder( flag );
-			}
+			excluder( flag );
 		}
 
 		// Handle Sizzle exclusion
 		// Replace with selector-native
 		if ( (index = excluded.indexOf( "sizzle" )) > -1 ) {
-			config.rawText = {
-				selector: "define(['./selector-native']);"
-			};
+			config.rawText.selector = "define(['./selector-native']);";
 			excluded.splice( index, 1 );
 		}
 
@@ -212,6 +211,12 @@ module.exports = function( grunt ) {
 			// Write concatenated source to file
 			grunt.file.write( name, compiled );
 		};
+
+		// Turn off opt-in if necessary
+		if ( !optIn ) {
+			// Overwrite the default inclusions with the explicit ones provided
+			config.rawText.jquery = "define([" + (included.length ? included.join(",") : "") + "]);";
+		}
 
 		// Trace dependencies and concatenate files
 		requirejs.optimize( config, function( response ) {
