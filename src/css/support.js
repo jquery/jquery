@@ -1,6 +1,7 @@
 define([
+	"../core",
 	"../var/support"
-], function( support ) {
+], function( jQuery, support ) {
 
 (function () {
 	var pixelPositionVal, boxSizingReliableVal,
