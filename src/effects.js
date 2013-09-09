@@ -635,5 +635,5 @@ jQuery.fx.speeds = {
 	_default: 400
 };
 
-
+return jQuery;
 });

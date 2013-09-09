@@ -104,4 +104,6 @@ function buildParams( prefix, obj, traditional, add ) {
 		add( prefix, obj );
 	}
 }
+
+return jQuery;
 });

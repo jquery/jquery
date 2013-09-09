@@ -144,4 +144,6 @@ jQuery.extend({
 		return deferred.promise();
 	}
 });
+
+return jQuery;
 });

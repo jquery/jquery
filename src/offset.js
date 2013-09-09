@@ -182,4 +182,5 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 	};
 });
 
+return jQuery;
 });

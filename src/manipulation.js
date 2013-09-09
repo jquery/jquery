@@ -745,5 +745,5 @@ jQuery.extend({
 	}
 });
 
+return jQuery;
 });
-

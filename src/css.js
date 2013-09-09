@@ -640,4 +640,5 @@ jQuery.each({
 	}
 });
 
+return jQuery;
 });
