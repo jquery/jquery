@@ -1,9 +1,10 @@
 define([
 	"./core",
 	"./var/rnotwhite",
+	"./core/access",
 	"./data/var/data_priv",
 	"./data/var/data_user"
-], function( jQuery, rnotwhite, data_priv, data_user ) {
+], function( jQuery, rnotwhite, access, data_priv, data_user ) {
 
 /*
 	Implementation Summary
@@ -79,7 +80,7 @@ jQuery.fn.extend({
 			});
 		}
 
-		return jQuery.access( this, function( value ) {
+		return access( this, function( value ) {
 			var data,
 				camelKey = jQuery.camelCase( key );
 

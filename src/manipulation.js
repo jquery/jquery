@@ -1,18 +1,23 @@
-define([
-	"./core",
-	"./var/concat",
-	"./var/push",
-	"./manipulation/var/rcheckableType",
-	"./manipulation/support",
-	"./data/var/data_priv",
-	"./data/var/data_user",
-	"./data/accepts",
-	"./selector",
-	"./traversing",
-	"./event"
-], function( jQuery, concat, push, rcheckableType, support, data_priv, data_user ){
+// Require more than a few needed variables
+// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
+define(function( require ){
 
-var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
+// Dependencies not needed as variables
+require( "./data/accepts" );
+require( "./traversing" );
+require( "./selector" );
+require( "./event" );
+
+var
+	jQuery = require( "./core" ),
+	concat = require( "./var/concat" ),
+	push = require( "./var/push" ),
+	access = require( "./core/access" ),
+	rcheckableType = require( "./manipulation/var/rcheckableType" ),
+	support = require( "./manipulation/support" ),
+	data_priv = require( "./data/var/data_priv" ),
+	data_user = require( "./data/var/data_user" ),
+	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
@@ -44,7 +49,7 @@ wrapMap.th = wrapMap.td;
 
 jQuery.fn.extend({
 	text: function( value ) {
-		return jQuery.access( this, function( value ) {
+		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
 				this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
@@ -134,7 +139,7 @@ jQuery.fn.extend({
 	},
 
 	html: function( value ) {
-		return jQuery.access( this, function( value ) {
+		return access( this, function( value ) {
 			var elem = this[ 0 ] || {},
 				i = 0,
 				l = this.length;

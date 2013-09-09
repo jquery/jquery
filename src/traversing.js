@@ -3,6 +3,7 @@ define([
 	"./var/indexOf",
 	"./selector"
 ], function( jQuery, indexOf ) {
+
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,

@@ -1,18 +1,17 @@
-define([
-	"./core",
-	"./var/pnum",
-	"./css/var/cssExpand",
-	"./css/var/isHidden",
-	"./css/support",
-	"./css/defaultDisplay",
-	"./data/var/data_priv",
-	"./css/swap",
-	"./core/ready",
-	"./selector", // contains
-	// Optional
-	"./offset"
-], function( jQuery, pnum, cssExpand, isHidden, support, defaultDisplay, data_priv ) {
+// Require more than a few needed variables
+// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
+define(function( require ) {
+
 var
+	jQuery = require( "./core" ),
+	pnum = require( "./var/pnum" ),
+	access = require( "./core/access" ),
+	cssExpand = require( "./css/var/cssExpand" ),
+	isHidden = require( "./css/var/isHidden" ),
+	support = require( "./css/support" ),
+	defaultDisplay = require( "./css/defaultDisplay" ),
+	data_priv = require( "./data/var/data_priv" ),
+
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
@@ -28,6 +27,13 @@ var
 	},
 
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
+
+// Dependencies not needed as vars
+require( "./css/swap" );
+require( "./core/ready" );
+require( "./selector" ); // contains
+// Optional
+require( "./offset" );
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
@@ -487,7 +493,7 @@ jQuery.each({
 
 jQuery.fn.extend({
 	css: function( name, value ) {
-		return jQuery.access( this, function( elem, name, value ) {
+		return access( this, function( elem, name, value ) {
 			var styles, len,
 				map = {},
 				i = 0;

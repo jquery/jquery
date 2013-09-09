@@ -1,9 +1,10 @@
 define([
 	"./core",
 	"./var/strundefined",
+	"./core/access",
 	"./css",
 	"./selector" // contains
-], function( jQuery, strundefined ) {
+], function( jQuery, strundefined, access ) {
 
 var docElem = window.document.documentElement;
 
@@ -158,7 +159,7 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 	var top = "pageYOffset" === prop;
 
 	jQuery.fn[ method ] = function( val ) {
-		return jQuery.access( this, function( elem, method, val ) {
+		return access( this, function( elem, method, val ) {
 			var win = getWindow( elem );
 
 			if ( val === undefined ) {

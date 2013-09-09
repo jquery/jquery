@@ -1,13 +1,14 @@
 define([
 	"../core",
+	"../core/access",
 	"./support"
-], function( jQuery, support ) {
+], function( jQuery, access, support ) {
 
 var rfocusable = /^(?:input|select|textarea|button)$/i;
 
 jQuery.fn.extend({
 	prop: function( name, value ) {
-		return jQuery.access( this, jQuery.prop, name, value, arguments.length > 1 );
+		return access( this, jQuery.prop, name, value, arguments.length > 1 );
 	},
 
 	removeProp: function( name ) {
