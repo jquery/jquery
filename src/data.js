@@ -171,4 +171,5 @@ function dataAttr( elem, key, data ) {
 	return data;
 }
 
+return jQuery;
 });

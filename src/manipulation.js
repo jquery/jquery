@@ -580,4 +580,6 @@ function fixInput( src, dest ) {
 		dest.defaultValue = src.defaultValue;
 	}
 }
+
+return jQuery;
 });

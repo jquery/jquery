@@ -286,4 +286,6 @@ function winnow( elements, qualifier, not ) {
 		return ( indexOf.call( qualifier, elem ) >= 0 ) !== not;
 	});
 }
+
+return jQuery;
 });

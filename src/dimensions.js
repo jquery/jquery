@@ -43,4 +43,6 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 		};
 	});
 });
+
+return jQuery;
 });

@@ -529,4 +529,5 @@ jQuery.each({
 	}
 });
 
+return jQuery;
 });

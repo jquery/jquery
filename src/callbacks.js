@@ -201,4 +201,5 @@ jQuery.Callbacks = function( options ) {
 	return self;
 };
 
+return jQuery;
 });
