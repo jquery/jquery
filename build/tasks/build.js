@@ -68,9 +68,9 @@ module.exports = function( grunt ) {
 			// Remove CommonJS-style require calls
 			// Keep an ending semicolon
 			contents = contents
-				.replace( /(?:\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\1\s*\)([,;])/g,
-					function( all, quote, commaSemicolon ) {
-						return commaSemicolon === ";" ? ";" : "";
+				.replace( /(\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\2\s*\)([,;])/g,
+					function( all, isVar, quote, commaSemicolon ) {
+						return isVar && commaSemicolon === ";" ? ";" : "";
 					});
 
 			// Remove empty definitions
