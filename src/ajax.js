@@ -3,6 +3,8 @@ define([
 	"./var/rnotwhite",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
+	"./ajax/parseJSON",
+	"./ajax/parseXML",
 	"./deferred"
 ], function( jQuery, rnotwhite, nonce, rquery ) {
 
