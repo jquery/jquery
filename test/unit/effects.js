@@ -135,13 +135,17 @@ test("show(Number) - other displays", function() {
 		num = 0;
 	jQuery("#test-table").remove();
 
+	// Note: inline elements are expected to be inline-block
+	// because we're showing width/height
+	// Can't animate width/height inline
+	// See #14344
 	test = {
 		"div"      : "block",
 		"p"        : "block",
-		"a"        : "inline",
-		"code"     : "inline",
+		"a"        : "inline-block",
+		"code"     : "inline-block",
 		"pre"      : "block",
-		"span"     : "inline",
+		"span"     : "inline-block",
 		"table"    : old ? "block" : "table",
 		"thead"    : old ? "block" : "table-header-group",
 		"tbody"    : old ? "block" : "table-row-group",

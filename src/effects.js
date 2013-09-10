@@ -118,7 +118,7 @@ function createTween( value, prop, animation ) {
 
 function defaultPrefilter( elem, props, opts ) {
 	/* jshint validthis: true */
-	var prop, value, toggle, tween, hooks, oldfire,
+	var prop, value, toggle, tween, hooks, oldfire, display, dDisplay,
 		anim = this,
 		orig = {},
 		style = elem.style,
@@ -161,12 +161,17 @@ function defaultPrefilter( elem, props, opts ) {
 
 		// Set display property to inline-block for height/width
 		// animations on inline elements that are having width/height animated
-		if ( jQuery.css( elem, "display" ) === "inline" &&
+		display = jQuery.css( elem, "display" );
+		dDisplay = defaultDisplay( elem.nodeName );
+		if ( display === "none" ) {
+			display = dDisplay;
+		}
+		if ( display === "inline" &&
 				jQuery.css( elem, "float" ) === "none" ) {
 
 			// inline-level elements accept inline-block;
 			// block-level elements need to be inline with layout
-			if ( !support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
+			if ( !support.inlineBlockNeedsLayout || dDisplay === "inline" ) {
 				style.display = "inline-block";
 			} else {
 				style.zoom = 1;
