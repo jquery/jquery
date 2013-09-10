@@ -1,6 +1,6 @@
 define([
 	"./core",
-	"../bower_components/sizzle/dist/sizzle"
+	"sizzle"
 ], function ( jQuery, Sizzle ) {
 
 jQuery.find = Sizzle;

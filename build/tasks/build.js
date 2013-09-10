@@ -26,6 +26,9 @@ module.exports = function( grunt ) {
 				startFile: "src/intro.js",
 				endFile: "src/outro.js"
 			},
+			paths: {
+				sizzle: "../bower_components/sizzle/dist/sizzle"
+			},
 			rawText: {},
 			onBuildWrite: convert
 		};
@@ -47,7 +50,7 @@ module.exports = function( grunt ) {
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
-		} else if ( /\/sizzle$/.test( name ) ) {
+		} else if ( /^sizzle$/.test( name ) ) {
 			contents = "var Sizzle =\n" + contents
 				// Remove EXPOSE lines from Sizzle
 				.replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return Sizzle;" );

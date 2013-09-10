@@ -28,7 +28,12 @@
 	// If QUnit is on window, this is the main window
 	// This detection allows AMD tests to be run in an iframe
 	if ( QUnit.urlParams.amd && window.QUnit ) {
-		require.config({ baseUrl: path });
+		require.config({
+			baseUrl: path,
+			paths: {
+				sizzle: path + 'bower_components/sizzle/dist/sizzle'
+			}
+		});
 		src = "src/jquery";
 		// Include tests if specified
 		if ( typeof loadTests !== "undefined" ) {
