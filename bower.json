@@ -6,8 +6,10 @@
     "build",
     "speed",
     "test",
-    "CONTRIBUTING.md",
-    "*.txt",
+    "*.md",
+    "AUTHORS.txt",
+    "Gruntfile.js",
+    "package.json",
     "bower.json"
   ],
   "dependencies": {
