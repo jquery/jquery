@@ -2,9 +2,18 @@ define([
 	"./core",
 	"./var/strundefined",
 	"./var/support",
+	"./core/init", // Needed for hasOwn support test
 	// This is listed as a dependency for build order, but it's still optional in builds
 	"./core/ready"
 ], function( jQuery, strundefined, support ) {
+
+// Support: IE<9
+// Iteration over object's inherited properties before its own
+var i;
+for ( i in jQuery( support ) ) {
+	break;
+}
+support.ownLast = i !== "0";
 
 // Note: most support tests are defined in their respective modules.
 

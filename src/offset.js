@@ -2,6 +2,7 @@ define([
 	"./core",
 	"./var/strundefined",
 	"./core/access",
+	"./core/init",
 	"./css",
 	"./selector" // contains
 ], function( jQuery, strundefined, access ) {

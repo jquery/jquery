@@ -1,6 +1,6 @@
 define([
 	"../core",
-	"../var/rsingleTag",
+	"./var/rsingleTag",
 	"../manipulation" // buildFragment
 ], function( jQuery, rsingleTag ) {
 

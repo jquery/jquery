@@ -6,7 +6,7 @@ var
 	cssExpand = require( "./css/var/cssExpand" ),
 	isHidden = require( "./css/var/isHidden" ),
 	defaultDisplay = require( "./css/defaultDisplay" ),
-	support = require( "./css/support" ),
+	support = require( "./effects/support" ),
 
 	fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
@@ -65,6 +65,7 @@ var
 	};
 
 // Dependencies not needed as vars
+require( "./core/init" );
 require( "./effects/Tween" );
 require( "./queue" );
 require( "./css" );

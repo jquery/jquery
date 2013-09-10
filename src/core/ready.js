@@ -1,5 +1,6 @@
 define([
 	"../core",
+	"../core/init",
 	"../deferred"
 ], function( jQuery ) {
 

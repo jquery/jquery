@@ -1,7 +1,8 @@
 define([
 	"../core",
 	"../var/rnotwhite",
-	"../var/strundefined"
+	"../var/strundefined",
+	"../core/init"
 ], function( jQuery, rnotwhite, strundefined ) {
 
 var rclass = /[\t\r\n\f]/g;

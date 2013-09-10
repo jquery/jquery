@@ -3,6 +3,7 @@ define([
 	"./var/rnotwhite",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
+	"./core/init",
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./deferred"

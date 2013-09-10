@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./core/init",
 	"./traversing" // parent, contents
 ], function( jQuery ) {
 

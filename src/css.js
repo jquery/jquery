@@ -33,6 +33,7 @@ var
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
 
 // Dependencies not needed as vars
+require( "./core/init" );
 require( "./css/swap" );
 require( "./core/ready" );
 require( "./selector" ); // contains

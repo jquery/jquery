@@ -14,6 +14,7 @@ var
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
 
 // Dependencies not needed as vars
+require( "./core/init" );
 require( "./data/accepts" );
 require( "./selector" );
 

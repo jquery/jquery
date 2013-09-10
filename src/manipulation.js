@@ -2,12 +2,6 @@
 // Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
 define(function( require ){
 
-// Dependencies not needed as variables
-require( "./data/accepts" );
-require( "./traversing" );
-require( "./selector" );
-require( "./event" );
-
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
 		safeFrag = document.createDocumentFragment();
@@ -71,6 +65,12 @@ wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
+// Dependencies not needed as variables
+require( "./core/init" );
+require( "./data/accepts" );
+require( "./traversing" );
+require( "./selector" );
+require( "./event" );
 
 function getAll( context, tag ) {
 	var elems, elem,
