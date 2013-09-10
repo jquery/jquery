@@ -2,7 +2,8 @@ define([
 	"../core",
 	"../var/rnotwhite",
 	"../var/strundefined",
-	"../data/var/data_priv"
+	"../data/var/data_priv",
+	"../core/init"
 ], function( jQuery, rnotwhite, strundefined, data_priv ) {
 
 var rclass = /[\t\r\n\f]/g;

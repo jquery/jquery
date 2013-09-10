@@ -63,6 +63,7 @@ var
 	};
 
 // Dependencies not needed as vars
+require( "./core/init" );
 require( "./effects/Tween" );
 require( "./queue" );
 require( "./css" );
