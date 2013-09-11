@@ -44,8 +44,9 @@ define([
 	select.disabled = true;
 	support.optDisabled = !opt.disabled;
 
+	// Support: IE8 only
 	// Check if we can trust getAttribute("value")
-	input = document.createElement("input");
+	input = document.createElement( "input" );
 	input.setAttribute( "value", "" );
 	support.input = input.getAttribute( "value" ) === "";
 

@@ -26,6 +26,7 @@ test( "zoom of doom (#13089)", function() {
 		ok( !document.body.style.zoom, "No zoom added to the body" );
 	}
 });
+
 if ( jQuery.css ) {
 	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9239)", "support/bodyBackground.html", function( color, support ) {
 		expect( 2 );
@@ -256,7 +257,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"boxSizing": false,
 			"boxSizingReliable": true,
 			"changeBubbles": false,
-			"checkClone": false,
+			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": false,
@@ -269,7 +270,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone": false,
 			"htmlSerialize": false,
 			"inlineBlockNeedsLayout": true,
-			"input": false,
+			"input": true,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
 			"noCloneEvent": false,
@@ -293,7 +294,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"boxSizing": false,
 			"boxSizingReliable": true,
 			"changeBubbles": false,
-			"checkClone": false,
+			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": false,
@@ -306,7 +307,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone": false,
 			"htmlSerialize": false,
 			"inlineBlockNeedsLayout": true,
-			"input": false,
+			"input": true,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
 			"noCloneEvent": false,
@@ -380,6 +381,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"inlineBlockNeedsLayout": false,
+			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
 			"noCloneEvent": true,
