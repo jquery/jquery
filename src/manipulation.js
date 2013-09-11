@@ -488,8 +488,9 @@ jQuery.fn.extend({
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
-		if ( isFunction || !( l <= 1 || typeof value !== "string" || support.checkClone ||
-				!rchecked.test( value ) ) ) {
+		if ( isFunction ||
+				( l > 1 && typeof value === "string" &&
+					!support.checkClone && rchecked.test( value ) ) ) {
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
