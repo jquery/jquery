@@ -33,6 +33,7 @@ define([
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
+	input.checked = false;
 	input.setAttribute( "checked", "t" );
 	input.setAttribute( "name", "t" );
 
