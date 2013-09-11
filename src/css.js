@@ -417,7 +417,7 @@ if ( !support.opacity ) {
 	};
 }
 
-addGetHookIf( jQuery.cssHooks.marginRight, support.reliableMarginRight,
+jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	function ( elem, computed ) {
 		if ( computed ) {
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right

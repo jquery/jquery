@@ -1,8 +1,8 @@
 define(function() {
 
-function addGetHookIf( hookVar, conditionFn, hookFn ) {
+function addGetHookIf( conditionFn, hookFn ) {
 	// Define the hook, we'll check on the first run if it's really needed.
-	hookVar = {
+	return {
 		get: function() {
 			var condition = conditionFn();
 
@@ -16,14 +16,13 @@ function addGetHookIf( hookVar, conditionFn, hookFn ) {
 				// Hook not needed (or it's not possible to use it due to missing dependency),
 				// remove it.
 				// Since there are no other hooks for marginRight, remove the whole object.
-				delete hookVar.get;
+				delete this.get;
 				return;
 			}
 
 			// Hook needed; redefine it so that the support test is not executed again.
-			hookVar.get = hookFn;
 
-			return hookVar.get.apply( hookVar, arguments );
+			return (this.get = hookFn).apply( hookVar, arguments );
 		}
 	};
 }
