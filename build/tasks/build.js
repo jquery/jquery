@@ -57,10 +57,12 @@ module.exports = function( grunt ) {
 
 		} else {
 
-			// Ignore jQuery's return statement (the only necessary one)
+			// Ignore jQuery's exports (the only necessary one)
 			if ( name !== "jquery" ) {
 				contents = contents
-					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" );
+					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" )
+					// Multiple exports
+					.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
 			}
 
 			// Remove define wrappers, closure ends, and empty declarations
@@ -71,7 +73,7 @@ module.exports = function( grunt ) {
 			// Remove CommonJS-style require calls
 			// Keep an ending semicolon
 			contents = contents
-				.replace( /(\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\2\s*\)([,;])/g,
+				.replace( /(\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\2\s*\)[\.\w]*([,;])/g,
 					function( all, isVar, quote, commaSemicolon ) {
 						return isVar && commaSemicolon === ";" ? ";" : "";
 					});

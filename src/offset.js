@@ -1,13 +1,18 @@
-define([
-	"./core",
-	"./var/strundefined",
-	"./core/access",
-	"./core/init",
-	"./css",
-	"./selector" // contains
-], function( jQuery, strundefined, access ) {
+define(function( require ) {
 
-var docElem = window.document.documentElement;
+var
+	jQuery = require( "./core" ),
+	strundefined = require( "./var/strundefined" ),
+	access = require( "./core/access" ),
+	rnumnonpx = require( "./css/var/rnumnonpx" ),
+	curCSS = require( "./css/curCSS" ).curCSS,
+	addGetHookIf = require( "./css/addGetHookIf" ),
+	support = require( "./css/support" ),
+	docElem = window.document.documentElement;
+
+require( "./core/init" );
+require( "./css" );
+require( "./selector" ); // contains
 
 /**
  * Gets a window from an element
@@ -179,6 +184,24 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 			}
 		}, method, val, arguments.length, null );
 	};
+});
+
+// Add the top/left cssHooks using jQuery.fn.position
+// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
+// getComputedStyle returns percent when specified for top/left/bottom/right
+// rather than make the css module depend on the offset module, we just check for it here
+jQuery.each( [ "top", "left" ], function( i, prop ) {
+	addGetHookIf( jQuery.cssHooks[ prop ], support.pixelPosition,
+		function ( elem, computed ) {
+			if ( computed ) {
+				computed = curCSS( elem, prop );
+				// if curCSS returns percentage, fallback to offset
+				return rnumnonpx.test( computed ) ?
+					jQuery( elem ).position()[ prop ] + "px" :
+					computed;
+			}
+		}
+	);
 });
 
 return jQuery;
