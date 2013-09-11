@@ -10,6 +10,7 @@ var
 	isHidden = require( "./css/var/isHidden" ),
 	support = require( "./css/support" ),
 	defaultDisplay = require( "./css/defaultDisplay" ),
+	addGetHookIf = require( "./css/addGetHookIf" ),
 
 	getStyles, curCSS,
 	ralpha = /alpha\([^)]*\)/i,
@@ -512,69 +513,32 @@ if ( !support.opacity ) {
 	};
 }
 
-jQuery.cssHooks.marginRight = {
-	get: function( elem, computed ) {
-		var reliableMarginRight = support.reliableMarginRight();
-		if ( reliableMarginRight == null ) {
-			// The test was not ready at this point; screw the hook this time
-			// but check again when needed next time.
-			return;
+addGetHookIf( jQuery.cssHooks.marginRight, support.reliableMarginRight,
+	function ( elem, computed ) {
+		if ( computed ) {
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			// Work around by temporarily setting element display to inline-block
+			return jQuery.swap( elem, { "display": "inline-block" },
+				curCSS, [ elem, "marginRight" ] );
 		}
-
-		if ( reliableMarginRight ) {
-			// Hook not needed, remove it.
-			// Since there are no other hooks for marginRight, remove the whole object.
-			delete jQuery.cssHooks.marginRight;
-			return;
-		}
-
-		jQuery.cssHooks.marginRight.get = function ( elem, computed ) {
-			if ( computed ) {
-				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-				// Work around by temporarily setting element display to inline-block
-				return jQuery.swap( elem, { "display": "inline-block" },
-					curCSS, [ elem, "marginRight" ] );
-			}
-		};
-
-		return jQuery.cssHooks.marginRight.get( elem, computed );
 	}
-};
+);
 
 // Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
 // getComputedStyle returns percent when specified for top/left/bottom/right
 // rather than make the css module depend on the offset module, we just check for it here
 jQuery.each( [ "top", "left" ], function( i, prop ) {
-	jQuery.cssHooks[ prop ] = {
-		get: function( elem, computed ) {
-			var pixelPosition = support.pixelPosition();
-
-			if ( pixelPosition == null ) {
-				// The test was not ready at this point; screw the hook this time
-				// but check again when needed next time.
-				return;
+	addGetHookIf( jQuery.cssHooks[ prop ], support.pixelPosition,
+		function ( elem, computed ) {
+			if ( computed ) {
+				computed = curCSS( elem, prop );
+				// if curCSS returns percentage, fallback to offset
+				return rnumnonpx.test( computed ) ?
+					jQuery( elem ).position()[ prop ] + "px" :
+					computed;
 			}
-
-			if ( pixelPosition || !jQuery.fn.position ) {
-				// Hook not needed or impossible to apply due to a missing module, remove it.
-				// Since there are no other hooks for prop, remove the whole object.
-				delete jQuery.cssHooks[ prop ];
-				return;
-			}
-
-			jQuery.cssHooks[ prop ].get = function ( elem, computed ) {
-				if ( computed ) {
-					computed = curCSS( elem, prop );
-					// if curCSS returns percentage, fallback to offset
-					return rnumnonpx.test( computed ) ?
-						jQuery( elem ).position()[ prop ] + "px" :
-						computed;
-				}
-			};
-
-			return jQuery.cssHooks[ prop ].get( elem, computed );
 		}
-	};
+	);
 });
 
 
