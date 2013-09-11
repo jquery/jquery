@@ -3,7 +3,6 @@ define([
 	"../core",
 	"./var/rnumnonpx",
 	"./var/rmargin",
-	"../css", // Circular, but needs jQuery.style
 	"../selector" // contains
 ], function( exports, jQuery, rnumnonpx, rmargin ) {
 
