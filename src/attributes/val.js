@@ -49,10 +49,12 @@ jQuery.fn.extend({
 			// Treat null/undefined as ""; convert numbers to string
 			if ( val == null ) {
 				val = "";
+
 			} else if ( typeof val === "number" ) {
 				val += "";
+
 			} else if ( jQuery.isArray( val ) ) {
-				val = jQuery.map(val, function ( value ) {
+				val = jQuery.map( val, function( value ) {
 					return value == null ? "" : value + "";
 				});
 			}

@@ -26,7 +26,7 @@ var xhrSupported = jQuery.ajaxSettings.xhr(),
 
 if ( window.ActiveXObject ) {
 	jQuery( window ).on( "unload", function() {
-		for( var key in xhrCallbacks ) {
+		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]();
 		}
 		xhrCallbacks = undefined;

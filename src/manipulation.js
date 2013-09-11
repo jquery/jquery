@@ -1,6 +1,6 @@
 // Require more than a few needed variables
 // Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
-define(function( require ){
+define(function( require ) {
 
 var
 	jQuery = require( "./core" ),
@@ -47,7 +47,6 @@ require( "./data/accepts" );
 require( "./traversing" );
 require( "./selector" );
 require( "./event" );
-
 
 // Support: 1.x compatibility
 // Manipulating tables requires a tbody
@@ -218,7 +217,7 @@ jQuery.extend({
 					tmp = tmp || fragment.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
-					tag = ( rtagName.exec( elem ) || ["", ""] )[ 1 ].toLowerCase();
+					tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
 
@@ -398,7 +397,7 @@ jQuery.fn.extend({
 		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 
-		return this.map( function () {
+		return this.map(function() {
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		});
 	},

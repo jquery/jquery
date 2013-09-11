@@ -2,7 +2,7 @@ define([
 	"../var/support"
 ], function( support ) {
 
-(function () {
+(function() {
 	var input = document.createElement( "input" ),
 		select = document.createElement( "select" ),
 		opt = select.appendChild( document.createElement( "option" ) );
