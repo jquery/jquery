@@ -147,7 +147,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-	if ( support.checkOn ) {
+	if ( !support.checkOn ) {
 		jQuery.valHooks[ this ].get = function( elem ) {
 			// Support: Webkit
 			// "" is returned instead of "on" if a value isn't specified
