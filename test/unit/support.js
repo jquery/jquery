@@ -60,10 +60,11 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 });
 
 (function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
+		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -91,7 +92,7 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"optDisabled": true,
 			"optSelected": true,
 			"ownLast": false,
-			"pixelPosition": true,
+			"pixelPosition": version >= 28,
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
@@ -359,12 +360,49 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 			"submitBubbles": true,
 			"tbody": true
 		};
+	} else if ( /5\.1\.1 safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"appendChecked": false,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"changeBubbles": true,
+			"checkClone": false,
+			"checkOn": false,
+			"clearCloneStyle": true,
+			"cors": true,
+			"cssFloat": true,
+			"deleteExpando": true,
+			"enctype": true,
+			"focusinBubbles": false,
+			"getSetAttribute": true,
+			"hrefNormalized": true,
+			"html5Clone": true,
+			"htmlSerialize": true,
+			"inlineBlockNeedsLayout": false,
+			"leadingWhitespace": true,
+			"noCloneChecked": true,
+			"noCloneEvent": true,
+			"opacity": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"ownLast": false,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableHiddenOffsets": true,
+			"reliableMarginRight": true,
+			"shrinkWrapBlocks": false,
+			"style": true,
+			"submitBubbles": true,
+			"tbody": true
+		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
 			"boxSizing": true,
-			"boxSizingReliable": true,
+			"boxSizingReliable": version >= 23,
 			"changeBubbles": true,
 			"checkClone": true,
 			"checkOn": true,
