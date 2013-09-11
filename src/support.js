@@ -43,7 +43,7 @@ jQuery(function() {
 		// Check if natively block-level elements act like inline-block
 		// elements when setting their display to 'inline' and giving
 		// them layout
-		div.style.cssText = "width:1px;padding:1px;display:inline;zoom:1";
+		div.style.cssText = "border:0;margin:0;width:1px;padding:1px;display:inline;zoom:1";
 
 		if ( (support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 )) ) {
 			// Prevent IE 6 from affecting layout for positioned elements #11048
