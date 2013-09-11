@@ -147,6 +147,22 @@ function fixInput( src, dest ) {
 	}
 }
 
+jQuery.fn.extend({
+	placeholder: function(text){                
+        $(this).focus(function(e){
+        	$(this).val('');
+        });
+        $(this).blur(function(e){
+        	 if($.trim($(this).val()) == ''){
+        		 $(this).val(texto);
+        	 }
+        });        
+        if($.trim($(this).val()) == ''){
+   		 $(this).val(texto);
+   	 	}        
+    }
+});
+
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var i, l, srcElements, destElements,
