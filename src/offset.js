@@ -187,7 +187,7 @@ jQuery.each( {scrollLeft: "pageXOffset", scrollTop: "pageYOffset"}, function( me
 // getComputedStyle returns percent when specified for top/left/bottom/right
 // rather than make the css module depend on the offset module, we just check for it here
 jQuery.each( [ "top", "left" ], function( i, prop ) {
-	addGetHookIf( jQuery.cssHooks[ prop ], support.pixelPosition,
+	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function ( elem, computed ) {
 			if ( computed ) {
 				computed = curCSS( elem, prop );
