@@ -14,6 +14,7 @@ var
 	curCSS = require( "./css/curCSS" ),
 	support = require( "./css/support" ),
 	defaultDisplay = require( "./css/defaultDisplay" ),
+	addGetHookIf = require( "./css/addGetHookIf" ),
 	data_priv = require( "./data/var/data_priv" ),
 
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
@@ -369,28 +370,16 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 });
 
 // Support: Android 2.3
-jQuery.cssHooks.marginRight = {
-	get: function( elem, computed ) {
-		if ( support.reliableMarginRight() ) {
-			// Hook not needed, remove it.
-			// Since there are no other hooks for marginRight, remove the whole object.
-			delete jQuery.cssHooks.marginRight;
-			return;
+addGetHookIf( jQuery.cssHooks.marginRight, support.reliableMarginRight,
+	function ( elem, computed ) {
+		if ( computed ) {
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			// Work around by temporarily setting element display to inline-block
+			return jQuery.swap( elem, { "display": "inline-block" },
+				curCSS, [ elem, "marginRight" ] );
 		}
-
-		jQuery.cssHooks.marginRight.get = function( elem, computed ) {
-			if ( computed ) {
-				// Support: Android 2.3
-				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-				// Work around by temporarily setting element display to inline-block
-				return jQuery.swap( elem, { "display": "inline-block" },
-					curCSS, [ elem, "marginRight" ] );
-			}
-		};
-
-		return jQuery.cssHooks.marginRight.get( elem, computed );
 	}
-};
+);
 
 // These hooks are used by animate to expand properties
 jQuery.each({
