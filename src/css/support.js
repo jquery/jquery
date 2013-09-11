@@ -3,7 +3,7 @@ define([
 	"../var/support"
 ], function( jQuery, support ) {
 
-(function () {
+(function() {
 	var pixelPositionVal, boxSizingReliableVal,
 		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
 		divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;" +

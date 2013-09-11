@@ -12,7 +12,7 @@ jQuery.parseXML = function( data ) {
 	// Support: IE9
 	try {
 		tmp = new DOMParser();
-		xml = tmp.parseFromString( data , "text/xml" );
+		xml = tmp.parseFromString( data, "text/xml" );
 	} catch ( e ) {
 		xml = undefined;
 	}
