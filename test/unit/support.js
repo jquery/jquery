@@ -31,10 +31,11 @@ if ( jQuery.css ) {
 }
 
 (function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
+		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -46,7 +47,7 @@ if ( jQuery.css ) {
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
-			"pixelPosition": true,
+			"pixelPosition": version >= 28,
 			"radioValue": true,
 			"reliableMarginRight": true
 		};
@@ -114,10 +115,27 @@ if ( jQuery.css ) {
 			"radioValue": true,
 			"reliableMarginRight": true
 		};
+	} else if ( /5\.1\.\d+ safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax":true,
+			"boxSizingReliable": true,
+			"checkClone":false,
+			"checkOn":false,
+			"clearCloneStyle": true,
+			"cors":true,
+			"focusinBubbles":false,
+			"noCloneChecked":true,
+			"optDisabled":true,
+			"optSelected":true,
+			"pixelPosition": false,
+			"radioValue":true,
+			"reliableMarginRight":true
+		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
-			"boxSizingReliable": true,
+			"boxSizingReliable": version >= 23,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
