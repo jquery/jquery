@@ -22,7 +22,7 @@ function addGetHookIf( conditionFn, hookFn ) {
 
 			// Hook needed; redefine it so that the support test is not executed again.
 
-			return (this.get = hookFn).apply( hookVar, arguments );
+			return (this.get = hookFn).apply( this, arguments );
 		}
 	};
 }
