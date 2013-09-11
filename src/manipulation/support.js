@@ -3,14 +3,13 @@ define([
 ], function( support ) {
 
 (function () {
-	var input, fragment,
-		div = document.createElement("div");
+	var fragment = document.createDocumentFragment(),
+		div = document.createElement("div"),
+		input = document.createElement("input");
 
 	// Setup
 	div.setAttribute( "className", "t" );
-	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
-	input = div.getElementsByTagName("input")[ 0 ];
-	input.type = "checkbox";
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a>";
 
 	// IE strips leading whitespace when .innerHTML is used
 	support.leadingWhitespace = div.firstChild.nodeType === 3;
@@ -32,20 +31,18 @@ define([
 	input.checked = true;
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
-	// #11217 - WebKit loses check when the name is after the checked attribute
-	input.checked = false;
-	input.setAttribute( "checked", "t" );
-	input.setAttribute( "name", "t" );
-
-	fragment = document.createDocumentFragment();
-	fragment.appendChild( input );
-
 	// Check if a disconnected checkbox will retain its checked
 	// value of true after appended to the DOM (IE6/7)
+	fragment.appendChild( input );
 	support.appendChecked = input.checked;
 
-	// WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = fragment.cloneNode( true ).cloneNode( true ).lastChild.checked;
+	// #11217 - WebKit loses check when the name is after the checked attribute
+	fragment.appendChild( div );
+	div.innerHTML = "<input type='radio' checked name='t'/>";
+
+	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
+	// old WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
 	// Support: IE<9
 	// Opera does not clone events (and typeof div.attachEvent === undefined).
@@ -71,7 +68,7 @@ define([
 	}
 
 	// Null elements to avoid leaks in IE.
-	input = fragment = div = null;
+	fragment = div = input = null;
 })();
 
 return support;
