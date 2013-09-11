@@ -7,6 +7,8 @@ define([
 		div = document.createElement("div"),
 		input = document.createElement("input");
 
+	input.type = "checkbox";
+
 	// Setup
 	div.setAttribute( "className", "t" );
 	div.innerHTML = "  <link/><table></table><a href='/a'>a</a>";

@@ -1,7 +1,5 @@
 module("support", { teardown: moduleTeardown });
 
-var computedSupport = getComputedSupport( jQuery.support );
-
 function getComputedSupport( support ) {
 	var prop,
 		result = {};
@@ -16,6 +14,8 @@ function getComputedSupport( support ) {
 
 	return result;
 }
+
+var computedSupport = getComputedSupport( jQuery.support );
 
 test( "zoom of doom (#13089)", function() {
 	expect( 1 );

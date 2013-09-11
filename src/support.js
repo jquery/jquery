@@ -16,6 +16,8 @@ for ( i in jQuery( support ) ) {
 support.ownLast = i !== "0";
 
 // Note: most support tests are defined in their respective modules.
+// false until the test is run
+support.inlineBlockNeedsLayout = false;
 
 jQuery(function() {
 	// We need to execute this one support test ASAP because we need to know
@@ -42,9 +44,6 @@ jQuery(function() {
 
 	body.appendChild( container ).appendChild( div );
 
-	// Will be changed later if needed.
-	support.inlineBlockNeedsLayout = false;
-
 	if ( typeof div.style.zoom !== strundefined ) {
 		// Support: IE<8
 		// Check if natively block-level elements act like inline-block
@@ -52,9 +51,8 @@ jQuery(function() {
 		// them layout
 		div.innerHTML = "";
 		div.style.cssText = divReset + "width:1px;padding:1px;display:inline;zoom:1";
-		support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 );
 
-		if ( support.inlineBlockNeedsLayout ) {
+		if ( (support.inlineBlockNeedsLayout = div.offsetWidth === 3) ) {
 			// Prevent IE 6 from affecting layout for positioned elements #11048
 			// Prevent IE from shrinking the body in IE 7 mode #12869
 			// Support: IE<8
