@@ -14,7 +14,7 @@ var
 	rrun = /queueHooks$/,
 	animationPrefilters = [ defaultPrefilter ],
 	tweeners = {
-		"*": [function( prop, value ) {
+		"*": [ function( prop, value ) {
 			var tween = this.createTween( prop, value ),
 				target = tween.cur(),
 				parts = rfxnum.exec( value ),
@@ -61,7 +61,7 @@ var
 			}
 
 			return tween;
-		}]
+		} ]
 	};
 
 // Dependencies not needed as vars
@@ -89,7 +89,7 @@ function genFx( type, includeWidth ) {
 	// if we include width, step value is 1 to do all cssExpand values,
 	// if we don't include width, step value is 2 to skip over Left and Right
 	includeWidth = includeWidth ? 1 : 0;
-	for( ; i < 4 ; i += 2 - includeWidth ) {
+	for ( ; i < 4 ; i += 2 - includeWidth ) {
 		which = cssExpand[ i ];
 		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
 	}
@@ -180,7 +180,6 @@ function defaultPrefilter( elem, props, opts ) {
 			style.overflowY = opts.overflow[ 2 ];
 		});
 	}
-
 
 	// show/hide pass
 	for ( prop in props ) {
