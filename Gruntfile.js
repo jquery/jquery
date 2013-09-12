@@ -2,14 +2,15 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
+	function readOptionalJSON( filepath ) {
+		var data = {};
+		try {
+			data = grunt.file.readJSON( filepath );
+		} catch(e) {}
+		return data;
+	}
+
 	var gzip = require( "gzip-js" ),
-		readOptionalJSON = function( filepath ) {
-			var data = {};
-			try {
-				data = grunt.file.readJSON( filepath );
-			} catch(e) {}
-			return data;
-		},
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
@@ -50,19 +51,24 @@ module.exports = function( grunt ) {
 			pkg: {
 				src: [ "package.json" ]
 			},
+
+			jscs: {
+				src: [ ".jscs.json" ]
+			},
+
 			bower: {
 				src: [ "bower.json" ]
 			}
 		},
 		jshint: {
 			src: {
-				src: [ "src/**/*.js" ],
+				src: "src/**/*.js",
 				options: {
 					jshintrc: "src/.jshintrc"
 				}
 			},
 			dist: {
-				src: [ "dist/jquery.js" ],
+				src: "dist/jquery.js",
 				options: srcHintOptions
 			},
 			grunt: {
@@ -72,11 +78,14 @@ module.exports = function( grunt ) {
 				}
 			},
 			tests: {
-				src: [ "test/**/*.js" ],
+				src: "test/**/*.js",
 				options: {
 					jshintrc: "test/.jshintrc"
 				}
 			}
+		},
+		jscs: {
+			src: "src/**/*.js"
 		},
 		testswarm: {
 			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split(" ")
@@ -137,12 +146,13 @@ module.exports = function( grunt ) {
 	grunt.loadNpmTasks( "grunt-contrib-jshint" );
 	grunt.loadNpmTasks( "grunt-contrib-uglify" );
 	grunt.loadNpmTasks( "grunt-jsonlint" );
+	grunt.loadNpmTasks( "grunt-jscs-checker" );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "jshint" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "jshint", "jscs" ] );
 
 	// Default grunt
 	grunt.registerTask( "default", [ "jsonlint", "dev", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
