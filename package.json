@@ -41,6 +41,7 @@
 		"requirejs": "~2.1.8"
 	},
 	"scripts": {
-		"install": "bower install"
+		"install": "bower install",
+		"test": "grunt"
 	}
 }
