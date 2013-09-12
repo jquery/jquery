@@ -1569,7 +1569,8 @@ module( "ajax", {
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
 		setup: function() {
-			jQuery.ajaxPrefilter(function( options, _, jqXHR ) {
+			// Ensure prefix does not throw an error
+			jQuery.ajaxPrefilter("+prefix *", function( options, _, jqXHR ) {
 				if ( options.abortInPrefilter ) {
 					jqXHR.abort();
 				}
