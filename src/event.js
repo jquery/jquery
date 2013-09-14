@@ -26,10 +26,61 @@ function returnFalse() {
 	return false;
 }
 
-function safeActiveElement() {
-	try {
-		return document.activeElement;
-	} catch ( err ) { }
+function wrapNative( el, type, noopHandler ) {
+	var buffer, active;
+
+	// Abort if we've already completed setup
+	if ( jQuery._data( el, type ) ) {
+		return false;
+	}
+
+	// If triggering, force setup through jQuery.event.add
+	if ( noopHandler ) {
+		return jQuery.event.add( el, type, noopHandler );
+	}
+
+	// Otherwise, register the controller
+	jQuery.event.add( el, type, function( event ) {
+		// If this is the outermost with-native-handlers event, fire a native one
+		if ( (event.isTrigger & 1) && !active ) {
+			// Remember provided arguments
+			if ( arguments.length > 1 ) {
+				buffer = active = slice.call( arguments, 1 );
+			}
+
+			// Go native!
+			try {
+				this[ type ]();
+
+			// Support: IE<9
+			// Handle error on focus to hidden element (#1486, #12518)
+			} catch ( e ) {
+				return;
+			}
+
+			// Outermost synthetic does not pass Go
+			event.stopImmediatePropagation();
+			event.preventDefault();
+
+			// Support: IE
+			// Asynchronous native focus/blur methods mean we can't forward the result;
+			// instead `buffer` will still hold the input arguments array
+			return buffer;
+
+		// If this is a native event from above, everything is now in order
+		// Fire an inner synthetic event with the original arguments
+		} else if ( !event.isTrigger && active ) {
+			// Capture the result
+			buffer = jQuery.event.trigger( event, buffer, this );
+			active = false;
+
+			// Intermediate native does not pass Go
+			event.stopImmediatePropagation();
+		}
+	});
+
+	// Note that the intercepting handler exists, but don't abort .add
+	return !jQuery._data( el, type, true );
 }
 
 /*
@@ -516,6 +567,29 @@ jQuery.event = {
 		return fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
 	},
 
+	simulate: function( type, elem, event, bubble ) {
+		// Piggyback on a donor event to simulate a different one.
+		// Fake originalEvent to avoid donor's stopPropagation, but if the
+		// simulated event prevents default then we do the same on the donor.
+		var e = jQuery.extend(
+			new jQuery.Event(),
+			event,
+			{
+				type: type,
+				isSimulated: true,
+				originalEvent: {}
+			}
+		);
+		if ( bubble ) {
+			jQuery.event.trigger( e, null, elem );
+		} else {
+			jQuery.event.dispatch.call( elem, e );
+		}
+		if ( e.isDefaultPrevented() ) {
+			event.preventDefault();
+		}
+	},
+
 	// Includes some event props shared by KeyEvent and MouseEvent
 	props: "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
 
@@ -571,80 +645,66 @@ jQuery.event = {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
-		focus: {
-			// Fire native event if possible so blur/focus sequence is correct
-			trigger: function() {
-				if ( this !== safeActiveElement() && this.focus ) {
-					try {
-						this.focus();
-						return false;
-					} catch ( e ) {
-						// Support: IE<9
-						// If we error on focus to hidden element (#1486, #12518),
-						// let .trigger() run the handlers
-					}
-				}
-			},
-			delegateType: "focusin"
-		},
-		blur: {
-			trigger: function() {
-				if ( this === safeActiveElement() && this.blur ) {
-					this.blur();
-					return false;
-				}
-			},
-			delegateType: "focusout"
-		},
-		click: {
-			// For checkbox, fire native event so checked state will be right
-			trigger: function() {
-				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
-					this.click();
-					return false;
-				}
-			},
-
-			// For cross-browser consistency, don't fire native .click() on links
-			_default: function( event ) {
-				return jQuery.nodeName( event.target, "a" );
-			}
-		},
 
 		beforeunload: {
 			postDispatch: function( event ) {
-
 				// Even when returnValue equals to undefined Firefox will still show alert
 				if ( event.result !== undefined ) {
 					event.originalEvent.returnValue = event.result;
 				}
 			}
-		}
-	},
+		},
 
-	simulate: function( type, elem, event, bubble ) {
-		// Piggyback on a donor event to simulate a different one.
-		// Fake originalEvent to avoid donor's stopPropagation, but if the
-		// simulated event prevents default then we do the same on the donor.
-		var e = jQuery.extend(
-			new jQuery.Event(),
-			event,
-			{
-				type: type,
-				isSimulated: true,
-				originalEvent: {}
+		click: {
+			// For cross-browser consistency, don't fire native .click() on links
+			_default: function( event ) {
+				return jQuery.nodeName( event.target, "a" );
+			},
+
+			// Utilize native event to ensure correct checkbox state
+			setup: function() {
+				// Claim the first click handler
+				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
+					wrapNative( this, "click" );
+				}
+
+				// Nothing to see here, move along
+				return false;
+			},
+			trigger: function() {
+				// Force setup before triggering a click
+				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
+					wrapNative( this, "click", returnTrue );
+				}
 			}
-		);
-		if ( bubble ) {
-			jQuery.event.trigger( e, null, elem );
-		} else {
-			jQuery.event.dispatch.call( elem, e );
-		}
-		if ( e.isDefaultPrevented() ) {
-			event.preventDefault();
 		}
 	}
 };
+
+// Utilize native events to ensure correct blur/focus sequence
+jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+	jQuery.event.special[ type ] = {
+
+		delegateType: delegateType,
+
+		setup: function() {
+			// Claim the first click handler
+			return wrapNative( this, type );
+		},
+
+		trigger: function() {
+			try {
+				// Force setup before trigger
+				if ( (this === document.activeElement) === (type === "blur") && this[ type ] ) {
+					wrapNative( this, type, returnTrue );
+				}
+
+			// Support: IE9
+			// Iframes and document.activeElement don't mix well
+			} catch ( err ) {}
+		}
+	};
+});
 
 jQuery.removeEvent = document.removeEventListener ?
 	function( elem, type, handle ) {
