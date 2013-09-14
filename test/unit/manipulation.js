@@ -1011,13 +1011,16 @@ test( "replaceWith(string) for more than one element", function() {
 });
 
 test( "empty replaceWith (#13401; #13596)", 4, function() {
-	expect( 6 );
+	expect( 8 );
 
 	var $el = jQuery("<div/>"),
 		tests = {
 			"empty string": "",
 			"empty array": [],
-			"empty collection": jQuery("#nonexistent")
+			"empty collection": jQuery("#nonexistent"),
+
+			// in case of jQuery(...).replaceWith();
+			"empty undefined": undefined
 		};
 
 	jQuery.each( tests, function( label, input ) {
