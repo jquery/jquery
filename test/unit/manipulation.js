@@ -1051,20 +1051,21 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "empty replaceWith (#13401; #13596)", 4, function() {
-	expect( 6 );
-
-	var $el = jQuery("<div/>"),
+test( "Empty replaceWith (#13401; #13596)", 8, function() {
+	var $el = jQuery( "<div/>" ),
 		tests = {
 			"empty string": "",
 			"empty array": [],
-			"empty collection": jQuery("#nonexistent")
+			"empty collection": jQuery( "#nonexistent" ),
+
+			 // in case of jQuery(...).replaceWith();
+			"empty undefined": undefined
 		};
 
 	jQuery.each( tests, function( label, input ) {
-		$el.html("<a/>").children().replaceWith( input );
+		$el.html( "<a/>" ).children().replaceWith( input );
 		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
-		$el.html("<b/>").children().replaceWith(function() { return input; });
+		$el.html( "<b/>" ).children().replaceWith(function() { return input; });
 		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
 	});
 });
