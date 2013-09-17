@@ -585,6 +585,11 @@ test( "show() resolves correct default display for detached nodes", function(){
 
 test("show() resolves correct default display #10227", 4, function() {
 	var html = jQuery( document.documentElement ),
+
+		// In new browsers default display for HTML element is "block"
+		// for older browsers display equals "inline"
+		htmlDefaultDisplay = html.css( "display" ),
+
 		body = jQuery( "body" );
 
 	body.append( "<p class='ddisplay'>a<style>body{display:none}</style></p>" );
@@ -599,8 +604,10 @@ test("show() resolves correct default display #10227", 4, function() {
 	equal( html.css("display"), "none", "Initial display for html element: none" );
 
 	html.show();
-	equal( html.css( "display" ), "block", "Correct display for html element: block" );
+	equal( html.css( "display" ), htmlDefaultDisplay, "Correct display for html element: " + htmlDefaultDisplay );
 
+	jQuery._removeData( body[ 0 ] );
+	jQuery._removeData( html[ 0 ] );
 	jQuery( ".ddisplay" ).remove();
 });
 
