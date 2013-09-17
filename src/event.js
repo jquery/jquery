@@ -26,7 +26,7 @@ function returnFalse() {
 	return false;
 }
 
-function wrapNative( el, type, noopHandler ) {
+function wrapNative( el, type, onlyHandlers, noopHandler ) {
 	var buffer, active;
 
 	// Abort if we've already completed setup
@@ -39,14 +39,12 @@ function wrapNative( el, type, noopHandler ) {
 		return jQuery.event.add( el, type, noopHandler );
 	}
 
-	// Otherwise, register the controller
-	jQuery.event.add( el, type, function( event ) {
+	// Register the reentrant controller for all namespaces
+	jQuery.event.add( el, type + "._", function( event ) {
 		// If this is the outermost with-native-handlers event, fire a native one
 		if ( (event.isTrigger & 1) && !active ) {
 			// Remember provided arguments
-			if ( arguments.length > 1 ) {
-				buffer = active = slice.call( arguments, 1 );
-			}
+			buffer = active = slice.call( arguments );
 
 			// Go native!
 			try {
@@ -70,8 +68,11 @@ function wrapNative( el, type, noopHandler ) {
 		// If this is a native event from above, everything is now in order
 		// Fire an inner synthetic event with the original arguments
 		} else if ( !event.isTrigger && active ) {
-			// Capture the result
-			buffer = jQuery.event.trigger( event, buffer, this );
+			// Buffer the "actual" result, using the original jQuery.Event to preserve namespaces
+			// Support: IE
+			// Extend with the prototype to reset the above stopImmediatePropagation()
+			buffer = jQuery.event.trigger( jQuery.extend( buffer.shift(), jQuery.Event.prototype ),
+				buffer, this, onlyHandlers );
 			active = false;
 
 			// Intermediate native does not pass Go
@@ -433,10 +434,8 @@ jQuery.event = {
 			return;
 		}
 
-		// Determine handlers
+		// Determine and invoke handlers
 		handlerQueue = jQuery.event.handlers.call( this, event, handlers );
-
-		// Run delegates first; they may want to stop propagation beneath us
 		i = 0;
 		while ( (matched = handlerQueue[ i++ ]) && !event.isPropagationStopped() ) {
 			event.currentTarget = matched.elem;
@@ -444,9 +443,10 @@ jQuery.event = {
 			j = 0;
 			while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or
-				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.namespace_re || event.namespace_re.test( handleObj.namespace ) ) {
+				// Invoke handlers that match or contain all event namespaces
+				// Underscore-namespaced handlers always match
+				if ( handleObj.namespace === "_" ||
+						!event.namespace_re || event.namespace_re.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
@@ -478,7 +478,7 @@ jQuery.event = {
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
 
-		// Find delegate handlers
+		// Add delegate handlers first; they may want to stop propagation beneath us
 		// Black-hole SVG <use> instance trees (#13180)
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
@@ -674,7 +674,7 @@ jQuery.event = {
 			trigger: function() {
 				// Force setup before triggering a click
 				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
-					wrapNative( this, "click", returnTrue );
+					wrapNative( this, "click", false, returnTrue );
 				}
 			}
 		}
@@ -689,14 +689,14 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 
 		setup: function() {
 			// Claim the first click handler
-			return wrapNative( this, type );
+			return wrapNative( this, type, !support.focusinBubbles );
 		},
 
 		trigger: function() {
 			try {
 				// Force setup before trigger
 				if ( (this === document.activeElement) === (type === "blur") && this[ type ] ) {
-					wrapNative( this, type, returnTrue );
+					wrapNative( this, type, !support.focusinBubbles, returnTrue );
 				}
 
 			// Support: IE9

@@ -2461,6 +2461,40 @@ test("trigger native-backed events with arguments (#13353; #13428)", function() 
 	}, 50 );
 });
 
+test("trigger namespaced native-backed events (#14359)", function() {
+	expect( 4 );
+
+	var $el = jQuery( "#text1" )
+		.on( "focus.foo.bar.baz", function() {
+			ok( true, "Matching-namespace handler called" );
+		})
+		.on( "focus.foo.bar.baz.qux", function() {
+			ok( true, "Super-namespace handler called" );
+		})
+		.on( "focus", function() {
+			ok( false, "No-namespace handler called" );
+		})
+		.on( "focus.foo", function() {
+			ok( false, "Partial-namespace handler called" );
+		})
+		.on( "focus.quux", function() {
+			ok( false, "Other-namespace handler called" );
+		});
+
+	notEqual( document.activeElement, $el[0], "Not focused before .trigger" );
+
+	// Support: IE
+	// Address asynchronous focus/blur methods with setTimeout
+	// Browser window must be topmost for this to work properly!!
+	stop();
+	$el.trigger( "focus.baz.bar.foo" );
+	setTimeout(function() {
+		strictEqual( document.activeElement, $el[0], "Focused after .trigger (default action)" );
+
+		start();
+	}, 50 );
+});
+
 test("focus-blur order (#12868)", function() {
 	expect( 5 );
 
