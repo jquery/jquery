@@ -241,10 +241,10 @@ jQuery.extend({
 	// The following elements throw uncatchable exceptions if you
 	// attempt to add expando properties to them.
 	noData: {
-		"applet": true,
-		"embed": true,
+		"applet ": true,
+		"embed ": true,
 		// Ban all objects except for Flash (which handle expandos)
-		"object": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+		"object ": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
 	},
 
 	hasData: function( elem ) {
