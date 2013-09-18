@@ -6,15 +6,15 @@ define([
  * Determines whether an object can have data
  */
 jQuery.acceptData = function( elem ) {
-	// Do not set data on non-element because it will not be cleared (#8335).
-	if ( elem.nodeType && elem.nodeType !== 1 && elem.nodeType !== 9 ) {
-		return false;
-	}
+	var noData = jQuery.noData[ (elem.nodeName + " ").toLowerCase() ],
+		nodeType = +elem.nodeType || 1;
 
-	var noData = elem.nodeName && jQuery.noData[ elem.nodeName.toLowerCase() ];
+	// Do not set data on non-element DOM nodes because it will not be cleared (#8335).
+	return nodeType !== 1 && nodeType !== 9 ?
+		false :
 
-	// nodes accept data unless otherwise specified; rejection can be conditional
-	return !noData || noData !== true && elem.getAttribute("classid") === noData;
+		// Nodes accept data unless otherwise specified; rejection can be conditional
+		!noData || noData !== true && elem.getAttribute("classid") === noData;
 };
 
 return jQuery.acceptData;
