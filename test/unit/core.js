@@ -1445,3 +1445,10 @@ testIframeWithCallback( "document ready when jQuery loaded asynchronously (#1365
 	expect( 1 );
 	equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
 });
+
+testIframeWithCallback( "Tolerating alias-masked DOM properties (#14074)", "core/aliased.html",
+	function( errors ) {
+			expect( 1 );
+			deepEqual( errors, [], "jQuery loaded" );
+	}
+);
