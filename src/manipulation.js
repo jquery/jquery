@@ -32,16 +32,20 @@ var
 	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
 	rleadingWhitespace = /^\s+/,
 
-	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
-	rnoInnerhtml = /<(?:script|style|link)/i,
+	rnoInnerhtml = /<(script|style|link)/i,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptType = /^$|\/(?:java|ecma)script/i,
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
+	// element that self-closes but shouldn't ($1-$5) or no-innerHTML container ($6)
+	rxhtmlTag =
+		/(<)(?!area|br|col|embed|hr|img|input|meta|param|link)(([\w:]+)[^>]*)(\/)(>)|(<(script|style|textarea)[^>]*>[\w\W]*?<\/\7\s*>|<!--[\w\W]*?--)/gi,
+	// "<"; element name and content; ">"; "<"; "/"; element name; ">"; no-innerHTML container
+	rxhtmlTagReplacement = "$1$2$5$1$4$3$5$6",
 
 	// We have to close these tags to support XHTML (#13200)
 	wrapMap = {
@@ -319,7 +323,7 @@ jQuery.extend({
 					tag = ( rtagName.exec( elem ) || ["", ""] )[1].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
 
-					tmp.innerHTML = wrap[1] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[2];
+					tmp.innerHTML = wrap[1] + elem.replace( rxhtmlTag, rxhtmlTagReplacement ) + wrap[2];
 
 					// Descend through wrappers to the right content
 					j = wrap[0];
@@ -584,7 +588,7 @@ jQuery.fn.extend({
 				( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
 				!wrapMap[ ( rtagName.exec( value ) || ["", ""] )[1].toLowerCase() ] ) {
 
-				value = value.replace( rxhtmlTag, "<$1></$2>" );
+				value = value.replace( rxhtmlTag, rxhtmlTagReplacement );
 
 				try {
 					for (; i < l; i++ ) {
