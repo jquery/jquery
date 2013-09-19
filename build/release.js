@@ -118,7 +118,7 @@ function checkGitStatus( next ) {
 			dieIfReal( "Branches don't match: Wanted " + branch + ", got " + onBranch );
 		}
 		if ( /Changes to be committed/i.test( stdout ) ) {
-			dieIfReal( "Please commit changed files before attemping to push a release." );
+			dieIfReal( "Please commit changed files before attempting to push a release." );
 		}
 		if ( /Changes not staged for commit/i.test( stdout ) ) {
 			dieIfReal( "Please stash files before attempting to push a release." );
@@ -166,10 +166,10 @@ function makeReleaseCopies( next ) {
 			} else if ( /\.min\.js$/.test( releaseFile ) ) {
 				// Minified files point back to the corresponding map;
 				// again assume one big happy directory.
-				// "//@ sourceMappingURL=jquery.min.map"
+				// "//# sourceMappingURL=jquery.min.map"
 				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /\/\/@ sourceMappingURL=\S+/,
-						"//@ sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
+					.replace( /\/\/# sourceMappingURL=\S+/,
+						"//# sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( builtFile !== releaseFile ) {
 				copy( builtFile, releaseFile );
