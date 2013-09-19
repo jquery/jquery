@@ -1357,7 +1357,7 @@ function childNodeNames( node ) {
 }
 
 function testHtml( valueObj ) {
-	expect( 37 );
+	expect( 40 );
 
 	var actual, expected, tmp,
 		div = jQuery("<div></div>"),
@@ -1446,6 +1446,13 @@ function testHtml( valueObj ) {
 	fixture.html( valueObj("<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>") );
 	fixture.html( valueObj("<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>") );
 	fixture.html( valueObj("foo <form><script type='text/javascript'>ok( true, 'Injection of identical script (#975)' );</script></form>") );
+
+	fixture.html( valueObj( "<!--<comment/>--><textarea><val/></textarea><script/>" +
+		"<script>equal( /<RE/>0, false, 'Script contents preserved' );</script><p/><![CDATA[<cdata/>]]>" ) );
+	equal( fixture[ 0 ].firstChild.nodeValue, "<comment/>", "Comment contents preserved" );
+	// CDATA not supported
+	// equal( fixture[ 0 ].lastChild.nodeValue, "<cdata/>", "CDATA contents preserved" );
+	equal( fixture.find( "textarea" )[ 0 ].value, "<val/>", "Textarea contents preserved" );
 
 	jQuery.scriptorder = 0;
 	fixture.html( valueObj([
