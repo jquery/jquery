@@ -32,7 +32,19 @@ var
 		fontWeight: 400
 	},
 
-	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
+	cssPrefix = window.opera && jQuery.isFunction(window.opera.version) ?
+		"O"
+		: ( document.documentMode || !document.querySelector ?
+			"ms"
+			: ( window.netscape ?
+					"Moz"
+				: (/WebKit\b/.test(navigator.appVersion) ?
+					"Webkit"
+					:
+					"Khtml"
+				)
+			)
+		);
 
 // Dependencies not needed as vars
 require( "./core/init" );
@@ -49,18 +61,9 @@ function vendorPropName( style, name ) {
 	}
 
 	// check for vendor prefixed names
-	var capName = name.charAt(0).toUpperCase() + name.slice(1),
-		origName = name,
-		i = cssPrefixes.length;
+	var capName = cssPrefix + name.charAt(0).toUpperCase() + name.slice(1);
 
-	while ( i-- ) {
-		name = cssPrefixes[ i ] + capName;
-		if ( name in style ) {
-			return name;
-		}
-	}
-
-	return origName;
+	return capName in style ? capName : name;
 }
 
 function showHide( elements, show ) {
