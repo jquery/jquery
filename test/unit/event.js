@@ -2567,7 +2567,7 @@ test( "make sure events cloned correctly", 18, function() {
 	clone.find("#check1").trigger("change"); // 0 events should fire
 });
 
-test( "Check order of focusin/focusout events", 2, function() {
+asyncTest( "Check order of focusin/focusout events", 2, function() {
 	var focus, blur,
 		input = jQuery("#name");
 
@@ -2591,7 +2591,10 @@ test( "Check order of focusin/focusout events", 2, function() {
 	jQuery("#search").trigger("focus");
 
 	// cleanup
-	input.off();
+	setTimeout(function() {
+		input.off();
+		start();
+	}, 50 );
 });
 
 test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function() {
