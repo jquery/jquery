@@ -18,7 +18,7 @@ if ( window.getComputedStyle ) {
 		var width, minWidth, maxWidth, ret,
 			style = elem.style;
 
-		computed = computed || getStyles( elem ),
+		computed = computed || getStyles( elem );
 
 		// getPropertyValue is only needed for .css('filter') in IE9, see #12537
 		ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined;
