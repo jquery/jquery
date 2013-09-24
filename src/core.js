@@ -214,7 +214,9 @@ jQuery.extend({
 		return jQuery.type(obj) === "function";
 	},
 
-	isArray: Array.isArray,
+	isArray: Array.isArray || function (instance) {
+		return Object.prototype.toString.apply(instance) === "[object Array]";
+	},
 
 	isWindow: function( obj ) {
 		return obj != null && obj === obj.window;
