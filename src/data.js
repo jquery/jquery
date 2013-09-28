@@ -5,7 +5,7 @@ define([
 	"./data/accepts"
 ], function( jQuery, deletedIds, support ) {
 
-var rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+var rbrace = /(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 function dataAttr( elem, key, data ) {
@@ -272,10 +272,10 @@ jQuery.extend({
 
 jQuery.fn.extend({
 	data: function( key, value ) {
-		var attrs, name,
+		var i, name,
 			data = null,
-			i = 0,
-			elem = this[0];
+			elem = this[0],
+			attrs = elem && elem.attributes;
 
 		// Special expections of .data basically thwart jQuery.access,
 		// so implement the relevant behavior ourselves
@@ -286,8 +286,8 @@ jQuery.fn.extend({
 				data = jQuery.data( elem );
 
 				if ( elem.nodeType === 1 && !jQuery._data( elem, "parsedAttrs" ) ) {
-					attrs = elem.attributes;
-					for ( ; i < attrs.length; i++ ) {
+					i = attrs.length;
+					while ( i-- ) {
 						name = attrs[i].name;
 
 						if ( name.indexOf("data-") === 0 ) {
