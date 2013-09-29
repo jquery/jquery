@@ -919,6 +919,12 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 });
 
+test( "override style='x: y !important;' when changing styles", function() {
+	expect( 1 );
+	var el = jQuery( "<div style='display: block !important;'></div>" );
+	equal( el.css( "display", "none" ).css( "display" ), "none" );
+});
+
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
 	styles = [{
