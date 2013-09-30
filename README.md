@@ -29,35 +29,16 @@ if you swing that way. Easy-peasy.
 How to build your own jQuery
 ----------------------------
 
-First, clone a copy of the main jQuery git repo by running:
+Clone a copy of the main jQuery git repo by running:
 
 ```bash
 git clone git://github.com/jquery/jquery.git
 ```
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) and [bower](http://bower.io/) packages if you haven't before. These should be done as global installs:
-
-```bash
-npm install -g grunt-cli bower
-```
-
-Make sure you have `grunt` and `bower` installed by testing:
-
-```bash
-grunt -version
-bower -version
-```
-
-Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
+Enter the jquery directory and build jQuery
 
 ```bash
 cd jquery && npm install
-```
-
-Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
-
-```bash
-grunt
 ```
 
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.

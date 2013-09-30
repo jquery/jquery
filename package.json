@@ -29,7 +29,9 @@
 	"dependencies": {},
 	"devDependencies": {
 		"archiver": "~0.4.9",
+		"bower": "~1.2.7",
 		"grunt": "~0.4.1",
+		"grunt-cli": "~0.1.9",
 		"grunt-compare-size": "~0.4.0",
 		"grunt-contrib-jshint": "~0.6.4",
 		"grunt-contrib-uglify": "~0.2.4",
@@ -41,7 +43,12 @@
 		"requirejs": "~2.1.8"
 	},
 	"scripts": {
-		"install": "bower install",
-		"test": "grunt"
+		"install": "./node_modules/bower/bin/bower install",
+		"postinstall": "./node_modules/grunt-cli/bin/grunt",
+
+		"prestart": "./node_modules/grunt-cli/bin/grunt dev",
+		"start": "./node_modules/grunt-cli/bin/grunt watch",
+
+		"test": "./node_modules/grunt-cli/bin/grunt"
 	}
 }
