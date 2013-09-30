@@ -1,4 +1,9 @@
-module("event", { teardown: moduleTeardown });
+module( "event", {
+	setup: function() {
+		document.body.focus();
+	},
+	teardown: moduleTeardown
+});
 
 test("null or undefined handler", function() {
 	expect(2);
@@ -2643,8 +2648,6 @@ test( "make sure events cloned correctly", 18, function() {
 test( "Check order of focusin/focusout events", 2, function() {
 	var focus, blur,
 		input = jQuery( "#name" );
-
-	document.body.focus();
 
 	input.on( "focus", function() {
 		focus = true;
