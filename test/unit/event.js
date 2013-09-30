@@ -2644,6 +2644,8 @@ test( "Check order of focusin/focusout events", 2, function() {
 	var focus, blur,
 		input = jQuery( "#name" );
 
+	document.body.focus();
+
 	input.on( "focus", function() {
 		focus = true;
 
@@ -2657,16 +2659,8 @@ test( "Check order of focusin/focusout events", 2, function() {
 		ok( !blur, "Focusout event should fire before blur does" );
 	});
 
-	// This test fails in some browsers if document does not have focus
-	if ( !document.hasFocus || document.hasFocus() ) {
-
-		// gain focus
-		input.trigger( "focus" );
-
-	} else {
-		expect( 1 );
-		ok( true, "Document does not have focus - skipping" );
-	}
+	// gain focus
+	input.trigger( "focus" );
 
 	// then lose it
 	jQuery( "#search" ).trigger( "focus" );
