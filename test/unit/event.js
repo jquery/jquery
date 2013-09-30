@@ -2640,35 +2640,40 @@ test( "make sure events cloned correctly", 18, function() {
 	clone.find("#check1").trigger("change"); // 0 events should fire
 });
 
-// This test fails in some browsers if document does not have focus
-if ( !document.hasFocus || document.hasFocus && document.hasFocus() ) {
-	test( "Check order of focusin/focusout events", 2, function() {
-		var focus, blur,
-			input = jQuery( "#name" );
+test( "Check order of focusin/focusout events", 2, function() {
+	var focus, blur,
+		input = jQuery( "#name" );
 
-		input.on( "focus", function() {
-			focus = true;
+	input.on( "focus", function() {
+		focus = true;
 
-		}).on( "focusin", function() {
-			ok( !focus, "Focusin event should fire before focus does" );
+	}).on( "focusin", function() {
+		ok( !focus, "Focusin event should fire before focus does" );
 
-		}).on( "blur", function() {
-			blur = true;
+	}).on( "blur", function() {
+		blur = true;
 
-		}).on( "focusout", function() {
-			ok( !blur, "Focusout event should fire before blur does" );
-		});
+	}).on( "focusout", function() {
+		ok( !blur, "Focusout event should fire before blur does" );
+	});
+
+	// This test fails in some browsers if document does not have focus
+	if ( !document.hasFocus || document.hasFocus() ) {
 
 		// gain focus
 		input.trigger( "focus" );
 
-		// then lose it
-		jQuery( "#search" ).trigger( "focus" );
+	} else {
+		expect( 1 );
+		ok( true, "Document does not have focus - skipping" );
+	}
 
-		// cleanup
-		input.off();
-	});
-}
+	// then lose it
+	jQuery( "#search" ).trigger( "focus" );
+
+	// cleanup
+	input.off();
+});
 
 test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function() {
 	expect( 1 );
