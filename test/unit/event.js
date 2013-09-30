@@ -1,4 +1,9 @@
-module("event", { teardown: moduleTeardown });
+module("event", {
+	setup: function() {
+		document.body.focus();
+	},
+	teardown: moduleTeardown
+});
 
 test("null or undefined handler", function() {
 	expect(2);
@@ -2414,44 +2419,121 @@ test("checkbox state (#3827)", function() {
 	jQuery( cb ).triggerHandler( "click" );
 });
 
+test("trigger native-backed events with arguments (#13353; #13428)", function() {
+	expect( 11 );
+
+	var data = [ "arg1", "arg2" ],
+		slice = data.slice,
+		$container = jQuery( "#form" ),
+		$checkbox = $container.find( "#check1" );
+
+	// click (#13353)
+	strictEqual( $checkbox[0].checked, true, "Checked before .trigger(\"click\", data) (#13353)" );
+	$container.add( $checkbox ).on( "click", function( evt ) {
+		var what = ( this.id === "form" ? "ancestor " : "" ) + evt.type;
+		strictEqual( evt.target.checked, false, "State unchecked in " + what + " handler" );
+		deepEqual( slice.call( arguments, 1 ), data, "Correct data for " + what + " handler" );
+	});
+	$checkbox.trigger( "click", data );
+	strictEqual( $checkbox[0].checked, false, "Unchecked after click (default action)" );
+
+	// focus (#13428); blur
+	notEqual( document.activeElement, $checkbox[0], "Not focused before .trigger(\"focus\", data) (#13428)" );
+	$checkbox.on( "focus blur", function( evt ) {
+		var type = evt.type;
+		deepEqual( slice.call( arguments, 1 ), data, "Correct data for " + type + " handler" );
+	});
+
+	// Support: IE
+	// Address asynchronous focus/blur methods with setTimeout
+	// Browser window must be topmost for this to work properly!!
+	stop();
+	$checkbox.trigger( "focus", data );
+	setTimeout(function() {
+		strictEqual( document.activeElement, $checkbox[0], "Focused after focus (default action)" );
+
+		$checkbox.trigger( "blur", data );
+		setTimeout(function() {
+			notEqual( document.activeElement, $checkbox[0], "Not focused after blur (default action)" );
+
+			start();
+		}, 50 );
+	}, 50 );
+});
+
+test("trigger namespaced native-backed events (#14359)", function() {
+	expect( 4 );
+
+	var $el = jQuery( "#text1" )
+		.on( "focus.foo.bar.baz", function() {
+			ok( true, "Matching-namespace handler called" );
+		})
+		.on( "focus.foo.bar.baz.qux", function() {
+			ok( true, "Super-namespace handler called" );
+		})
+		.on( "focus", function() {
+			ok( false, "No-namespace handler called" );
+		})
+		.on( "focus.foo", function() {
+			ok( false, "Partial-namespace handler called" );
+		})
+		.on( "focus.quux", function() {
+			ok( false, "Other-namespace handler called" );
+		});
+
+	notEqual( document.activeElement, $el[0], "Not focused before .trigger" );
+
+	// Support: IE
+	// Address asynchronous focus/blur methods with setTimeout
+	// Browser window must be topmost for this to work properly!!
+	stop();
+	$el.trigger( "focus.baz.bar.foo" );
+	setTimeout(function() {
+		strictEqual( document.activeElement, $el[0], "Focused after .trigger (default action)" );
+
+		start();
+	}, 50 );
+});
+
 test("focus-blur order (#12868)", function() {
 	expect( 5 );
 
-	var order,
-		$text = jQuery("#text1"),
-		$radio = jQuery("#radio1").trigger("focus");
+	var order = 0,
+		$text = jQuery( "#text1" ),
+		$radio = jQuery( "#radio1" ).trigger( "focus" );
 
-	// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
-	// IE's browser window must be topmost for this to work properly!!
+	// Support: IE
+	// Address asynchronous focus/blur methods with setTimeout
+	// Browser window must be topmost for this to work properly!!
 	stop();
 	$radio[0].focus();
 
-	setTimeout( function() {
+	setTimeout(function() {
+		// Verify initial focus
+		strictEqual( document.activeElement, $radio[0], "radio has focus" );
 
-		$text
-			.on( "focus", function(){
-				equal( order++, 1, "text focus" );
-			})
-			.on( "blur", function(){
-				equal( order++, 0, "text blur" );
-			});
-		$radio
-			.on( "focus", function(){
-				equal( order++, 1, "radio focus" );
-			})
-			.on( "blur", function(){
-				equal( order++, 0, "radio blur" );
-			});
+		// Add handlers
+		$radio.on( "blur", function() {
+			equal( ++order, 1, "radio blur" );
+		});
+		$text.on( "focus", function() {
+			equal( ++order, 2, "text focus" );
+		});
+		$text.on( "blur", function() {
+			equal( ++order, 0, "text blur" );
+		});
+		$radio.on( "focus", function() {
+			equal( ++order, 11, "radio focus" );
+		});
 
-		// Enabled input getting focus
-		order = 0;
-		equal( document.activeElement, $radio[0], "radio has focus" );
-		$text.trigger("focus");
-		setTimeout( function() {
-			equal( document.activeElement, $text[0], "text has focus" );
+		// Change focus
+		$text.trigger( "focus" );
+		setTimeout(function() {
+			// Verify focus change
+			strictEqual( document.activeElement, $text[0], "text has focus" );
 
-			// Run handlers without native method on an input
-			order = 1;
+			// Run handlers without native method
+			order = 10;
 			$radio.triggerHandler( "focus" );
 			$text.off();
 			start();
