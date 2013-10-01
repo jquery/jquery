@@ -121,12 +121,9 @@ module.exports = function( grunt ) {
 		},
 		"post-uglify": {
 			all: {
-				files: {
-					"dist/jquery.min.map.tmp": [ "dist/jquery.min.map" ],
-					"dist/jquery.min.js.tmp": [ "dist/jquery.min.js" ]
-				},
+				src: [ "dist/jquery.min.map" ],
 				options: {
-					tempFiles: [ "dist/jquery.min.map.tmp", "dist/jquery.min.js.tmp", "dist/jquery.pre-min.js" ]
+					tempFiles: [ "dist/jquery.pre-min.js" ]
 				}
 			}
 		}
