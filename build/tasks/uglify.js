@@ -18,10 +18,10 @@ module.exports = function( grunt ) {
 					// Remove the main jQuery banner, it'll be replaced by the new banner anyway.
 					.replace( /^\/\*![\W\w]*?\*\/\n?/g, "" )
 					// Strip other banners preserving line count.
-					.replace( /^\/\*!(?:.|\n)*?\*\/\n?/gm, function ( match ) {
+					.replace( /^\/\*!(?:.|\n)*?\*\/\n?/gm, function( match ) {
 						return match.replace( /[^\n]/gm, "" );
 					});
-			}).join("\n");
+			}).join( "\n" );
 
 			// Write temp file (with optional banner)
 			grunt.file.write( mapping.dest, ( banner || "" ) + input );
@@ -30,16 +30,12 @@ module.exports = function( grunt ) {
 
 	// Change the map file to point back to jquery.js instead of jquery.pre-min.js.
 	// The problem is caused by the pre-uglify task.
-	// Also, remove temporary files.
 	grunt.registerMultiTask( "post-uglify", function() {
 		this.files.forEach(function( mapping ) {
-			var mapFileName = mapping.src[ 0 ];
-
-			// Rename the file to a temporary name.
-			fs.renameSync( mapFileName, mapping.dest);
-			grunt.file.write( mapFileName, grunt.file.read( mapping.dest )
+			mapping.src.forEach( function( src ) {
 				// Refer to the source jquery.js, not the temporary jquery.pre-min.js.
-				.replace( /\.pre-min\./g, "." ));
+				grunt.file.write( src, grunt.file.read( src ).replace( /\.pre-min\./g, "." ) );
+			});
 		});
 
 		// Remove temporary files.
