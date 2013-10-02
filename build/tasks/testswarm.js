@@ -12,10 +12,10 @@ module.exports = function( grunt ) {
 			tests = grunt.config([ this.name, "tests" ]);
 
 		if ( pull ) {
-			jobName = "jQuery pull <a href='https://github.com/jquery/jquery/pull/" +
+			jobName = "Pull <a href='https://github.com/jquery/jquery/pull/" +
 				pull[ 1 ] + "'>#" + pull[ 1 ] + "</a>";
 		} else {
-			jobName = "jQuery commit #<a href='https://github.com/jquery/jquery/commit/" +
+			jobName = "Commit <a href='https://github.com/jquery/jquery/commit/" +
 				commit + "'>" + commit.substr( 0, 10 ) + "</a>";
 		}
 
