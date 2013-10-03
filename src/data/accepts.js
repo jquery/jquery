@@ -9,7 +9,7 @@ jQuery.acceptData = function( elem ) {
 	var noData = jQuery.noData[ (elem.nodeName + " ").toLowerCase() ],
 		nodeType = +elem.nodeType || 1;
 
-	// Do not set data on non-element because it will not be cleared (#8335).
+	// Do not set data on non-element DOM nodes because it will not be cleared (#8335).
 	return nodeType !== 1 && nodeType !== 9 ?
 		false :
 
