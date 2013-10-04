@@ -6,10 +6,10 @@ Michael Geary <mike@geary.com>
 Stefan Petre <stefan.petre@gmail.com>
 Yehuda Katz <wycats@gmail.com>
 Corey Jewett <cj@syntheticplayground.com>
-Klaus Hartl <klaus.hartl@googlemail.com>
+Klaus Hartl <klaus.hartl@gmail.com>
 Franck Marcia <franck.marcia@gmail.com>
 Jörn Zaefferer <joern.zaefferer@gmail.com>
-Paul Bakaus <paul.bakaus@googlemail.com>
+Paul Bakaus <paul.bakaus@gmail.com>
 Brandon Aaron <brandon.aaron@gmail.com>
 Mike Alsup <malsup@gmail.com>
 Dave Methvin <dave.methvin@gmail.com>
@@ -47,7 +47,7 @@ Matt Curry <matt@pseudocoder.com>
 Michael Monteleone <michael@michaelmonteleone.net>
 Noah Sloan <noah.sloan@gmail.com>
 Tom Viner <github@viner.tv>
-Douglas Neiner <doug@pixelgraphics.us>
+Douglas Neiner <doug@dougneiner.com>
 Adam J. Sontag <ajpiano@ajpiano.com>
 Dave Reed <dareed@microsoft.com>
 Ralph Whitbeck <ralph.whitbeck@gmail.com>
@@ -55,7 +55,7 @@ Carl Fürstenberg <azatoth@gmail.com>
 Jacob Wright <jacwright@gmail.com>
 J. Ryan Stinnett <jryans@gmail.com>
 Heungsub Lee <h@subl.ee>
-Colin Snover <colin@alpha.zetafleet.com>
+Colin Snover <github.com@zetafleet.com>
 Ryan W Tenney <ryan@10e.us>
 Ron Otten <r.j.g.otten@gmail.com>
 Jephte Clain <Jephte.Clain@univ-reunion.fr>
@@ -66,7 +66,7 @@ Henri Wiechers <hwiechers@gmail.com>
 Russell Holbrook <russellholbrook@gmail.com>
 Julian Aubourg <aubourg.julian@gmail.com>
 Gianni Alessandro Chiappetta <gianni@runlevel6.org>
-Scott Jehl <scott@scottjehl.com>
+Scott Jehl <scottjehl@gmail.com>
 James Burke <jrburke@gmail.com>
 Jonas Pfenniger <jonas@pfenniger.name>
 Xavi Ramirez <xavi.rmz@gmail.com>
@@ -75,9 +75,9 @@ Sylvester Keil <sylvester@keil.or.at>
 Brandon Sterne <bsterne@mozilla.com>
 Mathias Bynens <mathias@qiwi.be>
 Timmy Willison <timmywillisn@gmail.com>
-Corey Frang <gnarf@gnarf.net>
+Corey Frang <gnarf37@gmail.com>
 Anton Kovalyov <anton@kovalyov.net>
-David Murdoch <musicisair@yahoo.com>
+David Murdoch <david@davidmurdoch.com>
 Josh Varner <josh.varner@gmail.com>
 Charles McNulty <cmcnulty@kznf.com>
 Jordan Boesch <jboesch26@gmail.com>
@@ -131,7 +131,7 @@ Chris Faulkner <thefaulkner@gmail.com>
 Elijah Manor <elijah.manor@gmail.com>
 Daniel Chatfield <chatfielddaniel@gmail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
-Wesley Walser <wwalser@atlassian.com>
+Wesley Walser <waw325@gmail.com>
 Michael Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
 Benjamin Truyman <bentruyman@gmail.com>
