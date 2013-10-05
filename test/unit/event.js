@@ -2613,3 +2613,11 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	equal( errored, false, "trigger() did not throw exception" );
 	delete String.prototype.namespace;
 });
+
+test( "Inline event result is returned (#13993)", function() {
+	expect( 1 );
+
+	var result = jQuery("<p onclick='return 42'>hello</p>").triggerHandler("click");
+
+	equal( result, 42, "inline handler returned value" );
+});
