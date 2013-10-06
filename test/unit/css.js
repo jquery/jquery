@@ -200,6 +200,16 @@ test( "css() explicit and relative values", 29, function() {
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
 
+test("css(String) where values are z-index", function() {
+	expect(1);
+
+	var $elem = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+
+	$elem.css({ "position": "absolute", "z-index": "1000" });
+	strictEqual( $elem.css( "z-index" ), "1000" );
+});
+
+
 test("css(String, Object)", function() {
 	expect( 19 );
 	var j, div, display, ret, success;
@@ -391,6 +401,14 @@ test("css(Object) where values are Functions", function() {
 	});
 
 	jQuery("#cssFunctionTest").remove();
+});
+
+test("css(String) where values are undefined", function() {
+	expect(1);
+
+	var $elem = jQuery( "#nothiddendiv" );
+
+	strictEqual( $elem.css( "test" ), undefined );
 });
 
 test("css(Object) where values are Functions with incoming values", function() {
