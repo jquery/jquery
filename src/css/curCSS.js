@@ -44,6 +44,8 @@ function curCSS( elem, name, computed ) {
 		}
 	}
 
+    // Support: IE
+    // IE returns zIndex value as an integer.
 	return ret.toString();
 }
 
