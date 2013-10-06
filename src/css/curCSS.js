@@ -44,7 +44,7 @@ function curCSS( elem, name, computed ) {
 		}
 	}
 
-	return ret;
+	return ret.toString();
 }
 
 return curCSS;
