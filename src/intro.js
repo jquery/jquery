@@ -12,7 +12,7 @@
  * Date: @DATE
  */
 
-(function ( window, factory ) {
+(function( window, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 		// Expose a jQuery-making factory as module.exports in loaders that implement the Node
@@ -31,7 +31,7 @@
 	}
 
 // Pass this, window may not be defined yet
-}(this, function ( window ) {
+}(this, function( window ) {
 
 // Can't do this because several apps including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if

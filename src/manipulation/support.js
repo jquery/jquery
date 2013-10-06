@@ -1,8 +1,8 @@
 define([
 	"../var/support"
-], function( support ){
+], function( support ) {
 
-(function () {
+(function() {
 	var input,
 		fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement( "div" ) );

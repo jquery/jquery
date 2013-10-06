@@ -60,9 +60,6 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
-
-
-
 function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
@@ -371,7 +368,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 
 // Support: Android 2.3
 jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
-	function ( elem, computed ) {
+	function( elem, computed ) {
 		if ( computed ) {
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 			// Work around by temporarily setting element display to inline-block
