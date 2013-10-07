@@ -10,4 +10,4 @@ try {
 	process.exit( 0 );
 }
 
-spawn( "bower", [ "install" ], { stdio: 'inherit' } );
+spawn( "bower", [ "install" ], { stdio: "inherit" } );

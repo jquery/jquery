@@ -3,10 +3,8 @@
  * jQuery Release Note Generator
  */
 
-var fs = require("fs"),
-	http = require("http"),
+var http = require("http"),
 	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g,
-	categories = [],
 	version = process.argv[2];
 
 if ( !/^\d+\.\d+/.test( version ) ) {
@@ -27,13 +25,12 @@ http.request({
 	});
 
 	res.on( "end", function() {
-		var match,
-			file = data.join(""),
-			cur;
+		var match, cur, cat,
+			file = data.join("");
 
 		while ( (match = extract.exec( file )) ) {
 			if ( "#" + match[1] !== match[2] ) {
-				var cat = match[3];
+				cat = match[3];
 
 				if ( !cur || cur !== cat ) {
 					if ( cur ) {

@@ -101,7 +101,7 @@ function initialize( next ) {
 
 	console.log( "Current version is " + pkg.version + "; generating release " + releaseVersion );
 	version = pkg.version.match( rsemver );
-	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] )
+	oldver = ( +version[1] ) * 10000 + ( +version[2] * 100 ) + ( +version[3] );
 	newver = ( +major ) * 10000 + ( +minor * 100 ) + ( +patch );
 	if ( newver < oldver ) {
 		die( "Next version is older than current version!" );
@@ -112,7 +112,7 @@ function initialize( next ) {
 }
 
 function checkGitStatus( next ) {
-	git( [ "status" ], function( error, stdout, stderr ) {
+	git( [ "status" ], function( error, stdout ) {
 		var onBranch = ((stdout||"").match( /On branch (\S+)/ ) || [])[1];
 		if ( onBranch !== branch ) {
 			dieIfReal( "Branches don't match: Wanted " + branch + ", got " + onBranch );
@@ -135,7 +135,7 @@ function tagReleaseVersion( next ) {
 }
 
 function gruntBuild( next ) {
-	exec( gruntCmd, [], function( error, stdout ) {
+	exec( gruntCmd, [], function( error, stdout, stderr ) {
 		if ( error ) {
 			die( error + stderr );
 		}
@@ -218,10 +218,10 @@ function pushToGithub( next ) {
 
 function steps() {
 	var cur = 0,
-		steps = arguments;
+		st = arguments;
 	(function next(){
 		process.nextTick(function(){
-			steps[ cur++ ]( next );
+			st[ cur++ ]( next );
 		});
 	})();
 }
@@ -258,7 +258,7 @@ function makeArchive( cdn, files, fn ) {
 		return "dist/" + item.replace( /VER/g, releaseVersion );
 	});
 
-	exec( "md5sum", files, function( err, stdout, stderr ) {
+	exec( "md5sum", files, function( err, stdout ) {
 		fs.writeFileSync( md5file, stdout );
 		files.push( md5file );
 

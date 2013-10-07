@@ -64,7 +64,7 @@ module.exports = function( grunt ) {
 				options: srcHintOptions
 			},
 			grunt: {
-				src: [ "Gruntfile.js", "build/tasks/*" ],
+				src: [ "Gruntfile.js", "build/tasks/*", "build/{bower-install,release-notes,release}.js" ],
 				options: {
 					jshintrc: ".jshintrc"
 				}
