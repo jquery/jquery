@@ -42,7 +42,7 @@
 		"which": "~1.0.5"
 	},
 	"scripts": {
-		"install": "bower install",
+		"install": "node build/bower-install",
 		"test": "grunt"
 	}
 }
