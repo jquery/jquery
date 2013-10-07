@@ -12,15 +12,9 @@ module.exports = function( grunt ) {
 
 	// Temporary helper, wait until https://github.com/gustavohenke/grunt-jscs-checker/pull/2/
 	function excludeWrappers( path ) {
-		var files = grunt.file.expand( path );
-
-		files.forEach(function( value, index ) {
-			if ( /intro|outro/.test( value ) ) {
-				this.splice( index, 1 );
-			}
-		}, files );
-
-		return files;
+		return grunt.file.expand( path ).filter(function( value ) {
+			return [ "src/intro.js", "src/outro.js" ].indexOf( value ) === -1;
+		});
 	}
 
 	var gzip = require( "gzip-js" ),
