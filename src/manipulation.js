@@ -412,8 +412,9 @@ jQuery.fn.extend({
 				return elem.innerHTML;
 			}
 
-			if ( typeof value === "number" )
+			if ( typeof value === "number" ) {
 				value = value.toString();
+			}
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
