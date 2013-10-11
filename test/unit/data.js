@@ -257,7 +257,7 @@ test(".data(object) does not retain references. #13815", function() {
 });
 
 test("data-* attributes", function() {
-	expect(40);
+	expect(41);
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		div = jQuery("<div>"),
@@ -331,7 +331,8 @@ test("data-* attributes", function() {
 		.attr("data-empty", "")
 		.attr("data-space", " ")
 		.attr("data-null", "null")
-		.attr("data-string", "test");
+		.attr("data-string", "test")
+		.attr("data-guid", "GUID/{af4b2e0d-5f6a-11d2-8f20-0000c0e166dc}");
 
 	strictEqual( child.data("true"), true, "Primitive true read from attribute");
 	strictEqual( child.data("false"), false, "Primitive false read from attribute");
@@ -349,6 +350,7 @@ test("data-* attributes", function() {
 	strictEqual( child.data("space"), " ", "Empty string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
+	strictEqual( child.data("guid"), "GUID/{af4b2e0d-5f6a-11d2-8f20-0000c0e166dc}", "Typical guid string read from attribute");
 
 	child.remove();
 
