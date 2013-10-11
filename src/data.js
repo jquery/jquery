@@ -5,7 +5,7 @@ define([
 	"./data/accepts"
 ], function( jQuery, deletedIds, support ) {
 
-var rbrace = /(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
+var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 function dataAttr( elem, key, data ) {
