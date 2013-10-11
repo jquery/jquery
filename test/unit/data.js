@@ -257,9 +257,12 @@ test(".data(object) does not retain references. #13815", function() {
 });
 
 test("data-* attributes", function() {
-	expect(40);
+	expect( 43 );
+
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
+		parseJSON = jQuery.parseJSON,
+		nativeParse = typeof JSON !== "undefined" && JSON.parse,
 		div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -315,6 +318,19 @@ test("data-* attributes", function() {
 
 	equal( child.data("other"), "test", "Make sure value was pulled in properly from a .data()." );
 
+	// attribute parsing
+	i = l = 0;
+	jQuery.parseJSON = function() {
+		i++;
+		return parseJSON.apply( this, arguments );
+	};
+	if ( nativeParse ) {
+		JSON.parse = function() {
+			l++;
+			return nativeParse.apply( this, arguments );
+		};
+	}
+
 	child
 		.attr("data-true", "true")
 		.attr("data-false", "false")
@@ -328,6 +344,8 @@ test("data-* attributes", function() {
 		.attr("data-bigassnum", "123456789123456789123456789")
 		.attr("data-badjson", "{123}")
 		.attr("data-badjson2", "[abc]")
+		.attr("data-notjson", " {}")
+		.attr("data-notjson2", "[] ")
 		.attr("data-empty", "")
 		.attr("data-space", " ")
 		.attr("data-null", "null")
@@ -335,21 +353,36 @@ test("data-* attributes", function() {
 
 	strictEqual( child.data("true"), true, "Primitive true read from attribute");
 	strictEqual( child.data("false"), false, "Primitive false read from attribute");
-	strictEqual( child.data("five"), 5, "Primitive number read from attribute");
-	strictEqual( child.data("point"), 5.5, "Primitive number read from attribute");
-	strictEqual( child.data("pointe"), "5.5E3", "Floating point exponential number read from attribute");
-	strictEqual( child.data("grande"), "5.574E9", "Big exponential number read from attribute");
-	strictEqual( child.data("hexadecimal"), "0x42", "Hexadecimal number read from attribute");
-	strictEqual( child.data("pointbad"), "5..5", "Bad number read from attribute");
-	strictEqual( child.data("pointbad2"), "-.", "Bad number read from attribute");
-	strictEqual( child.data("bigassnum"), "123456789123456789123456789", "Bad bigass number read from attribute");
-	strictEqual( child.data("badjson"), "{123}", "Bad number read from attribute");
-	strictEqual( child.data("badjson2"), "[abc]", "Bad number read from attribute");
+	strictEqual( child.data("five"), 5, "Integer read from attribute");
+	strictEqual( child.data("point"), 5.5, "Floating-point number read from attribute");
+	strictEqual( child.data("pointe"), "5.5E3",
+		"Exponential-notation number read from attribute as string");
+	strictEqual( child.data("grande"), "5.574E9",
+		"Big exponential-notation number read from attribute as string");
+	strictEqual( child.data("hexadecimal"), "0x42",
+		"Hexadecimal number read from attribute as string");
+	strictEqual( child.data("pointbad"), "5..5",
+		"Extra-point non-number read from attribute as string");
+	strictEqual( child.data("pointbad2"), "-.",
+		"No-digit non-number read from attribute as string");
+	strictEqual( child.data("bigassnum"), "123456789123456789123456789",
+		"Bad bigass number read from attribute as string");
+	strictEqual( child.data("badjson"), "{123}", "Bad JSON object read from attribute as string");
+	strictEqual( child.data("badjson2"), "[abc]", "Bad JSON array read from attribute as string");
+	strictEqual( child.data("notjson"), " {}",
+		"JSON object with leading non-JSON read from attribute as string");
+	strictEqual( child.data("notjson2"), "[] ",
+		"JSON array with trailing non-JSON read from attribute as string");
 	strictEqual( child.data("empty"), "", "Empty string read from attribute");
-	strictEqual( child.data("space"), " ", "Empty string read from attribute");
+	strictEqual( child.data("space"), " ", "Whitespace string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
+	equal( i || l, 2, "Correct number of JSON parse attempts when reading from attributes" );
 
+	jQuery.parseJSON = parseJSON;
+	if ( nativeParse ) {
+		JSON.parse = nativeParse;
+	}
 	child.remove();
 
 	// tests from metadata plugin
