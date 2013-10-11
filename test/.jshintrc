@@ -60,6 +60,7 @@
 		"originaljQuery": true,
 		"$": true,
 		"original$": true,
+		"baseURL": true,
 		"externalHost": true
 	}
 }
