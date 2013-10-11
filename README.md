@@ -199,7 +199,7 @@ git clean -fdx
 
 ### rebasing ###
 
-For feature/topic branches, you should always used the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run following to automate this:
+For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run following to automate this:
 
 ```bash
 git config branch.autosetuprebase local
