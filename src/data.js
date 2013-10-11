@@ -17,7 +17,7 @@ define([
 	5. Avoid exposing implementation details on user objects (eg. expando properties)
 	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 */
-var rbrace = /(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
+var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 function dataAttr( elem, key, data ) {
