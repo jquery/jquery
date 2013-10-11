@@ -1,6 +1,7 @@
 /*jshint multistr:true, quotmark:false */
 
 var fireNative, originaljQuery, original$,
+	baseURL = "",
 	supportjQuery = this.jQuery,
 	// see RFC 2606
 	externalHost = "example.com";
@@ -130,7 +131,8 @@ fireNative = document.createEvent ?
  * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
-	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
+	return baseURL + value + (/\?/.test(value) ? "&" : "?") +
+		new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
 }
 
 // Ajax testing helper
@@ -236,6 +238,9 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 	test( title, function() {
 		var iframe;
 
+		// Expect one assertion, but allow overrides
+		expect( 1 );
+
 		stop();
 		window.iframeCallback = function() {
 			var self = this,
@@ -248,12 +253,12 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 				start();
 			}, 0 );
 		};
-		iframe = jQuery( "<div/>" ).append(
-			jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) )
-		).appendTo( "body" );
+		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
+			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
+			.appendTo( "#qunit-fixture" );
 	});
 };
-this.iframeCallback = undefined;
+window.iframeCallback = undefined;
 
 // Tests are always loaded async
 QUnit.config.autostart = false;

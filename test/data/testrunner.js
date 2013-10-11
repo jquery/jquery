@@ -238,7 +238,7 @@ window.Globals = (function() {
  * @param {String} url Test folder location
  * @param {RegExp} risTests To filter script sources
  */
-function testSubproject( label, url, risTests, complete ) {
+function testSubproject( label, subProjectURL, risTests, complete ) {
 	var sub, fixture, fixtureHTML,
 		fixtureReplaced = false;
 
@@ -280,11 +280,11 @@ function testSubproject( label, url, risTests, complete ) {
 
 	// Load tests and fixture from subproject
 	// Test order matters, so we must be synchronous and throw an error on load failure
-	supportjQuery.ajax( url, {
+	supportjQuery.ajax( subProjectURL, {
 		async: false,
 		dataType: "html",
 		error: function( jqXHR, status ) {
-			throw new Error( "Could not load: " + url + " (" + status + ")" );
+			throw new Error( "Could not load: " + subProjectURL + " (" + status + ")" );
 		},
 		success: function( data, status, jqXHR ) {
 			var sources = [],
@@ -312,7 +312,7 @@ function testSubproject( label, url, risTests, complete ) {
 			(function loadDep() {
 				var dep = sources.shift();
 				if ( dep ) {
-					require( [ url + dep ], loadDep );
+					require( [ subProjectURL + dep ], loadDep );
 				} else if ( complete ) {
 					complete();
 				}
@@ -337,6 +337,9 @@ function testSubproject( label, url, risTests, complete ) {
 					ok( false, "Found subproject fixture" );
 					return;
 				}
+
+				// Update helper function behavior
+				baseURL = subProjectURL;
 
 				// Replace the current fixture, including content outside of #qunit-fixture
 				var oldFixture = supportjQuery("#qunit-fixture");
