@@ -1,16 +1,21 @@
-// Require more than a few needed variables
-// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
-define(function( require ) {
+define([
+	"./core",
+	"./var/concat",
+	"./var/push",
+	"./core/access",
+	"./manipulation/var/rcheckableType",
+	"./manipulation/support",
+	"./data/var/data_priv",
+	"./data/var/data_user",
+
+	"./core/init",
+	"./data/accepts",
+	"./traversing",
+	"./selector",
+	"./event"
+], function( jQuery, concat, push, access, rcheckableType, support, data_priv, data_user ) {
 
 var
-	jQuery = require( "./core" ),
-	concat = require( "./var/concat" ),
-	push = require( "./var/push" ),
-	access = require( "./core/access" ),
-	rcheckableType = require( "./manipulation/var/rcheckableType" ),
-	support = require( "./manipulation/support" ),
-	data_priv = require( "./data/var/data_priv" ),
-	data_user = require( "./data/var/data_user" ),
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rhtml = /<|&#?\w+;/,
@@ -40,13 +45,6 @@ wrapMap.optgroup = wrapMap.option;
 
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
-
-// Dependencies not needed as variables
-require( "./core/init" );
-require( "./data/accepts" );
-require( "./traversing" );
-require( "./selector" );
-require( "./event" );
 
 // Support: 1.x compatibility
 // Manipulating tables requires a tbody

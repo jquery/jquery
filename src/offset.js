@@ -1,18 +1,18 @@
-define(function( require ) {
+define([
+	"./core",
+	"./var/strundefined",
+	"./core/access",
+	"./css/var/rnumnonpx",
+	"./css/curCSS",
+	"./css/addGetHookIf",
+	"./css/support",
 
-var
-	jQuery = require( "./core" ),
-	strundefined = require( "./var/strundefined" ),
-	access = require( "./core/access" ),
-	rnumnonpx = require( "./css/var/rnumnonpx" ),
-	curCSS = require( "./css/curCSS" ),
-	addGetHookIf = require( "./css/addGetHookIf" ),
-	support = require( "./css/support" ),
-	docElem = window.document.documentElement;
+	"./core/init",
+	"./css",
+	"./selector" // contains
+], function( jQuery, strundefined, access, rnumnonpx, curCSS, addGetHookIf, support ) {
 
-require( "./core/init" );
-require( "./css" );
-require( "./selector" ); // contains
+var docElem = window.document.documentElement;
 
 /**
  * Gets a window from an element

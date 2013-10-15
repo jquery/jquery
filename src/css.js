@@ -1,22 +1,26 @@
-// Require more than a few needed variables
-// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
-define(function( require ) {
+define([
+	"./core",
+	"./var/pnum",
+	"./core/access",
+	"./css/var/rmargin",
+	"./css/var/rnumnonpx",
+	"./css/var/cssExpand",
+	"./css/var/isHidden",
+	"./css/var/getStyles",
+	"./css/curCSS",
+	"./css/defaultDisplay",
+	"./css/addGetHookIf",
+	"./css/support",
+	"./data/var/data_priv",
+
+	"./core/init",
+	"./css/swap",
+	"./core/ready",
+	"./selector" // contains
+], function( jQuery, pnum, access, rmargin, rnumnonpx, cssExpand, isHidden,
+	getStyles, curCSS, defaultDisplay, addGetHookIf, support, data_priv ) {
 
 var
-	jQuery = require( "./core" ),
-	pnum = require( "./var/pnum" ),
-	access = require( "./core/access" ),
-	rmargin = require( "./css/var/rmargin" ),
-	rnumnonpx = require( "./css/var/rnumnonpx" ),
-	cssExpand = require( "./css/var/cssExpand" ),
-	isHidden = require( "./css/var/isHidden" ),
-	getStyles = require( "./css/var/getStyles" ),
-	curCSS = require( "./css/curCSS" ),
-	support = require( "./css/support" ),
-	defaultDisplay = require( "./css/defaultDisplay" ),
-	addGetHookIf = require( "./css/addGetHookIf" ),
-	data_priv = require( "./data/var/data_priv" ),
-
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
@@ -30,12 +34,6 @@ var
 	},
 
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
-
-// Dependencies not needed as vars
-require( "./core/init" );
-require( "./css/swap" );
-require( "./core/ready" );
-require( "./selector" ); // contains
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
