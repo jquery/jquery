@@ -11,7 +11,7 @@ module.exports = function( grunt ) {
 		srcFolder = __dirname + "/../../src/",
 		rdefineEnd = /\}\);[^}\w]*$/,
 		// This is temporary until the skipSemiColonInsertion option makes it to NPM
-		requirejs = require( "../r" ),
+		requirejs = require( "requirejs" ),
 		config = {
 			baseUrl: "src",
 			name: "jquery",
