@@ -14,7 +14,9 @@ function curCSS( elem, name, computed ) {
 
 	// Support: IE9
 	// getPropertyValue is only needed for .css('filter') in IE9, see #12537
-	ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined;
+	if ( computed ) {
+		ret = computed.getPropertyValue( name ) || computed[ name ];
+	}
 
 	if ( computed ) {
 
@@ -44,9 +46,11 @@ function curCSS( elem, name, computed ) {
 		}
 	}
 
-	// Support: IE
-	// IE returns zIndex value as an integer.
-	return ret === undefined ? ret : ret + "";
+	return ret !== undefined ?
+		// Support: IE
+		// IE returns zIndex value as an integer.
+		ret + "" :
+		ret;
 }
 
 return curCSS;
