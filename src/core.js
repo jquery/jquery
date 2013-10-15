@@ -1,17 +1,17 @@
-define(function( require ) {
+define([
+	"./var/deletedIds",
+	"./var/slice",
+	"./var/concat",
+	"./var/push",
+	"./var/indexOf",
+	"./var/class2type",
+	"./var/toString",
+	"./var/hasOwn",
+	"./var/trim",
+	"./var/support"
+], function( deletedIds, slice, concat, push, indexOf, class2type, toString, hasOwn, trim, support ) {
 
 var
-	deletedIds = require( "./var/deletedIds" ),
-	slice = require( "./var/slice" ),
-	concat = require( "./var/concat" ),
-	push = require( "./var/push" ),
-	indexOf = require( "./var/indexOf" ),
-	class2type = require( "./var/class2type" ),
-	toString = require( "./var/toString" ),
-	hasOwn = require( "./var/hasOwn" ),
-	trim = require( "./var/trim" ),
-	support = require( "./var/support" ),
-
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
 

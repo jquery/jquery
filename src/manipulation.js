@@ -1,6 +1,19 @@
-// Require more than a few needed variables
-// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
-define(function( require ){
+define([
+	"./core",
+	"./var/strundefined",
+	"./var/concat",
+	"./var/push",
+	"./var/deletedIds",
+	"./core/access",
+	"./manipulation/var/rcheckableType",
+	"./manipulation/support",
+
+	"./core/init",
+	"./data/accepts",
+	"./traversing",
+	"./selector",
+	"./event"
+], function( jQuery, strundefined, concat, push, deletedIds, access, rcheckableType, support ) {
 
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
@@ -16,22 +29,11 @@ function createSafeFragment( document ) {
 	return safeFrag;
 }
 
-var
-	jQuery = require( "./core" ),
-	strundefined = require( "./var/strundefined" ),
-	concat = require( "./var/concat" ),
-	push = require( "./var/push" ),
-	deletedIds = require( "./var/deletedIds" ),
-	access = require( "./core/access" ),
-	rcheckableType = require( "./manipulation/var/rcheckableType" ),
-	support = require( "./manipulation/support" ),
-
-	nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
+var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
 	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
 	rleadingWhitespace = /^\s+/,
-
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
 	rtbody = /<tbody/i,
@@ -64,13 +66,6 @@ var
 wrapMap.optgroup = wrapMap.option;
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
-
-// Dependencies not needed as variables
-require( "./core/init" );
-require( "./data/accepts" );
-require( "./traversing" );
-require( "./selector" );
-require( "./event" );
 
 function getAll( context, tag ) {
 	var elems, elem,

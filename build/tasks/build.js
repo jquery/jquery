@@ -69,13 +69,12 @@ module.exports = function( grunt ) {
 				.replace( /define\([^{]*?{/, "" )
 				.replace( rdefineEnd, "" );
 
-			// Remove CommonJS-style require calls
-			// Keep an ending semicolon
+			// Remove anything wrapped with
+			// /* ExcludeStart */ /* ExcludeEnd */
+			// or a single line directly after a // BuildExclude comment
 			contents = contents
-				.replace( /(\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\2\s*\)[\.\w]*([,;])/g,
-					function( all, isVar, quote, commaSemicolon ) {
-						return isVar && commaSemicolon === ";" ? ";" : "";
-					});
+				.replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
+				.replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
 
 			// Remove empty definitions
 			contents = contents

@@ -1,22 +1,21 @@
-define(function( require ) {
+define([
+	"./core",
+	"./var/strundefined",
+	"./var/rnotwhite",
+	"./var/hasOwn",
+	"./var/slice",
+	"./event/support",
 
-var
-	jQuery = require( "./core" ),
-	strundefined = require( "./var/strundefined" ),
-	rnotwhite = require( "./var/rnotwhite" ),
-	hasOwn = require( "./var/hasOwn" ),
-	slice = require( "./var/slice" ),
-	support = require( "./event/support" ),
-	rformElems = /^(?:input|select|textarea)$/i,
+	"./core/init",
+	"./data/accepts",
+	"./selector"
+], function( jQuery, strundefined, rnotwhite, hasOwn, slice, support ) {
+
+var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
-
-// Dependencies not needed as vars
-require( "./core/init" );
-require( "./data/accepts" );
-require( "./selector" );
 
 function returnTrue() {
 	return true;

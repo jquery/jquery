@@ -1,22 +1,26 @@
-// Require more than a few needed variables
-// Keep in mind that a dependency array cannot be used with CommonJS+AMD syntax
-define(function( require ) {
+define([
+	"./core",
+	"./var/pnum",
+	"./core/access",
+	"./css/var/rmargin",
+	"./css/var/rnumnonpx",
+	"./css/var/cssExpand",
+	"./css/var/isHidden",
+	"./css/curCSS",
+	"./css/defaultDisplay",
+	"./css/addGetHookIf",
+	"./css/support",
+
+	"./core/init",
+	"./css/swap",
+	"./core/ready",
+	"./selector" // contains
+], function( jQuery, pnum, access, rmargin, rnumnonpx, cssExpand, isHidden,
+	curCSS, defaultDisplay, addGetHookIf, support ) {
 
 var
-	jQuery = require( "./core" ),
-	pnum = require( "./var/pnum" ),
-	access = require( "./core/access" ),
-	rmargin = require( "./css/var/rmargin" ),
-	rnumnonpx = require( "./css/var/rnumnonpx" ),
-	cssExpand = require( "./css/var/cssExpand" ),
-	isHidden = require( "./css/var/isHidden" ),
-	// This format is here to facilitate easy removal when building
-	getStyles = require( "./css/curCSS" ).getStyles,
-	curCSS = require( "./css/curCSS" ).curCSS,
-	support = require( "./css/support" ),
-	defaultDisplay = require( "./css/defaultDisplay" ),
-	addGetHookIf = require( "./css/addGetHookIf" ),
-
+	// BuildExclude
+	getStyles = curCSS.getStyles,
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 
@@ -34,11 +38,8 @@ var
 
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
 
-// Dependencies not needed as vars
-require( "./core/init" );
-require( "./css/swap" );
-require( "./core/ready" );
-require( "./selector" ); // contains
+// BuildExclude
+curCSS = curCSS.curCSS;
 
 // return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {

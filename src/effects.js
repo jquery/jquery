@@ -1,13 +1,20 @@
-define(function( require ) {
+define([
+	"./core",
+	"./var/pnum",
+	"./css/var/cssExpand",
+	"./css/var/isHidden",
+	"./css/defaultDisplay",
+	"./effects/support",
+
+	"./core/init",
+	"./effects/Tween",
+	"./queue",
+	"./css",
+	"./deferred",
+	"./traversing"
+], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay, support ) {
 
 var
-	jQuery = require( "./core" ),
-	pnum = require( "./var/pnum" ),
-	cssExpand = require( "./css/var/cssExpand" ),
-	isHidden = require( "./css/var/isHidden" ),
-	defaultDisplay = require( "./css/defaultDisplay" ),
-	support = require( "./effects/support" ),
-
 	fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([+-])=|)(" + pnum + ")([a-z%]*)$", "i" ),
@@ -63,14 +70,6 @@ var
 			return tween;
 		}]
 	};
-
-// Dependencies not needed as vars
-require( "./core/init" );
-require( "./effects/Tween" );
-require( "./queue" );
-require( "./css" );
-require( "./deferred" );
-require( "./traversing" );
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
