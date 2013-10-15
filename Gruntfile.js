@@ -27,7 +27,7 @@ module.exports = function( grunt ) {
 						return gzip.zip( contents, {} ).length;
 					}
 				},
-				cache: "dist/.sizecache.json"
+				cache: "build/.sizecache.json"
 			}
 		},
 		build: {
