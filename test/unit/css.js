@@ -3,7 +3,7 @@ if ( jQuery.css ) {
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect( 41 );
+	expect( 43 );
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
@@ -13,7 +13,7 @@ test("css(String|Hash)", function() {
 	notEqual( $child.css("width"), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
 	notEqual( $child.css("height"), "20px", "Retrieving a height percentage on the child of a hidden div returns percentage" );
 
-	div = jQuery( "<div>" );
+	div = jQuery( "<div/>" );
 
 	// These should be "auto" (or some better value)
 	// temporarily provide "0px" for backwards compat
@@ -42,7 +42,7 @@ test("css(String|Hash)", function() {
 	equal( parseFloat(jQuery("#nothiddendiv").css("width")), 0, "Test negative width set to 0");
 	equal( parseFloat(jQuery("#nothiddendiv").css("height")), 0, "Test negative height set to 0");
 
-	equal( jQuery("<div style='display: none;'>").css("display"), "none", "Styles on disconnected nodes");
+	equal( jQuery("<div style='display: none;'/>").css("display"), "none", "Styles on disconnected nodes");
 
 	jQuery("#floatTest").css({"float": "right"});
 	equal( jQuery("#floatTest").css("float"), "right", "Modified CSS float using \"float\": Assert float is right");
@@ -111,6 +111,12 @@ test("css(String|Hash)", function() {
 	// Test null
 	child.css("font-size", null);
 	equal( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
+
+	strictEqual( child.css( "x-fake" ), undefined, "Make sure undefined is returned from css(nonexistent)." );
+
+	div = jQuery( "<div/>" ).css({ position: "absolute", "z-index": 1000 }).appendTo( "#qunit-fixture" );
+	strictEqual( div.css( "z-index" ), "1000",
+		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 });
 
 test( "css() explicit and relative values", 29, function() {
@@ -199,16 +205,6 @@ test( "css() explicit and relative values", 29, function() {
 	$elem.css( "opacity", "+=0.5" );
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
-
-test("css(String) where values are z-index", function() {
-	expect(1);
-
-	var $elem = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
-
-	$elem.css({ "position": "absolute", "z-index": "1000" });
-	strictEqual( $elem.css( "z-index" ), "1000" );
-});
-
 
 test("css(String, Object)", function() {
 	expect( 19 );
@@ -401,14 +397,6 @@ test("css(Object) where values are Functions", function() {
 	});
 
 	jQuery("#cssFunctionTest").remove();
-});
-
-test("css(String) where values are undefined", function() {
-	expect(1);
-
-	var $elem = jQuery( "#nothiddendiv" );
-
-	strictEqual( $elem.css( "test" ), undefined );
 });
 
 test("css(Object) where values are Functions with incoming values", function() {
