@@ -53,7 +53,9 @@ if ( window.getComputedStyle ) {
 
 		// Support: IE
 		// IE returns zIndex value as an integer.
-		return ret === undefined ? ret : ret + "";
+		return ret === undefined ?
+			ret :
+			ret + "";
 	};
 } else if ( document.documentElement.currentStyle ) {
 	getStyles = function( elem ) {
@@ -101,11 +103,11 @@ if ( window.getComputedStyle ) {
 			}
 		}
 
-		return ret === "" ? "auto" :
-			// Support: IE
-			// IE returns zIndex value as an integer.
-			ret === undefined ? ret :
-			ret + "";
+		// Support: IE
+		// IE returns zIndex value as an integer.
+		return ret === undefined ?
+			ret :
+			ret + "" || "auto";
 	};
 }
 
