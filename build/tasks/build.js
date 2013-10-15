@@ -56,10 +56,12 @@ module.exports = function( grunt ) {
 
 		} else {
 
-			// Ignore jQuery's return statement (the only necessary one)
+			// Ignore jQuery's exports (the only necessary one)
 			if ( name !== "jquery" ) {
 				contents = contents
-					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" );
+					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" )
+					// Multiple exports
+					.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
 			}
 
 			// Remove define wrappers, closure ends, and empty declarations
@@ -67,13 +69,12 @@ module.exports = function( grunt ) {
 				.replace( /define\([^{]*?{/, "" )
 				.replace( rdefineEnd, "" );
 
-			// Remove CommonJS-style require calls
-			// Keep an ending semicolon
+			// Remove anything wrapped with
+			// /* ExcludeStart */ /* ExcludeEnd */
+			// or a single line directly after a // BuildExclude comment
 			contents = contents
-				.replace( /(\s+\w+ = )?\s*require\(\s*(")[\w\.\/]+\2\s*\)([,;])/g,
-					function( all, isVar, quote, commaSemicolon ) {
-						return isVar && commaSemicolon === ";" ? ";" : "";
-					});
+				.replace( /\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig, "" )
+				.replace( /\/\/\s*BuildExclude\n\r?[\w\W]*?\n\r?/ig, "" );
 
 			// Remove empty definitions
 			contents = contents
