@@ -111,17 +111,9 @@ module.exports = function( grunt ) {
 						ascii_only: true
 					},
 					compress: {
-						properties: true,
-						dead_code: true,
-						unsafe: false,
-						booleans: true,
-						loops: false,
-						unused: false,
 						hoist_funs: false,
-						hoist_vars: false,
-						if_return: true,
-						join_vars: true,
-						warnings: true
+						loops: false,
+						unused: false
 					}
 				}
 			}
