@@ -8,10 +8,9 @@ module.exports = function( grunt ) {
 	"use strict";
 
 	var fs = require( "fs" ),
+		requirejs = require( "requirejs" ),
 		srcFolder = __dirname + "/../../src/",
 		rdefineEnd = /\}\);[^}\w]*$/,
-		// This is temporary until the skipSemiColonInsertion option makes it to NPM
-		requirejs = require( "requirejs" ),
 		config = {
 			baseUrl: "src",
 			name: "jquery",
