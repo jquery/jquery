@@ -75,9 +75,9 @@ Vagrant.configure( "2" ) do |config|
   #
   # The root of the project will be mapped to VM as the default location for the Nginx site.
   if vagrant_version >= "1.3.0"
-    config.vm.synced_folder "/", "/srv/www/", :owner => "www-data", :mount_options => [ "dmode=775", "fmode=774" ]
+    config.vm.synced_folder ".", "/srv/www/", :owner => "www-data"
   else
-    config.vm.synced_folder "/", "/srv/www/", :owner => "www-data", :extra => [ "dmode=775", "fmode=774" ]
+    config.vm.synced_folder ".", "/srv/www/", :owner => "www-data"
   end
   
   # Provisioning
