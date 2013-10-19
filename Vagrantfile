@@ -85,3 +85,4 @@ Vagrant.configure( "2" ) do |config|
   # By default, Vagrantfile is set to use the provision.sh bash script located in the
   # vagrant directory.
   config.vm.provision :shell, :path => File.join( "vagrant", "provision.sh" )
+end
