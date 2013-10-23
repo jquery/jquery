@@ -2507,33 +2507,6 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
-testIframeWithCallback( "focusin from an iframe", "event/focusinCrossFrame.html", function( frameDoc ) {
-	expect(1);
-
-	var input = jQuery( frameDoc ).find( "#frame-input" );
-
-	// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-	jQuery ( "body" ).on( "focusin.iframeTest", function() {
-		ok( false, "fired a focusin event in the parent document" );
-	});
-
-	input.on( "focusin", function() {
-		ok( true, "fired a focusin event in the iframe" );
-	});
-
-	// Avoid a native event; Chrome can't force focus to another frame
-	input.trigger( "focusin" );
-
-	// Must manually remove handler to avoid leaks in our data store
-	input.remove();
-
-	// Be sure it was removed; nothing should happen
-	input.trigger( "focusin" );
-
-	// Remove body handler manually since it's outside the fixture
-	jQuery( "body" ).off( "focusin.iframeTest" );
-});
-
 testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
 	expect(1);
 	ok( isOk, "$.when( $.ready ) works" );

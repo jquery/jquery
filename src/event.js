@@ -892,29 +892,22 @@ if ( !support.changeBubbles ) {
 if ( !support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
-		// Attach a single capturing handler on the document while someone wants focusin/focusout
-		var handler = function( event ) {
+		// Attach a single capturing handler while someone wants focusin/focusout
+		var attaches = 0,
+			handler = function( event ) {
 				jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
 			};
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				var doc = this.ownerDocument,
-					attaches = jQuery._data( doc, "focusCount" );
-
-				if ( !attaches ) {
-					doc.addEventListener( orig, handler, true );
+				if ( attaches++ === 0 ) {
+					document.addEventListener( orig, handler, true );
 				}
-				jQuery._data( doc, "focusCount", ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
-				var doc = this.ownerDocument,
-					attaches = jQuery._data( doc, "focusCount" ) - 1;
-
-				if ( !attaches ) {
-					doc.removeEventListener( orig, handler, true );
+				if ( --attaches === 0 ) {
+					document.removeEventListener( orig, handler, true );
 				}
-				jQuery._data( doc, "focusCount", attaches );
 			}
 		};
 	});
