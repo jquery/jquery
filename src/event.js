@@ -735,21 +735,21 @@ if ( !support.focusinBubbles ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				var doc = this.ownerDocument,
-					attaches = data_priv.access( doc, "focusCount" );
+					attaches = data_priv.access( doc, fix);
 
 				if ( !attaches ) {
 					doc.addEventListener( orig, handler, true );
 				}
-				data_priv.access( doc, "focusCount", ( attaches || 0 ) + 1 );
+				data_priv.access( doc, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
 				var doc = this.ownerDocument,
-					attaches = data_priv.access( doc, "focusCount" ) - 1;
+					attaches = data_priv.access( doc, fix ) - 1;
 
 				if ( !attaches ) {
 					doc.removeEventListener( orig, handler, true );
 				}
-				data_priv.access( doc, "focusCount", attaches );
+				data_priv.access( doc, fix, attaches );
 			}
 		};
 	});
