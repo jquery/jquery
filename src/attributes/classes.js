@@ -35,6 +35,7 @@ jQuery.fn.extend({
             while ((clazz = classes[j++])) {
               classList.add(clazz);
             }
+            finalValue = jQuery.trim(elem.className);
           } else {
             cur = ( elem.className ?
               ( " " + elem.className + " " ).replace(rclass, " ") :
@@ -47,16 +48,16 @@ jQuery.fn.extend({
                   cur += clazz + " ";
                 }
               }
-              // only assign if different to avoid unneeded rendering.
               finalValue = jQuery.trim(cur);
-              if (elem.className !== finalValue) {
-                elem.className = finalValue;
-              }
             }
+          }
+          // only assign if different to avoid unneeded rendering.
+          if (elem.className !== finalValue) {
+            elem.className = finalValue;
           }
         }
       }
-		}
+    }
 
 		return this;
 	},
@@ -81,10 +82,15 @@ jQuery.fn.extend({
           //use element.classList if available for improved performance
           classList = elem.classList;
           if (classList) {
+            if (!value) {
+              elem.className = "";
+              break;
+            }
             j = 0;
             while ((clazz = classes[j++])) {
               classList.remove(clazz);
             }
+            finalValue = jQuery.trim(elem.className);
           } else {
             // This expression is here for better compressibility (see addClass)
             cur = ( elem.className ?
@@ -99,13 +105,12 @@ jQuery.fn.extend({
                   cur = cur.replace(" " + clazz + " ", " ");
                 }
               }
-
-              // only assign if different to avoid unneeded rendering.
               finalValue = value ? jQuery.trim(cur) : "";
-              if (elem.className !== finalValue) {
-                elem.className = finalValue;
-              }
             }
+          }
+          // only assign if different to avoid unneeded rendering.
+          if (elem.className !== finalValue) {
+            elem.className = finalValue;
           }
         }
       }
