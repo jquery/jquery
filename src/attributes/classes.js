@@ -62,62 +62,48 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	removeClass: function( value ) {
-		var classes, elem, cur, clazz, j, finalValue, classList,
-			i = 0,
-			len = this.length,
-			proceed = arguments.length === 0 || typeof value === "string" && value;
+  removeClass: function( value ) {
+    var classes, elem, cur, clazz, j, finalValue,
+      i = 0,
+      len = this.length,
+      proceed = arguments.length === 0 || typeof value === "string" && value;
 
-		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
-				jQuery( this ).removeClass( value.call( this, j, this.className ) );
-			});
-		}
-		if ( proceed ) {
-			classes = ( value || "" ).match( rnotwhite ) || [];
+    if ( jQuery.isFunction( value ) ) {
+      return this.each(function( j ) {
+        jQuery( this ).removeClass( value.call( this, j, this.className ) );
+      });
+    }
+    if ( proceed ) {
+      classes = ( value || "" ).match( rnotwhite ) || [];
 
-      for (; i < len; i++) {
+      for ( ; i < len; i++ ) {
         elem = this[ i ];
-        if (elem.nodeType === 1) {
-          //use element.classList if available for improved performance
-          classList = elem.classList;
-          if (classList) {
-            if (!value) {
-              elem.className = "";
-              break;
-            }
-            j = 0;
-            while ((clazz = classes[j++])) {
-              classList.remove(clazz);
-            }
-            finalValue = jQuery.trim(elem.className);
-          } else {
-            // This expression is here for better compressibility (see addClass)
-            cur = ( elem.className ?
-              ( " " + elem.className + " " ).replace(rclass, " ") :
-              ""
-              );
-            if (cur) {
-              j = 0;
-              while ((clazz = classes[j++])) {
-                // Remove *all* instances
-                while (cur.indexOf(" " + clazz + " ") >= 0) {
-                  cur = cur.replace(" " + clazz + " ", " ");
-                }
-              }
-              finalValue = value ? jQuery.trim(cur) : "";
+        // This expression is here for better compressibility (see addClass)
+        cur = elem.nodeType === 1 && ( elem.className ?
+          ( " " + elem.className + " " ).replace( rclass, " " ) :
+          ""
+          );
+
+        if ( cur ) {
+          j = 0;
+          while ( (clazz = classes[j++]) ) {
+            // Remove *all* instances
+            while ( cur.indexOf( " " + clazz + " " ) >= 0 ) {
+              cur = cur.replace( " " + clazz + " ", " " );
             }
           }
+
           // only assign if different to avoid unneeded rendering.
-          if (elem.className !== finalValue) {
+          finalValue = value ? jQuery.trim( cur ) : "";
+          if ( elem.className !== finalValue ) {
             elem.className = finalValue;
           }
         }
       }
-		}
+    }
 
-		return this;
-	},
+    return this;
+  },
 
 	toggleClass: function( value, stateVal ) {
 		var type = typeof value;
