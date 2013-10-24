@@ -1357,6 +1357,49 @@ test( "addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("class4") === false, "Check the class has been properly removed" );
 });
 
+test( "addClass, removeClass, hasClass on many elements", function() {
+	expect( 19 );
+
+	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
+
+	elem.addClass( "hi" );
+	equal( elem[ 0 ].className, "hi", "Check single added class" );
+	equal( elem[ 1 ].className, "hi", "Check single added class" );
+	equal( elem[ 2 ].className, "hi", "Check single added class" );
+
+	elem.addClass( "foo bar" );
+	equal( elem[ 0 ].className, "hi foo bar", "Check more added classes" );
+	equal( elem[ 1 ].className, "hi foo bar", "Check more added classes" );
+	equal( elem[ 2 ].className, "hi foo bar", "Check more added classes" );
+
+	elem.removeClass();
+	equal( elem[ 0 ].className, "", "Remove all classes" );
+	equal( elem[ 1 ].className, "", "Remove all classes" );
+	equal( elem[ 2 ].className, "", "Remove all classes" );
+
+	elem.addClass( "hi foo bar" );
+	elem.removeClass( "foo" );
+	equal( elem[ 0 ].className, "hi bar", "Check removal of one class" );
+	equal( elem[ 1 ].className, "hi bar", "Check removal of one class" );
+	equal( elem[ 2 ].className, "hi bar", "Check removal of one class" );
+
+	ok( elem.hasClass( "hi" ), "Check has1" );
+	ok( elem.hasClass( "bar" ), "Check has2" );
+
+	ok( jQuery( "<p class='hi'>p0</p><p>p1</p><p>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the first element" );
+	ok( jQuery( "<p>p0</p><p class='hi'>p1</p><p>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the second element" );
+	ok( jQuery( "<p>p0</p><p>p1</p><p class='hi'>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the last element" );
+
+	ok( jQuery( "<p class='hi'>p0</p><p class='hi'>p1</p><p class='hi'>p2</p>" ).hasClass( "hi" ),
+		"Did find a class when present in all elements" );
+
+	ok( !jQuery( "<p class='hi0'>p0</p><p class='hi1'>p1</p><p class='hi2'>p2</p>" ).hasClass( "hi" ),
+		"Did not find a class when not present" );
+});
+
 test( "contents().hasClass() returns correct values", function() {
 	expect( 2 );
 
