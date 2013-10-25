@@ -931,6 +931,22 @@ test( "Override !important when changing styles (#14394)", function() {
 	equal( el.css( "display" ), "none", "New style replaced !important" );
 });
 
+test( "Show and hide will override !important inline or css style (#14487)", function() {
+	expect( 4 );
+
+	var methods = [ "show", "hide" ];
+	jQuery.each( methods, function( i, method ) {
+		var opposite = i === 0 ? methods[ 1 ] : methods[ 0 ],
+			el1 = jQuery( "<div>" ).addClass( opposite + "-important" ).appendTo( "#qunit-fixture" ),
+			el2 = jQuery( "<div>" ).attr( "style" , "display: " + el1.css( "display" ) + " !important;" );
+
+		jQuery.each( [ el1, el2 ], function( _, el ) {
+			el[ method ]();
+			equal( el.css( "display" ), method === "show" ? "block" : "none", method + " overrides !important style" );
+		});
+	});
+});
+
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
 	styles = [{

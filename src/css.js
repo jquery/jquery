@@ -196,7 +196,15 @@ function showHide( elements, show ) {
 			continue;
 		}
 		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
-			elem.style.display = show ? values[ index ] || "" : "none";
+			if ( show ) {
+				if ( values [ index ] ) {
+					elem.style.cssText += "display: " + values[ index ] + " !important;";
+				} else {
+					elem.style.display = "";
+				}
+			} else {
+				elem.style.cssText += "display: none !important;";
+			}
 		}
 	}
 
