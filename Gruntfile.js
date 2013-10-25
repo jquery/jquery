@@ -1,5 +1,4 @@
 module.exports = function( grunt ) {
-
 	"use strict";
 
 	function readOptionalJSON( filepath ) {
@@ -140,13 +139,7 @@ module.exports = function( grunt ) {
 	});
 
 	// Load grunt tasks from NPM packages
-	grunt.loadNpmTasks( "grunt-compare-size" );
-	grunt.loadNpmTasks( "grunt-git-authors" );
-	grunt.loadNpmTasks( "grunt-contrib-watch" );
-	grunt.loadNpmTasks( "grunt-contrib-jshint" );
-	grunt.loadNpmTasks( "grunt-contrib-uglify" );
-	grunt.loadNpmTasks( "grunt-jsonlint" );
-	grunt.loadNpmTasks( "grunt-jscs-checker" );
+	require( "load-grunt-tasks" )( grunt );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
