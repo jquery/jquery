@@ -140,3 +140,7 @@ section { background:#f0f; display:block; }
 #foo { background: url(1x1.jpg) right bottom no-repeat; }
 
 #display { display: list-item !important; }
+
+/* #14487 */
+.show-important { display: block !important; }
+.hide-important { display: none !important; }
