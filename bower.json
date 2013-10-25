@@ -18,5 +18,10 @@
   },
   "devDependencies": {
     "qunit": "~1.12.0"
-  }
+  },
+  "keywords": [
+    "jquery",
+    "javascript",
+    "library"
+  ]
 }
