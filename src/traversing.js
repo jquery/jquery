@@ -61,7 +61,7 @@ jQuery.fn.extend({
 		var cur,
 			i = 0,
 			l = this.length,
-			ret = [],
+			matched = [],
 			pos = rneedsContext.test( selectors ) || typeof selectors !== "string" ?
 				jQuery( selectors, context || this.context ) :
 				0;
@@ -76,13 +76,13 @@ jQuery.fn.extend({
 					cur.nodeType === 1 &&
 						jQuery.find.matchesSelector(cur, selectors)) ) {
 
-					cur = ret.push( cur );
+					matched.push( cur );
 					break;
 				}
 			}
 		}
 
-		return this.pushStack( ret.length > 1 ? jQuery.unique( ret ) : ret );
+		return this.pushStack( matched.length > 1 ? jQuery.unique( matched ) : matched );
 	},
 
 	// Determine the position of an element within
