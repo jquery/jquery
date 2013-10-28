@@ -262,7 +262,6 @@ test("data-* attributes", function() {
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		nativeParse = typeof JSON !== "undefined" && JSON.parse,
 		div = jQuery("<div>"),
 		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
 		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
@@ -319,17 +318,11 @@ test("data-* attributes", function() {
 	equal( child.data("other"), "test", "Make sure value was pulled in properly from a .data()." );
 
 	// attribute parsing
-	i = l = 0;
+	i = 0;
 	jQuery.parseJSON = function() {
 		i++;
 		return parseJSON.apply( this, arguments );
 	};
-	if ( nativeParse ) {
-		JSON.parse = function() {
-			l++;
-			return nativeParse.apply( this, arguments );
-		};
-	}
 
 	child
 		.attr("data-true", "true")
@@ -377,12 +370,9 @@ test("data-* attributes", function() {
 	strictEqual( child.data("space"), " ", "Whitespace string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
-	equal( i || l, 2, "Correct number of JSON parse attempts when reading from attributes" );
+	equal( i, 2, "Correct number of JSON parse attempts when reading from attributes" );
 
 	jQuery.parseJSON = parseJSON;
-	if ( nativeParse ) {
-		JSON.parse = nativeParse;
-	}
 	child.remove();
 
 	// tests from metadata plugin
