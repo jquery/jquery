@@ -25,7 +25,7 @@ function dataAttr( elem, key, data ) {
 					// Only convert to a number if it doesn't change the string
 					+data + "" === data ? +data :
 					rbrace.test( data ) ? jQuery.parseJSON( data ) :
-						data;
+					data;
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
