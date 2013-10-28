@@ -1522,6 +1522,11 @@ module( "ajax", {
 		}
 	} );
 
+	testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
+		expect( 1 );
+		strictEqual( status, "success", "Request completed" );
+	});
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {

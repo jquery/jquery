@@ -18,18 +18,16 @@ var xhrSupported = jQuery.ajaxSettings.xhr(),
 		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
 	},
-	// Support: IE9
-	// We need to keep track of outbound xhr and abort them manually
-	// because IE is not smart enough to do it all by itself
 	xhrId = 0,
 	xhrCallbacks = {};
 
+// Support: IE9
+// Open requests must be manually aborted on unload (#5280)
 if ( window.ActiveXObject ) {
 	jQuery( window ).on( "unload", function() {
 		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]();
 		}
-		xhrCallbacks = undefined;
 	});
 }
 
