@@ -723,7 +723,6 @@ jQuery.each({
 
 // Create "bubbling" focus and blur events
 // Support: Firefox, Chrome, Safari
-// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
 if ( !support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
