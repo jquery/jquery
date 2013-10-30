@@ -477,7 +477,7 @@ jQuery.fn.extend({
 				return this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
 			}
 
-			for ( ; (elem = this[i]) != null; i++ ) {
+			for ( ; (elem = this[ i ]) != null; i++ ) {
 				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
 					elem.textContent = value;
 				}
