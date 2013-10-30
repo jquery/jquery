@@ -316,13 +316,9 @@ jQuery.fn.extend({
 				return jQuery.text( this );
 			}
 
-			// Support: IE <= 8
-			if ( !this[ 0 ].textContent ) {
-				return this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
-			}
-			
-			this[ 0 ].textContent = value;
-			return this;
+			return this.each(function() {
+				this.textContent = value;
+			});
 
 		}, null, value, arguments.length );
 	},

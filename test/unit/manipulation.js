@@ -31,9 +31,9 @@ function manipulationFunctionReturningObj( value ) {
 
 test( "text()", function() {
 
-	expect( 5 );
+	expect( 7 );
 
-	var expected, frag, $newLineTest;
+	var expected, frag, $newLineTest, $multipleElements;
 
 	expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	equal( jQuery("#sap").text(), expected, "Check for merged text of more then one element." );
@@ -53,6 +53,15 @@ test( "text()", function() {
 	equal( $newLineTest.text(), "test\ntesty", "text() does not remove new lines (#11153)" );
 
 	$newLineTest.remove();
+
+	// Update multiple elements #11809
+	expected = "New";
+
+	$multipleElements = jQuery( "<div>Hello</div>" ).add( "<div>World</div>" );
+	$multipleElements.text( expected );
+
+	equal( $multipleElements.eq(0).text(), expected, "text() updates multiple elements (#11809)" );
+	equal( $multipleElements.eq(1).text(), expected, "text() updates multiple elements (#11809)" );
 });
 
 test( "text(undefined)", function() {
