@@ -312,9 +312,16 @@ jQuery.extend({
 jQuery.fn.extend({
 	text: function( value ) {
 		return access( this, function( value ) {
-			return value === undefined ?
-				jQuery.text( this ) :
-				this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
+			if ( value === undefined ) {
+				return jQuery.text( this );
+			}
+
+			if ( this[ 0 ].textContent ) {
+				this[ 0 ].textContent = value;
+				return this;
+			}
+
+			return this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
 		}, null, value, arguments.length );
 	},
 
