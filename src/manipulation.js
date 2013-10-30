@@ -319,7 +319,7 @@ jQuery.fn.extend({
 				return jQuery.text( this );
 			}
 
-			for ( ; (elem = this[i]) != null; i++ ) {
+			for ( ; (elem = this[ i ]) != null; i++ ) {
 				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
 					elem.textContent = value;
 				}
