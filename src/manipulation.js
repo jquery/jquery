@@ -328,8 +328,6 @@ jQuery.fn.extend({
 					elem.textContent = value;
 				}
 			}
-
-			return this;
 		}, null, value, arguments.length );
 	},
 
