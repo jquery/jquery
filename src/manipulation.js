@@ -465,6 +465,9 @@ jQuery.extend({
 jQuery.fn.extend({
 	text: function( value ) {
 		return access( this, function( value ) {
+			var elem,
+				i = 0;
+
 			if ( value === undefined ) {
 				return jQuery.text( this );
 			}
@@ -474,12 +477,13 @@ jQuery.fn.extend({
 				return this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
 			}
 
-			return this.each(function() {
-				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-					this.textContent = value;
+			for ( ; (elem = this[i]) != null; i++ ) {
+				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
+					elem.textContent = value;
 				}
-			});
+			}
 
+			return this;
 		}, null, value, arguments.length );
 	},
 
