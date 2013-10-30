@@ -317,7 +317,9 @@ jQuery.fn.extend({
 			}
 
 			return this.each(function() {
-				this.textContent = value;
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.textContent = value;
+				}
 			});
 
 		}, null, value, arguments.length );
