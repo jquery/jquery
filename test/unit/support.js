@@ -60,6 +60,21 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 	strictEqual( shrinkWrapBlocks, computedSupport.shrinkWrapBlocks, "jQuery.support.shrinkWrapBlocks properties are the same" );
 });
 
+testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
+	"support/csp.php",
+	function( support ) {
+		expect( 2 );
+		deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
+
+		stop();
+
+		jQuery.get( "data/support/csp.log" ).done(function( data ) {
+			equal( data, "", "No log request should be sent" );
+			jQuery.get( "data/support/csp-clean.php" ).done( start );
+		});
+	}
+);
+
 (function() {
 	var expected, version,
 		userAgent = window.navigator.userAgent;
@@ -462,17 +477,3 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 	}
 
 })();
-
-// Support: Safari 5.1
-// Shameless browser-sniff, but Safari 5.1 mishandles CSP
-if ( !( typeof navigator !== "undefined" &&
-	(/ AppleWebKit\/\d.*? Version\/(\d+)/.exec(navigator.userAgent) || [])[1] < 6 ) ) {
-
-	testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
-		"support/csp.php",
-		function( support ) {
-			expect( 1 );
-			deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
-		}
-	);
-}

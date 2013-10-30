@@ -4,14 +4,17 @@ define([
 
 (function () {
 	var i, eventName,
-		div = document.createElement("div" );
+		div = document.createElement( "div" );
 
-	// Support: IE<9 (lack submit/change bubble), Firefox 17+ (lack focusin event)
-	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+	// Support: IE<9 (lack submit/change bubble), Firefox 23+ (lack focusin event)
 	for ( i in { submit: true, change: true, focusin: true }) {
-		div.setAttribute( eventName = "on" + i, "t" );
+		eventName = "on" + i;
 
-		support[ i + "Bubbles" ] = eventName in window || div.attributes[ eventName ].expando === false;
+		if ( !(support[ i + "Bubbles" ] = eventName in window) ) {
+			// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+			div.setAttribute( eventName, "t" );
+			support[ i + "Bubbles" ] = div.attributes[ eventName ].expando === false;
+		}
 	}
 
 	// Null elements to avoid leaks in IE.
