@@ -64,9 +64,9 @@ test( "text(undefined)", function() {
 
 function testText( valueObj ) {
 
-	expect( 4 );
+	expect( 6 );
 
-	var val, j;
+	var val, j, expected, $multipleElements;
 
 	val = valueObj("<div><b>Hello</b> cruel world!</div>");
 	equal( jQuery("#foo").text(val)[ 0 ].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
@@ -79,6 +79,15 @@ function testText( valueObj ) {
 
 	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equal( jQuery("#nonnodes")[ 0 ].childNodes.length < 3 ? 8 : j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
+
+	// Update multiple elements #11809
+	expected = "New";
+
+	$multipleElements = jQuery( "<div>Hello</div>" ).add( "<div>World</div>" );
+	$multipleElements.text( expected );
+
+	equal( $multipleElements.eq(0).text(), expected, "text() updates multiple elements (#11809)" );
+	equal( $multipleElements.eq(1).text(), expected, "text() updates multiple elements (#11809)" );
 }
 
 test( "text(String)", function() {

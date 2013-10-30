@@ -465,9 +465,21 @@ jQuery.extend({
 jQuery.fn.extend({
 	text: function( value ) {
 		return access( this, function( value ) {
-			return value === undefined ?
-				jQuery.text( this ) :
-				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
+			if ( value === undefined ) {
+				return jQuery.text( this );
+			}
+
+			// Support: IE<9
+			if ( typeof this[0].textContent !== "string" ) {
+				return this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
+			}
+
+			return this.each(function() {
+				if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
+					this.textContent = value;
+				}
+			});
+
 		}, null, value, arguments.length );
 	},
 
