@@ -320,11 +320,10 @@ jQuery.fn.extend({
 				return jQuery.text( this );
 			}
 
-			this.empty();
-
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
+					jQuery.cleanData( getAll( elem, false ) );
 					elem.textContent = value;
 				}
 			}
