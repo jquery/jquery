@@ -64,9 +64,9 @@ test( "text(undefined)", function() {
 
 function testText( valueObj ) {
 
-	expect( 6 );
+	expect( 7 );
 
-	var val, j, expected, $multipleElements;
+	var val, j, expected, $multipleElements, $parentDiv, $childDiv;
 
 	val = valueObj("<div><b>Hello</b> cruel world!</div>");
 	equal( jQuery("#foo").text(val)[ 0 ].innerHTML.replace(/>/g, "&gt;"), "&lt;div&gt;&lt;b&gt;Hello&lt;/b&gt; cruel world!&lt;/div&gt;", "Check escaped text" );
@@ -88,6 +88,15 @@ function testText( valueObj ) {
 
 	equal( $multipleElements.eq(0).text(), expected, "text() updates multiple elements (#11809)" );
 	equal( $multipleElements.eq(1).text(), expected, "text() updates multiple elements (#11809)" );
+
+	// Prevent memory leaks #11809
+	$childDiv = jQuery( "<div/>" );
+	$childDiv.data("leak", true);
+	$parentDiv = jQuery( "<div/>" );
+	$parentDiv.append( $childDiv );
+	$parentDiv.text("Dry off");
+	
+	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
 }
 
 test( "text(String)", function() {
