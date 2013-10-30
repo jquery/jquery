@@ -313,13 +313,15 @@ jQuery.fn.extend({
 	text: function( value ) {
 		return access( this, function( value ) {
 			var elem,
-				i = 0;
+				i = 0,
+				len = this.length;
 
 			if ( value === undefined ) {
 				return jQuery.text( this );
 			}
 
-			for ( ; (elem = this[ i ]) != null; i++ ) {
+			for ( ; i < len; i++ ) {
+				elem = this[ i ];
 				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
 					elem.textContent = value;
 				}
