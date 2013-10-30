@@ -473,16 +473,17 @@ jQuery.fn.extend({
 				return jQuery.text( this );
 			}
 
-			// Support: IE<9
-			if ( typeof this[0].textContent !== "string" ) {
-				return this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
-			}
+			this.empty();
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				if ( elem.nodeType === 1 || elem.nodeType === 11 || elem.nodeType === 9 ) {
-					jQuery.cleanData( getAll( elem, false ) );
-					elem.textContent = value;
+					if ( typeof elem.textContent === "string" ) {
+						elem.textContent = value;
+					} else {
+						// Support: IE<9
+						elem.appendChild( (elem.ownerDocument || elem).createTextNode( value ) );
+					}
 				}
 			}
 		}, null, value, arguments.length );
