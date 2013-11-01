@@ -60,6 +60,9 @@ testIframeWithCallback( "box-sizing does not affect jQuery.support.shrinkWrapBlo
 	strictEqual( shrinkWrapBlocks, computedSupport.shrinkWrapBlocks, "jQuery.support.shrinkWrapBlocks properties are the same" );
 });
 
+
+// This test checkes CSP only for browsers with "Content-Security-Policy" header support
+// i.e. no old WebKit or old Firefox
 testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"support/csp.php",
 	function( support ) {
@@ -68,9 +71,9 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 		stop();
 
-		jQuery.get( "data/support/csp.log" ).done(function( data ) {
+		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
 			equal( data, "", "No log request should be sent" );
-			jQuery.get( "data/support/csp-clean.php" ).done( start );
+			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
 		});
 	}
 );
