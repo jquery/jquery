@@ -366,7 +366,7 @@ test("data-* attributes", function() {
 		"JSON object with leading non-JSON read from attribute as string");
 	strictEqual( child.data("notjson2"), "[] ",
 		"JSON array with trailing non-JSON read from attribute as string");
-	strictEqual( child.data("empty"), "", "Empty string read from attribute");
+	strictEqual( child.data("empty"), true, "Empty string read from attribute represents true (HTML5 Boolean attributes)");
 	strictEqual( child.data("space"), " ", "Whitespace string read from attribute");
 	strictEqual( child.data("null"), null, "Primitive null read from attribute");
 	strictEqual( child.data("string"), "test", "Typical string read from attribute");
