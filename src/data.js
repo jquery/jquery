@@ -31,7 +31,7 @@ function dataAttr( elem, key, data ) {
 
 		if ( typeof data === "string" ) {
 			try {
-				data = data === "true" ? true :
+				data = ( data === "true" || data === "" ) ? true :
 					data === "false" ? false :
 					data === "null" ? null :
 					// Only convert to a number if it doesn't change the string
