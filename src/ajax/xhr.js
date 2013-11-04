@@ -77,11 +77,9 @@ if ( xhrSupported ) {
 					}
 
 					// Need an extra try/catch for cross-domain requests in Firefox 3
-					try {
-						for ( i in headers ) {
-							xhr.setRequestHeader( i, headers[ i ] );
-						}
-					} catch( err ) {}
+					for ( i in headers ) {
+						xhr.setRequestHeader( i, headers[ i ] );
+					}
 
 					// Do send the request
 					// This may raise an exception which is actually
@@ -114,8 +112,8 @@ if ( xhrSupported ) {
 									status = xhr.status;
 
 									// Support: IE<10
-									// #11426: When requesting binary data, IE9 will throw an exception
-									// on any attempt to access responseText
+									// Accessing binary-data responseText throws an exception
+									// (#11426)
 									if ( typeof xhr.responseText === "string" ) {
 										responses.text = xhr.responseText;
 									}
@@ -186,7 +184,7 @@ function createStandardXHR() {
 
 function createActiveXHR() {
 	try {
-		return new window.ActiveXObject("Microsoft.XMLHTTP");
+		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
 	} catch( e ) {}
 }
 
