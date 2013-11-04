@@ -93,8 +93,8 @@ jQuery.ajaxTransport(function( options ) {
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
 									// Support: IE9
-									// #11426: When requesting binary data, IE9 will throw an exception
-									// on any attempt to access responseText
+									// Accessing binary-data responseText throws an exception
+									// (#11426)
 									typeof xhr.responseText === "string" ? {
 										text: xhr.responseText
 									} : undefined,
