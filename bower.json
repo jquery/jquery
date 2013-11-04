@@ -19,6 +19,18 @@
     "requirejs": "~2.1.8",
     "qunit": "~1.12.0"
   },
+  "exportsOverride": {
+    "sizzle": {
+      "sizzle": "."
+    },
+
+    "requirejs": {
+      "requirejs": "require.js"
+    },
+    "qunit": {
+      "qunit": "qunit"
+    }
+  },
   "keywords": [
     "jquery",
     "javascript",

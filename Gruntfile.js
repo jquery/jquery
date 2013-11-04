@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 	}
 
 	var gzip = require( "gzip-js" ),
+		path = require( "path" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
@@ -43,6 +44,17 @@ module.exports = function( grunt ) {
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ],
 					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
+				}
+			}
+		},
+		bower: {
+			install: {
+				options: {
+					targetDir: "bower_modules",
+					cleanup: true,
+					layout: function( type ) {
+						return path.join( type );
+					}
 				}
 			}
 		},
