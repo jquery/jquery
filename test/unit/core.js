@@ -1338,13 +1338,35 @@ test("jQuery.parseHTML", function() {
 	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 });
 
-test("jQuery.parseJSON", function(){
-	expect( 9 );
+test("jQuery.parseJSON", function() {
+	expect( 19 );
 
-	equal( jQuery.parseJSON( null ), null, "Actual null returns null" );
-	equal( jQuery.isEmptyObject( jQuery.parseJSON("{}") ), true, "Empty object returns empty object" );
-	deepEqual( jQuery.parseJSON("{\"test\":1}"), { "test": 1 }, "Plain object parses" );
-	deepEqual( jQuery.parseJSON("\n{\"test\":1}"), { "test": 1 }, "Leading whitespaces are ignored." );
+	strictEqual( jQuery.parseJSON( null ), null, "null" );
+	strictEqual( jQuery.parseJSON("0.88"), 0.88, "Number" );
+	strictEqual(
+		jQuery.parseJSON("\" \\\" \\\\ \\/ \\b \\f \\n \\r \\t \\u007E \\u263a \""),
+		" \" \\ / \b \f \n \r \t ~ \u263A ",
+		"String escapes"
+	);
+	deepEqual( jQuery.parseJSON("{}"), {}, "Empty object" );
+	deepEqual( jQuery.parseJSON("{\"test\":1}"), { "test": 1 }, "Plain object" );
+	deepEqual( jQuery.parseJSON("[0]"), [ 0 ], "Simple array" );
+
+	deepEqual(
+		jQuery.parseJSON("[ \"string\", -4.2, 2.7180e0, 3.14E-1, {}, [], true, false, null ]"),
+		[ "string", -4.2, 2.718, 0.314, {}, [], true, false, null ],
+		"Array of all data types"
+	);
+	deepEqual(
+		jQuery.parseJSON( "{ \"string\": \"\", \"number\": 4.2e+1, \"object\": {}," +
+			"\"array\": [[]], \"boolean\": [ true, false ], \"null\": null }"),
+		{ string: "", number: 42, object: {}, array: [[]], boolean: [ true, false ], "null": null },
+		"Dictionary of all data types"
+	);
+
+	deepEqual( jQuery.parseJSON("\n{\"test\":1}\t"), { "test": 1 },
+		"Leading and trailing whitespace are ignored" );
+
 	raises(function() {
 		jQuery.parseJSON();
 	}, null, "Undefined raises an error" );
@@ -1354,12 +1376,48 @@ test("jQuery.parseJSON", function(){
 	raises(function() {
 		jQuery.parseJSON("''");
 	}, null, "Single-quoted string raises an error" );
+	/*
+
+	// Broken on IE8
+	raises(function() {
+		jQuery.parseJSON("\" \\a \"");
+	}, null, "Invalid string escape raises an error" );
+
+	// Broken on IE8, Safari5.1 Windows
+	raises(function() {
+		jQuery.parseJSON("\"\t\"");
+	}, null, "Unescaped control character raises an error" );
+
+	// Broken on IE9+
+	raises(function() {
+		jQuery.parseJSON("0101");
+	}, null, "Leading-zero number raises an error" );
+
+	// Broken on IE8
+	raises(function() {
+		jQuery.parseJSON(".123");
+	}, null, "Number with no integer component raises an error" );
+	*/
 	raises(function() {
 		jQuery.parseJSON("{a:1}");
 	}, null, "Unquoted property raises an error" );
 	raises(function() {
 		jQuery.parseJSON("{'a':1}");
 	}, null, "Single-quoted property raises an error" );
+	raises(function() {
+		jQuery.parseJSON("[,]");
+	}, null, "Array element elision raises an error" );
+	raises(function() {
+		jQuery.parseJSON("{},[]");
+	}, null, "Comma expression raises an error" );
+	raises(function() {
+		jQuery.parseJSON("[]\n,{}");
+	}, null, "Newline-containing comma expression raises an error" );
+	raises(function() {
+		jQuery.parseJSON("\"\"\n\"\"");
+	}, null, "Automatic semicolon insertion raises an error" );
+
+	strictEqual( jQuery.parseJSON([ 0 ]), 0, "Input cast to string" );
 });
 
 test("jQuery.parseXML", 8, function(){
