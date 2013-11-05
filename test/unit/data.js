@@ -164,6 +164,12 @@ test("jQuery.acceptData", function() {
 	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
 });
 
+// attempting to access the data of an undefined jQuery element should be undefined
+test("jQuery().data() === undefined (#14101)", 2, function() {
+	strictEqual(jQuery().data(), undefined);
+	strictEqual(jQuery().data("key"), undefined);
+});
+
 test(".data()", function() {
 	expect(5);
 
