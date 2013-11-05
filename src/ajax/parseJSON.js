@@ -12,7 +12,7 @@ jQuery.parseJSON = function( data ) {
 
 	var requireNonComma,
 		depth = null,
-		str = jQuery.trim( data + "" );
+		str = jQuery.trim( data );
 
 	// Guard against invalid (and possibly dangerous) input by ensuring that nothing remains
 	// after removing valid tokens

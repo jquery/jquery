@@ -1341,7 +1341,7 @@ test("jQuery.parseHTML", function() {
 test("jQuery.parseJSON", function() {
 	expect( 19 );
 
-	strictEqual( jQuery.parseJSON( null ), null, "null" );
+	strictEqual( jQuery.parseJSON("null"), null, "null" );
 	strictEqual( jQuery.parseJSON("0.88"), 0.88, "Number" );
 	strictEqual(
 		jQuery.parseJSON("\" \\\" \\\\ \\/ \\b \\f \\n \\r \\t \\u007E \\u263a \""),
