@@ -76,8 +76,8 @@ function restoreScript( elem ) {
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {
-	var l = elems.length,
-		i = 0;
+	var i = 0,
+		l = elems.length;
 
 	for ( ; i < l; i++ ) {
 		data_priv.set(
@@ -190,10 +190,10 @@ jQuery.extend({
 
 	buildFragment: function( elems, context, scripts, selection ) {
 		var elem, tmp, tag, wrap, contains, j,
-			i = 0,
-			l = elems.length,
 			fragment = context.createDocumentFragment(),
-			nodes = [];
+			nodes = [],
+			i = 0,
+			l = elems.length;
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
