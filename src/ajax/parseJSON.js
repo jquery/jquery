@@ -23,7 +23,7 @@ jQuery.parseJSON = function( data ) {
 			depth = 0;
 		}
 
-		// Perform no more replacements after encountering a valid prefix
+		// Perform no more replacements after returning to outermost depth
 		if ( depth === 0 ) {
 			return token;
 		}
@@ -31,8 +31,11 @@ jQuery.parseJSON = function( data ) {
 		// Commas must not follow "[", "{", or ","
 		requireNonComma = open || comma;
 
-		// Determine numeric depth, incrementing on "[" or "{" and decrementing on "}" or "]"
-		depth -= !open - !close;
+		// Determine new depth
+		// array/object open ("[" or "{"): depth += true - false (increment)
+		// array/object close ("]" or "}"): depth += false - true (decrement)
+		// other cases ("," or primitive): depth += true - true (numeric cast)
+		depth += !close - !open;
 
 		// Remove this token
 		return "";
