@@ -11,9 +11,9 @@ var rclass = /[\t\r\n\f]/g;
 jQuery.fn.extend({
 	addClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
+			proceed = typeof value === "string" && value,
 			i = 0,
-			len = this.length,
-			proceed = typeof value === "string" && value;
+			l = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -25,7 +25,7 @@ jQuery.fn.extend({
 			// The disjunction here is for better compressibility (see removeClass)
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
-			for ( ; i < len; i++ ) {
+			for ( ; i < l; i++ ) {
 				elem = this[ i ];
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) :
@@ -54,9 +54,9 @@ jQuery.fn.extend({
 
 	removeClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
+			proceed = arguments.length === 0 || typeof value === "string" && value,
 			i = 0,
-			len = this.length,
-			proceed = arguments.length === 0 || typeof value === "string" && value;
+			l = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -66,7 +66,7 @@ jQuery.fn.extend({
 		if ( proceed ) {
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
-			for ( ; i < len; i++ ) {
+			for ( ; i < l; i++ ) {
 				elem = this[ i ];
 				// This expression is here for better compressibility (see addClass)
 				cur = elem.nodeType === 1 && ( elem.className ?
