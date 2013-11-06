@@ -1419,3 +1419,10 @@ testIframeWithCallback( "Conditional compilation compatibility (#13274)", "core/
 	deepEqual( errors, [], "No errors" );
 	ok( $(), "jQuery executes" );
 });
+
+testIframeWithCallback( "Tolerating alias-masked DOM properties (#14074)", "core/aliased.html",
+	function( errors ) {
+			expect( 1 );
+			deepEqual( errors, [], "jQuery loaded" );
+	}
+);
