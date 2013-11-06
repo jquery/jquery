@@ -1383,21 +1383,26 @@ test("jQuery.parseJSON", function() {
 		jQuery.parseJSON("\" \\a \"");
 	}, null, "Invalid string escape raises an error" );
 
-	// Broken on IE8, Safari5.1 Windows
+	// Broken on IE8, Safari 5.1 Windows
 	raises(function() {
 		jQuery.parseJSON("\"\t\"");
 	}, null, "Unescaped control character raises an error" );
-
-	// Broken on IE9+
-	raises(function() {
-		jQuery.parseJSON("0101");
-	}, null, "Leading-zero number raises an error" );
 
 	// Broken on IE8
 	raises(function() {
 		jQuery.parseJSON(".123");
 	}, null, "Number with no integer component raises an error" );
+
 	*/
+	raises(function() {
+		var result = jQuery.parseJSON("0101");
+
+		// Support: IE9+
+		// Ensure base-10 interpretation on browsers that erroneously accept leading-zero numbers
+		if ( result === 101 ) {
+			throw new Error("close enough");
+		}
+	}, null, "Leading-zero number raises an error or is parsed as decimal" );
 	raises(function() {
 		jQuery.parseJSON("{a:1}");
 	}, null, "Unquoted property raises an error" );
@@ -1416,8 +1421,6 @@ test("jQuery.parseJSON", function() {
 	raises(function() {
 		jQuery.parseJSON("\"\"\n\"\"");
 	}, null, "Automatic semicolon insertion raises an error" );
-
-	strictEqual( jQuery.parseJSON([ 0 ]), 0, "Input cast to string" );
 });
 
 test("jQuery.parseXML", 8, function(){
