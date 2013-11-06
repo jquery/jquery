@@ -6,7 +6,7 @@ define([
 // The value/s can optionally be executed if it's a function
 var access = jQuery.access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 	var i = 0,
-		length = elems.length,
+		len = elems.length,
 		bulk = key == null;
 
 	// Sets many values
@@ -40,7 +40,7 @@ var access = jQuery.access = function( elems, fn, key, value, chainable, emptyGe
 		}
 
 		if ( fn ) {
-			for ( ; i < length; i++ ) {
+			for ( ; i < len; i++ ) {
 				fn( elems[i], key, raw ? value : value.call( elems[i], i, fn( elems[i], key ) ) );
 			}
 		}
@@ -52,7 +52,7 @@ var access = jQuery.access = function( elems, fn, key, value, chainable, emptyGe
 		// Gets
 		bulk ?
 			fn.call( elems ) :
-			length ? fn( elems[0], key ) : emptyGet;
+			len ? fn( elems[0], key ) : emptyGet;
 };
 
 return access;
