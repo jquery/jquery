@@ -54,13 +54,13 @@ jQuery.filter = function( expr, elems, not ) {
 jQuery.fn.extend({
 	find: function( selector ) {
 		var i = 0,
-			l = this.length,
+			len = this.length,
 			ret = [],
 			self = this;
 
 		if ( typeof selector !== "string" ) {
 			return this.pushStack( jQuery( selector ).filter(function() {
-				for ( ; i < l; i++ ) {
+				for ( ; i < len; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
@@ -69,12 +69,12 @@ jQuery.fn.extend({
 		}
 
 		i = 0;
-		for ( ; i < l; i++ ) {
+		for ( ; i < len; i++ ) {
 			jQuery.find( selector, self[ i ], ret );
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		ret = this.pushStack( l > 1 ? jQuery.unique( ret ) : ret );
+		ret = this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
 		ret.selector = this.selector ? this.selector + " " + selector : selector;
 		return ret;
 	},

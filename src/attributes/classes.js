@@ -13,7 +13,7 @@ jQuery.fn.extend({
 		var classes, elem, cur, clazz, j, finalValue,
 			proceed = typeof value === "string" && value,
 			i = 0,
-			l = this.length;
+			len = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -25,7 +25,7 @@ jQuery.fn.extend({
 			// The disjunction here is for better compressibility (see removeClass)
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
-			for ( ; i < l; i++ ) {
+			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) :
@@ -56,7 +56,7 @@ jQuery.fn.extend({
 		var classes, elem, cur, clazz, j, finalValue,
 			proceed = arguments.length === 0 || typeof value === "string" && value,
 			i = 0,
-			l = this.length;
+			len = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -66,7 +66,7 @@ jQuery.fn.extend({
 		if ( proceed ) {
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
-			for ( ; i < l; i++ ) {
+			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				// This expression is here for better compressibility (see addClass)
 				cur = elem.nodeType === 1 && ( elem.className ?
