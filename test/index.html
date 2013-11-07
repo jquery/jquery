@@ -8,8 +8,11 @@
 	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<!-- Includes -->
 
-	<!-- Allows us to fetch submodule tests when using a no-ajax build -->
-	<script src="data/jquery-1.9.1.ajax_xhr.min.js"></script>
+	<!--
+		We have to use previous jQuery as helper to ensure testability with
+		ajax-free builds (and non-interference when changing ajax internals)
+	-->
+	<script src="data/jquery-1.9.1.js"></script>
 
 	<script src="../bower_components/qunit/qunit/qunit.js"></script>
 	<script src="../bower_components/requirejs/require.js"></script>
