@@ -41,10 +41,10 @@
     "load-grunt-tasks": "~0.2.0",
     "testswarm": "~1.1.0",
     "requirejs": "~2.1.9",
-    "which": "~1.0.5"
+    "bower": "~1.2.7"
   },
   "scripts": {
-    "install": "node build/bower-install",
+    "install": "bower install",
     "test": "grunt"
   }
 }

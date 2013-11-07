@@ -35,20 +35,19 @@ First, clone a copy of the main jQuery git repo by running:
 git clone git://github.com/jquery/jquery.git
 ```
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) and [bower](http://bower.io/) packages if you haven't before. These should be done as global installs:
+Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) if you haven't before. This should be done as global install:
 
 ```bash
-npm install -g grunt-cli bower
+npm install -g grunt-cli
 ```
 
-Make sure you have `grunt` and `bower` installed by testing:
+Make sure you have `grunt` installed by testing:
 
 ```bash
 grunt -version
-bower -version
 ```
 
-Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
+Enter the jquery directory and install the Node dependencies, this time *without* specifying a global(-g) install:
 
 ```bash
 cd jquery && npm install
