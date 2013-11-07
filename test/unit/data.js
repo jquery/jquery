@@ -142,7 +142,7 @@ test("Data is not being set on comment and text nodes", function() {
 });
 
 test("jQuery.acceptData", function() {
-	expect( 10 );
+	expect( 11 );
 
 	var flash, applet;
 
@@ -162,6 +162,7 @@ test("jQuery.acceptData", function() {
 
 	ok( !jQuery.acceptData( document.createComment( "" ) ), "comment" );
 	ok( !jQuery.acceptData( document.createTextNode( "" ) ), "text" );
+	ok( !jQuery.acceptData( document.createDocumentFragment() ), "documentFragment" );
 
 	ok( jQuery.acceptData(
 		jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ] ),
