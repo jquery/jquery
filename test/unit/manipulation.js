@@ -91,12 +91,12 @@ function testText( valueObj ) {
 
 	// Prevent memory leaks #11809
 	$childDiv = jQuery( "<div/>" );
-	$childDiv.data("leak", true);
+	$childDiv.data( "leak", true );
 	$parentDiv = jQuery( "<div/>" );
 	$parentDiv.append( $childDiv );
-	$parentDiv.text("Dry off");
+	$parentDiv.text( "Dry off" );
 	
-	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
+	equal( $childDiv.data( "leak" ), undefined, "Check for leaks (#11809)" );
 }
 
 test( "text(String)", function() {
