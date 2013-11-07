@@ -39,7 +39,9 @@
     "gzip-js": "0.3.2",
     "testswarm": "~1.1.0",
     "requirejs": "~2.1.9",
-    "which": "~1.0.5"
+    "which": "~1.0.5",
+    "load-grunt-tasks": "~0.2.0",
+    "time-grunt": "~0.1.1"
   },
   "scripts": {
     "install": "node build/bower-install",

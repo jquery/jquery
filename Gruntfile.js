@@ -1,6 +1,10 @@
 module.exports = function( grunt ) {
-
 	"use strict";
+
+	// Load all grunt tasks
+	require( "load-grunt-tasks" )( grunt );
+	// Show elapsed time at the end
+	require( "time-grunt" )( grunt );
 
 	var gzip = require( "gzip-js" ),
 		readOptionalJSON = function( filepath ) {
@@ -129,14 +133,6 @@ module.exports = function( grunt ) {
 			}
 		}
 	});
-
-	// Load grunt tasks from NPM packages
-	grunt.loadNpmTasks( "grunt-compare-size" );
-	grunt.loadNpmTasks( "grunt-git-authors" );
-	grunt.loadNpmTasks( "grunt-contrib-watch" );
-	grunt.loadNpmTasks( "grunt-contrib-jshint" );
-	grunt.loadNpmTasks( "grunt-contrib-uglify" );
-	grunt.loadNpmTasks( "grunt-jsonlint" );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
