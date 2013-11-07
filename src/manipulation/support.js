@@ -2,7 +2,7 @@ define([
 	"../var/support"
 ], function( support ) {
 
-(function () {
+(function() {
 	var fragment = document.createDocumentFragment(),
 		div = document.createElement("div"),
 		input = document.createElement("input");

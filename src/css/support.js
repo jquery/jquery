@@ -3,7 +3,7 @@ define([
 	"../var/support"
 ], function( jQuery, support ) {
 
-(function () {
+(function() {
 	var a, reliableHiddenOffsetsVal, boxSizingVal, boxSizingReliableVal,
 		pixelPositionVal, reliableMarginRightVal,
 		div = document.createElement( "div" ),
@@ -33,7 +33,6 @@ define([
 
 	// Null elements to avoid leaks in IE.
 	a = div = null;
-
 
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {

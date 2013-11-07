@@ -52,7 +52,7 @@ jQuery.fn.extend({
 			} else if ( typeof val === "number" ) {
 				val += "";
 			} else if ( jQuery.isArray( val ) ) {
-				val = jQuery.map(val, function ( value ) {
+				val = jQuery.map( val, function( value ) {
 					return value == null ? "" : value + "";
 				});
 			}

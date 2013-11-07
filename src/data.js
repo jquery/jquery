@@ -56,7 +56,7 @@ function isEmptyDataObject( obj ) {
 	return true;
 }
 
-function internalData( elem, name, data, pvt /* Internal Use Only */ ){
+function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}

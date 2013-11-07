@@ -11,7 +11,7 @@ jQuery.parseXML = function( data ) {
 	try {
 		if ( window.DOMParser ) { // Standard
 			tmp = new DOMParser();
-			xml = tmp.parseFromString( data , "text/xml" );
+			xml = tmp.parseFromString( data, "text/xml" );
 		} else { // IE
 			xml = new ActiveXObject( "Microsoft.XMLDOM" );
 			xml.async = "false";

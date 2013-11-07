@@ -2,7 +2,7 @@ define([
 	"../var/support"
 ], function( support ) {
 
-(function () {
+(function() {
 	var i, eventName,
 		div = document.createElement( "div" );
 

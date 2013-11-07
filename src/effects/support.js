@@ -3,7 +3,7 @@ define([
 	"../var/support"
 ], function( strundefined, support ) {
 
-(function () {
+(function() {
 	var a, shrinkWrapBlocksVal,
 		div = document.createElement( "div" ),
 		divReset =
@@ -32,7 +32,7 @@ define([
 	// Null elements to avoid leaks in IE.
 	a = div = null;
 
-	support.shrinkWrapBlocks = function () {
+	support.shrinkWrapBlocks = function() {
 		var body, container, div, containerStyles;
 
 		if ( shrinkWrapBlocksVal == null ) {

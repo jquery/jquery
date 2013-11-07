@@ -422,7 +422,7 @@ if ( !support.opacity ) {
 }
 
 jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
-	function ( elem, computed ) {
+	function( elem, computed ) {
 		if ( computed ) {
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
 			// Work around by temporarily setting element display to inline-block

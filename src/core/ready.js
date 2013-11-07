@@ -87,7 +87,6 @@ function completed() {
 	}
 }
 
-
 jQuery.ready.promise = function( obj ) {
 	if ( !readyList ) {
 

@@ -2,7 +2,7 @@ define([
 	"../var/support"
 ], function( support ) {
 
-(function () {
+(function() {
 	var div = document.createElement( "div" );
 
 	// Execute the test only if not already executed in another module.

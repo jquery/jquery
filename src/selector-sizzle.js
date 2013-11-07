@@ -1,7 +1,7 @@
 define([
 	"./core",
 	"sizzle"
-], function ( jQuery, Sizzle ) {
+], function( jQuery, Sizzle ) {
 
 jQuery.find = Sizzle;
 jQuery.expr = Sizzle.selectors;

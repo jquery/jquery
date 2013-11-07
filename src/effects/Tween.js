@@ -102,7 +102,7 @@ jQuery.easing = {
 		return p;
 	},
 	swing: function( p ) {
-		return 0.5 - Math.cos( p*Math.PI ) / 2;
+		return 0.5 - Math.cos( p * Math.PI ) / 2;
 	}
 };
 
