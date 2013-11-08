@@ -2346,51 +2346,6 @@ test("checkbox state (#3827)", function() {
 	jQuery( cb ).triggerHandler( "click" );
 });
 
-test("focus-blur order (#12868)", function() {
-	expect( 5 );
-
-	var order,
-		$text = jQuery("#text1"),
-		$radio = jQuery("#radio1").trigger("focus");
-
-	// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
-	// IE's browser window must be topmost for this to work properly!!
-	stop();
-	$radio[0].focus();
-
-	setTimeout( function() {
-
-		$text
-			.on( "focus", function(){
-				equal( order++, 1, "text focus" );
-			})
-			.on( "blur", function(){
-				equal( order++, 0, "text blur" );
-			});
-		$radio
-			.on( "focus", function(){
-				equal( order++, 1, "radio focus" );
-			})
-			.on( "blur", function(){
-				equal( order++, 0, "radio blur" );
-			});
-
-		// Enabled input getting focus
-		order = 0;
-		equal( document.activeElement, $radio[0], "radio has focus" );
-		$text.trigger("focus");
-		setTimeout( function() {
-			equal( document.activeElement, $text[0], "text has focus" );
-
-			// Run handlers without native method on an input
-			order = 1;
-			$radio.triggerHandler( "focus" );
-			$text.off();
-			start();
-		}, 50 );
-	}, 50 );
-});
-
 test("hover event no longer special since 1.9", function() {
 	expect( 1 );
 
@@ -2572,33 +2527,6 @@ test( "make sure events cloned correctly", 18, function() {
 	clone.find("#check1").trigger("change"); // 0 events should fire
 });
 
-test( "Check order of focusin/focusout events", 2, function() {
-	var focus, blur,
-		input = jQuery( "#name" );
-
-	input.on( "focus", function() {
-		focus = true;
-
-	}).on( "focusin", function() {
-		ok( !focus, "Focusin event should fire before focus does" );
-
-	}).on( "blur", function() {
-		blur = true;
-
-	}).on( "focusout", function() {
-		ok( !blur, "Focusout event should fire before blur does" );
-	});
-
-	// gain focus
-	input.trigger( "focus" );
-
-	// then lose it
-	jQuery( "#search" ).trigger( "focus" );
-
-	// cleanup
-	input.off();
-});
-
 test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function() {
 	expect( 1 );
 	var errored = false;
@@ -2621,3 +2549,78 @@ test( "Inline event result is returned (#13993)", function() {
 
 	equal( result, 42, "inline handler returned value" );
 });
+
+// This tests are unreliable in Firefox
+if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
+	test( "Check order of focusin/focusout events", 2, function() {
+		var focus, blur,
+			input = jQuery( "#name" );
+
+		input.on( "focus", function() {
+			focus = true;
+
+		}).on( "focusin", function() {
+			ok( !focus, "Focusin event should fire before focus does" );
+
+		}).on( "blur", function() {
+			blur = true;
+
+		}).on( "focusout", function() {
+			ok( !blur, "Focusout event should fire before blur does" );
+		});
+
+		// gain focus
+		input.trigger( "focus" );
+
+		// then lose it
+		jQuery( "#search" ).trigger( "focus" );
+
+		// cleanup
+		input.off();
+	});
+
+	test("focus-blur order (#12868)", function() {
+		expect( 5 );
+
+		var order,
+			$text = jQuery("#text1"),
+			$radio = jQuery("#radio1").trigger("focus");
+
+		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+		// IE's browser window must be topmost for this to work properly!!
+		stop();
+		$radio[0].focus();
+
+		setTimeout( function() {
+
+			$text
+				.on( "focus", function(){
+					equal( order++, 1, "text focus" );
+				})
+				.on( "blur", function(){
+					equal( order++, 0, "text blur" );
+				});
+			$radio
+				.on( "focus", function(){
+					equal( order++, 1, "radio focus" );
+				})
+				.on( "blur", function(){
+					equal( order++, 0, "radio blur" );
+				});
+
+			// Enabled input getting focus
+			order = 0;
+			equal( document.activeElement, $radio[0], "radio has focus" );
+			$text.trigger("focus");
+			setTimeout( function() {
+				equal( document.activeElement, $text[0], "text has focus" );
+
+				// Run handlers without native method on an input
+				order = 1;
+				$radio.triggerHandler( "focus" );
+				$text.off();
+				start();
+			}, 50 );
+		}, 50 );
+	});
+}
