@@ -76,7 +76,7 @@ if ( xhrSupported ) {
 						headers["X-Requested-With"] = "XMLHttpRequest";
 					}
 
-					// Need an extra try/catch for cross-domain requests in Firefox 3
+					// Set headers
 					for ( i in headers ) {
 						xhr.setRequestHeader( i, headers[ i ] );
 					}
