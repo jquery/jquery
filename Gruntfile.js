@@ -84,7 +84,9 @@ module.exports = function( grunt ) {
 			}
 		},
 		jscs: {
-			src: "src/**/*.js"
+			src: "src/**/*.js",
+			gruntfile: "Gruntfile.js",
+			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
 			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split(" ")
