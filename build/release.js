@@ -164,12 +164,10 @@ function makeReleaseCopies( next ) {
 						"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( /\.min\.js$/.test( releaseFile ) ) {
-				// Minified files point back to the corresponding map;
-				// again assume one big happy directory.
-				// "//# sourceMappingURL=jquery.min.map"
+				// Remove the source map comment; it causes way too many problems.
+				// Keep the map file in case DevTools allow manual association.
 				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /\/\/# sourceMappingURL=\S+/,
-						"//# sourceMappingURL=" + unpathedFile.replace( /\.js$/, ".map" ) );
+					.replace( /\/\/# sourceMappingURL=\S+/, "" );
 				fs.writeFileSync( releaseFile, text );
 			} else if ( builtFile !== releaseFile ) {
 				copy( builtFile, releaseFile );
