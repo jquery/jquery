@@ -103,7 +103,7 @@ module.exports = function( grunt ) {
 				options: {
 					banner: "\n\n\n\n\n\n\n\n\n\n\n\n" + // banner line size must be preserved
 						"/*! jQuery v<%= pkg.version %> | " +
-						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
+						"(c) 2005, <%= grunt.template.today('yyyy') %> jQuery Foundation, Inc. | " +
 						"jquery.org/license */\n"
 				}
 			}
