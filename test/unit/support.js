@@ -48,11 +48,10 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 );
 
 (function() {
-	var expected, version,
+	var expected,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
-		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -64,7 +63,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
-			"pixelPosition": version >= 28,
+			"pixelPosition": true,
 			"radioValue": true,
 			"reliableMarginRight": true
 		};
@@ -149,10 +148,9 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableMarginRight":true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
-		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
-			"boxSizingReliable": version >= 23,
+			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
