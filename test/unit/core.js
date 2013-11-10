@@ -409,7 +409,6 @@ test("isFunction", function() {
 	// Firefox says this is a function
 	ok( !jQuery.isFunction(obj), "Object Element" );
 
-	// IE says this is an object
 	// Since 1.3, this isn't supported (#2968)
 	//ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
 
@@ -427,7 +426,6 @@ test("isFunction", function() {
 	input.type = "text";
 	document.body.appendChild( input );
 
-	// IE says this is an object
 	// Since 1.3, this isn't supported (#2968)
 	//ok( jQuery.isFunction(input.focus), "A default function property" );
 

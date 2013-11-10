@@ -392,28 +392,15 @@ test("on bubbling, isDefaultPrevented", function() {
 		$main = jQuery( "#qunit-fixture" ),
 		fakeClick = function($jq) {
 			// Use a native click so we don't get jQuery simulated bubbling
-			if ( document.createEvent ) {
-				var e = document.createEvent( "MouseEvents" );
-				e.initEvent( "click", true, true );
-				$jq[0].dispatchEvent(e);
-			}
-			else if ( $jq[0].click ) {
-				$jq[0].click();	// IE
-			}
+			var e = document.createEvent( "MouseEvents" );
+			e.initEvent( "click", true, true );
+			$jq[ 0 ].dispatchEvent( e );
 		};
 	$anchor2.on( "click", function(e) {
 		e.preventDefault();
 	});
-	$main.on("click", "#foo", function(e) {
-		var orig = e.originalEvent;
-
-		if ( typeof(orig.defaultPrevented) === "boolean" || typeof(orig.returnValue) === "boolean" || orig["getPreventDefault"] ) {
-			equal( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
-
-		} else {
-			// Opera < 11 doesn't implement any interface we can use, so give it a pass
-			ok( true, "isDefaultPrevented not supported by this browser, test skipped" );
-		}
+	$main.on( "click", "#foo", function( e ) {
+		equal( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
 	});
 	fakeClick( $anchor2 );
 	$anchor2.off( "click" );
@@ -1224,8 +1211,6 @@ test("trigger(eventObject, [data], [fn])", function() {
 	equal( event.isDefaultPrevented(), false, "default not prevented" );
 });
 
-// Explicitly introduce global variable for oldIE so QUnit doesn't complain if checking globals
-window.onclick = undefined;
 test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	expect(2);
 
