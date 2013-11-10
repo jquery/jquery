@@ -79,11 +79,10 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 );
 
 (function() {
-	var expected, version,
+	var expected,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
-		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -111,7 +110,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optDisabled": true,
 			"optSelected": true,
 			"ownLast": false,
-			"pixelPosition": version >= 28,
+			"pixelPosition": true,
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
@@ -417,12 +416,11 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
-		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
 			"boxSizing": true,
-			"boxSizingReliable": version >= 23,
+			"boxSizingReliable": true,
 			"changeBubbles": true,
 			"checkClone": true,
 			"checkOn": true,
