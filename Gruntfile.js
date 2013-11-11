@@ -1,15 +1,15 @@
 module.exports = function( grunt ) {
-
 	"use strict";
 
+	function readOptionalJSON( filepath ) {
+		var data = {};
+		try {
+			data = grunt.file.readJSON( filepath );
+		} catch ( e ) {}
+		return data;
+	}
+
 	var gzip = require( "gzip-js" ),
-		readOptionalJSON = function( filepath ) {
-			var data = {};
-			try {
-				data = grunt.file.readJSON( filepath );
-			} catch(e) {}
-			return data;
-		},
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
@@ -17,8 +17,8 @@ module.exports = function( grunt ) {
 	delete srcHintOptions.onevar;
 
 	grunt.initConfig({
-		pkg: grunt.file.readJSON("package.json"),
-		dst: readOptionalJSON("dist/.destination.json"),
+		pkg: grunt.file.readJSON( "package.json" ),
+		dst: readOptionalJSON( "dist/.destination.json" ),
 		compare_size: {
 			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
 			options: {
@@ -50,19 +50,24 @@ module.exports = function( grunt ) {
 			pkg: {
 				src: [ "package.json" ]
 			},
+
+			jscs: {
+				src: [ ".jscs.json" ]
+			},
+
 			bower: {
 				src: [ "bower.json" ]
 			}
 		},
 		jshint: {
 			src: {
-				src: [ "src/**/*.js" ],
+				src: "src/**/*.js",
 				options: {
 					jshintrc: "src/.jshintrc"
 				}
 			},
 			dist: {
-				src: [ "dist/jquery.js" ],
+				src: "dist/jquery.js",
 				options: srcHintOptions
 			},
 			grunt: {
@@ -72,46 +77,40 @@ module.exports = function( grunt ) {
 				}
 			},
 			tests: {
-				src: [ "test/**/*.js" ],
+				src: "test/**/*.js",
 				options: {
 					jshintrc: "test/.jshintrc"
 				}
 			}
 		},
+		jscs: {
+			src: "src/**/*.js",
+			gruntfile: "Gruntfile.js",
+			tasks: "build/tasks/*.js"
+		},
 		testswarm: {
-			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split(" ")
+			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split( " " )
 		},
 		watch: {
 			files: [ "<%= jshint.grunt.src %>", "<%= jshint.tests.src %>", "src/**/*.js" ],
 			tasks: "dev"
 		},
-		"pre-uglify": {
-			all: {
-				files: {
-					"dist/jquery.pre-min.js": [ "dist/jquery.js" ]
-				},
-				options: {
-					banner: "\n\n\n\n\n\n\n\n\n\n\n\n" + // banner line size must be preserved
-						"/*! jQuery v<%= pkg.version %> | " +
-						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
-						"jquery.org/license */\n"
-				}
-			}
-		},
 		uglify: {
 			all: {
 				files: {
-					"dist/jquery.min.js": [ "dist/jquery.pre-min.js" ]
+					"dist/jquery.min.js": [ "dist/jquery.js" ]
 				},
 				options: {
-					// Keep our hard-coded banner
-					preserveComments: "some",
+					preserveComments: false,
 					sourceMap: "dist/jquery.min.map",
 					sourceMappingURL: "jquery.min.map",
 					report: "min",
 					beautify: {
 						ascii_only: true
 					},
+					banner: "/*! jQuery v<%= pkg.version %> | " +
+						"(c) 2005, 2013 jQuery Foundation, Inc. | " +
+						"jquery.org/license */",
 					compress: {
 						hoist_funs: false,
 						loops: false,
@@ -119,31 +118,18 @@ module.exports = function( grunt ) {
 					}
 				}
 			}
-		},
-		"post-uglify": {
-			all: {
-				src: [ "dist/jquery.min.map" ],
-				options: {
-					tempFiles: [ "dist/jquery.pre-min.js" ]
-				}
-			}
 		}
 	});
 
 	// Load grunt tasks from NPM packages
-	grunt.loadNpmTasks( "grunt-compare-size" );
-	grunt.loadNpmTasks( "grunt-git-authors" );
-	grunt.loadNpmTasks( "grunt-contrib-watch" );
-	grunt.loadNpmTasks( "grunt-contrib-jshint" );
-	grunt.loadNpmTasks( "grunt-contrib-uglify" );
-	grunt.loadNpmTasks( "grunt-jsonlint" );
+	require( "load-grunt-tasks" )( grunt );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "jshint" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "jshint", "jscs" ] );
 
 	// Default grunt
-	grunt.registerTask( "default", [ "jsonlint", "dev", "pre-uglify", "uglify", "post-uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
 };

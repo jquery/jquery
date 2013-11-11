@@ -170,6 +170,12 @@ test("jQuery.data(object/flash)", 25, function() {
 	dataTests( flash );
 });
 
+// attempting to access the data of an undefined jQuery element should be undefined
+test("jQuery().data() === undefined (#14101)", 2, function() {
+	strictEqual(jQuery().data(), undefined);
+	strictEqual(jQuery().data("key"), undefined);
+});
+
 test(".data()", function() {
 	expect(5);
 
@@ -760,14 +766,30 @@ test(".data doesn't throw when calling selection is empty. #13551", function() {
 	}
 });
 
-test("jQuery.acceptData", 6, function() {
+test("jQuery.acceptData", 11, function() {
+	var flash, applet;
+
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
 	ok( jQuery.acceptData( {} ), "object" );
+	ok( jQuery.acceptData( document.createElement( "embed" ) ), "embed" );
+	ok( jQuery.acceptData( document.createElement( "applet" ) ), "applet" );
 
-	ok( !jQuery.acceptData( document.createComment("") ), "comment" );
-	ok( !jQuery.acceptData( document.createTextNode("") ), "text" );
+	flash = document.createElement( "object" );
+	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
+	ok( jQuery.acceptData( flash ), "flash" );
+
+	applet = document.createElement( "object" );
+	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
+	ok( jQuery.acceptData( applet ), "applet" );
+
+	ok( !jQuery.acceptData( document.createComment( "" ) ), "comment" );
+	ok( !jQuery.acceptData( document.createTextNode( "" ) ), "text" );
 	ok( !jQuery.acceptData( document.createDocumentFragment() ), "documentFragment" );
+
+	ok( jQuery.acceptData(
+		jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ] ),
+		"form with aliased DOM properties" );
 });
 
 test("Check proper data removal of non-element descendants nodes (#8335)", 1, function() {

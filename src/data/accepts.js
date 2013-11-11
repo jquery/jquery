@@ -12,8 +12,8 @@ jQuery.acceptData = function( owner ) {
 	//    - Node.DOCUMENT_NODE
 	//  - Object
 	//    - Any
-	return owner.nodeType ?
-		owner.nodeType === 1 || owner.nodeType === 9 : true;
+	/* jshint -W018 */
+	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
 };
 
 return jQuery.acceptData;

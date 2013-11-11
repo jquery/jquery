@@ -65,7 +65,7 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length,
 			matched = [],
-			pos = ( rneedsContext.test( selectors ) || typeof selectors !== "string" ) ?
+			pos = rneedsContext.test( selectors ) || typeof selectors !== "string" ?
 				jQuery( selectors, context || this.context ) :
 				0;
 
@@ -79,7 +79,7 @@ jQuery.fn.extend({
 					cur.nodeType === 1 &&
 						jQuery.find.matchesSelector(cur, selectors)) ) {
 
-					cur = matched.push( cur );
+					matched.push( cur );
 					break;
 				}
 			}
