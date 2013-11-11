@@ -17,7 +17,7 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
-				jQuery( this ).addClass( value.call( this, j, this.className ) );
+				jQuery( this ).addClass( value.call( this, j, jQuery( this ).attr( "class" ) ) );
 			});
 		}
 
@@ -28,7 +28,7 @@ jQuery.fn.extend({
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
+					( " " + jQuery( elem ).attr( "class" ) + " " ).replace( rclass, " " ) :
 					" "
 				);
 
@@ -42,8 +42,8 @@ jQuery.fn.extend({
 
 					// only assign if different to avoid unneeded rendering.
 					finalValue = jQuery.trim( cur );
-					if ( elem.className !== finalValue ) {
-						elem.className = finalValue;
+					if ( jQuery( elem ).attr( "class" ) !== finalValue ) {
+						jQuery( elem ).attr( "class", finalValue );
 					}
 				}
 			}
@@ -60,7 +60,7 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
-				jQuery( this ).removeClass( value.call( this, j, this.className ) );
+				jQuery( this ).removeClass( value.call( this, j, jQuery( this ).attr( "class" ) ) );
 			});
 		}
 		if ( proceed ) {
@@ -69,8 +69,8 @@ jQuery.fn.extend({
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
 				// This expression is here for better compressibility (see addClass)
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
+				cur = elem.nodeType === 1 && ( jQuery( elem ).attr( "class" ) ?
+					( " " + jQuery( elem ).attr( "class" ) + " " ).replace( rclass, " " ) :
 					""
 				);
 
@@ -85,8 +85,8 @@ jQuery.fn.extend({
 
 					// only assign if different to avoid unneeded rendering.
 					finalValue = value ? jQuery.trim( cur ) : "";
-					if ( elem.className !== finalValue ) {
-						elem.className = finalValue;
+					if ( jQuery( elem ).attr( "class" ) !== finalValue ) {
+						jQuery( elem ).attr( "class", finalValue );
 					}
 				}
 			}
@@ -104,7 +104,7 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( i ) {
-				jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
+				jQuery( this ).toggleClass( value.call(this, i, jQuery( this ).attr( "class" ), stateVal), stateVal );
 			});
 		}
 
@@ -127,16 +127,16 @@ jQuery.fn.extend({
 
 			// Toggle whole class name
 			} else if ( type === strundefined || type === "boolean" ) {
-				if ( this.className ) {
+				if ( jQuery( this ).attr( "class" ) ) {
 					// store className if set
-					data_priv.set( this, "__className__", this.className );
+					data_priv.set( this, "__className__", jQuery( this ).attr( "class" ) );
 				}
 
 				// If the element has a class name or if we're passed "false",
 				// then remove the whole classname (if there was one, the above saved it).
 				// Otherwise bring back whatever was previously saved (if anything),
 				// falling back to the empty string if nothing was stored.
-				this.className = this.className || value === false ? "" : data_priv.get( this, "__className__" ) || "";
+				jQuery( this ).attr( "class", jQuery( this ).attr( "class" ) || value === false ? "" : data_priv.get( this, "__className__" ) || "" );
 			}
 		});
 	},
@@ -146,7 +146,7 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
+			if ( this[i].nodeType === 1 && (" " + jQuery( this[i] ).attr( "class" ) + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
 				return true;
 			}
 		}

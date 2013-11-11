@@ -1047,6 +1047,7 @@ var testAddClass = function( valueObj ) {
 	expect( 9 );
 
 	var pass, j, i,
+	  form = jQuery("<form></form>"),
 		div = jQuery("#qunit-fixture div");
 	div.addClass( valueObj("test") );
 	pass = true;
@@ -1087,6 +1088,10 @@ var testAddClass = function( valueObj ) {
 	div.removeClass();
 	div.addClass( valueObj("bar bar") );
 	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
+
+	form.addClass("a");
+	form.append("<input name=\"className\">");
+	equal( form.attr("class"), "a", "Allow forms to have inputs with a name of \"className\"." );
 };
 
 test( "addClass(String)", function() {
