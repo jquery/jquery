@@ -174,6 +174,11 @@ jQuery.Callbacks = function( options ) {
 			locked: function() {
 				return !stack;
 			},
+			// Forget anything in memory
+			forget: function() {
+				memory = undefined;
+				return this;
+			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
 				if ( list && ( !fired || stack ) ) {

@@ -340,3 +340,20 @@ test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", fun
 
 	ok( true, "no stack overflow" );
 });
+
+test( "jQuery.Callbacks.forget", function() {
+
+	expect( 1 );
+
+	var cb = jQuery.Callbacks("memory");
+	cb.fire("hello");
+
+	function handler ( str ) {
+		strictEqual( str, "hello", "memory is intact" );
+	}
+
+	cb.add( handler );
+	cb.remove( handler );
+	cb.forget();
+	cb.add( handler );
+});
