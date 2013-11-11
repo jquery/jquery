@@ -64,7 +64,7 @@ test( "text(undefined)", function() {
 
 function testText( valueObj ) {
 
-	expect( 7 );
+	expect( 6 );
 
 	var val, j, expected, $multipleElements, $parentDiv, $childDiv;
 
@@ -94,8 +94,6 @@ function testText( valueObj ) {
 	$parentDiv = jQuery( "<div/>" );
 	$parentDiv.append( $childDiv );
 	$parentDiv.text("Dry off");
-
-	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
 }
 
 test( "text(String)", function() {
@@ -1814,7 +1812,7 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 
 test( "remove() no filters", function() {
 
-  expect( 3 );
+  expect( 2 );
 
 	var first = jQuery("#ap").children().first();
 
@@ -1823,9 +1821,6 @@ test( "remove() no filters", function() {
 	jQuery("#ap").children().remove();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
-
-	equal( first.data("foo"), null, "first data" );
-
 });
 
 test( "remove() with filters", function() {
