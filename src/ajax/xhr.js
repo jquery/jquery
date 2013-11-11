@@ -78,7 +78,15 @@ if ( xhrSupported ) {
 
 					// Set headers
 					for ( i in headers ) {
-						xhr.setRequestHeader( i, headers[ i ] );
+						// Support: IE<9
+						// IE's ActiveXObject throws a 'Type Mismatch' exception when setting
+						// request header to a null-value.
+						//
+						// To keep consistent with other XHR implementations, cast the value
+						// to string and ignore `undefined`.
+						if ( headers[ i ] !== undefined ) {
+							xhr.setRequestHeader( i, headers[ i ] + "" );
+						}
 					}
 
 					// Do send the request
