@@ -1339,9 +1339,9 @@ test("jQuery.parseHTML", function() {
 });
 
 test("jQuery.parseJSON", function() {
-	expect( 19 );
+	expect( 20 );
 
-	strictEqual( jQuery.parseJSON("null"), null, "null" );
+	strictEqual( jQuery.parseJSON( null ), null, "primitive null" );
 	strictEqual( jQuery.parseJSON("0.88"), 0.88, "Number" );
 	strictEqual(
 		jQuery.parseJSON("\" \\\" \\\\ \\/ \\b \\f \\n \\r \\t \\u007E \\u263a \""),
@@ -1421,6 +1421,8 @@ test("jQuery.parseJSON", function() {
 	raises(function() {
 		jQuery.parseJSON("\"\"\n\"\"");
 	}, null, "Automatic semicolon insertion raises an error" );
+
+	strictEqual( jQuery.parseJSON([ 0 ]), 0, "Input cast to string" );
 });
 
 test("jQuery.parseXML", 8, function(){
