@@ -18,7 +18,7 @@ var
 	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
-	rurl = /^([\w.+-]+:)(?:\/\/(?:[^/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
+	rurl = /^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,
 
 	/* Prefilters
 	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
@@ -44,7 +44,7 @@ var
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
 try {
-	ajaxLocation = location.protocol + "//" + location.host;
+	ajaxLocation = location.href;
 } catch( e ) {
 	// Use the href attribute of an A element
 	// since IE will modify it given document.location
