@@ -7,19 +7,6 @@
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require;
 
-	// Config parameter to force basic code paths
-	QUnit.config.urlConfig.push({
-		id: "basic",
-		label: "Bypass optimizations",
-		tooltip: "Force use of the most basic code by disabling native querySelectorAll; contains; compareDocumentPosition; JSON.parse"
-	});
-	if ( QUnit.urlParams.basic ) {
-		document.querySelectorAll = null;
-		document.documentElement.contains = null;
-		document.documentElement.compareDocumentPosition = null;
-		window.JSON = null;
-	}
-
 	// iFrames won't load AMD (the iframe tests synchronously expect jQuery to be there)
 	QUnit.config.urlConfig.push({
 		id: "amd",
