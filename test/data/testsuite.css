@@ -1,4 +1,3 @@
-/* for testing opacity set in styles in IE */
 ol#empty {
 	opacity: 0;
 }

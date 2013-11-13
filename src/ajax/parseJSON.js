@@ -2,7 +2,11 @@ define([
 	"../core"
 ], function( jQuery ) {
 
-jQuery.parseJSON = JSON.parse;
+// Support: Android 2.3
+// Workaround failure to string-cast null input
+jQuery.parseJSON = function( data ) {
+	return JSON.parse( data + "" );
+};
 
 return jQuery.parseJSON;
 

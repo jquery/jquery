@@ -700,29 +700,22 @@ test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
-	if ( "widows" in $p[0].style ) {
-		expect(4);
-		$p.css({
-			"widows": 0,
-			"orphans": 0
-		});
+	expect( 4 );
+	$p.css({
+		"widows": 0,
+		"orphans": 0
+	});
 
-		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0");
-		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0");
+	equal( $p.css( "widows" ) || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0" );
+	equal( $p.css( "orphans" ) || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0" );
 
-		$p.css({
-			"widows": 3,
-			"orphans": 3
-		});
+	$p.css({
+		"widows": 3,
+		"orphans": 3
+	});
 
-		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 3, "widows correctly set to 3");
-		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 3, "orphans correctly set to 3");
-	} else {
-
-		expect(1);
-		ok( true, "jQuery does not attempt to test for style props that definitely don't exist in older versions of IE");
-	}
-
+	equal( $p.css( "widows" ) || jQuery.style( $p[0], "widows" ), 3, "widows correctly set to 3" );
+	equal( $p.css( "orphans" ) || jQuery.style( $p[0], "orphans" ), 3, "orphans correctly set to 3" );
 
 	$p.remove();
 });
@@ -759,12 +752,6 @@ test("can't get background-position in IE<9, see #10796", function() {
 		div.css( "background-position", units [ i ] );
 		ok( div.css( "background-position" ), "can't get background-position in IE<9, see #10796" );
 	}
-});
-
-test("percentage properties for bottom and right in IE<9 should not be incorrectly transformed to pixels, see #11311", function() {
-	expect( 1 );
-	var div = jQuery("<div style='position: absolute; width: 1px; height: 20px; bottom:50%;'></div>").appendTo( "#qunit-fixture" );
-	ok( window.getComputedStyle || div.css( "bottom" ) === "50%", "position properties get incorrectly transformed in IE<8, see #11311" );
 });
 
 if ( jQuery.fn.offset ) {
