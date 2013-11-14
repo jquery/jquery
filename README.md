@@ -1,4 +1,4 @@
-[jQuery](http://jquery.com/) - New Wave JavaScript
+[jQuery](http://jquery.com/) - New Wave JavaScript [![Code Climate](https://codeclimate.com/github/jquery/jquery.png)](https://codeclimate.com/github/jquery/jquery)
 ==================================================
 
 Contribution Guides
