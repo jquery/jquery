@@ -1,7 +1,7 @@
 src/intro.js
 src/outro.js
-test/qunit/**
 test/data/jquery-1.9.1.js
+bower_modules
 test/data/badcall.js
 test/data/badjson.js
 test/data/json_obj.js
