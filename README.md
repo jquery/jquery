@@ -29,39 +29,37 @@ if you swing that way. Easy-peasy.
 How to build your own jQuery
 ----------------------------
 
-First, clone a copy of the main jQuery git repo by running:
+Clone a copy of the main jQuery git repo by running:
 
 ```bash
 git clone git://github.com/jquery/jquery.git
 ```
 
-Install the [grunt-cli](http://gruntjs.com/getting-started#installing-the-cli) and [bower](http://bower.io/) packages if you haven't before. These should be done as global installs:
-
+Enter the jquery directory and run the build script:
 ```bash
-npm install -g grunt-cli bower
+cd jquery && npm run-script build
+```
+The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
+
+If you want create custom build or help with jQuery development, it would be better to install <a href="https://github.com/gruntjs/grunt-cli">grunt command line interface</a> as a global package:
+
+```
+npm install -g grunt-cli
+```
+Make sure you have `grunt` installed by testing:
+```
+grunt -v
 ```
 
-Make sure you have `grunt` and `bower` installed by testing:
-
-```bash
-grunt -version
-bower -version
+Now by running `grunt` command, in the jquery directory, you could build full version of jQuery, just like with `npm run-script build` command:
 ```
-
-Enter the jquery directory and install the Node and Bower dependencies, this time *without* specifying a global(-g) install:
-
-```bash
-cd jquery && npm install
-```
-
-Then, to get a complete, minified (w/ Uglify.js), linted (w/ JSHint) version of jQuery, type the following:
-
-```bash
 grunt
 ```
 
-The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
-
+There are many other tasks avaliable for jQuery Core:
+```
+grunt -help
+```
 
 ### Modules
 
@@ -135,10 +133,10 @@ Running the Unit Tests
 Make sure you have the necessary dependencies:
 
 ```bash
-bower install
+npm install
 ```
 
-Start `grunt watch` to auto-build jQuery as you work:
+Start `grunt watch` or `npm start` to auto-build jQuery as you work:
 
 ```bash
 cd jquery && grunt watch

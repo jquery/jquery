@@ -31,6 +31,8 @@
   "devDependencies": {
     "archiver": "~0.4.10",
     "grunt": "~0.4.1",
+    "grunt-bower-task": "~0.3.2",
+    "grunt-cli": "~0.1.11",
     "grunt-compare-size": "~0.4.0",
     "grunt-contrib-jshint": "~0.7.0",
     "grunt-contrib-uglify": "~0.2.7",
@@ -45,7 +47,11 @@
     "which": "~1.0.5"
   },
   "scripts": {
-    "install": "node build/bower-install",
+    "build": "npm install && grunt",
+
+    "install": "grunt bower",
+
+    "start": "grunt watch",
     "test": "grunt"
   }
 }
