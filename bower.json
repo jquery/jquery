@@ -13,7 +13,7 @@
     "bower.json"
   ],
   "dependencies": {
-    "sizzle": "~1.10.11"
+    "sizzle": "1.10.12"
   },
   "devDependencies": {
     "requirejs": "~2.1.8",
