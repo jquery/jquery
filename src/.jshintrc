@@ -20,6 +20,7 @@
 	"globals": {
 		"jQuery": true,
 		"define": true,
-		"module": true
+		"module": true,
+		"ActiveXObject": true
 	}
 }
