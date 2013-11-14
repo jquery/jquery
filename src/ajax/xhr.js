@@ -84,8 +84,8 @@ jQuery.ajaxTransport(function( options ) {
 								xhr.abort();
 							} else if ( type === "error" ) {
 								complete(
-									// file protocol always yields status 0, assume 404
-									xhr.status || 404,
+									// file: protocol always yields status 0; see #8605, #14207
+									xhr.status,
 									xhr.statusText
 								);
 							} else {
