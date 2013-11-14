@@ -18,7 +18,7 @@ var releaseVersion,
 	pkg,
 	branch,
 
-	sizzleLoc = "bower_components/sizzle",
+	sizzleLoc = "bower_modules/sizzle",
 
 	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 	cdnURL = "http://code.origin.jquery.com/",
