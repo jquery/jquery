@@ -899,7 +899,7 @@ if ( !support.focusinBubbles ) {
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
-				var doc = this.ownerDocument,
+				var doc = this.ownerDocument || this,
 					attaches = jQuery._data( doc, fix );
 
 				if ( !attaches ) {
@@ -908,7 +908,7 @@ if ( !support.focusinBubbles ) {
 				jQuery._data( doc, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
-				var doc = this.ownerDocument,
+				var doc = this.ownerDocument || this,
 					attaches = jQuery._data( doc, fix ) - 1;
 
 				if ( !attaches ) {

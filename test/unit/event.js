@@ -2462,6 +2462,19 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
+test( "focusin using non-element targets", function() {
+	expect( 2 );
+
+	jQuery( document ).on( "focusin", function( e ) {
+		ok( e.type === "focusin", "got a focusin event on a document" );
+	}).trigger( "focusin" ).off( "focusin" );
+
+	jQuery( window ).on( "focusin", function( e ) {
+		ok( e.type === "focusin", "got a focusin event on a window" );
+	}).trigger( "focusin" ).off( "focusin" );
+
+});
+
 testIframeWithCallback( "focusin from an iframe", "event/focusinCrossFrame.html", function( frameDoc ) {
 	expect(1);
 
