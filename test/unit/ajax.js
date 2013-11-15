@@ -189,7 +189,7 @@ module( "ajax", {
 			"SometHing-elsE": "other value",
 			"OthEr": "something else",
 			"Nullable": null,
-			"undefined": undefined,
+			"undefined": undefined
 
 			// Support: Firefox
 			// Not all browsers allow empty-string headers
