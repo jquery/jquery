@@ -1,4 +1,3 @@
-/dist
 .project
 .settings
 *~
@@ -8,6 +7,7 @@
 .DS_Store
 .bower.json
 .sizecache.json
-dist/.destination.json
-bower_components
-node_modules
+
+/dist
+/bower_components
+/node_modules

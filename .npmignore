@@ -1,10 +1,12 @@
-.editorconfig
-.gitattributes
-.jscs.json
 .jshintignore
 .jshintrc
-.mailmap
-.travis.yml
+
+/.editorconfig
+/.gitattributes
+/.jscs.json
+/.mailmap
+/.travis.yml
+
 /build
 /speed
 /test
