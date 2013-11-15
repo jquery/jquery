@@ -13,9 +13,12 @@ module.exports = function( grunt ) {
 		path = require( "path" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
-	// The concatenated file won't pass onevar
+	// The concatenated file won't pass onevar or complexity metrics
 	// But our modules can
 	delete srcHintOptions.onevar;
+	delete srcHintOptions.maxdepth;
+	delete srcHintOptions.maxstatements;
+	delete srcHintOptions.maxcomplexity;
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON( "package.json" ),

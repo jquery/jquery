@@ -13,6 +13,7 @@ var rootjQuery,
 	// Strict HTML recognition (#11290: must start with <)
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
 
+	/* jshint -W074*/ // cyclomatic complexity
 	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
 
@@ -111,6 +112,7 @@ var rootjQuery,
 
 		return jQuery.makeArray( selector, this );
 	};
+	/* jshint +W074*/ // cyclomatic complexity
 
 // Give the init function the jQuery prototype for later instantiation
 init.prototype = jQuery.fn;

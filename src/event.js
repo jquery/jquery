@@ -40,6 +40,7 @@ jQuery.event = {
 
 	global: {},
 
+	/*jshint -W074*/ // cyclomatic complexity
 	add: function( elem, types, handler, data, selector ) {
 
 		var handleObjIn, eventHandle, tmp,
@@ -144,8 +145,10 @@ jQuery.event = {
 		}
 
 	},
+	/*jshint +W074*/
 
 	// Detach an event or set of events from an element
+	/*jshint -W074*/ // cyclomatic complexity
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
 		var j, origCount, tmp,
@@ -215,7 +218,9 @@ jQuery.event = {
 			data_priv.remove( elem, "events" );
 		}
 	},
+	/*jshint +W074*/
 
+	/*jshint -W074, -W071*/ // cyclomatic complexity, too many statements
 	trigger: function( event, data, elem, onlyHandlers ) {
 
 		var i, cur, tmp, bubbleType, ontype, handle, special,
@@ -347,6 +352,7 @@ jQuery.event = {
 
 		return event.result;
 	},
+	/*jshint +W074, +W071*/
 
 	dispatch: function( event ) {
 
