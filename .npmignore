@@ -1,0 +1,11 @@
+.editorconfig
+.gitattributes
+.jscs.json
+.jshintignore
+.jshintrc
+.mailmap
+.travis.yml
+/build
+/speed
+/test
+/Gruntfile.js
