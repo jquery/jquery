@@ -44,13 +44,5 @@
     "testswarm": "~1.1.0",
     "requirejs": "~2.1.9",
     "which": "~1.0.5"
-  },
-  "scripts": {
-    "build": "npm install && grunt",
-
-    "install": "grunt bower",
-
-    "start": "grunt watch",
-    "test": "grunt"
   }
 }
