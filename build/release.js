@@ -301,13 +301,25 @@ function checkoutCommit( next ) {
 
 function commitDistFiles( next ) {
 	// Remove scripts property from package.json
+	// Building and bower are irrelevant as those files will be committed
+	// Makes for a clean npm install
 	var pkgClone = readJSON( "package.json" );
 	delete pkgClone.scripts;
 	fs.writeFileSync( "package.json", JSON.stringify( pkgClone, null, "\t" ) );
 	// Add files to be committed
-	// Use force to add normally ignored files
-	git( [ "add", "-f", "package.json", devFile, minFile, mapFile, sizzleLoc ], function() {
-		git( [ "commit", "-m", releaseVersion ], next, debug );
+	git( [ "add", "package.json" ], function() {
+		git( [ "commit", "-m", "Remove scripts property from package.json" ], function() {
+			// Add sizzle in a separate commit to avoid a big diff
+			// Use force to add normally ignored files
+			git( [ "add", "-f", sizzleLoc ], function() {
+				git( [ "commit", "-m", "Add sizzle" ], function() {
+					// Add jquery files for distribution in a final commit
+					git( [ "add", "-f", devFile, minFile, mapFile ], function() {
+						git( [ "commit", "-m", releaseVersion ], next, debug );
+					}, debug );
+				}, debug );
+			}, debug );
+		}, debug );
 	}, debug );
 }
 
