@@ -1457,7 +1457,7 @@ module( "ajax", {
 			jQuery.ajax({
 				url: "data/badjson.js",
 				dataType: "script",
-				throws: true,
+				"throws": true,
 				// TODO find a way to test this asynchronously, too
 				async: false,
 				// Global events get confused by the exception

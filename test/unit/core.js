@@ -1363,7 +1363,7 @@ test("jQuery.parseJSON", function() {
 	deepEqual(
 		jQuery.parseJSON( "{ \"string\": \"\", \"number\": 4.2e+1, \"object\": {}," +
 			"\"array\": [[]], \"boolean\": [ true, false ], \"null\": null }"),
-		{ string: "", number: 42, object: {}, array: [[]], boolean: [ true, false ], "null": null },
+		{ string: "", number: 42, object: {}, array: [[]], "boolean": [ true, false ], "null": null },
 		"Dictionary of all data types"
 	);
 

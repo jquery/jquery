@@ -13,6 +13,7 @@
 	"undef": true,
 	"unused": true,
 
+	"es3": true,
 	"evil": true,
 	"sub": true,
 
