@@ -246,7 +246,9 @@ module( "ajax", {
 			url: url("data/headers.php?keys=content-type"),
 			contentType: false,
 			success: function( data ) {
-				strictEqual( data, "", "Test content-type is not sent when options.contentType===false" );
+				// Some server/interpreter combinations always supply a Content-Type to scripts
+				data = data || "content-type: \n";
+				strictEqual( data, "content-type: \n", "Test content-type is not set when options.contentType===false" );
 			}
 		}
 	]);
