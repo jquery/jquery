@@ -60,14 +60,14 @@ steps(
 	checkGitStatus,
 	setReleaseVersion,
 	gruntBuild,
-	createTag,
 	makeReleaseCopies,
 	copyTojQueryCDN,
 	buildGoogleCDN,
 	buildMicrosoftCDN,
+	createTag,
 	setNextVersion,
 	pushToGithub,
-	publishToNpm,
+	// publishToNpm,
 	exit
 );
 
@@ -305,7 +305,7 @@ function commitDistFiles( next ) {
 	fs.writeFileSync( "package.json", JSON.stringify( pkgClone, null, "\t" ) );
 	fs.unlinkSync( ".gitignore" );
 	// Add files to be committed
-	git( [ "add", "package.json", "dist", sizzleLoc ], function() {
+	git( [ "add", "package.json", devFile, minFile, mapFile, sizzleLoc ], function() {
 		// Remove unneeded files
 		git( [ "rm", "-r",
 			"build",
@@ -322,7 +322,7 @@ function commitDistFiles( next ) {
 			"Gruntfile.js",
 			"README.md"
 		], function() {
-			git( [ "commit", "-a", "-m", releaseVersion ], next, debug );
+			git( [ "commit", "-m", releaseVersion ], next, debug );
 		}, debug );
 	}, debug );
 }
@@ -378,6 +378,7 @@ function makeArchive( cdn, files, fn ) {
 
 /* NPM
 ---------------------------------------------------------------------- */
+/*
 function publishToNpm( next ) {
 	// Only publish the master branch to NPM
 	// You must be the jquery npm user for this not to fail
@@ -400,7 +401,7 @@ function publishToNpm( next ) {
 			}, debug || skipRemote );
 		}, debug );
 	}, debug);
-}
+}*/
 
 /* Death
 ---------------------------------------------------------------------- */
