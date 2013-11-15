@@ -4,6 +4,7 @@
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
   "version": "1.11.0-pre",
+  "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {
     "name": "jQuery Foundation and other contributors",
