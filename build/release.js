@@ -303,27 +303,10 @@ function commitDistFiles( next ) {
 	var pkgClone = readJSON( "package.json" );
 	delete pkgClone.scripts;
 	fs.writeFileSync( "package.json", JSON.stringify( pkgClone, null, "\t" ) );
-	fs.unlinkSync( ".gitignore" );
 	// Add files to be committed
-	git( [ "add", "package.json", devFile, minFile, mapFile, sizzleLoc ], function() {
-		// Remove unneeded files
-		git( [ "rm", "-r",
-			"build",
-			"speed",
-			"test",
-			".editorconfig",
-			".gitattributes",
-			".gitignore",
-			".jscs.json",
-			".jshintignore",
-			".jshintrc",
-			".mailmap",
-			".travis.yml",
-			"Gruntfile.js",
-			"README.md"
-		], function() {
-			git( [ "commit", "-m", releaseVersion ], next, debug );
-		}, debug );
+	// Use force to add normally ignored files
+	git( [ "add", "-f", "package.json", devFile, minFile, mapFile, sizzleLoc ], function() {
+		git( [ "commit", "-m", releaseVersion ], next, debug );
 	}, debug );
 }
 
