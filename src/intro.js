@@ -15,17 +15,21 @@
 (function( window, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		// Expose a jQuery-making factory as module.exports in loaders that implement the Node
-		// module pattern (including browserify).
-		// This accentuates the need for a real window in the environment
+		// For CommonJS and CommonJS-like environments where a proper window is present,
+		// execute the factory and get jQuery
+		// For environments that do not inherently posses a window with a document
+		// (such as Node.js), expose a jQuery-making factory as module.exports
+		// This accentuates the need for the creation of a real window
 		// e.g. var jQuery = require("jquery")(window);
-		module.exports = function( w ) {
-			w = w || window;
-			if ( !w.document ) {
-				throw new Error("jQuery requires a window with a document");
-			}
-			return factory( w );
-		};
+		// See ticket #14549 for more info
+		module.exports = window.document ?
+			factory( window ) :
+			function( w ) {
+				if ( !w.document ) {
+					throw new Error("jQuery requires a window with a document");
+				}
+				return factory( w );
+			};
 	} else {
 		factory( window );
 	}
