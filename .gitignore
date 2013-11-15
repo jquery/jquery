@@ -9,5 +9,6 @@ dist
 dist/.destination.json
 dist/.sizecache.json
 build/.sizecache.json
+bower_components
 bower_modules
 node_modules
