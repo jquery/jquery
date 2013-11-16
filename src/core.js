@@ -483,6 +483,9 @@ jQuery.extend({
 		// Set the guid of unique handler to the same of original handler, so it can be removed
 		proxy.guid = fn.guid = fn.guid || jQuery.guid++;
 
+		// Store the context as an attribute on the proxy so the context can be determined later
+		proxy.context = context;
+
 		return proxy;
 	},
 
