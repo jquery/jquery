@@ -5,19 +5,22 @@ define([
 ], function( jQuery ) {
 
 jQuery.fn.extend({
-	wrapAll: function( html ) {
+	wrapAll: function( html, clone /* true */ ) {
 		var wrap;
 
 		if ( jQuery.isFunction( html ) ) {
 			return this.each(function( i ) {
-				jQuery( this ).wrapAll( html.call(this, i) );
+				jQuery( this ).wrapAll( html.call(this, i), clone );
 			});
 		}
 
 		if ( this[ 0 ] ) {
 
-			// The elements to wrap the target around
-			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+                        // The elements to wrap the target around
+                        if (clone === false)
+                            wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 );
+                        else
+                            wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
 
 			if ( this[ 0 ].parentNode ) {
 				wrap.insertBefore( this[ 0 ] );
@@ -37,10 +40,10 @@ jQuery.fn.extend({
 		return this;
 	},
 
-	wrapInner: function( html ) {
+	wrapInner: function( html, clone /* true */ ) {
 		if ( jQuery.isFunction( html ) ) {
 			return this.each(function( i ) {
-				jQuery( this ).wrapInner( html.call(this, i) );
+				jQuery( this ).wrapInner( html.call(this, i), clone );
 			});
 		}
 
@@ -49,7 +52,7 @@ jQuery.fn.extend({
 				contents = self.contents();
 
 			if ( contents.length ) {
-				contents.wrapAll( html );
+				contents.wrapAll( html, clone );
 
 			} else {
 				self.append( html );
@@ -57,11 +60,11 @@ jQuery.fn.extend({
 		});
 	},
 
-	wrap: function( html ) {
+	wrap: function( html, clone /* true */ ) {
 		var isFunction = jQuery.isFunction( html );
 
 		return this.each(function( i ) {
-			jQuery( this ).wrapAll( isFunction ? html.call(this, i) : html );
+			jQuery( this ).wrapAll( (isFunction ? html.call(this, i) : html), clone );
 		});
 	},
 
