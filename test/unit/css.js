@@ -683,9 +683,8 @@ test("box model properties incorrectly returning % instead of px, see #10639 and
 test("script and style elements returns nonzero dimensions, see #14545", function() {
 	expect( 4 );
 
-	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
-		el = jQuery("<script/>").text( "use strict;" ),
-		el2 = jQuery("<style/>").text( "div { display: block; }" );
+	var el = jQuery("<script/>").text( "use strict;" ).appendTo("#qunit-fixture"),
+		el2 = jQuery("<style/>").text( "div { display: block; }" ).appendTo("#qunit-fixture");
 
 	equal( el.width(), 0, "script element has width 0" );
 	equal( el.height(), 0, "script element has height 0" );
