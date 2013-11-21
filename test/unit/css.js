@@ -680,6 +680,19 @@ test("box model properties incorrectly returning % instead of px, see #10639 and
 	equal( el2.css("marginLeft"), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
 });
 
+test("script and style elements returns nonzero dimensions, see #14545", function() {
+	expect( 4 );
+
+	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
+		el = jQuery("<script/>").text( "use strict;" ),
+		el2 = jQuery("<style/>").text( "div { display: block; }" );
+
+	equal( el.width(), 0, "script element has width 0" );
+	equal( el.height(), 0, "script element has height 0" );
+	equal( el2.width(), 0, "style element has width 0" );
+	equal( el2.height(), 0, "style element has height 0" );
+});
+
 test("jQuery.cssProps behavior, (bug #8402)", function() {
 	expect( 2 );
 
