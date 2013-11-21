@@ -106,18 +106,19 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 }
 
 function getWidthOrHeight( elem, name, extra ) {
-  // In HTML5, it is now valid to have style tags outside the head tag.
-  // See http://bugs.jquery.com/ticket/14545
-  var elemNodeName = elem.nodeName.toLowerCase();
-  if (elemNodeName === "script" || elemNodeName === "style") {
-    return 0;
-  }
 
 	// Start with offset property, which is equivalent to the border-box value
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+    elemNodeName = elem.nodeName.toLowerCase();
+
+  // In HTML5, it is now valid to have style tags outside the head tag.
+  // See http://bugs.jquery.com/ticket/14545
+  if (elemNodeName === "script" || elemNodeName === "style") {
+    return 0;
+  }
 
 	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
