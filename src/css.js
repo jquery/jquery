@@ -344,7 +344,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			if ( computed ) {
 				// In HTML5, it is now valid to have style tags outside the head tag.
 				// See http://bugs.jquery.com/ticket/14545
-				var elemNodeName = elem.nodeName.toLowerCase()
+				var elemNodeName = elem.nodeName.toLowerCase();
 				if (elemNodeName === "script" || elemNodeName === "style") {
 					return 0;
 				}
