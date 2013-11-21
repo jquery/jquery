@@ -106,6 +106,12 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 }
 
 function getWidthOrHeight( elem, name, extra ) {
+  // In HTML5, it is now valid to have style tags outside the head tag.
+  // See http://bugs.jquery.com/ticket/14545
+  var elemNodeName = elem.nodeName.toLowerCase();
+  if (elemNodeName === "script" || elemNodeName == "style") {
+    return 0;
+  }
 
 	// Start with offset property, which is equivalent to the border-box value
 	var valueIsBorderBox = true,
