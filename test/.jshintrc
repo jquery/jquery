@@ -49,6 +49,7 @@
 		"q": false,
 
 		"jQuery": true,
+		"sinon": true,
 		"module": true,
 		"test": true,
 		"amdDefined": true,
