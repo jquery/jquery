@@ -94,7 +94,7 @@ function testText( valueObj ) {
 	$parentDiv = jQuery( "<div/>" );
 	$parentDiv.append( $childDiv );
 	$parentDiv.text("Dry off");
-	
+
 	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
 }
 
@@ -1333,7 +1333,7 @@ function childNodeNames( node ) {
 }
 
 function testHtml( valueObj ) {
-	expect( 37 );
+	expect( 40 );
 
 	var actual, expected, tmp,
 		div = jQuery("<div></div>"),
@@ -1353,6 +1353,9 @@ function testHtml( valueObj ) {
 
 	equal( div.html(valueObj(5)).html(), "5", "Setting a number as html" );
 	equal( div.html(valueObj(0)).html(), "0", "Setting a zero as html" );
+	equal( div.html(valueObj(Infinity)).html(), "Infinity", "Setting Infinity as html" );
+	equal( div.html(valueObj(NaN)).html(), "", "Setting NaN as html" );
+	equal( div.html(valueObj(1e2)).html(), "100", "Setting exponential number notation as html" );
 
 	div.html( valueObj("&#160;&amp;") );
 	equal(
@@ -1438,7 +1441,7 @@ function testHtml( valueObj ) {
 	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 }
 
-test( "html(String)", function() {
+test( "html(String|Number)", function() {
 	testHtml( manipulationBareObj );
 });
 
