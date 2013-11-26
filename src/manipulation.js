@@ -415,13 +415,10 @@ jQuery.fn.extend({
 			}
 
 			// See if we can take a shortcut and just use innerHTML
-			if ( typeof value === "string" && ( !rnoInnerhtml.test( value ) &&
-				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) ||
-				typeof value === "number" ) {
+			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
+				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
-				if ( typeof value === "string") {
-					value = value.replace( rxhtmlTag, "<$1></$2>" );
-				}
+				value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
 					for ( ; i < l; i++ ) {
