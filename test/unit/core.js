@@ -222,6 +222,19 @@ test( "globalEval with 'use strict'", function() {
 	equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
 });
 
+test( "globalEval execution after script injection (#7862)", 1, function() {
+	var now,
+		script = document.createElement( "script" );
+
+	script.src = "data/longLoadScript.php?sleep=2";
+
+	now = jQuery.now();
+	document.body.appendChild( script );
+
+	jQuery.globalEval( "var strictEvalTest = " + jQuery.now() + ";");
+	ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
+});
+
 test("noConflict", function() {
 	expect(7);
 
