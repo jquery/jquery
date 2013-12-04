@@ -57,12 +57,12 @@ module.exports = function( grunt ) {
 			},
 			tests: {
 				options: {
-					destPrefix: "test"
+					destPrefix: "test/libs"
 				},
 				files: {
-					"libs/qunit": "qunit/qunit",
-					"libs/require.js": "requirejs/require.js",
-					"libs/sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
+					"qunit": "qunit/qunit",
+					"require.js": "requirejs/require.js",
+					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
 				}
 			}
 		},
