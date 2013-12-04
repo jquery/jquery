@@ -19,7 +19,7 @@
 		require.config({
 			baseUrl: path,
 			paths: {
-				sizzle: path + "bower_modules/sizzle/dist/sizzle"
+				sizzle: "src/sizzle/sizzle"
 			}
 		});
 		src = "src/jquery";

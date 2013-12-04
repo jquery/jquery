@@ -26,7 +26,7 @@ module.exports = function( grunt ) {
 				endFile: "src/outro.js"
 			},
 			paths: {
-				sizzle: "../bower_modules/sizzle/dist/sizzle"
+				sizzle: "sizzle/sizzle"
 			},
 			rawText: {},
 			onBuildWrite: convert
