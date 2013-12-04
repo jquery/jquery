@@ -1,7 +1,7 @@
 src/intro.js
 src/outro.js
 src/sizzle/**/*
-test/data/sizzle/**/*
+test/sizzle/**/*
 test/libs/**/*
 test/data/jquery-1.9.1.js
 test/data/badcall.js
