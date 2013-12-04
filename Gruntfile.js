@@ -52,7 +52,7 @@ module.exports = function( grunt ) {
 			},
 			src: {
 				files: {
-					"src/sizzle": "sizzle/dist"
+					"src/sizzle": "sizzle"
 				}
 			},
 			tests: {
@@ -60,7 +60,6 @@ module.exports = function( grunt ) {
 					destPrefix: "test"
 				},
 				files: {
-					"sizzle": "sizzle/test",
 					"libs/qunit": "qunit/qunit",
 					"libs/require.js": "requirejs/require.js",
 					"libs/sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"

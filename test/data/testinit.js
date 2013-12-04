@@ -300,7 +300,7 @@ this.loadTests = function() {
 
 
 				// Subproject tests must be last because they replace our test fixture
-				testSubproject( "Sizzle", "sizzle/", /^unit\/.*\.js$/, function() {
+				testSubproject( "Sizzle", "../src/sizzle/test/", /^unit\/.*\.js$/, function() {
 					// Call load to build module filter select element
 					QUnit.load();
 
