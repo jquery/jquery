@@ -152,13 +152,24 @@ jQuery.fn.extend({
 		});
 	},
 
-	hasClass: function( selector ) {
-		var className = " " + selector + " ",
-			i = 0,
+	hasClass: function( value ) {
+		var classes, classesLength, className,
+			i, j,
 			l = this.length;
-		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
-				return true;
+
+		if ( typeof value === "string" && value ) {
+			classes = value.match( core_rnotwhite );
+			classesLength = classes.length - 1;
+			for ( i = classesLength; i >= 0; i-- ) {
+				classes[i] = " " + classes[i] + " ";
+			}
+			for ( i = 0; i < l; i++ ) {
+				if ( this[i].nodeType === 1 ) {
+					className = (" " + this[i].className + " ").replace(rclass, " ");
+					for ( j = classesLength ; j >= 0 && className.indexOf( classes[j] ) >= 0; j-- ) {}
+					if ( j === -1 )
+						return true;
+				}
 			}
 		}
 
