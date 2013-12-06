@@ -10,7 +10,6 @@ module.exports = function( grunt ) {
 	}
 
 	var gzip = require( "gzip-js" ),
-		path = require( "path" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
@@ -47,14 +46,23 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		bower: {
-			install: {
+		bowercopy: {
+			options: {
+				clean: true
+			},
+			src: {
+				files: {
+					"src/sizzle": "sizzle"
+				}
+			},
+			tests: {
 				options: {
-					targetDir: "bower_modules",
-					cleanup: true,
-					layout: function( type ) {
-						return path.join( type );
-					}
+					destPrefix: "test/libs"
+				},
+				files: {
+					"qunit": "qunit/qunit",
+					"require.js": "requirejs/require.js",
+					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
 				}
 			}
 		},
@@ -138,6 +146,9 @@ module.exports = function( grunt ) {
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
+
+	// Alias bower to bowercopy
+	grunt.registerTask( "bower", "bowercopy" );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "jshint", "jscs" ] );
