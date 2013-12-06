@@ -18,8 +18,6 @@ var releaseVersion,
 	pkg,
 	branch,
 
-	sizzleLoc = "bower_modules/sizzle",
-
 	scpURL = "jqadmin@code.origin.jquery.com:/var/www/html/code.jquery.com/",
 	cdnURL = "http://code.origin.jquery.com/",
 	repoURL = "git@github.com:jquery/jquery.git",
@@ -101,9 +99,6 @@ function initialize( next ) {
 	}
 	if ( !exists( "package.json" ) ) {
 		die( "No package.json in this directory" );
-	}
-	if ( !exists( sizzleLoc ) ) {
-		die( "Sizzle expected to exist at " + sizzleLoc );
 	}
 	pkg = readJSON( "package.json" );
 
@@ -308,15 +303,9 @@ function commitDistFiles( next ) {
 	// Add files to be committed
 	git( [ "add", "package.json" ], function() {
 		git( [ "commit", "-m", "Remove scripts property from package.json" ], function() {
-			// Add sizzle in a separate commit to avoid a big diff
-			// Use force to add normally ignored files
-			git( [ "add", "-f", sizzleLoc ], function() {
-				git( [ "commit", "-m", "Add sizzle" ], function() {
-					// Add jquery files for distribution in a final commit
-					git( [ "add", "-f", devFile, minFile, mapFile ], function() {
-						git( [ "commit", "-m", releaseVersion ], next, debug );
-					}, debug );
-				}, debug );
+			// Add jquery files for distribution in a final commit
+			git( [ "add", "-f", devFile, minFile, mapFile ], function() {
+				git( [ "commit", "-m", releaseVersion ], next, debug );
 			}, debug );
 		}, debug );
 	}, debug );

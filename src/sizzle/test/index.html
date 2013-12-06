@@ -2,60 +2,28 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-	<title>jQuery Test Suite</title>
-	<link rel="Stylesheet" media="screen" href="libs/qunit/qunit.css" />
-	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
-	<!-- Includes -->
-
-	<!--
-		We have to use previous jQuery to ensure testability with
-		ajax-free builds (and non-interference when changing ajax internals)
-	-->
-	<script src="data/jquery-1.9.1.js"></script>
-
-	<script src="libs/qunit/qunit.js"></script>
-	<script src="libs/require.js"></script>
-
-	<!-- See testinit for the list of tests -->
-	<script src="data/testinit.js"></script>
-
-	<!-- A script that includes jQuery min, dev, or AMD -->
-	<!-- Adds "basic" URL option, even to iframes -->
-	<!-- iframes will not load AMD as loading needs to be synchronous for some tests -->
-	<!-- Also executes the function above to load tests -->
-	<script src="jquery.js"></script>
-
-	<script>
-		// html5shiv, enabling HTML5 elements to be used with jQuery
-		( "abbr article aside audio bdi canvas data datalist details figcaption figure footer header hgroup " +
-			"mark meter nav output progress section summary time video"
-		).replace(/\w+/g, function(n) {
-			document.createElement(n);
-		});
-
-		// Load tests if they have not been loaded
-		// This is in a different script tag to ensure that
-		// jQuery is on the page when the testrunner executes
-		if ( !QUnit.urlParams.amd ) {
-			loadTests();
-		}
-	</script>
+	<title>Sizzle Test Suite</title>
+	<link rel="Stylesheet" media="screen" href="../bower_components/qunit/qunit/qunit.css" />
+	<script type="text/javascript" src="../bower_components/qunit/qunit/qunit.js"></script>
+	<script type="text/javascript" src="data/testinit.js"></script>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="../dist/sizzle.js"></script>
+	<script type="text/javascript" src="unit/selector.js"></script>
+	<script type="text/javascript" src="unit/utilities.js"></script>
+	<script type="text/javascript" src="unit/extending.js"></script>
 </head>
 
 <body id="body">
 	<div id="qunit"></div>
 
 	<!-- Test HTML -->
-	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
-	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
-	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px;">
+	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px">
 	<div id="qunit-fixture">
 		<p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 		<p id="ap">
-			Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
+			Here are some [links] in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
 			<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>.
-			This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>:
+			This link has <code id="code1"><a href="http://smin" id="anchor1">class="blog"</a></code>:
 			<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
 
 		</p>
@@ -71,7 +39,7 @@
 		<span id="name+value"></span>
 		<p id="first">Try them out:</p>
 		<ul id="firstUL"></ul>
-		<ol id="empty"></ol>
+		<ol id="empty"><!-- comment --></ol>
 		<form id="form" action="formaction">
 			<label for="action" id="label-for">Action:</label>
 			<input type="text" name="action" value="Test" id="text1" maxlength="30"/>
@@ -123,7 +91,7 @@
 			<select name="select5" id="select5">
 				<option id="option5a" value="3">1</option>
 				<option id="option5b" value="2">2</option>
-				<option id="option5c" value="1" data-attr="">3</option>
+				<option id="option5c" value="1">3</option>
 			</select>
 
 			<object id="object1" codebase="stupid">
@@ -135,7 +103,7 @@
 			<span id="台北" lang="中文"></span>
 			<span id="utf8class1" class="台北Táiběi 台北"></span>
 			<span id="utf8class2" class="台北"></span>
-			<span id="foo:bar" class="foo:bar"></span>
+			<span id="foo:bar" class="foo:bar"><span id="foo_descendent"></span></span>
 			<span id="test.foo[5]bar" class="test.foo[5]bar"></span>
 
 			<foo_bar id="foobar">test element</foo_bar>
@@ -209,14 +177,28 @@ Z</textarea>
 					<input type="checkbox" name="checkedtestcheckboxes" />
 				</div>
 			</form>
-			<div id="nonnodes"><span id="nonnodesElement">hi</span> there <!-- mon ami --></div>
+			<div id="nonnodes"><span>hi</span> there <!-- mon ami --></div>
 			<div id="t2037">
 				<div><div class="hidden">hidden</div></div>
 			</div>
 			<div id="t6652">
 				<div></div>
 			</div>
+			<div id="t12087">
+				<input type="hidden" id="el12087" data-comma="0,1"/>
+			</div>
 			<div id="no-clone-exception"><object><embed></embed></object></div>
+			<div id="names-group">
+				<span id="name-is-example" name="example"></span>
+				<span id="name-is-div" name="div"></span>
+			</div>
+			<script id="script-no-src"></script>
+			<script id="script-src" src="data/empty.js"></script>
+			<div id="id-name-tests">
+				<a id="tName1ID" name="tName1"><span></span></a>
+				<a id="tName2ID" name="tName2"><span></span></a>
+				<div id="tName1"><span id="tName1-span">C</span></div>
+			</div>
 		</div>
 
 		<div id="tabindex-tests">
@@ -234,12 +216,6 @@ Z</textarea>
 			<span>...</span><a id="linkWithNoHrefWithNoTabIndex">Eat a burger</a><span>...</span>
 			<span>...</span><a id="linkWithNoHrefWithTabIndex" tabindex="1">Eat some funyuns</a><span>...</span>
 			<span>...</span><a id="linkWithNoHrefWithNegativeTabIndex" tabindex="-1">Eat some funyuns</a><span>...</span>
-			<input id="inputWithoutTabIndex"/>
-			<button id="buttonWithoutTabIndex"></button>
-			<textarea id="textareaWithoutTabIndex"></textarea>
-			<menu type="popup">
-				<menuitem id="menuitemWithoutTabIndex" command="submitbutton" default/>
-			</menu>
 		</div>
 
 		<div id="liveHandlerOrder">
@@ -258,41 +234,9 @@ Z</textarea>
 				</em>
 			</em>
 			<span id="siblingspan"></span>
-		</div>
-		<div id="fx-test-group" style="position: absolute; width: 1px; height: 1px; overflow: hidden;">
-			<div id="fx-queue" name="test">
-				<div id="fadein" class='chain-test' name='div'>fadeIn<div>fadeIn</div></div>
-				<div id="fadeout" class='chain-test chain-test-out'>fadeOut<div>fadeOut</div></div>
-
-				<div id="show" class='chain-test'>show<div>show</div></div>
-				<div id="hide" class='chain-test chain-test-out'>hide<div>hide</div></div>
-				<div id="easehide" class='chain-test chain-test-out'>hide<div>hide</div></div>
-
-				<div id="togglein" class='chain-test'>togglein<div>togglein</div></div>
-				<div id="toggleout" class='chain-test chain-test-out'>toggleout<div>toggleout</div></div>
-				<div id="easetoggleout" class='chain-test chain-test-out'>toggleout<div>toggleout</div></div>
-
-				<div id="slideup" class='chain-test'>slideUp<div>slideUp</div></div>
-				<div id="slidedown" class='chain-test chain-test-out'>slideDown<div>slideDown</div></div>
-				<div id="easeslideup" class='chain-test'>slideUp<div>slideUp</div></div>
-
-				<div id="slidetogglein" class='chain-test'>slideToggleIn<div>slideToggleIn</div></div>
-				<div id="slidetoggleout" class='chain-test chain-test-out'>slideToggleOut<div>slideToggleOut</div></div>
-
-				<div id="fadetogglein" class='chain-test'>fadeToggleIn<div>fadeToggleIn</div></div>
-				<div id="fadetoggleout" class='chain-test chain-test-out'>fadeToggleOut<div>fadeToggleOut</div></div>
-
-				<div id="fadeto" class='chain-test'>fadeTo<div>fadeTo</div></div>
-			</div>
-
-			<div id="fx-tests"></div>
-			<span id="display"></span>
-		</div>
+		</div>​
 	</div>
 	</dl>
-	<map name="imgmap" id="imgmap">
-		<area shape="rect" coords="0,0,200,50">
-	</map>
-
+	<br id="last"/>
 </body>
 </html>
