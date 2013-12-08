@@ -56,7 +56,7 @@ Now by running `grunt` command, in the jquery directory, you could build full ve
 grunt
 ```
 
-There are many other tasks avaliable for jQuery Core:
+There are many other tasks available for jQuery Core:
 ```
 grunt -help
 ```
