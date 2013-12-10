@@ -335,7 +335,7 @@ callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
 Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
 The given callback is fired when window.iframeCallback is called by the page
 The arguments passed to the callback are the same as the
-arguments passed to window.iframeCallback, whatever that may be
+arguments that are passed to window.iframeCallback, whatever that may be
 
 ```js
 testIframeWithCallback( testName, fileName, callback );
