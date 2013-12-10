@@ -345,8 +345,8 @@ test( "jQuery.Callbacks.forget", function() {
 
 	expect( 1 );
 
-	var cb = jQuery.Callbacks("memory");
-	cb.fire("hello");
+	var cb = jQuery.Callbacks( "memory" );
+	cb.fire( "hello" );
 
 	function handler ( str ) {
 		strictEqual( str, "hello", "memory is intact" );
