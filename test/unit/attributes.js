@@ -635,7 +635,8 @@ test( "removeAttr(Multi String, variable space width)", function() {
 });
 
 test( "prop(String, Object)", function() {
-	expect( 31 );
+
+	expect( 17 );
 
 	equal( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
 	equal( jQuery("#text1").prop( "value", "Test2" ).prop("defaultValue"), "Test", "Check for defaultValue attribute" );
@@ -663,7 +664,11 @@ test( "prop(String, Object)", function() {
 	equal( jQuery("#table").prop("useMap"), 1, "Check setting and retrieving useMap" );
 	jQuery("#table").prop( "frameborder", 1 );
 	equal( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
-	QUnit.reset();
+});
+
+test( "prop(String, Object) on null/undefined", function() {
+
+  expect( 14 );
 
 	var select, optgroup, option, attributeNode, commentNode, textNode, obj, $form,
 		body = document.body,
@@ -795,16 +800,20 @@ test( "removeProp(String)", function() {
 	});
 });
 
-test( "val()", function() {
-	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
+test( "val() after modification", function() {
 
-	var checks, $button;
+	expect( 1 );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
+});
 
-	QUnit.reset();
 
+test( "val()", function() {
+
+	expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
+
+	var checks, $button;
 	equal( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
 	equal( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
@@ -919,7 +928,6 @@ if ( "value" in document.createElement("meter") &&
 var testVal = function( valueObj ) {
 	expect( 8 );
 
-	QUnit.reset();
 	jQuery("#text1").val( valueObj("test") );
 	equal( document.getElementById("text1").value, "test", "Check for modified (via val(String)) value of input element" );
 
@@ -974,7 +982,6 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 test( "val(Function) with incoming value", function() {
 	expect( 10 );
 
-	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
 
 	jQuery("#text1").val(function( i, val ) {
