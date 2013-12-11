@@ -391,9 +391,10 @@ test("css(Object) where values are Functions with incoming values", function() {
 });
 
 test("show(); hide()", function() {
-	expect(22);
 
-	var hiddendiv, div, pass, old, test;
+	expect( 4 );
+
+	var hiddendiv, div;
 
 	hiddendiv = jQuery("div.hidden");
 	hiddendiv.hide();
@@ -406,8 +407,13 @@ test("show(); hide()", function() {
 	div.appendTo("#qunit-fixture").show();
 	equal( div.css("display"), "block", "Pre-hidden div shown" );
 
-	QUnit.reset();
+});
 
+test("show();", function() {
+
+	expect( 18 );
+
+  var hiddendiv, div, pass, old, test;
 	hiddendiv = jQuery("div.hidden");
 
 	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
@@ -620,7 +626,6 @@ test("toggle()", function() {
 
 test("hide hidden elements (bug #7141)", function() {
 	expect(3);
-	QUnit.reset();
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
 	equal( div.css("display"), "none", "Element is hidden by default" );

@@ -130,7 +130,6 @@ test("show()", 27, function () {
 
 test("show(Number) - other displays", function() {
 	expect(15);
-	QUnit.reset();
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
@@ -1221,7 +1220,6 @@ test("animate with CSS shorthand properties", function(){
 
 test("hide hidden elements, with animation (bug #7141)", function() {
 	expect(3);
-	QUnit.reset();
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
 	equal( div.css("display"), "none", "Element is hidden by default" );
