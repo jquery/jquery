@@ -27,6 +27,16 @@ if ( window.ActiveXObject ) {
 			xhrCallbacks[ key ]( undefined, true );
 		}
 	});
+
+	// Support: IE<9
+	// XHR does not fully support HTTP METHODS (#13240)
+	jQuery.ajaxPrefilter( function(options) {
+		if ( /^(head|options|patch)/i.test( options.type ) ) {
+			options.xhr = function() {
+				return new window.ActiveXObject( "Microsoft.XMLHTTP" );
+			};
+		}
+	});
 }
 
 // Determine support properties

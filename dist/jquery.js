@@ -9,7 +9,7 @@
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2013-11-15T15:58Z
+ * Date: 2013-12-16T15:18Z
  */
 
 (function ( window, factory ) {
@@ -9575,6 +9575,16 @@ if ( window.ActiveXObject ) {
 	jQuery( window ).on( "unload", function() {
 		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]( undefined, true );
+		}
+	});
+
+	// Support: IE<9
+	// XHR does not fully support HTTP METHODS (#13240)
+	jQuery.ajaxPrefilter( function(options) {
+		if ( /^(head|options|patch)/i.test( options.type ) ) {
+			options.xhr = function() {
+				return new window.ActiveXObject( "Microsoft.XMLHTTP" );
+			};
 		}
 	});
 }
