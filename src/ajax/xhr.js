@@ -5,14 +5,6 @@ define([
 ], function( jQuery, support ) {
 
 jQuery.ajaxSettings.xhr = function() {
-	// Support: IE9+
-	// IE can't get local files with standard XHR, only ActiveX
-	if ( this.isLocal ) {
-		try {
-			return new ActiveXObject( "Microsoft.XMLHTTP" );
-		} catch( e ) {}
-	}
-
 	try {
 		return new XMLHttpRequest();
 	} catch( e ) {}
