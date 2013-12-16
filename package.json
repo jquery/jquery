@@ -29,22 +29,24 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "archiver": "~0.4.10",
-    "grunt": "~0.4.1",
-    "grunt-bowercopy": "~0.4.1",
-    "grunt-cli": "~0.1.11",
-    "grunt-compare-size": "~0.4.0",
-    "grunt-contrib-jshint": "~0.7.0",
-    "grunt-contrib-uglify": "~0.2.7",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-git-authors": "~1.2.0",
-    "grunt-jscs-checker": "~0.2.3",
-    "grunt-jsonlint": "~1.0.1",
+    "archiver": "0.4.10",
     "gzip-js": "0.3.2",
-    "load-grunt-tasks": "~0.2.0",
-    "testswarm": "~1.1.0",
-    "requirejs": "~2.1.9",
-    "which": "~1.0.5"
+    "testswarm": "1.1.0",
+    "load-grunt-tasks": "0.2.0",
+    "requirejs": "2.1.9",
+
+    "grunt": "0.4.2",
+    "grunt-cli": "0.1.11",
+
+    "grunt-contrib-jshint": "0.7.2",
+    "grunt-contrib-uglify": "0.2.7",
+    "grunt-contrib-watch": "0.5.3",
+
+    "grunt-bowercopy": "0.4.1",
+    "grunt-compare-size": "0.4.0-rc.3",
+    "grunt-git-authors": "1.2.0",
+    "grunt-jscs-checker": "0.2.6",
+    "grunt-jsonlint": "1.0.4"
   },
   "scripts": {
     "build": "npm install && grunt",
