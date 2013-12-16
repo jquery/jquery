@@ -329,7 +329,6 @@ function testSubproject( label, subProjectURL, risTests, complete ) {
 	function requireFixture( fn ) {
 		return function() {
 			if ( !fixtureReplaced ) {
-        console.log(fn);
 				// Make sure that we retrieved a fixture for the subproject
 				if ( !fixture.length ) {
 					ok( false, "Found subproject fixture" );
