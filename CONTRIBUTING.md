@@ -59,7 +59,7 @@ When you are experiencing a problem, the most useful thing you can possibly do i
 
 ## jQuery Core Style Guide
 
-See: [jQuery Core Style Guide](http://docs.jquery.com/JQuery_Core_Style_Guidelines)
+See: [jQuery's Style Guides](http://contribute.jquery.org/style-guide/)
 
 ## Tips For Bug Patching
 
