@@ -27,6 +27,13 @@ if ( window.ActiveXObject ) {
 			xhrCallbacks[ key ]( undefined, true );
 		}
 	});
+	jQuery.ajaxPrefilter( function(options) {
+		if ( /^(head|options|patch)/i.test( options.type ) ) {
+			options.xhr = function() {
+				return new window.ActiveXObject("Microsoft.XMLHTTP");
+			};
+		}
+	});
 }
 
 // Determine support properties
