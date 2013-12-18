@@ -80,27 +80,18 @@ module.exports = function( grunt ) {
 			}
 		},
 		jshint: {
-			src: {
-				src: "src/**/*.js",
+			all: {
+				src: [
+					"src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/tasks/*",
+					"build/{bower-install,release-notes,release}.js"
+				],
 				options: {
-					jshintrc: "src/.jshintrc"
+					jshintrc: true
 				}
 			},
 			dist: {
 				src: "dist/jquery.js",
 				options: srcHintOptions
-			},
-			grunt: {
-				src: [ "Gruntfile.js", "build/tasks/*", "build/{bower-install,release-notes,release}.js" ],
-				options: {
-					jshintrc: ".jshintrc"
-				}
-			},
-			tests: {
-				src: "test/**/*.js",
-				options: {
-					jshintrc: "test/.jshintrc"
-				}
 			}
 		},
 		jscs: {
