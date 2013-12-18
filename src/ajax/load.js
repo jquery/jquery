@@ -20,8 +20,9 @@ jQuery.fn.load = function( url, params, callback ) {
 		return _load.apply( this, arguments );
 	}
 
-	var selector, type, response,
+	var selector, response,
 		self = this,
+		type = "GET",
 		off = url.indexOf(" ");
 
 	if ( off >= 0 ) {
@@ -45,8 +46,6 @@ jQuery.fn.load = function( url, params, callback ) {
 	if ( self.length > 0 ) {
 		jQuery.ajax({
 			url: url,
-
-			// if "type" variable is undefined, then "GET" method will be used
 			type: type,
 			dataType: "html",
 			data: params
