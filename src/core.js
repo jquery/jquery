@@ -12,12 +12,6 @@ define([
 ], function( deletedIds, slice, concat, push, indexOf, class2type, toString, hasOwn, trim, support ) {
 
 var
-	// Map over jQuery in case of overwrite
-	_jQuery = window.jQuery,
-
-	// Map over the $ in case of overwrite
-	_$ = window.$,
-
 	version = "@VERSION",
 
 	// Define a local copy of jQuery
@@ -201,18 +195,6 @@ jQuery.extend({
 	},
 
 	noop: function() {},
-
-	noConflict: function( deep ) {
-		if ( window.$ === jQuery ) {
-			window.$ = _$;
-		}
-
-		if ( deep && window.jQuery === jQuery ) {
-			window.jQuery = _jQuery;
-		}
-
-		return jQuery;
-	},
 
 	// See test/unit/core.js for details concerning isFunction.
 	// Since version 1.3, DOM methods and functions like alert

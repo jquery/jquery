@@ -87,7 +87,7 @@ module.exports = function( grunt ) {
 		"build",
 		"Concatenate source, remove sub AMD definitions, (include/exclude modules with +/- flags), embed date/version",
 	function() {
-		var flag,
+		var flag, index,
 			done = this.async(),
 			flags = this.flags,
 			optIn = flags[ "*" ],
@@ -184,6 +184,13 @@ module.exports = function( grunt ) {
 		delete flags[ "*" ];
 		for ( flag in flags ) {
 			excluder( flag );
+		}
+
+		// Replace exports/global with a noop noConflict
+		if ( (index = excluded.indexOf( "exports/global" )) > -1 ) {
+			config.rawText[ "exports/global" ] = "define(['../core']," +
+				"function( jQuery ) {\njQuery.noConflict = function() {};\n});";
+			excluded.splice( index, 1 );
 		}
 
 		grunt.verbose.writeflags( excluded, "Excluded" );
