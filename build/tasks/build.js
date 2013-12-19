@@ -196,6 +196,13 @@ module.exports = function( grunt ) {
 			excluded.splice( index, 1 );
 		}
 
+		// Replace exports/global with a noop noConflict
+		if ( (index = excluded.indexOf( "exports/global" )) > -1 ) {
+			config.rawText[ "exports/global" ] = "define(['../core']," +
+				"function( jQuery ) {\njQuery.noConflict = function() {};\n});";
+			excluded.splice( index, 1 );
+		}
+
 		grunt.verbose.writeflags( excluded, "Excluded" );
 		grunt.verbose.writeflags( included, "Included" );
 
