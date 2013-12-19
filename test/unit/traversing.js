@@ -699,52 +699,136 @@ test("sort direction", function() {
 	});
 });
 
-test("add(String|Element|Array|undefined)", function() {
-	expect( 15 );
+test("add(String selector)", function() {
+	expect( 2 );
 
-	var divs, tmp, x, notDefined;
+	var divs;
 
-	deepEqual( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
-	deepEqual( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
+	deepEqual(
+		jQuery("#sndp").add("#en").add("#sap").toArray(),
+		q("sndp", "en", "sap"),
+		"Check elements from document"
+	);
+
+	divs = jQuery("<div/>").add("#sndp");
+	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
+});
+
+test("add(String selector, String context)", function() {
+	expect( 1 );
+
+	deepEqual(
+		jQuery([]).add("div", "#nothiddendiv").toArray(),
+		q("nothiddendivchild"),
+		"Check elements from document"
+	);
+});
+
+test("add(String html)", function() {
+	expect( 3 );
+
+	var x,
+		divs = jQuery("#sndp").add("<div/>");
+
+	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
+
+
+	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	equal( x[0].id, "x1", "Check detached element1" );
+	equal( x[1].id, "x2", "Check detached element2" );
+});
+
+test("add(jQuery)", function() {
+	expect( 4 );
+
+	var x,
+		tmp = jQuery("<div/>");
+
+	x = jQuery([])
+	.add(
+		jQuery("<p id='x1'>xxx</p>").appendTo(tmp)
+	)
+	.add(
+		jQuery("<p id='x2'>xxx</p>").appendTo(tmp)
+	);
+
+	equal( x[0].id, "x1", "Check element1 in detached parent" );
+	equal( x[1].id, "x2", "Check element2 in detached parent" );
+
+	x = jQuery([])
+	.add(
+		jQuery("<p id='x1'>xxx</p>")
+	)
+	.add(
+		jQuery("<p id='x2'>xxx</p>")
+	);
+
+	equal( x[0].id, "x1", "Check detached element1" );
+	equal( x[1].id, "x2", "Check detached element2" );
+});
+
+test("add(Element)", function() {
+	expect( 2 );
+
+	var x,
+		tmp = jQuery("<div/>");
+
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	equal( x[0].id, "x1", "Check on-the-fly element1" );
+	equal( x[1].id, "x2", "Check on-the-fly element2" );
+});
+
+test("add(Array elements)", function() {
+	expect( 1 );
+
+	deepEqual(
+		jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).toArray(),
+		q("sndp", "en", "sap"),
+		"Check elements from document"
+	);
+});
+
+test("add(Window)", function() {
+	expect( 1 );
+
+	var frame1 = document.createElement( "iframe" ),
+		frame2 = document.createElement( "iframe" );
+
+	// This increases window.length and sets window[i] available
+	document.body.appendChild( frame1 );
+	document.body.appendChild( frame2 );
+
+	// Window is tricky because it is a lot like an array, even Array#slice will
+	// turn it into a multi-item array.
+	equal( jQuery([]).add( window ).length, 1, "Add a window" );
+
+	document.body.removeChild( frame1 );
+	document.body.removeChild( frame2 );
+});
+
+test("add(NodeList|undefined|HTMLFormElement|HTMLSelectElement)", function() {
+	expect( 4 );
+
+	var ps, notDefined;
+
+	ps = document.getElementsByTagName("p");
+
+	equal( jQuery([]).add(ps).length, ps.length, "Add a NodeList" );
+
+	equal( jQuery([]).add(notDefined).length, 0, "Adding undefined adds nothing" );
+
+	equal( jQuery([]).add( document.getElementById("form") ).length, 1, "Add a form" );
+	equal( jQuery([]).add( document.getElementById("select1") ).length, 1, "Add a select" );
 
 	// We no longer support .add(form.elements), unfortunately.
 	// There is no way, in browsers, to reliably determine the difference
 	// between form.elements and form - and doing .add(form) and having it
 	// add the form elements is way to unexpected, so this gets the boot.
-	// ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
+	//ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
 
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
 	// use jQuery([]).add(form.elements) instead.
 	//equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
-
-	divs = jQuery("<div/>").add("#sndp");
-	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
-
-	divs = jQuery("#sndp").add("<div/>");
-	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
-
-	tmp = jQuery("<div/>");
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	equal( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
-
-	equal( jQuery([]).add( document.getElementById("form") ).length, 1, "Add a form" );
-	equal( jQuery([]).add( document.getElementById("select1") ).length, 1, "Add a select" );
 });
 
 test("add(String, Context)", function() {
