@@ -202,7 +202,7 @@ reset = function () {
 
 	// Cleanup globals
 	Globals.cleanup();
-	jQuery("#qunit-fixture").html(QUnit.config.fixture);
+	jQuery("#qunit-fixture")[0].innerHTML = QUnit.config.fixture;
 };
 
 QUnit.testDone(reset);
