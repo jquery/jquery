@@ -103,7 +103,7 @@ module.exports = function( grunt ) {
 			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split( " " )
 		},
 		watch: {
-			files: [ "<%= jshint.grunt.src %>", "<%= jshint.tests.src %>", "src/**/*.js" ],
+			files: [ "<%= jshint.all.src %>" ],
 			tasks: "dev"
 		},
 		uglify: {
