@@ -3,7 +3,7 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "1.11.0-pre",
+  "version": "1.11.0pre",
   "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {

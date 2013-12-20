@@ -1,6 +1,6 @@
 {
   "name": "jquery",
-  "version": "1.11.0-pre",
+  "version": "1.11.0pre",
   "ignore": [
     "**/.*",
     "build",
