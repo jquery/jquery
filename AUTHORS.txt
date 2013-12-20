@@ -14,7 +14,7 @@ Brandon Aaron <brandon.aaron@gmail.com>
 Mike Alsup <malsup@gmail.com>
 Dave Methvin <dave.methvin@gmail.com>
 Ed Engelhardt <edengelhardt@gmail.com>
-Sean Catchpole <sean@sunsean.com>
+Sean Catchpole <littlecooldude@gmail.com>
 Paul Mclanahan <pmclanahan@gmail.com>
 David Serduke <davidserduke@gmail.com>
 Richard D. Worth <rdworth@gmail.com>
@@ -54,16 +54,19 @@ Ralph Whitbeck <ralph.whitbeck@gmail.com>
 Carl Fürstenberg <azatoth@gmail.com>
 Jacob Wright <jacwright@gmail.com>
 J. Ryan Stinnett <jryans@gmail.com>
+unknown <Igen005@.upcorp.ad.uprr.com>
+temp01 <temp01irc@gmail.com>
 Heungsub Lee <h@subl.ee>
 Colin Snover <github.com@zetafleet.com>
 Ryan W Tenney <ryan@10e.us>
+Pinhook <contact@pinhooklabs.com>
 Ron Otten <r.j.g.otten@gmail.com>
 Jephte Clain <Jephte.Clain@univ-reunion.fr>
 Anton Matzneller <obhvsbypqghgc@gmail.com>
 Alex Sexton <AlexSexton@gmail.com>
 Dan Heberden <danheberden@gmail.com>
 Henri Wiechers <hwiechers@gmail.com>
-Russell Holbrook <russellholbrook@gmail.com>
+Russell Holbrook <russell.holbrook@patch.com>
 Julian Aubourg <aubourg.julian@gmail.com>
 Gianni Alessandro Chiappetta <gianni@runlevel6.org>
 Scott Jehl <scottjehl@gmail.com>
@@ -76,6 +79,7 @@ Brandon Sterne <bsterne@mozilla.com>
 Mathias Bynens <mathias@qiwi.be>
 Timmy Willison <timmywillisn@gmail.com>
 Corey Frang <gnarf37@gmail.com>
+Digitalxero <digitalxero>
 Anton Kovalyov <anton@kovalyov.net>
 David Murdoch <david@davidmurdoch.com>
 Josh Varner <josh.varner@gmail.com>
@@ -93,7 +97,8 @@ Brian Brennan <me@brianlovesthings.com>
 Xavier Montillet <xavierm02.net@gmail.com>
 Daniel Pihlstrom <sciolist.se@gmail.com>
 Sahab Yazdani <sahab.yazdani+github@gmail.com>
-Scott Hughes <shughes@atlassian.com>
+avaly <github-com@agachi.name>
+Scott Hughes <hi@scott-hughes.me>
 Mike Sherov <mike.sherov@gmail.com>
 Greg Hazel <ghazel@gmail.com>
 Schalk Neethling <schalk@ossreleasefeed.com>
@@ -105,17 +110,20 @@ Shi Chuan <shichuanr@gmail.com>
 Berker Peksag <berker.peksag@gmail.com>
 Toby Brain <tobyb@freshview.com>
 Matt Mueller <mattmuelle@gmail.com>
+Justin <drakefjustin@gmail.com>
 Daniel Herman <daniel.c.herman@gmail.com>
 Oleg Gaidarenko <markelog@gmail.com>
 Richard Gibson <richard.gibson@gmail.com>
 Rafaël Blais Masson <rafbmasson@gmail.com>
+cmc3cn <59194618@qq.com>
 Joe Presbrey <presbrey@gmail.com>
 Sindre Sorhus <sindresorhus@gmail.com>
 Arne de Bree <arne@bukkie.nl>
 Vladislav Zarakovsky <vlad.zar@gmail.com>
 Andrew E Monat <amonat@gmail.com>
+Oskari <admin@o-programs.com>
 Joao Henrique de Andrade Bruni <joaohbruni@yahoo.com.br>
-Dominik D. Geyer <dominik.geyer@gmail.com>
+tsinha <tsinha@Anthonys-MacBook-Pro.local>
 Matt Farmer <matt@frmr.me>
 Trey Hunner <treyhunner@gmail.com>
 Jason Moon <jmoon@socialcast.com>
@@ -132,49 +140,76 @@ Elijah Manor <elijah.manor@gmail.com>
 Daniel Chatfield <chatfielddaniel@gmail.com>
 Nikita Govorov <nikita.govorov@gmail.com>
 Wesley Walser <waw325@gmail.com>
-Michael Pennisi <mike@mikepennisi.com>
+Mike Pennisi <mike@mikepennisi.com>
 Markus Staab <markus.staab@redaxo.de>
+Dave Riddle <david@joyvuu.com>
+Callum Macrae <callum@lynxphp.com>
 Benjamin Truyman <bentruyman@gmail.com>
 James Huston <james@jameshuston.net>
+Erick Ruiz de Chávez <erickrdch@gmail.com>
+David Bonner <dbonner@cogolabs.com>
+Akintayo Akinwunmi <aakinwunmi@judge.com>
+MORGAN <morgan@morgangraphics.com>
 Ismail Khair <ismail.khair@gmail.com>
 Carl Danley <carldanley@gmail.com>
-Michael Petrovich <michael.c.petrovich@gmail.com>
-Callum Macrae <callum@lynxphp.com>
-David Bonner <dbonner@cogolabs.com>
-Erick Ruiz de Chávez <erickrdch@gmail.com>
-Akintayo Akinwunmi <aakinwunmi@judge.com>
-Dave Riddle <david@joyvuu.com>
+Mike Petrovich <michael.c.petrovich@gmail.com>
 Greg Lavallee <greglavallee@wapolabs.com>
 Daniel Gálvez <dgalvez@editablething.com>
 Sai Lung Wong <sai.wong@huffingtonpost.com>
-Tom H Fuertes <tomfuertes@gmail.com>
+Tom H Fuertes <TomFuertes@gmail.com>
 Roland Eckl <eckl.roland@googlemail.com>
 Jay Merrifield <fracmak@gmail.com>
 Allen J Schmidt Jr <cobrasoft@gmail.com>
+Jonathan Sampson <jjdsampson@gmail.com>
 Marcel Greter <marcel.greter@ocbnet.ch>
 Matthias Jäggli <matthias.jaeggli@gmail.com>
+David Fox <dfoxinator@gmail.com>
 Yiming He <yiminghe@gmail.com>
 Devin Cooper <cooper.semantics@gmail.com>
+Paul Ramos <paul.b.ramos@gmail.com>
+Rod Vagg <rod@vagg.org>
 Bennett Sorbo <bsorbo@gmail.com>
 Sebastian Burkhard <sebi.burkhard@gmail.com>
+Zachary Adam Kaplan <razic@viralkitty.com>
+nanto_vi <nanto@moon.email.ne.jp>
+nanto <nanto@moon.email.ne.jp>
 Danil Somsikov <danilasomsikov@gmail.com>
+Ryunosuke SATO <tricknotes.rs@gmail.com>
 Jean Boussier <jean.boussier@gmail.com>
 Adam Coulombe <me@adam.co>
 Andrew Plummer <plummer.andrew@gmail.com>
+Mark Raddatz <mraddatz@gmail.com>
+Isaac Z. Schlueter <i@izs.me>
+Karl Sieburg <ksieburg@yahoo.com>
+Pascal Borreli <pascal@borreli.com>
 Nguyen Phuc Lam <ruado1987@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
 Michał Gołębiowski <m.goleb@gmail.com>
-Steven Benner <admin@stevenbenner.com>
 Li Xudong <istonelee@gmail.com>
+Steven Benner <admin@stevenbenner.com>
+Tom H Fuertes <tomfuertes@gmail.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
+ros3cin <ros3@cin.ufpe.br>
 Jason Bedard <jason+jquery@jbedard.ca>
 Kyle Robinson Young <kyle@dontkry.com>
 Chris Talkington <chris@talkingtontech.com>
-Jason Merino <jasonmerino@gmail.com>
+Eddie Monge <eddie@eddiemonge.com>
 Terry Jones <terry@jon.es>
+Jason Merino <jasonmerino@gmail.com>
 Jeremy Dunck <jdunck@gmail.com>
 Chris Price <price.c@gmail.com>
 Guy Bedford <guybedford@gmail.com>
 Amey Sakhadeo <me@ameyms.com>
-Noah Hamann <njhamann@gmail.com>
-
+Mike Sidorov <mikes.ekb@gmail.com>
+Anthony Ryan <anthonyryan1@gmail.com>
+Dominik D. Geyer <dominik.geyer@gmail.com>
+George Kats <katsgeorgeek@gmail.com>
+Lihan Li <frankieteardrop@gmail.com>
+Ronny Springer <springer.ronny@gmail.com>
+Chris Antaki <ChrisAntaki@gmail.com>
+Marian Sollmann <marian.sollmann@cargomedia.ch>
+njhamann <njhamann@gmail.com>
+Ilya Kantor <iliakan@gmail.com>
+hongymagic <d.hong@me.com>
+John Paul <john@johnkpaul.com>
+Jakob Stoeck <jakob@pokermania.de>
