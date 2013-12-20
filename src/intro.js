@@ -23,7 +23,7 @@
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info
 		module.exports = global.document ?
-			factory( global ) :
+			factory( global, true ) :
 			function( w ) {
 				if ( !w.document ) {
 					throw new Error( "jQuery requires a window with a document" );
@@ -35,7 +35,7 @@
 	}
 
 // Pass this, window may not be defined yet
-}(this, function( window ) {
+}(this, function( window, noGlobal ) {
 
 // Can't do this because several apps including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if
