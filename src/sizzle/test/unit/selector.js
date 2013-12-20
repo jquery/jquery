@@ -316,7 +316,7 @@ test("class", function() {
 });
 
 test("name", function() {
-	expect( 13 );
+	expect( 14 );
 
 	var form;
 
@@ -342,6 +342,8 @@ test("name", function() {
 	t( "Find elements that have similar IDs", "[name=tName1]", ["tName1ID"] );
 	t( "Find elements that have similar IDs", "[name=tName2]", ["tName2ID"] );
 	t( "Find elements that have similar IDs", "#tName2ID", ["tName2ID"] );
+
+	t( "Case-sensitivity", "[name=tname1]", [] );
 });
 
 test("multiple", function() {
