@@ -34,6 +34,7 @@
     "testswarm": "1.1.0",
     "load-grunt-tasks": "0.2.0",
     "requirejs": "2.1.9",
+    "shelljs": "0.2.6",
 
     "grunt": "0.4.2",
     "grunt-cli": "0.1.11",
