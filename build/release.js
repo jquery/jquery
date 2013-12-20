@@ -138,7 +138,7 @@ module.exports = function( Release ) {
 		 */
 		complete: function() {
 			// Build CDN archives
-			Release._walk( buildGoogleCDN, buildMicrosoftCDN, _complete );
+			Release._walk([ buildGoogleCDN, buildMicrosoftCDN, _complete ]);
 		},
 		/**
 		 * Our trac milestones are different than the new version
