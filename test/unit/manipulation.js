@@ -330,11 +330,11 @@ test( "append(param) to object, see #11280", function() {
 	equal( object.children().eq(0).attr("name"), "bar", "param has name=bar" );
 });
 
-test( "append(Function) with incoming value", function() {
+test( "append(Function) returns String", function() {
 
-	expect( 12 );
+	expect( 4 );
 
-	var defaultText, result, select, old, expected;
+	var defaultText, result, select, old;
 
 	defaultText = "Try them out:";
 	old = jQuery("#first").html();
@@ -352,47 +352,57 @@ test( "append(Function) with incoming value", function() {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return "<option value='appendTest'>Append Test</option>";
 	}).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element" );
+});
 
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
-	old = jQuery("#sap").html();
+test( "append(Function) returns Element", function() {
+  
+  expect( 2 );
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:",
+    old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function( i, val ) {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return document.getElementById("first");
 	});
 	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
+});
 
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo";
-	old = jQuery("#sap").html();
+test( "append(Function) returns Array<Element>", function() {
+  
+	expect( 2 );
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo",
+    old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function( i, val ) {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return [ document.getElementById("first"), document.getElementById("yahoo") ];
 	});
 	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
+});
 
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
-	old = jQuery("#sap").html();
+test( "append(Function) returns jQuery", function() {
+  
+	expect( 2 );
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:",
+    old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function( i, val ) {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return jQuery("#yahoo, #first");
 	});
 	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
+});
 
-	QUnit.reset();
-	old = jQuery("#sap").html();
+test( "append(Function) returns Number", function() {
+  
+	expect( 2 );
+	var old = jQuery("#sap").html();
 
 	jQuery("#sap").append(function( i, val ) {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return 5;
 	});
 	ok( jQuery("#sap")[ 0 ].innerHTML.match( /5$/ ), "Check for appending a number" );
-
-	QUnit.reset();
 });
 
 test( "XML DOM manipulation (#9960)", function() {
@@ -520,11 +530,11 @@ test( "append(xml)", function() {
 
 });
 
-test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
+test( "appendTo(String)", function() {
+  
+	expect( 4 );
 
-	expect( 16 );
-
-	var defaultText, l, expected, num, div;
+	var l, defaultText;
 
 	defaultText = "Try them out:";
 	jQuery("<b>buga</b>").appendTo("#first");
@@ -538,9 +548,13 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 		.appendTo("#first");
 	equal( jQuery("#first").children().length, l, "Make sure the elements were inserted." );
 	equal( jQuery("#first").children().last()[ 0 ].nodeName.toLowerCase(), "strong", "Verify the last element." );
+});
 
-	QUnit.reset();
-	expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
+test( "appendTo(Element|Array<Element>)", function() {
+  
+  expect( 2 );
+  
+	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	jQuery( document.getElementById("first") ).appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 
@@ -548,7 +562,13 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	jQuery([ document.getElementById("first"), document.getElementById("yahoo") ]).appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
 
-	QUnit.reset();
+});
+
+test( "appendTo(jQuery)", function() {
+  
+  expect( 10 );
+  
+  var expected, num, div;
 	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
 
 	expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:";
@@ -588,52 +608,62 @@ test( "appendTo(String|Element|Array<Element>|jQuery)", function() {
 	equal( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 });
 
-function testPrepend( val ) {
+test( "prepend(String)", function() {
+  
+	expect( 2 );
 
-	expect( 6 );
+	var result, expected;
+	expected = "Try them out:";
+	result = jQuery("#first").prepend( "<b>buga</b>" );
+	equal( result.text(), "buga" + expected, "Check if text prepending works" );
+	equal( jQuery("#select3").prepend( "<option value='prependTest'>Prepend Test</option>"  ).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
+});
 
-	var defaultText, result, expected;
+test( "prepend(Element)", function() {
+  
+	expect( 1 );
 
-	defaultText = "Try them out:";
-	result = jQuery("#first").prepend( val("<b>buga</b>") );
-
-	equal( result.text(), "buga" + defaultText, "Check if text prepending works" );
-	equal( jQuery("#select3").prepend( val("<option value='prependTest'>Prepend Test</option>" ) ).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
-
-	QUnit.reset();
+	var expected;
 	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#sap").prepend( val(document.getElementById("first")) );
+	jQuery("#sap").prepend( document.getElementById("first") );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
+});
 
-	QUnit.reset();
+test( "prepend(Array<Element>)", function() {
+  
+	expect( 1 );
+
+	var expected;
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#sap").prepend( val([ document.getElementById("first"), document.getElementById("yahoo") ]) );
+	jQuery("#sap").prepend( [ document.getElementById("first"), document.getElementById("yahoo") ] );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+});
 
-	QUnit.reset();
+test( "prepend(jQuery)", function() {
+  
+	expect( 1 );
+
+	var expected;
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#sap").prepend( val(jQuery("#yahoo, #first")) );
+	jQuery("#sap").prepend( jQuery("#yahoo, #first") );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
+});
 
-	QUnit.reset();
+test( "prepend(Array<jQuery>)", function() {
+  
+	expect( 1 );
+
+	var expected;
 	expected = "Try them out:GoogleYahooThis link has class=\"blog\": Simon Willison's Weblog";
-	jQuery("#sap").prepend( val([ jQuery("#first"), jQuery("#yahoo, #google") ]) );
+	jQuery("#sap").prepend( [ jQuery("#first"), jQuery("#yahoo, #google") ] );
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
-}
-
-test( "prepend(String|Element|Array<Element>|jQuery)", function() {
-	testPrepend( manipulationBareObj );
 });
 
-test( "prepend(Function)", function() {
-	testPrepend( manipulationFunctionReturningObj );
-});
+test( "prepend(Function) with incoming value -- String", function() {
 
-test( "prepend(Function) with incoming value", function() {
+	expect( 4 );
 
-	expect( 10 );
-
-	var defaultText, old, result, expected;
+	var defaultText, old, result;
 
 	defaultText = "Try them out:";
 	old = jQuery("#first").html();
@@ -650,8 +680,13 @@ test( "prepend(Function) with incoming value", function() {
 		equal( val, old, "Make sure the incoming value is correct." );
 		return "<option value='prependTest'>Prepend Test</option>";
 	}).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
+});
 
-	QUnit.reset();
+test( "prepend(Function) with incoming value -- Element", function() {
+  
+  expect( 2 );
+
+	var old, expected;
 	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery("#sap").html();
 
@@ -661,8 +696,13 @@ test( "prepend(Function) with incoming value", function() {
 	});
 
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
+});
 
-	QUnit.reset();
+test( "prepend(Function) with incoming value -- Array<Element>", function() {
+  
+  expect( 2 );
+
+	var old, expected;
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery("#sap").html();
 
@@ -672,8 +712,13 @@ test( "prepend(Function) with incoming value", function() {
 	});
 
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+});
 
-	QUnit.reset();
+test( "prepend(Function) with incoming value -- jQuery", function() {
+
+  expect( 2 );
+
+	var old, expected;
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	old = jQuery("#sap").html();
 
@@ -685,80 +730,174 @@ test( "prepend(Function) with incoming value", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test( "prependTo(String|Element|Array<Element>|jQuery)", function() {
+test( "prependTo(String)", function() {
 
-	expect( 6 );
+	expect( 2 );
 
-	var defaultText, expected;
+	var defaultText;
 
 	defaultText = "Try them out:";
 	jQuery("<b>buga</b>").prependTo("#first");
 	equal( jQuery("#first").text(), "buga" + defaultText, "Check if text prepending works" );
 	equal( jQuery("<option value='prependTest'>Prepend Test</option>").prependTo("#select3").parent().find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
+	
+});
 
-	QUnit.reset();
+test( "prependTo(Element)", function() {
+
+	expect( 1 );
+
+	var expected;
+
 	expected = "Try them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery( document.getElementById("first") ).prependTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
+});
 
-	QUnit.reset();
+test( "prependTo(Array<Element>)", function() {
+
+	expect( 1 );
+
+	var expected;
+
 	expected = "Try them out:YahooThis link has class=\"blog\": Simon Willison's Weblog";
 	jQuery( [ document.getElementById("first"), document.getElementById("yahoo") ] ).prependTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
+});
 
-	QUnit.reset();
+test( "prependTo(jQuery)", function() {
+
+	expect( 1 );
+
+	var expected;
+
 	expected = "YahooTry them out:This link has class=\"blog\": Simon Willison's Weblog";
 	jQuery("#yahoo, #first").prependTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
+});
 
-	QUnit.reset();
+test( "prependTo(Array<jQuery>)", function() {
+
+	expect( 1 );
+
 	jQuery("<select id='prependSelect1'></select>").prependTo("#form");
 	jQuery("<select id='prependSelect2'><option>Test</option></select>").prependTo("#form");
 
 	t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
 });
 
-function testBefore( val ) {
+test( "before(String)", function() {
 
-	expect( 7 );
+	expect( 1 );
 
-	var expected, set;
+	var expected;
 
 	expected = "This is a normal link: bugaYahoo";
-	jQuery("#yahoo").before( val("<b>buga</b>") );
+	jQuery("#yahoo").before( manipulationBareObj("<b>buga</b>") );
 	equal( jQuery("#en").text(), expected, "Insert String before" );
+});
 
-	QUnit.reset();
+test( "before(Element)", function() {
+
+	expect( 1 );
+
+	var expected;
+
 	expected = "This is a normal link: Try them out:Yahoo";
-	jQuery("#yahoo").before( val(document.getElementById("first")) );
+	jQuery("#yahoo").before( manipulationBareObj(document.getElementById("first")) );
 	equal( jQuery("#en").text(), expected, "Insert element before" );
+});
 
-	QUnit.reset();
+test( "before(Array<Element>)", function() {
+
+	expect( 1 );
+
+	var expected;
 	expected = "This is a normal link: Try them out:diveintomarkYahoo";
-	jQuery("#yahoo").before( val([ document.getElementById("first"), document.getElementById("mark") ]) );
+	jQuery("#yahoo").before( manipulationBareObj([ document.getElementById("first"), document.getElementById("mark") ]) );
 	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
+});
 
-	QUnit.reset();
+test( "before(jQuery)", function() {
+
+	expect( 1 );
+
+	var expected;
 	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
-	jQuery("#yahoo").before( val(jQuery("#mark, #first")) );
+	jQuery("#yahoo").before( manipulationBareObj(jQuery("#mark, #first")) );
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
+});
+	
+test( "before(Array<jQuery>)", function() {
 
-	QUnit.reset();
+	expect( 1 );
+
+	var expected;
 	expected = "This is a normal link: Try them out:GooglediveintomarkYahoo";
-	jQuery("#yahoo").before( val([ jQuery("#first"), jQuery("#mark, #google") ]) );
+	jQuery("#yahoo").before( manipulationBareObj([ jQuery("#first"), jQuery("#mark, #google") ]) );
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
+});
 
+test( "before(Function) -- Returns String", function() {
+
+	expect( 1 );
+
+	var expected;
+
+	expected = "This is a normal link: bugaYahoo";
+	jQuery("#yahoo").before( manipulationFunctionReturningObj("<b>buga</b>") );
+	equal( jQuery("#en").text(), expected, "Insert String before" );
+});
+
+test( "before(Function) -- Returns Element", function() {
+
+	expect( 1 );
+
+	var expected;
+
+	expected = "This is a normal link: Try them out:Yahoo";
+	jQuery("#yahoo").before( manipulationFunctionReturningObj(document.getElementById("first")) );
+	equal( jQuery("#en").text(), expected, "Insert element before" );
+});
+
+test( "before(Function) -- Returns Array<Element>", function() {
+
+	expect( 1 );
+
+	var expected;
+	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+	jQuery("#yahoo").before( manipulationFunctionReturningObj([ document.getElementById("first"), document.getElementById("mark") ]) );
+	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
+});
+
+test( "before(Function) -- Returns jQuery", function() {
+
+	expect( 1 );
+
+	var expected;
+	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
+	jQuery("#yahoo").before( manipulationFunctionReturningObj(jQuery("#mark, #first")) );
+	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
+});
+	
+test( "before(Function) -- Returns Array<jQuery>", function() {
+
+	expect( 1 );
+
+	var expected;
+	expected = "This is a normal link: Try them out:GooglediveintomarkYahoo";
+	jQuery("#yahoo").before( manipulationFunctionReturningObj([ jQuery("#first"), jQuery("#mark, #google") ]) );
+	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
+});
+
+test( "before(no-op)", function() {
+
+	expect( 2 );
+
+	var set;
 	set = jQuery("<div/>").before("<span>test</span>");
 	equal( set[ 0 ].nodeName.toLowerCase(), "div", "Insert before a disconnected node should be a no-op" );
 	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
-}
-
-test( "before(String|Element|Array<Element>|jQuery)", function() {
-	testBefore( manipulationBareObj );
-});
-
-test( "before(Function)", function() {
-	testBefore( manipulationFunctionReturningObj );
 });
 
 test( "before and after w/ empty object (#10812)", function() {
@@ -771,124 +910,207 @@ test( "before and after w/ empty object (#10812)", function() {
 	equal( res.length, 0, "didn't choke on empty object" );
 });
 
-test( "before and after on disconnected node (#10517)", function() {
+test( ".before() and .after() disconnected node", function() {
 
-	expect( 6 );
-
-	var expectedBefore = "This is a normal link: bugaYahoo",
-		expectedAfter = "This is a normal link: Yahoobuga";
-
-	equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 1, "before() on disconnected node is no-op" );
+  expect(2);
+  
+  equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 1, "before() on disconnected node is no-op" );
 	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 1, "after() on disconnected node is no-op" );
+});
 
-	QUnit.reset();
-	jQuery("#yahoo").add("<span/>").before("<b>buga</b>");
+test( "insert with .before() on disconnected node last", function() {
+
+  expect(1);
+
+  var expectedBefore = "This is a normal link: bugaYahoo";
+
+  jQuery("#yahoo").add("<span/>").before("<b>buga</b>");
 	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node last" );
+});
 
-	QUnit.reset();
+test( "insert with .before() on disconnected node first", function() {
+
+  expect(1);
+
+  var expectedBefore = "This is a normal link: bugaYahoo";
+
 	jQuery("<span/>").add("#yahoo").before("<b>buga</b>");
 	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node first" );
+});
 
-	QUnit.reset();
+test( "insert with .before() on disconnected node last", function() {
+
+  expect(1);
+
+  var expectedAfter = "This is a normal link: Yahoobuga";
+
 	jQuery("#yahoo").add("<span/>").after("<b>buga</b>");
 	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node last" );
+});
 
-	QUnit.reset();
+test( "insert with .before() on disconnected node last", function() {
+
+  expect(1);
+
+  var expectedAfter = "This is a normal link: Yahoobuga";
+
 	jQuery("<span/>").add("#yahoo").after("<b>buga</b>");
 	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node first" );
 });
 
-test( "insertBefore(String|Element|Array<Element>|jQuery)", function() {
+test( "insertBefore(String)", function() {
 
-	expect( 4 );
+	expect( 1 );
 
-	var expected;
-
-	expected = "This is a normal link: bugaYahoo";
+	var expected = "This is a normal link: bugaYahoo";
 	jQuery("<b>buga</b>").insertBefore("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert String before" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: Try them out:Yahoo";
+test( "insertBefore(Element)", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: Try them out:Yahoo";
 	jQuery( document.getElementById("first") ).insertBefore("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert element before" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: Try them out:diveintomarkYahoo";
+test( "insertBefore(Array<Element>)", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: Try them out:diveintomarkYahoo";
 	jQuery( [ document.getElementById("first"), document.getElementById("mark") ] ).insertBefore("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: diveintomarkTry them out:Yahoo";
+test( "insertBefore(jQuery)", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: diveintomarkTry them out:Yahoo";
 	jQuery("#mark, #first").insertBefore("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
-function testAfter( val ) {
+test( ".after(String)", function() {
 
-	expect( 7 );
+  expect( 1 );
+  
+  var expected = "This is a normal link: Yahoobuga";
+	jQuery("#yahoo").after( "<b>buga</b>" );
+	equal( jQuery("#en").text(), expected, "Insert String after" );
+});
 
-	var set, expected;
+test( ".after(Element)", function() {
 
-	expected = "This is a normal link: Yahoobuga";
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:";
+	jQuery("#yahoo").after( document.getElementById("first") );
+	equal( jQuery("#en").text(), expected, "Insert element after" );
+});
+
+test( ".after(Array<Element>)", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:diveintomark";
+	jQuery("#yahoo").after( [ document.getElementById("first"), document.getElementById("mark") ] );
+	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
+});
+
+test( ".after(jQuery)", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:Googlediveintomark";
+	jQuery("#yahoo").after( [ jQuery("#first"), jQuery("#mark, #google") ] );
+	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
+});
+
+test( ".after(Function) returns String", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: Yahoobuga",
+    val = manipulationFunctionReturningObj;
 	jQuery("#yahoo").after( val("<b>buga</b>") );
 	equal( jQuery("#en").text(), expected, "Insert String after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:";
+test( ".after(Function) returns Element", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:",
+    val = manipulationFunctionReturningObj;
 	jQuery("#yahoo").after( val(document.getElementById("first")) );
 	equal( jQuery("#en").text(), expected, "Insert element after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:diveintomark";
+test( ".after(Function) returns Array<Element>", function() {
+
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:diveintomark",
+    val = manipulationFunctionReturningObj;
 	jQuery("#yahoo").after( val([ document.getElementById("first"), document.getElementById("mark") ]) );
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahoodiveintomarkTry them out:";
-	jQuery("#yahoo").after(val( jQuery("#mark, #first") ));
-	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
+test( ".after(Function) returns jQuery", function() {
 
-	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:Googlediveintomark";
+  expect( 1 );
+
+  var expected = "This is a normal link: YahooTry them out:Googlediveintomark",
+    val = manipulationFunctionReturningObj;
 	jQuery("#yahoo").after( val([ jQuery("#first"), jQuery("#mark, #google") ]) );
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
+});
 
-	set = jQuery("<div/>").before("<span>test</span>");
+test( ".after(disconnected node)", function() {
+
+  expect( 2 );
+
+  var set = jQuery("<div/>").before("<span>test</span>");
 	equal( set[ 0 ].nodeName.toLowerCase(), "div", "Insert after a disconnected node should be a no-op" );
 	equal( set.length, 1, "Insert the element after the disconnected node should be a no-op" );
-}
-
-test( "after(String|Element|Array<Element>|jQuery)", function() {
-	testAfter( manipulationBareObj );
 });
 
-test( "after(Function)", function() {
-	testAfter( manipulationFunctionReturningObj );
-});
+test( "insertAfter(String)", function() {
 
-test( "insertAfter(String|Element|Array<Element>|jQuery)", function() {
+	expect( 1 ) ;
 
-	expect( 4 ) ;
-
-	var expected;
-
-	expected = "This is a normal link: Yahoobuga";
+	var expected = "This is a normal link: Yahoobuga";
 	jQuery("<b>buga</b>").insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert String after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:";
+test( "insertAfter(Element)", function() {
+
+  expect(1);
+  
+  var expected = "This is a normal link: YahooTry them out:";
 	jQuery( document.getElementById("first") ).insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert element after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahooTry them out:diveintomark";
+test( "insertAfter(Array<Element>)", function() {
+
+  expect(1);
+  
+  var expected = "This is a normal link: YahooTry them out:diveintomark";
 	jQuery( [ document.getElementById("first"), document.getElementById("mark") ] ).insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
+});
 
-	QUnit.reset();
-	expected = "This is a normal link: YahoodiveintomarkTry them out:";
+test( "insertAfter(jQuery)", function() {
+
+  expect(1);
+  
+  var expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery("#mark, #first").insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
 });
@@ -1034,7 +1256,7 @@ test( "Empty replaceWith (#13401; #13596)", 8, function() {
 			"empty array": [],
 			"empty collection": jQuery( "#nonexistent" ),
 
-			 // in case of jQuery(...).replaceWith();
+       // in case of jQuery(...).replaceWith();
 			"empty undefined": undefined
 		};
 
@@ -1046,26 +1268,38 @@ test( "Empty replaceWith (#13401; #13596)", 8, function() {
 	});
 });
 
-test( "replaceAll(String|Element|Array<Element>|jQuery)", function() {
+test( "replaceAll(String)", function() {
 
-	expect( 10 );
+	expect( 2 );
 
 	jQuery("<b id='replace'>buga</b>").replaceAll("#yahoo");
 	ok( jQuery("#replace")[ 0 ], "Replace element with string" );
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after string" );
+});
 
-	QUnit.reset();
+test( "replaceAll(Element)", function() {
+
+	expect( 2 );
+
 	jQuery( document.getElementById("first") ).replaceAll("#yahoo");
 	ok( jQuery("#first")[ 0 ], "Replace element with element" );
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after element" );
+});
 
-	QUnit.reset();
+test( "replaceAll(Array<Element>)", function() {
+
+	expect( 3 );
+
 	jQuery( [ document.getElementById("first"), document.getElementById("mark") ] ).replaceAll("#yahoo");
 	ok( jQuery("#first")[ 0 ], "Replace element with array of elements" );
 	ok( jQuery("#mark")[ 0 ], "Replace element with array of elements" );
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after array of elements" );
+});
 
-	QUnit.reset();
+test( "replaceAll(jQuery)", function() {
+
+	expect( 3 );
+
 	jQuery("#mark, #first").replaceAll("#yahoo");
 	ok( jQuery("#first")[ 0 ], "Replace element with set of elements" );
 	ok( jQuery("#mark")[ 0 ], "Replace element with set of elements" );
@@ -1436,7 +1670,6 @@ function testHtml( valueObj ) {
 		"<script>equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
 	].join("")) );
 
-	QUnit.reset();
 	fixture.html( valueObj( fixture.text() ) );
 	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 }
@@ -1449,11 +1682,11 @@ test( "html(Function)", function() {
 	testHtml( manipulationFunctionReturningObj );
 });
 
-test( "html(Function) with incoming value", function() {
+test( "html(Function) with incoming value -- direct selection", function() {
 
-	expect( 18 );
+	expect( 4 );
 
-	var els, actualhtml, pass, j, $div, $div2, insert;
+	var els, actualhtml, pass;
 
 	els = jQuery("#foo > p");
 	actualhtml = els.map(function() {
@@ -1472,9 +1705,14 @@ test( "html(Function) with incoming value", function() {
 		}
 	});
 	ok( pass, "Set HTML" );
+});
 
-	QUnit.reset();
-	// using contents will get comments regular, text, and comment nodes
+test( "html(Function) with incoming value -- jQuery.contents()", function() {
+
+	expect( 14 );
+
+  var actualhtml, j, $div, $div2, insert;
+
 	j = jQuery("#nonnodes").contents();
 	actualhtml = j.map(function() {
 		return jQuery( this ).html();
@@ -1542,52 +1780,51 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 	ok( expected.test( $content.html() ), "html()" );
 });
 
-function testRemove( method ) {
-	var markup, div,
-		first = jQuery("#ap").children().first();
+test( "remove() no filters", function() {
+
+  expect( 3 );
+
+	var first = jQuery("#ap").children().first();
 
 	first.data("foo", "bar");
 
-	jQuery("#ap").children()[ method ]();
+	jQuery("#ap").children().remove();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
 
-	equal( first.data("foo"), method === "remove" ? null : "bar", "first data" );
+	equal( first.data("foo"), null, "first data" );
 
-	QUnit.reset();
-	jQuery("#ap").children()[ method ]("a");
+});
+
+test( "remove() with filters", function() {
+
+  expect( 8 );
+
+  var markup, div;
+	jQuery("#ap").children().remove("a");
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 1, "Check filtered remove" );
 
-	jQuery("#ap").children()[ method ]("a, code");
+	jQuery("#ap").children().remove("a, code");
 	equal( jQuery("#ap").children().length, 0, "Check multi-filtered remove" );
 
 	// Positional and relative selectors
 	markup = "<div><span>1</span><span>2</span><span>3</span><span>4</span></div>";
 	div = jQuery( markup );
 	div.children().remove("span:nth-child(2n)");
-	equal( div.text(), "13", "relative selector in " + method );
+	equal( div.text(), "13", "relative selector in remove" );
 	div = jQuery( markup );
 	div.children().remove("span:first");
-	equal( div.text(), "234", "positional selector in " + method );
+	equal( div.text(), "234", "positional selector in remove" );
 	div = jQuery( markup );
 	div.children().remove("span:last");
-	equal( div.text(), "123", "positional selector in " + method );
+	equal( div.text(), "123", "positional selector in remove" );
 
 	// using contents will get comments regular, text, and comment nodes
 	// Handle the case where no comment is in the document
 	ok( jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment remove works" );
-	jQuery("#nonnodes").contents()[ method ]();
+	jQuery("#nonnodes").contents().remove();
 	equal( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
-
-	// manually clean up detached elements
-	if (method === "detach") {
-		first.remove();
-	}
-}
-
-test( "remove()", 11, function() {
-	testRemove("remove");
 });
 
 test( "remove() event cleaning ", 1, function() {
@@ -1629,8 +1866,52 @@ test( "remove() in document order #13779", 1, function() {
 	jQuery.cleanData = cleanData;
 });
 
-test( "detach()", 11, function() {
-	testRemove("detach");
+test("detach() no filters", function () {
+
+  expect(3);
+
+  var first = jQuery("#ap").children().first();
+
+  first.data("foo", "bar");
+
+  jQuery("#ap").children().detach();
+  ok(jQuery("#ap").text().length > 10, "Check text is not removed");
+  equal(jQuery("#ap").children().length, 0, "Check remove");
+
+  equal(first.data("foo"), "bar");
+  first.remove();
+
+});
+
+test("detach() with filters", function () {
+
+  expect(8);
+
+  var markup, div;
+  jQuery("#ap").children().detach("a");
+  ok(jQuery("#ap").text().length > 10, "Check text is not removed");
+  equal(jQuery("#ap").children().length, 1, "Check filtered remove");
+
+  jQuery("#ap").children().detach("a, code");
+  equal(jQuery("#ap").children().length, 0, "Check multi-filtered remove");
+
+  // Positional and relative selectors
+  markup = "<div><span>1</span><span>2</span><span>3</span><span>4</span></div>";
+  div = jQuery(markup);
+  div.children().detach("span:nth-child(2n)");
+  equal(div.text(), "13", "relative selector in detach");
+  div = jQuery(markup);
+  div.children().detach("span:first");
+  equal(div.text(), "234", "positional selector in detach");
+  div = jQuery(markup);
+  div.children().detach("span:last");
+  equal(div.text(), "123", "positional selector in detach");
+
+  // using contents will get comments regular, text, and comment nodes
+  // Handle the case where no comment is in the document
+  ok(jQuery("#nonnodes").contents().length >= 2, "Check node,textnode,comment remove works");
+  jQuery("#nonnodes").contents().detach();
+  equal(jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works");
 });
 
 test( "detach() event cleaning ", 1, function() {
