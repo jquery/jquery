@@ -152,7 +152,7 @@ module.exports = function( Release ) {
 		 * Release._tracMilestone();
 		 * // => 1.11.1/2.1.1
 		 */
-		_tracMilestone: function() {
+		tracMilestone: function() {
 			var otherVersion,
 				m = Release.newVersion.split( "." ),
 				major = m[0] | 0,
