@@ -124,7 +124,7 @@ test("show()", 27, function () {
 
 test("show(Number) - other displays", function() {
 	expect(15);
-	QUnit.reset();
+
 	stop();
 
 	// #show-tests * is set display: none in CSS
@@ -171,7 +171,7 @@ test("show(Number) - other displays", function() {
 // Supports #7397
 test("Persist correct display value", function() {
 	expect(3);
-	QUnit.reset();
+
 	stop();
 
 	// #show-tests * is set display: none in CSS
@@ -1310,7 +1310,7 @@ test("animate with CSS shorthand properties", function(){
 
 test("hide hidden elements, with animation (bug #7141)", function() {
 	expect(3);
-	QUnit.reset();
+
 	stop();
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
