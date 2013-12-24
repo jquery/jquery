@@ -1550,6 +1550,21 @@ test("Animation callback should not show animated element as :animated (#7157)",
 	this.clock.tick( 100 );
 });
 
+test("Initial step callback should show element as :animated (#14623)", 1, function() {
+	var foo = jQuery( "#foo" );
+
+	foo.animate({
+		opacity: 0,
+	}, {
+		duration: 100,
+		step: function() {
+			ok( foo.is(":animated"), "The element matches :animated inside step function" );
+		}
+	});
+	this.clock.tick( 1 );
+	foo.stop();
+});
+
 test( "hide called on element within hidden parent should set display to none (#10045)", 3, function() {
 	var hidden = jQuery(".hidden"),
 		elems = jQuery("<div>hide</div><div>hide0</div><div>hide1</div>");
