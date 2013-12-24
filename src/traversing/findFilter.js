@@ -94,6 +94,9 @@ jQuery.fn.extend({
 				selector || [],
 			false
 		).length;
+	},
+	if: function( cond ) {
+		return cond ? this : jQuery();
 	}
 });
 
