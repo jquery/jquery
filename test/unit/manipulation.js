@@ -1609,7 +1609,7 @@ function childNodeNames( node ) {
 }
 
 function testHtml( valueObj ) {
-	expect( 40 );
+	expect( 39 );
 
 	var actual, expected, tmp,
 		div = jQuery("<div></div>"),
@@ -1711,9 +1711,6 @@ function testHtml( valueObj ) {
 		"<span id='scriptorder'><script>equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
 		"<script>equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
 	].join("")) );
-
-	fixture.html( valueObj( fixture.text() ) );
-	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 }
 
 test( "html(String|Number)", function() {
@@ -1722,6 +1719,24 @@ test( "html(String|Number)", function() {
 
 test( "html(Function)", function() {
 	testHtml( manipulationFunctionReturningObj );
+});
+
+test( "html( $.text() )", function() {
+
+	expect( 1 );
+
+	var fixture = jQuery("#qunit-fixture");
+	fixture.html(  fixture.text() );
+	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
+});
+
+test( "html( fn ) returns $.text()", function() {
+
+	expect( 1 );
+
+	var fixture = jQuery("#qunit-fixture");
+	fixture.html( manipulationFunctionReturningObj( fixture.text() ) );
+	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 });
 
 test( "html(Function) with incoming value -- direct selection", function() {
