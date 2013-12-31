@@ -6,9 +6,9 @@ Contribution Guides
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
-1. [Getting Involved](http://docs.jquery.com/Getting_Involved)
-2. [Core Style Guide](http://docs.jquery.com/JQuery_Core_Style_Guidelines)
-3. [Tips For Bug Patching](http://docs.jquery.com/Tips_for_jQuery_Bug_Patching)
+1. [Getting Involved](http://contribute.jquery.org/)
+2. [Core Style Guide](http://contribute.jquery.org/style-guide/js/)
+3. [Writing Code for jQuery Foundation Projects](http://contribute.jquery.org/code/)
 
 
 What you need to build your own jQuery
@@ -37,11 +37,11 @@ git clone git://github.com/jquery/jquery.git
 
 Enter the jquery directory and run the build script:
 ```bash
-cd jquery && npm run-script build
+cd jquery && npm run build
 ```
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
-If you want create custom build or help with jQuery development, it would be better to install <a href="https://github.com/gruntjs/grunt-cli">grunt command line interface</a> as a global package:
+If you want create custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
 
 ```
 npm install -g grunt-cli
@@ -51,7 +51,7 @@ Make sure you have `grunt` installed by testing:
 grunt -v
 ```
 
-Now by running `grunt` command, in the jquery directory, you could build full version of jQuery, just like with `npm run-script build` command:
+Now by running `grunt` command, in the jquery directory, you could build full version of jQuery, just like with `npm run build` command:
 ```
 grunt
 ```
