@@ -13,7 +13,7 @@ var oldStart = window.start,
 	expectedDataKeys = {},
 
 	splice = [].splice,
-	reset = QUnit.reset,
+	reset,
 	ajaxSettings = jQuery.ajaxSettings;
 
 
@@ -157,8 +157,7 @@ window.moduleTeardown = function() {
 		oldActive = jQuery.active;
 	}
 
-	// Allow QUnit.reset to clean up any attached elements before checking for leaks
-	QUnit.reset();
+	reset();
 
 	for ( i in jQuery.cache ) {
 		++cacheLength;
@@ -187,8 +186,8 @@ QUnit.done(function() {
 	supportjQuery("#qunit ~ *").remove();
 });
 
-// jQuery-specific QUnit.reset
-QUnit.reset = function() {
+// jQuery-specific post-test cleanup
+reset = function() {
 
 	// Ensure jQuery events and data on the fixture are properly removed
 	jQuery("#qunit-fixture").empty();
@@ -206,9 +205,10 @@ QUnit.reset = function() {
 	// Cleanup globals
 	Globals.cleanup();
 
-	// Let QUnit reset the fixture
-	reset.apply( this, arguments );
+	jQuery("#qunit-fixture")[0].innerHTML = QUnit.config.fixture;
 };
+
+QUnit.testDone(reset);
 
 // Register globals for cleanup and the cleanup code itself
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
@@ -351,7 +351,7 @@ function testSubproject( label, subProjectURL, risTests, complete ) {
 
 				// WARNING: UNDOCUMENTED INTERFACE
 				QUnit.config.fixture = fixtureHTML;
-				QUnit.reset();
+				reset();
 				if ( supportjQuery("#qunit-fixture").html() !== fixtureHTML ) {
 					ok( false, "Copied subproject fixture" );
 					return;
@@ -359,7 +359,6 @@ function testSubproject( label, subProjectURL, risTests, complete ) {
 
 				fixtureReplaced = true;
 			}
-
 			fn.apply( this, arguments );
 		};
 	}
