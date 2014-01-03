@@ -204,11 +204,8 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 19 );
+	expect( 18 );
 	var j, div, display, ret, success;
-
-	jQuery("#nothiddendiv").css("top", "-1em");
-	ok( jQuery("#nothiddendiv").css("top"), -16, "Check negative number in EMs." );
 
 	jQuery("#floatTest").css("float", "left");
 	equal( jQuery("#floatTest").css("float"), "left", "Modified CSS float using \"float\": Assert float is left");
