@@ -610,8 +610,11 @@ jQuery.fx.tick = function() {
 };
 
 jQuery.fx.timer = function( timer ) {
-	if ( timer() && jQuery.timers.push( timer ) ) {
+	jQuery.timers.push( timer );
+	if ( timer() ) {
 		jQuery.fx.start();
+	} else {
+		jQuery.timers.pop();
 	}
 };
 
