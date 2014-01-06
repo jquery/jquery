@@ -1,0 +1,83 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'f:\\nodejs\\node.exe',
+1 verbose cli   'f:\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'grunt-cli' ]
+2 info using npm@1.3.14
+3 info using node@v0.10.22
+4 verbose cache add [ 'grunt-cli', null ]
+5 verbose cache add name=undefined spec="grunt-cli" args=["grunt-cli",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'grunt-cli',
+6 verbose parsed url   path: 'grunt-cli',
+6 verbose parsed url   href: 'grunt-cli' }
+7 silly lockFile 671ef8ac-grunt-cli grunt-cli
+8 verbose lock grunt-cli C:\Users\ming.liu\AppData\Roaming\npm-cache\671ef8ac-grunt-cli.lock
+9 silly lockFile 671ef8ac-grunt-cli grunt-cli
+10 silly lockFile 671ef8ac-grunt-cli grunt-cli
+11 verbose addNamed [ 'grunt-cli', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile d63f3d0b-grunt-cli grunt-cli@
+14 verbose lock grunt-cli@ C:\Users\ming.liu\AppData\Roaming\npm-cache\d63f3d0b-grunt-cli.lock
+15 silly addNameRange { name: 'grunt-cli', range: '*', hasData: false }
+16 verbose url raw grunt-cli
+17 verbose url resolving [ 'http://npm.tuna.tsinghua.edu.cn/registry/', './grunt-cli' ]
+18 verbose url resolved http://npm.tuna.tsinghua.edu.cn/registry/grunt-cli
+19 info trying registry request attempt 1 at 13:40:58
+20 http GET http://npm.tuna.tsinghua.edu.cn/registry/grunt-cli
+21 http 404 http://npm.tuna.tsinghua.edu.cn/registry/grunt-cli
+22 verbose bad json <html>
+22 verbose bad json <head><title>404 Not Found</title></head>
+22 verbose bad json <body bgcolor="white">
+22 verbose bad json <center><h1>404 Not Found</h1></center>
+22 verbose bad json <hr><center>nginx/1.2.1</center>
+22 verbose bad json </body>
+22 verbose bad json </html>
+23 error registry error parsing json
+24 silly registry.get cb [ 404,
+24 silly registry.get   { server: 'nginx/1.2.1',
+24 silly registry.get     date: 'Mon, 06 Jan 2014 05:40:58 GMT',
+24 silly registry.get     'content-type': 'text/html',
+24 silly registry.get     'content-length': '168',
+24 silly registry.get     connection: 'keep-alive' } ]
+25 silly lockFile d63f3d0b-grunt-cli grunt-cli@
+26 silly lockFile d63f3d0b-grunt-cli grunt-cli@
+27 error SyntaxError: Unexpected token <
+27 error <html>
+27 error <head><title>404 Not Found</title></head>
+27 error <body bgcolor="white">
+27 error <center><h1>404 Not Found</h1></center>
+27 error <hr><center>nginx/1.2.1</center>
+27 error </body>
+27 error </html>
+27 error
+27 error     at Object.parse (native)
+27 error     at RegClient.<anonymous> (f:\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:238:23)
+27 error     at Request.self.callback (f:\nodejs\node_modules\npm\node_modules\request\request.js:129:22)
+27 error     at Request.EventEmitter.emit (events.js:98:17)
+27 error     at Request.<anonymous> (f:\nodejs\node_modules\npm\node_modules\request\request.js:873:14)
+27 error     at Request.EventEmitter.emit (events.js:117:20)
+27 error     at IncomingMessage.<anonymous> (f:\nodejs\node_modules\npm\node_modules\request\request.js:824:12)
+27 error     at IncomingMessage.EventEmitter.emit (events.js:117:20)
+27 error     at _stream_readable.js:920:16
+27 error     at process._tickCallback (node.js:415:13)
+28 error If you need help, you may report this log at:
+28 error     <http://github.com/isaacs/npm/issues>
+28 error or email it to:
+28 error     <npm-@googlegroups.com>
+29 error System Windows_NT 6.1.7601
+30 error command "f:\\nodejs\\node.exe" "f:\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "-g" "grunt-cli"
+31 error cwd e:\百度云同步盘\Github\jquery
+32 error node -v v0.10.22
+33 error npm -v 1.3.14
+34 error type unexpected_token
+35 verbose exit [ 1, true ]
