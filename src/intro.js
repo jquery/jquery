@@ -34,8 +34,8 @@
 		factory( global );
 	}
 
-// Pass this, window may not be defined yet
-}(this, function( window, noGlobal ) {
+// Pass this if window is not defined yet
+}(typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 // Can't do this because several apps including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if
