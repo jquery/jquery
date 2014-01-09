@@ -206,3 +206,4 @@ Jakob Stoeck <jakob@pokermania.de>
 cjqed <christopherjonesqed@gmail.com>
 Forbes Lindesay <forbes@lindesay.co.uk>
 John Paul <john@johnkpaul.com>
+S. Andrew Sheppard <andrew@wq.io>
