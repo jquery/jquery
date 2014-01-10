@@ -1349,11 +1349,11 @@ test( "callbacks that throw exceptions will be removed (#5684)", function() {
 
 	var foo = jQuery( "#foo" );
 
-	function testException() {
+	function TestException() {
 	}
 
 	foo.animate({ height: 1 }, 1, function() {
-		throw new testException();
+		throw new TestException();
 	});
 
 	// this test thoroughly abuses undocumented methods - please feel free to update
@@ -1362,9 +1362,11 @@ test( "callbacks that throw exceptions will be removed (#5684)", function() {
 	// make sure that the standard timer loop will NOT run.
 	jQuery.fx.stop();
 
-        this.clock.tick( 1 );
+	this.clock.tick( 1 );
 	raises( jQuery.fx.tick, TestException, "Exception was thrown" );
 
+	// the second call shouldn't
+	jQuery.fx.tick();
 
 	ok( true, "Test completed without throwing a second exception" );
 

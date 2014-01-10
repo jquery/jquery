@@ -20,11 +20,6 @@
     "qunit": "~1.12.0",
     "sinon": "~1.7.3"
   },
-    },
-    "sinon": {
-      "sinon": "**/*.js"
-    }
-  },
   "keywords": [
     "jquery",
     "javascript",
