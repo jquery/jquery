@@ -118,6 +118,7 @@ module.exports = function( Release ) {
 	}
 
 	Release.define({
+		npmPublish: true,
 		issueTracker: "trac",
 		contributorReportId: 508,
 		/**
