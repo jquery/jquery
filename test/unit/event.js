@@ -1297,7 +1297,7 @@ test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", functi
 	// Alias names like "id" cause havoc
 	var form = jQuery(
 			"<form id='myform'>" +
-				"<input type='text' name='id' value='secret agent man' />" +
+				"<input type='text' name='id' value='secret agent person' />" +
 			"</form>"
 		)
 		.on( "submit", function( event ) {
