@@ -1445,3 +1445,12 @@ test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
 });
+
+test( "should not throw at $(option).val() (#14686)", 1, function() {
+	try {
+		jQuery( "<option/>" ).val();
+		ok( true );
+	} catch ( _ ) {
+		ok( false );
+	}
+});
