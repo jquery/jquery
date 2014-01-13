@@ -1575,6 +1575,17 @@ module( "ajax", {
 		}
 	} );
 
+	ajaxTest( "#13240 - jQuery.ajax() - support non-RFC2616 methods", 1, {
+		url: "data/echoQuery.php",
+		method: "PATCH",
+		success: function() {
+			ok( true, "success" );
+		},
+		error: function() {
+			ok( false, "error" );
+		}
+	});
+
 	// Support: Chrome 31.
 	// Chrome 31 doesn't fire Ajax requests in beforeunload event handler.
 	// There is no way for us to workaround it and it's been fixed in Chrome 32
