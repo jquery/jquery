@@ -52,7 +52,11 @@ module.exports = function( grunt ) {
 			},
 			src: {
 				files: {
-					"src/sizzle": "sizzle"
+					"src/sizzle/dist": "sizzle/dist",
+					"src/sizzle/test/data": "sizzle/test/data",
+					"src/sizzle/test/unit": "sizzle/test/unit",
+					"src/sizzle/test/index.html": "sizzle/test/index.html",
+					"src/sizzle/test/jquery.js": "sizzle/test/jquery.js"
 				}
 			},
 			tests: {

@@ -1082,9 +1082,13 @@ test("pseudo - :lang", function() {
 });
 
 test("caching", function() {
-	expect( 1 );
+	expect( 2 );
 	Sizzle( ":not(code)", document.getElementById("ap") );
 	deepEqual( Sizzle( ":not(code)", document.getElementById("foo") ), q("sndp", "en", "yahoo", "sap", "anchor2", "simon"), "Reusing selector with new context" );
+
+	t( "Deep ancestry caching in post-positional element matcher (jQuery #14657)",
+		"#qunit-fixture a:lt(3):parent",
+		[ "simon1", "google", "groups" ] );
 });
 
 asyncTest( "Iframe dispatch should not affect Sizzle, see jQuery #13936", 1, function() {
