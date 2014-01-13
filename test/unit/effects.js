@@ -5,18 +5,21 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var off = jQuery.fx.off;
+var off = jQuery.fx.off,
+	oldNow = jQuery.now;
 
 module("effects", {
 	setup: function() {
 		this.clock = sinon.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
+		jQuery.now = function() {
+			return +( new Date() );
+		};
 	},
 	teardown: function() {
 		this.clock.restore();
-		jQuery.now = Date.now;
+		jQuery.now = oldNow;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		jQuery.fx.off = off;

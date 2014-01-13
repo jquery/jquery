@@ -60,7 +60,8 @@ module.exports = function( grunt ) {
 				files: {
 					"qunit": "qunit/qunit",
 					"require.js": "requirejs/require.js",
-					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
+					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js",
+					"sinon/timers_ie.js": "sinon/lib/sinon/util/timers_ie.js"
 				}
 			}
 		},
