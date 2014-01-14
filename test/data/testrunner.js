@@ -7,7 +7,6 @@ var oldStart = window.start,
 	// Store the old counts so that we only assert on tests that have actually leaked,
 	// instead of asserting every time a test has leaked sometime in the past
 	oldCacheLength = 0,
-	oldFragmentsLength = 0,
 	oldActive = 0,
 
 	expectedDataKeys = {},
@@ -117,7 +116,6 @@ QUnit.config.urlConfig.push({
 window.moduleTeardown = function() {
 	var i,
 		expectedKeys, actualKeys,
-		fragmentsLength = 0,
 		cacheLength = 0;
 
 	// Only look for jQuery data problems if this test actually
@@ -161,21 +159,11 @@ window.moduleTeardown = function() {
 		++cacheLength;
 	}
 
-	jQuery.fragments = {};
-
-	for ( i in jQuery.fragments ) {
-		++fragmentsLength;
-	}
-
 	// Because QUnit doesn't have a mechanism for retrieving the number of expected assertions for a test,
 	// if we unconditionally assert any of these, the test will fail with too many assertions :|
 	if ( cacheLength !== oldCacheLength ) {
 		equal( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
 		oldCacheLength = cacheLength;
-	}
-	if ( fragmentsLength !== oldFragmentsLength ) {
-		equal( fragmentsLength, oldFragmentsLength, "No unit tests leak memory in jQuery.fragments" );
-		oldFragmentsLength = fragmentsLength;
 	}
 };
 
