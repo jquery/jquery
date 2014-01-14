@@ -5,21 +5,16 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var off = jQuery.fx.off,
-	oldNow = jQuery.now;
+var off = jQuery.fx.off;
 
 module("effects", {
 	setup: function() {
 		this.clock = sinon.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.interval = 10;
-		jQuery.now = function() {
-			return +( new Date() );
-		};
 	},
 	teardown: function() {
 		this.clock.restore();
-		jQuery.now = oldNow;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		jQuery.fx.off = off;
@@ -299,13 +294,11 @@ test("animate block as inline width/height", function() {
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
-		stop();
 
 		jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
 			equal( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
 			equal( this.offsetWidth, 42, "width was animated" );
 			equal( this.offsetHeight, 42, "height was animated" );
-			start();
 		});
 
 	// Browser doesn't support inline-block
@@ -326,7 +319,6 @@ test("animate native inline width/height", function() {
 	span.remove();
 
 	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
-		stop();
 		jQuery("#foo").css({ display: "", width: "", height: "" })
 			.append("<span>text</span>")
 			.children("span")
@@ -334,7 +326,6 @@ test("animate native inline width/height", function() {
 					equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
 					equal( this.offsetWidth, 42, "width was animated" );
 					equal( this.offsetHeight, 42, "height was animated" );
-					start();
 				});
 
 	// Browser doesn't support inline-block
