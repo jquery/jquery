@@ -71,11 +71,10 @@ jQuery.extend({
 	valHooks: {
 		option: {
 			get: function( elem ) {
-				// Use proper attribute retrieval(#6932, #12072)
 				var val = jQuery.find.attr( elem, "value" );
 				return val != null ?
 					val :
-					elem.text;
+					jQuery.text( elem );
 			}
 		},
 		select: {
