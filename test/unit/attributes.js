@@ -926,7 +926,7 @@ if ( "value" in document.createElement("meter") &&
 }
 
 var testVal = function( valueObj ) {
-	expect( 8 );
+	expect( 9 );
 
 	jQuery("#text1").val( valueObj("test") );
 	equal( document.getElementById("text1").value, "test", "Check for modified (via val(String)) value of input element" );
@@ -941,7 +941,9 @@ var testVal = function( valueObj ) {
 	equal( document.getElementById("text1").value, "", "Check for modified (via val(null)) value of input element" );
 
 	var j,
-		$select1 = jQuery("#select1");
+		select = jQuery( "<select multiple><option value='1'/><option value='2'/></select>" );
+		$select1 = jQuery("#select1"),
+
 	$select1.val( valueObj("3") );
 	equal( $select1.val(), "3", "Check for modified (via val(String)) value of select element" );
 
@@ -957,6 +959,9 @@ var testVal = function( valueObj ) {
 	j.val( valueObj( "asdf" ) );
 	equal( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
+
+	select.val( valueObj( [ "1", "2" ] ) );
+	deepEqual( select.val(), [ "1", "2" ], "Should set array of values" );
 };
 
 test( "val(String/Number)", function() {
