@@ -118,12 +118,13 @@ jQuery.extend({
 			set: function( elem, value ) {
 				var optionSet, option,
 					options = elem.options,
+					values = jQuery.makeArray( value ),
 					i = options.length;
 
 				while ( i-- ) {
 					option = options[ i ];
 
-					if ( jQuery.valHooks.option.get( option ) === value ) {
+					if ( jQuery.inArray( jQuery.valHooks.option.get( option ), values ) >= 0 ) {
 
 						// Support: IE6
 						// When new option element is added to select box we need to
