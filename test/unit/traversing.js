@@ -24,19 +24,21 @@ test( "find(leading combinator)", function() {
 });
 
 test( "find(node|jQuery object)", function() {
-	expect( 12 );
+	expect( 13 );
 
 	var $foo = jQuery("#foo"),
 		$blog = jQuery(".blogTest"),
 		$first = jQuery("#first"),
 		$two = $blog.add( $first ),
+		$twoMore = jQuery("#ap").add( $blog ),
 		$fooTwo = $foo.add( $blog );
 
 	equal( $foo.find( $blog ).text(), "Yahoo", "Find with blog jQuery object" );
 	equal( $foo.find( $blog[ 0 ] ).text(), "Yahoo", "Find with blog node" );
 	equal( $foo.find( $first ).length, 0, "#first is not in #foo" );
 	equal( $foo.find( $first[ 0 ]).length, 0, "#first not in #foo (node)" );
-	ok( $foo.find( $two ).is(".blogTest"), "Find returns only nodes within #foo" );
+	deepEqual( $foo.find( $two ).get(), $blog.get(), "Find returns only nodes within #foo" );
+	deepEqual( $foo.find( $twoMore ).get(), $blog.get(), "...regardless of order" );
 	ok( $fooTwo.find( $blog ).is(".blogTest"), "Blog is part of the collection, but also within foo" );
 	ok( $fooTwo.find( $blog[ 0 ] ).is(".blogTest"), "Blog is part of the collection, but also within foo(node)" );
 
