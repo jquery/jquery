@@ -1,0 +1,14 @@
+{
+  "name": "jquery",
+  "repo": "jquery/jquery",
+  "description": "JavaScript library for DOM operations",
+  "version": "2.1.0-rc1",
+  "keywords": [
+    "jquery",
+    "javascript",
+    "library"
+  ],
+  "main": "dist/jquery.js",
+  "scripts": ["dist/jquery.js"],
+  "license": "MIT"
+}
