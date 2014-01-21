@@ -2,7 +2,7 @@
   "name": "jquery",
   "repo": "jquery/jquery",
   "description": "JavaScript library for DOM operations",
-  "version": "2.1.0-rc1",
+  "version": "2.1.0pre",
   "keywords": [
     "jquery",
     "javascript",
