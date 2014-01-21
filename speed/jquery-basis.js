@@ -2117,7 +2117,7 @@ jQuery.Event.prototype = {
 			e.preventDefault();
 		}
 		// otherwise set the returnValue property of the original event to false (IE)
-		e.returnValue = false;
+		if (typeof e.returnValue !== 'unknown') { e.returnValue = false; }
 	},
 	stopPropagation: function() {
 		this.isPropagationStopped = returnTrue;
@@ -2131,7 +2131,7 @@ jQuery.Event.prototype = {
 			e.stopPropagation();
 		}
 		// otherwise set the cancelBubble property of the original event to true (IE)
-		e.cancelBubble = true;
+		if (typeof e.cancelBubble !== 'unknown') { e.cancelBubble = true; }
 	},
 	stopImmediatePropagation: function() {
 		this.isImmediatePropagationStopped = returnTrue;
