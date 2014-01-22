@@ -92,7 +92,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"clearCloneStyle": false,
 			"cors": true,
 			"focusinBubbles": true,
-			"noCloneChecked": true,
+			"noCloneChecked": false,
 			"optDisabled": true,
 			"optSelected": false,
 			"pixelPosition": true,
