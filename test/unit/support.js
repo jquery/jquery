@@ -455,7 +455,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
-			"appendChecked": false,
+			"appendChecked": true,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
