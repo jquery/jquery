@@ -178,7 +178,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"inlineBlockNeedsLayout": false,
 			"input": true,
 			"leadingWhitespace": true,
-			"noCloneChecked": true,
+			"noCloneChecked": false,
 			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
