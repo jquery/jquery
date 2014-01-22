@@ -378,7 +378,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": false,
 			"tbody": false
 		};
-	} else if ( /7\.0\.\d+ safari/i.test( userAgent ) ) {
+	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -415,7 +415,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": true,
 			"tbody": true
 		};
-	} else if ( /6\.0\.\d+ safari/i.test( userAgent ) ) {
+	} else if ( /6\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -452,7 +452,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": true,
 			"tbody": true
 		};
-	} else if ( /5\.1\.1 safari/i.test( userAgent ) ) {
+	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
