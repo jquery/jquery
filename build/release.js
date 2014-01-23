@@ -74,15 +74,15 @@ module.exports = function( Release ) {
 		});
 	}
 
-	function buildGoogleCDN( next ) {
-		makeArchive( "googlecdn", googleFilesCDN, next );
+	function buildGoogleCDN() {
+		makeArchive( "googlecdn", googleFilesCDN );
 	}
 
-	function buildMicrosoftCDN( next ) {
-		makeArchive( "mscdn", msFilesCDN, next );
+	function buildMicrosoftCDN() {
+		makeArchive( "mscdn", msFilesCDN );
 	}
 
-	function makeArchive( cdn, files, next ) {
+	function makeArchive( cdn, files ) {
 		if ( Release.preRelease ) {
 			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
 			return;
@@ -90,7 +90,7 @@ module.exports = function( Release ) {
 
 		console.log( "Creating production archive for " + cdn );
 
-		var archiver = require( "archiver" ),
+		var archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream( cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip" );
 
@@ -98,7 +98,6 @@ module.exports = function( Release ) {
 			throw err;
 		});
 
-		output.on( "close", next );
 		archiver.pipe( output );
 
 		files = files.map(function( item ) {
@@ -138,8 +137,10 @@ module.exports = function( Release ) {
 		 * Release completion
 		 */
 		complete: function() {
-			// Build CDN archives
-			Release._walk([ buildGoogleCDN, buildMicrosoftCDN, _complete ]);
+			// Build CDN archives async
+			buildGoogleCDN();
+			buildMicrosoftCDN();
+			_complete();
 		},
 		/**
 		 * Our trac milestones are different than the new version
