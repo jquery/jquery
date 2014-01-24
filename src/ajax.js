@@ -646,7 +646,11 @@ jQuery.extend({
 					done( -1, e );
 				// Simply rethrow otherwise
 				} else {
-					throw e;
+					// Throw asynchronously to ensure deferred
+					// callbacks are called
+					setTimeout(function(){
+						throw e;
+					});
 				}
 			}
 		}
