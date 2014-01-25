@@ -1544,6 +1544,36 @@ module( "ajax", {
 		});
 	}
 
+	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, [
+		{
+			url: "data/params_html.php",
+			method: "POST",
+			data: {
+				toString: function() {
+					throw "Can't parse";
+				}
+			},
+			processData: false,
+			done: function( data ) {
+				ok( false, "done: " + data );
+			},
+			fail: function( jqXHR, status, error ) {
+				ok( true, "exception caught: " + error );
+				strictEqual( jqXHR.status, 0, "proper status code" );
+				strictEqual( status, "error", "proper status" );
+			}
+		},
+		{
+			url: "http://domain.org:80d",
+			done: function( data ) {
+				ok( false, "done: " + data );
+			},
+			fail: function( _, status, error ) {
+				ok( true, "fail: " + status + " - " + error );
+			}
+		}
+	]);
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
