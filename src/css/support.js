@@ -5,7 +5,7 @@ define([
 
 (function() {
 	var a, reliableHiddenOffsetsVal, boxSizingVal, boxSizingReliableVal,
-		pixelPositionVal, reliableMarginRightVal,
+		pixelPositionVal,
 		div = document.createElement( "div" ),
 		containerStyles = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px",
 		divReset =
@@ -107,10 +107,10 @@ define([
 		},
 
 		reliableMarginRight: function() {
-			var body, container, div, marginDiv;
+			var body, container, div, marginDiv, reliableMarginRightVal;
 
 			// Use window.getComputedStyle because jsdom on node.js will break without it.
-			if ( reliableMarginRightVal == null && window.getComputedStyle ) {
+			if ( window.getComputedStyle ) {
 				body = document.getElementsByTagName( "body" )[ 0 ];
 				if ( !body ) {
 					// Test fired too early or in an unsupported environment, exit.
@@ -136,9 +136,9 @@ define([
 					!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 
 				body.removeChild( container );
-			}
 
-			return reliableMarginRightVal;
+				return reliableMarginRightVal;
+			}
 		}
 	});
 
@@ -171,7 +171,6 @@ define([
 		// Will be changed later if needed.
 		boxSizingReliableVal = true;
 		pixelPositionVal = false;
-		reliableMarginRightVal = true;
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
