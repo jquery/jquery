@@ -107,7 +107,11 @@ define([
 		},
 
 		reliableMarginRight: function() {
-			var body, container, div, marginDiv, reliableMarginRightVal;
+			var body, container, div, marginDiv,
+				// Support: IE<9.
+				// IE should pass the test but we're using getComputedStyle
+				// to compute it so just return true if the method is not present.
+				reliableMarginRightVal = true;
 
 			// Use window.getComputedStyle because jsdom on node.js will break without it.
 			if ( window.getComputedStyle ) {
@@ -136,9 +140,9 @@ define([
 					!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
 
 				body.removeChild( container );
-
-				return reliableMarginRightVal;
 			}
+
+			return reliableMarginRightVal;
 		}
 	});
 
