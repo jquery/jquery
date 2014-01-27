@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: config.browserSets
+				browserSets: [ "popular", "ios" ]
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
