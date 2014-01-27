@@ -526,6 +526,43 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": true,
 			"tbody": true
 		};
+	} else if ( /iphone os 6_0/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"appendChecked": true,
+			"boxSizing": true,
+			"boxSizingReliable": true,
+			"changeBubbles": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"cssFloat": true,
+			"deleteExpando": true,
+			"enctype": true,
+			"focusinBubbles": false,
+			"getSetAttribute": true,
+			"hrefNormalized": true,
+			"html5Clone": true,
+			"htmlSerialize": true,
+			"inlineBlockNeedsLayout": false,
+			"input": true,
+			"leadingWhitespace": true,
+			"noCloneChecked": true,
+			"noCloneEvent": true,
+			"opacity": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"ownLast": false,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableHiddenOffsets": true,
+			"reliableMarginRight": true,
+			"shrinkWrapBlocks": false,
+			"style": true,
+			"submitBubbles": true,
+			"tbody": true
+		};
 	}
 
 	if ( expected ) {
