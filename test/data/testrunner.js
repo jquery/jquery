@@ -1,8 +1,7 @@
 define(function() {
 
 // Allow subprojects to test against their own fixtures
-var oldStart = window.start,
-	qunitModule = QUnit.module,
+var qunitModule = QUnit.module,
 	qunitTest = QUnit.test,
 	// Store the old counts so that we only assert on tests that have actually leaked,
 	// instead of asserting every time a test has leaked sometime in the past
@@ -30,11 +29,6 @@ QUnit.config.requireExpects = true;
 /**
  * QUnit hooks
  */
-
-// Sandbox start for great justice
-window.start = function() {
-	oldStart();
-};
 
 function keys(o) {
 	var ret, key;
