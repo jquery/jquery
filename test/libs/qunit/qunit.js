@@ -21,6 +21,7 @@ var QUnit,
 	// Keep a local reference to Date (GH-283)
 	Date = window.Date,
 	setTimeout = window.setTimeout,
+	clearTimeout = window.clearTimeout,
 	defined = {
 		setTimeout: typeof window.setTimeout !== "undefined",
 		sessionStorage: (function() {
