@@ -21,7 +21,7 @@ var oldStart = window.start,
 
 // Max time for stop() and asyncTest() until it aborts test
 // and start()'s the next test.
-QUnit.config.testTimeout = 20 * 1000; // 20 seconds
+QUnit.config.testTimeout = 2e4; // 20 seconds
 
 // Enforce an "expect" argument or expect() call in all test bodies.
 QUnit.config.requireExpects = true;
