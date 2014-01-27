@@ -314,9 +314,26 @@ jQuery.fn.extend({
 		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
-				this.empty().each(function() {
-					if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-						this.textContent = value;
+				this.each(function() {
+					var i = 0,
+						text = document.createTextNode( value ),
+						childNode;
+
+					for ( ; i < this.childNodes.length; i++ ) {
+						childNode = this.childNodes[ i ];
+						// Make sure this is a textNode
+						if ( childNode.nodeType === 3 ) {
+							// Make sure the text has 'value' (not just whitespace)
+							if ( childNode.textContent.replace(/^\s+|\s+$/, "" ) ) {
+								this.removeChild ( this.childNodes[ i ] );
+							}
+						}
+					}
+
+					if ( this.childNodes.length ) {
+						this.insertBefore( text, this.childNodes[0] );
+					} else {
+						this.appendChild( text );
 					}
 				});
 		}, null, value, arguments.length );
