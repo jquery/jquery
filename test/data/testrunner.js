@@ -35,20 +35,6 @@ window.start = function() {
 	oldStart();
 };
 
-function keys(o) {
-	var ret, key;
-	if ( Object.keys ) {
-		ret = Object.keys( o );
-	} else {
-		ret = [];
-		for ( key in o ) {
-			ret.push( key );
-		}
-	}
-	ret.sort();
-	return ret;
-}
-
 /**
  * @param {jQuery|HTMLElement|Object|Array} elems Target (or array of targets) for jQuery.data.
  * @param {string} key
@@ -123,7 +109,7 @@ window.moduleTeardown = function() {
 	if ( QUnit.urlParams.jqdata || this.checkJqData ) {
 		for ( i in jQuery.cache ) {
 			expectedKeys = expectedDataKeys[i];
-			actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
+			actualKeys = jQuery.cache[i] ? Object.keys( jQuery.cache[i] ) : jQuery.cache[i];
 			if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
 				deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
 			}
