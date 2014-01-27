@@ -172,23 +172,22 @@ reset = function () {
 QUnit.testDone(reset);
 
 // Register globals for cleanup and the cleanup code itself
-// Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
 window.Globals = (function() {
 	var globals = {};
+
 	return {
 		register: function( name ) {
-			globals[ name ] = true;
-			supportjQuery.globalEval( "var " + name + " = undefined;" );
+			window[ name ] = globals[ name ] = true;
 		},
+
 		cleanup: function() {
-			var name,
-				current = globals;
-			globals = {};
-			for ( name in current ) {
-				supportjQuery.globalEval( "try { " +
-					"delete " + ( supportjQuery.support.deleteExpando ? "window['" + name + "']" : name ) +
-				"; } catch( x ) {}" );
+			var name;
+
+			for ( name in globals ) {
+				delete window[ name ];
 			}
+
+			globals = {};
 		}
 	};
 })();
