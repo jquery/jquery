@@ -106,6 +106,7 @@ define([
 			return pixelPositionVal;
 		},
 
+		// Support: Android 2.3
 		reliableMarginRight: function() {
 			var body, container, div, marginDiv,
 				// Support: IE<9.
