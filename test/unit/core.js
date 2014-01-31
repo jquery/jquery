@@ -1339,6 +1339,25 @@ test("jQuery.parseHTML", function() {
 	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 });
 
+asyncTest("jQuery.parseHTML", function() {
+	expect ( 1 );
+
+	window.parseHTMLError = false;
+
+	var test = function() {
+		start();
+		equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+	};
+
+	// At the moment, this doesn't work in IE8 and below, skipping the test for those browsers
+	if ( !jQuery.isFunction( document.implementation.createHTMLDocument ) ) {
+		return test();
+	}
+
+	jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
+	window.setTimeout(test, 2000);
+});
+
 test("jQuery.parseJSON", function() {
 	expect( 20 );
 

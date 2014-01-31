@@ -15,10 +15,17 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		keepScripts = context;
 		context = false;
 	}
-	context = context || document;
 
 	var parsed = rsingleTag.exec( data ),
-		scripts = !keepScripts && [];
+		scripts = !keepScripts && [],
+		// document.implementation stops scripts or inline event handlers from being executed immediately
+		/* jshint laxbreak: true */
+		defaultContext = jQuery.isFunction( document.implementation.createHTMLDocument )
+			? document.implementation.createHTMLDocument()
+			: document;
+		/* jshint laxbreak: false */
+
+	context = context || defaultContext;
 
 	// Single tag
 	if ( parsed ) {
