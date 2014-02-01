@@ -2,13 +2,13 @@
 ==================================================
 
 Contribution Guides
---------------------------------------
+----------------------  ----------------
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
 1. [Getting Involved](http://contribute.jquery.org/)
 2. [Core Style Guide](http://contribute.jquery.org/style-guide/js/)
-3. [Writing Code for jQuery Foundation Projects](http://contribute.jquery.org/code/)
+3. [Writing Code for jQuery Foun dation Projects](http://contribute.jquery.org/code/)
 
 
 Environments in which to use jQuery
