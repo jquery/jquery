@@ -2,7 +2,7 @@
 ==================================================
 
 Contribution Guides
---------------------------------------
+-------------------------- ------------
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
