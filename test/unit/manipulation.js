@@ -2183,7 +2183,7 @@ test( "html() - script exceptions bubble (#11743)", function() {
 
 	expect( 3 );
 
-	raises(function() {
+	throws(function() {
 		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
 		ok( false, "Exception ignored" );
 	}, "Exception bubbled from inline script" );
