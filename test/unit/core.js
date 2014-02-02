@@ -1358,18 +1358,21 @@ test("jQuery.parseHTML", function() {
 	ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
 });
 
-asyncTest("jQuery.parseHTML", function() {
-	expect ( 1 );
+// This XSS test is optional, as it will only pass when `document.implementation.createHTMLDocument`
+// is implemented. This might not be the case for older Android browsers (<= 2.x).
+if ( jQuery.isFunction( document.implementation.createHTMLDocument ) ) {
+	asyncTest("jQuery.parseHTML", function() {
+		expect ( 1 );
 
-	window.parseHTMLError = false;
+		window.parseHTMLError = false;
+		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
 
-	jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
-	window.setTimeout(function() {
-		start();
-		equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
-	}, 2000);
-
-});
+		window.setTimeout(function() {
+			start();
+			equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+		}, 2000);
+	});
+}
 
 test("jQuery.parseJSON", function() {
 	expect( 20 );
