@@ -17,6 +17,11 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 	}
 	context = context || document;
 
+	// Disable event handlers like onload, onerror, etc. when scripts are removed
+	if ( !keepScripts ) {
+		data = data.replace( /\b(on[a-z]+)/gi, "data-$1" );
+	}
+
 	var parsed = rsingleTag.exec( data ),
 		scripts = !keepScripts && [];
 

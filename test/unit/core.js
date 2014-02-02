@@ -1319,7 +1319,7 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 18 );
+	expect( 21 );
 
 	var html, nodes;
 
@@ -1333,6 +1333,12 @@ test("jQuery.parseHTML", function() {
 	nodes = jQuery.parseHTML( jQuery("body")[0].innerHTML );
 	ok( nodes.length > 4, "Parse a large html string" );
 	equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
+
+	html = "<div onclick=alert(1)><img src='x' ONERROR></div>";
+	console.log ( jQuery.parseHTML( html ), jQuery.parseHTML( html )[0], jQuery.parseHTML( html )[0].hasAttribute("onload") );
+	equal( jQuery.parseHTML( html )[0].hasAttribute("onclick"), false, "Remove event handlers by default" );
+	equal( jQuery.parseHTML( html )[0].hasAttribute("data-onclick"), true, "Replace event handlers with data attributes by default" );
+	equal( jQuery.parseHTML( html, true )[0].hasAttribute("onclick"), true, "Preserve event handlers when requested" );
 
 	html = "<script>undefined()</script>";
 	equal( jQuery.parseHTML( html ).length, 0, "Ignore scripts by default" );
