@@ -35,7 +35,7 @@
 		"start": false,
 		"stop": false,
 		"expect": false,
-		"raises": false,
+		"throws": false,
 		"ajaxTest": false,
 		"testIframe": false,
 		"testIframeWithCallback": false,

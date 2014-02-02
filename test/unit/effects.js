@@ -1319,7 +1319,7 @@ test( "callbacks that throw exceptions will be removed (#5684)", function() {
 	jQuery.fx.stop();
 
         this.clock.tick( 1 );
-	raises( jQuery.fx.tick, TestException, "Exception was thrown" );
+	throws( jQuery.fx.tick, TestException, "Exception was thrown" );
 
 	// the second call shouldn't
 	jQuery.fx.tick();
