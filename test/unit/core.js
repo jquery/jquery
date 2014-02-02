@@ -1364,7 +1364,9 @@ if ( jQuery.isFunction( document.implementation.createHTMLDocument ) ) {
 	asyncTest("jQuery.parseHTML", function() {
 		expect ( 1 );
 
-		window.parseHTMLError = false;
+		Globals.register("parseHTMLError");
+
+		jQuery.globalEval("parseHTMLError = false;");
 		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
 
 		window.setTimeout(function() {
