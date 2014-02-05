@@ -269,7 +269,7 @@ deepEqual( actual, expected, [message] );
 notDeepEqual( actual, expected, [message] );
 strictEqual( actual, expected, [message] );
 notStrictEqual( actual, expected, [message] );
-raises( block, [expected], [message] );
+throws( block, [expected], [message] );
 ```
 
 

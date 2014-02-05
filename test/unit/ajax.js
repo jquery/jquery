@@ -1453,7 +1453,7 @@ module( "ajax", {
 	});
 
 	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
-		raises(function() {
+		throws(function() {
 			jQuery.ajax({
 				url: "data/badjson.js",
 				dataType: "script",
