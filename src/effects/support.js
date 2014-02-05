@@ -6,6 +6,7 @@ define([
 (function() {
 	var a, shrinkWrapBlocksVal,
 		div = document.createElement( "div" ),
+		// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 		divReset =
 			"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;" +
 			"display:block;padding:0;margin:0;border:0";
