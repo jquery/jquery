@@ -162,7 +162,7 @@ test("broken", function() {
 
 	var attrbad,
 		broken = function( name, selector ) {
-			raises(function() {
+			throws(function() {
 				// Setting context to null here somehow avoids QUnit's window.error handling
 				// making the e & e.message correct
 				// For whatever reason, without this,
@@ -1055,7 +1055,7 @@ test("pseudo - :lang", function() {
 	anchor.lang = "ara\\b";
 	deepEqual( Sizzle( ":lang(ara\\b)", foo ), [], ":lang respects backslashes" );
 	deepEqual( Sizzle( ":lang(ara\\\\b)", foo ), [ anchor ], ":lang respects escaped backslashes" );
-	raises(function() {
+	throws(function() {
 		Sizzle.call( null, "dl:lang(c++)" );
 	}, function( e ) {
 		return e.message.indexOf("Syntax error") >= 0;
@@ -1135,4 +1135,15 @@ test("matchesSelector", function() {
 
 	ok( Sizzle.matchesSelector( el, "* > *" ), "child combinator (matching)" );
 	ok( !Sizzle.matchesSelector( disconnected, "* > *" ), "child combinator (not matching)" );
+});
+
+test("select() with pre-compiled function", function() {
+	expect( 6 );
+
+	jQuery.each([ "#qunit-fixture #first", "ol#listWithTabIndex > li[tabindex]", "#liveSpan1" ],
+	function( i, selector ) {
+		var compiled = Sizzle.compile( selector );
+		equal( Sizzle.select( compiled, document ).length, 1, "Should match using a compiled selector function" );
+		equal( Sizzle.select( compiled, Sizzle( "#first")[0] ).length, 0, "Should not match with different context" );
+	});
 });
