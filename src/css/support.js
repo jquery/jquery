@@ -5,7 +5,7 @@ define([
 
 (function() {
 	var pixelPositionVal, boxSizingReliableVal,
-		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+		// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 		divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;" +
 			"-moz-box-sizing:content-box;box-sizing:content-box",
 		docElem = document.documentElement,
@@ -23,7 +23,7 @@ define([
 	// Executing both pixelPosition & boxSizingReliable tests require only one layout
 	// so they're executed at the same time to save the second computation.
 	function computePixelPositionAndBoxSizingReliable() {
-		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+		// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 		div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;" +
 			"box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;" +
 			"position:absolute;top:1%";

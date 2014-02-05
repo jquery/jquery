@@ -789,7 +789,7 @@ test("Do not append px (#9548, #12990)", function() {
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
 
-	// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
 		el = el_dis.clone().appendTo("#qunit-fixture");
 
