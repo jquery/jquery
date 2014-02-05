@@ -1048,6 +1048,16 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	jQuery._removeData( jQuery("#display")[ 0 ] );
 });
 
+test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
+	var div = jQuery( "<div />" ),
+		fixture = jQuery( "#qunit-fixture" );
+
+	fixture.append( div );
+
+	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
+	equal( div.css( "display" ), "list-item", "should get last set display value" );
+});
+
 // Support: IE < 11, Safari < 7
 // We have to jump through the hoops here in order to test work with "order" CSS property,
 // that some browsers do not support. This test is not, strictly speaking, correct,
