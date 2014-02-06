@@ -74,7 +74,9 @@ jQuery.ready.promise = function( obj ) {
 		// Catch cases where $(document).ready() is called after the browser event has already occurred.
 		// we once tried to use readyState "interactive" here, but it caused issues like the one
 		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
-		if ( document.readyState === "complete" ) {
+		// The prefixed implementations of performance.timing can be used here for even earlier browser support.
+		if ( document.readyState === "complete" ||
+		     (("performance" in window) && "timing" in performance && performance.timing.domContentLoadedEventStart) ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready );
 
