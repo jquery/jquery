@@ -70,6 +70,7 @@ var
 			return tween;
 		} ]
 	};
+/*jshint -W074*/ // cyclomatic complexity
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
@@ -115,7 +116,6 @@ function createTween( value, prop, animation ) {
 }
 
 function defaultPrefilter( elem, props, opts ) {
-	/* jshint validthis: true */
 	var prop, value, toggle, tween, hooks, oldfire, display,
 		anim = this,
 		orig = {},
@@ -381,6 +381,7 @@ function Animation( elem, properties, options ) {
 		.fail( animation.opts.fail )
 		.always( animation.opts.always );
 }
+/*jshint +W074*/
 
 jQuery.Animation = jQuery.extend( Animation, {
 

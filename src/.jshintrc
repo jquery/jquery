@@ -13,6 +13,10 @@
 	"undef": true,
 	"unused": true,
 
+	"maxdepth": 7,
+	"maxstatements": 50,
+	"maxcomplexity": 20,
+
 	"sub": true,
 
 	"browser": true,

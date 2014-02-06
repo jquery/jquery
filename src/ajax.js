@@ -211,6 +211,7 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 	current = dataTypes.shift();
 
 	// Convert to each sequential dataType
+	/*jshint -W073*/ // block nesting
 	while ( current ) {
 
 		if ( s.responseFields[ current ] ) {
@@ -282,6 +283,7 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 			}
 		}
 	}
+	/*jshint +W073*/
 
 	return { state: "success", data: response };
 }
@@ -379,6 +381,7 @@ jQuery.extend({
 	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
 	// Main method
+	/*jshint -W071, -W074*/ // too many statements, cyclomatic complexity
 	ajax: function( url, options ) {
 
 		// If url is an object, simulate pre-1.5 signature
@@ -766,6 +769,7 @@ jQuery.extend({
 
 		return jqXHR;
 	},
+	/*jshint +W071, +W074*/
 
 	getJSON: function( url, data, callback ) {
 		return jQuery.get( url, data, callback, "json" );
