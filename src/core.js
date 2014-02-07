@@ -277,25 +277,20 @@ jQuery.extend({
 
 	// args is for internal usage only
 	each: function( obj, callback, args ) {
-		var value,
-			i = 0,
+		var i = 0,
 			length = obj.length,
 			isArray = isArraylike( obj );
 
 		if ( args ) {
 			if ( isArray ) {
 				for ( ; i < length; i++ ) {
-					value = callback.apply( obj[ i ], args );
-
-					if ( value === false ) {
+					if ( callback.apply( obj[ i ], args ) === false ) {
 						break;
 					}
 				}
 			} else {
 				for ( i in obj ) {
-					value = callback.apply( obj[ i ], args );
-
-					if ( value === false ) {
+					if ( callback.apply( obj[ i ], args ) === false ) {
 						break;
 					}
 				}
@@ -305,17 +300,13 @@ jQuery.extend({
 		} else {
 			if ( isArray ) {
 				for ( ; i < length; i++ ) {
-					value = callback.call( obj[ i ], i, obj[ i ] );
-
-					if ( value === false ) {
+					if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
 						break;
 					}
 				}
 			} else {
 				for ( i in obj ) {
-					value = callback.call( obj[ i ], i, obj[ i ] );
-
-					if ( value === false ) {
+					if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
 						break;
 					}
 				}
