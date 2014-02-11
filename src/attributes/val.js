@@ -41,7 +41,7 @@ jQuery.fn.extend({
 			}
 
 			if ( isFunction ) {
-				val = value.call( this, i, jQuery( this ).val() );
+				val = value.call( this, i, this.value );
 			} else {
 				val = value;
 			}
@@ -94,7 +94,7 @@ jQuery.extend({
 							( !option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
 
 						// Get the specific value for the option
-						value = jQuery( option ).val();
+						value = option.value;
 
 						// We don't need an array for one selects
 						if ( one ) {
@@ -137,7 +137,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
 			if ( jQuery.isArray( value ) ) {
-				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+				return ( elem.checked = jQuery.inArray( elem.value, value ) >= 0 );
 			}
 		}
 	};
