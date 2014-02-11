@@ -355,7 +355,7 @@ test( "append(Function) returns String", function() {
 });
 
 test( "append(Function) returns Element", function() {
-  
+
   expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:",
     old = jQuery("#sap").html();
@@ -368,7 +368,7 @@ test( "append(Function) returns Element", function() {
 });
 
 test( "append(Function) returns Array<Element>", function() {
-  
+
 	expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo",
     old = jQuery("#sap").html();
@@ -381,7 +381,7 @@ test( "append(Function) returns Array<Element>", function() {
 });
 
 test( "append(Function) returns jQuery", function() {
-  
+
 	expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:",
     old = jQuery("#sap").html();
@@ -394,7 +394,7 @@ test( "append(Function) returns jQuery", function() {
 });
 
 test( "append(Function) returns Number", function() {
-  
+
 	expect( 2 );
 	var old = jQuery("#sap").html();
 
@@ -531,7 +531,7 @@ test( "append(xml)", function() {
 });
 
 test( "appendTo(String)", function() {
-  
+
 	expect( 4 );
 
 	var l, defaultText;
@@ -551,9 +551,9 @@ test( "appendTo(String)", function() {
 });
 
 test( "appendTo(Element|Array<Element>)", function() {
-  
+
   expect( 2 );
-  
+
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:";
 	jQuery( document.getElementById("first") ).appendTo("#sap");
 	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
@@ -565,9 +565,9 @@ test( "appendTo(Element|Array<Element>)", function() {
 });
 
 test( "appendTo(jQuery)", function() {
-  
+
   expect( 10 );
-  
+
   var expected, num, div;
 	ok( jQuery(document.createElement("script")).appendTo("body").length, "Make sure a disconnected script can be appended." );
 
@@ -609,7 +609,7 @@ test( "appendTo(jQuery)", function() {
 });
 
 test( "prepend(String)", function() {
-  
+
 	expect( 2 );
 
 	var result, expected;
@@ -620,7 +620,7 @@ test( "prepend(String)", function() {
 });
 
 test( "prepend(Element)", function() {
-  
+
 	expect( 1 );
 
 	var expected;
@@ -630,7 +630,7 @@ test( "prepend(Element)", function() {
 });
 
 test( "prepend(Array<Element>)", function() {
-  
+
 	expect( 1 );
 
 	var expected;
@@ -640,7 +640,7 @@ test( "prepend(Array<Element>)", function() {
 });
 
 test( "prepend(jQuery)", function() {
-  
+
 	expect( 1 );
 
 	var expected;
@@ -650,7 +650,7 @@ test( "prepend(jQuery)", function() {
 });
 
 test( "prepend(Array<jQuery>)", function() {
-  
+
 	expect( 1 );
 
 	var expected;
@@ -683,7 +683,7 @@ test( "prepend(Function) with incoming value -- String", function() {
 });
 
 test( "prepend(Function) with incoming value -- Element", function() {
-  
+
   expect( 2 );
 
 	var old, expected;
@@ -699,7 +699,7 @@ test( "prepend(Function) with incoming value -- Element", function() {
 });
 
 test( "prepend(Function) with incoming value -- Array<Element>", function() {
-  
+
   expect( 2 );
 
 	var old, expected;
@@ -740,7 +740,7 @@ test( "prependTo(String)", function() {
 	jQuery("<b>buga</b>").prependTo("#first");
 	equal( jQuery("#first").text(), "buga" + defaultText, "Check if text prepending works" );
 	equal( jQuery("<option value='prependTest'>Prepend Test</option>").prependTo("#select3").parent().find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
-	
+
 });
 
 test( "prependTo(Element)", function() {
@@ -827,7 +827,7 @@ test( "before(jQuery)", function() {
 	jQuery("#yahoo").before( manipulationBareObj(jQuery("#mark, #first")) );
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
-	
+
 test( "before(Array<jQuery>)", function() {
 
 	expect( 1 );
@@ -879,7 +879,7 @@ test( "before(Function) -- Returns jQuery", function() {
 	jQuery("#yahoo").before( manipulationFunctionReturningObj(jQuery("#mark, #first")) );
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
-	
+
 test( "before(Function) -- Returns Array<jQuery>", function() {
 
 	expect( 1 );
@@ -913,7 +913,7 @@ test( "before and after w/ empty object (#10812)", function() {
 test( ".before() and .after() disconnected node", function() {
 
   expect(2);
-  
+
   equal( jQuery("<input type='checkbox'/>").before("<div/>").length, 1, "before() on disconnected node is no-op" );
 	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 1, "after() on disconnected node is no-op" );
 });
@@ -997,7 +997,7 @@ test( "insertBefore(jQuery)", function() {
 test( ".after(String)", function() {
 
   expect( 1 );
-  
+
   var expected = "This is a normal link: Yahoobuga";
 	jQuery("#yahoo").after( "<b>buga</b>" );
 	equal( jQuery("#en").text(), expected, "Insert String after" );
@@ -1091,7 +1091,7 @@ test( "insertAfter(String)", function() {
 test( "insertAfter(Element)", function() {
 
   expect(1);
-  
+
   var expected = "This is a normal link: YahooTry them out:";
 	jQuery( document.getElementById("first") ).insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert element after" );
@@ -1100,7 +1100,7 @@ test( "insertAfter(Element)", function() {
 test( "insertAfter(Array<Element>)", function() {
 
   expect(1);
-  
+
   var expected = "This is a normal link: YahooTry them out:diveintomark";
 	jQuery( [ document.getElementById("first"), document.getElementById("mark") ] ).insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
@@ -1109,7 +1109,7 @@ test( "insertAfter(Array<Element>)", function() {
 test( "insertAfter(jQuery)", function() {
 
   expect(1);
-  
+
   var expected = "This is a normal link: YahoodiveintomarkTry them out:";
 	jQuery("#mark, #first").insertAfter("#yahoo");
 	equal( jQuery("#en").text(), expected, "Insert jQuery after" );
