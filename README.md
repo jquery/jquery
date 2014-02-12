@@ -97,8 +97,6 @@ Some example modules that can be excluded are:
 
 Removing sizzle is not supported on the 1.x branch.
 
-*Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
-
 The build process shows a message for each dependent module it excludes or includes.
 
 ##### AMD name
