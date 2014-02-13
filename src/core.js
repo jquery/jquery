@@ -24,6 +24,10 @@ var
 		return new jQuery.fn.init( selector, context );
 	},
 
+	// Support: Android<4.1
+	// Make sure we trim BOM and NBSP
+	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
+
 	// Matches dashed string for camelizing
 	rmsPrefix = /^-ms-/,
 	rdashAlpha = /-([\da-z])/gi,
@@ -336,9 +340,21 @@ jQuery.extend({
 		return obj;
 	},
 
-	trim: function( text ) {
-		return text == null ? "" : trim.call( text );
-	},
+	// Support: Android<4.1
+	// Use native String.trim function wherever possible
+	trim: trim && !trim.call("\uFEFF\xA0") ?
+		function( text ) {
+			return text == null ?
+				"" :
+				trim.call( text );
+		} :
+
+		// Otherwise use our own trimming functionality
+		function( text ) {
+			return text == null ?
+				"" :
+				( text + "" ).replace( rtrim, "" );
+		},
 
 	// results is for internal usage only
 	makeArray: function( arr, results ) {
