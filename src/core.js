@@ -21,7 +21,8 @@ var
 		return new jQuery.fn.init( selector, context );
 	},
 
-	// Make sure we trim BOM and NBSP (here's looking at you, Safari 5.0 and IE)
+	// Support: Android<4.1, IE<9
+	// Make sure we trim BOM and NBSP
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 
 	// Matches dashed string for camelizing
@@ -347,6 +348,7 @@ jQuery.extend({
 		return obj;
 	},
 
+	// Support: Android<4.1, IE<9
 	// Use native String.trim function wherever possible
 	trim: trim && !trim.call("\uFEFF\xA0") ?
 		function( text ) {
