@@ -17,12 +17,16 @@ define([
 	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
 	a = div.getElementsByTagName( "a" )[ 0 ];
 
+	// Finish early in limited (non-browser) environments
+	if ( !a || !a.style ) {
+		return;
+	}
+
 	a.style.cssText = "float:left;opacity:.5";
 
-	// Make sure that element opacity exists
-	// (IE uses filter instead)
-	// Use a regex to work around a WebKit issue. See #5145
-	support.opacity = /^0.5/.test( a.style.opacity );
+	// Support: IE<9
+	// Make sure that element opacity exists (as opposed to filter)
+	support.opacity = a.style.opacity === "0.5";
 
 	// Verify style float existence
 	// (IE uses styleFloat instead of cssFloat)
