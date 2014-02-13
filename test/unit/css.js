@@ -776,7 +776,12 @@ test("Do not append px (#9548, #12990)", function() {
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
 
 	$div.css( "fill-opacity", 1 );
-	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'" );
+	// Support: Android 2.3 (no support for fill-opacity)
+	if ( $div.css( "fill-opacity" ) ) {
+		equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
+	} else {
+		ok( true, "No support for fill-opacity CSS property" );
+	}
 
 	$div.css( "column-count", 1 );
 	if ( $div.css("column-count") ) {
