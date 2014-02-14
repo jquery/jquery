@@ -45,22 +45,18 @@ define([
 				return reliableHiddenOffsetsVal;
 			}
 
-			var container, tds, isSupported,
-				div = document.createElement( "div" ),
-				body = document.getElementsByTagName( "body" )[ 0 ];
+			var container, div, body, tds, isSupported;
 
+			body = document.getElementsByTagName( "body" )[ 0 ];
 			if ( !body ) {
 				// Return for frameset docs that don't have a body
 				return;
 			}
 
 			// Setup
-			div.setAttribute( "className", "t" );
-			div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
-
+			div = document.createElement( "div" );
 			container = document.createElement( "div" );
 			container.style.cssText = containerStyles;
-
 			body.appendChild( container ).appendChild( div );
 
 			// Support: IE8
