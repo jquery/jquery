@@ -38,50 +38,9 @@ define([
 
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
-			// `window` is referenced here for better post-minification compressibility
-			if ( reliableHiddenOffsetsVal != null && window ) {
-				return reliableHiddenOffsetsVal;
+			if ( reliableHiddenOffsetsVal == null ) {
+				computeStyleTests();
 			}
-
-			var container, div, body, tds;
-
-			body = document.getElementsByTagName( "body" )[ 0 ];
-			if ( !body || !body.style ) {
-				// Return for frameset docs that don't have a body
-				return;
-			}
-
-			// Setup
-			div = document.createElement( "div" );
-			container = document.createElement( "div" );
-			container.style.cssText = containerStyles;
-			body.appendChild( container ).appendChild( div );
-
-			// Support: IE8
-			// Check if table cells still have offsetWidth/Height when they are set
-			// to display:none and there are still other visible table cells in a
-			// table row; if so, offsetWidth/Height are not reliable for use when
-			// determining if an element has been hidden directly using
-			// display:none (it is still safe to use offsets if a parent element is
-			// hidden; don safety goggles and see bug #4512 for more information).
-			div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
-			tds = div.getElementsByTagName( "td" );
-			tds[ 0 ].style.cssText = "margin:0;border:0;padding:0;display:none";
-			reliableHiddenOffsetsVal = tds[ 0 ].offsetHeight === 0;
-
-			// Support: IE8
-			// Check if empty table cells still have offsetWidth/Height
-			if ( reliableHiddenOffsetsVal ) {
-				tds[ 0 ].style.display = "";
-				tds[ 1 ].style.display = "none";
-				reliableHiddenOffsetsVal = tds[ 0 ].offsetHeight === 0;
-			}
-
-			body.removeChild( container );
-
-			// Null elements to avoid leaks in IE.
-			container = div = body = tds = null;
-
 			return reliableHiddenOffsetsVal;
 		},
 
@@ -108,56 +67,15 @@ define([
 
 		// Support: Android 2.3
 		reliableMarginRight: function() {
-			// Support: IE<9
-			// Assume reliable margin-right because confirmation requires getComputedStyle
-			// Support: node.js jsdom
-			// Don't assume that getComputedStyle is a property of the global object
-			if ( reliableMarginRightVal != null || !window.getComputedStyle ) {
-				return reliableMarginRightVal || !window.getComputedStyle;
+			if ( reliableMarginRightVal == null ) {
+				computeStyleTests();
 			}
-
-			var container, div, body, marginDiv;
-
-			body = document.getElementsByTagName( "body" )[ 0 ];
-			if ( !body || !body.style ) {
-				// Test fired too early or in an unsupported environment, exit.
-				return;
-			}
-
-			// Setup
-			div = document.createElement( "div" );
-			container = document.createElement( "div" );
-			container.style.cssText = containerStyles;
-			body.appendChild( container ).appendChild( div );
-
-			// Check if div with explicit width and no margin-right incorrectly
-			// gets computed margin-right based on width of container. (#3333)
-			// Fails in WebKit before Feb 2011 nightlies
-			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-			marginDiv = div.appendChild( document.createElement( "div" ) );
-			// Reset CSS: box-sizing; display; margin; border; padding
-			marginDiv.style.cssText = div.style.cssText =
-				// Support: Firefox<29, Android 2.3
-				// Vendor-prefix box-sizing
-				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
-				"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
-			marginDiv.style.marginRight = marginDiv.style.width = "0";
-			div.style.width = "1px";
-
-			reliableMarginRightVal =
-				!parseFloat( ( window.getComputedStyle( marginDiv, null ) || {} ).marginRight );
-
-			body.removeChild( container );
-
-			// Null elements to avoid leaks in IE.
-			container = div = body = marginDiv = null;
-
 			return reliableMarginRightVal;
 		}
 	});
 
 	function computeStyleTests() {
-		var container, div, body;
+		var container, div, body, contents;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
 		if ( !body || !body.style ) {
@@ -184,9 +102,10 @@ define([
 			boxSizingVal = div.offsetWidth === 4;
 		});
 
-		// Will be changed later if needed.
-		boxSizingReliableVal = true;
+		// Support: IE<9
+		// Assume reasonable values in the absence of getComputedStyle
 		pixelPositionVal = false;
+		reliableMarginRightVal = boxSizingReliableVal = true;
 
 		// Support: node.js jsdom
 		// Don't assume that getComputedStyle is a property of the global object
@@ -194,12 +113,47 @@ define([
 			pixelPositionVal = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
 			boxSizingReliableVal =
 				( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+
+			// Support: Android 2.3
+			// Div with explicit width and no margin-right incorrectly
+			// gets computed margin-right based on width of container (#3333)
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			contents = div.appendChild( document.createElement( "div" ) );
+
+			// Reset CSS: box-sizing; display; margin; border; padding
+			contents.style.cssText = div.style.cssText =
+				// Support: Firefox<29, Android 2.3
+				// Vendor-prefix box-sizing
+				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
+				"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
+			contents.style.marginRight = contents.style.width = "0";
+			div.style.width = "1px";
+
+			reliableMarginRightVal =
+				!parseFloat( ( window.getComputedStyle( contents, null ) || {} ).marginRight );
+		}
+
+		// Support: IE8
+		// Check if table cells still have offsetWidth/Height when they are set
+		// to display:none and there are still other visible table cells in a
+		// table row; if so, offsetWidth/Height are not reliable for use when
+		// determining if an element has been hidden directly using
+		// display:none (it is still safe to use offsets if a parent element is
+		// hidden; don safety goggles and see bug #4512 for more information).
+		div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
+		contents = div.getElementsByTagName( "td" );
+		contents[ 0 ].style.cssText = "margin:0;border:0;padding:0;display:none";
+		reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
+		if ( reliableHiddenOffsetsVal ) {
+			contents[ 0 ].style.display = "";
+			contents[ 1 ].style.display = "none";
+			reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
 		}
 
 		body.removeChild( container );
 
 		// Null elements to avoid leaks in IE.
-		container = div = body = null;
+		container = div = body = contents = null;
 	}
 
 })();
