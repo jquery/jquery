@@ -1357,7 +1357,12 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
 
 	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
-		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+		// Support: Android 2.3 (no support for fill-opacity)
+		if ( jQuery( this ).css( "fill-opacity" ) ) {
+			equal( jQuery( this ).css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
+		} else {
+			ok( true, "No support for fill-opacity CSS property" );
+		}
 		$div.remove();
 	});
 });
