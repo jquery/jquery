@@ -1385,10 +1385,11 @@ test("Submit event can be stopped (#11049)", function() {
 });
 
 // Test beforeunload event only if it supported (i.e. not Opera)
-// Support: iOS 7+
-// iOS has the window.onbeforeunload field but doesn't support the beforeunload
+// Support: iOS 7+, Android<4.0
+// iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
-if ( window.onbeforeunload === null && !/(ipad|iphone|ipod)/i.test( navigator.userAgent ) ) {
+if ( window.onbeforeunload === null &&
+	!/(ipad|iphone|ipod|android 2\.3)/i.test( navigator.userAgent ) ) {
 	asyncTest("on(beforeunload)", 1, function() {
 		var iframe = jQuery(jQuery.parseHTML("<iframe src='data/event/onbeforeunload.html'><iframe>"));
 
