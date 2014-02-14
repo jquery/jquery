@@ -19,6 +19,7 @@ define([
 			return;
 		}
 
+		// Setup
 		div = document.createElement( "div" );
 		container = document.createElement( "div" );
 		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
@@ -45,7 +46,7 @@ define([
 		body.removeChild( container );
 
 		// Null elements to avoid leaks in IE.
-		body = container = div = null;
+		container = div = body = null;
 
 		return shrinkWrapBlocksVal;
 	};
