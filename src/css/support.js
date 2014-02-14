@@ -12,6 +12,10 @@ define([
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
+	if ( !div.style ) {
+		return;
+	}
+
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
