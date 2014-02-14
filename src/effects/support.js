@@ -14,7 +14,7 @@ define([
 		var container, div, body;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
-		if ( !body ) {
+		if ( !body || !body.style ) {
 			// Test fired too early or in an unsupported environment, exit.
 			return;
 		}
@@ -38,8 +38,7 @@ define([
 				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
 				"box-sizing:content-box;display:block;margin:0;border:0;" +
 				"padding:1px;width:1px;zoom:1";
-			div.innerHTML = "<div></div>";
-			div.firstChild.style.width = "5px";
+			div.appendChild( document.createElement( "div" ) ).style.width = "5px";
 			shrinkWrapBlocksVal = div.offsetWidth !== 3;
 		}
 

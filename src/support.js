@@ -23,10 +23,10 @@ jQuery(function() {
 	// We need to execute this one support test ASAP because we need to know
 	// if body.style.zoom needs to be set.
 
-	var container, div, body;
+	var val, container, div, body;
 
 	body = document.getElementsByTagName( "body" )[ 0 ];
-	if ( !body ) {
+	if ( !body || !body.style ) {
 		// Return for frameset docs that don't have a body
 		return;
 	}
@@ -44,7 +44,8 @@ jQuery(function() {
 		// them layout
 		div.style.cssText = "display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1";
 
-		if ( (support.inlineBlockNeedsLayout = ( div.offsetWidth === 3 )) ) {
+		support.inlineBlockNeedsLayout = val = div.offsetWidth === 3;
+		if ( val ) {
 			// Prevent IE 6 from affecting layout for positioned elements #11048
 			// Prevent IE from shrinking the body in IE 7 mode #12869
 			// Support: IE<8

@@ -4,29 +4,30 @@ define([
 ], function( jQuery, support ) {
 
 (function() {
-	var a, pixelPositionVal, boxSizingVal, boxSizingReliableVal,
+	var div, style, a, pixelPositionVal, boxSizingVal, boxSizingReliableVal,
 		reliableHiddenOffsetsVal, reliableMarginRightVal,
-		div = document.createElement( "div" ),
 		containerStyles = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
 
 	// Setup
+	div = document.createElement( "div" );
 	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
 	a = div.getElementsByTagName( "a" )[ 0 ];
+	style = a && a.style;
 
 	// Finish early in limited (non-browser) environments
-	if ( !a || !a.style ) {
+	if ( !style ) {
 		return;
 	}
 
-	a.style.cssText = "float:left;opacity:.5";
+	style.cssText = "float:left;opacity:.5";
 
 	// Support: IE<9
 	// Make sure that element opacity exists (as opposed to filter)
-	support.opacity = a.style.opacity === "0.5";
+	support.opacity = style.opacity === "0.5";
 
 	// Verify style float existence
 	// (IE uses styleFloat instead of cssFloat)
-	support.cssFloat = !!a.style.cssFloat;
+	support.cssFloat = !!style.cssFloat;
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
@@ -37,14 +38,15 @@ define([
 
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
-			if ( reliableHiddenOffsetsVal != null ) {
+			// `window` is referenced here for better post-minification compressibility
+			if ( reliableHiddenOffsetsVal != null && window ) {
 				return reliableHiddenOffsetsVal;
 			}
 
-			var container, div, body, tds, isSupported;
+			var container, div, body, tds;
 
 			body = document.getElementsByTagName( "body" )[ 0 ];
-			if ( !body ) {
+			if ( !body || !body.style ) {
 				// Return for frameset docs that don't have a body
 				return;
 			}
@@ -65,14 +67,15 @@ define([
 			div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
 			tds = div.getElementsByTagName( "td" );
 			tds[ 0 ].style.cssText = "margin:0;border:0;padding:0;display:none";
-			isSupported = ( tds[ 0 ].offsetHeight === 0 );
-
-			tds[ 0 ].style.display = "";
-			tds[ 1 ].style.display = "none";
+			reliableHiddenOffsetsVal = tds[ 0 ].offsetHeight === 0;
 
 			// Support: IE8
 			// Check if empty table cells still have offsetWidth/Height
-			reliableHiddenOffsetsVal = isSupported && ( tds[ 0 ].offsetHeight === 0 );
+			if ( reliableHiddenOffsetsVal ) {
+				tds[ 0 ].style.display = "";
+				tds[ 1 ].style.display = "none";
+				reliableHiddenOffsetsVal = tds[ 0 ].offsetHeight === 0;
+			}
 
 			body.removeChild( container );
 
@@ -116,7 +119,7 @@ define([
 			var container, div, body, marginDiv;
 
 			body = document.getElementsByTagName( "body" )[ 0 ];
-			if ( !body ) {
+			if ( !body || !body.style ) {
 				// Test fired too early or in an unsupported environment, exit.
 				return;
 			}
@@ -157,7 +160,7 @@ define([
 		var container, div, body;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
-		if ( !body ) {
+		if ( !body || !body.style ) {
 			// Test fired too early or in an unsupported environment, exit.
 			return;
 		}
