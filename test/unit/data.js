@@ -558,6 +558,19 @@ test(".data should not miss preset data-* w/ hyphenated property names", functio
 	});
 });
 
+test(".data should not miss data-* w/ hyphenated property names #14799", function() {
+
+	expect(2);
+
+	var div = jQuery("<div>");
+
+	div.data({ "foo-bar": 1 });
+	div.data( "foo-bar", 2 );
+
+	equal( div.data( "foo-bar" ), 2, "data with property 'foo-bar' is correct");
+	equal( div.data( "fooBar" ), 2, "data with property 'fooBar' is correct");
+});
+
 test("jQuery.data should not miss data-* w/ hyphenated property names #14047", function() {
 
 	expect(1);
@@ -696,6 +709,7 @@ test( ".removeData supports removal of hyphenated properties via array (#12786)"
 		// From batch assignment .data({ "a-a": 1 })
 		"a-a": 1,
 		// From property, value assignment .data( "b-b", 1 )
+		"b-b": 1,
 		"bB": 1
 	};
 
