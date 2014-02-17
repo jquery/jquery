@@ -1,6 +1,7 @@
 {
   "name": "jquery",
   "version": "2.1.1pre",
+  "main": "dist/jquery.js",
   "ignore": [
     "**/.*",
     "build",
@@ -9,8 +10,7 @@
     "*.md",
     "AUTHORS.txt",
     "Gruntfile.js",
-    "package.json",
-    "bower.json"
+    "package.json"
   ],
   "dependencies": {
     "sizzle": "1.10.18"
