@@ -16,7 +16,7 @@ original$ = this.$ = "replaced";
 
 /**
  * Returns an array of elements with the given IDs
- * @example q("main", "foo", "bar")
+ * @example q( "main", "foo", "bar" )
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
 this.q = function() {
@@ -38,7 +38,7 @@ this.q = function() {
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 this.t = function( a, b, c ) {
-	var f = jQuery(b).get(),
+	var f = jQuery( b ).get(),
 		s = "",
 		i = 0;
 
@@ -46,7 +46,7 @@ this.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
+	deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
 };
 
 this.createDashboardXML = function() {
@@ -98,13 +98,13 @@ this.createWithFriesXML = function() {
 this.createXMLFragment = function() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
-		xml = new ActiveXObject("msxml2.domdocument");
+		xml = new ActiveXObject( "msxml2.domdocument" );
 	} else {
 		xml = document.implementation.createDocument( "", "", null );
 	}
 
 	if ( xml ) {
-		frag = xml.createElement("data");
+		frag = xml.createElement( "data" );
 	}
 
 	return frag;
@@ -112,13 +112,13 @@ this.createXMLFragment = function() {
 
 fireNative = document.createEvent ?
 	function( node, type ) {
-		var event = document.createEvent('HTMLEvents');
+		var event = document.createEvent( "HTMLEvents" );
+
 		event.initEvent( type, true, true );
 		node.dispatchEvent( event );
 	} :
 	function( node, type ) {
-		var event = document.createEventObject();
-		node.fireEvent( 'on' + type, event );
+		node.fireEvent( "on" + type, document.createEventObject() );
 	};
 
 /**
@@ -233,31 +233,28 @@ this.testIframe = function( fileName, name, fn ) {
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-
-	test( title, function() {
+	asyncTest( title, 1, function() {
 		var iframe;
 
-		// Expect one assertion, but allow overrides
-		expect( 1 );
-
-		stop();
 		window.iframeCallback = function() {
-			var self = this,
-				args = arguments;
+			var args = arguments;
+
 			setTimeout(function() {
-				window.iframeCallback = undefined;
+				this.iframeCallback = undefined;
+
 				iframe.remove();
-				func.apply( self, args );
+				func.apply( this, args );
 				func = function() {};
+
 				start();
-			}, 0 );
+			});
 		};
 		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
 			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
 			.appendTo( "#qunit-fixture" );
 	});
 };
-window.iframeCallback = undefined;
+this.iframeCallback = undefined;
 
 // Tests are always loaded async
 QUnit.config.autostart = false;
