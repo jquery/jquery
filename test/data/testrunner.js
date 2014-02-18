@@ -196,7 +196,7 @@ window.Globals = (function() {
 	return {
 		register: function( name ) {
 			globals[ name ] = true;
-			supportjQuery.globalEval( "var " + name + " = undefined;" );
+			supportjQuery.globalEval( "var " + name + " = true;" );
 		},
 		cleanup: function() {
 			var name,
