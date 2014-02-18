@@ -14,7 +14,6 @@ var qunitModule = QUnit.module,
 	reset,
 	ajaxSettings = jQuery.ajaxSettings;
 
-
 /**
  * QUnit configuration
  */
