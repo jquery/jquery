@@ -145,11 +145,11 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	// Alias bower to bowercopy
 	grunt.registerTask( "bower", "bowercopy" );
+	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "jshint", "jscs" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
 
 	// Default grunt
 	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
