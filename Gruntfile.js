@@ -101,6 +101,9 @@ module.exports = function( grunt ) {
 		jscs: {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
+
+			// Right know, check only test helpers
+			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
