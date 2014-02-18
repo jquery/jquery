@@ -1,18 +1,13 @@
-define(function() {
+(function() {
 
-// Allow subprojects to test against their own fixtures
-var qunitModule = QUnit.module,
-	qunitTest = QUnit.test,
-	// Store the old counts so that we only assert on tests that have actually leaked,
-	// instead of asserting every time a test has leaked sometime in the past
-	oldCacheLength = 0,
+// Store the old counts so that we only assert on tests that have actually leaked,
+// instead of asserting every time a test has leaked sometime in the past
+var oldCacheLength = 0,
 	oldActive = 0,
 
 	expectedDataKeys = {},
-  reset,
 	splice = [].splice,
 	ajaxSettings = jQuery.ajaxSettings;
-
 
 /**
  * QUnit configuration
@@ -45,7 +40,7 @@ QUnit.expectJqData = function( elems, key ) {
 		}
 
 		for ( i = 0; i < elems.length; i++ ) {
-			elem = elems[i];
+			elem = elems[ i ];
 
 			// jQuery.data only stores data for nodes in jQuery.cache,
 			// for other data targets the data is stored in the object itself,
@@ -69,10 +64,10 @@ QUnit.expectJqData = function( elems, key ) {
 				// (instead of in teardown).
 				notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
 			} else {
-				if ( expectedDataKeys[expando] ) {
-					expectedDataKeys[expando].push( key );
+				if ( expectedDataKeys[ expando ] ) {
+					expectedDataKeys[ expando ].push( key );
 				} else {
-					expectedDataKeys[expando] = [ key ];
+					expectedDataKeys[ expando ] = [ key ];
 				}
 			}
 		}
@@ -90,26 +85,25 @@ QUnit.config.urlConfig.push({
  * teardown function on all modules' lifecycle object.
  */
 window.moduleTeardown = function() {
-	var i,
-		expectedKeys, actualKeys,
+	var i, expectedKeys, actualKeys,
 		cacheLength = 0;
 
 	// Only look for jQuery data problems if this test actually
 	// provided some information to compare against.
 	if ( QUnit.urlParams.jqdata || this.checkJqData ) {
 		for ( i in jQuery.cache ) {
-			expectedKeys = expectedDataKeys[i];
-			actualKeys = jQuery.cache[i] ? Object.keys( jQuery.cache[i] ) : jQuery.cache[i];
+			expectedKeys = expectedDataKeys[ i ];
+			actualKeys = jQuery.cache[ i ] ? Object.keys( jQuery.cache[ i ] ) : jQuery.cache[ i ];
 			if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
 				deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
 			}
-			delete jQuery.cache[i];
-			delete expectedDataKeys[i];
+			delete jQuery.cache[ i ];
+			delete expectedDataKeys[ i ];
 		}
 		// In case it was removed from cache before (or never there in the first place)
 		for ( i in expectedDataKeys ) {
-			deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
-			delete expectedDataKeys[i];
+			deepEqual( expectedDataKeys[ i ], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
+			delete expectedDataKeys[ i ];
 		}
 	}
 
@@ -143,18 +137,7 @@ window.moduleTeardown = function() {
 	}
 };
 
-QUnit.done(function() {
-	// Remove our own fixtures outside #qunit-fixture
-	supportjQuery("#qunit ~ *").remove();
-});
-
-// jQuery-specific post-test cleanup
-reset = function () {
-
-	// Ensure jQuery events and data on the fixture are properly removed
-	jQuery("#qunit-fixture").empty();
-	// ...even if the jQuery under test has a broken .empty()
-	supportjQuery("#qunit-fixture").empty();
+QUnit.testDone(function() {
 
 	// Reset internal jQuery state
 	jQuery.event.global = {};
@@ -166,10 +149,7 @@ reset = function () {
 
 	// Cleanup globals
 	Globals.cleanup();
-	jQuery("#qunit-fixture")[0].innerHTML = QUnit.config.fixture;
-};
-
-QUnit.testDone(reset);
+});
 
 // Register globals for cleanup and the cleanup code itself
 window.Globals = (function() {
@@ -192,4 +172,4 @@ window.Globals = (function() {
 	};
 })();
 
-});
+})();
