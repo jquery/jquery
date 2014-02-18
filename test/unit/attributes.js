@@ -1459,3 +1459,50 @@ test( "should not throw at $(option).val() (#14686)", 1, function() {
 		ok( false );
 	}
 });
+
+test( "addClass adds class to SVG nodes", function() {
+	expect( 1 );
+
+	var svg = jQuery( "<svg><text>svg text node</text></svg>" ),
+		text = svg.find( "text" ).eq( 0 );
+
+	text.addClass( "svg-class svg-class2" );
+	equal( text.attr( "class" ), "svg-class svg-class2", "did not add class correctly" );
+});
+
+test( "removeClass removes class from SVG nodes", function() {
+	expect( 1 );
+
+	var svg = jQuery( "<svg><text class='svg-class svg-class2'>svg text node</text></svg>" ),
+		text = svg.find( "text" ).eq( 0 );
+
+	text.removeClass( "svg-class svg-class2" );
+	equal( text.attr( "class" ), "", "did not remove class correctly" );
+});
+
+test( "toggleClass toggles class on SVG nodes", function() {
+	expect( 2 );
+
+	var svg = jQuery( "<svg><text class='svg-class'>svg text node</text></svg>" ),
+		text = svg.find( "text" ).eq( 0 );
+
+	text.toggleClass( "svg-class" );
+	equal( text.attr( "class" ), "", "did not toggle class correctly" );
+
+	text.toggleClass( "svg-class" );
+	equal( text.attr( "class" ), "svg-class", "did not toggle class correctly" );
+});
+
+test( "hasClass reports accurately for SVG nodes", function() {
+	expect( 2 );
+
+	var svg = jQuery( "<svg><text class='svg-class'>svg text node</text></svg>" ),
+		text = svg.find( "text" ).eq( 0 );
+
+	equal( text.hasClass( "svg-class" ), true, "did not return true as expected" );
+
+	svg = jQuery( "<svg><text>svg text node</text></svg>" );
+	text = svg.find( "text" ).eq( 0 );
+
+	equal( text.hasClass( "svg-class" ), false, "did not return false as expected" );
+});

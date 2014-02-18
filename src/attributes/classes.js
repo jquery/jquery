@@ -27,6 +27,11 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+				if ( typeof elem.className === "object" && elem.classList ) {
+					elem.classList.add.apply( elem.classList, classes );
+					continue;
+				}
+
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) :
 					" "
@@ -68,6 +73,11 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+				if ( typeof elem.className === "object" && elem.classList ) {
+					elem.classList.remove.apply( elem.classList, classes );
+					continue;
+				}
+
 				// This expression is here for better compressibility (see addClass)
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) :
@@ -146,6 +156,9 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
+			if ( typeof this[i].className === "object" && this[i].classList && this[i].classList.contains( selector ) ) {
+				return true;
+			}
 			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
 				return true;
 			}
