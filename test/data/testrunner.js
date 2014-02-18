@@ -124,6 +124,8 @@ window.moduleTeardown = function() {
 		oldActive = jQuery.active;
 	}
 
+	Globals.cleanup();
+
 	for ( i in jQuery.cache ) {
 		++cacheLength;
 	}
