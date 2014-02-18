@@ -733,7 +733,7 @@ module( "ajax", {
 				jsonpCallback: "functionToCleanUp",
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (GET, custom callback name to be cleaned up)" );
-					strictEqual( window["functionToCleanUp"], undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+					strictEqual( window["functionToCleanUp"], true, "Callback was removed (GET, custom callback name to be cleaned up)" );
 					var xhr;
 					jQuery.ajax({
 						url: "data/jsonp.php",
@@ -747,7 +747,7 @@ module( "ajax", {
 					});
 					xhr.fail(function() {
 						ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-						strictEqual( window["functionToCleanUp"], undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+						strictEqual( window["functionToCleanUp"], true, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 					});
 				}
 			}, {
