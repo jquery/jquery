@@ -1,6 +1,8 @@
 {
   "name": "jquery",
   "version": "2.1.1pre",
+  "main": "dist/jquery.js",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "build",
@@ -12,10 +14,8 @@
     "package.json",
     "bower.json"
   ],
-  "dependencies": {
-    "sizzle": "1.10.18"
-  },
   "devDependencies": {
+    "sizzle": "1.10.18",
     "requirejs": "2.1.10",
     "qunit": "1.14.0",
     "sinon": "1.8.1"
