@@ -19,11 +19,10 @@ support.ownLast = i !== "0";
 // false until the test is run
 support.inlineBlockNeedsLayout = false;
 
+// Execute ASAP in case we need to set body.style.zoom
 jQuery(function() {
-	// We need to execute this one support test ASAP because we need to know
-	// if body.style.zoom needs to be set.
-
-	var val, container, div, body;
+	// Minified: a,b,c,d
+	var val, div, body, container;
 
 	body = document.getElementsByTagName( "body" )[ 0 ];
 	if ( !body || !body.style ) {
@@ -34,7 +33,7 @@ jQuery(function() {
 	// Setup
 	div = document.createElement( "div" );
 	container = document.createElement( "div" );
-	container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px";
+	container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
 	body.appendChild( container ).appendChild( div );
 
 	if ( typeof div.style.zoom !== strundefined ) {
@@ -56,7 +55,7 @@ jQuery(function() {
 	body.removeChild( container );
 
 	// Null elements to avoid leaks in IE
-	container = div = body = null;
+	container = body = div = null;
 });
 
 });

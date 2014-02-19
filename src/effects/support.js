@@ -11,7 +11,11 @@ define([
 			return shrinkWrapBlocksVal;
 		}
 
-		var container, div, body;
+		// Will be changed later if needed.
+		shrinkWrapBlocksVal = false;
+
+		// Minified: b,c,d
+		var div, body, container;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
 		if ( !body || !body.style ) {
@@ -24,9 +28,6 @@ define([
 		container = document.createElement( "div" );
 		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
 		body.appendChild( container ).appendChild( div );
-
-		// Will be changed later if needed.
-		shrinkWrapBlocksVal = false;
 
 		// Support: IE6
 		// Check if elements with layout shrink-wrap their children
@@ -45,7 +46,7 @@ define([
 		body.removeChild( container );
 
 		// Null elements to avoid leaks in IE.
-		container = div = body = null;
+		container = body = div = null;
 
 		return shrinkWrapBlocksVal;
 	};

@@ -4,9 +4,9 @@ define([
 ], function( jQuery, support ) {
 
 (function() {
+	// Minified: b,c,d,e,f,g, h,i
 	var div, style, a, pixelPositionVal, boxSizingVal, boxSizingReliableVal,
-		reliableHiddenOffsetsVal, reliableMarginRightVal,
-		containerStyles = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
+		reliableHiddenOffsetsVal, reliableMarginRightVal;
 
 	// Setup
 	div = document.createElement( "div" );
@@ -34,7 +34,7 @@ define([
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
 	// Null elements to avoid leaks in IE.
-	a = div = null;
+	a = style = div = null;
 
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
@@ -75,7 +75,8 @@ define([
 	});
 
 	function computeStyleTests() {
-		var container, div, body, contents;
+		// Minified: b,c,d,j
+		var div, body, container, contents;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
 		if ( !body || !body.style ) {
@@ -86,7 +87,7 @@ define([
 		// Setup
 		div = document.createElement( "div" );
 		container = document.createElement( "div" );
-		container.style.cssText = containerStyles;
+		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
 		body.appendChild( container ).appendChild( div );
 
 		div.style.cssText =
@@ -153,7 +154,7 @@ define([
 		body.removeChild( container );
 
 		// Null elements to avoid leaks in IE.
-		container = div = body = contents = null;
+		contents = container = body = div = null;
 	}
 
 })();
