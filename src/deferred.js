@@ -5,7 +5,7 @@ define([
 ], function( jQuery, slice ) {
 
 jQuery.extend({
-
+	_promise: {},
 	Deferred: function( func ) {
 		var tuples = [
 				// action, add listener, listener list, final state
@@ -53,6 +53,9 @@ jQuery.extend({
 
 		// Keep pipe for back-compat
 		promise.pipe = promise.then;
+
+		// Allow plugins to modify deferreds and promises by extending jQuery._promise.
+		jQuery.extend(promise, jQuery._promise);
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
