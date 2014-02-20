@@ -13,7 +13,7 @@ define([
 var _load = jQuery.fn.load;
 
 /**
- * Load a url into a page
+ * Take in a url and some paramaters and load that into a page
  */
 jQuery.fn.load = function( url, params, callback ) {
 	if ( typeof url !== "string" && _load ) {
