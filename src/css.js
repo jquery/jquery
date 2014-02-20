@@ -342,6 +342,12 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
+				// In HTML5, it is now valid to have style tags outside the head tag.
+				// See http://bugs.jquery.com/ticket/14545
+				var elemNodeName = elem.nodeName.toLowerCase();
+				if (elemNodeName === "script" || elemNodeName === "style") {
+					return 0;
+				}
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
 				return elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ?
