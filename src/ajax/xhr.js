@@ -43,7 +43,8 @@ jQuery.ajaxTransport(function( options ) {
 			send: function( headers, complete ) {
 				var i,
 					xhr = options.xhr(),
-					id = ++xhrId;
+					id = ++xhrId,
+					responses = {};
 
 				xhr.open( options.type, options.url, options.async, options.username, options.password );
 
@@ -89,15 +90,25 @@ jQuery.ajaxTransport(function( options ) {
 									xhr.statusText
 								);
 							} else {
+								//Verify the responseType attribute to avoid InvalidStateError Exception (XHR2 Spec)
+								// Support : IE9
+								// Accessing binary-data responseText throws an exception
+								// (#11426)
+								if ( (!xhr.responseType || xhr.responseType === "text") &&
+									typeof xhr.responseText === "string" ) {
+									responses.text = xhr.responseText;
+								}
+
+								//The native response associated with the responseType
+								//Stored in the xhr.response attribute (XHR2 Spec)
+								if ( xhr.response ) {
+									responses.native = xhr.response;
+								}
+
 								complete(
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
-									// Support: IE9
-									// Accessing binary-data responseText throws an exception
-									// (#11426)
-									typeof xhr.responseText === "string" ? {
-										text: xhr.responseText
-									} : undefined,
+									responses,
 									xhr.getAllResponseHeaders()
 								);
 							}

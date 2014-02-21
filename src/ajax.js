@@ -332,7 +332,8 @@ jQuery.extend({
 		responseFields: {
 			xml: "responseXML",
 			text: "responseText",
-			json: "responseJSON"
+			json: "responseJSON",
+			native: "responseNative"
 		},
 
 		// Data converters
@@ -349,7 +350,10 @@ jQuery.extend({
 			"text json": jQuery.parseJSON,
 
 			// Parse text as xml
-			"text xml": jQuery.parseXML
+			"text xml": jQuery.parseXML,
+
+			//Don't convert a native response
+			"* native": true
 		},
 
 		// For options that shouldn't be deep extended:
