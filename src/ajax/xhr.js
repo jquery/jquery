@@ -90,7 +90,7 @@ jQuery.ajaxTransport(function( options ) {
 									xhr.statusText
 								);
 							} else {
-								//Verify the responseType attribute to avoid InvalidStateError Exception (XHR2 Spec)
+								// Verify the responseType attribute to avoid InvalidStateError Exception (XHR2 Spec)
 								// Support : IE9
 								// Accessing binary-data responseText throws an exception
 								// (#11426)
@@ -99,8 +99,8 @@ jQuery.ajaxTransport(function( options ) {
 									responses.text = xhr.responseText;
 								}
 
-								//The native response associated with the responseType
-								//Stored in the xhr.response attribute (XHR2 Spec)
+								// The native response associated with the responseType
+								// Stored in the xhr.response attribute (XHR2 Spec)
 								if ( xhr.response ) {
 									responses.native = xhr.response;
 								}

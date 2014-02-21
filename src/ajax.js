@@ -352,7 +352,7 @@ jQuery.extend({
 			// Parse text as xml
 			"text xml": jQuery.parseXML,
 
-			//Don't convert a native response
+			// Don't convert a native response
 			"* native": true
 		},
 
