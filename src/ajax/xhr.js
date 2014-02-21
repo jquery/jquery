@@ -91,11 +91,11 @@ jQuery.ajaxTransport(function( options ) {
 								);
 							} else {
 								// Verify the responseType attribute to avoid InvalidStateError Exception (XHR2 Spec)
-								// Support : IE9
+								// Support: IE9
 								// Accessing binary-data responseText throws an exception
 								// (#11426)
 								if ( (!xhr.responseType || xhr.responseType === "text") &&
-									typeof xhr.responseText === "string" ) {
+										typeof xhr.responseText === "string" ) {
 									responses.text = xhr.responseText;
 								}
 
