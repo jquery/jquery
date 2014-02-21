@@ -30,6 +30,7 @@
   "dependencies": {},
   "devDependencies": {
     "archiver": "0.5.2",
+    "commitplease": "1.7.0",
     "grunt": "0.4.2",
     "grunt-bowercopy": "0.7.1",
     "grunt-cli": "0.1.13",
