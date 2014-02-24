@@ -21,6 +21,48 @@ test("element - jQuery only", function() {
 	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 });
 
+test("id", function() {
+	expect( 26 );
+
+	var a;
+
+	t( "ID Selector", "#body", ["body"] );
+	t( "ID Selector w/ Element", "body#body", ["body"] );
+	t( "ID Selector w/ Element", "ul#first", [] );
+	t( "ID selector with existing ID descendant", "#firstp #simon1", ["simon1"] );
+	t( "ID selector with non-existant descendant", "#firstp #foobar", [] );
+	t( "ID selector using UTF8", "#台北Táiběi", ["台北Táiběi"] );
+	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", ["台北Táiběi","台北"] );
+	t( "Descendant ID selector using UTF8", "div #台北", ["台北"] );
+	t( "Child ID selector using UTF8", "form > #台北", ["台北"] );
+
+	t( "Escaped ID", "#foo\\:bar", ["foo:bar"] );
+	t( "Escaped ID", "#test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Descendant escaped ID", "div #foo\\:bar", ["foo:bar"] );
+	t( "Descendant escaped ID", "div #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+	t( "Child escaped ID", "form > #foo\\:bar", ["foo:bar"] );
+	t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", ["test.foo[5]bar"] );
+
+	t( "ID Selector, child ID present", "#form > #radio1", ["radio1"] ); // bug #267
+	t( "ID Selector, not an ancestor ID", "#form #first", [] );
+	t( "ID Selector, not a child ID", "#form > #option1a", [] );
+
+	t( "All Children of ID", "#foo > *", ["sndp", "en", "sap"] );
+	t( "All Children of ID with no children", "#firstUL > *", [] );
+
+	a = jQuery("<a id='backslash\\foo'></a>").appendTo("#qunit-fixture");
+	t( "ID Selector contains backslash", "#backslash\\\\foo", ["backslash\\foo"] );
+
+	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
+
+	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
+
+	t( "Underscore ID", "#types_all", ["types_all"] );
+	t( "Dash ID", "#qunit-fixture", ["qunit-fixture"] );
+
+	t( "ID with weird characters in it", "#name\\+value", ["name+value"] );
+});
+
 test("class - jQuery only", function() {
 	expect( 4 );
 
@@ -28,6 +70,23 @@ test("class - jQuery only", function() {
 	deepEqual( jQuery(".blog", "p").get(), q("mark", "simon"), "Finding elements with a context." );
 	deepEqual( jQuery(".blog", jQuery("p")).get(), q("mark", "simon"), "Finding elements with a context." );
 	deepEqual( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
+});
+
+test("name", function() {
+	expect( 5 );
+
+	var form;
+
+	t( "Name selector", "input[name=action]", ["text1"] );
+	t( "Name selector with single quotes", "input[name='action']", ["text1"] );
+	t( "Name selector with double quotes", "input[name=\"action\"]", ["text1"] );
+
+	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] );
+
+	form = jQuery("<form><input name='id'/></form>").appendTo("body");
+	equal( jQuery("input", form[0]).length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
+
+	form.remove();
 });
 
 test("attributes - jQuery only", function() {
@@ -170,4 +229,38 @@ testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles
 	deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
 	equal( jQuery(".evil a").length, 0, "Select nothing with second sizzle" );
 	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
+});
+
+asyncTest( "Iframe dispatch should not affect Sizzle, see #13936", 1, function() {
+	var loaded = false,
+		thrown = false,
+		iframe = document.getElementById("iframe"),
+		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+	jQuery( iframe ).on( "load", function() {
+		var form;
+
+		try {
+			iframeDoc = this.contentDocument || this.contentWindow.document;
+			form = jQuery( "#navigate", iframeDoc )[ 0 ];
+		} catch ( e ) {
+			thrown = e;
+		}
+
+		if ( loaded ) {
+			strictEqual( thrown, false, "No error thrown from post-reload jQuery call" );
+
+			// clean up
+			jQuery( iframe ).off();
+
+			start();
+		} else {
+			loaded = true;
+			form.submit();
+		}
+	});
+
+	iframeDoc.open();
+	iframeDoc.write("<body><form id='navigate'></form></body>");
+	iframeDoc.close();
 });
