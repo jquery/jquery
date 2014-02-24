@@ -2000,7 +2000,7 @@ module( "ajax", {
 	});
 
 	ajaxTest( "jQuery.ajax() - Native datatype", 8, [{
-		url: url("data/native.bin"),
+		url: url( "data/native.bin" ),
 		xhrFields: {
 			responseType: "arraybuffer"
 		},
@@ -2009,10 +2009,10 @@ module( "ajax", {
 			ok( data instanceof ArrayBuffer, "The data retrieved is an ArrayBuffer instance" );
 			var array = new Uint8Array( data );
 			strictEqual( array.length, 4, "Check for response length" );
-			deepEqual( [array[0], array[1], array[2], array[3]], [0, 1 ,2 , 3], "Check for response content" );
+			deepEqual( [ array[ 0 ], array[ 1 ], array[ 2 ], array[ 3 ] ], [ 0, 1, 2, 3 ], "Check for response content" );
 		}
 	}, {
-		url: url("data/native.txt"),
+		url: url( "data/native.txt" ),
 		dataType: "native",
 		success: function( data, status, jqXHR ) {
 			strictEqual( data, jqXHR.responseNative, "The responseNative attribute contains the response" );
