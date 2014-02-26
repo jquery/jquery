@@ -100,6 +100,47 @@ test( "selectors with comma", function() {
 	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 });
 
+test("child and adjacent", function() {
+	expect( 27 );
+
+	var nothiddendiv;
+
+	t( "Child", "p > a", ["simon1","google","groups","mark","yahoo","simon"] );
+	t( "Child", "p> a", ["simon1","google","groups","mark","yahoo","simon"] );
+	t( "Child", "p >a", ["simon1","google","groups","mark","yahoo","simon"] );
+	t( "Child", "p>a", ["simon1","google","groups","mark","yahoo","simon"] );
+	t( "Child w/ Class", "p > a.blog", ["mark","simon"] );
+	t( "All Children", "code > *", ["anchor1","anchor2"] );
+	t( "All Grandchildren", "p > * > *", ["anchor1","anchor2"] );
+	t( "Adjacent", "p + p", ["ap","en","sap"] );
+	t( "Adjacent", "p#firstp + p", ["ap"] );
+	t( "Adjacent", "p[lang=en] + p", ["sap"] );
+	t( "Adjacent", "a.GROUPS + code + a", ["mark"] );
+	t( "Element Preceded By", "#groups ~ a", ["mark"] );
+	t( "Element Preceded By", "#length ~ input", ["idTest"] );
+	t( "Element Preceded By", "#siblingfirst ~ em", ["siblingnext", "siblingthird"] );
+	t( "Element Preceded By (multiple)", "#siblingTest em ~ em ~ em ~ span", ["siblingspan"] );
+	t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", ["siblingfirst"] );
+
+	t( "Multiple combinators selects all levels", "#siblingTest em *", ["siblingchild", "siblinggrandchild", "siblinggreatgrandchild"] );
+	t( "Multiple combinators selects all levels", "#siblingTest > em *", ["siblingchild", "siblinggrandchild", "siblinggreatgrandchild"] );
+	t( "Multiple sibling combinators doesn't miss general siblings", "#siblingTest > em:first-child + em ~ span", ["siblingspan"] );
+	t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
+
+	equal( jQuery("#listWithTabIndex").length, 1, "Parent div for next test is found via ID (#8310)" );
+	equal( jQuery("#listWithTabIndex li:eq(2) ~ li").length, 1, "Find by general sibling combinator (#8310)" );
+	equal( jQuery("#__sizzle__").length, 0, "Make sure the temporary id assigned by sizzle is cleared out (#8310)" );
+	equal( jQuery("#listWithTabIndex").length, 1, "Parent div for previous test is still found via ID (#8310)" );
+
+	t( "Verify deep class selector", "div.blah > p > a", [] );
+
+	t( "No element deep selector", "div.foo > span > a", [] );
+
+	nothiddendiv = document.getElementById("nothiddendiv");
+
+	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
+});
+
 test("attributes", function() {
 	expect( 54 );
 
