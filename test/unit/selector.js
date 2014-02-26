@@ -221,6 +221,32 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
 });
 
+test( "jQuery.contains", function() {
+	expect( 16 );
+
+	var container = document.getElementById("nonnodes"),
+		element = container.firstChild,
+		text = element.nextSibling,
+		nonContained = container.nextSibling,
+		detached = document.createElement("a");
+	ok( element && element.nodeType === 1, "preliminary: found element" );
+	ok( text && text.nodeType === 3, "preliminary: found text" );
+	ok( nonContained, "preliminary: found non-descendant" );
+	ok( jQuery.contains(container, element), "child" );
+	ok( jQuery.contains(container.parentNode, element), "grandchild" );
+	ok( jQuery.contains(container, text), "text child" );
+	ok( jQuery.contains(container.parentNode, text), "text grandchild" );
+	ok( !jQuery.contains(container, container), "self" );
+	ok( !jQuery.contains(element, container), "parent" );
+	ok( !jQuery.contains(container, nonContained), "non-descendant" );
+	ok( !jQuery.contains(container, document), "document" );
+	ok( !jQuery.contains(container, document.documentElement), "documentElement (negative)" );
+	ok( !jQuery.contains(container, null), "Passing null does not throw an error" );
+	ok( jQuery.contains(document, document.documentElement), "documentElement (positive)" );
+	ok( jQuery.contains(document, element), "document container (positive)" );
+	ok( !jQuery.contains(document, detached), "document container (negative)" );
+});
+
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
 	var $cached = window["$cached"];
 
