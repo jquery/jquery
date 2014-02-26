@@ -89,6 +89,18 @@ test("name", function() {
 	form.remove();
 });
 
+test( "comma selectors", function() {
+	expect( 4 );
+
+	var fixture = jQuery( "<div><h2><span/></h2><div><p><span/></p><p/></div></div>" );
+
+	equal( fixture.find( "h2, div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	equal( fixture.find( "h2, div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	equal( fixture.find( "h2 , div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+});
+
+
 test("attributes - jQuery only", function() {
 	expect( 5 );
 
