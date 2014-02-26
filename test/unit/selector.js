@@ -100,7 +100,7 @@ test( "selectors with comma", function() {
 	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 });
 
-test("child and adjacent", function() {
+test( "child and adjacent", function() {
 	expect( 27 );
 
 	var nothiddendiv;
@@ -144,7 +144,7 @@ test("child and adjacent", function() {
 test("attributes", function() {
 	expect( 54 );
 
-	var opt, input, attrbad, div, withScript;
+	var attrbad, div, withScript;
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
 
