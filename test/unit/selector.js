@@ -89,7 +89,7 @@ test("name", function() {
 	form.remove();
 });
 
-test( "comma selectors", function() {
+test( "selectors with comma", function() {
 	expect( 4 );
 
 	var fixture = jQuery( "<div><h2><span/></h2><div><p><span/></p><p/></div></div>" );
@@ -100,11 +100,97 @@ test( "comma selectors", function() {
 	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 });
 
+test("attributes", function() {
+	expect( 54 );
 
-test("attributes - jQuery only", function() {
-	expect( 5 );
+	var opt, input, attrbad, div, withScript;
 
 	t( "Find elements with a tabindex attribute", "[tabindex]", ["listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex"] );
+
+	t( "Attribute Exists", "#qunit-fixture a[title]", ["google"] );
+	t( "Attribute Exists (case-insensitive)", "#qunit-fixture a[TITLE]", ["google"] );
+	t( "Attribute Exists", "#qunit-fixture *[title]", ["google"] );
+	t( "Attribute Exists", "#qunit-fixture [title]", ["google"] );
+	t( "Attribute Exists", "#qunit-fixture a[ title ]", ["google"] );
+
+	t( "Boolean attribute exists", "#select2 option[selected]", ["option2d"]);
+	t( "Boolean attribute equals", "#select2 option[selected='selected']", ["option2d"]);
+
+	t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", ["simon1"] );
+	t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", ["simon1"] );
+	t( "Attribute Equals", "#qunit-fixture a[rel=bookmark]", ["simon1"] );
+	t( "Attribute Equals", "#qunit-fixture a[href='http://www.google.com/']", ["google"] );
+	t( "Attribute Equals", "#qunit-fixture a[ rel = 'bookmark' ]", ["simon1"] );
+	t( "Attribute Equals Number", "#qunit-fixture option[value=1]", ["option1b","option2b","option3b","option4b","option5c"] );
+	t( "Attribute Equals Number", "#qunit-fixture li[tabIndex=-1]", ["foodWithNegativeTabIndex"] );
+
+	document.getElementById("anchor2").href = "#2";
+	t( "href Attribute", "p a[href^=#]", ["anchor2"] );
+	t( "href Attribute", "p a[href*=#]", ["simon1", "anchor2"] );
+
+	t( "for Attribute", "form label[for]", ["label-for"] );
+	t( "for Attribute in form", "#form [for=action]", ["label-for"] );
+
+	t( "Attribute containing []", "input[name^='foo[']", ["hidden2"] );
+	t( "Attribute containing []", "input[name^='foo[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name*='[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name$='foo[bar]']", ["hidden2"] );
+	t( "Attribute containing []", "input[name*='foo[bar]']", ["hidden2"] );
+
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type='hidden']", ["radio1", "radio2", "hidden1"] );
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=\"hidden\"]", ["radio1", "radio2", "hidden1"] );
+	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=hidden]", ["radio1", "radio2", "hidden1"] );
+
+	t( "Attribute selector using UTF8", "span[lang=中文]", ["台北"] );
+
+	t( "Attribute Begins With", "a[href ^= 'http://www']", ["google","yahoo"] );
+	t( "Attribute Ends With", "a[href $= 'org/']", ["mark"] );
+	t( "Attribute Contains", "a[href *= 'google']", ["google","groups"] );
+	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", ["google","groups","anchor1"] );
+
+	t( "Empty values", "#select1 option[value='']", ["option1a"] );
+	t( "Empty values", "#select1 option[value!='']", ["option1b","option1c","option1d"] );
+
+	t( "Select options via :selected", "#select1 option:selected", ["option1a"] );
+	t( "Select options via :selected", "#select2 option:selected", ["option2d"] );
+	t( "Select options via :selected", "#select3 option:selected", ["option3b", "option3c"] );
+	t( "Select options via :selected", "select[name='select2'] option:selected", ["option2d"] );
+
+	t( "Grouped Form Elements", "input[name='foo[bar]']", ["hidden2"] );
+
+	// Make sure attribute value quoting works correctly. See jQuery #6093; #6428; #13894
+	// Use seeded results to bypass querySelectorAll optimizations
+	attrbad = jQuery(
+		"<input type='hidden' id='attrbad_space' name='foo bar'/>" +
+		"<input type='hidden' id='attrbad_dot' value='2' name='foo.baz'/>" +
+		"<input type='hidden' id='attrbad_brackets' value='2' name='foo[baz]'/>" +
+		"<input type='hidden' id='attrbad_injection' data-attr='foo_baz&#39;]'/>" +
+		"<input type='hidden' id='attrbad_quote' data-attr='&#39;'/>" +
+		"<input type='hidden' id='attrbad_backslash' data-attr='&#92;'/>" +
+		"<input type='hidden' id='attrbad_backslash_quote' data-attr='&#92;&#39;'/>" +
+		"<input type='hidden' id='attrbad_backslash_backslash' data-attr='&#92;&#92;'/>" +
+		"<input type='hidden' id='attrbad_unicode' data-attr='&#x4e00;'/>"
+	).appendTo("#qunit-fixture").get();
+
+	t( "Underscores don't need escaping", "input[id=types_all]", ["types_all"] );
+
+	t( "input[type=text]", "#form input[type=text]", ["text1", "text2", "hidden2", "name"] );
+	t( "input[type=search]", "#form input[type=search]", ["search"] );
+
+	withScript = supportjQuery( "<div><span><script src=''/></span></div>" );
+	ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery #13777)" );
+
+	div = document.getElementById("foo");
+	t( "Object.prototype property \"constructor\" (negative)", "[constructor]", [] );
+	t( "Gecko Object.prototype property \"watch\" (negative)", "[watch]", [] );
+	div.setAttribute( "constructor", "foo" );
+	div.setAttribute( "watch", "bar" );
+	t( "Object.prototype property \"constructor\"", "[constructor='foo']", ["foo"] );
+	t( "Gecko Object.prototype property \"watch\"", "[watch='bar']", ["foo"] );
+
+	t( "Value attribute is retrieved correctly", "input[value=Test]", ["text1", "text2"] );
 
 	// #12600
 	ok(
