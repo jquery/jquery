@@ -247,6 +247,85 @@ test( "jQuery.contains", function() {
 	ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
+test("jQuery.unique", function() {
+	expect( 14 );
+
+	function Arrayish( arr ) {
+		var i = this.length = arr.length;
+		while ( i-- ) {
+			this[ i ] = arr[ i ];
+		}
+	}
+	Arrayish.prototype = {
+		slice: [].slice,
+		sort: [].sort,
+		splice: [].splice
+	};
+
+	var i, tests,
+		detached = [],
+		body = document.body,
+		fixture = document.getElementById("qunit-fixture"),
+		detached1 = document.createElement("p"),
+		detached2 = document.createElement("ul"),
+		detachedChild = detached1.appendChild( document.createElement("a") ),
+		detachedGrandchild = detachedChild.appendChild( document.createElement("b") );
+
+	for ( i = 0; i < 12; i++ ) {
+		detached.push( document.createElement("li") );
+		detached[i].id = "detached" + i;
+		detached2.appendChild( document.createElement("li") ).id = "detachedChild" + i;
+	}
+
+	tests = {
+		"Empty": {
+			input: [],
+			expected: []
+		},
+		"Single-element": {
+			input: [ fixture ],
+			expected: [ fixture ]
+		},
+		"No duplicates": {
+			input: [ fixture, body ],
+			expected: [ body, fixture ]
+		},
+		"Duplicates": {
+			input: [ body, fixture, fixture, body ],
+			expected: [ body, fixture ]
+		},
+		"Detached": {
+			input: detached.slice( 0 ),
+			expected: detached.slice( 0 )
+		},
+		"Detached children": {
+			input: [
+				detached2.childNodes[0],
+				detached2.childNodes[1],
+				detached2.childNodes[2],
+				detached2.childNodes[3]
+			],
+			expected: [
+				detached2.childNodes[0],
+				detached2.childNodes[1],
+				detached2.childNodes[2],
+				detached2.childNodes[3]
+			]
+		},
+		"Attached/detached mixture": {
+			input: [ detached1, fixture, detached2, document, detachedChild, body, detachedGrandchild ],
+			expected: [ document, body, fixture ],
+			length: 3
+		}
+	};
+
+	jQuery.each( tests, function( label, test ) {
+		var length = test.length || test.input.length;
+		deepEqual( jQuery.unique( test.input ).slice( 0, length ), test.expected, label + " (array)" );
+		deepEqual( jQuery.unique( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+	});
+});
+
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
 	var $cached = window["$cached"];
 
