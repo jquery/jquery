@@ -1,17 +1,13 @@
 define(function() {
 
-// Allow subprojects to test against their own fixtures
-var qunitModule = QUnit.module,
-	qunitTest = QUnit.test,
-	// Store the old counts so that we only assert on tests that have actually leaked,
-	// instead of asserting every time a test has leaked sometime in the past
+// Store the old counts so that we only assert on tests that have actually leaked,
+// instead of asserting every time a test has leaked sometime in the past
+var reset,
 	oldCacheLength = 0,
 	oldActive = 0,
 
 	expectedDataKeys = {},
-
 	splice = [].splice,
-	reset,
 	ajaxSettings = jQuery.ajaxSettings;
 
 /**
