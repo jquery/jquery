@@ -4,8 +4,8 @@ define([
 
 (function() {
 	// Minified: a,b,c
-	var input = document.createElement("input"),
-		div = document.createElement("div"),
+	var input = document.createElement( "input" ),
+		div = document.createElement( "div" ),
 		fragment = document.createDocumentFragment();
 
 	// Setup
