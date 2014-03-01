@@ -33,9 +33,6 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	// Null elements to avoid leaks in IE.
-	a = style = div = null;
-
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
 			if ( reliableHiddenOffsetsVal == null ) {
@@ -152,9 +149,6 @@ define([
 		}
 
 		body.removeChild( container );
-
-		// Null elements to avoid leaks in IE.
-		contents = container = body = div = null;
 	}
 
 })();

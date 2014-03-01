@@ -45,9 +45,6 @@ define([
 
 		body.removeChild( container );
 
-		// Null elements to avoid leaks in IE.
-		container = body = div = null;
-
 		return shrinkWrapBlocksVal;
 	};
 

@@ -69,9 +69,6 @@ define([
 			support.deleteExpando = false;
 		}
 	}
-
-	// Null elements to avoid leaks in IE.
-	input = div = fragment = null;
 })();
 
 return support;

@@ -55,9 +55,6 @@ define([
 	input.value = "t";
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
-
-	// Null elements to avoid leaks in IE.
-	opt = input = div = select = a = null;
 })();
 
 return support;
