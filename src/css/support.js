@@ -4,7 +4,7 @@ define([
 ], function( jQuery, support ) {
 
 (function() {
-	// Minified: b,c,d,e,f,g, h,i
+	// Minified: var b,c,d,e,f,g, h,i
 	var div, style, a, pixelPositionVal, boxSizingVal, boxSizingReliableVal,
 		reliableHiddenOffsetsVal, reliableMarginRightVal;
 
@@ -75,7 +75,7 @@ define([
 	});
 
 	function computeStyleTests() {
-		// Minified: b,c,d,j
+		// Minified: var b,c,d,j
 		var div, body, container, contents;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];

@@ -3,7 +3,7 @@ define([
 ], function( support ) {
 
 (function() {
-	// Minified: a,b,c
+	// Minified: var a,b,c
 	var input = document.createElement( "input" ),
 		div = document.createElement( "div" ),
 		fragment = document.createDocumentFragment();

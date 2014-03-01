@@ -3,7 +3,7 @@ define([
 ], function( support ) {
 
 (function() {
-	// Minified: a,b,c,d,e
+	// Minified: var a,b,c,d,e
 	var input, div, select, a, opt;
 
 	// Setup

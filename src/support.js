@@ -21,7 +21,7 @@ support.inlineBlockNeedsLayout = false;
 
 // Execute ASAP in case we need to set body.style.zoom
 jQuery(function() {
-	// Minified: a,b,c,d
+	// Minified: var a,b,c,d
 	var val, div, body, container;
 
 	body = document.getElementsByTagName( "body" )[ 0 ];

@@ -14,7 +14,7 @@ define([
 		// Will be changed later if needed.
 		shrinkWrapBlocksVal = false;
 
-		// Minified: b,c,d
+		// Minified: var b,c,d
 		var div, body, container;
 
 		body = document.getElementsByTagName( "body" )[ 0 ];
