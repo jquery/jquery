@@ -207,7 +207,7 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 19 );
+	expect( 20 );
 	var j, div, display, ret, success;
 
 	jQuery("#nothiddendiv").css("top", "-1em");
@@ -242,15 +242,18 @@ test("css(String, Object)", function() {
 	equal( ret, div, "Make sure setting undefined returns the original set." );
 	equal( div.css("display"), display, "Make sure that the display wasn't changed." );
 
-	// Test for Bug #5509
 	success = true;
 	try {
-		jQuery("#foo").css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
 	}
 	catch (e) {
 		success = false;
 	}
-	ok( success, "Setting RGBA values does not throw Error" );
+	ok( success, "Setting RGBA background-color does not throw (#5509)" );
+
+	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
+	strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
+		"Set font shorthand property (#14759)" );
 });
 
 test( "css(Array)", function() {

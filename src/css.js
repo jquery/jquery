@@ -292,11 +292,14 @@ jQuery.extend({
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
 
-				// Support: IE
+				// Support: IE<9
 				// Swallow errors from 'invalid' CSS values (#5509)
 				try {
 					// Support: Chrome, Safari
-					// Setting style to blank string required to delete "style: x !important;"
+					// Setting style to blank string is required to delete "style: x !important;"
+					// Support: IE<9
+					// Shorthand properties like "font" cannot be blanked (#14759)
+					style[ name ] = value;
 					style[ name ] = "";
 					style[ name ] = value;
 				} catch(e) {}
