@@ -1807,6 +1807,14 @@ module( "ajax", {
 		});
 	});
 
+	// Selector should be trimmed to avoid leading spaces (#14773)
+	asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )", 1, function() {
+		jQuery("#first").load( "data/test3.html   #superuser ", function() {
+			strictEqual( jQuery( this ).children("div").length, 1, "Verify that specific elements were injected" );
+			start();
+		});
+	});
+
 	asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM", 2, function() {
 		jQuery("#first").load( url("data/name.html"), function() {
 			ok( /^ERROR/.test(jQuery("#first").text()), "Check if content was injected into the DOM" );
