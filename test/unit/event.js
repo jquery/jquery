@@ -2434,6 +2434,11 @@ testIframeWithCallback( "Focusing iframe element", "event/focusElem.html", funct
 	ok( isOk, "Focused an element in an iframe" );
 });
 
+testIframeWithCallback( "triggerHandler(onbeforeunload)", "event/triggerunload.html", function( isOk ) {
+	expect( 1 );
+	ok( isOk, "Triggered onbeforeunload without an error" );
+});
+
 // need PHP here to make the incepted IFRAME hang
 if ( hasPHP ) {
 	testIframeWithCallback( "jQuery.ready synchronous load with long loading subresources", "event/syncReady.html", function( isOk ) {
