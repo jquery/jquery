@@ -813,12 +813,13 @@ testIframeWithCallback( "css('width') should work correctly before document read
 );
 
 test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
-	expect ( 2 );
+	expect ( 3 );
 
 	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;'>test</div>").appendTo("#qunit-fixture");
 
 	ok( jQuery.isNumeric( parseFloat( el.css("letterSpacing") ) ), "css('letterSpacing') not convertable to number, see #8627" );
 	ok( jQuery.isNumeric( parseFloat( el.css("fontWeight") ) ), "css('fontWeight') not convertable to number, see #8627" );
+	equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 });
 
 // only run this test in IE9
