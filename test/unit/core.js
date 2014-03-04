@@ -1516,3 +1516,10 @@ testIframeWithCallback( "Tolerating alias-masked DOM properties (#14074)", "core
 			deepEqual( errors, [], "jQuery loaded" );
 	}
 );
+
+testIframeWithCallback( "Don't call window.onready (#14802)", "core/onready.html",
+	function( error ) {
+			expect( 1 );
+			equal( error, false, "no call to user-defined onready" );
+	}
+);
