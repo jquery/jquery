@@ -224,6 +224,7 @@ jQuery.extend({
 		"fillOpacity": true,
 		"fontWeight": true,
 		"lineHeight": true,
+		"msFlexOrder": true,
 		"opacity": true,
 		"order": true,
 		"orphans": true,
