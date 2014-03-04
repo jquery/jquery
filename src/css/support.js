@@ -5,7 +5,7 @@ define([
 
 (function() {
 	// Minified: var b,c,d,e,f,g, h,i
-	var div, style, a, pixelPositionVal, boxSizingVal, boxSizingReliableVal,
+	var div, style, a, pixelPositionVal, boxSizingReliableVal,
 		reliableHiddenOffsetsVal, reliableMarginRightVal;
 
 	// Setup
@@ -33,19 +33,17 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+	// Support: Firefox<29, Android 2.3
+	// Vendor-prefix box-sizing
+	support.boxSizing = style.boxSizing === "" || style.MozBoxSizing === "" ||
+		style.WebkitBoxSizing === "";
+
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
 			if ( reliableHiddenOffsetsVal == null ) {
 				computeStyleTests();
 			}
 			return reliableHiddenOffsetsVal;
-		},
-
-		boxSizing: function() {
-			if ( boxSizingVal == null ) {
-				computeStyleTests();
-			}
-			return boxSizingVal;
 		},
 
 		boxSizingReliable: function() {
@@ -93,12 +91,6 @@ define([
 			"-webkit-box-sizing:border-box;-moz-box-sizing:border-box;" +
 			"box-sizing:border-box;display:block;margin-top:1%;top:1%;" +
 			"border:1px;padding:1px;width:4px;position:absolute";
-
-		// Workaround failing boxSizing test due to offsetWidth returning wrong value
-		// with some non-1 values of body zoom, ticket #13543
-		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
-			boxSizingVal = div.offsetWidth === 4;
-		});
 
 		// Support: IE<9
 		// Assume reasonable values in the absence of getComputedStyle
