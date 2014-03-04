@@ -462,7 +462,7 @@ test("isFunction", function() {
 });
 
 test( "isNumeric", function() {
-	expect( 36 );
+	expect( 38 );
 
 	var t = jQuery.isNumeric,
 		Traditionalists = /** @constructor */ function(n) {
@@ -510,6 +510,8 @@ test( "isNumeric", function() {
 	equal( t(Number.NEGATIVE_INFINITY), false, "Negative Infinity");
 	equal( t(rong), false, "Custom .toString returning non-number");
 	equal( t({}), false, "Empty object");
+	equal( t( [] ), false, "Empty array" );
+	equal( t( [ 42 ] ), false, "Array with one number" );
 	equal( t(function(){} ), false, "Instance of a function");
 	equal( t( new Date() ), false, "Instance of a Date");
 	equal( t(function(){} ), false, "Instance of a function");
