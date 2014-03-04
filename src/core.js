@@ -7,9 +7,8 @@ define([
 	"./var/class2type",
 	"./var/toString",
 	"./var/hasOwn",
-	"./var/trim",
 	"./var/support"
-], function( arr, slice, concat, push, indexOf, class2type, toString, hasOwn, trim, support ) {
+], function( arr, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
 
 var
 	// Use the correct document accordingly with window argument (sandbox)
@@ -341,20 +340,11 @@ jQuery.extend({
 	},
 
 	// Support: Android<4.1
-	// Use native String.trim function wherever possible
-	trim: trim && !trim.call("\uFEFF\xA0") ?
-		function( text ) {
-			return text == null ?
-				"" :
-				trim.call( text );
-		} :
-
-		// Otherwise use our own trimming functionality
-		function( text ) {
-			return text == null ?
-				"" :
-				( text + "" ).replace( rtrim, "" );
-		},
+	trim: function( text ) {
+		return text == null ?
+			"" :
+			( text + "" ).replace( rtrim, "" );
+	},
 
 	// results is for internal usage only
 	makeArray: function( arr, results ) {
