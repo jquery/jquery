@@ -55,13 +55,14 @@ module.exports = function( grunt ) {
 				// Remove EXPOSE lines from Sizzle
 				.replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return Sizzle;" );
 
-		// AMD Name
-		} else if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
-			// Remove the comma for anonymous defines
-			contents = contents
-				.replace( /(\s*)"jquery"(\,\s*)/, amdName ? "$1\"" + amdName + "\"$2" : "" );
-
+		
 		} else {
+			// AMD Name
+			if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
+				// Remove the comma for anonymous defines
+				contents = contents
+					.replace( /(\s*)"jquery"(\,\s*)/, amdName ? "$1\"" + amdName + "\"$2" : "" );
+			}
 
 			// Ignore jQuery's exports (the only necessary one)
 			if ( name !== "jquery" ) {
