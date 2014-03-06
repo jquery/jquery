@@ -74,8 +74,7 @@ jQuery.extend({
 				var val = jQuery.find.attr( elem, "value" );
 				if ( val != null ) {
 					return val;
-				}
-				else{
+				} else {
 					
 					/* In IE10/11 (at least before a certain version)
 					accessing text of an empty option will throw an
