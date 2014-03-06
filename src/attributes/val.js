@@ -76,13 +76,19 @@ jQuery.extend({
 					return val;
 				}
 				else{
+					
+					/* In IE10/11 (at least before a certain version)
+					accessing text of an empty option will throw an
+					exception: "Invalid argument"
+					Reproduced in 10.0.9200.16798 with
+					document.createElement('option').text
+					*/
 					try {
 						return elem.text;
-					} catch ( ex ) {
-						return '';
+					} catch ( _ ) {
+						return "";
 					}
 				}
-				
 			}
 		},
 		select: {
