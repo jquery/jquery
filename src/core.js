@@ -105,7 +105,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	eq: function( i ) {
-		var elem = ( +i == i ) && this.get( i );
+		var elem = i != null && this.get(i);
 		return this.pushStack( elem ? [ elem ] : [] );
 	},
 
