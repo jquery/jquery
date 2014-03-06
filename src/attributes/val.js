@@ -72,9 +72,17 @@ jQuery.extend({
 		option: {
 			get: function( elem ) {
 				var val = jQuery.find.attr( elem, "value" );
-				return val != null ?
-					val :
-					jQuery.text( elem );
+				if ( val != null ) {
+					return val;
+				}
+				else{
+					try {
+						return elem.text;
+					} catch ( ex ) {
+						return '';
+					}
+				}
+				
 			}
 		},
 		select: {
