@@ -219,4 +219,5 @@ S. Andrew Sheppard <andrew@wq.io>
 Roman Reiß <me@silverwind.io>
 Benjy Cui <benjytrys@gmail.com>
 Rodrigo Rosenfeld Rosas <rr.rosas@gmail.com>
+John Hoven <hovenj@gmail.com>
 
