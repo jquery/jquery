@@ -105,9 +105,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	eq: function( i ) {
-		var len = this.length,
-			j = +i + ( i < 0 ? len : 0 );
-		return this.pushStack( j >= 0 && j < len ? [ this[j] ] : [] );
+		var elem = ( +i == i ) && this.get( i );
+		return this.pushStack( elem ? [ elem ] : [] );
 	},
 
 	end: function() {
