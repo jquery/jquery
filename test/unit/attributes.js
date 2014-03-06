@@ -1459,3 +1459,16 @@ test( "should not throw at $(option).val() (#14686)", 1, function() {
 		ok( false );
 	}
 });
+
+test( "Insignificant white space returned for $(option).val() (#14858)", function() {
+	expect ( 3 );
+
+	var val = jQuery( "<option></option>" ).val();
+	equal( val.length, 0, "Empty option should have no value" );
+
+	val = jQuery( "<option>  </option>" ).val();
+	equal( val.length, 0, "insignificant white-space returned for value" );
+
+	val = jQuery( "<option>  test  </option>" ).val();
+	equal( val.length, 4, "insignificant white-space returned for value" );
+});
