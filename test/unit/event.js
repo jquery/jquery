@@ -386,10 +386,13 @@ test("on immediate propagation", function() {
 	$p.off( "click", "**" );
 });
 
-test("on bubbling, isDefaultPrevented", function() {
-	expect(2);
+test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
+	expect( 3 );
 	var $anchor2 = jQuery( "#anchor2" ),
 		$main = jQuery( "#qunit-fixture" ),
+		neverCallMe = function() {
+			ok( false, "immediate propagation should have been stopped" );
+		},
 		fakeClick = function($jq) {
 			// Use a native click so we don't get jQuery simulated bubbling
 			var e = document.createEvent( "MouseEvents" );
@@ -414,6 +417,14 @@ test("on bubbling, isDefaultPrevented", function() {
 	fakeClick( $anchor2 );
 	$anchor2.off( "click" );
 	$main.off( "click", "**" );
+
+	$anchor2.on( "click", function( e ) {
+		e.stopImmediatePropagation();
+		ok( true, "anchor was clicked and prop stopped" );
+	});
+	$anchor2[0].addEventListener( "click", neverCallMe, false );
+	fakeClick( $anchor2 );
+	$anchor2[0].removeEventListener( "click", neverCallMe );
 });
 
 test("on(), iframes", function() {
