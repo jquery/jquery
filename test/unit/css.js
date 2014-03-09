@@ -204,7 +204,7 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 19 );
+	expect( 20 );
 	var j, div, display, ret, success;
 
 	jQuery("#nothiddendiv").css("top", "-1em");
@@ -239,15 +239,18 @@ test("css(String, Object)", function() {
 	equal( ret, div, "Make sure setting undefined returns the original set." );
 	equal( div.css("display"), display, "Make sure that the display wasn't changed." );
 
-	// Test for Bug #5509
 	success = true;
 	try {
-		jQuery("#foo").css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
 	}
 	catch (e) {
 		success = false;
 	}
-	ok( success, "Setting RGBA values does not throw Error" );
+	ok( success, "Setting RGBA values does not throw Error (#5509)" );
+
+	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
+	strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
+		"Set font shorthand property (#14759)" );
 });
 
 test( "css(Array)", function() {
@@ -923,10 +926,20 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 });
 
-test( "Override !important when changing styles (#14394)", function() {
+test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
+	expect( 2 );
+
+	var el;
+	el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", "fake value" );
+	equal( el.css( "color" ), "black", "The old style is kept when setting an unrecognized value" );
+	el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", " " );
+	equal( el.css( "color" ), "black", "The old style is kept when setting to a space" );
+});
+
+test( "Reset the style if set to an empty string", function() {
 	expect( 1 );
-	var el = jQuery( "<div style='display: block !important;'></div>" ).css( "display", "none" );
-	equal( el.css( "display" ), "none", "New style replaced !important" );
+	var el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", "" );
+	equal( el.css( "color" ), "", "The style can be reset by setting to an empty string" );
 });
 
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
