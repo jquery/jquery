@@ -247,7 +247,7 @@ jQuery.extend({
 		}
 
 		// Make sure that we're working with the right name
-		var ret, type, hooks,
+		var ret, type, hooks, oldValue,
 			origName = jQuery.camelCase( name ),
 			style = elem.style;
 
@@ -286,10 +286,19 @@ jQuery.extend({
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
-				// Support: Chrome, Safari
+				oldValue = style[ name ];
+
+				// Support: Chrome, Safari, IE
 				// Setting style to blank string required to delete "style: x !important;"
 				style[ name ] = "";
 				style[ name ] = value;
+
+				// Revert to the old value if the browser didn't accept the new rule to
+				// not break the cascade.
+				// Fixes #14836
+				if ( value && !style[ name ] ) {
+					style[ name ] = oldValue;
+				}
 			}
 
 		} else {
