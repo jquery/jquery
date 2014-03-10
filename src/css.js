@@ -222,6 +222,8 @@ jQuery.extend({
 	cssNumber: {
 		"columnCount": true,
 		"fillOpacity": true,
+		"flexShrink": true,
+		"flexGrow": true,
 		"fontWeight": true,
 		"lineHeight": true,
 		"opacity": true,
