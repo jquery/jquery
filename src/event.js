@@ -763,7 +763,7 @@ jQuery.fn.extend({
 			if ( typeof selector !== "string" ) {
 				// ( types-Object, data )
 				data = data || selector;
-				selector = undefined;
+				selector = selector.selector || undefined;
 			}
 			for ( type in types ) {
 				this.on( type, selector, data, types[ type ], one );
