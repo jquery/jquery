@@ -16,15 +16,9 @@ var
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
-
-function returnTrue() {
-	return true;
-}
-
-function returnFalse() {
-	return false;
-}
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/,
+	returnTrue = Function("return true"),
+	returnFalse = Function("return false");
 
 function safeActiveElement() {
 	try {
