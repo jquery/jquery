@@ -929,6 +929,22 @@ test( "Override !important when changing styles (#14394)", function() {
 	equal( el.css( "display" ), "none", "New style replaced !important" );
 });
 
+test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
+	expect( 2 );
+
+	var el;
+	el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", "fake value" );
+	equal( el.css( "color" ), "black", "The old style is kept when setting an unrecognized value" );
+	el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", " " );
+	equal( el.css( "color" ), "black", "The old style is kept when setting to a space" );
+});
+
+test( "Reset the style if set to an empty string", function() {
+	expect( 1 );
+	var el = jQuery( "<div></div>" ).css( "color", "black" ).css( "color", "" );
+	equal( el.css( "color" ), "", "The style can be reset by setting to an empty string" );
+});
+
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
 	styles = [{
