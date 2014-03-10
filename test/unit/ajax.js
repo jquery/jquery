@@ -1532,17 +1532,10 @@ module( "ajax", {
 		}
 	} );
 
-	// Support: Chrome 31.
-	// Chrome 31 doesn't fire Ajax requests in beforeunload event handler.
-	// There is no way for us to workaround it and it's been fixed in Chrome 32
-	// so let's just blacklist Chrome 31 as long as it's in TestSwarm.
-	// See https://code.google.com/p/chromium/issues/detail?id=321241
-	if ( navigator.userAgent.indexOf( " Chrome/31." ) === -1 ) {
-		testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
-			expect( 1 );
-			strictEqual( status, "success", "Request completed" );
-		});
-	}
+	testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
+		expect( 1 );
+		strictEqual( status, "success", "Request completed" );
+	});
 
 	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, [
 		{

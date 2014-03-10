@@ -362,29 +362,16 @@ test("animate table-row width/height", function() {
 });
 
 test("animate table-cell width/height", function() {
-	// Support: Chrome 31.
-	// Chrome 31 reports incorrect offsetWidth on a table cell with fixed width.
-	// This is fixed in Chrome 32 so let's just skip the failing test in Chrome 31.
-	// See https://code.google.com/p/chromium/issues/detail?id=290399
-	var td,
-		chrome31 = navigator.userAgent.indexOf( " Chrome/31." ) !== -1;
+	expect(3);
 
-	if (chrome31) {
-		expect(2);
-	} else {
-		expect(3);
-	}
-
-	td = jQuery( "#table" )
+	var td = jQuery( "#table" )
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
 			.html( "<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>" )
 			.find( "td" );
 
 	td.animate({ width: 10, height: 10 }, 100, function() {
 		equal( jQuery( this ).css( "display" ), "table-cell", "display mode is correct" );
-		if (!chrome31) {
-			equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
-		}
+		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
 		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 	});
 	this.clock.tick( 100 );
