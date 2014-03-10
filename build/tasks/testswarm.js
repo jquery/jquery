@@ -2,7 +2,7 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
-	grunt.registerTask( "testswarm", function( commit, configFile ) {
+	grunt.registerTask( "testswarm", function( commit, configFile, browserSets ) {
 		var jobName,
 			testswarm = require( "testswarm" ),
 			runs = {},
@@ -10,6 +10,10 @@ module.exports = function( grunt ) {
 			pull = /PR-(\d+)/.exec( commit ),
 			config = grunt.file.readJSON( configFile ).jquery,
 			tests = grunt.config([ this.name, "tests" ]);
+
+		if ( !browserSets ) {
+			browserSets = [ "popular-no-old-ie", "ios" ];
+		}
 
 		if ( pull ) {
 			jobName = "Pull <a href='https://github.com/jquery/jquery/pull/" +
@@ -38,7 +42,7 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: [ "popular-no-old-ie", "ios" ]
+				browserSets: browserSets
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
