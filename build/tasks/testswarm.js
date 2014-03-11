@@ -2,7 +2,7 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
-	grunt.registerTask( "testswarm", function( commit, configFile, browserSets ) {
+	grunt.registerTask( "testswarm", function( commit, configFile, browserSets, timeout ) {
 		var jobName,
 			testswarm = require( "testswarm" ),
 			runs = {},
@@ -10,10 +10,6 @@ module.exports = function( grunt ) {
 			pull = /PR-(\d+)/.exec( commit ),
 			config = grunt.file.readJSON( configFile ).jquery,
 			tests = grunt.config([ this.name, "tests" ]);
-
-		if ( !browserSets ) {
-			browserSets = [ "popular-no-old-ie", "ios" ];
-		}
 
 		if ( pull ) {
 			jobName = "Pull <a href='https://github.com/jquery/jquery/pull/" +
@@ -30,7 +26,7 @@ module.exports = function( grunt ) {
 		testswarm.createClient( {
 			url: config.swarmUrl,
 			pollInterval: 10000,
-			timeout: 1000 * 60 * 30
+			timeout: timeout || 1000 * 60 * 30
 		} )
 		.addReporter( testswarm.reporters.cli )
 		.auth( {
@@ -42,7 +38,7 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: browserSets
+				browserSets: browserSets || [ "popular-no-old-ie", "ios" ]
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
