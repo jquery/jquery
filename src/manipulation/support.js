@@ -4,11 +4,11 @@ define([
 
 (function() {
 	var fragment = document.createDocumentFragment(),
-		div = fragment.appendChild( document.createElement( "div" ) );
+		div = fragment.appendChild( document.createElement( "div" ) ),
+		input = document.createElement("input");
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	// createElement and setAttribute used for Windows Web Applications security
-	var input = document.createElement("input");
 	input.setAttribute("type", "radio");
 	input.setAttribute("checked", "checked");
 	input.setAttribute("name", "t");

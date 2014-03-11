@@ -615,8 +615,8 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// since its presence should be enough
 			// http://bugs.jquery.com/ticket/12359
 			// createElement and setAttribute used for Windows Web Applications security
-			var select = document.createElement("select");
-			var option = document.createElement("option");
+			var select = document.createElement("select"),
+				option = document.createElement("option");
 
 			select.setAttribute("t", "");
 			option.setAttribute("selected", "");
