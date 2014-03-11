@@ -614,7 +614,15 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// setting a boolean content attribute,
 			// since its presence should be enough
 			// http://bugs.jquery.com/ticket/12359
-			div.innerHTML = "<select t=''><option selected=''></option></select>";
+			// createElement and setAttribute used for Windows Web Applications security
+			var select = document.createElement("select");
+			var option = document.createElement("option");
+
+			select.setAttribute("t", "");
+			option.setAttribute("selected", "");
+
+			select.appendChild(option);
+			div.appendChild(select);
 
 			// Support: IE8, Opera 10-12
 			// Nothing should be selected when empty strings follow ^= or $= or *=

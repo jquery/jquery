@@ -7,7 +7,13 @@ define([
 		div = fragment.appendChild( document.createElement( "div" ) );
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
-	div.innerHTML = "<input type='radio' checked='checked' name='t'/>";
+	// createElement and setAttribute used for Windows Web Applications security
+	var input = document.createElement("input");
+	input.setAttribute("type", "radio");
+	input.setAttribute("checked", "checked");
+	input.setAttribute("name", "t");
+
+	div.appendChild(input);
 
 	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
 	// old WebKit doesn't clone checked state correctly in fragments
