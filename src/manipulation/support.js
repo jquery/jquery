@@ -8,7 +8,8 @@ define([
 		input = document.createElement("input");
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
-	// createElement and setAttribute used for Windows Web Applications security
+	// Support: Windows Web Apps (WWA)
+	// `name` and `type` set with .setAttribute for WWA security compliance
 	input.setAttribute("type", "radio");
 	input.setAttribute("checked", "checked");
 	input.setAttribute("name", "t");

@@ -614,7 +614,8 @@ setDocument = Sizzle.setDocument = function( node ) {
 			// setting a boolean content attribute,
 			// since its presence should be enough
 			// http://bugs.jquery.com/ticket/12359
-			// createElement and setAttribute used for Windows Web Applications security
+			// Support: Windows Web Apps (WWA)
+			// unknown attribute `t` set with setAttribute for WWA security compliance
 			var select = document.createElement("select"),
 				option = document.createElement("option");
 
