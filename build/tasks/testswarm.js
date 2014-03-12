@@ -23,10 +23,8 @@ module.exports = function( grunt ) {
 			runs[ test ] = config.testUrl + commit + "/test/index.html?module=" + test;
 		});
 
-		testswarm.createClient( {
-			url: config.swarmUrl,
-			pollInterval: 10000,
-			timeout: timeout || 1000 * 60 * 30
+		testswarm.createClient({
+			url: config.swarmUrl
 		} )
 		.addReporter( testswarm.reporters.cli )
 		.auth( {
@@ -38,7 +36,8 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: browserSets || [ "popular-no-old-ie", "ios" ]
+				browserSets: browserSets || [ "popular-no-old-ie", "ios" ],
+				timeout: timeout || 1000 * 60 * 30
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
