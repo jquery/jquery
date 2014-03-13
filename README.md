@@ -212,7 +212,7 @@ Essential Git
 
 As the source code is handled by the version control system Git, it's useful to know some features used.
 
-### cleaning ###
+### Cleaning ###
 
 If you want to purge your working directory back to the status of upstream, following commands can be used (remember everything you've worked on is gone after these):
 
@@ -221,7 +221,7 @@ git reset --hard upstream/master
 git clean -fdx
 ```
 
-### rebasing ###
+### Rebasing ###
 
 For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run following to automate this:
 
@@ -230,7 +230,7 @@ git config branch.autosetuprebase local
 ```
 (see `man git-config` for more information)
 
-### handling merge conflicts ###
+### Handling merge conflicts ###
 
 If you're getting merge conflicts when merging, instead of editing the conflicted files manually, you can use the feature
 `git mergetool`. Even though the default tool `xxdiff` looks awful/old, it's rather useful.
