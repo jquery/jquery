@@ -1486,6 +1486,11 @@ testIframeWithCallback( "Conditional compilation compatibility (#13274)", "core/
 	ok( $(), "jQuery executes" );
 });
 
+testIframeWithCallback( "document ready when jQuery loaded asynchronously (#13655)", "core/dynamic_ready.html", function( ready ) {
+	expect( 1 );
+	equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
+});
+
 testIframeWithCallback( "Tolerating alias-masked DOM properties (#14074)", "core/aliased.html",
 	function( errors ) {
 			expect( 1 );
