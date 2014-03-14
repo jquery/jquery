@@ -40,7 +40,7 @@ jQuery.ajaxTransport(function( options ) {
 	// Cross domain only allowed if supported through XMLHttpRequest
 	if ( support.cors || xhrSupported && !options.crossDomain ) {
 		return {
-			send: function( headers, complete ) {
+			send: function( headers, complete, progress ) {
 				var i,
 					xhr = options.xhr(),
 					id = ++xhrId;
@@ -111,6 +111,13 @@ jQuery.ajaxTransport(function( options ) {
 
 				// Create the abort callback
 				callback = xhrCallbacks[ id ] = callback("abort");
+
+				// Progress callback
+				if ("onprogress" in xhr) {
+					xhr.onprogress = function(evt) {
+						progress(evt.lengthComputable, evt.loaded, evt.total);
+					};
+				}
 
 				try {
 					// Do send the request (this may raise an exception)
