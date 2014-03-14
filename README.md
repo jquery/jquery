@@ -210,7 +210,7 @@ Additionally, both methods can be combined.
 Essential Git
 -------------
 
-As the source code is handled by the version control system Git, it's useful to know some features used.
+As the source code is handled by the Git version control system, it's useful to know some features used.
 
 ### Cleaning ###
 
@@ -258,7 +258,7 @@ start();
 ```
 
 
-note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters
+Note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters
 
 ### Test assertions ###
 
@@ -357,7 +357,7 @@ callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
 ### Load tests in an iframe (window.iframeCallback) ###
 
 Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-The given callback is fired when window.iframeCallback is called by the page
+The given callback is fired when window.iframeCallback is called by the page.
 The arguments passed to the callback are the same as the
 arguments passed to window.iframeCallback, whatever that may be
 
