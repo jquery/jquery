@@ -246,7 +246,7 @@ Following are some commands that can be used there:
 * `Ctrl + S` - save
 * `Ctrl + Q` - quit
 
-[QUnit](http://docs.jquery.com/QUnit) Reference
+[QUnit](http://api.qunitjs.com) Reference
 -----------------
 
 ### Test methods ###
