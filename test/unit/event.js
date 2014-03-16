@@ -840,6 +840,20 @@ test("mouseover triggers mouseenter", function() {
 	elem.remove();
 });
 
+test("pointerover triggers pointerenter", function() {
+	expect(1);
+
+	var count = 0,
+		elem = jQuery("<a />");
+	elem.on( "pointerenter", function () {
+		count++;
+	});
+	elem.trigger("pointerover");
+	equal(count, 1, "make sure pointerover triggers a pointerenter" );
+
+	elem.remove();
+});
+
 test("withinElement implemented with jQuery.contains()", function() {
 
 	expect(1);
