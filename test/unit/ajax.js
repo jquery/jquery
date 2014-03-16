@@ -22,7 +22,7 @@ module( "ajax", {
 	function addGlobalEvents( expected ) {
 		return function() {
 			expected = expected || "";
-			jQuery( document ).on( "ajaxStartaddGlobalEvents ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess", function( e ) {
+			jQuery( document ).on( "ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess", function( e ) {
 				ok( expected.indexOf(e.type) !== -1, e.type );
 			});
 		};
@@ -35,7 +35,7 @@ module( "ajax", {
 		ok( true, "done" );
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks", 9, {
+	ajaxTest( "jQuery.ajax() - success callbacks", 10, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -52,7 +52,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax", 9, {
+	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax", 10, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		create: function( options ) {
 			return jQuery.ajax( url("data/name.html"), options );
@@ -71,7 +71,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 9, {
+	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 10, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -92,7 +92,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)", 9, {
+	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)", 10, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -113,7 +113,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - error callbacks", 9, {
+	ajaxTest( "jQuery.ajax() - error callbacks", 10, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
@@ -366,7 +366,7 @@ module( "ajax", {
 		];
 	});
 
-	ajaxTest( "jQuery.ajax() - abort", 10, {
+	ajaxTest( "jQuery.ajax() - abort", 11, {
 		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxError ajaxComplete"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
