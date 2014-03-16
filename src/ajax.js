@@ -657,8 +657,8 @@ jQuery.extend({
 			var progress_ratio;
 
 			// Set progress information
+			jqXHR.bytesLoaded = loaded;
 			if (lengthComputable) {
-				jqXHR.bytesLoaded = loaded;
 				jqXHR.bytesTotal = total;
 
 				progress_ratio = loaded / total;
