@@ -5,12 +5,10 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "build",
     "speed",
     "test",
     "*.md",
     "AUTHORS.txt",
-    "Gruntfile.js",
     "package.json"
   ],
   "devDependencies": {
