@@ -74,7 +74,7 @@ jQuery.extend({
 				var val = jQuery.find.attr( elem, "value" );
 				if ( val != null ) {
 					return val;
-				} else {					
+				} else {
 					// Support: IE10-11+ Accessing text of an empty option will 
 					// throw an exception: "Invalid argument", example: 
 					// document.createElement('option').text
