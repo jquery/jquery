@@ -387,12 +387,7 @@ test("on immediate propagation", function() {
 });
 
 test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
-	// Support: Android 2.3
-	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-		expect( 2 );
-	} else {
-		expect( 3 );
-	}
+	expect( 3 );
 
 	var $anchor2 = jQuery( "#anchor2" ),
 		$main = jQuery( "#qunit-fixture" ),
@@ -427,7 +422,9 @@ test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
 	// Android 2.3 doesn't support stopImmediatePropagation; jQuery fallbacks to stopPropagation
 	// in such a case.
 	// Support: Android 2.3
-	if ( !/android 2\.3/i.test( navigator.userAgent ) ) {
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		ok( true, "Android 2.3, skipping native stopImmediatePropagation check" );
+	} else {
 		$anchor2.on( "click", function( e ) {
 			e.stopImmediatePropagation();
 			ok( true, "anchor was clicked and prop stopped" );
