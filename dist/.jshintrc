@@ -1,0 +1,5 @@
+{
+	"extends": "../src/.jshintrc",
+
+	"onevar": false
+}
