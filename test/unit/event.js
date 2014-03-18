@@ -431,8 +431,11 @@ test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
 	$anchor2.off( "click" );
 	$main.off( "click", "**" );
 
-	if ( !window.addEventListener ) {
-		ok( true, "Old IE, skipping native stopImmediatePropagation check" );
+	// Android 2.3 doesn't support stopImmediatePropagation; jQuery fallbacks to stopPropagation
+	// in such a case.
+	// Support: Android 2.3
+	if ( !window.addEventListener || /android 2\.3/i.test( navigator.userAgent ) ) {
+		ok( true, "Old IE or Android 2.3, skipping native stopImmediatePropagation check" );
 	} else {
 		$anchor2.on( "click", function( e ) {
 			e.stopImmediatePropagation();
