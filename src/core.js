@@ -56,11 +56,11 @@ jQuery.fn = jQuery.prototype = {
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
 		return num != null ?
-
-			// Return a 'clean' array
+            
+                        // Return just the object
 			( num < 0 ? this[ num + this.length ] : this[ num ] ) :
 
-			// Return just the object
+			// Return a 'clean' array
 			slice.call( this );
 	},
 
