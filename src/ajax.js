@@ -664,6 +664,8 @@ jQuery.extend({
 				progress_ratio = loaded / total;
 			}
 
+			deferred.progress( callbackContext, [ progress_ratio, jqXHR ] );
+
 			if (s.progress) {
 				s.progress.call( callbackContext, progress_ratio, jqXHR);
 			}
