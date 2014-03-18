@@ -4,10 +4,6 @@ module.exports = function( Release ) {
 		fs = require( "fs" ),
 		shell = require( "shelljs" ),
 
-		// Windows needs the .cmd version but will find the non-.cmd
-		// On Windows, ensure the HOME environment variable is set
-		gruntCmd = process.platform === "win32" ? "grunt.cmd" : "grunt",
-
 		devFile = "dist/jquery.js",
 		minFile = "dist/jquery.min.js",
 		mapFile = "dist/jquery.min.map",
@@ -127,9 +123,7 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			if ( Release.exec( gruntCmd ).code !== 0 ) {
-				Release.abort("Grunt command failed");
-			}
+			Release.exec( "grunt", "Grunt command failed" );
 			makeReleaseCopies();
 			callback([ "dist/jquery.js", "dist/jquery.min.js", "dist/jquery.min.map" ]);
 		},
@@ -170,3 +164,8 @@ module.exports = function( Release ) {
 		}
 	});
 };
+
+module.exports.dependencies = [
+	"archiver@0.5.2",
+	"shelljs@0.2.6"
+];

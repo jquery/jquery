@@ -29,7 +29,6 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "archiver": "0.5.2",
     "commitplease": "1.7.0",
     "grunt": "0.4.2",
     "grunt-bowercopy": "0.7.1",
@@ -44,7 +43,6 @@
     "gzip-js": "0.3.2",
     "load-grunt-tasks": "0.3.0",
     "requirejs": "2.1.10",
-    "shelljs": "0.2.6",
     "testswarm": "1.1.0"
   },
   "scripts": {
