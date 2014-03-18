@@ -57,7 +57,7 @@ jQuery.fn = jQuery.prototype = {
 	get: function( num ) {
 		return num != null ?
             
-                        // Return just the object
+                       // Return just the object
 			( num < 0 ? this[ num + this.length ] : this[ num ] ) :
 
 			// Return a 'clean' array
