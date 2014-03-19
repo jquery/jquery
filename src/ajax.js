@@ -613,7 +613,7 @@ jQuery.extend({
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
-		for ( i in { success: 1, error: 1, complete: 1 } ) {
+		for ( i in { progress: 1, success: 1, error: 1, complete: 1 } ) {
 			jqXHR[ i ]( s[ i ] );
 		}
 
@@ -664,11 +664,7 @@ jQuery.extend({
 				progress_ratio = loaded / total;
 			}
 
-			deferred.progress( callbackContext, [ progress_ratio, jqXHR ] );
-
-			if (s.progress) {
-				s.progress.call( callbackContext, progress_ratio, jqXHR);
-			}
+			deferred.notifyWith( callbackContext, [ progress_ratio, jqXHR ] );
 
 			if ( fireGlobals ) {
 				globalEventContext.trigger( "ajaxProgress", [ jqXHR, s, progress_ratio ] );
