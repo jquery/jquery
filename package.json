@@ -29,12 +29,10 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "archiver": "0.5.2",
     "gzip-js": "0.3.2",
     "testswarm": "1.1.0",
     "load-grunt-tasks": "0.3.0",
     "requirejs": "2.1.10",
-    "shelljs": "0.2.6",
     "grunt": "0.4.2",
     "grunt-cli": "0.1.13",
     "grunt-contrib-jshint": "0.8.0",
