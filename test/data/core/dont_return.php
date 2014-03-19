@@ -1,3 +1,3 @@
 <?php
-sleep(100);
+sleep(30);
 ?>
