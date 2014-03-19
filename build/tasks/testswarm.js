@@ -38,10 +38,10 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: projectName === "jquery" ?
-					[ "popular-no-old-ie", "ios" ] :
-					"weekly-no-old-ie",
-				timeout: projectName === "jquery" ? 1000 * 60 * 30 : 1000 * 60 * 60 * 4
+				browserSets: projectName === "jqueryweekly" ?
+					"weekly-no-old-ie" :
+					[ "popular-no-old-ie", "ios" ],
+				timeout: projectName === "jqueryweekly" ? 1000 * 60 * 60 : 1000 * 60 * 30
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
