@@ -57,10 +57,10 @@ jQuery.fn = jQuery.prototype = {
 	get: function( num ) {
 		return num != null ?
             
-                       // Return just the object
+                       // Return just the one element from the set
 			( num < 0 ? this[ num + this.length ] : this[ num ] ) :
 
-			// Return a 'clean' array
+			// Return all the elements in a clean array
 			slice.call( this );
 	},
 
