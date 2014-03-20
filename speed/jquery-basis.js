@@ -1729,7 +1729,7 @@ jQuery.event = {
 			}
 
 			if ( !handler ) {
-				for ( var j = 0; j < eventType.length; j++ ) {
+				for ( var j = 0,l=eventType.length; j <l ; j++ ) {
 					handleObj = eventType[ j ];
 
 					if ( all || namespace.test( handleObj.namespace ) ) {
@@ -1743,7 +1743,7 @@ jQuery.event = {
 
 			special = jQuery.event.special[ type ] || {};
 
-			for ( var j = pos || 0; j < eventType.length; j++ ) {
+				for (var j = pos || 0, l = eventType.length; j < l; j++) {
 				handleObj = eventType[ j ];
 
 				if ( handler.guid === handleObj.guid ) {
@@ -2770,7 +2770,7 @@ Sizzle.uniqueSort = function(results){
 		results.sort(sortOrder);
 
 		if ( hasDuplicate ) {
-			for ( var i = 1; i < results.length; i++ ) {
+			for (var i = 1, l = results.length; i < l; i++) {
 				if ( results[i] === results[i-1] ) {
 					results.splice(i--, 1);
 				}
