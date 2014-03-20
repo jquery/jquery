@@ -1620,6 +1620,19 @@ test( "hide, fadeOut and slideUp called on element width height and width = 0 sh
 	this.clock.tick( 400 );
 });
 
+test( "hide should not leave hidden inline elements visible (#14848)", 2, function() {
+	var el = jQuery("#simon1");
+
+	el.hide( 1, function() {
+		equal( el.css( "display" ), "none", "hidden" );
+		el.hide( 1, function() {
+			equal( el.css( "display" ), "none", "still hidden" );
+		});
+	});
+
+	this.clock.tick( 100 );
+});
+
 test( "Handle queue:false promises", 10, function() {
 	var foo = jQuery( "#foo" ).clone().addBack(),
 		step = 1;
