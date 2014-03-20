@@ -160,11 +160,8 @@ function defaultPrefilter( elem, props, opts ) {
 		// Set display property to inline-block for height/width
 		// animations on inline elements that are having width/height animated
 		display = jQuery.css( elem, "display" );
-		dDisplay = defaultDisplay( elem.nodeName );
-		if ( display === "none" ) {
-			display = dDisplay;
-		}
-		if ( display === "inline" &&
+		// Test default display if display is currently "none"
+		if ( (display === "none" ? defaultDisplay( elem.nodeName ) : display) === "inline" &&
 				jQuery.css( elem, "float" ) === "none" ) {
 
 			// inline-level elements accept inline-block;
@@ -204,6 +201,10 @@ function defaultPrefilter( elem, props, opts ) {
 				}
 			}
 			orig[ prop ] = dataShow && dataShow[ prop ] || jQuery.style( elem, prop );
+
+		// Any non-fx value stops us from restoring the original display value
+		} else {
+			display = undefined;
 		}
 	}
 
@@ -245,6 +246,10 @@ function defaultPrefilter( elem, props, opts ) {
 				}
 			}
 		}
+
+	// If this is a noop like .hide().hide(), restore an overwritten display value
+	} else if ( (display === "none" ? defaultDisplay( elem.nodeName ) : display) === "inline" ) {
+		style.display = display;
 	}
 }
 
