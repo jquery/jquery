@@ -40,8 +40,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 					async: true,
 					charset: s.scriptCharset,
 					src: s.url
-				}).on(
-					"load error",
+				}).on("load error",
 					callback = function( evt ) {
 						script.remove();
 						callback = null;
