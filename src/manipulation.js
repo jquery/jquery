@@ -254,7 +254,9 @@ jQuery.extend({
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-			tmp = getAll( fragment.appendChild( elem ), "script" );
+			// Support: Android<4.0
+			// appendChild doesn't work cross-document on old Android.
+			tmp = getAll( fragment.appendChild( context.adoptNode( elem ) ), "script" );
 
 			// Preserve script evaluation history
 			if ( contains ) {
