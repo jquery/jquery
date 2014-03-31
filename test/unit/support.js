@@ -165,19 +165,19 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
-			"ajax":true,
+			"ajax": true,
 			"boxSizingReliable": true,
-			"checkClone":false,
-			"checkOn":false,
+			"checkClone": false,
+			"checkOn": false,
 			"clearCloneStyle": true,
-			"cors":true,
-			"focusinBubbles":false,
-			"noCloneChecked":true,
-			"optDisabled":true,
-			"optSelected":true,
+			"cors": true,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
 			"pixelPosition": false,
-			"radioValue":true,
-			"reliableMarginRight":true
+			"radioValue": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -211,10 +211,42 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableMarginRight": true
 		};
+	} else if ( /android 2\.3/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": false,
+			"clearCloneStyle": false,
+			"cors": true,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": false,
+			"optSelected": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginRight": false
+		};
+	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": false,
+			"checkOn": false,
+			"clearCloneStyle": true,
+			"cors": true,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginRight": true
+		};
 	}
 
 	if ( expected ) {
-		test("Verify that the support tests resolve as expected per browser", function() {
+		test( "Verify that the support tests resolve as expected per browser", function() {
 			var i, prop,
 				j = 0;
 
