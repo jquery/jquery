@@ -602,7 +602,7 @@ module( "ajax", {
 
 		ok( jQuery.get( url(target), success ), "get" );
 		ok( jQuery.post( url(target), success ), "post" );
-		ok( jQuery.getScript( url("data/test.js"), success ), "script" );
+		ok( jQuery.getScript( url("data/testbar.php"), success ), "script" );
 		ok( jQuery.getJSON( url("data/json_obj.js"), success ), "json" );
 		ok( jQuery.ajax({
 			url: url( target ),
@@ -850,7 +850,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -861,7 +861,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		type: "POST",
 		dataType: "script",
 		success: function( data, status ) {
@@ -874,7 +874,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -1776,7 +1776,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function() {
+		jQuery.getScript( url("data/testbar.php"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
 			start();
 		});
@@ -1784,12 +1784,12 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js") ).done( start );
+		jQuery.getScript( url("data/testbar.php") ).done( start );
 	});
 
 	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
+		jQuery.getScript( url("data/testbar.php"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
 			start();
 		});
@@ -2017,7 +2017,9 @@ module( "ajax", {
 					strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly" );
 				}
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
@@ -2040,7 +2042,9 @@ module( "ajax", {
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
 				});
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 //----------- jQuery.active

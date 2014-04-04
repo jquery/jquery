@@ -3,5 +3,5 @@ html text<br/>
 testFoo = "foo"; jQuery('#foo').html('foo');
 ok( true, "test.php executed" );
 /* ]]> */</script>
-<script src="data/test.js?<?php srand(); echo time() . '' . rand(); ?>"></script>
+<script src="data/testbar.php?<?php srand(); echo time() . '' . rand(); ?>"></script>
 blabla
