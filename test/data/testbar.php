@@ -1,3 +1,3 @@
 this.testBar = "bar";
 jQuery("#ap").html("bar");
-ok( true, "test.js executed");
+ok( true, "testbar.php executed");

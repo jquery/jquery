@@ -2284,7 +2284,7 @@ test( "script evaluation (#11795)", function() {
 
 	if ( jQuery.ajax ) {
 		Globals.register("testBar");
-		jQuery("#qunit-fixture").append( "<script src='" + url("data/test.js") + "'/>" );
+		jQuery("#qunit-fixture").append( "<script src='" + url("data/testbar.php") + "'/>" );
 		strictEqual( window["testBar"], "bar", "Global script evaluation" );
 	} else {
 		ok( true, "No jQuery.ajax" );
