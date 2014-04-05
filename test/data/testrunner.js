@@ -25,7 +25,7 @@ QUnit.config.requireExpects = true;
  * QUnit hooks
  */
 
-function keys(o) {
+function keys( o ) {
 	var ret, key;
 	if ( Object.keys ) {
 		ret = Object.keys( o );
@@ -59,7 +59,7 @@ QUnit.expectJqData = function( elems, key ) {
 		}
 
 		for ( i = 0; i < elems.length; i++ ) {
-			elem = elems[i];
+			elem = elems[ i ];
 
 			// jQuery.data only stores data for nodes in jQuery.cache,
 			// for other data targets the data is stored in the object itself,
@@ -83,10 +83,10 @@ QUnit.expectJqData = function( elems, key ) {
 				// (instead of in teardown).
 				notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
 			} else {
-				if ( expectedDataKeys[expando] ) {
-					expectedDataKeys[expando].push( key );
+				if ( expectedDataKeys[ expando ] ) {
+					expectedDataKeys[ expando ].push( key );
 				} else {
-					expectedDataKeys[expando] = [ key ];
+					expectedDataKeys[ expando ] = [ key ];
 				}
 			}
 		}
@@ -112,18 +112,18 @@ window.moduleTeardown = function() {
 	// provided some information to compare against.
 	if ( QUnit.urlParams.jqdata || this.checkJqData ) {
 		for ( i in jQuery.cache ) {
-			expectedKeys = expectedDataKeys[i];
-			actualKeys = jQuery.cache[i] ? keys( jQuery.cache[i] ) : jQuery.cache[i];
+			expectedKeys = expectedDataKeys[ i ];
+			actualKeys = jQuery.cache[ i ] ? keys( jQuery.cache[ i ] ) : jQuery.cache[ i ];
 			if ( !QUnit.equiv( expectedKeys, actualKeys ) ) {
 				deepEqual( actualKeys, expectedKeys, "Expected keys exist in jQuery.cache" );
 			}
-			delete jQuery.cache[i];
-			delete expectedDataKeys[i];
+			delete jQuery.cache[ i ];
+			delete expectedDataKeys[ i ];
 		}
 		// In case it was removed from cache before (or never there in the first place)
 		for ( i in expectedDataKeys ) {
-			deepEqual( expectedDataKeys[i], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
-			delete expectedDataKeys[i];
+			deepEqual( expectedDataKeys[ i ], undefined, "No unexpected keys were left in jQuery.cache (#" + i + " )" );
+			delete expectedDataKeys[ i ];
 		}
 	}
 
@@ -139,7 +139,7 @@ window.moduleTeardown = function() {
 	if ( jQuery.active !== undefined && jQuery.active !== oldActive ) {
 		equal( jQuery.active, oldActive, "No AJAX requests are still active" );
 		if ( ajaxTest.abort ) {
-			ajaxTest.abort("active requests");
+			ajaxTest.abort( "active requests" );
 		}
 		oldActive = jQuery.active;
 	}
@@ -160,16 +160,16 @@ window.moduleTeardown = function() {
 
 QUnit.done(function() {
 	// Remove our own fixtures outside #qunit-fixture
-	supportjQuery("#qunit ~ *").remove();
+	supportjQuery( "#qunit ~ *" ).remove();
 });
 
 // jQuery-specific post-test cleanup
 reset = function() {
 
 	// Ensure jQuery events and data on the fixture are properly removed
-	jQuery("#qunit-fixture").empty();
+	jQuery( "#qunit-fixture" ).empty();
 	// ...even if the jQuery under test has a broken .empty()
-	supportjQuery("#qunit-fixture").empty();
+	supportjQuery( "#qunit-fixture" ).empty();
 
 	// Reset internal jQuery state
 	jQuery.event.global = {};
@@ -183,7 +183,7 @@ reset = function() {
 	Globals.cleanup();
 };
 
-QUnit.testDone(reset);
+QUnit.testDone( reset );
 
 // Register globals for cleanup and the cleanup code itself
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
