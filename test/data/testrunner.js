@@ -138,7 +138,18 @@ window.moduleTeardown = function() {
 	}
 };
 
+QUnit.done(function() {
+	// Remove our own fixtures outside #qunit-fixture
+	supportjQuery( "#qunit ~ *" ).remove();
+});
+
 QUnit.testDone(function() {
+
+	// Ensure jQuery events and data on the fixture are properly removed
+	jQuery( "#qunit-fixture" ).empty();
+	// ...even if the jQuery under test has a broken .empty()
+	supportjQuery( "#qunit-fixture" ).empty();
+
 
 	// Reset internal jQuery state
 	jQuery.event.global = {};
