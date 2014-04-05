@@ -7,7 +7,5 @@
 /.mailmap
 /.travis.yml
 
-/build
 /speed
 /test
-/Gruntfile.js
