@@ -96,6 +96,14 @@ jQuery.extend({
 
 		return results;
 	},
+	
+	context: function(){
+		var self = this;
+		return function(selector, context, results, seed){
+			return self.find(selector, context, results, seed);
+		}
+	},
+	
 	unique: function( results ) {
 		var elem,
 			duplicates = [],
