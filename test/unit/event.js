@@ -2623,6 +2623,27 @@ test( "Inline event result is returned (#13993)", function() {
 	equal( result, 42, "inline handler returned value" );
 });
 
+test( "selector for DOMNodeRemoved events on comment nodes", function () {
+	expect( 1 );
+	var errored = false,
+	  // Get a comment node
+		node = jQuery("body").contents()
+			.filter(function() {
+				return this.nodeType === 8; //Node.COMMENT_NODE
+			}).first();
+
+	jQuery("body").on("DOMNodeRemoved", "[attr]", function () {});
+
+	// Remove it
+	try {
+		node.remove();
+	} catch( e ) {
+		errored = true;
+	}
+
+	equal( errored, false, "remove() did not throw exception");
+});
+
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 	test( "Check order of focusin/focusout events", 2, function() {
