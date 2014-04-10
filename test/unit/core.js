@@ -904,7 +904,7 @@ test("jQuery.map", function() {
 });
 
 test("jQuery.merge()", function() {
-	expect( 10 );
+	expect( 11 );
 
 	deepEqual(
 		jQuery.merge( [], [] ),
@@ -962,6 +962,12 @@ test("jQuery.merge()", function() {
 		jQuery.merge( [], document.getElementById("lengthtest").getElementsByTagName("input") ),
 		[ document.getElementById("length"), document.getElementById("idTest") ],
 		"Second NodeList"
+	);
+
+	deepEqual(
+		jQuery.merge( [ 1, 2 ], [ 2, 3 ], [ 3, 4 ] ),
+		[ 1, 2, 2, 3, 3, 4 ],
+		"Multiple arrays"
 	);
 });
 
