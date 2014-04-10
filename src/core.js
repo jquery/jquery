@@ -368,16 +368,22 @@ jQuery.extend({
 		return arr == null ? -1 : indexOf.call( arr, elem, i );
 	},
 
-	merge: function( first, second ) {
-		var len = +second.length,
-			j = 0,
-			i = first.length;
+	merge: function() {
+		var i = 1, j, array, len,
+			first = arguments[ 0 ],
+			firstLen = first.length;
 
-		for ( ; j < len; j++ ) {
-			first[ i++ ] = second[ j ];
+		for ( ; i < arguments.length ; i++ ) {
+			// Only deal with non-null/undefined values
+			if ( ( array = arguments[ i ] ) != null ) {
+				len = array.length;
+				for ( j = 0 ; j < len ; j++ ) {
+					first [ firstLen++ ] = array[ j ];
+				}
+			}
 		}
 
-		first.length = i;
+		first.length = firstLen;
 
 		return first;
 	},
