@@ -421,7 +421,7 @@ jQuery.event = {
 			for ( ; cur !== this; cur = cur.parentNode || this ) {
 
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-				if ( cur.nodeType === 1 && (cur.disabled !== true || event.type !== "click") ) {
+				if ( cur.disabled !== true || event.type !== "click" ) {
 					matches = [];
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
@@ -528,6 +528,13 @@ jQuery.event = {
 		// All events should have a target; Cordova deviceready doesn't
 		if ( !event.target ) {
 			event.target = document;
+		}
+
+		// Handle events only on element nodes and document node (#14986)
+		if (event.target.nodeType &&
+			event.target.nodeType !== 1 &&
+			event.target.nodeType !== 9) {
+			return false;
 		}
 
 		// Support: Safari 6.0+, Chrome < 28
