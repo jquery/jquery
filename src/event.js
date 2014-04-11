@@ -530,6 +530,13 @@ jQuery.event = {
 			event.target = document;
 		}
 
+		// Handle events only on element nodes and document node (#14986)
+		if (event.target.nodeType &&
+			event.target.nodeType !== 1 &&
+			event.target.nodeType !== 9) {
+			return false;
+		}
+
 		// Support: Safari 6.0+, Chrome < 28
 		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
