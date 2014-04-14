@@ -113,6 +113,9 @@ module.exports = function( Release ) {
 
 	Release.define({
 		npmPublish: true,
+		npmTags: function() {
+			return [ "1.x" ];
+		},
 		issueTracker: "trac",
 		contributorReportId: 508,
 		/**
