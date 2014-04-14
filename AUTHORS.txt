@@ -221,4 +221,5 @@ Benjy Cui <benjytrys@gmail.com>
 Rodrigo Rosenfeld Rosas <rr.rosas@gmail.com>
 John Hoven <hovenj@gmail.com>
 Philip Jägenstedt <philip@foolip.org>
+Christian Kosmowski <ksmwsk@gmail.com>
 
