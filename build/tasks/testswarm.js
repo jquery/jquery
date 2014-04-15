@@ -17,7 +17,7 @@ module.exports = function( grunt ) {
 			// We got an array, parse it
 			browserSets = JSON.parse( browserSets );
 		}
-		timeout = timeout || 1000 * 60 * 30;
+		timeout = timeout || 1000 * 60 * 15;
 		tests = grunt.config([ this.name, "tests" ]);
 
 		if ( pull ) {
