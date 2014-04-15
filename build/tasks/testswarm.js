@@ -2,7 +2,8 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
-	grunt.registerTask( "testswarm", function( commit, configFile, projectName ) {
+	grunt.registerTask( "testswarm", function( commit, configFile, projectName, browserSets,
+			timeout ) {
 		var jobName, config, tests,
 			testswarm = require( "testswarm" ),
 			runs = {},
@@ -11,6 +12,12 @@ module.exports = function( grunt ) {
 
 		projectName = projectName || "jquery";
 		config = grunt.file.readJSON( configFile )[ projectName ];
+		browserSets = browserSets || config.browserSets;
+		if ( browserSets[ 0 ] === "[" ) {
+			// We got an array, parse it
+			browserSets = JSON.parse( browserSets );
+		}
+		timeout = timeout || 1000 * 60 * 30;
 		tests = grunt.config([ this.name, "tests" ]);
 
 		if ( pull ) {
@@ -38,10 +45,8 @@ module.exports = function( grunt ) {
 				name: jobName,
 				runs: runs,
 				runMax: config.runMax,
-				browserSets: projectName === "jqueryweekly" ?
-					"weekly-no-old-ie" :
-					[ "popular-no-old-ie", "ios" ],
-				timeout: projectName === "jqueryweekly" ? 1000 * 60 * 60 : 1000 * 60 * 30
+				browserSets: browserSets,
+				timeout: timeout
 			}, function( err, passed ) {
 				if ( err ) {
 					grunt.log.error( err );
