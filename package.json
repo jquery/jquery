@@ -38,7 +38,7 @@
     "grunt-contrib-uglify": "0.3.2",
     "grunt-contrib-watch": "0.5.3",
     "grunt-git-authors": "1.2.0",
-    "grunt-jscs-checker": "0.3.2",
+    "grunt-jscs-checker": "0.4.1",
     "grunt-jsonlint": "1.0.4",
     "gzip-js": "0.3.2",
     "load-grunt-tasks": "0.3.0",
