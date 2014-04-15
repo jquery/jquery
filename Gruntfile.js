@@ -107,7 +107,7 @@ module.exports = function( grunt ) {
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
-			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split( " " )
+			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing".split( " " )
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
