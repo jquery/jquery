@@ -708,14 +708,7 @@ test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
-	expect( 4 );
-	$p.css({
-		"widows": 0,
-		"orphans": 0
-	});
-
-	equal( $p.css( "widows" ) || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0" );
-	equal( $p.css( "orphans" ) || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0" );
+	expect( 2 );
 
 	$p.css({
 		"widows": 3,
