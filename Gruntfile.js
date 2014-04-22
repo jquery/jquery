@@ -9,12 +9,7 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
-	var gzip = require( "gzip-js" ),
-		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
-
-	// The concatenated file won't pass onevar
-	// But our modules can
-	delete srcHintOptions.onevar;
+	var gzip = require( "gzip-js" );
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON( "package.json" ),
@@ -95,7 +90,9 @@ module.exports = function( grunt ) {
 			},
 			dist: {
 				src: "dist/jquery.js",
-				options: srcHintOptions
+				options: {
+					jshintrc: ".jshintrc.dist"
+				}
 			}
 		},
 		jscs: {
