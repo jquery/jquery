@@ -1,24 +1,13 @@
 {
-	"boss": true,
-	"curly": true,
-	"eqeqeq": true,
-	"eqnull": true,
-	"expr": true,
-	"immed": true,
-	"noarg": true,
-	"onevar": true,
-	"quotmark": "double",
-	"smarttabs": true,
-	"trailing": true,
-	"undef": true,
-	"unused": true,
-
+	"extends": "../.jshintrc",
+	
 	"evil": true,
 	"sub": true,
 
 	"browser": true,
 	"devel": true,
 	"wsh": true,
+	"node": false,
 
 	"globals": {
 		"require": false,
