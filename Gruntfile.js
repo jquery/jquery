@@ -75,10 +75,6 @@ module.exports = function( grunt ) {
 				src: [ "package.json" ]
 			},
 
-			jscs: {
-				src: [ ".jscs.json" ]
-			},
-
 			bower: {
 				src: [ "bower.json" ]
 			}
