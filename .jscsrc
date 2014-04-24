@@ -1,5 +1,5 @@
 {
-    "preset": "jquery",
+	"preset": "jquery",
 
-    "excludeFiles": [ "src/intro.js", "src/outro.js", "src/sizzle/**/*" ]
+	"excludeFiles": [ "src/intro.js", "src/outro.js", "src/sizzle/**/*" ]
 }
