@@ -19,7 +19,7 @@ function actualDisplay( name, doc ) {
 		// getDefaultComputedStyle might be reliably used only on attached element
 		display = window.getDefaultComputedStyle && ( style = window.getDefaultComputedStyle( elem[ 0 ] ) ) ?
 
-			// Use of this method is a temporary fix (more like optmization) until something better comes along,
+			// Use of this method is a temporary fix (more like optimization) until something better comes along,
 			// since it was removed from specification and supported only in FF
 			style.display : jQuery.css( elem[ 0 ], "display" );
 

@@ -44,16 +44,16 @@ var
 				start = +target || 1;
 
 				do {
-					// If previous iteration zeroed out, double until we get *something*
-					// Use a string for doubling factor so we don't accidentally see scale as unchanged below
+					// If previous iteration zeroed out, double until we get *something*.
+					// Use string for doubling so we don't accidentally see scale as unchanged below
 					scale = scale || ".5";
 
 					// Adjust and apply
 					start = start / scale;
 					jQuery.style( tween.elem, prop, start + unit );
 
-				// Update scale, tolerating zero or NaN from tween.cur()
-				// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
+				// Update scale, tolerating zero or NaN from tween.cur(),
+				// break the loop if scale is unchanged or perfect, or if we've just had enough
 				} while ( scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations );
 			}
 
@@ -85,8 +85,8 @@ function genFx( type, includeWidth ) {
 		i = 0,
 		attrs = { height: type };
 
-	// if we include width, step value is 1 to do all cssExpand values,
-	// if we don't include width, step value is 2 to skip over Left and Right
+	// If we include width, step value is 1 to do all cssExpand values,
+	// otherwise step value is 2 to skip over Left and Right
 	includeWidth = includeWidth ? 1 : 0;
 	for ( ; i < 4 ; i += 2 - includeWidth ) {
 		which = cssExpand[ i ];
@@ -108,7 +108,7 @@ function createTween( value, prop, animation ) {
 	for ( ; index < length; index++ ) {
 		if ( (tween = collection[ index ].call( animation, prop, value )) ) {
 
-			// we're done with this property
+			// We're done with this property
 			return tween;
 		}
 	}
@@ -123,7 +123,7 @@ function defaultPrefilter( elem, props, opts ) {
 		hidden = elem.nodeType && isHidden( elem ),
 		dataShow = data_priv.get( elem, "fxshow" );
 
-	// handle queue: false promises
+	// Handle queue: false promises
 	if ( !opts.queue ) {
 		hooks = jQuery._queueHooks( elem, "fx" );
 		if ( hooks.unqueued == null ) {
@@ -138,8 +138,7 @@ function defaultPrefilter( elem, props, opts ) {
 		hooks.unqueued++;
 
 		anim.always(function() {
-			// doing this makes sure that the complete handler will be called
-			// before this completes
+			// Ensure the complete handler is called before this completes
 			anim.always(function() {
 				hooks.unqueued--;
 				if ( !jQuery.queue( elem, "fx" ).length ) {
@@ -149,7 +148,7 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 	}
 
-	// height/width overflow pass
+	// Height/width overflow pass
 	if ( elem.nodeType === 1 && ( "height" in props || "width" in props ) ) {
 		// Make sure that nothing sneaks out
 		// Record all 3 overflow attributes because IE9-10 do not
@@ -211,7 +210,7 @@ function defaultPrefilter( elem, props, opts ) {
 			dataShow = data_priv.access( elem, "fxshow", {} );
 		}
 
-		// store state if its toggle - enables .stop().toggle() to "reverse"
+		// Store state if its toggle - enables .stop().toggle() to "reverse"
 		if ( toggle ) {
 			dataShow.hidden = !hidden;
 		}
@@ -271,8 +270,8 @@ function propFilter( props, specialEasing ) {
 			value = hooks.expand( value );
 			delete props[ name ];
 
-			// not quite $.extend, this wont overwrite keys already present.
-			// also - reusing 'index' from above because we have the correct "name"
+			// Not quite $.extend, this won't overwrite existing keys.
+			// Reusing 'index' because we have the correct "name"
 			for ( index in value ) {
 				if ( !( index in props ) ) {
 					props[ index ] = value[ index ];
@@ -291,7 +290,7 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		length = animationPrefilters.length,
 		deferred = jQuery.Deferred().always( function() {
-			// don't match elem in the :animated selector
+			// Don't match elem in the :animated selector
 			delete tick.elem;
 		}),
 		tick = function() {
@@ -300,7 +299,8 @@ function Animation( elem, properties, options ) {
 			}
 			var currentTime = fxNow || createFxNow(),
 				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
-				// archaic crash bug won't allow us to use 1 - ( 0.5 || 0 ) (#12497)
+				// Support: Android 2.3
+				// Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
 				temp = remaining / animation.duration || 0,
 				percent = 1 - temp,
 				index = 0,
@@ -336,7 +336,7 @@ function Animation( elem, properties, options ) {
 			},
 			stop: function( gotoEnd ) {
 				var index = 0,
-					// if we are going to the end, we want to run all the tweens
+					// If we are going to the end, we want to run all the tweens
 					// otherwise we skip this part
 					length = gotoEnd ? animation.tweens.length : 0;
 				if ( stopped ) {
@@ -347,8 +347,7 @@ function Animation( elem, properties, options ) {
 					animation.tweens[ index ].run( 1 );
 				}
 
-				// resolve when we played the last frame
-				// otherwise, reject
+				// Resolve when we played the last frame; otherwise, reject
 				if ( gotoEnd ) {
 					deferred.resolveWith( elem, [ animation, gotoEnd ] );
 				} else {
@@ -430,7 +429,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
-	// normalize opt.queue - true/undefined/null -> "fx"
+	// Normalize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
 		opt.queue = "fx";
 	}
@@ -454,10 +453,10 @@ jQuery.speed = function( speed, easing, fn ) {
 jQuery.fn.extend({
 	fadeTo: function( speed, to, easing, callback ) {
 
-		// show any hidden elements after setting opacity to 0
+		// Show any hidden elements after setting opacity to 0
 		return this.filter( isHidden ).css( "opacity", 0 ).show()
 
-			// animate to the value specified
+			// Animate to the value specified
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
@@ -520,9 +519,9 @@ jQuery.fn.extend({
 				}
 			}
 
-			// start the next in the queue if the last step wasn't forced
-			// timers currently will call their complete callbacks, which will dequeue
-			// but only if they were gotoEnd
+			// Start the next in the queue if the last step wasn't forced.
+			// Timers currently will call their complete callbacks, which
+			// will dequeue but only if they were gotoEnd.
 			if ( dequeue || !gotoEnd ) {
 				jQuery.dequeue( this, type );
 			}
@@ -540,17 +539,17 @@ jQuery.fn.extend({
 				timers = jQuery.timers,
 				length = queue ? queue.length : 0;
 
-			// enable finishing flag on private data
+			// Enable finishing flag on private data
 			data.finish = true;
 
-			// empty the queue first
+			// Empty the queue first
 			jQuery.queue( this, type, [] );
 
 			if ( hooks && hooks.stop ) {
 				hooks.stop.call( this, true );
 			}
 
-			// look for any active animations, and finish them
+			// Look for any active animations, and finish them
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && timers[ index ].queue === type ) {
 					timers[ index ].anim.stop( true );
@@ -558,14 +557,14 @@ jQuery.fn.extend({
 				}
 			}
 
-			// look for any animations in the old queue and finish them
+			// Look for any animations in the old queue and finish them
 			for ( index = 0; index < length; index++ ) {
 				if ( queue[ index ] && queue[ index ].finish ) {
 					queue[ index ].finish.call( this );
 				}
 			}
 
-			// turn off finishing flag
+			// Turn off finishing flag
 			delete data.finish;
 		});
 	}
