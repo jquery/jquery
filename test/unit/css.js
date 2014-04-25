@@ -204,7 +204,7 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 19 );
+	expect( 20 );
 	var j, div, display, ret, success;
 
 	jQuery("#nothiddendiv").css("top", "-1em");
@@ -239,15 +239,18 @@ test("css(String, Object)", function() {
 	equal( ret, div, "Make sure setting undefined returns the original set." );
 	equal( div.css("display"), display, "Make sure that the display wasn't changed." );
 
-	// Test for Bug #5509
 	success = true;
 	try {
-		jQuery("#foo").css("backgroundColor", "rgba(0, 0, 0, 0.1)");
+		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
 	}
 	catch (e) {
 		success = false;
 	}
-	ok( success, "Setting RGBA values does not throw Error" );
+	ok( success, "Setting RGBA values does not throw Error (#5509)" );
+
+	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
+	strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
+		"Set font shorthand property (#14759)" );
 });
 
 test( "css(Array)", function() {
@@ -705,14 +708,7 @@ test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
-	expect( 4 );
-	$p.css({
-		"widows": 0,
-		"orphans": 0
-	});
-
-	equal( $p.css( "widows" ) || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0" );
-	equal( $p.css( "orphans" ) || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0" );
+	expect( 2 );
 
 	$p.css({
 		"widows": 3,
@@ -776,7 +772,12 @@ test("Do not append px (#9548, #12990)", function() {
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
 
 	$div.css( "fill-opacity", 1 );
-	equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'" );
+	// Support: Android 2.3 (no support for fill-opacity)
+	if ( $div.css( "fill-opacity" ) ) {
+		equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
+	} else {
+		ok( true, "No support for fill-opacity CSS property" );
+	}
 
 	$div.css( "column-count", 1 );
 	if ( $div.css("column-count") ) {
@@ -789,7 +790,7 @@ test("Do not append px (#9548, #12990)", function() {
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
 
-	// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
 		el = el_dis.clone().appendTo("#qunit-fixture");
 
@@ -808,12 +809,13 @@ testIframeWithCallback( "css('width') should work correctly before document read
 );
 
 test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
-	expect ( 2 );
+	expect ( 3 );
 
 	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;'>test</div>").appendTo("#qunit-fixture");
 
 	ok( jQuery.isNumeric( parseFloat( el.css("letterSpacing") ) ), "css('letterSpacing') not convertable to number, see #8627" );
 	ok( jQuery.isNumeric( parseFloat( el.css("fontWeight") ) ), "css('fontWeight') not convertable to number, see #8627" );
+	equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 });
 
 // only run this test in IE9
@@ -917,10 +919,23 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 });
 
-test( "Override !important when changing styles (#14394)", function() {
+test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
+	expect( 2 );
+
+	var el;
+	el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "fake value" );
+	equal( el.css( "position" ), "absolute", "The old style is kept when setting an unrecognized value" );
+	el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", " " );
+	equal( el.css( "position" ), "absolute", "The old style is kept when setting to a space" );
+});
+
+test( "Reset the style if set to an empty string", function() {
 	expect( 1 );
-	var el = jQuery( "<div style='display: block !important;'></div>" ).css( "display", "none" );
-	equal( el.css( "display" ), "none", "New style replaced !important" );
+	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "" );
+	// Some browsers return an empty string; others "static". Both those cases mean the style
+	// was reset successfully so accept them both.
+	equal( el.css( "position" ) || "static", "static",
+		"The style can be reset by setting to an empty string" );
 });
 
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
@@ -1024,6 +1039,16 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	equal( jQuery._data( jQuery("#display").css( "display", "inline" ).hide()[ 0 ], "olddisplay" ), display,
 	"display: * !Important value should used as initialized display" );
 	jQuery._removeData( jQuery("#display")[ 0 ] );
+});
+
+test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
+	var div = jQuery( "<div />" ),
+		fixture = jQuery( "#qunit-fixture" );
+
+	fixture.append( div );
+
+	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
+	equal( div.css( "display" ), "list-item", "should get last set display value" );
 });
 
 // Support: IE < 11, Safari < 7

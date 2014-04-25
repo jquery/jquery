@@ -16,7 +16,7 @@ original$ = this.$ = "replaced";
 
 /**
  * Returns an array of elements with the given IDs
- * @example q("main", "foo", "bar")
+ * @example q( "main", "foo", "bar" )
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
 this.q = function() {
@@ -38,7 +38,7 @@ this.q = function() {
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 this.t = function( a, b, c ) {
-	var f = jQuery(b).get(),
+	var f = jQuery( b ).get(),
 		s = "",
 		i = 0;
 
@@ -46,7 +46,7 @@ this.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
+	deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
 };
 
 this.createDashboardXML = function() {
@@ -98,13 +98,13 @@ this.createWithFriesXML = function() {
 this.createXMLFragment = function() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
-		xml = new ActiveXObject("msxml2.domdocument");
+		xml = new ActiveXObject( "msxml2.domdocument" );
 	} else {
 		xml = document.implementation.createDocument( "", "", null );
 	}
 
 	if ( xml ) {
-		frag = xml.createElement("data");
+		frag = xml.createElement( "data" );
 	}
 
 	return frag;
@@ -112,13 +112,13 @@ this.createXMLFragment = function() {
 
 fireNative = document.createEvent ?
 	function( node, type ) {
-		var event = document.createEvent('HTMLEvents');
+		var event = document.createEvent( "HTMLEvents" );
+
 		event.initEvent( type, true, true );
 		node.dispatchEvent( event );
 	} :
 	function( node, type ) {
-		var event = document.createEventObject();
-		node.fireEvent( 'on' + type, event );
+		node.fireEvent( "on" + type, document.createEventObject() );
 	};
 
 /**
@@ -131,8 +131,8 @@ fireNative = document.createEvent ?
  * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
-	return baseURL + value + (/\?/.test(value) ? "&" : "?") +
-		new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
+	return baseURL + value + (/\?/.test( value ) ? "&" : "?") +
+		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
 }
 
 // Ajax testing helper
@@ -201,21 +201,18 @@ this.ajaxTest = function( title, expect, options ) {
 	});
 };
 
-
 this.testIframe = function( fileName, name, fn ) {
-
-	test(name, function() {
-		// pause execution for now
-		stop();
+	asyncTest(name, function() {
 
 		// load fixture in iframe
 		var iframe = loadFixture(),
 			win = iframe.contentWindow,
-			interval = setInterval( function() {
+			interval = setInterval(function() {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
-					// continue
+
 					start();
+
 					// call actual tests passing the correct jQuery instance to use
 					fn.call( this, win.jQuery, win, win.document );
 					document.body.removeChild( iframe );
@@ -225,51 +222,50 @@ this.testIframe = function( fileName, name, fn ) {
 	});
 
 	function loadFixture() {
-		var src = url("./data/" + fileName + ".html"),
-			iframe = jQuery("<iframe />").appendTo("body")[0];
+		var src = url( "./data/" + fileName + ".html" ),
+			iframe = jQuery( "<iframe />" ).appendTo( "body" )[ 0 ];
 			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
+
 		iframe.contentWindow.location = src;
 		return iframe;
 	}
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-
-	test( title, function() {
+	asyncTest( title, 1, function() {
 		var iframe;
 
-		// Expect one assertion, but allow overrides
-		expect( 1 );
-
-		stop();
 		window.iframeCallback = function() {
-			var self = this,
-				args = arguments;
+			var args = arguments;
+
 			setTimeout(function() {
-				window.iframeCallback = undefined;
+				this.iframeCallback = undefined;
+
 				iframe.remove();
-				func.apply( self, args );
+				func.apply( this, args );
 				func = function() {};
+
 				start();
-			}, 0 );
+			});
 		};
 		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
 			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
 			.appendTo( "#qunit-fixture" );
 	});
 };
-window.iframeCallback = undefined;
+this.iframeCallback = undefined;
 
 // Tests are always loaded async
 QUnit.config.autostart = false;
 this.loadTests = function() {
 	var loadSwarm,
 		url = window.location.search;
-	url = decodeURIComponent( url.slice( url.indexOf("swarmURL=") + "swarmURL=".length ) );
-	loadSwarm = url && url.indexOf("http") === 0;
+
+	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
+	loadSwarm = url && url.indexOf( "http" ) === 0;
 
 	// Get testSubproject from testrunner first
-	require([ "data/testrunner.js" ], function( testSubproject ) {
+	require([ "data/testrunner.js" ], function() {
 		var tests = [
 			"unit/core.js",
 			"unit/callbacks.js",
@@ -294,39 +290,26 @@ this.loadTests = function() {
 		// Ensure load order (to preserve test numbers)
 		(function loadDep() {
 			var dep = tests.shift();
+
 			if ( dep ) {
 				require( [ dep ], loadDep );
+
 			} else {
+				QUnit.load();
 
+				/**
+				 * Run in noConflict mode
+				 */
+				jQuery.noConflict();
 
-				// Subproject tests must be last because they replace our test fixture
-				testSubproject( "Sizzle", "../src/sizzle/test/", /^unit\/.*\.js$/, function() {
-					// Call load to build module filter select element
-					QUnit.load();
-
-					/**
-					 * Run in noConflict mode
-					 */
-					jQuery.noConflict();
-
-					// Expose Sizzle for Sizzle's selector tests
-					// We remove Sizzle's globalization in jQuery
-					window.Sizzle = window.Sizzle || jQuery.find;
-
-					// For checking globals pollution despite auto-created globals in various environments
-					supportjQuery.each( [ jQuery.expando, "getInterface", "Packages", "java", "netscape" ], function( i, name ) {
-						window[ name ] = window[ name ];
-					});
-
-					// Load the TestSwarm listener if swarmURL is in the address.
-					if ( loadSwarm ) {
-						require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
-							QUnit.start();
-						});
-					} else {
+				// Load the TestSwarm listener if swarmURL is in the address.
+				if ( loadSwarm ) {
+					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
 						QUnit.start();
-					}
-				});
+					});
+				} else {
+					QUnit.start();
+				}
 			}
 		})();
 	});

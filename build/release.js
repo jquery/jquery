@@ -4,10 +4,6 @@ module.exports = function( Release ) {
 		fs = require( "fs" ),
 		shell = require( "shelljs" ),
 
-		// Windows needs the .cmd version but will find the non-.cmd
-		// On Windows, ensure the HOME environment variable is set
-		gruntCmd = process.platform === "win32" ? "grunt.cmd" : "grunt",
-
 		devFile = "dist/jquery.js",
 		minFile = "dist/jquery.min.js",
 		mapFile = "dist/jquery.min.map",
@@ -74,15 +70,15 @@ module.exports = function( Release ) {
 		});
 	}
 
-	function buildGoogleCDN( next ) {
-		makeArchive( "googlecdn", googleFilesCDN, next );
+	function buildGoogleCDN() {
+		makeArchive( "googlecdn", googleFilesCDN );
 	}
 
-	function buildMicrosoftCDN( next ) {
-		makeArchive( "mscdn", msFilesCDN, next );
+	function buildMicrosoftCDN() {
+		makeArchive( "mscdn", msFilesCDN );
 	}
 
-	function makeArchive( cdn, files, next ) {
+	function makeArchive( cdn, files ) {
 		if ( Release.preRelease ) {
 			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
 			return;
@@ -90,7 +86,7 @@ module.exports = function( Release ) {
 
 		console.log( "Creating production archive for " + cdn );
 
-		var archiver = require( "archiver" ),
+		var archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream( cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip" );
 
@@ -98,7 +94,6 @@ module.exports = function( Release ) {
 			throw err;
 		});
 
-		output.on( "close", next );
 		archiver.pipe( output );
 
 		files = files.map(function( item ) {
@@ -128,9 +123,7 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			if ( Release.exec( gruntCmd ).code !== 0 ) {
-				Release.abort("Grunt command failed");
-			}
+			Release.exec( "grunt", "Grunt command failed" );
 			makeReleaseCopies();
 			callback([ "dist/jquery.js", "dist/jquery.min.js", "dist/jquery.min.map" ]);
 		},
@@ -138,8 +131,10 @@ module.exports = function( Release ) {
 		 * Release completion
 		 */
 		complete: function() {
-			// Build CDN archives
-			Release._walk([ buildGoogleCDN, buildMicrosoftCDN, _complete ]);
+			// Build CDN archives async
+			buildGoogleCDN();
+			buildMicrosoftCDN();
+			_complete();
 		},
 		/**
 		 * Our trac milestones are different than the new version
@@ -169,3 +164,8 @@ module.exports = function( Release ) {
 		}
 	});
 };
+
+module.exports.dependencies = [
+	"archiver@0.5.2",
+	"shelljs@0.2.6"
+];

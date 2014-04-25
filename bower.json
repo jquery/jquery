@@ -1,6 +1,8 @@
 {
   "name": "jquery",
-  "version": "2.1.0pre",
+  "version": "2.1.1pre",
+  "main": "dist/jquery.js",
+  "license": "MIT",
   "ignore": [
     "**/.*",
     "build",
@@ -9,16 +11,13 @@
     "*.md",
     "AUTHORS.txt",
     "Gruntfile.js",
-    "package.json",
-    "bower.json"
+    "package.json"
   ],
-  "dependencies": {
-    "sizzle": "1.10.16"
-  },
   "devDependencies": {
-    "requirejs": "~2.1.8",
-    "qunit": "~1.12.0",
-    "sinon": "~1.7.3"
+    "sizzle": "1.10.19",
+    "requirejs": "2.1.10",
+    "qunit": "1.14.0",
+    "sinon": "1.8.1"
   },
   "keywords": [
     "jquery",

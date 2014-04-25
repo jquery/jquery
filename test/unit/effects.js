@@ -363,6 +363,7 @@ test("animate table-row width/height", function() {
 
 test("animate table-cell width/height", function() {
 	expect(3);
+
 	var td = jQuery( "#table" )
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
 			.html( "<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>" )
@@ -1305,7 +1306,7 @@ test( "callbacks that throw exceptions will be removed (#5684)", function() {
 	jQuery.fx.stop();
 
         this.clock.tick( 1 );
-	raises( jQuery.fx.tick, TestException, "Exception was thrown" );
+	throws( jQuery.fx.tick, TestException, "Exception was thrown" );
 
 	// the second call shouldn't
 	jQuery.fx.tick();
@@ -1343,7 +1344,12 @@ test("Do not append px to 'fill-opacity' #9548", 1, function() {
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
 
 	$div.css("fill-opacity", 0).animate({ "fill-opacity": 1.0 }, 0, function () {
-		equal( jQuery(this).css("fill-opacity"), 1, "Do not append px to 'fill-opacity'");
+		// Support: Android 2.3 (no support for fill-opacity)
+		if ( jQuery( this ).css( "fill-opacity" ) ) {
+			equal( jQuery( this ).css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
+		} else {
+			ok( true, "No support for fill-opacity CSS property" );
+		}
 		$div.remove();
 	});
 });
@@ -1612,6 +1618,19 @@ test( "hide, fadeOut and slideUp called on element width height and width = 0 sh
 
 	});
 	this.clock.tick( 400 );
+});
+
+test( "hide should not leave hidden inline elements visible (#14848)", 2, function() {
+	var el = jQuery("#simon1");
+
+	el.hide( 1, function() {
+		equal( el.css( "display" ), "none", "hidden" );
+		el.hide( 1, function() {
+			equal( el.css( "display" ), "none", "still hidden" );
+		});
+	});
+
+	this.clock.tick( 100 );
 });
 
 test( "Handle queue:false promises", 10, function() {

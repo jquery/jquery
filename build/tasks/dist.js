@@ -52,13 +52,6 @@ module.exports = function( grunt ) {
 				nonascii = true;
 			}
 
-			// Modify map/min so that it points to files in the same folder;
-			// see https://github.com/mishoo/UglifyJS2/issues/47
-			if ( /\.map$/.test( filename ) ) {
-				text = text.replace( /"dist\//g, "\"" );
-				fs.writeFileSync( filename, text, "utf-8" );
-			}
-
 			// Optionally copy dist files to other locations
 			paths.forEach(function( path ) {
 				var created;

@@ -75,10 +75,6 @@ module.exports = function( grunt ) {
 				src: [ "package.json" ]
 			},
 
-			jscs: {
-				src: [ ".jscs.json" ]
-			},
-
 			bower: {
 				src: [ "bower.json" ]
 			}
@@ -101,10 +97,13 @@ module.exports = function( grunt ) {
 		jscs: {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
+
+			// Right know, check only test helpers
+			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
-			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing Sizzle".split( " " )
+			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing".split( " " )
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
@@ -142,11 +141,11 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	// Alias bower to bowercopy
 	grunt.registerTask( "bower", "bowercopy" );
+	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "jshint", "jscs" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
 
 	// Default grunt
 	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );

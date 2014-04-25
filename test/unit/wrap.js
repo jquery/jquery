@@ -174,7 +174,7 @@ test( "wrapInner(String)", function() {
 	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
-	
+
 	num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
 	jQuery("#first").wrapInner( "<div class='red'><div id='tmp'></div></div>" );
 	equal( jQuery("#first").children().length, 1, "Only one child" );
@@ -188,7 +188,7 @@ test( "wrapInner(Element)", function() {
 
 	var num,
 		div = jQuery("<div/>");
-		
+
 	num = jQuery("#first").children().length;
 	jQuery("#first").wrapInner( document.getElementById("empty") );
 	equal( jQuery("#first").children().length, 1, "Only one child" );
@@ -213,7 +213,7 @@ test( "wrapInner(Function) returns String", function() {
 	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
-	
+
 	num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
 	jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
 	equal( jQuery("#first").children().length, 1, "Only one child" );
@@ -228,7 +228,7 @@ test( "wrapInner(Function) returns Element", function() {
 	var num,
     val = manipulationFunctionReturningObj,
 		div = jQuery("<div/>");
-	
+
 	num = jQuery("#first").children().length;
 	jQuery("#first").wrapInner( val(document.getElementById("empty")) );
 	equal( jQuery("#first").children().length, 1, "Only one child" );

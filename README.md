@@ -210,9 +210,9 @@ Additionally, both methods can be combined.
 Essential Git
 -------------
 
-As the source code is handled by the version control system Git, it's useful to know some features used.
+As the source code is handled by the Git version control system, it's useful to know some features used.
 
-### cleaning ###
+### Cleaning ###
 
 If you want to purge your working directory back to the status of upstream, following commands can be used (remember everything you've worked on is gone after these):
 
@@ -221,7 +221,7 @@ git reset --hard upstream/master
 git clean -fdx
 ```
 
-### rebasing ###
+### Rebasing ###
 
 For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run following to automate this:
 
@@ -230,7 +230,7 @@ git config branch.autosetuprebase local
 ```
 (see `man git-config` for more information)
 
-### handling merge conflicts ###
+### Handling merge conflicts ###
 
 If you're getting merge conflicts when merging, instead of editing the conflicted files manually, you can use the feature
 `git mergetool`. Even though the default tool `xxdiff` looks awful/old, it's rather useful.
@@ -246,7 +246,7 @@ Following are some commands that can be used there:
 * `Ctrl + S` - save
 * `Ctrl + Q` - quit
 
-[QUnit](http://docs.jquery.com/QUnit) Reference
+[QUnit](http://api.qunitjs.com) Reference
 -----------------
 
 ### Test methods ###
@@ -258,7 +258,7 @@ start();
 ```
 
 
-note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters
+Note: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters
 
 ### Test assertions ###
 
@@ -271,7 +271,7 @@ deepEqual( actual, expected, [message] );
 notDeepEqual( actual, expected, [message] );
 strictEqual( actual, expected, [message] );
 notStrictEqual( actual, expected, [message] );
-raises( block, [expected], [message] );
+throws( block, [expected], [message] );
 ```
 
 
@@ -357,7 +357,7 @@ callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
 ### Load tests in an iframe (window.iframeCallback) ###
 
 Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-The given callback is fired when window.iframeCallback is called by the page
+The given callback is fired when window.iframeCallback is called by the page.
 The arguments passed to the callback are the same as the
 arguments passed to window.iframeCallback, whatever that may be
 

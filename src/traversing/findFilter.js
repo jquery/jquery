@@ -53,14 +53,14 @@ jQuery.filter = function( expr, elems, not ) {
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var i = 0,
+		var i,
 			len = this.length,
 			ret = [],
 			self = this;
 
 		if ( typeof selector !== "string" ) {
 			return this.pushStack( jQuery( selector ).filter(function() {
-				for ( ; i < len; i++ ) {
+				for ( i = 0; i < len; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
@@ -68,8 +68,7 @@ jQuery.fn.extend({
 			}) );
 		}
 
-		i = 0;
-		for ( ; i < len; i++ ) {
+		for ( i = 0; i < len; i++ ) {
 			jQuery.find( selector, self[ i ], ret );
 		}
 
