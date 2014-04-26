@@ -138,4 +138,7 @@ section { background:#f0f; display:block; }
 /* #11971 */
 #foo { background: url(1x1.jpg) right bottom no-repeat; }
 
+/* #14824 */
+#span-14824 { display: block; }
+
 #display { display: list-item !important; }
