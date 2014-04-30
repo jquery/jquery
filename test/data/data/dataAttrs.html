@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>IE11 onpageshow strangeness (#14894)</title>
+	<script src="../../jquery.js"></script>
+	<script>
+		$(function(){
+			window.parent.iframeCallback( $( "body" ).data().result );
+		});
+	</script>
+</head>
+<body x-what="test" data-result="ok" onload="x=1" onpageshow="x=1">
+    Test for #14894
+</body>
+</html>
