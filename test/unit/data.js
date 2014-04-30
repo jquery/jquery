@@ -677,3 +677,9 @@ test( "JSON data- attributes can have newlines", function() {
 	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
 });
+
+testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs.html", function( result ) {
+	expect(1);
+
+	equal(result, "ok", "enumeration of data- attrs on body" );
+});
