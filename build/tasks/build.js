@@ -19,6 +19,8 @@ module.exports = function( grunt ) {
 			optimize: "none",
 			// Include dependencies loaded with require
 			findNestedDependencies: true,
+			// Avoid inserting define() placeholder
+			skipModuleInsertion: true,
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
@@ -79,7 +81,7 @@ module.exports = function( grunt ) {
 
 			// Remove empty definitions
 			contents = contents
-				.replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
+				.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
 		}
 		// AMD Name
 		if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
