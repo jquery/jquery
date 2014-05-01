@@ -79,7 +79,7 @@ module.exports = function( grunt ) {
 
 			// Remove empty definitions
 			contents = contents
-				.replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
+				.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
 		}
 		// AMD Name
 		if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
