@@ -20,7 +20,7 @@ module.exports = function( grunt ) {
 			// Include dependencies loaded with require
 			findNestedDependencies: true,
 			// Avoid inserting define() placeholder
-			skipModuleInsertion:true,
+			skipModuleInsertion: true,
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
