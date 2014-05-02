@@ -457,7 +457,7 @@ test("isFunction", function() {
 });
 
 test( "isNumeric", function() {
-	expect( 38 );
+	expect( 37 );
 
 	var t = jQuery.isNumeric,
 		Traditionalists = /** @constructor */ function(n) {
