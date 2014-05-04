@@ -457,7 +457,7 @@ test("isFunction", function() {
 });
 
 test( "isNumeric", function() {
-	expect( 38 );
+	expect( 37 );
 
 	var t = jQuery.isNumeric,
 		Traditionalists = /** @constructor */ function(n) {
@@ -509,7 +509,6 @@ test( "isNumeric", function() {
 	equal( t( [ 42 ] ), false, "Array with one number" );
 	equal( t(function(){} ), false, "Instance of a function");
 	equal( t( new Date() ), false, "Instance of a Date");
-	equal( t(function(){} ), false, "Instance of a function");
 });
 
 test("isXMLDoc - HTML", function() {

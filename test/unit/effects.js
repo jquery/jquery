@@ -2158,4 +2158,28 @@ test( "slideDown() after stop() (#13483)", 2, function() {
 		clock.tick( 10 );
 });
 
+test( "Respect display value on inline elements (#14824)", 2, function() {
+	var clock = this.clock,
+		fromStyleSheet = jQuery( "<span id='span-14824' />" ),
+		fromStyleAttr = jQuery( "<span style='display: block;' />" );
+
+	jQuery( "#qunit-fixture" ).append( fromStyleSheet, fromStyleAttr );
+
+	fromStyleSheet.slideUp(function() {
+		jQuery( this ).slideDown( function() {
+			equal( jQuery( this ).css( "display" ), "block",
+				"Respect previous display value (from stylesheet) on span element" );
+		});
+	});
+
+	fromStyleAttr.slideUp( function() {
+		jQuery( this ).slideDown( function() {
+			equal( jQuery( this ).css( "display" ), "block",
+				"Respect previous display value (from style attribute) on span element" );
+		});
+	});
+
+	clock.tick( 800 );
+});
+
 })();
