@@ -1450,6 +1450,15 @@ module( "ajax", {
 	});
 
 	asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+		// Support: Android 2.3 only
+		// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
+		if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+			ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+				"errors in dynamically included scripts" );
+			start();
+			return;
+		}
+
 		var onerror = window.onerror;
 		window.onerror = function() {
 			ok( true, "Exception thrown" );
