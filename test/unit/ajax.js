@@ -1414,19 +1414,37 @@ module( "ajax", {
 			window.onerror = onerror;
 			start();
 		};
-		jQuery.ajax({
-			url: "data/badjson.js",
-			dataType: "script",
-			throws: true,
-			// Global events get confused by the exception
-			global: false,
-			success: function() {
-				ok( false, "Success." );
-			},
-			error: function() {
-				ok( false, "Error." );
+
+		function invokeAjax() {
+			jQuery.ajax({
+				url: "data/badjson.js",
+				dataType: "script",
+				throws: true,
+				// Global events get confused by the exception
+				global: false,
+				success: function() {
+					ok( false, "Success." );
+				},
+				error: function() {
+					ok( false, "Error." );
+				}
+			});
+		}
+
+		// Android 2.3 doesn't support async script tags so the error is thrown
+		// synchronously making the window.onerror handler to not fire.
+		// Catch the error instead.
+		// Support: Android 2.3
+		if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+			try {
+				invokeAjax();
+				ok( false, "Exception ignored" );
+			} catch ( e ) {
+				ok( true, "Exception thrown synchronously in Android 2.3" );
 			}
-		});
+		} else {
+			invokeAjax();
+		}
 	});
 
 	jQuery.each( [ "method", "type" ], function( _, globalOption ) {
