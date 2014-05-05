@@ -1470,6 +1470,12 @@ module( "ajax", {
 			var parsedXML = jQuery( jQuery.parseXML("<tab title=\"Added\">blibli</tab>") ).find("tab");
 			ajaxXML = jQuery( ajaxXML );
 			try {
+				// Android 2.3 doesn't automatically adopt nodes from foreign documents.
+				// (see the comment in test/manipulation.js)
+				// Support: Android 2.3
+				if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+					parsedXML = jQuery( ajaxXML[ 0 ].adoptNode( parsedXML[ 0 ] ) );
+				}
 				ajaxXML.find("infowindowtab").append( parsedXML );
 			} catch( e ) {
 				strictEqual( e, undefined, "error" );
