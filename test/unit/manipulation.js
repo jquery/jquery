@@ -2241,6 +2241,17 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 });
 
 asyncTest( "html() - script exceptions bubble (#11743)", 2, function() {
+	// Support: Android 2.3 only
+	// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+			"errors in dynamically included scripts" );
+		ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+			"errors in dynamically included scripts" );
+		start();
+		return;
+	}
+
 	var onerror = window.onerror;
 
 	setTimeout(function() {
