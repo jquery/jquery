@@ -409,7 +409,7 @@ test( "XML DOM manipulation (#9960)", function() {
 
 	expect( 5 );
 
-	var
+	var scxml1Adopted,
 		xmlDoc1 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state x='100' y='100' initial='actions' id='provisioning'></state><state x='100' y='100' id='error'></state><state x='100' y='100' id='finished' final='true'></state></scxml>"),
 		xmlDoc2 = jQuery.parseXML("<scxml xmlns='http://www.w3.org/2005/07/scxml' version='1.0'><state id='provisioning3'></state></scxml>"),
 		xml1 = jQuery( xmlDoc1 ),
@@ -417,6 +417,15 @@ test( "XML DOM manipulation (#9960)", function() {
 		scxml1 = jQuery( "scxml", xml1 ),
 		scxml2 = jQuery( "scxml", xml2 ),
 		state = scxml2.find("state");
+
+	// Android 2.3 doesn't automatically adopt nodes from foreign documents.
+	// Although technically this is compliant behavior, no other browser
+	// (including newer Android Browsers) behave in this way so do the adopting
+	// just for Android 2.3.
+	// Support: Android 2.3
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		state = jQuery( xmlDoc1.adoptNode( state[ 0 ] ) );
+	}
 
 	scxml1.append( state );
 	strictEqual( scxml1[0].lastChild, state[0], "append" );
@@ -430,7 +439,13 @@ test( "XML DOM manipulation (#9960)", function() {
 	scxml1.find("#provisioning").before( state );
 	strictEqual( scxml1[0].firstChild, state[0], "before" );
 
-	scxml2.replaceWith( scxml1 );
+	// Support: Android 2.3
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		scxml1Adopted = jQuery( xmlDoc2.adoptNode( scxml1[ 0 ] ) );
+		scxml2.replaceWith( scxml1Adopted );
+	} else {
+		scxml2.replaceWith( scxml1 );
+	}
 	deepEqual( jQuery( "state", xml2 ).get(), scxml1.find("state").get(), "replaceWith" );
 });
 
