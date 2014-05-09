@@ -5,8 +5,6 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var off = jQuery.fx.off;
-
 module("effects", {
 	setup: function() {
 		this.clock = sinon.useFakeTimers( 505877050 );
@@ -19,7 +17,6 @@ module("effects", {
 		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		jQuery.fx.off = off;
 		return moduleTeardown.apply( this, arguments );
 	}
 });
