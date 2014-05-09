@@ -71,6 +71,18 @@ var
 		} ]
 	};
 
+function raf() {
+	if ( timerId ) {
+		window.requestAnimationFrame( raf );
+		jQuery.fx.tick();
+	}
+}
+
+// Will get false negative for old browsers which is okay
+function isDocumentHidden() {
+	return "hidden" in document && document.hidden;
+}
+
 // Animations created synchronously will run synchronously
 function createFxNow() {
 	setTimeout(function() {
@@ -453,6 +465,9 @@ jQuery.speed = function( speed, easing, fn ) {
 
 jQuery.fn.extend({
 	fadeTo: function( speed, to, easing, callback ) {
+		if ( isDocumentHidden() ) {
+			return this;
+		}
 
 		// show any hidden elements after setting opacity to 0
 		return this.filter( isHidden ).css( "opacity", 0 ).show()
@@ -461,6 +476,10 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
+		if ( isDocumentHidden() ) {
+			return this;
+		}
+
 		var empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
@@ -626,10 +645,14 @@ jQuery.fx.timer = function( timer ) {
 };
 
 jQuery.fx.interval = 13;
-
 jQuery.fx.start = function() {
 	if ( !timerId ) {
-		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+		if ( window.requestAnimationFrame ) {
+			timerId = true;
+			window.requestAnimationFrame( raf );
+		} else {
+			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+		}
 	}
 };
 
