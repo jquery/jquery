@@ -92,7 +92,8 @@ jQuery.fn.extend({
 		docElem = doc.documentElement;
 
 		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
+		var parents = this.parents();
+		if ( !parents[ parents.length-1 ] === docElem ) {
 			return box;
 		}
 
