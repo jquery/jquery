@@ -93,7 +93,7 @@ jQuery.fn.extend({
 
 		// Make sure it's not a disconnected DOM node
 		parents = this.parents();
-		if ( parents[ parents.length-1 ] !== docElem ) {
+		if ( parents[ parents.length - 1 ] !== docElem ) {
 			return box;
 		}
 
