@@ -80,7 +80,7 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win,
+		var docElem, win,parents,
 			elem = this[ 0 ],
 			box = { top: 0, left: 0 },
 			doc = elem && elem.ownerDocument;
@@ -92,7 +92,8 @@ jQuery.fn.extend({
 		docElem = doc.documentElement;
 
 		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
+		parents = this.parents();
+		if ( parents[ parents.length - 1 ] !== docElem ) {
 			return box;
 		}
 
