@@ -2183,4 +2183,28 @@ test( "Respect display value on inline elements (#14824)", 2, function() {
 	clock.tick( 800 );
 });
 
+test( "Animation should go to its end state if document.hidden = true", 1, function() {
+	var height;
+
+	if ( Object.defineProperty ) {
+
+		// Can't rewrite document.hidden property if its host property
+		Object.defineProperty( document, "hidden", {
+			get: function() {
+				return true;
+			}
+		});
+	} else {
+		document.hidden = true;
+	}
+
+	if ( document.hidden ) {
+		height = jQuery( "#qunit-fixture" ).animate({ height: 500 } ).height();
+
+		equal( height, 500, "Animation should happen immediately if document.hidden = true" );
+		jQuery( document ).removeProp( "hidden" );
+	}
+});
+
+
 })();

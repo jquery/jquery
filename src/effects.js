@@ -16,6 +16,7 @@ define([
 
 var
 	fxNow, timerId,
+	hasRaf = !!window.requestAnimationFrame,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([+-])=|)(" + pnum + ")([a-z%]*)$", "i" ),
 	rrun = /queueHooks$/,
@@ -76,11 +77,6 @@ function raf() {
 		window.requestAnimationFrame( raf );
 		jQuery.fx.tick();
 	}
-}
-
-// Will get false negative for old browsers which is okay
-function isDocumentHidden() {
-	return "hidden" in document && document.hidden;
 }
 
 // Animations created synchronously will run synchronously
@@ -439,8 +435,15 @@ jQuery.speed = function( speed, easing, fn ) {
 		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
 	};
 
-	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+	// Go to the end state if fx are off or if document is hidden
+	if ( jQuery.fx.off || document.hidden ) {
+		opt.duration = 0;
+
+	} else {
+		opt.duration = typeof opt.duration === "number" ?
+			opt.duration : opt.duration in jQuery.fx.speeds ?
+				jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+	}
 
 	// normalize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
@@ -465,9 +468,6 @@ jQuery.speed = function( speed, easing, fn ) {
 
 jQuery.fn.extend({
 	fadeTo: function( speed, to, easing, callback ) {
-		if ( isDocumentHidden() ) {
-			return this;
-		}
 
 		// show any hidden elements after setting opacity to 0
 		return this.filter( isHidden ).css( "opacity", 0 ).show()
@@ -476,10 +476,6 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		if ( isDocumentHidden() ) {
-			return this;
-		}
-
 		var empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
@@ -647,17 +643,19 @@ jQuery.fx.timer = function( timer ) {
 jQuery.fx.interval = 13;
 jQuery.fx.start = function() {
 	if ( !timerId ) {
-		if ( window.requestAnimationFrame ) {
-			timerId = true;
-			window.requestAnimationFrame( raf );
-		} else {
-			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
-		}
+		timerId = hasRaf ?
+			window.requestAnimationFrame( raf ) :
+			setInterval( jQuery.fx.tick, jQuery.fx.interval );
 	}
 };
 
 jQuery.fx.stop = function() {
-	clearInterval( timerId );
+	if ( hasRaf ) {
+		window.cancelAnimationFrame( timerId );
+	} else {
+		clearInterval( timerId );
+	}
+
 	timerId = null;
 };
 
