@@ -1511,7 +1511,7 @@ if ( window.onbeforeunload === null &&
 
 test("jQuery.Event( type, props )", function() {
 
-	expect(5);
+	expect(6);
 
 	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
@@ -1526,6 +1526,8 @@ test("jQuery.Event( type, props )", function() {
 	equal( jQuery.inArray("type", jQuery.event.props), -1, "'type' property not in props (#10375)" );
 
 	ok( "keyCode" in event, "Special 'keyCode' property exists" );
+
+	strictEqual( jQuery.isPlainObject( event ), false, "Instances of $.Event should not be identified as a plain object." );
 
 	jQuery("body").on( "keydown", handler ).trigger( event );
 
