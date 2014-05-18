@@ -1068,4 +1068,27 @@ test( "show() after hide() should always set display to initial value (#14750)",
 		});
 	}
 })();
+
+test( "Do not throw on frame elements from css method (#15098)", 1, function() {
+	var frameWin, frameDoc,
+		frameElement = document.createElement( "iframe" ),
+		frameWrapDiv = document.createElement( "div" );
+
+	frameWrapDiv.appendChild( frameElement );
+	document.body.appendChild( frameWrapDiv );
+	frameWin = frameElement.contentWindow;
+	frameDoc = frameWin.document;
+	frameDoc.open();
+	frameDoc.write( "<!doctype html><html><body><div>Hi</div></body></html>" );
+	frameDoc.close();
+
+	frameWrapDiv.style.display = "none";
+
+	try {
+		jQuery( frameDoc.body ).css( "direction" );
+		ok( true, "It didn't throw" );
+	} catch ( _ ) {
+		ok( false, "It did throw" );
+	}
+});
 }
