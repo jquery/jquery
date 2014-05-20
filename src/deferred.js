@@ -99,7 +99,7 @@ jQuery.extend({
 			length = resolveValues.length,
 
 			// the count of uncompleted subordinates
-			remaining = length !== 1 || ( subordinate && jQuery.isFunction( subordinate.promise ) ) ? length : 0,
+			remaining = length !== 1 || ( subordinate && jQuery.isFunction( subordinate.then ) ) ? length : 0,
 
 			// the master Deferred. If resolveValues consist of only a single Deferred, just use that.
 			deferred = remaining === 1 ? subordinate : jQuery.Deferred(),
@@ -117,7 +117,7 @@ jQuery.extend({
 				};
 			},
 
-			progressValues, progressContexts, resolveContexts;
+			progressValues, progressContexts, resolveContexts, resolveValue;
 
 		// add listeners to Deferred subordinates; treat others as resolved
 		if ( length > 1 ) {
@@ -125,11 +125,15 @@ jQuery.extend({
 			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
-				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
-					resolveValues[ i ].promise()
-						.done( updateFunc( i, resolveContexts, resolveValues ) )
-						.fail( deferred.reject )
-						.progress( updateFunc( i, progressContexts, progressValues ) );
+				if ( ( resolveValue = resolveValues[ i ] ) && jQuery.isFunction( resolveValue.then ) ) {
+					resolveValue.then(
+						updateFunc( i, resolveContexts, resolveValues ),
+						deferred.reject
+					);
+
+					if ( jQuery.isFunction( resolveValue.progress ) ) {
+						resolveValue.progress( updateFunc( i, progressContexts, progressValues ) );
+					}
 				} else {
 					--remaining;
 				}
@@ -141,7 +145,12 @@ jQuery.extend({
 			deferred.resolveWith( resolveContexts, resolveValues );
 		}
 
-		return deferred.promise();
+		// At this point, `deferred` is guaranteed to be a promise, but not necessarily a jQuery promise.
+		// Do some duck typing to see if it's a jQuery promise;  if so, return that implementation, otherwise
+		// cast the promise to a jQuery for a consistent return type.
+		return deferred.promise ? deferred.promise() : jQuery.Deferred(function( newDefer ) {
+			deferred.then( newDefer.resolve, newDefer.reject );
+		}).promise();
 	}
 });
 
