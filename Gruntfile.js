@@ -81,8 +81,7 @@ module.exports = function( grunt ) {
 		jshint: {
 			all: {
 				src: [
-					"src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/tasks/*",
-					"build/{bower-install,release-notes,release}.js"
+					"src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js"
 				],
 				options: {
 					jshintrc: true
@@ -99,6 +98,7 @@ module.exports = function( grunt ) {
 
 			// Right know, check only test helpers
 			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
+			release: "build/*.js",
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
