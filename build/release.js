@@ -3,6 +3,7 @@ module.exports = function( Release ) {
 	var
 		fs = require( "fs" ),
 		shell = require( "shelljs" ),
+		ensureSizzle = require( "./ensure-sizzle" ),
 
 		devFile = "dist/jquery.js",
 		minFile = "dist/jquery.min.js",
@@ -116,6 +117,13 @@ module.exports = function( Release ) {
 		npmPublish: true,
 		issueTracker: "trac",
 		contributorReportId: 508,
+		/**
+		 * Ensure the repo is in a proper state before release
+		 * @param {Function} callback
+		 */
+		checkRepoState: function( callback ) {
+			ensureSizzle( Release, callback );
+		},
 		/**
 		 * Generates any release artifacts that should be included in the release.
 		 * The callback must be invoked with an array of files that should be
