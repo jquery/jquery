@@ -207,9 +207,10 @@ cjqed <christopherjonesqed@gmail.com>
 Forbes Lindesay <forbes@lindesay.co.uk>
 John Paul <john@johnkpaul.com>
 S. Andrew Sheppard <andrew@wq.io>
+Leonardo Balter <leonardo.balter@gmail.com>
 Roman Reiß <me@silverwind.io>
 Benjy Cui <benjytrys@gmail.com>
 Rodrigo Rosenfeld Rosas <rr.rosas@gmail.com>
 John Hoven <hovenj@gmail.com>
 Christian Kosmowski <ksmwsk@gmail.com>
-
+Liang Peng <poppinlp@gmail.com>
