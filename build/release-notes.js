@@ -17,7 +17,7 @@ http.request({
 	port: 80,
 	method: "GET",
 	path: "/query?status=closed&resolution=fixed&max=400&component=!web&order=component&milestone=" + version
-}, function (res) {
+}, function( res ) {
 	var data = [];
 
 	res.on( "data", function( chunk ) {
@@ -53,4 +53,3 @@ http.request({
 
 	});
 }).end();
-
