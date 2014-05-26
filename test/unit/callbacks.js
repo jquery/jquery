@@ -69,7 +69,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 					// Give qunit a little breathing room
 					QUnit.stop();
-					setTimeout( start, 0 );
+					setTimeout( QUnit.start, 0 );
 
 					var cblist,
 						results = resultString.split( /\s+/ );

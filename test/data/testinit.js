@@ -46,7 +46,7 @@ this.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
+	QUnit.assert.deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
 };
 
 this.createDashboardXML = function() {
@@ -146,7 +146,7 @@ this.ajaxTest = function( title, expect, options ) {
 	if ( !jQuery.isArray( requestOptions ) ) {
 		requestOptions = [ requestOptions ];
 	}
-	asyncTest( title, expect, function() {
+	QUnit.asyncTest( title, expect, function( assert ) {
 		if ( options.setup ) {
 			options.setup();
 		}
@@ -160,7 +160,7 @@ this.ajaxTest = function( title, expect, options ) {
 					if ( options.teardown ) {
 						options.teardown();
 					}
-					start();
+					QUnit.start();
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
@@ -170,7 +170,7 @@ this.ajaxTest = function( title, expect, options ) {
 						return function( _, status ) {
 							if ( !completed ) {
 								if ( !handler ) {
-									ok( false, "unexpected " + status );
+									assert.ok( false, "unexpected " + status );
 								} else if ( jQuery.isFunction( handler ) ) {
 									handler.apply( this, arguments );
 								}
@@ -192,7 +192,7 @@ this.ajaxTest = function( title, expect, options ) {
 			if ( !completed ) {
 				completed = true;
 				delete ajaxTest.abort;
-				ok( false, "aborted " + reason );
+				assert.ok( false, "aborted " + reason );
 				jQuery.each( requests, function( i, request ) {
 					request.abort();
 				});
@@ -202,7 +202,7 @@ this.ajaxTest = function( title, expect, options ) {
 };
 
 this.testIframe = function( fileName, name, fn ) {
-	asyncTest(name, function() {
+	QUnit.asyncTest(name, function() {
 
 		// load fixture in iframe
 		var iframe = loadFixture(),
@@ -211,7 +211,7 @@ this.testIframe = function( fileName, name, fn ) {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
 
-					start();
+					QUnit.start();
 
 					// call actual tests passing the correct jQuery instance to use
 					fn.call( this, win.jQuery, win, win.document );
@@ -232,7 +232,7 @@ this.testIframe = function( fileName, name, fn ) {
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-	asyncTest( title, 1, function() {
+	QUnit.asyncTest( title, 1, function() {
 		var iframe;
 
 		window.iframeCallback = function() {
@@ -245,7 +245,7 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 				func.apply( this, args );
 				func = function() {};
 
-				start();
+				QUnit.start();
 			});
 		};
 		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })

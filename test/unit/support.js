@@ -42,7 +42,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
 			QUnit.assert.equal( data, "", "No log request should be sent" );
-			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
+			supportjQuery.get( "data/support/csp-clean.php" ).done( QUnit.start );
 		});
 	}
 );

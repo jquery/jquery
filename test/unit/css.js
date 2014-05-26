@@ -1015,7 +1015,7 @@ QUnit.asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original
 		}, 100 );
 	});
 
-	window.setTimeout( start, 1000 );
+	window.setTimeout( QUnit.start, 1000 );
 });
 
 QUnit.asyncTest( "Make sure initialized display value for disconnected nodes is correct (#13310)", 4, function( assert ) {
