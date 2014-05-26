@@ -63,7 +63,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 				"object": objectFlags
 			}, function( flagsTypes, flags ) {
 
-				QUnit.test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
+				QUnit.test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function( assert ) {
 
 					expect( 21 );
 
@@ -81,22 +81,22 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						output += str;
 					});
 					cblist.fire("A");
-					strictEqual( output, "XA", "Basic binding and firing" );
-					strictEqual( cblist.fired(), true, ".fired() detects firing" );
+					assert.strictEqual( output, "XA", "Basic binding and firing" );
+					assert.strictEqual( cblist.fired(), true, ".fired() detects firing" );
 					output = "X";
 					cblist.disable();
 					cblist.add(function( str ) {
 						output += str;
 					});
-					strictEqual( output, "X", "Adding a callback after disabling" );
+					assert.strictEqual( output, "X", "Adding a callback after disabling" );
 					cblist.fire("A");
-					strictEqual( output, "X", "Firing after disabling" );
+					assert.strictEqual( output, "X", "Firing after disabling" );
 
 					// #13517 - Emptying while firing
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.empty );
 					cblist.add( function() {
-						ok( false, "not emptied" );
+						assert.ok( false, "not emptied" );
 					} );
 					cblist.fire();
 
@@ -104,7 +104,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.disable );
 					cblist.add( function() {
-						ok( false, "not disabled" );
+						assert.ok( false, "not disabled" );
 					} );
 					cblist.fire();
 
@@ -112,18 +112,18 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
 					cblist.add(function() {
-						equal( this, window, "Basic binding and firing (context)" );
+						assert.equal( this, window, "Basic binding and firing (context)" );
 						output += Array.prototype.join.call( arguments, "" );
 					});
 					cblist.fireWith( window, [ "A", "B" ] );
-					strictEqual( output, "XAB", "Basic binding and firing (arguments)" );
+					assert.strictEqual( output, "XAB", "Basic binding and firing (arguments)" );
 
 					// fireWith with no arguments
 					output = "";
 					cblist = jQuery.Callbacks( flags );
 					cblist.add(function() {
-						equal( this, window, "fireWith with no arguments (context is window)" );
-						strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
+						assert.equal( this, window, "fireWith with no arguments (context is window)" );
+						assert.strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
 					});
 					cblist.fireWith();
 
@@ -133,7 +133,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add( outputA, outputB, outputC );
 					cblist.remove( outputB, outputC );
 					cblist.fire();
-					strictEqual( output, "XA", "Basic binding, removing and firing" );
+					assert.strictEqual( output, "XA", "Basic binding, removing and firing" );
 
 					// Empty
 					output = "X";
@@ -143,7 +143,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add( outputC );
 					cblist.empty();
 					cblist.fire();
-					strictEqual( output, "X", "Empty" );
+					assert.strictEqual( output, "X", "Empty" );
 
 					// Locking
 					output = "X";
@@ -159,7 +159,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add(function( str ) {
 						output += str;
 					});
-					strictEqual( output, "X", "Lock early" );
+					assert.strictEqual( output, "X", "Lock early" );
 
 					// Ordering
 					output = "X";
@@ -169,7 +169,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						outputA();
 					}, outputB );
 					cblist.fire();
-					strictEqual( output, results.shift(), "Proper ordering" );
+					assert.strictEqual( output, results.shift(), "Proper ordering" );
 
 					// Add and fire again
 					output = "X";
@@ -177,11 +177,11 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						cblist.add( outputC );
 						outputA();
 					}, outputB );
-					strictEqual( output, results.shift(), "Add after fire" );
+					assert.strictEqual( output, results.shift(), "Add after fire" );
 
 					output = "X";
 					cblist.fire();
-					strictEqual( output, results.shift(), "Fire again" );
+					assert.strictEqual( output, results.shift(), "Fire again" );
 
 					// Multiple fire
 					output = "X";
@@ -190,20 +190,20 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						output += str;
 					});
 					cblist.fire("A");
-					strictEqual( output, "XA", "Multiple fire (first fire)" );
+					assert.strictEqual( output, "XA", "Multiple fire (first fire)" );
 					output = "X";
 					cblist.add(function( str ) {
 						output += str;
 					});
-					strictEqual( output, results.shift(), "Multiple fire (first new callback)" );
+					assert.strictEqual( output, results.shift(), "Multiple fire (first new callback)" );
 					output = "X";
 					cblist.fire("B");
-					strictEqual( output, results.shift(), "Multiple fire (second fire)" );
+					assert.strictEqual( output, results.shift(), "Multiple fire (second fire)" );
 					output = "X";
 					cblist.add(function( str ) {
 						output += str;
 					});
-					strictEqual( output, results.shift(), "Multiple fire (second new callback)" );
+					assert.strictEqual( output, results.shift(), "Multiple fire (second new callback)" );
 
 					// Return false
 					output = "X";
@@ -211,12 +211,12 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add( outputA, function() { return false; }, outputB );
 					cblist.add( outputA );
 					cblist.fire();
-					strictEqual( output, results.shift(), "Callback returning false" );
+					assert.strictEqual( output, results.shift(), "Callback returning false" );
 
 					// Add another callback (to control lists with memory do not fire anymore)
 					output = "X";
 					cblist.add( outputC );
-					strictEqual( output, results.shift(), "Adding a callback after one returned false" );
+					assert.strictEqual( output, results.shift(), "Adding a callback after one returned false" );
 
 					// Callbacks are not iterated
 					output = "";
@@ -230,7 +230,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					cblist.add( handler );
 					cblist.add( handler );
 					cblist.fire();
-					strictEqual( output, results.shift(), "No callback iteration" );
+					assert.strictEqual( output, results.shift(), "No callback iteration" );
 				});
 			});
 		});
@@ -238,7 +238,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 })();
 
-QUnit.test( "jQuery.Callbacks( options ) - options are copied", function() {
+QUnit.test( "jQuery.Callbacks( options ) - options are copied", function( assert ) {
 
 	expect( 1 );
 
@@ -248,14 +248,14 @@ QUnit.test( "jQuery.Callbacks( options ) - options are copied", function() {
 		cb = jQuery.Callbacks( options ),
 		count = 0,
 		fn = function() {
-			ok( !( count++ ), "called once" );
+			assert.ok( !( count++ ), "called once" );
 		};
 	options["unique"] = false;
 	cb.add( fn, fn );
 	cb.fire();
 });
 
-QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
+QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function( assert ) {
 
 	expect( 1 );
 
@@ -266,26 +266,26 @@ QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 	args[ 0 ] = "world";
 
 	cb.add(function( hello ) {
-		strictEqual( hello, "hello", "arguments are copied internally" );
+		assert.strictEqual( hello, "hello", "arguments are copied internally" );
 	});
 });
 
-QUnit.test( "jQuery.Callbacks.remove - should remove all instances", function() {
+QUnit.test( "jQuery.Callbacks.remove - should remove all instances", function( assert ) {
 
 	expect( 1 );
 
 	var cb = jQuery.Callbacks();
 
 	function fn() {
-		ok( false, "function wasn't removed" );
+		assert.ok( false, "function wasn't removed" );
 	}
 
 	cb.add( fn, fn, function() {
-		ok( true, "end of test" );
+		assert.ok( true, "end of test" );
 	}).remove( fn ).fire();
 });
 
-QUnit.test( "jQuery.Callbacks.has", function() {
+QUnit.test( "jQuery.Callbacks.has", function( assert ) {
 
 	expect( 13 );
 
@@ -300,43 +300,43 @@ QUnit.test( "jQuery.Callbacks.has", function() {
 		return "C";
 	}
 	cb.add(getA, getB, getC);
-	strictEqual( cb.has(), true, "No arguments to .has() returns whether callback function(s) are attached or not" );
-	strictEqual( cb.has(getA), true, "Check if a specific callback function is in the Callbacks list" );
+	assert.strictEqual( cb.has(), true, "No arguments to .has() returns whether callback function(s) are attached or not" );
+	assert.strictEqual( cb.has(getA), true, "Check if a specific callback function is in the Callbacks list" );
 
 	cb.remove(getB);
-	strictEqual( cb.has(getB), false, "Remove a specific callback function and make sure its no longer there" );
-	strictEqual( cb.has(getA), true, "Remove a specific callback function and make sure other callback function is still there" );
+	assert.strictEqual( cb.has(getB), false, "Remove a specific callback function and make sure its no longer there" );
+	assert.strictEqual( cb.has(getA), true, "Remove a specific callback function and make sure other callback function is still there" );
 
 	cb.empty();
-	strictEqual( cb.has(), false, "Empty list and make sure there are no callback function(s)" );
-	strictEqual( cb.has(getA), false, "Check for a specific function in an empty() list" );
+	assert.strictEqual( cb.has(), false, "Empty list and make sure there are no callback function(s)" );
+	assert.strictEqual( cb.has(getA), false, "Check for a specific function in an empty() list" );
 
 	cb.add(getA, getB, function(){
-		strictEqual( cb.has(), true, "Check if list has callback function(s) from within a callback function" );
-		strictEqual( cb.has(getA), true, "Check if list has a specific callback from within a callback function" );
+		assert.strictEqual( cb.has(), true, "Check if list has callback function(s) from within a callback function" );
+		assert.strictEqual( cb.has(getA), true, "Check if list has a specific callback from within a callback function" );
 	}).fire();
 
-	strictEqual( cb.has(), true, "Callbacks list has callback function(s) after firing" );
+	assert.strictEqual( cb.has(), true, "Callbacks list has callback function(s) after firing" );
 
 	cb.disable();
-	strictEqual( cb.has(), false, "disabled() list has no callback functions (returns false)" );
-	strictEqual( cb.has(getA), false, "Check for a specific function in a disabled() list" );
+	assert.strictEqual( cb.has(), false, "disabled() list has no callback functions (returns false)" );
+	assert.strictEqual( cb.has(getA), false, "Check for a specific function in a disabled() list" );
 
 	cb = jQuery.Callbacks("unique");
 	cb.add(getA);
 	cb.add(getA);
-	strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
+	assert.strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
 	cb.lock();
-	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
+	assert.strictEqual( cb.has(), false, "locked() list is empty and returns false" );
 
 
 });
 
-QUnit.test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
+QUnit.test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function( assert ) {
 
 	expect( 1 );
 
 	jQuery.Callbacks().add( "hello world" );
 
-	ok( true, "no stack overflow" );
+	assert.ok( true, "no stack overflow" );
 });

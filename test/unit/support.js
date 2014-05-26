@@ -24,9 +24,9 @@ if ( jQuery.css ) {
 			"#000000": true,
 			"rgb(0, 0, 0)": true
 		};
-		ok( okValue[ color ], "color was not reset (" + color + ")" );
+		QUnit.assert.ok( okValue[ color ], "color was not reset (" + color + ")" );
 
-		deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
+		QUnit.assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
 	});
 }
 
@@ -36,12 +36,12 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	"support/csp.php",
 	function( support ) {
 		expect( 2 );
-		deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
+		QUnit.assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
 
 		QUnit.stop();
 
 		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
-			equal( data, "", "No log request should be sent" );
+			QUnit.assert.equal( data, "", "No log request should be sent" );
 			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
 		});
 	}
@@ -246,7 +246,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	}
 
 	if ( expected ) {
-		QUnit.test( "Verify that the support tests resolve as expected per browser", function() {
+		QUnit.test( "Verify that the support tests resolve as expected per browser", function( assert ) {
 			var i, prop,
 				j = 0;
 
@@ -259,11 +259,11 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			for ( i in expected ) {
 				// TODO check for all modules containing support properties
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-					equal( computedSupport[ i ], expected[ i ],
+					assert.equal( computedSupport[ i ], expected[ i ],
 						"jQuery.support['" + i + "']: " + computedSupport[ i ] +
 							", expected['" + i + "']: " + expected[ i ]);
 				} else {
-					ok( true, "no ajax; skipping jQuery.support[' " + i + " ']" );
+					assert.ok( true, "no ajax; skipping jQuery.support[' " + i + " ']" );
 				}
 			}
 		});

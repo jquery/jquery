@@ -84,7 +84,7 @@ QUnit.config.urlConfig.push({
  * Ensures that tests have cleaned up properly after themselves. Should be passed as the
  * teardown function on all modules' lifecycle object.
  */
-window.moduleTeardown = function() {
+window.moduleTeardown = function( assert ) {
 	var i, expectedKeys, actualKeys,
 		cacheLength = 0;
 
