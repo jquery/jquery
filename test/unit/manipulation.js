@@ -1,4 +1,4 @@
-module( "manipulation", {
+QUnit.module( "manipulation", {
 	teardown: moduleTeardown
 });
 
@@ -29,7 +29,7 @@ function manipulationFunctionReturningObj( value ) {
 		Returns a function that returns the value
 */
 
-test( "text()", function() {
+QUnit.test( "text()", function() {
 
 	expect( 5 );
 
@@ -55,7 +55,7 @@ test( "text()", function() {
 	$newLineTest.remove();
 });
 
-test( "text(undefined)", function() {
+QUnit.test( "text(undefined)", function() {
 
 	expect( 1 );
 
@@ -98,15 +98,15 @@ function testText( valueObj ) {
 	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
 }
 
-test( "text(String)", function() {
+QUnit.test( "text(String)", function() {
 	testText( manipulationBareObj );
 });
 
-test( "text(Function)", function() {
+QUnit.test( "text(Function)", function() {
 	testText( manipulationFunctionReturningObj );
 });
 
-test( "text(Function) with incoming value", function() {
+QUnit.test( "text(Function) with incoming value", function() {
 
 	expect( 2 );
 
@@ -305,15 +305,15 @@ function testAppend( valueObj ) {
 	equal( jQuery("<div/>").append( valueObj("option<area/>") )[ 0 ].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
 }
 
-test( "append(String|Element|Array<Element>|jQuery)", function() {
+QUnit.test( "append(String|Element|Array<Element>|jQuery)", function() {
 	testAppend( manipulationBareObj );
 });
 
-test( "append(Function)", function() {
+QUnit.test( "append(Function)", function() {
 	testAppend( manipulationFunctionReturningObj );
 });
 
-test( "append(param) to object, see #11280", function() {
+QUnit.test( "append(param) to object, see #11280", function() {
 
 	expect( 5 );
 
@@ -330,7 +330,7 @@ test( "append(param) to object, see #11280", function() {
 	equal( object.children().eq(0).attr("name"), "bar", "param has name=bar" );
 });
 
-test( "append(Function) returns String", function() {
+QUnit.test( "append(Function) returns String", function() {
 
 	expect( 4 );
 
@@ -354,7 +354,7 @@ test( "append(Function) returns String", function() {
 	}).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element" );
 });
 
-test( "append(Function) returns Element", function() {
+QUnit.test( "append(Function) returns Element", function() {
 
   expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:",
@@ -367,7 +367,7 @@ test( "append(Function) returns Element", function() {
 	equal( jQuery("#sap").text(), expected, "Check for appending of element" );
 });
 
-test( "append(Function) returns Array<Element>", function() {
+QUnit.test( "append(Function) returns Array<Element>", function() {
 
 	expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogTry them out:Yahoo",
@@ -380,7 +380,7 @@ test( "append(Function) returns Array<Element>", function() {
 	equal( jQuery("#sap").text(), expected, "Check for appending of array of elements" );
 });
 
-test( "append(Function) returns jQuery", function() {
+QUnit.test( "append(Function) returns jQuery", function() {
 
 	expect( 2 );
 	var expected = "This link has class=\"blog\": Simon Willison's WeblogYahooTry them out:",
@@ -393,7 +393,7 @@ test( "append(Function) returns jQuery", function() {
 	equal( jQuery("#sap").text(), expected, "Check for appending of jQuery object" );
 });
 
-test( "append(Function) returns Number", function() {
+QUnit.test( "append(Function) returns Number", function() {
 
 	expect( 2 );
 	var old = jQuery("#sap").html();
@@ -405,7 +405,7 @@ test( "append(Function) returns Number", function() {
 	ok( jQuery("#sap")[ 0 ].innerHTML.match( /5$/ ), "Check for appending a number" );
 });
 
-test( "XML DOM manipulation (#9960)", function() {
+QUnit.test( "XML DOM manipulation (#9960)", function() {
 
 	expect( 5 );
 
@@ -449,7 +449,7 @@ test( "XML DOM manipulation (#9960)", function() {
 	deepEqual( jQuery( "state", xml2 ).get(), scxml1.find("state").get(), "replaceWith" );
 });
 
-test( "append HTML5 sectioning elements (Bug #6485)", function() {
+QUnit.test( "append HTML5 sectioning elements (Bug #6485)", function() {
 
 	expect( 2 );
 
@@ -465,7 +465,7 @@ test( "append HTML5 sectioning elements (Bug #6485)", function() {
 });
 
 if ( jQuery.css ) {
-	test( "HTML5 Elements inherit styles from style rules (Bug #10501)", function() {
+	QUnit.test( "HTML5 Elements inherit styles from style rules (Bug #10501)", function() {
 
 		expect( 1 );
 
@@ -477,7 +477,7 @@ if ( jQuery.css ) {
 	});
 }
 
-test( "html(String) with HTML5 (Bug #6485)", function() {
+QUnit.test( "html(String) with HTML5 (Bug #6485)", function() {
 
 	expect( 2 );
 
@@ -486,7 +486,7 @@ test( "html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
-test( "IE8 serialization bug", function() {
+QUnit.test( "IE8 serialization bug", function() {
 
 	expect( 2 );
 	var wrapper = jQuery("<div></div>");
@@ -498,7 +498,7 @@ test( "IE8 serialization bug", function() {
 	equal( wrapper.children("link").length, 1, "Link elements are insertable with .html()" );
 });
 
-test( "html() object element #10324", function() {
+QUnit.test( "html() object element #10324", function() {
 
 	expect( 1 );
 
@@ -508,7 +508,7 @@ test( "html() object element #10324", function() {
 	equal( clone.html(), object.html(), "html() returns correct innerhtml of cloned object elements" );
 });
 
-test( "append(xml)", function() {
+QUnit.test( "append(xml)", function() {
 
 	expect( 1 );
 
@@ -545,7 +545,7 @@ test( "append(xml)", function() {
 
 });
 
-test( "appendTo(String)", function() {
+QUnit.test( "appendTo(String)", function() {
 
 	expect( 4 );
 
@@ -565,7 +565,7 @@ test( "appendTo(String)", function() {
 	equal( jQuery("#first").children().last()[ 0 ].nodeName.toLowerCase(), "strong", "Verify the last element." );
 });
 
-test( "appendTo(Element|Array<Element>)", function() {
+QUnit.test( "appendTo(Element|Array<Element>)", function() {
 
   expect( 2 );
 
@@ -579,7 +579,7 @@ test( "appendTo(Element|Array<Element>)", function() {
 
 });
 
-test( "appendTo(jQuery)", function() {
+QUnit.test( "appendTo(jQuery)", function() {
 
   expect( 10 );
 
@@ -623,7 +623,7 @@ test( "appendTo(jQuery)", function() {
 	equal( jQuery("#qunit-fixture div").length, num, "Make sure all the removed divs were inserted." );
 });
 
-test( "prepend(String)", function() {
+QUnit.test( "prepend(String)", function() {
 
 	expect( 2 );
 
@@ -634,7 +634,7 @@ test( "prepend(String)", function() {
 	equal( jQuery("#select3").prepend( "<option value='prependTest'>Prepend Test</option>"  ).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
 });
 
-test( "prepend(Element)", function() {
+QUnit.test( "prepend(Element)", function() {
 
 	expect( 1 );
 
@@ -644,7 +644,7 @@ test( "prepend(Element)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 });
 
-test( "prepend(Array<Element>)", function() {
+QUnit.test( "prepend(Array<Element>)", function() {
 
 	expect( 1 );
 
@@ -654,7 +654,7 @@ test( "prepend(Array<Element>)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 });
 
-test( "prepend(jQuery)", function() {
+QUnit.test( "prepend(jQuery)", function() {
 
 	expect( 1 );
 
@@ -664,7 +664,7 @@ test( "prepend(jQuery)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test( "prepend(Array<jQuery>)", function() {
+QUnit.test( "prepend(Array<jQuery>)", function() {
 
 	expect( 1 );
 
@@ -674,7 +674,7 @@ test( "prepend(Array<jQuery>)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of jQuery objects" );
 });
 
-test( "prepend(Function) with incoming value -- String", function() {
+QUnit.test( "prepend(Function) with incoming value -- String", function() {
 
 	expect( 4 );
 
@@ -697,7 +697,7 @@ test( "prepend(Function) with incoming value -- String", function() {
 	}).find("option:first-child").attr("value"), "prependTest", "Prepending html options to select element" );
 });
 
-test( "prepend(Function) with incoming value -- Element", function() {
+QUnit.test( "prepend(Function) with incoming value -- Element", function() {
 
   expect( 2 );
 
@@ -713,7 +713,7 @@ test( "prepend(Function) with incoming value -- Element", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 });
 
-test( "prepend(Function) with incoming value -- Array<Element>", function() {
+QUnit.test( "prepend(Function) with incoming value -- Array<Element>", function() {
 
   expect( 2 );
 
@@ -729,7 +729,7 @@ test( "prepend(Function) with incoming value -- Array<Element>", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 });
 
-test( "prepend(Function) with incoming value -- jQuery", function() {
+QUnit.test( "prepend(Function) with incoming value -- jQuery", function() {
 
   expect( 2 );
 
@@ -745,7 +745,7 @@ test( "prepend(Function) with incoming value -- jQuery", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test( "prependTo(String)", function() {
+QUnit.test( "prependTo(String)", function() {
 
 	expect( 2 );
 
@@ -758,7 +758,7 @@ test( "prependTo(String)", function() {
 
 });
 
-test( "prependTo(Element)", function() {
+QUnit.test( "prependTo(Element)", function() {
 
 	expect( 1 );
 
@@ -769,7 +769,7 @@ test( "prependTo(Element)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of element" );
 });
 
-test( "prependTo(Array<Element>)", function() {
+QUnit.test( "prependTo(Array<Element>)", function() {
 
 	expect( 1 );
 
@@ -780,7 +780,7 @@ test( "prependTo(Array<Element>)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of array of elements" );
 });
 
-test( "prependTo(jQuery)", function() {
+QUnit.test( "prependTo(jQuery)", function() {
 
 	expect( 1 );
 
@@ -791,7 +791,7 @@ test( "prependTo(jQuery)", function() {
 	equal( jQuery("#sap").text(), expected, "Check for prepending of jQuery object" );
 });
 
-test( "prependTo(Array<jQuery>)", function() {
+QUnit.test( "prependTo(Array<jQuery>)", function() {
 
 	expect( 1 );
 
@@ -801,7 +801,7 @@ test( "prependTo(Array<jQuery>)", function() {
 	t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
 });
 
-test( "before(String)", function() {
+QUnit.test( "before(String)", function() {
 
 	expect( 1 );
 
@@ -812,7 +812,7 @@ test( "before(String)", function() {
 	equal( jQuery("#en").text(), expected, "Insert String before" );
 });
 
-test( "before(Element)", function() {
+QUnit.test( "before(Element)", function() {
 
 	expect( 1 );
 
@@ -823,7 +823,7 @@ test( "before(Element)", function() {
 	equal( jQuery("#en").text(), expected, "Insert element before" );
 });
 
-test( "before(Array<Element>)", function() {
+QUnit.test( "before(Array<Element>)", function() {
 
 	expect( 1 );
 
@@ -833,7 +833,7 @@ test( "before(Array<Element>)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
 });
 
-test( "before(jQuery)", function() {
+QUnit.test( "before(jQuery)", function() {
 
 	expect( 1 );
 
@@ -843,7 +843,7 @@ test( "before(jQuery)", function() {
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
-test( "before(Array<jQuery>)", function() {
+QUnit.test( "before(Array<jQuery>)", function() {
 
 	expect( 1 );
 
@@ -853,7 +853,7 @@ test( "before(Array<jQuery>)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
 });
 
-test( "before(Function) -- Returns String", function() {
+QUnit.test( "before(Function) -- Returns String", function() {
 
 	expect( 1 );
 
@@ -864,7 +864,7 @@ test( "before(Function) -- Returns String", function() {
 	equal( jQuery("#en").text(), expected, "Insert String before" );
 });
 
-test( "before(Function) -- Returns Element", function() {
+QUnit.test( "before(Function) -- Returns Element", function() {
 
 	expect( 1 );
 
@@ -875,7 +875,7 @@ test( "before(Function) -- Returns Element", function() {
 	equal( jQuery("#en").text(), expected, "Insert element before" );
 });
 
-test( "before(Function) -- Returns Array<Element>", function() {
+QUnit.test( "before(Function) -- Returns Array<Element>", function() {
 
 	expect( 1 );
 
@@ -885,7 +885,7 @@ test( "before(Function) -- Returns Array<Element>", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
 });
 
-test( "before(Function) -- Returns jQuery", function() {
+QUnit.test( "before(Function) -- Returns jQuery", function() {
 
 	expect( 1 );
 
@@ -895,7 +895,7 @@ test( "before(Function) -- Returns jQuery", function() {
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
-test( "before(Function) -- Returns Array<jQuery>", function() {
+QUnit.test( "before(Function) -- Returns Array<jQuery>", function() {
 
 	expect( 1 );
 
@@ -905,7 +905,7 @@ test( "before(Function) -- Returns Array<jQuery>", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects before" );
 });
 
-test( "before(no-op)", function() {
+QUnit.test( "before(no-op)", function() {
 
 	expect( 2 );
 
@@ -915,7 +915,7 @@ test( "before(no-op)", function() {
 	equal( set.length, 1, "Insert the element before the disconnected node. should be a no-op" );
 });
 
-test( "before and after w/ empty object (#10812)", function() {
+QUnit.test( "before and after w/ empty object (#10812)", function() {
 
 	expect( 1 );
 
@@ -925,7 +925,7 @@ test( "before and after w/ empty object (#10812)", function() {
 	equal( res.length, 0, "didn't choke on empty object" );
 });
 
-test( ".before() and .after() disconnected node", function() {
+QUnit.test( ".before() and .after() disconnected node", function() {
 
   expect(2);
 
@@ -933,7 +933,7 @@ test( ".before() and .after() disconnected node", function() {
 	equal( jQuery("<input type='checkbox'/>").after("<div/>").length, 1, "after() on disconnected node is no-op" );
 });
 
-test( "insert with .before() on disconnected node last", function() {
+QUnit.test( "insert with .before() on disconnected node last", function() {
 
   expect(1);
 
@@ -943,7 +943,7 @@ test( "insert with .before() on disconnected node last", function() {
 	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node last" );
 });
 
-test( "insert with .before() on disconnected node first", function() {
+QUnit.test( "insert with .before() on disconnected node first", function() {
 
   expect(1);
 
@@ -953,7 +953,7 @@ test( "insert with .before() on disconnected node first", function() {
 	equal( jQuery("#en").text(), expectedBefore, "Insert String before with disconnected node first" );
 });
 
-test( "insert with .before() on disconnected node last", function() {
+QUnit.test( "insert with .before() on disconnected node last", function() {
 
   expect(1);
 
@@ -963,7 +963,7 @@ test( "insert with .before() on disconnected node last", function() {
 	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node last" );
 });
 
-test( "insert with .before() on disconnected node last", function() {
+QUnit.test( "insert with .before() on disconnected node last", function() {
 
   expect(1);
 
@@ -973,7 +973,7 @@ test( "insert with .before() on disconnected node last", function() {
 	equal( jQuery("#en").text(), expectedAfter, "Insert String after with disconnected node first" );
 });
 
-test( "insertBefore(String)", function() {
+QUnit.test( "insertBefore(String)", function() {
 
 	expect( 1 );
 
@@ -982,7 +982,7 @@ test( "insertBefore(String)", function() {
 	equal( jQuery("#en").text(), expected, "Insert String before" );
 });
 
-test( "insertBefore(Element)", function() {
+QUnit.test( "insertBefore(Element)", function() {
 
   expect( 1 );
 
@@ -991,7 +991,7 @@ test( "insertBefore(Element)", function() {
 	equal( jQuery("#en").text(), expected, "Insert element before" );
 });
 
-test( "insertBefore(Array<Element>)", function() {
+QUnit.test( "insertBefore(Array<Element>)", function() {
 
   expect( 1 );
 
@@ -1000,7 +1000,7 @@ test( "insertBefore(Array<Element>)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements before" );
 });
 
-test( "insertBefore(jQuery)", function() {
+QUnit.test( "insertBefore(jQuery)", function() {
 
   expect( 1 );
 
@@ -1009,7 +1009,7 @@ test( "insertBefore(jQuery)", function() {
 	equal( jQuery("#en").text(), expected, "Insert jQuery before" );
 });
 
-test( ".after(String)", function() {
+QUnit.test( ".after(String)", function() {
 
   expect( 1 );
 
@@ -1018,7 +1018,7 @@ test( ".after(String)", function() {
 	equal( jQuery("#en").text(), expected, "Insert String after" );
 });
 
-test( ".after(Element)", function() {
+QUnit.test( ".after(Element)", function() {
 
   expect( 1 );
 
@@ -1027,7 +1027,7 @@ test( ".after(Element)", function() {
 	equal( jQuery("#en").text(), expected, "Insert element after" );
 });
 
-test( ".after(Array<Element>)", function() {
+QUnit.test( ".after(Array<Element>)", function() {
 
   expect( 1 );
 
@@ -1036,7 +1036,7 @@ test( ".after(Array<Element>)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
 });
 
-test( ".after(jQuery)", function() {
+QUnit.test( ".after(jQuery)", function() {
 
   expect( 1 );
 
@@ -1045,7 +1045,7 @@ test( ".after(jQuery)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
 });
 
-test( ".after(Function) returns String", function() {
+QUnit.test( ".after(Function) returns String", function() {
 
   expect( 1 );
 
@@ -1055,7 +1055,7 @@ test( ".after(Function) returns String", function() {
 	equal( jQuery("#en").text(), expected, "Insert String after" );
 });
 
-test( ".after(Function) returns Element", function() {
+QUnit.test( ".after(Function) returns Element", function() {
 
   expect( 1 );
 
@@ -1065,7 +1065,7 @@ test( ".after(Function) returns Element", function() {
 	equal( jQuery("#en").text(), expected, "Insert element after" );
 });
 
-test( ".after(Function) returns Array<Element>", function() {
+QUnit.test( ".after(Function) returns Array<Element>", function() {
 
   expect( 1 );
 
@@ -1075,7 +1075,7 @@ test( ".after(Function) returns Array<Element>", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
 });
 
-test( ".after(Function) returns jQuery", function() {
+QUnit.test( ".after(Function) returns jQuery", function() {
 
   expect( 1 );
 
@@ -1085,7 +1085,7 @@ test( ".after(Function) returns jQuery", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of jQuery objects after" );
 });
 
-test( ".after(disconnected node)", function() {
+QUnit.test( ".after(disconnected node)", function() {
 
   expect( 2 );
 
@@ -1094,7 +1094,7 @@ test( ".after(disconnected node)", function() {
 	equal( set.length, 1, "Insert the element after the disconnected node should be a no-op" );
 });
 
-test( "insertAfter(String)", function() {
+QUnit.test( "insertAfter(String)", function() {
 
 	expect( 1 ) ;
 
@@ -1103,7 +1103,7 @@ test( "insertAfter(String)", function() {
 	equal( jQuery("#en").text(), expected, "Insert String after" );
 });
 
-test( "insertAfter(Element)", function() {
+QUnit.test( "insertAfter(Element)", function() {
 
   expect(1);
 
@@ -1112,7 +1112,7 @@ test( "insertAfter(Element)", function() {
 	equal( jQuery("#en").text(), expected, "Insert element after" );
 });
 
-test( "insertAfter(Array<Element>)", function() {
+QUnit.test( "insertAfter(Array<Element>)", function() {
 
   expect(1);
 
@@ -1121,7 +1121,7 @@ test( "insertAfter(Array<Element>)", function() {
 	equal( jQuery("#en").text(), expected, "Insert array of elements after" );
 });
 
-test( "insertAfter(jQuery)", function() {
+QUnit.test( "insertAfter(jQuery)", function() {
 
   expect(1);
 
@@ -1239,11 +1239,11 @@ function testReplaceWith( val ) {
 	return expected;
 }
 
-test( "replaceWith(String|Element|Array<Element>|jQuery)", function() {
+QUnit.test( "replaceWith(String|Element|Array<Element>|jQuery)", function() {
 	testReplaceWith( manipulationBareObj );
 });
 
-test( "replaceWith(Function)", function() {
+QUnit.test( "replaceWith(Function)", function() {
 	expect( testReplaceWith(manipulationFunctionReturningObj) + 1 );
 
 	var y = jQuery("#foo")[ 0 ];
@@ -1253,7 +1253,7 @@ test( "replaceWith(Function)", function() {
 	});
 });
 
-test( "replaceWith(string) for more than one element", function() {
+QUnit.test( "replaceWith(string) for more than one element", function() {
 
 	expect( 3 );
 
@@ -1264,7 +1264,7 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "Empty replaceWith (#13401; #13596)", 8, function() {
+QUnit.test( "Empty replaceWith (#13401; #13596)", 8, function() {
 	var $el = jQuery( "<div/>" ),
 		tests = {
 			"empty string": "",
@@ -1283,7 +1283,7 @@ test( "Empty replaceWith (#13401; #13596)", 8, function() {
 	});
 });
 
-test( "replaceAll(String)", function() {
+QUnit.test( "replaceAll(String)", function() {
 
 	expect( 2 );
 
@@ -1292,7 +1292,7 @@ test( "replaceAll(String)", function() {
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after string" );
 });
 
-test( "replaceAll(Element)", function() {
+QUnit.test( "replaceAll(Element)", function() {
 
 	expect( 2 );
 
@@ -1301,7 +1301,7 @@ test( "replaceAll(Element)", function() {
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after element" );
 });
 
-test( "replaceAll(Array<Element>)", function() {
+QUnit.test( "replaceAll(Array<Element>)", function() {
 
 	expect( 3 );
 
@@ -1311,7 +1311,7 @@ test( "replaceAll(Array<Element>)", function() {
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after array of elements" );
 });
 
-test( "replaceAll(jQuery)", function() {
+QUnit.test( "replaceAll(jQuery)", function() {
 
 	expect( 3 );
 
@@ -1321,7 +1321,7 @@ test( "replaceAll(jQuery)", function() {
 	ok( !jQuery("#yahoo")[ 0 ], "Verify that original element is gone, after set of elements" );
 });
 
-test( "jQuery.clone() (#8017)", function() {
+QUnit.test( "jQuery.clone() (#8017)", function() {
 
 	expect( 2 );
 
@@ -1333,7 +1333,7 @@ test( "jQuery.clone() (#8017)", function() {
 	equal( main.childNodes.length, clone.childNodes.length, "Simple child length to ensure a large dom tree copies correctly" );
 });
 
-test( "append to multiple elements (#8070)", function() {
+QUnit.test( "append to multiple elements (#8070)", function() {
 
 	expect( 2 );
 
@@ -1344,7 +1344,7 @@ test( "append to multiple elements (#8070)", function() {
 	equal( selects[ 1 ].childNodes.length, 2, "Second select got two nodes" );
 });
 
-test( "table manipulation", function() {
+QUnit.test( "table manipulation", function() {
 	expect( 2 );
 
 	var table = jQuery("<table style='font-size:16px'></table>").appendTo("#qunit-fixture").empty(),
@@ -1359,7 +1359,7 @@ test( "table manipulation", function() {
 	ok( table[0].offsetHeight - height >= 15, "prepended rows are visible" );
 });
 
-test( "clone()", function() {
+QUnit.test( "clone()", function() {
 
 	expect( 45 );
 
@@ -1487,7 +1487,7 @@ test( "clone()", function() {
 	body.remove();
 });
 
-test( "clone(script type=non-javascript) (#11359)", function() {
+QUnit.test( "clone(script type=non-javascript) (#11359)", function() {
 
 	expect( 3 );
 
@@ -1500,7 +1500,7 @@ test( "clone(script type=non-javascript) (#11359)", function() {
 	dest.remove();
 });
 
-test( "clone(form element) (Bug #3879, #6655)", function() {
+QUnit.test( "clone(form element) (Bug #3879, #6655)", function() {
 
 	expect( 5 );
 
@@ -1525,7 +1525,7 @@ test( "clone(form element) (Bug #3879, #6655)", function() {
 	equal( clone[ 0 ].defaultValue, "foo", "Textarea defaultValue cloned correctly" );
 });
 
-test( "clone(multiple selected options) (Bug #8129)", function() {
+QUnit.test( "clone(multiple selected options) (Bug #8129)", function() {
 
 	expect( 1 );
 
@@ -1535,7 +1535,7 @@ test( "clone(multiple selected options) (Bug #8129)", function() {
 
 });
 
-test( "clone() on XML nodes", function() {
+QUnit.test( "clone() on XML nodes", function() {
 
 	expect( 2 );
 
@@ -1550,7 +1550,7 @@ test( "clone() on XML nodes", function() {
 	equal( cloneTab.text(), "cloneval", "Check cloned XML node was correctly set" );
 });
 
-test( "clone() on local XML nodes with html5 nodename", function() {
+QUnit.test( "clone() on local XML nodes with html5 nodename", function() {
 
 	expect( 2 );
 
@@ -1561,14 +1561,14 @@ test( "clone() on local XML nodes with html5 nodename", function() {
 	equal( $meter[ 0 ].nodeType, 1, "Check if nodeType is not changed due to cloning" );
 });
 
-test( "html(undefined)", function() {
+QUnit.test( "html(undefined)", function() {
 
 	expect( 1 );
 
 	equal( jQuery("#foo").html("<i>test</i>").html(undefined).html().toLowerCase(), "<i>test</i>", ".html(undefined) is chainable (#5571)" );
 });
 
-test( "html() on empty set", function() {
+QUnit.test( "html() on empty set", function() {
 
 	expect( 1 );
 
@@ -1689,15 +1689,15 @@ function testHtml( valueObj ) {
 	ok( /^[^<]*[^<\s][^<]*$/.test( fixture.html() ), "Replace html with text" );
 }
 
-test( "html(String|Number)", function() {
+QUnit.test( "html(String|Number)", function() {
 	testHtml( manipulationBareObj );
 });
 
-test( "html(Function)", function() {
+QUnit.test( "html(Function)", function() {
 	testHtml( manipulationFunctionReturningObj );
 });
 
-test( "html(Function) with incoming value -- direct selection", function() {
+QUnit.test( "html(Function) with incoming value -- direct selection", function() {
 
 	expect( 4 );
 
@@ -1722,7 +1722,7 @@ test( "html(Function) with incoming value -- direct selection", function() {
 	ok( pass, "Set HTML" );
 });
 
-test( "html(Function) with incoming value -- jQuery.contents()", function() {
+QUnit.test( "html(Function) with incoming value -- jQuery.contents()", function() {
 
 	expect( 14 );
 
@@ -1775,7 +1775,7 @@ test( "html(Function) with incoming value -- jQuery.contents()", function() {
 	}).html().replace( />/g, "&gt;" ), " " + insert, "Verify escaped insertion." );
 });
 
-test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() {
+QUnit.test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() {
 
 	expect( 2 );
 
@@ -1795,7 +1795,7 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 	ok( expected.test( $content.html() ), "html()" );
 });
 
-test( "remove() no filters", function() {
+QUnit.test( "remove() no filters", function() {
 
   expect( 3 );
 
@@ -1811,7 +1811,7 @@ test( "remove() no filters", function() {
 
 });
 
-test( "remove() with filters", function() {
+QUnit.test( "remove() with filters", function() {
 
   expect( 8 );
 
@@ -1842,7 +1842,7 @@ test( "remove() with filters", function() {
 	equal( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 });
 
-test( "remove() event cleaning ", 1, function() {
+QUnit.test( "remove() event cleaning ", 1, function() {
 	var count, first, cleanUp;
 
 	count = 0;
@@ -1857,7 +1857,7 @@ test( "remove() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
-test( "remove() in document order #13779", 1, function() {
+QUnit.test( "remove() in document order #13779", 1, function() {
 	var last,
 		cleanData = jQuery.cleanData;
 
@@ -1881,7 +1881,7 @@ test( "remove() in document order #13779", 1, function() {
 	jQuery.cleanData = cleanData;
 });
 
-test("detach() no filters", function () {
+QUnit.test("detach() no filters", function () {
 
   expect(3);
 
@@ -1898,7 +1898,7 @@ test("detach() no filters", function () {
 
 });
 
-test("detach() with filters", function () {
+QUnit.test("detach() with filters", function () {
 
   expect(8);
 
@@ -1929,7 +1929,7 @@ test("detach() with filters", function () {
   equal(jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works");
 });
 
-test( "detach() event cleaning ", 1, function() {
+QUnit.test( "detach() event cleaning ", 1, function() {
 	var count, first, cleanUp;
 
 	count = 0;
@@ -1944,7 +1944,7 @@ test( "detach() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
-test("empty()", function() {
+QUnit.test("empty()", function() {
 
 	expect( 3 );
 
@@ -1957,7 +1957,7 @@ test("empty()", function() {
 	equal( j.html(), "", "Check node,textnode,comment empty works" );
 });
 
-test( "jQuery.cleanData", function() {
+QUnit.test( "jQuery.cleanData", function() {
 
 	expect( 14 );
 
@@ -2035,7 +2035,7 @@ test( "jQuery.cleanData", function() {
 	}
 });
 
-test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
+QUnit.test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 
 	expect( 1 );
 
@@ -2054,7 +2054,7 @@ test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 	$f.remove();
 });
 
-test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
+QUnit.test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
 
 	expect( 3 );
 
@@ -2081,7 +2081,7 @@ test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)"
 			].join("\n")).appendTo("#qunit-fixture");
 });
 
-test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
+QUnit.test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
 
 	expect( 1 );
 
@@ -2091,7 +2091,7 @@ test( "jQuery.buildFragment - plain objects are not a document #8950", function(
 	} catch ( e ) {}
 });
 
-test( "jQuery.clone - no exceptions for object elements #9587", function() {
+QUnit.test( "jQuery.clone - no exceptions for object elements #9587", function() {
 
 	expect( 1 );
 
@@ -2103,7 +2103,7 @@ test( "jQuery.clone - no exceptions for object elements #9587", function() {
 	}
 });
 
-test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
+QUnit.test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 
 	expect( 7 );
 
@@ -2170,7 +2170,7 @@ test( "Cloned, detached HTML5 elems (#10667,10670)", function() {
 	$clone.off("click");
 });
 
-test( "Guard against exceptions when clearing safeChildNodes", function() {
+QUnit.test( "Guard against exceptions when clearing safeChildNodes", function() {
 
 	expect( 1 );
 
@@ -2183,7 +2183,7 @@ test( "Guard against exceptions when clearing safeChildNodes", function() {
 	ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
 });
 
-test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
+QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 
 	expect( 5 );
 
@@ -2194,7 +2194,7 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });
 
-test( "html() - script exceptions bubble (#11743)", function() {
+QUnit.test( "html() - script exceptions bubble (#11743)", function() {
 
 	expect( 3 );
 
@@ -2218,7 +2218,7 @@ test( "html() - script exceptions bubble (#11743)", function() {
 	}
 });
 
-test( "checked state is cloned with clone()", function() {
+QUnit.test( "checked state is cloned with clone()", function() {
 
 	expect( 2 );
 
@@ -2231,7 +2231,7 @@ test( "checked state is cloned with clone()", function() {
 	equal( jQuery(elem).clone().attr("id","clone")[ 0 ].checked, true, "Checked true state correctly cloned" );
 });
 
-test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
+QUnit.test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
 
 	expect( 2 );
 
@@ -2253,7 +2253,7 @@ testIframeWithCallback( "buildFragment works even if document[0] is iframe's win
 	ok( test.status, test.description );
 });
 
-test( "script evaluation (#11795)", function() {
+QUnit.test( "script evaluation (#11795)", function() {
 
 	expect( 13 );
 
@@ -2307,7 +2307,7 @@ test( "script evaluation (#11795)", function() {
 	}
 });
 
-test( "jQuery._evalUrl (#12838)", function() {
+QUnit.test( "jQuery._evalUrl (#12838)", function() {
 
 	expect( 5 );
 
@@ -2336,7 +2336,7 @@ test( "jQuery._evalUrl (#12838)", function() {
 	jQuery._evalUrl = evalUrl;
 });
 
-test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
+QUnit.test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
 
 	expect( 10 );
 
@@ -2370,7 +2370,7 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 	});
 });
 
-test( "Index for function argument should be received (#13094)", 2, function() {
+QUnit.test( "Index for function argument should be received (#13094)", 2, function() {
 	var i = 0;
 
 	jQuery("<div/><div/>").before(function( index ) {
@@ -2379,7 +2379,7 @@ test( "Index for function argument should be received (#13094)", 2, function() {
 
 });
 
-test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
+QUnit.test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement("div") );
 
@@ -2388,7 +2388,7 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
 
-test( "Make sure specific elements with content created correctly (#13232)", 20, function() {
+QUnit.test( "Make sure specific elements with content created correctly (#13232)", 20, function() {
 	var results = [],
 		args = [],
 		elems = {
@@ -2417,7 +2417,7 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 	});
 });
 
-test( "Validate creation of multiple quantities of certain elements (#13818)", 44, function() {
+QUnit.test( "Validate creation of multiple quantities of certain elements (#13818)", 44, function() {
 	var tags = [ "thead", "tbody", "tfoot", "colgroup", "col", "caption", "tr", "th", "td", "optgroup", "option" ];
 
 	jQuery.each( tags, function( index, tag ) {

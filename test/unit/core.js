@@ -1,12 +1,12 @@
-module("core", { teardown: moduleTeardown });
+QUnit.module("core", { teardown: moduleTeardown });
 
-test("Unit Testing Environment", function () {
+QUnit.test("Unit Testing Environment", function () {
 	expect(2);
 	ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
 	ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
 });
 
-test("Basic requirements", function() {
+QUnit.test("Basic requirements", function() {
 	expect(7);
 	ok( Array.prototype.push, "Array.push()" );
 	ok( Function.prototype.apply, "Function.apply()" );
@@ -17,7 +17,7 @@ test("Basic requirements", function() {
 	ok( $, "$" );
 });
 
-test("jQuery()", function() {
+QUnit.test("jQuery()", function() {
 
 	var elem, i,
 		obj = jQuery("div"),
@@ -150,14 +150,14 @@ test("jQuery()", function() {
 	}
 });
 
-test("jQuery(selector, context)", function() {
+QUnit.test("jQuery(selector, context)", function() {
 	expect(3);
 	deepEqual( jQuery("div p", "#qunit-fixture").get(), q("sndp", "en", "sap"), "Basic selector with string as context" );
 	deepEqual( jQuery("div p", q("qunit-fixture")[0]).get(), q("sndp", "en", "sap"), "Basic selector with element as context" );
 	deepEqual( jQuery("div p", jQuery("#qunit-fixture")).get(), q("sndp", "en", "sap"), "Basic selector with jQuery object as context" );
 });
 
-test( "selector state", function() {
+QUnit.test( "selector state", function() {
 	expect( 18 );
 
 	var test;
@@ -200,7 +200,7 @@ test( "selector state", function() {
 	equal( test.context, document.body, "#qunit-fixture find Context" );
 });
 
-test( "globalEval", function() {
+QUnit.test( "globalEval", function() {
 	expect( 3 );
 	Globals.register("globalEvalTest");
 
@@ -214,7 +214,7 @@ test( "globalEval", function() {
 	equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 });
 
-test( "globalEval with 'use strict'", function() {
+QUnit.test( "globalEval with 'use strict'", function() {
 	expect( 1 );
 	Globals.register("strictEvalTest");
 
@@ -222,7 +222,7 @@ test( "globalEval with 'use strict'", function() {
 	equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
 });
 
-test("noConflict", function() {
+QUnit.test("noConflict", function() {
 	expect(7);
 
 	var $$ = jQuery;
@@ -241,7 +241,7 @@ test("noConflict", function() {
 	window["jQuery"] = jQuery = $$;
 });
 
-test("trim", function() {
+QUnit.test("trim", function() {
 	expect(13);
 
 	var nbsp = String.fromCharCode(160);
@@ -263,7 +263,7 @@ test("trim", function() {
 	equal( jQuery.trim("\uFEFF \xA0! | \uFEFF"), "! |", "leading/trailing should be trimmed" );
 });
 
-test("type", function() {
+QUnit.test("type", function() {
 	expect( 28 );
 
 	equal( jQuery.type(null), "null", "null" );
@@ -302,7 +302,7 @@ test("type", function() {
 	equal( jQuery.type(new MyObject()), "object", "Object" );
 });
 
-asyncTest("isPlainObject", function() {
+QUnit.asyncTest("isPlainObject", function() {
 	expect(15);
 
 	var pass, iframe, doc,
@@ -356,7 +356,7 @@ asyncTest("isPlainObject", function() {
 		window.iframeDone = undefined;
 		iframe.parentNode.removeChild( iframe );
 		ok( jQuery.isPlainObject(new otherObject()), "new otherObject" + ( detail ? " - " + detail : "" ) );
-		start();
+		QUnit.start();
 	};
 
 	try {
@@ -370,7 +370,7 @@ asyncTest("isPlainObject", function() {
 	}
 });
 
-test("isFunction", function() {
+QUnit.test("isFunction", function() {
 	expect(19);
 
 	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
@@ -456,7 +456,7 @@ test("isFunction", function() {
 	});
 });
 
-test( "isNumeric", function() {
+QUnit.test( "isNumeric", function() {
 	expect( 37 );
 
 	var t = jQuery.isNumeric,
@@ -511,7 +511,7 @@ test( "isNumeric", function() {
 	equal( t( new Date() ), false, "Instance of a Date");
 });
 
-test("isXMLDoc - HTML", function() {
+QUnit.test("isXMLDoc - HTML", function() {
 	expect(4);
 
 	ok( !jQuery.isXMLDoc( document ), "HTML document" );
@@ -538,15 +538,15 @@ test("isXMLDoc - HTML", function() {
 	document.body.removeChild( iframe );
 });
 
-test("XSS via location.hash", function() {
+QUnit.test("XSS via location.hash", function() {
 	expect(1);
 
-	stop();
+	QUnit.stop();
 	jQuery["_check9521"] = function(x){
 		ok( x, "script called from #id-like selector with inline handler" );
 		jQuery("#check9521").remove();
 		delete jQuery["_check9521"];
-		start();
+		QUnit.start();
 	};
 	try {
 		// This throws an error because it's processed like an id
@@ -556,7 +556,7 @@ test("XSS via location.hash", function() {
 	}
 });
 
-test("isXMLDoc - XML", function() {
+QUnit.test("isXMLDoc - XML", function() {
 	expect(3);
 	var xml = createDashboardXML();
 	ok( jQuery.isXMLDoc( xml ), "XML document" );
@@ -564,7 +564,7 @@ test("isXMLDoc - XML", function() {
 	ok( jQuery.isXMLDoc( jQuery("tab", xml)[0] ), "XML Tab Element" );
 });
 
-test("isWindow", function() {
+QUnit.test("isWindow", function() {
 	expect( 14 );
 
 	ok( jQuery.isWindow(window), "window" );
@@ -583,7 +583,7 @@ test("isWindow", function() {
 	ok( !jQuery.isWindow(function(){}), "function" );
 });
 
-test("jQuery('html')", function() {
+QUnit.test("jQuery('html')", function() {
 	expect( 18 );
 
 	var s, div, j;
@@ -626,7 +626,7 @@ test("jQuery('html')", function() {
 	equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 });
 
-test("jQuery('massive html #7990')", function() {
+QUnit.test("jQuery('massive html #7990')", function() {
 	expect( 3 );
 
 	var i,
@@ -643,7 +643,7 @@ test("jQuery('massive html #7990')", function() {
 	equal( html.childNodes.length, 30000 );
 });
 
-test("jQuery('html', context)", function() {
+QUnit.test("jQuery('html', context)", function() {
 	expect(1);
 
 	var $div = jQuery("<div/>")[0],
@@ -651,7 +651,7 @@ test("jQuery('html', context)", function() {
 	equal($span.length, 1, "verify a span created with a div context works, #1763");
 });
 
-test("jQuery(selector, xml).text(str) - loaded via xml document", function() {
+QUnit.test("jQuery(selector, xml).text(str) - loaded via xml document", function() {
 	expect(2);
 
 	var xml = createDashboardXML(),
@@ -662,7 +662,7 @@ test("jQuery(selector, xml).text(str) - loaded via xml document", function() {
 	equal( tab.text(), "newtext", "verify new text correct" );
 });
 
-test("end()", function() {
+QUnit.test("end()", function() {
 	expect(3);
 	equal( "Yahoo", jQuery("#yahoo").parent().end().text(), "check for end" );
 	ok( jQuery("#yahoo").end(), "check for end with nothing to end" );
@@ -672,24 +672,24 @@ test("end()", function() {
 	equal( "Yahoo", jQuery("#yahoo").text(), "check for non-destructive behaviour" );
 });
 
-test("length", function() {
+QUnit.test("length", function() {
 	expect(1);
 	equal( jQuery("#qunit-fixture p").length, 6, "Get Number of Elements Found" );
 });
 
-test("get()", function() {
+QUnit.test("get()", function() {
 	expect(1);
 	deepEqual( jQuery("#qunit-fixture p").get(), q("firstp","ap","sndp","en","sap","first"), "Get All Elements" );
 });
 
-test("toArray()", function() {
+QUnit.test("toArray()", function() {
 	expect(1);
 	deepEqual( jQuery("#qunit-fixture p").toArray(),
 		q("firstp","ap","sndp","en","sap","first"),
 		"Convert jQuery object to an Array" );
 });
 
-test("inArray()", function() {
+QUnit.test("inArray()", function() {
 	expect(19);
 
 	var selections = {
@@ -725,19 +725,19 @@ test("inArray()", function() {
 
 });
 
-test("get(Number)", function() {
+QUnit.test("get(Number)", function() {
 	expect(2);
 	equal( jQuery("#qunit-fixture p").get(0), document.getElementById("firstp"), "Get A Single Element" );
 	strictEqual( jQuery("#firstp").get(1), undefined, "Try get with index larger elements count" );
 });
 
-test("get(-Number)",function() {
+QUnit.test("get(-Number)",function() {
 	expect(2);
 	equal( jQuery("p").get(-1), document.getElementById("first"), "Get a single element with negative index" );
 	strictEqual( jQuery("#firstp").get(-2), undefined, "Try get with index negative index larger then elements count" );
 });
 
-test("each(Function)", function() {
+QUnit.test("each(Function)", function() {
 	expect(1);
 	var div, pass, i;
 
@@ -752,7 +752,7 @@ test("each(Function)", function() {
 	ok( pass, "Execute a function, Relative" );
 });
 
-test("slice()", function() {
+QUnit.test("slice()", function() {
 	expect(7);
 
 	var $links = jQuery("#ap a");
@@ -767,7 +767,7 @@ test("slice()", function() {
 	deepEqual( $links.eq(-1).get(), q("mark"), "eq(-1)" );
 });
 
-test("first()/last()", function() {
+QUnit.test("first()/last()", function() {
 	expect(4);
 
 	var $links = jQuery("#ap a"), $none = jQuery("asdf");
@@ -779,7 +779,7 @@ test("first()/last()", function() {
 	deepEqual( $none.last().get(), [], "last() none" );
 });
 
-test("map()", function() {
+QUnit.test("map()", function() {
 	expect( 2 );
 
 	deepEqual(
@@ -799,7 +799,7 @@ test("map()", function() {
 	);
 });
 
-test("jQuery.map", function() {
+QUnit.test("jQuery.map", function() {
 	expect( 25 );
 
 	var i, label, result, callback;
@@ -902,7 +902,7 @@ test("jQuery.map", function() {
 	equal( result.join(""), "00012223", "Array results flattened (#2616)" );
 });
 
-test("jQuery.merge()", function() {
+QUnit.test("jQuery.merge()", function() {
 	expect( 10 );
 
 	deepEqual(
@@ -964,7 +964,7 @@ test("jQuery.merge()", function() {
 	);
 });
 
-test("jQuery.grep()", function() {
+QUnit.test("jQuery.grep()", function() {
 	expect(8);
 
 	var searchCriterion = function( value ) {
@@ -984,7 +984,7 @@ test("jQuery.grep()", function() {
 	deepEqual( jQuery.grep( [ 1, 3, 5, 7 ], searchCriterion, false ), [], "Satisfying elements absent and grep explicitly uninverted" );
 });
 
-test("jQuery.extend(Object, Object)", function() {
+QUnit.test("jQuery.extend(Object, Object)", function() {
 	expect(28);
 
 	var empty, optionsWithLength, optionsWithDate, myKlass,
@@ -1097,7 +1097,7 @@ test("jQuery.extend(Object, Object)", function() {
 	deepEqual( options2, options2Copy, "Check if not modified: options2 must not be modified" );
 });
 
-test("jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed by object", function() {
+QUnit.test("jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed by object", function() {
 	expect(2);
 
 	var result, initial = {
@@ -1118,7 +1118,7 @@ test("jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed by obj
 	ok( !jQuery.isArray( result.object ), "result.object wasn't paved with an empty array" );
 });
 
-test("jQuery.each(Object,Function)", function() {
+QUnit.test("jQuery.each(Object,Function)", function() {
 	expect( 23 );
 
 	var i, label, seen, callback;
@@ -1221,7 +1221,7 @@ test("jQuery.each(Object,Function)", function() {
 	equal( i, 2, "Iteration over document.styleSheets" );
 });
 
-test("jQuery.makeArray", function(){
+QUnit.test("jQuery.makeArray", function(){
 	expect(15);
 
 	equal( jQuery.makeArray(jQuery("html>*"))[0].nodeName.toUpperCase(), "HEAD", "Pass makeArray a jQuery object" );
@@ -1259,7 +1259,7 @@ test("jQuery.makeArray", function(){
 		"Pass makeArray a form (treat as elements)" );
 });
 
-test("jQuery.inArray", function(){
+QUnit.test("jQuery.inArray", function(){
 	expect(3);
 
 	equal( jQuery.inArray( 0, false ), -1 , "Search in 'false' as array returns -1 and doesn't throw exception" );
@@ -1269,7 +1269,7 @@ test("jQuery.inArray", function(){
 	equal( jQuery.inArray( 0, undefined ), -1 , "Search in 'undefined' as array returns -1 and doesn't throw exception" );
 });
 
-test("jQuery.isEmptyObject", function(){
+QUnit.test("jQuery.isEmptyObject", function(){
 	expect(2);
 
 	equal(true, jQuery.isEmptyObject({}), "isEmptyObject on empty object literal" );
@@ -1279,7 +1279,7 @@ test("jQuery.isEmptyObject", function(){
 	// equal(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );
 });
 
-test("jQuery.proxy", function(){
+QUnit.test("jQuery.proxy", function(){
 	expect( 9 );
 
 	var test2, test3, test4, fn, cb,
@@ -1319,7 +1319,7 @@ test("jQuery.proxy", function(){
 	cb.call( thisObject, "arg3" );
 });
 
-test("jQuery.parseHTML", function() {
+QUnit.test("jQuery.parseHTML", function() {
 	expect( 18 );
 
 	var html, nodes;
@@ -1359,7 +1359,7 @@ test("jQuery.parseHTML", function() {
 	ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
 });
 
-test("jQuery.parseJSON", function() {
+QUnit.test("jQuery.parseJSON", function() {
 	expect( 20 );
 
 	strictEqual( jQuery.parseJSON( null ), null, "primitive null" );
@@ -1446,7 +1446,7 @@ test("jQuery.parseJSON", function() {
 	strictEqual( jQuery.parseJSON([ 0 ]), 0, "Input cast to string" );
 });
 
-test("jQuery.parseXML", 8, function(){
+QUnit.test("jQuery.parseXML", 8, function(){
 	var xml, tmp;
 	try {
 		xml = jQuery.parseXML( "<p>A <b>well-formed</b> xml string</p>" );
@@ -1478,7 +1478,7 @@ test("jQuery.parseXML", 8, function(){
 	}
 });
 
-test("jQuery.camelCase()", function() {
+QUnit.test("jQuery.camelCase()", function() {
 
 	var tests = {
 		"foo-bar": "fooBar",

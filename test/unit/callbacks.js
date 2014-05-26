@@ -1,4 +1,4 @@
-module( "callbacks", {
+QUnit.module( "callbacks", {
 	teardown: moduleTeardown
 });
 
@@ -63,12 +63,12 @@ jQuery.each( tests, function( strFlags, resultString ) {
 				"object": objectFlags
 			}, function( flagsTypes, flags ) {
 
-				test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
+				QUnit.test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
 
 					expect( 21 );
 
 					// Give qunit a little breathing room
-					stop();
+					QUnit.stop();
 					setTimeout( start, 0 );
 
 					var cblist,
@@ -238,7 +238,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 })();
 
-test( "jQuery.Callbacks( options ) - options are copied", function() {
+QUnit.test( "jQuery.Callbacks( options ) - options are copied", function() {
 
 	expect( 1 );
 
@@ -255,7 +255,7 @@ test( "jQuery.Callbacks( options ) - options are copied", function() {
 	cb.fire();
 });
 
-test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
+QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 
 	expect( 1 );
 
@@ -270,7 +270,7 @@ test( "jQuery.Callbacks.fireWith - arguments are copied", function() {
 	});
 });
 
-test( "jQuery.Callbacks.remove - should remove all instances", function() {
+QUnit.test( "jQuery.Callbacks.remove - should remove all instances", function() {
 
 	expect( 1 );
 
@@ -285,7 +285,7 @@ test( "jQuery.Callbacks.remove - should remove all instances", function() {
 	}).remove( fn ).fire();
 });
 
-test( "jQuery.Callbacks.has", function() {
+QUnit.test( "jQuery.Callbacks.has", function() {
 
 	expect( 13 );
 
@@ -332,7 +332,7 @@ test( "jQuery.Callbacks.has", function() {
 
 });
 
-test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
+QUnit.test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
 
 	expect( 1 );
 

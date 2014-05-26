@@ -1,4 +1,4 @@
-module("support", { teardown: moduleTeardown });
+QUnit.module("support", { teardown: moduleTeardown });
 
 var computedSupport = getComputedSupport( jQuery.support );
 
@@ -38,7 +38,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expect( 2 );
 		deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
 
-		stop();
+		QUnit.stop();
 
 		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
 			equal( data, "", "No log request should be sent" );
@@ -246,7 +246,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	}
 
 	if ( expected ) {
-		test( "Verify that the support tests resolve as expected per browser", function() {
+		QUnit.test( "Verify that the support tests resolve as expected per browser", function() {
 			var i, prop,
 				j = 0;
 

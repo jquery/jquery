@@ -1,4 +1,4 @@
-module( "attributes", {
+QUnit.module( "attributes", {
 	teardown: moduleTeardown
 });
 
@@ -24,7 +24,7 @@ function functionReturningObj( value ) {
 		Returns a function that returns the value
 */
 
-test( "jQuery.propFix integrity test", function() {
+QUnit.test( "jQuery.propFix integrity test", function() {
 	expect( 1 );
 
 	//  This must be maintained and equal jQuery.attrFix when appropriate
@@ -49,7 +49,7 @@ test( "jQuery.propFix integrity test", function() {
 	deepEqual( props, jQuery.propFix, "jQuery.propFix passes integrity check" );
 });
 
-test( "attr(String)", function() {
+QUnit.test( "attr(String)", function() {
 	expect( 50 );
 
 	var extras, body, $body,
@@ -165,7 +165,7 @@ test( "attr(String)", function() {
 
 });
 
-test( "attr(String) on cloned elements, #9646", function() {
+QUnit.test( "attr(String) on cloned elements, #9646", function() {
 	expect( 4 );
 
 	var div,
@@ -188,7 +188,7 @@ test( "attr(String) on cloned elements, #9646", function() {
 	strictEqual( input.clone( true ).attr( "value", 42 )[ 0 ].value, "42", "Value attribute should be changed on cloned element" );
 });
 
-test( "attr(String) in XML Files", function() {
+QUnit.test( "attr(String) in XML Files", function() {
 	expect( 3 );
 	var xml = createDashboardXML();
 	equal( jQuery( "locations", xml ).attr("class"), "foo", "Check class attribute in XML document" );
@@ -196,7 +196,7 @@ test( "attr(String) in XML Files", function() {
 	equal( jQuery( "location", xml ).attr("checked"), "different", "Check that hooks are not attached in XML document" );
 });
 
-test( "attr(String, Function)", function() {
+QUnit.test( "attr(String, Function)", function() {
 	expect( 2 );
 
 	equal(
@@ -216,7 +216,7 @@ test( "attr(String, Function)", function() {
 	);
 });
 
-test( "attr(Hash)", function() {
+QUnit.test( "attr(Hash)", function() {
 	expect( 3 );
 	var pass = true;
 	jQuery("div").attr({
@@ -250,7 +250,7 @@ test( "attr(Hash)", function() {
 	);
 });
 
-test( "attr(String, Object)", function() {
+QUnit.test( "attr(String, Object)", function() {
 	expect( 71 );
 
 	var $input, $text, $details,
@@ -471,7 +471,7 @@ test( "attr(String, Object)", function() {
 	equal( jQuery("#name").attr( "nonexisting", undefined ).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
-test( "attr - extending the boolean attrHandle", function() {
+QUnit.test( "attr - extending the boolean attrHandle", function() {
 	expect( 1 );
 	var called = false,
 		_handle = jQuery.expr.attrHandle.checked || $.noop;
@@ -485,7 +485,7 @@ test( "attr - extending the boolean attrHandle", function() {
 	ok( called, "The boolean attrHandle does not drop custom attrHandles" );
 });
 
-test( "attr(String, Object) - Loaded via XML document", function() {
+QUnit.test( "attr(String, Object) - Loaded via XML document", function() {
 	expect( 2 );
 	var xml = createDashboardXML(),
 		titles = [];
@@ -496,7 +496,7 @@ test( "attr(String, Object) - Loaded via XML document", function() {
 	equal( titles[ 1 ], "Users", "attr() in XML context: Check second title" );
 });
 
-test( "attr(String, Object) - Loaded via XML fragment", function() {
+QUnit.test( "attr(String, Object) - Loaded via XML fragment", function() {
 	expect( 2 );
 	var frag = createXMLFragment(),
 		$frag = jQuery( frag );
@@ -507,7 +507,7 @@ test( "attr(String, Object) - Loaded via XML fragment", function() {
 	equal( $frag.attr("test"), undefined, "remove attribute" );
 });
 
-test( "attr('tabindex')", function() {
+QUnit.test( "attr('tabindex')", function() {
 	expect( 8 );
 
 	// elements not natively tabbable
@@ -525,7 +525,7 @@ test( "attr('tabindex')", function() {
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").attr("tabindex"), "-1", "anchor without href, no tabindex set" );
 });
 
-test( "attr('tabindex', value)", function() {
+QUnit.test( "attr('tabindex', value)", function() {
 	expect( 9 );
 
 	var element = jQuery("#divWithNoTabIndex");
@@ -562,7 +562,7 @@ test( "attr('tabindex', value)", function() {
 	equal( element.attr("tabindex"), "-1", "set negative tabindex" );
 });
 
-test( "removeAttr(String)", function() {
+QUnit.test( "removeAttr(String)", function() {
 	expect( 12 );
 	var $first;
 
@@ -594,7 +594,7 @@ test( "removeAttr(String)", function() {
 	equal( $first.attr( "Case" ), undefined, "mixed-case attribute was removed" );
 });
 
-test( "removeAttr(String) in XML", function() {
+QUnit.test( "removeAttr(String) in XML", function() {
 	expect( 7 );
 	var xml = createDashboardXML(),
 		iwt = jQuery( "infowindowtab", xml );
@@ -613,7 +613,7 @@ test( "removeAttr(String) in XML", function() {
 	equal( iwt.attr("mixedCase"), undefined, "Removed" );
 });
 
-test( "removeAttr(Multi String, variable space width)", function() {
+QUnit.test( "removeAttr(Multi String, variable space width)", function() {
 	expect( 8 );
 
 	var div = jQuery("<div id='a' alt='b' title='c' rel='d'></div>"),
@@ -635,7 +635,7 @@ test( "removeAttr(Multi String, variable space width)", function() {
 	});
 });
 
-test( "prop(String, Object)", function() {
+QUnit.test( "prop(String, Object)", function() {
 
 	expect( 17 );
 
@@ -667,7 +667,7 @@ test( "prop(String, Object)", function() {
 	equal( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
 });
 
-test( "prop(String, Object) on null/undefined", function() {
+QUnit.test( "prop(String, Object) on null/undefined", function() {
 
   expect( 14 );
 
@@ -711,7 +711,7 @@ test( "prop(String, Object) on null/undefined", function() {
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
 });
 
-test( "prop('tabindex')", function() {
+QUnit.test( "prop('tabindex')", function() {
 	expect( 11 );
 
 	// inputs without tabIndex attribute
@@ -734,7 +734,7 @@ test( "prop('tabindex')", function() {
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set" );
 });
 
-test( "prop('tabindex', value)", 10, function() {
+QUnit.test( "prop('tabindex', value)", 10, function() {
 
 	var clone,
 		element = jQuery("#divWithNoTabIndex");
@@ -776,7 +776,7 @@ test( "prop('tabindex', value)", 10, function() {
 	equal( clone[ 0 ].getAttribute("tabindex"), "1", "set tabindex on cloned element" );
 });
 
-test( "removeProp(String)", function() {
+QUnit.test( "removeProp(String)", function() {
 	expect( 6 );
 	var attributeNode = document.createAttribute("irrelevant"),
 		commentNode = document.createComment("some comment"),
@@ -801,7 +801,7 @@ test( "removeProp(String)", function() {
 	});
 });
 
-test( "val() after modification", function() {
+QUnit.test( "val() after modification", function() {
 
 	expect( 1 );
 
@@ -810,7 +810,7 @@ test( "val() after modification", function() {
 });
 
 
-test( "val()", function() {
+QUnit.test( "val()", function() {
 
 	expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
@@ -886,7 +886,7 @@ test( "val()", function() {
 	equal( jQuery("<option/>").val("test").attr("value"), "test", "Setting value sets the value attribute" );
 });
 
-test("val() with non-matching values on dropdown list", function() {
+QUnit.test("val() with non-matching values on dropdown list", function() {
 	expect( 3 );
 
 	jQuery("#select5").val( "" );
@@ -905,7 +905,7 @@ test("val() with non-matching values on dropdown list", function() {
 if ( "value" in document.createElement("meter") &&
 			"value" in document.createElement("progress") ) {
 
-	test( "val() respects numbers without exception (Bug #9319)", function() {
+	QUnit.test( "val() respects numbers without exception (Bug #9319)", function() {
 
 		expect( 4 );
 
@@ -965,15 +965,15 @@ var testVal = function( valueObj ) {
 	deepEqual( $select.val(), [ "1", "2" ], "Should set array of values" );
 };
 
-test( "val(String/Number)", function() {
+QUnit.test( "val(String/Number)", function() {
 	testVal( bareObj );
 });
 
-test( "val(Function)", function() {
+QUnit.test( "val(Function)", function() {
 	testVal( functionReturningObj );
 });
 
-test( "val(Array of Numbers) (Bug #7123)", function() {
+QUnit.test( "val(Array of Numbers) (Bug #7123)", function() {
 	expect( 4 );
 	jQuery("#form").append("<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />");
 	var elements = jQuery("input[name=arrayTest]").val([ 1, 2 ]);
@@ -985,7 +985,7 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 	elements.remove();
 });
 
-test( "val(Function) with incoming value", function() {
+QUnit.test( "val(Function) with incoming value", function() {
 	expect( 10 );
 
 	var oldVal = jQuery("#text1").val();
@@ -1037,7 +1037,7 @@ test( "val(Function) with incoming value", function() {
 });
 
 // testing if a form.reset() breaks a subsequent call to a select element's .val() (in IE only)
-test( "val(select) after form.reset() (Bug #2551)", function() {
+QUnit.test( "val(select) after form.reset() (Bug #2551)", function() {
 	expect( 3 );
 
 	jQuery("<form id='kk' name='kk'><select id='kkk'><option value='cf'>cf</option><option value='gf'>gf</option></select></form>").appendTo("#qunit-fixture");
@@ -1101,15 +1101,15 @@ var testAddClass = function( valueObj ) {
 	equal( div.attr("class"), "bar", "Do not add the same class twice in the same call." );
 };
 
-test( "addClass(String)", function() {
+QUnit.test( "addClass(String)", function() {
 	testAddClass( bareObj );
 });
 
-test( "addClass(Function)", function() {
+QUnit.test( "addClass(Function)", function() {
 	testAddClass( functionReturningObj );
 });
 
-test( "addClass(Function) with incoming value", function() {
+QUnit.test( "addClass(Function) with incoming value", function() {
 	expect( 52 );
 	var pass, i,
 		div = jQuery("#qunit-fixture div"),
@@ -1175,15 +1175,15 @@ var testRemoveClass = function(valueObj) {
 	equal( div.className, "", "Make sure there is nothing left after everything is removed." );
 };
 
-test( "removeClass(String) - simple", function() {
+QUnit.test( "removeClass(String) - simple", function() {
 	testRemoveClass( bareObj );
 });
 
-test( "removeClass(Function) - simple", function() {
+QUnit.test( "removeClass(Function) - simple", function() {
 	testRemoveClass( functionReturningObj );
 });
 
-test( "removeClass(Function) with incoming value", function() {
+QUnit.test( "removeClass(Function) with incoming value", function() {
 	expect( 52 );
 
 	var $divs = jQuery("#qunit-fixture div").addClass("test"), old = $divs.map(function() {
@@ -1200,7 +1200,7 @@ test( "removeClass(Function) with incoming value", function() {
 	ok( !$divs.is(".test"), "Remove Class" );
 });
 
-test( "removeClass() removes duplicates", function() {
+QUnit.test( "removeClass() removes duplicates", function() {
 	expect( 1 );
 
 	var $div = jQuery( jQuery.parseHTML("<div class='x x x'></div>") );
@@ -1210,7 +1210,7 @@ test( "removeClass() removes duplicates", function() {
 	ok( !$div.hasClass("x"), "Element with multiple same classes does not escape the wrath of removeClass()" );
 });
 
-test("removeClass(undefined) is a no-op", function() {
+QUnit.test("removeClass(undefined) is a no-op", function() {
 	expect( 1 );
 
 	var $div = jQuery("<div class='base second'></div>");
@@ -1269,15 +1269,15 @@ var testToggleClass = function(valueObj) {
 	QUnit.expectJqData( e[ 0 ], "__className__" );
 };
 
-test( "toggleClass(String|boolean|undefined[, boolean])", function() {
+QUnit.test( "toggleClass(String|boolean|undefined[, boolean])", function() {
 	testToggleClass( bareObj );
 });
 
-test( "toggleClass(Function[, boolean])", function() {
+QUnit.test( "toggleClass(Function[, boolean])", function() {
 	testToggleClass( functionReturningObj );
 });
 
-test( "toggleClass(Function[, boolean]) with incoming value", function() {
+QUnit.test( "toggleClass(Function[, boolean]) with incoming value", function() {
 	expect( 14 );
 
 	var e = jQuery("#firstp"),
@@ -1328,7 +1328,7 @@ test( "toggleClass(Function[, boolean]) with incoming value", function() {
 	ok( !e.is(".test"), "Assert class not present" );
 });
 
-test( "addClass, removeClass, hasClass", function() {
+QUnit.test( "addClass, removeClass, hasClass", function() {
 	expect( 17 );
 
 	var jq = jQuery("<p>Hi</p>"), x = jq[ 0 ];
@@ -1369,7 +1369,7 @@ test( "addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("class4") === false, "Check the class has been properly removed" );
 });
 
-test( "addClass, removeClass, hasClass on many elements", function() {
+QUnit.test( "addClass, removeClass, hasClass on many elements", function() {
 	expect( 19 );
 
 	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
@@ -1412,7 +1412,7 @@ test( "addClass, removeClass, hasClass on many elements", function() {
 		"Did not find a class when not present" );
 });
 
-test( "contents().hasClass() returns correct values", function() {
+QUnit.test( "contents().hasClass() returns correct values", function() {
 	expect( 2 );
 
 	var $div = jQuery("<div><span class='foo'></span><!-- comment -->text</div>"),
@@ -1422,7 +1422,7 @@ test( "contents().hasClass() returns correct values", function() {
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
 
-test( "hasClass correctly interprets non-space separators (#13835)", function() {
+QUnit.test( "hasClass correctly interprets non-space separators (#13835)", function() {
 	expect( 4 );
 
 	var
@@ -1442,7 +1442,7 @@ test( "hasClass correctly interprets non-space separators (#13835)", function() 
 	});
 });
 
-test( "coords returns correct values in IE6/IE7, see #10828", function() {
+QUnit.test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	expect( 1 );
 
 	var area,
@@ -1452,7 +1452,7 @@ test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
 });
 
-test( "should not throw at $(option).val() (#14686)", 1, function() {
+QUnit.test( "should not throw at $(option).val() (#14686)", 1, function() {
 	try {
 		jQuery( "<option/>" ).val();
 		ok( true );
@@ -1461,7 +1461,7 @@ test( "should not throw at $(option).val() (#14686)", 1, function() {
 	}
 });
 
-test( "Insignificant white space returned for $(option).val() (#14858)", function() {
+QUnit.test( "Insignificant white space returned for $(option).val() (#14858)", function() {
 	expect ( 3 );
 
 	var val = jQuery( "<option></option>" ).val();

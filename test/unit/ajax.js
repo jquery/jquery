@@ -1,4 +1,4 @@
-module( "ajax", {
+QUnit.module( "ajax", {
 	setup: function() {
 		var jsonpCallback = this.jsonpCallback = jQuery.ajaxSettings.jsonpCallback;
 		jQuery.ajaxSettings.jsonpCallback = function() {
@@ -148,7 +148,7 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "jQuery.ajax() - retry with jQuery.ajax( this )", 2, function() {
+	QUnit.asyncTest( "jQuery.ajax() - retry with jQuery.ajax( this )", 2, function() {
 		var previousUrl,
 			firstTime = true;
 		jQuery.ajax({
@@ -169,7 +169,7 @@ module( "ajax", {
 								previousUrl = this.url;
 							} else {
 								strictEqual( this.url, previousUrl, "url parameters are not re-appended" );
-								start();
+								QUnit.start();
 								return false;
 							}
 						},
@@ -585,7 +585,7 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object", 8, function() {
+	QUnit.asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object", 8, function() {
 		var target = "data/name.html",
 			successCount = 0,
 			errorCount = 0,
@@ -601,7 +601,7 @@ module( "ajax", {
 			equal( successCount, 5, "Check all ajax calls successful" );
 			equal( errorCount, 0, "Check no ajax errors (status" + errorEx + ")" );
 			jQuery( document ).off("ajaxError.passthru");
-			start();
+			QUnit.start();
 		});
 		Globals.register("testBar");
 
@@ -992,7 +992,7 @@ module( "ajax", {
 				},
 				function( type, url ) {
 					url = "data/" + url + "?ts=" + ifModifiedNow++;
-					asyncTest( "jQuery.ajax() - " + type + " support" + label, 4, function() {
+					QUnit.asyncTest( "jQuery.ajax() - " + type + " support" + label, 4, function() {
 						jQuery.ajax({
 							url: url,
 							ifModified: true,
@@ -1015,7 +1015,7 @@ module( "ajax", {
 										}
 									},
 									complete: function() {
-										start();
+										QUnit.start();
 									}
 								});
 							}
@@ -1049,24 +1049,24 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "jQuery.ajax() - statusText", 3, function() {
+	QUnit.asyncTest( "jQuery.ajax() - statusText", 3, function() {
 		jQuery.ajax( url("data/statusText.php?status=200&text=Hello") ).done(function( _, statusText, jqXHR ) {
 			strictEqual( statusText, "success", "callback status text ok for success" );
 			ok( jqXHR.statusText === "Hello" || jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
 			jQuery.ajax( url("data/statusText.php?status=404&text=World") ).fail(function( jqXHR, statusText ) {
 				strictEqual( statusText, "error", "callback status text ok for error" );
-				start();
+				QUnit.start();
 			});
 		});
 	});
 
-	asyncTest( "jQuery.ajax() - statusCode", 20, function() {
+	QUnit.asyncTest( "jQuery.ajax() - statusCode", 20, function() {
 
 		var count = 12;
 
 		function countComplete() {
 			if ( ! --count ) {
-				start();
+				QUnit.start();
 			}
 		}
 
@@ -1259,7 +1259,7 @@ module( "ajax", {
 		}
 	});
 
-	test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
+	QUnit.test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
 		var xhr,
 			success = false;
 		try {
@@ -1347,7 +1347,7 @@ module( "ajax", {
 		});
 	});
 
-	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", 2, function () {
+	QUnit.test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", 2, function () {
 		var success = false,
 			context = {};
 		context.field = context;
@@ -1407,12 +1407,12 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+	QUnit.asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
 		var onerror = window.onerror;
 		window.onerror = function() {
 			ok( true, "Exception thrown" );
 			window.onerror = onerror;
-			start();
+			QUnit.start();
 		};
 		jQuery.ajax({
 			url: "data/badjson.js",
@@ -1596,29 +1596,29 @@ module( "ajax", {
 
 //----------- jQuery.ajaxSetup()
 
-	asyncTest( "jQuery.ajaxSetup()", 1, function() {
+	QUnit.asyncTest( "jQuery.ajaxSetup()", 1, function() {
 		jQuery.ajaxSetup({
 			url: url("data/name.php?name=foo"),
 			success: function( msg ) {
 				strictEqual( msg, "bar", "Check for GET" );
-				start();
+				QUnit.start();
 			}
 		});
 		jQuery.ajax();
 	});
 
-	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) - with global timeout", 2, function() {
+	QUnit.asyncTest( "jQuery.ajaxSetup({ timeout: Number }) - with global timeout", 2, function() {
 		var passed = 0,
 			pass = function() {
 				ok( passed++ < 2, "Error callback executed" );
 				if ( passed === 2 ) {
 					jQuery( document ).off("ajaxError.setupTest");
-					start();
+					QUnit.start();
 				}
 			},
 			fail = function( a, b ) {
 				ok( false, "Check for timeout failed " + a + " " + b );
-				start();
+				QUnit.start();
 			};
 
 		jQuery( document ).on( "ajaxError.setupTest", pass );
@@ -1635,7 +1635,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) with localtimeout", 1, function() {
+	QUnit.asyncTest( "jQuery.ajaxSetup({ timeout: Number }) with localtimeout", 1, function() {
 		jQuery.ajaxSetup({
 			timeout: 50
 		});
@@ -1645,18 +1645,18 @@ module( "ajax", {
 			url: url("data/name.php?wait=1"),
 			error: function() {
 				ok( false, "Check for local timeout failed" );
-				start();
+				QUnit.start();
 			},
 			success: function() {
 				ok( true, "Check for local timeout" );
-				start();
+				QUnit.start();
 			}
 		});
 	});
 
 //----------- jQuery.domManip()
 
-	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+	QUnit.test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
 		jQuery.ajaxSetup({
 			type: "POST"
 		});
@@ -1670,13 +1670,13 @@ module( "ajax", {
 		jQuery( document ).off("ajaxStart ajaxStop");
 	});
 
-	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
+	QUnit.asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
 		jQuery("#qunit-fixture").load( "data/cleanScript.html", start );
 	});
 
 //----------- jQuery.get()
 
-	asyncTest( "jQuery.get( String, Hash, Function ) - parse xml and use text() on nodes", 2, function() {
+	QUnit.asyncTest( "jQuery.get( String, Hash, Function ) - parse xml and use text() on nodes", 2, function() {
 		jQuery.get( url("data/dashboard.xml"), function( xml ) {
 			var content = [];
 			jQuery( "tab", xml ).each(function() {
@@ -1684,23 +1684,23 @@ module( "ajax", {
 			});
 			strictEqual( content[ 0 ], "blabla", "Check first tab" );
 			strictEqual( content[ 1 ], "blublu", "Check second tab" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "#8277 - jQuery.get( String, Function ) - data in ajaxSettings", 1, function() {
+	QUnit.asyncTest( "#8277 - jQuery.get( String, Function ) - data in ajaxSettings", 1, function() {
 		jQuery.ajaxSetup({
 			data: "helloworld"
 		});
 		jQuery.get( url("data/echoQuery.php"), function( data ) {
 			ok( /helloworld$/.test( data ), "Data from ajaxSettings was used" );
-			start();
+			QUnit.start();
 		});
 	});
 
 //----------- jQuery.getJSON()
 
-	asyncTest( "jQuery.getJSON( String, Hash, Function ) - JSON array", 5, function() {
+	QUnit.asyncTest( "jQuery.getJSON( String, Hash, Function ) - JSON array", 5, function() {
 		jQuery.getJSON(
 			url("data/json.php"),
 			{
@@ -1712,56 +1712,56 @@ module( "ajax", {
 				strictEqual( json[ 0 ]["age"], 21, "Check JSON: first, age" );
 				strictEqual( json[ 1 ]["name"], "Peter", "Check JSON: second, name" );
 				strictEqual( json[ 1 ]["age"], 25, "Check JSON: second, age" );
-				start();
+				QUnit.start();
 			}
 		);
 	});
 
-	asyncTest( "jQuery.getJSON( String, Function ) - JSON object", 2, function() {
+	QUnit.asyncTest( "jQuery.getJSON( String, Function ) - JSON object", 2, function() {
 		jQuery.getJSON( url("data/json.php"), function( json ) {
 			if ( json && json["data"] ) {
 				strictEqual( json["data"]["lang"], "en", "Check JSON: lang" );
 				strictEqual( json["data"].length, 25, "Check JSON: length" );
-				start();
+				QUnit.start();
 			}
 		});
 	});
 
-	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function() {
+	QUnit.asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function() {
 		jQuery.getJSON( url( window.location.href.replace( /[^\/]*$/, "" ) + "data/json.php" ), function( json ) {
 			strictEqual( json.data.lang, "en", "Check JSON: lang" );
 			strictEqual( json.data.length, 25, "Check JSON: length" );
-			start();
+			QUnit.start();
 		});
 	});
 
 //----------- jQuery.getScript()
 
-	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
+	QUnit.asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
+	QUnit.asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php") ).done( start );
 	});
 
-	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
+	QUnit.asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
-			start();
+			QUnit.start();
 		});
 	});
 
 //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
-	asyncTest( "jQuery.fn.load( String )", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String )", 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1770,7 +1770,7 @@ module( "ajax", {
 		jQuery("#first").load( "data/name.html", start );
 	});
 
-	asyncTest( "jQuery.fn.load() - 404 error callbacks", 6, function() {
+	QUnit.asyncTest( "jQuery.fn.load() - 404 error callbacks", 6, function() {
 		addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError")();
 		jQuery( document ).ajaxStop( start );
 		jQuery("<div/>").load( "data/404.html", function() {
@@ -1779,7 +1779,7 @@ module( "ajax", {
 	});
 
 	// check if load can be called with url and null data
-	asyncTest( "jQuery.fn.load( String, null )", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, null )", 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1789,7 +1789,7 @@ module( "ajax", {
 	});
 
 	// check if load can be called with url and undefined data
-	asyncTest( "jQuery.fn.load( String, undefined )", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, undefined )", 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1799,33 +1799,33 @@ module( "ajax", {
 	});
 
 	// check if load can be called with only url
-	asyncTest( "jQuery.fn.load( URL_SELECTOR )", 1, function() {
+	QUnit.asyncTest( "jQuery.fn.load( URL_SELECTOR )", 1, function() {
 		jQuery("#first").load( "data/test3.html div.user", function() {
 			strictEqual( jQuery( this ).children("div").length, 2, "Verify that specific elements were injected" );
-			start();
+			QUnit.start();
 		});
 	});
 
 	// Selector should be trimmed to avoid leading spaces (#14773)
-	asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )", 1, function() {
+	QUnit.asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )", 1, function() {
 		jQuery("#first").load( "data/test3.html   #superuser ", function() {
 			strictEqual( jQuery( this ).children("div").length, 1, "Verify that specific elements were injected" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM", 2, function() {
 		jQuery("#first").load( url("data/name.html"), function() {
 			ok( /^ERROR/.test(jQuery("#first").text()), "Check if content was injected into the DOM" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - check scripts", 7, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, Function ) - check scripts", 7, function() {
 		var verifyEvaluation = function() {
 			strictEqual( window["testBar"], "bar", "Check if script src was evaluated after load" );
 			strictEqual( jQuery("#ap").html(), "bar", "Check if script evaluation has modified DOM");
-			start();
+			QUnit.start();
 		};
 
 		Globals.register("testFoo");
@@ -1839,17 +1839,17 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag", 3, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag", 3, function() {
 		Globals.register("testFoo");
 
 		jQuery("#first").load( url("data/test2.html"), function() {
 			strictEqual( jQuery("#foo").html(), "foo", "Check if script evaluation has modified DOM");
 			strictEqual( window["testFoo"], "foo", "Check if script was evaluated after load" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - dataFilter in ajaxSettings", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, Function ) - dataFilter in ajaxSettings", 2, function() {
 		jQuery.ajaxSetup({
 			dataFilter: function() {
 				return "Hello World";
@@ -1858,11 +1858,11 @@ module( "ajax", {
 		jQuery("<div/>").load( url("data/name.html"), function( responseText ) {
 			strictEqual( jQuery( this ).html(), "Hello World", "Test div was filled with filtered data" );
 			strictEqual( responseText, "Hello World", "Test callback receives filtered data" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Object, Function )", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, Object, Function )", 2, function() {
 		jQuery("<div />").load( url("data/params_html.php"), {
 			"foo": 3,
 			"bar": "ok"
@@ -1870,20 +1870,20 @@ module( "ajax", {
 			var $post = jQuery( this ).find("#post");
 			strictEqual( $post.find("#foo").text(), "3", "Check if a hash of data is passed correctly" );
 			strictEqual( $post.find("#bar").text(), "ok", "Check if a hash of data is passed correctly" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, String, Function )", 2, function() {
+	QUnit.asyncTest( "jQuery.fn.load( String, String, Function )", 2, function() {
 		jQuery("<div />").load( url("data/params_html.php"), "foo=3&bar=ok", function() {
 			var $get = jQuery( this ).find("#get");
 			strictEqual( $get.find("#foo").text(), "3", "Check if a string of data is passed correctly" );
 			strictEqual( $get.find("#bar").text(), "ok", "Check if a   of data is passed correctly" );
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load() - callbacks get the correct parameters", 8, function() {
+	QUnit.asyncTest( "jQuery.fn.load() - callbacks get the correct parameters", 8, function() {
 		var completeArgs = {};
 
 		jQuery.ajaxSetup({
@@ -1922,19 +1922,19 @@ module( "ajax", {
 		).always( start );
 	});
 
-	asyncTest( "#2046 - jQuery.fn.load( String, Function ) with ajaxSetup on dataType json", 1, function() {
+	QUnit.asyncTest( "#2046 - jQuery.fn.load( String, Function ) with ajaxSetup on dataType json", 1, function() {
 		jQuery.ajaxSetup({
 			dataType: "json"
 		});
 		jQuery( document ).ajaxComplete(function( e, xml, s ) {
 			strictEqual( s.dataType, "html", "Verify the load() dataType was html" );
 			jQuery( document ).off("ajaxComplete");
-			start();
+			QUnit.start();
 		});
 		jQuery("#first").load("data/test3.html");
 	});
 
-	asyncTest( "#10524 - jQuery.fn.load() - data specified in ajaxSettings is merged in", 1, function() {
+	QUnit.asyncTest( "#10524 - jQuery.fn.load() - data specified in ajaxSettings is merged in", 1, function() {
 		var data = {
 			"baz": 1
 		};
@@ -1946,13 +1946,13 @@ module( "ajax", {
 		jQuery("#foo").load( "data/echoQuery.php", data );
 		jQuery( document ).ajaxComplete(function( event, jqXHR, options ) {
 			ok( ~options.data.indexOf("foo=bar"), "Data from ajaxSettings was used" );
-			start();
+			QUnit.start();
 		});
 	});
 
 //----------- jQuery.post()
 
-	asyncTest( "jQuery.post() - data", 3, function() {
+	QUnit.asyncTest( "jQuery.post() - data", 3, function() {
 		jQuery.when(
 			jQuery.post(
 				url("data/name.php"),
@@ -1981,11 +1981,11 @@ module( "ajax", {
 				}
 			})
 		).always(function() {
-			start();
+			QUnit.start();
 		});
 	});
 
-	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
+	QUnit.asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
 		jQuery.when(
 			jQuery.post(
 				url("data/name.php"),
@@ -2006,13 +2006,13 @@ module( "ajax", {
 				});
 			})
 		).always(function() {
-			start();
+			QUnit.start();
 		});
 	});
 
 //----------- jQuery.active
 
-	test( "jQuery.active", 1, function() {
+	QUnit.test( "jQuery.active", 1, function() {
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 	});
 

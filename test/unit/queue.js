@@ -1,7 +1,7 @@
-module( "queue", { teardown: moduleTeardown });
+QUnit.module( "queue", { teardown: moduleTeardown });
 
-test( "queue() with other types", 14, function() {
-	stop();
+QUnit.test( "queue() with other types", 14, function() {
+	QUnit.stop();
 
 	var $div = jQuery({}),
 		counter = 0;
@@ -28,7 +28,7 @@ test( "queue() with other types", 14, function() {
 
 	$div.promise("foo").done(function() {
 		equal( counter, 4, "Testing previous call to dequeue in deferred"  );
-		start();
+		QUnit.start();
 	});
 
 	equal( $div.queue("foo").length, 4, "Testing queue length" );
@@ -52,7 +52,7 @@ test( "queue() with other types", 14, function() {
 
 });
 
-test("queue(name) passes in the next item in the queue as a parameter", function() {
+QUnit.test("queue(name) passes in the next item in the queue as a parameter", function() {
 	expect(2);
 
 	var div = jQuery({}),
@@ -71,9 +71,9 @@ test("queue(name) passes in the next item in the queue as a parameter", function
 	div.dequeue("foo");
 });
 
-test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
+QUnit.test("queue() passes in the next item in the queue as a parameter to fx queues", function() {
 	expect(3);
-	stop();
+	QUnit.stop();
 
 	var div = jQuery({}),
 		counter = 0;
@@ -90,13 +90,13 @@ test("queue() passes in the next item in the queue as a parameter to fx queues",
 
 	jQuery.when( div.promise("fx"), div ).done(function() {
 		equal(counter, 2, "Deferreds resolved");
-		start();
+		QUnit.start();
 	});
 });
 
-test("callbacks keep their place in the queue", function() {
+QUnit.test("callbacks keep their place in the queue", function() {
 	expect(5);
-	stop();
+	QUnit.stop();
 	var div = jQuery("<div>"),
 		counter = 0;
 
@@ -117,35 +117,35 @@ test("callbacks keep their place in the queue", function() {
 
 	div.promise("fx").done(function() {
 		equal(counter, 4, "Deferreds resolved");
-		start();
+		QUnit.start();
 	});
 });
 
-test( "jQuery.queue should return array while manipulating the queue", 1, function() {
+QUnit.test( "jQuery.queue should return array while manipulating the queue", 1, function() {
 	var div = document.createElement("div");
 
 	ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
 });
 
-test("delay()", function() {
+QUnit.test("delay()", function() {
 	expect(2);
-	stop();
+	QUnit.stop();
 
 	var foo = jQuery({}), run = 0;
 
 	foo.delay(100).queue(function(){
 		run = 1;
 		ok( true, "The function was dequeued." );
-		start();
+		QUnit.start();
 	});
 
 	equal( run, 0, "The delay delayed the next function from running." );
 });
 
-test("clearQueue(name) clears the queue", function() {
+QUnit.test("clearQueue(name) clears the queue", function() {
 	expect(2);
 
-	stop();
+	QUnit.stop();
 
 	var div = jQuery({}),
 		counter = 0;
@@ -160,7 +160,7 @@ test("clearQueue(name) clears the queue", function() {
 
 	div.promise("foo").done(function() {
 		ok( true, "dequeue resolves the deferred" );
-		start();
+		QUnit.start();
 	});
 
 	div.dequeue("foo");
@@ -168,7 +168,7 @@ test("clearQueue(name) clears the queue", function() {
 	equal(counter, 1, "the queue was cleared");
 });
 
-test("clearQueue() clears the fx queue", function() {
+QUnit.test("clearQueue() clears the fx queue", function() {
 	expect(1);
 
 	var div = jQuery({}),
@@ -187,7 +187,7 @@ test("clearQueue() clears the fx queue", function() {
 	div.removeData();
 });
 
-asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
+QUnit.asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
 	var foo = jQuery( "#foo" ).clone().addBack(),
 		promised = false;
 
@@ -198,11 +198,11 @@ asyncTest( "fn.promise() - called when fx queue is empty", 3, function() {
 	});
 	foo.promise().done( function() {
 		ok( promised = true, "Promised" );
-		start();
+		QUnit.start();
 	});
 });
 
-asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is dequeued", 5, function() {
+QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is dequeued", 5, function() {
 	var foo = jQuery( "#foo" ),
 		test;
 	foo.promise( "queue" ).done( function() {
@@ -217,7 +217,7 @@ asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is deq
 		setTimeout( function() {
 			next();
 			strictEqual( test++, 4, "step four" );
-			start();
+			QUnit.start();
 		}, 10 );
 	}).promise( "queue" ).done( function() {
 		strictEqual( test++, 3, "step three" );
@@ -226,7 +226,7 @@ asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is deq
 	foo.dequeue( "queue" );
 });
 
-asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function() {
+QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function() {
 	var foo = jQuery( "#foo" ),
 		test = 1;
 
@@ -242,12 +242,12 @@ asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before res
 
 	foo.promise( "queue" ).done( function() {
 		strictEqual( test++, 2, "step two" );
-		start();
+		QUnit.start();
 	});
 
 });
 
-test( ".promise(obj)", function() {
+QUnit.test( ".promise(obj)", function() {
 	expect(2);
 
 	var obj = {},
@@ -259,9 +259,9 @@ test( ".promise(obj)", function() {
 
 
 if ( jQuery.fn.stop ) {
-	test("delay() can be stopped", function() {
+	QUnit.test("delay() can be stopped", function() {
 		expect( 3 );
-		stop();
+		QUnit.stop();
 
 		var done = {};
 		jQuery({})
@@ -293,11 +293,11 @@ if ( jQuery.fn.stop ) {
 		deepEqual( done, { alt1: true, alt2: true }, "Queue ran the proper functions" );
 
 		setTimeout(function() {
-			start();
+			QUnit.start();
 		}, 1500 );
 	});
 
-	asyncTest( "queue stop hooks", 2, function() {
+	QUnit.asyncTest( "queue stop hooks", 2, function() {
 		var foo = jQuery( "#foo" );
 
 		foo.queue( function( next, hooks ) {
@@ -310,7 +310,7 @@ if ( jQuery.fn.stop ) {
 		foo.queue( function( next, hooks ) {
 			hooks.stop = function( gotoEnd ) {
 				equal( gotoEnd, true, "Stopped with gotoEnd" );
-				start();
+				QUnit.start();
 			};
 		});
 

@@ -1,11 +1,11 @@
-module( "event", {
+QUnit.module( "event", {
 	setup: function() {
 		document.body.focus();
 	},
 	teardown: moduleTeardown
 });
 
-test("null or undefined handler", function() {
+QUnit.test("null or undefined handler", function() {
 	expect(2);
 	// Supports Fixes bug #7229
 	try {
@@ -19,7 +19,7 @@ test("null or undefined handler", function() {
 	} catch ( e ) {}
 });
 
-test("on() with non-null,defined data", function() {
+QUnit.test("on() with non-null,defined data", function() {
 
 	expect(2);
 
@@ -37,7 +37,7 @@ test("on() with non-null,defined data", function() {
 
 });
 
-test("Handler changes and .trigger() order", function() {
+QUnit.test("Handler changes and .trigger() order", function() {
 	expect(1);
 
 	var markup = jQuery(
@@ -63,7 +63,7 @@ test("Handler changes and .trigger() order", function() {
 	markup.remove();
 });
 
-test("on(), with data", function() {
+QUnit.test("on(), with data", function() {
 	expect(4);
 	var test, handler, handler2;
 
@@ -82,7 +82,7 @@ test("on(), with data", function() {
 	jQuery("#firstp").on("click", test, handler2).trigger("click").off("click", handler2);
 });
 
-test("click(), with data", function() {
+QUnit.test("click(), with data", function() {
 	expect(3);
 	var handler = function(event) {
 		ok( event.data, "on() with data, check passed data exists" );
@@ -93,7 +93,7 @@ test("click(), with data", function() {
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using data." );
 });
 
-test("on(), with data, trigger with data", function() {
+QUnit.test("on(), with data, trigger with data", function() {
 	expect(4);
 	var handler = function(event, data) {
 		ok( event.data, "check passed data exists" );
@@ -104,7 +104,7 @@ test("on(), with data, trigger with data", function() {
 	jQuery("#firstp").on("click", {foo: "bar"}, handler).trigger("click", [{bar: "foo"}]).off("click", handler);
 });
 
-test("on(), multiple events at once", function() {
+QUnit.test("on(), multiple events at once", function() {
 	expect(2);
 	var handler,
 		clickCounter = 0,
@@ -123,7 +123,7 @@ test("on(), multiple events at once", function() {
 	equal( mouseoverCounter, 1, "on() with multiple events at once" );
 });
 
-test("on(), five events at once", function() {
+QUnit.test("on(), five events at once", function() {
 	expect(1);
 
 	var count = 0,
@@ -139,7 +139,7 @@ test("on(), five events at once", function() {
 	equal( count, 5, "on() five events at once" );
 });
 
-test("on(), multiple events at once and namespaces", function() {
+QUnit.test("on(), multiple events at once and namespaces", function() {
 	expect(7);
 
 	var cur, div,
@@ -183,7 +183,7 @@ test("on(), multiple events at once and namespaces", function() {
 	div.remove();
 });
 
-test("on(), namespace with special add", function() {
+QUnit.test("on(), namespace with special add", function() {
 	expect(27);
 
 	var i = 0,
@@ -246,7 +246,7 @@ test("on(), namespace with special add", function() {
 	delete jQuery.event.special["test"];
 });
 
-test("on(), no data", function() {
+QUnit.test("on(), no data", function() {
 	expect(1);
 	var handler = function(event) {
 		ok ( !event.data, "Check that no data is added to the event object" );
@@ -254,7 +254,7 @@ test("on(), no data", function() {
 	jQuery("#firstp").on("click", handler).trigger("click");
 });
 
-test("on/one/off(Object)", function(){
+QUnit.test("on/one/off(Object)", function(){
 	expect(6);
 
 	var $elem,
@@ -312,7 +312,7 @@ test("on/one/off(Object)", function(){
 	equal( mouseoverCounter, 4, "on(Object)" );
 });
 
-test("on/off(Object), on/off(Object, String)", function() {
+QUnit.test("on/off(Object), on/off(Object, String)", function() {
 	expect(6);
 
 	var events,
@@ -354,7 +354,7 @@ test("on/off(Object), on/off(Object, String)", function() {
 	equal( mouseoverCounter, 4, "off" );
 });
 
-test("on immediate propagation", function() {
+QUnit.test("on immediate propagation", function() {
 	expect(2);
 
 	var lastClick,
@@ -386,7 +386,7 @@ test("on immediate propagation", function() {
 	$p.off( "click", "**" );
 });
 
-test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
+QUnit.test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
 	expect( 3 );
 
 	var $anchor2 = jQuery( "#anchor2" ),
@@ -435,7 +435,7 @@ test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
 	}
 });
 
-test("on(), iframes", function() {
+QUnit.test("on(), iframes", function() {
 	expect( 1 );
 
 	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
@@ -446,7 +446,7 @@ test("on(), iframes", function() {
 	}).trigger("click").off("click");
 });
 
-test("on(), trigger change on select", function() {
+QUnit.test("on(), trigger change on select", function() {
 	expect(5);
 	var counter = 0;
 	function selectOnChange(event) {
@@ -457,7 +457,7 @@ test("on(), trigger change on select", function() {
 	}).trigger("change");
 });
 
-test("on(), namespaced events, cloned events", 18, function() {
+QUnit.test("on(), namespaced events, cloned events", 18, function() {
 	var firstp = jQuery( "#firstp" );
 
 	firstp.on("custom.test",function(){
@@ -509,7 +509,7 @@ test("on(), namespaced events, cloned events", 18, function() {
 	ok( jQuery("a.test").eq(0).triggerHandler("click") === false, "Handler is bound to appendTo'd elements" );
 });
 
-test("on(), multi-namespaced events", function() {
+QUnit.test("on(), multi-namespaced events", function() {
 	expect(6);
 
 	var order = [
@@ -567,7 +567,7 @@ test("on(), multi-namespaced events", function() {
 	jQuery("#firstp").trigger("custom");
 });
 
-test("namespace-only event binding is a no-op", function(){
+QUnit.test("namespace-only event binding is a no-op", function(){
 	expect(2);
 
 	jQuery("#firstp")
@@ -583,7 +583,7 @@ test("namespace-only event binding is a no-op", function(){
 		.off("whoops");
 });
 
-test("on(), with same function", function() {
+QUnit.test("on(), with same function", function() {
 	expect(2);
 
 	var count = 0, func = function(){
@@ -601,7 +601,7 @@ test("on(), with same function", function() {
 	equal(count, 1, "Verify that removing events still work." );
 });
 
-test("on(), make sure order is maintained", function() {
+QUnit.test("on(), make sure order is maintained", function() {
 	expect(1);
 
 	var elem = jQuery("#firstp"), log = [], check = [];
@@ -622,7 +622,7 @@ test("on(), make sure order is maintained", function() {
 	elem.off("click");
 });
 
-test("on(), with different this object", function() {
+QUnit.test("on(), with different this object", function() {
 	expect(4);
 	var thisObject = { myThis: true },
 		data = { myData: true },
@@ -641,7 +641,7 @@ test("on(), with different this object", function() {
 	ok( !jQuery._data(jQuery("#firstp")[0], "events"), "Event handler unbound when using different this object and data." );
 });
 
-test("on(name, false), off(name, false)", function() {
+QUnit.test("on(name, false), off(name, false)", function() {
 	expect(3);
 
 	var main = 0;
@@ -663,7 +663,7 @@ test("on(name, false), off(name, false)", function() {
 	jQuery("#qunit-fixture").off("click");
 });
 
-test("on(name, selector, false), off(name, selector, false)", function() {
+QUnit.test("on(name, selector, false), off(name, selector, false)", function() {
 	expect(3);
 
 	var main = 0;
@@ -684,7 +684,7 @@ test("on(name, selector, false), off(name, selector, false)", function() {
 	jQuery("#qunit-fixture").off("click", "#ap");
 });
 
-test("on()/trigger()/off() on plain object", function() {
+QUnit.test("on()/trigger()/off() on plain object", function() {
 	expect( 7 );
 
 	var events,
@@ -729,7 +729,7 @@ test("on()/trigger()/off() on plain object", function() {
 			obj[ jQuery.expando ][ jQuery.expando ]["events"], undefined, "Make sure events object is removed" );
 });
 
-test("off(type)", function() {
+QUnit.test("off(type)", function() {
 	expect( 1 );
 
 	var message, func,
@@ -775,7 +775,7 @@ test("off(type)", function() {
 		.off( "click" );
 });
 
-test("off(eventObject)", function() {
+QUnit.test("off(eventObject)", function() {
 	expect(4);
 
 	var $elem = jQuery("#firstp"),
@@ -812,7 +812,7 @@ test("off(eventObject)", function() {
 });
 
 if ( jQuery.fn.hover ) {
-	test("hover() mouseenter mouseleave", function() {
+	QUnit.test("hover() mouseenter mouseleave", function() {
 		expect(1);
 
 		var times = 0,
@@ -834,7 +834,7 @@ if ( jQuery.fn.hover ) {
 	});
 }
 
-test("mouseover triggers mouseenter", function() {
+QUnit.test("mouseover triggers mouseenter", function() {
 	expect(1);
 
 	var count = 0,
@@ -848,7 +848,7 @@ test("mouseover triggers mouseenter", function() {
 	elem.remove();
 });
 
-test("pointerover triggers pointerenter", function() {
+QUnit.test("pointerover triggers pointerenter", function() {
 	expect(1);
 
 	var count = 0,
@@ -862,7 +862,7 @@ test("pointerover triggers pointerenter", function() {
 	elem.remove();
 });
 
-test("withinElement implemented with jQuery.contains()", function() {
+QUnit.test("withinElement implemented with jQuery.contains()", function() {
 
 	expect(1);
 
@@ -881,7 +881,7 @@ test("withinElement implemented with jQuery.contains()", function() {
 
 });
 
-test("mouseenter, mouseleave don't catch exceptions", function() {
+QUnit.test("mouseenter, mouseleave don't catch exceptions", function() {
 	expect(2);
 
 	var elem = jQuery("#firstp").on( "mouseenter mouseleave", function() {
@@ -903,7 +903,7 @@ test("mouseenter, mouseleave don't catch exceptions", function() {
 
 if ( jQuery.fn.click ) {
 
-	test("trigger() shortcuts", function() {
+	QUnit.test("trigger() shortcuts", function() {
 		expect(6);
 
 		var counter, clickCounter,
@@ -951,7 +951,7 @@ if ( jQuery.fn.click ) {
 
 }
 
-test("trigger() bubbling", function() {
+QUnit.test("trigger() bubbling", function() {
 	expect(18);
 
 	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
@@ -996,7 +996,7 @@ test("trigger() bubbling", function() {
 	jQuery("html, body, #qunit-fixture").off("click");
 });
 
-test("trigger(type, [data], [fn])", function() {
+QUnit.test("trigger(type, [data], [fn])", function() {
 	expect(16);
 
 	var $elem, pass, form, elem2,
@@ -1087,7 +1087,7 @@ test("trigger(type, [data], [fn])", function() {
 	form.remove();
 });
 
-test( "submit event bubbles on copied forms (#11649)", function() {
+QUnit.test( "submit event bubbles on copied forms (#11649)", function() {
 	expect( 3 );
 
 	var $formByClone, $formByHTML,
@@ -1123,7 +1123,7 @@ test( "submit event bubbles on copied forms (#11649)", function() {
 	$testForm.off( "submit", noSubmit );
 });
 
-test( "change event bubbles on copied forms (#11796)", function(){
+QUnit.test( "change event bubbles on copied forms (#11796)", function(){
 	expect( 3 );
 
 	var $formByClone, $formByHTML,
@@ -1155,7 +1155,7 @@ test( "change event bubbles on copied forms (#11796)", function(){
 	$fixture.off( "change", "form", delegatedChange );
 });
 
-test("trigger(eventObject, [data], [fn])", function() {
+QUnit.test("trigger(eventObject, [data], [fn])", function() {
 	expect(28);
 
 	var event,
@@ -1244,7 +1244,7 @@ test("trigger(eventObject, [data], [fn])", function() {
 	equal( event.isDefaultPrevented(), false, "default not prevented" );
 });
 
-test(".trigger() bubbling on disconnected elements (#10489)", function() {
+QUnit.test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	expect(2);
 
 	jQuery( window ).on( "click", function(){
@@ -1268,7 +1268,7 @@ test(".trigger() bubbling on disconnected elements (#10489)", function() {
 	jQuery( window ).off( "click" );
 });
 
-test(".trigger() doesn't bubble load event (#10717)", function() {
+QUnit.test(".trigger() doesn't bubble load event (#10717)", function() {
 	expect(1);
 
 	jQuery( window ).on( "load", function(){
@@ -1287,7 +1287,7 @@ test(".trigger() doesn't bubble load event (#10717)", function() {
 	jQuery( window ).off( "load" );
 });
 
-test("Delegated events in SVG (#10791; #13180)", function() {
+QUnit.test("Delegated events in SVG (#10791; #13180)", function() {
 	expect(2);
 
 	var useElem, e,
@@ -1324,7 +1324,7 @@ test("Delegated events in SVG (#10791; #13180)", function() {
 	jQuery("#qunit-fixture").off("click");
 });
 
-test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function() {
+QUnit.test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function() {
 	expect(5);
 
 	// Alias names like "id" cause havoc
@@ -1379,7 +1379,7 @@ test("Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", functi
 	form.remove();
 });
 
-test("Submit event can be stopped (#11049)", function() {
+QUnit.test("Submit event can be stopped (#11049)", function() {
 	expect(1);
 
 	// Since we manually bubble in IE, make sure inner handlers get a chance to cancel
@@ -1423,7 +1423,7 @@ test("Submit event can be stopped (#11049)", function() {
 // handler making it impossible to feature-detect the support.
 if ( window.onbeforeunload === null &&
 	!/(ipad|iphone|ipod|android 2\.3)/i.test( navigator.userAgent ) ) {
-	asyncTest("on(beforeunload)", 1, function() {
+	QUnit.asyncTest("on(beforeunload)", 1, function() {
 		var iframe = jQuery(jQuery.parseHTML("<iframe src='data/event/onbeforeunload.html'><iframe>"));
 
 		window.onmessage = function( event ) {
@@ -1433,14 +1433,14 @@ if ( window.onbeforeunload === null &&
 
 			iframe.remove();
 			window.onmessage = null;
-			start();
+			QUnit.start();
 		};
 
 		iframe.appendTo("#qunit-fixture");
 	});
 }
 
-test("jQuery.Event( type, props )", function() {
+QUnit.test("jQuery.Event( type, props )", function() {
 
 	expect(5);
 
@@ -1464,7 +1464,7 @@ test("jQuery.Event( type, props )", function() {
 
 });
 
-test("jQuery.Event properties", function(){
+QUnit.test("jQuery.Event properties", function(){
 	expect(12);
 
 	var handler,
@@ -1502,7 +1502,7 @@ test("jQuery.Event properties", function(){
 	fireNative( $target[0], "click" );
 });
 
-test(".on()/.off()", function() {
+QUnit.test(".on()/.off()", function() {
 	expect(65);
 
 	var event, clicked, hash, called, livec, lived, livee,
@@ -1777,7 +1777,7 @@ test(".on()/.off()", function() {
 	jQuery("#body").off("click", "#nothiddendiv div");
 });
 
-test("jQuery.off using dispatched jQuery.Event", function() {
+QUnit.test("jQuery.off using dispatched jQuery.Event", function() {
 	expect(1);
 
 	var markup = jQuery("<p><a href='#'>target</a></p>"),
@@ -1791,7 +1791,7 @@ test("jQuery.off using dispatched jQuery.Event", function() {
 		.remove();
 });
 
-test( "delegated event with delegateTarget-relative selector", function() {
+QUnit.test( "delegated event with delegateTarget-relative selector", function() {
 	expect(3);
 	var markup = jQuery("<div><ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul></div>").appendTo("#qunit-fixture");
 
@@ -1825,7 +1825,7 @@ test( "delegated event with delegateTarget-relative selector", function() {
 	markup.remove();
 });
 
-test( "delegated event with selector matching Object.prototype property (#13203)", function() {
+QUnit.test( "delegated event with selector matching Object.prototype property (#13203)", function() {
 	expect(1);
 
 	var matched = 0;
@@ -1839,7 +1839,7 @@ test( "delegated event with selector matching Object.prototype property (#13203)
 	equal( matched, 0, "Nothing matched 'toString'" );
 });
 
-test("stopPropagation() stops directly-bound events on delegated target", function() {
+QUnit.test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 
 	var markup = jQuery("<div><p><a href=\"#\">target</a></p></div>");
@@ -1855,7 +1855,7 @@ test("stopPropagation() stops directly-bound events on delegated target", functi
 		.remove();
 });
 
-test("off all bound delegated events", function(){
+QUnit.test("off all bound delegated events", function(){
 	expect(2);
 
 	var count = 0,
@@ -1876,7 +1876,7 @@ test("off all bound delegated events", function(){
 	div.off("click");
 });
 
-test("on with multiple delegated events", function(){
+QUnit.test("on with multiple delegated events", function(){
 	expect(1);
 
 	var count = 0,
@@ -1892,7 +1892,7 @@ test("on with multiple delegated events", function(){
 	jQuery("#body").off( undefined, "**" );
 });
 
-test("delegated on with change", function(){
+QUnit.test("delegated on with change", function(){
 	expect(8);
 
 	var select, checkbox, checkboxFunction,
@@ -1981,7 +1981,7 @@ test("delegated on with change", function(){
 	equal( checkboxChange, 1, "Die on checkbox." );
 });
 
-test("delegated on with submit", function() {
+QUnit.test("delegated on with submit", function() {
 	expect( 2 );
 
 	var count1 = 0, count2 = 0;
@@ -2004,7 +2004,7 @@ test("delegated on with submit", function() {
 	jQuery(document).off( undefined, "**" );
 });
 
-test("delegated off() with only namespaces", function() {
+QUnit.test("delegated off() with only namespaces", function() {
 	expect(2);
 
 	var $delegate = jQuery("#liveHandlerOrder"),
@@ -2025,7 +2025,7 @@ test("delegated off() with only namespaces", function() {
 	equal( count, 1, "no more .ns after off");
 });
 
-test("Non DOM element events", function() {
+QUnit.test("Non DOM element events", function() {
 	expect(1);
 
 	var o = {};
@@ -2037,7 +2037,7 @@ test("Non DOM element events", function() {
 	jQuery(o).trigger("nonelementobj");
 });
 
-test("inline handler returning false stops default", function() {
+QUnit.test("inline handler returning false stops default", function() {
 	expect(1);
 
 	var markup = jQuery("<div><a href=\"#\" onclick=\"return false\">x</a></div>");
@@ -2049,7 +2049,7 @@ test("inline handler returning false stops default", function() {
 	markup.off("click");
 });
 
-test("window resize", function() {
+QUnit.test("window resize", function() {
 	expect(2);
 
 	jQuery(window).off();
@@ -2061,7 +2061,7 @@ test("window resize", function() {
 	ok( !jQuery._data(window, "events"), "Make sure all the events are gone." );
 });
 
-test("focusin bubbles", function() {
+QUnit.test("focusin bubbles", function() {
 	expect(2);
 
 	var input = jQuery( "<input type='text' />" ).prependTo( "body" ),
@@ -2095,7 +2095,7 @@ test("focusin bubbles", function() {
 	jQuery( "body" ).off( "focusin.focusinBubblesTest" );
 });
 
-test("custom events with colons (#3533, #8272)", function() {
+QUnit.test("custom events with colons (#3533, #8272)", function() {
 	expect(1);
 
 	var tab = jQuery("<table><tr><td>trigger</td></tr></table>").appendTo("body");
@@ -2109,7 +2109,7 @@ test("custom events with colons (#3533, #8272)", function() {
 
 });
 
-test(".on and .off", function() {
+QUnit.test(".on and .off", function() {
 	expect(9);
 	var counter, mixfn, data,
 		$onandoff = jQuery("<div id=\"onandoff\"><p>on<b>and</b>off</p><div>worked<em>or</em>borked?</div></div>").appendTo("body");
@@ -2207,7 +2207,7 @@ test(".on and .off", function() {
 	$onandoff.remove();
 });
 
-test("special on name mapping", function() {
+QUnit.test("special on name mapping", function() {
 	expect( 7 );
 
 	jQuery.event.special["slap"] = {
@@ -2278,7 +2278,7 @@ test("special on name mapping", function() {
 	delete jQuery.event.special["gutfeeling"];
 });
 
-test(".on and .off, selective mixed removal (#10705)", function() {
+QUnit.test(".on and .off, selective mixed removal (#10705)", function() {
 	expect(7);
 
 	var timingx = function( e ) {
@@ -2300,7 +2300,7 @@ test(".on and .off, selective mixed removal (#10705)", function() {
 		.trigger( "click" );	// 0
 });
 
-test(".on( event-map, null-selector, data ) #11130", function() {
+QUnit.test(".on( event-map, null-selector, data ) #11130", function() {
 
 	expect( 1 );
 
@@ -2316,7 +2316,7 @@ test(".on( event-map, null-selector, data ) #11130", function() {
 	$p.on( map, null, data ).trigger("foo");
 });
 
-test("clone() delegated events (#11076)", function() {
+QUnit.test("clone() delegated events (#11076)", function() {
 	expect(3);
 
 	var counter = { "center": 0, "fold": 0, "centerfold": 0 },
@@ -2339,7 +2339,7 @@ test("clone() delegated events (#11076)", function() {
 	clone.remove();
 });
 
-test("checkbox state (#3827)", function() {
+QUnit.test("checkbox state (#3827)", function() {
 	expect( 9 );
 
 	var markup = jQuery("<div><input type=checkbox><div>").appendTo("#qunit-fixture"),
@@ -2368,7 +2368,7 @@ test("checkbox state (#3827)", function() {
 	jQuery( cb ).triggerHandler( "click" );
 });
 
-test("hover event no longer special since 1.9", function() {
+QUnit.test("hover event no longer special since 1.9", function() {
 	expect( 1 );
 
 	jQuery("<div>craft</div>")
@@ -2379,7 +2379,7 @@ test("hover event no longer special since 1.9", function() {
 		.off("hover");
 });
 
-test("fixHooks extensions", function() {
+QUnit.test("fixHooks extensions", function() {
 	expect( 2 );
 
 	// IE requires focusable elements to be visible, so append to body
@@ -2411,7 +2411,7 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
-test( "focusin using non-element targets", function() {
+QUnit.test( "focusin using non-element targets", function() {
 	expect( 2 );
 
 	jQuery( document ).on( "focusin", function( e ) {
@@ -2480,7 +2480,7 @@ if ( hasPHP ) {
 	});
 }
 
-test("change handler should be detached from element", function() {
+QUnit.test("change handler should be detached from element", function() {
 	expect( 2 );
 
 	var $fixture = jQuery( "<input type='text' id='change-ie-leak' />" ).appendTo( "body" ),
@@ -2501,7 +2501,7 @@ test("change handler should be detached from element", function() {
 	jQuery.removeEvent = originRemoveEvent;
 });
 
-asyncTest("trigger click on checkbox, fires change event", function() {
+QUnit.asyncTest("trigger click on checkbox, fires change event", function() {
 	expect(1);
 
 	var check = jQuery("#check2");
@@ -2510,11 +2510,11 @@ asyncTest("trigger click on checkbox, fires change event", function() {
 		// get it?
 		check.off("change");
 		ok( true, "Change event fired as a result of triggered click" );
-		start();
+		QUnit.start();
 	}).trigger("click");
 });
 
-test( "Namespace preserved when passed an Event (#12739)", function() {
+QUnit.test( "Namespace preserved when passed an Event (#12739)", function() {
 	expect( 4 );
 
 	var markup = jQuery(
@@ -2549,7 +2549,7 @@ test( "Namespace preserved when passed an Event (#12739)", function() {
 	equal( triggered, 3, "foo.bar triggered" );
 });
 
-test( "make sure events cloned correctly", 18, function() {
+QUnit.test( "make sure events cloned correctly", 18, function() {
 	var clone,
 		fixture = jQuery("#qunit-fixture"),
 		checkbox = jQuery("#check1"),
@@ -2600,7 +2600,7 @@ test( "make sure events cloned correctly", 18, function() {
 	clone.find("#check1").trigger("change"); // 0 events should fire
 });
 
-test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function() {
+QUnit.test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function() {
 	expect( 1 );
 	var errored = false;
 
@@ -2615,7 +2615,7 @@ test( "String.prototype.namespace does not cause trigger() to throw (#13360)", f
 	delete String.prototype.namespace;
 });
 
-test( "Inline event result is returned (#13993)", function() {
+QUnit.test( "Inline event result is returned (#13993)", function() {
 	expect( 1 );
 
 	var result = jQuery("<p onclick='return 42'>hello</p>").triggerHandler("click");
@@ -2625,7 +2625,7 @@ test( "Inline event result is returned (#13993)", function() {
 
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
-	test( "Check order of focusin/focusout events", 2, function() {
+	QUnit.test( "Check order of focusin/focusout events", 2, function() {
 		var focus, blur,
 			input = jQuery( "#name" );
 
@@ -2652,7 +2652,7 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 		input.off();
 	});
 
-	test("focus-blur order (#12868)", function() {
+	QUnit.test("focus-blur order (#12868)", function() {
 		expect( 5 );
 
 		var order,
@@ -2661,7 +2661,7 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 
 		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
-		stop();
+		QUnit.stop();
 		$radio[0].focus();
 
 		setTimeout( function() {
@@ -2692,7 +2692,7 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 				order = 1;
 				$radio.triggerHandler( "focus" );
 				$text.off();
-				start();
+				QUnit.start();
 			}, 50 );
 		}, 50 );
 	});

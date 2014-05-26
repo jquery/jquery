@@ -1,10 +1,10 @@
-module("selector", { teardown: moduleTeardown });
+QUnit.module("selector", { teardown: moduleTeardown });
 
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
  */
 
-test("element - jQuery only", function() {
+QUnit.test("element - jQuery only", function() {
 	expect( 7 );
 
 	var fixture = document.getElementById("qunit-fixture");
@@ -21,7 +21,7 @@ test("element - jQuery only", function() {
 	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 });
 
-test("id", function() {
+QUnit.test("id", function() {
 	expect( 26 );
 
 	var a;
@@ -63,7 +63,7 @@ test("id", function() {
 	t( "ID with weird characters in it", "#name\\+value", ["name+value"] );
 });
 
-test("class - jQuery only", function() {
+QUnit.test("class - jQuery only", function() {
 	expect( 4 );
 
 	deepEqual( jQuery(".blog", document.getElementsByTagName("p")).get(), q("mark", "simon"), "Finding elements with a context." );
@@ -72,7 +72,7 @@ test("class - jQuery only", function() {
 	deepEqual( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
 });
 
-test("name", function() {
+QUnit.test("name", function() {
 	expect( 5 );
 
 	var form;
@@ -89,7 +89,7 @@ test("name", function() {
 	form.remove();
 });
 
-test( "selectors with comma", function() {
+QUnit.test( "selectors with comma", function() {
 	expect( 4 );
 
 	var fixture = jQuery( "<div><h2><span/></h2><div><p><span/></p><p/></div></div>" );
@@ -100,7 +100,7 @@ test( "selectors with comma", function() {
 	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 });
 
-test( "child and adjacent", function() {
+QUnit.test( "child and adjacent", function() {
 	expect( 27 );
 
 	var nothiddendiv;
@@ -141,7 +141,7 @@ test( "child and adjacent", function() {
 	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
 });
 
-test("attributes", function() {
+QUnit.test("attributes", function() {
 	expect( 54 );
 
 	var attrbad, div, withScript;
@@ -254,14 +254,14 @@ test("attributes", function() {
 	);
 });
 
-test("disconnected nodes", function() {
+QUnit.test("disconnected nodes", function() {
 	expect( 1 );
 
 	var $div = jQuery("<div/>");
 	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
 });
 
-test("disconnected nodes - jQuery only", function() {
+QUnit.test("disconnected nodes - jQuery only", function() {
 	expect( 3 );
 
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
@@ -360,7 +360,7 @@ testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQue
 	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
 });
 
-test( "jQuery.contains", function() {
+QUnit.test( "jQuery.contains", function() {
 	expect( 16 );
 
 	var container = document.getElementById("nonnodes"),
@@ -386,7 +386,7 @@ test( "jQuery.contains", function() {
 	ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
-test("jQuery.unique", function() {
+QUnit.test("jQuery.unique", function() {
 	expect( 14 );
 
 	function Arrayish( arr ) {
@@ -475,7 +475,7 @@ testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles
 	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
 });
 
-asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
+QUnit.asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
 	var loaded = false,
 		thrown = false,
 		iframe = document.getElementById( "iframe" ),
@@ -497,7 +497,7 @@ asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
 			// clean up
 			jQuery( iframe ).off();
 
-			start();
+			QUnit.start();
 		} else {
 			loaded = true;
 			form.submit();

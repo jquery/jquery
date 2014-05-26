@@ -1,6 +1,6 @@
-module("serialize", { teardown: moduleTeardown });
+QUnit.module("serialize", { teardown: moduleTeardown });
 
-test("jQuery.param()", function() {
+QUnit.test("jQuery.param()", function() {
 	expect(22);
 
 	var params, settings;
@@ -84,7 +84,7 @@ test("jQuery.param()", function() {
 	}
 });
 
-test("jQuery.param() Constructed prop values", function() {
+QUnit.test("jQuery.param() Constructed prop values", function() {
 	expect( 4 );
 
 	/** @constructor */
@@ -109,7 +109,7 @@ test("jQuery.param() Constructed prop values", function() {
 	equal( jQuery.param( params, false ), jQuery.param({ "test": { "prop": "val" } }), "Allow non-native constructed objects" );
 });
 
-test("serialize()", function() {
+QUnit.test("serialize()", function() {
 	expect(5);
 
 	// Add html5 elements only for serialize because selector can't yet find them on non-html5 browsers

@@ -4,7 +4,7 @@ if ( !jQuery.fn.width ) {
 	return;
 }
 
-module("dimensions", { teardown: moduleTeardown });
+QUnit.module("dimensions", { teardown: moduleTeardown });
 
 function pass( val ) {
 	return val;
@@ -60,15 +60,15 @@ function testWidth( val ) {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 }
 
-test("width()", function() {
+QUnit.test("width()", function() {
 	testWidth( pass );
 });
 
-test("width(Function)", function() {
+QUnit.test("width(Function)", function() {
 	testWidth( fn );
 });
 
-test("width(Function(args))", function() {
+QUnit.test("width(Function(args))", function() {
 	expect( 2 );
 
 	var $div = jQuery("#nothiddendiv");
@@ -113,15 +113,15 @@ function testHeight( val ) {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 }
 
-test("height()", function() {
+QUnit.test("height()", function() {
 	testHeight( pass );
 });
 
-test("height(Function)", function() {
+QUnit.test("height(Function)", function() {
 	testHeight( fn );
 });
 
-test("height(Function(args))", function() {
+QUnit.test("height(Function(args))", function() {
 	expect( 2 );
 
 	var $div = jQuery("#nothiddendiv");
@@ -133,7 +133,7 @@ test("height(Function(args))", function() {
 	equal( $div.height(), 31, "Make sure value was modified correctly." );
 });
 
-test("innerWidth()", function() {
+QUnit.test("innerWidth()", function() {
 	expect(6);
 
 	var $div, div,
@@ -169,7 +169,7 @@ test("innerWidth()", function() {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 });
 
-test("innerHeight()", function() {
+QUnit.test("innerHeight()", function() {
 	expect(6);
 
 	var $div, div,
@@ -205,7 +205,7 @@ test("innerHeight()", function() {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 });
 
-test("outerWidth()", function() {
+QUnit.test("outerWidth()", function() {
 	expect(11);
 
 	var $div, div,
@@ -244,7 +244,7 @@ test("outerWidth()", function() {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 });
 
-test("child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
+QUnit.test("child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
 	expect(16);
 
 	// setup html
@@ -281,7 +281,7 @@ test("child of a hidden elem (or unconnected node) has accurate inner/outer/Widt
 	$divNormal.remove();
 });
 
-test("getting dimensions shouldn't modify runtimeStyle see #9233", function() {
+QUnit.test("getting dimensions shouldn't modify runtimeStyle see #9233", function() {
 	expect( 1 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
@@ -304,7 +304,7 @@ test("getting dimensions shouldn't modify runtimeStyle see #9233", function() {
 	$div.remove();
 });
 
-test( "table dimensions", 2, function() {
+QUnit.test( "table dimensions", 2, function() {
 	var table = jQuery("<table><colgroup><col/><col/></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>").appendTo("#qunit-fixture"),
 		tdElem = table.find("td").first(),
 		colElem = table.find("col").first().width( 300 );
@@ -315,7 +315,7 @@ test( "table dimensions", 2, function() {
 	equal( colElem.width(), 300, "col elements have width(), see #12243" );
 });
 
-test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
+QUnit.test("box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function() {
 	expect(16);
 
 	// setup html
@@ -352,7 +352,7 @@ test("box-sizing:border-box child of a hidden elem (or unconnected node) has acc
 	$divNormal.remove();
 });
 
-test("outerHeight()", function() {
+QUnit.test("outerHeight()", function() {
 	expect(11);
 
 	var $div, div,
@@ -391,7 +391,7 @@ test("outerHeight()", function() {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 });
 
-test("passing undefined is a setter #5571", function() {
+QUnit.test("passing undefined is a setter #5571", function() {
 	expect(4);
 	equal(jQuery("#nothiddendiv").height(30).height(undefined).height(), 30, ".height(undefined) is chainable (#5571)");
 	equal(jQuery("#nothiddendiv").height(30).innerHeight(undefined).height(), 30, ".innerHeight(undefined) is chainable (#5571)");
@@ -399,7 +399,7 @@ test("passing undefined is a setter #5571", function() {
 	equal(jQuery("#nothiddendiv").width(30).width(undefined).width(), 30, ".width(undefined) is chainable (#5571)");
 });
 
-test( "getters on non elements should return null", function() {
+QUnit.test( "getters on non elements should return null", function() {
 	expect( 8 );
 
 	var nonElem = jQuery("notAnElement");
@@ -415,7 +415,7 @@ test( "getters on non elements should return null", function() {
 	strictEqual( nonElem.outerHeight( true ), null, ".outerHeight(true) is not null (#12283)" );
 });
 
-test("setters with and without box-sizing:border-box", function(){
+QUnit.test("setters with and without box-sizing:border-box", function(){
 	expect(20);
 
 	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).

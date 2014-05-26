@@ -1,4 +1,4 @@
-module( "deferred", {
+QUnit.module( "deferred", {
 	teardown: moduleTeardown
 });
 
@@ -8,7 +8,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 		return withNew ? new jQuery.Deferred( fn ) : jQuery.Deferred( fn );
 	}
 
-	test( "jQuery.Deferred" + withNew, function() {
+	QUnit.test( "jQuery.Deferred" + withNew, function() {
 
 		expect( 23 );
 
@@ -78,7 +78,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 });
 
 
-test( "jQuery.Deferred - chainability", function() {
+QUnit.test( "jQuery.Deferred - chainability", function() {
 
 	var defer = jQuery.Deferred();
 
@@ -93,7 +93,7 @@ test( "jQuery.Deferred - chainability", function() {
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (done)", function() {
+QUnit.test( "jQuery.Deferred.then - filtering (done)", function() {
 
 	expect( 4 );
 
@@ -127,7 +127,7 @@ test( "jQuery.Deferred.then - filtering (done)", function() {
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (fail)", function() {
+QUnit.test( "jQuery.Deferred.then - filtering (fail)", function() {
 
 	expect( 4 );
 
@@ -161,7 +161,7 @@ test( "jQuery.Deferred.then - filtering (fail)", function() {
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (progress)", function() {
+QUnit.test( "jQuery.Deferred.then - filtering (progress)", function() {
 
 	expect( 3 );
 
@@ -187,7 +187,7 @@ test( "jQuery.Deferred.then - filtering (progress)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
-test( "jQuery.Deferred.then - deferred (done)", function() {
+QUnit.test( "jQuery.Deferred.then - deferred (done)", function() {
 
 	expect( 3 );
 
@@ -215,7 +215,7 @@ test( "jQuery.Deferred.then - deferred (done)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
-test( "jQuery.Deferred.then - deferred (fail)", function() {
+QUnit.test( "jQuery.Deferred.then - deferred (fail)", function() {
 
 	expect( 3 );
 
@@ -243,7 +243,7 @@ test( "jQuery.Deferred.then - deferred (fail)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
-test( "jQuery.Deferred.then - deferred (progress)", function() {
+QUnit.test( "jQuery.Deferred.then - deferred (progress)", function() {
 
 	expect( 3 );
 
@@ -271,7 +271,7 @@ test( "jQuery.Deferred.then - deferred (progress)", function() {
 	strictEqual( value3, 6, "result of filter ok" );
 });
 
-test( "jQuery.Deferred.then - context", function() {
+QUnit.test( "jQuery.Deferred.then - context", function() {
 
 	expect( 7 );
 
@@ -314,7 +314,7 @@ test( "jQuery.Deferred.then - context", function() {
 	});
 });
 
-test( "jQuery.when", function() {
+QUnit.test( "jQuery.when", function() {
 
 	expect( 37 );
 
@@ -374,7 +374,7 @@ test( "jQuery.when", function() {
 	});
 });
 
-test( "jQuery.when - joined", function() {
+QUnit.test( "jQuery.when - joined", function() {
 
 	expect( 119 );
 

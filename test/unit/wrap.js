@@ -4,7 +4,7 @@ if ( !jQuery.fn.wrap ) { // no wrap module
 	return;
 }
 
-module( "wrap", {
+QUnit.module( "wrap", {
 	teardown: moduleTeardown
 });
 
@@ -95,15 +95,15 @@ function testWrap( val ) {
 	j.parent().trigger("click");
 }
 
-test( "wrap(String|Element)", function() {
+QUnit.test( "wrap(String|Element)", function() {
 	testWrap( manipulationBareObj );
 });
 
-test( "wrap(Function)", function() {
+QUnit.test( "wrap(Function)", function() {
 	testWrap( manipulationFunctionReturningObj );
 });
 
-test( "wrap(Function) with index (#10177)", function() {
+QUnit.test( "wrap(Function) with index (#10177)", function() {
 	var expectedIndex = 0,
 		targets = jQuery("#qunit-fixture p");
 
@@ -116,7 +116,7 @@ test( "wrap(Function) with index (#10177)", function() {
 	});
 });
 
-test( "wrap(String) consecutive elements (#10177)", function() {
+QUnit.test( "wrap(String) consecutive elements (#10177)", function() {
 	var targets = jQuery("#qunit-fixture p");
 
 	expect( targets.length * 2 );
@@ -130,7 +130,7 @@ test( "wrap(String) consecutive elements (#10177)", function() {
 	});
 });
 
-test( "wrapAll(String)", function() {
+QUnit.test( "wrapAll(String)", function() {
 
 	expect( 5 );
 
@@ -148,7 +148,7 @@ test( "wrapAll(String)", function() {
 
 });
 
-test( "wrapAll(Element)", function() {
+QUnit.test( "wrapAll(Element)", function() {
 
   expect( 3 );
 
@@ -162,7 +162,7 @@ test( "wrapAll(Element)", function() {
 	equal( jQuery("#first").parent()[ 0 ].parentNode, p, "Correct Parent" );
 });
 
-test( "wrapInner(String)", function() {
+QUnit.test( "wrapInner(String)", function() {
 
 	expect( 6 );
 
@@ -182,7 +182,7 @@ test( "wrapInner(String)", function() {
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 });
 
-test( "wrapInner(Element)", function() {
+QUnit.test( "wrapInner(Element)", function() {
 
 	expect( 5 );
 
@@ -200,7 +200,7 @@ test( "wrapInner(Element)", function() {
 	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
 });
 
-test( "wrapInner(Function) returns String", function() {
+QUnit.test( "wrapInner(Function) returns String", function() {
 
 	expect( 6 );
 
@@ -221,7 +221,7 @@ test( "wrapInner(Function) returns String", function() {
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 });
 
-test( "wrapInner(Function) returns Element", function() {
+QUnit.test( "wrapInner(Function) returns Element", function() {
 
 	expect( 5 );
 
@@ -240,7 +240,7 @@ test( "wrapInner(Function) returns Element", function() {
 	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
 });
 
-test( "unwrap()", function() {
+QUnit.test( "unwrap()", function() {
 
 	expect( 9 );
 
@@ -268,7 +268,7 @@ test( "unwrap()", function() {
 	jQuery("body > span.unwrap").remove();
 });
 
-test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
+QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
 
 	expect( 2 );
 
@@ -281,7 +281,7 @@ test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", functio
 	notEqual( $section.get( 0 ).style.backgroundColor, "transparent", "HTML5 elements create with jQuery( string ) inherit styles" );
 });
 
-test( "wrapping scripts (#10470)", function() {
+QUnit.test( "wrapping scripts (#10470)", function() {
 
 	expect( 2 );
 

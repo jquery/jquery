@@ -22,7 +22,7 @@ var supportsScroll, supportsFixedPosition,
 		checkFixed.remove();
 	};
 
-module("offset", { setup: function(){
+QUnit.module("offset", { setup: function(){
 	if ( typeof checkSupport === "function" ) {
 		checkSupport();
 	}
@@ -41,13 +41,13 @@ module("offset", { setup: function(){
 	the iframe window and the "jQuery" symbol is used to access any static methods.
 */
 
-test("empty set", function() {
+QUnit.test("empty set", function() {
 	expect(2);
 	strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
 	strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
 });
 
-test("object without getBoundingClientRect", function() {
+QUnit.test("object without getBoundingClientRect", function() {
 	expect(2);
 
 	// Simulates a browser without gBCR on elements, we just want to return 0,0
@@ -56,7 +56,7 @@ test("object without getBoundingClientRect", function() {
 	equal( result.left, 0, "Check left" );
 });
 
-test("disconnected node", function() {
+QUnit.test("disconnected node", function() {
 	expect(2);
 
 	var result = jQuery( document.createElement("div") ).offset();
@@ -459,7 +459,7 @@ testIframe("offset/body", "body", function( $ ) {
 	equal( $("#firstElement").position().top, 5, "$('#firstElement').position().top" );
 });
 
-test("chaining", function() {
+QUnit.test("chaining", function() {
 	expect(3);
 	var coords = { "top":  1, "left":  1 };
 	equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
@@ -467,7 +467,7 @@ test("chaining", function() {
 	equal( jQuery("#absolute-1").offset(undefined).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
 });
 
-test("offsetParent", function(){
+QUnit.test("offsetParent", function(){
 	expect(13);
 
 	var body, header, div, area;
@@ -504,7 +504,7 @@ test("offsetParent", function(){
 	div.remove();
 });
 
-test("fractions (see #7730 and #7885)", function() {
+QUnit.test("fractions (see #7730 and #7885)", function() {
 	expect(2);
 
 	jQuery("body").append("<div id='fractions'/>");

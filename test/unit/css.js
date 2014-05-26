@@ -1,8 +1,8 @@
 if ( jQuery.css ) {
 
-module("css", { teardown: moduleTeardown });
+QUnit.module("css", { teardown: moduleTeardown });
 
-test("css(String|Hash)", function() {
+QUnit.test("css(String|Hash)", function() {
 	expect( 42 );
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
@@ -116,7 +116,7 @@ test("css(String|Hash)", function() {
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 });
 
-test( "css() explicit and relative values", 29, function() {
+QUnit.test( "css() explicit and relative values", 29, function() {
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
@@ -203,7 +203,7 @@ test( "css() explicit and relative values", 29, function() {
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
 
-test("css(String, Object)", function() {
+QUnit.test("css(String, Object)", function() {
 	expect( 20 );
 	var j, div, display, ret, success;
 
@@ -253,7 +253,7 @@ test("css(String, Object)", function() {
 		"Set font shorthand property (#14759)" );
 });
 
-test( "css(Array)", function() {
+QUnit.test( "css(Array)", function() {
 	expect( 2 );
 
 	var expectedMany = {
@@ -269,7 +269,7 @@ test( "css(Array)", function() {
 	deepEqual( elem.css( expectedSingle ).css([ "width" ]), expectedSingle, "Getting single element array" );
 });
 
-test("css(String, Function)", function() {
+QUnit.test("css(String, Function)", function() {
 	expect(3);
 
 	var index,
@@ -300,7 +300,7 @@ test("css(String, Function)", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
-test("css(String, Function) with incoming value", function() {
+QUnit.test("css(String, Function) with incoming value", function() {
 	expect(3);
 
 	var index,
@@ -331,7 +331,7 @@ test("css(String, Function) with incoming value", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
-test("css(Object) where values are Functions", function() {
+QUnit.test("css(Object) where values are Functions", function() {
 	expect(3);
 
 	var index,
@@ -362,7 +362,7 @@ test("css(Object) where values are Functions", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
-test("css(Object) where values are Functions with incoming values", function() {
+QUnit.test("css(Object) where values are Functions with incoming values", function() {
 	expect(3);
 
 	var index,
@@ -393,7 +393,7 @@ test("css(Object) where values are Functions with incoming values", function() {
 	jQuery("#cssFunctionTest").remove();
 });
 
-test("show(); hide()", function() {
+QUnit.test("show(); hide()", function() {
 
 	expect( 4 );
 
@@ -412,7 +412,7 @@ test("show(); hide()", function() {
 
 });
 
-test("show();", function() {
+QUnit.test("show();", function() {
 
 	expect( 18 );
 
@@ -471,7 +471,7 @@ test("show();", function() {
 	jQuery("<div>test</div> text <span>test</span>").hide().remove();
 });
 
-test("show() resolves correct default display #8099", function() {
+QUnit.test("show() resolves correct default display #8099", function() {
 	expect(7);
 	var tt8099 = jQuery("<tt/>").appendTo("body"),
 			dfn8099 = jQuery("<dfn/>", { "html": "foo"}).appendTo("body");
@@ -491,7 +491,7 @@ test("show() resolves correct default display #8099", function() {
 	dfn8099.remove();
 });
 
-test( "show() resolves correct default display for detached nodes", function(){
+QUnit.test( "show() resolves correct default display for detached nodes", function(){
 	expect( 13 );
 
 	var div, span, tr, trDisplay;
@@ -558,7 +558,7 @@ test( "show() resolves correct default display for detached nodes", function(){
 	span.remove();
 });
 
-test("show() resolves correct default display #10227", 4, function() {
+QUnit.test("show() resolves correct default display #10227", 4, function() {
 	var html = jQuery( document.documentElement ),
 		body = jQuery( "body" );
 
@@ -579,7 +579,7 @@ test("show() resolves correct default display #10227", 4, function() {
 	jQuery( ".ddisplay" ).remove();
 });
 
-test("show() resolves correct default display when iframe display:none #12904", function() {
+QUnit.test("show() resolves correct default display when iframe display:none #12904", function() {
 	expect(2);
 
 	var ddisplay = jQuery(
@@ -594,7 +594,7 @@ test("show() resolves correct default display when iframe display:none #12904", 
 	ddisplay.remove();
 });
 
-test("toggle()", function() {
+QUnit.test("toggle()", function() {
 	expect(9);
 	var div, oldHide,
 		x = jQuery("#foo");
@@ -627,7 +627,7 @@ test("toggle()", function() {
 	jQuery.fn.hide = oldHide;
 });
 
-test("hide hidden elements (bug #7141)", function() {
+QUnit.test("hide hidden elements (bug #7141)", function() {
 	expect(3);
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
@@ -640,7 +640,7 @@ test("hide hidden elements (bug #7141)", function() {
 	div.remove();
 });
 
-test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
+QUnit.test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
 	expect(4);
 
 	var $checkedtest = jQuery("#checkedtest");
@@ -652,7 +652,7 @@ test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", funct
 	ok( !jQuery("input[type='checkbox']", $checkedtest).last().attr("checked"), "Check last checkbox still NOT checked." );
 });
 
-test("internal ref to elem.runtimeStyle (bug #7608)", function () {
+QUnit.test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 	expect(1);
 	var result = true;
 
@@ -665,7 +665,7 @@ test("internal ref to elem.runtimeStyle (bug #7608)", function () {
 	ok( result, "elem.runtimeStyle does not throw exception" );
 });
 
-test("marginRight computed style (bug #3333)", function() {
+QUnit.test("marginRight computed style (bug #3333)", function() {
 	expect(1);
 
 	var $div = jQuery("#foo");
@@ -677,7 +677,7 @@ test("marginRight computed style (bug #3333)", function() {
 	equal($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
 });
 
-test("box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
+QUnit.test("box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
 	expect( 2 );
 
 	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
@@ -688,7 +688,7 @@ test("box model properties incorrectly returning % instead of px, see #10639 and
 	equal( el2.css("marginLeft"), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
 });
 
-test("jQuery.cssProps behavior, (bug #8402)", function() {
+QUnit.test("jQuery.cssProps behavior, (bug #8402)", function() {
 	expect( 2 );
 
 	var div = jQuery( "<div>" ).appendTo(document.body).css({
@@ -704,7 +704,7 @@ test("jQuery.cssProps behavior, (bug #8402)", function() {
 	jQuery.cssProps.top = undefined;
 });
 
-test("widows & orphans #8936", function () {
+QUnit.test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
@@ -721,7 +721,7 @@ test("widows & orphans #8936", function () {
 	$p.remove();
 });
 
-test("can't get css for disconnected in IE<9, see #10254 and #8388", function() {
+QUnit.test("can't get css for disconnected in IE<9, see #10254 and #8388", function() {
 	expect( 2 );
 	var span, div;
 
@@ -732,7 +732,7 @@ test("can't get css for disconnected in IE<9, see #10254 and #8388", function() 
 	equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
 });
 
-test("can't get background-position in IE<9, see #10796", function() {
+QUnit.test("can't get background-position in IE<9, see #10796", function() {
 	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
 		units = [
 			"0 0",
@@ -756,7 +756,7 @@ test("can't get background-position in IE<9, see #10796", function() {
 });
 
 if ( jQuery.fn.offset ) {
-	test("percentage properties for left and top should be transformed to pixels, see #9505", function() {
+	QUnit.test("percentage properties for left and top should be transformed to pixels, see #9505", function() {
 		expect( 2 );
 		var parent = jQuery("<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>").appendTo( "#qunit-fixture" ),
 			div = jQuery("<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%'></div>").appendTo( parent );
@@ -766,7 +766,7 @@ if ( jQuery.fn.offset ) {
 	});
 }
 
-test("Do not append px (#9548, #12990)", function() {
+QUnit.test("Do not append px (#9548, #12990)", function() {
 	expect( 2 );
 
 	var $div = jQuery("<div>").appendTo("#qunit-fixture");
@@ -787,7 +787,7 @@ test("Do not append px (#9548, #12990)", function() {
 	}
 });
 
-test("css('width') and css('height') should respect box-sizing, see #11004", function() {
+QUnit.test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
 
 	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
@@ -808,7 +808,7 @@ testIframeWithCallback( "css('width') should work correctly before document read
 	}
 );
 
-test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
+QUnit.test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
 	expect ( 3 );
 
 	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;'>test</div>").appendTo("#qunit-fixture");
@@ -820,12 +820,12 @@ test("certain css values of 'normal' should be convertable to a number, see #862
 
 // only run this test in IE9
 if ( document.documentMode === 9 ) {
-	test( ".css('filter') returns a string in IE9, see #12537", 1, function() {
+	QUnit.test( ".css('filter') returns a string in IE9, see #12537", 1, function() {
 		equal( jQuery("<div style='-ms-filter:\"progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)\";'></div>").css("filter"), "progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)", "IE9 returns the correct value from css('filter')." );
 	});
 }
 
-test( "cssHooks - expand", function() {
+QUnit.test( "cssHooks - expand", function() {
 	expect( 15 );
 	var result,
 		properties = {
@@ -865,7 +865,7 @@ test( "cssHooks - expand", function() {
 
 });
 
-test( "css opacity consistency across browsers (#12685)", function() {
+QUnit.test( "css opacity consistency across browsers (#12685)", function() {
 	expect( 4 );
 
 	var el,
@@ -885,7 +885,7 @@ test( "css opacity consistency across browsers (#12685)", function() {
 	equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
 });
 
-test( ":visible/:hidden selectors", function() {
+QUnit.test( ":visible/:hidden selectors", function() {
 	expect( 13 );
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
@@ -919,7 +919,7 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
 });
 
-test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
+QUnit.test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
 	expect( 2 );
 
 	var el;
@@ -929,7 +929,7 @@ test( "Keep the last style if the new one isn't recognized by the browser (#1483
 	equal( el.css( "position" ), "absolute", "The old style is kept when setting to a space" );
 });
 
-test( "Reset the style if set to an empty string", function() {
+QUnit.test( "Reset the style if set to an empty string", function() {
 	expect( 1 );
 	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "" );
 	// Some browsers return an empty string; others "static". Both those cases mean the style
@@ -938,7 +938,7 @@ test( "Reset the style if set to an empty string", function() {
 		"The style can be reset by setting to an empty string" );
 });
 
-asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
+QUnit.asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
 	styles = [{
 			name: "backgroundAttachment",
@@ -1018,7 +1018,7 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 	window.setTimeout( start, 1000 );
 });
 
-asyncTest( "Make sure initialized display value for disconnected nodes is correct (#13310)", 4, function() {
+QUnit.asyncTest( "Make sure initialized display value for disconnected nodes is correct (#13310)", 4, function() {
 	var display = jQuery("#display").css("display"),
 		div = jQuery("<div/>");
 
@@ -1033,7 +1033,7 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 		equal( div.css( "display" ), "inline-block", "Initialized display value has returned" );
 		div.remove();
 
-		start();
+		QUnit.start();
 	});
 
 	equal( jQuery._data( jQuery("#display").css( "display", "inline" ).hide()[ 0 ], "olddisplay" ), display,
@@ -1041,7 +1041,7 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	jQuery._removeData( jQuery("#display")[ 0 ] );
 });
 
-test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
+QUnit.test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
 	var div = jQuery( "<div />" ),
 		fixture = jQuery( "#qunit-fixture" );
 
@@ -1060,7 +1060,7 @@ test( "show() after hide() should always set display to initial value (#14750)",
 		exist = "order" in style || "WebkitOrder" in style;
 
 	if ( exist ) {
-		test( "Don't append px to CSS \"order\" value (#14049)", 1, function() {
+		QUnit.test( "Don't append px to CSS \"order\" value (#14049)", 1, function() {
 			var $elem = jQuery( "<div/>" );
 
 			$elem.css( "order", 2 );
