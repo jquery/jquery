@@ -475,10 +475,10 @@ testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles
 	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
 });
 
-asyncTest( "Iframe dispatch should not affect Sizzle, see #13936", 1, function() {
+asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
 	var loaded = false,
 		thrown = false,
-		iframe = document.getElementById("iframe"),
+		iframe = document.getElementById( "iframe" ),
 		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
 	jQuery( iframe ).on( "load", function() {
@@ -486,17 +486,13 @@ asyncTest( "Iframe dispatch should not affect Sizzle, see #13936", 1, function()
 
 		try {
 			iframeDoc = this.contentDocument || this.contentWindow.document;
-			form = jQuery( "#navigate", iframeDoc )[ 0 ];
+			form = Sizzle( "#navigate", iframeDoc )[ 0 ];
 		} catch ( e ) {
 			thrown = e;
 		}
 
 		if ( loaded ) {
-			strictEqual( thrown, false, "No error thrown from post-reload jQuery call" );
-
-			// clean up
-			jQuery( iframe ).off();
-
+			strictEqual( thrown, false, "No error thrown from post-reload Sizzle call" );
 			start();
 		} else {
 			loaded = true;
@@ -505,6 +501,6 @@ asyncTest( "Iframe dispatch should not affect Sizzle, see #13936", 1, function()
 	});
 
 	iframeDoc.open();
-	iframeDoc.write("<body><form id='navigate'></form></body>");
+	iframeDoc.write( "<body><form id='navigate' action='?'></form></body>" );
 	iframeDoc.close();
 });
