@@ -486,13 +486,17 @@ asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
 
 		try {
 			iframeDoc = this.contentDocument || this.contentWindow.document;
-			form = Sizzle( "#navigate", iframeDoc )[ 0 ];
+			form = jQuery( "#navigate", iframeDoc )[ 0 ];
 		} catch ( e ) {
 			thrown = e;
 		}
 
 		if ( loaded ) {
-			strictEqual( thrown, false, "No error thrown from post-reload Sizzle call" );
+			strictEqual( thrown, false, "No error thrown from post-reload jQuery call" );
+
+			// clean up
+			jQuery( iframe ).off();
+
 			start();
 		} else {
 			loaded = true;
