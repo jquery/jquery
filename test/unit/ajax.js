@@ -8,7 +8,7 @@ module( "ajax", {
 		};
 	},
 	teardown: function() {
-		jQuery( document ).off( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess" );
+		jQuery( document ).off( "ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess" );
 		moduleTeardown.apply( this, arguments );
 	}
 });
@@ -22,7 +22,7 @@ module( "ajax", {
 	function addGlobalEvents( expected ) {
 		return function() {
 			expected = expected || "";
-			jQuery( document ).on( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess", function( e ) {
+			jQuery( document ).on( "ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess", function( e ) {
 				ok( expected.indexOf(e.type) !== -1, e.type );
 			});
 		};
@@ -35,11 +35,14 @@ module( "ajax", {
 		ok( true, "done" );
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks", 8, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
+	ajaxTest( "jQuery.ajax() - success callbacks", 10, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		success: function() {
 			ok( true, "success" );
@@ -49,13 +52,16 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax", 8, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
+	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax", 10, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		create: function( options ) {
 			return jQuery.ajax( url("data/name.html"), options );
 		},
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		success: function() {
 			ok( true, "success" );
@@ -65,11 +71,14 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 8, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
+	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 10, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		success: true,
 		afterSend: function( request ) {
@@ -83,11 +92,14 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)", 8, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
+	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)", 10, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		success: true,
 		complete: function( xhr ) {
@@ -101,11 +113,14 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - error callbacks", 8, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError"),
+	ajaxTest( "jQuery.ajax() - error callbacks", 10, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		afterSend: function( request ) {
 			request.abort();
@@ -351,11 +366,14 @@ module( "ajax", {
 		];
 	});
 
-	ajaxTest( "jQuery.ajax() - abort", 9, {
-		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxError ajaxComplete"),
+	ajaxTest( "jQuery.ajax() - abort", 11, {
+		setup: addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxError ajaxComplete"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		afterSend: function( xhr ) {
 			strictEqual( xhr.readyState, 1, "XHR readyState indicates successful dispatch" );
@@ -368,7 +386,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - events with context", 12, function() {
+	ajaxTest( "jQuery.ajax() - events with context", 16, function() {
 
 		var context = document.createElement("div");
 
@@ -386,6 +404,7 @@ module( "ajax", {
 			setup: function() {
 				jQuery( context ).appendTo("#foo")
 					.ajaxSend( event )
+					.ajaxProgress( event )
 					.ajaxComplete( event )
 					.ajaxError( event )
 					.ajaxSuccess( event );
@@ -394,19 +413,21 @@ module( "ajax", {
 				url: url("data/name.html"),
 				context: context,
 				beforeSend: callback("beforeSend"),
+				progress: callback("progress"),
 				success: callback("success"),
 				complete: callback("complete")
 			}, {
 				url: url("data/404.html"),
 				context: context,
 				beforeSend: callback("beforeSend"),
+				progress: callback("progress"),
 				error: callback("error"),
 				complete: callback("complete")
 			}]
 		};
 	});
 
-	ajaxTest( "jQuery.ajax() - events without context", 3, function() {
+	ajaxTest( "jQuery.ajax() - events without context", 4, function() {
 		function nocallback( msg ) {
 			return function() {
 				equal( typeof this.url, "string", "context is settings on callback " + msg );
@@ -415,6 +436,7 @@ module( "ajax", {
 		return {
 			url: url("data/404.html"),
 			beforeSend: nocallback("beforeSend"),
+			progress: nocallback("progress"),
 			error: nocallback("error"),
 			complete:  nocallback("complete")
 		};
@@ -456,12 +478,15 @@ module( "ajax", {
 		};
 	});
 
-	ajaxTest( "jQuery.ajax() - disabled globals", 3, {
+	ajaxTest( "jQuery.ajax() - disabled globals", 4, {
 		setup: addGlobalEvents(""),
 		global: false,
 		url: url("data/name.html"),
 		beforeSend: function() {
 			ok( true, "beforeSend" );
+		},
+		progress: function() {
+			ok( true, "progress" );
 		},
 		success: function() {
 			ok( true, "success" );
@@ -1770,8 +1795,8 @@ module( "ajax", {
 		jQuery("#first").load( "data/name.html", start );
 	});
 
-	asyncTest( "jQuery.fn.load() - 404 error callbacks", 6, function() {
-		addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError")();
+	asyncTest( "jQuery.fn.load() - 404 error callbacks", 7, function() {
+		addGlobalEvents("ajaxStart ajaxProgress ajaxStop ajaxSend ajaxComplete ajaxError")();
 		jQuery( document ).ajaxStop( start );
 		jQuery("<div/>").load( "data/404.html", function() {
 			ok( true, "complete" );

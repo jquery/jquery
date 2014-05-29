@@ -613,7 +613,7 @@ jQuery.extend({
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
-		for ( i in { success: 1, error: 1, complete: 1 } ) {
+		for ( i in { progress: 1, success: 1, error: 1, complete: 1 } ) {
 			jqXHR[ i ]( s[ i ] );
 		}
 
@@ -639,7 +639,7 @@ jQuery.extend({
 
 			try {
 				state = 1;
-				transport.send( requestHeaders, done );
+				transport.send( requestHeaders, done, progress );
 			} catch ( e ) {
 				// Propagate exception as error if not done
 				if ( state < 2 ) {
@@ -648,6 +648,26 @@ jQuery.extend({
 				} else {
 					throw e;
 				}
+			}
+		}
+
+		// Callback for progress events
+		function progress( lengthComputable, loaded, total ) {
+			// By default indeterminate progress, so progress stays undefined
+			var progress_ratio;
+
+			// Set progress information
+			jqXHR.bytesLoaded = loaded;
+			if (lengthComputable) {
+				jqXHR.bytesTotal = total;
+
+				progress_ratio = loaded / total;
+			}
+
+			deferred.notifyWith( callbackContext, [ progress_ratio, jqXHR ] );
+
+			if ( fireGlobals ) {
+				globalEventContext.trigger( "ajaxProgress", [ jqXHR, s, progress_ratio ] );
 			}
 		}
 
@@ -796,7 +816,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 });
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ) {
+jQuery.each( [ "ajaxStart", "ajaxProgress", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ) {
 	jQuery.fn[ type ] = function( fn ) {
 		return this.on( type, fn );
 	};
