@@ -420,6 +420,22 @@ module( "ajax", {
 		};
 	});
 
+	ajaxTest( "#15118 - jQuery.ajax() - function without jQuery.event", 1, function() {
+		var holder;
+		return {
+			url: url( "data/json.php" ),
+			setup: function() {
+				holder = jQuery.event;
+				delete jQuery.event;
+			},
+			complete: function() {
+				ok( true, "Call can be made without jQuery.event" );
+				jQuery.event = holder;
+			},
+			success: true
+		};
+	});
+
 	ajaxTest( "jQuery.ajax() - context modification", 1, {
 		url: url("data/name.html"),
 		context: {},
