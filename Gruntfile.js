@@ -39,7 +39,7 @@ module.exports = function( grunt ) {
 				],
 				// Exclude specified modules if the module matching the key is removed
 				removeWith: {
-					ajax: [ "manipulation/_evalUrl" ],
+					ajax: [ "manipulation/_evalUrl", "event/ajax" ],
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ],
 					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
