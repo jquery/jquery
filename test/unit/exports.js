@@ -1,7 +1,7 @@
-module("exports", { teardown: moduleTeardown });
+QUnit.module("exports", { teardown: moduleTeardown });
 
-test("amdModule", function() {
+QUnit.test("amdModule", function( assert ) {
 	expect(1);
 
-	equal( jQuery, amdDefined, "Make sure defined module matches jQuery" );
+	assert.equal( jQuery, amdDefined, "Make sure defined module matches jQuery" );
 });
