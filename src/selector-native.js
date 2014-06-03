@@ -28,20 +28,22 @@ define([
  */
 
 var docElem = window.document.documentElement,
-	selector_hasDuplicate,
+	selectorHasDuplicate,
 	matches = docElem.matches ||
 		docElem.webkitMatchesSelector ||
 		docElem.mozMatchesSelector ||
 		docElem.oMatchesSelector ||
 		docElem.msMatchesSelector,
-	selector_sortOrder = function( a, b ) {
+	selectorSortOrder = function( a, b ) {
 		// Flag for duplicate removal
 		if ( a === b ) {
-			selector_hasDuplicate = true;
+			selectorHasDuplicate = true;
 			return 0;
 		}
 
-		var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition( b );
+		var compare = b.compareDocumentPosition &&
+			a.compareDocumentPosition &&
+			a.compareDocumentPosition( b );
 
 		if ( compare ) {
 			// Disconnected nodes
@@ -102,10 +104,10 @@ jQuery.extend({
 			i = 0,
 			j = 0;
 
-		selector_hasDuplicate = false;
-		results.sort( selector_sortOrder );
+		selectorHasDuplicate = false;
+		results.sort( selectorSortOrder );
 
-		if ( selector_hasDuplicate ) {
+		if ( selectorHasDuplicate ) {
 			while ( (elem = results[i++]) ) {
 				if ( elem === results[ i ] ) {
 					j = duplicates.push( i );
@@ -151,7 +153,12 @@ jQuery.extend({
 	expr: {
 		attrHandle: {},
 		match: {
-			bool: /^(?:checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$/i,
+			bool: RegExp(
+			    "^(?:checked|selected|async|autofocus|autoplay|" +
+				"controls|defer|disabled|hidden|ismap|loop|multiple|open|" +
+				"readonly|required|scoped)$",
+				"i"
+			),
 			needsContext: /^[\x20\t\r\n\f]*[>+~]/
 		}
 	}

@@ -7,7 +7,7 @@ define([
 jQuery.ajaxSettings.xhr = function() {
 	try {
 		return new XMLHttpRequest();
-	} catch( e ) {}
+	} catch ( e ) {}
 };
 
 var xhrId = 0,
@@ -45,7 +45,13 @@ jQuery.ajaxTransport(function( options ) {
 					xhr = options.xhr(),
 					id = ++xhrId;
 
-				xhr.open( options.type, options.url, options.async, options.username, options.password );
+				xhr.open(
+					options.type,
+					options.url,
+					options.async,
+					options.username,
+					options.password
+				);
 
 				// Apply custom fields if provided
 				if ( options.xhrFields ) {
