@@ -666,7 +666,7 @@ jQuery.extend({
 			state = 2;
 
 			// Clear timeout if it exists
-			if ( timeoutTimer ) {
+			if ( timeoutTimer != null ) {
 				clearTimeout( timeoutTimer );
 			}
 
