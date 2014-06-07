@@ -460,56 +460,51 @@ test( "isNumeric", function() {
 	expect( 38 );
 
 	var t = jQuery.isNumeric,
-		Traditionalists = /** @constructor */ function(n) {
-			this.value = n;
-			this.toString = function(){
-				return String(this.value);
+		ToString = function( value ) {
+			this.toString = function() {
+				return String( value );
 			};
-		},
-		answer = new Traditionalists( "42" ),
-		rong = new Traditionalists( "Devo" );
+		};
 
-	ok( t("-10"), "Negative integer string");
-	ok( t("0"), "Zero string");
-	ok( t("5"), "Positive integer string");
-	ok( t(-16), "Negative integer number");
-	ok( t(0), "Zero integer number");
-	ok( t(32), "Positive integer number");
-	ok( t("040"), "Octal integer literal string");
-	// OctalIntegerLiteral has been deprecated since ES3/1999
-	// It doesn't pass lint, so disabling until a solution can be found
-	//ok( t(0144), "Octal integer literal");
-	ok( t("0xFF"), "Hexadecimal integer literal string");
-	ok( t(0xFFF), "Hexadecimal integer literal");
-	ok( t("-1.6"), "Negative floating point string");
-	ok( t("4.536"), "Positive floating point string");
-	ok( t(-2.6), "Negative floating point number");
-	ok( t(3.1415), "Positive floating point number");
-	ok( t(1.5999999999999999), "Very precise floating point number" );
-	ok( t(8e5), "Exponential notation");
-	ok( t("123e-2"), "Exponential notation string");
-	ok( t(answer), "Custom .toString returning number");
-	equal( t(""), false, "Empty string");
-	equal( t("        "), false, "Whitespace characters string");
-	equal( t("\t\t"), false, "Tab characters string");
-	equal( t("abcdefghijklm1234567890"), false, "Alphanumeric character string");
-	equal( t("xabcdefx"), false, "Non-numeric character string");
-	equal( t(true), false, "Boolean true literal");
-	equal( t(false), false, "Boolean false literal");
-	equal( t("bcfed5.2"), false, "Number with preceding non-numeric characters");
-	equal( t("7.2acdgs"), false, "Number with trailling non-numeric characters");
-	equal( t(undefined), false, "Undefined value");
-	equal( t(null), false, "Null value");
-	equal( t(NaN), false, "NaN value");
-	equal( t(Infinity), false, "Infinity primitive");
-	equal( t(Number.POSITIVE_INFINITY), false, "Positive Infinity");
-	equal( t(Number.NEGATIVE_INFINITY), false, "Negative Infinity");
-	equal( t(rong), false, "Custom .toString returning non-number");
-	equal( t({}), false, "Empty object");
+	ok( t( "-10" ), "Negative integer string" );
+	ok( t( "0" ), "Zero string" );
+	ok( t( "5" ), "Positive integer string" );
+	ok( t( -16 ), "Negative integer number" );
+	ok( t( 0 ), "Zero integer number" );
+	ok( t( 32 ), "Positive integer number" );
+	ok( t( "040" ), "Octal integer literal string" );
+	ok( t( "0xFF" ), "Hexadecimal integer literal string" );
+	ok( t( 0xFFF ), "Hexadecimal integer literal" );
+	ok( t( "-1.6" ), "Negative floating point string" );
+	ok( t( "4.536" ), "Positive floating point string" );
+	ok( t( -2.6 ), "Negative floating point number" );
+	ok( t( 3.1415 ), "Positive floating point number" );
+	ok( t( 1.5999999999999999 ), "Very precise floating point number" );
+	ok( t( 8e5 ), "Exponential notation" );
+	ok( t( "123e-2" ), "Exponential notation string" );
+	ok( t( new ToString( "42" ) ), "Custom .toString returning number" );
+
+	equal( t( "" ), false, "Empty string" );
+	equal( t( "        " ), false, "Whitespace characters string" );
+	equal( t( "\t\t" ), false, "Tab characters string" );
+	equal( t( "abcdefghijklm1234567890" ), false, "Alphanumeric character string" );
+	equal( t( "xabcdefx" ), false, "Non-numeric character string" );
+	equal( t( true ), false, "Boolean true literal" );
+	equal( t( false ), false, "Boolean false literal" );
+	equal( t( "bcfed5.2" ), false, "Number with preceding non-numeric characters" );
+	equal( t( "7.2acdgs" ), false, "Number with trailling non-numeric characters" );
+	equal( t( undefined ), false, "Undefined value" );
+	equal( t( null ), false, "Null value" );
+	equal( t( NaN ), false, "NaN value" );
+	equal( t( Infinity ), false, "Infinity primitive" );
+	equal( t( Number.POSITIVE_INFINITY ), false, "Positive Infinity" );
+	equal( t( Number.NEGATIVE_INFINITY ), false, "Negative Infinity" );
+	equal( t( new ToString( "Devo" ) ), false, "Custom .toString returning non-number" );
+	equal( t( {} ), false, "Empty object" );
 	equal( t( [] ), false, "Empty array" );
 	equal( t( [ 42 ] ), false, "Array with one number" );
-	equal( t(function(){} ), false, "Instance of a function");
-	equal( t( new Date() ), false, "Instance of a Date");
+	equal( t( function(){} ), false, "Instance of a function" );
+	equal( t( new Date() ), false, "Instance of a Date" );
 });
 
 test("isXMLDoc - HTML", function() {
