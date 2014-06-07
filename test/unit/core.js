@@ -457,7 +457,7 @@ test("isFunction", function() {
 });
 
 test( "isNumeric", function() {
-	expect( 37 );
+	expect( 38 );
 
 	var t = jQuery.isNumeric,
 		Traditionalists = /** @constructor */ function(n) {
@@ -485,6 +485,7 @@ test( "isNumeric", function() {
 	ok( t("4.536"), "Positive floating point string");
 	ok( t(-2.6), "Negative floating point number");
 	ok( t(3.1415), "Positive floating point number");
+	ok( t(1.5999999999999999), "Very precise floating point number" );
 	ok( t(8e5), "Exponential notation");
 	ok( t("123e-2"), "Exponential notation string");
 	ok( t(answer), "Custom .toString returning number");
