@@ -95,15 +95,36 @@ module.exports = function( grunt ) {
 		},
 		jscs: {
 			src: "src/**/*.js",
-			gruntfile: "Gruntfile.js",
+			gruntfile: {
+				files: {
+					src: "Gruntfile.js"
+				},
+				options: {
+					// Temporary, wait until jscs will have inline configuration -
+					// https://github.com/mdevils/node-jscs/issues/223
+					"requireCamelCaseOrUpperCaseIdentifiers": null
+				}
+			},
 
 			// Right know, check only test helpers
-			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
+			test: {
+				files: {
+					src: [ "test/data/testrunner.js", "test/data/testinit.js" ]
+				},
+				options: {
+					// Temporary, wait until jscs will have inline configuration -
+					// https://github.com/mdevils/node-jscs/issues/223
+					"requireCamelCaseOrUpperCaseIdentifiers": null
+				}
+			},
 			release: "build/*.js",
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
-			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing".split( " " )
+			tests: "ajax attributes callbacks core" +
+				"css data deferred dimensions" +
+				"effects event manipulation offset" +
+				"queue selector serialize support traversing".split( " " )
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],

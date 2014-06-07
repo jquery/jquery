@@ -50,47 +50,47 @@ this.t = function( a, b, c ) {
 };
 
 this.createDashboardXML = function() {
-	var string = '<?xml version="1.0" encoding="UTF-8"?> \
-	<dashboard> \
-		<locations class="foo"> \
-			<location for="bar" checked="different"> \
-				<infowindowtab normal="ab" mixedCase="yes"> \
-					<tab title="Location"><![CDATA[blabla]]></tab> \
-					<tab title="Users"><![CDATA[blublu]]></tab> \
-				</infowindowtab> \
-			</location> \
-		</locations> \
-	</dashboard>';
+	var string = "<?xml version='1.0' encoding='UTF-8'?>" +
+	"<dashboard>" +
+		"<locations class='foo'>" +
+			"<location for='bar' checked='different'>" +
+				"<infowindowtab normal='ab' mixedCase='yes'>" +
+					"<tab title='Location'><![CDATA[blabla]]></tab>" +
+					"<tab title='Users'><![CDATA[blublu]]></tab>" +
+				"</infowindowtab>" +
+			"</location>" +
+		"</locations>" +
+	"</dashboard>";
 
 	return jQuery.parseXML(string);
 };
 
 this.createWithFriesXML = function() {
-	var string = '<?xml version="1.0" encoding="UTF-8"?> \
-	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" \
-		xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> \
-		<soap:Body> \
-			<jsconf xmlns="http://{{ externalHost }}/ns1"> \
-				<response xmlns:ab="http://{{ externalHost }}/ns2"> \
-					<meta> \
-						<component id="seite1" class="component"> \
-							<properties xmlns:cd="http://{{ externalHost }}/ns3"> \
-								<property name="prop1"> \
-									<thing /> \
-									<value>1</value> \
-								</property> \
-								<property name="prop2"> \
-									<thing att="something" /> \
-								</property> \
-								<foo_bar>foo</foo_bar> \
-							</properties> \
-						</component> \
-					</meta> \
-				</response> \
-			</jsconf> \
-		</soap:Body> \
-	</soap:Envelope>';
+	var string = "<?xml version='1.0' encoding='UTF-8'?>" +
+	"<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope'" +
+		"xmlns:xsd='http://www.w3.org/2001/XMLSchem" +
+		"xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance" +
+		"<soap:Body>" +
+			"<jsconf xmlns='http://{{ externalHost }}/ns1'>" +
+				"<response xmlns:ab='http://{{ externalHost }}/ns2'>" +
+					"<meta>" +
+						"<component id='seite1' class='component'>" +
+							"<properties xmlns:cd='http://{{ externalHost }}/ns3'>" +
+								"<property name='prop1'>" +
+									"<thing />" +
+									"<value>1</value>" +
+								"</property>" +
+								"<property name='prop2'>" +
+									"<thing att='something' />" +
+								"</property>" +
+								"<foo_bar>foo</foo_bar>" +
+							"</properties>" +
+						"</component>" +
+					"</meta>" +
+				"</response>" +
+			"</jsconf>" +
+		"</soap:Body>" +
+	"</soap:Envelope>";
 
 	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
 };
@@ -224,7 +224,8 @@ this.testIframe = function( fileName, name, fn ) {
 	function loadFixture() {
 		var src = url( "./data/" + fileName + ".html" ),
 			iframe = jQuery( "<iframe />" ).appendTo( "body" )[ 0 ];
-			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
+			iframe.style.cssText = "width: 500px; height: 500px; position: absolute;" +
+				" top: -600px; left: -600px; visibility: hidden;";
 
 		iframe.contentWindow.location = src;
 		return iframe;
@@ -304,9 +305,12 @@ this.loadTests = function() {
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( loadSwarm ) {
-					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
-						QUnit.start();
-					});
+					require(
+					    [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ],
+					    function() {
+							QUnit.start();
+						}
+					);
 				} else {
 					QUnit.start();
 				}

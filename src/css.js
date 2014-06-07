@@ -11,17 +11,18 @@ define([
 	"./css/defaultDisplay",
 	"./css/addGetHookIf",
 	"./css/support",
-	"./data/var/data_priv",
+	"./data/var/dataPriv",
 
 	"./core/init",
 	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, rnumnonpx, cssExpand, isHidden,
-	getStyles, curCSS, defaultDisplay, addGetHookIf, support, data_priv ) {
+	getStyles, curCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
 
 var
-	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
+	// swappable if display is none or
+	// starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rnumsplit = new RegExp( "^(" + pnum + ")(.*)$", "i" ),
@@ -161,7 +162,7 @@ function showHide( elements, show ) {
 			continue;
 		}
 
-		values[ index ] = data_priv.get( elem, "olddisplay" );
+		values[ index ] = dataPriv.get( elem, "olddisplay" );
 		display = elem.style.display;
 		if ( show ) {
 			// Reset the inline display of this element to learn if it is
@@ -174,13 +175,21 @@ function showHide( elements, show ) {
 			// in a stylesheet to whatever the default browser style is
 			// for such an element
 			if ( elem.style.display === "" && isHidden( elem ) ) {
-				values[ index ] = data_priv.access( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+				values[ index ] = dataPriv.access(
+					elem,
+					"olddisplay",
+					defaultDisplay( elem.nodeName )
+				);
 			}
 		} else {
 			hidden = isHidden( elem );
 
 			if ( display !== "none" || !hidden ) {
-				data_priv.set( elem, "olddisplay", hidden ? display : jQuery.css( elem, "display" ) );
+				dataPriv.set(
+					elem,
+					"olddisplay",
+					hidden ? display : jQuery.css( elem, "display" )
+				);
 			}
 		}
 	}
@@ -250,7 +259,8 @@ jQuery.extend({
 			origName = jQuery.camelCase( name ),
 			style = elem.style;
 
-		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
+		name = jQuery.cssProps[ origName ] ||
+			(jQuery.cssProps[ origName ] = vendorPropName( style, origName ));
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
@@ -278,19 +288,27 @@ jQuery.extend({
 			}
 
 			// Fixes #8908, it can be done more correctly by specifying setters in cssHooks,
-			// but it would mean to define eight (for every problematic property) identical functions
+			// but it would mean to define eight (for every problematic property)
+			// identical functions
 			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
 				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
-			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
+			if (
+			    !hooks ||
+			    !("set" in hooks) ||
+			    (value = hooks.set( elem, value, extra )) !== undefined
+			) {
 				style[ name ] = value;
 			}
 
 		} else {
 			// If a hook was provided get the non-computed value from there
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
+			if (
+			    hooks && "get" in hooks &&
+			    (ret = hooks.get( elem, false, extra )) !== undefined
+			) {
 				return ret;
 			}
 
@@ -304,7 +322,8 @@ jQuery.extend({
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
-		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+		name = jQuery.cssProps[ origName ] ||
+			( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
@@ -340,11 +359,12 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			if ( computed ) {
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
-				return rdisplayswap.test( jQuery.css( elem, "display" ) ) && elem.offsetWidth === 0 ?
-					jQuery.swap( elem, cssShow, function() {
-						return getWidthOrHeight( elem, name, extra );
-					}) :
-					getWidthOrHeight( elem, name, extra );
+				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
+						elem.offsetWidth === 0 ?
+							jQuery.swap( elem, cssShow, function() {
+								return getWidthOrHeight( elem, name, extra );
+							}) :
+							getWidthOrHeight( elem, name, extra );
 			}
 		},
 

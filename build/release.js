@@ -53,10 +53,12 @@ module.exports = function( Release ) {
 					// Map files need to reference the new uncompressed name;
 					// assume that all files reside in the same directory.
 					// "file":"jquery.min.js","sources":["jquery.js"]
-					text = fs.readFileSync( builtFile, "utf8" )
-						.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
-							"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
-							"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+					text = fs.readFileSync( builtFile, "utf8" ).replace(
+						/"file":"([^"]+)","sources":\["([^"]+)"\]/,
+						"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
+							"\",\"sources\":[\"" +
+								unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]"
+					);
 					fs.writeFileSync( releaseFile, text );
 				} else if ( /\.min\.js$/.test( releaseFile ) ) {
 					// Remove the source map comment; it causes way too many problems.
@@ -89,7 +91,9 @@ module.exports = function( Release ) {
 
 		var archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
-			output = fs.createWriteStream( cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip" );
+			output = fs.createWriteStream(
+			    cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
+			);
 
 		output.on( "error", function( err ) {
 			throw err;

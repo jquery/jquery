@@ -50,7 +50,10 @@ jQuery.extend({
 			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
 
-			} else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
+			} else if (
+			    hooks && "set" in hooks &&
+			    (ret = hooks.set( elem, value, name )) !== undefined
+			) {
 				return ret;
 
 			} else {
