@@ -32,7 +32,7 @@
 		require.config({
 			baseUrl: path,
 			paths: {
-				sizzle: "src/sizzle/dist/sizzle"
+				sizzle: "external/sizzle/dist/sizzle"
 			}
 		});
 		src = "src/jquery";
