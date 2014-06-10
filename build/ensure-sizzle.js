@@ -1,6 +1,6 @@
 var fs = require( "fs" ),
 	bower = require( "grunt-bowercopy/node_modules/bower" ),
-	sizzleLoc = __dirname + "/../src/sizzle/dist/sizzle.js",
+	sizzleLoc = __dirname + "/../external/sizzle/dist/sizzle.js",
 	rversion = /Engine v(\d+\.\d+\.\d+(?:-\w+)?)/;
 
 /**

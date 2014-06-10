@@ -47,22 +47,22 @@ module.exports = function( grunt ) {
 			}
 		},
 		bowercopy: {
-			options: {
-				clean: true
-			},
-			src: {
-				files: {
-					"src/sizzle/dist": "sizzle/dist"
-				}
-			},
-			tests: {
+			all: {
 				options: {
-					destPrefix: "test/libs"
+					clean: true,
+					destPrefix: "external"
 				},
 				files: {
-					"qunit": "qunit/qunit",
-					"require.js": "requirejs/require.js",
-					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
+					"sizzle/dist": "sizzle/dist",
+
+					"qunit/qunit.js": "qunit/qunit/qunit.js",
+					"qunit/qunit.css": "qunit/qunit/qunit.css",
+					"qunit/MIT-LICENSE.txt": "qunit/MIT-LICENSE.txt",
+
+					"requirejs/require.js": "requirejs/require.js",
+
+					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js",
+					"sinon/LICENSE.txt": "sinon/LICENSE"
 				}
 			}
 		},
