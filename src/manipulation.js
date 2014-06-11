@@ -225,7 +225,7 @@ jQuery.extend({
 					}
 
 					// Support: QtWebKit, PhantomJS
-					// jQuery.merge because push.apply(_, arraylike) throws
+					// push.apply(_, arraylike) throws on ancient WebKit
 					jQuery.merge( nodes, tmp.childNodes );
 
 					// Remember the top-level container
