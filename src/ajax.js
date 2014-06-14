@@ -38,7 +38,7 @@ var
 	transports = {},
 
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-	allTypes = "*/".concat("*"),
+	allTypes = "*/".concat( "*" ),
 
 	// Document location
 	ajaxLocation = location.href,
