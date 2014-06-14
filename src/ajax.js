@@ -44,6 +44,7 @@ var
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
 	allTypes = "*/".concat( "*" );
 
+// Support: IE<9
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
 try {
