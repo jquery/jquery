@@ -708,14 +708,7 @@ test("widows & orphans #8936", function () {
 
 	var $p = jQuery("<p>").appendTo("#qunit-fixture");
 
-	expect( 4 );
-	$p.css({
-		"widows": 0,
-		"orphans": 0
-	});
-
-	equal( $p.css( "widows" ) || jQuery.style( $p[0], "widows" ), 0, "widows correctly start with value 0" );
-	equal( $p.css( "orphans" ) || jQuery.style( $p[0], "orphans" ), 0, "orphans correctly start with value 0" );
+	expect( 2 );
 
 	$p.css({
 		"widows": 3,
@@ -1046,6 +1039,16 @@ asyncTest( "Make sure initialized display value for disconnected nodes is correc
 	equal( jQuery._data( jQuery("#display").css( "display", "inline" ).hide()[ 0 ], "olddisplay" ), display,
 	"display: * !Important value should used as initialized display" );
 	jQuery._removeData( jQuery("#display")[ 0 ] );
+});
+
+test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
+	var div = jQuery( "<div />" ),
+		fixture = jQuery( "#qunit-fixture" );
+
+	fixture.append( div );
+
+	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
+	equal( div.css( "display" ), "list-item", "should get last set display value" );
 });
 
 // Support: IE < 11, Safari < 7

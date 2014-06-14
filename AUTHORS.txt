@@ -216,4 +216,11 @@ Jakob Stoeck <jakob@pokermania.de>
 Christopher Jones <chris@cjqed.com>
 Forbes Lindesay <forbes@lindesay.co.uk>
 S. Andrew Sheppard <andrew@wq.io>
+Leonardo Balter <leonardo.balter@gmail.com>
 Roman Reiß <me@silverwind.io>
+Benjy Cui <benjytrys@gmail.com>
+Rodrigo Rosenfeld Rosas <rr.rosas@gmail.com>
+John Hoven <hovenj@gmail.com>
+Philip Jägenstedt <philip@foolip.org>
+Christian Kosmowski <ksmwsk@gmail.com>
+Liang Peng <poppinlp@gmail.com>

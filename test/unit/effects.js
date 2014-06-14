@@ -5,8 +5,6 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var off = jQuery.fx.off;
-
 module("effects", {
 	setup: function() {
 		this.clock = sinon.useFakeTimers( 505877050 );
@@ -19,7 +17,6 @@ module("effects", {
 		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		jQuery.fx.off = off;
 		return moduleTeardown.apply( this, arguments );
 	}
 });
@@ -1620,6 +1617,19 @@ test( "hide, fadeOut and slideUp called on element width height and width = 0 sh
 	this.clock.tick( 400 );
 });
 
+test( "hide should not leave hidden inline elements visible (#14848)", 2, function() {
+	var el = jQuery("#simon1");
+
+	el.hide( 1, function() {
+		equal( el.css( "display" ), "none", "hidden" );
+		el.hide( 1, function() {
+			equal( el.css( "display" ), "none", "still hidden" );
+		});
+	});
+
+	this.clock.tick( 100 );
+});
+
 test( "Handle queue:false promises", 10, function() {
 	var foo = jQuery( "#foo" ).clone().addBack(),
 		step = 1;
@@ -2143,6 +2153,30 @@ test( "slideDown() after stop() (#13483)", 2, function() {
 		});
 
 		clock.tick( 10 );
+});
+
+test( "Respect display value on inline elements (#14824)", 2, function() {
+	var clock = this.clock,
+		fromStyleSheet = jQuery( "<span id='span-14824' />" ),
+		fromStyleAttr = jQuery( "<span style='display: block;' />" );
+
+	jQuery( "#qunit-fixture" ).append( fromStyleSheet, fromStyleAttr );
+
+	fromStyleSheet.slideUp(function() {
+		jQuery( this ).slideDown( function() {
+			equal( jQuery( this ).css( "display" ), "block",
+				"Respect previous display value (from stylesheet) on span element" );
+		});
+	});
+
+	fromStyleAttr.slideUp( function() {
+		jQuery( this ).slideDown( function() {
+			equal( jQuery( this ).css( "display" ), "block",
+				"Respect previous display value (from style attribute) on span element" );
+		});
+	});
+
+	clock.tick( 800 );
 });
 
 })();

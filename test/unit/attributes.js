@@ -374,8 +374,6 @@ test( "attr(String, Object)", function() {
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
 	});
 
-	// Register the property name to avoid generating a new global when testing window
-	Globals.register("nonexisting");
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
 		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
@@ -383,6 +381,9 @@ test( "attr(String, Object)", function() {
 		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
 		elem.nonexisting = oldVal;
 	});
+
+	// Register the property on the window for the previous assertion so it will be clean up
+	Globals.register( "nonexisting" );
 
 	table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>");
 	td = table.find("td").eq(0);
@@ -1458,4 +1459,17 @@ test( "should not throw at $(option).val() (#14686)", 1, function() {
 	} catch ( _ ) {
 		ok( false );
 	}
+});
+
+test( "Insignificant white space returned for $(option).val() (#14858)", function() {
+	expect ( 3 );
+
+	var val = jQuery( "<option></option>" ).val();
+	equal( val.length, 0, "Empty option should have no value" );
+
+	val = jQuery( "<option>  </option>" ).val();
+	equal( val.length, 0, "insignificant white-space returned for value" );
+
+	val = jQuery( "<option>  test  </option>" ).val();
+	equal( val.length, 4, "insignificant white-space returned for value" );
 });

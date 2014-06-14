@@ -420,6 +420,22 @@ module( "ajax", {
 		};
 	});
 
+	ajaxTest( "#15118 - jQuery.ajax() - function without jQuery.event", 1, function() {
+		var holder;
+		return {
+			url: url( "data/json.php" ),
+			setup: function() {
+				holder = jQuery.event;
+				delete jQuery.event;
+			},
+			complete: function() {
+				ok( true, "Call can be made without jQuery.event" );
+				jQuery.event = holder;
+			},
+			success: true
+		};
+	});
+
 	ajaxTest( "jQuery.ajax() - context modification", 1, {
 		url: url("data/name.html"),
 		context: {},
@@ -607,7 +623,7 @@ module( "ajax", {
 
 		ok( jQuery.get( url(target), success ), "get" );
 		ok( jQuery.post( url(target), success ), "post" );
-		ok( jQuery.getScript( url("data/test.js"), success ), "script" );
+		ok( jQuery.getScript( url("data/testbar.php"), success ), "script" );
 		ok( jQuery.getJSON( url("data/json_obj.js"), success ), "json" );
 		ok( jQuery.ajax({
 			url: url( target ),
@@ -733,7 +749,7 @@ module( "ajax", {
 				jsonpCallback: "functionToCleanUp",
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (GET, custom callback name to be cleaned up)" );
-					strictEqual( window["functionToCleanUp"], undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+					strictEqual( window["functionToCleanUp"], true, "Callback was removed (GET, custom callback name to be cleaned up)" );
 					var xhr;
 					jQuery.ajax({
 						url: "data/jsonp.php",
@@ -747,7 +763,7 @@ module( "ajax", {
 					});
 					xhr.fail(function() {
 						ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-						strictEqual( window["functionToCleanUp"], undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+						strictEqual( window["functionToCleanUp"], true, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 					});
 				}
 			}, {
@@ -855,7 +871,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -866,7 +882,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		type: "POST",
 		dataType: "script",
 		success: function( data, status ) {
@@ -879,7 +895,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -1470,6 +1486,12 @@ module( "ajax", {
 			var parsedXML = jQuery( jQuery.parseXML("<tab title=\"Added\">blibli</tab>") ).find("tab");
 			ajaxXML = jQuery( ajaxXML );
 			try {
+				// Android 2.3 doesn't automatically adopt nodes from foreign documents.
+				// (see the comment in test/manipulation.js)
+				// Support: Android 2.3
+				if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+					parsedXML = jQuery( ajaxXML[ 0 ].adoptNode( parsedXML[ 0 ] ) );
+				}
 				ajaxXML.find("infowindowtab").append( parsedXML );
 			} catch( e ) {
 				strictEqual( e, undefined, "error" );
@@ -1733,7 +1755,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function() {
+		jQuery.getScript( url("data/testbar.php"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
 			start();
 		});
@@ -1741,12 +1763,12 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js") ).done( start );
+		jQuery.getScript( url("data/testbar.php") ).done( start );
 	});
 
 	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
+		jQuery.getScript( url("data/testbar.php"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
 			start();
 		});
@@ -1974,7 +1996,9 @@ module( "ajax", {
 					strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly" );
 				}
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
@@ -1997,7 +2021,9 @@ module( "ajax", {
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
 				});
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 //----------- jQuery.active
