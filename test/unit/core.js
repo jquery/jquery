@@ -1,11 +1,5 @@
 module("core", { teardown: moduleTeardown });
 
-test("Unit Testing Environment", function () {
-	expect(2);
-	ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
-	ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
-});
-
 test("Basic requirements", function() {
 	expect(7);
 	ok( Array.prototype.push, "Array.push()" );

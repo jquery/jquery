@@ -14,6 +14,10 @@ module( "ajax", {
 });
 
 (function() {
+	test("Unit Testing Environment", 2, function () {
+		ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
+		ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
+	});
 
 	if ( !jQuery.ajax || ( isLocal && !hasPHP ) ) {
 		return;
