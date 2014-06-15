@@ -1468,24 +1468,18 @@ module( "ajax", {
 		}
 	});
 
-	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
-		throws(function() {
-			jQuery.ajax({
-				url: "data/badjson.js",
-				dataType: "script",
-				"throws": true,
-				// TODO find a way to test this asynchronously, too
-				async: false,
-				// Global events get confused by the exception
-				global: false,
-				success: function() {
-					ok( false, "Success." );
-				},
-				error: function() {
-					ok( false, "Error." );
-				}
-			});
-		}, "exception bubbled" );
+	asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+		var onerror = window.onerror;
+		window.onerror = function() {
+			ok( true, "Exception thrown" );
+			window.onerror = onerror;
+			start();
+		};
+		jQuery.ajax({
+			url: "data/badjson.js",
+			dataType: "script",
+			"throws": true
+		});
 	});
 
 	jQuery.each( [ "method", "type" ], function( _, globalOption ) {

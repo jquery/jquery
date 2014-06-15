@@ -2263,23 +2263,33 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });
 
-test( "html() - script exceptions bubble (#11743)", function() {
+asyncTest( "html() - script exceptions bubble (#11743)", 2, function() {
 
-	expect( 2 );
+	var onerror = window.onerror;
 
-	throws(function() {
-		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
-		ok( false, "Exception ignored" );
-	}, "Exception bubbled from inline script" );
+	setTimeout(function() {
+		window.onerror = onerror;
 
-	if ( jQuery.ajax ) {
-		throws(function() {
-			jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
-			ok( false, "Exception ignored" );
-		}, "Exception thrown in remote script" );
-	} else {
-		ok( true, "No jQuery.ajax" );
-	}
+		start();
+	}, 1000 );
+
+	window.onerror = function() {
+		ok( true, "Exception thrown" );
+
+		if ( jQuery.ajax ) {
+			window.onerror = function() {
+				ok( true, "Exception thrown in remote script" );
+			};
+
+			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
+			ok( true, "Exception ignored" );
+		} else {
+			ok( true, "No jQuery.ajax" );
+			ok( true, "No jQuery.ajax" );
+		}
+	};
+
+	jQuery( "#qunit-fixture" ).html( "<script>undefined();</script>" );
 });
 
 test( "checked state is cloned with clone()", function() {

@@ -275,17 +275,18 @@ jQuery.extend({
 	},
 
 	// Evaluates a script in a global context
-	// Workarounds based on findings by Jim Driscoll
-	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
 	globalEval: function( data ) {
-		if ( data && jQuery.trim( data ) ) {
-			// We use execScript on Internet Explorer
-			// We use an anonymous function so that context is window
-			// rather than jQuery in Firefox
-			( window.execScript || function( data ) {
-				window[ "eval" ].call( window, data );
-			} )( data );
-		}
+		// Inspired by code by Andrea Giammarchi
+		// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
+		var head = document.head || jQuery( "head" )[ 0 ] || document.documentElement,
+			script = document.createElement( "script" );
+
+		script.text = data;
+
+		// Support: IE6
+		// Circumvent bugs with base elements (#2709 and #4378) by prepending
+		head.insertBefore( script, head.firstChild );
+		head.removeChild( script );
 	},
 
 	// Convert dashed to camelCase; used by the css and data modules
