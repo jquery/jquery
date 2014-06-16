@@ -374,6 +374,47 @@ test( "jQuery.when", function() {
 	});
 });
 
+asyncTest( "jQuery.when - promise interoperability", function() {
+	expect( window.Promise ? 12 : 6 );
+
+	var executingTests = jQuery.map({
+		"Promise/A+ Promise": window.RSVP.Promise,
+		"ES6 Promise": window.Promise
+	}, function( Promise, implementationName ) {
+		if ( !Promise ) {
+			return;
+		}
+
+		var resolvedPromise = new Promise(function( resolve ) {
+				resolve( "resolved" );
+			}),
+
+			rejectedPromise = new Promise(function( resolve, reject ) {
+				reject( "rejected" );
+			}),
+
+			castedResolve = jQuery.when( resolvedPromise ),
+			castedRejection = jQuery.when( rejectedPromise );
+
+		strictEqual( castedRejection.state(), "pending", "The underyling " + implementationName + " has not rejected yet" );
+		strictEqual( castedResolve.state(), "pending", "The underyling " + implementationName + " has not resolved yet");
+
+		castedRejection.always(function( value ) {
+			strictEqual( castedRejection.state(), "rejected", "The rejection is propagated to the coordinating promise" );
+			strictEqual( value, "rejected", "The value of the underlying " + implementationName + " is unwrapped" );
+		});
+
+		castedResolve.always(function( value ) {
+			strictEqual( castedResolve.state(), "resolved", "The resolution is propagated to the coordinating promise" );
+			strictEqual( value, "resolved", "The value of the underlying " + implementationName + " is unwrapped" );
+		});
+
+		return jQuery.when( castedResolve, castedRejection.then( null, jQuery.noop ) );
+	});
+
+	jQuery.when.apply( null, executingTests ).always( start );
+});
+
 test( "jQuery.when - joined", function() {
 
 	expect( 119 );
