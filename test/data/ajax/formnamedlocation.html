@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>form element named `location` (#8138)</title>
+	<script src="../../jquery.js"></script>
+</head>
+<body>
+	<form name="location"></form>
+	<script>
+		jQuery.ajax({
+			url: "../name.php",
+			success: function( res ) {
+				parent.iframeCallback( 'success' );
+			},
+			error: function() {
+				parent.iframeCallback( 'error' );
+			}
+		});
+	</script>
+</body>
+</html>
