@@ -1613,6 +1613,11 @@ module( "ajax", {
 		strictEqual( status, "success", "Request completed" );
 	});
 
+	testIframeWithCallback( "#8138 - form element named `location`", "ajax/formnamedlocation.html", function( status ) {
+		expect( 1 );
+		strictEqual( status, "success", "Request completed" );
+	});
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
