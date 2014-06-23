@@ -929,7 +929,8 @@ getText = Sizzle.getText = function( elem ) {
 	var node,
 		ret = "",
 		i = 0,
-		nodeType = elem.nodeType;
+		nodeType = elem.nodeType,
+		elemTextContent;
 
 	if ( !nodeType ) {
 		// If no nodeType, this is expected to be an array
@@ -940,8 +941,9 @@ getText = Sizzle.getText = function( elem ) {
 	} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
 		// Use textContent for elements
 		// innerText usage removed for consistency of new lines (jQuery #11153)
-		if ( typeof elem.textContent === "string" ) {
-			return elem.textContent;
+		elemTextContent = elem.textContent;
+		if ( typeof elemTextContent === "string" ) {
+			return elemTextContent;
 		} else {
 			// Traverse its children
 			for ( elem = elem.firstChild; elem; elem = elem.nextSibling ) {
