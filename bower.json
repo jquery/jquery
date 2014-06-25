@@ -14,7 +14,7 @@
     "package.json"
   ],
   "devDependencies": {
-    "sizzle": "1.10.19",
+    "sizzle": "1.11.1",
     "requirejs": "2.1.10",
     "qunit": "1.14.0",
     "sinon": "1.8.1"
