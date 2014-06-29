@@ -1,4 +1,4 @@
-[jQuery](http://jquery.com/) - New Wave JavaScript
+[jQuery](http://jquery.com/) — New Wave JavaScript
 ==================================================
 
 Contribution Guides
