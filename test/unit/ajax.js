@@ -1559,11 +1559,6 @@ module( "ajax", {
 		strictEqual( status, "success", "Request completed" );
 	});
 
-	testIframeWithCallback( "#8138 - form element named `location`", "ajax/formnamedlocation.html", function( status ) {
-		expect( 1 );
-		strictEqual( status, "success", "Request completed" );
-	});
-
 	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, [
 		{
 			url: "data/params_html.php",
