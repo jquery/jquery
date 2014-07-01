@@ -16,8 +16,8 @@ var rootjQuery,
 	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
 
-		// HANDLE: $(""), $(null), $(undefined), $(false)
-		if ( !selector ) {
+		// HANDLE: $(""), $(null), $(undefined), $(false), $($)
+		if ( !selector || selector === jQuery ) {
 			return this;
 		}
 
