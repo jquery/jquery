@@ -32,6 +32,7 @@ if ( window.ActiveXObject ) {
 }
 
 support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+support.responseURL = !!xhrSupported && ( "responseURL" in xhrSupported );
 support.ajax = xhrSupported = !!xhrSupported;
 
 jQuery.ajaxTransport(function( options ) {
@@ -86,12 +87,14 @@ jQuery.ajaxTransport(function( options ) {
 								complete(
 									// file: protocol always yields status 0; see #8605, #14207
 									xhr.status,
-									xhr.statusText
+									xhr.statusText,
+									""
 								);
 							} else {
 								complete(
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
+									support.responseURL ? xhr.responseURL : "",
 									// Support: IE9
 									// Accessing binary-data responseText throws an exception
 									// (#11426)
