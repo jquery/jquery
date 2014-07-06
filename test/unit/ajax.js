@@ -1182,6 +1182,84 @@ module( "ajax", {
 		);
 	});
 
+	ajaxTest( "jQuery.ajax() - responseURL", 13, function() {
+		function expectedUrl( url ) {
+			return jQuery.support.responseURL ? url : "";
+		}
+
+		var baseUrl = window.location.href.replace( /[^\/]*$/, "" ),
+			successUrl = baseUrl + url("data/responseURL.php"),
+			errorUrl = "http://example.invalid",
+			redirectAndSuccessUrl = baseUrl + "data/responseURL.php?url=" + encodeURIComponent(successUrl),
+			redirectAndErrorUrl = baseUrl + "data/responseURL.php?url=" + encodeURIComponent(errorUrl),
+			jsonpUrl = baseUrl + "data/jsonp.php?callback=?",
+			scriptUrl = baseUrl + "data/testbar.php";
+
+		return [
+			{
+				url: successUrl,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					strictEqual( jqXHR.responseURL, expectedUrl(successUrl), "jqXHR responseURL ok for success" );
+				}
+			},
+			{
+				url: errorUrl,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for error" );
+				}
+			},
+			{
+				url: redirectAndSuccessUrl,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					strictEqual( jqXHR.responseURL, expectedUrl(successUrl), "jqXHR responseURL ok for redirect success" );
+				}
+			},
+			{
+				url: redirectAndErrorUrl,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for redirect error" );
+				}
+			},
+			{
+				url: jsonpUrl,
+				dataType: "jsonp",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for JSONP" );
+				}
+			},
+			{
+				setup: function() {
+					Globals.register("testBar");
+				},
+				url: scriptUrl,
+				dataType: "script",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for script" );
+				}
+			}
+		];
+	});
+
 	ajaxTest( "jQuery.ajax() - transitive conversions", 8, [
 		{
 			url: url("data/json.php"),

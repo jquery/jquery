@@ -48,10 +48,11 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 );
 
 (function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
+		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -65,7 +66,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": version >= 37
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
@@ -81,7 +83,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /trident\/7\.0/i.test( userAgent ) ) {
 		expected = {
@@ -97,7 +100,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": false,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /msie 10\.0/i.test( userAgent ) ) {
 		expected = {
@@ -113,7 +117,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": false,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -129,7 +134,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": false,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -145,7 +151,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /6\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -161,7 +168,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -177,9 +185,11 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -193,7 +203,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": version >= 32
 		};
 	} else if ( /iphone os (?:6|7)_/i.test( userAgent ) ) {
 		expected = {
@@ -209,7 +220,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	} else if ( /android 2\.3/i.test( userAgent ) ) {
 		expected = {
@@ -225,7 +237,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": false
+			"reliableMarginRight": false,
+			"responseURL": false
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
@@ -241,7 +254,8 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"optSelected": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginRight": true
+			"reliableMarginRight": true,
+			"responseURL": false
 		};
 	}
 
