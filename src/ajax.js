@@ -42,7 +42,7 @@ var
 	transports = {},
 
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-	allTypes = "*/".concat("*");
+	allTypes = "*/".concat( "*" );
 
 // Support: IE<8
 // #8138, IE may throw an exception when accessing
