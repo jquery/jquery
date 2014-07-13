@@ -440,6 +440,23 @@ module( "ajax", {
 		};
 	});
 
+	ajaxTest( "#15160 - jQuery.ajax() - request manually aborted in ajaxSend", 3, {
+		setup: function() {
+			jQuery( document ).on( "ajaxSend", function( e, jqXHR ) {
+				jqXHR.abort();
+			});
+
+			jQuery( document ).on( "ajaxError ajaxComplete", function( e, jqXHR ) {
+				equal( jqXHR.statusText, "abort", "jqXHR.statusText equals abort on global ajaxComplete and ajaxError events" );
+			});
+		},
+		url: url("data/name.html"),
+		error: true,
+		complete: function() {
+			ok( true, "complete" );
+		}
+	});
+
 	ajaxTest( "jQuery.ajax() - context modification", 1, {
 		url: url("data/name.html"),
 		context: {},
