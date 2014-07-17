@@ -129,8 +129,8 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					preserveComments: false,
-					sourceMap: "dist/jquery.min.map",
-					sourceMappingURL: "jquery.min.map",
+					sourceMap: true,
+					sourceMapName: "dist/jquery.min.map",
 					report: "min",
 					beautify: {
 						"ascii_only": true
