@@ -25,12 +25,13 @@ QUnit.config.requireExpects = true;
  * @param {string} key
  */
 QUnit.expectJqData = function( elems, key ) {
-	var i, elem, expando;
+	var i, elem, expando,
+		currentEnv = "current_testEnvironment";
 
 	// As of jQuery 2.0, there will be no "cache"-data is
 	// stored and managed completely below the API surface
 	if ( jQuery.cache ) {
-		QUnit.current_testEnvironment.checkJqData = true;
+		QUnit[ currentEnv ].checkJqData = true;
 
 		if ( elems.jquery && elems.toArray ) {
 			elems = elems.toArray();
@@ -62,7 +63,12 @@ QUnit.expectJqData = function( elems, key ) {
 				// Since this method was called it means some data was
 				// expected to be found, but since there is nothing, fail early
 				// (instead of in teardown).
-				notStrictEqual( expando, undefined, "Target for expectJqData must have an expando, for else there can be no data to expect." );
+				notStrictEqual(
+					expando,
+					undefined,
+					"Target for expectJqData must have an expando, " +
+						"for else there can be no data to expect."
+				);
 			} else {
 				if ( expectedDataKeys[ expando ] ) {
 					expectedDataKeys[ expando ].push( key );
@@ -77,7 +83,8 @@ QUnit.expectJqData = function( elems, key ) {
 QUnit.config.urlConfig.push({
 	id: "jqdata",
 	label: "Always check jQuery.data",
-	tooltip: "Trigger QUnit.expectJqData detection for all tests instead of just the ones that call it"
+	tooltip: "Trigger QUnit.expectJqData detection for all tests " +
+		"instead of just the ones that call it"
 });
 
 /**
@@ -102,7 +109,11 @@ window.moduleTeardown = function() {
 		}
 		// In case it was removed from cache before (or never there in the first place)
 		for ( i in expectedDataKeys ) {
-			deepEqual( expectedDataKeys[ i ], undefined, "No unexpected keys were left in jQuery.cache (#" + i + ")" );
+			deepEqual(
+				expectedDataKeys[ i ],
+				undefined,
+				"No unexpected keys were left in jQuery.cache (#" + i + ")"
+			);
 			delete expectedDataKeys[ i ];
 		}
 	}
@@ -130,8 +141,10 @@ window.moduleTeardown = function() {
 		++cacheLength;
 	}
 
-	// Because QUnit doesn't have a mechanism for retrieving the number of expected assertions for a test,
-	// if we unconditionally assert any of these, the test will fail with too many assertions :|
+	// Because QUnit doesn't have a mechanism for retrieving
+	// the number of expected assertions for a test,
+	// if we unconditionally assert any of these,
+	// the test will fail with too many assertions :|
 	if ( cacheLength !== oldCacheLength ) {
 		equal( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
 		oldCacheLength = cacheLength;

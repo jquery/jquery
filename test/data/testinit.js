@@ -224,7 +224,8 @@ this.testIframe = function( fileName, name, fn ) {
 	function loadFixture() {
 		var src = url( "./data/" + fileName + ".html" ),
 			iframe = jQuery( "<iframe />" ).appendTo( "body" )[ 0 ];
-			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
+			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; " +
+				"top: -600px; left: -600px; visibility: hidden;";
 
 		iframe.contentWindow.location = src;
 		return iframe;
@@ -304,7 +305,8 @@ this.loadTests = function() {
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( loadSwarm ) {
-					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ], function() {
+					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ],
+					function() {
 						QUnit.start();
 					});
 				} else {

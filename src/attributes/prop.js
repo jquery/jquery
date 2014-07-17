@@ -56,9 +56,10 @@ jQuery.extend({
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
-				return elem.hasAttribute( "tabindex" ) || rfocusable.test( elem.nodeName ) || elem.href ?
-					elem.tabIndex :
-					-1;
+				return elem.hasAttribute( "tabindex" ) ||
+					rfocusable.test( elem.nodeName ) || elem.href ?
+						elem.tabIndex :
+						-1;
 			}
 		}
 	}

@@ -19,7 +19,7 @@ module.exports = function( grunt ) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
-		compare_size: {
+		"compare_size": {
 			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
 			options: {
 				compress: {
@@ -93,13 +93,31 @@ module.exports = function( grunt ) {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
 
-			// Right know, check only test helpers
-			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
-			release: "build/*.js",
+			// Right now, check only test helpers
+			test: [ "test/data/testrunner.js" ],
+			release: [ "build/*.js", "!build/release-notes.js" ],
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
-			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing".split( " " )
+			tests: [
+				"ajax",
+				"attributes",
+				"callbacks",
+				"core",
+				"css",
+				"data",
+				"deferred",
+				"dimensions",
+				"effects",
+				"event",
+				"manipulation",
+				"offset",
+				"queue",
+				"selector",
+				"serialize",
+				"support",
+				"traversing"
+			]
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
@@ -116,13 +134,13 @@ module.exports = function( grunt ) {
 					sourceMappingURL: "jquery.min.map",
 					report: "min",
 					beautify: {
-						ascii_only: true
+						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) 2005, <%= grunt.template.today('yyyy') %> jQuery Foundation, Inc. | " +
 						"jquery.org/license */",
 					compress: {
-						hoist_funs: false,
+						"hoist_funs": false,
 						loops: false,
 						unused: false
 					}
