@@ -5,15 +5,15 @@ define([
 	"./core/access",
 	"./manipulation/var/rcheckableType",
 	"./manipulation/support",
-	"./data/var/data_priv",
-	"./data/var/data_user",
+	"./data/var/dataPriv",
+	"./data/var/dataUser",
 
 	"./core/init",
 	"./data/accepts",
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, concat, push, access, rcheckableType, support, data_priv, data_user ) {
+], function( jQuery, concat, push, access, rcheckableType, support, dataPriv, dataUser ) {
 
 var
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
@@ -80,8 +80,8 @@ function setGlobalEval( elems, refElements ) {
 		l = elems.length;
 
 	for ( ; i < l; i++ ) {
-		data_priv.set(
-			elems[ i ], "globalEval", !refElements || data_priv.get( refElements[ i ], "globalEval" )
+		dataPriv.set(
+			elems[ i ], "globalEval", !refElements || dataPriv.get( refElements[ i ], "globalEval" )
 		);
 	}
 }
@@ -94,9 +94,9 @@ function cloneCopyEvent( src, dest ) {
 	}
 
 	// 1. Copy private data: events, handlers, etc.
-	if ( data_priv.hasData( src ) ) {
-		pdataOld = data_priv.access( src );
-		pdataCur = data_priv.set( dest, pdataOld );
+	if ( dataPriv.hasData( src ) ) {
+		pdataOld = dataPriv.access( src );
+		pdataCur = dataPriv.set( dest, pdataOld );
 		events = pdataOld.events;
 
 		if ( events ) {
@@ -112,11 +112,11 @@ function cloneCopyEvent( src, dest ) {
 	}
 
 	// 2. Copy user data
-	if ( data_user.hasData( src ) ) {
-		udataOld = data_user.access( src );
+	if ( dataUser.hasData( src ) ) {
+		udataOld = dataUser.access( src );
 		udataCur = jQuery.extend( {}, udataOld );
 
-		data_user.set( dest, udataCur );
+		dataUser.set( dest, udataCur );
 	}
 }
 
@@ -280,9 +280,9 @@ jQuery.extend({
 
 		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
 			if ( jQuery.acceptData( elem ) ) {
-				key = elem[ data_priv.expando ];
+				key = elem[ dataPriv.expando ];
 
-				if ( key && (data = data_priv.cache[ key ]) ) {
+				if ( key && (data = dataPriv.cache[ key ]) ) {
 					if ( data.events ) {
 						for ( type in data.events ) {
 							if ( special[ type ] ) {
@@ -294,14 +294,14 @@ jQuery.extend({
 							}
 						}
 					}
-					if ( data_priv.cache[ key ] ) {
+					if ( dataPriv.cache[ key ] ) {
 						// Discard any remaining `private` data
-						delete data_priv.cache[ key ];
+						delete dataPriv.cache[ key ];
 					}
 				}
 			}
 			// Discard any remaining `user` data
-			delete data_user.cache[ elem[ data_user.expando ] ];
+			delete dataUser.cache[ elem[ dataUser.expando ] ];
 		}
 	}
 });
@@ -431,7 +431,7 @@ jQuery.fn.extend({
 					elem = 0;
 
 				// If using innerHTML throws an exception, use the fallback method
-				} catch( e ) {}
+				} catch ( e ) {}
 			}
 
 			if ( elem ) {
@@ -500,7 +500,8 @@ jQuery.fn.extend({
 				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 				hasScripts = scripts.length;
 
-				// Use the original fragment for the last item instead of the first because it can end up
+				// Use the original fragment for the last item
+				// instead of the first because it can end up
 				// being emptied incorrectly in certain situations (#8070).
 				for ( ; i < l; i++ ) {
 					node = fragment;
@@ -529,7 +530,8 @@ jQuery.fn.extend({
 					for ( i = 0; i < hasScripts; i++ ) {
 						node = scripts[ i ];
 						if ( rscriptType.test( node.type || "" ) &&
-							!data_priv.access( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+							!dataPriv.access( node, "globalEval" ) &&
+							jQuery.contains( doc, node ) ) {
 
 							if ( node.src ) {
 								// Optional AJAX dependency, but won't run scripts if not present

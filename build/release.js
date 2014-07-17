@@ -89,7 +89,9 @@ module.exports = function( Release ) {
 
 		var archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
-			output = fs.createWriteStream( cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip" );
+			output = fs.createWriteStream(
+				cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
+			);
 
 		output.on( "error", function( err ) {
 			throw err;

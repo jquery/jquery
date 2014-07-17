@@ -27,21 +27,23 @@ define([
  * customize this stub for the project's specific needs.
  */
 
-var docElem = window.document.documentElement,
-	selector_hasDuplicate,
+var hasDuplicate,
+	docElem = window.document.documentElement,
 	matches = docElem.matches ||
 		docElem.webkitMatchesSelector ||
 		docElem.mozMatchesSelector ||
 		docElem.oMatchesSelector ||
 		docElem.msMatchesSelector,
-	selector_sortOrder = function( a, b ) {
+	sortOrder = function( a, b ) {
 		// Flag for duplicate removal
 		if ( a === b ) {
-			selector_hasDuplicate = true;
+			hasDuplicate = true;
 			return 0;
 		}
 
-		var compare = b.compareDocumentPosition && a.compareDocumentPosition && a.compareDocumentPosition( b );
+		var compare = b.compareDocumentPosition &&
+			a.compareDocumentPosition &&
+			a.compareDocumentPosition( b );
 
 		if ( compare ) {
 			// Disconnected nodes
@@ -102,10 +104,10 @@ jQuery.extend({
 			i = 0,
 			j = 0;
 
-		selector_hasDuplicate = false;
-		results.sort( selector_sortOrder );
+		hasDuplicate = false;
+		results.sort( sortOrder );
 
-		if ( selector_hasDuplicate ) {
+		if ( hasDuplicate ) {
 			while ( (elem = results[i++]) ) {
 				if ( elem === results[ i ] ) {
 					j = duplicates.push( i );
