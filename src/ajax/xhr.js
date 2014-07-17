@@ -60,7 +60,13 @@ if ( xhrSupported ) {
 						id = ++xhrId;
 
 					// Open the socket
-					xhr.open( options.type, options.url, options.async, options.username, options.password );
+					xhr.open(
+						options.type,
+						options.url,
+						options.async,
+						options.username,
+						options.password
+					);
 
 					// Apply custom fields if provided
 					if ( options.xhrFields ) {
@@ -132,7 +138,7 @@ if ( xhrSupported ) {
 								// statusText for faulty cross-domain requests
 								try {
 									statusText = xhr.statusText;
-								} catch( e ) {
+								} catch ( e ) {
 									// We normalize with Webkit giving an empty statusText
 									statusText = "";
 								}
@@ -184,13 +190,13 @@ if ( xhrSupported ) {
 function createStandardXHR() {
 	try {
 		return new window.XMLHttpRequest();
-	} catch( e ) {}
+	} catch ( e ) {}
 }
 
 function createActiveXHR() {
 	try {
 		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
-	} catch( e ) {}
+	} catch ( e ) {}
 }
 
 });

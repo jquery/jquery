@@ -17,7 +17,7 @@ jQuery.parseXML = function( data ) {
 			xml.async = "false";
 			xml.loadXML( data );
 		}
-	} catch( e ) {
+	} catch ( e ) {
 		xml = undefined;
 	}
 	if ( !xml || !xml.documentElement || xml.getElementsByTagName( "parsererror" ).length ) {

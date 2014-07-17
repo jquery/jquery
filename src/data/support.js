@@ -11,7 +11,7 @@ define([
 		support.deleteExpando = true;
 		try {
 			delete div.test;
-		} catch( e ) {
+		} catch ( e ) {
 			support.deleteExpando = false;
 		}
 	}

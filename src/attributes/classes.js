@@ -103,7 +103,9 @@ jQuery.fn.extend({
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( i ) {
-				jQuery( this ).toggleClass( value.call(this, i, this.className, stateVal), stateVal );
+				jQuery( this ).toggleClass(
+					value.call(this, i, this.className, stateVal), stateVal
+				);
 			});
 		}
 
@@ -135,7 +137,9 @@ jQuery.fn.extend({
 				// then remove the whole classname (if there was one, the above saved it).
 				// Otherwise bring back whatever was previously saved (if anything),
 				// falling back to the empty string if nothing was stored.
-				this.className = this.className || value === false ? "" : jQuery._data( this, "__className__" ) || "";
+				this.className = this.className || value === false ?
+					"" :
+					jQuery._data( this, "__className__" ) || "";
 			}
 		});
 	},
@@ -145,7 +149,9 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 && (" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
+			if ( this[i].nodeType === 1 &&
+				(" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
+
 				return true;
 			}
 		}

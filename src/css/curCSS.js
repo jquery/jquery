@@ -37,9 +37,12 @@ if ( window.getComputedStyle ) {
 			}
 
 			// A tribute to the "awesome hack by Dean Edwards"
-			// Chrome < 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
-			// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
-			// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+			// Chrome < 17 and Safari 5.0 uses "computed value"
+			// instead of "used value" for margin-right
+			// Safari 5.1.7 (at least) returns percentage for a larger set of values,
+			// but width seems to be reliably pixels
+			// this is against the CSSOM draft spec:
+			// http://dev.w3.org/csswg/cssom/#resolved-values
 			if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 
 				// Remember the original values
@@ -87,8 +90,10 @@ if ( window.getComputedStyle ) {
 
 		// If we're not dealing with a regular pixel number
 		// but a number that has a weird ending, we need to convert it to pixels
-		// but not position css attributes, as those are proportional to the parent element instead
-		// and we can't measure the parent instead because it might trigger a "stacking dolls" problem
+		// but not position css attributes, as those are
+		// proportional to the parent element instead
+		// and we can't measure the parent instead because it
+		// might trigger a "stacking dolls" problem
 		if ( rnumnonpx.test( ret ) && !rposition.test( name ) ) {
 
 			// Remember the original values

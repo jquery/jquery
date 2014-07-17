@@ -24,8 +24,10 @@ var
 	ralpha = /alpha\([^)]*\)/i,
 	ropacity = /opacity\s*=\s*([^)]*)/,
 
-	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
-	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+	// swappable if display is none or starts with table except
+	// "table", "table-cell", or "table-caption"
+	// see here for display values:
+	// https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rnumsplit = new RegExp( "^(" + pnum + ")(.*)$", "i" ),
 	rrelNum = new RegExp( "^([+-])=(" + pnum + ")", "i" ),
@@ -95,7 +97,11 @@ function showHide( elements, show ) {
 			hidden = isHidden( elem );
 
 			if ( display && display !== "none" || !hidden ) {
-				jQuery._data( elem, "olddisplay", hidden ? display : jQuery.css( elem, "display" ) );
+				jQuery._data(
+					elem,
+					"olddisplay",
+					hidden ? display : jQuery.css( elem, "display" )
+				);
 			}
 		}
 	}
@@ -168,7 +174,8 @@ function getWidthOrHeight( elem, name, extra ) {
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
-		isBorderBox = support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+		isBorderBox = support.boxSizing &&
+			jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
@@ -187,7 +194,8 @@ function getWidthOrHeight( elem, name, extra ) {
 
 		// we need the check for style in case a browser which returns unreliable values
 		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = isBorderBox && ( support.boxSizingReliable() || val === elem.style[ name ] );
+		valueIsBorderBox = isBorderBox &&
+			( support.boxSizingReliable() || val === elem.style[ name ] );
 
 		// Normalize "", auto, and prepare for extra
 		val = parseFloat( val ) || 0;
@@ -255,7 +263,8 @@ jQuery.extend({
 			origName = jQuery.camelCase( name ),
 			style = elem.style;
 
-		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
+		name = jQuery.cssProps[ origName ] ||
+			( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
@@ -283,24 +292,28 @@ jQuery.extend({
 			}
 
 			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
-			// but it would mean to define eight (for every problematic property) identical functions
+			// but it would mean to define eight
+			// (for every problematic property) identical functions
 			if ( !support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
 				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
-			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
+			if ( !hooks || !("set" in hooks) ||
+				(value = hooks.set( elem, value, extra )) !== undefined ) {
 
 				// Support: IE
 				// Swallow errors from 'invalid' CSS values (#5509)
 				try {
 					style[ name ] = value;
-				} catch(e) {}
+				} catch (e) {}
 			}
 
 		} else {
 			// If a hook was provided get the non-computed value from there
-			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
+			if ( hooks && "get" in hooks &&
+				(ret = hooks.get( elem, false, extra )) !== undefined ) {
+
 				return ret;
 			}
 
@@ -314,7 +327,8 @@ jQuery.extend({
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
-		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+		name = jQuery.cssProps[ origName ] ||
+			( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
@@ -350,11 +364,12 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			if ( computed ) {
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
-				return rdisplayswap.test( jQuery.css( elem, "display" ) ) && elem.offsetWidth === 0 ?
-					jQuery.swap( elem, cssShow, function() {
-						return getWidthOrHeight( elem, name, extra );
-					}) :
-					getWidthOrHeight( elem, name, extra );
+				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
+					elem.offsetWidth === 0 ?
+						jQuery.swap( elem, cssShow, function() {
+							return getWidthOrHeight( elem, name, extra );
+						}) :
+						getWidthOrHeight( elem, name, extra );
 			}
 		},
 
@@ -365,7 +380,8 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 					elem,
 					name,
 					extra,
-					support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					support.boxSizing &&
+						jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 					styles
 				) : 0
 			);
@@ -377,9 +393,11 @@ if ( !support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
 			// IE uses filters for opacity
-			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
-				( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
-				computed ? "1" : "";
+			return ropacity.test( (computed && elem.currentStyle ?
+				elem.currentStyle.filter :
+				elem.style.filter) || "" ) ?
+					( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
+					computed ? "1" : "";
 		},
 
 		set: function( elem, value ) {
@@ -392,7 +410,8 @@ if ( !support.opacity ) {
 			// Force it by setting the zoom level
 			style.zoom = 1;
 
-			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
+			// if setting opacity to 1, and no other filters exist -
+			// attempt to remove filter attribute #6652
 			// if value === "", then remove inline opacity #12685
 			if ( ( value >= 1 || value === "" ) &&
 					jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
@@ -403,7 +422,8 @@ if ( !support.opacity ) {
 				// style.removeAttribute is IE Only, but so apparently is this code path...
 				style.removeAttribute( "filter" );
 
-				// if there is no filter style applied in a css rule or unset inline opacity, we are done
+				// if there is no filter style applied in a css rule
+				// or unset inline opacity, we are done
 				if ( value === "" || currentStyle && !currentStyle.filter ) {
 					return;
 				}

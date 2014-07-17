@@ -74,7 +74,8 @@ jQuery.event = {
 					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
 					undefined;
 			};
-			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
+			// Add elem as a property of the handle fn to prevent a memory leak
+			// with IE non-native events
 			eventHandle.elem = elem;
 		}
 
@@ -118,7 +119,9 @@ jQuery.event = {
 				handlers.delegateCount = 0;
 
 				// Only use addEventListener/attachEvent if the special events handler returns false
-				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+				if ( !special.setup ||
+					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+
 					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
@@ -193,7 +196,8 @@ jQuery.event = {
 				if ( ( mappedTypes || origType === handleObj.origType ) &&
 					( !handler || handler.guid === handleObj.guid ) &&
 					( !tmp || tmp.test( handleObj.namespace ) ) &&
-					( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
+					( !selector || selector === handleObj.selector ||
+						selector === "**" && handleObj.selector ) ) {
 					handlers.splice( j, 1 );
 
 					if ( handleObj.selector ) {
@@ -208,7 +212,9 @@ jQuery.event = {
 			// Remove generic event handler if we removed something and no more handlers exist
 			// (avoids potential for endless recursion during removal of special event handlers)
 			if ( origCount && !handlers.length ) {
-				if ( !special.teardown || special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
+				if ( !special.teardown ||
+					special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
+
 					jQuery.removeEvent( elem, type, elemData.handle );
 				}
 
@@ -261,7 +267,7 @@ jQuery.event = {
 		// Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
 		event.isTrigger = onlyHandlers ? 2 : 3;
 		event.namespace = namespaces.join(".");
-		event.namespace_re = event.namespace ?
+		event.rnamespace = event.namespace ?
 			new RegExp( "(^|\\.)" + namespaces.join("\\.(?:.*\\.|)") + "(\\.|$)" ) :
 			null;
 
@@ -310,7 +316,9 @@ jQuery.event = {
 				special.bindType || type;
 
 			// jQuery handler
-			handle = ( jQuery._data( cur, "events" ) || {} )[ event.type ] && jQuery._data( cur, "handle" );
+			handle = ( jQuery._data( cur, "events" ) || {} )[ event.type ] &&
+				jQuery._data( cur, "handle" );
+
 			if ( handle ) {
 				handle.apply( cur, data );
 			}
@@ -393,17 +401,19 @@ jQuery.event = {
 			event.currentTarget = matched.elem;
 
 			j = 0;
-			while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
+			while ( (handleObj = matched.handlers[ j++ ]) &&
+				!event.isImmediatePropagationStopped() ) {
 
 				// Triggered event must either 1) have no namespace, or
-				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.namespace_re || event.namespace_re.test( handleObj.namespace ) ) {
+				// 2) have namespace(s) a subset or equal to those in the bound event
+				// (both can have no namespace).
+				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
 
-					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
-							.apply( matched.elem, args );
+					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle ||
+						handleObj.handler ).apply( matched.elem, args );
 
 					if ( ret !== undefined ) {
 						if ( (event.result = ret) === false ) {
@@ -519,7 +529,8 @@ jQuery.event = {
 	},
 
 	// Includes some event props shared by KeyEvent and MouseEvent
-	props: "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
+	props: ( "altKey bubbles cancelable ctrlKey currentTarget eventPhase " +
+		"metaKey relatedTarget shiftKey target timeStamp view which" ).split(" "),
 
 	fixHooks: {},
 
@@ -537,7 +548,8 @@ jQuery.event = {
 	},
 
 	mouseHooks: {
-		props: "button buttons clientX clientY fromElement offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
+		props: ( "button buttons clientX clientY fromElement offsetX offsetY " +
+			"pageX pageY screenX screenY toElement" ).split(" "),
 		filter: function( event, original ) {
 			var body, eventDoc, doc,
 				button = original.button,
@@ -549,13 +561,19 @@ jQuery.event = {
 				doc = eventDoc.documentElement;
 				body = eventDoc.body;
 
-				event.pageX = original.clientX + ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) - ( doc && doc.clientLeft || body && body.clientLeft || 0 );
-				event.pageY = original.clientY + ( doc && doc.scrollTop  || body && body.scrollTop  || 0 ) - ( doc && doc.clientTop  || body && body.clientTop  || 0 );
+				event.pageX = original.clientX +
+					( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
+					( doc && doc.clientLeft || body && body.clientLeft || 0 );
+				event.pageY = original.clientY +
+					( doc && doc.scrollTop  || body && body.scrollTop  || 0 ) -
+					( doc && doc.clientTop  || body && body.clientTop  || 0 );
 			}
 
 			// Add relatedTarget, if necessary
 			if ( !event.relatedTarget && fromElement ) {
-				event.relatedTarget = fromElement === event.target ? original.toElement : fromElement;
+				event.relatedTarget = fromElement === event.target ?
+					original.toElement :
+					fromElement;
 			}
 
 			// Add which for click: 1 === left; 2 === middle; 3 === right
@@ -661,7 +679,8 @@ jQuery.removeEvent = document.removeEventListener ?
 		if ( elem.detachEvent ) {
 
 			// #8545, #7054, preventing memory leaks for custom events in IE6-8
-			// detachEvent needed property on element, by name of that event, to properly expose it to GC
+			// detachEvent needed property on element, by name of that event,
+			// to properly expose it to GC
 			if ( typeof elem[ name ] === strundefined ) {
 				elem[ name ] = null;
 			}
@@ -804,10 +823,13 @@ if ( !support.submitBubbles ) {
 			jQuery.event.add( this, "click._submit keypress._submit", function( e ) {
 				// Node name check avoids a VML-related crash in IE (#9807)
 				var elem = e.target,
-					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.form : undefined;
+					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ?
+						elem.form :
+						undefined;
+
 				if ( form && !jQuery._data( form, "submitBubbles" ) ) {
 					jQuery.event.add( form, "submit._submit", function( event ) {
-						event._submit_bubble = true;
+						event._submitBubble = true;
 					});
 					jQuery._data( form, "submitBubbles", true );
 				}
@@ -817,8 +839,8 @@ if ( !support.submitBubbles ) {
 
 		postDispatch: function( event ) {
 			// If form was submitted by the user, bubble the event up the tree
-			if ( event._submit_bubble ) {
-				delete event._submit_bubble;
+			if ( event._submitBubble ) {
+				delete event._submitBubble;
 				if ( this.parentNode && !event.isTrigger ) {
 					jQuery.event.simulate( "submit", this.parentNode, event, true );
 				}
@@ -851,12 +873,12 @@ if ( !support.changeBubbles ) {
 				if ( this.type === "checkbox" || this.type === "radio" ) {
 					jQuery.event.add( this, "propertychange._change", function( event ) {
 						if ( event.originalEvent.propertyName === "checked" ) {
-							this._just_changed = true;
+							this._justChanged = true;
 						}
 					});
 					jQuery.event.add( this, "click._change", function( event ) {
-						if ( this._just_changed && !event.isTrigger ) {
-							this._just_changed = false;
+						if ( this._justChanged && !event.isTrigger ) {
+							this._justChanged = false;
 						}
 						// Allow triggered, simulated change events (#11500)
 						jQuery.event.simulate( "change", this, event, true );
@@ -883,7 +905,9 @@ if ( !support.changeBubbles ) {
 			var elem = event.target;
 
 			// Swallow native change events from checkbox/radio, we already triggered them above
-			if ( this !== elem || event.isSimulated || event.isTrigger || (elem.type !== "radio" && elem.type !== "checkbox") ) {
+			if ( this !== elem || event.isSimulated || event.isTrigger ||
+				(elem.type !== "radio" && elem.type !== "checkbox") ) {
+
 				return event.handleObj.handler.apply( this, arguments );
 			}
 		},
@@ -994,7 +1018,9 @@ jQuery.fn.extend({
 			// ( event )  dispatched jQuery.Event
 			handleObj = types.handleObj;
 			jQuery( types.delegateTarget ).off(
-				handleObj.namespace ? handleObj.origType + "." + handleObj.namespace : handleObj.origType,
+				handleObj.namespace ?
+					handleObj.origType + "." + handleObj.namespace :
+					handleObj.origType,
 				handleObj.selector,
 				handleObj.handler
 			);

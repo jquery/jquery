@@ -29,7 +29,8 @@ function createSafeFragment( document ) {
 	return safeFrag;
 }
 
-var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
+var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|" +
+		"datalist|details|figcaption|figure|footer|" +
 		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
 	rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
 	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
@@ -70,9 +71,11 @@ wrapMap.th = wrapMap.td;
 function getAll( context, tag ) {
 	var elems, elem,
 		i = 0,
-		found = typeof context.getElementsByTagName !== strundefined ? context.getElementsByTagName( tag || "*" ) :
-			typeof context.querySelectorAll !== strundefined ? context.querySelectorAll( tag || "*" ) :
-			undefined;
+		found = typeof context.getElementsByTagName !== strundefined ?
+			context.getElementsByTagName( tag || "*" ) :
+			typeof context.querySelectorAll !== strundefined ?
+				context.querySelectorAll( tag || "*" ) :
+				undefined;
 
 	if ( !found ) {
 		for ( found = [], elems = context.childNodes || context; (elem = elems[i]) != null; i++ ) {
@@ -127,7 +130,11 @@ function setGlobalEval( elems, refElements ) {
 	var elem,
 		i = 0;
 	for ( ; (elem = elems[i]) != null; i++ ) {
-		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[i], "globalEval" ) );
+		jQuery._data(
+			elem,
+			"globalEval",
+			!refElements || jQuery._data( refElements[i], "globalEval" )
+		);
 	}
 }
 
@@ -231,7 +238,9 @@ jQuery.extend({
 		var destElements, node, clone, i, srcElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
-		if ( support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+		if ( support.html5Clone || jQuery.isXMLDoc(elem) ||
+			!rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+
 			clone = elem.cloneNode( true );
 
 		// IE<=8 does not properly clone detached, unknown element nodes
@@ -341,7 +350,9 @@ jQuery.extend({
 
 						j = elem && elem.childNodes.length;
 						while ( j-- ) {
-							if ( jQuery.nodeName( (tbody = elem.childNodes[j]), "tbody" ) && !tbody.childNodes.length ) {
+							if ( jQuery.nodeName( (tbody = elem.childNodes[j]), "tbody" ) &&
+								!tbody.childNodes.length ) {
+
 								elem.removeChild( tbody );
 							}
 						}
@@ -467,7 +478,9 @@ jQuery.fn.extend({
 		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
-				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
+				this.empty().append(
+					( this[0] && this[0].ownerDocument || document ).createTextNode( value )
+				);
 		}, null, value, arguments.length );
 	},
 
@@ -594,7 +607,7 @@ jQuery.fn.extend({
 					elem = 0;
 
 				// If using innerHTML throws an exception, use the fallback method
-				} catch(e) {}
+				} catch ( e ) {}
 			}
 
 			if ( elem ) {
@@ -664,7 +677,8 @@ jQuery.fn.extend({
 				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 				hasScripts = scripts.length;
 
-				// Use the original fragment for the last item instead of the first because it can end up
+				// Use the original fragment for the last item
+				// instead of the first because it can end up
 				// being emptied incorrectly in certain situations (#8070).
 				for ( ; i < l; i++ ) {
 					node = fragment;
@@ -691,7 +705,8 @@ jQuery.fn.extend({
 					for ( i = 0; i < hasScripts; i++ ) {
 						node = scripts[ i ];
 						if ( rscriptType.test( node.type || "" ) &&
-							!jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+							!jQuery._data( node, "globalEval" ) &&
+							jQuery.contains( doc, node ) ) {
 
 							if ( node.src ) {
 								// Optional AJAX dependency, but won't run scripts if not present
@@ -699,7 +714,10 @@ jQuery.fn.extend({
 									jQuery._evalUrl( node.src );
 								}
 							} else {
-								jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
+								jQuery.globalEval(
+									( node.text || node.textContent || node.innerHTML || "" )
+										.replace( rcleanScript, "" )
+								);
 							}
 						}
 					}

@@ -19,7 +19,8 @@ define([
 
 	a.style.cssText = "top:1px";
 
-	// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+	// Test setAttribute on camelCase class.
+	// If it works, we need attrFixes when doing get/setAttribute (ie6/7)
 	support.getSetAttribute = div.className !== "t";
 
 	// Get the style information from getAttribute

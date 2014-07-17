@@ -19,7 +19,7 @@ jQuery.fn.extend({
 			try {
 				this[ name ] = undefined;
 				delete this[ name ];
-			} catch( e ) {}
+			} catch ( e ) {}
 		});
 	}
 });
@@ -48,9 +48,10 @@ jQuery.extend({
 		}
 
 		if ( value !== undefined ) {
-			return hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ?
-				ret :
-				( elem[ name ] = value );
+			return hooks && "set" in hooks &&
+				(ret = hooks.set( elem, value, name )) !== undefined ?
+					ret :
+					( elem[ name ] = value );
 
 		} else {
 			return hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ?
@@ -62,16 +63,18 @@ jQuery.extend({
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
-				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// elem.tabIndex doesn't always return the
+				// correct value when it hasn't been explicitly set
 				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
 				// Use proper attribute retrieval(#12072)
 				var tabindex = jQuery.find.attr( elem, "tabindex" );
 
 				return tabindex ?
 					parseInt( tabindex, 10 ) :
-					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
-						0 :
-						-1;
+					rfocusable.test( elem.nodeName ) ||
+						rclickable.test( elem.nodeName ) && elem.href ?
+							0 :
+							-1;
 			}
 		}
 	}

@@ -59,7 +59,8 @@ jQuery.extend({
 		}
 	},
 
-	// not intended for public consumption - generates a queueHooks object, or returns the current one
+	// not intended for public consumption - generates a queueHooks object,
+	// or returns the current one
 	_queueHooks: function( elem, type ) {
 		var key = type + "queueHooks";
 		return jQuery._data( elem, key ) || jQuery._data( elem, key, {

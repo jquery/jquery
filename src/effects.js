@@ -45,7 +45,8 @@ var
 
 				do {
 					// If previous iteration zeroed out, double until we get *something*
-					// Use a string for doubling factor so we don't accidentally see scale as unchanged below
+					// Use a string for doubling factor so we don't accidentally see scale
+					// as unchanged below
 					scale = scale || ".5";
 
 					// Adjust and apply
@@ -53,8 +54,11 @@ var
 					jQuery.style( tween.elem, prop, start + unit );
 
 				// Update scale, tolerating zero or NaN from tween.cur()
-				// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
-				} while ( scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations );
+				// And breaking the loop if scale is unchanged or perfect,
+				// or if we've just had enough
+				} while (
+					scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations
+				);
 			}
 
 			// Update tween properties
@@ -203,7 +207,8 @@ function defaultPrefilter( elem, props, opts ) {
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
 
-				// If there is dataShow left over from a stopped hide or show and we are going to proceed with show, we should pretend to be hidden
+				// If there is dataShow left over from a stopped hide or show
+				// and we are going to proceed with show, we should pretend to be hidden
 				if ( value === "show" && dataShow && dataShow[ prop ] !== undefined ) {
 					hidden = true;
 				} else {
@@ -533,7 +538,9 @@ jQuery.fn.extend({
 			}
 
 			for ( index = timers.length; index--; ) {
-				if ( timers[ index ].elem === this && (type == null || timers[ index ].queue === type) ) {
+				if ( timers[ index ].elem === this &&
+					(type == null || timers[ index ].queue === type) ) {
+
 					timers[ index ].anim.stop( gotoEnd );
 					dequeue = false;
 					timers.splice( index, 1 );
