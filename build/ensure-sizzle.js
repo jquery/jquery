@@ -1,15 +1,26 @@
 var fs = require( "fs" ),
-	bower = require( "grunt-bowercopy/node_modules/bower" ),
+	npm = require( "npm" ),
 	sizzleLoc = __dirname + "/../external/sizzle/dist/sizzle.js",
 	rversion = /Engine v(\d+\.\d+\.\d+(?:-\w+)?)/;
 
+require( "colors" );
+
 /**
- * Retrieve the latest tag of Sizzle from bower
+ * Retrieve the latest tag of Sizzle from npm
  * @param {Function(string)} callback
  */
 function getLatestSizzle( callback ) {
-	bower.commands.info( "sizzle", "version" )
-		.on( "end", callback );
+	npm.load(function( err, npm ) {
+		if ( err ) {
+			throw err;
+		}
+		npm.commands.info( [ "sizzle", "version" ], function( err, info ) {
+			if ( err ) {
+				throw err;
+			}
+			callback( Object.keys( info )[ 0 ] );
+		});
+	});
 }
 
 /**

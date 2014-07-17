@@ -30,10 +30,9 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "colors": "^0.6.2",
+    "colors": "0.6.2",
     "commitplease": "1.9.0",
     "grunt": "0.4.2",
-    "grunt-bowercopy": "1.1.0",
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
     "grunt-contrib-jshint": "0.8.0",
@@ -42,9 +41,14 @@
     "grunt-git-authors": "1.2.0",
     "grunt-jscs-checker": "0.4.1",
     "grunt-jsonlint": "1.0.4",
+    "grunt-npmcopy": "0.1.0",
     "gzip-js": "0.3.2",
     "load-grunt-tasks": "0.3.0",
-    "requirejs": "2.1.10",
+    "npm": "1.4.21",
+    "qunitjs": "1.14.0",
+    "requirejs": "2.1.14",
+    "sinon": "1.10.3",
+    "sizzle": "2.0.0",
     "testswarm": "1.1.0"
   },
   "scripts": {

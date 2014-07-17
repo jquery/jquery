@@ -46,19 +46,18 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		bowercopy: {
+		npmcopy: {
 			all: {
 				options: {
-					clean: true,
 					destPrefix: "external"
 				},
 				files: {
 					"sizzle/dist": "sizzle/dist",
 					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
-					"qunit/qunit.js": "qunit/qunit/qunit.js",
-					"qunit/qunit.css": "qunit/qunit/qunit.css",
-					"qunit/MIT-LICENSE.txt": "qunit/MIT-LICENSE.txt",
+					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
+					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
+					"qunit/MIT-LICENSE.txt": "qunitjs/MIT-LICENSE.txt",
 
 					"requirejs/require.js": "requirejs/require.js",
 
@@ -138,7 +137,6 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "bower", "bowercopy" );
 	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
 
 	// Short list as a high frequency watch task
