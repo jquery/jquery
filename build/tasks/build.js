@@ -159,8 +159,12 @@ module.exports = function( grunt ) {
 					module = m[ 2 ];
 
 				if ( exclude ) {
+					// Can't exclude sizzle on this branch
+					if ( module === "sizzle" ) {
+						grunt.log.error( "Sizzle cannot be excluded on the 1.x branch." );
+
 					// Can't exclude certain modules
-					if ( minimum.indexOf( module ) === -1 ) {
+					} else if ( minimum.indexOf( module ) === -1 ) {
 						// Add to excluded
 						if ( excluded.indexOf( module ) === -1 ) {
 							grunt.log.writeln( flag );
