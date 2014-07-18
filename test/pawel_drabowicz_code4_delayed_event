@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Pawel Drabowicz - Delayed Event Refactor</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="content-language" content="en" />
+		<script type="text/javascript" src="http://nantek.com.pl/js2/jquery-1.9.0.js"></script>
+		<script type="text/javascript">
+			// <![CDATA[
+			function handleScroll()
+			{
+				clearTimeout(window.handleScrollCount);
+				window.handleScrollCount = setTimeout
+				(
+					function()
+					{
+						$("#result").append("Called after the user has stopped scrolling for 200 milliseconds.");
+					}, 
+					200
+				);
+			}
+			
+			$(window).scroll(handleScroll);
+			// ]]>
+		</script>
+	</head>
+	<body>
+		
+		<div id="result" style="width: 100%; height: 2048px; border: 1px #000000 solid;"></div>
+
+	</body>
+</html>
