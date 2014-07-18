@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Pawel Drabowicz - Event Delegation</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="content-language" content="en" />
+		<style type="text/css">
+			.user
+			{
+				width: 128px;
+				height: 48px;
+				margin: 8px;
+				text-align: center;
+				background-color: #aaaaaa;
+			}
+		</style>
+		<script type="text/javascript" src="http://nantek.com.pl/js2/jquery-1.9.0.js"></script>
+		<script type="text/javascript">
+			// <![CDATA[
+			function fnShowUserHover()
+			{
+				$(this).text("Hover!");
+			}
+			
+			function fnAddUserElement()
+			{
+				$("body").append('<div class="user"></div>');
+			}
+			// ]]>
+		</script>
+	</head>
+	<body>
+		<div class="user"></div>
+		
+		<script type="text/javascript">
+			// <![CDATA[
+			$("body").on("mouseenter", ".user", fnShowUserHover);
+			// ]]>
+		</script>
+		
+		<input type="button" value="Add element" onclick="fnAddUserElement();" />
+	</body>
+</html>
