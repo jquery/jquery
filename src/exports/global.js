@@ -2,9 +2,6 @@ define([
 	"../core"
 ], function( jQuery ) {
 
-/* exported noGlobal */
-/* global   noGlobal: false */
-
 var
 	// Map over jQuery in case of overwrite
 	_jQuery = window.jQuery,
