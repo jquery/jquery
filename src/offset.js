@@ -98,7 +98,7 @@ jQuery.fn.extend({
 
 		// Support: BlackBerry 5, iOS 3 (original iPhone)
 		// If we don't have gBCR, just use 0,0 rather than error
-		if ( elem.getBoundingClientRect !== undefined ) {
+		if ( elem.getBoundingClientRect ) {
 			box = elem.getBoundingClientRect();
 		}
 		win = getWindow( doc );
