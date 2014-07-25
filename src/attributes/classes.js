@@ -1,10 +1,9 @@
 define([
 	"../core",
 	"../var/rnotwhite",
-	"../var/strundefined",
 	"../data/var/dataPriv",
 	"../core/init"
-], function( jQuery, rnotwhite, strundefined, dataPriv ) {
+], function( jQuery, rnotwhite, dataPriv ) {
 
 var rclass = /[\t\r\n\f]/g;
 
@@ -128,7 +127,7 @@ jQuery.fn.extend({
 				}
 
 			// Toggle whole class name
-			} else if ( type === strundefined || type === "boolean" ) {
+			} else if ( value === undefined || type === "boolean" ) {
 				if ( this.className ) {
 					// store className if set
 					dataPriv.set( this, "__className__", this.className );

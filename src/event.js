@@ -1,6 +1,5 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
@@ -10,7 +9,7 @@ define([
 	"./core/init",
 	"./data/accepts",
 	"./selector"
-], function( jQuery, strundefined, rnotwhite, hasOwn, slice, support, dataPriv ) {
+], function( jQuery, rnotwhite, hasOwn, slice, support, dataPriv ) {
 
 var
 	rkeyEvent = /^key/,
@@ -72,7 +71,7 @@ jQuery.event = {
 			eventHandle = elemData.handle = function( e ) {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
-				return typeof jQuery !== strundefined && jQuery.event.triggered !== e.type ?
+				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
 					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
 			};
 		}
