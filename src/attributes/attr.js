@@ -1,11 +1,10 @@
 define([
 	"../core",
 	"../var/rnotwhite",
-	"../var/strundefined",
 	"../core/access",
 	"./support",
 	"../selector"
-], function( jQuery, rnotwhite, strundefined, access, support ) {
+], function( jQuery, rnotwhite, access, support ) {
 
 var nodeHook, boolHook,
 	attrHandle = jQuery.expr.attrHandle;
@@ -33,7 +32,7 @@ jQuery.extend({
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( typeof elem.getAttribute === strundefined ) {
+		if ( !elem.getAttribute ) {
 			return jQuery.prop( elem, name, value );
 		}
 
