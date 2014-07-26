@@ -24,19 +24,21 @@ test( "find(leading combinator)", function() {
 });
 
 test( "find(node|jQuery object)", function() {
-	expect( 12 );
+	expect( 13 );
 
 	var $foo = jQuery("#foo"),
 		$blog = jQuery(".blogTest"),
 		$first = jQuery("#first"),
 		$two = $blog.add( $first ),
+		$twoMore = jQuery("#ap").add( $blog ),
 		$fooTwo = $foo.add( $blog );
 
 	equal( $foo.find( $blog ).text(), "Yahoo", "Find with blog jQuery object" );
 	equal( $foo.find( $blog[ 0 ] ).text(), "Yahoo", "Find with blog node" );
 	equal( $foo.find( $first ).length, 0, "#first is not in #foo" );
 	equal( $foo.find( $first[ 0 ]).length, 0, "#first not in #foo (node)" );
-	ok( $foo.find( $two ).is(".blogTest"), "Find returns only nodes within #foo" );
+	deepEqual( $foo.find( $two ).get(), $blog.get(), "Find returns only nodes within #foo" );
+	deepEqual( $foo.find( $twoMore ).get(), $blog.get(), "...regardless of order" );
 	ok( $fooTwo.find( $blog ).is(".blogTest"), "Blog is part of the collection, but also within foo" );
 	ok( $fooTwo.find( $blog[ 0 ] ).is(".blogTest"), "Blog is part of the collection, but also within foo(node)" );
 
@@ -141,16 +143,22 @@ test("is() with :has() selectors", function() {
 });
 
 test("is() with positional selectors", function() {
-	expect(24);
+	expect(27);
 
-	var isit = function(sel, match, expect) {
-		equal( jQuery( sel ).is( match ), expect, "jQuery('" + sel + "').is('" + match + "')" );
-	};
+	var
+		posp = jQuery(
+			"<p id='posp'><a class='firsta' href='#'><em>first</em></a>" +
+			"<a class='seconda' href='#'><b>test</b></a><em></em></p>"
+		).appendTo( "#qunit-fixture" ),
+		isit = function( sel, match, expect ) {
+			equal(
+				jQuery( sel ).is( match ),
+				expect,
+				"jQuery('" + sel + "').is('" + match + "')"
+			);
+		};
 
-	jQuery(
-		"<p id='posp'><a class='firsta' href='#'><em>first</em></a><a class='seconda' href='#'><b>test</b></a><em></em></p>"
-	).appendTo( "#qunit-fixture" );
-
+	isit( "#posp", "p:last", true );
 	isit( "#posp", "#posp:first", true );
 	isit( "#posp", "#posp:eq(2)", false );
 	isit( "#posp", "#posp a:first", false );
@@ -179,6 +187,9 @@ test("is() with positional selectors", function() {
 	isit( "#posp em", "#posp a em:eq(2)", false );
 
 	ok( jQuery("#option1b").is("#select1 option:not(:first)"), "POS inside of :not() (#10970)" );
+
+	ok( jQuery( posp[0] ).is("p:last"), "context constructed from a single node (#13797)" );
+	ok( !jQuery( posp[0] ).find("#firsta").is("a:first"), "context derived from a single node (#13797)" );
 });
 
 test("index()", function() {
@@ -664,52 +675,162 @@ test("contents()", function() {
 	equal( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 });
 
-test("add(String|Element|Array|undefined)", function() {
-	expect( 15 );
+test("sort direction", function() {
+	expect( 12 );
 
-	var divs, tmp, x, notDefined;
+	var elems = jQuery("#ap, #select1 > *, #moretests > form"),
+		methodDirections = {
+			parent: false,
+			parents: true,
+			parentsUntil: true,
+			next: false,
+			prev: false,
+			nextAll: false,
+			prevAll: true,
+			nextUntil: false,
+			prevUntil: true,
+			siblings: false,
+			children: false,
+			contents: false
+		};
 
-	deepEqual( jQuery("#sndp").add("#en").add("#sap").get(), q("sndp", "en", "sap"), "Check elements from document" );
-	deepEqual( jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).get(), q("sndp", "en", "sap"), "Check elements from document" );
+	jQuery.each( methodDirections, function( method, reversed ) {
+		var actual = elems[ method ]().get(),
+			forward = jQuery.unique( [].concat( actual ) );
+		deepEqual( actual, reversed ? forward.reverse() : forward, "Correct sort direction for " + method );
+	});
+});
+
+test("add(String selector)", function() {
+	expect( 2 );
+
+	var divs;
+
+	deepEqual(
+		jQuery("#sndp").add("#en").add("#sap").toArray(),
+		q("sndp", "en", "sap"),
+		"Check elements from document"
+	);
+
+	divs = jQuery("<div/>").add("#sndp");
+	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
+});
+
+test("add(String selector, String context)", function() {
+	expect( 1 );
+
+	deepEqual(
+		jQuery([]).add("div", "#nothiddendiv").toArray(),
+		q("nothiddendivchild"),
+		"Check elements from document"
+	);
+});
+
+test("add(String html)", function() {
+	expect( 3 );
+
+	var x,
+		divs = jQuery("#sndp").add("<div/>");
+
+	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
+
+
+	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
+	equal( x[0].id, "x1", "Check detached element1" );
+	equal( x[1].id, "x2", "Check detached element2" );
+});
+
+test("add(jQuery)", function() {
+	expect( 4 );
+
+	var x,
+		tmp = jQuery("<div/>");
+
+	x = jQuery([])
+	.add(
+		jQuery("<p id='x1'>xxx</p>").appendTo(tmp)
+	)
+	.add(
+		jQuery("<p id='x2'>xxx</p>").appendTo(tmp)
+	);
+
+	equal( x[0].id, "x1", "Check element1 in detached parent" );
+	equal( x[1].id, "x2", "Check element2 in detached parent" );
+
+	x = jQuery([])
+	.add(
+		jQuery("<p id='x1'>xxx</p>")
+	)
+	.add(
+		jQuery("<p id='x2'>xxx</p>")
+	);
+
+	equal( x[0].id, "x1", "Check detached element1" );
+	equal( x[1].id, "x2", "Check detached element2" );
+});
+
+test("add(Element)", function() {
+	expect( 2 );
+
+	var x,
+		tmp = jQuery("<div/>");
+
+	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
+	equal( x[0].id, "x1", "Check on-the-fly element1" );
+	equal( x[1].id, "x2", "Check on-the-fly element2" );
+});
+
+test("add(Array elements)", function() {
+	expect( 1 );
+
+	deepEqual(
+		jQuery("#sndp").add( jQuery("#en")[0] ).add( jQuery("#sap") ).toArray(),
+		q("sndp", "en", "sap"),
+		"Check elements from document"
+	);
+});
+
+test("add(Window)", function() {
+	expect( 1 );
+
+	var frame1 = document.createElement( "iframe" ),
+		frame2 = document.createElement( "iframe" );
+
+	// This increases window.length and sets window[i] available
+	document.body.appendChild( frame1 );
+	document.body.appendChild( frame2 );
+
+	// Window is tricky because it is a lot like an array, even Array#slice will
+	// turn it into a multi-item array.
+	equal( jQuery([]).add( window ).length, 1, "Add a window" );
+
+	document.body.removeChild( frame1 );
+	document.body.removeChild( frame2 );
+});
+
+test("add(NodeList|undefined|HTMLFormElement|HTMLSelectElement)", function() {
+	expect( 4 );
+
+	var ps, notDefined;
+
+	ps = document.getElementsByTagName("p");
+
+	equal( jQuery([]).add(ps).length, ps.length, "Add a NodeList" );
+
+	equal( jQuery([]).add(notDefined).length, 0, "Adding undefined adds nothing" );
+
+	equal( jQuery([]).add( document.getElementById("form") ).length, 1, "Add a form" );
+	equal( jQuery([]).add( document.getElementById("select1") ).length, 1, "Add a select" );
 
 	// We no longer support .add(form.elements), unfortunately.
 	// There is no way, in browsers, to reliably determine the difference
 	// between form.elements and form - and doing .add(form) and having it
 	// add the form elements is way to unexpected, so this gets the boot.
-	// ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
+	//ok( jQuery([]).add(jQuery("#form")[0].elements).length >= 13, "Check elements from array" );
 
 	// For the time being, we're discontinuing support for jQuery(form.elements) since it's ambiguous in IE
 	// use jQuery([]).add(form.elements) instead.
 	//equal( jQuery([]).add(jQuery("#form")[0].elements).length, jQuery(jQuery("#form")[0].elements).length, "Array in constructor must equals array in add()" );
-
-	divs = jQuery("<div/>").add("#sndp");
-	ok( divs[0].parentNode, "Sort with the disconnected node last (started with disconnected first)." );
-
-	divs = jQuery("#sndp").add("<div/>");
-	ok( !divs[1].parentNode, "Sort with the disconnected node last." );
-
-	tmp = jQuery("<div/>");
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp));
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>").appendTo(tmp)[0]).add(jQuery("<p id='x2'>xxx</p>").appendTo(tmp)[0]);
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add(jQuery("<p id='x1'>xxx</p>")).add(jQuery("<p id='x2'>xxx</p>"));
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	x = jQuery([]).add("<p id='x1'>xxx</p>").add("<p id='x2'>xxx</p>");
-	equal( x[0].id, "x1", "Check on-the-fly element1" );
-	equal( x[1].id, "x2", "Check on-the-fly element2" );
-
-	equal( jQuery([]).add(notDefined).length, 0, "Check that undefined adds nothing" );
-
-	equal( jQuery([]).add( document.getElementById("form") ).length, 1, "Add a form" );
-	equal( jQuery([]).add( document.getElementById("select1") ).length, 1, "Add a select" );
 });
 
 test("add(String, Context)", function() {

@@ -96,7 +96,7 @@ test( "attr(String)", function() {
 	jQuery("<a id='tAnchor6' href='#5' />").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#tAnchor6").prop("href"), "Check for absolute href prop on an anchor" );
 
-	$("<script type='jquery/test' src='#5' id='scriptSrc'></script>").appendTo("#qunit-fixture");
+	jQuery("<script type='jquery/test' src='#5' id='scriptSrc'></script>").appendTo("#qunit-fixture");
 	equal( jQuery("#tAnchor5").prop("href"), jQuery("#scriptSrc").prop("src"), "Check for absolute src prop on a script" );
 
 	// list attribute is readonly by default in browsers that support it
@@ -374,8 +374,6 @@ test( "attr(String, Object)", function() {
 		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
 	});
 
-	// Register the property name to avoid generating a new global when testing window
-	Globals.register("nonexisting");
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
 		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
@@ -383,6 +381,9 @@ test( "attr(String, Object)", function() {
 		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
 		elem.nonexisting = oldVal;
 	});
+
+	// Register the property on the window for the previous assertion so it will be clean up
+	Globals.register( "nonexisting" );
 
 	table = jQuery("#table").append("<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>");
 	td = table.find("td").eq(0);
@@ -468,6 +469,20 @@ test( "attr(String, Object)", function() {
 	equal( typeof jQuery("#name").attr( "maxlength", undefined ), "object", ".attr('attribute', undefined) is chainable (#5571)" );
 	equal( jQuery("#name").attr( "maxlength", undefined ).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
 	equal( jQuery("#name").attr( "nonexisting", undefined ).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
+});
+
+test( "attr - extending the boolean attrHandle", function() {
+	expect( 1 );
+	var called = false,
+		_handle = jQuery.expr.attrHandle.checked || $.noop;
+	jQuery.expr.attrHandle.checked = function() {
+		called = true;
+		_handle.apply( this, arguments );
+	};
+	jQuery( "input" ).attr( "checked" );
+	called = false;
+	jQuery( "input" ).attr( "checked" );
+	ok( called, "The boolean attrHandle does not drop custom attrHandles" );
 });
 
 test( "attr(String, Object) - Loaded via XML document", function() {
@@ -576,8 +591,7 @@ test( "removeAttr(String)", function() {
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
-	// IE 6/7 return empty string here, not undefined
-	ok( !$first.attr("Case"), "mixed-case attribute was removed" );
+	equal( $first.attr( "Case" ), undefined, "mixed-case attribute was removed" );
 });
 
 test( "removeAttr(String) in XML", function() {
@@ -622,7 +636,8 @@ test( "removeAttr(Multi String, variable space width)", function() {
 });
 
 test( "prop(String, Object)", function() {
-	expect( 31 );
+
+	expect( 17 );
 
 	equal( jQuery("#text1").prop("value"), "Test", "Check for value attribute" );
 	equal( jQuery("#text1").prop( "value", "Test2" ).prop("defaultValue"), "Test", "Check for defaultValue attribute" );
@@ -650,7 +665,11 @@ test( "prop(String, Object)", function() {
 	equal( jQuery("#table").prop("useMap"), 1, "Check setting and retrieving useMap" );
 	jQuery("#table").prop( "frameborder", 1 );
 	equal( jQuery("#table").prop("frameBorder"), 1, "Check setting and retrieving frameBorder" );
-	QUnit.reset();
+});
+
+test( "prop(String, Object) on null/undefined", function() {
+
+  expect( 14 );
 
 	var select, optgroup, option, attributeNode, commentNode, textNode, obj, $form,
 		body = document.body,
@@ -782,16 +801,20 @@ test( "removeProp(String)", function() {
 	});
 });
 
-test( "val()", function() {
-	expect( 21 + ( jQuery.fn.serialize ? 6 : 0 ) );
+test( "val() after modification", function() {
 
-	var checks, $button;
+	expect( 1 );
 
 	document.getElementById("text1").value = "bla";
 	equal( jQuery("#text1").val(), "bla", "Check for modified value of input element" );
+});
 
-	QUnit.reset();
 
+test( "val()", function() {
+
+	expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
+
+	var checks, $button;
 	equal( jQuery("#text1").val(), "Test", "Check for value of input element" );
 	// ticket #1714 this caused a JS error in IE
 	equal( jQuery("#first").val(), "", "Check a paragraph element to see if it has a value" );
@@ -904,9 +927,8 @@ if ( "value" in document.createElement("meter") &&
 }
 
 var testVal = function( valueObj ) {
-	expect( 8 );
+	expect( 9 );
 
-	QUnit.reset();
 	jQuery("#text1").val( valueObj("test") );
 	equal( document.getElementById("text1").value, "test", "Check for modified (via val(String)) value of input element" );
 
@@ -920,7 +942,9 @@ var testVal = function( valueObj ) {
 	equal( document.getElementById("text1").value, "", "Check for modified (via val(null)) value of input element" );
 
 	var j,
+		$select = jQuery( "<select multiple><option value='1'/><option value='2'/></select>" ),
 		$select1 = jQuery("#select1");
+
 	$select1.val( valueObj("3") );
 	equal( $select1.val(), "3", "Check for modified (via val(String)) value of select element" );
 
@@ -936,6 +960,9 @@ var testVal = function( valueObj ) {
 	j.val( valueObj( "asdf" ) );
 	equal( j.val(), "asdf", "Check node,textnode,comment with val()" );
 	j.removeAttr("value");
+
+	$select.val( valueObj( [ "1", "2" ] ) );
+	deepEqual( $select.val(), [ "1", "2" ], "Should set array of values" );
 };
 
 test( "val(String/Number)", function() {
@@ -961,7 +988,6 @@ test( "val(Array of Numbers) (Bug #7123)", function() {
 test( "val(Function) with incoming value", function() {
 	expect( 10 );
 
-	QUnit.reset();
 	var oldVal = jQuery("#text1").val();
 
 	jQuery("#text1").val(function( i, val ) {
@@ -1343,6 +1369,49 @@ test( "addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("class4") === false, "Check the class has been properly removed" );
 });
 
+test( "addClass, removeClass, hasClass on many elements", function() {
+	expect( 19 );
+
+	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
+
+	elem.addClass( "hi" );
+	equal( elem[ 0 ].className, "hi", "Check single added class" );
+	equal( elem[ 1 ].className, "hi", "Check single added class" );
+	equal( elem[ 2 ].className, "hi", "Check single added class" );
+
+	elem.addClass( "foo bar" );
+	equal( elem[ 0 ].className, "hi foo bar", "Check more added classes" );
+	equal( elem[ 1 ].className, "hi foo bar", "Check more added classes" );
+	equal( elem[ 2 ].className, "hi foo bar", "Check more added classes" );
+
+	elem.removeClass();
+	equal( elem[ 0 ].className, "", "Remove all classes" );
+	equal( elem[ 1 ].className, "", "Remove all classes" );
+	equal( elem[ 2 ].className, "", "Remove all classes" );
+
+	elem.addClass( "hi foo bar" );
+	elem.removeClass( "foo" );
+	equal( elem[ 0 ].className, "hi bar", "Check removal of one class" );
+	equal( elem[ 1 ].className, "hi bar", "Check removal of one class" );
+	equal( elem[ 2 ].className, "hi bar", "Check removal of one class" );
+
+	ok( elem.hasClass( "hi" ), "Check has1" );
+	ok( elem.hasClass( "bar" ), "Check has2" );
+
+	ok( jQuery( "<p class='hi'>p0</p><p>p1</p><p>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the first element" );
+	ok( jQuery( "<p>p0</p><p class='hi'>p1</p><p>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the second element" );
+	ok( jQuery( "<p>p0</p><p>p1</p><p class='hi'>p2</p>" ).hasClass( "hi" ),
+		"Did find a class in the last element" );
+
+	ok( jQuery( "<p class='hi'>p0</p><p class='hi'>p1</p><p class='hi'>p2</p>" ).hasClass( "hi" ),
+		"Did find a class when present in all elements" );
+
+	ok( !jQuery( "<p class='hi0'>p0</p><p class='hi1'>p1</p><p class='hi2'>p2</p>" ).hasClass( "hi" ),
+		"Did not find a class when not present" );
+});
+
 test( "contents().hasClass() returns correct values", function() {
 	expect( 2 );
 
@@ -1353,6 +1422,26 @@ test( "contents().hasClass() returns correct values", function() {
 	ok( !$contents.hasClass("undefined"), "Did not find 'undefined' in $contents (correctly)" );
 });
 
+test( "hasClass correctly interprets non-space separators (#13835)", function() {
+	expect( 4 );
+
+	var
+		map = {
+			tab: "&#9;",
+			"line-feed": "&#10;",
+			"form-feed": "&#12;",
+			"carriage-return": "&#13;"
+		},
+		classes = jQuery.map( map, function( separator, label ) {
+			return " " + separator + label + separator + " ";
+		}),
+		$div = jQuery( "<div class='" + classes + "'></div>" );
+
+	jQuery.each( map, function( label ) {
+		ok( $div.hasClass( label ), label.replace( "-", " " ) );
+	});
+});
+
 test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	expect( 1 );
 
@@ -1361,4 +1450,26 @@ test( "coords returns correct values in IE6/IE7, see #10828", function() {
 
 	area = map.html("<area shape='rect' coords='0,0,0,0' href='#' alt='a' />").find("area");
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
+});
+
+test( "should not throw at $(option).val() (#14686)", 1, function() {
+	try {
+		jQuery( "<option/>" ).val();
+		ok( true );
+	} catch ( _ ) {
+		ok( false );
+	}
+});
+
+test( "Insignificant white space returned for $(option).val() (#14858)", function() {
+	expect ( 3 );
+
+	var val = jQuery( "<option></option>" ).val();
+	equal( val.length, 0, "Empty option should have no value" );
+
+	val = jQuery( "<option>  </option>" ).val();
+	equal( val.length, 0, "insignificant white-space returned for value" );
+
+	val = jQuery( "<option>  test  </option>" ).val();
+	equal( val.length, 4, "insignificant white-space returned for value" );
 });

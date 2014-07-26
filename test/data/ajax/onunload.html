@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>onunload ajax requests (#14379)</title>
+	<script src="../../jquery.js"></script>
+</head>
+<body>
+	<form id="navigate" action="../iframe.html"></form>
+	<script>
+		jQuery( window ).on( "unload", function() {
+			var ajaxStatus;
+			jQuery.ajax({
+				url: "../name.html",
+				async: false,
+				complete: function( xhr, status ) {
+					ajaxStatus = status;
+				}
+			});
+			parent.iframeCallback( ajaxStatus );
+		});
+
+		jQuery(function() {
+			setTimeout(function() {
+				document.getElementById( "navigate" ).submit();
+			}, 0 );
+		});
+	</script>
+</body>
+</html>

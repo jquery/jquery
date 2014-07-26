@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+	<title>alias-masked DOM properties (#14074)</title>
+	<script>
+		var error = false;
+		window.onready = function() { error = "Called window.onready"; };
+	</script>
+	<script src="../../jquery.js"></script>
+</head>
+<body>
+	<form>
+		<input type="text" id="nodeName"/>
+	</form>
+	<script>
+		jQuery(function() {
+			setTimeout( function() {
+				window.parent.iframeCallback( error );
+			});
+		});
+	</script>
+</body>
+</html>

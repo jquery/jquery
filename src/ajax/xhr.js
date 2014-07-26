@@ -1,10 +1,17 @@
+define([
+	"../core",
+	"../var/support",
+	"../ajax"
+], function( jQuery, support ) {
+
 jQuery.ajaxSettings.xhr = function() {
 	try {
 		return new XMLHttpRequest();
-	} catch( e ) {}
+	} catch ( e ) {}
 };
 
-var xhrSupported = jQuery.ajaxSettings.xhr(),
+var xhrId = 0,
+	xhrCallbacks = {},
 	xhrSuccessStatus = {
 		// file protocol always yields status code 0, assume 200
 		0: 200,
@@ -12,43 +19,52 @@ var xhrSupported = jQuery.ajaxSettings.xhr(),
 		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
 	},
-	// Support: IE9
-	// We need to keep track of outbound xhr and abort them manually
-	// because IE is not smart enough to do it all by itself
-	xhrId = 0,
-	xhrCallbacks = {};
+	xhrSupported = jQuery.ajaxSettings.xhr();
 
+// Support: IE9
+// Open requests must be manually aborted on unload (#5280)
 if ( window.ActiveXObject ) {
 	jQuery( window ).on( "unload", function() {
-		for( var key in xhrCallbacks ) {
+		for ( var key in xhrCallbacks ) {
 			xhrCallbacks[ key ]();
 		}
-		xhrCallbacks = undefined;
 	});
 }
 
-jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-jQuery.support.ajax = xhrSupported = !!xhrSupported;
+support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
+support.ajax = xhrSupported = !!xhrSupported;
 
 jQuery.ajaxTransport(function( options ) {
 	var callback;
+
 	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( jQuery.support.cors || xhrSupported && !options.crossDomain ) {
+	if ( support.cors || xhrSupported && !options.crossDomain ) {
 		return {
 			send: function( headers, complete ) {
-				var i, id,
-					xhr = options.xhr();
-				xhr.open( options.type, options.url, options.async, options.username, options.password );
+				var i,
+					xhr = options.xhr(),
+					id = ++xhrId;
+
+				xhr.open(
+					options.type,
+					options.url,
+					options.async,
+					options.username,
+					options.password
+				);
+
 				// Apply custom fields if provided
 				if ( options.xhrFields ) {
 					for ( i in options.xhrFields ) {
 						xhr[ i ] = options.xhrFields[ i ];
 					}
 				}
+
 				// Override mime type if needed
 				if ( options.mimeType && xhr.overrideMimeType ) {
 					xhr.overrideMimeType( options.mimeType );
 				}
+
 				// X-Requested-With header
 				// For cross-domain requests, seeing as conditions for a preflight are
 				// akin to a jigsaw puzzle, we simply never set it to be sure.
@@ -57,22 +73,25 @@ jQuery.ajaxTransport(function( options ) {
 				if ( !options.crossDomain && !headers["X-Requested-With"] ) {
 					headers["X-Requested-With"] = "XMLHttpRequest";
 				}
+
 				// Set headers
 				for ( i in headers ) {
 					xhr.setRequestHeader( i, headers[ i ] );
 				}
+
 				// Callback
 				callback = function( type ) {
 					return function() {
 						if ( callback ) {
 							delete xhrCallbacks[ id ];
 							callback = xhr.onload = xhr.onerror = null;
+
 							if ( type === "abort" ) {
 								xhr.abort();
 							} else if ( type === "error" ) {
 								complete(
-									// file protocol always yields status 0, assume 404
-									xhr.status || 404,
+									// file: protocol always yields status 0; see #8605, #14207
+									xhr.status,
 									xhr.statusText
 								);
 							} else {
@@ -80,8 +99,8 @@ jQuery.ajaxTransport(function( options ) {
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
 									// Support: IE9
-									// #11426: When requesting binary data, IE9 will throw an exception
-									// on any attempt to access responseText
+									// Accessing binary-data responseText throws an exception
+									// (#11426)
 									typeof xhr.responseText === "string" ? {
 										text: xhr.responseText
 									} : undefined,
@@ -91,16 +110,25 @@ jQuery.ajaxTransport(function( options ) {
 						}
 					};
 				};
+
 				// Listen to events
 				xhr.onload = callback();
 				xhr.onerror = callback("error");
+
 				// Create the abort callback
-				callback = xhrCallbacks[( id = xhrId++ )] = callback("abort");
-				// Do send the request
-				// This may raise an exception which is actually
-				// handled in jQuery.ajax (so no try/catch here)
-				xhr.send( options.hasContent && options.data || null );
+				callback = xhrCallbacks[ id ] = callback("abort");
+
+				try {
+					// Do send the request (this may raise an exception)
+					xhr.send( options.hasContent && options.data || null );
+				} catch ( e ) {
+					// #14683: Only rethrow if this hasn't been notified as an error yet
+					if ( callback ) {
+						throw e;
+					}
+				}
 			},
+
 			abort: function() {
 				if ( callback ) {
 					callback();
@@ -108,4 +136,6 @@ jQuery.ajaxTransport(function( options ) {
 			}
 		};
 	}
+});
+
 });

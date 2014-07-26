@@ -16,7 +16,6 @@
 	"sub": true,
 
 	"browser": true,
-	"es5": true,
 
 	"globals": {
 		"jQuery": true,

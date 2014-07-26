@@ -1,6 +1,3 @@
-src/selector-sizzle.js
-src/selector.js
-dist
 .project
 .settings
 *~
@@ -8,7 +5,8 @@ dist
 *.patch
 /*.html
 .DS_Store
-dist/.destination.json
-dist/.sizecache.json
-build/.sizecache.json
-node_modules
+.bower.json
+.sizecache.json
+
+/dist
+/node_modules

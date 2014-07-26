@@ -31,12 +31,10 @@ function testWrap( val ) {
 	equal( defaultText, result, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
 
-	QUnit.reset();
 	result = jQuery("#first").wrap( val(document.getElementById("empty")) ).parent();
 	ok( result.is("ol"), "Check for element wrapping" );
 	equal( result.text(), defaultText, "Check for element wrapping" );
 
-	QUnit.reset();
 	jQuery("#check1").on( "click", function() {
 		var checkbox = this;
 
@@ -49,7 +47,6 @@ function testWrap( val ) {
 	j = jQuery("#nonnodes").contents();
 	j.wrap( val("<i></i>") );
 
-	// Blackberry 4.6 doesn't maintain comments in the DOM
 	equal( jQuery("#nonnodes > i").length, jQuery("#nonnodes")[ 0 ].childNodes.length, "Check node,textnode,comment wraps ok" );
 	equal( jQuery("#nonnodes > i").text(), j.text(), "Check node,textnode,comment wraps doesn't hurt text" );
 
@@ -96,9 +93,6 @@ function testWrap( val ) {
 	equal( j[ 0 ].parentNode.nodeName.toLowerCase(), "div", "Wrapping works." );
 
 	j.parent().trigger("click");
-
-	// clean up attached elements
-	QUnit.reset();
 }
 
 test( "wrap(String|Element)", function() {
@@ -136,15 +130,15 @@ test( "wrap(String) consecutive elements (#10177)", function() {
 	});
 });
 
-function testWrapAll( val ) {
+test( "wrapAll(String)", function() {
 
-	expect( 8 );
+	expect( 5 );
 
 	var prev, p, result;
 
 	prev = jQuery("#firstp")[ 0 ].previousSibling;
 	p = jQuery("#firstp,#first")[ 0 ].parentNode;
-	result = jQuery("#firstp,#first").wrapAll( val("<div class='red'><div class='tmp'></div></div>") );
+	result = jQuery("#firstp,#first").wrapAll( "<div class='red'><div class='tmp'></div></div>" );
 
 	equal( result.parent().length, 1, "Check for wrapping of on-the-fly html" );
 	ok( jQuery("#first").parent().parent().is(".red"), "Check if wrapper has class 'red'" );
@@ -152,26 +146,66 @@ function testWrapAll( val ) {
 	equal( jQuery("#first").parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 	equal( jQuery("#first").parent().parent()[ 0 ].parentNode, p, "Correct Parent" );
 
-	QUnit.reset();
+});
+
+test( "wrapAll(Element)", function() {
+
+  expect( 3 );
+
+  var prev, p;
 	prev = jQuery("#firstp")[ 0 ].previousSibling;
 	p = jQuery("#first")[ 0 ].parentNode;
-	jQuery("#firstp,#first").wrapAll( val(document.getElementById("empty")) );
+	jQuery("#firstp,#first").wrapAll( document.getElementById("empty") );
 
 	equal( jQuery("#first").parent()[ 0 ], jQuery("#firstp").parent()[ 0 ], "Same Parent" );
 	equal( jQuery("#first").parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 	equal( jQuery("#first").parent()[ 0 ].parentNode, p, "Correct Parent" );
-}
-
-test( "wrapAll(String|Element)", function() {
-	testWrapAll( manipulationBareObj );
 });
 
-function testWrapInner( val ) {
+test( "wrapInner(String)", function() {
 
-	expect( 11 );
+	expect( 6 );
+
+	var num;
+
+	num = jQuery("#first").children().length;
+	jQuery("#first").wrapInner( "<div class='red'><div id='tmp'></div></div>" );
+
+	equal( jQuery("#first").children().length, 1, "Only one child" );
+	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
+	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+
+	num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
+	jQuery("#first").wrapInner( "<div class='red'><div id='tmp'></div></div>" );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
+	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
+	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+});
+
+test( "wrapInner(Element)", function() {
+
+	expect( 5 );
 
 	var num,
 		div = jQuery("<div/>");
+
+	num = jQuery("#first").children().length;
+	jQuery("#first").wrapInner( document.getElementById("empty") );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
+	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
+	equal( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
+
+	div.wrapInner( "<span></span>" );
+	equal( div.children().length, 1, "The contents were wrapped." );
+	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
+});
+
+test( "wrapInner(Function) returns String", function() {
+
+	expect( 6 );
+
+	var num,
+    val = manipulationFunctionReturningObj;
 
 	num = jQuery("#first").children().length;
 	jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
@@ -180,14 +214,21 @@ function testWrapInner( val ) {
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
 
-	QUnit.reset();
 	num = jQuery("#first").html("foo<div>test</div><div>test2</div>").children().length;
 	jQuery("#first").wrapInner( val("<div class='red'><div id='tmp'></div></div>") );
 	equal( jQuery("#first").children().length, 1, "Only one child" );
 	ok( jQuery("#first").children().is(".red"), "Verify Right Element" );
 	equal( jQuery("#first").children().children().children().length, num, "Verify Elements Intact" );
+});
 
-	QUnit.reset();
+test( "wrapInner(Function) returns Element", function() {
+
+	expect( 5 );
+
+	var num,
+    val = manipulationFunctionReturningObj,
+		div = jQuery("<div/>");
+
 	num = jQuery("#first").children().length;
 	jQuery("#first").wrapInner( val(document.getElementById("empty")) );
 	equal( jQuery("#first").children().length, 1, "Only one child" );
@@ -197,14 +238,6 @@ function testWrapInner( val ) {
 	div.wrapInner( val("<span></span>") );
 	equal( div.children().length, 1, "The contents were wrapped." );
 	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
-}
-
-test( "wrapInner(String|Element)", function() {
-	testWrapInner( manipulationBareObj );
-});
-
-test( "wrapInner(Function)", function() {
-	testWrapInner( manipulationFunctionReturningObj );
 });
 
 test( "unwrap()", function() {

@@ -418,7 +418,7 @@ test( "getters on non elements should return null", function() {
 test("setters with and without box-sizing:border-box", function(){
 	expect(20);
 
-	// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 	var el_bb = jQuery("<div style='width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>").appendTo("#qunit-fixture"),
 		el = jQuery("<div style='width:100px;height:100px;margin:5px;padding:3px;border:4px solid white;'>test</div>").appendTo("#qunit-fixture"),
 		expected = 100;
@@ -446,21 +446,6 @@ test("setters with and without box-sizing:border-box", function(){
 	equal( el.outerHeight( 117 ).height(), expected + 3, "test border-box outerHeight(int) by roundtripping" );
 	equal( el.outerHeight( 118, false ).height(), expected + 4, "test border-box outerHeight(int, false) by roundtripping" );
 	equal( el.outerHeight( 129, true ).height(), expected + 5, "test border-box innerHeight(int, true) by roundtripping" );
-});
-
-testIframe( "dimensions/documentSmall", "window vs. small document", function( jQuery, window, document ) {
-	// this test is practically tautological, but there is a bug in IE8
-	// with no simple workaround, so this test exposes the bug and works around it
-	if ( document.body.offsetWidth >= document.documentElement.offsetWidth ) {
-		expect( 2 );
-
-		equal( jQuery( document ).height(), jQuery( window ).height(), "document height matches window height" );
-		equal( jQuery( document ).width(), jQuery( window ).width(), "document width matches window width" );
-	} else {
-		// all tests should have at least one assertion
-		expect( 1 );
-		ok( true, "skipping test (conditions not satisfied)" );
-	}
 });
 
 testIframe( "dimensions/documentLarge", "window vs. large document", function( jQuery, window, document ) {

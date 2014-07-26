@@ -1,5 +1,7 @@
-// Limit scope pollution from any deprecated API
-// (function() {
+define([
+	"./core",
+	"./traversing"
+], function( jQuery ) {
 
 // The number of elements contained in the matched element set
 jQuery.fn.size = function() {
@@ -8,4 +10,4 @@ jQuery.fn.size = function() {
 
 jQuery.fn.andSelf = jQuery.fn.addBack;
 
-// })();
+});

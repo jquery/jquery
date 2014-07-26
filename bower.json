@@ -1,0 +1,21 @@
+{
+  "name": "jquery",
+  "version": "2.1.2-pre",
+  "main": "dist/jquery.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "build",
+    "speed",
+    "test",
+    "*.md",
+    "AUTHORS.txt",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "keywords": [
+    "jquery",
+    "javascript",
+    "library"
+  ]
+}

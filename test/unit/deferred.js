@@ -316,7 +316,7 @@ test( "jQuery.Deferred.then - context", function() {
 
 test( "jQuery.when", function() {
 
-	expect( 34 );
+	expect( 37 );
 
 	// Some other objects
 	jQuery.each({
@@ -328,7 +328,9 @@ test( "jQuery.when", function() {
 		"false": false,
 		"null": null,
 		"undefined": undefined,
-		"a plain object": {}
+		"a plain object": {},
+		"an array": [ 1, 2, 3 ]
+
 	}, function( message, value ) {
 		ok(
 			jQuery.isFunction(

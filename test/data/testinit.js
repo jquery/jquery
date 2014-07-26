@@ -1,30 +1,22 @@
 /*jshint multistr:true, quotmark:false */
 
-var amdDefined, fireNative,
-	originaljQuery = this.jQuery || "jQuery",
-	original$ = this.$ || "$",
+var fireNative, originaljQuery, original$,
+	baseURL = "",
+	supportjQuery = this.jQuery,
 	// see RFC 2606
 	externalHost = "example.com";
 
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
 
-// For testing .noConflict()
-this.jQuery = originaljQuery;
-this.$ = original$;
-
-/**
- * Set up a mock AMD define function for testing AMD registration.
- */
-function define( name, dependencies, callback ) {
-	amdDefined = callback();
-}
-
-define.amd = {};
+// Setup global variables before loading jQuery for testing .noConflict()
+supportjQuery.noConflict( true );
+originaljQuery = this.jQuery = undefined;
+original$ = this.$ = "replaced";
 
 /**
  * Returns an array of elements with the given IDs
- * @example q("main", "foo", "bar")
+ * @example q( "main", "foo", "bar" )
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
 this.q = function() {
@@ -46,7 +38,7 @@ this.q = function() {
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
 this.t = function( a, b, c ) {
-	var f = jQuery(b).get(),
+	var f = jQuery( b ).get(),
 		s = "",
 		i = 0;
 
@@ -54,7 +46,7 @@ this.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
+	deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
 };
 
 this.createDashboardXML = function() {
@@ -106,13 +98,13 @@ this.createWithFriesXML = function() {
 this.createXMLFragment = function() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
-		xml = new ActiveXObject("msxml2.domdocument");
+		xml = new ActiveXObject( "msxml2.domdocument" );
 	} else {
 		xml = document.implementation.createDocument( "", "", null );
 	}
 
 	if ( xml ) {
-		frag = xml.createElement("data");
+		frag = xml.createElement( "data" );
 	}
 
 	return frag;
@@ -120,13 +112,13 @@ this.createXMLFragment = function() {
 
 fireNative = document.createEvent ?
 	function( node, type ) {
-		var event = document.createEvent('HTMLEvents');
+		var event = document.createEvent( "HTMLEvents" );
+
 		event.initEvent( type, true, true );
 		node.dispatchEvent( event );
 	} :
 	function( node, type ) {
-		var event = document.createEventObject();
-		node.fireEvent( 'on' + type, event );
+		node.fireEvent( "on" + type, document.createEventObject() );
 	};
 
 /**
@@ -139,7 +131,8 @@ fireNative = document.createEvent ?
  * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
-	return value + (/\?/.test(value) ? "&" : "?") + new Date().getTime() + "" + parseInt(Math.random() * 100000, 10);
+	return baseURL + value + (/\?/.test( value ) ? "&" : "?") +
+		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
 }
 
 // Ajax testing helper
@@ -208,21 +201,18 @@ this.ajaxTest = function( title, expect, options ) {
 	});
 };
 
-
 this.testIframe = function( fileName, name, fn ) {
-
-	test(name, function() {
-		// pause execution for now
-		stop();
+	asyncTest(name, function() {
 
 		// load fixture in iframe
 		var iframe = loadFixture(),
 			win = iframe.contentWindow,
-			interval = setInterval( function() {
+			interval = setInterval(function() {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
-					// continue
+
 					start();
+
 					// call actual tests passing the correct jQuery instance to use
 					fn.call( this, win.jQuery, win, win.document );
 					document.body.removeChild( iframe );
@@ -232,33 +222,97 @@ this.testIframe = function( fileName, name, fn ) {
 	});
 
 	function loadFixture() {
-		var src = url("./data/" + fileName + ".html"),
-			iframe = jQuery("<iframe />").appendTo("body")[0];
-			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; top: -600px; left: -600px; visibility: hidden;";
+		var src = url( "./data/" + fileName + ".html" ),
+			iframe = jQuery( "<iframe />" ).appendTo( "body" )[ 0 ];
+			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; " +
+				"top: -600px; left: -600px; visibility: hidden;";
+
 		iframe.contentWindow.location = src;
 		return iframe;
 	}
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-
-	test( title, function() {
+	asyncTest( title, 1, function() {
 		var iframe;
 
-		stop();
 		window.iframeCallback = function() {
-			var self = this,
-				args = arguments;
+			var args = arguments;
+
 			setTimeout(function() {
-				window.iframeCallback = undefined;
+				this.iframeCallback = undefined;
+
 				iframe.remove();
-				func.apply( self, args );
+				func.apply( this, args );
 				func = function() {};
+
 				start();
-			}, 0 );
+			});
 		};
-		iframe = jQuery( "<div/>" ).append(
-			jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) )
-		).appendTo( "body" );
+		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
+			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
+			.appendTo( "#qunit-fixture" );
+	});
+};
+this.iframeCallback = undefined;
+
+// Tests are always loaded async
+QUnit.config.autostart = false;
+this.loadTests = function() {
+	var loadSwarm,
+		url = window.location.search;
+
+	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
+	loadSwarm = url && url.indexOf( "http" ) === 0;
+
+	// Get testSubproject from testrunner first
+	require([ "data/testrunner.js" ], function() {
+		var tests = [
+			"unit/core.js",
+			"unit/callbacks.js",
+			"unit/deferred.js",
+			"unit/support.js",
+			"unit/data.js",
+			"unit/queue.js",
+			"unit/attributes.js",
+			"unit/event.js",
+			"unit/selector.js",
+			"unit/traversing.js",
+			"unit/manipulation.js",
+			"unit/wrap.js",
+			"unit/css.js",
+			"unit/serialize.js",
+			"unit/ajax.js",
+			"unit/effects.js",
+			"unit/offset.js",
+			"unit/dimensions.js"
+		];
+
+		// Ensure load order (to preserve test numbers)
+		(function loadDep() {
+			var dep = tests.shift();
+
+			if ( dep ) {
+				require( [ dep ], loadDep );
+
+			} else {
+				QUnit.load();
+
+				/**
+				 * Run in noConflict mode
+				 */
+				jQuery.noConflict();
+
+				// Load the TestSwarm listener if swarmURL is in the address.
+				if ( loadSwarm ) {
+					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ],
+					function() {
+						QUnit.start();
+					});
+				} else {
+					QUnit.start();
+				}
+			}
+		})();
 	});
 };

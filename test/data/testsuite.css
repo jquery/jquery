@@ -1,7 +1,5 @@
-/* for testing opacity set in styles in IE */
 ol#empty {
 	opacity: 0;
-	filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff');
 }
 
 div#fx-tests h4 {
@@ -35,7 +33,7 @@ div.autowidth {
 }
 
 div.autoopacity {
-	opacity: auto;
+	opacity: 1;
 }
 
 div.largewidth {
@@ -44,10 +42,6 @@ div.largewidth {
 
 div.largeheight {
 	height: 100px;
-}
-
-div.largeopacity {
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
 
 div.medwidth {
@@ -60,7 +54,6 @@ div.medheight {
 
 div.medopacity {
 	opacity: 0.5;
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
 }
 
 div.nowidth {
@@ -73,7 +66,6 @@ div.noheight {
 
 div.noopacity {
 	opacity: 0;
-	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 
 div.hidden {
@@ -132,9 +124,6 @@ div#show-tests * { display: none; }
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
 
-/* For testing type on vml in IE #7071 */
-v\:oval { behavior:url(#default#VML); display:inline-block; }
-
 /* 8099 changes to default styles are read correctly */
 tt { display: none; }
 sup { display: none; }
@@ -143,13 +132,13 @@ dfn { display: none; }
 /* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
 body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif) no-repeat -1000px 0; }
 
-/* #6652 REMOVE FILTER:ALPHA(OPACITY=100) AFTER ANIMATION */
-#t6652 div { filter: alpha(opacity=50); }
-
 /* #10501 */
 section { background:#f0f; display:block; }
 
 /* #11971 */
 #foo { background: url(1x1.jpg) right bottom no-repeat; }
+
+/* #14824 */
+#span-14824 { display: block; }
 
 #display { display: list-item !important; }

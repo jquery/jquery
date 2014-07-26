@@ -4,81 +4,35 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
 	<title>jQuery Test Suite</title>
-	<link rel="Stylesheet" media="screen" href="qunit/qunit/qunit.css" />
+	<link rel="Stylesheet" media="screen" href="../external/qunit/qunit.css" />
 	<link rel="Stylesheet" media="screen" href="data/testsuite.css" />
 	<!-- Includes -->
 
-	<!-- Allows us to fetch submodule tests when using a no-ajax build -->
-	<script src="data/jquery-1.9.1.ajax_xhr.min.js"></script>
+	<!--
+		We have to use previous jQuery as helper to ensure testability with
+		ajax-free builds (and non-interference when changing ajax internals)
+	-->
+	<script src="data/jquery-1.9.1.js"></script>
 
+	<script src="../external/qunit/qunit.js"></script>
+	<script src="../external/requirejs/require.js"></script>
+	<script src="../external/sinon/fake_timers.js"></script>
+	<!-- See testinit for the list of tests -->
 	<script src="data/testinit.js"></script>
 
-	<script src="qunit/qunit/qunit.js"></script>
-	<script>
-		(function() {
-			var src = "../dist/jquery.min.js";
-
-			// Config parameter to use minified jQuery
-			QUnit.config.urlConfig.push({
-				id: "dev",
-				label: "Load unminified",
-				tooltip: "Load the development (unminified) jQuery file"
-			});
-			if ( QUnit.urlParams.dev ) {
-				src = "../dist/jquery.js";
-			}
-
-			// Config parameter to force basic code paths
-			QUnit.config.urlConfig.push({
-				id: "basic",
-				label: "Bypass optimizations",
-				tooltip: "Force use of the most basic code by disabling native querySelectorAll; contains; compareDocumentPosition"
-			});
-			if ( QUnit.urlParams.basic ) {
-				document.querySelectorAll = null;
-				document.documentElement.contains = null;
-				document.documentElement.compareDocumentPosition = null;
-			}
-
-			// Load jQuery
-			document.write( "<script id='jquery-js' src='" + src + "'><\x2Fscript>" );
-		})();
-	</script>
-	<script src="data/testrunner.js"></script>
-
-	<script src="unit/core.js"></script>
-	<script src="unit/callbacks.js"></script>
-	<script src="unit/deferred.js"></script>
-	<script src="unit/support.js"></script>
-	<script src="unit/data.js"></script>
-	<script src="unit/queue.js"></script>
-	<script src="unit/attributes.js"></script>
-	<script src="unit/event.js"></script>
-	<script src="unit/selector.js"></script>
-	<script src="unit/traversing.js"></script>
-	<script src="unit/manipulation.js"></script>
-	<script src="unit/wrap.js"></script>
-	<script src="unit/css.js"></script>
-	<script src="unit/serialize.js"></script>
-	<script src="unit/ajax.js"></script>
-	<script src="unit/effects.js"></script>
-	<script src="unit/offset.js"></script>
-	<script src="unit/dimensions.js"></script>
-	<script src="unit/deprecated.js"></script>
-	<script src="unit/exports.js"></script>
-
-	<!-- Subproject tests must be last because they replace our test fixture -->
-	<script>
-		testSubproject( "Sizzle", "../src/sizzle/test/", /^unit\/.*\.js$/ );
-	</script>
+	<!-- A script that includes jQuery min, dev, or AMD -->
+	<!-- Adds "basic" URL option, even to iframes -->
+	<!-- iframes will not load AMD as loading needs to be synchronous for some tests -->
+	<!-- Also executes the function above to load tests -->
+	<script src="jquery.js"></script>
 
 	<script>
-		// html5shiv, enabling HTML5 elements to be used with jQuery
-		( "abbr article aside audio bdi canvas data datalist details figcaption figure footer header hgroup " +
-			"mark meter nav output progress section summary time video"
-		).replace(/\w+/g, function(n) {
-			document.createElement(n);
-		});
+		// Load tests if they have not been loaded
+		// This is in a different script tag to ensure that
+		// jQuery is on the page when the testrunner executes
+		if ( !QUnit.urlParams.amd ) {
+			loadTests();
+		}
 	</script>
 </head>
 

@@ -59,7 +59,7 @@ When you are experiencing a problem, the most useful thing you can possibly do i
 
 ## jQuery Core Style Guide
 
-See: [jQuery Core Style Guide](http://docs.jquery.com/JQuery_Core_Style_Guidelines)
+See: [jQuery's Style Guides](http://contribute.jquery.org/style-guide/)
 
 ## Tips For Bug Patching
 
@@ -207,12 +207,8 @@ This will only run the "css" module tests. This will significantly speed up your
 **ALWAYS RUN THE FULL SUITE BEFORE COMMITTING AND PUSHING A PATCH!**
 
 
-### jQuery 2.x supports the following browsers:
+### Browser support
 
-* Chrome Current-1
-* Safari Current-1
-* Firefox Current-1
-* IE 9+
-* Opera Current-1
+Remember that jQuery supports multiple browsers and their versions; any contributed code must work in all of them. You can refer to the [browser support page](http://jquery.com/browser-support/) for the current list of supported browsers.
 
-jQuery 1.x additionally supports IE6+.
+Note that browser support differs depending on whether you are targeting the `master` or `1.x-master` branch.

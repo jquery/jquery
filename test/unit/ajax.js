@@ -14,6 +14,10 @@ module( "ajax", {
 });
 
 (function() {
+	test("Unit Testing Environment", 2, function () {
+		ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
+		ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
+	});
 
 	if ( !jQuery.ajax || ( isLocal && !hasPHP ) ) {
 		return;
@@ -182,17 +186,24 @@ module( "ajax", {
 		});
 	});
 
-	ajaxTest( "jQuery.ajax() - headers", 4, {
+	ajaxTest( "jQuery.ajax() - headers", 5, {
 		setup: function() {
 			jQuery( document ).ajaxSend(function( evt, xhr ) {
 				xhr.setRequestHeader( "ajax-send", "test" );
 			});
 		},
-		url: url("data/headers.php?keys=siMPle_SometHing-elsE_OthEr_ajax-send"),
+		url: url("data/headers.php?keys=siMPle_SometHing-elsE_OthEr_Nullable_undefined_Empty_ajax-send"),
 		headers: {
 			"siMPle": "value",
 			"SometHing-elsE": "other value",
-			"OthEr": "something else"
+			"OthEr": "something else",
+			"Nullable": null,
+			"undefined": undefined
+
+			// Support: Firefox
+			// Not all browsers allow empty-string headers
+			// https://bugzilla.mozilla.org/show_bug.cgi?id=815299
+			//"Empty": ""
 		},
 		success: function( data, _, xhr ) {
 			var i, emptyHeader,
@@ -201,12 +212,13 @@ module( "ajax", {
 				}),
 				tmp = [];
 			for ( i in requestHeaders ) {
-				tmp.push( i, ": ", requestHeaders[ i ], "\n" );
+				tmp.push( i, ": ", requestHeaders[ i ] + "", "\n" );
 			}
 			tmp = tmp.join("");
 
 			strictEqual( data, tmp, "Headers were sent" );
 			strictEqual( xhr.getResponseHeader("Sample-Header"), "Hello World", "Sample header received" );
+			ok( data.indexOf( "undefined" ) < 0 , "Undefined header value was not sent" );
 
 			emptyHeader = xhr.getResponseHeader("Empty-Header");
 			if ( emptyHeader === null ) {
@@ -243,7 +255,9 @@ module( "ajax", {
 			url: url("data/headers.php?keys=content-type"),
 			contentType: false,
 			success: function( data ) {
-				strictEqual( data, "content-type: \n", "Test content-type is not sent when options.contentType===false" );
+				// Some server/interpreter combinations always supply a Content-Type to scripts
+				data = data || "content-type: \n";
+				strictEqual( data, "content-type: \n", "Test content-type is not set when options.contentType===false" );
 			}
 		}
 	]);
@@ -407,6 +421,22 @@ module( "ajax", {
 			beforeSend: nocallback("beforeSend"),
 			error: nocallback("error"),
 			complete:  nocallback("complete")
+		};
+	});
+
+	ajaxTest( "#15118 - jQuery.ajax() - function without jQuery.event", 1, function() {
+		var holder;
+		return {
+			url: url( "data/json.php" ),
+			setup: function() {
+				holder = jQuery.event;
+				delete jQuery.event;
+			},
+			complete: function() {
+				ok( true, "Call can be made without jQuery.event" );
+				jQuery.event = holder;
+			},
+			success: true
 		};
 	});
 
@@ -597,7 +627,7 @@ module( "ajax", {
 
 		ok( jQuery.get( url(target), success ), "get" );
 		ok( jQuery.post( url(target), success ), "post" );
-		ok( jQuery.getScript( url("data/test.js"), success ), "script" );
+		ok( jQuery.getScript( url("data/testbar.php"), success ), "script" );
 		ok( jQuery.getJSON( url("data/json_obj.js"), success ), "json" );
 		ok( jQuery.ajax({
 			url: url( target ),
@@ -723,7 +753,7 @@ module( "ajax", {
 				jsonpCallback: "functionToCleanUp",
 				success: function( data ) {
 					ok( data["data"], "JSON results returned (GET, custom callback name to be cleaned up)" );
-					strictEqual( window["functionToCleanUp"], undefined, "Callback was removed (GET, custom callback name to be cleaned up)" );
+					strictEqual( window["functionToCleanUp"], true, "Callback was removed (GET, custom callback name to be cleaned up)" );
 					var xhr;
 					jQuery.ajax({
 						url: "data/jsonp.php",
@@ -737,7 +767,7 @@ module( "ajax", {
 					});
 					xhr.fail(function() {
 						ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-						strictEqual( window["functionToCleanUp"], undefined, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+						strictEqual( window["functionToCleanUp"], true, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 					});
 				}
 			}, {
@@ -845,7 +875,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -856,7 +886,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ) + "data/testbar.php",
 		type: "POST",
 		dataType: "script",
 		success: function( data, status ) {
@@ -869,7 +899,7 @@ module( "ajax", {
 		setup: function() {
 			Globals.register("testBar");
 		},
-		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/test.js",
+		url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + "data/testbar.php",
 		dataType: "script",
 		success: function() {
 			strictEqual( window["testBar"], "bar", "Script results returned (GET, no callback)" );
@@ -1407,15 +1437,7 @@ module( "ajax", {
 		jQuery.ajax({
 			url: "data/badjson.js",
 			dataType: "script",
-			throws: true,
-			// Global events get confused by the exception
-			global: false,
-			success: function() {
-				ok( false, "Success." );
-			},
-			error: function() {
-				ok( false, "Error." );
-			}
+			throws: true
 		});
 	});
 
@@ -1460,6 +1482,12 @@ module( "ajax", {
 			var parsedXML = jQuery( jQuery.parseXML("<tab title=\"Added\">blibli</tab>") ).find("tab");
 			ajaxXML = jQuery( ajaxXML );
 			try {
+				// Android 2.3 doesn't automatically adopt nodes from foreign documents.
+				// (see the comment in test/manipulation.js)
+				// Support: Android 2.3
+				if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+					parsedXML = jQuery( ajaxXML[ 0 ].adoptNode( parsedXML[ 0 ] ) );
+				}
 				ajaxXML.find("infowindowtab").append( parsedXML );
 			} catch( e ) {
 				strictEqual( e, undefined, "error" );
@@ -1499,11 +1527,71 @@ module( "ajax", {
 		}
 	});
 
+	ajaxTest( "#13922 - jQuery.ajax() - converter is bypassed for HEAD requests", 3, {
+		url: "data/json.php",
+		method: "HEAD",
+		data: {
+			header: "yes"
+		},
+		converters: {
+			"text json": function() {
+				throw "converter was called";
+			}
+		},
+		success: function( data, status ) {
+			ok( true, "success" );
+			strictEqual( status, "nocontent", "data is undefined" );
+			strictEqual( data, undefined, "data is undefined" );
+		},
+		error: function( _, status, error ) {
+			ok( false, "error" );
+			strictEqual( status, "parsererror", "Parser Error" );
+			strictEqual( error, "converter was called", "Converter was called" );
+		}
+	} );
+
+	testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
+		expect( 1 );
+		strictEqual( status, "success", "Request completed" );
+	});
+
+	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, [
+		{
+			url: "data/params_html.php",
+			method: "POST",
+			data: {
+				toString: function() {
+					throw "Can't parse";
+				}
+			},
+			processData: false,
+			done: function( data ) {
+				ok( false, "done: " + data );
+			},
+			fail: function( jqXHR, status, error ) {
+				ok( true, "exception caught: " + error );
+				strictEqual( jqXHR.status, 0, "proper status code" );
+				strictEqual( status, "error", "proper status" );
+			}
+		},
+		{
+			url: "http://domain.org:80d",
+			done: function( data ) {
+				ok( false, "done: " + data );
+			},
+			fail: function( _, status, error ) {
+				ok( true, "fail: " + status + " - " + error );
+			}
+		}
+	]);
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
+		dataType: "prefix",
 		setup: function() {
-			jQuery.ajaxPrefilter(function( options, _, jqXHR ) {
+			// Ensure prefix does not throw an error
+			jQuery.ajaxPrefilter("+prefix", function( options, _, jqXHR ) {
 				if ( options.abortInPrefilter ) {
 					jqXHR.abort();
 				}
@@ -1663,7 +1751,7 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function() {
+		jQuery.getScript( url("data/testbar.php"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
 			start();
 		});
@@ -1671,12 +1759,12 @@ module( "ajax", {
 
 	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js") ).done( start );
+		jQuery.getScript( url("data/testbar.php") ).done( start );
 	});
 
 	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
 		Globals.register("testBar");
-		jQuery.getScript( url("data/test.js"), function( data, _, jqXHR ) {
+		jQuery.getScript( url("data/testbar.php"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
 			start();
 		});
@@ -1726,6 +1814,14 @@ module( "ajax", {
 	asyncTest( "jQuery.fn.load( URL_SELECTOR )", 1, function() {
 		jQuery("#first").load( "data/test3.html div.user", function() {
 			strictEqual( jQuery( this ).children("div").length, 2, "Verify that specific elements were injected" );
+			start();
+		});
+	});
+
+	// Selector should be trimmed to avoid leading spaces (#14773)
+	asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )", 1, function() {
+		jQuery("#first").load( "data/test3.html   #superuser ", function() {
+			strictEqual( jQuery( this ).children("div").length, 1, "Verify that specific elements were injected" );
 			start();
 		});
 	});
@@ -1896,7 +1992,9 @@ module( "ajax", {
 					strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly" );
 				}
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
@@ -1919,7 +2017,9 @@ module( "ajax", {
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
 				});
 			})
-		).always( start );
+		).always(function() {
+			start();
+		});
 	});
 
 //----------- jQuery.active

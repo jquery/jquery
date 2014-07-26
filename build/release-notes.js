@@ -3,10 +3,8 @@
  * jQuery Release Note Generator
  */
 
-var fs = require("fs"),
-	http = require("http"),
+var http = require("http"),
 	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g,
-	categories = [],
 	version = process.argv[2];
 
 if ( !/^\d+\.\d+/.test( version ) ) {
@@ -18,8 +16,9 @@ http.request({
 	host: "bugs.jquery.com",
 	port: 80,
 	method: "GET",
-	path: "/query?status=closed&resolution=fixed&max=400&component=!web&order=component&milestone=" + version
-}, function (res) {
+	path: "/query?status=closed&resolution=fixed&max=400&" +
+		"component=!web&order=component&milestone=" + version
+}, function( res ) {
 	var data = [];
 
 	res.on( "data", function( chunk ) {
@@ -27,20 +26,19 @@ http.request({
 	});
 
 	res.on( "end", function() {
-		var match,
-			file = data.join(""),
-			cur;
+		var match, cur, cat,
+			file = data.join("");
 
 		while ( (match = extract.exec( file )) ) {
 			if ( "#" + match[1] !== match[2] ) {
-				var cat = match[3];
+				cat = match[3];
 
 				if ( !cur || cur !== cat ) {
 					if ( cur ) {
 						console.log("</ul>");
 					}
 					cur = cat;
-					console.log( "<h2>" + cat.charAt(0).toUpperCase() + cat.slice(1) + "</h2>" );
+					console.log( "<h3>" + cat.charAt(0).toUpperCase() + cat.slice(1) + "</h3>" );
 					console.log("<ul>");
 				}
 
@@ -56,4 +54,3 @@ http.request({
 
 	});
 }).end();
-
