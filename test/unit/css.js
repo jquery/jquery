@@ -886,15 +886,17 @@ test( "css opacity consistency across browsers (#12685)", function() {
 });
 
 test( ":visible/:hidden selectors", function() {
-	expect( 13 );
+	expect( 16 );
+
+	var $newDiv, $br, $table;
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
 	jQuery("#nothiddendiv").css({ display: "none" });
 	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden" );
-	jQuery("#nothiddendiv").css({"display": "block"});
+	jQuery("#nothiddendiv").css({ "display": "block" });
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
-	ok( jQuery(window).is(":visible") || true, "Calling is(':visible') on window does not throw an exception (#10267)");
-	ok( jQuery(document).is(":visible") || true, "Calling is(':visible') on document does not throw an exception (#10267)");
+	ok( !jQuery(window).is(":visible"), "Calling is(':visible') on window does not throw an exception (#10267).");
+	ok( !jQuery(document).is(":visible"), "Calling is(':visible') on document does not throw an exception (#10267).");
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
 	jQuery("#nothiddendiv").css("display", "none");
@@ -902,13 +904,13 @@ test( ":visible/:hidden selectors", function() {
 	jQuery("#nothiddendiv").css("display", "block");
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
 
-	// ok( !jQuery("#siblingspan").is(":visible"), "Span with no content not visible (#13132)" );
-	// var $newDiv = jQuery("<div><span></span></div>").appendTo("#qunit-fixture");
-	// equal( $newDiv.find(":visible").length, 0, "Span with no content not visible (#13132)" );
-	// var $br = jQuery("<br/>").appendTo("#qunit-fixture");
-	// ok( !$br.is(":visible"), "br element not visible (#10406)");
+	ok( !jQuery("#siblingspan").is(":visible"), "Span with no content not visible (#13132)" );
+	$newDiv = jQuery("<div><span></span></div>").appendTo("#qunit-fixture");
+	equal( $newDiv.find(":visible").length, 0, "Span with no content not visible (#13132)" );
+	$br = jQuery("<br/>").appendTo("#qunit-fixture");
+	ok( !$br.is(":visible"), "br element not visible (#10406)");
 
-	var $table = jQuery("#table");
+	$table = jQuery("#table");
 	$table.html("<tr><td style='display:none'>cell</td><td>cell</td></tr>");
 	equal(jQuery("#table td:visible").length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements");
 	$table.css("display", "none").html("<tr><td>cell</td><td>cell</td></tr>");
@@ -1068,4 +1070,27 @@ test( "show() after hide() should always set display to initial value (#14750)",
 		});
 	}
 })();
+
+test( "Do not throw on frame elements from css method (#15098)", 1, function() {
+	var frameWin, frameDoc,
+		frameElement = document.createElement( "iframe" ),
+		frameWrapDiv = document.createElement( "div" );
+
+	frameWrapDiv.appendChild( frameElement );
+	document.body.appendChild( frameWrapDiv );
+	frameWin = frameElement.contentWindow;
+	frameDoc = frameWin.document;
+	frameDoc.open();
+	frameDoc.write( "<!doctype html><html><body><div>Hi</div></body></html>" );
+	frameDoc.close();
+
+	frameWrapDiv.style.display = "none";
+
+	try {
+		jQuery( frameDoc.body ).css( "direction" );
+		ok( true, "It didn't throw" );
+	} catch ( _ ) {
+		ok( false, "It did throw" );
+	}
+});
 }

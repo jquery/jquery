@@ -1,11 +1,5 @@
 module("core", { teardown: moduleTeardown });
 
-test("Unit Testing Environment", function () {
-	expect(2);
-	ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
-	ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
-});
-
 test("Basic requirements", function() {
 	expect(7);
 	ok( Array.prototype.push, "Array.push()" );
@@ -220,6 +214,19 @@ test( "globalEval with 'use strict'", function() {
 
 	jQuery.globalEval("'use strict'; var strictEvalTest = 1;");
 	equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
+});
+
+test( "globalEval execution after script injection (#7862)", 1, function() {
+	var now,
+		script = document.createElement( "script" );
+
+	script.src = "data/longLoadScript.php?sleep=2";
+
+	now = jQuery.now();
+	document.body.appendChild( script );
+
+	jQuery.globalEval( "var strictEvalTest = " + jQuery.now() + ";");
+	ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 });
 
 test("noConflict", function() {
