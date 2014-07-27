@@ -1,6 +1,5 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./var/concat",
 	"./var/push",
 	"./var/deletedIds",
@@ -13,7 +12,7 @@ define([
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, strundefined, concat, push, deletedIds, access, rcheckableType, support ) {
+], function( jQuery, concat, push, deletedIds, access, rcheckableType, support ) {
 
 function createSafeFragment( document ) {
 	var list = nodeNames.split( "|" ),
@@ -71,9 +70,9 @@ wrapMap.th = wrapMap.td;
 function getAll( context, tag ) {
 	var elems, elem,
 		i = 0,
-		found = typeof context.getElementsByTagName !== strundefined ?
+		found = typeof context.getElementsByTagName !== "undefined" ?
 			context.getElementsByTagName( tag || "*" ) :
-			typeof context.querySelectorAll !== strundefined ?
+			typeof context.querySelectorAll !== "undefined" ?
 				context.querySelectorAll( tag || "*" ) :
 				undefined;
 
@@ -458,7 +457,7 @@ jQuery.extend({
 						if ( deleteExpando ) {
 							delete elem[ internalKey ];
 
-						} else if ( typeof elem.removeAttribute !== strundefined ) {
+						} else if ( typeof elem.removeAttribute !== "undefined" ) {
 							elem.removeAttribute( internalKey );
 
 						} else {

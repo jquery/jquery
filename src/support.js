@@ -1,11 +1,10 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./var/support",
 	"./core/init", // Needed for hasOwn support test
 	// This is listed as a dependency for build order, but it's still optional in builds
 	"./core/ready"
-], function( jQuery, strundefined, support ) {
+], function( jQuery, support ) {
 
 // Support: IE<9
 // Iteration over object's inherited properties before its own
@@ -36,7 +35,7 @@ jQuery(function() {
 	container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
 	body.appendChild( container ).appendChild( div );
 
-	if ( typeof div.style.zoom !== strundefined ) {
+	if ( typeof div.style.zoom !== "undefined" ) {
 		// Support: IE<8
 		// Check if natively block-level elements act like inline-block
 		// elements when setting their display to 'inline' and giving
