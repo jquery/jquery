@@ -1,7 +1,6 @@
 define([
-	"../var/strundefined",
 	"../var/support"
-], function( strundefined, support ) {
+], function( support ) {
 
 (function() {
 	var shrinkWrapBlocksVal;
@@ -31,7 +30,7 @@ define([
 
 		// Support: IE6
 		// Check if elements with layout shrink-wrap their children
-		if ( typeof div.style.zoom !== strundefined ) {
+		if ( typeof div.style.zoom !== "undefined" ) {
 			// Reset CSS: box-sizing; display; margin; border
 			div.style.cssText =
 				// Support: Firefox<29, Android 2.3

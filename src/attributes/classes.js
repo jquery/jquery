@@ -1,9 +1,8 @@
 define([
 	"../core",
 	"../var/rnotwhite",
-	"../var/strundefined",
 	"../core/init"
-], function( jQuery, rnotwhite, strundefined ) {
+], function( jQuery, rnotwhite ) {
 
 var rclass = /[\t\r\n\f]/g;
 
@@ -127,7 +126,7 @@ jQuery.fn.extend({
 				}
 
 			// Toggle whole class name
-			} else if ( type === strundefined || type === "boolean" ) {
+			} else if ( type === "undefined" || type === "boolean" ) {
 				if ( this.className ) {
 					// store className if set
 					jQuery._data( this, "__className__", this.className );

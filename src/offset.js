@@ -1,6 +1,5 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./core/access",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
@@ -10,7 +9,7 @@ define([
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, strundefined, access, rnumnonpx, curCSS, addGetHookIf, support ) {
+], function( jQuery, access, rnumnonpx, curCSS, addGetHookIf, support ) {
 
 // BuildExclude
 curCSS = curCSS.curCSS;
@@ -104,7 +103,7 @@ jQuery.fn.extend({
 
 		// If we don't have gBCR, just use 0,0 rather than error
 		// BlackBerry 5, iOS 3 (original iPhone)
-		if ( typeof elem.getBoundingClientRect !== strundefined ) {
+		if ( typeof elem.getBoundingClientRect !== "undefined" ) {
 			box = elem.getBoundingClientRect();
 		}
 		win = getWindow( doc );
