@@ -40,7 +40,8 @@ var
 function vendorPropName( style, name ) {
 
 	// Shortcut for names that are not vendor prefixed
-	if ( name in style ) {
+	//IE8 fix
+	if ( name in style && typeof name!=="string") {
 		return name;
 	}
 
