@@ -8,8 +8,13 @@ var
 	_jQuery = window.jQuery,
 
 	// Map over the $ in case of overwrite
-	_$ = window.$;
+	_$ = window.$,
 
+	//Define two const values for "forEach"'s loop  preConditionValue
+	normal=0,
+	continueLoop=1,
+	breakLoop=2,
+	
 jQuery.noConflict = function( deep ) {
 	if ( window.$ === jQuery ) {
 		window.$ = _$;
@@ -20,7 +25,13 @@ jQuery.noConflict = function( deep ) {
 	}
 
 	return jQuery;
-};
+},
+
+//Export the const values for "forEach"'s loop
+jQuery.NORMAL=normal,
+jQuery.CONTINUELOOP=continueLoop,
+jQuery.BREAKLOOP=breakLoop;
+
 
 // Expose jQuery and $ identifiers, even in AMD
 // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
