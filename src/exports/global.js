@@ -11,9 +11,11 @@ var
 	_$ = window.$,
 
 	//Define two const values for "forEach"'s loop  preConditionValue
-	normal=0,
-	continueLoop=1,
-	breakLoop=2,
+	FOREACH_PRECONDITION_STATUSES = {
+		NORMAL: 0,
+		CONTINUE: 1,
+		BREAK: 2
+	},
 	
 jQuery.noConflict = function( deep ) {
 	if ( window.$ === jQuery ) {
@@ -28,9 +30,7 @@ jQuery.noConflict = function( deep ) {
 },
 
 //Export the const values for "forEach"'s loop
-jQuery.NORMAL=normal,
-jQuery.CONTINUELOOP=continueLoop,
-jQuery.BREAKLOOP=breakLoop;
+jQuery.prototype.FOREACHSTATUS = FOREACH_PRECONDITION_STATUSES;
 
 
 // Expose jQuery and $ identifiers, even in AMD
