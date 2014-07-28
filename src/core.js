@@ -86,6 +86,17 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.each( this, callback, args );
 	},
 
+	//Enhance the "each" method by returning a pre-condition to 
+	//decide whether the current loop will be executed or not.
+	//pre-condition must be a function as a condition and return a
+	//value among the three values below:
+	//0: Nothing to do, ignore this value (If pre-condition function or the returned value is invalid, default value)
+	//1: ignore the current loop of execution function (callBack) and continue.
+	//2: break all the looping.
+	forEach: function(obj, preCondition,callBack,args){
+	       return jQuery.forEach(this,preCondition,callBack,args);	
+	},
+
 	map: function( callback ) {
 		return this.pushStack( jQuery.map(this, function( elem, i ) {
 			return callback.call( elem, i, elem );
@@ -325,6 +336,105 @@ jQuery.extend({
 		return obj;
 	},
 
+
+	forEach: function(obj,preCondition,callBack,args){
+	      //Init all variables
+	      var i = 0,
+	          preConditionValue = -1,
+	          length = obj.length,
+	          isArray = isArraylike(obj);
+	          
+	      //If pre-Condition function is invalid, just ignore it
+	      if(typeof preCondition !== "function"){
+	      	preConditionValue = 0;
+	      }
+	    
+	      if(args){
+	      	if(isArray){
+	      		for(; i < length; ++i){
+	      			//This is a real function
+	      			if(preConditionValue !== -1){
+	      			preConditionValue = preCondition.apply(obj[i],args)
+	      			
+	      			}
+	      			 if(preConditionValue > 2 || preConditionValue < 0){
+	      			 	preConditionValue = 0;
+	      			 }
+	      			}
+	      			if(preConditionValue===1){
+	      				continue;
+	      			}
+	      			else if(preConditionValue===2){
+	      				break;
+	      			}
+	      		  callBack.apply(obj[i],args);
+	      		}
+	      	}
+	      	else{
+	      		for(o in obj){
+	      			//This is a real function
+	      			if(preConditionValue !== -1){
+	      			preConditionValue = preCondition.apply(obj[o],args)
+	      			
+	      			}
+	      			 if(preConditionValue > 2 || preConditionValue < 0){
+	      			 	preConditionValue = 0;
+	      			 }
+	      			}
+	      			if(preConditionValue===1){
+	      				continue;
+	      			}
+	      			else if(preConditionValue===2){
+	      				break;
+	      			}
+	      		  callBack.apply(obj[o],args);	
+	      		}
+	      	}
+	      }
+	      else{
+	      	if(isArray){
+	      		for(;i<length;++i){
+	      			//This is a real function
+	      			if(preConditionValue !== -1){
+	      			preConditionValue = preCondition.call(obj[i],i,obj[i])
+	      			
+	      			}
+	      			 if(preConditionValue > 2 || preConditionValue < 0){
+	      			 	preConditionValue = 0;
+	      			 }
+	      			}
+	      			if(preConditionValue===1){
+	      				continue;
+	      			}
+	      			else if(preConditionValue===2){
+	      				break;
+	      			}
+	      		  callBack.call(obj[i],i,obj[i]);
+	      		}	
+	      	}
+	      	else{
+	      		for(o in obj){
+	      			//This is a real function
+	      			if(preConditionValue !== -1){
+	      			preConditionValue = preCondition.call(obj[o],o,obj[o]);
+	      			
+	      			}
+	      			 if(preConditionValue > 2 || preConditionValue < 0){
+	      			 	preConditionValue = 0;
+	      			 }
+	      			}
+	      			if(preConditionValue===1){
+	      				continue;
+	      			}
+	      			else if(preConditionValue===2){
+	      				break;
+	      			}
+	      		  callBack.call(obj[o],o,obj[o]);	
+	      		}	
+	      	}
+	      }
+	      return obj;
+	},
 	// Support: Android<4.1
 	trim: function( text ) {
 		return text == null ?
