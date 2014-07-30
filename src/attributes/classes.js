@@ -10,7 +10,7 @@ var rclass = /[\t\r\n\f]/g;
 
 jQuery.fn.extend({
 	addClass: function( value ) {
-		var classes, elem, cur, clazz, j, finalValue,
+		var classes, elem, elemClassName, cur, clazz, j, finalValue,
 			proceed = typeof value === "string" && value,
 			i = 0,
 			len = this.length;
@@ -27,8 +27,9 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
+				elemClassName = elem.className;
+				cur = elem.nodeType === 1 && ( elemClassName ?
+					( " " + elemClassName + " " ).replace( rclass, " " ) :
 					" "
 				);
 
@@ -42,7 +43,7 @@ jQuery.fn.extend({
 
 					// only assign if different to avoid unneeded rendering.
 					finalValue = jQuery.trim( cur );
-					if ( elem.className !== finalValue ) {
+					if ( elemClassName !== finalValue ) {
 						elem.className = finalValue;
 					}
 				}
@@ -53,7 +54,7 @@ jQuery.fn.extend({
 	},
 
 	removeClass: function( value ) {
-		var classes, elem, cur, clazz, j, finalValue,
+		var classes, elem, elemClassName, cur, clazz, j, finalValue,
 			proceed = arguments.length === 0 || typeof value === "string" && value,
 			i = 0,
 			len = this.length;
@@ -68,9 +69,10 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+				elemClassName = elem.className;
 				// This expression is here for better compressibility (see addClass)
-				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
+				cur = elem.nodeType === 1 && ( elemClassName ?
+					( " " + elemClassName + " " ).replace( rclass, " " ) :
 					""
 				);
 
@@ -85,7 +87,7 @@ jQuery.fn.extend({
 
 					// Only assign if different to avoid unneeded rendering.
 					finalValue = value ? jQuery.trim( cur ) : "";
-					if ( elem.className !== finalValue ) {
+					if ( elemClassName !== finalValue ) {
 						elem.className = finalValue;
 					}
 				}
