@@ -85,7 +85,8 @@ jQuery.fn.extend({
 		return jQuery.param( this.serializeArray() );
 	},
 	serializeArray: function(keyValuePairs) {
-		var items = this.map(function() {
+		var pairs = {},
+			items = this.map(function() {
 			// Can add propHook for "elements" to filter or add form elements
 			var elements = jQuery.prop( this, "elements" );
 			return elements ? jQuery.makeArray( elements ) : this;
@@ -110,10 +111,9 @@ jQuery.fn.extend({
 					{ name: elem.name, value: val.replace( rCRLF, "\r\n" ) };
 		}).get();
 
-		if (keyValuePairs) {
-			var pairs = {};
-			jQuery.each(items, function(){
-				pairs[this.name] = this.value;
+		if ( keyValuePairs ) {
+			jQuery.each( items, function() {
+				pairs[ this.name ] = this.value;
 			});
 			return pairs;
 		}
