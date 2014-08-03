@@ -112,7 +112,7 @@ jQuery.fn.extend({
 
 		if (keyValuePairs) {
 			var pairs = {};
-			$(items).each(function(){
+			jQuery.each(items, function(){
 				pairs[this.name] = this.value;
 			});
 			return pairs;
