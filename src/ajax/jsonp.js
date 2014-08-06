@@ -7,6 +7,8 @@ define([
 
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
+	//change
+	rjsonContent = /(=)\?(?=&|$)/;
 
 // Default jsonp settings
 jQuery.ajaxSetup({
@@ -26,7 +28,8 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			"url" :
 			typeof s.data === "string" &&
 				!( s.contentType || "" ).indexOf("application/x-www-form-urlencoded") &&
-				rjsonp.test( s.data ) && "data"
+				//change
+				rjsonContent.test( s.data ) && "data"
 		);
 
 	// Handle iff the expected data type is "jsonp" or we have a parameter to set
