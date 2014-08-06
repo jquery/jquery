@@ -7,7 +7,7 @@ define([
 
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
-	//change
+	//change #1639
 	rjsonContent = /(=)\?(?=&|$)/;
 
 // Default jsonp settings
@@ -28,7 +28,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			"url" :
 			typeof s.data === "string" &&
 				!( s.contentType || "" ).indexOf("application/x-www-form-urlencoded") &&
-				//change
+				//change #1639
 				rjsonContent.test( s.data ) && "data"
 		);
 
