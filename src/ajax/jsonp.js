@@ -5,9 +5,9 @@ define([
 	"../ajax"
 ], function( jQuery, nonce, rquery ) {
 
+//change #1639
 var oldCallbacks = [],
-	rjsonp = /(=)\?(?=&|$)|\?\?/;
-	//change #1639
+	rjsonp = /(=)\?(?=&|$)|\?\?/,
 	rjsonContent = /(=)\?(?=&|$)/;
 
 // Default jsonp settings
