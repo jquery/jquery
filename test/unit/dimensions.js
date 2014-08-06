@@ -169,15 +169,21 @@ test("innerWidth()", function() {
 	QUnit.expectJqData( $div[0], "olddisplay" );
 });
 
+test( "innerHeight() on document", function() {
+	var docHeight = jQuery( document ).height();
+
+	expect( 1 );
+
+	equal( jQuery( document ).innerHeight(), docHeight, "Test on document" );
+});
+
 test("innerHeight()", function() {
-	expect(6);
+	expect( 5 );
 
 	var $div, div,
-		winHeight = jQuery( window ).height(),
-		docHeight = jQuery( document ).height();
+		winHeight = jQuery( window ).height();
 
 	equal(jQuery(window).innerHeight(), winHeight, "Test on window");
-	equal(jQuery(document).innerHeight(), docHeight, "Test on document");
 
 	$div = jQuery("#nothiddendiv");
 	// set styles
@@ -352,18 +358,30 @@ test("box-sizing:border-box child of a hidden elem (or unconnected node) has acc
 	$divNormal.remove();
 });
 
+test( "outerHeight() on document #1", function() {
+	var docHeight = jQuery( document ).height();
+
+	expect( 1 );
+
+	equal( jQuery( document ).outerHeight(), docHeight, "Test on document without margin option" );
+});
+
+test( "outerHeight() on document #2", function() {
+	var docHeight = jQuery( document ).height();
+
+	expect( 1 );
+
+	equal( jQuery( document ).outerHeight( true ), docHeight, "Test on document with margin option" );
+});
+
 test("outerHeight()", function() {
-	expect(11);
+	expect( 9 );
 
 	var $div, div,
-	winHeight = jQuery( window ).height(),
-		docHeight = jQuery( document ).height();
-
+		winHeight = jQuery( window ).height();
 
 	equal( jQuery( window ).outerHeight(), winHeight, "Test on window without margin option" );
 	equal( jQuery( window ).outerHeight( true ), winHeight, "Test on window with margin option" );
-	equal( jQuery( document ).outerHeight(), docHeight, "Test on document without margin option" );
-	equal( jQuery( document ).outerHeight( true ), docHeight, "Test on document with margin option" );
 
 	$div = jQuery("#nothiddendiv");
 	$div.css("height", 30);
