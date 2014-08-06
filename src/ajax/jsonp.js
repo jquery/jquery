@@ -23,12 +23,12 @@ jQuery.ajaxSetup({
 // Detect, normalize options and install callbacks for jsonp requests
 jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
+	//change #1639
 	var callbackName, overwritten, responseContainer,
 		jsonProp = s.jsonp !== false && ( rjsonp.test( s.url ) ?
 			"url" :
 			typeof s.data === "string" &&
 				!( s.contentType || "" ).indexOf("application/x-www-form-urlencoded") &&
-				//change #1639
 				rjsonContent.test( s.data ) && "data"
 		);
 
