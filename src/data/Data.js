@@ -112,7 +112,7 @@ Data.prototype = {
 			stored = this.get( owner, key );
 
 			return stored !== undefined ?
-				stored : this.get( owner, jQuery.camelCase(key) );
+				stored : this.get( owner, jQuery.camelCase( key ) );
 		}
 
 		// [*]When the key is not a string, or both a key and value
