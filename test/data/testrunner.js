@@ -7,7 +7,8 @@ var oldCacheLength = 0,
 
 	expectedDataKeys = {},
 	splice = [].splice,
-	ajaxSettings = jQuery.ajaxSettings;
+	ajaxSettings = jQuery.ajaxSettings,
+	fixture = document.getElementById( "qunit-fixture" ).innerHTML;
 
 /**
  * QUnit configuration
@@ -161,7 +162,7 @@ QUnit.testDone(function() {
 	// Ensure jQuery events and data on the fixture are properly removed
 	jQuery( "#qunit-fixture" ).empty();
 	// ...even if the jQuery under test has a broken .empty()
-	supportjQuery( "#qunit-fixture" ).empty();
+	supportjQuery( "#qunit-fixture" ).empty().html( fixture );
 
 	// Reset internal jQuery state
 	jQuery.event.global = {};
