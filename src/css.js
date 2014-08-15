@@ -441,6 +441,12 @@ jQuery.fn.extend({
 				jQuery.css( elem, name );
 		}, name, value, arguments.length > 1 );
 	},
+	removeCss: function( name ) {
+		return this.each(function() {
+			jQuery.style( this, name, '' );
+		});
+	}
+	,
 	show: function() {
 		return showHide( this, true );
 	},
