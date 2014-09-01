@@ -1,6 +1,5 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./core/access",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
@@ -10,7 +9,7 @@ define([
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, strundefined, access, rnumnonpx, curCSS, addGetHookIf, support ) {
+], function( jQuery, access, rnumnonpx, curCSS, addGetHookIf, support ) {
 
 var docElem = window.document.documentElement;
 
