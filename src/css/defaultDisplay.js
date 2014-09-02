@@ -7,7 +7,7 @@ var iframe,
 	elemdisplay = {
 
 		// Support: Firefox
-		// We have to pre-define this values for FF (#10227)
+		// We have to pre-define these values for FF (#10227)
 		HTML: "block",
 		BODY: "block"
 	};
@@ -49,7 +49,7 @@ function defaultDisplay( nodeName ) {
 				.appendTo( doc.documentElement );
 
 			// Always write a new HTML skeleton so Webkit and Firefox don't choke on reuse
-			doc = iframe[ 0 ].contentDocument;
+			doc = ( iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument ).document;
 
 			// Support: IE
 			doc.write();
@@ -67,5 +67,4 @@ function defaultDisplay( nodeName ) {
 }
 
 return defaultDisplay;
-
 });
