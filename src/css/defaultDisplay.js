@@ -7,7 +7,7 @@ var iframe,
 	elemdisplay = {
 
 		// Support: Firefox
-		// We have to pre-define this values for FF (#10227)
+		// We have to pre-define these values for FF (#10227)
 		HTML: "block",
 		BODY: "block"
 	};
