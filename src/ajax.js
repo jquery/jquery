@@ -342,6 +342,9 @@ jQuery.extend({
 
 			// Parse text as xml
 			"text xml": jQuery.parseXML
+			
+			// Parse text as number
+			"text number": Number
 		},
 
 		// For options that shouldn't be deep extended:
