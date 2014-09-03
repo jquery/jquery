@@ -341,7 +341,7 @@ jQuery.extend({
 			"text json": jQuery.parseJSON,
 
 			// Parse text as xml
-			"text xml": jQuery.parseXML
+			"text xml": jQuery.parseXML,
 			
 			// Parse text as number
 			"text number": Number
