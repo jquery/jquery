@@ -73,7 +73,7 @@ The Ajax tests still depend on PHP running locally*, so make sure you have the f
 * Some kind of localhost server program that supports PHP (any will do)
 * Node.js
 * NPM (comes with the latest version of Node.js)
-* Grunt (install with: `npm install grunt -g`
+* Grunt (install with: `npm install grunt -g`)
 
 
 Maintaining a list of platform specific instructions is outside of the scope of this document and there is plenty of existing documentation for the above technologies.
