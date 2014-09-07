@@ -2,7 +2,7 @@ define([
 	"./core",
 	"./core/init",
 	"./manipulation", // clone
-	"./traversing" // parent, contents;
+	"./traversing" // parent, contents
 ], function( jQuery ) {
 
 jQuery.fn.extend({
