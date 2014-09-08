@@ -48,16 +48,9 @@ define([
 	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
 
 	// Support: IE<9
-	// Opera does not clone events (and typeof div.attachEvent === undefined).
-	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
-	support.noCloneEvent = true;
-	if ( div.attachEvent ) {
-		div.attachEvent( "onclick", function() {
-			support.noCloneEvent = false;
-		});
-
-		div.cloneNode( true ).click();
-	}
+	// Cloning references to object-valued properties causes problems (#15104)
+	div.test = support;
+	support.cloneProps = div.cloneNode( true ).test === support && div;
 
 	// Execute the test only if not already executed in another module.
 	if (support.deleteExpando == null) {

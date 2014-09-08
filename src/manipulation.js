@@ -175,16 +175,27 @@ function fixCloneNodeIssues( src, dest ) {
 
 	nodeName = dest.nodeName.toLowerCase();
 
-	// IE6-8 copies events bound via attachEvent when using cloneNode.
-	if ( !support.noCloneEvent && dest[ jQuery.expando ] ) {
-		data = jQuery._data( dest );
+	// Support: IE<9
+	// Remove erroneously-copied event handlers and (attr-)properties
+	if ( support.cloneProps ) {
+		data = dest[ jQuery.expando ] && jQuery._data( dest );
 
-		for ( e in data.events ) {
-			jQuery.removeEvent( dest, e, data.handle );
+		if ( data ) {
+			for ( e in data.events ) {
+				jQuery.removeEvent( dest, e, data.handle );
+			}
 		}
 
 		// Event data gets referenced instead of copied if the expando gets copied too
 		dest.removeAttribute( jQuery.expando );
+
+		for ( e in dest ) {
+			if ( (typeof dest[ e ] === "object" && dest[ e ] || typeof dest[ e ] === "function") &&
+				dest[ e ] !== support.cloneProps[ e ] && dest[ e ] === src[ e ] ) {
+
+				dest.removeAttribute( e );
+			}
+		}
 	}
 
 	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
@@ -248,7 +259,7 @@ jQuery.extend({
 			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
 		}
 
-		if ( (!support.noCloneEvent || !support.noCloneChecked) &&
+		if ( (support.cloneProps || !support.noCloneChecked) &&
 				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2

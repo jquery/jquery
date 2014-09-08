@@ -452,10 +452,18 @@ test( "XML DOM manipulation (#9960)", function() {
 
 test( "append the same fragment with events (Bug #6997, 5566)", function() {
 
-	var element, clone,
-		doExtra = !jQuery.support.noCloneEvent && document["fireEvent"];
+	var clone,
+		element = jQuery( "#qunit-fixture div" ).eq( 0 ),
+		doExtra = 0;
 
-	expect( 2 + ( doExtra ? 1 : 0 ) );
+	if ( document["fireEvent"] ) {
+		element.on( "click", function() {
+			doExtra = 1;
+		});
+		element[ 0 ].fireEvent( "onclick" );
+	}
+
+	expect( 2 + doExtra );
 
 	stop();
 
@@ -463,7 +471,7 @@ test( "append the same fragment with events (Bug #6997, 5566)", function() {
 	// native event handlers on the original object don't get disturbed when they are
 	// modified on the clone
 	if ( doExtra ) {
-		element = jQuery("div:first").on( "click", function() {
+		element.on( "click", function() {
 			ok( true, "Event exists on original after being unbound on clone" );
 			jQuery( this ).off("click");
 		});
@@ -1832,12 +1840,14 @@ test( "html(Function) with incoming value -- jQuery.contents()", function() {
 	}).html().replace( />/g, "&gt;" ), " " + insert, "Verify escaped insertion." );
 });
 
-test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() {
+test( "html()/clone() don't expose jQuery/Sizzle expandos (#12858)", function() {
 
-	expect( 2 );
+	expect( 3 );
 
 	var $content = jQuery("<div><b><i>text</i></b></div>").appendTo("#qunit-fixture"),
-		expected = /^<b><i>text<\/i><\/b>$/i;
+		innerHTML = $content[ 0 ].innerHTML;
+
+	ok( /^<b><i>text<\/i><\/b>$/i.test( innerHTML ), "initial HTML as-expected" );
 
 	// Attach jQuery and Sizzle data (the latter with a non-qSA nth-child)
 	try {
@@ -1848,8 +1858,45 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 		$content.find("*").data( "test", true );
 	}
 
-	ok( expected.test( $content.clone( false )[ 0 ].innerHTML ), "clone()" );
-	ok( expected.test( $content.html() ), "html()" );
+	equal( $content.html(), innerHTML, "html()" );
+	equal( $content.clone( false )[ 0 ].innerHTML, innerHTML, "clone()" );
+});
+
+asyncTest( "clone() doesn't copy non-scalar properties (#15104)", function() {
+
+	expect( 6 );
+
+	var clone,
+		src = jQuery("<img/>").appendTo("#qunit-fixture")[ 0 ],
+		obj = src.obj = {},
+		arr = src.arr = [],
+		fn = src.fn = function() {},
+		nativeFn = src.nativeFn = encodeURIComponent,
+		onerror = src.onerror = function() {
+			ok( false, "source DOM0 event handler not invoked" );
+		};
+
+	clone = jQuery( src )
+		.on( "error", function() {
+			ok( false, "source jQuery event handler not invoked" );
+		})
+		.clone( false ).appendTo("#qunit-fixture")[ 0 ];
+
+	ok( clone.obj !== obj, "object property not cloned" );
+	ok( clone.arr !== arr, "array property not cloned" );
+	ok( clone.fn !== fn, "function property not cloned" );
+	ok( clone.nativeFn !== nativeFn, "native function property not cloned" );
+	ok( clone.onerror !== onerror, "DOM0 event handler not cloned" );
+
+	jQuery( clone ).on( "error", function() {
+		ok( true, "error event dipatched" );
+		setTimeout(function() {
+			// Clean up
+			jQuery( src, clone ).remove();
+			start();
+		}, 0 );
+	});
+	clone.src = "http://example.invalid/file.png";
 });
 
 test( "remove() no filters", function() {
