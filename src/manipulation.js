@@ -166,7 +166,7 @@ function cloneCopyEvent( src, dest ) {
 }
 
 function fixCloneNodeIssues( src, dest ) {
-	var nodeName, e, data;
+	var nodeName, p, data;
 
 	// We do not need to do anything for non-Elements
 	if ( dest.nodeType !== 1 ) {
@@ -181,21 +181,21 @@ function fixCloneNodeIssues( src, dest ) {
 		data = dest[ jQuery.expando ] && jQuery._data( dest );
 
 		if ( data ) {
-			for ( e in data.events ) {
-				jQuery.removeEvent( dest, e, data.handle );
+			for ( p in data.events ) {
+				jQuery.removeEvent( dest, p, data.handle );
+			}
+		}
+
+		for ( p in dest ) {
+			if ( (typeof dest[ p ] === "object" && dest[ p ] || typeof dest[ p ] === "function") &&
+				dest[ p ] !== support.cloneProps[ p ] && dest[ p ] === src[ p ] ) {
+
+				dest.removeAttribute( p );
 			}
 		}
 
 		// Event data gets referenced instead of copied if the expando gets copied too
 		dest.removeAttribute( jQuery.expando );
-
-		for ( e in dest ) {
-			if ( (typeof dest[ e ] === "object" && dest[ e ] || typeof dest[ e ] === "function") &&
-				dest[ e ] !== support.cloneProps[ e ] && dest[ e ] === src[ e ] ) {
-
-				dest.removeAttribute( e );
-			}
-		}
 	}
 
 	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
