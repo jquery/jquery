@@ -1,5 +1,5 @@
 {
-	"boss": true,
+	"boss": false,
 	"curly": true,
 	"eqeqeq": true,
 	"eqnull": true,
