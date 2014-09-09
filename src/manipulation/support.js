@@ -34,23 +34,24 @@ define([
 	fragment.appendChild( input );
 	support.appendChecked = input.checked;
 
-	// Make sure textarea (and checkbox) defaultValue is properly cloned
-	// Support: IE6-IE11+
-	div.innerHTML = "<textarea>x</textarea>";
-	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
+	// Setup div for cloneNode tests, then replace it with a clone
+	div.innerHTML = "<textarea>x</textarea><input type='radio' checked='checked' name='t'/>";
+	div.test = support;
+	div = div.cloneNode( true );
 
+	// Support: IE6-IE11+
+	// Make sure textarea (and checkbox) defaultValue is properly cloned
+	support.noCloneChecked = !!div.firstChild.defaultValue;
+
+	// Support: Safari 5.1, iOS 5.1, Android<4.2+
+	// WebKit doesn't clone checked state correctly in fragments
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	fragment.appendChild( div );
-	div.innerHTML = "<input type='radio' checked='checked' name='t'/>";
-
-	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
-	// old WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+	support.checkClone = div.cloneNode( true ).lastChild.checked;
 
 	// Support: IE<9
 	// Cloning references to object-valued properties causes problems (#15104)
-	div.test = support;
-	support.cloneProps = div.cloneNode( true ).test === support && div;
+	support.cloneProps = div.test === support && div;
 
 	// Execute the test only if not already executed in another module.
 	if (support.deleteExpando == null) {
