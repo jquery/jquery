@@ -851,7 +851,7 @@ module( "ajax", {
 			{
 				create: function( options ) {
 					var request = jQuery.ajax( options ),
-						promise = request.then(function( data ) {
+						promise = request.pipe(function( data ) {
 							ok( data.data, "first request: JSON results returned (GET, no callback)" );
 							request = jQuery.ajax( this ).done(function( data ) {
 								ok( data.data, "this re-used: JSON results returned (GET, no callback)" );

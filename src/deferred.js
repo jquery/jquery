@@ -4,6 +4,41 @@ define([
 	"./callbacks"
 ], function( jQuery, slice ) {
 
+function stdAttach( object, fnDone, fnFail, fnProgress ) {
+	return object &&
+		(
+			jQuery.isFunction( object.promise ) ?
+				object.promise()
+					.done( fnDone )
+					.fail( fnFail )
+					.progress( fnProgress ) :
+				jQuery.isFunction( object.then ) && object.then( fnDone, fnFail )
+		);
+}
+
+function stdCallback( defer, callback ) {
+	return jQuery.isFunction( callback ) && function( value ) {
+		setTimeout(function() {
+			var returned;
+			try {
+				returned = callback( value );
+			} catch ( e ) {
+				return defer.reject( e );
+			}
+			if (
+				!stdAttach(
+					returned,
+					defer.resolve,
+					defer.reject,
+					defer.notify
+				)
+			) {
+				defer.resolve( returned );
+			}
+		});
+	};
+}
+
 jQuery.extend({
 
 	Deferred: function( func ) {
@@ -22,7 +57,17 @@ jQuery.extend({
 					deferred.done( arguments ).fail( arguments );
 					return this;
 				},
-				then: function( /* fnDone, fnFail, fnProgress */ ) {
+				then: function( fnDone, fnFail ) {
+					return jQuery.Deferred(function( newDefer ) {
+						deferred
+							.done( stdCallback( newDefer, fnDone ) )
+							.fail( stdCallback( newDefer, fnFail ) );
+					}).promise();
+				},
+				catch: function( fnFail ) {
+					return promise.then( null, fnFail );
+				},
+				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
 					return jQuery.Deferred(function( newDefer ) {
 						jQuery.each( tuples, function( i, tuple ) {
@@ -30,12 +75,13 @@ jQuery.extend({
 							// deferred[ done | fail | progress ] for forwarding actions to newDefer
 							deferred[ tuple[1] ](function() {
 								var returned = fn && fn.apply( this, arguments );
-								if ( returned && jQuery.isFunction( returned.promise ) ) {
-									returned.promise()
-										.done( newDefer.resolve )
-										.fail( newDefer.reject )
-										.progress( newDefer.notify );
-								} else {
+								if ( !stdAttach(
+										returned,
+										newDefer.resolve,
+										newDefer.reject,
+										newDefer.notify
+									)
+								) {
 									newDefer[ tuple[ 0 ] + "With" ](
 										this === promise ? newDefer.promise() : this,
 										fn ? [ returned ] : arguments
@@ -53,9 +99,6 @@ jQuery.extend({
 				}
 			},
 			deferred = {};
-
-		// Keep pipe for back-compat
-		promise.pipe = promise.then;
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
@@ -130,12 +173,14 @@ jQuery.extend({
 			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
-				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
-					resolveValues[ i ].promise()
-						.done( updateFunc( i, resolveContexts, resolveValues ) )
-						.fail( deferred.reject )
-						.progress( updateFunc( i, progressContexts, progressValues ) );
-				} else {
+				if (
+					!stdAttach(
+						resolveValues[ i ],
+						updateFunc( i, resolveContexts, resolveValues ),
+						deferred.reject,
+						updateFunc( i, progressContexts, progressValues )
+					)
+				) {
 					--remaining;
 				}
 			}
