@@ -55,6 +55,9 @@ module.exports = function( grunt ) {
 					"sizzle/dist": "sizzle/dist",
 					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
+					"q/q.js": "q/q.js",
+					"q/LICENSE.txt": "q/LICENSE",
+
 					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
 					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",

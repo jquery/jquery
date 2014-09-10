@@ -24,6 +24,7 @@
 		"require": false,
 		"define": false,
 		"DOMParser": false,
+		"Q": false,
 		"QUnit": false,
 		"ok": false,
 		"equal": false,
