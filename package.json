@@ -42,6 +42,7 @@
     "grunt-jscs-checker": "0.4.1",
     "grunt-jsonlint": "1.0.4",
     "gzip-js": "0.3.2",
+    "jsdom": "1.5.0",
     "load-grunt-tasks": "0.3.0",
     "requirejs": "2.1.10",
     "testswarm": "1.1.0"

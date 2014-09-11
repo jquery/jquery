@@ -144,9 +144,22 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "bower", "bowercopy" );
 	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
 
+	grunt.registerTask( "node-smoke-test", function() {
+	    var done = this.async();
+		require( "jsdom" ).env( "", function( errors, window ) {
+			if ( errors ) {
+				console.error( errors );
+				done( false );
+			}
+			require( "./" )( window );
+			done();
+		});
+	});
+
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
 
 	// Default grunt
-	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default",
+		[ "jsonlint", "dev", "uglify", "dist:*", "compare_size", "node-smoke-test" ] );
 };
