@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 	}
 
 	var gzip = require( "gzip-js" ),
+		spawn = require( "child_process" ).spawn,
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
@@ -162,6 +163,18 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test_fast", [ "node_smoke_test" ] );
 
 	grunt.registerTask( "test", [ "test_fast" ] );
+
+	grunt.registerTask( "promises-aplus-tests", function() {
+	    var done = this.async();
+		spawn( "node", [
+			"./node_modules/.bin/promises-aplus-tests",
+			"./promises-aplus-adapter.js"
+		], {
+			stdio: "inherit"
+		}).on( "close", function( code ) {
+			done( code === 0 );
+		});
+	});
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "dist:*" ] );
