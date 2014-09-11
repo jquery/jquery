@@ -43,6 +43,7 @@
     "grunt-jsonlint": "1.0.4",
     "grunt-npmcopy": "0.1.0",
     "gzip-js": "0.3.2",
+    "jsdom": "1.5.0",
     "load-grunt-tasks": "1.0.0",
     "npm": "2.1.12",
     "qunitjs": "1.16.0",
@@ -54,6 +55,6 @@
   "scripts": {
     "build": "npm install && grunt",
     "start": "grunt watch",
-    "test": "grunt"
+    "test": "grunt test"
   }
 }

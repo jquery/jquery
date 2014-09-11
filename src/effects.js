@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/pnum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
@@ -12,7 +13,7 @@ define([
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, pnum, cssExpand, isHidden, defaultDisplay, dataPriv ) {
+], function( jQuery, document, pnum, cssExpand, isHidden, defaultDisplay, dataPriv ) {
 
 var
 	fxNow, timerId,
