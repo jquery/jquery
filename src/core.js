@@ -1,5 +1,6 @@
 define([
 	"./var/arr",
+	"./var/document",
 	"./var/slice",
 	"./var/concat",
 	"./var/push",
@@ -8,12 +9,9 @@ define([
 	"./var/toString",
 	"./var/hasOwn",
 	"./var/support"
-], function( arr, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
+], function( arr, document, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
 
 var
-	// Use the correct document accordingly with window argument (sandbox)
-	document = window.document,
-
 	version = "@VERSION",
 
 	// Define a local copy of jQuery

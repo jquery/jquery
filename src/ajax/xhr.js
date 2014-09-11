@@ -6,7 +6,7 @@ define([
 
 jQuery.ajaxSettings.xhr = function() {
 	try {
-		return new XMLHttpRequest();
+		return new window.XMLHttpRequest();
 	} catch ( e ) {}
 };
 

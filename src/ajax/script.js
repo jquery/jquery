@@ -1,7 +1,8 @@
 define([
 	"../core",
+	"../var/document",
 	"../ajax"
-], function( jQuery ) {
+], function( jQuery, document ) {
 
 // Install script dataType
 jQuery.ajaxSetup({

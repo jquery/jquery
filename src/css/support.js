@@ -1,11 +1,12 @@
 define([
 	"../core",
+	"../var/document",
+	"../var/documentElement",
 	"../var/support"
-], function( jQuery, support ) {
+], function( jQuery, document, documentElement, support ) {
 
 (function() {
 	var pixelPositionVal, boxSizingReliableVal,
-		docElem = document.documentElement,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -33,13 +34,13 @@ define([
 			"display:block;margin-top:1%;top:1%;" +
 			"border:1px;padding:1px;width:4px;position:absolute";
 		div.innerHTML = "";
-		docElem.appendChild( container );
+		documentElement.appendChild( container );
 
 		var divStyle = window.getComputedStyle( div, null );
 		pixelPositionVal = divStyle.top !== "1%";
 		boxSizingReliableVal = divStyle.width === "4px";
 
-		docElem.removeChild( container );
+		documentElement.removeChild( container );
 	}
 
 	// Support: node.js jsdom
@@ -78,11 +79,11 @@ define([
 					"display:block;margin:0;border:0;padding:0";
 				marginDiv.style.marginRight = marginDiv.style.width = "0";
 				div.style.width = "1px";
-				docElem.appendChild( container );
+				documentElement.appendChild( container );
 
 				ret = !parseFloat( window.getComputedStyle( marginDiv, null ).marginRight );
 
-				docElem.removeChild( container );
+				documentElement.removeChild( container );
 				div.removeChild( marginDiv );
 
 				return ret;

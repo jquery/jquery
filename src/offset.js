@@ -1,6 +1,8 @@
 define([
 	"./core",
 	"./core/access",
+	"./var/document",
+	"./var/documentElement",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
@@ -9,9 +11,7 @@ define([
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, rnumnonpx, curCSS, addGetHookIf, support ) {
-
-var docElem = window.document.documentElement;
+], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support ) {
 
 /**
  * Gets a window from an element
@@ -145,14 +145,14 @@ jQuery.fn.extend({
 
 	offsetParent: function() {
 		return this.map(function() {
-			var offsetParent = this.offsetParent || docElem;
+			var offsetParent = this.offsetParent || documentElement;
 
 			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) &&
 				jQuery.css( offsetParent, "position" ) === "static" ) ) {
 				offsetParent = offsetParent.offsetParent;
 			}
 
-			return offsetParent || docElem;
+			return offsetParent || documentElement;
 		});
 	}
 });

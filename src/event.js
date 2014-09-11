@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
@@ -9,7 +10,7 @@ define([
 	"./core/init",
 	"./data/accepts",
 	"./selector"
-], function( jQuery, rnotwhite, hasOwn, slice, support, dataPriv ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support, dataPriv ) {
 
 var
 	rkeyEvent = /^key/,

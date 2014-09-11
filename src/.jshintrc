@@ -15,9 +15,13 @@
 
 	"sub": true,
 
-	"browser": true,
-
 	"globals": {
+		"window": true,
+		"setTimeout": true,
+		"clearTimeout": true,
+		"setInterval": true,
+		"clearInterval": true,
+
 		"jQuery": true,
 		"define": true,
 		"module": true,
