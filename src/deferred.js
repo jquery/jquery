@@ -5,35 +5,25 @@ define([
 ], function( jQuery, slice ) {
 
 function stdAttach( object, fnDone, fnFail, fnProgress ) {
-	return object &&
-		(
-			jQuery.isFunction( object.promise ) ?
-				object.promise()
-					.done( fnDone )
-					.fail( fnFail )
-					.progress( fnProgress ) :
-				jQuery.isFunction( object.then ) && object.then( fnDone, fnFail )
-		);
+	if ( object ) {
+		if ( jQuery.isFunction( object.promise ) ) {
+			return object.promise()
+				.done( fnDone )
+				.fail( fnFail )
+				.progress( fnProgress );
+		}
+
+		return object;
+	}
 }
 
-function stdCallback( defer, callback ) {
-	return jQuery.isFunction( callback ) && function( value ) {
+function stdCallback( defer, callback, defaultCallback ) {
+	return function( value ) {
 		setTimeout(function() {
-			var returned;
 			try {
-				returned = callback( value );
+				defer.resolve( ( jQuery.isFunction( callback ) ? callback : defaultCallback )( value ) );
 			} catch ( e ) {
 				return defer.reject( e );
-			}
-			if (
-				!stdAttach(
-					returned,
-					defer.resolve,
-					defer.reject,
-					defer.notify
-				)
-			) {
-				defer.resolve( returned );
 			}
 		});
 	};
@@ -60,8 +50,12 @@ jQuery.extend({
 				then: function( fnDone, fnFail ) {
 					return jQuery.Deferred(function( newDefer ) {
 						deferred
-							.done( stdCallback( newDefer, fnDone ) )
-							.fail( stdCallback( newDefer, fnFail ) );
+							.done( stdCallback( newDefer, fnDone, function(response) {
+								return response;
+							}))
+							.fail( stdCallback( newDefer, fnFail, function(error) {
+								throw error;
+							}));
 					}).promise();
 				},
 				catch: function( fnFail ) {
@@ -119,11 +113,34 @@ jQuery.extend({
 			}
 
 			// deferred[ resolve | reject | notify ]
-			deferred[ tuple[0] ] = function() {
-				deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
+			deferred[ tuple[ 0 ] ] = function() {
+				var valueThen,
+					value = arguments[ 0 ],
+					context = this === deferred ? promise : this,
+					method = tuple[ 0 ];
+				if ( method !== "resolve" ||
+					( !value || typeof value !== "object" ) && typeof value !== "function" ) {
+					deferred[ method + "With" ]( context, arguments );
+				} else {
+					try {
+						valueThen = value.then;
+					} catch ( e ) {
+						deferred.reject( e );
+						return this;
+					}
+					if (jQuery.isFunction( valueThen )) {
+						valueThen.call( value, function ( newValue ) {
+							deferred.resolve( newValue );
+						}, function ( error ) {
+							deferred.reject( error );
+						});
+					} else {
+						deferred[ method + "With" ]( this, arguments );
+					}
+				}
 				return this;
 			};
-			deferred[ tuple[0] + "With" ] = list.fireWith;
+			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
 		});
 
 		// Make the deferred a promise
