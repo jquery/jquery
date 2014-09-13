@@ -28,6 +28,11 @@
       "url": "https://github.com/jquery/jquery/blob/master/LICENSE.txt"
     }
   ],
+  "browserify": {
+    "transform": [
+      "deamdify"
+    ]
+  },
   "dependencies": {},
   "devDependencies": {
     "colors": "0.6.2",
@@ -55,5 +60,8 @@
     "build": "npm install && grunt",
     "start": "grunt watch",
     "test": "grunt"
+  },
+  "optionalDependencies": {
+    "deamdify": "~0.1.1"
   }
 }
