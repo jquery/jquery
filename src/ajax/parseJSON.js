@@ -6,10 +6,10 @@ var rvalidtokens = /(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]
 
 jQuery.parseJSON = function( data ) {
 	// Attempt to parse using the native JSON parser first
-	if ( window.JSON && window.JSON.parse ) {
+	if ( window.JSON && JSON.parse ) {
 		// Support: Android 2.3
 		// Workaround failure to string-cast null input
-		return window.JSON.parse( data + "" );
+		return JSON.parse( data + "" );
 	}
 
 	var requireNonComma,
