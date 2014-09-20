@@ -448,6 +448,21 @@ jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	}
 );
 
+jQuery.cssHooks.textDecoration = {
+	get: function(elem, computed) {
+		if (computed) {
+			//Chrome 31-36 return text-decoration-line and text-decoration-color
+			//which are not expected yet.
+			//see https://code.google.com/p/chromium/issues/detail?id=342126
+			var ret = curCSS(elem, "text-decoration");
+			//We cannot assume the first word as "text-decoration-style"
+			if (/\b(inherit|(?:und|ov)erline|blink|line\-through|none)\b/.test(ret)) {
+				return RegExp.$1;
+			}
+		}
+	}
+};
+
 // These hooks are used by animate to expand properties
 jQuery.each({
 	margin: "",

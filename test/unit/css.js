@@ -3,7 +3,7 @@ if ( jQuery.css ) {
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect( 43 );
+	expect( 44 );
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
@@ -64,6 +64,9 @@ test("css(String|Hash)", function() {
 	jQuery.support.opacity ?
 		ok(true, "Requires the same number of tests"):
 		ok( ~jQuery("#empty")[0].currentStyle.filter.indexOf("gradient"), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
+
+	div.css( "text-decoration", "underline" );
+	equal( div.css( "text-decoration" ), "underline", "ssert text-decoration is taken without line&color");
 
 	div = jQuery("#nothiddendiv");
 	child = jQuery("#nothiddendivchild");
