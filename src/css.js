@@ -223,6 +223,22 @@ jQuery.extend({
 					return ret === "" ? "1" : ret;
 				}
 			}
+		},
+		textDecoration: {
+			get: function( elem, computed ) {
+				if ( computed ) {
+
+					//Chrome 31-36 return text-decoration-line and text-decoration-color
+					//which are not expected yet.
+					//see https://code.google.com/p/chromium/issues/detail?id=342126
+					var ret = curCSS( elem, "text-decoration" );
+					//We cannot assume the first word as "text-decoration-style"
+					if ( /\b(inherit|(?:und|ov)erline|blink|line\-through|none)\b/.test( ret ) )
+					{
+						return RegExp.$1;
+					}
+				}
+			}
 		}
 	},
 

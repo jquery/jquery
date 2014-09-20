@@ -3,7 +3,7 @@ if ( jQuery.css ) {
 module("css", { teardown: moduleTeardown });
 
 test("css(String|Hash)", function() {
-	expect( 42 );
+	expect( 43 );
 
 	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
 
@@ -61,7 +61,10 @@ test("css(String|Hash)", function() {
 	equal( jQuery("#empty").css("opacity"), "0", "Assert opacity is accessible via filter property set in stylesheet in IE" );
 	jQuery("#empty").css({ "opacity": "1" });
 	equal( jQuery("#empty").css("opacity"), "1", "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
-
+	
+	div.css( "text-decoration", "underline" );
+	equal( div.css("text-decoration"), "underline", "Assert text-decoration is taken without line&color");
+	
 	div = jQuery("#nothiddendiv");
 	child = jQuery("#nothiddendivchild");
 
