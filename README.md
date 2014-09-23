@@ -21,10 +21,9 @@ Environments in which to use jQuery
 What you need to build your own jQuery
 --------------------------------------
 
-In order to build jQuery, you need to have Node.js/npm latest and git 1.7 or later.
-(Earlier versions might work OK, but are not tested.)
+In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
-For Windows you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
+For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
 
 Mac OS users should install [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
@@ -58,7 +57,7 @@ Make sure you have `grunt` installed by testing:
 grunt -v
 ```
 
-Now by running `grunt` command, in the jquery directory, you could build full version of jQuery, just like with `npm run build` command:
+Now by running the `grunt` command, in the jquery directory, you can build a full version of jQuery, just like with a `npm run build` command:
 ```
 grunt
 ```
