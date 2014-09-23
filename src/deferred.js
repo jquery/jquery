@@ -151,10 +151,7 @@ jQuery.extend({
 				}
 				return this;
 			};
-			deferred[ tuple[0] + "With" ] = function( context, args ) {
-				deferred[ tuple[0] ].apply( context, args );
-				return this;
-			};
+			deferred[ tuple[0] + "With" ] = list.fireWith;
 		});
 
 		// Make the deferred a promise
