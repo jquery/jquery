@@ -108,7 +108,7 @@ jQuery.extend({
 				}
 			},
 			deferred = {},
-			finalizerFactoryFactory = function() {
+			activatorFactoryFactory = function() {
 				var finalized;
 				return function( i, indirect ) {
 					return function( _self, _args ) {
@@ -120,7 +120,7 @@ jQuery.extend({
 							finalized = !indirect && !!(
 								args &&
 								args.length === 1 &&
-								( factory = finalizerFactoryFactory() ) &&
+								( factory = activatorFactoryFactory() ) &&
 								stdAttach( args[ 0 ], factory( 0 ), factory( 1 ), factory( 2 ) )
 							);
 							if ( !finalized ) {
@@ -134,7 +134,7 @@ jQuery.extend({
 					};
 				};
 			},
-			finalizerFactory = finalizerFactoryFactory();
+			activatorFactory = activatorFactoryFactory();
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
@@ -155,8 +155,8 @@ jQuery.extend({
 			}
 
 			// deferred[ resolve | reject | notify ]
-			deferred[ tuple[ 0 ] ] = finalizerFactory( i );
-			deferred[ tuple[ 0 ] + "With" ] = finalizerFactory( i, true );
+			deferred[ tuple[ 0 ] ] = activatorFactory( i );
+			deferred[ tuple[ 0 ] + "With" ] = activatorFactory( i, true );
 		});
 
 		// Make the deferred a promise
