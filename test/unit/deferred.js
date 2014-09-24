@@ -374,20 +374,14 @@ test( "jQuery.when - joined", function() {
 
 	expect( 195 );
 
-	function stdPromise( type, value ) {
-		var defer = Q.defer();
-		defer[ type ]( value );
-		return defer.promise;
-	}
-
 	var deferreds = {
 			value: 1,
 			success: jQuery.Deferred().resolve( 1 ),
 			error: jQuery.Deferred().reject( 0 ),
 			futureSuccess: jQuery.Deferred().notify( true ),
 			futureError: jQuery.Deferred().notify( true ),
-			futureStdSuccess: stdPromise( "resolve",  1 ),
-			futureStdError: stdPromise( "reject",  0 ),
+			futureStdSuccess: Promise.resolve( 1 ),
+			futureStdError: Promise.reject( 0 ),
 			notify: jQuery.Deferred().notify( true )
 		},
 		willSucceed = {
@@ -504,9 +498,7 @@ test( "jQuery.Deferred.then - chaining", function() {
 	}
 
 	function chainStandard() {
-		var defer = Q.defer();
-		defer.resolve( "std deferred" );
-		return defer.promise;
+		return Promise.resolve( "std deferred" );
 	}
 
 	stop();
