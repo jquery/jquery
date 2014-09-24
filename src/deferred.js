@@ -4,10 +4,7 @@ define([
 	"./callbacks"
 ], function( jQuery, slice ) {
 
-var stdTypes = {
-	object: true,
-	function: true
-};
+var stdTypes = /^(object|function)$/;
 
 function stdAttach( object, fnDone, fnFail, fnProgress ) {
 	var then;
@@ -18,7 +15,7 @@ function stdAttach( object, fnDone, fnFail, fnProgress ) {
 				.done( fnDone )
 				.fail( fnFail );
 		}
-		if ( stdTypes[ typeof object ] ) {
+		if ( stdTypes.test( typeof object ) ) {
 			try {
 				if ( jQuery.isFunction(( then = object.then )) ) {
 					then.call( object, fnDone, fnFail );
@@ -32,20 +29,20 @@ function stdAttach( object, fnDone, fnFail, fnProgress ) {
 	}
 }
 
-function stdCallback( defer, callback ) {
+function stdCallback( deferred, callback ) {
 	return jQuery.isFunction( callback ) && function( value ) {
 		setTimeout(function() {
 			var returned;
 			try {
 				returned = callback( value );
-				if ( returned === defer.promise() ) {
+				if ( returned === deferred.promise() ) {
 					throw new TypeError();
 				}
 			} catch ( e ) {
-				return defer.reject( e );
+				return deferred.reject( e );
 			}
-			if ( !stdAttach( returned, defer.resolve, defer.reject, defer.notify ) ) {
-				defer.resolve( returned );
+			if ( !stdAttach( returned, deferred.resolve, deferred.reject, deferred.notify ) ) {
+				deferred.resolve( returned );
 			}
 		});
 	};
@@ -54,7 +51,7 @@ function stdCallback( defer, callback ) {
 jQuery.extend({
 
 	Deferred: function( func ) {
-		var finalized, tuples = [
+		var tuples = [
 				// action, add listener, listener list, final state
 				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
 				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
@@ -110,7 +107,34 @@ jQuery.extend({
 					return obj != null ? jQuery.extend( obj, promise ) : promise;
 				}
 			},
-			deferred = {};
+			deferred = {},
+			finalizerFactoryFactory = function() {
+				var finalized;
+				return function( i, indirect ) {
+					return function( _self, _args ) {
+						var factory,
+							self = indirect ? _self : this,
+							args = indirect ? _args : arguments;
+						if ( !finalized ) {
+							finalized = ( i < 2 );
+							finalized = !indirect && !!(
+								args &&
+								args.length === 1 &&
+								( factory = finalizerFactoryFactory() ) &&
+								stdAttach( args[ 0 ], factory(0), factory(1), factory(2) )
+							);
+							if ( !finalized ) {
+								tuples[ i ][ 2 ].fireWith(
+									self === deferred ? promise : self,
+									args
+								);
+							}
+						}
+						return this;
+					};
+				};
+			},
+			finalizerFactory = finalizerFactoryFactory();
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
@@ -130,28 +154,9 @@ jQuery.extend({
 				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
 			}
 
-			tuple[ 4 ] = function() {
-				if ( arguments.length !== 1 || !stdAttach(
-					arguments[ 0 ],
-					tuples[ 0 ][ 4 ],
-					tuples[ 1 ][ 4 ],
-					tuples[ 2 ][ 4 ] ) ) {
-					list.fireWith(
-						this === deferred ? promise : this,
-						arguments
-					);
-				}
-			};
-
 			// deferred[ resolve | reject | notify ]
-			deferred[ tuple[0] ] = function() {
-				if ( !finalized ) {
-					finalized = ( i < 2 );
-					tuple[ 4 ].apply( this, arguments );
-				}
-				return this;
-			};
-			deferred[ tuple[0] + "With" ] = list.fireWith;
+			deferred[ tuple[0] ] = finalizerFactory( i );
+			deferred[ tuple[0] + "With" ] = finalizerFactory( i, true );
 		});
 
 		// Make the deferred a promise
