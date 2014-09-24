@@ -11,11 +11,9 @@ require( "jsdom" ).env( "", function (errors, window) {
 		var deferred = jQuery.Deferred();
 
 		return {
-			get promise() {
-				return deferred.promise();
-			},
-			resolve: deferred.resolve.bind(deferred),
-			reject: deferred.reject.bind(deferred)
+			promise: deferred.promise(),
+			resolve: deferred.resolve,
+			reject: deferred.reject
 		};
 	};
 });
