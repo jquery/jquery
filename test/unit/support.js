@@ -81,6 +81,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -118,6 +119,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -155,6 +157,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": false,
 			"changeBubbles": true,
@@ -192,6 +195,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": false,
 			"changeBubbles": true,
@@ -229,6 +233,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": false,
 			"changeBubbles": true,
@@ -266,6 +271,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": true,
 			"boxSizing": true,
 			"boxSizingReliable": false,
 			"changeBubbles": false,
@@ -303,6 +309,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
+			"attrProps": true,
 			"boxSizing": false,
 			"boxSizingReliable": false,
 			"changeBubbles": false,
@@ -340,6 +347,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
+			"attrProps": true,
 			"boxSizing": false,
 			"boxSizingReliable": false,
 			"changeBubbles": false,
@@ -377,6 +385,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -414,6 +423,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -451,6 +461,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -488,6 +499,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -525,6 +537,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -562,6 +575,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,
@@ -599,6 +613,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
+			"attrProps": false,
 			"boxSizing": true,
 			"boxSizingReliable": true,
 			"changeBubbles": true,

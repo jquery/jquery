@@ -59,16 +59,8 @@ define([
 		div.cloneNode( true ).click();
 	}
 
-	// Execute the test only if not already executed in another module.
-	if (support.deleteExpando == null) {
-		// Support: IE<9
-		support.deleteExpando = true;
-		try {
-			delete div.test;
-		} catch ( e ) {
-			support.deleteExpando = false;
-		}
-	}
+	div[ jQuery.expando ] = 1;
+	support.attrProps = !!div.getAttribute( jQuery.expando );
 })();
 
 return support;
