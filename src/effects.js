@@ -488,11 +488,11 @@ jQuery.fn.extend({
 			optall = jQuery.speed( speed, easing, callback ), /* queue options */
 			doAnimation = function () {
 				self.css( {
-					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + " translateZ(0)" : transform /* Accelaration */
+					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + " translateZ(0)" : transform
 				} );
-				win.setTimeout( function () {
+				setTimeout( function () {
 					self.css( {
-						transform : transform /* After end tweening, we can back to original transform, that, nodes works faster by freeing up GPU memory */
+						transform : transform
 					} );
 				}, optall.duration);
 			/* Operate on a copy of prop so per-property easing won't be lost */
