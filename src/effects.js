@@ -477,15 +477,15 @@ jQuery.fn.extend({
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function ( prop, speed, easing, callback ) {
-		var empty = $.isEmptyObject( prop ), /* if prop empty, continue function for performance */
+		var empty = jQuery.isEmptyObject( prop ), /* if prop empty, continue function for performance */
 			self = this, /* self, need for GPU Accelaration */
 			transform = self.css( "transform" ), /* get current transform */
 			isSupport3D = function () {
-			var temp = $('<div/>').css( { transform : "translateZ(0)" } );
+			var temp = jQuery('<div/>').css( { transform : "translateZ(0)" } );
 				temp = temp.css( "transform" );
 			return temp === "translateZ(0px)";
 			},
-			optall = $.speed( speed, easing, callback ), /* queue options */
+			optall = jQuery.speed( speed, easing, callback ), /* queue options */
 			doAnimation = function () {
 				self.css( {
 					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + ' translateZ(0)' : transform /* Accelaration */
@@ -496,10 +496,10 @@ jQuery.fn.extend({
 					} );
 				}, optall.duration);
 			/* Operate on a copy of prop so per-property easing won't be lost */
-				var anim = $.Animation( this, $.extend( {}, prop ), optall );
+				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
 
 			/* Empty animations, or finishing resolves immediately */
-				if ( empty || $._data( this, "finish" ) ) {
+				if ( empty || jQuery._data( this, "finish" ) ) {
 					anim.stop( true );
 				}
 			};
