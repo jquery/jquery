@@ -481,14 +481,14 @@ jQuery.fn.extend({
 			self = this, /* self, need for GPU Accelaration */
 			transform = self.css( "transform" ), /* get current transform */
 			isSupport3D = function () {
-			var temp = jQuery('<div/>').css( { transform : "translateZ(0)" } );
+			var temp = jQuery("<div/>").css( { transform : "translateZ(0)" } );
 				temp = temp.css( "transform" );
 			return temp === "translateZ(0px)";
 			},
 			optall = jQuery.speed( speed, easing, callback ), /* queue options */
 			doAnimation = function () {
 				self.css( {
-					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + ' translateZ(0)' : transform /* Accelaration */
+					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + " translateZ(0)" : transform /* Accelaration */
 				} );
 				win.setTimeout( function () {
 					self.css( {
