@@ -29,24 +29,20 @@ Data.prototype = {
 			return 0;
 		}
 
-		var descriptor = {},
-			// Check if the owner object already has a cache key
-			unlock = owner[ this.expando ];
+		// Check if the owner object already has a cache key
+		var unlock = owner[ this.expando ];
 
 		// If not, create one
 		if ( !unlock ) {
 			unlock = Data.uid++;
 
-			// Secure it in a non-enumerable, non-writable property
-			try {
-				descriptor[ this.expando ] = { value: unlock };
-				Object.defineProperties( owner, descriptor );
-
-			// Support: Android<4
-			// Fallback to a less secure definition
-			} catch ( e ) {
-				descriptor[ this.expando ] = unlock;
-				jQuery.extend( owner, descriptor );
+			// If it is a node unlikely to be stringify-ed or looped over
+			// use plain assignment
+			if ( owner.nodeType ) {
+				owner[ this.expando ] = unlock;
+			// Otherwise secure it in a non-enumerable, non-writable property
+			} else {
+				Object.defineProperty( owner, this.expando, { value: unlock } );
 			}
 		}
 
