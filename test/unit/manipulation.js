@@ -1892,7 +1892,7 @@ asyncTest( "clone() doesn't copy non-scalar properties (#15104)", function() {
 		ok( true, "error event dipatched" );
 		setTimeout(function() {
 			// Clean up
-			jQuery( src, clone ).remove();
+			jQuery([ src, clone ]).remove();
 			start();
 		}, 0 );
 	});
