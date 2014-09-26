@@ -86,7 +86,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 (function() {
 	var knownClient,
 		expected = {},
-		expectedTruthy = {},
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
@@ -290,6 +289,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -316,7 +316,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": false,
 			"tbody": true
 		};
-		expectedTruthy = { cloneProps: true };
 	} else if ( /msie 7\.0/i.test( userAgent ) ) {
 		knownClient = "IE7";
 		expected = {
@@ -328,6 +327,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -354,7 +354,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": false,
 			"tbody": false
 		};
-		expectedTruthy = { cloneProps: true };
 	} else if ( /msie 6\.0/i.test( userAgent ) ) {
 		knownClient = "IE6";
 		expected = {
@@ -366,6 +365,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -392,7 +392,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submitBubbles": false,
 			"tbody": false
 		};
-		expectedTruthy = { cloneProps: true };
 	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		knownClient = "Safari 7";
 		expected = {
@@ -681,11 +680,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 				} else {
 					ok( true, "no ajax; skipping jQuery.support." + i + " is " + expected[ i ] );
 				}
-			}
-
-			for ( i in expectedTruthy ) {
-				ok( !!computedSupport[i],
-					"jQuery.support." + i + ": " + computedSupport[i] + " is truthy" );
 			}
 		});
 	}

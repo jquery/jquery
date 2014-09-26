@@ -179,23 +179,19 @@ function fixCloneNodeIssues( src, dest ) {
 	// Remove erroneously-copied event handlers and (attr-)properties
 	if ( support.cloneProps ) {
 		data = dest[ jQuery.expando ] && jQuery._data( dest );
-
 		if ( data ) {
 			for ( p in data.events ) {
 				jQuery.removeEvent( dest, p, data.handle );
 			}
 		}
 
-		for ( p in dest ) {
-			if ( (typeof dest[ p ] === "object" && dest[ p ] || typeof dest[ p ] === "function") &&
-				dest[ p ] !== support.cloneProps[ p ] && dest[ p ] === src[ p ] ) {
-
-				dest.removeAttribute( p );
+		data = dest.attributes;
+		p = data.length;
+		while ( p-- ) {
+			if ( data[ p ].expando ) {
+				dest.removeAttribute( data[ p ].name );
 			}
 		}
-
-		// Event data gets referenced instead of copied if the expando gets copied too
-		dest.removeAttribute( jQuery.expando );
 	}
 
 	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text

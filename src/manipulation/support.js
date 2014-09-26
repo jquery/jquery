@@ -51,7 +51,7 @@ define([
 
 	// Support: IE<9
 	// Cloning references to object-valued properties causes problems (#15104)
-	support.cloneProps = div.test === support && div;
+	support.cloneProps = div.test === support;
 
 	// Execute the test only if not already executed in another module.
 	if (support.deleteExpando == null) {
