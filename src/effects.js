@@ -476,23 +476,38 @@ jQuery.fn.extend({
 			// Animate to the value specified
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
-	animate: function( prop, speed, easing, callback ) {
-		var empty = jQuery.isEmptyObject( prop ),
-			optall = jQuery.speed( speed, easing, callback ),
-			doAnimation = function() {
-				// Operate on a copy of prop so per-property easing won't be lost
-				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
+	animate: function ( prop, speed, easing, callback ) {
+		var empty = $.isEmptyObject( prop ), /* if prop empty, continue function for performance */
+			self = this, /* self, need for GPU Accelaration */
+			transform = self.css( "transform" ), /* get current transform */
+			isSupport3D = function () {
+			var temp = $('<div/>').css( { transform : "translateZ(0)" } );
+				temp = temp.css( "transform" );
+			return temp === "translateZ(0px)";
+			},
+			optall = $.speed( speed, easing, callback ), /* queue options */
+			doAnimation = function () {
+				self.css( {
+					transform : isSupport3D && !/translateZ|translate3d|matrix3d/.test( transform ) ? transform + ' translateZ(0)' : transform /* Accelaration */
+				} );
+				win.setTimeout( function () {
+					self.css( {
+						transform : transform /* After end tweening, we can back to original transform, that, nodes works faster by freeing up GPU memory */
+					} );
+				}, optall.duration);
+			/* Operate on a copy of prop so per-property easing won't be lost */
+				var anim = $.Animation( this, $.extend( {}, prop ), optall );
 
-				// Empty animations, or finishing resolves immediately
-				if ( empty || dataPriv.get( this, "finish" ) ) {
+			/* Empty animations, or finishing resolves immediately */
+				if ( empty || $._data( this, "finish" ) ) {
 					anim.stop( true );
 				}
 			};
-			doAnimation.finish = doAnimation;
+		doAnimation.finish = doAnimation;
 
-		return empty || optall.queue === false ?
-			this.each( doAnimation ) :
-			this.queue( optall.queue, doAnimation );
+		return empty || !optall.queue ?
+				this.each( doAnimation ) :
+				this.queue( optall.queue, doAnimation );
 	},
 	stop: function( type, clearQueue, gotoEnd ) {
 		var stopQueue = function( hooks ) {
