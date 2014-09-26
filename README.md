@@ -21,7 +21,7 @@ Environments in which to use jQuery
 What you need to build your own jQuery
 --------------------------------------
 
-In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work OK, but are not supported with tests.
+In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
 For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
 
