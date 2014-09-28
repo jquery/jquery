@@ -185,10 +185,12 @@ function fixCloneNodeIssues( src, dest ) {
 			}
 		}
 
+		dest.removeAttribute( jQuery.expando );
+
 		data = dest.attributes;
 		p = data.length;
 		while ( p-- ) {
-			if ( data[ p ].expando ) {
+			if ( data[ p ].expando && typeof dest[ data[ p ].name ] !== "string" ) {
 				dest.removeAttribute( data[ p ].name );
 			}
 		}

@@ -1411,7 +1411,7 @@ test( "table manipulation", function() {
 
 test( "clone()", function() {
 
-	expect( 45 );
+	expect( 50 );
 
 	var div, clone, form, body;
 
@@ -1426,6 +1426,22 @@ test( "clone()", function() {
 
 	// Check cloning non-elements
 	equal( jQuery("#nonnodes").contents().clone().length, 3, "Check node,textnode,comment clone works (some browsers delete comments on clone)" );
+
+	// Verify attribute cloning
+	div = jQuery("<div class='foo' static='bar'/>").attr({
+		"dynamic-string": "baz",
+		"dynamic-number": 1,
+		"dynamic-boolean": true
+	});
+	clone = div.clone();
+	equal( clone.attr("class"), "foo", "Standard attribute cloned" );
+	equal( clone.attr("static"), "bar", "Non-standard attribute cloned" );
+	equal( clone.attr("dynamic-string"), "baz",
+		"Dynamically-added non-standard string attribute cloned" );
+	equal( clone.attr("dynamic-number"), "1",
+		"Dynamically-added non-standard number attribute cloned" );
+	equal( clone.attr("dynamic-boolean"), "true",
+		"Dynamically-added non-standard boolean attribute cloned" );
 
 	// Verify that clones of clones can keep event listeners
 	div = jQuery("<div><ul><li>test</li></ul></div>").on( "click", function() {
