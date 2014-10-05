@@ -54,6 +54,7 @@ jQuery.fn.extend({
 	removeClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
 			proceed = arguments.length === 0 || typeof value === "string" && value,
+			regexp = typeof value === "object" && value instanceof RegExp,
 			i = 0,
 			len = this.length;
 
@@ -87,6 +88,19 @@ jQuery.fn.extend({
 					if ( elem.className !== finalValue ) {
 						elem.className = finalValue;
 					}
+				}
+			}
+		}
+		if ( regexp ) {
+			for ( ; i < len; i++ ) {
+				if ( this[i].nodeType === 1 ) {
+					classes = this[i].className.split(" ");
+					for ( j in classes ) {
+						if ( classes[j] && value.test(classes[j]) ) {
+							classes.splice(j, 1);
+						}
+					}
+					this[i].className = classes.join(" ");
 				}
 			}
 		}
