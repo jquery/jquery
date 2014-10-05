@@ -1134,7 +1134,7 @@ test( "addClass(Function) with incoming value", function() {
 });
 
 var testRemoveClass = function(valueObj) {
-	expect( 8 );
+	expect( 9 );
 
 	var $set = jQuery("#qunit-fixture div"),
 		div = document.createElement("div");
@@ -1154,6 +1154,9 @@ var testRemoveClass = function(valueObj) {
 
 	$set.eq( 0 ).addClass("expected").removeClass( valueObj("") );
 	ok( $set.eq( 0 ).is(".expected"), "Empty string passed to removeClass" );
+
+	$set.addClass("regexp-test another-class").removeClass( valueObj(/^regexp/) );
+	ok( !$set.hasClass("regexp-test"), "Remove class matching regular expression" );
 
 	// using contents will get regular, text, and comment nodes
 	$set = jQuery("#nonnodes").contents();
@@ -1329,7 +1332,7 @@ test( "toggleClass(Function[, boolean]) with incoming value", function() {
 });
 
 test( "addClass, removeClass, hasClass", function() {
-	expect( 17 );
+	expect( 18 );
 
 	var jq = jQuery("<p>Hi</p>"), x = jq[ 0 ];
 
@@ -1358,6 +1361,8 @@ test( "addClass, removeClass, hasClass", function() {
 	ok( jq.hasClass("cla.ss3"), "Check hasClass with dot" );
 	ok( jq.hasClass("class4"), "Check hasClass with carriage return" );
 	ok( jq.is(".class4"), "Check is with carriage return" );
+
+	ok( jq.hasClass(/^class\d$/), "Check hasClass matching regexp" );
 
 	jq.removeClass("class2");
 	ok( jq.hasClass("class2") === false, "Check the class has been properly removed" );

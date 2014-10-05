@@ -94,7 +94,7 @@ jQuery.fn.extend({
 		if ( regexp ) {
 			for ( ; i < len; i++ ) {
 				if ( this[i].nodeType === 1 ) {
-					classes = this[i].className.split(" ");
+					classes = ( this[i].className || "" ).match( rnotwhite ) || [];
 					for ( j in classes ) {
 						if ( classes[j] && value.test(classes[j]) ) {
 							classes.splice(j, 1);
@@ -172,7 +172,7 @@ jQuery.fn.extend({
 				}
 
 				if ( typeof selector === "object" && selector instanceof RegExp ) {
-					classes = this[i].className.split(" ");
+					classes = ( this[i].className || "" ).match( rnotwhite ) || [];
 					for ( j in classes ) {
 						if ( classes[j] && selector.test(classes[j]) ) {
 							return true;
