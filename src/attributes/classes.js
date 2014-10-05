@@ -54,6 +54,7 @@ jQuery.fn.extend({
 	removeClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
 			proceed = arguments.length === 0 || typeof value === "string" && value,
+			regexp = typeof value === "object" && value instanceof RegExp,
 			i = 0,
 			len = this.length;
 
@@ -87,6 +88,19 @@ jQuery.fn.extend({
 					if ( elem.className !== finalValue ) {
 						elem.className = finalValue;
 					}
+				}
+			}
+		}
+		if ( regexp ) {
+			for ( ; i < len; i++ ) {
+				if ( this[i].nodeType === 1 ) {
+					classes = ( this[i].className || "" ).match( rnotwhite ) || [];
+					for ( j in classes ) {
+						if ( classes[j] && value.test(classes[j]) ) {
+							classes.splice(j, 1);
+						}
+					}
+					this[i].className = classes.join(" ");
 				}
 			}
 		}
@@ -145,14 +159,26 @@ jQuery.fn.extend({
 	},
 
 	hasClass: function( selector ) {
-		var className = " " + selector + " ",
+		var classes, j,
+			className = " " + selector + " ",
 			i = 0,
 			l = this.length;
-		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 &&
-				(" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) >= 0 ) {
 
-				return true;
+		for ( ; i < l; i++ ) {
+			if ( this[i].nodeType === 1 ) {
+				if ((" " + this[i].className + " ").replace(rclass, " ")
+					.indexOf( className ) >= 0 ) {
+					return true;
+				}
+
+				if ( typeof selector === "object" && selector instanceof RegExp ) {
+					classes = ( this[i].className || "" ).match( rnotwhite ) || [];
+					for ( j in classes ) {
+						if ( classes[j] && selector.test(classes[j]) ) {
+							return true;
+						}
+					}
+				}
 			}
 		}
 
