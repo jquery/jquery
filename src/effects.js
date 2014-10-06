@@ -227,9 +227,7 @@ function defaultPrefilter( elem, props, opts ) {
 		if ( hidden ) {
 			jQuery( elem ).show();
 		} else {
-			anim.done(function() {
-				jQuery( elem ).hide();
-			});
+			anim.done(jQuery( elem ).hide);
 		}
 		anim.done(function() {
 			var prop;
