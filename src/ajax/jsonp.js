@@ -44,7 +44,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			s.url += ( rquery.test( s.url ) ? "&" : "?" ) + s.jsonp + "=" + callbackName;
 		}
 
-		// add user and password to request URL if http authentification selected
+		// add user and password to request URL if http authentification is required
 		if (s.password && s.username) {
 			s.url = s.url.replace(/^http:\/\/|^https:\/\//, "$&" + s.username + ":" + s.password + "@");
 		}
