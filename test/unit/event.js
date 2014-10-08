@@ -1004,6 +1004,7 @@ test("trigger() bubbling", function() {
 	equal( win, 4, "doc bubble" );
 
 	// manually clean up events from elements outside the fixture
+	jQuery(window).off("click");
 	jQuery(document).off("click");
 	jQuery("html, body, #qunit-fixture").off("click");
 });
@@ -2123,7 +2124,7 @@ test("Non DOM element events", function() {
 		ok( true, "Event on non-DOM object triggered" );
 	});
 
-	jQuery(o).trigger("nonelementobj");
+	jQuery(o).trigger("nonelementobj").off("nonelementobj");
 });
 
 test("inline handler returning false stops default", function() {
