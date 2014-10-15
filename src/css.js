@@ -22,7 +22,7 @@ var
 	// BuildExclude
 	getStyles = curCSS.getStyles,
 	ralpha = /alpha\([^)]*\)/i,
-	ropacity = /opacity\s*=\s*([^)]*)/,
+	ropacity = /opacity\s*=\s*([^)]*)/i,
 
 	// swappable if display is none or starts with table except
 	// "table", "table-cell", or "table-caption"
