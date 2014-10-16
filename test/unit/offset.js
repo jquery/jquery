@@ -407,7 +407,7 @@ testIframe("offset/table", "table", function( $ ) {
 });
 
 testIframe("offset/scroll", "scroll", function( $, win ) {
-	expect(24);
+	expect(28);
 
 	equal( $("#scroll-1").offset().top, 7, "jQuery('#scroll-1').offset().top" );
 	equal( $("#scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
@@ -457,6 +457,17 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 	notEqual( $().scrollLeft(null), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
 	strictEqual( $().scrollTop(), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
 	strictEqual( $().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
+
+	// Tests position after parent scrolling (#15239)
+	$("#scroll-1").scrollTop(0);
+	$("#scroll-1").scrollLeft(0);
+	equal( $("#scroll-1-1").position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
+	equal( $("#scroll-1-1").position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
+
+	$("#scroll-1").scrollTop(5);
+	$("#scroll-1").scrollLeft(5);
+	equal( $("#scroll-1-1").position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
+	equal( $("#scroll-1-1").position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
 });
 
 testIframe("offset/body", "body", function( $ ) {
