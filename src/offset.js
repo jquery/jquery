@@ -136,7 +136,7 @@ jQuery.fn.extend({
 			// Add offsetParent borders
 			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
 			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
-			
+
 			// Subtract offsetParent scroll positions
 			parentOffset.top -= offsetParent.scrollTop();
 			parentOffset.left -= offsetParent.scrollLeft();
