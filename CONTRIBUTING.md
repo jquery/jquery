@@ -126,7 +126,7 @@ Now open the jQuery test suite in a browser at http://localhost/test. If there i
 Success! You just built and tested jQuery!
 
 
-### Fix a bug from a ticket filed at bugs.jquery.com:
+### Fix a bug from a ticket filed on Github:
 
 **NEVER write your patches to the master branch** - it gets messy (I say this from experience!)
 
