@@ -177,7 +177,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 					target[ name ] = jQuery.extend( deep, clone, copy );
 
 				// Don't bring in undefined values
-				} else if ( copy !== undefined ) {
+				} else if ( typeof copy !== 'undefined' ) {
 					target[ name ] = copy;
 				}
 			}
