@@ -14,21 +14,6 @@ insert_final_newline = true
 [**.js]
 indent_style = tab
 
-[Makefile]
-indent_style = tab
-
-
-[speed/**.html]
-indent_style = tab
-
-[speed/**.css]
-indent_style = tab
-
-[speed/benchmarker.js]
-indent_style = space
-indent_size = 2
-
-
 [test/**.xml]
 indent_style = tab
 
