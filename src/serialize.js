@@ -141,7 +141,7 @@ jQuery.fn.extend({
                 }
                 setValue(context, chain, value);
             };
-        $.each(this.serializeArray(), function(i, e){
+        jQuery.each(this.serializeArray(), function(i, e){
             if (e.value) {
                 assign(json, e.name, e.value);
             }
