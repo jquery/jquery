@@ -111,41 +111,43 @@ jQuery.fn.extend({
 		}).get();
 	},
     serializeJSON: function() {
-        var json = {},
-            check = function(parent, key, isArray){
-                parent[key] = parent[key] || (isArray ? [] : {});
-                return parent[key];
+        var json = { },
+            check = function( parent, key, isArray ) {
+                parent[ key ] = parent[ key ] || ( isArray ? [ ] : { } );
+                return parent[ key ];
             },
-            setValue = function (context, chain, value){
-                var pre = context, cur, i;
-                for (i = 0; i < chain.length - 1; i++) {
-                    cur = check(pre, chain[i], jQuery.isNumeric(chain[i + 1]));
+            setValue = function( context, chain, value ) {
+                var pre = context,
+                    cur,
+                    i;
+                for ( i = 0; i < chain.length - 1; i++ ) {
+                    cur = check( pre, chain[ i ], jQuery.isNumeric( chain[ i + 1 ] ) );
                     pre = cur;
                 }
-                pre[chain[chain.length - 1]] = value;
+                pre[ chain[ chain.length - 1 ] ] = value;
             },
-            assign = function(context, name, value) {
+            assign = function( context, name, value ) {
                 var namePattern = /\w+/,
                     numPattern = /\d+/,
                     pattern = /\[(\w+)\]/gi,
-                    chain = [], m, t;
-                if (m = namePattern.exec(name)){
-                    chain.push(m[0]);
-                    while(t = pattern.exec(name)) {
-                        if (numPattern.test(t[1])) {
-                            chain.push(+t[1]);
+                    chain = [ ], m, t;
+                if ( m = namePattern.exec( name ) ){
+                    chain.push( m[0] );
+                    while ( t = pattern.exec( name ) ) {
+                        if ( numPattern.test( t[ 1 ] ) ) {
+                            chain.push( +t[ 1 ] );
                         } else {
-                            chain.push(t[1]);
+                            chain.push( t[ 1 ] );
                         }
                     }
                 }
-                setValue(context, chain, value);
+                setValue( context, chain, value );
             };
-        jQuery.each(this.serializeArray(), function(i, e){
-            if (e.value) {
-                assign(json, e.name, e.value);
+        jQuery.each( this.serializeArray(), function( i, e ) {
+            if ( e.value ) {
+                assign( json, e.name, e.value );
             }
-        });
+        } );
         return json;
     }
 });
