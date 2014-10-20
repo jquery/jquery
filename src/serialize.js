@@ -119,7 +119,7 @@ jQuery.fn.extend({
             setValue = function (context, chain, value){
                 var pre = context, cur, i;
                 for (i = 0; i < chain.length - 1; i++) {
-                    cur = check(pre, chain[i], $.isNumeric(chain[i + 1]));
+                    cur = check(pre, chain[i], jQuery.isNumeric(chain[i + 1]));
                     pre = cur;
                 }
                 pre[chain[chain.length - 1]] = value;
