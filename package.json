@@ -31,7 +31,7 @@
   "dependencies": {},
   "devDependencies": {
     "colors": "0.6.2",
-    "commitplease": "1.10.1",
+    "commitplease": "2.0.0",
     "grunt": "0.4.5",
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
