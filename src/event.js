@@ -809,7 +809,7 @@ jQuery.fn.extend({
 				selector = undefined;
 			}
 		}
-		if ( fn === false ) {
+		if ( fn === false || !jQuery.isFunction(fn)) {
 			fn = returnFalse;
 		} else if ( !fn ) {
 			return this;
