@@ -7,7 +7,6 @@ define([
 	"./manipulation/support",
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
-
 	"./core/init",
 	"./data/accepts",
 	"./traversing",
@@ -307,6 +306,36 @@ jQuery.extend({
 			// Discard any remaining `user` data
 			delete dataUser.cache[ elem[ dataUser.expando ] ];
 		}
+	},
+
+	makeElt: function( elem, attrs) {
+	    var elt = document.createElement(elem), attr;
+
+	    // convenience to $.makeElt() + node.appendChild()
+	    elt.appendElt = function(elem, attrs) {
+	        return this.appendChild( jQuery.makeElt( elem, attrs) );
+	    };
+
+	    if (attrs === undefined) {
+	        return elt;
+	    }
+
+	    // semantic shortcut
+	    if (attrs.class !== undefined) {
+	        elt.className = attrs.class;
+	    }
+
+	    // semantic shortcut
+	    if (attrs.text !== undefined) {
+	        elt.textContent = attrs.text;
+	    }
+
+	    // will produce elements given they are properly formatted
+	    for (attr in attrs) {
+	        elt[attr] = attrs[attr];
+	    }
+
+	    return elt;
 	}
 });
 
