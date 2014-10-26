@@ -7,8 +7,8 @@ define([
 	"./manipulation/support",
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
-
 	"./core/init",
+	"./core/makeElt",
 	"./data/accepts",
 	"./traversing",
 	"./selector",
