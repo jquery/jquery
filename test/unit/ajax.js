@@ -1002,9 +1002,6 @@ module( "ajax", {
 			" (no cache)": false
 		},
 		function( label, cache ) {
-			// Support: Opera 12.0
-			// In Opera 12.0, XHR doesn't notify 304 back to the user properly
-			var opera = window.opera && window.opera.version();
 			jQuery.each(
 				{
 					"If-Modified-Since": "if_modified_since.php",
@@ -1024,15 +1021,9 @@ module( "ajax", {
 									ifModified: true,
 									cache: cache,
 									success: function( data, status, jqXHR ) {
-										if ( status === "success" && opera === "12.00" ) {
-											strictEqual( status, "success", "Opera 12.0: Following status is 'success'" );
-											strictEqual( jqXHR.status, 200, "Opera 12.0: XHR status is 200, not 304" );
-											strictEqual( data, "", "Opera 12.0: response body is empty" );
-										} else {
-											strictEqual( status, "notmodified", "Following status is 'notmodified'" );
-											strictEqual( jqXHR.status, 304, "XHR status is 304" );
-											equal( data, null, "no response body is given" );
-										}
+										strictEqual( status, "notmodified", "Following status is 'notmodified'" );
+										strictEqual( jqXHR.status, 304, "XHR status is 304" );
+										equal( data, null, "no response body is given" );
 									},
 									complete: function() {
 										start();
