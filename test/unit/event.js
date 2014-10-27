@@ -1417,7 +1417,7 @@ test("Submit event can be stopped (#11049)", function() {
 	form.remove();
 });
 
-// Test beforeunload event only if it supported (i.e. not Opera)
+// Test beforeunload event only if it supported.
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
@@ -2431,32 +2431,26 @@ testIframeWithCallback( "focusin from an iframe", "event/focusinCrossFrame.html"
 
 	var input = jQuery( frameDoc ).find( "#frame-input" );
 
-	if ( input.length ) {
-		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-		jQuery ( "body" ).on( "focusin.iframeTest", function() {
-			ok( false, "fired a focusin event in the parent document" );
-		});
+	// Create a focusin handler on the parent; shouldn't affect the iframe's fate
+	jQuery ( "body" ).on( "focusin.iframeTest", function() {
+		ok( false, "fired a focusin event in the parent document" );
+	});
 
-		input.on( "focusin", function() {
-			ok( true, "fired a focusin event in the iframe" );
-		});
+	input.on( "focusin", function() {
+		ok( true, "fired a focusin event in the iframe" );
+	});
 
-		// Avoid a native event; Chrome can't force focus to another frame
-		input.trigger( "focusin" );
+	// Avoid a native event; Chrome can't force focus to another frame
+	input.trigger( "focusin" );
 
-		// Must manually remove handler to avoid leaks in our data store
-		input.remove();
+	// Must manually remove handler to avoid leaks in our data store
+	input.remove();
 
-		// Be sure it was removed; nothing should happen
-		input.trigger( "focusin" );
+	// Be sure it was removed; nothing should happen
+	input.trigger( "focusin" );
 
-		// Remove body handler manually since it's outside the fixture
-		jQuery( "body" ).off( "focusin.iframeTest" );
-
-	} else {
-		// Opera 12 (pre-Blink) doesn't select anything
-		ok( true, "SOFTFAIL: no focus event fired in the iframe" );
-	}
+	// Remove body handler manually since it's outside the fixture
+	jQuery( "body" ).off( "focusin.iframeTest" );
 });
 
 testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
