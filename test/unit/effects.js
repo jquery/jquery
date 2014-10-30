@@ -1687,7 +1687,7 @@ test( "hide should not leave hidden inline elements visible (#14848)", 2, functi
 });
 
 test( "Handle queue:false promises", 10, function() {
-	var foo = jQuery( "#foo" ).clone().andSelf(),
+	var foo = jQuery( "#foo" ).clone().addBack(),
 		step = 1;
 
 	foo.animate({
