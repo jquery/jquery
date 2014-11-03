@@ -159,7 +159,7 @@ section { background:#f0f; display:block; }
 
 /* fix get alpha opacity in IE8 */
 .fix-get-alpha-opacity-in-ie8 {
-	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=50);
 	opacity: 0.5;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 }
 

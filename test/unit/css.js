@@ -1154,20 +1154,7 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 
 // Only test in IE8
 (function() {
-	// via: https://gist.github.com/padolsey/527683
-	var ie = (function() {
-		var undef,
-			v = 3,
-			div = document.createElement("div"),
-			all = div.getElementsByTagName("i");
-		while (
-			div.innerHTML = "<!--[if gt IE " + (++v) + "]><i></i><![endif]-->",
-			all[0]
-		) {
-		}
-		return v > 4 ? v : undef;
-	}());
-	if ( ie === 8 ) {
+	if ( !jQuery.support.opacity ) {
 		test( "get upper case alpha opacity in IE8", 1, function() {
 			var div = document.createElement("div");
 			div.className = "fix-get-alpha-opacity-in-ie8";
