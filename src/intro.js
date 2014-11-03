@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v@VERSION
+ * jQuery Compat JavaScript Library v@VERSION
  * http://jquery.com/
  *
  * Includes Sizzle.js

@@ -135,7 +135,7 @@ module.exports = function( grunt ) {
 					beautify: {
 						"ascii_only": true
 					},
-					banner: "/*! jQuery v<%= pkg.version %> | " +
+					banner: "/*! jQuery Compat v<%= pkg.version %> | " +
 						"(c) 2005, <%= grunt.template.today('yyyy') %> jQuery Foundation, Inc. | " +
 						"jquery.org/license */",
 					compress: {
