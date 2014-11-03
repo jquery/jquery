@@ -7,7 +7,7 @@
   "homepage": "http://jquery.com",
   "author": {
     "name": "jQuery Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/compat/AUTHORS.txt"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jquery/jquery/blob/master/LICENSE.txt"
+      "url": "https://github.com/jquery/jquery/blob/compat/LICENSE.txt"
     }
   ],
   "dependencies": {},
