@@ -1,8 +1,8 @@
 {
-  "name": "jquery",
+  "name": "jquery-compat",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "1.11.2-pre",
+  "version": "3.0.0-pre",
   "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {
