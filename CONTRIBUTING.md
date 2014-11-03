@@ -211,4 +211,4 @@ This will only run the "css" module tests. This will significantly speed up your
 
 Remember that jQuery supports multiple browsers and their versions; any contributed code must work in all of them. You can refer to the [browser support page](http://jquery.com/browser-support/) for the current list of supported browsers.
 
-Note that browser support differs depending on whether you are targeting the `master` or `1.x-master` branch.
+Note that browser support differs depending on whether you are targeting the `master` or `compat` branch.
