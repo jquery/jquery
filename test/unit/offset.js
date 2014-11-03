@@ -182,16 +182,13 @@ testIframe("offset/absolute", "absolute", function( $ ) {
 testIframe("offset/relative", "relative", function( $ ) {
 	expect(60);
 
-	var ie, tests;
-
-	// IE is collapsing the top margin of 1px; detect and adjust accordingly
-	ie = $("#relative-1").offset().top === 6;
+	var tests;
 
 	// get offset
 	tests = [
-		{ "id": "#relative-1",   "top": ie ?   6 :   7, "left":  7 },
-		{ "id": "#relative-1-1", "top": ie ?  13 :  15, "left": 15 },
-		{ "id": "#relative-2",   "top": ie ? 141 : 142, "left": 27 }
+		{ "id": "#relative-1",   "top":   7, "left":  7 },
+		{ "id": "#relative-1-1", "top":  15, "left": 15 },
+		{ "id": "#relative-2",   "top": 142, "left": 27 }
 	];
 	jQuery.each( tests, function() {
 		equal( $( this["id"] ).offset().top,  this["top"],  "jQuery('" + this["id"] + "').offset().top" );
@@ -201,9 +198,9 @@ testIframe("offset/relative", "relative", function( $ ) {
 
 	// get position
 	tests = [
-		{ "id": "#relative-1",   "top": ie ?   5 :   6, "left":  6 },
-		{ "id": "#relative-1-1", "top": ie ?   4 :   5, "left":  5 },
-		{ "id": "#relative-2",   "top": ie ? 140 : 141, "left": 26 }
+		{ "id": "#relative-1",   "top":   6, "left":  6 },
+		{ "id": "#relative-1-1", "top":   5, "left":  5 },
+		{ "id": "#relative-2",   "top": 141, "left": 26 }
 	];
 	jQuery.each( tests, function() {
 		equal( $( this["id"] ).position().top,  this["top"],  "jQuery('" + this["id"] + "').position().top" );
@@ -245,17 +242,14 @@ testIframe("offset/relative", "relative", function( $ ) {
 testIframe("offset/static", "static", function( $ ) {
 	expect( 80 );
 
-	var ie, tests;
-
-	// IE is collapsing the top margin of 1px; detect and adjust accordingly
-	ie = $("#static-1").offset().top === 6;
+	var tests;
 
 	// get offset
 	tests = [
-		{ "id": "#static-1",     "top": ie ?   6 :   7, "left":  7 },
-		{ "id": "#static-1-1",   "top": ie ?  13 :  15, "left": 15 },
-		{ "id": "#static-1-1-1", "top": ie ?  20 :  23, "left": 23 },
-		{ "id": "#static-2", "top": ie ? 121 : 122, left: 7 }
+		{ "id": "#static-1",     "top":  7, "left":  7 },
+		{ "id": "#static-1-1",   "top": 15, "left": 15 },
+		{ "id": "#static-1-1-1", "top": 23, "left": 23 },
+		{ "id": "#static-2", "top": 122, left: 7 }
 	];
 	jQuery.each( tests, function() {
 		equal( $( this["id"] ).offset().top,  this["top"],  "jQuery('" + this["id"] + "').offset().top" );
@@ -265,10 +259,10 @@ testIframe("offset/static", "static", function( $ ) {
 
 	// get position
 	tests = [
-		{ "id": "#static-1",     "top": ie ?   5 :   6, "left":  6 },
-		{ "id": "#static-1-1",   "top": ie ?  12 :  14, "left": 14 },
-		{ "id": "#static-1-1-1", "top": ie ?  19 :  22, "left": 22 },
-		{ "id": "#static-2", "top": ie ? 120 : 121, "left": 6 }
+		{ "id": "#static-1",     "top":  6, "left":  6 },
+		{ "id": "#static-1-1",   "top": 14, "left": 14 },
+		{ "id": "#static-1-1-1", "top": 22, "left": 22 },
+		{ "id": "#static-2", "top": 121, "left": 6 }
 	];
 	jQuery.each( tests, function() {
 		equal( $( this["id"] ).position().top,  this["top"],  "jQuery('" + this["top"]  + "').position().top" );
@@ -314,25 +308,22 @@ testIframe("offset/static", "static", function( $ ) {
 testIframe("offset/fixed", "fixed", function( $ ) {
 	expect(34);
 
-	var ie, tests, $noTopLeft;
-
-	// IE is collapsing the top margin of 1px; detect and adjust accordingly
-	ie = $("#fixed-1").position().top === 2;
+	var tests, $noTopLeft;
 
 	tests = [
 		{
 			"id": "#fixed-1",
 			"offsetTop": 1001,
 			"offsetLeft": 1001,
-			"positionTop": ie ? 2 : 0,
-			"positionLeft": ie ? 2 : 0
+			"positionTop": 0,
+			"positionLeft": 0
 		},
 		{
 			"id": "#fixed-2",
 			"offsetTop": 1021,
 			"offsetLeft": 1021,
-			"positionTop": ie ? 22 : 20,
-			"positionLeft": ie ? 22 : 20
+			"positionTop": 20,
+			"positionLeft": 20
 		}
 	];
 
@@ -415,7 +406,7 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 	expect(24);
 
 	// If we're going to bastardize the tests, let's just DO it
-	var ie = /msie [678]/i.test( navigator.userAgent );
+	var ie = /msie 8/i.test( navigator.userAgent );
 
 	if ( ie ) {
 		ok( true, "TestSwarm's iframe has hosed this test in oldIE, we surrender" );

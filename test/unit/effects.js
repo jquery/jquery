@@ -47,7 +47,7 @@ test("show() basic", 2, function() {
 });
 
 test("show()", 27, function () {
-	var div, speeds, old, test,
+	var div, speeds, test,
 		displaysActual, displaysExpected,
 		hiddendiv = jQuery("div.hidden");
 
@@ -97,10 +97,7 @@ test("show()", 27, function () {
 	QUnit.expectJqData( this, div, "olddisplay" );
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
-
-	old = jQuery("#test-table").show().css("display") !== "table";
-	jQuery("#test-table").remove();
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>");
 
 	test = {
 		"div"      : "block",
@@ -109,14 +106,14 @@ test("show()", 27, function () {
 		"code"     : "inline",
 		"pre"      : "block",
 		"span"     : "inline",
-		"table"    : old ? "block" : "table",
-		"thead"    : old ? "block" : "table-header-group",
-		"tbody"    : old ? "block" : "table-row-group",
-		"tr"       : old ? "block" : "table-row",
-		"th"       : old ? "block" : "table-cell",
-		"td"       : old ? "block" : "table-cell",
+		"table"    : "table",
+		"thead"    : "table-header-group",
+		"tbody"    : "table-row-group",
+		"tr"       : "table-row",
+		"th"       : "table-cell",
+		"td"       : "table-cell",
 		"ul"       : "block",
-		"li"       : old ? "block" : "list-item"
+		"li"       : "list-item"
 	};
 
 	jQuery.each(test, function(selector, expected) {
@@ -136,31 +133,27 @@ test("show(Number) - other displays", function() {
 
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
-
-	var test,
-		old = jQuery("#test-table").show().css("display") !== "table";
-	jQuery("#test-table").remove();
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>");
 
 	// Note: inline elements are expected to be inline-block
 	// because we're showing width/height
 	// Can't animate width/height inline
 	// See #14344
-	test = {
+	var test = {
 		"div"      : "block",
 		"p"        : "block",
 		"a"        : "inline-block",
 		"code"     : "inline-block",
 		"pre"      : "block",
 		"span"     : "inline-block",
-		"table"    : old ? "block" : "table",
-		"thead"    : old ? "block" : "table-header-group",
-		"tbody"    : old ? "block" : "table-row-group",
-		"tr"       : old ? "block" : "table-row",
-		"th"       : old ? "block" : "table-cell",
-		"td"       : old ? "block" : "table-cell",
+		"table"    : "table",
+		"thead"    : "table-header-group",
+		"tbody"    : "table-row-group",
+		"tr"       : "table-row",
+		"th"       : "table-cell",
+		"td"       : "table-cell",
 		"ul"       : "block",
-		"li"       : old ? "block" : "list-item"
+		"li"       : "list-item"
 	};
 
 	jQuery.each(test, function(selector, expected) {
@@ -289,52 +282,35 @@ test("animate negative padding", function() {
 test("animate block as inline width/height", function() {
 	expect(3);
 
-	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
-		expected = span.css("display");
+	var span = jQuery("<span>").css("display", "inline-block").appendTo("body");
 
 	span.remove();
 
-	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
+	jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
+		equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+		equal( this.offsetWidth, 42, "width was animated" );
+		equal( this.offsetHeight, 42, "height was animated" );
+	});
 
-		jQuery("#foo").css({ display: "inline", width: "", height: "" }).animate({ width: 42, height: 42 }, 100, function() {
-			equal( jQuery(this).css("display"), jQuery.support.inlineBlockNeedsLayout ? "inline" : "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-			equal( this.offsetWidth, 42, "width was animated" );
-			equal( this.offsetHeight, 42, "height was animated" );
-		});
-
-	// Browser doesn't support inline-block
-	} else {
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-	}
 	this.clock.tick( 100 );
 });
 
 test("animate native inline width/height", function() {
 	expect(3);
 
-	var span = jQuery("<span>").css("display", "inline-block").appendTo("body"),
-		expected = span.css("display");
+	var span = jQuery("<span>").css("display", "inline-block").appendTo("body");
 
 	span.remove();
 
-	if ( jQuery.support.inlineBlockNeedsLayout || expected === "inline-block" ) {
-		jQuery("#foo").css({ display: "", width: "", height: "" })
-			.append("<span>text</span>")
-			.children("span")
-				.animate({ width: 42, height: 42 }, 100, function() {
-					equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
-					equal( this.offsetWidth, 42, "width was animated" );
-					equal( this.offsetHeight, 42, "height was animated" );
-				});
+	jQuery("#foo").css({ display: "", width: "", height: "" })
+		.append("<span>text</span>")
+		.children("span")
+			.animate({ width: 42, height: 42 }, 100, function() {
+				equal( jQuery(this).css("display"), "inline-block", "inline-block was set on non-floated inline element when animating width/height" );
+				equal( this.offsetWidth, 42, "width was animated" );
+				equal( this.offsetHeight, 42, "height was animated" );
+			});
 
-	// Browser doesn't support inline-block
-	} else {
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-		ok( true, "Browser doesn't support inline-block" );
-	}
 	this.clock.tick( 100 );
 });
 
@@ -365,30 +341,24 @@ test( "animate block width/height", function() {
 	this.clock.tick( 100 );
 });
 
-test("animate table width/height", function() {
+test( "animate table width/height", function() {
 	expect(1);
 
-	var displayMode = jQuery("#table").css("display") !== "table" ? "block" : "table";
-
-	jQuery("#table").animate({ width: 42, height: 42 }, 100, function() {
-		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+	jQuery( "#table" ).animate({ width: 42, height: 42 }, 100, function() {
+		equal( jQuery( this ).css( "display" ), "table", "display mode is correct" );
 	});
 	this.clock.tick( 100 );
 });
 
 test("animate table-row width/height", function() {
 	expect(3);
-	var displayMode,
-		tr = jQuery("#table")
+	var tr = jQuery("#table")
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
 			.html("<tr style='height:42px;'><td style='padding:0;'><div style='width:20px;height:20px;'></div></td></tr>")
 			.find("tr");
 
-	// IE<8 uses "block" instead of the correct display type
-	displayMode = tr.css("display") !== "table-row" ? "block" : "table-row";
-
 	tr.animate({ width: 10, height: 10 }, 100, function() {
-		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( jQuery( this ).css( "display" ), "table-row", "display mode is correct" );
 		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
 		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 	});
@@ -398,17 +368,13 @@ test("animate table-row width/height", function() {
 test("animate table-cell width/height", function() {
 	expect(3);
 
-	var displayMode,
-		td = jQuery( "#table" )
+	var td = jQuery( "#table" )
 			.attr({ "cellspacing": 0, "cellpadding": 0, "border": 0 })
 			.html( "<tr><td style='width:42px;height:42px;padding:0;'><div style='width:20px;height:20px;'></div></td></tr>" )
 			.find( "td" );
 
-	// IE<8 uses "block" instead of the correct display type
-	displayMode = td.css( "display" ) !== "table-cell" ? "block" : "table-cell";
-
 	td.animate({ width: 10, height: 10 }, 100, function() {
-		equal( jQuery(this).css("display"), displayMode, "display mode is correct" );
+		equal( jQuery( this ).css( "display" ), "table-cell", "display mode is correct" );
 		equal( this.offsetWidth, 20, "width animated to shrink wrap point" );
 		equal( this.offsetHeight, 20, "height animated to shrink wrap point" );
 	});
@@ -1050,11 +1016,10 @@ jQuery.each({
 
 test("Effects chaining", function() {
 	var remaining = 16,
-		shrinkwrap = jQuery.support.shrinkWrapBlocks(),
 		props = [ "opacity", "height", "width", "display", "overflow" ],
-		setup = function( name, selector, hiddenOverflow ) {
+		setup = function( name, selector ) {
 			var $el = jQuery( selector );
-			return $el.data( getProps( $el[0], hiddenOverflow ) ).data( "name", name );
+			return $el.data( getProps( $el[0] ) ).data( "name", name );
 		},
 		assert = function() {
 			var data = jQuery.data( this ),
@@ -1075,21 +1040,19 @@ test("Effects chaining", function() {
 
 	expect( remaining );
 
-	// We need to pass jQuery.support.shrinkWrapBlocks for all methods that
-	// set overflow hidden (slide* and show/hide with speed)
 	setup( ".fadeOut().fadeIn()", "#fadein div" ).fadeOut("fast").fadeIn( "fast", assert );
 	setup( ".fadeIn().fadeOut()", "#fadeout div" ).fadeIn("fast").fadeOut( "fast", assert );
-	setup( ".hide().show()", "#show div",  shrinkwrap ).hide("fast").show( "fast", assert );
-	setup( ".show().hide()", "#hide div",  shrinkwrap ).show("fast").hide( "fast", assert );
-	setup( ".show().hide(easing)", "#easehide div", shrinkwrap ).show("fast").hide( "fast", "linear", assert );
-	setup( ".toggle().toggle() - in", "#togglein div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle() - out", "#toggleout div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle(easing) - out", "#easetoggleout div", shrinkwrap ).toggle("fast").toggle( "fast", "linear", assert );
-	setup( ".slideDown().slideUp()", "#slidedown div", shrinkwrap ).slideDown("fast").slideUp( "fast", assert );
-	setup( ".slideUp().slideDown()", "#slideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", assert );
-	setup( ".slideUp().slideDown(easing)", "#easeslideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", "linear", assert );
-	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
-	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".hide().show()", "#show div" ).hide("fast").show( "fast", assert );
+	setup( ".show().hide()", "#hide div" ).show("fast").hide( "fast", assert );
+	setup( ".show().hide(easing)", "#easehide div" ).show("fast").hide( "fast", "linear", assert );
+	setup( ".toggle().toggle() - in", "#togglein div" ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle() - out", "#toggleout div" ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle(easing) - out", "#easetoggleout div" ).toggle("fast").toggle( "fast", "linear", assert );
+	setup( ".slideDown().slideUp()", "#slidedown div" ).slideDown("fast").slideUp( "fast", assert );
+	setup( ".slideUp().slideDown()", "#slideup div" ).slideUp("fast").slideDown( "fast", assert );
+	setup( ".slideUp().slideDown(easing)", "#easeslideup div" ).slideUp("fast").slideDown( "fast", "linear", assert );
+	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div" ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div" ).slideToggle("fast").slideToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - in", "#fadetogglein div" ).fadeToggle("fast").fadeToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - out", "#fadetoggleout div" ).fadeToggle("fast").fadeToggle( "fast", assert );
 	setup( ".fadeTo(0.5).fadeTo(1.0, easing)", "#fadeto div" ).fadeTo( "fast", 0.5 ).fadeTo( "fast", 1.0, "linear", assert );
@@ -1912,12 +1875,8 @@ test( "Animate properly sets overflow hidden when animating width/height (#12117
 			equal( div.css( "overflow" ), "hidden",
 				"overflow: hidden set when animating " + prop + " to " + value );
 			div.stop();
-			if ( jQuery.support.shrinkWrapBlocks ) {
-				ok( true, "cannot restore overflow, shrinkWrapBlocks" );
-			} else {
-				equal( div.css( "overflow" ), "auto",
-					"overflow: auto restored after animating " + prop + " to " + value );
-			}
+			equal( div.css( "overflow" ), "auto",
+				"overflow: auto restored after animating " + prop + " to " + value );
 		});
 	});
 });

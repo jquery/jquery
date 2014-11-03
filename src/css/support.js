@@ -33,11 +33,6 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	// Support: Firefox<29, Android 2.3
-	// Vendor-prefix box-sizing
-	support.boxSizing = style.boxSizing === "" || style.MozBoxSizing === "" ||
-		style.WebkitBoxSizing === "";
-
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
 			if ( reliableHiddenOffsetsVal == null ) {
@@ -71,9 +66,9 @@ define([
 
 	function computeStyleTests() {
 		// Minified: var b,c,d,j
-		var div, body, container, contents;
+		var div, container, contents,
+			body = document.body;
 
-		body = document.getElementsByTagName( "body" )[ 0 ];
 		if ( !body || !body.style ) {
 			// Test fired too early or in an unsupported environment, exit.
 			return;
@@ -86,10 +81,10 @@ define([
 		body.appendChild( container ).appendChild( div );
 
 		div.style.cssText =
-			// Support: Firefox<29, Android 2.3
+			// Support: Android 2.3
 			// Vendor-prefix box-sizing
-			"-webkit-box-sizing:border-box;-moz-box-sizing:border-box;" +
-			"box-sizing:border-box;display:block;margin-top:1%;top:1%;" +
+			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
+			"display:block;margin-top:1%;top:1%;" +
 			"border:1px;padding:1px;width:4px;position:absolute";
 
 		// Support: IE<9
@@ -111,10 +106,10 @@ define([
 
 			// Reset CSS: box-sizing; display; margin; border; padding
 			contents.style.cssText = div.style.cssText =
-				// Support: Firefox<29, Android 2.3
+				// Support: Android 2.3
 				// Vendor-prefix box-sizing
-				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
-				"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
+				"-webkit-box-sizing:content-box;box-sizing:content-box;" +
+				"display:block;margin:0;border:0;padding:0";
 			contents.style.marginRight = contents.style.width = "0";
 			div.style.width = "1px";
 
@@ -124,7 +119,7 @@ define([
 			div.removeChild( contents );
 		}
 
-		// Support: IE8
+		// Support: IE<9
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
 		// table row; if so, offsetWidth/Height are not reliable for use when

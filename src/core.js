@@ -285,9 +285,7 @@ jQuery.extend({
 
 		script.text = data;
 
-		// Support: IE6
-		// Circumvent bugs with base elements (#2709 and #4378) by prepending
-		head.insertBefore( script, head.firstChild );
+		head.appendChild( script );
 		head.removeChild( script );
 	},
 

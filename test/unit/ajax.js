@@ -1014,9 +1014,7 @@ module( "ajax", {
 			" (no cache)": false
 		},
 		function( label, cache ) {
-			var isOpera = !!window.opera;
-
-			asyncTest( "jQuery.ajax() - If-Modified-Since support" + label, 3, function() {
+			asyncTest( "jQuery.ajax() - If-Modified-Since support" + label, 4, function() {
 				var url = "data/if_modified_since.php?ts=" + ifModifiedNow++;
 
 				jQuery.ajax({
@@ -1030,33 +1028,15 @@ module( "ajax", {
 							url: url,
 							ifModified: true,
 							cache: cache,
-							success: function( data, status ) {
-								if ( data === "FAIL" ) {
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-Modified-Since')." );
-								} else {
-									strictEqual( status, "notmodified" );
-									ok( data == null, "response body should be empty" );
-								}
-								start();
+							success: function( data, status, jqXHR ) {
+								strictEqual( status, "notmodified", "Following status is 'notmodified'" );
+								strictEqual( jqXHR.status, 304, "XHR status is 304" );
+								equal( data, null, "no response body is given" );
 							},
-							error: function() {
-								// Do this because opera simply refuses to implement 304 handling :(
-								// A feature-driven way of detecting this would be appreciated
-								// See: http://gist.github.com/599419
-								ok( isOpera, "error" );
-								ok( isOpera, "error" );
+							complete: function() {
 								start();
 							}
 						});
-					},
-					error: function() {
-						strictEqual( false, "error" );
-						// Do this because opera simply refuses to implement 304 handling :(
-						// A feature-driven way of detecting this would be appreciated
-						// See: http://gist.github.com/599419
-						ok( isOpera, "error" );
-						start();
 					}
 				});
 			});
@@ -1076,31 +1056,13 @@ module( "ajax", {
 							ifModified: true,
 							cache: cache,
 							success: function( data, status ) {
-								if ( data === "FAIL" ) {
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match')." );
-									ok( isOpera, "Opera is incapable of doing .setRequestHeader('If-None-Match')." );
-								} else {
-									strictEqual( status, "notmodified" );
-									ok( data == null, "response body should be empty" );
-								}
-								start();
+								strictEqual( status, "notmodified" );
+								ok( data == null, "response body should be empty" );
 							},
-							error: function() {
-								// Do this because opera simply refuses to implement 304 handling :(
-								// A feature-driven way of detecting this would be appreciated
-								// See: http://gist.github.com/599419
-								ok( isOpera, "error" );
-								ok( isOpera, "error" );
+							complete: function() {
 								start();
 							}
 						});
-					},
-					error: function() {
-						// Do this because opera simply refuses to implement 304 handling :(
-						// A feature-driven way of detecting this would be appreciated
-						// See: http://gist.github.com/599419
-						ok( isOpera, "error" );
-						start();
 					}
 				});
 			});

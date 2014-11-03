@@ -231,8 +231,6 @@ test("css(String, Object)", function() {
 	j = jQuery("#nonnodes").contents();
 	j.css("overflow", "visible");
 	equal( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
-	// opera sometimes doesn't update 'display' correctly, see #2037
-	jQuery("#t2037")[0].innerHTML = jQuery("#t2037")[0].innerHTML;
 	equal( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
 
 	div = jQuery("#nothiddendiv");
@@ -297,11 +295,7 @@ if ( !jQuery.support.opacity ) {
 			test2 = test.find( "div" ).css( "opacity", 1 );
 
 		function hasFilter( elem ) {
-			var match = rfilter.exec( elem[0].style.cssText );
-			if ( match ) {
-				return true;
-			}
-			return false;
+			return !!rfilter.exec( elem[0].style.cssText );
 		}
 		expect( 2 );
 		ok( !hasFilter( test ), "Removed filter attribute on element without filter in stylesheet" );
@@ -455,7 +449,7 @@ test("show();", function() {
 
 	expect( 18 );
 
-	var hiddendiv, div, pass, old, test;
+	var hiddendiv, div, pass, test;
 	hiddendiv = jQuery("div.hidden");
 
 	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
@@ -478,10 +472,7 @@ test("show();", function() {
 	ok( pass, "Show" );
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
-
-	old = jQuery("#test-table").show().css("display") !== "table";
-	jQuery("#test-table").remove();
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div>");
 
 	test = {
 		"div"      : "block",
@@ -490,14 +481,14 @@ test("show();", function() {
 		"code"     : "inline",
 		"pre"      : "block",
 		"span"     : "inline",
-		"table"    : old ? "block" : "table",
-		"thead"    : old ? "block" : "table-header-group",
-		"tbody"    : old ? "block" : "table-row-group",
-		"tr"       : old ? "block" : "table-row",
-		"th"       : old ? "block" : "table-cell",
-		"td"       : old ? "block" : "table-cell",
+		"table"    : "table",
+		"thead"    : "table-header-group",
+		"tbody"    : "table-row-group",
+		"tr"       : "table-row",
+		"th"       : "table-cell",
+		"td"       : "table-cell",
 		"ul"       : "block",
-		"li"       : old ? "block" : "list-item"
+		"li"       : "list-item"
 	};
 
 	jQuery.each(test, function(selector, expected) {
@@ -848,8 +839,8 @@ test("Do not append px (#9548, #12990)", function() {
 test("css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
 
-	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
-	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
+	// Support: Android 2.3 (-webkit-box-sizing).
+	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
 		el = el_dis.clone().appendTo("#qunit-fixture");
 
 	equal( el.css("width"), el.css("width", el.css("width")).css("width"), "css('width') is not respecting box-sizing, see #11004");
@@ -930,13 +921,13 @@ test( "css opacity consistency across browsers (#12685)", function() {
 		fixture = jQuery("#qunit-fixture");
 
 	// Append style element
-	jQuery("<style>.opacityWithSpaces_t12685 { opacity: 0.1; filter: alpha(opacity = 10); } .opacityNoSpaces_t12685 { opacity: 0.2; filter: alpha(opacity=20); }</style>").appendTo( fixture );
+	jQuery("<style>.opacityWithSpaces_t12685 { opacity: 0.1; -ms-filter: 'alpha(opacity = 10)'; } .opacityNoSpaces_t12685 { opacity: 0.2; -ms-filter: 'alpha(opacity=20)'; }</style>").appendTo( fixture );
 
 	el = jQuery("<div class='opacityWithSpaces_t12685'></div>").appendTo(fixture);
 
-	equal( Math.round( el.css("opacity") * 100 ), 10, "opacity from style sheet (filter:alpha with spaces)" );
+	equal( Math.round( el.css("opacity") * 100 ), 10, "opacity from style sheet (-ms-filter:alpha with spaces)" );
 	el.removeClass("opacityWithSpaces_t12685").addClass("opacityNoSpaces_t12685");
-	equal( Math.round( el.css("opacity") * 100 ), 20, "opacity from style sheet (filter:alpha without spaces)" );
+	equal( Math.round( el.css("opacity") * 100 ), 20, "opacity from style sheet (-ms-filter:alpha without spaces)" );
 	el.css( "opacity", 0.3 );
 	equal( Math.round( el.css("opacity") * 100 ), 30, "override opacity" );
 	el.css( "opacity", "" );

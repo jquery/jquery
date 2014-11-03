@@ -77,8 +77,7 @@ function testText( valueObj ) {
 	equal( jQuery( j[ 0 ] ).text(), "hi!", "Check node,textnode,comment with text()" );
 	equal( j[ 1 ].nodeValue, " there ", "Check node,textnode,comment with text()" );
 
-	// Blackberry 4.6 doesn't maintain comments in the DOM
-	equal( jQuery("#nonnodes")[ 0 ].childNodes.length < 3 ? 8 : j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
+	equal( j[ 2 ].nodeType, 8, "Check node,textnode,comment with text()" );
 
 	// Update multiple elements #11809
 	expected = "New";

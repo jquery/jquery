@@ -7,13 +7,13 @@ define([
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
 jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
-	// Support: IE6+
+	// Support: IE8
 	function() {
 
 		// XHR cannot access local files, always use ActiveX for that case
 		return !this.isLocal &&
 
-			// Support: IE7-8
+			// Support: IE<9
 			// oldIE XHR does not support non-RFC2616 methods (#13240)
 			// See http://msdn.microsoft.com/en-us/library/ie/ms536648(v=vs.85).aspx
 			// and http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
@@ -167,10 +167,6 @@ if ( xhrSupported ) {
 					if ( !options.async ) {
 						// if we're in sync mode we fire the callback
 						callback();
-					} else if ( xhr.readyState === 4 ) {
-						// (IE6 & IE7) if it's in cache and has been
-						// retrieved directly we need to fire the callback
-						setTimeout( callback );
 					} else {
 						// Add to the list of active xhr callbacks
 						xhr.onreadystatechange = xhrCallbacks[ id ] = callback;

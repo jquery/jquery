@@ -408,15 +408,7 @@ test("on bubbling, isDefaultPrevented, stopImmediatePropagation", function() {
 		e.preventDefault();
 	});
 	$main.on("click", "#foo", function(e) {
-		var orig = e.originalEvent;
-
-		if ( typeof(orig.defaultPrevented) === "boolean" || typeof(orig.returnValue) === "boolean" || orig["getPreventDefault"] ) {
-			equal( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
-
-		} else {
-			// Opera < 11 doesn't implement any interface we can use, so give it a pass
-			ok( true, "isDefaultPrevented not supported by this browser, test skipped" );
-		}
+		equal( e.isDefaultPrevented(), true, "isDefaultPrevented true passed to bubbled event" );
 	});
 	fakeClick( $anchor2 );
 	$anchor2.off( "click" );
@@ -1432,7 +1424,7 @@ test("Submit event can be stopped (#11049)", function() {
 	form.remove();
 });
 
-// Test beforeunload event only if it supported (i.e. not Opera)
+// Test beforeunload event only if it supported.
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
@@ -1440,7 +1432,6 @@ if ( window.onbeforeunload === null &&
 	!/(ipad|iphone|ipod|android 2\.3)/i.test( navigator.userAgent ) ) {
 	asyncTest("on(beforeunload)", 4, function() {
 		var win,
-			forIE6 = 0,
 			fired = false,
 			iframe = jQuery("<iframe src='data/iframe.html' />");
 
@@ -1454,33 +1445,7 @@ if ( window.onbeforeunload === null &&
 
 			strictEqual( win.onbeforeunload, null, "onbeforeunload property on window object still equals null" );
 
-			// In old Safari beforeunload event will not fire on iframes
-			jQuery( win ).on( "unload", function() {
-				if ( !fired ) {
-					ok( true, "This is suppose to be true only in old Safari" );
-					checker();
-				}
-			});
-
-			jQuery( win ).on( "beforeunload", function() {
-
-				// On iframe in IE6 beforeunload event will not fire if event is binded through window object,
-				// nevertheless, test should continue
-				window.setTimeout(function() {
-					if ( !forIE6 ) {
-						checker();
-					}
-				});
-			});
-
 			win.onbeforeunload = function() {
-				if ( !forIE6 ) {
-					forIE6++;
-					checker();
-				}
-			};
-
-			function checker() {
 				ok( true, "window.onbeforeunload handler is called" );
 				iframe = jQuery("<iframe src='data/iframe.html' />");
 
@@ -1503,7 +1468,7 @@ if ( window.onbeforeunload === null &&
 
 					win.location.reload();
 				});
-			}
+			};
 
 			win.location.reload();
 		});
@@ -2519,32 +2484,26 @@ testIframeWithCallback( "focusin from an iframe", "event/focusinCrossFrame.html"
 
 	var input = jQuery( frameDoc ).find( "#frame-input" );
 
-	if ( input.length ) {
-		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-		jQuery ( "body" ).on( "focusin.iframeTest", function() {
-			ok( false, "fired a focusin event in the parent document" );
-		});
+	// Create a focusin handler on the parent; shouldn't affect the iframe's fate
+	jQuery ( "body" ).on( "focusin.iframeTest", function() {
+		ok( false, "fired a focusin event in the parent document" );
+	});
 
-		input.on( "focusin", function() {
-			ok( true, "fired a focusin event in the iframe" );
-		});
+	input.on( "focusin", function() {
+		ok( true, "fired a focusin event in the iframe" );
+	});
 
-		// Avoid a native event; Chrome can't force focus to another frame
-		input.trigger( "focusin" );
+	// Avoid a native event; Chrome can't force focus to another frame
+	input.trigger( "focusin" );
 
-		// Must manually remove handler to avoid leaks in our data store
-		input.remove();
+	// Must manually remove handler to avoid leaks in our data store
+	input.remove();
 
-		// Be sure it was removed; nothing should happen
-		input.trigger( "focusin" );
+	// Be sure it was removed; nothing should happen
+	input.trigger( "focusin" );
 
-		// Remove body handler manually since it's outside the fixture
-		jQuery( "body" ).off( "focusin.iframeTest" );
-
-	} else {
-		// Opera 12 (pre-Blink) doesn't select anything
-		ok( true, "SOFTFAIL: no focus event fired in the iframe" );
-	}
+	// Remove body handler manually since it's outside the fixture
+	jQuery( "body" ).off( "focusin.iframeTest" );
 });
 
 testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
@@ -2749,7 +2708,8 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 			$text = jQuery("#text1"),
 			$radio = jQuery("#radio1").trigger("focus");
 
-		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+		// Support: IE<11
+		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
 		stop();
 		$radio[0].focus();

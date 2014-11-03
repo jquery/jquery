@@ -46,10 +46,6 @@ test( "jQuery.propFix integrity test", function() {
 		"contenteditable": "contentEditable"
 	};
 
-	if ( !jQuery.support.enctype ) {
-		props.enctype = "encoding";
-	}
-
 	deepEqual( props, jQuery.propFix, "jQuery.propFix passes integrity check" );
 });
 
@@ -594,8 +590,7 @@ test( "removeAttr(String)", function() {
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
-	// IE 6/7 return empty string here, not undefined
-	ok( !$first.attr("Case"), "mixed-case attribute was removed" );
+	equal( $first.attr("Case"), undefined, "mixed-case attribute was removed" );
 });
 
 test( "removeAttr(String) in XML", function() {
