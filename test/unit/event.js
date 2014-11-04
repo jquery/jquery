@@ -2655,7 +2655,7 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 			$text = jQuery("#text1"),
 			$radio = jQuery("#radio1").trigger("focus");
 
-		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
 		stop();
 		$radio[0].focus();
