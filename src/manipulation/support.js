@@ -7,10 +7,13 @@ define([
 		div = fragment.appendChild( document.createElement( "div" ) ),
 		input = document.createElement( "input" );
 
+	// Support: Android 4.0-4.3
+	// Check state lost if the name is set (#11217)
 	// Support: Windows Web Apps (WWA)
 	// `name` and `type` must use .setAttribute for WWA (#14901)
 	input.setAttribute( "type", "radio" );
 	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "name", "t" );
 
 	div.appendChild( input );
 
