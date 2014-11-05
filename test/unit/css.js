@@ -1152,17 +1152,14 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 	}
 });
 
-// Only test in IE8
-(function() {
-	if ( !jQuery.support.opacity ) {
-		test( "get upper case alpha opacity in IE8", 1, function() {
-			var div = document.createElement("div");
-			div.className = "fix-get-alpha-opacity-in-ie8";
-			document.body.appendChild( div );
-			equal( jQuery(div).css("opacity"), "0.5", "get upper case alpha opacity in IE8 ok" );
-			document.body.removeChild( div );
-		});
-	}
-})();
+if ( !jQuery.support.opacity ) {
+	test( "get upper case alpha opacity in IE8", 1, function() {
+		var div = document.createElement("div");
+		div.className = "fix-get-alpha-opacity-in-ie8";
+		document.body.appendChild( div );
+		equal( jQuery(div).css("opacity"), "0.5", "get upper case alpha opacity in IE8 ok" );
+		document.body.removeChild( div );
+	});
+}
 
 }
