@@ -3,11 +3,13 @@ define([
 	"./var/rnumnonpx",
 	"./var/rmargin",
 	"./var/getStyles",
+	"./support",
 	"../selector" // contains
-], function( jQuery, rnumnonpx, rmargin, getStyles ) {
+], function( jQuery, rnumnonpx, rmargin, getStyles, support ) {
 
 function curCSS( elem, name, computed ) {
-	var ret;
+	var width, minWidth, maxWidth, ret,
+		style = elem.style;
 
 	computed = computed || getStyles( elem );
 
@@ -21,6 +23,29 @@ function curCSS( elem, name, computed ) {
 
 		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 			ret = jQuery.style( elem, name );
+		}
+
+		// Support: Android 4.0-4.3
+		// A tribute to the "awesome hack by Dean Edwards"
+		// Android Browser returns percentage for some values,
+		// but width seems to be reliably pixels.
+		// This is against the CSSOM draft spec:
+		// http://dev.w3.org/csswg/cssom/#resolved-values
+		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+
+			// Remember the original values
+			width = style.width;
+			minWidth = style.minWidth;
+			maxWidth = style.maxWidth;
+
+			// Put in the new values to get a computed value out
+			style.minWidth = style.maxWidth = style.width = ret;
+			ret = computed.width;
+
+			// Revert the changed values
+			style.width = width;
+			style.minWidth = minWidth;
+			style.maxWidth = maxWidth;
 		}
 	}
 

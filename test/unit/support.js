@@ -66,6 +66,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -83,6 +84,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": false,
 			"optDisabled": true,
 			"optSelected": false,
+			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
 			"reliableMarginRight": true
@@ -100,6 +102,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": false,
 			"optDisabled": true,
 			"optSelected": false,
+			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
 			"reliableMarginRight": true
@@ -117,6 +120,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -134,6 +138,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -151,6 +156,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -168,6 +174,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -185,6 +192,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -202,6 +210,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": false,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": true
@@ -219,6 +228,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"noCloneChecked": true,
 			"optDisabled": false,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginRight": false

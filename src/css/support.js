@@ -6,7 +6,7 @@ define([
 ], function( jQuery, document, documentElement, support ) {
 
 (function() {
-	var pixelPositionVal, boxSizingReliableVal,
+	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -20,7 +20,7 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;" +
+	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;margin-top:1px;" +
 		"position:absolute";
 	container.appendChild( div );
 
@@ -60,6 +60,16 @@ define([
 					computePixelPositionAndBoxSizingReliable();
 				}
 				return boxSizingReliableVal;
+			},
+			pixelMarginRight: function() {
+				if ( pixelMarginRightVal == null ) {
+					div.style.cssText = "display:block;width:50%;margin-right:50%";
+					documentElement.appendChild( container );
+					pixelMarginRightVal =
+						window.getComputedStyle( div, null ).marginRight === "4px";
+					documentElement.removeChild( container );
+				}
+				return pixelMarginRightVal;
 			},
 			reliableMarginRight: function() {
 
