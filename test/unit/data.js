@@ -144,7 +144,7 @@ test("jQuery.data({})", 25, function() {
 test("jQuery.data(window)", 25, function() {
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
-	jQuery( window ).off( "unload" );
+	jQuery( window ).off( "unload" );
 
 	dataTests( window );
 });
