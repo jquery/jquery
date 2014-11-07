@@ -1153,11 +1153,15 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 });
 
 test( "get upper case alpha opacity in IE8", 1, function() {
-	var div = document.createElement( "div" );
+	var div = document.createElement( "div" ),
+		fixture = document.getElementById( "qunit-fixture" );
+
 	div.className = "fix-get-alpha-opacity-in-ie8";
-	document.body.appendChild( div );
+	fixture.appendChild( div );
+
 	equal( jQuery( div ).css( "opacity" ), "0.5", "get upper case alpha opacity in IE8 ok" );
-	document.body.removeChild( div );
+
+	fixture.removeChild( div );
 });
 
 }
