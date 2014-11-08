@@ -1343,6 +1343,23 @@ test("jQuery.parseHTML", function() {
 	equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 });
 
+// This XSS test is optional, as it will only pass when `document.implementation.createHTMLDocument`
+// is implemented. It is not available in IE8 and below and might not be for older Android
+// browsers (<= 2.x) either.
+if ( jQuery.isFunction( document.implementation.createHTMLDocument ) ) {
+	asyncTest("jQuery.parseHTML", function() {
+		expect ( 1 );
+
+		window.parseHTMLError = false;
+		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
+
+		window.setTimeout(function() {
+			start();
+			equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+		}, 2000);
+	});
+}
+
 test("jQuery.parseJSON", function() {
 	expect( 20 );
 
