@@ -181,7 +181,7 @@ module.exports = function( grunt ) {
 						// Check removeWith list
 						excludeList( removeWith[ module ] );
 					} else {
-						grunt.log.error( "Module \"" + module + "\" is a mimimum requirement.");
+						grunt.log.error( "Module \"" + module + "\" is a minimum requirement.");
 					}
 				} else {
 					grunt.log.writeln( flag );
