@@ -39,7 +39,12 @@ if ( jQuery.css ) {
 		stop();
 		// Run doc ready tests as well
 		jQuery(function() {
-			deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
+			var iframeSupport = jQuery.extend( {}, support );
+			if ( iframeSupport.cloneProps && computedSupport.cloneProps ) {
+				iframeSupport.cloneProps = computedSupport.cloneProps;
+			}
+			deepEqual( iframeSupport, computedSupport, "Same support properties" );
+
 			start();
 		});
 	});
@@ -62,7 +67,12 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	"support/csp.php",
 	function( support ) {
 		expect( 2 );
-		deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
+
+		var iframeSupport = jQuery.extend( {}, support );
+		if ( iframeSupport.cloneProps && computedSupport.cloneProps ) {
+			iframeSupport.cloneProps = computedSupport.cloneProps;
+		}
+		deepEqual( iframeSupport, computedSupport, "No violations of CSP polices" );
 
 		stop();
 
@@ -74,10 +84,12 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 );
 
 (function() {
-	var expected,
+	var knownClient,
+		expected = {},
 		userAgent = window.navigator.userAgent;
 
 	if ( /chrome/i.test( userAgent ) ) {
+		knownClient = "Chrome";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -87,6 +99,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -100,7 +113,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -115,6 +127,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
+		knownClient = "Opera 12.1x";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -124,6 +137,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -137,7 +151,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -152,6 +165,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /trident\/7\.0/i.test( userAgent ) ) {
+		knownClient = "IE11";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -161,6 +175,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": false,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -174,7 +189,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": false,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": false,
@@ -189,6 +203,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /msie 10\.0/i.test( userAgent ) ) {
+		knownClient = "IE10";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -198,6 +213,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": false,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -211,7 +227,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": false,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": false,
@@ -226,6 +241,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
+		knownClient = "IE9";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -235,6 +251,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": false,
+			"cloneProps": false,
 			"cors": false,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -248,7 +265,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": false,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": false,
@@ -263,6 +279,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /msie 8\.0/i.test( userAgent ) ) {
+		knownClient = "IE8";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -272,6 +289,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -285,7 +303,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": false,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
-			"noCloneEvent": false,
 			"opacity": false,
 			"optDisabled": true,
 			"optSelected": false,
@@ -300,6 +317,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /msie 7\.0/i.test( userAgent ) ) {
+		knownClient = "IE7";
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
@@ -309,6 +327,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -322,7 +341,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
-			"noCloneEvent": false,
 			"opacity": false,
 			"optDisabled": true,
 			"optSelected": false,
@@ -337,6 +355,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": false
 		};
 	} else if ( /msie 6\.0/i.test( userAgent ) ) {
+		knownClient = "IE6";
 		expected = {
 			"ajax": true,
 			"appendChecked": false,
@@ -346,6 +365,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": true,
 			"cors": false,
 			"cssFloat": false,
 			"deleteExpando": false,
@@ -359,7 +379,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
-			"noCloneEvent": false,
 			"opacity": false,
 			"optDisabled": true,
 			"optSelected": false,
@@ -374,6 +393,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": false
 		};
 	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
+		knownClient = "Safari 7";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -383,6 +403,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -396,7 +417,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -411,6 +431,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /6\.0(\.\d+|) safari/i.test( userAgent ) ) {
+		knownClient = "Safari 6";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -420,6 +441,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -433,7 +455,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -448,6 +469,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
+		knownClient = "Safari 5.1";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -457,6 +479,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": false,
 			"checkOn": false,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -470,7 +493,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -485,6 +507,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		knownClient = "Firefox";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -494,6 +517,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -507,7 +531,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -522,6 +545,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /iphone os (?:6|7)_/i.test( userAgent ) ) {
+		knownClient = "iOS 6-7";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -531,6 +555,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -544,7 +569,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -559,6 +583,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /android 2\.3/i.test( userAgent ) ) {
+		knownClient = "Android 2.3";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -568,6 +593,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": true,
 			"checkOn": false,
 			"clearCloneStyle": false,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -581,7 +607,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": false,
 			"optSelected": true,
@@ -596,6 +621,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"tbody": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
+		knownClient = "Android 4.0-4.3";
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -605,6 +631,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkClone": false,
 			"checkOn": false,
 			"clearCloneStyle": true,
+			"cloneProps": false,
 			"cors": true,
 			"cssFloat": true,
 			"deleteExpando": true,
@@ -618,7 +645,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"input": true,
 			"leadingWhitespace": true,
 			"noCloneChecked": true,
-			"noCloneEvent": true,
 			"opacity": true,
 			"optDisabled": true,
 			"optSelected": true,
@@ -634,10 +660,10 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	}
 
-	if ( expected ) {
+	if ( knownClient ) {
 		test( "Verify that the support tests resolve as expected per browser", function() {
 			var i, prop,
-				j = 0;
+				j = 1;
 
 			for ( prop in computedSupport ) {
 				j++;
@@ -645,13 +671,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 			expect( j );
 
+			ok( true, "Known client: " + knownClient );
+
 			for ( i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-					equal( computedSupport[i], expected[i],
-						"jQuery.support['" + i + "']: " + computedSupport[i] +
-							", expected['" + i + "']: " + expected[i]);
+					strictEqual( computedSupport[i], expected[i],
+						"jQuery.support." + i + " is " + expected[ i ] );
 				} else {
-					ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
+					ok( true, "no ajax; skipping jQuery.support." + i + " is " + expected[ i ] );
 				}
 			}
 		});
