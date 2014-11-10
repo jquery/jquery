@@ -54,7 +54,7 @@ npm install -g grunt-cli
 ```
 Make sure you have `grunt` installed by testing:
 ```
-grunt -v
+grunt -V
 ```
 
 Now by running the `grunt` command, in the jquery directory, you can build a full version of jQuery, just like with a `npm run build` command:
