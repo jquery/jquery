@@ -455,4 +455,16 @@ testIframe( "dimensions/documentLarge", "window vs. large document", function( j
 	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
 });
 
+test( "allow modification of coordinates argument (gh-1848)", 1, function() {
+	var element = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	element.offset(function( index, coords ) {
+		coords.top = 100;
+
+		return coords;
+	});
+
+	equal( element.offset().top, 100, "coordinates are modified" );
+});
+
 })();
