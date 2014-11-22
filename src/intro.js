@@ -22,7 +22,10 @@
 		// This accentuates the need for the creation of a real `window`.
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info.
-		module.exports = global.document ?
+
+		// if global.JQUERY_FACTORY is true, you can still get a factory with which you can then make additional jQueries bound to different windows.
+
+		module.exports = (global.document && !global.JQUERY_FACTORY) ?
 			factory( global, true ) :
 			function( w ) {
 				if ( !w.document ) {
