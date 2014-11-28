@@ -2461,3 +2461,12 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
+
+asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
+	Globals.register( "testFoo" );
+	jQuery( "#qunit-fixture" ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
+	setTimeout(function (){
+		strictEqual( window[ "testFoo" ], "foo", "data-URI script executed" );
+		start();
+	}, 100 );
+});
