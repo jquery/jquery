@@ -2434,3 +2434,12 @@ test( "Validate creation of multiple quantities of certain elements (#13818)", 4
 		});
 	});
 });
+
+asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
+	Globals.register( "testFoo" );
+	jQuery( "#qunit-fixture" ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
+	setTimeout(function() {
+		strictEqual( window[ "testFoo" ], "foo", "data-URI script executed" );
+		start();
+	}, 100 );
+});
