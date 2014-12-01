@@ -83,6 +83,7 @@ define([
 				ret = !parseFloat( window.getComputedStyle( marginDiv, null ).marginRight );
 
 				docElem.removeChild( container );
+				div.removeChild( marginDiv );
 
 				return ret;
 			}
