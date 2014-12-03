@@ -11,7 +11,8 @@ var rootjQuery,
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
-	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
+	// Shortcut simple #id case for speed
+	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
 	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
