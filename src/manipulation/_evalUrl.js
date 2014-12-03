@@ -7,6 +7,7 @@ jQuery._evalUrl = function( url ) {
 		url: url,
 		type: "GET",
 		dataType: "script",
+		cache: true,
 		async: false,
 		global: false,
 		"throws": true
