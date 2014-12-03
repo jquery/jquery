@@ -2381,6 +2381,25 @@ test("hover event no longer special since 1.9", function() {
 		.off("hover");
 });
 
+test( "event object properties on natively-triggered event", function() {
+	expect( 3 );
+
+	var link = document.createElement( "a" ),
+		$link = jQuery( link ),
+		evt = document.createEvent( "MouseEvents" );
+
+	// IE9+ requires element to be in the body before it will dispatch
+	$link.appendTo( "body" ).on( "click", function( e ) {
+		// Not trying to assert specific values here, just ensure the property exists
+		equal( "detail" in e, true, "has .detail" );
+		equal( "cancelable" in e, true, "has .cancelable" );
+		equal( "bubbles" in e, true, "has .bubbles" );
+	});
+	evt.initEvent( "click", true, true );
+	link.dispatchEvent( evt );
+	$link.off( "click" ).remove();
+});
+
 test("fixHooks extensions", function() {
 	expect( 2 );
 
