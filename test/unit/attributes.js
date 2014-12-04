@@ -1461,6 +1461,11 @@ test( "should not throw at $(option).val() (#14686)", 1, function() {
 	}
 });
 
+test( "option value not trimmed when setting via parent select", function() {
+	expect( 1 );
+	equal( jQuery( "<select><option> 2</option></select>" ).val( "2" ).val(), "2" );
+});
+
 test( "Insignificant white space returned for $(option).val() (#14858)", function() {
 	expect ( 3 );
 
