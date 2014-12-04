@@ -7,14 +7,14 @@
 
 Note: This is the code development repository for *jQuery Core* only. Before opening an issue or making a pull request, be sure you're in the right place.
 * jQuery plugin issues should be reported to the author of the plugin.
-* jQuery Core API documentation issues can be filed [here](http://github.com/jquery/api.jquery.com/issues).
+* jQuery Core API documentation issues can be filed [at the API repo](http://github.com/jquery/api.jquery.com/issues).
 * Bugs or suggestions for other jQuery Foundation projects should be filed in [their respective repos](http://github.com/jquery/).
 
 ## Getting Involved
 
-We've put together [a short guide with tips, tricks, and ideas on getting started](http://contribute.jquery.org/open-source/). We're always looking for help identifying bugs, writing and reducing test cases and documentation.
+We've put together [a short guide with tips, tricks, and ideas on getting started](http://contribute.jquery.org/open-source/). We're always looking for help identifying bugs, writing and reducing test cases, and documentation.
 
-More information on how to contribute to this and other jQuery Foundation projects is at [contribute.jquery.org](http://contribute.jquery.org). Please review our [commit & pull request guide](http://contribute.jquery.org/commits-and-pull-requests/) and [style guides](http://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](http://contribute.jquery.org/cla).
+More information on how to contribute to this and other jQuery Foundation projects is at [contribute.jquery.org](http://contribute.jquery.org). Please review our [commit & pull request guide](http://contribute.jquery.org/commits-and-pull-requests/) and [style guides](http://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](http://contribute.jquery.org/cla/).
 
 
 ## Questions and Discussion
@@ -23,7 +23,7 @@ More information on how to contribute to this and other jQuery Foundation projec
 
 jQuery is so popular that many developers have knowledge of its capabilities and limitations. Most questions about using jQuery can be answered on popular forums such as [Stack Overflow](http://stackoverflow.com). Please start there when you have questions, even if you think you've found a bug.
 
-The jQuery Core team watches the [jQuery Development Forum](http://forum.jquery.com/developing-jquery-core). If you have longer posts or questions that can't be answered in places such as Stack Overflow, please feel free to post them there. If you think you've found a bug please [file it in the bug tracker](#how-to-report-bugs). The Core team can be found in the [#jquery-dev](http://webchat.freenode.net/?channels=jquery-dev) IRC channel on irc.freenode.net.
+The jQuery Core team watches the [jQuery Development Forum](http://forum.jquery.com/developing-jquery-core). If you have longer posts or questions that can't be answered in places such as Stack Overflow, please feel free to post them there. If you think you've found a bug, please [file it in the bug tracker](#how-to-report-bugs). The Core team can be found in the [#jquery-dev](http://webchat.freenode.net/?channels=jquery-dev) IRC channel on irc.freenode.net.
 
 ### Weekly Status Meetings
 
@@ -51,6 +51,10 @@ Bugs in old versions of jQuery may have already been fixed. In order to avoid re
 ### Simplify the test case
 
 When experiencing a problem, [reduce your code](http://webkit.org/quality/reduction.html) to the bare minimum required to reproduce the issue. This makes it *much* easier to isolate and fix the offending code. Bugs reported without reduced test cases take on average 9001% longer to fix than bugs that are submitted with them, so you really should try to do this if at all possible.
+
+### Search for related or duplicate issues
+
+Go to the [jQuery Core issue tracker](https://github.com/jquery/jquery/issues) and make sure the problem hasn't already been reported. If not, create a new issue there and include your test case.
 
 
 ## Tips For Bug Patching
