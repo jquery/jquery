@@ -23,7 +23,7 @@ jQuery.fn.extend({
 
 jQuery.extend({
 	attr: function( elem, name, value ) {
-		var hooks, ret,
+		var hooks, ret, notxml,
 			nType = elem.nodeType;
 
 		// don't get/set attributes on text, comment and attribute nodes
@@ -38,7 +38,8 @@ jQuery.extend({
 
 		// All attributes are lowercase
 		// Grab necessary hook if one is defined
-		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
+		notxml = nType !== 1 || !jQuery.isXMLDoc( elem );
+		if ( notxml ) {
 			name = name.toLowerCase();
 			hooks = jQuery.attrHooks[ name ] ||
 				( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
