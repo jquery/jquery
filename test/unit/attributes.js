@@ -1269,7 +1269,7 @@ var testToggleClass = function(valueObj) {
 
 	// Cleanup
 	e.removeClass("testD");
-	QUnit.expectJqData( e[ 0 ], "__className__" );
+	QUnit.expectJqData( this, e[ 0 ], "__className__" );
 };
 
 test( "toggleClass(String|boolean|undefined[, boolean])", function() {

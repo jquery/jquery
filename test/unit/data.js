@@ -78,7 +78,7 @@ test("jQuery.data(div)", 25, function() {
 	// We stored one key in the private data
 	// assert that nothing else was put in there, and that that
 	// one stayed there.
-	QUnit.expectJqData( div, "foo" );
+	QUnit.expectJqData( this, div, "foo" );
 });
 
 test("jQuery.data({})", 25, function() {
@@ -96,7 +96,7 @@ test("jQuery.data(window)", 25, function() {
 test("jQuery.data(document)", 25, function() {
 	dataTests( document );
 
-	QUnit.expectJqData( document, "foo" );
+	QUnit.expectJqData( this, document, "foo" );
 });
 
 test("Expando cleanup", 4, function() {
