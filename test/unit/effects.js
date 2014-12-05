@@ -45,7 +45,7 @@ test("show() basic", 2, function() {
 	// Clean up the detached node
 	div.remove();
 
-	QUnit.expectJqData(hiddendiv, "olddisplay");
+	QUnit.expectJqData( this, hiddendiv, "olddisplay" );
 });
 
 test("show()", 27, function () {
@@ -92,7 +92,7 @@ test("show()", 27, function () {
 	});
 
 	// Tolerate data from show()/hide()
-	QUnit.expectJqData(div, "olddisplay");
+	QUnit.expectJqData( this, div, "olddisplay" );
 
 	// #show-tests * is set display: none in CSS
 	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
@@ -200,7 +200,7 @@ test("Persist correct display value", function() {
 
 	clock.tick( 300 );
 
-	QUnit.expectJqData($span, "olddisplay");
+	QUnit.expectJqData( this, $span, "olddisplay" );
 });
 
 test("animate(Hash, Object, Function)", function() {
@@ -1077,7 +1077,8 @@ test("jQuery.show('fast') doesn't clear radio buttons (bug #1095)", function () 
 test( "interrupt toggle", function() {
 	expect( 24 );
 
-	var longDuration = 2000,
+	var env = this,
+		longDuration = 2000,
 		shortDuration = 500,
 		remaining = 0,
 		$elems = jQuery(".chain-test"),
@@ -1094,7 +1095,7 @@ test( "interrupt toggle", function() {
 			jQuery.data( this, "startVal", jQuery( this ).css( prop ) );
 
 			// Expect olddisplay data from our .hide() call below
-			QUnit.expectJqData( this, "olddisplay" );
+			QUnit.expectJqData( env, this, "olddisplay" );
 		});
 
 		// Interrupt a hiding toggle
@@ -1499,7 +1500,8 @@ test( "User supplied callback called after show when fx off (#8892)", 2, functio
 test( "animate should set display for disconnected nodes", function() {
 	expect( 18 );
 
-	var methods = {
+	var env = this,
+		methods = {
 			toggle: [ 1 ],
 			slideToggle: [],
 			fadeIn: [],
@@ -1520,9 +1522,9 @@ test( "animate should set display for disconnected nodes", function() {
 	strictEqual( $divNone.show()[ 0 ].style.display, "block", "show() should change display if it already set to none" );
 	strictEqual( $divInline.show()[ 0 ].style.display, "inline", "show() should not change display if it already set" );
 
-	QUnit.expectJqData( $divTest[ 0 ], "olddisplay" );
-	QUnit.expectJqData( $divEmpty[ 0 ], "olddisplay" );
-	QUnit.expectJqData( $divNone[ 0 ], "olddisplay" );
+	QUnit.expectJqData( env, $divTest[ 0 ], "olddisplay" );
+	QUnit.expectJqData( env, $divEmpty[ 0 ], "olddisplay" );
+	QUnit.expectJqData( env, $divNone[ 0 ], "olddisplay" );
 
 	jQuery.each( methods, function( name, opt ) {
 		jQuery.each([
@@ -1537,7 +1539,7 @@ test( "animate should set display for disconnected nodes", function() {
 			var callback = [function () {
 					strictEqual( this.style.display, "block", "set display to block with " + name );
 
-					QUnit.expectJqData( this, "olddisplay" );
+					QUnit.expectJqData( env, this, "olddisplay" );
 
 			}];
 			jQuery.fn[ name ].apply( this, opt.concat( callback ) );
