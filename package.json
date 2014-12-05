@@ -45,7 +45,7 @@
     "gzip-js": "0.3.2",
     "load-grunt-tasks": "0.6.0",
     "npm": "1.4.21",
-    "qunitjs": "1.14.0",
+    "qunitjs": "1.16.0",
     "requirejs": "2.1.14",
     "sinon": "1.10.3",
     "sizzle": "2.0.0",
