@@ -24,14 +24,13 @@ QUnit.config.requireExpects = true;
  * @param {jQuery|HTMLElement|Object|Array} elems Target (or array of targets) for jQuery.data.
  * @param {string} key
  */
-QUnit.expectJqData = function( elems, key ) {
-	var i, elem, expando,
-		currentEnv = "current_testEnvironment";
+QUnit.expectJqData = function( env, elems, key ) {
+	var i, elem, expando;
 
 	// As of jQuery 2.0, there will be no "cache"-data is
 	// stored and managed completely below the API surface
 	if ( jQuery.cache ) {
-		QUnit[ currentEnv ].checkJqData = true;
+		env.checkJqData = true;
 
 		if ( elems.jquery && elems.toArray ) {
 			elems = elems.toArray();
