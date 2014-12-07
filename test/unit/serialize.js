@@ -85,7 +85,7 @@ test("jQuery.param()", function() {
 });
 
 test("jQuery.param() Constructed prop values", function() {
-	expect( 4 );
+	expect( 5 );
 
 	/** @constructor */
 	function Record() {
@@ -107,6 +107,12 @@ test("jQuery.param() Constructed prop values", function() {
 	// should allow non-native constructed objects
 	params = { "test": new Record() };
 	equal( jQuery.param( params, false ), jQuery.param({ "test": { "prop": "val" } }), "Allow non-native constructed objects" );
+
+	Record.prototype.inheritedProp = "inheritedVal";
+	params = { "test": new Record() };
+	params.test.nestedRecord = new Record();
+	equal( jQuery.param( params, false ), jQuery.param({ "test": { "prop": "val", "nestedRecord": { "prop": "val" } } }), "Ignore inherited properties");
+
 });
 
 test("serialize()", function() {
