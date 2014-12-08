@@ -148,6 +148,36 @@ test( "wrapAll(String)", function() {
 
 });
 
+test( "wrapAll(Function)", 5, function() {
+	var prev = jQuery( "#firstp" )[ 0 ].previousSibling,
+		p = jQuery( "#firstp,#first" )[ 0 ].parentNode,
+		result = jQuery( "#firstp,#first" ).wrapAll(function() {
+			return "<div class='red'><div class='tmp'></div></div>";
+		});
+
+	equal( result.parent().length, 1, "Check for wrapping of on-the-fly html" );
+	ok( jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
+	ok( jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
+	ok( jQuery( "#first" ).parent().parent().parent().is( p ), "Correct Parent" );
+	strictEqual( jQuery( "#first" ).parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
+});
+
+test( "wrapAll(Function) check execution characteristics", 3, function() {
+	var i = 0;
+
+	jQuery( "non-existent" ).wrapAll(function() {
+		i++;
+		return "";
+	});
+
+	ok( !i, "should not execute function argument if target element does not exist" );
+
+	jQuery( "#firstp" ).wrapAll(function( index ) {
+		strictEqual( this, jQuery( "#firstp" )[ 0 ], "context must be the first found element" );
+		strictEqual( index, undefined, "index argument should not be included in function execution" );
+	});
+});
+
 test( "wrapAll(Element)", function() {
 
   expect( 3 );
