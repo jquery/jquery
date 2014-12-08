@@ -340,3 +340,18 @@ test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", fun
 
 	ok( true, "no stack overflow" );
 });
+
+test( "jQuery.Callbacks() - disabled callback doesn't fire (gh-1790)", function() {
+
+	expect( 1 );
+
+	var cb = jQuery.Callbacks(),
+		fired = false,
+		shot = function() { fired = true; };
+
+	cb.disable();
+	cb.empty();
+	cb.add( shot );
+	cb.fire();
+	ok( !fired, "Disabled callback function didn't fire" );
+});
