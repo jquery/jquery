@@ -57,7 +57,7 @@ module.exports = function( grunt ) {
 
 					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
-					"qunit/MIT-LICENSE.txt": "qunitjs/MIT-LICENSE.txt",
+					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
 
 					"requirejs/require.js": "requirejs/require.js",
 
