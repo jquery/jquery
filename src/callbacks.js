@@ -151,8 +151,10 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Remove all callbacks from the list
 			empty: function() {
-				list = [];
-				firingLength = 0;
+				if ( list ) {
+					list = [];
+					firingLength = 0;
+				}
 				return this;
 			},
 			// Have the list do nothing anymore
