@@ -234,24 +234,27 @@ test( "globalEval execution after script injection (#7862)", 1, function() {
 	ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 });
 
-test("noConflict", function() {
-	expect(7);
+// This is not run in AMD mode
+if (jQuery.noConflict) {
+	test("noConflict", function() {
+		expect(7);
 
-	var $$ = jQuery;
+		var $$ = jQuery;
 
-	strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
-	strictEqual( window["jQuery"], $$, "Make sure jQuery wasn't touched." );
-	strictEqual( window["$"], original$, "Make sure $ was reverted." );
+		strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
+		strictEqual( window["jQuery"], $$, "Make sure jQuery wasn't touched." );
+		strictEqual( window["$"], original$, "Make sure $ was reverted." );
 
-	jQuery = $ = $$;
+		jQuery = $ = $$;
 
-	strictEqual( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
-	strictEqual( window["jQuery"], originaljQuery, "Make sure jQuery was reverted." );
-	strictEqual( window["$"], original$, "Make sure $ was reverted." );
-	ok( $$().pushStack([]), "Make sure that jQuery still works." );
+		strictEqual( jQuery.noConflict(true), $$, "noConflict returned the jQuery object" );
+		strictEqual( window["jQuery"], originaljQuery, "Make sure jQuery was reverted." );
+		strictEqual( window["$"], original$, "Make sure $ was reverted." );
+		ok( $$().pushStack([]), "Make sure that jQuery still works." );
 
-	window["jQuery"] = jQuery = $$;
-});
+		window["jQuery"] = jQuery = $$;
+	});
+}
 
 test("trim", function() {
 	expect(13);
