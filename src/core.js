@@ -7,7 +7,7 @@ define([
 	"./var/class2type",
 	"./var/toString",
 	"./var/hasOwn",
-	"./core/support"
+	"./var/support"
 ], function( arr, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
 
 var
