@@ -17,9 +17,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		keepScripts = context;
 		context = false;
 	}
-	// document.implementation stops scripts or inline event handlers from
-	// being executed immediately
-	context = context || document.implementation.createHTMLDocument( "" );
+	context = context || document;
 
 	var parsed = rsingleTag.exec( data ),
 		scripts = !keepScripts && [];

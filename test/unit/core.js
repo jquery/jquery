@@ -1370,20 +1370,6 @@ test("jQuery.parseHTML", function() {
 	ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
 });
 
-asyncTest("jQuery.parseHTML", function() {
-	expect ( 1 );
-
-	Globals.register("parseHTMLError");
-
-	jQuery.globalEval("parseHTMLError = false;");
-	jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
-
-	window.setTimeout(function() {
-		start();
-		equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
-	}, 2000);
-});
-
 test("jQuery.parseJSON", function() {
 	expect( 20 );
 
