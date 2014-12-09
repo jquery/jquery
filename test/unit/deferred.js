@@ -436,3 +436,25 @@ test( "jQuery.when - joined", function() {
 	deferreds.futureSuccess.resolve( 1 );
 	deferreds.futureError.reject( 0 );
 });
+
+test( "jQuery.when - resolved", function() {
+
+	expect( 6 );
+
+	var a = jQuery.Deferred().notify( 1 ).resolve( 4 ),
+		b = jQuery.Deferred().notify( 2 ).resolve( 5 ),
+		c = jQuery.Deferred().notify( 3 ).resolve( 6 );
+
+	jQuery.when( a, b, c ).progress(function( a, b, c ) {
+		strictEqual( a, 1, "first notify value ok" );
+		strictEqual( b, 2, "second notify value ok" );
+		strictEqual( c, 3, "third notify value ok" );
+	}).done(function( a, b, c ) {
+		strictEqual( a, 4, "first resolve value ok" );
+		strictEqual( b, 5, "second resolve value ok" );
+		strictEqual( c, 6, "third resolve value ok" );
+	}).fail(function() {
+		ok( false, "Error on resolve" );
+	});
+
+});
