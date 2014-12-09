@@ -21,7 +21,8 @@
 
 	"globals": {
 		"jQuery": true,
-		"define": true,
-		"module": true
+		"define": false,
+		"module": false,
+		"noGlobal": true
 	}
 }

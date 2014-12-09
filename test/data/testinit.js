@@ -304,7 +304,9 @@ this.loadTests = function() {
 				/**
 				 * Run in noConflict mode
 				 */
-				jQuery.noConflict();
+				if ( jQuery.noConflict ) {
+					jQuery.noConflict();
+				}
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( loadSwarm ) {
