@@ -99,36 +99,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": true,
 			"submitBubbles": true
 		};
-	} else if ( /trident\/7\.0/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": false,
-			"changeBubbles": true,
-			"checkClone": true,
-			"checkOn": true,
-			"clearCloneStyle": false,
-			"cors": true,
-			"cssFloat": true,
-			"deleteExpando": true,
-			"focusinBubbles": true,
-			"html5Clone": true,
-			"htmlSerialize": true,
-			"input": true,
-			"leadingWhitespace": true,
-			"noCloneChecked": false,
-			"noCloneEvent": true,
-			"opacity": true,
-			"optDisabled": true,
-			"optSelected": false,
-			"ownLast": false,
-			"pixelPosition": true,
-			"radioValue": false,
-			"reliableHiddenOffsets": true,
-			"reliableMarginRight": true,
-			"style": true,
-			"submitBubbles": true
-		};
-	} else if ( /msie 10\.0/i.test( userAgent ) ) {
+	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": false,
@@ -215,36 +186,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": false,
 			"submitBubbles": false
 		};
-	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": true,
-			"changeBubbles": true,
-			"checkClone": true,
-			"checkOn": true,
-			"clearCloneStyle": true,
-			"cors": true,
-			"cssFloat": true,
-			"deleteExpando": true,
-			"focusinBubbles": false,
-			"html5Clone": true,
-			"htmlSerialize": true,
-			"input": true,
-			"leadingWhitespace": true,
-			"noCloneChecked": true,
-			"noCloneEvent": true,
-			"opacity": true,
-			"optDisabled": true,
-			"optSelected": true,
-			"ownLast": false,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableHiddenOffsets": true,
-			"reliableMarginRight": true,
-			"style": true,
-			"submitBubbles": true
-		};
-	} else if ( /6\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /(6|7|8)\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -331,35 +273,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": true,
 			"submitBubbles": true
 		};
-	} else if ( /android 2\.3/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": true,
-			"changeBubbles": true,
-			"checkClone": true,
-			"checkOn": false,
-			"clearCloneStyle": false,
-			"cors": true,
-			"cssFloat": true,
-			"deleteExpando": true,
-			"focusinBubbles": false,
-			"html5Clone": true,
-			"htmlSerialize": true,
-			"input": true,
-			"leadingWhitespace": true,
-			"noCloneChecked": true,
-			"noCloneEvent": true,
-			"opacity": true,
-			"optDisabled": false,
-			"optSelected": true,
-			"ownLast": false,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableHiddenOffsets": true,
-			"reliableMarginRight": false,
-			"style": true,
-			"submitBubbles": true
-		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
@@ -386,6 +299,35 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"style": true,
+			"submitBubbles": true
+		};
+	} else if ( /android 2\.3/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"changeBubbles": true,
+			"checkClone": true,
+			"checkOn": false,
+			"clearCloneStyle": false,
+			"cors": true,
+			"cssFloat": true,
+			"deleteExpando": true,
+			"focusinBubbles": false,
+			"html5Clone": true,
+			"htmlSerialize": true,
+			"input": true,
+			"leadingWhitespace": true,
+			"noCloneChecked": true,
+			"noCloneEvent": true,
+			"opacity": true,
+			"optDisabled": false,
+			"optSelected": true,
+			"ownLast": false,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableHiddenOffsets": true,
+			"reliableMarginRight": false,
 			"style": true,
 			"submitBubbles": true
 		};
