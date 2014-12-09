@@ -36,7 +36,9 @@ function buildParams( prefix, obj, traditional, add ) {
 	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
 		// Serialize object item.
 		for ( name in obj ) {
-			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			if ( obj.hasOwnProperty( name ) ) {
+				buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );
+			}
 		}
 
 	} else {
@@ -72,7 +74,9 @@ jQuery.param = function( a, traditional ) {
 		// If traditional, encode the "old" way (the way 1.3.2 or older
 		// did it), otherwise encode params recursively.
 		for ( prefix in a ) {
-			buildParams( prefix, a[ prefix ], traditional, add );
+			if ( a.hasOwnProperty( prefix ) ) {
+				buildParams( prefix, a[ prefix ], traditional, add );
+			}
 		}
 	}
 
