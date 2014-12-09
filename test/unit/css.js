@@ -204,7 +204,7 @@ test( "css() explicit and relative values", 29, function() {
 });
 
 test("css(String, Object)", function() {
-	expect( 19 );
+	expect( 18 );
 	var j, div, display, ret, success;
 
 	jQuery("#floatTest").css("float", "left");
