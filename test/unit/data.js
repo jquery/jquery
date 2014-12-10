@@ -100,18 +100,10 @@ test("jQuery.data(document)", 25, function() {
 });
 
 test("Expando cleanup", 4, function() {
-	var expected, actual,
-		div = document.createElement("div");
+	var div = document.createElement("div");
 
 	function assertExpandoAbsent(message) {
-		if (jQuery.support.deleteExpando) {
-			expected = false;
-			actual = jQuery.expando in div;
-		} else {
-			expected = null;
-			actual = div[ jQuery.expando ];
-		}
-		equal( actual, expected, message );
+		strictEqual( div[ jQuery.expando ], undefined, message );
 	}
 
 	assertExpandoAbsent("There is no expando on new elements");

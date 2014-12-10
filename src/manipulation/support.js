@@ -1,6 +1,7 @@
 define([
+	"../core",
 	"../var/support"
-], function( support ) {
+], function( jQuery, support ) {
 
 (function() {
 	var div = document.createElement( "div" ),
@@ -38,16 +39,11 @@ define([
 	// Cloned elements keep attachEvent handlers, we use addEventListener on IE9+
 	support.noCloneEvent = !!div.addEventListener;
 
-	// Execute the test only if not already executed in another module.
-	if (support.deleteExpando == null) {
-		// Support: IE<9
-		support.deleteExpando = true;
-		try {
-			delete div.test;
-		} catch ( e ) {
-			support.deleteExpando = false;
-		}
-	}
+	// Support: IE<9
+	// Since attributes and properties are the same in IE,
+	// cleanData must set properties to undefined rather than use removeAttribute
+	div[ jQuery.expando ] = 1;
+	support.attributes = !div.getAttribute( jQuery.expando );
 })();
 
 return support;
