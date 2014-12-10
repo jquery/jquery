@@ -235,7 +235,7 @@ test( "globalEval execution after script injection (#7862)", 1, function() {
 });
 
 // This is not run in AMD mode
-if (jQuery.noConflict) {
+if ( jQuery.noConflict ) {
 	test("noConflict", function() {
 		expect(7);
 
@@ -1369,6 +1369,22 @@ test("jQuery.parseHTML", function() {
 		"parentNode should be documentFragment for wrapMap (variable in manipulation module) elements too" );
 	ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
 });
+
+if ( jQuery.support.createHTMLDocument ) {
+	asyncTest("jQuery.parseHTML", function() {
+		expect ( 1 );
+
+		Globals.register("parseHTMLError");
+
+		jQuery.globalEval("parseHTMLError = false;");
+		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
+
+		window.setTimeout(function() {
+			start();
+			equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+		}, 2000);
+	});
+}
 
 test("jQuery.parseJSON", function() {
 	expect( 20 );

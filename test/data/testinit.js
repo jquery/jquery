@@ -301,7 +301,7 @@ this.loadTests = function() {
 				/**
 				 * Run in noConflict mode
 				 */
-				if (jQuery.noConflict) {
+				if ( jQuery.noConflict ) {
 					jQuery.noConflict();
 				}
 

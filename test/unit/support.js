@@ -61,6 +61,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -77,6 +78,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": false,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": true,
 			"noCloneChecked": false,
 			"optDisabled": true,
@@ -93,6 +95,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": false,
 			"cors": false,
+			"createHTMLDocument": true,
 			"focusinBubbles": true,
 			"noCloneChecked": false,
 			"optDisabled": true,
@@ -101,7 +104,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableMarginRight": true
 		};
-	} else if ( /(6|7|8)\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -109,6 +112,24 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
+			"createHTMLDocument": true,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginRight": true
+		};
+	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": false,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -125,6 +146,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -141,6 +163,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -157,6 +180,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": false,
 			"clearCloneStyle": true,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -173,6 +197,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": false,
 			"clearCloneStyle": false,
 			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": false,
