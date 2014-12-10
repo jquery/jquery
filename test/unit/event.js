@@ -583,6 +583,17 @@ test("namespace-only event binding is a no-op", function(){
 		.off("whoops");
 });
 
+test("Empty namespace is ignored", function(){
+	expect( 1 );
+
+	jQuery("#firstp")
+		.on( "meow.", function( e ) {
+			equal( e.namespace, "", "triggered a namespace-less meow event" );
+		})
+		.trigger("meow.")
+		.off("meow.");
+});
+
 test("on(), with same function", function() {
 	expect(2);
 
