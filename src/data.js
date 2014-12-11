@@ -123,7 +123,8 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 	}
 
 	if ( data !== undefined ) {
-		thisCache[ jQuery.camelCase( name ) ] = data;
+		//check if key exist as-is else convert to camelCase and update
+		thisCache[ thisCache[ name ] ? name : jQuery.camelCase( name ) ] = data;
 	}
 
 	// Check for both converted-to-camel and non-converted data property names
