@@ -678,18 +678,18 @@ test( "JSON data- attributes can have newlines", function() {
 	x.remove();
 });
 
-/*testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs.html", function( result ) {
+testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs.html", function( result ) {
 	expect(1);
 
 	equal(result, "ok", "enumeration of data- attrs on body" );
-});*/
+});
 
 test(".data should update as-is if added without camel casing (PR 1.x-master #1905)", function() {
 	expect(5);
 	var div = jQuery("<div></div>").prependTo("body");
 	div.data({
 		"data-test-1": "data1",
-		"data-test-2": "data2",
+		"data-test-2": "data2"
 	});
 	equal( div.data()["data-test-1"], "data1", "Verifing data update succesful with object" );
 	
@@ -698,11 +698,11 @@ test(".data should update as-is if added without camel casing (PR 1.x-master #19
 	equal( div.data()["dataTest1"], undefined, "Verifying it is not camel cased when adding as object" );
 	
 	//update data-test-1
-	div.data('data-test-1', 'data1_updated');
-	equal( div.data()["data-test-1"], 'data1_updated', "Verifying .update() updating the right data" );
+	div.data("data-test-1", "data1_updated");
+	equal( div.data()["data-test-1"], "data1_updated", "Verifying .update() updating the right data" );
 	
 	//remove data-test-1 and data-test-2
-	div.removeData(['data-test-1', 'data-test-2']);
+	div.removeData(["data-test-1", "data-test-2"]);
 	equal( div.data()["data-test-1"], undefined, "Verifying remove of data-test-1 deleting the right data" );
 	equal( div.data()["data-test-2"], undefined, "Verifying remove of data-test-2 deleting the right data" );
 	div.remove();
