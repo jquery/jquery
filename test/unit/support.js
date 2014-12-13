@@ -194,7 +194,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": false,
 			"submitBubbles": false
 		};
-	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
@@ -204,7 +204,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
-			"createHTMLDocument": true,
+			"createHTMLDocument": false,
 			"cssFloat": true,
 			"deleteExpando": true,
 			"focusinBubbles": false,
@@ -225,7 +225,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": true,
 			"submitBubbles": true
 		};
-	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
@@ -235,7 +235,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
-			"createHTMLDocument": false,
+			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
 			"focusinBubbles": false,
@@ -287,7 +287,38 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": true,
 			"submitBubbles": true
 		};
-	} else if ( /iphone os/i.test( userAgent ) ) {
+	} else if ( /iphone os 8/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"attributes": true,
+			"boxSizingReliable": true,
+			"changeBubbles": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": false,
+			"cssFloat": true,
+			"deleteExpando": true,
+			"focusinBubbles": false,
+			"html5Clone": true,
+			"htmlSerialize": true,
+			"input": true,
+			"leadingWhitespace": true,
+			"noCloneChecked": true,
+			"noCloneEvent": true,
+			"opacity": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"ownLast": false,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableHiddenOffsets": true,
+			"reliableMarginRight": true,
+			"style": true,
+			"submitBubbles": true
+		};
+	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
