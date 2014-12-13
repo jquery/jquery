@@ -104,23 +104,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableMarginRight": true
 		};
-	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": true,
-			"checkClone": true,
-			"checkOn": true,
-			"clearCloneStyle": true,
-			"cors": true,
-			"createHTMLDocument": true,
-			"focusinBubbles": false,
-			"noCloneChecked": true,
-			"optDisabled": true,
-			"optSelected": true,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
-		};
 	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
@@ -130,6 +113,23 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"clearCloneStyle": true,
 			"cors": true,
 			"createHTMLDocument": false,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginRight": true
+		};
+	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
 			"focusinBubbles": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
@@ -155,7 +155,24 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableMarginRight": true
 		};
-	} else if ( /iphone os/i.test( userAgent ) ) {
+	} else if ( /iphone os 8/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": false,
+			"focusinBubbles": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginRight": true
+		};
+	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
