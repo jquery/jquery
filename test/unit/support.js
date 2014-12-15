@@ -47,7 +47,7 @@ testIframeWithCallback( "A background on the testElement does not cause IE8 to c
 });
 
 
-// This test checkes CSP only for browsers with "Content-Security-Policy" header support
+// This test checks CSP only for browsers with "Content-Security-Policy" header support
 // i.e. no old WebKit or old Firefox
 testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"support/csp.php",
