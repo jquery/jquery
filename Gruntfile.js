@@ -51,11 +51,11 @@ module.exports = function( grunt ) {
 				},
 				files: {
 					"sizzle/dist": "sizzle/dist",
-					"sizzle/MIT-LICENSE.txt": "sizzle/MIT-LICENSE.txt",
+					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
 					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
-					"qunit/MIT-LICENSE.txt": "qunitjs/MIT-LICENSE.txt",
+					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
 
 					"requirejs/require.js": "requirejs/require.js",
 

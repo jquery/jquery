@@ -48,7 +48,7 @@
     "qunitjs": "1.16.0",
     "requirejs": "2.1.14",
     "sinon": "1.10.3",
-    "sizzle": "2.0.0",
+    "sizzle": "2.1.1",
     "testswarm": "1.1.0"
   },
   "scripts": {
