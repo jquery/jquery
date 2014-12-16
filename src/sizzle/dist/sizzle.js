@@ -1,12 +1,12 @@
 /*!
- * Sizzle CSS Selector Engine v2.1.1
+ * Sizzle CSS Selector Engine v2.2.0-pre
  * http://sizzlejs.com/
  *
  * Copyright 2008, 2014 jQuery Foundation, Inc. and other contributors
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2014-12-15
+ * Date: 2014-12-16
  */
 (function( window ) {
 
@@ -74,21 +74,25 @@ var i,
 
 	// Regular expressions
 
-	// http://www.w3.org/TR/css3-selectors/#whitespace
+	// Whitespace characters http://www.w3.org/TR/css3-selectors/#whitespace
 	whitespace = "[\\x20\\t\\r\\n\\f]",
+	// http://www.w3.org/TR/css3-syntax/#characters
+	characterEncoding = "(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",
 
-	// http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
-	identifier = "(?:\\\\.|[\\w-]|[^\\x00-\\xa0])+",
+	// Loosely modeled on CSS identifier characters
+	// An unquoted value should be a CSS identifier http://www.w3.org/TR/css3-selectors/#attribute-selectors
+	// Proper syntax: http://www.w3.org/TR/CSS21/syndata.html#value-def-identifier
+	identifier = characterEncoding.replace( "w", "w#" ),
 
 	// Attribute selectors: http://www.w3.org/TR/selectors/#attribute-selectors
-	attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+	attributes = "\\[" + whitespace + "*(" + characterEncoding + ")(?:" + whitespace +
 		// Operator (capture 2)
 		"*([*^$|!~]?=)" + whitespace +
 		// "Attribute values must be CSS identifiers [capture 5] or strings [capture 3 or capture 4]"
 		"*(?:'((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\"|(" + identifier + "))|)" + whitespace +
 		"*\\]",
 
-	pseudos = ":(" + identifier + ")(?:\\((" +
+	pseudos = ":(" + characterEncoding + ")(?:\\((" +
 		// To reduce the number of selectors needing tokenize in the preFilter, prefer arguments:
 		// 1. quoted (capture 3; capture 4 or capture 5)
 		"('((?:\\\\.|[^\\\\'])*)'|\"((?:\\\\.|[^\\\\\"])*)\")|" +
@@ -111,9 +115,9 @@ var i,
 	ridentifier = new RegExp( "^" + identifier + "$" ),
 
 	matchExpr = {
-		"ID": new RegExp( "^#(" + identifier + ")" ),
-		"CLASS": new RegExp( "^\\.(" + identifier + ")" ),
-		"TAG": new RegExp( "^(" + identifier + "|[*])" ),
+		"ID": new RegExp( "^#(" + characterEncoding + ")" ),
+		"CLASS": new RegExp( "^\\.(" + characterEncoding + ")" ),
+		"TAG": new RegExp( "^(" + characterEncoding.replace( "w", "w*" ) + ")" ),
 		"ATTR": new RegExp( "^" + attributes ),
 		"PSEUDO": new RegExp( "^" + pseudos ),
 		"CHILD": new RegExp( "^:(only|first|last|nth|nth-last)-(child|of-type)(?:\\(" + whitespace +
@@ -201,16 +205,15 @@ function Sizzle( selector, context, results, seed ) {
 
 	context = context || document;
 	results = results || [];
+	nodeType = context.nodeType;
 
-	if ( !selector || typeof selector !== "string" ) {
+	if ( typeof selector !== "string" || !selector ||
+		nodeType !== 1 && nodeType !== 9 && nodeType !== 11 ) {
+
 		return results;
 	}
 
-	if ( (nodeType = context.nodeType) !== 1 && nodeType !== 9 && nodeType !== 11 ) {
-		return [];
-	}
-
-	if ( documentIsHTML && !seed ) {
+	if ( !seed && documentIsHTML ) {
 
 		// Try to shortcut find operations when possible (e.g., not under DocumentFragment)
 		if ( nodeType !== 11 && (match = rquickExpr.exec( selector )) ) {
