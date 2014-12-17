@@ -210,7 +210,7 @@ Chris Antaki <ChrisAntaki@gmail.com>
 Marian Sollmann <marian.sollmann@cargomedia.ch>
 njhamann <njhamann@gmail.com>
 Ilya Kantor <iliakan@gmail.com>
-hongymagic <d.hong@me.com>
+David Hong <d.hong@me.com>
 John Paul <john@johnkpaul.com>
 Jakob Stoeck <jakob@pokermania.de>
 Christopher Jones <chris@cjqed.com>
@@ -224,3 +224,17 @@ John Hoven <hovenj@gmail.com>
 Philip Jägenstedt <philip@foolip.org>
 Christian Kosmowski <ksmwsk@gmail.com>
 Liang Peng <poppinlp@gmail.com>
+TJ VanToll <tj.vantoll@gmail.com>
+Senya Pugach <upisfree@outlook.com>
+Aurelio De Rosa <aurelioderosa@gmail.com>
+Nazar Mokrynskyi <nazar@mokrynskyi.com>
+Amit Merchant <bullredeyes@gmail.com>
+Jason Bedard <jason+github@jbedard.ca>
+Arthur Verschaeve <contact@arthurverschaeve.be>
+Dan Hart <danhart@notonthehighstreet.com>
+Bin Xin <rhyzix@gmail.com>
+David Corbacho <davidcorbacho@gmail.com>
+Veaceslav Grimalschi <grimalschi@yandex.ru>
+Daniel Husar <dano.husar@gmail.com>
+Frederic Hemberger <mail@frederic-hemberger.de>
+Ben Toews <mastahyeti@gmail.com>
