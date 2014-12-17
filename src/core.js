@@ -14,6 +14,9 @@ var
 	// Use the correct document accordingly with window argument (sandbox)
 	document = window.document,
 
+	// Add a location global for non-browser environments
+	location = window.location, // jshint ignore:line
+
 	version = "@VERSION",
 
 	// Define a local copy of jQuery
