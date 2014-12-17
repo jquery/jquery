@@ -1,7 +1,7 @@
 var fs = require( "fs" ),
 	npm = require( "npm" ),
 	sizzleLoc = __dirname + "/../external/sizzle/dist/sizzle.js",
-	rversion = /Engine v(\d+\.\d+\.\d+[-\.\d\w]*)/;
+	rversion = /Engine v(\d+\.\d+\.\d+(?:-[-\.\d\w]+)?)/;
 
 require( "colors" );
 
