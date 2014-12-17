@@ -122,7 +122,7 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		checkRepoState: function( callback ) {
-			ensureSizzle( Release, callback );
+			//ensureSizzle( Release, callback );
 		},
 		/**
 		 * Generates any release artifacts that should be included in the release.
