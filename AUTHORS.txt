@@ -210,7 +210,7 @@ Chris Antaki <ChrisAntaki@gmail.com>
 Marian Sollmann <marian.sollmann@cargomedia.ch>
 njhamann <njhamann@gmail.com>
 Ilya Kantor <iliakan@gmail.com>
-hongymagic <d.hong@me.com>
+David Hong <d.hong@me.com>
 John Paul <john@johnkpaul.com>
 Jakob Stoeck <jakob@pokermania.de>
 Christopher Jones <chris@cjqed.com>
@@ -224,3 +224,4 @@ John Hoven <hovenj@gmail.com>
 Philip Jägenstedt <philip@foolip.org>
 Christian Kosmowski <ksmwsk@gmail.com>
 Liang Peng <poppinlp@gmail.com>
+TJ VanToll <tj.vantoll@gmail.com>
