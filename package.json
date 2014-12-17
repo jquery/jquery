@@ -2,12 +2,12 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "2.1.2-pre",
+  "version": "2.1.2",
   "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {
     "name": "jQuery Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/2.1.2/AUTHORS.txt"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt"
+      "url": "https://github.com/jquery/jquery/blob/2.1.2/MIT-LICENSE.txt"
     }
   ],
   "dependencies": {},
