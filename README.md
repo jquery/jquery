@@ -15,7 +15,7 @@ Environments in which to use jQuery
 --------------------------------------
 
 - [Browser support](http://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](http://jquery.com/browser-support/) for more info.
-- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments.
+- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments. Also note that version 2.1.2 is currently [not working correctly](https://github.com/jquery/jquery/issues/1788) in non-browser environments.
 
 
 What you need to build your own jQuery
