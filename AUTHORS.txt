@@ -200,10 +200,10 @@ Ronny Springer <springer.ronny@gmail.com>
 Marian Sollmann <marian.sollmann@cargomedia.ch>
 Corey Frang <gnarf37@gmail.com>
 Chris Antaki <ChrisAntaki@gmail.com>
-njhamann <njhamann@gmail.com>
-hongymagic <d.hong@me.com>
+Noah Hamann <njhamann@gmail.com>
+David Hong <d.hong@me.com>
 Jakob Stoeck <jakob@pokermania.de>
-cjqed <christopherjonesqed@gmail.com>
+Christopher Jones <christopherjonesqed@gmail.com>
 Forbes Lindesay <forbes@lindesay.co.uk>
 John Paul <john@johnkpaul.com>
 S. Andrew Sheppard <andrew@wq.io>
@@ -214,3 +214,16 @@ Rodrigo Rosenfeld Rosas <rr.rosas@gmail.com>
 John Hoven <hovenj@gmail.com>
 Christian Kosmowski <ksmwsk@gmail.com>
 Liang Peng <poppinlp@gmail.com>
+TJ VanToll <tj.vantoll@gmail.com>
+Senya Pugach <upisfree@outlook.com>
+Aurelio De Rosa <aurelioderosa@gmail.com>
+Nazar Mokrynskyi <nazar@mokrynskyi.com>
+Arthur Verschaeve <contact@arthurverschaeve.be>
+Dan Hart <danhart@notonthehighstreet.com>
+Zheming Sun <mescodasun@gmail.com>
+Bin Xin <rhyzix@gmail.com>
+David Corbacho <davidcorbacho@gmail.com>
+Veaceslav Grimalschi <grimalschi@yandex.ru>
+Daniel Husar <dano.husar@gmail.com>
+Jason Bedard <jason+github@jbedard.ca>
+Ben Toews <mastahyeti@gmail.com>
