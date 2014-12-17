@@ -6,7 +6,7 @@ define([
 	"./event/support",
 
 	"./core/init",
-	"./data/accepts",
+	"./data",
 	"./selector"
 ], function( jQuery, rnotwhite, hasOwn, slice, support ) {
 
