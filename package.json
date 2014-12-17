@@ -30,7 +30,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "commitplease": "1.7.0",
+    "commitplease": "2.0.0",
     "grunt": "0.4.2",
     "grunt-bowercopy": "0.7.1",
     "grunt-cli": "0.1.13",
