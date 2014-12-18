@@ -119,6 +119,17 @@ test("css(String|Hash)", function() {
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 });
 
+test( "css(String) computed values", 3, function() {
+	var div = jQuery( "<div/>" ).addClass( "get-computed-value" ),
+		fixture = document.getElementById( "qunit-fixture" );
+
+	div.appendTo( fixture );
+	strictEqual( div.css( "padding-left" ), "500px", "should get computed value for padding-left property" );
+	strictEqual( div.css( "width" ), "200px", "should get computed value for width property" );
+	strictEqual( div.css( "font-size" ), "32px", "should get computed value for font-size property" );
+});
+
+
 test( "css() explicit and relative values", 29, function() {
 	var $elem = jQuery("#nothiddendiv");
 

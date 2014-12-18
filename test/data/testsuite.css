@@ -163,3 +163,8 @@ section { background:#f0f; display:block; }
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 }
 
+.get-computed-value {
+	padding-left: 50%;
+	width: 20%;
+	font-size: 2em;
+}
