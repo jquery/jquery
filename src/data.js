@@ -112,8 +112,7 @@ jQuery.fn.extend({
 		}
 
 		return access( this, function( value ) {
-			var data,
-				camelKey = jQuery.camelCase( key );
+			var data, camelKey;
 
 			// The calling jQuery object (element matches) is not empty
 			// (and therefore has an element appears at this[ 0 ]) and the
@@ -128,6 +127,7 @@ jQuery.fn.extend({
 					return data;
 				}
 
+				camelKey = jQuery.camelCase( key );
 				// Attempt to get data from the cache
 				// with the key camelized
 				data = dataUser.get( elem, camelKey );
@@ -147,6 +147,7 @@ jQuery.fn.extend({
 			}
 
 			// Set the data...
+			camelKey = jQuery.camelCase( key );
 			this.each(function() {
 				// First, attempt to store a copy or reference of any
 				// data that might've been store with a camelCased key.
