@@ -321,7 +321,7 @@ module( "ajax", {
 
 		return [
 			request(
-				loc.protocol + "//" + loc.host + ":" + samePort,
+				loc.protocol + "//" + loc.hostname + ":" + samePort,
 				"Test matching ports are not detected as cross-domain",
 				false
 			),
