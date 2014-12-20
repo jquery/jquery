@@ -2477,6 +2477,25 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
+// IE8 doesn't support custom event triggering natively, but we can skip
+// this test in IE8 since a native HTML5 drag event will never occur there.
+if ( document.createEvent ) {
+
+	test( "drag events copy over mouse related event properties (gh-1925)", function() {
+		expect( 2 );
+
+		var $fixture = jQuery( "<div id='drag-fixture'></div>" ).appendTo( "body" );
+
+		$fixture.on( "dragmove", function( evt ) {
+			ok( "pageX" in evt, "checking for pageX property" );
+			ok( "pageY" in evt, "checking for pageY property" );
+		});
+
+		fireNative( $fixture[ 0 ], "dragmove" );
+		$fixture.unbind( "dragmove" ).remove();
+	});
+}
+
 test( "focusin using non-element targets", function() {
 	expect( 2 );
 
