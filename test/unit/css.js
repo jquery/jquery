@@ -248,6 +248,21 @@ test("css(String, Object)", function() {
 		"Set font shorthand property (#14759)" );
 });
 
+test( "css(String, Object) with negative values", function() {
+	expect( 4 );
+
+	jQuery( "#nothiddendiv" ).css( "margin-top", "-10px" );
+	jQuery( "#nothiddendiv" ).css( "margin-left", "-10px" );
+	equal( jQuery( "#nothiddendiv" ).css( "margin-top" ), "-10px", "Ensure negative top margins work." );
+	equal( jQuery( "#nothiddendiv" ).css( "margin-left" ), "-10px", "Ensure negative left margins work." );
+
+	jQuery( "#nothiddendiv" ).css( "position", "absolute" );
+	jQuery( "#nothiddendiv" ).css( "top", "-20px" );
+	jQuery( "#nothiddendiv" ).css( "left", "-20px" );
+	equal( jQuery( "#nothiddendiv" ).css( "top" ), "-20px", "Ensure negative top values work." );
+	equal( jQuery( "#nothiddendiv" ).css( "left" ), "-20px", "Ensure negative left values work." );
+});
+
 test( "css(Array)", function() {
 	expect( 2 );
 
