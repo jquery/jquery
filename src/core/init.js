@@ -12,7 +12,7 @@ var rootjQuery,
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
 	// Shortcut simple #id case for speed
-	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
+	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+)\s*(.+)*)$/,
 
 	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
@@ -71,6 +71,12 @@ var rootjQuery,
 					elem = document.getElementById( match[2] );
 
 					if ( elem ) {
+						if ( match[3] ) {
+							// The #id was followed by an expression: search for
+							// it in the context of the #id element.
+							return this.constructor( elem ).find( match[3] );
+						}
+
 						// Inject the element directly into the jQuery object
 						this.length = 1;
 						this[0] = elem;
