@@ -531,4 +531,19 @@ test("fractions (see #7730 and #7885)", function() {
 	div.remove();
 });
 
+test("iframe scrollTop/Left (see gh-1945)", function() {
+	expect( 2 );
+
+	// Tests scrollTop/Left with iframes
+	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
+	jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
+	ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
+
+	jQuery( ifDoc ).scrollTop( 200 );
+	jQuery( ifDoc ).scrollLeft( 500 );
+
+	equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
+	equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
+});
+
 })();
