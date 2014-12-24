@@ -554,6 +554,7 @@ test("iframe scrollTop/Left (see gh-1945)", function() {
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
 	jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
 	ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
+	ifDoc.close();
 
 	jQuery( ifDoc ).scrollTop( 200 );
 	jQuery( ifDoc ).scrollLeft( 500 );
