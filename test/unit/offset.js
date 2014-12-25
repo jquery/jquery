@@ -534,16 +534,25 @@ test("fractions (see #7730 and #7885)", function() {
 test("iframe scrollTop/Left (see gh-1945)", function() {
 	expect( 2 );
 
-	// Tests scrollTop/Left with iframes
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
-	jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
-	ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
 
-	jQuery( ifDoc ).scrollTop( 200 );
-	jQuery( ifDoc ).scrollLeft( 500 );
+	// iPhone resize the iframe by its content
+	// meaning it's not possible to scroll the iframe only its parent element
+	if ( /iphone os/i.test( navigator.userAgent ) ) {
+		equal( true, true, "iPhone doesn't scroll the iframes" );
+		equal( true, true, "iPhone doesn't scroll the iframes" );
 
-	equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
-	equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
+	} else {
+		// Tests scrollTop/Left with iframes
+		jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
+		ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
+
+		jQuery( ifDoc ).scrollTop( 200 );
+		jQuery( ifDoc ).scrollLeft( 500 );
+
+		equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
+		equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
+	}
 });
 
 })();
