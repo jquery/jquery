@@ -1,13 +1,10 @@
 define([
 	"../core",
-	"../var/support",
-	"../ajax"
+	"../var/support"
 ], function( jQuery, support ) {
 
 jQuery.ajaxSettings.xhr = function() {
-	try {
-		return new XMLHttpRequest();
-	} catch ( e ) {}
+	return new XMLHttpRequest();
 };
 
 var xhrId = 0,
@@ -18,8 +15,7 @@ var xhrId = 0,
 		// Support: IE9
 		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
-	},
-	xhrSupported = jQuery.ajaxSettings.xhr();
+	};
 
 // Support: IE9
 // Open requests must be manually aborted on unload (#5280)
@@ -32,14 +28,14 @@ if ( window.attachEvent ) {
 	});
 }
 
-support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-support.ajax = xhrSupported = !!xhrSupported;
+// Support: IE9
+support.cors = "withCredentials" in jQuery.ajaxSettings.xhr();
 
 jQuery.ajaxTransport(function( options ) {
 	var callback;
 
 	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( support.cors || xhrSupported && !options.crossDomain ) {
+	if ( support.cors || !options.crossDomain ) {
 		return {
 			send: function( headers, complete ) {
 				var i,

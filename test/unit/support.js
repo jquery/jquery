@@ -55,7 +55,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		// Catches Chrome on Android as well (i.e. the default
 		// Android browser on Android >= 4.4).
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -72,7 +71,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": false,
 			"checkClone": true,
 			"checkOn": true,
@@ -89,7 +87,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": false,
 			"checkClone": true,
 			"checkOn": true,
@@ -106,7 +103,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -123,7 +119,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -140,7 +135,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -157,7 +151,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /iphone os 8/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -174,7 +167,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
@@ -191,7 +183,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": false,
 			"checkOn": false,
@@ -208,7 +199,6 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 		};
 	} else if ( /android 2\.3/i.test( userAgent ) ) {
 		expected = {
-			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": false,
@@ -238,7 +228,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 			for ( i in expected ) {
 				// TODO check for all modules containing support properties
-				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
+				if ( jQuery.ajax || i !== "cors" ) {
 					equal( computedSupport[ i ], expected[ i ],
 						"jQuery.support['" + i + "']: " + computedSupport[ i ] +
 							", expected['" + i + "']: " + expected[ i ]);
