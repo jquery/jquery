@@ -85,18 +85,28 @@ jQuery.fn.extend({
 		var docElem, win,
 			elem = this[ 0 ],
 			box = { top: 0, left: 0 },
-			doc = elem && elem.ownerDocument;
+			doc = elem && elem.ownerDocument,
+			elemParent = elem;
 
 		if ( !doc ) {
 			return;
 		}
 
-		docElem = doc.documentElement;
-
-		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
+		if ( !elem.getBoundingClientRect ) {
 			return box;
 		}
+
+		// Make sure it's not a disconnected DOM node
+		while ( true ) {
+			elemParent = elemParent.parentNode || elemParent.host;
+			if ( elemParent === doc ) {
+				break;
+			} else if ( !elemParent ) {
+				return box;
+			}
+		}
+
+		docElem = doc.documentElement;
 
 		box = elem.getBoundingClientRect();
 		win = getWindow( doc );
