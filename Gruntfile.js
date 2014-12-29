@@ -55,6 +55,8 @@ module.exports = function( grunt ) {
 					"sizzle/dist": "sizzle/dist",
 					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
+					"npo/npo.js": "native-promise-only/npo.js",
+
 					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
 					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
@@ -158,7 +160,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "test_fast", [ "node_smoke_test" ] );
 
-	grunt.registerTask( "test", [ "test_fast" ] );
+	grunt.registerTask( "test", [ "test_fast", "promises-aplus-tests" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );

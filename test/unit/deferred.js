@@ -14,7 +14,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		var defer = createDeferred();
 
-		strictEqual( defer.pipe, defer.then, "pipe is an alias of then" );
+		ok( jQuery.isFunction( defer.pipe ), "defer.pipe is a function" );
 
 		createDeferred().resolve().done(function() {
 			ok( true, "Success on resolve" );
@@ -93,15 +93,16 @@ test( "jQuery.Deferred - chainability", function() {
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (done)", function() {
+test( "jQuery.Deferred.then - filtering (done)", function( assert ) {
 
-	expect( 4 );
+	assert.expect( 4 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
 		piped = defer.then(function( a, b ) {
 			return a * b;
-		});
+		}),
+		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
 
 	piped.done(function( result ) {
 		value3 = result;
@@ -112,30 +113,70 @@ test( "jQuery.Deferred.then - filtering (done)", function() {
 		value2 = b;
 	});
 
-	defer.resolve( 2, 3 );
-
-	strictEqual( value1, 2, "first resolve value ok" );
-	strictEqual( value2, 3, "second resolve value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
-
-	jQuery.Deferred().reject().then(function() {
-		ok( false, "then should not be called on reject" );
+	defer.resolve( 2, 3 ).then(function() {
+		assert.strictEqual( value1, 2, "first resolve value ok" );
+		assert.strictEqual( value2, 3, "second resolve value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done.pop().call();
 	});
 
+	jQuery.Deferred().reject().then(function() {
+		assert.ok( false, "then should not be called on reject" );
+	}).then( null, done.pop() );
+
 	jQuery.Deferred().resolve().then( jQuery.noop ).done(function( value ) {
-		strictEqual( value, undefined, "then done callback can return undefined/null" );
+		assert.strictEqual( value, undefined, "then done callback can return undefined/null" );
+		done.pop().call();
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (fail)", function() {
+test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
 
-	expect( 4 );
+	assert.expect( 4 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
 		piped = defer.then( null, function( a, b ) {
 			return a * b;
-		});
+		}),
+		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+
+	piped.done(function( result ) {
+		value3 = result;
+	});
+
+	defer.fail(function( a, b ) {
+		value1 = a;
+		value2 = b;
+	});
+
+	defer.reject( 2, 3 ).then( null, function() {
+		assert.strictEqual( value1, 2, "first reject value ok" );
+		assert.strictEqual( value2, 3, "second reject value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().resolve().then( null, function() {
+		assert.ok( false, "then should not be called on resolve" );
+	}).then( done.pop() );
+
+	jQuery.Deferred().reject().then( null, jQuery.noop ).done(function( value ) {
+		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
+		done.pop().call();
+	});
+});
+
+test( "[PIPE ONLY] jQuery.Deferred.pipe - filtering (fail)", function( assert ) {
+
+	assert.expect( 4 );
+
+	var value1, value2, value3,
+		defer = jQuery.Deferred(),
+		piped = defer.pipe( null, function( a, b ) {
+			return a * b;
+		}),
+		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
 
 	piped.fail(function( result ) {
 		value3 = result;
@@ -146,30 +187,33 @@ test( "jQuery.Deferred.then - filtering (fail)", function() {
 		value2 = b;
 	});
 
-	defer.reject( 2, 3 );
-
-	strictEqual( value1, 2, "first reject value ok" );
-	strictEqual( value2, 3, "second reject value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
-
-	jQuery.Deferred().resolve().then( null, function() {
-		ok( false, "then should not be called on resolve" );
+	defer.reject( 2, 3 ).pipe( null, function() {
+		assert.strictEqual( value1, 2, "first reject value ok" );
+		assert.strictEqual( value2, 3, "second reject value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done.pop().call();
 	});
 
-	jQuery.Deferred().reject().then( null, jQuery.noop ).fail(function( value ) {
-		strictEqual( value, undefined, "then fail callback can return undefined/null" );
+	jQuery.Deferred().resolve().pipe( null, function() {
+		assert.ok( false, "then should not be called on resolve" );
+	}).then( done.pop() );
+
+	jQuery.Deferred().reject().pipe( null, jQuery.noop ).fail(function( value ) {
+		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
+		done.pop().call();
 	});
 });
 
-test( "jQuery.Deferred.then - filtering (progress)", function() {
+test( "jQuery.Deferred.then - filtering (progress)", function( assert ) {
 
-	expect( 3 );
+	assert.expect( 3 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
 		piped = defer.then( null, null, function( a, b ) {
 			return a * b;
-		});
+		}),
+		done = assert.async();
 
 	piped.progress(function( result ) {
 		value3 = result;
@@ -180,16 +224,17 @@ test( "jQuery.Deferred.then - filtering (progress)", function() {
 		value2 = b;
 	});
 
-	defer.notify( 2, 3 );
-
-	strictEqual( value1, 2, "first progress value ok" );
-	strictEqual( value2, 3, "second progress value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
+	defer.notify( 2, 3 ).then( null, null, function() {
+		assert.strictEqual( value1, 2, "first progress value ok" );
+		assert.strictEqual( value2, 3, "second progress value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done();
+	});
 });
 
-test( "jQuery.Deferred.then - deferred (done)", function() {
+test( "jQuery.Deferred.then - deferred (done)", function( assert ) {
 
-	expect( 3 );
+	assert.expect( 3 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
@@ -197,7 +242,8 @@ test( "jQuery.Deferred.then - deferred (done)", function() {
 			return jQuery.Deferred(function( defer ) {
 				defer.reject( a * b );
 			});
-		});
+		}),
+		done = assert.async();
 
 	piped.fail(function( result ) {
 		value3 = result;
@@ -210,14 +256,17 @@ test( "jQuery.Deferred.then - deferred (done)", function() {
 
 	defer.resolve( 2, 3 );
 
-	strictEqual( value1, 2, "first resolve value ok" );
-	strictEqual( value2, 3, "second resolve value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
+	piped.fail(function() {
+		assert.strictEqual( value1, 2, "first resolve value ok" );
+		assert.strictEqual( value2, 3, "second resolve value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done();
+	});
 });
 
-test( "jQuery.Deferred.then - deferred (fail)", function() {
+test( "jQuery.Deferred.then - deferred (fail)", function( assert ) {
 
-	expect( 3 );
+	assert.expect( 3 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
@@ -225,7 +274,8 @@ test( "jQuery.Deferred.then - deferred (fail)", function() {
 			return jQuery.Deferred(function( defer ) {
 				defer.resolve( a * b );
 			});
-		});
+		}),
+		done = assert.async();
 
 	piped.done(function( result ) {
 		value3 = result;
@@ -238,14 +288,17 @@ test( "jQuery.Deferred.then - deferred (fail)", function() {
 
 	defer.reject( 2, 3 );
 
-	strictEqual( value1, 2, "first reject value ok" );
-	strictEqual( value2, 3, "second reject value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
+	piped.done(function() {
+		assert.strictEqual( value1, 2, "first reject value ok" );
+		assert.strictEqual( value2, 3, "second reject value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done();
+	});
 });
 
-test( "jQuery.Deferred.then - deferred (progress)", function() {
+test( "jQuery.Deferred.then - deferred (progress)", function( assert ) {
 
-	expect( 3 );
+	assert.expect( 3 );
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
@@ -253,7 +306,48 @@ test( "jQuery.Deferred.then - deferred (progress)", function() {
 			return jQuery.Deferred(function( defer ) {
 				defer.resolve( a * b );
 			});
+		}),
+		done = assert.async();
+
+	piped.progress(function( result ) {
+		return jQuery.Deferred().resolve().then(function() {
+			return result;
+		}).then(function( result ) {
+			value3 = result;
 		});
+	});
+
+	defer.progress(function( a, b ) {
+		value1 = a;
+		value2 = b;
+	});
+
+	defer.notify( 2, 3 );
+
+	piped.then( null, null, function( result ) {
+		return jQuery.Deferred().resolve().then(function() {
+			return result;
+		}).then(function() {
+			assert.strictEqual( value1, 2, "first progress value ok" );
+			assert.strictEqual( value2, 3, "second progress value ok" );
+			assert.strictEqual( value3, 6, "result of filter ok" );
+			done();
+		});
+	});
+});
+
+test( "[PIPE ONLY] jQuery.Deferred.pipe - deferred (progress)", function( assert ) {
+
+	assert.expect( 3 );
+
+	var value1, value2, value3,
+		defer = jQuery.Deferred(),
+		piped = defer.pipe( null, null, function( a, b ) {
+			return jQuery.Deferred(function( defer ) {
+				defer.resolve( a * b );
+			});
+		}),
+		done = assert.async();
 
 	piped.done(function( result ) {
 		value3 = result;
@@ -266,29 +360,36 @@ test( "jQuery.Deferred.then - deferred (progress)", function() {
 
 	defer.notify( 2, 3 );
 
-	strictEqual( value1, 2, "first progress value ok" );
-	strictEqual( value2, 3, "second progress value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
+	piped.done(function() {
+		assert.strictEqual( value1, 2, "first progress value ok" );
+		assert.strictEqual( value2, 3, "second progress value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done();
+	});
 });
 
-test( "jQuery.Deferred.then - context", function() {
+test( "jQuery.Deferred.then - context", function( assert ) {
 
-	expect( 7 );
+	assert.expect( 7 );
 
 	var defer, piped, defer2, piped2,
-		context = {};
+		context = {},
+		done = jQuery.map( new Array( 4 ), function() { return assert.async(); } );
 
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).then(function( value ) {
 		return value * 3;
 	}).done(function( value ) {
-		strictEqual( this, context, "custom context correctly propagated" );
-		strictEqual( value, 6, "proper value received" );
+		assert.notStrictEqual( this, context, "custom context not propagated through .then" );
+		assert.strictEqual( value, 6, "proper value received" );
+		done.pop().call();
 	});
 
 	jQuery.Deferred().resolve().then(function() {
-		return jQuery.Deferred().resolveWith(context);
+		return jQuery.Deferred().resolveWith( context );
 	}).done(function() {
-		strictEqual( this, context, "custom context of returned deferred correctly propagated" );
+		assert.strictEqual( this, context,
+			"custom context of returned deferred correctly propagated" );
+		done.pop().call();
 	});
 
 	defer = jQuery.Deferred();
@@ -299,8 +400,10 @@ test( "jQuery.Deferred.then - context", function() {
 	defer.resolve( 2 );
 
 	piped.done(function( value ) {
-		strictEqual( this, piped, "default context gets updated to latest promise in the chain" );
-		strictEqual( value, 6, "proper value received" );
+		assert.strictEqual( this, piped,
+			"default context gets updated to latest promise in the chain" );
+		assert.strictEqual( value, 6, "proper value received" );
+		done.pop().call();
 	});
 
 	defer2 = jQuery.Deferred();
@@ -309,9 +412,157 @@ test( "jQuery.Deferred.then - context", function() {
 	defer2.resolve( 2 );
 
 	piped2.done(function( value ) {
-		strictEqual( this, piped2, "default context gets updated to latest promise in the chain (without passing function)" );
-		strictEqual( value, 2, "proper value received (without passing function)" );
+		assert.strictEqual( this, piped2,
+			"default context updated to latest promise in the chain (without passing function)" );
+		assert.strictEqual( value, 2, "proper value received (without passing function)" );
+		done.pop().call();
 	});
+});
+
+test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
+
+	assert.expect( 7 );
+
+	var defer, piped, defer2, piped2,
+		context = {},
+		done = jQuery.map( new Array( 4 ), function() { return assert.async(); } );
+
+	jQuery.Deferred().resolveWith( context, [ 2 ] ).pipe(function( value ) {
+		return value * 3;
+	}).done(function( value ) {
+		assert.strictEqual( this, context, "[PIPE ONLY] custom context correctly propagated" );
+		assert.strictEqual( value, 6, "proper value received" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().resolve().pipe(function() {
+		return jQuery.Deferred().resolveWith(context);
+	}).done(function() {
+		assert.strictEqual( this, context,
+			"custom context of returned deferred correctly propagated" );
+		done.pop().call();
+	});
+
+	defer = jQuery.Deferred();
+	piped = defer.pipe(function( value ) {
+		return value * 3;
+	});
+
+	defer.resolve( 2 );
+
+	piped.done(function( value ) {
+		assert.strictEqual( this, piped,
+			"default context gets updated to latest promise in the chain" );
+		assert.strictEqual( value, 6, "proper value received" );
+		done.pop().call();
+	});
+
+	defer2 = jQuery.Deferred();
+	piped2 = defer2.pipe();
+
+	defer2.resolve( 2 );
+
+	piped2.done(function( value ) {
+		assert.strictEqual( this, piped2,
+			"default context updated to latest promise in the chain (without passing function)" );
+		assert.strictEqual( value, 2, "proper value received (without passing function)" );
+		done.pop().call();
+	});
+});
+
+asyncTest( "jQuery.Deferred.then - spec compatibility", function() {
+
+	expect( 1 );
+
+	var defer = jQuery.Deferred().done(function() {
+		setTimeout( start );
+		throw new Error();
+	});
+
+	defer.then(function() {
+		ok( true, "errors in .done callbacks don't stop .then handlers" );
+	});
+
+	try {
+		defer.resolve();
+	} catch ( _ ) {}
+});
+
+test( "jQuery.Deferred - 1.x/2.x compatibility", function( assert ) {
+
+	expect( 8 );
+
+	var context = { id: "callback context" },
+		thenable = jQuery.Deferred().resolve( "thenable fulfillment" ).promise(),
+		done = jQuery.map( new Array( 8 ), function() { return assert.async(); } );
+
+	thenable.unwrapped = false;
+
+	jQuery.Deferred().resolve( 1, 2 ).then(function() {
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then fulfillment callbacks receive all resolution values" );
+		done.pop().call();
+	});
+	jQuery.Deferred().reject( 1, 2 ).then( null, function() {
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then rejection callbacks receive all rejection values" );
+		done.pop().call();
+	});
+	jQuery.Deferred().notify( 1, 2 ).then( null, null, function() {
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then progress callbacks receive all progress values" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().resolveWith( context ).then(function() {
+		assert.deepEqual( this, context, ".then fulfillment callbacks receive context" );
+		done.pop().call();
+	});
+	jQuery.Deferred().rejectWith( context ).then( null, function() {
+		assert.deepEqual( this, context, ".then rejection callbacks receive context" );
+		done.pop().call();
+	});
+	jQuery.Deferred().notifyWith( context ).then( null, null, function() {
+		assert.deepEqual( this, context, ".then progress callbacks receive context" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().resolve( thenable ).done(function( value ) {
+		assert.strictEqual( value, thenable, ".done doesn't unwrap thenables" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().notify( thenable ).then().then( null, null, function( value ) {
+		assert.strictEqual( value, "thenable fulfillment",
+			".then implicit progress callbacks unwrap thenables" );
+		done.pop().call();
+	});
+});
+
+test( "jQuery.Deferred.then - progress and thenables", function( assert ) {
+
+	expect( 2 );
+
+	var trigger = jQuery.Deferred().notify(),
+		expectedProgress = [ "baz", "baz" ],
+		done = jQuery.map( new Array( 2 ), function() { return assert.async(); } ),
+		failer = function( evt ) {
+			return function() {
+				ok( false, "no unexpected " + evt );
+			};
+		};
+
+	trigger.then( null, null, function() {
+		var notifier = jQuery.Deferred().notify( "foo" );
+		setTimeout(function() {
+			notifier.notify( "bar" ).resolve( "baz" );
+		});
+		return notifier;
+	}).then( failer( "fulfill" ), failer( "reject" ), function( v ) {
+		assert.strictEqual( v, expectedProgress.shift(), "expected progress value" );
+		done.pop().call();
+	});
+	trigger.notify();
 });
 
 test( "jQuery.when", function() {
@@ -376,30 +627,43 @@ test( "jQuery.when", function() {
 
 test( "jQuery.when - joined", function() {
 
-	expect( 119 );
+	expect( 195 );
 
 	var deferreds = {
-			value: 1,
-			success: jQuery.Deferred().resolve( 1 ),
-			error: jQuery.Deferred().reject( 0 ),
-			futureSuccess: jQuery.Deferred().notify( true ),
-			futureError: jQuery.Deferred().notify( true ),
-			notify: jQuery.Deferred().notify( true )
+			rawValue: 1,
+			fulfilled: jQuery.Deferred().resolve( 1 ),
+			rejected: jQuery.Deferred().reject( 0 ),
+			notified: jQuery.Deferred().notify( true ),
+			eventuallyFulfilled: jQuery.Deferred().notify( true ),
+			eventuallyRejected: jQuery.Deferred().notify( true ),
+			fulfilledStandardPromise: Promise.resolve( 1 ),
+			rejectedStandardPromise: Promise.reject( 0 )
 		},
 		willSucceed = {
-			value: true,
-			success: true,
-			futureSuccess: true
+			rawValue: true,
+			fulfilled: true,
+			eventuallyFulfilled: true,
+			fulfilledStandardPromise: true
 		},
 		willError = {
-			error: true,
-			futureError: true
+			rejected: true,
+			eventuallyRejected: true,
+			rejectedStandardPromise: true
 		},
 		willNotify = {
-			futureSuccess: true,
-			futureError: true,
-			notify: true
-		};
+			notified: true,
+			eventuallyFulfilled: true,
+			eventuallyRejected: true
+		},
+		counter = 49;
+
+	stop();
+
+	function restart() {
+		if ( !--counter ) {
+			start();
+		}
+	}
 
 	jQuery.each( deferreds, function( id1, defer1 ) {
 		jQuery.each( deferreds, function( id2, defer2 ) {
@@ -408,9 +672,11 @@ test( "jQuery.when - joined", function() {
 				shouldNotify = willNotify[ id1 ] || willNotify[ id2 ],
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
-				code = id1 + "/" + id2,
-				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : undefined,
-				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : undefined;
+				code = "jQuery.when( " + id1 + ", " + id2 + " )",
+				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() :
+					( defer1.then ? window : undefined ),
+				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() :
+					( defer2.then ? window : undefined );
 
 			jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
@@ -430,11 +696,11 @@ test( "jQuery.when - joined", function() {
 				deepEqual( [ a, b ], expectedNotify, code + " => progress" );
 				strictEqual( this[ 0 ], expectedNotify[ 0 ] ? context1 : undefined, code + " => first context OK" );
 				strictEqual( this[ 1 ], expectedNotify[ 1 ] ? context2 : undefined, code + " => second context OK" );
-			});
+			}).always( restart );
 		});
 	});
-	deferreds.futureSuccess.resolve( 1 );
-	deferreds.futureError.reject( 0 );
+	deferreds.eventuallyFulfilled.resolve( 1 );
+	deferreds.eventuallyRejected.reject( 0 );
 });
 
 test( "jQuery.when - resolved", function() {
@@ -456,5 +722,75 @@ test( "jQuery.when - resolved", function() {
 	}).fail(function() {
 		ok( false, "Error on resolve" );
 	});
+});
 
+test( "jQuery.when - filtering", function() {
+
+	expect( 2 );
+
+	function increment( x ) {
+		return x + 1;
+	}
+
+	stop();
+
+	jQuery.when(
+		jQuery.Deferred().resolve( 3 ).then( increment ),
+		jQuery.Deferred().reject( 5 ).then( null, increment )
+	).done(function( four, six ) {
+		strictEqual( four, 4, "resolved value incremented" );
+		strictEqual( six, 6, "rejected value incremented" );
+		start();
+	});
+});
+
+test( "jQuery.when - exceptions", function() {
+
+	expect( 2 );
+
+	function woops() {
+		throw "exception thrown";
+	}
+
+	stop();
+
+	jQuery.Deferred().resolve().then( woops ).fail(function( doneException ) {
+		strictEqual( doneException, "exception thrown", "throwing in done handler" );
+		jQuery.Deferred().reject().then( null, woops ).fail(function( failException ) {
+			strictEqual( failException, "exception thrown", "throwing in fail handler" );
+			start();
+		});
+	});
+});
+
+test( "jQuery.when - chaining", function() {
+
+	expect( 4 );
+
+	var defer = jQuery.Deferred();
+
+	function chain() {
+		return defer;
+	}
+
+	function chainStandard() {
+		return Promise.resolve( "std deferred" );
+	}
+
+	stop();
+
+	jQuery.when(
+		jQuery.Deferred().resolve( 3 ).then( chain ),
+		jQuery.Deferred().reject( 5 ).then( null, chain ),
+		jQuery.Deferred().resolve( 3 ).then( chainStandard ),
+		jQuery.Deferred().reject( 5 ).then( null, chainStandard )
+	).done(function( v1, v2, s1, s2 ) {
+		strictEqual( v1, "other deferred", "chaining in done handler" );
+		strictEqual( v2, "other deferred", "chaining in fail handler" );
+		strictEqual( s1, "std deferred", "chaining thenable in done handler" );
+		strictEqual( s2, "std deferred", "chaining thenable in fail handler" );
+		start();
+	});
+
+	defer.resolve( "other deferred" );
 });
