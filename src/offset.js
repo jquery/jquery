@@ -92,21 +92,29 @@ jQuery.fn.extend({
 			return;
 		}
 
-		if ( !elem.getBoundingClientRect ) {
-			return box;
-		}
+		docElem = doc.documentElement;
 
-		// Make sure it's not a disconnected DOM node
-		while ( true ) {
-			elemParent = elemParent.parentNode || elemParent.host;
-			if ( elemParent === doc ) {
-				break;
-			} else if ( !elemParent ) {
+		// We have element in ShadowDOM, need recursive traversal from element to its parent
+		if ( elem.matches && elem.matches( ":host *" ) ) {
+			if ( !elem.getBoundingClientRect ) {
+				return box;
+			}
+
+			// Make sure it's not a disconnected DOM node
+			while ( true ) {
+				elemParent = elemParent.parentNode || elemParent.host;
+				if ( elemParent === doc ) {
+					break;
+				} else if ( !elemParent ) {
+					return box;
+				}
+			}
+		} else {
+			// Make sure it's not a disconnected DOM node
+			if ( !jQuery.contains( docElem, elem ) ) {
 				return box;
 			}
 		}
-
-		docElem = doc.documentElement;
 
 		box = elem.getBoundingClientRect();
 		win = getWindow( doc );
