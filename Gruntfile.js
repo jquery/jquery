@@ -53,6 +53,8 @@ module.exports = function( grunt ) {
 					"sizzle/dist": "sizzle/dist",
 					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
+					"npo/npo.js": "native-promise-only/npo.js",
+
 					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
 					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
@@ -158,7 +160,8 @@ module.exports = function( grunt ) {
 	// Only defined for master at this time, but kept for cross-branch consistency
 	grunt.registerTask( "test_fast", [] );
 
-	grunt.registerTask( "test", [ "test_fast" ] );
+	// gh-2133 TODO: cherry-pick 76df9e4e389d80bff410a9e5f08b848de1d21a2f for promises-aplus-tests
+	grunt.registerTask( "test", [ "test_fast"/*, "promises-aplus-tests"*/ ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
