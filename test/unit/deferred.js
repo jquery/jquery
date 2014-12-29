@@ -314,6 +314,61 @@ test( "jQuery.Deferred.then - context", function() {
 	});
 });
 
+asyncTest( "jQuery.Deferred.then - spec compatibility", function() {
+
+	expect( 1 );
+
+	var defer = jQuery.Deferred().done(function() {
+		setTimeout( start );
+		throw new Error();
+	});
+
+	defer.then(function() {
+		ok( true, "errors in .done callbacks don't stop .then handlers" );
+	});
+
+	try {
+		defer.resolve();
+	} catch ( _ ) {}
+});
+
+asyncTest( "jQuery.Deferred - 1.x/2.x compatibility", function() {
+
+	expect( 7 );
+
+	var context = { id: "callback context" },
+		thenable = jQuery.Deferred().resolve( "thenable fulfillment value" ).promise();
+
+	jQuery.Deferred().resolve( 1, 2 ).then(function() {
+		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then fulfillment callbacks receive all resolution values" );
+	});
+	jQuery.Deferred().reject( 1, 2 ).then( null, function() {
+		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then rejection callbacks receive all rejection values" );
+	});
+	jQuery.Deferred().notify( 1, 2 ).then( null, null, function() {
+		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+			".then progress callbacks receive all progress values" );
+	});
+
+	jQuery.Deferred().resolveWith( context ).then(function() {
+		deepEqual( this, context, ".then fulfillment callbacks receive context" );
+	});
+	jQuery.Deferred().rejectWith( context ).then( null, function() {
+		deepEqual( this, context, ".then rejection callbacks receive context" );
+	});
+	jQuery.Deferred().notifyWith( context ).then( null, null, function() {
+		deepEqual( this, context, ".then progress callbacks receive context" );
+	});
+
+	jQuery.Deferred().resolve( thenable ).done(function( value ) {
+		strictEqual( value, thenable, ".done doesn't unwrap thenables" );
+	});
+
+	setTimeout( start );
+});
+
 test( "jQuery.when", function() {
 
 	expect( 37 );
