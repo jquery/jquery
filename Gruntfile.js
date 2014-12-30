@@ -120,7 +120,7 @@ module.exports = function( grunt ) {
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
-			tasks: "dev"
+			tasks: [ "dev" ]
 		},
 		uglify: {
 			all: {
@@ -153,11 +153,15 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
+	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
+
+	// Only defined for master at this time, but kept for cross-branch consistency
+	grunt.registerTask( "test_fast", [] );
+
+	grunt.registerTask( "test", [ "test_fast" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "dist:*" ] );
 
-	// Default grunt
-	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 };
