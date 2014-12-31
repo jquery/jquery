@@ -24,7 +24,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		self = this,
 		off = url.indexOf(" ");
 
-	if ( off >= 0 ) {
+	if ( off > -1 ) {
 		selector = jQuery.trim( url.slice( off ) );
 		url = url.slice( 0, off );
 	}

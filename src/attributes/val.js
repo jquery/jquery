@@ -128,7 +128,7 @@ jQuery.extend({
 				while ( i-- ) {
 					option = options[ i ];
 					if ( (option.selected =
-							jQuery.inArray( jQuery.valHooks.option.get( option ), values ) >= 0) ) {
+							jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1) ) {
 						optionSet = true;
 					}
 				}
@@ -148,7 +148,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
 			if ( jQuery.isArray( value ) ) {
-				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) > -1 );
 			}
 		}
 	};

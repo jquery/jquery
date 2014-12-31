@@ -25,7 +25,8 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		jsonProp = s.jsonp !== false && ( rjsonp.test( s.url ) ?
 			"url" :
 			typeof s.data === "string" &&
-				!( s.contentType || "" ).indexOf("application/x-www-form-urlencoded") &&
+				( s.contentType || "" )
+					.indexOf("application/x-www-form-urlencoded") === 0 &&
 				rjsonp.test( s.data ) && "data"
 		);
 
