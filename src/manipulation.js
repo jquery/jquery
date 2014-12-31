@@ -248,7 +248,7 @@ jQuery.extend({
 
 			// #4087 - If origin and destination elements are the same, and this is
 			// that element, do not do anything
-			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
+			if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
 				continue;
 			}
 
