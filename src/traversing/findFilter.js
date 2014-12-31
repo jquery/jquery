@@ -33,7 +33,7 @@ function winnow( elements, qualifier, not ) {
 	}
 
 	return jQuery.grep( elements, function( elem ) {
-		return ( jQuery.inArray( elem, qualifier ) >= 0 ) !== not;
+		return ( jQuery.inArray( elem, qualifier ) > -1 ) !== not;
 	});
 }
 
