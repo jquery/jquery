@@ -1,4 +1,4 @@
-Copyright 2005, 2014 jQuery Foundation and other contributors,
+Copyright 2005, 2015 jQuery Foundation and other contributors,
 https://jquery.org/
 
 This software consists of voluntary contributions made by many
