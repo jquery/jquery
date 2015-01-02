@@ -65,11 +65,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 				test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
 
-					expect( 21 );
-
-					// Give qunit a little breathing room
-					stop();
-					setTimeout( start, 0 );
+					expect( 28 );
 
 					var cblist,
 						results = resultString.split( /\s+/ );
@@ -77,10 +73,14 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Basic binding and firing
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
+					strictEqual( cblist.locked(), false, ".locked() initially false" );
+					strictEqual( cblist.disabled(), false, ".disabled() initially false" );
+					strictEqual( cblist.fired(), false, ".fired() initially false" );
 					cblist.add(function( str ) {
 						output += str;
 					});
-					cblist.fire("A");
+					strictEqual( cblist.fired(), false, ".fired() still false after .add" );
+					cblist.fire( "A" );
 					strictEqual( output, "XA", "Basic binding and firing" );
 					strictEqual( cblist.fired(), true, ".fired() detects firing" );
 					output = "X";
@@ -91,6 +91,8 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					strictEqual( output, "X", "Adding a callback after disabling" );
 					cblist.fire("A");
 					strictEqual( output, "X", "Firing after disabling" );
+					strictEqual( cblist.disabled(), true, ".disabled() becomes true" );
+					strictEqual( cblist.locked(), true, "disabling locks" );
 
 					// #13517 - Emptying while firing
 					cblist = jQuery.Callbacks( flags );
@@ -160,6 +162,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						output += str;
 					});
 					strictEqual( output, "X", "Lock early" );
+					strictEqual( cblist.locked(), true, "Locking reflected in accessor" );
 
 					// Ordering
 					output = "X";
