@@ -594,6 +594,19 @@ test("jQuery('html')", function() {
 	equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 });
 
+test("jQuery(tag-hyphenated elements) gh-1987", function() {
+	expect( 17 );
+
+	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
+		var j = jQuery("<" + name + "-d></" + name + "-d>");
+		ok( j[0], "Create a tag-hyphenated elements" );
+		ok( jQuery.nodeName(j[0], name.toUpperCase() + "-D"), "Tag-hyphenated element has expected node name" );
+	});
+
+	var j = jQuery("<tr-multiple-hyphens></tr-multiple-hyphens>");
+	ok( jQuery.nodeName(j[0], "TR-MULTIPLE-HYPHENS"), "Element with multiple hyphens in its tag has expected node name" );
+});
+
 test("jQuery('massive html #7990')", function() {
 	expect( 3 );
 
