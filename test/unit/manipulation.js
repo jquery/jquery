@@ -486,6 +486,23 @@ test( "html(String) with HTML5 (Bug #6485)", function() {
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 });
 
+test( "html(String) tag-hyphenated elements (Bug #1987)", function() {
+
+	expect( 27 );
+
+	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
+		var j = jQuery("<" + name + "-d></" + name + "-d><" + name + "-d></" + name + "-d>");
+		ok( j[0], "Create a tag-hyphenated element" );
+		ok( jQuery.nodeName(j[0], name.toUpperCase() + "-D"), "Hyphenated node name" );
+		ok( jQuery.nodeName(j[1], name.toUpperCase() + "-D"), "Hyphenated node name" );
+	});
+
+	var j = jQuery("<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>");
+	ok( jQuery.nodeName(j[0], "TR-MULTIPLE-HYPHENS"), "Tags with multiple hypens" );
+	ok( jQuery.nodeName(j.children()[0], "TD-WITH-HYPHEN"), "Tags with multiple hypens" );
+	equal( j.children().text(), "text", "Tags with multple hypens behave normally" );
+});
+
 test( "IE8 serialization bug", function() {
 
 	expect( 2 );
