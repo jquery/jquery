@@ -106,10 +106,17 @@ jQuery.extend({
 											deferred.resolve( returned );
 										}
 									} catch ( e ) {
-										if ( Thrower === handler ) {
-											deferred.rejectWith( that || deferred.promise(), args );
-										} else {
-											deferred.reject( e );
+
+										// Support: Promises/A+ section 2.3.3.3.4.1
+										// https://promisesaplus.com/#point-61
+										// Ignore post-resolution exceptions
+										if ( depth + 1 >= maxDepth ) {
+											if ( Thrower === handler ) {
+												deferred.rejectWith( that || deferred.promise(),
+													args );
+											} else {
+												deferred.reject( e );
+											}
 										}
 									}
 								};
@@ -129,17 +136,23 @@ jQuery.extend({
 					return jQuery.Deferred(function( newDefer ) {
 						// fulfilled_handlers.add( ... )
 						tuples[ 0 ][ 3 ].add(
-							resolve( newDefer, jQuery.isFunction( onFulfilled ) ?
-								onFulfilled :
-								Identity
+							resolve(
+								newDefer,
+								jQuery.isFunction( onFulfilled ) ?
+									onFulfilled :
+									Identity,
+								0
 							)
 						);
 
 						// rejected_handlers.add( ... )
 						tuples[ 1 ][ 3 ].add(
-							resolve( newDefer, jQuery.isFunction( onRejected ) ?
-								onRejected :
-								Thrower
+							resolve(
+								newDefer,
+								jQuery.isFunction( onRejected ) ?
+									onRejected :
+									Thrower,
+								0
 							)
 						);
 
