@@ -2035,10 +2035,10 @@ module( "ajax", {
 	});
 
 	asyncTest( "jQuery[get|post]( config ) - simple with xml", 2, function() {
-		jQuery.when.apply(jQuery,
-			jQuery.map(["get", "post"], function(method) {
-				return jQuery[method]({
-					url: url("data/name.php"),
+		jQuery.when.apply( jQuery,
+			jQuery.map( [ "get", "post" ] , function( method ) {
+				return jQuery[ method ]({
+					url: url( "data/name.php" ),
 					data: {
 						"xml": "5-2"
 					},
