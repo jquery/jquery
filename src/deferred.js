@@ -69,6 +69,13 @@ jQuery.extend({
 								var returned;
 								try {
 									returned = handler.apply( that, args );
+
+									// Support: Promises/A+ section 2.3.1
+									// https://promisesaplus.com/#point-48
+									if ( returned === deferred.promise() ) {
+										throw new TypeError();
+									}
+
 									if ( returned && jQuery.isFunction( returned.then ) ) {
 										returned.then(
 											resolve( deferred, Identity ),
