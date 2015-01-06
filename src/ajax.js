@@ -796,13 +796,14 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 			data = undefined;
 		}
 
-		return jQuery.ajax({
+		//extend to handle situation when url is actually a config object
+		return jQuery.ajax(jQuery.extend({
 			url: url,
 			type: method,
 			dataType: type,
 			data: data,
 			success: callback
-		});
+		}, (jQuery.isPlainObject(url) && url)));
 	};
 });
 
