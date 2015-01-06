@@ -89,7 +89,14 @@ jQuery.extend({
 										// https://promisesaplus.com/#point-54
 										// https://promisesaplus.com/#point-75
 										// Retrieve `then` only once
-										then = returned && returned.then;
+										then = returned &&
+
+											// Support: Promises/A+ section 2.3.4
+											// https://promisesaplus.com/#point-64
+											// Only check objects and functions for thenability
+											( typeof returned === "object" ||
+												typeof returned === "function" ) &&
+											returned.then;
 
 										if ( jQuery.isFunction( then ) ) {
 											maxDepth++;
