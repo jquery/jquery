@@ -68,6 +68,14 @@ jQuery.extend({
 								args = arguments,
 								fn = function() {
 									var returned, then;
+
+									// Support: Promises/A+ section 2.3.3.3.3
+									// https://promisesaplus.com/#point-59
+									// Ignore double-resolution attempts
+									if ( depth < maxDepth ) {
+										return;
+									}
+
 									try {
 										returned = handler.apply( that, args );
 
