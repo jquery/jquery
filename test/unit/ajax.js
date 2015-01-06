@@ -2034,6 +2034,26 @@ module( "ajax", {
 		});
 	});
 
+	asyncTest( "jQuery[get|post]( options ) - simple with xml", 2, function() {
+		jQuery.when.apply( jQuery,
+			jQuery.map( [ "get", "post" ] , function( method ) {
+				return jQuery[ method ]({
+					url: url( "data/name.php" ),
+					data: {
+						"xml": "5-2"
+					},
+					success: function( xml ) {
+						jQuery( "math", xml ).each(function() {
+							strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+						});
+					}
+				});
+			})
+		).always(function() {
+			start();
+		});
+	});
+
 //----------- jQuery.active
 
 	test( "jQuery.active", 1, function() {
