@@ -63,7 +63,7 @@ jQuery.extend({
 				then: function( onFulfilled, onRejected, onProgress ) {
 					function resolve( deferred, handler ) {
 						return function() {
-							var that = this,
+							var that = this === promise ? undefined : this,
 								args = arguments;
 							setTimeout(function() {
 								var returned;
@@ -75,11 +75,17 @@ jQuery.extend({
 											resolve( deferred, Thrower ),
 											deferred.notify
 										);
+									} else if ( Identity === handler ) {
+										deferred.resolveWith( that || deferred.promise(), args );
 									} else {
 										deferred.resolve( returned );
 									}
 								} catch ( e ) {
-									deferred.reject( e );
+									if ( Thrower === handler ) {
+										deferred.rejectWith( that || deferred.promise(), args );
+									} else {
+										deferred.reject( e );
+									}
 								}
 							});
 						};

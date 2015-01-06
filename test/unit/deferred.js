@@ -385,7 +385,7 @@ test( "jQuery.Deferred.then - context", function( assert ) {
 	});
 
 	jQuery.Deferred().resolve().then(function() {
-		return jQuery.Deferred().resolveWith(context);
+		return jQuery.Deferred().resolveWith( context );
 	}).done(function() {
 		assert.strictEqual( this, context,
 			"custom context of returned deferred correctly propagated" );
