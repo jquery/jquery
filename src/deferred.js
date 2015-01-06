@@ -66,7 +66,7 @@ jQuery.extend({
 							var that = this === promise ? undefined : this,
 								args = arguments;
 							setTimeout(function() {
-								var returned;
+								var returned, then;
 								try {
 									returned = handler.apply( that, args );
 
@@ -76,8 +76,15 @@ jQuery.extend({
 										throw new TypeError();
 									}
 
-									if ( returned && jQuery.isFunction( returned.then ) ) {
-										returned.then(
+									// Support: Promises/A+ sections 2.3.3.1, 3.5
+									// https://promisesaplus.com/#point-54
+									// https://promisesaplus.com/#point-75
+									// Retrieve `then` only once
+									then = returned && returned.then;
+
+									if ( jQuery.isFunction( then ) ) {
+										then.call(
+											returned,
 											resolve( deferred, Identity ),
 											resolve( deferred, Thrower ),
 											deferred.notify
