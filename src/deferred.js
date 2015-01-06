@@ -61,47 +61,60 @@ jQuery.extend({
 					}).promise();
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
-					function resolve( deferred, handler ) {
+					var maxDepth = 0;
+					function resolve( deferred, handler, depth ) {
 						return function() {
 							var that = this === promise ? undefined : this,
-								args = arguments;
-							setTimeout(function() {
-								var returned, then;
-								try {
-									returned = handler.apply( that, args );
+								args = arguments,
+								fn = function() {
+									var returned, then;
+									try {
+										returned = handler.apply( that, args );
 
-									// Support: Promises/A+ section 2.3.1
-									// https://promisesaplus.com/#point-48
-									if ( returned === deferred.promise() ) {
-										throw new TypeError();
-									}
+										// Support: Promises/A+ section 2.3.1
+										// https://promisesaplus.com/#point-48
+										if ( returned === deferred.promise() ) {
+											throw new TypeError();
+										}
 
-									// Support: Promises/A+ sections 2.3.3.1, 3.5
-									// https://promisesaplus.com/#point-54
-									// https://promisesaplus.com/#point-75
-									// Retrieve `then` only once
-									then = returned && returned.then;
+										// Support: Promises/A+ sections 2.3.3.1, 3.5
+										// https://promisesaplus.com/#point-54
+										// https://promisesaplus.com/#point-75
+										// Retrieve `then` only once
+										then = returned && returned.then;
 
-									if ( jQuery.isFunction( then ) ) {
-										then.call(
-											returned,
-											resolve( deferred, Identity ),
-											resolve( deferred, Thrower ),
-											deferred.notify
-										);
-									} else if ( Identity === handler ) {
-										deferred.resolveWith( that || deferred.promise(), args );
-									} else {
-										deferred.resolve( returned );
+										if ( jQuery.isFunction( then ) ) {
+											maxDepth++;
+											then.call(
+												returned,
+												resolve( deferred, Identity, maxDepth ),
+												resolve( deferred, Thrower, maxDepth ),
+												deferred.notify
+											);
+										} else if ( Identity === handler ) {
+											deferred.resolveWith( that || deferred.promise(),
+												args );
+										} else {
+											deferred.resolve( returned );
+										}
+									} catch ( e ) {
+										if ( Thrower === handler ) {
+											deferred.rejectWith( that || deferred.promise(), args );
+										} else {
+											deferred.reject( e );
+										}
 									}
-								} catch ( e ) {
-									if ( Thrower === handler ) {
-										deferred.rejectWith( that || deferred.promise(), args );
-									} else {
-										deferred.reject( e );
-									}
-								}
-							});
+								};
+
+							// Support: Promises/A+ section 2.3.3.3.1
+							// https://promisesaplus.com/#point-57
+							// Re-resolve promises immediately to dodge false rejection from
+							// subsequent errors
+							if ( depth ) {
+								fn();
+							} else {
+								setTimeout( fn );
+							}
 						};
 					}
 
