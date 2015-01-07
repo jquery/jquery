@@ -118,13 +118,13 @@ grunt custom --amd=""
 
 #### Custom Build Examples
 
-To create a custom build of the latest stable version, first check out the version:
+To create a custom build, first check out the version:
 
 ```bash
-git pull; git checkout $(git describe --abbrev=0 --tags)
+git pull; git checkout VERSION
 ```
 
-Then, make sure all Node dependencies are installed:
+where VERSION is the version you want to customize. Then, make sure all Node dependencies are installed:
 
 ```bash
 npm install
