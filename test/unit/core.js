@@ -1301,13 +1301,18 @@ test("jQuery.proxy", function(){
 });
 
 test("jQuery.parseHTML", function() {
-	expect( 18 );
+	expect( 23 );
 
 	var html, nodes;
 
-	equal( jQuery.parseHTML(), null, "Nothing in, null out." );
-	equal( jQuery.parseHTML( null ), null, "Null in, null out." );
-	equal( jQuery.parseHTML( "" ), null, "Empty string in, null out." );
+	deepEqual( jQuery.parseHTML(), [], "Without arguments" );
+	deepEqual( jQuery.parseHTML( undefined ), [], "Undefined" );
+	deepEqual( jQuery.parseHTML( null ), [], "Null" );
+	deepEqual( jQuery.parseHTML( false ), [], "Boolean false" );
+	deepEqual( jQuery.parseHTML( 0 ), [], "Zero" );
+	deepEqual( jQuery.parseHTML( true ), [], "Boolean true" );
+	deepEqual( jQuery.parseHTML( 42 ), [], "Positive number" );
+	deepEqual( jQuery.parseHTML( "" ), [], "Empty string" );
 	throws(function() {
 		jQuery.parseHTML( "<div></div>", document.getElementById("form") );
 	}, "Passing an element as the context raises an exception (context should be a document)");
