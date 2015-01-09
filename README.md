@@ -124,7 +124,7 @@ To create a custom build, first check out the version:
 git pull; git checkout VERSION
 ```
 
-where VERSION is the version you want to customize. Then, make sure all Node dependencies are installed:
+Where VERSION is the version you want to customize. Then, make sure all Node dependencies are installed:
 
 ```bash
 npm install
