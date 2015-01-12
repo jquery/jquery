@@ -96,10 +96,6 @@ jQuery.fn.extend({
 
 		// We have element in ShadowDOM, need recursive traversal from element to its parent
 		if ( elem.matches && elem.matches( ":host *" ) ) {
-			if ( !elem.getBoundingClientRect ) {
-				return box;
-			}
-
 			// Make sure it's not a disconnected DOM node
 			while ( true ) {
 				elemParent = elemParent.parentNode || elemParent.host;
