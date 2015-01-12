@@ -298,6 +298,31 @@ test( "unwrap()", function() {
 	jQuery("body > span.unwrap").remove();
 });
 
+test( "unwrap( selector )", function() {
+
+	expect( 5 );
+
+	jQuery( "body" ).append( "  <div id='unwrap' style='display: none;'> <div id='unwrap1'> <span class='unwrap'>a</span> <span class='unwrap'>b</span> </div> <div id='unwrap2'> <span class='unwrap'>c</span> <span class='unwrap'>d</span> </div> </div>" );
+
+	// Shouldn't unwrap, no match
+	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap2" );
+	equal( jQuery("#unwrap1").length, 1, "still wrapped" );
+
+	 // Shouldn't unwrap, no match
+	jQuery( "#unwrap1 span" ) .unwrap( "span" );
+	equal( jQuery("#unwrap1").length, 1, "still wrapped" );
+
+	// Unwraps
+	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap1" );
+	equal( jQuery("#unwrap1").length, 0, "unwrapped match" );
+
+	// Check return values
+	deepEqual( jQuery( "#unwrap2 span" ).get(), jQuery( "#unwrap2 span" ).unwrap( "quote" ).get(), "return on unmatched unwrap" );
+	deepEqual( jQuery( "#unwrap2 span" ).get(), jQuery( "#unwrap2 span" ).unwrap( "#unwrap2" ).get(), "return on matched unwrap" );
+
+	jQuery("body > span.unwrap").remove();
+});
+
 test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
 
 	expect( 2 );
