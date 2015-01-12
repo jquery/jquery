@@ -1,6 +1,8 @@
 define([
-	"./core"
-], function( jQuery ) {
+	"./core",
+	"./var/document",
+	"./var/documentElement"
+], function( jQuery, document, documentElement ) {
 
 /*
  * Optional (non-Sizzle) selector module for custom builds.
@@ -28,12 +30,11 @@ define([
  */
 
 var hasDuplicate,
-	docElem = window.document.documentElement,
-	matches = docElem.matches ||
-		docElem.webkitMatchesSelector ||
-		docElem.mozMatchesSelector ||
-		docElem.oMatchesSelector ||
-		docElem.msMatchesSelector,
+	matches = documentElement.matches ||
+		documentElement.webkitMatchesSelector ||
+		documentElement.mozMatchesSelector ||
+		documentElement.oMatchesSelector ||
+		documentElement.msMatchesSelector,
 	sortOrder = function( a, b ) {
 		// Flag for duplicate removal
 		if ( a === b ) {

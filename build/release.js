@@ -14,14 +14,7 @@ module.exports = function( Release ) {
 		releaseFiles = {
 			"jquery-VER.js": devFile,
 			"jquery-VER.min.js": minFile,
-			"jquery-VER.min.map": mapFile //,
-// Disable these until 2.0 defeats 1.9 as the ONE TRUE JQUERY
-			// "jquery.js": devFile,
-			// "jquery.min.js": minFile,
-			// "jquery.min.map": mapFile,
-			// "jquery-latest.js": devFile,
-			// "jquery-latest.min.js": minFile,
-			// "jquery-latest.min.map": mapFile
+			"jquery-VER.min.map": mapFile
 		},
 
 		googleFilesCDN = [
@@ -46,27 +39,23 @@ module.exports = function( Release ) {
 				unpathedFile = key.replace( /VER/g, Release.newVersion ),
 				releaseFile = cdnFolder + "/" + unpathedFile;
 
-			// Beta releases don't update the jquery-latest etc. copies
-			if ( !Release.preRelease || key.indexOf( "VER" ) >= 0 ) {
-
-				if ( /\.map$/.test( releaseFile ) ) {
-					// Map files need to reference the new uncompressed name;
-					// assume that all files reside in the same directory.
-					// "file":"jquery.min.js","sources":["jquery.js"]
-					text = fs.readFileSync( builtFile, "utf8" )
-						.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
-							"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
-							"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
-					fs.writeFileSync( releaseFile, text );
-				} else if ( /\.min\.js$/.test( releaseFile ) ) {
-					// Remove the source map comment; it causes way too many problems.
-					// Keep the map file in case DevTools allow manual association.
-					text = fs.readFileSync( builtFile, "utf8" )
-						.replace( /\/\/# sourceMappingURL=\S+/, "" );
-					fs.writeFileSync( releaseFile, text );
-				} else if ( builtFile !== releaseFile ) {
-					shell.cp( "-f", builtFile, releaseFile );
-				}
+			if ( /\.map$/.test( releaseFile ) ) {
+				// Map files need to reference the new uncompressed name;
+				// assume that all files reside in the same directory.
+				// "file":"jquery.min.js","sources":["jquery.js"]
+				text = fs.readFileSync( builtFile, "utf8" )
+					.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
+						"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
+						"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+				fs.writeFileSync( releaseFile, text );
+			} else if ( /\.min\.js$/.test( releaseFile ) ) {
+				// Remove the source map comment; it causes way too many problems.
+				// Keep the map file in case DevTools allow manual association.
+				text = fs.readFileSync( builtFile, "utf8" )
+					.replace( /\/\/# sourceMappingURL=\S+/, "" );
+				fs.writeFileSync( releaseFile, text );
+			} else if ( builtFile !== releaseFile ) {
+				shell.cp( "-f", builtFile, releaseFile );
 			}
 		});
 	}

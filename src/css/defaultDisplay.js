@@ -1,7 +1,8 @@
 define([
 	"../core",
+	"../var/document",
 	"../manipulation" // appendTo
-], function( jQuery ) {
+], function( jQuery, document ) {
 
 var iframe,
 	elemdisplay = {

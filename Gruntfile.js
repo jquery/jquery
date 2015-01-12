@@ -121,7 +121,7 @@ module.exports = function( grunt ) {
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
-			tasks: "dev"
+			tasks: [ "dev" ]
 		},
 		uglify: {
 			all: {
@@ -137,8 +137,7 @@ module.exports = function( grunt ) {
 						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) 2005, <%= grunt.template.today('yyyy') %> jQuery Foundation, Inc. | " +
-						"jquery.org/license */",
+						"(c) jQuery Foundation | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,
 						loops: false,
@@ -155,11 +154,14 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
+	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
+
+	grunt.registerTask( "test_fast", [ "node_smoke_test" ] );
+
+	grunt.registerTask( "test", [ "test_fast" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "dist:*" ] );
 
-	// Default grunt
-	grunt.registerTask( "default", [ "jsonlint", "dev", "uglify", "dist:*", "compare_size" ] );
+	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 };

@@ -321,7 +321,7 @@ module( "ajax", {
 
 		return [
 			request(
-				loc.protocol + "//" + loc.host + ":" + samePort,
+				loc.protocol + "//" + loc.hostname + ":" + samePort,
 				"Test matching ports are not detected as cross-domain",
 				false
 			),
@@ -2027,6 +2027,26 @@ module( "ajax", {
 				jQuery( "math", xml ).each(function() {
 					strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+				});
+			})
+		).always(function() {
+			start();
+		});
+	});
+
+	asyncTest( "jQuery[get|post]( options ) - simple with xml", 2, function() {
+		jQuery.when.apply( jQuery,
+			jQuery.map( [ "get", "post" ] , function( method ) {
+				return jQuery[ method ]({
+					url: url( "data/name.php" ),
+					data: {
+						"xml": "5-2"
+					},
+					success: function( xml ) {
+						jQuery( "math", xml ).each(function() {
+							strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+						});
+					}
 				});
 			})
 		).always(function() {

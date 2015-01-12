@@ -1,13 +1,15 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/rnotwhite",
+	"./ajax/var/location",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
 	"./core/init",
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./deferred"
-], function( jQuery, rnotwhite, nonce, rquery ) {
+], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
 
 var
 	rhash = /#.*$/,
@@ -794,13 +796,14 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 			data = undefined;
 		}
 
-		return jQuery.ajax({
+		// The url can be an options object (which then must have .url)
+		return jQuery.ajax( jQuery.extend({
 			url: url,
 			type: method,
 			dataType: type,
 			data: data,
 			success: callback
-		});
+		}, jQuery.isPlainObject( url ) && url ) );
 	};
 });
 

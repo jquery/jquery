@@ -25,7 +25,7 @@ In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or
 
 For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
 
-Mac OS users should install [Homebrew](http://mxcl.github.com/homebrew/). Once Homebrew is installed, run `brew install git` to install git,
+OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
@@ -118,13 +118,13 @@ grunt custom --amd=""
 
 #### Custom Build Examples
 
-To create a custom build of the latest stable version, first check out the version:
+To create a custom build, first check out the version:
 
 ```bash
-git pull; git checkout $(git describe --abbrev=0 --tags)
+git pull; git checkout VERSION
 ```
 
-Then, make sure all Node dependencies are installed:
+Where VERSION is the version you want to customize. Then, make sure all Node dependencies are installed:
 
 ```bash
 npm install

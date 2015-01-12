@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
@@ -9,11 +10,11 @@ define([
 	"./core/init",
 	"./data/accepts",
 	"./selector"
-], function( jQuery, rnotwhite, hasOwn, slice, support, dataPriv ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support, dataPriv ) {
 
 var
 	rkeyEvent = /^key/,
-	rmouseEvent = /^(?:mouse|pointer|contextmenu)|click/,
+	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
@@ -239,7 +240,7 @@ jQuery.event = {
 			return;
 		}
 
-		if ( type.indexOf(".") >= 0 ) {
+		if ( type.indexOf(".") > -1 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
 			type = namespaces.shift();
@@ -437,7 +438,7 @@ jQuery.event = {
 
 						if ( matches[ sel ] === undefined ) {
 							matches[ sel ] = handleObj.needsContext ?
-								jQuery( sel, this ).index( cur ) >= 0 :
+								jQuery( sel, this ).index( cur ) > -1 :
 								jQuery.find( sel, this, null, [ cur ] ).length;
 						}
 						if ( matches[ sel ] ) {
