@@ -63,12 +63,11 @@ jQuery.fn.extend({
 		});
 	},
 
-	unwrap: function() {
-		return this.parent().each(function() {
-			if ( !jQuery.nodeName( this, "body" ) ) {
-				jQuery( this ).replaceWith( this.childNodes );
-			}
-		}).end();
+	unwrap: function( selector ) {
+		this.parent( selector ).not( "body" ).each(function() {
+			jQuery( this ).replaceWith( this.childNodes );
+		});
+		return this;
 	}
 });
 
