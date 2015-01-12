@@ -78,7 +78,8 @@
       "Queue",
       "Selector",
       "Serialize",
-      "Traversing"
+      "Traversing",
+      "Wrap"
     ]
   }
 }
