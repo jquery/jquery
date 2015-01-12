@@ -62,11 +62,11 @@ jQuery.extend({
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
 					var maxDepth = 0;
-					function resolve( deferred, handler, depth ) {
+					function resolve( depth, deferred, handler, special ) {
 						return function() {
 							var that = this === promise ? undefined : this,
 								args = arguments,
-								fn = function() {
+								mightThrow = function() {
 									var returned, then;
 
 									// Support: Promises/A+ section 2.3.3.3.3
@@ -76,66 +76,101 @@ jQuery.extend({
 										return;
 									}
 
-									try {
-										returned = handler.apply( that, args );
+									returned = handler.apply( that, args );
 
-										// Support: Promises/A+ section 2.3.1
-										// https://promisesaplus.com/#point-48
-										if ( returned === deferred.promise() ) {
-											throw new TypeError();
-										}
+									// Support: Promises/A+ section 2.3.1
+									// https://promisesaplus.com/#point-48
+									if ( returned === deferred.promise() ) {
+										throw new TypeError();
+									}
 
-										// Support: Promises/A+ sections 2.3.3.1, 3.5
-										// https://promisesaplus.com/#point-54
-										// https://promisesaplus.com/#point-75
-										// Retrieve `then` only once
-										then = returned &&
+									// Support: Promises/A+ sections 2.3.3.1, 3.5
+									// https://promisesaplus.com/#point-54
+									// https://promisesaplus.com/#point-75
+									// Retrieve `then` only once
+									then = returned &&
 
-											// Support: Promises/A+ section 2.3.4
-											// https://promisesaplus.com/#point-64
-											// Only check objects and functions for thenability
-											( typeof returned === "object" ||
-												typeof returned === "function" ) &&
-											returned.then;
+										// Support: Promises/A+ section 2.3.4
+										// https://promisesaplus.com/#point-64
+										// Only check objects and functions for thenability
+										( typeof returned === "object" ||
+											typeof returned === "function" ) &&
+										returned.then;
 
-										if ( jQuery.isFunction( then ) ) {
-											maxDepth++;
+									// Handle a returned thenable
+									if ( jQuery.isFunction( then ) ) {
+										// Special processors (notify) just wait for resolution
+										if ( special ) {
 											then.call(
 												returned,
-												resolve( deferred, Identity, maxDepth ),
-												resolve( deferred, Thrower, maxDepth ),
-												deferred.notify
+												resolve( maxDepth, deferred, Identity, special ),
+												resolve( maxDepth, deferred, Thrower, special )
 											);
-										} else if ( Identity === handler ) {
-											deferred.resolveWith( that || deferred.promise(),
-												args );
-										} else {
-											deferred.resolve( returned );
-										}
-									} catch ( e ) {
 
-										// Support: Promises/A+ section 2.3.3.3.4.1
-										// https://promisesaplus.com/#point-61
-										// Ignore post-resolution exceptions
-										if ( depth + 1 >= maxDepth ) {
-											if ( Thrower === handler ) {
+										// Normal processors (resolve) also hook into progress
+										} else {
+
+											// ...and disregard older resolution values
+											maxDepth++;
+
+											then.call(
+												returned,
+												resolve( maxDepth, deferred, Identity, special ),
+												resolve( maxDepth, deferred, Thrower, special ),
+												resolve( maxDepth, deferred, Identity,
+													deferred.notify )
+											);
+										}
+
+									// Handle all other returned values
+									} else {
+										// Only substitue handlers pass on context
+										// and multiple values (non-spec behavior)
+										if ( handler !== Identity ) {
+											that = undefined;
+											args = [ returned ];
+										}
+
+										// Process the value(s)
+										// Default process is resolve
+										( special || deferred.resolveWith )(
+											that || deferred.promise(), args );
+									}
+								},
+
+								// Only normal processors (resolve) catch and reject exceptions
+								process = special ?
+									mightThrow :
+									function() {
+										try {
+											mightThrow();
+										} catch ( e ) {
+
+											// Support: Promises/A+ section 2.3.3.3.4.1
+											// https://promisesaplus.com/#point-61
+											// Ignore post-resolution exceptions
+											if ( depth + 1 >= maxDepth ) {
+												// Only substitue handlers pass on context
+												// and multiple values (non-spec behavior)
+												if ( handler !== Thrower ) {
+													that = undefined;
+													args = [ e ];
+												}
+
 												deferred.rejectWith( that || deferred.promise(),
 													args );
-											} else {
-												deferred.reject( e );
 											}
 										}
-									}
-								};
+									};
 
 							// Support: Promises/A+ section 2.3.3.3.1
 							// https://promisesaplus.com/#point-57
 							// Re-resolve promises immediately to dodge false rejection from
 							// subsequent errors
 							if ( depth ) {
-								fn();
+								process();
 							} else {
-								setTimeout( fn );
+								setTimeout( process );
 							}
 						};
 					}
@@ -144,37 +179,36 @@ jQuery.extend({
 						// fulfilled_handlers.add( ... )
 						tuples[ 0 ][ 3 ].add(
 							resolve(
+								0,
 								newDefer,
 								jQuery.isFunction( onFulfilled ) ?
 									onFulfilled :
-									Identity,
-								0
+									Identity
 							)
 						);
 
 						// rejected_handlers.add( ... )
 						tuples[ 1 ][ 3 ].add(
 							resolve(
+								0,
 								newDefer,
 								jQuery.isFunction( onRejected ) ?
 									onRejected :
-									Thrower,
-								0
+									Thrower
 							)
 						);
 
 						// progress_handlers.add( ... )
-						tuples[ 2 ][ 3 ].add(function() {
-							var that = this,
-								args = arguments;
-							setTimeout(function() {
-								if ( jQuery.isFunction( onProgress ) ) {
-									args = [ onProgress.apply( that, args ) ];
-									that = newDefer.promise();
-								}
-								newDefer.notifyWith( that, args );
-							});
-						});
+						tuples[ 2 ][ 3 ].add(
+							resolve(
+								0,
+								newDefer,
+								jQuery.isFunction( onProgress ) ?
+									onProgress :
+									Identity,
+								newDefer.notifyWith
+							)
+						);
 					}).promise();
 				},
 				// Get a promise for this deferred

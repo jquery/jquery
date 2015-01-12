@@ -488,41 +488,81 @@ asyncTest( "jQuery.Deferred.then - spec compatibility", function() {
 	} catch ( _ ) {}
 });
 
-asyncTest( "jQuery.Deferred - 1.x/2.x compatibility", function() {
+test( "jQuery.Deferred - 1.x/2.x compatibility", function( assert ) {
 
-	expect( 7 );
+	expect( 8 );
 
 	var context = { id: "callback context" },
-		thenable = jQuery.Deferred().resolve( "thenable fulfillment value" ).promise();
+		thenable = jQuery.Deferred().resolve( "thenable fulfillment" ).promise(),
+		done = jQuery.map( new Array( 8 ), function() { return assert.async(); } );
+
+	thenable.unwrapped = false;
 
 	jQuery.Deferred().resolve( 1, 2 ).then(function() {
-		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
 			".then fulfillment callbacks receive all resolution values" );
+		done.pop().call();
 	});
 	jQuery.Deferred().reject( 1, 2 ).then( null, function() {
-		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
 			".then rejection callbacks receive all rejection values" );
+		done.pop().call();
 	});
 	jQuery.Deferred().notify( 1, 2 ).then( null, null, function() {
-		deepEqual( [].slice.call( arguments ), [ 1, 2 ],
+		assert.deepEqual( [].slice.call( arguments ), [ 1, 2 ],
 			".then progress callbacks receive all progress values" );
+		done.pop().call();
 	});
 
 	jQuery.Deferred().resolveWith( context ).then(function() {
-		deepEqual( this, context, ".then fulfillment callbacks receive context" );
+		assert.deepEqual( this, context, ".then fulfillment callbacks receive context" );
+		done.pop().call();
 	});
 	jQuery.Deferred().rejectWith( context ).then( null, function() {
-		deepEqual( this, context, ".then rejection callbacks receive context" );
+		assert.deepEqual( this, context, ".then rejection callbacks receive context" );
+		done.pop().call();
 	});
 	jQuery.Deferred().notifyWith( context ).then( null, null, function() {
-		deepEqual( this, context, ".then progress callbacks receive context" );
+		assert.deepEqual( this, context, ".then progress callbacks receive context" );
+		done.pop().call();
 	});
 
 	jQuery.Deferred().resolve( thenable ).done(function( value ) {
-		strictEqual( value, thenable, ".done doesn't unwrap thenables" );
+		assert.strictEqual( value, thenable, ".done doesn't unwrap thenables" );
+		done.pop().call();
 	});
 
-	setTimeout( start );
+	jQuery.Deferred().notify( thenable ).then().then( null, null, function( value ) {
+		assert.strictEqual( value, "thenable fulfillment",
+			".then implicit progress callbacks unwrap thenables" );
+		done.pop().call();
+	});
+});
+
+test( "jQuery.Deferred.then - progress and thenables", function( assert ) {
+
+	expect( 2 );
+
+	var trigger = jQuery.Deferred().notify(),
+		expectedProgress = [ "baz", "baz" ],
+		done = jQuery.map( new Array( 2 ), function() { return assert.async(); } ),
+		failer = function( evt ) {
+			return function() {
+				ok( false, "no unexpected " + evt );
+			};
+		};
+
+	trigger.then( null, null, function() {
+		var notifier = jQuery.Deferred().notify( "foo" );
+		setTimeout(function() {
+			notifier.notify( "bar" ).resolve( "baz" );
+		});
+		return notifier;
+	}).then( failer( "fulfill" ), failer( "reject" ), function( v ) {
+		assert.strictEqual( v, expectedProgress.shift(), "expected progress value" );
+		done.pop().call();
+	});
+	trigger.notify();
 });
 
 test( "jQuery.when", function() {
