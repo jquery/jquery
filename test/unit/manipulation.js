@@ -529,6 +529,13 @@ test( "html(String) with HTML5 (Bug #6485)", function() {
 
 test( "html(String) tag-hyphenated elements (Bug #1987)", function() {
 
+	// Support: IE8
+	if ( /msie 8\.0/i.test( navigator.userAgent ) ) {
+		expect( 1 );
+		ok( true, "IE8 doesn't support custom elements" );
+		return;
+	}
+
 	expect( 27 );
 
 	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
