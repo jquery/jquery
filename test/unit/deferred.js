@@ -627,7 +627,7 @@ test( "jQuery.when", function() {
 
 test( "jQuery.when - joined", function() {
 
-	expect( 119 );
+	expect( 195 );
 
 	var deferreds = {
 			value: 1,
@@ -635,22 +635,35 @@ test( "jQuery.when - joined", function() {
 			error: jQuery.Deferred().reject( 0 ),
 			futureSuccess: jQuery.Deferred().notify( true ),
 			futureError: jQuery.Deferred().notify( true ),
+			futureStdSuccess: Promise.resolve( 1 ),
+			futureStdError: Promise.reject( 0 ),
 			notify: jQuery.Deferred().notify( true )
 		},
 		willSucceed = {
 			value: true,
 			success: true,
-			futureSuccess: true
+			futureSuccess: true,
+			futureStdSuccess: true
 		},
 		willError = {
 			error: true,
-			futureError: true
+			futureError: true,
+			futureStdError: true
 		},
 		willNotify = {
 			futureSuccess: true,
 			futureError: true,
 			notify: true
-		};
+		},
+		counter = 49;
+
+	stop();
+
+	function restart() {
+		if ( !--counter ) {
+			start();
+		}
+	}
 
 	jQuery.each( deferreds, function( id1, defer1 ) {
 		jQuery.each( deferreds, function( id2, defer2 ) {
@@ -660,8 +673,10 @@ test( "jQuery.when - joined", function() {
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
 				code = id1 + "/" + id2,
-				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : undefined,
-				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : undefined;
+				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() :
+					( defer1.then ? window : undefined ),
+				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() :
+					( defer2.then ? window : undefined );
 
 			jQuery.when( defer1, defer2 ).done(function( a, b ) {
 				if ( shouldResolve ) {
@@ -681,7 +696,7 @@ test( "jQuery.when - joined", function() {
 				deepEqual( [ a, b ], expectedNotify, code + " => progress" );
 				strictEqual( this[ 0 ], expectedNotify[ 0 ] ? context1 : undefined, code + " => first context OK" );
 				strictEqual( this[ 1 ], expectedNotify[ 1 ] ? context2 : undefined, code + " => second context OK" );
-			});
+			}).always( restart );
 		});
 	});
 	deferreds.futureSuccess.resolve( 1 );
@@ -707,5 +722,75 @@ test( "jQuery.when - resolved", function() {
 	}).fail(function() {
 		ok( false, "Error on resolve" );
 	});
+});
 
+test( "jQuery.when - filtering", function() {
+
+	expect( 2 );
+
+	function double( x ) {
+		return 2 * x;
+	}
+
+	stop();
+
+	jQuery.when(
+		jQuery.Deferred().resolve( 3 ).then( double ),
+		jQuery.Deferred().reject( 5 ).then( null, double )
+	).done(function( six, ten ) {
+		strictEqual( six, 6, "resolved value doubled" );
+		strictEqual( ten, 10, "rejected value doubled" );
+		start();
+	});
+});
+
+test( "jQuery.when - exceptions", function() {
+
+	expect( 2 );
+
+	function woops() {
+		throw "exception thrown";
+	}
+
+	stop();
+
+	jQuery.Deferred().resolve().then( woops ).fail(function( doneException ) {
+		strictEqual( doneException, "exception thrown", "throwing in done handler" );
+		jQuery.Deferred().reject().then( null, woops ).fail(function( failException ) {
+			strictEqual( failException, "exception thrown", "throwing in fail handler" );
+			start();
+		});
+	});
+});
+
+test( "jQuery.when - chaining", function() {
+
+	expect( 4 );
+
+	var defer = jQuery.Deferred();
+
+	function chain() {
+		return defer;
+	}
+
+	function chainStandard() {
+		return Promise.resolve( "std deferred" );
+	}
+
+	stop();
+
+	jQuery.when(
+		jQuery.Deferred().resolve( 3 ).then( chain ),
+		jQuery.Deferred().reject( 5 ).then( null, chain ),
+		jQuery.Deferred().resolve( 3 ).then( chainStandard ),
+		jQuery.Deferred().reject( 5 ).then( null, chainStandard )
+	).done(function( v1, v2, s1, s2 ) {
+		strictEqual( v1, "other deferred", "chaining in done handler" );
+		strictEqual( v2, "other deferred", "chaining in fail handler" );
+		strictEqual( s1, "std deferred", "chaining thenable in done handler" );
+		strictEqual( s2, "std deferred", "chaining thenable in fail handler" );
+		start();
+	});
+
+	defer.resolve( "other deferred" );
 });
