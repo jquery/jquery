@@ -2507,6 +2507,6 @@ asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
 		}
 
 		start();
-	});
+	}, 100 );
 });
 
