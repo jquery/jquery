@@ -90,6 +90,9 @@ define([
 			}
 		});
 	}
+
+	support.nativeCSSStyleDeclaration = (typeof div.style.setProperty === 'function');
+
 })();
 
 return support;
