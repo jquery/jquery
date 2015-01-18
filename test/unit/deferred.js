@@ -630,30 +630,30 @@ test( "jQuery.when - joined", function() {
 	expect( 195 );
 
 	var deferreds = {
-			value: 1,
-			success: jQuery.Deferred().resolve( 1 ),
-			error: jQuery.Deferred().reject( 0 ),
-			futureSuccess: jQuery.Deferred().notify( true ),
-			futureError: jQuery.Deferred().notify( true ),
-			futureStdSuccess: Promise.resolve( 1 ),
-			futureStdError: Promise.reject( 0 ),
-			notify: jQuery.Deferred().notify( true )
+			rawValue: 1,
+			fulfilled: jQuery.Deferred().resolve( 1 ),
+			rejected: jQuery.Deferred().reject( 0 ),
+			notified: jQuery.Deferred().notify( true ),
+			eventuallyFulfilled: jQuery.Deferred().notify( true ),
+			eventuallyRejected: jQuery.Deferred().notify( true ),
+			fulfilledStandardPromise: Promise.resolve( 1 ),
+			rejectedStandardPromise: Promise.reject( 0 )
 		},
 		willSucceed = {
-			value: true,
-			success: true,
-			futureSuccess: true,
-			futureStdSuccess: true
+			rawValue: true,
+			fulfilled: true,
+			eventuallyFulfilled: true,
+			fulfilledStandardPromise: true
 		},
 		willError = {
-			error: true,
-			futureError: true,
-			futureStdError: true
+			rejected: true,
+			eventuallyRejected: true,
+			rejectedStandardPromise: true
 		},
 		willNotify = {
-			futureSuccess: true,
-			futureError: true,
-			notify: true
+			notified: true,
+			eventuallyFulfilled: true,
+			eventuallyRejected: true
 		},
 		counter = 49;
 
@@ -672,7 +672,7 @@ test( "jQuery.when - joined", function() {
 				shouldNotify = willNotify[ id1 ] || willNotify[ id2 ],
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
-				code = id1 + "/" + id2,
+				code = "jQuery.when( " + id1 + ", " + id2 + " )",
 				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() :
 					( defer1.then ? window : undefined ),
 				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() :
@@ -699,8 +699,8 @@ test( "jQuery.when - joined", function() {
 			}).always( restart );
 		});
 	});
-	deferreds.futureSuccess.resolve( 1 );
-	deferreds.futureError.reject( 0 );
+	deferreds.eventuallyFulfilled.resolve( 1 );
+	deferreds.eventuallyRejected.reject( 0 );
 });
 
 test( "jQuery.when - resolved", function() {
