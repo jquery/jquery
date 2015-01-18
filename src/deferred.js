@@ -280,7 +280,8 @@ jQuery.extend({
 
 	// Deferred helper
 	when: function( subordinate /* , ..., subordinateN */ ) {
-		var i = 0,
+		var method,
+			i = 0,
 			resolveValues = slice.call( arguments ),
 			length = resolveValues.length,
 
@@ -312,12 +313,22 @@ jQuery.extend({
 			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
-				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
+				if ( resolveValues[ i ] &&
+					jQuery.isFunction( (method = resolveValues[ i ].promise) ) ) {
 
-					resolveValues[ i ].promise()
+					method.call( resolveValues[ i ] )
 						.progress( updateFunc( i, progressContexts, progressValues ) )
 						.done( updateFunc( i, resolveContexts, resolveValues ) )
 						.fail( master.reject );
+				} else if ( resolveValues[ i ] &&
+					jQuery.isFunction( (method = resolveValues[ i ].then) ) ) {
+
+					method.call(
+						resolveValues[ i ],
+						updateFunc( i, resolveContexts, resolveValues ),
+						master.reject,
+						updateFunc( i, progressContexts, progressValues )
+					);
 				} else {
 					--remaining;
 				}
