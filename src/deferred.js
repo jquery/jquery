@@ -290,7 +290,7 @@ jQuery.extend({
 
 			// the master Deferred.
 			// If resolveValues consist of only a single Deferred, just use that.
-			deferred = remaining === 1 ? subordinate : jQuery.Deferred(),
+			master = remaining === 1 ? subordinate : jQuery.Deferred(),
 
 			// Update function for both resolve and progress values
 			updateFunc = function( i, contexts, values ) {
@@ -298,13 +298,12 @@ jQuery.extend({
 					contexts[ i ] = this;
 					values[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
 					if ( values === progressValues ) {
-						deferred.notifyWith( contexts, values );
+						master.notifyWith( contexts, values );
 					} else if ( !( --remaining ) ) {
-						deferred.resolveWith( contexts, values );
+						master.resolveWith( contexts, values );
 					}
 				};
 			},
-
 			progressValues, progressContexts, resolveContexts;
 
 		// Add listeners to Deferred subordinates; treat others as resolved
@@ -314,10 +313,11 @@ jQuery.extend({
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
 				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
+
 					resolveValues[ i ].promise()
 						.progress( updateFunc( i, progressContexts, progressValues ) )
 						.done( updateFunc( i, resolveContexts, resolveValues ) )
-						.fail( deferred.reject );
+						.fail( master.reject );
 				} else {
 					--remaining;
 				}
@@ -326,10 +326,10 @@ jQuery.extend({
 
 		// If we're not waiting on anything, resolve the master
 		if ( !remaining ) {
-			deferred.resolveWith( resolveContexts, resolveValues );
+			master.resolveWith( resolveContexts, resolveValues );
 		}
 
-		return deferred.promise();
+		return master.promise();
 	}
 });
 
