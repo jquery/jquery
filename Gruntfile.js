@@ -176,6 +176,18 @@ module.exports = function( grunt ) {
 		});
 	});
 
+	grunt.registerTask( "promises-aplus-tests", function() {
+	    var done = this.async();
+		spawn( "node", [
+			"./node_modules/.bin/promises-aplus-tests",
+			"./promises-aplus-adapter.js"
+		], {
+			stdio: "inherit"
+		}).on( "close", function( code ) {
+			done( code === 0 );
+		});
+	});
+
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "dist:*" ] );
 
