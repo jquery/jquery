@@ -220,6 +220,7 @@ Aurelio De Rosa <aurelioderosa@gmail.com>
 Nazar Mokrynskyi <nazar@mokrynskyi.com>
 Arthur Verschaeve <contact@arthurverschaeve.be>
 Dan Hart <danhart@notonthehighstreet.com>
+Scott González <scott.gonzalez@gmail.com>
 Zheming Sun <mescodasun@gmail.com>
 Bin Xin <rhyzix@gmail.com>
 David Corbacho <davidcorbacho@gmail.com>
@@ -227,3 +228,10 @@ Veaceslav Grimalschi <grimalschi@yandex.ru>
 Daniel Husar <dano.husar@gmail.com>
 Jason Bedard <jason+github@jbedard.ca>
 Ben Toews <mastahyeti@gmail.com>
+Aditya Raghavan <araghavan3@gmail.com>
+Nicolas HENRY <icewil@gmail.com>
+Norman Xu <homyu.shinn@gmail.com>
+Anne-Gaelle Colom <coloma@westminster.ac.uk>
+Victor Homyakov <vkhomyackov@gmail.com>
+George Mauer <gmauer@gmail.com>
+Leonardo Braga <leonardo.braga@gmail.com>
