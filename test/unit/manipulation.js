@@ -2452,6 +2452,81 @@ test( "Validate creation of multiple quantities of certain elements (#13818)", 4
 	});
 });
 
+test( "Make sure tr element will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tr><td>test</td></tr>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
+});
+
+test( "Make sure tr elements will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tr><td>1</td></tr><tr><td>2</td></tr>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>1</td></tr><tr><td>2</td></tr></tbody>" );
+});
+
+test( "Make sure tfoot element will not be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tfoot/>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody></tbody><tfoot></tfoot>" );
+});
+
+test( "Make sure document fragment will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		fragment = document.createDocumentFragment(),
+		table = document.createElement( "table" ),
+		tr = document.createElement( "tr" ),
+		td = document.createElement( "td" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	fragment.appendChild( tr );
+	tr.appendChild( td );
+	td.innerHTML = "test";
+
+	jQuery( table ).append( fragment );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
+});
+
 test( "Make sure col element is appended correctly", function() {
 	expect( 1 );
 
