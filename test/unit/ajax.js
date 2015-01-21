@@ -2003,6 +2003,20 @@ module( "ajax", {
 				success: function( data ) {
 					strictEqual( data, "test%5Blength%5D=7&test%5Bfoo%5D=bar", "Check if a sub-object with a length param is serialized correctly" );
 				}
+			}),
+			jQuery.ajax({
+				url: url("data/echoData.php"),
+				contentType: "application/json",
+				type: "POST",
+				data: {
+					"test": {
+						"length": 7,
+						"foo": "bar"
+					}
+				},
+				success: function( data ) {
+					strictEqual( data, "{\"test\":{\"length\":7,\"foo\":\"bar\"}}", "Check if a sub-object with a length param is stringify correctly" );
+				}
 			})
 		).always(function() {
 			start();

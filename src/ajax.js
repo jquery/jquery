@@ -526,7 +526,11 @@ jQuery.extend({
 
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
-			s.data = jQuery.param( s.data, s.traditional );
+			if (s.contentType && s.contentType.indexOf( "application/json" ) !== -1 ) {
+				s.data = JSON.stringify( s.data );
+			} else {
+				s.data = jQuery.param( s.data, s.traditional );
+			}
 		}
 
 		// Apply prefilters
