@@ -1,0 +1,4 @@
+java_script:
+  enabled: true
+  config_file: .jshintrc
+  ignore_file: .jshintignore
