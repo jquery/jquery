@@ -2452,6 +2452,18 @@ test( "Validate creation of multiple quantities of certain elements (#13818)", 4
 	});
 });
 
+test( "Make sure col element is appended correctly", function() {
+	expect( 1 );
+
+	var table = jQuery( "<table cellpadding='0'><tr><td>test</td></tr></table>" );
+
+	jQuery( table ).appendTo( "#qunit-fixture" );
+
+	jQuery( "<col width='150'/>" ).prependTo( table );
+
+	strictEqual( table.find( "td" ).width(), 150 );
+});
+
 asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
