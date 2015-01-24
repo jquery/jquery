@@ -95,7 +95,9 @@ jQuery.fn.extend({
 		docElem = doc.documentElement;
 
 		// We have element in ShadowDOM, need recursive traversal from element to its parent
-		if ( elem.matches && elem.matches( ":host *" ) ) {
+		// First checking for shadowRoot creation support
+		// If that is present - we have non-prefixed element.matches() support
+		if ( Element.prototype.createShadowRoot && elem.matches( ":host *" ) ) {
 			// Make sure it's not a disconnected DOM node
 			while ( true ) {
 				elemParent = elemParent.parentNode || elemParent.host;
