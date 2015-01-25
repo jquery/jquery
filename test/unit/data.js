@@ -767,7 +767,7 @@ test(".data doesn't throw when calling selection is empty. #13551", function() {
 });
 
 test("jQuery.acceptData", 11, function() {
-	var flash, applet;
+	var flash, pdf;
 
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
@@ -779,9 +779,9 @@ test("jQuery.acceptData", 11, function() {
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
 	ok( jQuery.acceptData( flash ), "flash" );
 
-	applet = document.createElement( "object" );
-	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
-	ok( jQuery.acceptData( applet ), "applet" );
+	pdf = document.createElement( "object" );
+	pdf.setAttribute( "classid", "clsid:CA8A9780-280D-11CF-A24D-444553540000" );
+	ok( jQuery.acceptData( pdf ), "pdf" );
 
 	ok( !jQuery.acceptData( document.createComment( "" ) ), "comment" );
 	ok( !jQuery.acceptData( document.createTextNode( "" ) ), "text" );
