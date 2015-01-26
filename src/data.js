@@ -151,7 +151,12 @@ jQuery.fn.extend({
 				// First, attempt to store a copy or reference of any
 				// data that might've been store with a camelCased key.
 				var data = dataUser.get( this, camelKey );
-
+				
+				//lets try the key as is if data is null
+				if ( data == null) {
+					data = dataUser.get( this, key );
+				}
+				
 				// For HTML5 data-* attribute interop, we have to
 				// store property names with dashes in a camelCase form.
 				// This might not apply to all properties...*

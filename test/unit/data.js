@@ -807,3 +807,24 @@ testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs
 
 	equal(result, "ok", "enumeration of data- attrs on body" );
 });
+
+test(".data should update as-is if added without camel casing (PR 1.x-master #1905)", function() {
+	expect(5);
+	var div = jQuery("<div></div>").prependTo("body");
+	div.data({
+		"data-test-1": "data1",
+		"data-test-2": "data2"
+	});
+	equal( div.data()[ "data-test-1" ], "data1", "Verifing data update succesful with object" );
+	//the purpose of the below test is to remove this patch once we stop using $.extend to create data
+	//when using object notation. This is expected to fail if jQuery decides to camelCase always.
+	equal( div.data()[ "dataTest1" ], undefined, "Verifying it is not camel cased when adding as object" );
+	//update data-test-1
+	div.data( "data-test-1", "data1_updated" );
+	equal( div.data()[ "data-test-1" ], "data1_updated", "Verifying .update() updating the right data" );
+	//remove data-test-1 and data-test-2
+	div.removeData([ "data-test-1", "data-test-2" ]);
+	equal( div.data()[ "data-test-1" ], undefined, "Verifying remove of data-test-1 deleting the right data" );
+	equal( div.data()[ "data-test-2" ], undefined, "Verifying remove of data-test-2 deleting the right data" );
+	div.remove();
+});
