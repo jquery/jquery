@@ -88,7 +88,7 @@ jQuery.extend({
 		}
 
 		if ( seed ) {
-			while ( (elem = seed[i++]) ) {
+			while ( (elem = seed[ i++ ]) ) {
 				if ( jQuery.find.matchesSelector(elem, selector) ) {
 					results.push( elem );
 				}
@@ -109,7 +109,7 @@ jQuery.extend({
 		results.sort( sortOrder );
 
 		if ( hasDuplicate ) {
-			while ( (elem = results[i++]) ) {
+			while ( (elem = results[ i++ ]) ) {
 				if ( elem === results[ i ] ) {
 					j = duplicates.push( i );
 				}
@@ -129,7 +129,7 @@ jQuery.extend({
 
 		if ( !nodeType ) {
 			// If no nodeType, this is expected to be an array
-			while ( (node = elem[i++]) ) {
+			while ( (node = elem[ i++ ]) ) {
 				// Do not traverse comment nodes
 				ret += jQuery.text( node );
 			}

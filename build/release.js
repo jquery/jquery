@@ -150,9 +150,9 @@ module.exports = function( Release ) {
 		tracMilestone: function() {
 			var otherVersion,
 				m = Release.newVersion.split( "." ),
-				major = m[0] | 0,
-				minor = m[1] | 0,
-				patch = m[2] | 0 ? "." + m[2] : "",
+				major = m[ 0 ] | 0,
+				minor = m[ 1 ] | 0,
+				patch = m[ 2 ] | 0 ? "." + m[ 2 ] : "",
 				version = major + "." + minor + patch;
 			if ( major === 1) {
 				otherVersion = "2." + ( minor - 10 ) + patch;

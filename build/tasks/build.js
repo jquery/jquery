@@ -50,7 +50,7 @@ module.exports = function( grunt ) {
 		// Convert var modules
 		if ( /.\/var\//.test( path ) ) {
 			contents = contents
-				.replace( /define\([\w\W]*?return/, "var " + (/var\/([\w-]+)/.exec(name)[1]) + " =" )
+				.replace( /define\([\w\W]*?return/, "var " + (/var\/([\w-]+)/.exec(name)[ 1 ]) + " =" )
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
@@ -136,7 +136,7 @@ module.exports = function( grunt ) {
 							}
 							// Prepend folder name if passed
 							// Remove .js extension
-							module = prepend + module[1];
+							module = prepend + module[ 1 ];
 						}
 
 						// Avoid infinite recursion
