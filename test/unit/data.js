@@ -808,7 +808,7 @@ testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs
 	equal(result, "ok", "enumeration of data- attrs on body" );
 });
 
-test(".data should update as-is if added without camel casing (PR 1.x-master #1905)", function() {
+test(".data should update as-is if added without camel casing (PR 1.x-master #2036)", function() {
 	expect(5);
 	var div = jQuery("<div></div>").prependTo("body");
 	div.data({
