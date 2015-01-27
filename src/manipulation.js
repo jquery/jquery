@@ -51,7 +51,7 @@ function manipulationTarget( elem, content ) {
 	return jQuery.nodeName( elem, "table" ) &&
 		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ?
 
-		elem.getElementsByTagName("tbody")[0] ||
+		elem.getElementsByTagName("tbody")[ 0 ] ||
 			elem.appendChild( elem.ownerDocument.createElement("tbody") ) :
 		elem;
 }
@@ -361,7 +361,7 @@ jQuery.fn.extend({
 			elems = selector ? jQuery.filter( selector, this ) : this,
 			i = 0;
 
-		for ( ; (elem = elems[i]) != null; i++ ) {
+		for ( ; (elem = elems[ i ]) != null; i++ ) {
 			if ( !keepData && elem.nodeType === 1 ) {
 				jQuery.cleanData( getAll( elem ) );
 			}
@@ -381,7 +381,7 @@ jQuery.fn.extend({
 		var elem,
 			i = 0;
 
-		for ( ; (elem = this[i]) != null; i++ ) {
+		for ( ; (elem = this[ i ]) != null; i++ ) {
 			if ( elem.nodeType === 1 ) {
 
 				// Prevent memory leaks

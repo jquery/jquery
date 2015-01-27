@@ -33,7 +33,7 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( (clazz = classes[ j++ ]) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
 							cur += clazz + " ";
 						}
@@ -75,7 +75,7 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( (clazz = classes[ j++ ]) ) {
 						// Remove *all* instances
 						while ( cur.indexOf( " " + clazz + " " ) > -1 ) {
 							cur = cur.replace( " " + clazz + " ", " " );
@@ -149,8 +149,8 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 &&
-				(" " + this[i].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
+			if ( this[ i ].nodeType === 1 &&
+				(" " + this[ i ].className + " ").replace(rclass, " ").indexOf( className ) > -1 ) {
 
 				return true;
 			}
