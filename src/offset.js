@@ -82,7 +82,7 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win,
+		var docElem, win, rect,
 			elem = this[ 0 ],
 			box = { top: 0, left: 0 },
 			doc = elem && elem.ownerDocument;
@@ -91,18 +91,19 @@ jQuery.fn.extend({
 			return;
 		}
 
-		docElem = doc.documentElement;
+		rect = elem.getBoundingClientRect();
 
-		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
+		// Make sure element is not hidden or disconnected
+		if ( !rect.width && !rect.height ) {
 			return box;
 		}
 
-		box = elem.getBoundingClientRect();
+		docElem = doc.documentElement;
 		win = getWindow( doc );
+
 		return {
-			top: box.top + win.pageYOffset - docElem.clientTop,
-			left: box.left + win.pageXOffset - docElem.clientLeft
+			top: rect.top + win.pageYOffset - docElem.clientTop,
+			left: rect.left + win.pageXOffset - docElem.clientLeft
 		};
 	},
 
