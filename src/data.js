@@ -152,8 +152,8 @@ jQuery.fn.extend({
 				// data that might've been store with a camelCased key.
 				var data = dataUser.get( this, camelKey );
 
-				//lets try the key as is if data is null
-				if ( data == null) {
+				// Try the key as is if data is undefined
+				if ( data === undefined ) {
 					data = dataUser.get( this, key );
 				}
 
