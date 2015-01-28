@@ -91,6 +91,12 @@ jQuery.fn.extend({
 			return;
 		}
 
+		// Make sure it's not a disconnected DOM node,
+		// which is enough only if user-agent does not support ShadowDOM
+		if ( !elem.createShadowRoot && !jQuery.contains( docElem, elem ) ) {
+			return box;
+		}
+
 		rect = elem.getBoundingClientRect();
 
 		// Make sure element is not hidden or disconnected
