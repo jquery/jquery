@@ -91,6 +91,8 @@ jQuery.fn.extend({
 			return;
 		}
 
+		docElem = doc.documentElement;
+
 		// Make sure it's not a disconnected DOM node,
 		// which is enough only if user-agent does not support ShadowDOM
 		if ( !elem.createShadowRoot && !jQuery.contains( docElem, elem ) ) {
@@ -104,7 +106,6 @@ jQuery.fn.extend({
 			return box;
 		}
 
-		docElem = doc.documentElement;
 		win = getWindow( doc );
 
 		return {
