@@ -9,10 +9,6 @@ module.exports = function( Release ) {
 
 		npmTags = Release.npmTags;
 
-	// Have jquery-release update the version
-	// in our bower.json template
-	Release._jsonFiles.push( "build/release/_bower.json" );
-
 	Release.define({
 		npmPublish: true,
 		issueTracker: "github",
