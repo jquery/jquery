@@ -84,29 +84,21 @@ jQuery.fn.extend({
 
 		var docElem, win, rect,
 			elem = this[ 0 ],
-			box = { top: 0, left: 0 },
 			doc = elem && elem.ownerDocument;
 
 		if ( !doc ) {
 			return;
 		}
 
-		docElem = doc.documentElement;
-
-		// Make sure it's not a disconnected DOM node,
-		// which is enough only if user-agent does not support ShadowDOM
-		if ( !elem.createShadowRoot && !jQuery.contains( docElem, elem ) ) {
-			return box;
-		}
-
 		rect = elem.getBoundingClientRect();
 
 		// Make sure element is not hidden or disconnected
 		if ( !rect.width && !rect.height ) {
-			return box;
+			return { top: 0, left: 0 };
 		}
 
 		win = getWindow( doc );
+		docElem = doc.documentElement;
 
 		return {
 			top: rect.top + win.pageYOffset - docElem.clientTop,
