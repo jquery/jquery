@@ -45,12 +45,6 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		dist: function( callback ) {
-
-			if ( Release.isTest ) {
-				callback();
-				return;
-			}
-
 			dist( Release, callback );
 		}
 	});
