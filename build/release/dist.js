@@ -104,7 +104,7 @@ module.exports = function( Release, complete ) {
 		Release.dir.repo = Release.dir.dist;
 	}
 
-	Release.walk([
+	Release.walk( [
 		Release._section( "Copy files to distribution repo" ),
 		clone,
 		copy,
@@ -112,5 +112,5 @@ module.exports = function( Release, complete ) {
 
 		Release._section( "Pushing files to distribution repo" ),
 		push
-	], complete);
+	], complete );
 };
