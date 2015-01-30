@@ -4,6 +4,7 @@ module.exports = function( Release, complete ) {
 		fs = require( "fs" ),
 		shell = require( "shelljs" ),
 		pkg = require( Release.dir.repo + "/package.json" ),
+		distRemote = Release.remote.replace( "jquery", "jquery-dist" ),
 		// These files are included with the distrubtion
 		files = [
 			"src",
@@ -16,8 +17,6 @@ module.exports = function( Release, complete ) {
 	 * Clone the distribution repo
 	 */
 	function clone() {
-		var distRemote = Release.remote.replace( "jquery", "jquery-dist" );
-
 		Release.chdir( Release.dir.base );
 		Release.dir.dist = Release.dir.base + "/dist";
 
@@ -93,7 +92,7 @@ module.exports = function( Release, complete ) {
 		Release.chdir( Release.dir.dist );
 
 		console.log( "Pushing release to dist repo..." );
-		Release.exec( "git push origin master --tags",
+		Release.exec( "git push " + distRemote + " master --tags",
 			"Error pushing master and tags to git repo." );
 
 		// Set repo for npm publish
