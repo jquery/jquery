@@ -92,7 +92,7 @@ jQuery.fn.extend({
 
 		rect = elem.getBoundingClientRect();
 
-		// Make sure element is not hidden or disconnected
+		// Make sure element is not hidden (display: none) or disconnected
 		if ( !rect.width && !rect.height && !rect.left &&
 			!rect.top && !rect.right && !rect.bottom ) {
 			return;
