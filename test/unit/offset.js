@@ -61,7 +61,7 @@ test("disconnected node", function() {
 
 	var result = jQuery( document.createElement("div") ).offset();
 
-	equal(typeof result, "undefined", "Check result typeof" );
+	equal( typeof result, "undefined", "Check result typeof" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {
