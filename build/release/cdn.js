@@ -1,6 +1,7 @@
 var
 	fs = require( "fs" ),
 	shell = require( "shelljs" ),
+	path = require( "path" ),
 
 	cdnFolder = "dist/cdn",
 
@@ -20,18 +21,22 @@ var
 
 	msFilesCDN = [
 		"jquery-compat-VER.js", "jquery-compat-VER.min.js", "jquery-compat-VER.min.map"
-	];
+	],
+
+	rver = /VER/,
+	rcompat = /\-compat\./g;
 
 /**
  * Generates copies for the CDNs
  */
 function makeReleaseCopies( Release ) {
+	var version = Release.newVersion.replace( "-compat", "" );
 	shell.mkdir( "-p", cdnFolder );
 
 	Object.keys( releaseFiles ).forEach(function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
-			unpathedFile = key.replace( /VER/g, Release.newVersion ),
+			unpathedFile = key.replace( /VER/g, version ),
 			releaseFile = cdnFolder + "/" + unpathedFile;
 
 		if ( /\.map$/.test( releaseFile ) ) {
@@ -55,52 +60,72 @@ function makeReleaseCopies( Release ) {
 	});
 }
 
-function makeArchive( Release, cdn, files ) {
-	if ( Release.preRelease ) {
-		console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
-		return;
-	}
+function makeArchives( Release, callback ) {
 
-	console.log( "Creating production archive for " + cdn );
+	Release.chdir( Release.dir.repo );
 
-	var archiver = require( "archiver" )( "zip" ),
-		md5file = cdnFolder + "/" + cdn + "-md5.txt",
-		output = fs.createWriteStream(
-			cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
+	var version = Release.newVersion.replace( "-compat", "" );
+
+	function makeArchive( cdn, files, callback ) {
+		if ( Release.preRelease ) {
+			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
+			callback();
+			return;
+		}
+
+		console.log( "Creating production archive for " + cdn );
+
+		var sum,
+			archiver = require( "archiver" )( "zip" ),
+			md5file = cdnFolder + "/" + cdn + "-md5.txt",
+			output = fs.createWriteStream(
+				cdnFolder + "/" + cdn + "-jquery-compat-" + version + ".zip"
+			);
+
+		output.on( "close", callback );
+
+		output.on( "error", function( err ) {
+			throw err;
+		});
+
+		archiver.pipe( output );
+
+		files = files.map(function( item ) {
+			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
+				item.replace( rver, version );
+		});
+
+		sum = Release.exec(
+			// Read jQuery files
+			"md5sum " + files.join( " " ).replace( rcompat, "." ),
+			"Error retrieving md5sum"
 		);
-
-	output.on( "error", function( err ) {
-		throw err;
-	});
-
-	archiver.pipe( output );
-
-	files = files.map(function( item ) {
-		return cdnFolder + "/" + item.replace( /VER/g, Release.newVersion );
-	});
-
-	shell.exec( "md5sum", files, function( code, stdout ) {
-		fs.writeFileSync( md5file, stdout );
+		fs.writeFileSync( "./" + md5file, sum );
 		files.push( md5file );
 
 		files.forEach(function( file ) {
-			archiver.append( fs.createReadStream( file ), { name: file } );
+			// For Google, read jquery.js, write jquery-compat.js
+			archiver.append( fs.createReadStream( file.replace( rcompat, "." ) ),
+				{ name: path.basename( file ) } );
 		});
 
 		archiver.finalize();
+	}
+
+	function buildGoogleCDN( callback ) {
+		makeArchive( "googlecdn", googleFilesCDN, callback );
+	}
+
+	function buildMicrosoftCDN( callback ) {
+		makeArchive( "mscdn", msFilesCDN, callback );
+	}
+
+	buildGoogleCDN(function() {
+		buildMicrosoftCDN( callback );
 	});
-}
-
-function buildGoogleCDN( Release ) {
-	makeArchive( Release, "googlecdn", googleFilesCDN );
-}
-
-function buildMicrosoftCDN( Release ) {
-	makeArchive( Release, "mscdn", msFilesCDN );
 }
 
 module.exports = {
 	makeReleaseCopies: makeReleaseCopies,
-	buildGoogleCDN: buildGoogleCDN,
-	buildMicrosoftCDN: buildMicrosoftCDN
+	makeArchives: makeArchives
 };
