@@ -1,6 +1,7 @@
 var
 	fs = require( "fs" ),
 	shell = require( "shelljs" ),
+	path = require( "path" ),
 
 	cdnFolder = "dist/cdn",
 
@@ -55,52 +56,66 @@ function makeReleaseCopies( Release ) {
 	});
 }
 
-function makeArchive( Release, cdn, files ) {
-	if ( Release.preRelease ) {
-		console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
-		return;
-	}
+function makeArchives( Release, callback ) {
 
-	console.log( "Creating production archive for " + cdn );
+	Release.chdir( Release.dir.repo );
 
-	var archiver = require( "archiver" )( "zip" ),
-		md5file = cdnFolder + "/" + cdn + "-md5.txt",
-		output = fs.createWriteStream(
-			cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
-		);
+	function makeArchive( cdn, files, callback ) {
+		if ( Release.preRelease ) {
+			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
+			callback();
+			return;
+		}
 
-	output.on( "error", function( err ) {
-		throw err;
-	});
+		console.log( "Creating production archive for " + cdn );
 
-	archiver.pipe( output );
+		var sum,
+			archiver = require( "archiver" )( "zip" ),
+			md5file = cdnFolder + "/" + cdn + "-md5.txt",
+			output = fs.createWriteStream(
+				cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
+			),
+			rver = /VER/;
 
-	files = files.map(function( item ) {
-		return cdnFolder + "/" + item.replace( /VER/g, Release.newVersion );
-	});
+		output.on( "close", callback );
 
-	shell.exec( "md5sum", files, function( code, stdout ) {
-		fs.writeFileSync( md5file, stdout );
+		output.on( "error", function( err ) {
+			throw err;
+		});
+
+		archiver.pipe( output );
+
+		files = files.map(function( item ) {
+			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
+				item.replace( rver, Release.newVersion );
+		});
+
+		sum = Release.exec( "md5sum " + files.join( " " ), "Error retrieving md5sum" );
+		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
 		files.forEach(function( file ) {
-			archiver.append( fs.createReadStream( file ), { name: file } );
+			archiver.append( fs.createReadStream( file ),
+				{ name: path.basename( file ) } );
 		});
 
 		archiver.finalize();
+	}
+
+	function buildGoogleCDN( callback ) {
+		makeArchive( "googlecdn", googleFilesCDN, callback );
+	}
+
+	function buildMicrosoftCDN( callback ) {
+		makeArchive( "mscdn", msFilesCDN, callback );
+	}
+
+	buildGoogleCDN(function() {
+		buildMicrosoftCDN( callback );
 	});
-}
-
-function buildGoogleCDN( Release ) {
-	makeArchive( Release, "googlecdn", googleFilesCDN );
-}
-
-function buildMicrosoftCDN( Release ) {
-	makeArchive( Release, "mscdn", msFilesCDN );
 }
 
 module.exports = {
 	makeReleaseCopies: makeReleaseCopies,
-	buildGoogleCDN: buildGoogleCDN,
-	buildMicrosoftCDN: buildMicrosoftCDN
+	makeArchives: makeArchives
 };

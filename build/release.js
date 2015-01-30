@@ -45,13 +45,15 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		dist: function( callback ) {
-			dist( Release, callback );
+			cdn.makeArchives( Release, function() {
+				dist( Release, callback );
+			});
 		}
 	});
 };
 
 module.exports.dependencies = [
-	"archiver@0.5.2",
+	"archiver@0.14.2",
 	"shelljs@0.2.6",
 	"npm@2.3.0"
 ];
