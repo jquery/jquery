@@ -57,10 +57,10 @@ jQuery.offset = {
 		}
 
 		if ( options.top != null ) {
-			props.top = ( options.top - curOffset.top ) + curTop;
+			props.top = ( options.top - ( curOffset ? curOffset.top : 0 ) ) + curTop;
 		}
 		if ( options.left != null ) {
-			props.left = ( options.left - curOffset.left ) + curLeft;
+			props.left = ( options.left - ( curOffset ? curOffset.left : 0 ) ) + curLeft;
 		}
 
 		if ( "using" in options ) {
@@ -93,8 +93,9 @@ jQuery.fn.extend({
 		rect = elem.getBoundingClientRect();
 
 		// Make sure element is not hidden or disconnected
-		if ( !rect.width && !rect.height ) {
-			return { top: 0, left: 0 };
+		if ( !rect.width && !rect.height && !rect.left &&
+			!rect.top && !rect.right && !rect.bottom ) {
+			return;
 		}
 
 		win = getWindow( doc );

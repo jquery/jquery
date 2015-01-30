@@ -57,12 +57,11 @@ test("object without getBoundingClientRect", function() {
 });
 
 test("disconnected node", function() {
-	expect(2);
+	expect(1);
 
 	var result = jQuery( document.createElement("div") ).offset();
 
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
+	equal(typeof result, "undefined", "Check result typeof" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {
