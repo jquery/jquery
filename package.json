@@ -35,7 +35,7 @@
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
     "grunt-contrib-jshint": "0.10.0",
-    "grunt-contrib-uglify": "0.6.0",
+    "grunt-contrib-uglify": "0.7.0",
     "grunt-contrib-watch": "0.6.1",
     "grunt-git-authors": "2.0.1",
     "grunt-jscs-checker": "0.8.1",
@@ -61,7 +61,6 @@
       "Tests",
       "Build",
       "Release",
-
       "Core",
       "Ajax",
       "Attributes",

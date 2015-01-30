@@ -44,12 +44,6 @@ function makeReleaseCopies( Release ) {
 					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
 					"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 			fs.writeFileSync( releaseFile, text );
-		} else if ( /\.min\.js$/.test( releaseFile ) ) {
-			// Remove the source map comment; it causes way too many problems.
-			// Keep the map file in case DevTools allow manual association.
-			text = fs.readFileSync( builtFile, "utf8" )
-				.replace( /\/\/# sourceMappingURL=\S+/, "" );
-			fs.writeFileSync( releaseFile, text );
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );
 		}
