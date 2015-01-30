@@ -161,7 +161,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test", [ "test_fast" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "dist:*" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
 
 	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 };
