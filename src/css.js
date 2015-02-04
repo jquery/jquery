@@ -3,11 +3,13 @@ define([
 	"./var/pnum",
 	"./core/access",
 	"./css/var/rmargin",
+	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/var/getStyles",
 	"./css/curCSS",
+	"./css/adjustCSS",
 	"./css/defaultDisplay",
 	"./css/addGetHookIf",
 	"./css/support",
@@ -17,8 +19,8 @@ define([
 	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, pnum, access, rmargin, rnumnonpx, cssExpand, isHidden,
-	getStyles, curCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
+], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
+	getStyles, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
 
 var
 	// Swappable if display is none or starts with table
@@ -26,7 +28,6 @@ var
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rnumsplit = new RegExp( "^(" + pnum + ")(.*)$", "i" ),
-	rrelNum = new RegExp( "^([+-])=(" + pnum + ")", "i" ),
 
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
@@ -272,8 +273,8 @@ jQuery.extend({
 			type = typeof value;
 
 			// Convert "+=" or "-=" to relative numbers (#7345)
-			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
-				value = ( ret[1] + 1 ) * ret[2] + parseFloat( jQuery.css( elem, name ) );
+			if ( type === "string" && (ret = rcssNum.exec( value )) && ret[ 1 ] ) {
+				value = adjustCSS( elem, name, ret );
 				// Fixes bug #9237
 				type = "number";
 			}
@@ -283,9 +284,9 @@ jQuery.extend({
 				return;
 			}
 
-			// If a number was passed in, add 'px' (except for certain CSS properties)
-			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
-				value += "px";
+			// If a number was passed in, add the unit (except for certain CSS properties)
+			if ( type === "number" ) {
+				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
 			}
 
 			// Support: IE9-11+

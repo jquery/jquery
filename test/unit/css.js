@@ -203,6 +203,58 @@ test( "css() explicit and relative values", 29, function() {
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
 
+test( "css() non-px relative values (gh-1711)", 17, function() {
+	var cssCurrent,
+		units = {},
+		$child = jQuery( "#nothiddendivchild" ),
+		add = function( prop, val, unit ) {
+			var str = ( val < 0 ? "-=" : "+=" ) + Math.abs( val ) + unit;
+			$child.css( prop, str );
+			equal(
+				Math.round( parseFloat( $child.css( prop ) ) ),
+				Math.round( cssCurrent += val * units[ prop ][ unit ] ),
+				prop + ": '" + str + "'"
+			);
+		},
+		getUnits = function( prop ) {
+			units[ prop ] = {
+				"px": 1,
+				"em": parseFloat( $child.css( prop, "100em" ).css( prop ) ) / 100,
+				"pt": parseFloat( $child.css( prop, "100pt" ).css( prop ) ) / 100,
+				"pc": parseFloat( $child.css( prop, "100pc" ).css( prop ) ) / 100,
+				"cm": parseFloat( $child.css( prop, "100cm" ).css( prop ) ) / 100,
+				"mm": parseFloat( $child.css( prop, "100mm" ).css( prop ) ) / 100,
+				"%" : parseFloat( $child.css( prop, "100%"  ).css( prop ) ) / 100
+			};
+		};
+
+	jQuery( "#nothiddendiv" ).css({ height: 1, padding: 0, width: 400 });
+	$child.css({ height: 1, padding: 0 });
+
+	getUnits( "width" );
+	cssCurrent = parseFloat( $child.css( "width", "50%" ).css( "width" ) );
+	add( "width",  25,    "%" );
+	add( "width", -50,    "%" );
+	add( "width",  10,   "em" );
+	add( "width",  10,   "pt" );
+	add( "width",  -2.3, "pt" );
+	add( "width",   5,   "pc" );
+	add( "width",  -5,   "em" );
+	add( "width",  +2,   "cm" );
+	add( "width", -15,   "mm" );
+	add( "width",  21,   "px" );
+
+	getUnits( "lineHeight" );
+	cssCurrent = parseFloat( $child.css( "lineHeight", "1em" ).css( "lineHeight" ) );
+	add( "lineHeight",   2, "em" );
+	add( "lineHeight", -10, "px" );
+	add( "lineHeight",  20, "pt" );
+	add( "lineHeight",  30, "pc" );
+	add( "lineHeight",   1, "cm" );
+	add( "lineHeight", -20, "mm" );
+	add( "lineHeight",  50,  "%" );
+});
+
 test("css(String, Object)", function() {
 	expect( 19 );
 	var j, div, display, ret, success;
