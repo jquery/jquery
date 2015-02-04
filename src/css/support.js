@@ -4,8 +4,7 @@ define([
 ], function( jQuery, support ) {
 
 (function() {
-	// Minified: var b,c,d,e,f,g, h,i
-	var div, style, a, pixelPositionVal, boxSizingReliableVal,
+	var div, container, style, a, pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
 		reliableHiddenOffsetsVal, reliableMarginRightVal;
 
 	// Setup
@@ -33,19 +32,35 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
+	container = document.createElement( "div" );
+	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
+		"padding:0;margin-top:1px;position:absolute";
+	div.innerHTML = "";
+	container.appendChild( div );
+
 	jQuery.extend(support, {
 		reliableHiddenOffsets: function() {
-			if ( reliableHiddenOffsetsVal == null ) {
+			if ( pixelPositionVal == null ) {
 				computeStyleTests();
 			}
 			return reliableHiddenOffsetsVal;
 		},
 
 		boxSizingReliable: function() {
-			if ( boxSizingReliableVal == null ) {
+			// We're checking for pixelPositionVal here instead of boxSizingReliableVal
+			// since that compresses better and they're computed together anyway.
+			if ( pixelPositionVal == null ) {
 				computeStyleTests();
 			}
 			return boxSizingReliableVal;
+		},
+
+		pixelMarginRight: function() {
+			// Support: Android 4.0-4.3
+			if ( pixelPositionVal == null ) {
+				computeStyleTests();
+			}
+			return pixelMarginRightVal;
 		},
 
 		pixelPosition: function() {
@@ -55,9 +70,9 @@ define([
 			return pixelPositionVal;
 		},
 
-		// Support: Android 2.3
 		reliableMarginRight: function() {
-			if ( reliableMarginRightVal == null ) {
+			// Support: Android 2.3
+			if ( pixelPositionVal == null ) {
 				computeStyleTests();
 			}
 			return reliableMarginRightVal;
@@ -65,8 +80,7 @@ define([
 	});
 
 	function computeStyleTests() {
-		// Minified: var b,c,d,j
-		var div, container, contents,
+		var contents, divStyle,
 			body = document.body;
 
 		if ( !body || !body.style ) {
@@ -75,17 +89,16 @@ define([
 		}
 
 		// Setup
-		div = document.createElement( "div" );
-		container = document.createElement( "div" );
-		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
-		body.appendChild( container ).appendChild( div );
+		body.appendChild( container );
 
 		div.style.cssText =
 			// Support: Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
-			"display:block;margin-top:1%;top:1%;" +
-			"border:1px;padding:1px;width:4px;position:absolute";
+			"position:absolute;display:block;" +
+			"margin:0;margin-top:1%;margin-right:50%;" +
+			"border:1px;padding:1px;" +
+			"top:1%;height:4px;width:50%";
 
 		// Support: IE<9
 		// Assume reasonable values in the absence of getComputedStyle
@@ -94,9 +107,10 @@ define([
 
 		// Check for getComputedStyle so that this code is not run in IE<9.
 		if ( window.getComputedStyle ) {
-			pixelPositionVal = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
-			boxSizingReliableVal =
-				( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+			divStyle = window.getComputedStyle( div, null );
+			pixelPositionVal = ( divStyle || {} ).top !== "1%";
+			boxSizingReliableVal = ( divStyle || { height: "4px" } ).height === "4px";
+			pixelMarginRightVal = ( divStyle || { marginRight: "4px" } ).marginRight === "4px";
 
 			// Support: Android 2.3
 			// Div with explicit width and no margin-right incorrectly
@@ -136,6 +150,7 @@ define([
 			reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
 		}
 
+		// Teardown
 		body.removeChild( container );
 	}
 
