@@ -20,25 +20,28 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;margin-top:1px;" +
-		"position:absolute";
+	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
+		"padding:0;margin-top:1px;position:absolute";
 	container.appendChild( div );
 
 	// Executing both pixelPosition & boxSizingReliable tests require only one layout
 	// so they're executed at the same time to save the second computation.
-	function computePixelPositionAndBoxSizingReliable() {
+	function computeStyleTests() {
 		div.style.cssText =
 			// Support: Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
-			"display:block;margin-top:1%;top:1%;" +
-			"border:1px;padding:1px;width:4px;position:absolute";
+			"display:block;position:absolute;" +
+			"margin:0;margin-top:1%;margin-right:50%;" +
+			"border:1px;padding:1px;" +
+			"top:1%;width:50%;height:4px";
 		div.innerHTML = "";
 		documentElement.appendChild( container );
 
 		var divStyle = window.getComputedStyle( div, null );
 		pixelPositionVal = divStyle.top !== "1%";
-		boxSizingReliableVal = divStyle.width === "4px";
+		boxSizingReliableVal = divStyle.height === "4px";
+		pixelMarginRightVal = divStyle.marginRight === "4px";
 
 		documentElement.removeChild( container );
 	}
@@ -48,33 +51,24 @@ define([
 	if ( window.getComputedStyle ) {
 		jQuery.extend( support, {
 			pixelPosition: function() {
-
 				// This test is executed only once but we still do memoizing
 				// since we can use the boxSizingReliable pre-computing.
 				// No need to check if the test was already performed, though.
-				computePixelPositionAndBoxSizingReliable();
+				computeStyleTests();
 				return pixelPositionVal;
 			},
 			boxSizingReliable: function() {
 				if ( boxSizingReliableVal == null ) {
-					computePixelPositionAndBoxSizingReliable();
+					computeStyleTests();
 				}
 				return boxSizingReliableVal;
 			},
 			pixelMarginRight: function() {
 				// Support: Android 4.0-4.3
-				// A tribute to the "awesome hack by Dean Edwards"
-				// Android Browser returns percentage for some values,
-				// but width seems to be reliably pixels.
-				// This is against the CSSOM draft spec:
-				// http://dev.w3.org/csswg/cssom/#resolved-values
-				if ( pixelMarginRightVal == null ) {
-					div.style.cssText = "display:block;width:50%;border:0;margin:0;padding:0;" +
-						"margin-right:50%";
-					documentElement.appendChild( container );
-					pixelMarginRightVal =
-						window.getComputedStyle( div, null ).marginRight === "4px";
-					documentElement.removeChild( container );
+				// We're checking for boxSizingReliableVal here instead of pixelMarginRightVal
+				// since that compresses better and they're computed together anyway.
+				if ( boxSizingReliableVal == null ) {
+					computeStyleTests();
 				}
 				return pixelMarginRightVal;
 			},
