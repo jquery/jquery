@@ -62,8 +62,15 @@ define([
 				return boxSizingReliableVal;
 			},
 			pixelMarginRight: function() {
+				// Support: Android 4.0-4.3
+				// A tribute to the "awesome hack by Dean Edwards"
+				// Android Browser returns percentage for some values,
+				// but width seems to be reliably pixels.
+				// This is against the CSSOM draft spec:
+				// http://dev.w3.org/csswg/cssom/#resolved-values
 				if ( pixelMarginRightVal == null ) {
-					div.style.cssText = "display:block;width:50%;margin-right:50%";
+					div.style.cssText = "display:block;width:50%;border:0;margin:0;padding:0;" +
+						"margin-right:50%";
 					documentElement.appendChild( container );
 					pixelMarginRightVal =
 						window.getComputedStyle( div, null ).marginRight === "4px";

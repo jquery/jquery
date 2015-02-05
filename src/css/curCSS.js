@@ -25,12 +25,6 @@ function curCSS( elem, name, computed ) {
 			ret = jQuery.style( elem, name );
 		}
 
-		// Support: Android 4.0-4.3
-		// A tribute to the "awesome hack by Dean Edwards"
-		// Android Browser returns percentage for some values,
-		// but width seems to be reliably pixels.
-		// This is against the CSSOM draft spec:
-		// http://dev.w3.org/csswg/cssom/#resolved-values
 		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 
 			// Remember the original values
