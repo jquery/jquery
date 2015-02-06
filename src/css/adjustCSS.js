@@ -1,9 +1,9 @@
 define([
 	"../core",
-	"../var/rfxnum"
-], function( jQuery, rfxnum ) {
+	"../var/rcssNum"
+], function( jQuery, rcssNum ) {
 
-function adjustCSS( elem, prop, value, tween ) {
+function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted,
 		scale = 1,
 		maxIterations = 20,
@@ -11,20 +11,20 @@ function adjustCSS( elem, prop, value, tween ) {
 			function() { return tween.cur(); } :
 			function() { return jQuery.css( elem, prop, "" ); },
 		initial = currentValue(),
-		unit = value && value[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
+		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
 		// Starting value computation is required for potential unit mismatches
-		recasted = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
-			rfxnum.exec( jQuery.css( elem, prop ) );
+		initialInUnit = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
+			rcssNum.exec( jQuery.css( elem, prop ) );
 
-	if ( recasted && recasted[ 3 ] !== unit ) {
+	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
 		// Trust units reported by jQuery.css
-		unit = unit || recasted[ 3 ];
+		unit = unit || initialInUnit[ 3 ];
 
 		// Make sure we update the tween properties later on
-		value = value || [];
+		valueParts = valueParts || [];
 
 		// Iteratively approximate from a nonzero starting point
-		recasted = +initial || 1;
+		initialInUnit = +initial || 1;
 
 		do {
 			// If previous iteration zeroed out, double until we get *something*.
@@ -32,8 +32,8 @@ function adjustCSS( elem, prop, value, tween ) {
 			scale = scale || ".5";
 
 			// Adjust and apply
-			recasted = recasted / scale;
-			jQuery.style( elem, prop, recasted + unit );
+			initialInUnit = initialInUnit / scale;
+			jQuery.style( elem, prop, initialInUnit + unit );
 
 		// Update scale, tolerating zero or NaN from tween.cur()
 		// Break the loop if scale is unchanged or perfect, or if we've just had enough.
@@ -42,14 +42,15 @@ function adjustCSS( elem, prop, value, tween ) {
 		);
 	}
 
-	if ( value ) {
-		recasted = +recasted || +initial || 0;
-		adjusted = value[ 1 ] ?
-			recasted + ( value[ 1 ] + 1 ) * value[ 2 ] :
-			+value[ 2 ];
+	if ( valueParts ) {
+		initialInUnit = +initialInUnit || +initial || 0;
+		// Apply relative offset (+=/-=) if specified
+		adjusted = valueParts[ 1 ] ?
+			initialInUnit + ( valueParts[ 1 ] + 1 ) * valueParts[ 2 ] :
+			+valueParts[ 2 ];
 		if ( tween ) {
 			tween.unit = unit;
-			tween.start = recasted;
+			tween.start = initialInUnit;
 			tween.end = adjusted;
 		}
 	}

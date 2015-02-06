@@ -1,9 +1,9 @@
 define([
 	"./core",
 	"./var/pnum",
-	"./var/rfxnum",
 	"./core/access",
 	"./css/var/rmargin",
+	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
@@ -19,7 +19,7 @@ define([
 	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, pnum, rfxnum, access, rmargin, rnumnonpx, cssExpand, isHidden,
+], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
 	getStyles, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
 
 var
@@ -273,7 +273,7 @@ jQuery.extend({
 			type = typeof value;
 
 			// Convert "+=" or "-=" to relative numbers (#7345)
-			if ( type === "string" && (ret = rfxnum.exec( value )) && ret[ 1 ] ) {
+			if ( type === "string" && (ret = rcssNum.exec( value )) && ret[ 1 ] ) {
 				value = adjustCSS( elem, name, ret );
 				// Fixes bug #9237
 				type = "number";
@@ -286,11 +286,7 @@ jQuery.extend({
 
 			// If a number was passed in, add the unit (except for certain CSS properties)
 			if ( type === "number" ) {
-				if ( ret && ret[ 3 ] ) {
-					value += ret[ 3 ];
-				} else if ( !jQuery.cssNumber[ origName ] ) {
-					value += "px";
-				}
+				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
 			}
 
 			// Support: IE9-11+

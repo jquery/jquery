@@ -1,7 +1,7 @@
 define([
 	"./core",
 	"./var/document",
-	"./var/rfxnum",
+	"./var/rcssNum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/adjustCSS",
@@ -14,7 +14,7 @@ define([
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, document, rfxnum, cssExpand,
+], function( jQuery, document, rcssNum, cssExpand,
 	isHidden, adjustCSS, defaultDisplay, dataPriv ) {
 
 var
@@ -25,7 +25,7 @@ var
 	tweeners = {
 		"*": [ function( prop, value ) {
 			var tween = this.createTween( prop, value );
-			adjustCSS( tween.elem, prop, rfxnum.exec( value ), tween );
+			adjustCSS( tween.elem, prop, rcssNum.exec( value ), tween );
 			return tween;
 		} ]
 	};

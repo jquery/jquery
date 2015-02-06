@@ -206,21 +206,20 @@ test( "css() explicit and relative values", 29, function() {
 test( "css() non-px relative values (gh-1711)", 17, function() {
 	var cssCurrent,
 		units = {},
-		$parent = jQuery("#nothiddendiv"),
-		$child = jQuery("#nothiddendivchild", $parent),
+		$child = jQuery( "#nothiddendivchild" ),
 		add = function( prop, val, unit ) {
-			var str = ( val < 0 ? "-=" : "+=" ) + Math.abs(val) + unit;
+			var str = ( val < 0 ? "-=" : "+=" ) + Math.abs( val ) + unit;
 			$child.css( prop, str );
 			equal(
 				Math.round( parseFloat( $child.css( prop ) ) ),
 				Math.round( cssCurrent += val * units[ prop ][ unit ] ),
-				"'" + str + "' on " + prop
+				prop + ": '" + str + "'"
 			);
 		},
 		getUnits = function( prop ) {
 			units[ prop ] = {
 				"px": 1,
-				"em": parseFloat( $child.css( "fontSize", "16px" ).css( "fontSize" )),
+				"em": parseFloat( $child.css( prop, "100em" ).css( prop ) ) / 100,
 				"pt": parseFloat( $child.css( prop, "100pt" ).css( prop ) ) / 100,
 				"pc": parseFloat( $child.css( prop, "100pc" ).css( prop ) ) / 100,
 				"cm": parseFloat( $child.css( prop, "100cm" ).css( prop ) ) / 100,
@@ -229,11 +228,11 @@ test( "css() non-px relative values (gh-1711)", 17, function() {
 			};
 		};
 
-	$parent.css({ height: 1, padding: 0, width: 400 });
+	jQuery( "#nothiddendiv" ).css({ height: 1, padding: 0, width: 400 });
 	$child.css({ height: 1, padding: 0 });
 
 	getUnits( "width" );
-	cssCurrent = $child.css( "width", "50%" ).width();
+	cssCurrent = parseFloat( $child.css( "width", "50%" ).css( "width" ) );
 	add( "width",  25,    "%" );
 	add( "width", -50,    "%" );
 	add( "width",  10,   "em" );
