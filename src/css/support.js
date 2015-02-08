@@ -103,7 +103,7 @@ define([
 		// Support: IE<9
 		// Assume reasonable values in the absence of getComputedStyle
 		pixelPositionVal = boxSizingReliableVal = false;
-		reliableMarginRightVal = true;
+		pixelMarginRightVal = reliableMarginRightVal = true;
 
 		// Check for getComputedStyle so that this code is not run in IE<9.
 		if ( window.getComputedStyle ) {
