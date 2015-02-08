@@ -33,9 +33,27 @@ var
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 
 		thead: [ 1, "<table>", "</table>" ],
-		col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
-		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
+
+		// Following wrappers are not fully defined because
+		// their parent elements (except for "table" element) could be omitted
+		// since browser parsers are smart enough to auto-insert them
+		col: [
+
+			2,
+			// Support: Android 2.3
+			// Android browser doesn't auto-insert colgroup element
+			"<table><colgroup>", "</colgroup></table>"
+		],
+
+		tr: [
+			2, // - auto-inserts "tbody" element
+			"<table>", "</table>"
+		],
+
+		td: [
+			3, // - auto-inserts "tbody" and "tr" elements
+			"<table>", "</table>"
+		],
 
 		_default: [ 0, "", "" ]
 	};
