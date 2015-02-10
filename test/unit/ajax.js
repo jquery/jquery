@@ -1689,9 +1689,20 @@ module( "ajax", {
 			ok( false, "Global event triggered" );
 		});
 
-		jQuery("#qunit-fixture").append("<script src='data/evalScript.php'></script>");
+		jQuery("#qunit-fixture").append("<script src='data/ajax/evalScript.php'></script>");
 
 		jQuery( document ).off("ajaxStart ajaxStop");
+	});
+
+	asyncTest( "jQuery#load() - always use GET method even if it overrided through ajaxSetup (#11264)", 1, function() {
+		jQuery.ajaxSetup({
+			type: "POST"
+		});
+
+		jQuery( "#qunit-fixture" ).load( "data/ajax/method.php", function( method ) {
+			equal( method, "GET" );
+			start();
+		});
 	});
 
 	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
