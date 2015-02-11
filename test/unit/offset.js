@@ -536,11 +536,14 @@ test("iframe scrollTop/Left (see gh-1945)", function() {
 
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
 
-	// iPhone resize the iframe by its content
-	// meaning it's not possible to scroll the iframe only its parent element
-	if ( /iphone os/i.test( navigator.userAgent ) ) {
-		equal( true, true, "iPhone doesn't scroll the iframes" );
-		equal( true, true, "iPhone doesn't scroll the iframes" );
+	// Mobile Safari and Android 2.3 resize the iframe by its content
+	// meaning it's not possible to scroll the iframe only its parent element.
+	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
+	if ( /iphone os/i.test( navigator.userAgent ) ||
+	    /android 2\.3/i.test( navigator.userAgent ) ||
+	    /android 4\.0/i.test( navigator.userAgent ) ) {
+		equal( true, true, "Can't scroll iframes in this environment" );
+		equal( true, true, "Can't scroll iframes in this environment" );
 
 	} else {
 		// Tests scrollTop/Left with iframes
