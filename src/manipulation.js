@@ -203,7 +203,8 @@ jQuery.extend({
 
 	buildFragment: function( elems, context, scripts, selection ) {
 		var elem, tmp, tag, wrap, contains, j,
-			fragment = context.createDocumentFragment(),
+			doc = context.ownerDocument || context,
+			fragment = doc.createDocumentFragment(),
 			nodes = [],
 			i = 0,
 			l = elems.length;
@@ -221,11 +222,11 @@ jQuery.extend({
 
 				// Convert non-html into a text node
 				} else if ( !rhtml.test( elem ) ) {
-					nodes.push( context.createTextNode( elem ) );
+					nodes.push( doc.createTextNode( elem ) );
 
 				// Convert html into DOM nodes
 				} else {
-					tmp = tmp || fragment.appendChild( context.createElement("div") );
+					tmp = tmp || fragment.appendChild( doc.createElement("div") );
 
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
