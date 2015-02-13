@@ -149,7 +149,10 @@ module.exports = function( grunt ) {
 	});
 
 	// Load grunt tasks from NPM packages
-	require( "load-grunt-tasks" )( grunt );
+	require( "load-grunt-tasks" )( grunt, {
+		pattern: "grunt-*",
+		scope: "devDependencies"
+	});
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
