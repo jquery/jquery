@@ -1199,7 +1199,7 @@ test("jQuery.each(Object,Function)", function() {
 	jQuery.each( document.styleSheets, function() {
 		i++;
 	});
-	equal( i, 2, "Iteration over document.styleSheets" );
+	equal( i, document.styleSheets.length, "Iteration over document.styleSheets" );
 });
 
 test("jQuery.makeArray", function(){
