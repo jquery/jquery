@@ -122,7 +122,7 @@ test("is(jQuery)", function() {
 	ok( !jQuery("#radio1").is( jQuery("input:checked") ), "Check for pseudoclass: Expected not checked" );
 
 	// Some raw elements
-	ok( jQuery("#form").is( jQuery("form")[0] ), "Check for element: A form is a form" );
+	ok( jQuery("#form").is( jQuery("#qunit-fixture form")[0] ), "Check for element: A form is a form" );
 	ok( !jQuery("#form").is( jQuery("div")[0] ), "Check for element: A form is not a div" );
 	ok( jQuery("#mark").is( jQuery(".blog")[0] ), "Check for class: Expected class 'blog'" );
 	ok( !jQuery("#mark").is( jQuery(".link")[0] ), "Check for class: Did not expect class 'link'" );

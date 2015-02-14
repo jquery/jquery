@@ -210,23 +210,23 @@ function testAppend( valueObj ) {
 	equal( result.text(), defaultText + "buga", "Check if text appending works" );
 	equal( jQuery("#select3").append( valueObj("<option value='appendTest'>Append Test</option>") ).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element" );
 
-	jQuery("form").append( valueObj("<input name='radiotest' type='radio' checked='checked' />") );
-	jQuery("form input[name=radiotest]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest' type='radio' checked='checked' />") );
+	jQuery("#qunit-fixture form input[name=radiotest]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input name='radiotest2' type='radio' checked    =   'checked' />") );
-	jQuery("form input[name=radiotest2]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest2' type='radio' checked    =   'checked' />") );
+	jQuery("#qunit-fixture form input[name=radiotest2]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append alternately formated checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input name='radiotest3' type='radio' checked />") );
-	jQuery("form input[name=radiotest3]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest3' type='radio' checked />") );
+	jQuery("#qunit-fixture form input[name=radiotest3]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append HTML5-formated checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input type='radio' checked='checked' name='radiotest4' />") );
-	jQuery("form input[name=radiotest4]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input type='radio' checked='checked' name='radiotest4' />") );
+	jQuery("#qunit-fixture form input[name=radiotest4]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append with name attribute after checked attribute" );
 	}).remove();
 
