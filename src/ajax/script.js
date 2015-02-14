@@ -46,8 +46,6 @@ jQuery.ajaxTransport( "script", function(s) {
 
 				script = document.createElement("script");
 
-				script.async = true;
-
 				if ( s.scriptCharset ) {
 					script.charset = s.scriptCharset;
 				}
