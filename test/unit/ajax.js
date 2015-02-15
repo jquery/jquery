@@ -72,11 +72,11 @@ module( "ajax", {
 		},
 		success: true,
 		afterSend: function( request ) {
-			request.complete(function() {
+			request.always(function() {
 				ok( true, "complete" );
-			}).success(function() {
+			}).done(function() {
 				ok( true, "success" );
-			}).error(function() {
+			}).fail(function() {
 				ok( false, "error" );
 			});
 		}
@@ -90,11 +90,11 @@ module( "ajax", {
 		},
 		success: true,
 		complete: function( xhr ) {
-			xhr.complete(function() {
+			xhr.always(function() {
 				ok( true, "complete" );
-			}).success(function() {
+			}).done(function() {
 				ok( true, "success" );
-			}).error(function() {
+			}).fail(function() {
 				ok( false, "error" );
 			});
 		}
