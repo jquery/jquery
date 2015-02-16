@@ -447,9 +447,9 @@ jQuery.fn.extend({
 	hide: function() {
 		return showHide( this );
 	},
-	toggle: function( state ) {
-		if ( typeof state === "boolean" ) {
-			return state ? this.show() : this.hide();
+	toggle: function( doShow ) {
+		if ( typeof doShow === "boolean" ) {
+			return doShow ? this.show() : this.hide();
 		}
 
 		return this.each(function() {
