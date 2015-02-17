@@ -271,6 +271,13 @@ jQuery.extend({
 		if ( value !== undefined ) {
 			type = typeof value;
 
+			var _m, priority;
+			if (type === 'string' && (_m = value.match(/(.+)!\s*(important)[\s;]*$/)))
+			{
+				value = _m[1];
+				priority = _m[2];
+			}
+
 			// Convert "+=" or "-=" to relative numbers (#7345)
 			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
 				value = ( ret[1] + 1 ) * ret[2] + parseFloat( jQuery.css( elem, name ) );
@@ -298,7 +305,8 @@ jQuery.extend({
 			if ( !hooks || !("set" in hooks) ||
 				(value = hooks.set( elem, value, extra )) !== undefined ) {
 
-				style[ name ] = value;
+				//style[ name ] = value;
+				style.setProperty(name, value, priority ? 'important' : null);
 			}
 
 		} else {
