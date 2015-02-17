@@ -74,10 +74,8 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	// Execute a callback for every element in the matched set.
-	// (You can seed the arguments with an array of args, but this is
-	// only used internally.)
-	each: function( callback, args ) {
-		return jQuery.each( this, callback, args );
+	each: function( callback ) {
+		return jQuery.each( this, callback );
 	},
 
 	map: function( callback ) {
@@ -269,40 +267,21 @@ jQuery.extend({
 		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	},
 
-	// args is for internal usage only
-	each: function( obj, callback, args ) {
+	each: function( obj, callback ) {
 		var i = 0,
 			length = obj.length,
 			isArray = isArraylike( obj );
 
-		if ( args ) {
-			if ( isArray ) {
-				for ( ; i < length; i++ ) {
-					if ( callback.apply( obj[ i ], args ) === false ) {
-						break;
-					}
-				}
-			} else {
-				for ( i in obj ) {
-					if ( callback.apply( obj[ i ], args ) === false ) {
-						break;
-					}
+		if ( isArray ) {
+			for ( ; i < length; i++ ) {
+				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
+					break;
 				}
 			}
-
-		// A special, fast, case for the most common use of each
 		} else {
-			if ( isArray ) {
-				for ( ; i < length; i++ ) {
-					if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
-						break;
-					}
-				}
-			} else {
-				for ( i in obj ) {
-					if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
-						break;
-					}
+			for ( i in obj ) {
+				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
+					break;
 				}
 			}
 		}
