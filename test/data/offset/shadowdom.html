@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>shadowdom</title>
+		<style type="text/css" media="screen">
+			body::shadow div {
+				left     : 30px;
+				position : absolute;
+				top      : 20px;
+			}
+		</style>
+		<script src="../../jquery.js"></script>
+		<script>
+			jQuery(function() {
+				var body = document.body;
+				body.createShadowRoot();
+				body.shadowRoot.appendChild(
+					document.createElement('div')
+				);
+			});
+		</script>
+	</head>
+	<body></body>
+</html>

@@ -85,7 +85,8 @@ jQuery.fn.extend({
 		var docElem, win,
 			elem = this[ 0 ],
 			box = { top: 0, left: 0 },
-			doc = elem && elem.ownerDocument;
+			doc = elem && elem.ownerDocument,
+			elemParent = elem;
 
 		if ( !doc ) {
 			return;
@@ -93,9 +94,24 @@ jQuery.fn.extend({
 
 		docElem = doc.documentElement;
 
-		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
-			return box;
+		// We have element in ShadowDOM, need recursive traversal from element to its parent
+		// First checking for shadowRoot creation support
+		// If that is present - we have non-prefixed element.matches() support
+		if ( elem.createShadowRoot && elem.matches( ":host *" ) ) {
+			// Make sure it's not a disconnected DOM node
+			while ( true ) {
+				elemParent = elemParent.parentNode || elemParent.host;
+				if ( elemParent === doc ) {
+					break;
+				} else if ( !elemParent ) {
+					return box;
+				}
+			}
+		} else {
+			// Make sure it's not a disconnected DOM node
+			if ( !jQuery.contains( docElem, elem ) ) {
+				return box;
+			}
 		}
 
 		box = elem.getBoundingClientRect();

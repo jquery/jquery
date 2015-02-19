@@ -65,6 +65,15 @@ test("disconnected node", function() {
 	equal( result.left, 0, "Check left" );
 });
 
+( !Element.prototype.createShadowRoot ? QUnit.skip : testIframe )("offset/shadowdom", "working inside shadowDOM", function($, iframe) {
+	expect(2);
+
+	var result = $(iframe.document.body.shadowRoot.querySelector("div")).offset();
+
+	equal( result.top, 20, "Check top" );
+	equal( result.left, 30, "Check left" );
+});
+
 testIframe("offset/absolute", "absolute", function($, iframe) {
 	expect(4);
 
