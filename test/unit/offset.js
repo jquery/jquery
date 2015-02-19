@@ -56,12 +56,31 @@ test("object without getBoundingClientRect", function() {
 	equal( result.left, 0, "Check left" );
 });
 
-test("disconnected node", function() {
+test("disconnected element", function() {
 	expect(1);
 
-	var result = jQuery( document.createElement("div") ).offset();
+	var result;
 
-	equal( typeof result, "undefined", "Check result typeof" );
+	try {
+		result = jQuery( document.createElement("div") ).offset();
+	} catch ( e ) {}
+
+	ok( !result, "no position for disconnected element" );
+});
+
+test("hidden (display: none) element", function() {
+	expect(1);
+
+	var result,
+		node = jQuery("<div style='display: none' />").appendTo(document.body);
+
+	try {
+		result = node.offset();
+	} catch ( e ) {}
+
+	node.remove();
+
+	ok( !result, "no position for hidden (display: none) element" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {

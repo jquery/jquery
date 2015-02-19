@@ -32,7 +32,7 @@ jQuery.offset = {
 			elem.style.position = "relative";
 		}
 
-		curOffset = curElem.offset();
+		curOffset = curElem.offset() || { top: 0, left: 0 };
 		curCSSTop = jQuery.css( elem, "top" );
 		curCSSLeft = jQuery.css( elem, "left" );
 		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
@@ -57,10 +57,10 @@ jQuery.offset = {
 		}
 
 		if ( options.top != null ) {
-			props.top = ( options.top - ( curOffset ? curOffset.top : 0 ) ) + curTop;
+			props.top = ( options.top - curOffset.top ) + curTop;
 		}
 		if ( options.left != null ) {
-			props.left = ( options.left - ( curOffset ? curOffset.left : 0 ) ) + curLeft;
+			props.left = ( options.left - curOffset.left ) + curLeft;
 		}
 
 		if ( "using" in options ) {
@@ -93,18 +93,15 @@ jQuery.fn.extend({
 		rect = elem.getBoundingClientRect();
 
 		// Make sure element is not hidden (display: none) or disconnected
-		if ( !rect.width && !rect.height && !rect.left &&
-			!rect.top && !rect.right && !rect.bottom ) {
-			return;
+		if ( rect.width || rect.height || elem.getClientRects().length ) {
+			win = getWindow( doc );
+			docElem = doc.documentElement;
+
+			return {
+				top: rect.top + win.pageYOffset - docElem.clientTop,
+				left: rect.left + win.pageXOffset - docElem.clientLeft
+			};
 		}
-
-		win = getWindow( doc );
-		docElem = doc.documentElement;
-
-		return {
-			top: rect.top + win.pageYOffset - docElem.clientTop,
-			left: rect.left + win.pageXOffset - docElem.clientLeft
-		};
 	},
 
 	position: function() {
