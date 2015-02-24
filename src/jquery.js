@@ -1,34 +1,5 @@
 define([
-	"./core",
-	"./selector",
-	"./traversing",
-	"./callbacks",
-	"./deferred",
-	"./core/ready",
-	"./data",
-	"./queue",
-	"./queue/delay",
-	"./attributes",
-	"./event",
-	"./event/alias",
-	"./manipulation",
-	"./manipulation/_evalUrl",
-	"./wrap",
-	"./css",
-	"./css/hiddenVisibleSelectors",
-	"./serialize",
-	"./ajax",
-	"./ajax/xhr",
-	"./ajax/script",
-	"./ajax/jsonp",
-	"./ajax/load",
-	"./event/ajax",
-	"./effects",
-	"./effects/animatedSelector",
-	"./offset",
-	"./dimensions",
-	"./deprecated",
-	"./exports/amd"
+	alksdjf;alksdjf;laskdjgf;laskdjg;lkasdjg2q;alskdjga;lskdjg;alskgjd;laksdjg;laskjdglasj lasdkjg q0923h 0-	2h3t0	9h23 t09	h23 t09h2t39 
 ], function( jQuery ) {
 
 return (window.jQuery = window.$ = jQuery);
