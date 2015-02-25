@@ -167,7 +167,7 @@ test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
 	});
 });
 
-test( "[DIVERGENT] jQuery.Deferred.pipe - filtering (fail)", function( assert ) {
+test( "[PIPE ONLY] jQuery.Deferred.pipe - filtering (fail)", function( assert ) {
 
 	assert.expect( 4 );
 
@@ -336,7 +336,7 @@ test( "jQuery.Deferred.then - deferred (progress)", function( assert ) {
 	});
 });
 
-test( "[DIVERGENT] jQuery.Deferred.pipe - deferred (progress)", function( assert ) {
+test( "[PIPE ONLY] jQuery.Deferred.pipe - deferred (progress)", function( assert ) {
 
 	assert.expect( 3 );
 
@@ -419,7 +419,7 @@ test( "jQuery.Deferred.then - context", function( assert ) {
 	});
 });
 
-test( "[DIVERGENT] jQuery.Deferred.pipe - context", function( assert ) {
+test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
 
 	assert.expect( 7 );
 
@@ -430,7 +430,7 @@ test( "[DIVERGENT] jQuery.Deferred.pipe - context", function( assert ) {
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).pipe(function( value ) {
 		return value * 3;
 	}).done(function( value ) {
-		assert.strictEqual( this, context, "[DIVERGENT] custom context correctly propagated" );
+		assert.strictEqual( this, context, "[PIPE ONLY] custom context correctly propagated" );
 		assert.strictEqual( value, 6, "proper value received" );
 		done.pop().call();
 	});

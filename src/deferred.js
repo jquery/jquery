@@ -81,7 +81,7 @@ jQuery.extend({
 									// Support: Promises/A+ section 2.3.1
 									// https://promisesaplus.com/#point-48
 									if ( returned === deferred.promise() ) {
-										throw new TypeError();
+										throw new TypeError( "Thenable self-resolution" );
 									}
 
 									// Support: Promises/A+ sections 2.3.3.1, 3.5
