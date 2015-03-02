@@ -72,7 +72,7 @@ test("hidden (display: none) element", function() {
 	expect(1);
 
 	var result,
-		node = jQuery("<div style='display: none' />").appendTo(document.body);
+		node = jQuery("<div style='display: none' />").appendTo("#qunit-fixture");
 
 	try {
 		result = node.offset();
