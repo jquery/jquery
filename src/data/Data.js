@@ -14,34 +14,23 @@ Data.accepts = jQuery.acceptData;
 Data.prototype = {
 
 	register: function( owner, initial ) {
-		var descriptor = {},
-			value = initial || {};
+		var value = initial || {};
 
-		try {
-			// If it is a node unlikely to be stringify-ed or looped over
-			// use plain assignment
-			if ( owner.nodeType ) {
-				owner[ this.expando ] = value;
+		// If it is a node unlikely to be stringify-ed or looped over
+		// use plain assignment
+		if ( owner.nodeType ) {
+			owner[ this.expando ] = value;
 
-			// Otherwise secure it in a non-enumerable, non-writable property
-			// configurability must be true to allow the property to be
-			// deleted with the delete operator
-			} else {
-				descriptor[ this.expando ] = {
-					value: value,
-					writable: true,
-					configurable: true
-				};
-				Object.defineProperties( owner, descriptor );
-			}
-
-		// Support: Android < 4
-		// Fallback to a less secure definition
-		} catch ( e ) {
-			descriptor[ this.expando ] = value;
-			jQuery.extend( owner, descriptor );
+		// Otherwise secure it in a non-enumerable, non-writable property
+		// configurability must be true to allow the property to be
+		// deleted with the delete operator
+		} else {
+			Object.defineProperty( owner, this.expando, {
+				value: value,
+				writable: true,
+				configurable: true
+			});
 		}
-
 		return owner[ this.expando ];
 	},
 	cache: function( owner, initial ) {
@@ -73,15 +62,9 @@ Data.prototype = {
 
 		// Handle: [ owner, { properties } ] args
 		} else {
-			// Fresh assignments by object are shallow copied
-			if ( jQuery.isEmptyObject( cache ) ) {
-
-				jQuery.extend( cache, data );
-			// Otherwise, copy the properties one-by-one to the cache object
-			} else {
-				for ( prop in data ) {
-					cache[ prop ] = data[ prop ];
-				}
+			// Copy the properties one-by-one to the cache object
+			for ( prop in data ) {
+				cache[ prop ] = data[ prop ];
 			}
 		}
 		return cache;
@@ -128,7 +111,11 @@ Data.prototype = {
 	},
 	remove: function( owner, key ) {
 		var i, name, camel,
-			cache = this.cache( owner );
+			cache = owner[ this.expando ];
+
+		if ( cache === undefined ) {
+			return;
+		}
 
 		if ( key === undefined ) {
 			this.register( owner );
