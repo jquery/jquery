@@ -316,7 +316,7 @@ jQuery.event = {
 			}
 
 			// Native handler
-			handle = ontype && cur[ ontype ];
+			handle = ontype && cur === elem &&  cur[ ontype ];
 			if ( handle && handle.apply && jQuery.acceptData( cur ) ) {
 				event.result = handle.apply( cur, data );
 				if ( event.result === false ) {
