@@ -255,19 +255,13 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 				// Apply converter (if not an equivalence)
 				if ( conv !== true ) {
-
-					// Unless errors are allowed to bubble, catch and return them
-					if ( conv && s[ "throws" ] ) {
+					try {
 						response = conv( response );
-					} else {
-						try {
-							response = conv( response );
-						} catch ( e ) {
-							return {
-								state: "parsererror",
-								error: conv ? e : "No conversion from " + prev + " to " + current
-							};
-						}
+					} catch ( e ) {
+						return {
+							state: "parsererror",
+							error: conv ? e : "No conversion from " + prev + " to " + current
+						};
 					}
 				}
 			}
@@ -301,7 +295,6 @@ jQuery.extend({
 		username: null,
 		password: null,
 		cache: null,
-		throws: false,
 		traditional: false,
 		headers: {},
 		*/

@@ -586,19 +586,31 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - dataType html", 5, {
-		setup: function() {
-			Globals.register("testFoo");
-			Globals.register("testBar");
-		},
-		dataType: "html",
-		url: url("data/test.html"),
-		success: function( data ) {
-			ok( data.match( /^html text/ ), "Check content for datatype html" );
-			jQuery("#ap").html( data );
-			strictEqual( window["testFoo"], "foo", "Check if script was evaluated for datatype html" );
-			strictEqual( window["testBar"], "bar", "Check if script src was evaluated for datatype html" );
-		}
+	asyncTest( "jQuery.ajax() - success callbacks", function() {
+		expect( 5 );
+		var old = jQuery._evalUrl;
+
+		Globals.register( "testFoo" );
+		Globals.register( "testBar" );
+
+		jQuery._evalUrl = function() {
+			old.apply( this, arguments ).done(function() {
+				jQuery._evalUrl = old;
+
+				strictEqual( window[ "testBar" ], "bar", "Check if script src was evaluated for datatype html" );
+				start();
+			});
+		};
+
+		jQuery.ajax({
+			url: url( "data/test.html" ),
+			dataType: "html",
+			success: function( data ) {
+				ok( data.match( /^html text/ ), "Check content for datatype html" );
+				jQuery( "#ap" ).html( data );
+				strictEqual( window[ "testFoo" ], "foo", "Check if script was evaluated for datatype html" );
+			}
+		});
 	});
 
 	ajaxTest( "jQuery.ajax() - synchronous request", 1, {
@@ -1680,7 +1692,9 @@ module( "ajax", {
 
 //----------- jQuery.domManip()
 
-	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+	asyncTest( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+		var old = jQuery._evalUrl;
+
 		jQuery.ajaxSetup({
 			type: "POST"
 		});
@@ -1689,9 +1703,16 @@ module( "ajax", {
 			ok( false, "Global event triggered" );
 		});
 
-		jQuery("#qunit-fixture").append("<script src='data/ajax/evalScript.php'></script>");
+		jQuery._evalUrl = function() {
+			old.apply( this, arguments ).done(function() {
+				jQuery._evalUrl = old;
+				start();
+			});
+		};
 
-		jQuery( document ).off("ajaxStart ajaxStop");
+		jQuery( "#qunit-fixture" ).append( "<script src='data/ajax/evalScript.php'></script>" );
+
+		jQuery( document ).off( "ajaxStart ajaxStop" );
 	});
 
 	asyncTest( "jQuery#load() - always use GET method even if it overrided through ajaxSetup (#11264)", 1, function() {
