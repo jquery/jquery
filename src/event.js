@@ -710,9 +710,11 @@ jQuery.Event.prototype = {
 // Create mouseenter/leave events using mouseover/out and event-time checks
 // so that event delegation works in jQuery.
 // Do the same for pointerenter/pointerleave and pointerover/pointerout
+//
 // Support: Safari<7.0
 // Safari doesn't support mouseenter/mouseleave at all.
-// Support: Chrome 40+
+//
+// Support: Chrome 34+
 // Mouseenter doesn't perform while left mouse button is pressed
 // (and initiated outside the observed element)
 // https://code.google.com/p/chromium/issues/detail?id=333868
