@@ -64,14 +64,10 @@ jQuery.fn.extend({
 	},
 
 	unwrap: function( selector ) {
-		return this
-			.parent()
-				.filter( selector || ":not(body)" )
-					.each(function() {
-						jQuery( this ).replaceWith( this.childNodes );
-					})
-				.end()
-			.end();
+		this.parent( selector ).not( "body" ).each(function() {
+			jQuery( this ).replaceWith( this.childNodes );
+		});
+		return this;
 	}
 });
 
