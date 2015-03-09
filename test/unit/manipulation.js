@@ -2047,6 +2047,23 @@ test( "jQuery.cleanData", function() {
 	}
 });
 
+test( "jQuery.cleanData eliminates all private data (Bug #2127)", function() {
+	expect( 2 );
+
+	var div = jQuery( "<div/>" );
+
+	div.appendTo( "body" );
+	div.hide();
+
+	ok( jQuery._data( div[ 0 ], "olddisplay" ), "Ensure some private data exists" );
+
+	div.remove();
+
+	ok( jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ), "Private data is empty after node is removed" );
+
+	div.remove();
+});
+
 test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 
 	expect( 1 );

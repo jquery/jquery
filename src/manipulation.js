@@ -305,7 +305,7 @@ jQuery.extend({
 						}
 					}
 				}
-				delete data.events;
+				delete elem[ dataPriv.expando ];
 			}
 		}
 	}
