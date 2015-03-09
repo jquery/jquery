@@ -63,12 +63,7 @@ jQuery.extend({
 			return ret;
 
 		} else {
-			ret = jQuery.find.attr( elem, name );
-
-			// Non-existent attributes return null, we normalize to null
-			return ret == null ?
-				null :
-				ret;
+			return jQuery.find.attr( elem, name );
 		}
 	},
 
