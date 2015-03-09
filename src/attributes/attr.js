@@ -67,7 +67,7 @@ jQuery.extend({
 
 			// Non-existent attributes return null, we normalize to undefined
 			return ret == null ?
-				undefined :
+				null :
 				ret;
 		}
 	},
