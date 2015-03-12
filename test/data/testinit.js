@@ -242,10 +242,11 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 			setTimeout(function() {
 				this.iframeCallback = undefined;
 
-				iframe.remove();
+				
 				func.apply( this, args );
 				func = function() {};
-
+				iframe.remove();
+				
 				start();
 			});
 		};
