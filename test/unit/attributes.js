@@ -377,8 +377,17 @@ test( "attr(String, Object)", function() {
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
 		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
-		strictEqual( $elem.attr("nonexisting"), null, "attr works correctly for non existing attributes (bug #7500)." );
-		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
+		// Falls back to prop, which returns undefined
+		strictEqual(
+			$elem.attr( "nonexisting" ),
+			typeof $elem[0].getAttribute === "undefined" ? undefined : null,
+			"attr works correctly for non existing attributes (bug #7500)."
+		);
+		equal(
+			$elem.attr( "nonexisting", "foo" ).attr( "nonexisting" ),
+			"foo",
+			"attr falls back to prop on unsupported arguments"
+		);
 		elem.nonexisting = oldVal;
 	});
 
