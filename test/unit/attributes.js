@@ -371,7 +371,7 @@ test( "attr(String, Object)", function() {
 	jQuery.each( [ commentNode, textNode, attributeNode ], function( i, elem ) {
 		var $elem = jQuery( elem );
 		$elem.attr( "nonexisting", "foo" );
-		strictEqual( $elem.attr("nonexisting"), null, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
+		strictEqual( $elem.attr("nonexisting"), undefined, "attr(name, value) works correctly on comment and text nodes (bug #7500)." );
 	});
 
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
