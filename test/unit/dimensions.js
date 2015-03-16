@@ -453,7 +453,8 @@ testIframe( "dimensions/documentLarge", "window vs. large document", function( j
 });
 
 test( "allow modification of coordinates argument (gh-1848)", 1, function() {
-	var element = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+	var offsetTop,
+		element = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	element.offset(function( index, coords ) {
 		coords.top = 100;
@@ -461,7 +462,9 @@ test( "allow modification of coordinates argument (gh-1848)", 1, function() {
 		return coords;
 	});
 
-	equal( element.offset().top, 100, "coordinates are modified" );
+	offsetTop = element.offset().top;
+	ok( Math.abs(offsetTop - 100) < 0.02,
+		"coordinates are modified (got offset.top: " +  offsetTop + ")");
 });
 
 })();
