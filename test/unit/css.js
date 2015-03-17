@@ -208,13 +208,25 @@ test( "css() non-px relative values (gh-1711)", 17, function() {
 		units = {},
 		$child = jQuery( "#nothiddendivchild" ),
 		add = function( prop, val, unit ) {
-			var str = ( val < 0 ? "-=" : "+=" ) + Math.abs( val ) + unit;
-			$child.css( prop, str );
-			equal(
-				Math.round( parseFloat( $child.css( prop ) ) ),
-				Math.round( cssCurrent += val * units[ prop ][ unit ] ),
-				prop + ": '" + str + "'"
-			);
+			var difference,
+				adjustment = ( val < 0 ? "-=" : "+=" ) + Math.abs( val ) + unit,
+				message = prop + ": " + adjustment,
+				cssOld = cssCurrent,
+				expected = cssOld + val * units[ prop ][ unit ];
+
+			// Apply change
+			$child.css( prop, adjustment );
+			cssCurrent = parseFloat( $child.css( prop ) );
+
+			// Require a difference of less than one pixel
+			difference = Math.abs( cssCurrent - expected );
+			if ( difference < 1 ) {
+				ok( true, message );
+
+			// ...or fail with actual and expected values
+			} else {
+				ok( false, message + " (actual " + cssCurrent + ", expected " + expected + ")" );
+			}
 		},
 		getUnits = function( prop ) {
 			units[ prop ] = {
