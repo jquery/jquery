@@ -218,9 +218,9 @@ test( "css() non-px relative values (gh-1711)", 17, function() {
 			$child.css( prop, adjustment );
 			cssCurrent = parseFloat( $child.css( prop ) );
 
-			// Require a difference of less than one pixel
+			// Require a difference of no more than one pixel
 			difference = Math.abs( cssCurrent - expected );
-			if ( difference < 1 ) {
+			if ( difference <= 1 ) {
 				ok( true, message );
 
 			// ...or fail with actual and expected values
