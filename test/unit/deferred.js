@@ -14,7 +14,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		var defer = createDeferred();
 
-		ok( defer.pipe, "defer.pipe exists" );
+		ok( jQuery.isFunction( defer.pipe ), "defer.pipe is a function" );
 
 		createDeferred().resolve().done(function() {
 			ok( true, "Success on resolve" );
