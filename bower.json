@@ -6,6 +6,7 @@
   "ignore": [
     "**/.*",
     "build",
+    "dist/cdn",
     "speed",
     "test",
     "*.md",
