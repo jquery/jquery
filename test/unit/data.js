@@ -142,23 +142,22 @@ test("Data is not being set on comment and text nodes", function() {
 });
 
 test("jQuery.acceptData", function() {
-	expect( 11 );
+	expect( 10 );
 
-	var flash, applet;
+	var flash, pdf;
 
 	ok( jQuery.acceptData( document ), "document" );
 	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
 	ok( jQuery.acceptData( {} ), "object" );
 	ok( !jQuery.acceptData( document.createElement( "embed" ) ), "embed" );
-	ok( !jQuery.acceptData( document.createElement( "applet" ) ), "applet" );
 
 	flash = document.createElement( "object" );
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
 	ok( jQuery.acceptData( flash ), "flash" );
 
-	applet = document.createElement( "object" );
-	applet.setAttribute( "classid", "clsid:8AD9C840-044E-11D1-B3E9-00805F499D93" );
-	ok( !jQuery.acceptData( applet ), "applet" );
+	pdf = document.createElement( "object" );
+	pdf.setAttribute( "classid", "clsid:CA8A9780-280D-11CF-A24D-444553540000" );
+	ok( !jQuery.acceptData( pdf ), "pdf" );
 
 	ok( !jQuery.acceptData( document.createComment( "" ) ), "comment" );
 	ok( !jQuery.acceptData( document.createTextNode( "" ) ), "text" );
