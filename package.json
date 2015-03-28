@@ -44,7 +44,7 @@
     "gzip-js": "0.3.2",
     "jsdom": "1.5.0",
     "load-grunt-tasks": "1.0.0",
-    "native-promise-only": "0.7.7-a",
+    "native-promise-only": "0.7.8-a",
     "npm": "2.1.12",
     "promises-aplus-tests": "2.1.0",
     "q": "1.1.2",
