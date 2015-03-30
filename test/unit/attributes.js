@@ -71,16 +71,16 @@ test( "attr(String)", function() {
 	equal( jQuery("#text1").attr("value", "").attr("value"), "", "Check setting the value attribute to empty string" );
 	equal( jQuery("<div value='t'></div>").attr("value"), "t", "Check setting custom attr named 'value' on a div" );
 	equal( jQuery("#form").attr("blah", "blah").attr("blah"), "blah", "Set non-existent attribute on a form" );
-	equal( jQuery("#foo").attr("height"), null, "Non existent height attribute should return null" );
+	equal( jQuery("#foo").attr("height"), undefined, "Non existent height attribute should return undefined" );
 
 	// [7472] & [3113] (form contains an input with name="action" or name="id")
 	extras = jQuery("<input id='id' name='id' /><input id='name' name='name' /><input id='target' name='target' />").appendTo("#testForm");
 	equal( jQuery("#form").attr("action","newformaction").attr("action"), "newformaction", "Check that action attribute was changed" );
-	equal( jQuery("#testForm").attr("target"), null, "Retrieving target does not equal the input with name=target" );
+	equal( jQuery("#testForm").attr("target"), undefined, "Retrieving target does not equal the input with name=target" );
 	equal( jQuery("#testForm").attr("target", "newTarget").attr("target"), "newTarget", "Set target successfully on a form" );
-	equal( jQuery("#testForm").removeAttr("id").attr("id"), null, "Retrieving id does not equal the input with name=id after id is removed [#7472]" );
+	equal( jQuery("#testForm").removeAttr("id").attr("id"), undefined, "Retrieving id does not equal the input with name=id after id is removed [#7472]" );
 	// Bug #3685 (form contains input with name="name")
-	equal( jQuery("#testForm").attr("name"), null, "Retrieving name does not retrieve input with name=name" );
+	equal( jQuery("#testForm").attr("name"), undefined, "Retrieving name does not retrieve input with name=name" );
 	extras.remove();
 
 	equal( jQuery("#text1").attr("maxlength"), "30", "Check for maxlength attribute" );
@@ -107,7 +107,7 @@ test( "attr(String)", function() {
 	body = document.body;
 	$body = jQuery( body );
 
-	strictEqual( $body.attr("foo"), null, "Make sure that a non existent attribute returns null" );
+	strictEqual( $body.attr("foo"), undefined, "Make sure that a non existent attribute returns undefined" );
 
 	body.setAttribute( "foo", "baz" );
 	equal( $body.attr("foo"), "baz", "Make sure the dom attribute is retrieved when no expando is found" );
@@ -139,12 +139,12 @@ test( "attr(String)", function() {
 
 	// Check value on button element (#1954)
 	$button = jQuery("<button>text</button>").insertAfter("#button");
-	strictEqual( $button.attr("value"), null, "Absence of value attribute on a button" );
+	strictEqual( $button.attr("value"), undefined, "Absence of value attribute on a button" );
 	equal( $button.attr( "value", "foobar" ).attr("value"), "foobar", "Value attribute on a button does not return innerHTML" );
 	equal( $button.attr("value", "baz").html(), "text", "Setting the value attribute does not change innerHTML" );
 
 	// Attributes with a colon on a table element (#1591)
-	equal( jQuery("#table").attr("test:attrib"), null, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
+	equal( jQuery("#table").attr("test:attrib"), undefined, "Retrieving a non-existent attribute on a table with a colon does not throw an error." );
 	equal( jQuery("#table").attr( "test:attrib", "foobar" ).attr("test:attrib"), "foobar", "Setting an attribute on a table with a colon does not throw an error." );
 
 	$form = jQuery("<form class='something'></form>").appendTo("#qunit-fixture");
@@ -153,12 +153,12 @@ test( "attr(String)", function() {
 	$a = jQuery("<a href='#' onclick='something()'>Click</a>").appendTo("#qunit-fixture");
 	equal( $a.attr("onclick"), "something()", "Retrieve ^on attribute without anonymous function wrapper." );
 
-	ok( jQuery("<div/>").attr("doesntexist") === null, "Make sure null is returned when no attribute is found." );
-	ok( jQuery("<div/>").attr("title") === null, "Make sure null is returned when no attribute is found." );
+	ok( jQuery("<div/>").attr("doesntexist") === undefined, "Make sure undefined is returned when no attribute is found." );
+	ok( jQuery("<div/>").attr("title") === undefined, "Make sure undefined is returned when no attribute is found." );
 	equal( jQuery("<div/>").attr( "title", "something" ).attr("title"), "something", "Set the title attribute." );
 	ok( jQuery().attr("doesntexist") === undefined, "Make sure undefined is returned when no element is there." );
-	equal( jQuery("<div/>").attr("value"), null, "An unset value on a div returns null." );
-	strictEqual( jQuery("<select><option value='property'></option></select>").attr("value"), null, "An unset value on a select returns null." );
+	equal( jQuery("<div/>").attr("value"), undefined, "An unset value on a div returns undefined." );
+	strictEqual( jQuery("<select><option value='property'></option></select>").attr("value"), undefined, "An unset value on a select returns undefined." );
 
 	$form = jQuery("#form").attr( "enctype", "multipart/form-data" );
 	equal( $form.prop("enctype"), "multipart/form-data", "Set the enctype of a form (encoding in IE6/7 #6743)" );
@@ -280,7 +280,7 @@ test( "attr(String, Object)", function() {
 	jQuery("#name").attr( "name", "something" );
 	equal( jQuery("#name").attr("name"), "something", "Set name attribute" );
 	jQuery("#name").attr( "name", null );
-	equal( jQuery("#name").attr("name"), null, "Remove name attribute" );
+	equal( jQuery("#name").attr("name"), undefined, "Remove name attribute" );
 
 	$input = jQuery( "<input>", {
 		name: "something",
@@ -301,17 +301,17 @@ test( "attr(String, Object)", function() {
 	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
 	equal( $input.attr("checked"), "checked", "Set checked (verified by .attr)" );
 	$input.prop( "checked", false ).prop( "checked", true ).attr( "checked", false );
-	equal( $input.attr("checked"), null, "Remove checked (verified by .attr)" );
+	equal( $input.attr("checked"), undefined, "Remove checked (verified by .attr)" );
 
 	$input = jQuery("#text1").prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", true );
 	equal( $input.attr("readonly"), "readonly", "Set readonly (verified by .attr)" );
 	$input.prop( "readOnly", false ).prop( "readOnly", true ).attr( "readonly", false );
-	equal( $input.attr("readonly"), null, "Remove readonly (verified by .attr)" );
+	equal( $input.attr("readonly"), undefined, "Remove readonly (verified by .attr)" );
 
 	$input = jQuery("#check2").attr( "checked", true ).attr( "checked", false ).prop( "checked", true );
 	equal( $input[0].checked, true, "Set checked property (verified by native property)" );
 	equal( $input.prop("checked"), true, "Set checked property (verified by .prop)" );
-	equal( $input.attr("checked"), null, "Setting checked property doesn't affect checked attribute" );
+	equal( $input.attr("checked"), undefined, "Setting checked property doesn't affect checked attribute" );
 	$input.attr( "checked", false ).attr( "checked", true ).prop( "checked", false );
 	equal( $input[0].checked, false, "Clear checked property (verified by native property)" );
 	equal( $input.prop("checked"), false, "Clear checked property (verified by .prop)" );
@@ -343,13 +343,13 @@ test( "attr(String, Object)", function() {
 		"required": true
 	});
 	equal( $text.attr("autofocus"), "autofocus", "Reading autofocus attribute yields 'autofocus'" );
-	equal( $text.attr( "autofocus", false ).attr("autofocus"), null, "Setting autofocus to false removes it" );
+	equal( $text.attr( "autofocus", false ).attr("autofocus"), undefined, "Setting autofocus to false removes it" );
 	equal( $text.attr("required"), "required", "Reading required attribute yields 'required'" );
-	equal( $text.attr( "required", false ).attr("required"), null, "Setting required attribute to false removes it" );
+	equal( $text.attr( "required", false ).attr("required"), undefined, "Setting required attribute to false removes it" );
 
 	$details = jQuery("<details open></details>").appendTo("#qunit-fixture");
 	equal( $details.attr("open"), "open", "open attribute presence indicates true" );
-	equal( $details.attr( "open", false ).attr("open"), null, "Setting open attribute to false removes it" );
+	equal( $details.attr( "open", false ).attr("open"), undefined, "Setting open attribute to false removes it" );
 
 	$text.attr( "data-something", true );
 	equal( $text.attr("data-something"), "true", "Set data attributes");
@@ -377,17 +377,8 @@ test( "attr(String, Object)", function() {
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
 		var oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
-		// Falls back to prop, which returns undefined
-		strictEqual(
-			$elem.attr( "nonexisting" ),
-			typeof $elem[0].getAttribute === "undefined" ? undefined : null,
-			"attr works correctly for non existing attributes (bug #7500)."
-		);
-		equal(
-			$elem.attr( "nonexisting", "foo" ).attr( "nonexisting" ),
-			"foo",
-			"attr falls back to prop on unsupported arguments"
-		);
+		strictEqual( $elem.attr("nonexisting"), undefined, "attr works correctly for non existing attributes (bug #7500)." );
+		equal( $elem.attr( "nonexisting", "foo" ).attr("nonexisting"), "foo", "attr falls back to prop on unsupported arguments" );
 		elem.nonexisting = oldVal;
 	});
 
@@ -403,7 +394,7 @@ test( "attr(String, Object)", function() {
 	table.attr("cellspacing", "2");
 	equal( table[ 0 ]["cellSpacing"], "2", "Check cellspacing is correctly set" );
 
-	equal( jQuery("#area1").attr("value"), null, "Value attribute is distinct from value property." );
+	equal( jQuery("#area1").attr("value"), undefined, "Value attribute is distinct from value property." );
 
 	// for #1070
 	jQuery("#name").attr( "someAttr", "0" );
@@ -477,7 +468,7 @@ test( "attr(String, Object)", function() {
 	jQuery("#name").attr( "maxlength", "5" ).removeAttr("nonexisting");
 	equal( typeof jQuery("#name").attr( "maxlength", undefined ), "object", ".attr('attribute', undefined) is chainable (#5571)" );
 	equal( jQuery("#name").attr( "maxlength", undefined ).attr("maxlength"), "5", ".attr('attribute', undefined) does not change value (#5571)" );
-	equal( jQuery("#name").attr( "nonexisting", undefined ).attr("nonexisting"), null, ".attr('attribute', undefined) does not create attribute (#5571)" );
+	equal( jQuery("#name").attr( "nonexisting", undefined ).attr("nonexisting"), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
 });
 
 test( "attr - extending the boolean attrHandle", function() {
@@ -513,7 +504,7 @@ test( "attr(String, Object) - Loaded via XML fragment", function() {
 	$frag.attr( "test", "some value" );
 	equal( $frag.attr("test"), "some value", "set attribute" );
 	$frag.attr( "test", null );
-	equal( $frag.attr("test"), null, "remove attribute" );
+	equal( $frag.attr("test"), undefined, "remove attribute" );
 });
 
 test( "attr('tabindex')", function() {
@@ -521,15 +512,15 @@ test( "attr('tabindex')", function() {
 
 	// elements not natively tabbable
 	equal( jQuery("#listWithTabIndex").attr("tabindex"), "5", "not natively tabbable, with tabindex set to 0" );
-	equal( jQuery("#divWithNoTabIndex").attr("tabindex"), null, "not natively tabbable, no tabindex set" );
+	equal( jQuery("#divWithNoTabIndex").attr("tabindex"), undefined, "not natively tabbable, no tabindex set" );
 
 	// anchor with href
-	equal( jQuery("#linkWithNoTabIndex").attr("tabindex"), null, "anchor with href, no tabindex set" );
+	equal( jQuery("#linkWithNoTabIndex").attr("tabindex"), undefined, "anchor with href, no tabindex set" );
 	equal( jQuery("#linkWithTabIndex").attr("tabindex"), "2", "anchor with href, tabindex set to 2" );
 	equal( jQuery("#linkWithNegativeTabIndex").attr("tabindex"), "-1", "anchor with href, tabindex set to -1" );
 
 	// anchor without href
-	equal( jQuery("#linkWithNoHrefWithNoTabIndex").attr("tabindex"), null, "anchor without href, no tabindex set" );
+	equal( jQuery("#linkWithNoHrefWithNoTabIndex").attr("tabindex"), undefined, "anchor without href, no tabindex set" );
 	equal( jQuery("#linkWithNoHrefWithTabIndex").attr("tabindex"), "1", "anchor without href, tabindex set to 2" );
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").attr("tabindex"), "-1", "anchor without href, no tabindex set" );
 });
@@ -538,7 +529,7 @@ test( "attr('tabindex', value)", function() {
 	expect( 9 );
 
 	var element = jQuery("#divWithNoTabIndex");
-	equal( element.attr("tabindex"), null, "start with no tabindex" );
+	equal( element.attr("tabindex"), undefined, "start with no tabindex" );
 
 	// set a positive string
 	element.attr( "tabindex", "1" );
@@ -575,10 +566,10 @@ test( "removeAttr(String)", function() {
 	expect( 12 );
 	var $first;
 
-	equal( jQuery("#mark").removeAttr("class").attr("class"), null, "remove class" );
-	equal( jQuery("#form").removeAttr("id").attr("id"), null, "Remove id" );
-	equal( jQuery("#foo").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), null, "Check removing style attribute" );
-	equal( jQuery("#form").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), null, "Check removing style attribute on a form" );
+	equal( jQuery("#mark").removeAttr("class").attr("class"), undefined, "remove class" );
+	equal( jQuery("#form").removeAttr("id").attr("id"), undefined, "Remove id" );
+	equal( jQuery("#foo").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), undefined, "Check removing style attribute" );
+	equal( jQuery("#form").attr( "style", "position:absolute;" ).removeAttr("style").attr("style"), undefined, "Check removing style attribute on a form" );
 	equal( jQuery("<div style='position: absolute'></div>").appendTo("#foo").removeAttr("style").prop("style").cssText, "", "Check removing style attribute (#9699 Webkit)" );
 	equal( jQuery("#fx-test-group").attr( "height", "3px" ).removeAttr("height").get( 0 ).style.height, "1px", "Removing height attribute has no effect on height set with style attribute" );
 
@@ -592,7 +583,7 @@ test( "removeAttr(String)", function() {
 
 	try {
 		$first = jQuery("#first").attr( "contenteditable", "true" ).removeAttr("contenteditable");
-		equal( $first.attr("contenteditable"), null, "Remove the contenteditable attribute" );
+		equal( $first.attr("contenteditable"), undefined, "Remove the contenteditable attribute" );
 	} catch( e ) {
 		ok( false, "Removing contenteditable threw an error (#10429)" );
 	}
@@ -600,7 +591,7 @@ test( "removeAttr(String)", function() {
 	$first = jQuery("<div Case='mixed'></div>");
 	equal( $first.attr("Case"), "mixed", "case of attribute doesn't matter" );
 	$first.removeAttr("Case");
-	equal( $first.attr( "Case" ), null, "mixed-case attribute was removed" );
+	equal( $first.attr( "Case" ), undefined, "mixed-case attribute was removed" );
 });
 
 test( "removeAttr(String) in XML", function() {
@@ -612,14 +603,14 @@ test( "removeAttr(String) in XML", function() {
 	iwt.removeAttr("Normal");
 	equal( iwt.attr("normal"), "ab", "Should still be there" );
 	iwt.removeAttr("normal");
-	equal( iwt.attr("normal"), null, "Removed" );
+	equal( iwt.attr("normal"), undefined, "Removed" );
 
 	equal( iwt.attr("mixedCase"), "yes", "Check initial value" );
-	equal( iwt.attr("mixedcase"), null, "toLowerCase not work good" );
+	equal( iwt.attr("mixedcase"), undefined, "toLowerCase not work good" );
 	iwt.removeAttr("mixedcase");
 	equal( iwt.attr("mixedCase"), "yes", "Should still be there" );
 	iwt.removeAttr("mixedCase");
-	equal( iwt.attr("mixedCase"), null, "Removed" );
+	equal( iwt.attr("mixedCase"), undefined, "Removed" );
 });
 
 test( "removeAttr(Multi String, variable space width)", function() {
@@ -640,7 +631,7 @@ test( "removeAttr(Multi String, variable space width)", function() {
 	div.removeAttr( "id   alt title  rel  " );
 
 	jQuery.each( tests, function( key ) {
-		equal( div.attr( key ), null, "Attribute `" + key + "` was removed" );
+		equal( div.attr( key ), undefined, "Attribute `" + key + "` was removed" );
 	});
 });
 
@@ -1171,7 +1162,7 @@ var testRemoveClass = function(valueObj) {
 
 
 	jQuery( div ).removeClass( valueObj("foo") );
-	strictEqual( jQuery( div ).attr("class"), null, "removeClass doesn't create a class attribute" );
+	strictEqual( jQuery( div ).attr("class"), undefined, "removeClass doesn't create a class attribute" );
 
 	div.className = " test foo ";
 
