@@ -100,6 +100,8 @@ As a special case, you may also replace Sizzle by using a special flag `grunt cu
 
 *Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
 
+*Note*: Removing Sizzle is not supported on the `compat` branch.
+
 The build process shows a message for each dependent module it excludes or includes.
 
 ##### AMD name
