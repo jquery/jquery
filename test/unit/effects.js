@@ -879,7 +879,7 @@ jQuery.each({
 }, function( fn, f ) {
 	jQuery.each({
 		"show": function( elem, prop ) {
-			jQuery( elem ).hide( ).addClass( "wide" + prop );
+			jQuery( elem ).hide().addClass( "wide" + prop );
 			return "show";
 		},
 		"hide": function( elem, prop ) {
@@ -914,15 +914,15 @@ jQuery.each({
 
 			num = 0;
 			// TODO: uncrowd this
-			if ( t_h === "show" ) {num++;}
-			if ( t_w === "show" ) {num++;}
-			if ( t_w === "hide" || t_w === "show" ) {num++;}
-			if ( t_h === "hide" || t_h === "show" ) {num++;}
-			if ( t_o === "hide" || t_o === "show" ) {num++;}
-			if ( t_w === "hide" ) {num++;}
-			if ( t_o.constructor === Number ) {num += 2;}
-			if ( t_w.constructor === Number ) {num += 2;}
-			if ( t_h.constructor === Number ) {num +=2;}
+			if ( t_h === "show" ) { num++; }
+			if ( t_w === "show" ) { num++; }
+			if ( t_w === "hide" || t_w === "show" ) { num++; }
+			if ( t_h === "hide" || t_h === "show" ) { num++; }
+			if ( t_o === "hide" || t_o === "show" ) { num++; }
+			if ( t_w === "hide" ) { num++; }
+			if ( t_o.constructor === Number ) { num += 2; }
+			if ( t_w.constructor === Number ) { num += 2; }
+			if ( t_h.constructor === Number ) { num += 2; }
 
 			expect( num );
 
@@ -930,13 +930,13 @@ jQuery.each({
 
 			elem.animate(anim, 50);
 
-			jQuery.when( elem ).done(function( elem ) {
-				var cur_o, cur_w, cur_h, old_h;
-
-				elem = elem[ 0 ];
+			jQuery.when( elem ).done(function( $elem ) {
+				var cur_o, cur_w, cur_h, old_h,
+					elem = $elem[ 0 ];
 
 				if ( t_w === "show" ) {
-					equal( elem.style.display, "block", "Showing, display should block: " + elem.style.display );
+					equal( $elem.css( "display" ), "block",
+						"Showing, display should block: " + elem.style.display );
 				}
 
 				if ( t_w === "hide" || t_w === "show" ) {
@@ -1500,7 +1500,7 @@ test( "User supplied callback called after show when fx off (#8892)", 2, functio
 });
 
 test( "animate should set display for disconnected nodes", function() {
-	expect( 18 );
+	expect( 20 );
 
 	var env = this,
 		methods = {
@@ -1512,42 +1512,40 @@ test( "animate should set display for disconnected nodes", function() {
 			show: [ 1 ],
 			animate: [{ width: "show" }]
 		},
-		$divTest = jQuery("<div>test</div>"),
-		// parentNode = null
 		$divEmpty = jQuery("<div/>"),
+		disconnectedDisplay = $divEmpty.css("display"),
+		$divTest = jQuery("<div>test</div>"),
 		$divNone = jQuery("<div style='display: none;'/>"),
 		$divInline = jQuery("<div style='display: inline;'/>"),
 		clock = this.clock;
 
-	strictEqual( $divTest.show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
-	strictEqual( $divEmpty.show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = null" );
-	strictEqual( $divNone.show()[ 0 ].style.display, "block", "show() should change display if it already set to none" );
-	strictEqual( $divInline.show()[ 0 ].style.display, "inline", "show() should not change display if it already set" );
+	strictEqual( $divEmpty[ 0 ].parentNode, null, "Setup: element with null parentNode" );
+	strictEqual( ($divTest[ 0 ].parentNode || {}).nodeType, 11, "Setup: element under fragment" );
 
-	QUnit.expectJqData( env, $divTest[ 0 ], "olddisplay" );
-	QUnit.expectJqData( env, $divEmpty[ 0 ], "olddisplay" );
+	strictEqual( $divEmpty.show().css( "display" ), disconnectedDisplay,
+		"set display with show() for element with null parentNode" );
+	strictEqual( $divTest.show().css( "display" ), disconnectedDisplay,
+		"set display with show() for element under fragment" );
+	strictEqual( $divNone.show().css( "display" ), disconnectedDisplay,
+		"show() should change display if it already set to none" );
+	strictEqual( $divInline.show().css( "display" ), "inline",
+		"show() should not change display if it already set" );
+
 	QUnit.expectJqData( env, $divNone[ 0 ], "olddisplay" );
 
 	jQuery.each( methods, function( name, opt ) {
 		jQuery.each([
-
-			// parentNode = document fragment
-			jQuery("<div>test</div>"),
-
-			// parentNode = null
-			jQuery("<div/>")
-
+			jQuery("<div>test</div>").prop( "title", "under fragment" ),
+			jQuery("<div/>").prop( "title", "with null parentNode" )
 		], function() {
 			var callback = [function () {
-					strictEqual( this.style.display, "block", "set display to block with " + name );
-
-					QUnit.expectJqData( env, this, "olddisplay" );
-
+					strictEqual( jQuery( this ).css( "display" ), disconnectedDisplay,
+						"." + name + " block " + this.title );
 			}];
 			jQuery.fn[ name ].apply( this, opt.concat( callback ) );
 		});
 	});
-        clock.tick( 400 );
+	clock.tick( 400 );
 });
 
 test("Animation callback should not show animated element as :animated (#7157)", 1, function() {
