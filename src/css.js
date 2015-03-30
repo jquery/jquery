@@ -8,6 +8,7 @@ define([
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/var/getStyles",
+	"./css/var/swap",
 	"./css/curCSS",
 	"./css/adjustCSS",
 	"./css/defaultDisplay",
@@ -16,11 +17,10 @@ define([
 	"./data/var/dataPriv",
 
 	"./core/init",
-	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
-	getStyles, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
+	getStyles, swap, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
 
 var
 	// Swappable if display is none or starts with table
@@ -359,7 +359,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 				// but it must have a current display style that would benefit
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
 					elem.offsetWidth === 0 ?
-						jQuery.swap( elem, cssShow, function() {
+						swap( elem, cssShow, function() {
 							return getWidthOrHeight( elem, name, extra );
 						}) :
 						getWidthOrHeight( elem, name, extra );
@@ -385,7 +385,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	function( elem, computed ) {
 		if ( computed ) {
-			return jQuery.swap( elem, { "display": "inline-block" },
+			return swap( elem, { "display": "inline-block" },
 				curCSS, [ elem, "marginRight" ] );
 		}
 	}
