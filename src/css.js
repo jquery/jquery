@@ -7,6 +7,7 @@ define([
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
+	"./css/var/swap",
 	"./css/curCSS",
 	"./css/adjustCSS",
 	"./css/defaultDisplay",
@@ -14,11 +15,10 @@ define([
 	"./css/support",
 
 	"./core/init",
-	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
-	curCSS, adjustCSS, defaultDisplay, addGetHookIf, support ) {
+	curCSS, swap, adjustCSS, defaultDisplay, addGetHookIf, support ) {
 
 var
 	// BuildExclude
@@ -366,7 +366,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 				// however, it must have a current display style that would benefit from this
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
 					elem.offsetWidth === 0 ?
-						jQuery.swap( elem, cssShow, function() {
+						swap( elem, cssShow, function() {
 							return getWidthOrHeight( elem, name, extra );
 						}) :
 						getWidthOrHeight( elem, name, extra );
@@ -440,7 +440,7 @@ if ( !support.opacity ) {
 jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	function( elem, computed ) {
 		if ( computed ) {
-			return jQuery.swap( elem, { "display": "inline-block" },
+			return swap( elem, { "display": "inline-block" },
 				curCSS, [ elem, "marginRight" ] );
 		}
 	}
