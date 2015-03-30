@@ -94,7 +94,7 @@ Some example modules that can be excluded are:
 - **exports/global**: Exclude the attachment of global jQuery variables ($ and jQuery) to the window.
 - **exports/amd**: Exclude the AMD definition.
 
-Removing sizzle is not supported on the 1.x branch.
+Removing Sizzle is not supported on the `compat` branch.
 
 The build process shows a message for each dependent module it excludes or includes.
 
