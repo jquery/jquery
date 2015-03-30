@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Test for gh-1684</title>
+	<style>
+		#result {
+			font-size: 24px;
+			margin: 0.5em 0;
+		}
+		#response {
+			white-space: pre;
+		}
+		.error {
+			background-color: red;
+		}
+		.warn {
+			background-color: yellow;
+		}
+		.success {
+			background-color: lightgreen;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="result"></div>
+	<div id="response"></div>
+	<script src="../../dist/jquery.js"></script>
+	<script>
+		if ( !jQuery.support.cors ) {
+			jQuery( "#result" )
+				.addClass( "success" )
+				.text( "CORS not supported in this browser. Test not run." );
+		} else {
+			jQuery.ajax( {
+				url: "http://httpbin.org/patch",
+				method: "PATCH",
+				success: function( data ) {
+					jQuery( "#result" ).addClass( "success" ).text( "Test passed." );
+					jQuery( "#response" ).text( "Response:\n" + JSON.stringify( data, null, 4 ) );
+				},
+				error: function( error ) {
+					jQuery( "#result" ).addClass( "error" ).text( "Test failed." );
+					jQuery( "#response" ).text( "Error:\n" + JSON.stringify( error, null, 4 ) );
+				}
+			} );
+		}
+	</script>
+</body>
+</html>

@@ -1578,8 +1578,10 @@ module( "ajax", {
 		}
 	} );
 
-	// BrowserStack PATCH support sometimes breaks so on TestSwarm run the test in IE8 only.
-	if ( location.search.indexOf( "swarmURL=" ) === -1 || document.documentMode < 9 ) {
+	// BrowserStack PATCH support sometimes breaks so on TestSwarm run the test in IE only.
+	// Unfortunately, all IE versions gets special treatment in request object creation
+	// so we need to test in all supported IE versions to be sure.
+	if ( location.search.indexOf( "swarmURL=" ) === -1 || document.documentMode ) {
 		ajaxTest( "#13240 - jQuery.ajax() - support non-RFC2616 methods", 1, {
 			url: "data/echoQuery.php",
 			method: "PATCH",
