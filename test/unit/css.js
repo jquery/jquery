@@ -490,8 +490,8 @@ test("show();", function() {
 
 	expect( 18 );
 
-  var hiddendiv, div, pass, old, test;
-	hiddendiv = jQuery("div.hidden");
+	var hiddendiv, div, pass, old, test;
+		hiddendiv = jQuery("div.hidden");
 
 	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
 
@@ -512,8 +512,13 @@ test("show();", function() {
 	});
 	ok( pass, "Show" );
 
-	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery(
+		"<div id='show-tests'>" +
+		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
+		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
+		"<ul><li></li></ul></div>" +
+		"<table id='test-table'></table>"
+	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
 
 	old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();

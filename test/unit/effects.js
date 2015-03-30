@@ -30,22 +30,13 @@ test("sanity check", function() {
 	equal( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length, 2, "QUnit state is correct for testing effects" );
 });
 
-test("show() basic", 2, function() {
-	var div,
-		hiddendiv = jQuery("div.hidden");
-
-	hiddendiv.hide().show();
-
-	equal( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
-
-	div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
+test("show() basic", 1, function() {
+	var div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
 
 	equal( div.css("display"), "block", "Make sure pre-hidden divs show" );
 
 	// Clean up the detached node
 	div.remove();
-
-	QUnit.expectJqData( this, hiddendiv, "olddisplay" );
 });
 
 test("show()", 27, function () {
@@ -94,8 +85,13 @@ test("show()", 27, function () {
 	// Tolerate data from show()/hide()
 	QUnit.expectJqData( this, div, "olddisplay" );
 
-	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery(
+		"<div id='show-tests'>" +
+		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
+		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
+		"<ul><li></li></ul></div>" +
+		"<table id='test-table'></table>"
+	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
 
 	old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
@@ -132,11 +128,17 @@ test("show()", 27, function () {
 test("show(Number) - other displays", function() {
 	expect(15);
 
-	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery(
+		"<div id='show-tests'>" +
+		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
+		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
+		"<ul><li></li></ul></div>" +
+		"<table id='test-table'></table>"
+	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
 
 	var test,
 		old = jQuery("#test-table").show().css("display") !== "table";
+
 	jQuery("#test-table").remove();
 
 	// Note: inline elements are expected to be inline-block
@@ -174,8 +176,8 @@ test("show(Number) - other displays", function() {
 test("Persist correct display value", function() {
 	expect(3);
 
-	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><span style='position:absolute;'>foo</span></div>");
+	jQuery( "<div id='show-tests'><span style='position:absolute;'>foo</span></div>" )
+		.appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
 
 	var $span = jQuery("#show-tests span"),
 		displayNone = $span.css("display"),
