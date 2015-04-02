@@ -183,15 +183,15 @@ function defaultPrefilter( elem, props, opts ) {
 
 		if ( hidden ) {
 			jQuery( elem ).show();
-		} else {
-			anim.done(function() {
-				jQuery( elem ).hide();
-			});
 		}
 
 		anim.done(function() {
-			var prop;
-
+			if ( checkDisplay === "inline" && style.display === "inline-block" ) {
+				style.display = dataPriv.get( elem, "olddisplay" ) || "";
+			}
+			if ( !hidden ) {
+				jQuery( elem ).hide();
+			}
 			dataPriv.remove( elem, "fxshow" );
 			for ( prop in orig ) {
 				jQuery.style( elem, prop, orig[ prop ] );

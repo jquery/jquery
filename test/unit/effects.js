@@ -126,7 +126,7 @@ test("show()", 27, function () {
 });
 
 test("show(Number) - other displays", function() {
-	expect(15);
+	expect(30);
 
 	jQuery(
 		"<div id='show-tests'>" +
@@ -148,10 +148,10 @@ test("show(Number) - other displays", function() {
 	test = {
 		"div"      : "block",
 		"p"        : "block",
-		"a"        : "inline-block",
-		"code"     : "inline-block",
+		"a"        : "inline",
+		"code"     : "inline",
 		"pre"      : "block",
-		"span"     : "inline-block",
+		"span"     : "inline",
 		"table"    : old ? "block" : "table",
 		"thead"    : old ? "block" : "table-header-group",
 		"tbody"    : old ? "block" : "table-row-group",
@@ -162,12 +162,26 @@ test("show(Number) - other displays", function() {
 		"li"       : old ? "block" : "list-item"
 	};
 
-	jQuery.each(test, function(selector, expected) {
-		var elem = jQuery(selector, "#show-tests").show(1, function() {
-			equal( elem.css("display"), expected, "Show using correct display type for " + selector );
+	jQuery.each( test, function( selector ) {
+		jQuery( selector, "#show-tests" ).show( 100 );
+	});
+	this.clock.tick( 50 );
+	jQuery.each( test, function( selector, expected ) {
+		jQuery( selector, "#show-tests" ).each(function() {
+			equal(
+				jQuery( this ).css( "display" ),
+				expected === "inline" ? "inline-block" : expected,
+				"Correct display type during animation for " + selector
+			);
 		});
 	});
-	this.clock.tick( 10 );
+	this.clock.tick( 50 );
+	jQuery.each( test, function( selector, expected ) {
+		jQuery( selector, "#show-tests" ).each(function() {
+			equal( jQuery( this ).css( "display" ), expected,
+				"Correct display type after animation for " + selector );
+		});
+	});
 
 	jQuery("#show-tests").remove();
 });
