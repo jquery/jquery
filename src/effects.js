@@ -89,7 +89,7 @@ function defaultPrefilter( elem, props, opts ) {
 		hidden = elem.nodeType && isHidden( elem ),
 		dataShow = dataPriv.get( elem, "fxshow" );
 
-	// Handle queue: false promises
+	// Queue-skipping animations hijack the fx hooks
 	if ( !opts.queue ) {
 		hooks = jQuery._queueHooks( elem, "fx" );
 		if ( hooks.unqueued == null ) {
@@ -114,22 +114,18 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 	}
 
-	// Height/width overflow pass
+	// Temporarily restrict "overflow" and "display" styles during height/width animations
 	if ( elem.nodeType === 1 && ( "height" in props || "width" in props ) ) {
-		// Make sure that nothing sneaks out
-		// Record all 3 overflow attributes because IE9-10 do not
-		// change the overflow attribute when overflowX and
-		// overflowY are set to the same value
+		// Support: IE 9 - 11
+		// Record all 3 overflow attributes because IE does not infer the shorthand
+		// from identically-valued overflowX and overflowY
 		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
 
-		// Set display property to inline-block for height/width
-		// animations on inline elements that are having width/height animated
+		// Animate inline elements as inline-block
 		display = jQuery.css( elem, "display" );
-
-		// Test default display if display is currently "none"
 		checkDisplay = display === "none" ?
-			dataPriv.get( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) : display;
-
+			dataPriv.get( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) :
+			display;
 		if ( checkDisplay === "inline" && jQuery.css( elem, "float" ) === "none" ) {
 			style.display = "inline-block";
 		}
@@ -144,7 +140,7 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 	}
 
-	// show/hide pass
+	// Detect show/hide animations
 	for ( prop in props ) {
 		value = props[ prop ];
 		if ( rfxtypes.exec( value ) ) {
@@ -152,22 +148,25 @@ function defaultPrefilter( elem, props, opts ) {
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
 
-				// If there is dataShow left over from a stopped hide or show
-				// and we are going to proceed with show, we should pretend to be hidden
+				// Pretend to be hidden if this is a "show" and
+				// there is still data from a stopped show/hide
 				if ( value === "show" && dataShow && dataShow[ prop ] !== undefined ) {
 					hidden = true;
+
+				// Ignore all other no-op show/hide data
 				} else {
 					continue;
 				}
 			}
 			orig[ prop ] = dataShow && dataShow[ prop ] || jQuery.style( elem, prop );
 
-		// Any non-fx value stops us from restoring the original display value
+		// Any non-show/hide property stops us from reverting a display override
 		} else {
 			display = undefined;
 		}
 	}
 
+	// Implement show/hide animations
 	if ( !jQuery.isEmptyObject( orig ) ) {
 		if ( dataShow ) {
 			if ( "hidden" in dataShow ) {
@@ -177,10 +176,11 @@ function defaultPrefilter( elem, props, opts ) {
 			dataShow = dataPriv.access( elem, "fxshow", {} );
 		}
 
-		// Store state if its toggle - enables .stop().toggle() to "reverse"
+		// Store hidden/visible for toggle so `.stop().toggle()` "reverses"
 		if ( toggle ) {
 			dataShow.hidden = !hidden;
 		}
+
 		if ( hidden ) {
 			jQuery( elem ).show();
 		} else {
@@ -188,6 +188,7 @@ function defaultPrefilter( elem, props, opts ) {
 				jQuery( elem ).hide();
 			});
 		}
+
 		anim.done(function() {
 			var prop;
 
@@ -196,6 +197,7 @@ function defaultPrefilter( elem, props, opts ) {
 				jQuery.style( elem, prop, orig[ prop ] );
 			}
 		});
+
 		for ( prop in orig ) {
 			tween = createTween( hidden ? dataShow[ prop ] : 0, prop, anim );
 
@@ -208,7 +210,7 @@ function defaultPrefilter( elem, props, opts ) {
 			}
 		}
 
-	// If this is a noop like .hide().hide(), restore an overwritten display value
+	// If this is a noop like .hide().hide(), revert a display override
 	} else if ( (display === "none" ? defaultDisplay( elem.nodeName ) : display) === "inline" ) {
 		style.display = display;
 	}
