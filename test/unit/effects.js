@@ -1522,13 +1522,13 @@ test( "animate should set display for disconnected nodes", function() {
 	strictEqual( $divEmpty[ 0 ].parentNode, null, "Setup: element with null parentNode" );
 	strictEqual( ($divTest[ 0 ].parentNode || {}).nodeType, 11, "Setup: element under fragment" );
 
-	strictEqual( $divEmpty.show().css( "display" ), disconnectedDisplay,
+	strictEqual( $divEmpty.show()[ 0 ].style.display, "",
 		"set display with show() for element with null parentNode" );
-	strictEqual( $divTest.show().css( "display" ), disconnectedDisplay,
+	strictEqual( $divTest.show()[ 0 ].style.display, "",
 		"set display with show() for element under fragment" );
-	strictEqual( $divNone.show().css( "display" ), disconnectedDisplay,
+	strictEqual( $divNone.show()[ 0 ].style.display, "",
 		"show() should change display if it already set to none" );
-	strictEqual( $divInline.show().css( "display" ), "inline",
+	strictEqual( $divInline.show()[ 0 ].style.display, "inline",
 		"show() should not change display if it already set" );
 
 	QUnit.expectJqData( env, $divNone[ 0 ], "olddisplay" );
