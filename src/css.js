@@ -10,7 +10,6 @@ define([
 	"./css/var/getStyles",
 	"./css/curCSS",
 	"./css/adjustCSS",
-	"./css/defaultDisplay",
 	"./css/addGetHookIf",
 	"./css/support",
 	"./data/var/dataPriv",
@@ -20,7 +19,7 @@ define([
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
-	getStyles, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support, dataPriv ) {
+	getStyles, curCSS, adjustCSS, addGetHookIf, support, dataPriv ) {
 
 var
 	// Swappable if display is none or starts with table

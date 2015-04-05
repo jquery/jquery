@@ -5,17 +5,16 @@ define([
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/adjustCSS",
-	"./css/defaultDisplay",
 	"./data/var/dataPriv",
 
 	"./core/init",
-	"./effects/Tween",
 	"./queue",
-	"./css",
 	"./deferred",
-	"./traversing"
-], function( jQuery, document, rcssNum, cssExpand,
-	isHidden, adjustCSS, defaultDisplay, dataPriv ) {
+	"./traversing",
+	"./manipulation",
+	"./css",
+	"./effects/Tween"
+], function( jQuery, document, rcssNum, cssExpand, isHidden, adjustCSS, dataPriv ) {
 
 var
 	fxNow, timerId,
@@ -82,7 +81,8 @@ function createTween( value, prop, animation ) {
 
 function defaultPrefilter( elem, props, opts ) {
 	/* jshint validthis: true */
-	var prop, value, toggle, tween, hooks, oldfire, display, checkDisplay,
+	var prop, value, toggle, tween, hooks, oldfire, display, restoreDisplay,
+		isBox = "height" in props || "width" in props,
 		anim = this,
 		orig = {},
 		style = elem.style,
@@ -114,32 +114,6 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 	}
 
-	// Temporarily restrict "overflow" and "display" styles during height/width animations
-	if ( elem.nodeType === 1 && ( "height" in props || "width" in props ) ) {
-		// Support: IE 9 - 11
-		// Record all 3 overflow attributes because IE does not infer the shorthand
-		// from identically-valued overflowX and overflowY
-		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
-
-		// Animate inline elements as inline-block
-		display = jQuery.css( elem, "display" );
-		checkDisplay = display === "none" ?
-			dataPriv.get( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) :
-			display;
-		if ( checkDisplay === "inline" && jQuery.css( elem, "float" ) === "none" ) {
-			style.display = "inline-block";
-		}
-	}
-
-	if ( opts.overflow ) {
-		style.overflow = "hidden";
-		anim.always(function() {
-			style.overflow = opts.overflow[ 0 ];
-			style.overflowX = opts.overflow[ 1 ];
-			style.overflowY = opts.overflow[ 2 ];
-		});
-	}
-
 	// Detect show/hide animations
 	for ( prop in props ) {
 		value = props[ prop ];
@@ -159,11 +133,56 @@ function defaultPrefilter( elem, props, opts ) {
 				}
 			}
 			orig[ prop ] = dataShow && dataShow[ prop ] || jQuery.style( elem, prop );
-
-		// Any non-show/hide property stops us from reverting a display override
-		} else {
-			display = undefined;
 		}
+	}
+
+	// Temporarily restrict "overflow" and "display" styles during box animations
+	if ( isBox && elem.nodeType === 1 ) {
+		// Support: IE 9 - 11
+		// Record all 3 overflow attributes because IE does not infer the shorthand
+		// from identically-valued overflowX and overflowY
+		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
+
+		// Identify a display type, preferring old show/hide data over the CSS cascade
+		restoreDisplay = dataShow && dataShow.display;
+		if ( restoreDisplay == null ) {
+			restoreDisplay = dataPriv.get( elem, "olddisplay" );
+		}
+		display = jQuery.css( elem, "display" );
+		if ( display === "none" ) {
+			display = restoreDisplay || jQuery.swap( elem, { "display": "" }, function() {
+				return jQuery.css( elem, "display" );
+			} );
+		}
+
+		// Animate inline elements as inline-block
+		if ( display === "inline" || display === "inline-block" && restoreDisplay != null ) {
+			if ( jQuery.css( elem, "float" ) === "none" ) {
+				if ( !jQuery.isEmptyObject( props ) ) {
+					style.display = "inline-block";
+
+				// Restore the original display value at the end of pure show/hide animations
+				} else if ( !jQuery.isEmptyObject( orig ) ) {
+					if ( restoreDisplay == null ) {
+						display = style.display;
+						restoreDisplay = display === "none" ? "" : display;
+					}
+					style.display = "inline-block";
+					anim.done(function() {
+						style.display = restoreDisplay;
+					});
+				}
+			}
+		}
+	}
+
+	if ( opts.overflow ) {
+		style.overflow = "hidden";
+		anim.always(function() {
+			style.overflow = opts.overflow[ 0 ];
+			style.overflowX = opts.overflow[ 1 ];
+			style.overflowY = opts.overflow[ 2 ];
+		});
 	}
 
 	// Implement show/hide animations
@@ -173,7 +192,7 @@ function defaultPrefilter( elem, props, opts ) {
 				hidden = dataShow.hidden;
 			}
 		} else {
-			dataShow = dataPriv.access( elem, "fxshow", {} );
+			dataShow = dataPriv.access( elem, "fxshow", { display: restoreDisplay } );
 		}
 
 		// Store hidden/visible for toggle so `.stop().toggle()` "reverses"
@@ -186,9 +205,6 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 
 		anim.done(function() {
-			if ( checkDisplay === "inline" && style.display === "inline-block" ) {
-				style.display = dataPriv.get( elem, "olddisplay" ) || "";
-			}
 			if ( !hidden ) {
 				jQuery( elem ).hide();
 			}
@@ -209,10 +225,6 @@ function defaultPrefilter( elem, props, opts ) {
 				}
 			}
 		}
-
-	// If this is a noop like .hide().hide(), revert a display override
-	} else if ( (display === "none" ? defaultDisplay( elem.nodeName ) : display) === "inline" ) {
-		style.display = display;
 	}
 }
 

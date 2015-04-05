@@ -2216,4 +2216,73 @@ test( "Make sure initialized display value for disconnected nodes is correct (#1
 	this.clock.tick( 1000 );
 });
 
+test( "Show/hide/toggle and display: inline", function() {
+	expect( 40 );
+
+	var clock = this.clock;
+
+	jQuery( "<span/><div style='display:inline' title='inline div'/>" ).each(function() {
+		var completed, interrupted,
+			N = 100,
+			fixture = jQuery( "#qunit-fixture" ),
+			$el = jQuery( this ),
+			kind = this.title || this.nodeName.toLowerCase();
+
+		// Animations allowed to complete
+		completed = jQuery.map( [
+			$el.clone().data({ call: "hide", done: "none" }).appendTo( fixture ).hide( N ),
+			$el.clone().data({ call: "toggle", done: "none" }).appendTo( fixture ).toggle( N ),
+			$el.clone().data({ call: "hide+show", done: "inline" }).appendTo( fixture )
+				.hide().show( N ),
+			$el.clone().data({ call: "hide+toggle", done: "inline" }).appendTo( fixture )
+				.hide().toggle( N )
+		], function( $clone ) { return $clone[ 0 ]; } );
+
+		// Animations not allowed to complete
+		interrupted = jQuery.map( [
+			$el.clone().data({ call: "hide+stop" }).appendTo( fixture ).hide( N ),
+			$el.clone().data({ call: "toggle+stop" }).appendTo( fixture ).toggle( N ),
+			$el.clone().data({ call: "hide+show+stop" }).appendTo( fixture ).hide().show( N ),
+			$el.clone().data({ call: "hide+toggle+stop" }).appendTo( fixture ).hide().toggle( N )
+		], function( $clone ) { return $clone[ 0 ]; } );
+
+		// All elements should be inline-block during the animation
+		clock.tick( N / 2 );
+		jQuery( completed ).each(function() {
+			var $el = jQuery( this ),
+				call = $el.data( "call" );
+			strictEqual( $el.css( "display" ), "inline-block", kind + " display during " + call );
+		});
+
+		// Interrupted elements should remain inline-block
+		jQuery( interrupted ).stop();
+		clock.tick( N / 2 );
+		jQuery( interrupted ).each(function() {
+			var $el = jQuery( this ),
+				call = $el.data( "call" );
+			strictEqual( $el.css( "display" ), "inline-block", kind + " display after " + call );
+		});
+
+		// Completed elements should not remain inline-block
+		clock.tick( N / 2 );
+		jQuery( completed ).each(function() {
+			var $el = jQuery( this ),
+				call = $el.data( "call" ),
+				display = $el.data( "done" );
+			strictEqual( $el.css( "display" ), display, kind + " display after " + call );
+		});
+
+		// A post-animation toggle should not make any element inline-block
+		completed = jQuery( completed.concat( interrupted ) );
+		completed.toggle( N / 2 );
+		clock.tick( N );
+		completed.each(function() {
+			var $el = jQuery( this ),
+				call = $el.data( "call" );
+			ok( $el.css( "display" ) !== "inline-block",
+				kind + " display is not inline-block after " + call + "+toggle" );
+		});
+	});
+});
+
 })();
