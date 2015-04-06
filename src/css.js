@@ -12,14 +12,14 @@ define([
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
 	"./css/support",
-	"./data/var/dataPriv",
+	"./css/showHide",
 
 	"./core/init",
 	"./css/swap",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
-	getStyles, curCSS, adjustCSS, addGetHookIf, support, dataPriv ) {
+	getStyles, curCSS, adjustCSS, addGetHookIf, support, showHide ) {
 
 var
 	// Swappable if display is none or starts with table
@@ -148,46 +148,6 @@ function getWidthOrHeight( elem, name, extra ) {
 			styles
 		)
 	) + "px";
-}
-
-function showHide( elements, show ) {
-	var display, elem,
-		values = [],
-		index = 0,
-		length = elements.length;
-
-	// Determine new display value for elements that need to change
-	for ( ; index < length; index++ ) {
-		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-
-		display = elem.style.display;
-		if ( show ) {
-			if ( display === "none" ) {
-				// Restore a pre-hide() value if we have one
-				values[ index ] = dataPriv.get( elem, "olddisplay" ) || "";
-			}
-		} else {
-			if ( display !== "none" ) {
-				values[ index ] = "none";
-
-				// Remember the value we're replacing
-				dataPriv.set( elem, "olddisplay", display );
-			}
-		}
-	}
-
-	// Set the display of the elements in a second loop
-	// to avoid the constant reflow
-	for ( index = 0; index < length; index++ ) {
-		if ( values[ index ] != null ) {
-			elements[ index ].style.display = values[ index ];
-		}
-	}
-
-	return elements;
 }
 
 jQuery.extend({

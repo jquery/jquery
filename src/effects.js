@@ -6,6 +6,7 @@ define([
 	"./css/var/isHidden",
 	"./css/adjustCSS",
 	"./data/var/dataPriv",
+	"./css/showHide",
 
 	"./core/init",
 	"./queue",
@@ -14,7 +15,7 @@ define([
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, cssExpand, isHidden, adjustCSS, dataPriv ) {
+], function( jQuery, document, rcssNum, cssExpand, isHidden, adjustCSS, dataPriv, showHide ) {
 
 var
 	fxNow, timerId,
@@ -81,8 +82,8 @@ function createTween( value, prop, animation ) {
 
 function defaultPrefilter( elem, props, opts ) {
 	/* jshint validthis: true */
-	var prop, value, toggle, tween, hooks, oldfire, display, restoreDisplay,
-		isBox = "height" in props || "width" in props,
+	var prop, value, toggle, hooks, oldfire, propTween, restoreDisplay, display,
+		isBox = "width" in props || "height" in props,
 		anim = this,
 		orig = {},
 		style = elem.style,
@@ -117,7 +118,7 @@ function defaultPrefilter( elem, props, opts ) {
 	// Detect show/hide animations
 	for ( prop in props ) {
 		value = props[ prop ];
-		if ( rfxtypes.exec( value ) ) {
+		if ( rfxtypes.test( value ) ) {
 			delete props[ prop ];
 			toggle = toggle || value === "toggle";
 			if ( value === ( hidden ? "hide" : "show" ) ) {
@@ -136,7 +137,13 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 	}
 
-	// Temporarily restrict "overflow" and "display" styles during box animations
+	// Bail out if this is a no-op like .hide().hide()
+	propTween = !jQuery.isEmptyObject( props );
+	if ( !propTween && jQuery.isEmptyObject( orig ) ) {
+		return;
+	}
+
+	// Restrict "overflow" and "display" styles during box animations
 	if ( isBox && elem.nodeType === 1 ) {
 		// Support: IE 9 - 11
 		// Record all 3 overflow attributes because IE does not infer the shorthand
@@ -158,20 +165,18 @@ function defaultPrefilter( elem, props, opts ) {
 		// Animate inline elements as inline-block
 		if ( display === "inline" || display === "inline-block" && restoreDisplay != null ) {
 			if ( jQuery.css( elem, "float" ) === "none" ) {
-				if ( !jQuery.isEmptyObject( props ) ) {
-					style.display = "inline-block";
 
 				// Restore the original display value at the end of pure show/hide animations
-				} else if ( !jQuery.isEmptyObject( orig ) ) {
+				if ( !propTween ) {
+					anim.done(function() {
+						style.display = restoreDisplay;
+					});
 					if ( restoreDisplay == null ) {
 						display = style.display;
 						restoreDisplay = display === "none" ? "" : display;
 					}
-					style.display = "inline-block";
-					anim.done(function() {
-						style.display = restoreDisplay;
-					});
 				}
+				style.display = "inline-block";
 			}
 		}
 	}
@@ -186,43 +191,49 @@ function defaultPrefilter( elem, props, opts ) {
 	}
 
 	// Implement show/hide animations
-	if ( !jQuery.isEmptyObject( orig ) ) {
-		if ( dataShow ) {
-			if ( "hidden" in dataShow ) {
-				hidden = dataShow.hidden;
-			}
-		} else {
-			dataShow = dataPriv.access( elem, "fxshow", { display: restoreDisplay } );
-		}
+	propTween = false;
+	for ( prop in orig ) {
 
-		// Store hidden/visible for toggle so `.stop().toggle()` "reverses"
-		if ( toggle ) {
-			dataShow.hidden = !hidden;
-		}
-
-		if ( hidden ) {
-			jQuery( elem ).show();
-		}
-
-		anim.done(function() {
-			if ( !hidden ) {
-				jQuery( elem ).hide();
-			}
-			dataPriv.remove( elem, "fxshow" );
-			for ( prop in orig ) {
-				jQuery.style( elem, prop, orig[ prop ] );
-			}
-		});
-
-		for ( prop in orig ) {
-			tween = createTween( hidden ? dataShow[ prop ] : 0, prop, anim );
-
-			if ( !( prop in dataShow ) ) {
-				dataShow[ prop ] = tween.start;
-				if ( hidden ) {
-					tween.end = tween.start;
-					tween.start = prop === "width" || prop === "height" ? 1 : 0;
+		// General show/hide setup for this element animation
+		if ( !propTween ) {
+			if ( dataShow ) {
+				if ( "hidden" in dataShow ) {
+					hidden = dataShow.hidden;
 				}
+			} else {
+				dataShow = dataPriv.access( elem, "fxshow", { display: restoreDisplay } );
+			}
+
+			// Store hidden/visible for toggle so `.stop().toggle()` "reverses"
+			if ( toggle ) {
+				dataShow.hidden = !hidden;
+			}
+
+			// Show elements before animating them
+			if ( hidden ) {
+				showHide( [ elem ], true );
+			}
+
+			/* jshint -W083 */
+			anim.done(function() {
+				// The final step of a "hide" animation is actually hiding the element
+				if ( !hidden ) {
+					showHide( [ elem ] );
+				}
+				dataPriv.remove( elem, "fxshow" );
+				for ( prop in orig ) {
+					jQuery.style( elem, prop, orig[ prop ] );
+				}
+			});
+		}
+
+		// Per-property setup
+		propTween = createTween( hidden ? dataShow[ prop ] : 0, prop, anim );
+		if ( !( prop in dataShow ) ) {
+			dataShow[ prop ] = propTween.start;
+			if ( hidden ) {
+				propTween.end = propTween.start;
+				propTween.start = prop === "width" || prop === "height" ? 1 : 0;
 			}
 		}
 	}
