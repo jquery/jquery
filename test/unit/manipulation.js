@@ -2064,7 +2064,7 @@ test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
 	div.remove();
 });
 
-test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
+test( "domManip plain-text caching (trac-6779)", function() {
 
 	expect( 1 );
 
@@ -2083,42 +2083,43 @@ test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 	$f.remove();
 });
 
-test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
+test( "domManip executes scripts containing html comments or CDATA (trac-9221)", function() {
 
 	expect( 3 );
 
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--",
-				"ok( true, '<!-- handled' );",
-				"//-->",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<![CDATA[",
-				"ok( true, '<![CDATA[ handled' );",
-				"//]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--//--><![CDATA[//><!--",
-				"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
-				"//--><!]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--",
+		"ok( true, '<!-- handled' );",
+		"//-->",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<![CDATA[",
+		"ok( true, '<![CDATA[ handled' );",
+		"//]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--//--><![CDATA[//><!--",
+		"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+		"//--><!]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 });
 
-test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
-
-	expect( 1 );
-
-	try {
-		jQuery( "<input type='hidden'>", {} );
-		ok( true, "Does not allow attribute object to be treated like a doc object" );
-	} catch ( e ) {}
-});
+testIframeWithCallback(
+	"domManip tolerates window-valued document[0] in IE9/10 (trac-12266)",
+	"manipulation/iframe-denied.html",
+	function( test ) {
+		expect( 1 );
+		ok( test.status, test.description );
+	}
+);
 
 test( "jQuery.clone - no exceptions for object elements #9587", function() {
 
@@ -2278,12 +2279,6 @@ test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
 		.after( "<p>a</p>", "<p>b</p>" )
 		.parent();
 	equal( div.find("*").length, 3, "added 2 paragraphs after inner div" );
-});
-
-testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9/10 (#12266)", "manipulation/iframe-denied.html", function( test ) {
-	expect( 1 );
-
-	ok( test.status, test.description );
 });
 
 test( "script evaluation (#11795)", function() {
