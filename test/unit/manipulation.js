@@ -2080,7 +2080,7 @@ test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
 	div.remove();
 });
 
-test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
+test( "domManip plain-text caching (trac-6779)", function() {
 
 	expect( 1 );
 
@@ -2099,42 +2099,43 @@ test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 	$f.remove();
 });
 
-test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
+test( "domManip executes scripts containing html comments or CDATA (trac-9221)", function() {
 
 	expect( 3 );
 
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--",
-				"ok( true, '<!-- handled' );",
-				"//-->",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<![CDATA[",
-				"ok( true, '<![CDATA[ handled' );",
-				"//]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--//--><![CDATA[//><!--",
-				"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
-				"//--><!]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--",
+		"ok( true, '<!-- handled' );",
+		"//-->",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<![CDATA[",
+		"ok( true, '<![CDATA[ handled' );",
+		"//]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--//--><![CDATA[//><!--",
+		"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+		"//--><!]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 });
 
-test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
-
-	expect( 1 );
-
-	try {
-		jQuery( "<input type='hidden'>", {} );
-		ok( true, "Does not allow attribute object to be treated like a doc object" );
-	} catch ( e ) {}
-});
+testIframeWithCallback(
+	"domManip tolerates window-valued document[0] in IE9/10 (trac-12266)",
+	"manipulation/iframe-denied.html",
+	function( test ) {
+		expect( 1 );
+		ok( test.status, test.description );
+	}
+);
 
 test( "jQuery.clone - no exceptions for object elements #9587", function() {
 
@@ -2296,12 +2297,6 @@ test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
 	equal( div.find("*").length, 3, "added 2 paragraphs after inner div" );
 });
 
-testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9/10 (#12266)", "manipulation/iframe-denied.html", function( test ) {
-	expect( 1 );
-
-	ok( test.status, test.description );
-});
-
 test( "script evaluation (#11795)", function() {
 
 	expect( 13 );
@@ -2383,6 +2378,46 @@ test( "jQuery._evalUrl (#12838)", function() {
 
 	jQuery.ajax = ajax;
 	jQuery._evalUrl = evalUrl;
+});
+
+test( "jQuery.htmlPrefilter (gh-1747)", function( assert ) {
+
+	assert.expect( 5 );
+
+	var expectedArgument,
+		invocations = 0,
+		htmlPrefilter = jQuery.htmlPrefilter,
+		fixture = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+		poison = "<script>jQuery.htmlPrefilter.assert.ok( false, 'script not executed' );</script>",
+		done = assert.async();
+
+	jQuery.htmlPrefilter = function( html ) {
+		invocations++;
+		assert.equal( html, expectedArgument, "Expected input" );
+
+		// Remove <script> and <del> elements
+		return htmlPrefilter.apply( this, arguments )
+			.replace( /<(script|del)(?=[\s>])[\w\W]*?<\/\1\s*>/ig, "" );
+	};
+	jQuery.htmlPrefilter.assert = assert;
+
+	expectedArgument = "A-" + poison + "B-" + poison + poison + "C-";
+	fixture.html( expectedArgument );
+
+	expectedArgument = "D-" + poison + "E-" + "<del/><div>" + poison + poison + "</div>" + "F-";
+	fixture.append( expectedArgument );
+
+	expectedArgument = poison;
+	fixture.find( "div" ).replaceWith( expectedArgument );
+
+	assert.equal( invocations, 3, "htmlPrefilter invoked for all DOM manipulations" );
+	assert.equal( fixture.html(), "A-B-C-D-E-F-", "htmlPrefilter modified HTML" );
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		jQuery.htmlPrefilter = htmlPrefilter;
+		done();
+	}, 100 );
 });
 
 test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {

@@ -19,8 +19,7 @@ test("jQuery()", function() {
 		img = jQuery("<img/>"),
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
-		lng = "",
-		expected = 22,
+		expected = 23,
 		attrObj = {
 			"text": "test",
 			"class": "test2",
@@ -141,12 +140,9 @@ test("jQuery()", function() {
 	}
 	equal( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
 
-	// manually clean up detached elements
-	elem.remove();
-
-	for ( i = 0; i < 128; i++ ) {
-		lng += "12345678";
-	}
+	elem = jQuery( "<input type='hidden'>", {} );
+	strictEqual( elem[ 0 ].ownerDocument, document,
+		"Empty attributes object is not interpreted as a document (trac-8950)" );
 });
 
 test("jQuery(selector, context)", function() {
