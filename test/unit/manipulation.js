@@ -1279,15 +1279,19 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "Empty replaceWith (#13401; #13596)", 8, function() {
+test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function() {
+
+	expect( 10 );
+
 	var $el = jQuery( "<div/>" ),
 		tests = {
 			"empty string": "",
 			"empty array": [],
+			"array of empty string": [ "" ],
 			"empty collection": jQuery( "#nonexistent" ),
 
-       // in case of jQuery(...).replaceWith();
-			"empty undefined": undefined
+			// in case of jQuery(...).replaceWith();
+			"undefined": undefined
 		};
 
 	jQuery.each( tests, function( label, input ) {
