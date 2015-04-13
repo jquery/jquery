@@ -1279,15 +1279,20 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "Empty replaceWith (#13401; #13596)", 8, function() {
-	var $el = jQuery( "<div/>" ),
+test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function() {
+
+	expect( 25 );
+
+	var $el = jQuery( "<div/><div/>" ).html( "<p>0</p>" ),
+		expectedHTML = $el.html(),
 		tests = {
 			"empty string": "",
 			"empty array": [],
+			"array of empty string": [ "" ],
 			"empty collection": jQuery( "#nonexistent" ),
 
-       // in case of jQuery(...).replaceWith();
-			"empty undefined": undefined
+			// in case of jQuery(...).replaceWith();
+			"undefined": undefined
 		};
 
 	jQuery.each( tests, function( label, input ) {
@@ -1295,6 +1300,17 @@ test( "Empty replaceWith (#13401; #13596)", 8, function() {
 		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
 		$el.html( "<b/>" ).children().replaceWith(function() { return input; });
 		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
+		$el.html( "<i/>" ).children().replaceWith(function( i ) { i; return input; });
+		strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
+		$el.html( "<p/>" ).children().replaceWith(function( i ) {
+			return i ?
+				input :
+				jQuery( this ).html( i + "" );
+		});
+		strictEqual( $el.eq( 0 ).html(), expectedHTML,
+			"replaceWith(function conditionally returning context)" );
+		strictEqual( $el.eq( 1 ).html(), "",
+			"replaceWith(function conditionally returning " + label + ")" );
 	});
 });
 
