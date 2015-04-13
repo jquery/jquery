@@ -2364,6 +2364,46 @@ test( "jQuery._evalUrl (#12838)", function() {
 	jQuery._evalUrl = evalUrl;
 });
 
+test( "jQuery.htmlPrefilter (gh-1747)", function( assert ) {
+
+	assert.expect( 5 );
+
+	var expectedArgument,
+		invocations = 0,
+		htmlPrefilter = jQuery.htmlPrefilter,
+		fixture = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+		poison = "<script>jQuery.htmlPrefilter.assert.ok( false, 'script not executed' );</script>",
+		done = assert.async();
+
+	jQuery.htmlPrefilter = function( html ) {
+		invocations++;
+		assert.equal( html, expectedArgument, "Expected input" );
+
+		// Remove <script> and <del> elements
+		return htmlPrefilter.apply( this, arguments )
+			.replace( /<(script|del)(?=[\s\n>])[\w\W]*?<\/\1[\s\n]*>/ig, "" );
+	};
+	jQuery.htmlPrefilter.assert = assert;
+
+	expectedArgument = "A-" + poison + "B-" + poison + poison + "C-";
+	fixture.html( expectedArgument );
+
+	expectedArgument = "D-" + poison + "E-" + "<del/><div>" + poison + poison + "</div>" + "F-";
+	fixture.append( expectedArgument );
+
+	expectedArgument = poison;
+	fixture.find( "div" ).replaceWith( expectedArgument );
+
+	assert.equal( invocations, 3, "htmlPrefilter invoked for all DOM manipulations" );
+	assert.equal( fixture.html(), "A-B-C-D-E-F-", "htmlPrefilter modified HTML" );
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		jQuery.htmlPrefilter = htmlPrefilter;
+		done();
+	}, 100 );
+});
+
 test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
 
 	expect( 10 );
