@@ -822,6 +822,24 @@ test("off(eventObject)", function() {
 	assert( 0 );
 });
 
+test("off() should delete all handlers from queue", function() {
+	expect(1);
+
+	var counter = 0,
+		handler1 = function() { counter++; },
+		handler2 = function() { counter++; };
+
+	jQuery("#foo").on("foo", handler1);
+	jQuery("#foo").on("foo", function() {
+		jQuery("#foo").off();
+	});
+	jQuery("#foo").on("foo", handler2);
+
+	jQuery("#foo").trigger("foo");
+
+	equal( counter, 1, "Make sure that the event handler is not called after handler removal" );
+});
+
 if ( jQuery.fn.hover ) {
 	test("hover() mouseenter mouseleave", function() {
 		expect(1);
