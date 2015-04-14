@@ -176,6 +176,18 @@ jQuery.extend({
 					}
 
 					return jQuery.Deferred(function( newDefer ) {
+						// progress_handlers.add( ... )
+						tuples[ 2 ][ 3 ].add(
+							resolve(
+								0,
+								newDefer,
+								jQuery.isFunction( onProgress ) ?
+									onProgress :
+									Identity,
+								newDefer.notifyWith
+							)
+						);
+
 						// fulfilled_handlers.add( ... )
 						tuples[ 0 ][ 3 ].add(
 							resolve(
@@ -195,18 +207,6 @@ jQuery.extend({
 								jQuery.isFunction( onRejected ) ?
 									onRejected :
 									Thrower
-							)
-						);
-
-						// progress_handlers.add( ... )
-						tuples[ 2 ][ 3 ].add(
-							resolve(
-								0,
-								newDefer,
-								jQuery.isFunction( onProgress ) ?
-									onProgress :
-									Identity,
-								newDefer.notifyWith
 							)
 						);
 					}).promise();

@@ -565,6 +565,22 @@ test( "jQuery.Deferred.then - progress and thenables", function( assert ) {
 	trigger.notify();
 });
 
+test( "jQuery.Deferred.then - progress and resolved", function( assert ) {
+
+	expect( 2 );
+
+	var notifiedResolved = jQuery.Deferred().notify( "foo" ).resolve( "bar" ),
+		done = assert.async();
+
+	notifiedResolved.progress( function( v ) {
+		assert.strictEqual( v, "foo", "expected progress value" );
+	} );
+	notifiedResolved.then().progress( function( v ) {
+		assert.strictEqual( v, "foo", "expected propagated progress value" );
+		done();
+	} );
+});
+
 test( "jQuery.when", function() {
 
 	expect( 37 );
