@@ -565,6 +565,54 @@ test( "jQuery.Deferred.then - progress and thenables", function( assert ) {
 	trigger.notify();
 });
 
+test( "jQuery.Deferred - notify and resolve", function( assert ) {
+
+	expect( 7 );
+
+	var notifiedResolved = jQuery.Deferred().notify( "foo" )/*xxx .resolve( "bar" )*/,
+		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+
+	notifiedResolved.progress( function( v ) {
+		assert.strictEqual( v, "foo", "progress value" );
+	} );
+
+	notifiedResolved.pipe().progress( function( v ) {
+		assert.strictEqual( v, "foo", "piped progress value" );
+	} );
+
+	notifiedResolved.pipe( null, null, function() {
+		return "baz";
+	} ).progress( function( v ) {
+		assert.strictEqual( v, "baz", "replaced piped progress value" );
+	} );
+
+	notifiedResolved.pipe( null, null, function() {
+		return jQuery.Deferred().notify( "baz" ).resolve( "quux" );
+	} ).progress( function( v ) {
+		assert.strictEqual( v, "baz", "deferred replaced piped progress value" );
+	} );
+
+	notifiedResolved.then().progress( function( v ) {
+		assert.strictEqual( v, "foo", "then'd progress value" );
+		done.pop().call();
+	} );
+
+	notifiedResolved.then( null, null, function() {
+		return "baz";
+	} ).progress( function( v ) {
+		assert.strictEqual( v, "baz", "replaced then'd progress value" );
+		done.pop().call();
+	} );
+
+	notifiedResolved.then( null, null, function() {
+		return jQuery.Deferred().notify( "baz" ).resolve( "quux" );
+	} ).progress( function( v ) {
+		// Progress from the surrogate deferred is ignored
+		assert.strictEqual( v, "quux", "deferred replaced then'd progress value" );
+		done.pop().call();
+	} );
+});
+
 test( "jQuery.when", function() {
 
 	expect( 37 );
