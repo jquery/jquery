@@ -7,8 +7,6 @@ define([
 	"./selector"
 ], function( jQuery, indexOf, rneedsContext ) {
 
-var rparentsprev = /^(?:parents|prev(?:Until|All))/;
-
 jQuery.extend({
 	dir: function( elem, dir, until ) {
 		var matched = [],
@@ -161,10 +159,18 @@ jQuery.each({
 		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
+	var // Sorting (which implicitly de-dupes) is required for non-adjacent traversals
+		sort = name !== "prev" && name !== "next",
+
+		// Reverse order for prev-derivatives and parents*
+		reverse = name !== "prev" && name.slice( 0, 4 ) === "prev" ||
+			name.slice( 0, 7 ) === "parents";
+
 	jQuery.fn[ name ] = function( until, selector ) {
 		var matched = jQuery.map( this, fn, until );
 
-		if ( name.slice( -5 ) !== "Until" ) {
+		// Only *Until methods support two parameters
+		if ( fn.length !== 3 ) {
 			selector = until;
 		}
 
@@ -173,13 +179,10 @@ jQuery.each({
 		}
 
 		if ( this.length > 1 ) {
-			// Sorting (which implicitly de-dupes) is required for non-adjacent traversals
-			if ( name !== "prev" && name !== "next" ) {
+			if ( sort ) {
 				jQuery.unique( matched );
 			}
-
-			// Reverse order for parents* and prev-derivatives
-			if ( rparentsprev.test( name ) ) {
+			if ( reverse ) {
 				matched.reverse();
 			}
 		}
