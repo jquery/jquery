@@ -2381,7 +2381,7 @@ test( "jQuery.htmlPrefilter (gh-1747)", function( assert ) {
 
 		// Remove <script> and <del> elements
 		return htmlPrefilter.apply( this, arguments )
-			.replace( /<(script|del)(?=[\s\n>])[\w\W]*?<\/\1[\s\n]*>/ig, "" );
+			.replace( /<(script|del)(?=[\s>])[\w\W]*?<\/\1\s*>/ig, "" );
 	};
 	jQuery.htmlPrefilter.assert = assert;
 
