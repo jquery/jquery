@@ -7,14 +7,7 @@ define([
 	"./selector"
 ], function( jQuery, indexOf, rneedsContext ) {
 
-var rparentsprev = /^(?:parents|prev(?:Until|All))/,
-	// Methods guaranteed to produce a unique set when starting from a unique set
-	guaranteedUnique = {
-		children: true,
-		contents: true,
-		next: true,
-		prev: true
-	};
+var rparentsprev = /^(?:parents|prev(?:Until|All))/;
 
 jQuery.extend({
 	dir: function( elem, dir, until ) {
@@ -180,8 +173,8 @@ jQuery.each({
 		}
 
 		if ( this.length > 1 ) {
-			// Remove duplicates
-			if ( !guaranteedUnique[ name ] ) {
+			// Sorting (which implicitly de-dupes) is required for non-adjacent traversals
+			if ( name !== "prev" && name !== "next" ) {
 				jQuery.unique( matched );
 			}
 
