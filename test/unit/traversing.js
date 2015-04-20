@@ -508,9 +508,17 @@ test("siblings([String]) - jQuery only", function() {
 });
 
 test("children([String])", function() {
-	expect(2);
-	deepEqual( jQuery("#foo").children().get(), q("sndp", "en", "sap"), "Check for children" );
-	deepEqual( jQuery("#foo").children("#en, #sap").get(), q("en", "sap"), "Check for multiple filters" );
+	expect( 3 );
+
+	deepEqual( jQuery( "#foo" ).children().get(), q( "sndp", "en", "sap" ),
+		"Check for children" );
+	deepEqual( jQuery( "#foo" ).children( "#en, #sap" ).get(), q( "en", "sap" ),
+		"Check for multiple filters" );
+	deepEqual(
+		jQuery( "#foo, #en" ).children().get(),
+		q( "sndp", "en", "yahoo", "sap" ),
+		"children of a self-descendant collection are sorted in document order (gh-1766)"
+	);
 });
 
 test("children([String]) - jQuery only", function() {
@@ -642,7 +650,8 @@ test("prevUntil([String])", function() {
 });
 
 test("contents()", function() {
-	expect(12);
+	expect( 13 );
+
 	var ibody, c;
 
 	equal( jQuery("#ap").contents().length, 9, "Check element contents" );
@@ -673,6 +682,14 @@ test("contents()", function() {
 	c = jQuery("#nonnodes").contents().contents();
 	equal( c.length, 1, "Check node,textnode,comment contents is just one" );
 	equal( c[0].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
+
+	c = jQuery( "#nonnodes" ).contents().get();
+	c.splice( 1, 0, c[ 0 ].firstChild );
+	deepEqual(
+		jQuery( "#nonnodes, #nonnodesElement" ).contents().get(),
+		c,
+		"contents of a self-descendant collection are sorted in document order (gh-1766)"
+	);
 });
 
 test("sort direction", function() {
