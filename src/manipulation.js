@@ -460,7 +460,11 @@ jQuery.fn.extend({
 		});
 
 		// Force removal if there was no new content (e.g., from empty arguments)
-		return arg && (arg.length || arg.nodeType) ? this : this.remove();
+		if ( !arg || !arg[ 0 ] || typeof arg === "string" ) {
+			return this.remove();
+		}
+
+		return this;
 	},
 
 	detach: function( selector ) {
