@@ -1281,9 +1281,9 @@ test( "replaceWith(string) for more than one element", function() {
 
 test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function() {
 
-	expect( 10 );
+	expect( 25 );
 
-	var $el = jQuery( "<div/>" ),
+	var $el = jQuery( "<div/><div/>" ),
 		tests = {
 			"empty string": "",
 			"empty array": [],
@@ -1299,6 +1299,17 @@ test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function() {
 		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
 		$el.html( "<b/>" ).children().replaceWith(function() { return input; });
 		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
+		$el.html( "<i/>" ).children().replaceWith(function( i ) { i; return input; });
+		strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
+		$el.html( "<p/>" ).children().replaceWith(function( i ) {
+			return i ?
+				input :
+				jQuery( this ).html( i + "" );
+		});
+		strictEqual( $el.eq( 0 ).html(), "<p>0</p>",
+			"replaceWith(function conditionally returning context)" );
+		strictEqual( $el.eq( 1 ).html(), "",
+			"replaceWith(function conditionally returning " + label + ")" );
 	});
 });
 

@@ -448,26 +448,21 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function() {
-		var replaced = [];
+		var ignored = [];
 
-		// Make the changes, replacing each context element with the new content
-		this.domManip( arguments, function( elem ) {
+		// Make the changes, replacing each non-ignored context element with the new content
+		return this.domManip( arguments, function( elem ) {
 			var parent = this.parentNode;
 
-			jQuery.cleanData( getAll( this ) );
-
-			if ( parent ) {
-				parent.replaceChild( elem, this );
+			if ( jQuery.inArray( this, ignored ) < 0 ) {
+				jQuery.cleanData( getAll( this ) );
+				if ( parent ) {
+					parent.replaceChild( elem, this );
+				}
 			}
 
-			// Record replacement
-			replaced.push( parent );
-
-		// Self-replacement counts, even if the callback is not invoked
-		}, replaced );
-
-		// Force removal if there were no replacements (e.g., from empty arguments)
-		return replaced.length ? this : this.remove();
+		// Force callback invocation
+		}, ignored );
 	},
 
 	detach: function( selector ) {
@@ -496,7 +491,7 @@ jQuery.fn.extend({
 				if ( isFunction ) {
 					args[ 0 ] = value.call( this, index, self.html() );
 				}
-				self.domManip( args, callback );
+				self.domManip( args, callback, ignored );
 			});
 		}
 
@@ -508,7 +503,8 @@ jQuery.fn.extend({
 				fragment = first;
 			}
 
-			if ( first ) {
+			// Require either new content or an interest in ignored elements to invoke the callback
+			if ( first || ignored ) {
 				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 				hasScripts = scripts.length;
 
