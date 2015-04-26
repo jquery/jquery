@@ -52,7 +52,8 @@
     "requirejs": "2.1.15",
     "sinon": "1.10.3",
     "sizzle": "2.2.0",
-    "testswarm": "1.1.0"
+    "testswarm": "1.1.0",
+    "win-spawn": "2.0.0"
   },
   "scripts": {
     "build": "npm install && grunt",
