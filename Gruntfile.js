@@ -158,9 +158,9 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
 
-	grunt.registerTask( "test_fast", [ "node_smoke_test" ] );
+	grunt.registerTask( "test_fast", [ "node_smoke_tests" ] );
 
-	grunt.registerTask( "test", [ "test_fast", "promises-aplus-tests" ] );
+	grunt.registerTask( "test", [ "test_fast", "promises_aplus_tests" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
