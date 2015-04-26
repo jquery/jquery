@@ -51,6 +51,8 @@ jQuery.ajaxTransport( "script", function( s ) {
 						}
 					}
 				);
+
+				// Use native DOM manipulation to avoid our domManip AJAX trickery
 				document.head.appendChild( script[ 0 ] );
 			},
 			abort: function() {

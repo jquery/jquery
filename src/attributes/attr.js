@@ -6,7 +6,7 @@ define([
 	"../selector"
 ], function( jQuery, rnotwhite, access, support ) {
 
-var nodeHook, boolHook,
+var boolHook,
 	attrHandle = jQuery.expr.attrHandle;
 
 jQuery.fn.extend({
@@ -41,7 +41,7 @@ jQuery.extend({
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			name = name.toLowerCase();
 			hooks = jQuery.attrHooks[ name ] ||
-				( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
+				( jQuery.expr.match.bool.test( name ) ? boolHook : undefined );
 		}
 
 		if ( value !== undefined ) {
