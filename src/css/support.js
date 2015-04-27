@@ -39,7 +39,7 @@ define([
 		div.innerHTML = "";
 		documentElement.appendChild( container );
 
-		var divStyle = window.getComputedStyle( div, null );
+		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
 		boxSizingReliableVal = divStyle.height === "4px";
 		pixelMarginRightVal = divStyle.marginRight === "4px";
@@ -90,7 +90,7 @@ define([
 			div.style.width = "1px";
 			documentElement.appendChild( container );
 
-			ret = !parseFloat( window.getComputedStyle( marginDiv, null ).marginRight );
+			ret = !parseFloat( window.getComputedStyle( marginDiv ).marginRight );
 
 			documentElement.removeChild( container );
 			div.removeChild( marginDiv );
