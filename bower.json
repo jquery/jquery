@@ -1,6 +1,6 @@
 {
   "name": "jquery",
-  "version": "1.11.2-pre",
+  "version": "1.11.3",
   "main": "dist/jquery.js",
   "license": "MIT",
   "ignore": [
