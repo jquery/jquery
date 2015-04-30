@@ -2239,14 +2239,10 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 	strictEqual( jQuery("<p/>").appendTo("<div/>").end().length, jQuery("<p>test</p>").appendTo("<div/>").end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 });
 
-asyncTest( "html() - script exceptions bubble (#11743)", 2, function() {
+asyncTest( "html() - script exceptions bubble (#11743)", function() {
+	expect( 3 );
 	var onerror = window.onerror;
-
-	setTimeout(function() {
-		window.onerror = onerror;
-
-		start();
-	}, 1000 );
+	var _evalUrl = jQuery._evalUrl;
 
 	window.onerror = function() {
 		ok( true, "Exception thrown" );
@@ -2256,11 +2252,21 @@ asyncTest( "html() - script exceptions bubble (#11743)", 2, function() {
 				ok( true, "Exception thrown in remote script" );
 			};
 
+			jQuery._evalUrl = function() {
+				_evalUrl.apply( this, arguments ).done(function() {
+					jQuery._evalUrl = _evalUrl;
+					window.onerror = onerror;
+
+					start();
+				});
+			};
+
 			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
-			ok( true, "Exception ignored" );
+			ok( true, "No exception" );
 		} else {
 			ok( true, "No jQuery.ajax" );
 			ok( true, "No jQuery.ajax" );
+			start();
 		}
 	};
 
@@ -2302,11 +2308,12 @@ testIframeWithCallback( "buildFragment works even if document[0] is iframe's win
 	ok( test.status, test.description );
 });
 
-test( "script evaluation (#11795)", function() {
+asyncTest( "script evaluation (#11795)", function() {
 
 	expect( 13 );
 
 	var scriptsIn, scriptsOut,
+		_evalUrl = jQuery._evalUrl,
 		fixture = jQuery("#qunit-fixture").empty(),
 		objGlobal = (function() {
 			return this;
@@ -2348,11 +2355,22 @@ test( "script evaluation (#11795)", function() {
 
 	if ( jQuery.ajax ) {
 		Globals.register("testBar");
+
+		jQuery._evalUrl = function() {
+			_evalUrl.apply( this, arguments ).done(function() {
+				jQuery._evalUrl = _evalUrl;
+
+				strictEqual( window["testBar"], "bar", "Global script evaluation" );
+
+				start();
+			});
+		};
+
 		jQuery("#qunit-fixture").append( "<script src='" + url("data/testbar.php") + "'/>" );
-		strictEqual( window["testBar"], "bar", "Global script evaluation" );
 	} else {
 		ok( true, "No jQuery.ajax" );
 		ok( true, "No jQuery.ajax" );
+		start();
 	}
 });
 

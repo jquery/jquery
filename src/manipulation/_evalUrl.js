@@ -10,9 +10,8 @@ jQuery._evalUrl = function( url ) {
 		type: "GET",
 		dataType: "script",
 		cache: true,
-		async: false,
-		global: false,
-		"throws": true
+		async: true,
+		global: false
 	});
 };
 
