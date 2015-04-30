@@ -5,20 +5,6 @@ module( "event", {
 	teardown: moduleTeardown
 });
 
-test("null or undefined handler", function() {
-	expect(2);
-	// Supports Fixes bug #7229
-	try {
-		jQuery("#firstp").on( "click", null );
-		ok(true, "Passing a null handler will not throw an exception");
-	} catch ( e ) {}
-
-	try {
-		jQuery("#firstp").on( "click", undefined );
-		ok(true, "Passing an undefined handler will not throw an exception");
-	} catch ( e ) {}
-});
-
 test("on() with non-null,defined data", function() {
 
 	expect(2);

@@ -819,8 +819,6 @@ jQuery.fn.extend({
 		}
 		if ( fn === false ) {
 			fn = returnFalse;
-		} else if ( !fn ) {
-			return this;
 		}
 
 		if ( one === 1 ) {
