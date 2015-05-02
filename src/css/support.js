@@ -107,7 +107,7 @@ define([
 
 		// Check for getComputedStyle so that this code is not run in IE<9.
 		if ( window.getComputedStyle ) {
-			divStyle = window.getComputedStyle( div, null );
+			divStyle = window.getComputedStyle( div );
 			pixelPositionVal = ( divStyle || {} ).top !== "1%";
 			boxSizingReliableVal = ( divStyle || { height: "4px" } ).height === "4px";
 			pixelMarginRightVal = ( divStyle || { marginRight: "4px" } ).marginRight === "4px";
@@ -128,7 +128,7 @@ define([
 			div.style.width = "1px";
 
 			reliableMarginRightVal =
-				!parseFloat( ( window.getComputedStyle( contents, null ) || {} ).marginRight );
+				!parseFloat( ( window.getComputedStyle( contents ) || {} ).marginRight );
 
 			div.removeChild( contents );
 		}

@@ -677,7 +677,7 @@ jQuery.removeEvent = document.removeEventListener ?
 
 		// This "if" is needed for plain objects
 		if ( elem.removeEventListener ) {
-			elem.removeEventListener( type, handle, false );
+			elem.removeEventListener( type, handle );
 		}
 	} :
 	function( elem, type, handle ) {
