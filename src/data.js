@@ -152,6 +152,11 @@ jQuery.fn.extend({
 				// data that might've been store with a camelCased key.
 				var data = dataUser.get( this, camelKey );
 
+				// Try the key as is if data is undefined
+				if ( data === undefined ) {
+					data = dataUser.get( this, key );
+				}
+
 				// For HTML5 data-* attribute interop, we have to
 				// store property names with dashes in a camelCase form.
 				// This might not apply to all properties...*
