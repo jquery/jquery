@@ -26,20 +26,7 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
 
-var xhrId = 0,
-	xhrCallbacks = {},
-	xhrSupported = jQuery.ajaxSettings.xhr();
-
-// Support: IE<10
-// Open requests must be manually aborted on unload (#5280)
-// See https://support.microsoft.com/kb/2856746 for more info
-if ( window.attachEvent ) {
-	window.attachEvent( "onunload", function() {
-		for ( var key in xhrCallbacks ) {
-			xhrCallbacks[ key ]( undefined, true );
-		}
-	});
-}
+var xhrSupported = jQuery.ajaxSettings.xhr();
 
 // Determine support properties
 support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
@@ -57,8 +44,7 @@ if ( xhrSupported ) {
 			return {
 				send: function( headers, complete ) {
 					var i,
-						xhr = options.xhr(),
-						id = ++xhrId;
+						xhr = options.xhr();
 
 					// Open the socket
 					xhr.open(
@@ -115,7 +101,6 @@ if ( xhrSupported ) {
 						// Was never called and is aborted or complete
 						if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 							// Clean up
-							delete xhrCallbacks[ id ];
 							callback = undefined;
 							xhr.onreadystatechange = jQuery.noop;
 
@@ -169,7 +154,7 @@ if ( xhrSupported ) {
 						callback();
 					} else {
 						// Add to the list of active xhr callbacks
-						xhr.onreadystatechange = xhrCallbacks[ id ] = callback;
+						xhr.onreadystatechange = callback;
 					}
 				},
 
