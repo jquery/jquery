@@ -1484,7 +1484,7 @@ test("jQuery.camelCase()", function() {
 		"foo-bar": "fooBar",
 		"foo-bar-baz": "fooBarBaz",
 		"girl-u-want": "girlUWant",
-		"the-4th-dimension": "the4thDimension",
+		"the-4th-dimension": "the-4thDimension",
 		"-o-tannenbaum": "OTannenbaum",
 		"-moz-illa": "MozIlla",
 		"-ms-take": "msTake"

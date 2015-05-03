@@ -241,14 +241,14 @@ test("jQuery(plain Object).data(String, Object).data(String)", function() {
 });
 
 test("data-* attributes", function() {
-	expect( 43 );
+	expect( 46 );
 
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
 		div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
-		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>");
 
 	equal( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
@@ -265,6 +265,7 @@ test("data-* attributes", function() {
 
 	child.appendTo("#qunit-fixture");
 	equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
+	equal( child.data("foo-42"), "boosh", "camelCasing does not affect numbers (#1751)" );
 
 	child.data("myobj", "replaced");
 	equal( child.data("myobj"), "replaced", "Original data overwritten");
@@ -274,7 +275,7 @@ test("data-* attributes", function() {
 
 	obj = child.data();
 	obj2 = dummy.data();
-	check = [ "myobj", "ignored", "other" ];
+	check = [ "myobj", "ignored", "other", "foo-42" ];
 	num = 0;
 	num2 = 0;
 
