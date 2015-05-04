@@ -2215,12 +2215,14 @@ test( "Animation should go to its end state if document.hidden = true", 1, funct
 test( "jQuery.easing._default (#2218)", 2, function() {
 	jQuery( "#foo" )
 		.animate({ width: "5px" }, {
+			duration: 5,
 			start: function( anim ) {
 				equal( anim.opts.easing, jQuery.easing._default,
 					"anim.opts.easing should be equal to jQuery.easing._default when the easing argument is not given" );
 			}
 		})
 		.animate({ height: "5px" }, {
+			duration: 5,
 			easing: "linear",
 			start: function( anim ) {
 				equal( anim.opts.easing, "linear",
@@ -2228,6 +2230,7 @@ test( "jQuery.easing._default (#2218)", 2, function() {
 			}
 		})
 		.stop();
+	this.clock.tick( 25 );
 });
 
 })();
