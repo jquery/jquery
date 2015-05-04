@@ -41,14 +41,14 @@ function dataAttr( elem, key, data ) {
 
 // checks a cache object for emptiness
 function isEmptyDataObject( obj ) {
-	var name;
-	for ( name in obj ) {
+	var key;
+	for ( key in obj ) {
 
 		// if the public data object is empty, the private is still empty
-		if ( name === "data" && jQuery.isEmptyObject( obj[name] ) ) {
+		if ( key === "data" && jQuery.isEmptyObject( obj[ key ] ) ) {
 			continue;
 		}
-		if ( name !== "toJSON" ) {
+		if ( key !== "toJSON" ) {
 			return false;
 		}
 	}
@@ -56,12 +56,12 @@ function isEmptyDataObject( obj ) {
 	return true;
 }
 
-function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
+function internalData( elem, key, data, pvt /* Internal Use Only */ ) {
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}
 
-	var ret, thisCache,
+	var thisCache, prop,
 		internalKey = jQuery.expando,
 
 		// We have to handle DOM nodes and JS objects differently because IE6-7
@@ -79,7 +79,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 	// Avoid doing any more work than we need to when trying to get data on an
 	// object that has no data at all
 	if ( (!id || !cache[id] || (!pvt && !cache[id].data)) &&
-		data === undefined && typeof name === "string" ) {
+		data === undefined && typeof key === "string" ) {
 		return;
 	}
 
@@ -99,16 +99,6 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 		cache[ id ] = isNode ? {} : { toJSON: jQuery.noop };
 	}
 
-	// An object can be passed to jQuery.data instead of a key/value pair; this gets
-	// shallow copied over onto the existing cache
-	if ( typeof name === "object" || typeof name === "function" ) {
-		if ( pvt ) {
-			cache[ id ] = jQuery.extend( cache[ id ], name );
-		} else {
-			cache[ id ].data = jQuery.extend( cache[ id ].data, name );
-		}
-	}
-
 	thisCache = cache[ id ];
 
 	// jQuery data() is stored in a separate object inside the object's internal data
@@ -122,31 +112,28 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 		thisCache = thisCache.data;
 	}
 
-	if ( data !== undefined ) {
-		thisCache[ jQuery.camelCase( name ) ] = data;
-	}
-
-	// Check for both converted-to-camel and non-converted data property names
-	// If a data property was specified
-	if ( typeof name === "string" ) {
-
-		// First Try to find as-is property data
-		ret = thisCache[ name ];
-
-		// Test for null|undefined property data
-		if ( ret == null ) {
-
-			// Try to find the camelCased property
-			ret = thisCache[ jQuery.camelCase( name ) ];
+	// An object can be passed to jQuery.data instead of a key/value pair; this gets
+	// shallow copied over onto the existing cache
+	if ( typeof key === "object" || typeof key === "function" ) {
+		for ( prop in key ) {
+			thisCache[ jQuery.camelCase( prop ) ] = key[ prop ];
 		}
-	} else {
-		ret = thisCache;
+		// Stop here, ignore other arguments
+		return thisCache;
 	}
 
-	return ret;
+	if ( data !== undefined ) {
+		return thisCache[ jQuery.camelCase( key ) ] = data;
+	}
+
+	// We always set camelCased properties (gh-2257)
+	return typeof key === "string" ?
+		thisCache[ jQuery.camelCase( key ) ] :
+		// Return the whole cache if no key was specified
+		thisCache;
 }
 
-function internalRemoveData( elem, name, pvt ) {
+function internalRemoveData( elem, key, pvt ) {
 	if ( !jQuery.acceptData( elem ) ) {
 		return;
 	}
@@ -164,41 +151,29 @@ function internalRemoveData( elem, name, pvt ) {
 		return;
 	}
 
-	if ( name ) {
+	if ( key ) {
 
 		thisCache = pvt ? cache[ id ] : cache[ id ].data;
 
 		if ( thisCache ) {
 
-			// Support array or space separated string names for data keys
-			if ( !jQuery.isArray( name ) ) {
+			// Support array or space separated string keys for data keys
+			if ( jQuery.isArray( key ) ) {
 
-				// try the string as a key before any manipulation
-				if ( name in thisCache ) {
-					name = [ name ];
-				} else {
-
-					// split the camel cased version by spaces unless a key with the spaces exists
-					name = jQuery.camelCase( name );
-					if ( name in thisCache ) {
-						name = [ name ];
-					} else {
-						name = name.split(" ");
-					}
-				}
+				// If "key" is an array of keys...
+				// We always use camelCased keys (gh-2257)
+				key = jQuery.map( key, jQuery.camelCase );
 			} else {
-				// If "name" is an array of keys...
-				// When data is initially created, via ("key", "val") signature,
-				// keys will be converted to camelCase.
-				// Since there is no way to tell _how_ a key was added, remove
-				// both plain key and camelCase key. #12786
-				// This will only penalize the array argument path.
-				name = name.concat( jQuery.map( name, jQuery.camelCase ) );
+
+				// split the camel cased version by spaces
+				// unless a key with the spaces exists
+				key = jQuery.camelCase( key );
+				key = key in thisCache ? [ key ] : key.split( " " );
 			}
 
-			i = name.length;
+			i = key.length;
 			while ( i-- ) {
-				delete thisCache[ name[i] ];
+				delete thisCache[ key[ i ] ];
 			}
 
 			// If there is no data left in the cache, we want to continue

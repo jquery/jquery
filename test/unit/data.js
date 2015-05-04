@@ -534,8 +534,65 @@ test("jQuery.data should not miss data with preset hyphenated property names", f
 	});
 });
 
-test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
+test(".data should not miss attr() set data-* with hyphenated property names", function() {
+	expect(2);
 
+	var a, b;
+
+	a = jQuery("<div/>").appendTo("#qunit-fixture");
+
+	a.attr( "data-long-param", "test" );
+	a.data( "long-param", { a: 2 });
+
+	deepEqual( a.data("long-param"), { a: 2 }, "data with property long-param was found, 1" );
+
+	b = jQuery("<div/>").appendTo("#qunit-fixture");
+
+	b.attr( "data-long-param", "test" );
+	b.data( "long-param" );
+	b.data( "long-param", { a: 2 });
+
+	deepEqual( b.data("long-param"), { a: 2 }, "data with property long-param was found, 2" );
+});
+
+test(".data always sets data with the camelCased key (gh-2257)", function() {
+	expect( 36 );
+
+	var div = jQuery("<div>").appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }"
+		};
+
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
+		var allData = div.data();
+		equal( allData[ key ], undefined, ".data(key, val) does not store with hyphenated keys" );
+		equal( allData[ jQuery.camelCase( key ) ], val, ".data(key, val) stores the camelCased key" );
+	});
+
+	div.removeData();
+
+	div.data( datas );
+	jQuery.each( datas, function( key, val ) {
+		var allData = div.data();
+		equal( allData[ key ], undefined, ".data(object) does not store with hyphenated keys" );
+		equal( allData[ jQuery.camelCase( key ) ], val, ".data(object) stores the camelCased key" );
+	});
+});
+
+test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
 	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
 		datas = {
 			"non-empty": "a string",
@@ -597,7 +654,36 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 	});
 });
 
-test( ".removeData supports removal of hyphenated properties via array (#12786)", function() {
+test(".data supports interoperable removal of properties SET TWICE #13850", function() {
+	var div = jQuery("<div>").appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }"
+		};
+
+	expect( 9 );
+
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
+		div.data( key, val );
+
+		div.removeData( key );
+
+		equal( div.data( key ), undefined, "removal: " + key );
+	});
+});
+
+test( ".removeData supports removal of hyphenated properties via array (#12786, gh-2257)", function() {
 	expect( 4 );
 
 	var div, plain, compare;
@@ -605,11 +691,10 @@ test( ".removeData supports removal of hyphenated properties via array (#12786)"
 	div = jQuery("<div>").appendTo("#qunit-fixture");
 	plain = jQuery({});
 
-	// When data is batch assigned (via plain object), the properties
-	// are not camel cased as they are with (property, value) calls
+	// Properties should always be camelCased
 	compare = {
 		// From batch assignment .data({ "a-a": 1 })
-		"a-a": 1,
+		"aA": 1,
 		// From property, value assignment .data( "b-b", 1 )
 		"bB": 1
 	};
@@ -624,7 +709,6 @@ test( ".removeData supports removal of hyphenated properties via array (#12786)"
 	div.removeData([ "a-a", "b-b" ]);
 	plain.removeData([ "a-a", "b-b" ]);
 
-	// NOTE: Timo's proposal for "propEqual" (or similar) would be nice here
 	deepEqual( div.data(), {}, "Data is empty. (div)" );
 	deepEqual( plain.data(), {}, "Data is empty. (plain)" );
 });
