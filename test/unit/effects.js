@@ -2212,8 +2212,7 @@ test( "Animation should go to its end state if document.hidden = true", 1, funct
 	}
 });
 
-test( "jQuery.easing._default (#2218)", 3, function() {
-
+test( "jQuery.easing._default (#2218)", 2, function() {
 	jQuery( "#foo" )
 		.animate({ width: "5px" }, {
 			start: function( anim ) {
@@ -2229,7 +2228,6 @@ test( "jQuery.easing._default (#2218)", 3, function() {
 			}
 		})
 		.stop();
-
 });
 
 })();
