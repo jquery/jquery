@@ -696,7 +696,7 @@ test("sort direction", function() {
 
 	jQuery.each( methodDirections, function( method, reversed ) {
 		var actual = elems[ method ]().get(),
-			forward = jQuery.unique( [].concat( actual ) );
+			forward = jQuery.uniqueSort( [].concat( actual ) );
 		deepEqual( actual, reversed ? forward.reverse() : forward, "Correct sort direction for " + method );
 	});
 });

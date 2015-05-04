@@ -386,7 +386,7 @@ test( "jQuery.contains", function() {
 	ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
-test("jQuery.unique", function() {
+test("jQuery.uniqueSort", function() {
 	expect( 14 );
 
 	function Arrayish( arr ) {
@@ -460,8 +460,8 @@ test("jQuery.unique", function() {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		deepEqual( jQuery.unique( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		deepEqual( jQuery.unique( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
+		deepEqual( jQuery.uniqueSort( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
 	});
 });
 
