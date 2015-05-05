@@ -79,6 +79,7 @@ jQuery.offset = {
 
 jQuery.fn.extend({
 	offset: function( options ) {
+		// Preserve chaining for setter
 		if ( arguments.length ) {
 			return options === undefined ?
 				this :
@@ -87,11 +88,10 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win, rect,
-			elem = this[ 0 ],
-			doc = elem && elem.ownerDocument;
+		var docElem, win, rect, doc,
+			elem = this[ 0 ];
 
-		if ( !doc ) {
+		if ( !elem ) {
 			return;
 		}
 
@@ -99,6 +99,7 @@ jQuery.fn.extend({
 
 		// Make sure element is not hidden (display: none) or disconnected
 		if ( rect.width || rect.height || elem.getClientRects().length ) {
+			doc = elem.ownerDocument;
 			win = getWindow( doc );
 			docElem = doc.documentElement;
 
