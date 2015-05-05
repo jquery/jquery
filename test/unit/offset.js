@@ -42,18 +42,9 @@ module("offset", { setup: function(){
 */
 
 test("empty set", function() {
-	expect(2);
+	expect( 2 );
 	strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
 	strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
-});
-
-test("object without getBoundingClientRect", function() {
-	expect(2);
-
-	// Simulates a browser without gBCR on elements, we just want to return 0,0
-	var result = jQuery({ ownerDocument: document }).offset();
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
 });
 
 test("disconnected element", function() {
