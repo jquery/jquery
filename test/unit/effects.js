@@ -1130,49 +1130,49 @@ test( "interrupt toggle", function() {
 			});
 		}, shortDuration );
 	});
-	clock.tick(longDuration);
-        //FIXME untangle the set timeouts
+	clock.tick( longDuration );
+
+	// FIXME untangle the set timeouts
 });
 
-test("animate with per-property easing", function(){
+test( "animate with per-property easing", function() {
 
-	expect(5);
+	expect( 5 );
 
-	var data = { a:0, b:0, c:0 },
-		_test1_called = false,
-		_test2_called = false,
-		_default_test_called = false,
+	var data = { a: 0, b: 0, c: 0 },
+		test1Called = false,
+		test2Called = false,
+		defaultTestCalled = false,
 		props = {
 			a: [ 100, "_test1" ],
 			b: [ 100, "_test2" ],
 			c: 100
 		};
 
-	jQuery.easing["_test1"] = function(p) {
-		_test1_called = true;
+	jQuery.easing._test1 = function( p ) {
+		test1Called = true;
 		return p;
 	};
 
-	jQuery.easing["_test2"] = function(p) {
-		_test2_called = true;
+	jQuery.easing._test2 = function( p ) {
+		test2Called = true;
 		return p;
 	};
 
-	jQuery.easing["_default_test"] = function(p) {
-		_default_test_called = true;
+	jQuery.easing._defaultTest = function( p ) {
+		defaultTestCalled = true;
 		return p;
 	};
 
-	jQuery(data).animate( props, 400, "_default_test", function(){
-
-		ok( _test1_called, "Easing function (_test1) called" );
-		ok( _test2_called, "Easing function (_test2) called" );
-		ok( _default_test_called, "Easing function (_default) called" );
-		equal( props.a[ 1 ], "_test1", "animate does not change original props (per-property easing would be lost)");
-		equal( props.b[ 1 ], "_test2", "animate does not change original props (per-property easing would be lost)");
+	jQuery( data ).animate( props, 400, "_defaultTest", function() {
+		ok( test1Called, "Easing function (_test1) called" );
+		ok( test2Called, "Easing function (_test2) called" );
+		ok( defaultTestCalled, "Easing function (_default) called" );
+		equal( props.a[ 1 ], "_test1", "animate does not change original props (per-property easing would be lost)" );
+		equal( props.b[ 1 ], "_test2", "animate does not change original props (per-property easing would be lost)" );
 	});
-	this.clock.tick( 400 );
 
+	this.clock.tick( 400 );
 });
 
 test("animate with CSS shorthand properties", function(){
@@ -2212,16 +2212,18 @@ test( "Animation should go to its end state if document.hidden = true", 1, funct
 	}
 });
 
-test( "jQuery.easing._default (#2218)", 2, function() {
+test( "jQuery.easing._default (gh-2218)", function() {
+	expect( 2 );
+
 	jQuery( "#foo" )
-		.animate({ width: "5px" }, {
+		.animate( { width: "5px" }, {
 			duration: 5,
 			start: function( anim ) {
 				equal( anim.opts.easing, jQuery.easing._default,
 					"anim.opts.easing should be equal to jQuery.easing._default when the easing argument is not given" );
 			}
 		})
-		.animate({ height: "5px" }, {
+		.animate( { height: "5px" }, {
 			duration: 5,
 			easing: "linear",
 			start: function( anim ) {
@@ -2230,7 +2232,60 @@ test( "jQuery.easing._default (#2218)", 2, function() {
 			}
 		})
 		.stop();
+
 	this.clock.tick( 25 );
+});
+
+test( "jQuery.easing._default in Animation (gh-2218", function() {
+	expect( 3 );
+
+	var animation,
+		defaultEasing = jQuery.easing._default,
+		called = false,
+		testObject = { "width": 100 },
+		testDest = { "width": 200 };
+
+	jQuery.easing.custom = function( p ) {
+		called = true;
+		return p;
+	};
+	jQuery.easing._default = "custom";
+
+	animation = jQuery.Animation( testObject, testDest, { "duration": 1 } );
+	animation.done( function() {
+		equal( testObject.width, testDest.width, "Animated width" );
+		ok( called, "Custom jQuery.easing._default called" );
+		strictEqual( animation.opts.easing, "custom",
+			"Animation used custom jQuery.easing._default" );
+		jQuery.easing._default = defaultEasing;
+		delete jQuery.easing.custom;
+	});
+
+	this.clock.tick( 10 );
+});
+
+test( "jQuery.easing._default in Tween (gh-2218)", function() {
+	expect( 3 );
+
+	var tween,
+		defaultEasing = jQuery.easing._default,
+		called = false,
+		testObject = { "width": 100 };
+
+	jQuery.easing.custom = function( p ) {
+		called = true;
+		return p;
+	};
+	jQuery.easing._default = "custom";
+
+	tween = jQuery.Tween( testObject, { "duration": 1 }, "width", 200 );
+	tween.run( 1 );
+	equal( testObject.width, 200, "Animated width" );
+	ok( called, "Custom jQuery.easing._default called" );
+	strictEqual( tween.easing, "custom",
+		"Animation used custom jQuery.easing._default" );
+	jQuery.easing._default = defaultEasing;
+	delete jQuery.easing.custom;
 });
 
 })();
