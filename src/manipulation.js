@@ -4,7 +4,14 @@ define([
 	"./var/push",
 	"./core/access",
 	"./manipulation/var/rcheckableType",
+	"./manipulation/var/rtagName",
+	"./manipulation/var/rscriptType",
+	"./manipulation/wrapMap",
+	"./manipulation/getAll",
+	"./manipulation/setGlobalEval",
+	"./manipulation/buildFragment",
 	"./manipulation/support",
+
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
 
@@ -13,49 +20,18 @@ define([
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, concat, push, access, rcheckableType, support, dataPriv, dataUser ) {
+], function( jQuery, concat, push, access,
+	rcheckableType, rtagName, rscriptType,
+	wrapMap, getAll, setGlobalEval, buildFragment, support,
+	dataPriv, dataUser ) {
 
 var
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi,
-	rtagName = /<([\w:-]+)/,
-	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
-	rscriptType = /^$|\/(?:java|ecma)script/i,
 	rscriptTypeMasked = /^true\/(.*)/,
-	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
-
-	// We have to close these tags to support XHTML (#13200)
-	wrapMap = {
-
-		// Support: IE9
-		option: [ 1, "<select multiple='multiple'>", "</select>" ],
-
-		thead: [ 1, "<table>", "</table>" ],
-
-		// Some of the following wrappers are not fully defined, because
-		// their parent elements (except for "table" element) could be omitted
-		// since browser parsers are smart enough to auto-insert them
-
-		// Support: Android 2.3
-		// Android browser doesn't auto-insert colgroup
-		col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
-
-		// Auto-insert "tbody" element
-		tr: [ 2, "<table>", "</table>" ],
-
-		// Auto-insert "tbody" and "tr" elements
-		td: [ 3, "<table>", "</table>" ],
-
-		_default: [ 0, "", "" ]
-	};
-
-// Support: IE9
-wrapMap.optgroup = wrapMap.option;
-
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
-wrapMap.th = wrapMap.td;
+	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
 function manipulationTarget( elem, content ) {
 	if ( jQuery.nodeName( elem, "table" ) &&
@@ -82,18 +58,6 @@ function restoreScript( elem ) {
 	}
 
 	return elem;
-}
-
-// Mark scripts as having already been evaluated
-function setGlobalEval( elems, refElements ) {
-	var i = 0,
-		l = elems.length;
-
-	for ( ; i < l; i++ ) {
-		dataPriv.set(
-			elems[ i ], "globalEval", !refElements || dataPriv.get( refElements[ i ], "globalEval" )
-		);
-	}
 }
 
 function cloneCopyEvent( src, dest ) {
@@ -128,20 +92,6 @@ function cloneCopyEvent( src, dest ) {
 
 		dataUser.set( dest, udataCur );
 	}
-}
-
-function getAll( context, tag ) {
-	// Support: IE9-11+
-	// Use typeof to avoid zero-argument method invocation on host objects (#15151)
-	var ret = typeof context.getElementsByTagName !== "undefined" ?
-			context.getElementsByTagName( tag || "*" ) :
-			typeof context.querySelectorAll !== "undefined" ?
-				context.querySelectorAll( tag || "*" ) :
-			[];
-
-	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], ret ) :
-		ret;
 }
 
 // Fix IE bugs, see support tests
@@ -203,94 +153,6 @@ jQuery.extend({
 
 		// Return the cloned set
 		return clone;
-	},
-
-	buildFragment: function( elems, context, scripts, selection, ignored ) {
-		var elem, tmp, tag, wrap, contains, j,
-			fragment = context.createDocumentFragment(),
-			nodes = [],
-			i = 0,
-			l = elems.length;
-
-		for ( ; i < l; i++ ) {
-			elem = elems[ i ];
-
-			if ( elem || elem === 0 ) {
-
-				// Add nodes directly
-				if ( jQuery.type( elem ) === "object" ) {
-					// Support: Android<4.1, PhantomJS<2
-					// push.apply(_, arraylike) throws on ancient WebKit
-					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
-
-				// Convert non-html into a text node
-				} else if ( !rhtml.test( elem ) ) {
-					nodes.push( context.createTextNode( elem ) );
-
-				// Convert html into DOM nodes
-				} else {
-					tmp = tmp || fragment.appendChild( context.createElement("div") );
-
-					// Deserialize a standard representation
-					tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
-					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[ 1 ] + jQuery.htmlPrefilter( elem ) + wrap[ 2 ];
-
-					// Descend through wrappers to the right content
-					j = wrap[ 0 ];
-					while ( j-- ) {
-						tmp = tmp.lastChild;
-					}
-
-					// Support: Android<4.1, PhantomJS<2
-					// push.apply(_, arraylike) throws on ancient WebKit
-					jQuery.merge( nodes, tmp.childNodes );
-
-					// Remember the top-level container
-					tmp = fragment.firstChild;
-
-					// Ensure the created nodes are orphaned (#12392)
-					tmp.textContent = "";
-				}
-			}
-		}
-
-		// Remove wrapper from fragment
-		fragment.textContent = "";
-
-		i = 0;
-		while ( (elem = nodes[ i++ ]) ) {
-
-			// Skip elements already in the context collection (trac-4087)
-			if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
-				if ( ignored ) {
-					ignored.push( elem );
-				}
-				continue;
-			}
-
-			contains = jQuery.contains( elem.ownerDocument, elem );
-
-			// Append to fragment
-			tmp = getAll( fragment.appendChild( elem ), "script" );
-
-			// Preserve script evaluation history
-			if ( contains ) {
-				setGlobalEval( tmp );
-			}
-
-			// Capture executables
-			if ( scripts ) {
-				j = 0;
-				while ( (elem = tmp[ j++ ]) ) {
-					if ( rscriptType.test( elem.type || "" ) ) {
-						scripts.push( elem );
-					}
-				}
-			}
-		}
-
-		return fragment;
 	},
 
 	cleanData: function( elems ) {
@@ -500,7 +362,7 @@ jQuery.fn.extend({
 		}
 
 		if ( l ) {
-			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this, ignored );
+			fragment = buildFragment( args, this[ 0 ].ownerDocument, false, this, ignored );
 			first = fragment.firstChild;
 
 			if ( fragment.childNodes.length === 1 ) {

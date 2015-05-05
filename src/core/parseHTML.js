@@ -2,13 +2,11 @@ define([
 	"../core",
 	"../var/document",
 	"./var/rsingleTag",
+	"../manipulation/buildFragment",
 
 	// This is the only module that needs core/support
-	"./support",
-
-	// buildFragment
-	"../manipulation"
-], function( jQuery, document, rsingleTag, support ) {
+	"./support"
+], function( jQuery, document, rsingleTag, buildFragment, support ) {
 
 // data: string of html
 // context (optional): If specified, the fragment will be created in this context,
@@ -36,7 +34,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		return [ context.createElement( parsed[1] ) ];
 	}
 
-	parsed = jQuery.buildFragment( [ data ], context, scripts );
+	parsed = buildFragment( [ data ], context, scripts );
 
 	if ( scripts && scripts.length ) {
 		jQuery( scripts ).remove();
