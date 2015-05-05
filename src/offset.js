@@ -32,7 +32,7 @@ jQuery.offset = {
 			elem.style.position = "relative";
 		}
 
-		curOffset = curElem.offset() || { top: 0, left: 0 };
+		curOffset = curElem.offset();
 		curCSSTop = jQuery.css( elem, "top" );
 		curCSSLeft = jQuery.css( elem, "left" );
 		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
