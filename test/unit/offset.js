@@ -56,13 +56,31 @@ test("object without getBoundingClientRect", function() {
 	equal( result.left, 0, "Check left" );
 });
 
-test("disconnected node", function() {
-	expect(2);
+test("disconnected element", function() {
+	expect(1);
 
-	var result = jQuery( document.createElement("div") ).offset();
+	var result;
 
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
+	try {
+		result = jQuery( document.createElement("div") ).offset();
+	} catch ( e ) {}
+
+	ok( !result, "no position for disconnected element" );
+});
+
+test("hidden (display: none) element", function() {
+	expect(1);
+
+	var result,
+		node = jQuery("<div style='display: none' />").appendTo("#qunit-fixture");
+
+	try {
+		result = node.offset();
+	} catch ( e ) {}
+
+	node.remove();
+
+	ok( !result, "no position for hidden (display: none) element" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {
