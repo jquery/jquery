@@ -120,10 +120,7 @@ Data.prototype = {
 			return;
 		}
 
-		if ( key === undefined ) {
-			this.register( owner );
-
-		} else {
+		if ( key !== undefined ) {
 
 			// Support array or space separated string of keys
 			if ( jQuery.isArray( key ) ) {
@@ -146,6 +143,11 @@ Data.prototype = {
 			while ( i-- ) {
 				delete cache[ key[ i ] ];
 			}
+		}
+
+		// Remove the expando if there's no more data
+		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
+			delete owner[ this.expando ];
 		}
 	},
 	hasData: function( owner ) {
