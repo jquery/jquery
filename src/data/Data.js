@@ -13,8 +13,8 @@ Data.accepts = jQuery.acceptData;
 
 Data.prototype = {
 
-	register: function( owner, initial ) {
-		var value = initial || {};
+	register: function( owner ) {
+		var value = {};
 
 		// If it is a node unlikely to be stringify-ed or looped over
 		// use plain assignment
@@ -33,7 +33,7 @@ Data.prototype = {
 		}
 		return owner[ this.expando ];
 	},
-	cache: function( owner, initial ) {
+	cache: function( owner ) {
 
 		// We can accept data for non-element nodes in modern browsers,
 		// but we should not, see #8335.
@@ -51,7 +51,7 @@ Data.prototype = {
 		}
 
 		// If not, register one
-		return this.register( owner, initial );
+		return this.register( owner );
 	},
 	set: function( owner, data, value ) {
 		var prop,
@@ -151,11 +151,6 @@ Data.prototype = {
 	hasData: function( owner ) {
 		var cache = owner[ this.expando ];
 		return cache !== undefined && !jQuery.isEmptyObject( cache );
-	},
-	discard: function( owner ) {
-		if ( owner[ this.expando ] ) {
-			delete owner[ this.expando ];
-		}
 	}
 };
 
