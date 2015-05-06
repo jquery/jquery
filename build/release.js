@@ -24,12 +24,12 @@ module.exports = function( Release ) {
 		 * The tag for compat is different
 		 * This sets a different new version for the source repo,
 		 * but after building with the correct tag
-		 * e.g. 3.0.0-compat
+		 * e.g. 3.0.0+compat
 		 */
 		_createTag: function( paths ) {
 			Release.distVersion = Release.newVersion;
 			Release.newVersion = Release.newVersion
-				.replace( /(\d+\.\d+\.\d+)/, "$1-compat" );
+				.replace( /(\d+\.\d+\.\d+)/, "$1+compat" );
 			return createTag( paths );
 		},
 		/**

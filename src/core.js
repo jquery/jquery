@@ -11,7 +11,7 @@ define([
 ], function( deletedIds, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
 
 var
-	version = "@VERSION",
+	version = "@VERSION+compat",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
