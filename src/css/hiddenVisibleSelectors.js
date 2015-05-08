@@ -6,15 +6,13 @@ define([
 ], function( jQuery, support ) {
 
 jQuery.expr.filters.hidden = function( elem ) {
-	// Use OR instead of AND as the element is not visible if either is true
-	// See tickets #10406 and #13132
-	return !elem.offsetWidth || !elem.offsetHeight ||
-		(!support.reliableHiddenOffsets() &&
-			((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
+	return !jQuery.expr.filters.visible( elem );
 };
 
 jQuery.expr.filters.visible = function( elem ) {
-	return !jQuery.expr.filters.hidden( elem );
+	return !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length ) &&
+		( support.reliableHiddenOffsets() ||
+		( ( elem.style && elem.style.display ) || jQuery.css( elem, "display" ) ) !== "none" );
 };
 
 });
