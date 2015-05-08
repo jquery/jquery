@@ -570,7 +570,7 @@ jQuery.fn.extend({
 	}
 });
 
-jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {
+[ "toggle", "show", "hide" ].forEach(function( name ) {
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
 		return speed == null || typeof speed === "boolean" ?

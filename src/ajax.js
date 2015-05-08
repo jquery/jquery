@@ -763,7 +763,7 @@ jQuery.extend({
 	}
 });
 
-jQuery.each( [ "get", "post" ], function( i, method ) {
+[ "get", "post" ].forEach(function( method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
 		// Shift arguments if data argument was omitted
 		if ( jQuery.isFunction( data ) ) {
