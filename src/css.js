@@ -334,7 +334,7 @@ jQuery.extend({
 	}
 });
 
-jQuery.each([ "height", "width" ], function( i, name ) {
+[ "height", "width" ].forEach(function( name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {

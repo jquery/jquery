@@ -76,7 +76,7 @@ if ( !support.optSelected ) {
 	};
 }
 
-jQuery.each([
+[
 	"tabIndex",
 	"readOnly",
 	"maxLength",
@@ -87,8 +87,8 @@ jQuery.each([
 	"useMap",
 	"frameBorder",
 	"contentEditable"
-], function() {
-	jQuery.propFix[ this.toLowerCase() ] = this;
+].forEach(function(prop) {
+	jQuery.propFix[ prop.toLowerCase() ] = prop;
 });
 
 });

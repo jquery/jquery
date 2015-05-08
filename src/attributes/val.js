@@ -143,8 +143,8 @@ jQuery.extend({
 });
 
 // Radios and checkboxes getter/setter
-jQuery.each([ "radio", "checkbox" ], function() {
-	jQuery.valHooks[ this ] = {
+[ "radio", "checkbox" ].forEach(function(type) {
+	jQuery.valHooks[ type ] = {
 		set: function( elem, value ) {
 			if ( jQuery.isArray( value ) ) {
 				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
@@ -152,7 +152,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 		}
 	};
 	if ( !support.checkOn ) {
-		jQuery.valHooks[ this ].get = function( elem ) {
+		jQuery.valHooks[ type ].get = function( elem ) {
 			return elem.getAttribute("value") === null ? "on" : elem.value;
 		};
 	}
