@@ -960,9 +960,9 @@ test( "css opacity consistency across browsers (#12685)", function() {
 });
 
 test( ":visible/:hidden selectors", function() {
-	expect( 16 );
+	expect( 18 );
 
-	var $newDiv, $br, $table;
+	var $div, $br, $table, $a;
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
 	jQuery("#nothiddendiv").css({ display: "none" });
@@ -978,11 +978,14 @@ test( ":visible/:hidden selectors", function() {
 	jQuery("#nothiddendiv").css("display", "block");
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
 
-	ok( !jQuery("#siblingspan").is(":visible"), "Span with no content not visible (#13132)" );
-	$newDiv = jQuery("<div><span></span></div>").appendTo("#qunit-fixture");
-	equal( $newDiv.find(":visible").length, 0, "Span with no content not visible (#13132)" );
-	$br = jQuery("<br/>").appendTo("#qunit-fixture");
-	ok( !$br.is(":visible"), "br element not visible (#10406)");
+	ok( jQuery( "#siblingspan" ).is( ":visible" ), "Span with no content is visible" );
+	$div = jQuery( "<div><span></span></div>" ).appendTo( "#qunit-fixture" );
+	equal( $div.find( ":visible" ).length, 1, "Span with no content is visible" );
+	$div.css( { width: 0, height: 0, overflow: "hidden" } );
+	ok( $div.is( ":visible" ), "Div with width and height of 0 is still visible (gh-2227)" );
+
+	$br = jQuery( "<br/>" ).appendTo( "#qunit-fixture" );
+	ok( $br.is( ":visible" ), "br element is visible" );
 
 	$table = jQuery("#table");
 	$table.html("<tr><td style='display:none'>cell</td><td>cell</td></tr>");
@@ -993,6 +996,9 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
 	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
+
+	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
+	ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
 });
 
 test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
