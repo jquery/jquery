@@ -434,6 +434,19 @@ jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	}
 );
 
+jQuery.cssHooks.marginLeft = addGetHookIf( support.reliableMarginLeft,
+	function( elem, computed ) {
+		if ( computed ) {
+			return ( parseFloat( curCSS( elem, "marginLeft" ) ) ||
+				elem.getBoundingClientRect().left -
+					swap( elem, { marginLeft: 0 }, function() {
+						return elem.getBoundingClientRect().left;
+					} )
+				) + "px";
+		}
+	}
+);
+
 // These hooks are used by animate to expand properties
 jQuery.each( {
 	margin: "",

@@ -106,6 +106,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -139,6 +140,7 @@ testIframeWithCallback(
 			"radioValue": false,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -172,6 +174,7 @@ testIframeWithCallback(
 			"radioValue": false,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -205,6 +208,7 @@ testIframeWithCallback(
 			"radioValue": false,
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": false,
 			"submit": false
 		};
@@ -241,6 +245,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -274,6 +279,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -307,6 +313,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -340,6 +347,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": true,
 			"submit": true
 		};
@@ -373,6 +381,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -406,6 +415,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
@@ -439,6 +449,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": true,
 			"submit": true
 		};
@@ -472,32 +483,36 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": false,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submit": true
 		};
 	}
 
-	if ( expected ) {
-		QUnit.test( "Verify that the support tests resolve as expected per browser", function( assert ) {
-			var i, prop,
-				j = 0;
+	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
+		if ( !expected ) {
+			assert.expect( 1 );
+			assert.ok( false, "Known client: " + userAgent );
+		}
 
-			for ( prop in computedSupport ) {
-				j++;
+		var i, prop,
+			j = 0;
+
+		for ( prop in computedSupport ) {
+			j++;
+		}
+
+		assert.expect( j );
+
+		for ( i in expected ) {
+			if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
+				assert.equal( computedSupport[ i ], expected[ i ],
+					"jQuery.support['" + i + "']: " + computedSupport[ i ] +
+						", expected['" + i + "']: " + expected[ i ] );
+			} else {
+				assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 			}
-
-			assert.expect( j );
-
-			for ( i in expected ) {
-				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-					assert.equal( computedSupport[ i ], expected[ i ],
-						"jQuery.support['" + i + "']: " + computedSupport[ i ] +
-							", expected['" + i + "']: " + expected[ i ] );
-				} else {
-					assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
-				}
-			}
-		} );
-	}
+		}
+	});
 
 } )();
