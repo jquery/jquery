@@ -186,13 +186,14 @@ testIframe( "offset/absolute", "absolute", function( $, window, document, assert
 } );
 
 testIframe( "offset/relative", "relative", function( $, window, document, assert ) {
-	assert.expect( 60 );
+	assert.expect( 64 );
 
 	// get offset
 	var tests = [
 		{ "id": "#relative-1",   "top":   7, "left":  7 },
 		{ "id": "#relative-1-1", "top":  15, "left": 15 },
-		{ "id": "#relative-2",   "top": 142, "left": 27 }
+		{ "id": "#relative-2",   "top": 142, "left": 27 },
+		{ "id": "#relative-2-1",   "top": 149, "left": 52 }
 	];
 	jQuery.each( tests, function() {
 		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
@@ -203,7 +204,8 @@ testIframe( "offset/relative", "relative", function( $, window, document, assert
 	tests = [
 		{ "id": "#relative-1",   "top":   6, "left":  6 },
 		{ "id": "#relative-1-1", "top":   5, "left":  5 },
-		{ "id": "#relative-2",   "top": 141, "left": 26 }
+		{ "id": "#relative-2",   "top": 141, "left": 26 },
+		{ "id": "#relative-2-1",   "top": 5, "left": 5 }
 	];
 	jQuery.each( tests, function() {
 		assert.equal( $( this[ "id" ] ).position().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').position().top" );

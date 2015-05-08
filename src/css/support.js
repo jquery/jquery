@@ -6,7 +6,7 @@ define( [
 ], function( jQuery, document, documentElement, support ) {
 
 ( function() {
-	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
+	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal, reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -30,16 +30,20 @@ define( [
 	function computeStyleTests() {
 		div.style.cssText =
 			"box-sizing:border-box;" +
-			"display:block;position:absolute;" +
-			"margin:0;margin-top:1%;margin-right:50%;" +
-			"border:1px;padding:1px;" +
-			"top:1%;width:50%;height:4px";
+			"position:relative;display:block;" +
+			"margin:auto;border:1px;padding:1px;" +
+			"top:1%;width:50%";
 		div.innerHTML = "";
 		documentElement.appendChild( container );
 
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
-		boxSizingReliableVal = divStyle.height === "4px";
+		reliableMarginLeftVal = divStyle.marginLeft === "2px";
+		boxSizingReliableVal = divStyle.width === "4px";
+
+		// Support: Android 4.0 - 4.3 only
+		// Some styles come back with percentage values, even though they shouldn't
+		div.style.marginRight = "50%";
 		pixelMarginRightVal = divStyle.marginRight === "4px";
 
 		documentElement.removeChild( container );
@@ -69,6 +73,14 @@ define( [
 				computeStyleTests();
 			}
 			return pixelMarginRightVal;
+		},
+		reliableMarginLeft: function() {
+
+			// Support: IE <=8 only, Android 4.0 - 4.3 only, Firefox <=3 - 37
+			if ( boxSizingReliableVal == null ) {
+				computeStyleTests();
+			}
+			return reliableMarginLeftVal;
 		}
 	} );
 } )();

@@ -728,17 +728,31 @@ QUnit.test( "internal ref to elem.runtimeStyle (bug #7608)", function( assert ) 
 	assert.ok( result, "elem.runtimeStyle does not throw exception" );
 } );
 
-QUnit.test( "marginRight computed style (bug #3333)", function( assert ) {
-	assert.expect( 1 );
+QUnit.test( "computed margins (trac-3333; gh-2237)", function( assert ) {
+	assert.expect( 2 );
 
-	var $div = jQuery( "#foo" );
+	var $div = jQuery( "#foo" ),
+		$child = jQuery( "#en" );
+
 	$div.css( {
 		"width": "1px",
 		"marginRight": 0
 	} );
+	assert.equal( $div.css( "marginRight" ), "0px",
+		"marginRight correctly calculated with a width and display block" );
 
-	assert.equal( $div.css( "marginRight" ), "0px", "marginRight correctly calculated with a width and display block" );
-} );
+	$div.css({
+		position: "absolute",
+		top: 0,
+		left: 0,
+		width: "100px"
+	});
+	$child.css({
+		width: "50px",
+		margin: "auto"
+	});
+	assert.equal( $child.css( "marginLeft" ), "25px", "auto margins are computed to pixels" );
+});
 
 QUnit.test( "box model properties incorrectly returning % instead of px, see #10639 and #12088", function( assert ) {
 	assert.expect( 2 );
