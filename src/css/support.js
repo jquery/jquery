@@ -5,7 +5,7 @@ define([
 
 (function() {
 	var div, container, style, a, pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
-		reliableHiddenOffsetsVal, reliableMarginRightVal;
+		reliableHiddenOffsetsVal, reliableMarginRightVal, reliableMarginLeftVal;
 
 	// Setup
 	div = document.createElement( "div" );
@@ -56,7 +56,7 @@ define([
 		},
 
 		pixelMarginRight: function() {
-			// Support: Android 4.0-4.3
+			// Support: Android 4.0 - 4.3 only
 			if ( pixelPositionVal == null ) {
 				computeStyleTests();
 			}
@@ -76,6 +76,14 @@ define([
 				computeStyleTests();
 			}
 			return reliableMarginRightVal;
+		},
+
+		reliableMarginLeft: function() {
+			// Support: IE <=8 only, Android 4.0 - 4.3 only, Firefox <=3 - 37
+			if ( pixelPositionVal == null ) {
+				computeStyleTests();
+			}
+			return reliableMarginLeftVal;
 		}
 	});
 
@@ -95,24 +103,28 @@ define([
 			// Support: Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
-			"position:absolute;display:block;" +
-			"margin:0;margin-top:1%;margin-right:50%;" +
-			"border:1px;padding:1px;" +
-			"top:1%;height:4px;width:50%";
+			"position:relative;display:block;" +
+			"margin:auto;border:1px;padding:1px;" +
+			"top:1%;width:50%";
 
 		// Support: IE<9
 		// Assume reasonable values in the absence of getComputedStyle
-		pixelPositionVal = boxSizingReliableVal = false;
+		pixelPositionVal = boxSizingReliableVal = reliableMarginLeftVal = false;
 		pixelMarginRightVal = reliableMarginRightVal = true;
 
 		// Check for getComputedStyle so that this code is not run in IE<9.
 		if ( window.getComputedStyle ) {
 			divStyle = window.getComputedStyle( div, null );
 			pixelPositionVal = ( divStyle || {} ).top !== "1%";
-			boxSizingReliableVal = ( divStyle || { height: "4px" } ).height === "4px";
+			reliableMarginLeftVal = ( divStyle || {} ).marginLeft === "2px";
+			boxSizingReliableVal = ( divStyle || { width: "4px" } ).width === "4px";
+
+			// Support: Android 4.0 - 4.3 only
+			// Some styles come back with percentage values, even though they shouldn't
+			div.style.marginRight = "50%";
 			pixelMarginRightVal = ( divStyle || { marginRight: "4px" } ).marginRight === "4px";
 
-			// Support: Android 2.3
+			// Support: Android 2.3 only
 			// Div with explicit width and no margin-right incorrectly
 			// gets computed margin-right based on width of container (#3333)
 			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right

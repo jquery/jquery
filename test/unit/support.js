@@ -99,6 +99,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -131,6 +132,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -163,6 +165,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -195,6 +198,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": false,
 			"submitBubbles": false
 		};
@@ -227,6 +231,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -259,6 +264,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -291,6 +297,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -323,6 +330,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -355,6 +363,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -387,6 +396,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
+			"reliableMarginLeft": false,
 			"style": true,
 			"submitBubbles": true
 		};
@@ -419,32 +429,36 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": false,
+			"reliableMarginLeft": true,
 			"style": true,
 			"submitBubbles": true
 		};
 	}
 
-	if ( expected ) {
-		test( "Verify that the support tests resolve as expected per browser", function() {
-			var i, prop,
-				j = 0;
+	test( "Verify that the support tests resolve as expected per browser", function() {
+		if ( !expected ) {
+			expect( 1 );
+			ok( false, "Known client: " + userAgent );
+		}
 
-			for ( prop in computedSupport ) {
-				j++;
+		var i, prop,
+			j = 0;
+
+		for ( prop in computedSupport ) {
+			j++;
+		}
+
+		expect( j );
+
+		for ( i in expected ) {
+			if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
+				equal( computedSupport[i], expected[i],
+					"jQuery.support['" + i + "']: " + computedSupport[i] +
+						", expected['" + i + "']: " + expected[i]);
+			} else {
+				ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 			}
-
-			expect( j );
-
-			for ( i in expected ) {
-				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-					equal( computedSupport[i], expected[i],
-						"jQuery.support['" + i + "']: " + computedSupport[i] +
-							", expected['" + i + "']: " + expected[i]);
-				} else {
-					ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
-				}
-			}
-		});
-	}
+		}
+	});
 
 })();
