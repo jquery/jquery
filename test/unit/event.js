@@ -901,7 +901,7 @@ test("mouseenter, mouseleave don't catch exceptions", function() {
 if ( jQuery.fn.click ) {
 
 	test("trigger() shortcuts", function() {
-		expect(6);
+		expect(5);
 
 		var counter, clickCounter,
 			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
@@ -932,13 +932,6 @@ if ( jQuery.fn.click ) {
 		};
 		jQuery("#simon1").click();
 		equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
-
-		elem = jQuery("<img />").load(function(){
-			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
-		}).load();
-
-		// manually clean up detached elements
-		elem.remove();
 
 		// test that special handlers do not blow up with VML elements (#7071)
 		jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
