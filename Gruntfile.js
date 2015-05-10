@@ -78,6 +78,11 @@ module.exports = function( grunt ) {
 					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
 					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
 
+					"qunit-assert-step/qunit-assert-step.js":
+					"qunit-assert-step/qunit-assert-step.js",
+					"qunit-assert-step/MIT-LICENSE.txt":
+					"qunit-assert-step/MIT-LICENSE.txt",
+
 					"requirejs/require.js": "requirejs/require.js",
 
 					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js",

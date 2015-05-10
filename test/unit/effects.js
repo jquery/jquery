@@ -1832,10 +1832,11 @@ QUnit.test( "non-px animation handles non-numeric start (#11971)", function( ass
 	this.clock.tick( 10 );
 } );
 
-QUnit.test( "Animation callbacks (#11797)", function( assert ) {
-	assert.expect( 15 );
+QUnit.test("Animation callbacks (#11797)", function( assert ) {
+	assert.expect( 16 );
 
-	var targets = jQuery( "#foo" ).children(),
+	var prog = 0,
+		targets = jQuery( "#foo" ).children(),
 		done = false,
 		expectedProgress = 0;
 
@@ -1845,7 +1846,8 @@ QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 			assert.ok( true, "empty: start" );
 		},
 		progress: function( anim, percent ) {
-			assert.equal( percent, 0, "empty: progress 0" );
+			assert.equal( percent, prog, "empty: progress " + prog );
+			prog = 1;
 		},
 		done: function() {
 			assert.ok( true, "empty: done" );
@@ -1915,6 +1917,45 @@ QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 		}
 	} );
 	this.clock.tick( 10 );
+} );
+
+QUnit.test( "Animation callbacks in order (#2292)", function( assert ) {
+	assert.expect( 9 );
+
+	var step = 0,
+		dur = 50;
+
+	// assert? -> github.com/JamesMGreene/qunit-assert-step
+	jQuery( "#foo" ).animate( {
+		width: "5px"
+	}, {
+		duration: dur,
+		start: function() {
+			assert.step( 1 );
+		},
+		progress: function( anim, p, ms ) {
+			if ( !( step++ ) ) {
+				assert.step( 2 );
+				assert.strictEqual( p, 0, "first progress callback: progress ratio" );
+				assert.strictEqual( ms, dur, "first progress callback: remaining ms" );
+			} else {
+				assert.step( 3 );
+				assert.strictEqual( p, 1, "last progress callback: progress ratio" );
+				assert.strictEqual( ms, 0, "last progress callback: remaining ms" );
+			}
+		},
+		done: function() {
+			assert.step( 4 );
+		},
+		fail: function() {
+			assert.ok( false, "Animation failed" );
+		},
+		always: function() {
+			assert.step( 5 );
+		}
+	}).finish();
+
+	this.clock.tick( dur + 10 );
 } );
 
 QUnit.test( "Animate properly sets overflow hidden when animating width/height (#12117)", function( assert ) {
