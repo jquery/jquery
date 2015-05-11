@@ -1116,4 +1116,84 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 		ok( false, "It did throw" );
 	}
 });
+
+( function() {
+	var vendorPrefixes = [ "Webkit", "Moz", "ms" ];
+
+	function resetCssPropsFor( name ) {
+		delete jQuery.cssProps[ name ];
+		jQuery.each( vendorPrefixes, function( index, prefix ) {
+			delete jQuery.cssProps[ prefix + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
+		} );
+	}
+
+	test( "Don't default to a cached previously used wrong prefixed name (gh-2015)", function() {
+		// Note: this test needs a property we know is only supported in a prefixed version
+		// by at least one of our main supported browsers. This may get out of date so let's
+		// use -(webkit|moz)-appearance as well as those two are not on a standards track.
+		var appearanceName, transformName, elem, elemStyle,
+			transformVal = "translate(5px, 2px)",
+			emptyStyle = document.createElement( "div" ).style;
+
+		if ( "appearance" in emptyStyle ) {
+			appearanceName = "appearance";
+		} else {
+			jQuery.each( vendorPrefixes, function( index, prefix ) {
+				var prefixedProp = prefix + "Appearance";
+				if ( prefixedProp in emptyStyle ) {
+					appearanceName = prefixedProp;
+				}
+			} );
+		}
+
+		if ( "transform" in emptyStyle ) {
+			transformName = "transform";
+		} else {
+			jQuery.each( vendorPrefixes, function( index, prefix ) {
+				var prefixedProp = prefix + "Transform";
+				if ( prefixedProp in emptyStyle ) {
+					transformName = prefixedProp;
+				}
+			} );
+		}
+
+		expect( !!appearanceName + !!transformName + 1 );
+
+		resetCssPropsFor( "appearance" );
+		resetCssPropsFor( "transform" );
+
+		elem = jQuery( "<div/>" )
+			.css( {
+				msAppearance: "none",
+				appearance: "none",
+
+				// Only the ms prefix is used to make sure we haven't e.g. set
+				// webkitTransform ourselves in the test.
+				msTransform: transformVal,
+				transform: transformVal
+			} );
+		elemStyle = elem[ 0 ].style;
+
+		if ( appearanceName ) {
+			equal( elemStyle[ appearanceName ], "none", "setting properly-prefixed appearance" );
+		}
+		if ( transformName ) {
+			equal( elemStyle[ transformName ], transformVal, "setting properly-prefixed transform" );
+		}
+		equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
+	} );
+
+	test( "Don't detect fake set properties on a node when caching the prefixed version", function() {
+		expect( 1 );
+
+		var elem = jQuery( "<div/>" ),
+			style = elem[ 0 ].style;
+		style.MozFakeProperty = "old value";
+		elem.css( "fakeProperty", "new value" );
+
+		equal( style.MozFakeProperty, "old value", "Fake prefixed property is not cached" );
+	} );
+
+} )();
+
 }
