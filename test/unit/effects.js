@@ -1782,7 +1782,7 @@ test("Animation callbacks (#11797)", 16, function() {
 		},
 		progress: function( anim, percent ) {
 			equal( percent, prog, "empty: progress " + prog );
-			prog = +!percent;
+			prog = 1;
 		},
 		done: function() {
 			ok( true, "empty: done" );
