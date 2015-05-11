@@ -1769,8 +1769,9 @@ test( "non-px animation handles non-numeric start (#11971)", 2, function() {
 	this.clock.tick( 10 );
 });
 
-test("Animation callbacks (#11797)", 15, function() {
-	var targets = jQuery("#foo").children(),
+test("Animation callbacks (#11797)", 16, function() {
+	var prog = 0,
+		targets = jQuery("#foo").children(),
 		done = false,
 		expectedProgress = 0;
 
@@ -1780,7 +1781,8 @@ test("Animation callbacks (#11797)", 15, function() {
 			ok( true, "empty: start" );
 		},
 		progress: function( anim, percent ) {
-			equal( percent, 0, "empty: progress 0" );
+			equal( percent, prog, "empty: progress " + prog );
+			prog = +!percent;
 		},
 		done: function() {
 			ok( true, "empty: done" );
@@ -1848,6 +1850,35 @@ test("Animation callbacks (#11797)", 15, function() {
 		}
 	});
 	this.clock.tick( 10 );
+});
+
+test("Animation callbacks (#2292)", 1, function() {
+	var jq_elem = jQuery("#foo"),
+		dur = 50,
+		cb = "";
+
+	jq_elem.animate( {
+		width: "5px"
+	}, {
+		duration: dur,
+		start: function() {
+			cb += "[s]";
+		},
+		progress: function( anim, p, ms ) {
+			cb += "[p," + p + "," + ms + "]";
+		},
+		done: function() {
+			cb += "[d]";
+		},
+		fail: function() {
+			cb += "[f]";
+		},
+		always: function() {
+			equal( cb, "[s][p,0," + dur + "][p,1,0][d]", "callbacks order" );
+		}
+	}).finish();
+
+	this.clock.tick( dur + 10 );
 });
 
 test( "Animate properly sets overflow hidden when animating width/height (#12117)", 8, function() {
