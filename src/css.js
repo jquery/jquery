@@ -39,32 +39,30 @@ var
 		fontWeight: "400"
 	},
 
-	cssPrefixes = [ "Webkit", "Moz", "ms" ];
+	cssPrefixes = [ "Webkit", "Moz", "ms" ],
+	emptyStyle = document.createElement( "div" ).style;
 
 // BuildExclude
 curCSS = curCSS.curCSS;
 
 // return a css property mapped to a potentially vendor prefixed property
-function vendorPropName( style, name ) {
+function vendorPropName( name ) {
 
 	// shortcut for names that are not vendor prefixed
-	if ( name in style ) {
+	if ( name in emptyStyle ) {
 		return name;
 	}
 
 	// check for vendor prefixed names
 	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
-		origName = name,
 		i = cssPrefixes.length;
 
 	while ( i-- ) {
 		name = cssPrefixes[ i ] + capName;
-		if ( name in style ) {
+		if ( name in emptyStyle ) {
 			return name;
 		}
 	}
-
-	return origName;
 }
 
 function setPositiveNumber( elem, value, subtract ) {
@@ -209,7 +207,7 @@ jQuery.extend({
 			style = elem.style;
 
 		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
+			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
@@ -273,7 +271,7 @@ jQuery.extend({
 
 		// Make sure that we're working with the right name
 		name = jQuery.cssProps[ origName ] ||
-			( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+			( jQuery.cssProps[ origName ] = vendorPropName( origName ) || origName );
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
