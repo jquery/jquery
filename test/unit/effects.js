@@ -1853,11 +1853,10 @@ test("Animation callbacks (#11797)", 16, function() {
 });
 
 test("Animation callbacks (#2292)", 1, function() {
-	var jq_elem = jQuery("#foo"),
-		dur = 50,
+	var dur = 50,
 		cb = "";
 
-	jq_elem.animate( {
+	jQuery("#foo").animate( {
 		width: "5px"
 	}, {
 		duration: dur,
