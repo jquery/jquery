@@ -27,7 +27,7 @@ module("effects", {
 
 test("sanity check", function() {
 	expect(1);
-	equal( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length, 2, "QUnit state is correct for testing effects" );
+	equal( jQuery("#dl:visible, #qunit-fixture:visible, #foo:visible").length, 3, "QUnit state is correct for testing effects" );
 });
 
 test("show() basic", 1, function() {
