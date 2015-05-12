@@ -2671,6 +2671,60 @@ test( ".off() removes the expando when there's no more data", function() {
 	}
 });
 
+test( "preventDefault() on focusin does not throw exception", function( assert ) {
+	expect( 1 );
+
+	var done = assert.async(),
+		input = jQuery( "<input/>" ).appendTo( "#form" );
+		input
+			.on( "focusin", function( event ) {
+				var exceptionCaught;
+
+				try {
+					event.preventDefault();
+				} catch ( theException ) {
+					exceptionCaught = theException;
+				}
+
+				assert.strictEqual( exceptionCaught, undefined,
+					"Preventing default on focusin throws no exception" );
+
+				done();
+			} )
+			.focus();
+} );
+
+test( "jQuery.event.simulate() event has no originalEvent", function( assert ) {
+	expect( 1 );
+
+	var done = assert.async(),
+		input = jQuery( "<input>" )
+		.on( "click", function( event ) {
+			assert.strictEqual( "originalEvent" in event, false,
+				"originalEvent not present on simulated event" );
+			done();
+		} );
+
+	jQuery.event.simulate( "click", input[ 0 ], new jQuery.Event(), true );
+} );
+
+test( "Donor event interference", function( assert ) {
+	assert.expect( 4 );
+
+	jQuery( "#donor-outer" ).on( "click", function() {
+		assert.ok( true, "click bubbled to outer div" );
+	} );
+	jQuery( "#donor-input" ).on( "click", function( event ) {
+		assert.ok( true, "got a click event from the input" );
+		assert.ok( !event.isPropagationStopped(), "propagation says it's not stopped" );
+	} );
+	jQuery( "#donor-input" ).on( "change", function( event ) {
+		assert.ok( true, "got a change event from the input" );
+		event.stopPropagation();
+	} );
+	jQuery( "#donor-input" )[0].click();
+} );
+
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 	test( "Check order of focusin/focusout events", 2, function() {
