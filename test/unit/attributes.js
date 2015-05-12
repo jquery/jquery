@@ -1328,6 +1328,34 @@ test( "toggleClass(Function[, boolean]) with incoming value", function() {
 	ok( !e.is(".test"), "Assert class not present" );
 });
 
+test( "toggleClass(String[, Function])", function() {
+	expect( 9 );
+
+	var el = jQuery("<div><span data-tab='1'>One</span><span data-tab='2'>Two</span><span data-tab='3'>Three</span></div>"),
+		elChildren = el.children(),
+		currentTab = 2,
+		testFn = function( i, e ) {
+			return jQuery(e).data("tab") !== currentTab;
+		};
+
+	ok( !elChildren.is(".test"), "Assert class not present" );
+	ok( !testFn(0, jQuery("<span data-tab='2'></span>")), "Test function true when expected false" );
+	ok( testFn(0, jQuery("<span data-tab='1'></span>")), "Test function false when expected true" );
+
+	elChildren.toggleClass( "test", testFn );
+
+	ok ( el.children(":nth-child(1)").hasClass("test"), "Assert first child has test class" );
+	ok ( !el.children(":nth-child(2)").hasClass("test"), "Assert second child doesn't have test class" );
+	ok ( el.children(":nth-child(3)").hasClass("test"), "Assert third child has test class" );
+
+	currentTab = 1;
+	elChildren.toggleClass( "test", testFn );
+
+	ok ( !el.children(":nth-child(1)").hasClass("test"), "Assert first child doesn't have test class" );
+	ok ( el.children(":nth-child(2)").hasClass("test"), "Assert second child has test class" );
+	ok ( el.children(":nth-child(3)").hasClass("test"), "Assert third child has test class" );
+});
+
 test( "addClass, removeClass, hasClass", function() {
 	expect( 17 );
 
