@@ -1852,7 +1852,7 @@ test("Animation callbacks (#11797)", 16, function() {
 	this.clock.tick( 10 );
 });
 
-test( "Animation callbacks in order (#2292)", 10, function( assert ) {
+test( "Animation callbacks in order (#2292)", 9, function( assert ) {
 	var step = 0,
 		dur = 50;
 
@@ -1867,12 +1867,12 @@ test( "Animation callbacks in order (#2292)", 10, function( assert ) {
 		progress: function( anim, p, ms ) {
 			if ( !( step++ ) ) {
 				assert.step( 2 );
-				equal( p,    0, "first call of progress: percent != 0" );
-				equal( ms, dur, "first call of progress: ms != duration (" + dur + ")" );
+				strictEqual( p,    0, "first progress callback: progress ratio" );
+				strictEqual( ms, dur, "first progress callback: remaining ms" );
 			} else {
 				assert.step( 3 );
-				equal( p,  1, "last call of progress: percent != 1" );
-				equal( ms, 0, "last call of progress: ms != 0" );
+				strictEqual( p,  1, "last progress callback: progress ratio" );
+				strictEqual( ms, 0, "last progress callback: remaining ms" );
 			}
 		},
 		done: function() {
@@ -1883,7 +1883,6 @@ test( "Animation callbacks in order (#2292)", 10, function( assert ) {
 		},
 		always: function() {
 			assert.step( 5 );
-			ok( true, "The callbacks were called in the correct order" );
 		}
 	}).finish();
 
