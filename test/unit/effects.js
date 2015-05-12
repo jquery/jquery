@@ -1852,12 +1852,12 @@ test("Animation callbacks (#11797)", 16, function() {
 	this.clock.tick( 10 );
 });
 
-test("Animation callbacks in order (#2292)", 10, function(assert) {
+test( "Animation callbacks in order (#2292)", 10, function( assert ) {
 	var step = 0,
 		dur = 50;
 
 	// assert? -> github.com/JamesMGreene/qunit-assert-step
-	jQuery("#foo").animate( {
+	jQuery( "#foo" ).animate( {
 		width: "5px"
 	}, {
 		duration: dur,
