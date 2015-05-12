@@ -1852,28 +1852,38 @@ test("Animation callbacks (#11797)", 16, function() {
 	this.clock.tick( 10 );
 });
 
-test("Animation callbacks (#2292)", 1, function() {
-	var dur = 50,
-		cb = "";
+test("Animation callbacks in order (#2292)", 10, function(assert) {
+	var step = 0,
+		dur = 50;
 
+	// assert? -> github.com/JamesMGreene/qunit-assert-step
 	jQuery("#foo").animate( {
 		width: "5px"
 	}, {
 		duration: dur,
 		start: function() {
-			cb += "[s]";
+			assert.step( 1 );
 		},
 		progress: function( anim, p, ms ) {
-			cb += "[p," + p + "," + ms + "]";
+			if ( !( step++ ) ) {
+				assert.step( 2 );
+				equal( p,    0, "first call of progress: percent != 0" );
+				equal( ms, dur, "first call of progress: ms != duration (" + dur + ")" );
+			} else {
+				assert.step( 3 );
+				equal( p,  1, "last call of progress: percent != 1" );
+				equal( ms, 0, "last call of progress: ms != 0" );
+			}
 		},
 		done: function() {
-			cb += "[d]";
+			assert.step( 4 );
 		},
 		fail: function() {
-			cb += "[f]";
+			ok( false, "Animation failed" );
 		},
 		always: function() {
-			equal( cb, "[s][p,0," + dur + "][p,1,0][d]", "callbacks order" );
+			assert.step( 5 );
+			ok( true, "The callbacks were called in the correct order" );
 		}
 	}).finish();
 
