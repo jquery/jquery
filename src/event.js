@@ -610,10 +610,14 @@ jQuery.event = {
 			event,
 			{
 				type: type,
-				isSimulated: true,
-				originalEvent: {}
+				isSimulated: true
 			}
 		);
+
+		// This prevents stopPropagation(), stopImmediatePropagation(), and preventDefault() from
+		// preventing default on the donor event.
+		delete e.originalEvent;
+
 		if ( bubble ) {
 			jQuery.event.trigger( e, null, elem );
 		} else {
