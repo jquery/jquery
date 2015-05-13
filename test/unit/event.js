@@ -2657,6 +2657,27 @@ test( "Inline event result is returned (#13993)", function() {
 	equal( result, 42, "inline handler returned value" );
 });
 
+test( ".off() removes the expando when there's no more data", function() {
+	expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	div.on( "click", false );
+	div.on( "custom", function() {
+		ok( true, "Custom event triggered" );
+	} );
+	div.trigger( "custom" );
+	div.off( "click custom" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 	test( "Check order of focusin/focusout events", 2, function() {

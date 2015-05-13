@@ -837,7 +837,24 @@ test("Check proper data removal of non-element descendants nodes (#8335)", 1, fu
 });
 
 testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs.html", function( result ) {
-	expect(1);
+	expect( 1 );
 
-	equal(result, "ok", "enumeration of data- attrs on body" );
+	equal( result, "ok", "enumeration of data- attrs on body" );
+});
+
+test( "Check that the expando is removed when there's no more data", function() {
+	expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" );
+	div.data( "some", "data" );
+	equal( div.data( "some" ), "data", "Data is added" );
+	div.removeData( "some" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
 });
