@@ -114,22 +114,31 @@ jQuery.fn.extend({
 		}
 
 		return this.each(function() {
-			var className, i, self, classNames;
+			var className, i, self, classNames, predicate;
 
 			if ( type === "string" ) {
 
 				// Toggle individual class names
 				i = 0;
 				self = jQuery( this );
+				predicate = jQuery.isFunction( stateVal ) ? stateVal.call( self, i, self) : null;
 				classNames = value.match( rnotwhite ) || [];
 
 				while ( ( className = classNames[ i++ ] ) ) {
-
-					// Check each className given, space separated list
-					if ( self.hasClass( className ) ) {
-						self.removeClass( className );
+					if ( typeof predicate === "boolean" ) {
+						if ( predicate ) {
+							self.addClass( className );
+						} else {
+							self.removeClass( className );
+						}
 					} else {
-						self.addClass( className );
+
+						// Check each className given, space separated list
+						if ( self.hasClass( className ) ) {
+							self.removeClass( className );
+						} else {
+							self.addClass( className );
+						}
 					}
 				}
 
