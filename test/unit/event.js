@@ -2682,20 +2682,20 @@ test( "preventDefault() on focusin does not throw exception", function( assert )
 	expect( 1 );
 
 	var done = assert.async(),
-		input = jQuery( "<input>" ).appendTo( "#form" );
+		input = jQuery( "<input/>" ).appendTo( "#form" );
 		input
 			.on( "focusin", function( event ) {
-				var flawlessExecution = true;
+				var exceptionCaught;
 
 				try {
 					event.preventDefault();
-				} catch( theException ) {
-					flawlessExecution = false;
+				} catch ( theException ) {
+					exceptionCaught = theException;
 				}
 
-				ok( flawlessExecution, "Preventing default on focusin throws no exception" );
+				assert.strictEqual( exceptionCaught, undefined,
+					"Preventing default on focusin throws no exception" );
 
-				input.remove();
 				done();
 			} )
 			.focus();
