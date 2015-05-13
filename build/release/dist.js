@@ -36,7 +36,6 @@ module.exports = function( Release, complete ) {
 	function generateBower() {
 		return JSON.stringify({
 			name: pkg.name,
-			version: pkg.version,
 			main: pkg.main,
 			license: "MIT",
 			ignore: [
