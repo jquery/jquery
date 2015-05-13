@@ -1332,29 +1332,28 @@ test( "toggleClass(String[, Function])", function() {
 	expect( 9 );
 
 	var el = jQuery("<div><span data-tab='1'>One</span><span data-tab='2'>Two</span><span data-tab='3'>Three</span></div>"),
-		currentTab = 2, 
-		testFn = function( e ) {
+		elChildren = el.children(),
+		currentTab = 2,
+		testFn = function( i, e ) {
 			return jQuery(e).data("tab") !== currentTab;
 		};
-		
-	ok( !el.is(".test"), "Assert class not present" );
-	ok( !testFn(jQuery("<span data-tab='2'></span>")), "Test function true when expected false" );
-	ok( testFn(jQuery("<span data-tab='1'></span>")), "Test function false when expected true" );
 
-	el.toggleClass( "test", testFn );
-	
-	ok ( !el.children(":nth-child(0)").hasClass("test"), "Assert first child doesn't have test class" );
-	ok ( el.children(":nth-child(1)").hasClass("test"), "Assert second child has test class" );
-	ok ( !el.children(":nth-child(2)").hasClass("test"), "Assert third child doesn't have test class" );
+	ok( !elChildren.is(".test"), "Assert class not present" );
+	ok( !testFn(0, jQuery("<span data-tab='2'></span>")), "Test function true when expected false" );
+	ok( testFn(0, jQuery("<span data-tab='1'></span>")), "Test function false when expected true" );
 
-	currentTab = 1; 
-	el.toggleClass( "test", testFn );
-	
-	ok ( el.children(":nth-child(0)").hasClass("test"), "Assert first child has test class" );
-	ok ( !el.children(":nth-child(1)").hasClass("test"), "Assert second child doesn't have test class" );
-	ok ( !el.children(":nth-child(2)").hasClass("test"), "Assert third child doesn't have test class" );
-	
-	console.log( el );
+	elChildren.toggleClass( "test", testFn );
+
+	ok ( el.children(":nth-child(1)").hasClass("test"), "Assert first child has test class" );
+	ok ( !el.children(":nth-child(2)").hasClass("test"), "Assert second child doesn't have test class" );
+	ok ( el.children(":nth-child(3)").hasClass("test"), "Assert third child has test class" );
+
+	currentTab = 1;
+	elChildren.toggleClass( "test", testFn );
+
+	ok ( !el.children(":nth-child(1)").hasClass("test"), "Assert first child doesn't have test class" );
+	ok ( el.children(":nth-child(2)").hasClass("test"), "Assert second child has test class" );
+	ok ( el.children(":nth-child(3)").hasClass("test"), "Assert third child has test class" );
 });
 
 test( "addClass, removeClass, hasClass", function() {
