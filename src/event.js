@@ -216,14 +216,9 @@ jQuery.event = {
 			}
 		}
 
-		// Remove the expando if it's no longer used
+		// Remove data and the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
-			// Normally this should go through the data api
-			// but since event.js owns these properties,
-			// this exception is made for the sake of optimizing
-			// the operation.
-			delete elemData.handle;
-			delete elemData.events;
+			dataPriv.remove( elem, "handle events" );
 		}
 	},
 
