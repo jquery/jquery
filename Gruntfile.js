@@ -91,7 +91,7 @@ module.exports = function( grunt ) {
 			gruntfile: "Gruntfile.js",
 
 			// Right now, check only test helpers
-			test: [ "test/data/testrunner.js" ],
+			test: [ "test/data/testrunner.js", "test/unit/tween.js" ],
 			release: [ "build/*.js", "!build/release-notes.js" ],
 			tasks: "build/tasks/*.js"
 		},
@@ -113,7 +113,8 @@ module.exports = function( grunt ) {
 				"selector",
 				"serialize",
 				"support",
-				"traversing"
+				"traversing",
+				"tween"
 			]
 		},
 		watch: {
