@@ -18,8 +18,8 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 		// Support: IE 10-11
 		// IE seems to error on cross-domain PATCH requests when ActiveX XHR
 		// is used. In IE 9+ always use the native XHR.
-		// Note: this condition won't catch Spartan as it doesn't define
-		// document.documentMode but it also doesn't have ActiveX so it won't
+		// Note: this condition won't catch Edge as it doesn't define
+		// document.documentMode but it also doesn't support ActiveX so it won't
 		// reach this code.
 		if ( document.documentMode > 8 ) {
 			return createStandardXHR();
