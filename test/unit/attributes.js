@@ -1478,6 +1478,18 @@ test( "Insignificant white space returned for $(option).val() (#14858)", functio
 });
 
 test( "SVG class manipulation (gh-2199)", function() {
+
+	// Support: IE8
+	var svgSupport = !!document.createElementNS &&
+		!!document.createElementNS( "http://www.w3.org/2000/svg", "svg" ).createSVGRect;
+
+	if ( !svgSupport ) {
+		expect( 1 );
+		ok( true, "Environment doesn't support SVG" );
+
+		return;
+	}
+
 	expect( 12 );
 
 	function createSVGElement( nodeName ) {
