@@ -75,7 +75,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -83,7 +83,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -100,14 +100,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": false,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": false,
@@ -115,7 +115,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": true,
+			"focusin": true,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -132,14 +132,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": false,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": false,
@@ -147,7 +147,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": true,
+			"focusin": true,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -164,14 +164,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /msie 8\.0/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": false,
 			"boxSizingReliable": false,
-			"changeBubbles": false,
+			"change": false,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -179,7 +179,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": false,
 			"cssFloat": false,
 			"deleteExpando": false,
-			"focusinBubbles": true,
+			"focusin": true,
 			"html5Clone": false,
 			"htmlSerialize": false,
 			"input": false,
@@ -196,14 +196,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
 			"style": false,
-			"submitBubbles": false
+			"submit": false
 		};
 	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -211,7 +211,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": false,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -228,14 +228,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -243,7 +243,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -260,14 +260,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -275,7 +275,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -292,14 +292,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /iphone os 8/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -307,7 +307,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": false,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -324,14 +324,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": true,
 			"clearCloneStyle": true,
@@ -339,7 +339,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -356,14 +356,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": false,
 			"checkOn": false,
 			"clearCloneStyle": true,
@@ -371,7 +371,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -388,14 +388,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	} else if ( /android 2\.3/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
 			"boxSizingReliable": true,
-			"changeBubbles": true,
+			"change": true,
 			"checkClone": true,
 			"checkOn": false,
 			"clearCloneStyle": false,
@@ -403,7 +403,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"createHTMLDocument": true,
 			"cssFloat": true,
 			"deleteExpando": true,
-			"focusinBubbles": false,
+			"focusin": false,
 			"html5Clone": true,
 			"htmlSerialize": true,
 			"input": true,
@@ -420,7 +420,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": false,
 			"style": true,
-			"submitBubbles": true
+			"submit": true
 		};
 	}
 
