@@ -31,11 +31,8 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 		// and http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
 		// Although this check for six methods instead of eight
 		// since IE also does not support "trace" and "connect"
-		if ( /^(get|post|head|put|delete|options)$/i.test( this.type ) ) {
-			return createActiveXHR();
-		}
-
-		return createStandardXHR();
+		return /^(get|post|head|put|delete|options)$/i.test( this.type ) &&
+			createStandardXHR() || createActiveXHR();
 	} :
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
