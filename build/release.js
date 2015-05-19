@@ -25,21 +25,6 @@ module.exports = function( Release ) {
 		 * committed before creating the tag.
 		 * @param {Function} callback
 		 */
-		generateArtifacts: function( callback ) {
-			Release.exec( "grunt", "Grunt command failed" );
-			cdn.makeReleaseCopies( Release );
-			callback( files );
-		},
-		/**
-		 * Acts as insertion point for restoring Release.dir.repo
-		 * It was changed to reuse npm publish code in jquery-release
-		 * for publishing the distribution repo instead
-		 */
-		npmTags: function() {
-			// origRepo is not defined if dist was skipped
-			Release.dir.repo = Release.dir.origRepo || Release.dir.repo;
-			return npmTags();
-		},
 		/**
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
