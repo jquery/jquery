@@ -103,14 +103,15 @@ module.exports = function( grunt ) {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
 
-			// Right now, check only test helpers
-			test: [ "test/data/testrunner.js", "test/unit/tween.js" ],
+			// Check parts of tests that pass
+			test: [ "test/data/testrunner.js", "test/unit/animation.js", "test/unit/tween.js" ],
 			release: [ "build/*.js", "!build/release-notes.js" ],
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
 			tests: [
 				"ajax",
+				"animation",
 				"attributes",
 				"callbacks",
 				"core",

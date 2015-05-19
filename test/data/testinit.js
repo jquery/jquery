@@ -286,6 +286,7 @@ this.loadTests = function() {
 			"unit/effects.js",
 			"unit/offset.js",
 			"unit/dimensions.js",
+			"unit/animation.js",
 			"unit/tween.js"
 		];
 
