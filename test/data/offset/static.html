@@ -13,8 +13,8 @@
 		<script src="../../jquery.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			jQuery(function($) {
-				$('.static').click(function() {
-					$('#marker').css( $(this).offset() );
+				$(".static").click(function() {
+					$("#marker").css( $(this).offset() );
 					var pos = $(this).position();
 					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;
