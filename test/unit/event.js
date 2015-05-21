@@ -5,20 +5,6 @@ module( "event", {
 	teardown: moduleTeardown
 });
 
-test("null or undefined handler", function() {
-	expect(2);
-	// Supports Fixes bug #7229
-	try {
-		jQuery("#firstp").on( "click", null );
-		ok(true, "Passing a null handler will not throw an exception");
-	} catch ( e ) {}
-
-	try {
-		jQuery("#firstp").on( "click", undefined );
-		ok(true, "Passing an undefined handler will not throw an exception");
-	} catch ( e ) {}
-});
-
 test("on() with non-null,defined data", function() {
 
 	expect(2);
@@ -915,7 +901,7 @@ test("mouseenter, mouseleave don't catch exceptions", function() {
 if ( jQuery.fn.click ) {
 
 	test("trigger() shortcuts", function() {
-		expect(6);
+		expect(5);
 
 		var counter, clickCounter,
 			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
@@ -946,13 +932,6 @@ if ( jQuery.fn.click ) {
 		};
 		jQuery("#simon1").click();
 		equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
-
-		elem = jQuery("<img />").load(function(){
-			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
-		}).load();
-
-		// manually clean up detached elements
-		elem.remove();
 
 		// test that special handlers do not blow up with VML elements (#7071)
 		jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
@@ -2669,6 +2648,27 @@ test( "Inline event result is returned (#13993)", function() {
 	var result = jQuery("<p onclick='return 42'>hello</p>").triggerHandler("click");
 
 	equal( result, 42, "inline handler returned value" );
+});
+
+test( ".off() removes the expando when there's no more data", function() {
+	expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	div.on( "click", false );
+	div.on( "custom", function() {
+		ok( true, "Custom event triggered" );
+	} );
+	div.trigger( "custom" );
+	div.off( "click custom" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
 });
 
 // This tests are unreliable in Firefox

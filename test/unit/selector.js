@@ -386,8 +386,8 @@ test( "jQuery.contains", function() {
 	ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
-test("jQuery.unique", function() {
-	expect( 14 );
+test("jQuery.uniqueSort", function() {
+	expect( 15 );
 
 	function Arrayish( arr ) {
 		var i = this.length = arr.length;
@@ -460,9 +460,11 @@ test("jQuery.unique", function() {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		deepEqual( jQuery.unique( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		deepEqual( jQuery.unique( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
+		deepEqual( jQuery.uniqueSort( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
 	});
+
+	strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
 });
 
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {

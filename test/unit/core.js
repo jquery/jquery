@@ -19,8 +19,7 @@ test("jQuery()", function() {
 		img = jQuery("<img/>"),
 		div = jQuery("<div/><hr/><code/><b/>"),
 		exec = false,
-		lng = "",
-		expected = 22,
+		expected = 23,
 		attrObj = {
 			"text": "test",
 			"class": "test2",
@@ -36,10 +35,6 @@ test("jQuery()", function() {
 	if ( jQuery.fn.width ) {
 		expected++;
 		attrObj["width"] = 10;
-	}
-	if ( jQuery.fn.offset ) {
-		expected++;
-		attrObj["offset"] = { "top": 1, "left": 1 };
 	}
 	if ( jQuery.fn.css ) {
 		expected += 2;
@@ -106,14 +101,10 @@ test("jQuery()", function() {
 	elem = jQuery("\n\n<em>world</em>")[0];
 	equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery("<div/>", attrObj );
+	elem = jQuery( "<div/>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		equal( elem[0].style.width, "10px", "jQuery() quick setter width");
-	}
-
-	if ( jQuery.fn.offset ) {
-		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
 	if ( jQuery.fn.css ) {
@@ -141,12 +132,9 @@ test("jQuery()", function() {
 	}
 	equal( elem[0].defaultValue, "TEST", "Ensure cached nodes are cloned properly (Bug #6655)" );
 
-	// manually clean up detached elements
-	elem.remove();
-
-	for ( i = 0; i < 128; i++ ) {
-		lng += "12345678";
-	}
+	elem = jQuery( "<input type='hidden'>", {} );
+	strictEqual( elem[ 0 ].ownerDocument, document,
+		"Empty attributes object is not interpreted as a document (trac-8950)" );
 });
 
 test("jQuery(selector, context)", function() {
@@ -1202,6 +1190,27 @@ test("jQuery.each(Object,Function)", function() {
 	equal( i, document.styleSheets.length, "Iteration over document.styleSheets" );
 });
 
+test( "JIT compilation does not interfere with length retrieval (gh-2145)", function() {
+	expect( 4 );
+
+	var i;
+
+	// Trigger JIT compilation of jQuery.each – and therefore isArraylike – in iOS.
+	// Convince JSC to use one of its optimizing compilers
+	// by providing code which can be LICM'd into nothing.
+	for ( i = 0; i < 1000; i++ ) {
+		jQuery.each( [] );
+	}
+
+	i = 0;
+	jQuery.each( { 1: "1", 2: "2", 3: "3" }, function( index ) {
+		equal( ++i, index, "Iteration over object with solely " +
+			"numeric indices (gh-2145 JIT iOS 8 bug)" );
+	});
+	equal( i, 3, "Iteration over object with solely " +
+		"numeric indices (gh-2145 JIT iOS 8 bug)" );
+});
+
 test("jQuery.makeArray", function(){
 	expect(15);
 
@@ -1486,7 +1495,7 @@ test("jQuery.camelCase()", function() {
 		"foo-bar": "fooBar",
 		"foo-bar-baz": "fooBarBaz",
 		"girl-u-want": "girlUWant",
-		"the-4th-dimension": "the4thDimension",
+		"the-4th-dimension": "the-4thDimension",
 		"-o-tannenbaum": "OTannenbaum",
 		"-moz-illa": "MozIlla",
 		"-ms-take": "msTake"
