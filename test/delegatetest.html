@@ -171,7 +171,7 @@ for ( var i=0; i < events.length; i++ ) {
 
 	$("#changes thead td").each(function(){
 		var id = "#"+this.id,
-			$cell = $('<td></td>');
+			$cell = $("<td></td>");
 		if ( api == "onX" ) {
 			$(this).find("input, button, select, textarea").each(function(){
 				this["on"+type] = function(e){ e = $.event.fix(e||event); e.data = $cell; blinker.call(this, e); };
