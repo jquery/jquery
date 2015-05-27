@@ -65,11 +65,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 				test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function() {
 
-					expect( 21 );
-
-					// Give qunit a little breathing room
-					stop();
-					setTimeout( start, 0 );
+					expect( 29 );
 
 					var cblist,
 						results = resultString.split( /\s+/ );
@@ -77,10 +73,14 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Basic binding and firing
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
+					strictEqual( cblist.locked(), false, ".locked() initially false" );
+					strictEqual( cblist.disabled(), false, ".disabled() initially false" );
+					strictEqual( cblist.fired(), false, ".fired() initially false" );
 					cblist.add(function( str ) {
 						output += str;
 					});
-					cblist.fire("A");
+					strictEqual( cblist.fired(), false, ".fired() still false after .add" );
+					cblist.fire( "A" );
 					strictEqual( output, "XA", "Basic binding and firing" );
 					strictEqual( cblist.fired(), true, ".fired() detects firing" );
 					output = "X";
@@ -91,8 +91,10 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					strictEqual( output, "X", "Adding a callback after disabling" );
 					cblist.fire("A");
 					strictEqual( output, "X", "Firing after disabling" );
+					strictEqual( cblist.disabled(), true, ".disabled() becomes true" );
+					strictEqual( cblist.locked(), true, "disabling locks" );
 
-					// #13517 - Emptying while firing
+					// Emptying while firing (#13517)
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.empty );
 					cblist.add( function() {
@@ -160,6 +162,17 @@ jQuery.each( tests, function( strFlags, resultString ) {
 						output += str;
 					});
 					strictEqual( output, "X", "Lock early" );
+					strictEqual( cblist.locked(), true, "Locking reflected in accessor" );
+
+					// Locking while firing (gh-1990)
+					output = "X";
+					cblist = jQuery.Callbacks( flags );
+					cblist.add( cblist.lock );
+					cblist.add(function( str ) {
+						output += str;
+					});
+					cblist.fire( "A" );
+					strictEqual( output, "XA", "Locking doesn't abort execution (gh-1990)" );
 
 					// Ordering
 					output = "X";
@@ -328,8 +341,6 @@ test( "jQuery.Callbacks.has", function() {
 	strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
 	cb.lock();
 	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
-
-
 });
 
 test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function() {
@@ -339,4 +350,19 @@ test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", fun
 	jQuery.Callbacks().add( "hello world" );
 
 	ok( true, "no stack overflow" );
+});
+
+test( "jQuery.Callbacks() - disabled callback doesn't fire (gh-1790)", function() {
+
+	expect( 1 );
+
+	var cb = jQuery.Callbacks(),
+		fired = false,
+		shot = function() { fired = true; };
+
+	cb.disable();
+	cb.empty();
+	cb.add( shot );
+	cb.fire();
+	ok( !fired, "Disabled callback function didn't fire" );
 });

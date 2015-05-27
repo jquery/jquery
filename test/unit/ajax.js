@@ -77,11 +77,11 @@ module( "ajax", {
 		},
 		success: true,
 		afterSend: function( request ) {
-			request.complete(function() {
+			request.always(function() {
 				ok( true, "complete" );
-			}).success(function() {
+			}).done(function() {
 				ok( true, "success" );
-			}).error(function() {
+			}).fail(function() {
 				ok( false, "error" );
 			});
 		}
@@ -95,11 +95,11 @@ module( "ajax", {
 		},
 		success: true,
 		complete: function( xhr ) {
-			xhr.complete(function() {
+			xhr.always(function() {
 				ok( true, "complete" );
-			}).success(function() {
+			}).done(function() {
 				ok( true, "success" );
-			}).error(function() {
+			}).fail(function() {
 				ok( false, "error" );
 			});
 		}
@@ -301,7 +301,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - cross-domain detection", 7, function() {
+	ajaxTest( "jQuery.ajax() - cross-domain detection", 8, function() {
 		function request( url, title, crossDomainOrOptions ) {
 			return jQuery.extend( {
 				dataType: "jsonp",
@@ -321,7 +321,7 @@ module( "ajax", {
 
 		return [
 			request(
-				loc.protocol + "//" + loc.host + ":" + samePort,
+				loc.protocol + "//" + loc.hostname + ":" + samePort,
 				"Test matching ports are not detected as cross-domain",
 				false
 			),
@@ -351,6 +351,10 @@ module( "ajax", {
 				{
 					crossDomain: true
 				}
+			),
+			request(
+				" http://otherdomain.com",
+				"Cross-domain url with leading space is detected as cross-domain"
 			)
 		];
 	});
@@ -438,6 +442,23 @@ module( "ajax", {
 			},
 			success: true
 		};
+	});
+
+	ajaxTest( "#15160 - jQuery.ajax() - request manually aborted in ajaxSend", 3, {
+		setup: function() {
+			jQuery( document ).on( "ajaxSend", function( e, jqXHR ) {
+				jqXHR.abort();
+			});
+
+			jQuery( document ).on( "ajaxError ajaxComplete", function( e, jqXHR ) {
+				equal( jqXHR.statusText, "abort", "jqXHR.statusText equals abort on global ajaxComplete and ajaxError events" );
+			});
+		},
+		url: url("data/name.html"),
+		error: true,
+		complete: function() {
+			ok( true, "complete" );
+		}
 	});
 
 	ajaxTest( "jQuery.ajax() - context modification", 1, {
@@ -1002,9 +1023,6 @@ module( "ajax", {
 			" (no cache)": false
 		},
 		function( label, cache ) {
-			// Support: Opera 12.0
-			// In Opera 12.0, XHR doesn't notify 304 back to the user properly
-			var opera = window.opera && window.opera.version();
 			jQuery.each(
 				{
 					"If-Modified-Since": "if_modified_since.php",
@@ -1024,15 +1042,9 @@ module( "ajax", {
 									ifModified: true,
 									cache: cache,
 									success: function( data, status, jqXHR ) {
-										if ( status === "success" && opera === "12.00" ) {
-											strictEqual( status, "success", "Opera 12.0: Following status is 'success'" );
-											strictEqual( jqXHR.status, 200, "Opera 12.0: XHR status is 200, not 304" );
-											strictEqual( data, "", "Opera 12.0: response body is empty" );
-										} else {
-											strictEqual( status, "notmodified", "Following status is 'notmodified'" );
-											strictEqual( jqXHR.status, 304, "XHR status is 304" );
-											equal( data, null, "no response body is given" );
-										}
+										strictEqual( status, "notmodified", "Following status is 'notmodified'" );
+										strictEqual( jqXHR.status, 304, "XHR status is 304" );
+										equal( data, null, "no response body is given" );
 									},
 									complete: function() {
 										start();
@@ -1677,9 +1689,20 @@ module( "ajax", {
 			ok( false, "Global event triggered" );
 		});
 
-		jQuery("#qunit-fixture").append("<script src='data/evalScript.php'></script>");
+		jQuery("#qunit-fixture").append("<script src='data/ajax/evalScript.php'></script>");
 
 		jQuery( document ).off("ajaxStart ajaxStop");
+	});
+
+	asyncTest( "jQuery#load() - always use GET method even if it overrided through ajaxSetup (#11264)", 1, function() {
+		jQuery.ajaxSetup({
+			type: "POST"
+		});
+
+		jQuery( "#qunit-fixture" ).load( "data/ajax/method.php", function( method ) {
+			equal( method, "GET" );
+			start();
+		});
 	});
 
 	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
@@ -2015,6 +2038,26 @@ module( "ajax", {
 				jQuery( "math", xml ).each(function() {
 					strictEqual( jQuery( "calculation", this ).text(), "5-2", "Check for XML" );
 					strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+				});
+			})
+		).always(function() {
+			start();
+		});
+	});
+
+	asyncTest( "jQuery[get|post]( options ) - simple with xml", 2, function() {
+		jQuery.when.apply( jQuery,
+			jQuery.map( [ "get", "post" ] , function( method ) {
+				return jQuery[ method ]({
+					url: url( "data/name.php" ),
+					data: {
+						"xml": "5-2"
+					},
+					success: function( xml ) {
+						jQuery( "math", xml ).each(function() {
+							strictEqual( jQuery( "result", this ).text(), "3", "Check for XML" );
+						});
+					}
 				});
 			})
 		).always(function() {

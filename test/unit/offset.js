@@ -42,27 +42,36 @@ module("offset", { setup: function(){
 */
 
 test("empty set", function() {
-	expect(2);
+	expect( 2 );
 	strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
 	strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
 });
 
-test("object without getBoundingClientRect", function() {
-	expect(2);
+test("disconnected element", function() {
+	expect(1);
 
-	// Simulates a browser without gBCR on elements, we just want to return 0,0
-	var result = jQuery({ ownerDocument: document }).offset();
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
+	var result;
+
+	try {
+		result = jQuery( document.createElement("div") ).offset();
+	} catch ( e ) {}
+
+	ok( !result, "no position for disconnected element" );
 });
 
-test("disconnected node", function() {
-	expect(2);
+test("hidden (display: none) element", function() {
+	expect(1);
 
-	var result = jQuery( document.createElement("div") ).offset();
+	var result,
+		node = jQuery("<div style='display: none' />").appendTo("#qunit-fixture");
 
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
+	try {
+		result = node.offset();
+	} catch ( e ) {}
+
+	node.remove();
+
+	ok( !result, "no position for hidden (display: none) element" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {
@@ -398,7 +407,7 @@ testIframe("offset/table", "table", function( $ ) {
 });
 
 testIframe("offset/scroll", "scroll", function( $, win ) {
-	expect(24);
+	expect(28);
 
 	equal( $("#scroll-1").offset().top, 7, "jQuery('#scroll-1').offset().top" );
 	equal( $("#scroll-1").offset().left, 7, "jQuery('#scroll-1').offset().left" );
@@ -448,6 +457,17 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 	notEqual( $().scrollLeft(null), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
 	strictEqual( $().scrollTop(), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
 	strictEqual( $().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
+
+	// Tests position after parent scrolling (#15239)
+	$("#scroll-1").scrollTop(0);
+	$("#scroll-1").scrollLeft(0);
+	equal( $("#scroll-1-1").position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
+	equal( $("#scroll-1-1").position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
+
+	$("#scroll-1").scrollTop(5);
+	$("#scroll-1").scrollLeft(5);
+	equal( $("#scroll-1-1").position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
+	equal( $("#scroll-1-1").position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
 });
 
 testIframe("offset/body", "body", function( $ ) {
@@ -462,9 +482,9 @@ testIframe("offset/body", "body", function( $ ) {
 test("chaining", function() {
 	expect(3);
 	var coords = { "top":  1, "left":  1 };
-	equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
-	equal( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
-	equal( jQuery("#absolute-1").offset(undefined).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
+	equal( jQuery("#absolute-1").offset(coords).jquery, jQuery.fn.jquery, "offset(coords) returns jQuery object" );
+	equal( jQuery("#non-existent").offset(coords).jquery, jQuery.fn.jquery, "offset(coords) with empty jQuery set returns jQuery object" );
+	equal( jQuery("#absolute-1").offset(undefined).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
 });
 
 test("offsetParent", function(){
@@ -529,6 +549,33 @@ test("fractions (see #7730 and #7885)", function() {
 	equal( result.left, expected.left, "Check left" );
 
 	div.remove();
+});
+
+test("iframe scrollTop/Left (see gh-1945)", function() {
+	expect( 2 );
+
+	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
+
+	// Mobile Safari and Android 2.3 resize the iframe by its content
+	// meaning it's not possible to scroll the iframe only its parent element.
+	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
+	if ( /iphone os/i.test( navigator.userAgent ) ||
+	    /android 2\.3/i.test( navigator.userAgent ) ||
+	    /android 4\.0/i.test( navigator.userAgent ) ) {
+		equal( true, true, "Can't scroll iframes in this environment" );
+		equal( true, true, "Can't scroll iframes in this environment" );
+
+	} else {
+		// Tests scrollTop/Left with iframes
+		jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
+		ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
+
+		jQuery( ifDoc ).scrollTop( 200 );
+		jQuery( ifDoc ).scrollLeft( 500 );
+
+		equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
+		equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
+	}
 });
 
 })();

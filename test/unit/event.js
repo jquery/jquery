@@ -5,20 +5,6 @@ module( "event", {
 	teardown: moduleTeardown
 });
 
-test("null or undefined handler", function() {
-	expect(2);
-	// Supports Fixes bug #7229
-	try {
-		jQuery("#firstp").on( "click", null );
-		ok(true, "Passing a null handler will not throw an exception");
-	} catch ( e ) {}
-
-	try {
-		jQuery("#firstp").on( "click", undefined );
-		ok(true, "Passing an undefined handler will not throw an exception");
-	} catch ( e ) {}
-});
-
 test("on() with non-null,defined data", function() {
 
 	expect(2);
@@ -583,6 +569,17 @@ test("namespace-only event binding is a no-op", function(){
 		.off("whoops");
 });
 
+test("Empty namespace is ignored", function(){
+	expect( 1 );
+
+	jQuery("#firstp")
+		.on( "meow.", function( e ) {
+			equal( e.namespace, "", "triggered a namespace-less meow event" );
+		})
+		.trigger("meow.")
+		.off("meow.");
+});
+
 test("on(), with same function", function() {
 	expect(2);
 
@@ -904,7 +901,7 @@ test("mouseenter, mouseleave don't catch exceptions", function() {
 if ( jQuery.fn.click ) {
 
 	test("trigger() shortcuts", function() {
-		expect(6);
+		expect(5);
 
 		var counter, clickCounter,
 			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
@@ -935,13 +932,6 @@ if ( jQuery.fn.click ) {
 		};
 		jQuery("#simon1").click();
 		equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
-
-		elem = jQuery("<img />").load(function(){
-			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
-		}).load();
-
-		// manually clean up detached elements
-		elem.remove();
 
 		// test that special handlers do not blow up with VML elements (#7071)
 		jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
@@ -992,6 +982,7 @@ test("trigger() bubbling", function() {
 	equal( win, 4, "doc bubble" );
 
 	// manually clean up events from elements outside the fixture
+	jQuery(window).off("click");
 	jQuery(document).off("click");
 	jQuery("html, body, #qunit-fixture").off("click");
 });
@@ -1417,7 +1408,7 @@ test("Submit event can be stopped (#11049)", function() {
 	form.remove();
 });
 
-// Test beforeunload event only if it supported (i.e. not Opera)
+// Test beforeunload event only if it supported.
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
@@ -1442,7 +1433,7 @@ if ( window.onbeforeunload === null &&
 
 test("jQuery.Event( type, props )", function() {
 
-	expect(5);
+	expect(6);
 
 	var event = jQuery.Event( "keydown", { keyCode: 64 }),
 			handler = function( event ) {
@@ -1457,6 +1448,8 @@ test("jQuery.Event( type, props )", function() {
 	equal( jQuery.inArray("type", jQuery.event.props), -1, "'type' property not in props (#10375)" );
 
 	ok( "keyCode" in event, "Special 'keyCode' property exists" );
+
+	strictEqual( jQuery.isPlainObject( event ), false, "Instances of $.Event should not be identified as a plain object." );
 
 	jQuery("body").on( "keydown", handler ).trigger( event );
 
@@ -2034,7 +2027,7 @@ test("Non DOM element events", function() {
 		ok( true, "Event on non-DOM object triggered" );
 	});
 
-	jQuery(o).trigger("nonelementobj");
+	jQuery(o).trigger("nonelementobj").off("nonelementobj");
 });
 
 test("inline handler returning false stops default", function() {
@@ -2379,6 +2372,25 @@ test("hover event no longer special since 1.9", function() {
 		.off("hover");
 });
 
+test( "event object properties on natively-triggered event", function() {
+	expect( 3 );
+
+	var link = document.createElement( "a" ),
+		$link = jQuery( link ),
+		evt = document.createEvent( "MouseEvents" );
+
+	// IE9+ requires element to be in the body before it will dispatch
+	$link.appendTo( "body" ).on( "click", function( e ) {
+		// Not trying to assert specific values here, just ensure the property exists
+		equal( "detail" in e, true, "has .detail" );
+		equal( "cancelable" in e, true, "has .cancelable" );
+		equal( "bubbles" in e, true, "has .bubbles" );
+	});
+	evt.initEvent( "click", true, true );
+	link.dispatchEvent( evt );
+	$link.off( "click" ).remove();
+});
+
 test("fixHooks extensions", function() {
 	expect( 2 );
 
@@ -2411,6 +2423,27 @@ test("fixHooks extensions", function() {
 	jQuery.event.fixHooks.click = saved;
 });
 
+test( "drag/drop events copy mouse-related event properties (gh-1925, gh-2009)", function() {
+	expect( 4 );
+
+	var $fixture = jQuery( "<div id='drag-fixture'></div>" ).appendTo( "body" );
+
+	$fixture.on( "dragmove", function( evt ) {
+		ok( "pageX" in evt, "checking for pageX property on dragmove" );
+		ok( "pageY" in evt, "checking for pageY property on dragmove" );
+	});
+	fireNative( $fixture[ 0 ], "dragmove" );
+
+	$fixture.on( "drop", function( evt ) {
+		ok( "pageX" in evt, "checking for pageX property on drop" );
+		ok( "pageY" in evt, "checking for pageY property on drop" );
+	});
+
+	fireNative( $fixture[ 0 ], "drop" );
+
+	$fixture.unbind( "dragmove drop" ).remove();
+});
+
 test( "focusin using non-element targets", function() {
 	expect( 2 );
 
@@ -2429,32 +2462,26 @@ testIframeWithCallback( "focusin from an iframe", "event/focusinCrossFrame.html"
 
 	var input = jQuery( frameDoc ).find( "#frame-input" );
 
-	if ( input.length ) {
-		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-		jQuery ( "body" ).on( "focusin.iframeTest", function() {
-			ok( false, "fired a focusin event in the parent document" );
-		});
+	// Create a focusin handler on the parent; shouldn't affect the iframe's fate
+	jQuery ( "body" ).on( "focusin.iframeTest", function() {
+		ok( false, "fired a focusin event in the parent document" );
+	});
 
-		input.on( "focusin", function() {
-			ok( true, "fired a focusin event in the iframe" );
-		});
+	input.on( "focusin", function() {
+		ok( true, "fired a focusin event in the iframe" );
+	});
 
-		// Avoid a native event; Chrome can't force focus to another frame
-		input.trigger( "focusin" );
+	// Avoid a native event; Chrome can't force focus to another frame
+	input.trigger( "focusin" );
 
-		// Must manually remove handler to avoid leaks in our data store
-		input.remove();
+	// Must manually remove handler to avoid leaks in our data store
+	input.remove();
 
-		// Be sure it was removed; nothing should happen
-		input.trigger( "focusin" );
+	// Be sure it was removed; nothing should happen
+	input.trigger( "focusin" );
 
-		// Remove body handler manually since it's outside the fixture
-		jQuery( "body" ).off( "focusin.iframeTest" );
-
-	} else {
-		// Opera 12 (pre-Blink) doesn't select anything
-		ok( true, "SOFTFAIL: no focus event fired in the iframe" );
-	}
+	// Remove body handler manually since it's outside the fixture
+	jQuery( "body" ).off( "focusin.iframeTest" );
 });
 
 testIframeWithCallback( "jQuery.ready promise", "event/promiseReady.html", function( isOk ) {
@@ -2623,6 +2650,27 @@ test( "Inline event result is returned (#13993)", function() {
 	equal( result, 42, "inline handler returned value" );
 });
 
+test( ".off() removes the expando when there's no more data", function() {
+	expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	div.on( "click", false );
+	div.on( "custom", function() {
+		ok( true, "Custom event triggered" );
+	} );
+	div.trigger( "custom" );
+	div.off( "click custom" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 	test( "Check order of focusin/focusout events", 2, function() {
@@ -2659,7 +2707,7 @@ if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
 			$text = jQuery("#text1"),
 			$radio = jQuery("#radio1").trigger("focus");
 
-		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
+		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
 		stop();
 		$radio[0].focus();

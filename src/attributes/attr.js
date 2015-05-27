@@ -1,13 +1,12 @@
 define([
 	"../core",
 	"../var/rnotwhite",
-	"../var/strundefined",
 	"../core/access",
 	"./support",
 	"../selector"
-], function( jQuery, rnotwhite, strundefined, access, support ) {
+], function( jQuery, rnotwhite, access, support ) {
 
-var nodeHook, boolHook,
+var boolHook,
 	attrHandle = jQuery.expr.attrHandle;
 
 jQuery.fn.extend({
@@ -28,12 +27,12 @@ jQuery.extend({
 			nType = elem.nodeType;
 
 		// don't get/set attributes on text, comment and attribute nodes
-		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
+		if ( nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( typeof elem.getAttribute === strundefined ) {
+		if ( typeof elem.getAttribute === "undefined" ) {
 			return jQuery.prop( elem, name, value );
 		}
 
@@ -42,7 +41,7 @@ jQuery.extend({
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			name = name.toLowerCase();
 			hooks = jQuery.attrHooks[ name ] ||
-				( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
+				( jQuery.expr.match.bool.test( name ) ? boolHook : undefined );
 		}
 
 		if ( value !== undefined ) {

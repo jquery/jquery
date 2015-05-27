@@ -1,9 +1,7 @@
 var fs = require( "fs" ),
 	npm = require( "npm" ),
-	sizzleLoc = __dirname + "/../external/sizzle/dist/sizzle.js",
-	rversion = /Engine v(\d+\.\d+\.\d+(?:-\w+)?)/;
-
-require( "colors" );
+	sizzleLoc = __dirname + "/../../external/sizzle/dist/sizzle.js",
+	rversion = /Engine v(\d+\.\d+\.\d+(?:-[-\.\d\w]+)?)/;
 
 /**
  * Retrieve the latest tag of Sizzle from npm
@@ -36,6 +34,7 @@ function ensureSizzle( Release, callback ) {
 			version = match ? match[ 1 ] : "Not Found";
 
 		if ( version !== latest ) {
+			// colors is inherited from jquery-release
 			console.log(
 				"The Sizzle version in the src folder (" + version.red +
 				") is not the latest tag (" + latest.green + ")."

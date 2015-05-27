@@ -1,7 +1,8 @@
 define([
 	"./core",
-	"./var/strundefined",
 	"./core/access",
+	"./var/document",
+	"./var/documentElement",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
@@ -10,9 +11,7 @@ define([
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, strundefined, access, rnumnonpx, curCSS, addGetHookIf, support ) {
-
-var docElem = window.document.documentElement;
+], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support ) {
 
 /**
  * Gets a window from an element
@@ -52,7 +51,9 @@ jQuery.offset = {
 		}
 
 		if ( jQuery.isFunction( options ) ) {
-			options = options.call( elem, i, curOffset );
+
+			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
+			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
 		}
 
 		if ( options.top != null ) {
@@ -73,6 +74,7 @@ jQuery.offset = {
 
 jQuery.fn.extend({
 	offset: function( options ) {
+		// Preserve chaining for setter
 		if ( arguments.length ) {
 			return options === undefined ?
 				this :
@@ -81,32 +83,26 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win,
-			elem = this[ 0 ],
-			box = { top: 0, left: 0 },
-			doc = elem && elem.ownerDocument;
+		var docElem, win, rect, doc,
+			elem = this[ 0 ];
 
-		if ( !doc ) {
+		if ( !elem ) {
 			return;
 		}
 
-		docElem = doc.documentElement;
+		rect = elem.getBoundingClientRect();
 
-		// Make sure it's not a disconnected DOM node
-		if ( !jQuery.contains( docElem, elem ) ) {
-			return box;
-		}
+		// Make sure element is not hidden (display: none) or disconnected
+		if ( rect.width || rect.height || elem.getClientRects().length ) {
+			doc = elem.ownerDocument;
+			win = getWindow( doc );
+			docElem = doc.documentElement;
 
-		// Support: BlackBerry 5, iOS 3 (original iPhone)
-		// If we don't have gBCR, just use 0,0 rather than error
-		if ( typeof elem.getBoundingClientRect !== strundefined ) {
-			box = elem.getBoundingClientRect();
+			return {
+				top: rect.top + win.pageYOffset - docElem.clientTop,
+				left: rect.left + win.pageXOffset - docElem.clientLeft
+			};
 		}
-		win = getWindow( doc );
-		return {
-			top: box.top + win.pageYOffset - docElem.clientTop,
-			left: box.left + win.pageXOffset - docElem.clientLeft
-		};
 	},
 
 	position: function() {
@@ -135,8 +131,11 @@ jQuery.fn.extend({
 			}
 
 			// Add offsetParent borders
-			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
-			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
+			// Subtract offsetParent scroll positions
+			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true ) -
+				offsetParent.scrollTop();
+			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true ) -
+				offsetParent.scrollLeft();
 		}
 
 		// Subtract parent offsets and element margins
@@ -146,16 +145,25 @@ jQuery.fn.extend({
 		};
 	},
 
+	// This method will return documentElement in the following cases:
+	// 1) For the element inside the iframe without offsetParent, this method will return
+	//    documentElement of the parent window
+	// 2) For the hidden or detached element
+	// 3) For body or html element, i.e. in case of the html node - it will return itself
+	//
+	// but those exceptions were never presented as a real life use-cases
+	// and might be considered as more preferable results.
+	//
+	// This logic, however, is not guaranteed and can change at any point in the future
 	offsetParent: function() {
 		return this.map(function() {
-			var offsetParent = this.offsetParent || docElem;
+			var offsetParent = this.offsetParent;
 
-			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) &&
-				jQuery.css( offsetParent, "position" ) === "static" ) ) {
+			while ( offsetParent && jQuery.css( offsetParent, "position" ) === "static" ) {
 				offsetParent = offsetParent.offsetParent;
 			}
 
-			return offsetParent || docElem;
+			return offsetParent || documentElement;
 		});
 	}
 });
@@ -174,8 +182,8 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 
 			if ( win ) {
 				win.scrollTo(
-					!top ? val : window.pageXOffset,
-					top ? val : window.pageYOffset
+					!top ? val : win.pageXOffset,
+					top ? val : win.pageYOffset
 				);
 
 			} else {

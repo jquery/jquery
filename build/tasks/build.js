@@ -20,11 +20,13 @@ module.exports = function( grunt ) {
 			optimize: "none",
 			// Include dependencies loaded with require
 			findNestedDependencies: true,
+			// Avoid inserting define() placeholder
+			skipModuleInsertion: true,
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
 				startFile: "src/intro.js",
-				endFile: "src/outro.js"
+				endFile: [ "src/exports/global.js", "src/outro.js" ]
 			},
 			paths: {
 				sizzle: "../external/sizzle/dist/sizzle"
@@ -59,13 +61,10 @@ module.exports = function( grunt ) {
 
 		} else {
 
-			// Ignore jQuery's exports (the only necessary one)
-			if ( name !== "jquery" ) {
-				contents = contents
-					.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" )
-					// Multiple exports
-					.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
-			}
+			contents = contents
+				.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" )
+				// Multiple exports
+				.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
 
 			// Remove define wrappers, closure ends, and empty declarations
 			contents = contents
@@ -81,7 +80,7 @@ module.exports = function( grunt ) {
 
 			// Remove empty definitions
 			contents = contents
-				.replace( /define\(\[[^\]]+\]\)[\W\n]+$/, "" );
+				.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
 		}
 		// AMD Name
 		if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
@@ -177,7 +176,7 @@ module.exports = function( grunt ) {
 						// Check removeWith list
 						excludeList( removeWith[ module ] );
 					} else {
-						grunt.log.error( "Module \"" + module + "\" is a mimimum requirement.");
+						grunt.log.error( "Module \"" + module + "\" is a minimum requirement.");
 						if ( module === "selector" ) {
 							grunt.log.error(
 								"If you meant to replace Sizzle, use -sizzle instead."

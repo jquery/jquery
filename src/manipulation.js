@@ -4,7 +4,14 @@ define([
 	"./var/push",
 	"./core/access",
 	"./manipulation/var/rcheckableType",
+	"./manipulation/var/rtagName",
+	"./manipulation/var/rscriptType",
+	"./manipulation/wrapMap",
+	"./manipulation/getAll",
+	"./manipulation/setGlobalEval",
+	"./manipulation/buildFragment",
 	"./manipulation/support",
+
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
 
@@ -13,48 +20,27 @@ define([
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, concat, push, access, rcheckableType, support, dataPriv, dataUser ) {
+], function( jQuery, concat, push, access,
+	rcheckableType, rtagName, rscriptType,
+	wrapMap, getAll, setGlobalEval, buildFragment, support,
+	dataPriv, dataUser ) {
 
 var
-	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
-	rtagName = /<([\w:]+)/,
-	rhtml = /<|&#?\w+;/,
+	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi,
 	rnoInnerhtml = /<(?:script|style|link)/i,
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
-	rscriptType = /^$|\/(?:java|ecma)script/i,
 	rscriptTypeMasked = /^true\/(.*)/,
-	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
+	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
 
-	// We have to close these tags to support XHTML (#13200)
-	wrapMap = {
-
-		// Support: IE9
-		option: [ 1, "<select multiple='multiple'>", "</select>" ],
-
-		thead: [ 1, "<table>", "</table>" ],
-		col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
-		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
-		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
-
-		_default: [ 0, "", "" ]
-	};
-
-// Support: IE9
-wrapMap.optgroup = wrapMap.option;
-
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
-wrapMap.th = wrapMap.td;
-
-// Support: 1.x compatibility
-// Manipulating tables requires a tbody
 function manipulationTarget( elem, content ) {
-	return jQuery.nodeName( elem, "table" ) &&
-		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ?
+	if ( jQuery.nodeName( elem, "table" ) &&
+		jQuery.nodeName( content.nodeType !== 11 ? content : content.firstChild, "tr" ) ) {
 
-		elem.getElementsByTagName("tbody")[0] ||
-			elem.appendChild( elem.ownerDocument.createElement("tbody") ) :
-		elem;
+		return elem.getElementsByTagName( "tbody" )[ 0 ] || elem;
+	}
+
+	return elem;
 }
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
@@ -72,18 +58,6 @@ function restoreScript( elem ) {
 	}
 
 	return elem;
-}
-
-// Mark scripts as having already been evaluated
-function setGlobalEval( elems, refElements ) {
-	var i = 0,
-		l = elems.length;
-
-	for ( ; i < l; i++ ) {
-		dataPriv.set(
-			elems[ i ], "globalEval", !refElements || dataPriv.get( refElements[ i ], "globalEval" )
-		);
-	}
 }
 
 function cloneCopyEvent( src, dest ) {
@@ -120,16 +94,6 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-function getAll( context, tag ) {
-	var ret = context.getElementsByTagName ? context.getElementsByTagName( tag || "*" ) :
-			context.querySelectorAll ? context.querySelectorAll( tag || "*" ) :
-			[];
-
-	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], ret ) :
-		ret;
-}
-
 // Fix IE bugs, see support tests
 function fixInput( src, dest ) {
 	var nodeName = dest.nodeName.toLowerCase();
@@ -144,7 +108,99 @@ function fixInput( src, dest ) {
 	}
 }
 
+function domManip( collection, args, callback, ignored ) {
+
+	// Flatten any nested arrays
+	args = concat.apply( [], args );
+
+	var fragment, first, scripts, hasScripts, node, doc,
+		i = 0,
+		l = collection.length,
+		iNoClone = l - 1,
+		value = args[ 0 ],
+		isFunction = jQuery.isFunction( value );
+
+	// We can't cloneNode fragments that contain checked, in WebKit
+	if ( isFunction ||
+			( l > 1 && typeof value === "string" &&
+				!support.checkClone && rchecked.test( value ) ) ) {
+		return collection.each(function( index ) {
+			var self = collection.eq( index );
+			if ( isFunction ) {
+				args[ 0 ] = value.call( this, index, self.html() );
+			}
+			domManip( self, args, callback, ignored );
+		});
+	}
+
+	if ( l ) {
+		fragment = buildFragment( args, collection[ 0 ].ownerDocument, false, collection, ignored );
+		first = fragment.firstChild;
+
+		if ( fragment.childNodes.length === 1 ) {
+			fragment = first;
+		}
+
+		// Require either new content or an interest in ignored elements to invoke the callback
+		if ( first || ignored ) {
+			scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
+			hasScripts = scripts.length;
+
+			// Use the original fragment for the last item
+			// instead of the first because it can end up
+			// being emptied incorrectly in certain situations (#8070).
+			for ( ; i < l; i++ ) {
+				node = fragment;
+
+				if ( i !== iNoClone ) {
+					node = jQuery.clone( node, true, true );
+
+					// Keep references to cloned scripts for later restoration
+					if ( hasScripts ) {
+						// Support: Android<4.1, PhantomJS<2
+						// push.apply(_, arraylike) throws on ancient WebKit
+						jQuery.merge( scripts, getAll( node, "script" ) );
+					}
+				}
+
+				callback.call( collection[ i ], node, i );
+			}
+
+			if ( hasScripts ) {
+				doc = scripts[ scripts.length - 1 ].ownerDocument;
+
+				// Reenable scripts
+				jQuery.map( scripts, restoreScript );
+
+				// Evaluate executable scripts on first document insertion
+				for ( i = 0; i < hasScripts; i++ ) {
+					node = scripts[ i ];
+					if ( rscriptType.test( node.type || "" ) &&
+						!dataPriv.access( node, "globalEval" ) &&
+						jQuery.contains( doc, node ) ) {
+
+						if ( node.src ) {
+							// Optional AJAX dependency, but won't run scripts if not present
+							if ( jQuery._evalUrl ) {
+								jQuery._evalUrl( node.src );
+							}
+						} else {
+							jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return collection;
+}
+
 jQuery.extend({
+	htmlPrefilter: function( html ) {
+		return html.replace( rxhtmlTag, "<$1></$2>" );
+	},
+
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var i, l, srcElements, destElements,
 			clone = elem.cloneNode( true ),
@@ -187,121 +243,26 @@ jQuery.extend({
 		return clone;
 	},
 
-	buildFragment: function( elems, context, scripts, selection ) {
-		var elem, tmp, tag, wrap, contains, j,
-			fragment = context.createDocumentFragment(),
-			nodes = [],
-			i = 0,
-			l = elems.length;
-
-		for ( ; i < l; i++ ) {
-			elem = elems[ i ];
-
-			if ( elem || elem === 0 ) {
-
-				// Add nodes directly
-				if ( jQuery.type( elem ) === "object" ) {
-					// Support: QtWebKit, PhantomJS
-					// push.apply(_, arraylike) throws on ancient WebKit
-					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
-
-				// Convert non-html into a text node
-				} else if ( !rhtml.test( elem ) ) {
-					nodes.push( context.createTextNode( elem ) );
-
-				// Convert html into DOM nodes
-				} else {
-					tmp = tmp || fragment.appendChild( context.createElement("div") );
-
-					// Deserialize a standard representation
-					tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
-					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
-
-					// Descend through wrappers to the right content
-					j = wrap[ 0 ];
-					while ( j-- ) {
-						tmp = tmp.lastChild;
-					}
-
-					// Support: QtWebKit, PhantomJS
-					// push.apply(_, arraylike) throws on ancient WebKit
-					jQuery.merge( nodes, tmp.childNodes );
-
-					// Remember the top-level container
-					tmp = fragment.firstChild;
-
-					// Ensure the created nodes are orphaned (#12392)
-					tmp.textContent = "";
-				}
-			}
-		}
-
-		// Remove wrapper from fragment
-		fragment.textContent = "";
-
-		i = 0;
-		while ( (elem = nodes[ i++ ]) ) {
-
-			// #4087 - If origin and destination elements are the same, and this is
-			// that element, do not do anything
-			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
-				continue;
-			}
-
-			contains = jQuery.contains( elem.ownerDocument, elem );
-
-			// Append to fragment
-			tmp = getAll( fragment.appendChild( elem ), "script" );
-
-			// Preserve script evaluation history
-			if ( contains ) {
-				setGlobalEval( tmp );
-			}
-
-			// Capture executables
-			if ( scripts ) {
-				j = 0;
-				while ( (elem = tmp[ j++ ]) ) {
-					if ( rscriptType.test( elem.type || "" ) ) {
-						scripts.push( elem );
-					}
-				}
-			}
-		}
-
-		return fragment;
-	},
-
 	cleanData: function( elems ) {
-		var data, elem, type, key,
+		var data, elem, type,
 			special = jQuery.event.special,
 			i = 0;
 
 		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
-			if ( jQuery.acceptData( elem ) ) {
-				key = elem[ dataPriv.expando ];
+			if ( jQuery.acceptData( elem ) && (data = elem[ dataPriv.expando ])) {
+				if ( data.events ) {
+					for ( type in data.events ) {
+						if ( special[ type ] ) {
+							jQuery.event.remove( elem, type );
 
-				if ( key && (data = dataPriv.cache[ key ]) ) {
-					if ( data.events ) {
-						for ( type in data.events ) {
-							if ( special[ type ] ) {
-								jQuery.event.remove( elem, type );
-
-							// This is a shortcut to avoid jQuery.event.remove's overhead
-							} else {
-								jQuery.removeEvent( elem, type, data.handle );
-							}
+						// This is a shortcut to avoid jQuery.event.remove's overhead
+						} else {
+							jQuery.removeEvent( elem, type, data.handle );
 						}
 					}
-					if ( dataPriv.cache[ key ] ) {
-						// Discard any remaining `private` data
-						delete dataPriv.cache[ key ];
-					}
 				}
+				delete elem[ dataPriv.expando ];
 			}
-			// Discard any remaining `user` data
-			delete dataUser.cache[ elem[ dataUser.expando ] ];
 		}
 	}
 });
@@ -320,7 +281,7 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
-		return this.domManip( arguments, function( elem ) {
+		return domManip( this, arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				var target = manipulationTarget( this, elem );
 				target.appendChild( elem );
@@ -329,7 +290,7 @@ jQuery.fn.extend({
 	},
 
 	prepend: function() {
-		return this.domManip( arguments, function( elem ) {
+		return domManip( this, arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				var target = manipulationTarget( this, elem );
 				target.insertBefore( elem, target.firstChild );
@@ -338,7 +299,7 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
-		return this.domManip( arguments, function( elem ) {
+		return domManip( this, arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
@@ -346,7 +307,7 @@ jQuery.fn.extend({
 	},
 
 	after: function() {
-		return this.domManip( arguments, function( elem ) {
+		return domManip( this, arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
@@ -415,7 +376,7 @@ jQuery.fn.extend({
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
-				value = value.replace( rxhtmlTag, "<$1></$2>" );
+				value = jQuery.htmlPrefilter( value );
 
 				try {
 					for ( ; i < l; i++ ) {
@@ -441,113 +402,25 @@ jQuery.fn.extend({
 	},
 
 	replaceWith: function() {
-		var arg = arguments[ 0 ];
+		var ignored = [];
 
-		// Make the changes, replacing each context element with the new content
-		this.domManip( arguments, function( elem ) {
-			arg = this.parentNode;
+		// Make the changes, replacing each non-ignored context element with the new content
+		return domManip( this, arguments, function( elem ) {
+			var parent = this.parentNode;
 
-			jQuery.cleanData( getAll( this ) );
-
-			if ( arg ) {
-				arg.replaceChild( elem, this );
+			if ( jQuery.inArray( this, ignored ) < 0 ) {
+				jQuery.cleanData( getAll( this ) );
+				if ( parent ) {
+					parent.replaceChild( elem, this );
+				}
 			}
-		});
 
-		// Force removal if there was no new content (e.g., from empty arguments)
-		return arg && (arg.length || arg.nodeType) ? this : this.remove();
+		// Force callback invocation
+		}, ignored );
 	},
 
 	detach: function( selector ) {
 		return this.remove( selector, true );
-	},
-
-	domManip: function( args, callback ) {
-
-		// Flatten any nested arrays
-		args = concat.apply( [], args );
-
-		var fragment, first, scripts, hasScripts, node, doc,
-			i = 0,
-			l = this.length,
-			set = this,
-			iNoClone = l - 1,
-			value = args[ 0 ],
-			isFunction = jQuery.isFunction( value );
-
-		// We can't cloneNode fragments that contain checked, in WebKit
-		if ( isFunction ||
-				( l > 1 && typeof value === "string" &&
-					!support.checkClone && rchecked.test( value ) ) ) {
-			return this.each(function( index ) {
-				var self = set.eq( index );
-				if ( isFunction ) {
-					args[ 0 ] = value.call( this, index, self.html() );
-				}
-				self.domManip( args, callback );
-			});
-		}
-
-		if ( l ) {
-			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, this );
-			first = fragment.firstChild;
-
-			if ( fragment.childNodes.length === 1 ) {
-				fragment = first;
-			}
-
-			if ( first ) {
-				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
-				hasScripts = scripts.length;
-
-				// Use the original fragment for the last item
-				// instead of the first because it can end up
-				// being emptied incorrectly in certain situations (#8070).
-				for ( ; i < l; i++ ) {
-					node = fragment;
-
-					if ( i !== iNoClone ) {
-						node = jQuery.clone( node, true, true );
-
-						// Keep references to cloned scripts for later restoration
-						if ( hasScripts ) {
-							// Support: QtWebKit
-							// jQuery.merge because push.apply(_, arraylike) throws
-							jQuery.merge( scripts, getAll( node, "script" ) );
-						}
-					}
-
-					callback.call( this[ i ], node, i );
-				}
-
-				if ( hasScripts ) {
-					doc = scripts[ scripts.length - 1 ].ownerDocument;
-
-					// Reenable scripts
-					jQuery.map( scripts, restoreScript );
-
-					// Evaluate executable scripts on first document insertion
-					for ( i = 0; i < hasScripts; i++ ) {
-						node = scripts[ i ];
-						if ( rscriptType.test( node.type || "" ) &&
-							!dataPriv.access( node, "globalEval" ) &&
-							jQuery.contains( doc, node ) ) {
-
-							if ( node.src ) {
-								// Optional AJAX dependency, but won't run scripts if not present
-								if ( jQuery._evalUrl ) {
-									jQuery._evalUrl( node.src );
-								}
-							} else {
-								jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return this;
 	}
 });
 
@@ -569,8 +442,8 @@ jQuery.each({
 			elems = i === last ? this : this.clone( true );
 			jQuery( insert[ i ] )[ original ]( elems );
 
-			// Support: QtWebKit
-			// .get() because push.apply(_, arraylike) throws
+			// Support: Android<4.1, PhantomJS<2
+			// .get() because push.apply(_, arraylike) throws on ancient WebKit
 			push.apply( ret, elems.get() );
 		}
 

@@ -64,7 +64,7 @@ test( "text(undefined)", function() {
 
 function testText( valueObj ) {
 
-	expect( 7 );
+	expect( 6 );
 
 	var val, j, expected, $multipleElements, $parentDiv, $childDiv;
 
@@ -94,8 +94,6 @@ function testText( valueObj ) {
 	$parentDiv = jQuery( "<div/>" );
 	$parentDiv.append( $childDiv );
 	$parentDiv.text("Dry off");
-
-	equal( $childDiv.data("leak"), undefined, "Check for leaks (#11809)" );
 }
 
 test( "text(String)", function() {
@@ -210,23 +208,23 @@ function testAppend( valueObj ) {
 	equal( result.text(), defaultText + "buga", "Check if text appending works" );
 	equal( jQuery("#select3").append( valueObj("<option value='appendTest'>Append Test</option>") ).find("option:last-child").attr("value"), "appendTest", "Appending html options to select element" );
 
-	jQuery("form").append( valueObj("<input name='radiotest' type='radio' checked='checked' />") );
-	jQuery("form input[name=radiotest]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest' type='radio' checked='checked' />") );
+	jQuery("#qunit-fixture form input[name=radiotest]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input name='radiotest2' type='radio' checked    =   'checked' />") );
-	jQuery("form input[name=radiotest2]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest2' type='radio' checked    =   'checked' />") );
+	jQuery("#qunit-fixture form input[name=radiotest2]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append alternately formated checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input name='radiotest3' type='radio' checked />") );
-	jQuery("form input[name=radiotest3]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input name='radiotest3' type='radio' checked />") );
+	jQuery("#qunit-fixture form input[name=radiotest3]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append HTML5-formated checked radio" );
 	}).remove();
 
-	jQuery("form").append( valueObj("<input type='radio' checked='checked' name='radiotest4' />") );
-	jQuery("form input[name=radiotest4]").each(function() {
+	jQuery("#qunit-fixture form").append( valueObj("<input type='radio' checked='checked' name='radiotest4' />") );
+	jQuery("#qunit-fixture form input[name=radiotest4]").each(function() {
 		ok( jQuery(this).is(":checked"), "Append with name attribute after checked attribute" );
 	}).remove();
 
@@ -484,6 +482,23 @@ test( "html(String) with HTML5 (Bug #6485)", function() {
 	jQuery("#qunit-fixture").html("<article><section><aside>HTML5 elements</aside></section></article>");
 	equal( jQuery("#qunit-fixture").children().children().length, 1, "Make sure HTML5 article elements can hold children. innerHTML shortcut path" );
 	equal( jQuery("#qunit-fixture").children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
+});
+
+test( "html(String) tag-hyphenated elements (Bug #1987)", function() {
+
+	expect( 27 );
+
+	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split(" "), function( i, name ) {
+		var j = jQuery("<" + name + "-d></" + name + "-d><" + name + "-d></" + name + "-d>");
+		ok( j[0], "Create a tag-hyphenated element" );
+		ok( jQuery.nodeName(j[0], name.toUpperCase() + "-D"), "Hyphenated node name" );
+		ok( jQuery.nodeName(j[1], name.toUpperCase() + "-D"), "Hyphenated node name" );
+	});
+
+	var j = jQuery("<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>");
+	ok( jQuery.nodeName(j[0], "TR-MULTIPLE-HYPHENS"), "Tags with multiple hypens" );
+	ok( jQuery.nodeName(j.children()[0], "TD-WITH-HYPHEN"), "Tags with multiple hypens" );
+	equal( j.children().text(), "text", "Tags with multple hypens behave normally" );
 });
 
 test( "IE8 serialization bug", function() {
@@ -1264,15 +1279,20 @@ test( "replaceWith(string) for more than one element", function() {
 	equal(jQuery("#foo p").length, 0, "verify that all the three original element have been replaced");
 });
 
-test( "Empty replaceWith (#13401; #13596)", 8, function() {
-	var $el = jQuery( "<div/>" ),
+test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function() {
+
+	expect( 25 );
+
+	var $el = jQuery( "<div/><div/>" ).html( "<p>0</p>" ),
+		expectedHTML = $el.html(),
 		tests = {
 			"empty string": "",
 			"empty array": [],
+			"array of empty string": [ "" ],
 			"empty collection": jQuery( "#nonexistent" ),
 
-       // in case of jQuery(...).replaceWith();
-			"empty undefined": undefined
+			// in case of jQuery(...).replaceWith();
+			"undefined": undefined
 		};
 
 	jQuery.each( tests, function( label, input ) {
@@ -1280,6 +1300,17 @@ test( "Empty replaceWith (#13401; #13596)", 8, function() {
 		strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
 		$el.html( "<b/>" ).children().replaceWith(function() { return input; });
 		strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
+		$el.html( "<i/>" ).children().replaceWith(function( i ) { i; return input; });
+		strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
+		$el.html( "<p/>" ).children().replaceWith(function( i ) {
+			return i ?
+				input :
+				jQuery( this ).html( i + "" );
+		});
+		strictEqual( $el.eq( 0 ).html(), expectedHTML,
+			"replaceWith(function conditionally returning context)" );
+		strictEqual( $el.eq( 1 ).html(), "",
+			"replaceWith(function conditionally returning " + label + ")" );
 	});
 });
 
@@ -1797,7 +1828,7 @@ test( "clone()/html() don't expose jQuery/Sizzle expandos (#12858)", function() 
 
 test( "remove() no filters", function() {
 
-  expect( 3 );
+  expect( 2 );
 
 	var first = jQuery("#ap").children().first();
 
@@ -1806,9 +1837,6 @@ test( "remove() no filters", function() {
 	jQuery("#ap").children().remove();
 	ok( jQuery("#ap").text().length > 10, "Check text is not removed" );
 	equal( jQuery("#ap").children().length, 0, "Check remove" );
-
-	equal( first.data("foo"), null, "first data" );
-
 });
 
 test( "remove() with filters", function() {
@@ -2035,7 +2063,24 @@ test( "jQuery.cleanData", function() {
 	}
 });
 
-test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
+test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
+	expect( 2 );
+
+	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	jQuery._data( div[ 0 ], "gh-2127", "testing" );
+
+	ok( !jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ),  "Ensure some private data exists" );
+
+	div.remove();
+
+	ok( jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ),
+		"Private data is empty after node is removed" );
+
+	div.remove();
+});
+
+test( "domManip plain-text caching (trac-6779)", function() {
 
 	expect( 1 );
 
@@ -2054,42 +2099,43 @@ test( "jQuery.buildFragment - no plain-text caching (Bug #6779)", function() {
 	$f.remove();
 });
 
-test( "jQuery.html - execute scripts escaped with html comment or CDATA (#9221)", function() {
+test( "domManip executes scripts containing html comments or CDATA (trac-9221)", function() {
 
 	expect( 3 );
 
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--",
-				"ok( true, '<!-- handled' );",
-				"//-->",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<![CDATA[",
-				"ok( true, '<![CDATA[ handled' );",
-				"//]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
-	jQuery([
-				"<script type='text/javascript'>",
-				"<!--//--><![CDATA[//><!--",
-				"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
-				"//--><!]]>",
-				"</script>"
-			].join("\n")).appendTo("#qunit-fixture");
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--",
+		"ok( true, '<!-- handled' );",
+		"//-->",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<![CDATA[",
+		"ok( true, '<![CDATA[ handled' );",
+		"//]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!--//--><![CDATA[//><!--",
+		"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+		"//--><!]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 });
 
-test( "jQuery.buildFragment - plain objects are not a document #8950", function() {
-
-	expect( 1 );
-
-	try {
-		jQuery( "<input type='hidden'>", {} );
-		ok( true, "Does not allow attribute object to be treated like a doc object" );
-	} catch ( e ) {}
-});
+testIframeWithCallback(
+	"domManip tolerates window-valued document[0] in IE9/10 (trac-12266)",
+	"manipulation/iframe-denied.html",
+	function( test ) {
+		expect( 1 );
+		ok( test.status, test.description );
+	}
+);
 
 test( "jQuery.clone - no exceptions for object elements #9587", function() {
 
@@ -2251,12 +2297,6 @@ test( "manipulate mixed jQuery and text (#12384, #12346)", function() {
 	equal( div.find("*").length, 3, "added 2 paragraphs after inner div" );
 });
 
-testIframeWithCallback( "buildFragment works even if document[0] is iframe's window object in IE9/10 (#12266)", "manipulation/iframe-denied.html", function( test ) {
-	expect( 1 );
-
-	ok( test.status, test.description );
-});
-
 test( "script evaluation (#11795)", function() {
 
 	expect( 13 );
@@ -2338,6 +2378,46 @@ test( "jQuery._evalUrl (#12838)", function() {
 
 	jQuery.ajax = ajax;
 	jQuery._evalUrl = evalUrl;
+});
+
+test( "jQuery.htmlPrefilter (gh-1747)", function( assert ) {
+
+	assert.expect( 5 );
+
+	var expectedArgument,
+		invocations = 0,
+		htmlPrefilter = jQuery.htmlPrefilter,
+		fixture = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+		poison = "<script>jQuery.htmlPrefilter.assert.ok( false, 'script not executed' );</script>",
+		done = assert.async();
+
+	jQuery.htmlPrefilter = function( html ) {
+		invocations++;
+		assert.equal( html, expectedArgument, "Expected input" );
+
+		// Remove <script> and <del> elements
+		return htmlPrefilter.apply( this, arguments )
+			.replace( /<(script|del)(?=[\s>])[\w\W]*?<\/\1\s*>/ig, "" );
+	};
+	jQuery.htmlPrefilter.assert = assert;
+
+	expectedArgument = "A-" + poison + "B-" + poison + poison + "C-";
+	fixture.html( expectedArgument );
+
+	expectedArgument = "D-" + poison + "E-" + "<del/><div>" + poison + poison + "</div>" + "F-";
+	fixture.append( expectedArgument );
+
+	expectedArgument = poison;
+	fixture.find( "div" ).replaceWith( expectedArgument );
+
+	assert.equal( invocations, 3, "htmlPrefilter invoked for all DOM manipulations" );
+	assert.equal( fixture.html(), "A-B-C-D-E-F-", "htmlPrefilter modified HTML" );
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		jQuery.htmlPrefilter = htmlPrefilter;
+		done();
+	}, 100 );
 });
 
 test( "insertAfter, insertBefore, etc do not work when destination is original element. Element is removed (#4087)", function() {
@@ -2433,4 +2513,116 @@ test( "Validate creation of multiple quantities of certain elements (#13818)", 4
 			ok( jQuery.nodeName( this, tag ), tag + " elements with closing tag created correctly" );
 		});
 	});
+});
+
+test( "Make sure tr element will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tr><td>test</td></tr>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
+});
+
+test( "Make sure tr elements will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tr><td>1</td></tr><tr><td>2</td></tr>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>1</td></tr><tr><td>2</td></tr></tbody>" );
+});
+
+test( "Make sure tfoot element will not be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		table = document.createElement( "table" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	jQuery( table ).append( "<tfoot/>" );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody></tbody><tfoot></tfoot>" );
+});
+
+test( "Make sure document fragment will be appended to tbody element of table when present", function() {
+	expect( 1 );
+
+	var html,
+		fragment = document.createDocumentFragment(),
+		table = document.createElement( "table" ),
+		tr = document.createElement( "tr" ),
+		td = document.createElement( "td" );
+
+	table.appendChild( document.createElement( "tbody" ) );
+	document.getElementById( "qunit-fixture" ).appendChild( table );
+
+	fragment.appendChild( tr );
+	tr.appendChild( td );
+	td.innerHTML = "test";
+
+	jQuery( table ).append( fragment );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
+});
+
+test( "Make sure col element is appended correctly", function() {
+	expect( 1 );
+
+	var table = jQuery( "<table cellpadding='0'><tr><td>test</td></tr></table>" );
+
+	jQuery( table ).appendTo( "#qunit-fixture" );
+
+	jQuery( "<col width='150'/>" ).prependTo( table );
+
+	strictEqual( table.find( "td" ).width(), 150 );
+});
+
+asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
+	Globals.register( "testFoo" );
+	Globals.register( "testSrcFoo" );
+
+	var script = document.createElement( "script" ),
+		fixture = document.getElementById( "qunit-fixture" );
+
+	script.src = "data:text/javascript,testSrcFoo = 'foo';";
+
+	fixture.appendChild( script );
+
+	jQuery( fixture ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
+
+	setTimeout(function() {
+		if ( window[ "testSrcFoo" ] === "foo" ) {
+			strictEqual( window[ "testFoo" ], window[ "testSrcFoo" ], "data-URI script executed" );
+
+		} else {
+			ok( true, "data-URI script is not supported by this environment" );
+		}
+
+		start();
+	}, 100 );
 });

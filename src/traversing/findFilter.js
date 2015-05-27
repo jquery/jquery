@@ -33,7 +33,7 @@ function winnow( elements, qualifier, not ) {
 	}
 
 	return jQuery.grep( elements, function( elem ) {
-		return ( indexOf.call( qualifier, elem ) >= 0 ) !== not;
+		return ( indexOf.call( qualifier, elem ) > -1 ) !== not;
 	});
 }
 
@@ -72,10 +72,7 @@ jQuery.fn.extend({
 			jQuery.find( selector, self[ i ], ret );
 		}
 
-		// Needed because $( selector, context ) becomes $( context ).find( selector )
-		ret = this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
-		ret.selector = this.selector ? this.selector + " " + selector : selector;
-		return ret;
+		return this.pushStack( len > 1 ? jQuery.uniqueSort( ret ) : ret );
 	},
 	filter: function( selector ) {
 		return this.pushStack( winnow(this, selector || [], false) );

@@ -74,12 +74,9 @@ jQuery.extend({
 	valHooks: {
 		option: {
 			get: function( elem ) {
-				var val = jQuery.find.attr( elem, "value" );
-				return val != null ?
-					val :
-					// Support: IE10-11+
-					// option.text throws exceptions (#14686, #14858)
-					jQuery.trim( jQuery.text( elem ) );
+				// Support: IE<11
+				// option.value not trimmed (#14858)
+				return jQuery.trim( elem.value );
 			}
 		},
 		select: {
@@ -98,7 +95,7 @@ jQuery.extend({
 				for ( ; i < max; i++ ) {
 					option = options[ i ];
 
-					// IE6-9 doesn't update selected after form reset (#2551)
+					// IE8-9 doesn't update selected after form reset (#2551)
 					if ( ( option.selected || i === index ) &&
 							// Don't return options that are disabled or in a disabled optgroup
 							( support.optDisabled ?
@@ -130,7 +127,8 @@ jQuery.extend({
 
 				while ( i-- ) {
 					option = options[ i ];
-					if ( (option.selected = jQuery.inArray( option.value, values ) >= 0) ) {
+					if ( (option.selected =
+							jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1) ) {
 						optionSet = true;
 					}
 				}
@@ -150,7 +148,7 @@ jQuery.each([ "radio", "checkbox" ], function() {
 	jQuery.valHooks[ this ] = {
 		set: function( elem, value ) {
 			if ( jQuery.isArray( value ) ) {
-				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) > -1 );
 			}
 		}
 	};

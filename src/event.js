@@ -1,6 +1,6 @@
 define([
 	"./core",
-	"./var/strundefined",
+	"./var/document",
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
@@ -10,13 +10,13 @@ define([
 	"./core/init",
 	"./data/accepts",
 	"./selector"
-], function( jQuery, strundefined, rnotwhite, hasOwn, slice, support, dataPriv ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support, dataPriv ) {
 
 var
 	rkeyEvent = /^key/,
-	rmouseEvent = /^(?:mouse|pointer|contextmenu)|click/,
+	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
 function returnTrue() {
 	return true;
@@ -26,6 +26,8 @@ function returnFalse() {
 	return false;
 }
 
+// Support: IE9
+// See #13393 for more info
 function safeActiveElement() {
 	try {
 		return document.activeElement;
@@ -72,7 +74,7 @@ jQuery.event = {
 			eventHandle = elemData.handle = function( e ) {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
-				return typeof jQuery !== strundefined && jQuery.event.triggered !== e.type ?
+				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
 					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
 			};
 		}
@@ -121,7 +123,7 @@ jQuery.event = {
 					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 
 					if ( elem.addEventListener ) {
-						elem.addEventListener( type, eventHandle, false );
+						elem.addEventListener( type, eventHandle );
 					}
 				}
 			}
@@ -214,10 +216,9 @@ jQuery.event = {
 			}
 		}
 
-		// Remove the expando if it's no longer used
+		// Remove data and the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
-			delete elemData.handle;
-			dataPriv.remove( elem, "events" );
+			dataPriv.remove( elem, "handle events" );
 		}
 	},
 
@@ -240,7 +241,7 @@ jQuery.event = {
 			return;
 		}
 
-		if ( type.indexOf(".") >= 0 ) {
+		if ( type.indexOf(".") > -1 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
 			type = namespaces.shift();
@@ -420,8 +421,11 @@ jQuery.event = {
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
 
+		// Support (at least): Chrome, IE9
 		// Find delegate handlers
 		// Black-hole SVG <use> instance trees (#13180)
+		//
+		// Support: Firefox
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
 
@@ -438,7 +442,7 @@ jQuery.event = {
 
 						if ( matches[ sel ] === undefined ) {
 							matches[ sel ] = handleObj.needsContext ?
-								jQuery( sel, this ).index( cur ) >= 0 :
+								jQuery( sel, this ).index( cur ) > -1 :
 								jQuery.find( sel, this, null, [ cur ] ).length;
 						}
 						if ( matches[ sel ] ) {
@@ -461,7 +465,7 @@ jQuery.event = {
 	},
 
 	// Includes some event props shared by KeyEvent and MouseEvent
-	props: ( "altKey bubbles cancelable ctrlKey currentTarget eventPhase " +
+	props: ( "altKey bubbles cancelable ctrlKey currentTarget detail eventPhase " +
 		"metaKey relatedTarget shiftKey target timeStamp view which" ).split(" "),
 
 	fixHooks: {},
@@ -537,13 +541,7 @@ jQuery.event = {
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Support: Cordova 2.5 (WebKit) (#13255)
-		// All events should have a target; Cordova deviceready doesn't
-		if ( !event.target ) {
-			event.target = document;
-		}
-
-		// Support: Safari 6.0+, Chrome<28
+		// Support: Safari 6.0+
 		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
@@ -628,8 +626,10 @@ jQuery.event = {
 };
 
 jQuery.removeEvent = function( elem, type, handle ) {
+
+	// This "if" is needed for plain objects
 	if ( elem.removeEventListener ) {
-		elem.removeEventListener( type, handle, false );
+		elem.removeEventListener( type, handle );
 	}
 };
 
@@ -673,6 +673,7 @@ jQuery.Event = function( src, props ) {
 // jQuery.Event is based on DOM3 Events as specified by the ECMAScript Language Binding
 // http://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
 jQuery.Event.prototype = {
+	constructor: jQuery.Event,
 	isDefaultPrevented: returnFalse,
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
@@ -682,7 +683,7 @@ jQuery.Event.prototype = {
 
 		this.isDefaultPrevented = returnTrue;
 
-		if ( e && e.preventDefault ) {
+		if ( e ) {
 			e.preventDefault();
 		}
 	},
@@ -691,7 +692,7 @@ jQuery.Event.prototype = {
 
 		this.isPropagationStopped = returnTrue;
 
-		if ( e && e.stopPropagation ) {
+		if ( e ) {
 			e.stopPropagation();
 		}
 	},
@@ -700,7 +701,7 @@ jQuery.Event.prototype = {
 
 		this.isImmediatePropagationStopped = returnTrue;
 
-		if ( e && e.stopImmediatePropagation ) {
+		if ( e ) {
 			e.stopImmediatePropagation();
 		}
 
@@ -709,7 +710,16 @@ jQuery.Event.prototype = {
 };
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
-// Support: Chrome 15+
+// so that event delegation works in jQuery.
+// Do the same for pointerenter/pointerleave and pointerover/pointerout
+//
+// Support: Safari<7.0
+// Safari doesn't support mouseenter/mouseleave at all.
+//
+// Support: Chrome 34+
+// Mouseenter doesn't perform while left mouse button is pressed
+// (and initiated outside the observed element)
+// https://code.google.com/p/chromium/issues/detail?id=333868
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout",
@@ -738,15 +748,21 @@ jQuery.each({
 	};
 });
 
-// Support: Firefox, Chrome, Safari
-// Create "bubbling" focus and blur events
-if ( !support.focusinBubbles ) {
+// Support: Firefox
+// Firefox doesn't have focus(in | out) events
+// Related ticket - https://bugzilla.mozilla.org/show_bug.cgi?id=687787
+//
+// Support: Chrome, Safari
+// focus(in | out) events fire after focus & blur events,
+// which is spec violation - http://www.w3.org/TR/DOM-Level-3-Events/#events-focusevent-event-order
+// Related ticket - https://code.google.com/p/chromium/issues/detail?id=449857
+if ( !support.focusin ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
 
 		// Attach a single capturing handler on the document while someone wants focusin/focusout
 		var handler = function( event ) {
-				jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
-			};
+			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
+		};
 
 		jQuery.event.special[ fix ] = {
 			setup: function() {
@@ -811,8 +827,6 @@ jQuery.fn.extend({
 		}
 		if ( fn === false ) {
 			fn = returnFalse;
-		} else if ( !fn ) {
-			return this;
 		}
 
 		if ( one === 1 ) {

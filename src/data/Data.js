@@ -5,96 +5,84 @@ define([
 ], function( jQuery, rnotwhite ) {
 
 function Data() {
-	// Support: Android<4,
-	// Old WebKit does not have Object.preventExtensions/freeze method,
-	// return new empty object instead with no [[set]] accessor
-	Object.defineProperty( this.cache = {}, 0, {
-		get: function() {
-			return {};
-		}
-	});
-
-	this.expando = jQuery.expando + Math.random();
+	this.expando = jQuery.expando + Data.uid++;
 }
 
 Data.uid = 1;
 Data.accepts = jQuery.acceptData;
 
 Data.prototype = {
-	key: function( owner ) {
+
+	register: function( owner ) {
+		var value = {};
+
+		// If it is a node unlikely to be stringify-ed or looped over
+		// use plain assignment
+		if ( owner.nodeType ) {
+			owner[ this.expando ] = value;
+
+		// Otherwise secure it in a non-enumerable, non-writable property
+		// configurability must be true to allow the property to be
+		// deleted with the delete operator
+		} else {
+			Object.defineProperty( owner, this.expando, {
+				value: value,
+				writable: true,
+				configurable: true
+			});
+		}
+		return owner[ this.expando ];
+	},
+	cache: function( owner ) {
+
 		// We can accept data for non-element nodes in modern browsers,
 		// but we should not, see #8335.
-		// Always return the key for a frozen object.
+		// Always return an empty object.
 		if ( !Data.accepts( owner ) ) {
-			return 0;
+			return {};
 		}
 
-		var descriptor = {},
-			// Check if the owner object already has a cache key
-			unlock = owner[ this.expando ];
+		// Check if the owner object already has a cache
+		var cache = owner[ this.expando ];
 
-		// If not, create one
-		if ( !unlock ) {
-			unlock = Data.uid++;
-
-			// Secure it in a non-enumerable, non-writable property
-			try {
-				descriptor[ this.expando ] = { value: unlock };
-				Object.defineProperties( owner, descriptor );
-
-			// Support: Android<4
-			// Fallback to a less secure definition
-			} catch ( e ) {
-				descriptor[ this.expando ] = unlock;
-				jQuery.extend( owner, descriptor );
-			}
+		// If so, return it
+		if ( cache ) {
+			return cache;
 		}
 
-		// Ensure the cache object
-		if ( !this.cache[ unlock ] ) {
-			this.cache[ unlock ] = {};
-		}
-
-		return unlock;
+		// If not, register one
+		return this.register( owner );
 	},
 	set: function( owner, data, value ) {
 		var prop,
-			// There may be an unlock assigned to this node,
-			// if there is no entry for this "owner", create one inline
-			// and set the unlock as though an owner entry had always existed
-			unlock = this.key( owner ),
-			cache = this.cache[ unlock ];
+			cache = this.cache( owner );
 
 		// Handle: [ owner, key, value ] args
+		// Always use camelCase key (gh-2257)
 		if ( typeof data === "string" ) {
-			cache[ data ] = value;
+			cache[ jQuery.camelCase( data ) ] = value;
 
 		// Handle: [ owner, { properties } ] args
 		} else {
-			// Fresh assignments by object are shallow copied
-			if ( jQuery.isEmptyObject( cache ) ) {
-				jQuery.extend( this.cache[ unlock ], data );
-			// Otherwise, copy the properties one-by-one to the cache object
-			} else {
-				for ( prop in data ) {
-					cache[ prop ] = data[ prop ];
-				}
+
+			// Copy the properties one-by-one to the cache object
+			for ( prop in data ) {
+				cache[ jQuery.camelCase( prop ) ] = data[ prop ];
 			}
 		}
 		return cache;
 	},
 	get: function( owner, key ) {
-		// Either a valid cache is found, or will be created.
-		// New caches will be created and the unlock returned,
-		// allowing direct access to the newly created
-		// empty data object. A valid owner object must be provided.
-		var cache = this.cache[ this.key( owner ) ];
+		var cache = this.cache( owner );
 
 		return key === undefined ?
-			cache : cache[ key ];
+			cache :
+
+			// Always use camelCase key (gh-2257)
+			cache[ jQuery.camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
-		var stored;
+
 		// In cases where either:
 		//
 		//   1. No key was specified
@@ -107,12 +95,9 @@ Data.prototype = {
 		//   2. The data stored at the key
 		//
 		if ( key === undefined ||
-				((key && typeof key === "string") && value === undefined) ) {
+				( ( key && typeof key === "string" ) && value === undefined ) ) {
 
-			stored = this.get( owner, key );
-
-			return stored !== undefined ?
-				stored : this.get( owner, jQuery.camelCase(key) );
+			return this.get( owner, key );
 		}
 
 		// [*]When the key is not a string, or both a key and value
@@ -128,52 +113,46 @@ Data.prototype = {
 		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
-		var i, name, camel,
-			unlock = this.key( owner ),
-			cache = this.cache[ unlock ];
+		var i,
+			cache = owner[ this.expando ];
 
-		if ( key === undefined ) {
-			this.cache[ unlock ] = {};
+		if ( cache === undefined ) {
+			return;
+		}
 
-		} else {
+		if ( key !== undefined ) {
+
 			// Support array or space separated string of keys
 			if ( jQuery.isArray( key ) ) {
-				// If "name" is an array of keys...
-				// When data is initially created, via ("key", "val") signature,
-				// keys will be converted to camelCase.
-				// Since there is no way to tell _how_ a key was added, remove
-				// both plain key and camelCase key. #12786
-				// This will only penalize the array argument path.
-				name = key.concat( key.map( jQuery.camelCase ) );
+
+				// If key is an array of keys...
+				// We always set camelCase keys, so remove that.
+				key = key.map( jQuery.camelCase );
 			} else {
-				camel = jQuery.camelCase( key );
-				// Try the string as a key before any manipulation
-				if ( key in cache ) {
-					name = [ key, camel ];
-				} else {
-					// If a key with the spaces exists, use it.
-					// Otherwise, create an array by matching non-whitespace
-					name = camel;
-					name = name in cache ?
-						[ name ] : ( name.match( rnotwhite ) || [] );
-				}
+				key = jQuery.camelCase( key );
+
+				// If a key with the spaces exists, use it.
+				// Otherwise, create an array by matching non-whitespace
+				key = key in cache ?
+					[ key ] :
+					( key.match( rnotwhite ) || [] );
 			}
 
-			i = name.length;
+			i = key.length;
+
 			while ( i-- ) {
-				delete cache[ name[ i ] ];
+				delete cache[ key[ i ] ];
 			}
+		}
+
+		// Remove the expando if there's no more data
+		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
+			delete owner[ this.expando ];
 		}
 	},
 	hasData: function( owner ) {
-		return !jQuery.isEmptyObject(
-			this.cache[ owner[ this.expando ] ] || {}
-		);
-	},
-	discard: function( owner ) {
-		if ( owner[ this.expando ] ) {
-			delete this.cache[ owner[ this.expando ] ];
-		}
+		var cache = owner[ this.expando ];
+		return cache !== undefined && !jQuery.isEmptyObject( cache );
 	}
 };
 

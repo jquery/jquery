@@ -6,20 +6,22 @@
 	"expr": true,
 	"immed": true,
 	"noarg": true,
-	"onevar": true,
 	"quotmark": "double",
-	"smarttabs": true,
-	"trailing": true,
 	"undef": true,
 	"unused": true,
 
 	"sub": true,
 
-	"browser": true,
-
 	"globals": {
+		"window": true,
+		"setTimeout": true,
+		"clearTimeout": true,
+		"setInterval": true,
+		"clearInterval": true,
+
 		"jQuery": true,
 		"define": true,
-		"module": true
+		"module": true,
+		"noGlobal": true
 	}
 }

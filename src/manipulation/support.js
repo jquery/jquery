@@ -1,13 +1,14 @@
 define([
+	"../var/document",
 	"../var/support"
-], function( support ) {
+], function( document, support ) {
 
 (function() {
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement( "div" ) ),
 		input = document.createElement( "input" );
 
-	// Support: Safari<=5.1
+	// Support: Android 4.0-4.3
 	// Check state lost if the name is set (#11217)
 	// Support: Windows Web Apps (WWA)
 	// `name` and `type` must use .setAttribute for WWA (#14901)
@@ -17,7 +18,7 @@ define([
 
 	div.appendChild( input );
 
-	// Support: Safari<=5.1, Android<4.2
+	// Support: Android<4.2
 	// Older WebKit doesn't clone checked state correctly in fragments
 	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
 

@@ -57,7 +57,7 @@ function testWidth( val ) {
 
 	equal( jQuery(window).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[0], "olddisplay" );
 }
 
 test("width()", function() {
@@ -110,7 +110,7 @@ function testHeight( val ) {
 
 	equal( jQuery(window).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
 
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[0], "olddisplay" );
 }
 
 test("height()", function() {
@@ -134,28 +134,27 @@ test("height(Function(args))", function() {
 });
 
 test("innerWidth()", function() {
-	expect(6);
+	expect( 6 );
 
 	var $div, div,
-		winWidth = jQuery( window ).width(),
-		docWidth = jQuery( document ).width();
+		$win = jQuery( window ),
+		$doc = jQuery( document );
 
-	equal(jQuery(window).innerWidth(), winWidth, "Test on window");
-	equal(jQuery(document).innerWidth(), docWidth, "Test on document");
+	equal( jQuery( window ).innerWidth(), $win.width(), "Test on window" );
+	equal( jQuery( document ).innerWidth(), $doc.width(), "Test on document" );
 
-	$div = jQuery("#nothiddendiv");
-	// set styles
+	$div = jQuery( "#nothiddendiv" );
 	$div.css({
 		"margin": 10,
 		"border": "2px solid #fff",
 		"width": 30
 	});
 
-	equal($div.innerWidth(), 30, "Test with margin and border");
-	$div.css("padding", "20px");
-	equal($div.innerWidth(), 70, "Test with margin, border and padding");
+	equal( $div.innerWidth(), 30, "Test with margin and border" );
+	$div.css( "padding", "20px" );
+	equal( $div.innerWidth(), 70, "Test with margin, border and padding" );
 	$div.hide();
-	equal($div.innerWidth(), 70, "Test hidden div");
+	equal( $div.innerWidth(), 70, "Test hidden div" );
 
 	// reset styles
 	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
@@ -166,32 +165,31 @@ test("innerWidth()", function() {
 	equal( div.innerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 });
 
 test("innerHeight()", function() {
-	expect(6);
+	expect( 6 );
 
 	var $div, div,
-		winHeight = jQuery( window ).height(),
-		docHeight = jQuery( document ).height();
+		$win = jQuery( window ),
+		$doc = jQuery( document );
 
-	equal(jQuery(window).innerHeight(), winHeight, "Test on window");
-	equal(jQuery(document).innerHeight(), docHeight, "Test on document");
+	equal( jQuery( window ).innerHeight(), $win.height(), "Test on window" );
+	equal( jQuery( document ).innerHeight(), $doc.height(), "Test on document" );
 
-	$div = jQuery("#nothiddendiv");
-	// set styles
+	$div = jQuery( "#nothiddendiv" );
 	$div.css({
 		"margin": 10,
 		"border": "2px solid #fff",
 		"height": 30
 	});
 
-	equal($div.innerHeight(), 30, "Test with margin and border");
-	$div.css("padding", "20px");
-	equal($div.innerHeight(), 70, "Test with margin, border and padding");
+	equal( $div.innerHeight(), 30, "Test with margin and border" );
+	$div.css( "padding", "20px" );
+	equal( $div.innerHeight(), 70, "Test with margin, border and padding" );
 	$div.hide();
-	equal($div.innerHeight(), 70, "Test hidden div");
+	equal( $div.innerHeight(), 70, "Test hidden div" );
 
 	// reset styles
 	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
@@ -202,35 +200,35 @@ test("innerHeight()", function() {
 	equal( div.innerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 });
 
 test("outerWidth()", function() {
-	expect(11);
+	expect( 11 );
 
 	var $div, div,
-	winWidth = jQuery( window ).width(),
-		docWidth = jQuery( document ).width();
+		$win = jQuery( window ),
+		$doc = jQuery( document );
 
-	equal( jQuery( window ).outerWidth(), winWidth, "Test on window without margin option" );
-	equal( jQuery( window ).outerWidth( true ), winWidth, "Test on window with margin option" );
-	equal( jQuery( document ).outerWidth(), docWidth, "Test on document without margin option" );
-	equal( jQuery( document ).outerWidth( true ), docWidth, "Test on document with margin option" );
+	equal( jQuery( window ).outerWidth(), $win.width(), "Test on window without margin option" );
+	equal( jQuery( window ).outerWidth( true ), $win.width(), "Test on window with margin option" );
+	equal( jQuery( document ).outerWidth(), $doc.width(), "Test on document without margin option" );
+	equal( jQuery( document ).outerWidth( true ), $doc.width(), "Test on document with margin option" );
 
-	$div = jQuery("#nothiddendiv");
-	$div.css("width", 30);
+	$div = jQuery( "#nothiddendiv" );
+	$div.css( "width", 30 );
 
-	equal($div.outerWidth(), 30, "Test with only width set");
-	$div.css("padding", "20px");
-	equal($div.outerWidth(), 70, "Test with padding");
-	$div.css("border", "2px solid #fff");
-	equal($div.outerWidth(), 74, "Test with padding and border");
-	$div.css("margin", "10px");
-	equal($div.outerWidth(), 74, "Test with padding, border and margin without margin option");
-	$div.css("position", "absolute");
-	equal($div.outerWidth(true), 94, "Test with padding, border and margin with margin option");
+	equal( $div.outerWidth(), 30, "Test with only width set" );
+	$div.css( "padding", "20px" );
+	equal( $div.outerWidth(), 70, "Test with padding" );
+	$div.css( "border", "2px solid #fff" );
+	equal( $div.outerWidth(), 74, "Test with padding and border" );
+	$div.css( "margin", "10px" );
+	equal( $div.outerWidth(), 74, "Test with padding, border and margin without margin option" );
+	$div.css( "position", "absolute" );
+	equal( $div.outerWidth( true ), 94, "Test with padding, border and margin with margin option" );
 	$div.hide();
-	equal($div.outerWidth(true), 94, "Test hidden div with padding, border and margin with margin option");
+	equal( $div.outerWidth( true ), 94, "Test hidden div with padding, border and margin with margin option" );
 
 	// reset styles
 	$div.css({ "position": "", "display": "", "border": "", "padding": "", "width": "", "height": "" });
@@ -241,7 +239,7 @@ test("outerWidth()", function() {
 	equal( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 });
 
 test("child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function() {
@@ -353,31 +351,30 @@ test("box-sizing:border-box child of a hidden elem (or unconnected node) has acc
 });
 
 test("outerHeight()", function() {
-	expect(11);
+	expect( 11 );
 
 	var $div, div,
-	winHeight = jQuery( window ).height(),
-		docHeight = jQuery( document ).height();
+		$win = jQuery( window ),
+		$doc = jQuery( document );
 
+	equal( jQuery( window ).outerHeight(), $win.height(), "Test on window without margin option" );
+	equal( jQuery( window ).outerHeight( true ), $win.height(), "Test on window with margin option" );
+	equal( jQuery( document ).outerHeight(), $doc.height(), "Test on document without margin option" );
+	equal( jQuery( document ).outerHeight( true ), $doc.height(), "Test on document with margin option" );
 
-	equal( jQuery( window ).outerHeight(), winHeight, "Test on window without margin option" );
-	equal( jQuery( window ).outerHeight( true ), winHeight, "Test on window with margin option" );
-	equal( jQuery( document ).outerHeight(), docHeight, "Test on document without margin option" );
-	equal( jQuery( document ).outerHeight( true ), docHeight, "Test on document with margin option" );
+	$div = jQuery( "#nothiddendiv" );
+	$div.css( "height", 30 );
 
-	$div = jQuery("#nothiddendiv");
-	$div.css("height", 30);
-
-	equal($div.outerHeight(), 30, "Test with only width set");
-	$div.css("padding", "20px");
-	equal($div.outerHeight(), 70, "Test with padding");
-	$div.css("border", "2px solid #fff");
-	equal($div.outerHeight(), 74, "Test with padding and border");
-	$div.css("margin", "10px");
-	equal($div.outerHeight(), 74, "Test with padding, border and margin without margin option");
-	equal($div.outerHeight(true), 94, "Test with padding, border and margin with margin option");
+	equal( $div.outerHeight(), 30, "Test with only width set" );
+	$div.css( "padding", "20px" );
+	equal( $div.outerHeight(), 70, "Test with padding" );
+	$div.css( "border", "2px solid #fff" );
+	equal( $div.outerHeight(), 74, "Test with padding and border" );
+	$div.css( "margin", "10px" );
+	equal( $div.outerHeight(), 74, "Test with padding, border and margin without margin option" );
+	equal( $div.outerHeight( true ), 94, "Test with padding, border and margin with margin option" );
 	$div.hide();
-	equal($div.outerHeight(true), 94, "Test hidden div with padding, border and margin with margin option");
+	equal( $div.outerHeight( true ), 94, "Test hidden div with padding, border and margin with margin option" );
 
 	// reset styles
 	$div.css({ "display": "", "border": "", "padding": "", "width": "", "height": "" });
@@ -388,7 +385,7 @@ test("outerHeight()", function() {
 	equal( div.outerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	QUnit.expectJqData( $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 });
 
 test("passing undefined is a setter #5571", function() {
@@ -418,8 +415,8 @@ test( "getters on non elements should return null", function() {
 test("setters with and without box-sizing:border-box", function(){
 	expect(20);
 
-	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
-	var el_bb = jQuery("<div style='width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>").appendTo("#qunit-fixture"),
+	// Support: Android 2.3 (-webkit-box-sizing).
+	var el_bb = jQuery("<div style='width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>").appendTo("#qunit-fixture"),
 		el = jQuery("<div style='width:100px;height:100px;margin:5px;padding:3px;border:4px solid white;'>test</div>").appendTo("#qunit-fixture"),
 		expected = 100;
 
@@ -453,6 +450,21 @@ testIframe( "dimensions/documentLarge", "window vs. large document", function( j
 
 	ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
 	ok( jQuery( document ).width() > jQuery( window ).width(), "document width is larger than window width" );
+});
+
+test( "allow modification of coordinates argument (gh-1848)", 1, function() {
+	var offsetTop,
+		element = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	element.offset(function( index, coords ) {
+		coords.top = 100;
+
+		return coords;
+	});
+
+	offsetTop = element.offset().top;
+	ok( Math.abs(offsetTop - 100) < 0.02,
+		"coordinates are modified (got offset.top: " +  offsetTop + ")");
 });
 
 })();

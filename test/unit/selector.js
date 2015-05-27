@@ -30,7 +30,7 @@ test("id", function() {
 	t( "ID Selector w/ Element", "body#body", ["body"] );
 	t( "ID Selector w/ Element", "ul#first", [] );
 	t( "ID selector with existing ID descendant", "#firstp #simon1", ["simon1"] );
-	t( "ID selector with non-existant descendant", "#firstp #foobar", [] );
+	t( "ID selector with non-existent descendant", "#firstp #foobar", [] );
 	t( "ID selector using UTF8", "#台北Táiběi", ["台北Táiběi"] );
 	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", ["台北Táiběi","台北"] );
 	t( "Descendant ID selector using UTF8", "div #台北", ["台北"] );
@@ -55,7 +55,7 @@ test("id", function() {
 
 	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", ["lengthtest"] );
 
-	t( "ID selector with non-existant ancestor", "#asdfasdf #foobar", [] ); // bug #986
+	t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
 	t( "Underscore ID", "#types_all", ["types_all"] );
 	t( "Dash ID", "#qunit-fixture", ["qunit-fixture"] );
@@ -138,7 +138,7 @@ test( "child and adjacent", function() {
 
 	nothiddendiv = document.getElementById("nothiddendiv");
 
-	t( "Non-existant ancestors", ".fototab > .thumbnails > a", [] );
+	t( "Non-existent ancestors", ".fototab > .thumbnails > a", [] );
 });
 
 test("attributes", function() {
@@ -386,8 +386,8 @@ test( "jQuery.contains", function() {
 	ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
-test("jQuery.unique", function() {
-	expect( 14 );
+test("jQuery.uniqueSort", function() {
+	expect( 15 );
 
 	function Arrayish( arr ) {
 		var i = this.length = arr.length;
@@ -460,9 +460,11 @@ test("jQuery.unique", function() {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		deepEqual( jQuery.unique( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		deepEqual( jQuery.unique( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
+		deepEqual( jQuery.uniqueSort( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
 	});
+
+	strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
 });
 
 testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
