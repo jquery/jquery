@@ -602,7 +602,7 @@ jQuery.event = {
 	},
 
 	// Piggyback on a donor event to simulate a different one
-	simulate: function( type, elem, event, bubble ) {
+	simulate: function( type, elem, event ) {
 		var e = jQuery.extend(
 			new jQuery.Event(),
 			event,
@@ -624,11 +624,8 @@ jQuery.event = {
 			}
 		);
 
-		if ( bubble ) {
-			jQuery.event.trigger( e, null, elem );
-		} else {
-			jQuery.event.dispatch.call( elem, e );
-		}
+		jQuery.event.trigger( e, null, elem );
+
 		if ( e.isDefaultPrevented() ) {
 			event.preventDefault();
 		}
@@ -771,7 +768,7 @@ if ( !support.focusin ) {
 
 		// Attach a single capturing handler on the document while someone wants focusin/focusout
 		var handler = function( event ) {
-			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
+			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ) );
 		};
 
 		jQuery.event.special[ fix ] = {
