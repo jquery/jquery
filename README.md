@@ -166,7 +166,7 @@ npm install
 Start `grunt watch` or `npm start` to auto-build jQuery as you work:
 
 ```bash
-cd jquery && grunt watch
+grunt watch
 ```
 
 
