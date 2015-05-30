@@ -300,7 +300,7 @@ if (typeof sinon == "undefined") {
 
         if (source.toSource) {
             target.toSource = function toSource() {
-                return source.toSource();
+                return source.toString();
             };
         } else {
             delete target.toSource;
