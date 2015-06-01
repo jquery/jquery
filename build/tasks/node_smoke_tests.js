@@ -15,7 +15,8 @@ module.exports = function( grunt ) {
 
 	fs.readdirSync( testsDir )
 		.filter( function( testFilePath ) {
-			return fs.statSync( testsDir + testFilePath ).isFile();
+			return fs.statSync( testsDir + testFilePath ).isFile() &&
+				/\.js$/.test( testFilePath );
 		} )
 		.forEach( function( testFilePath ) {
 			var taskName = "node_" + testFilePath.replace( /\.js$/, "" );
