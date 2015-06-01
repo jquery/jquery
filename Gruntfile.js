@@ -30,6 +30,18 @@ module.exports = function( grunt ) {
 				cache: "build/.sizecache.json"
 			}
 		},
+		babel: {
+			options: {
+				sourceMap: "inline",
+				retainLines: true
+			},
+			nodeSmokeTests: {
+				files: {
+					"test/node_smoke_tests/lib/ensure_iterability.js":
+						"test/node_smoke_tests/lib/ensure_iterability_es6.js"
+				}
+			}
+		},
 		build: {
 			all: {
 				dest: "dist/jquery.js",

@@ -1538,3 +1538,23 @@ testIframeWithCallback( "Don't call window.onready (#14802)", "core/onready.html
 			equal( error, false, "no call to user-defined onready" );
 	}
 );
+
+test( "Iterability of jQuery objects (gh-1693)", function() {
+	/* jshint unused: false */
+	expect( 1 );
+
+	var i, elem, result;
+
+	if ( typeof Symbol === "function" ) {
+
+		elem = jQuery( "<div></div><span></span><a></a>" );
+		result = "";
+
+		try {
+			eval( "for ( i of elem ) { result += i.nodeName; }" );
+		} catch ( e ) {}
+		equal( result, "DIVSPANA", "for-of works on jQuery objects" );
+	} else {
+		ok( true, "The browser doesn't support Symbols" );
+	}
+} );

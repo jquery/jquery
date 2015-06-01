@@ -26,7 +26,9 @@
   "dependencies": {},
   "devDependencies": {
     "commitplease": "2.0.0",
+    "core-js": "0.9.17",
     "grunt": "0.4.5",
+    "grunt-babel": "5.0.1",
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
     "grunt-contrib-jshint": "0.11.2",
