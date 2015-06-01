@@ -17,6 +17,7 @@
 	"wsh": true,
 
 	"globals": {
+		"JSON": false,
 		"jQuery": true,
 		"define": false,
 		"module": false,
