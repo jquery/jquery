@@ -356,13 +356,13 @@ jQuery.extend({
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
 		var value,
+			length,
 			i = 0,
-			length = elems.length,
-			isArray = isArraylike( elems ),
 			ret = [];
 
 		// Go through the array, translating each of the items to their new values
-		if ( isArray ) {
+		if ( isArraylike( elems ) ) {
+			length = elems.length;
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
@@ -432,17 +432,19 @@ function(i, name) {
 });
 
 function isArraylike( obj ) {
+	var type, length;
+
+	if ( !obj ||
+		( type = jQuery.type( obj ) ) === "function" ||
+		jQuery.isWindow( obj ) ) {
+		return false;
+	}
 
 	// Support: iOS 8.2 (not reproducible in simulator)
 	// `in` check used to prevent JIT error (gh-2145)
 	// hasOwn isn't used here due to false negatives
 	// regarding Nodelist length in IE
-	var length = "length" in obj && obj.length,
-		type = jQuery.type( obj );
-
-	if ( type === "function" || jQuery.isWindow( obj ) ) {
-		return false;
-	}
+	length = "length" in obj && obj.length;
 
 	return type === "array" || length === 0 ||
 		typeof length === "number" && length > 0 && ( length - 1 ) in obj;

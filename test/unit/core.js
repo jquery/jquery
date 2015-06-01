@@ -871,6 +871,15 @@ test("jQuery.map", function() {
 	equal( result.join(""), "00012223", "Array results flattened (#2616)" );
 });
 
+test("jQuery.map(undefined, function) (PR #2363)", 1, function() {
+	try {
+		jQuery.map( undefined, jQuery.noop );
+		ok( true, ".map doesn't crash with undefined" );
+	} catch( e ) {
+		ok( false, ".map crash with an undefined value" );
+	}
+});
+
 test("jQuery.merge()", function() {
 	expect( 10 );
 
