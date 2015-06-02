@@ -4,10 +4,10 @@ define([
 	"./var/rcssNum",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
-	"./css/var/swap",
 	"./css/adjustCSS",
 	"./data/var/dataPriv",
 	"./css/showHide",
+	"./css/defaultDisplay",
 
 	"./core/init",
 	"./queue",
@@ -16,7 +16,8 @@ define([
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, cssExpand, isHidden, swap, adjustCSS, dataPriv, showHide ) {
+], function( jQuery, document,
+            rcssNum, cssExpand, isHidden, adjustCSS, dataPriv, showHide, defaultDisplay ) {
 
 var
 	fxNow, timerId,
@@ -153,14 +154,11 @@ function defaultPrefilter( elem, props, opts ) {
 
 		// Identify a display type, preferring old show/hide data over the CSS cascade
 		restoreDisplay = dataShow && dataShow.display;
-		if ( restoreDisplay == null ) {
-			restoreDisplay = dataPriv.get( elem, "display" );
-		}
+
 		display = jQuery.css( elem, "display" );
+
 		if ( display === "none" ) {
-			display = restoreDisplay || swap( elem, { "display": "" }, function() {
-				return jQuery.css( elem, "display" );
-			} );
+			display = defaultDisplay( elem );
 		}
 
 		// Animate inline elements as inline-block
@@ -177,7 +175,9 @@ function defaultPrefilter( elem, props, opts ) {
 						restoreDisplay = display === "none" ? "" : display;
 					}
 				}
+
 				style.display = "inline-block";
+				hidden = false;
 			}
 		}
 	}

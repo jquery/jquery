@@ -475,14 +475,14 @@ test("show(); hide()", function() {
 
 	hiddendiv = jQuery("div.hidden");
 	hiddendiv.hide();
-	equal( hiddendiv.css("display"), "none", "Cascade-hidden div after hide()" );
+	equal( hiddendiv.css("display"), "none", "Non-detached div hidden" );
 	hiddendiv.show();
-	equal( hiddendiv.css("display"), "none", "Show does not trump CSS cascade" );
+	equal( hiddendiv.css("display"), "block", "Pre-hidden div shown" );
 
 	div = jQuery("<div>").hide();
 	equal( div.css("display"), "none", "Detached div hidden" );
 	div.appendTo("#qunit-fixture").show();
-	equal( div.css("display"), "block", "Initially-detached div after show()" );
+	equal( div.css("display"), "block", "Pre-hidden div shown" );
 
 });
 
@@ -490,8 +490,8 @@ test("show();", function() {
 
 	expect( 18 );
 
-	var hiddendiv, div, pass, old, test;
-		hiddendiv = jQuery("div.hidden");
+  var hiddendiv, div, pass, old, test;
+	hiddendiv = jQuery("div.hidden");
 
 	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
 
@@ -512,13 +512,8 @@ test("show();", function() {
 	});
 	ok( pass, "Show" );
 
-	jQuery(
-		"<div id='show-tests'>" +
-		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
-		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
-		"<ul><li></li></ul></div>" +
-		"<table id='test-table'></table>"
-	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
+	// #show-tests * is set display: none in CSS
+	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
 
 	old = jQuery("#test-table").show().css("display") !== "table";
 	jQuery("#test-table").remove();
@@ -550,86 +545,122 @@ test("show();", function() {
 	jQuery("<div>test</div> text <span>test</span>").hide().remove();
 });
 
-test( "show() resolves correct default display for detached nodes", function(){
-	expect( 16 );
+test("show() resolves correct default display #8099", function() {
+	expect(7);
+	var tt8099 = jQuery("<tt/>").appendTo("body"),
+			dfn8099 = jQuery("<dfn/>", { "html": "foo"}).appendTo("body");
 
-	var div, span, tr;
+	equal( tt8099.css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equal( jQuery("#foo").hide().show().css("display"), "block", "Correctly resolves display:block after hide/show" );
+
+	equal( tt8099.hide().css("display"), "none", "default display override for all tt" );
+	equal( tt8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	equal( dfn8099.css("display"), "none", "default display override for all dfn" );
+	equal( dfn8099.show().css("display"), "inline", "Correctly resolves display:inline" );
+
+	tt8099.remove();
+	dfn8099.remove();
+});
+
+test( "show() resolves correct default display for detached nodes", function(){
+	expect( 12 );
+
+	var div, span, tr, trDisplay;
 
 	div = jQuery("<div class='hidden'>");
 	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
-		"A shown-while-detached div can be hidden by the CSS cascade" );
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div is visible." );
 
-	div = jQuery("<div><div class='hidden'></div></div>").children("div");
+	div = jQuery("<div style='display: none'>");
 	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
-		"A shown-while-detached div inside a visible div can be hidden by the CSS cascade" );
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div is visible." );
 
 	span = jQuery("<span class='hidden'/>");
 	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "none",
-		"A shown-while-detached span can be hidden by the CSS cascade" );
+	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through stylesheets ) span has default display." );
 
-	div = jQuery("div.hidden");
-	div.detach().show();
-	ok( !div[ 0 ].style.display,
-		"show() does not update inline style of a cascade-hidden-before-detach div" );
-	div.appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
-		"A shown-while-detached cascade-hidden div is hidden after attachment" );
-	div.remove();
+	span = jQuery("<span style='display: inline'/>");
+	span.show().appendTo("#qunit-fixture");
+	equal( span.css("display"), "inline", "Make sure a detached, pre-hidden( through inline style ) span has default display." );
 
-	span = jQuery("<span class='hidden'/>");
-	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "none",
-		"A shown-while-detached cascade-hidden span is hidden after attachment" );
-	span.remove();
-
-	div = jQuery( document.createElement("div") );
+	div = jQuery("<div><div class='hidden'></div></div>").children("div");
 	div.show().appendTo("#qunit-fixture");
-	ok( !div[ 0 ].style.display, "A shown-while-detached div has no inline style" );
-	equal( div.css("display"), "block",
-		"A shown-while-detached div has default display after attachment" );
-	div.remove();
-
-	div = jQuery("<div style='display: none'>");
-	div.show();
-	equal( div[ 0 ].style.display, "",
-		"show() updates inline style of a detached inline-hidden div" );
-	div.appendTo("#qunit-fixture");
-	equal( div.css("display"), "block",
-		"A shown-while-detached inline-hidden div has default display after attachment" );
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through stylesheets ) div inside another visible div is visible." );
 
 	div = jQuery("<div><div style='display: none'></div></div>").children("div");
 	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block",
-		"A shown-while-detached inline-hidden div inside a visible div has default display " +
-		"after attachment" );
+	equal( div.css("display"), "block", "Make sure a detached, pre-hidden( through inline style ) div inside another visible div is visible." );
 
-	span = jQuery("<span style='display: none'/>");
-	span.show();
-	equal( span[ 0 ].style.display, "",
-		"show() updates inline style of a detached inline-hidden span" );
-	span.appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline",
-		"A shown-while-detached inline-hidden span has default display after attachment" );
+	div = jQuery("div.hidden");
+	div.detach().show();
+	equal( div.css("display"), "block", "Make sure a detached( through detach() ), pre-hidden div is visible." );
+	div.remove();
 
-	div = jQuery("<div style='display: inline'/>");
+	span = jQuery("<span>");
+	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture" );
+	equal( span.css("display"), "inline", "Make sure a detached( through detach() ), pre-hidden span has default display." );
+	span.remove();
+
+	div = jQuery("<div>");
 	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "inline",
-		"show() does not update inline style of a detached inline-visible div" );
+	ok( !!div.get( 0 ).style.display, "Make sure not hidden div has a inline style." );
+	div.remove();
+
+	div = jQuery( document.createElement("div") );
+	div.show().appendTo("#qunit-fixture");
+	equal( div.css("display"), "block", "Make sure a pre-created element has default display." );
 	div.remove();
 
 	tr = jQuery("<tr/>");
 	jQuery("#table").append( tr );
+	trDisplay = tr.css( "display" );
 	tr.detach().hide().show();
 
-	ok( !tr[ 0 ].style.display, "Not-hidden detached tr elements have no inline style" );
+	equal( tr[ 0 ].style.display, trDisplay, "For detached tr elements, display should always be like for attached trs" );
 	tr.remove();
 
 	span = jQuery("<span/>").hide().show();
-	ok( !span[ 0 ].style.display, "Not-hidden detached span elements have no inline style" );
+	equal( span[ 0 ].style.display, "inline", "For detached span elements, display should always be inline" );
 	span.remove();
+});
+
+test("show() resolves correct default display #10227", 4, function() {
+	var html = jQuery( document.documentElement ),
+		body = jQuery( "body" );
+
+	body.append( "<p class='ddisplay'>a<style>body{display:none}</style></p>" );
+
+	equal( body.css("display"), "none", "Initial display for body element: none" );
+
+	body.show();
+	equal( body.css("display"), "block", "Correct display for body element: block" );
+
+	body.append( "<p class='ddisplay'>a<style>html{display:none}</style></p>" );
+
+	equal( html.css("display"), "none", "Initial display for html element: none" );
+
+	html.show();
+	equal( html.css( "display" ), "block", "Correct display for html element: block" );
+
+	jQuery( ".ddisplay" ).remove();
+});
+
+test("show() resolves correct default display when iframe display:none #12904", function() {
+	expect(2);
+
+	var ddisplay = jQuery(
+		"<p id='ddisplay'>a<style>p{display:none}iframe{display:none !important}</style></p>"
+	).appendTo("body");
+
+	equal( ddisplay.css("display"), "none", "Initial display: none" );
+
+	ddisplay.show();
+	equal( ddisplay.css("display"), "block", "Correct display: block" );
+
+	ddisplay.remove();
 });
 
 test("toggle()", function() {
@@ -666,12 +697,11 @@ test("toggle()", function() {
 });
 
 test("hide hidden elements (bug #7141)", function() {
-	expect(3);
+	expect(2);
 
 	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
 	equal( div.css("display"), "none", "Element is hidden by default" );
 	div.hide();
-	ok( !jQuery._data(div, "olddisplay"), "olddisplay is undefined after hiding an already-hidden element" );
 	div.show();
 	equal( div.css("display"), "block", "Show a double-hidden element" );
 
@@ -924,9 +954,9 @@ test( "css opacity consistency across browsers (#12685)", function() {
 });
 
 test( ":visible/:hidden selectors", function() {
-	expect( 17 );
+	expect( 13 );
 
-	var $div, $table, $a;
+	var $table;
 
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
 	jQuery("#nothiddendiv").css({ display: "none" });
@@ -942,17 +972,6 @@ test( ":visible/:hidden selectors", function() {
 	jQuery("#nothiddendiv").css("display", "block");
 	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
 
-	ok( jQuery( "#siblingspan" ).is( ":visible" ), "Span with no content is visible" );
-	$div = jQuery( "<div><span></span></div>" ).appendTo( "#qunit-fixture" );
-	equal( $div.find( ":visible" ).length, 1, "Span with no content is visible" );
-	$div.css( { width: 0, height: 0, overflow: "hidden" } );
-	ok( $div.is( ":visible" ), "Div with width and height of 0 is still visible (gh-2227)" );
-
-	// Safari 6-7 and iOS 6-7 report 0 width for br elements
-	// When newer browsers propagate, re-enable this test
-	// $br = jQuery( "<br/>" ).appendTo( "#qunit-fixture" );
-	// ok( $br.is( ":visible" ), "br element is visible" );
-
 	$table = jQuery("#table");
 	$table.html("<tr><td style='display:none'>cell</td><td>cell</td></tr>");
 	equal(jQuery("#table td:visible").length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements");
@@ -962,9 +981,6 @@ test( ":visible/:hidden selectors", function() {
 	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
 	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
 	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
-
-	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
-	ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
 });
 
 test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
@@ -1066,14 +1082,13 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 	window.setTimeout( start, 1000 );
 });
 
-test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
-	var div = jQuery( "<div />" ),
-		fixture = jQuery( "#qunit-fixture" );
+test( "Make sure initialized display value for disconnected nodes is correct (#13310)", function() {
+	expect( 1 );
 
-	fixture.append( div );
+	var div = jQuery("<div/>");
 
-	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
-	equal( div.css( "display" ), "list-item", "should get last set display value" );
+	equal( div.css( "display", "inline" ).hide().show().appendTo( "body" ).css( "display" ), "block", "Initialized display value has returned" );
+	div.remove();
 });
 
 // Support: IE < 11, Safari < 7
