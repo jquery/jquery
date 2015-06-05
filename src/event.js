@@ -648,7 +648,7 @@ jQuery.event = {
 		}
 	},
 
-	// Piggyback on a donor event to simulate a diff ne
+	// Piggyback on a donor event to simulate a different one
 	simulate: function( type, elem, event ) {
 		var e = jQuery.extend(
 			new jQuery.Event(),
