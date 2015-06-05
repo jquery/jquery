@@ -648,8 +648,8 @@ jQuery.event = {
 		}
 	},
 
-	// Piggyback on a donor event to simulate a different one
-	simulate: function( type, elem, event, bubble ) {
+	// Piggyback on a donor event to simulate a diff ne
+	simulate: function( type, elem, event ) {
 		var e = jQuery.extend(
 			new jQuery.Event(),
 			event,
@@ -666,11 +666,9 @@ jQuery.event = {
 				// constancy with other events and for more focused logic
 			}
 		);
-		if ( bubble ) {
-			jQuery.event.trigger( e, null, elem );
-		} else {
-			jQuery.event.dispatch.call( elem, e );
-		}
+
+		jQuery.event.trigger( e, null, elem );
+
 		if ( e.isDefaultPrevented() ) {
 			event.preventDefault();
 		}
@@ -866,7 +864,7 @@ if ( !support.submit ) {
 			if ( event._submitBubble ) {
 				delete event._submitBubble;
 				if ( this.parentNode && !event.isTrigger ) {
-					jQuery.event.simulate( "submit", this.parentNode, event, true );
+					jQuery.event.simulate( "submit", this.parentNode, event );
 				}
 			}
 		},
@@ -905,7 +903,7 @@ if ( !support.change ) {
 							this._justChanged = false;
 						}
 						// Allow triggered, simulated change events (#11500)
-						jQuery.event.simulate( "change", this, event, true );
+						jQuery.event.simulate( "change", this, event );
 					});
 				}
 				return false;
@@ -917,7 +915,7 @@ if ( !support.change ) {
 				if ( rformElems.test( elem.nodeName ) && !jQuery._data( elem, "change" ) ) {
 					jQuery.event.add( elem, "change._change", function( event ) {
 						if ( this.parentNode && !event.isSimulated && !event.isTrigger ) {
-							jQuery.event.simulate( "change", this.parentNode, event, true );
+							jQuery.event.simulate( "change", this.parentNode, event );
 						}
 					});
 					jQuery._data( elem, "change", true );
@@ -957,7 +955,7 @@ if ( !support.focusin ) {
 
 		// Attach a single capturing handler on the document while someone wants focusin/focusout
 		var handler = function( event ) {
-			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ), true );
+			jQuery.event.simulate( fix, event.target, jQuery.event.fix( event ) );
 		};
 
 		jQuery.event.special[ fix ] = {
