@@ -901,7 +901,7 @@ test("mouseenter, mouseleave don't catch exceptions", function() {
 if ( jQuery.fn.click ) {
 
 	test("trigger() shortcuts", function() {
-		expect(6);
+		expect(5);
 
 		var counter, clickCounter,
 			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
@@ -932,13 +932,6 @@ if ( jQuery.fn.click ) {
 		};
 		jQuery("#simon1").click();
 		equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
-
-		elem = jQuery("<img />").load(function(){
-			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
-		}).load();
-
-		// manually clean up detached elements
-		elem.remove();
 
 		// test that special handlers do not blow up with VML elements (#7071)
 		jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
@@ -2656,6 +2649,114 @@ test( "Inline event result is returned (#13993)", function() {
 
 	equal( result, 42, "inline handler returned value" );
 });
+
+test( ".off() removes the expando when there's no more data", function() {
+	expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	div.on( "click", false );
+	div.on( "custom", function() {
+		ok( true, "Custom event triggered" );
+	} );
+	div.trigger( "custom" );
+	div.off( "click custom" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
+test( "preventDefault() on focusin does not throw exception", function( assert ) {
+	expect( 1 );
+
+	var done = assert.async(),
+		input = jQuery( "<input/>" ).appendTo( "#form" );
+		input
+			.on( "focusin", function( event ) {
+				var exceptionCaught;
+
+				try {
+					event.preventDefault();
+				} catch ( theException ) {
+					exceptionCaught = theException;
+				}
+
+				assert.strictEqual( exceptionCaught, undefined,
+					"Preventing default on focusin throws no exception" );
+
+				done();
+			} )
+			.focus();
+} );
+
+test( "Donor event interference", function( assert ) {
+	assert.expect( 10 );
+
+	var html = "<div id='donor-outer'>" +
+		"<form id='donor-form'>" +
+			"<input id='donor-input' type='radio' />" +
+		"</form>" +
+	"</div>";
+
+	jQuery( "#qunit-fixture" ).append( html );
+
+	jQuery( "#donor-outer" ).on( "click", function( event ) {
+		assert.ok( true, "click bubbled to outer div" );
+		assert.equal( typeof event.originalEvent, "object", "make sure originalEvent exist" );
+		assert.equal( event.type, "click", "make sure event type is correct" );
+	} );
+	jQuery( "#donor-input" ).on( "click", function( event ) {
+		assert.ok( true, "got a click event from the input" );
+		assert.ok( !event.isPropagationStopped(), "propagation says it's not stopped" );
+		assert.equal( event.type, "click", "make sure event type is correct" );
+		assert.equal( typeof event.originalEvent, "object", "make sure originalEvent exist" );
+	} );
+	jQuery( "#donor-input" ).on( "change", function( event ) {
+		assert.equal( typeof event.originalEvent, "object", "make sure originalEvent exist" );
+		assert.equal( event.type, "change", "make sure event type is correct" );
+		assert.ok( true, "got a change event from the input" );
+		event.stopPropagation();
+	} );
+	jQuery( "#donor-input" )[ 0 ].click();
+} );
+
+test( "originalEvent property for Chrome, Safari and FF of simualted event", function( assert ) {
+	var userAgent = window.navigator.userAgent;
+
+	if ( !(/chrome/i.test( userAgent ) ||
+	       /firefox/i.test( userAgent ) ||
+	       /safari/i.test( userAgent ) ) ) {
+		assert.expect( 1 );
+		assert.ok( true, "Assertions should run only in Chrome, Safari and FF" );
+		return;
+	}
+
+	assert.expect( 4 );
+
+	var html = "<div id='donor-outer'>" +
+		"<form id='donor-form'>" +
+			"<input id='donor-input' type='radio' />" +
+		"</form>" +
+	"</div>";
+
+	jQuery( "#qunit-fixture" ).append( html );
+
+	jQuery( "#donor-outer" ).on( "focusin", function( event ) {
+		assert.ok( true, "focusin bubbled to outer div" );
+		assert.equal( event.originalEvent.type, "focus",
+		             "make sure originalEvent type is correct" );
+		assert.equal( event.type, "focusin", "make sure type is correct" );
+	} );
+	jQuery( "#donor-input" ).on( "focus", function() {
+		assert.ok( true, "got a focus event from the input" );
+	} );
+	jQuery( "#donor-input" ).trigger( "focus" );
+} );
 
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {

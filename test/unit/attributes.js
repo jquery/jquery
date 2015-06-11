@@ -1478,3 +1478,31 @@ test( "Insignificant white space returned for $(option).val() (#14858)", functio
 	val = jQuery( "<option>  test  </option>" ).val();
 	equal( val.length, 4, "insignificant white-space returned for value" );
 });
+
+test( "SVG class manipulation (gh-2199)", function() {
+	expect( 12 );
+
+	function createSVGElement( nodeName ) {
+		return document.createElementNS( "http://www.w3.org/2000/svg", nodeName );
+	}
+
+	jQuery.each([
+		"svg",
+		"rect",
+		"g"
+	], function() {
+		var elem = jQuery( createSVGElement( this ) );
+
+		elem.addClass( "awesome" );
+		ok( elem.hasClass( "awesome" ), "SVG element (" + this + ") has added class" );
+
+		elem.removeClass( "awesome" );
+		ok( !elem.hasClass( "awesome" ), "SVG element (" + this + ") removes the class" );
+
+		elem.toggleClass( "awesome" );
+		ok( elem.hasClass( "awesome" ), "SVG element (" + this + ") toggles the class on" );
+
+		elem.toggleClass( "awesome" );
+		ok( !elem.hasClass( "awesome" ), "SVG element (" + this + ") toggles the class off" );
+	});
+});
