@@ -70,10 +70,6 @@ module.exports = function( grunt ) {
 		jsonlint: {
 			pkg: {
 				src: [ "package.json" ]
-			},
-
-			bower: {
-				src: [ "bower.json" ]
 			}
 		},
 		jshint: {
