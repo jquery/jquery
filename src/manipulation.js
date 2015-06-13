@@ -233,6 +233,28 @@ function domManip( collection, args, callback, ignored ) {
 	return collection;
 }
 
+function remove( elem, selector, keepData ) {
+	var node,
+		elems = selector ? jQuery.filter( selector, elem ) : elem,
+		i = 0;
+
+	for ( ; (node = elems[i]) != null; i++ ) {
+
+		if ( !keepData && node.nodeType === 1 ) {
+			jQuery.cleanData( getAll( node ) );
+		}
+
+		if ( node.parentNode ) {
+			if ( keepData && jQuery.contains( node.ownerDocument, node ) ) {
+				setGlobalEval( getAll( node, "script" ) );
+			}
+			node.parentNode.removeChild( node );
+		}
+	}
+
+	return elem;
+}
+
 jQuery.extend({
 	htmlPrefilter: function( html ) {
 		return html.replace( rxhtmlTag, "<$1></$2>" );
@@ -350,6 +372,14 @@ jQuery.extend({
 });
 
 jQuery.fn.extend({
+	detach: function( selector ) {
+		return remove( this, selector, true );
+	},
+
+	remove: function( selector ) {
+		return remove( this, selector );
+	},
+
 	text: function( value ) {
 		return access( this, function( value ) {
 			return value === undefined ?
@@ -392,28 +422,6 @@ jQuery.fn.extend({
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
 		});
-	},
-
-	remove: function( selector, keepData /* Internal Use Only */ ) {
-		var elem,
-			elems = selector ? jQuery.filter( selector, this ) : this,
-			i = 0;
-
-		for ( ; (elem = elems[i]) != null; i++ ) {
-
-			if ( !keepData && elem.nodeType === 1 ) {
-				jQuery.cleanData( getAll( elem ) );
-			}
-
-			if ( elem.parentNode ) {
-				if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
-					setGlobalEval( getAll( elem, "script" ) );
-				}
-				elem.parentNode.removeChild( elem );
-			}
-		}
-
-		return this;
 	},
 
 	empty: function() {
@@ -508,10 +516,6 @@ jQuery.fn.extend({
 
 		// Force callback invocation
 		}, ignored );
-	},
-
-	detach: function( selector ) {
-		return this.remove( selector, true );
 	}
 });
 
