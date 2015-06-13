@@ -107,7 +107,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableMarginRight": true
 		};
-	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
