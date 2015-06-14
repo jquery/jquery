@@ -2,6 +2,9 @@ define([
 	"./core",
 	"./var/document",
 	"./var/rcssNum",
+	"./var/setInterval",
+	"./var/clearInterval",
+	"./var/setTimeout",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/var/swap",
@@ -16,7 +19,8 @@ define([
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, cssExpand, isHidden, swap, adjustCSS, dataPriv, showHide ) {
+], function( jQuery, document, rcssNum, setInterval, clearInterval, setTimeout,
+	cssExpand, isHidden, swap, adjustCSS, dataPriv, showHide ) {
 
 var
 	fxNow, timerId,
