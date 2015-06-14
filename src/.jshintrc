@@ -14,10 +14,6 @@
 
 	"globals": {
 		"window": true,
-		"setTimeout": true,
-		"clearTimeout": true,
-		"setInterval": true,
-		"clearInterval": true,
 
 		"jQuery": true,
 		"define": true,

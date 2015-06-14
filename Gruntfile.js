@@ -15,6 +15,10 @@ module.exports = function( grunt ) {
 	// The concatenated file won't pass onevar
 	// But our modules can
 	delete srcHintOptions.onevar;
+	srcHintOptions.globals.setTimeout = false;
+	srcHintOptions.globals.clearTimeout = false;
+	srcHintOptions.globals.setInterval = false;
+	srcHintOptions.globals.clearInterval = false;
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON( "package.json" ),

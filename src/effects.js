@@ -2,6 +2,9 @@ define([
 	"./core",
 	"./var/document",
 	"./var/rcssNum",
+	"./var/intervalSet",
+	"./var/intervalClear",
+	"./var/timeoutSet",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/var/swap",
@@ -16,7 +19,8 @@ define([
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, cssExpand, isHidden, swap, adjustCSS, dataPriv, showHide ) {
+], function( jQuery, document, rcssNum, intervalSet, intervalClear, timeoutSet,
+	cssExpand, isHidden, swap, adjustCSS, dataPriv, showHide ) {
 
 var
 	fxNow, timerId,
@@ -40,7 +44,7 @@ function raf() {
 
 // Animations created synchronously will run synchronously
 function createFxNow() {
-	setTimeout(function() {
+	timeoutSet(function() {
 		fxNow = undefined;
 	});
 	return ( fxNow = jQuery.now() );
@@ -634,7 +638,7 @@ jQuery.fx.start = function() {
 	if ( !timerId ) {
 		timerId = window.requestAnimationFrame ?
 			window.requestAnimationFrame( raf ) :
-			setInterval( jQuery.fx.tick, jQuery.fx.interval );
+			intervalSet( jQuery.fx.tick, jQuery.fx.interval );
 	}
 };
 
@@ -642,7 +646,7 @@ jQuery.fx.stop = function() {
 	if ( window.cancelAnimationFrame ) {
 		window.cancelAnimationFrame( timerId );
 	} else {
-		clearInterval( timerId );
+		intervalClear( timerId );
 	}
 
 	timerId = null;
