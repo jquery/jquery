@@ -68,9 +68,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	var expected,
 		userAgent = window.navigator.userAgent;
 
-	if ( /chrome/i.test( userAgent ) ) {
-		// Catches Chrome on Android as well (i.e. the default
-		// Android browser on Android >= 4.4).
+	if ( /edge\/12/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
@@ -78,7 +76,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"change": true,
 			"checkClone": true,
 			"checkOn": true,
-			"clearCloneStyle": true,
+			"clearCloneStyle": false,
 			"cors": true,
 			"createHTMLDocument": true,
 			"cssFloat": true,
@@ -197,6 +195,40 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"reliableMarginRight": true,
 			"style": false,
 			"submit": false
+		};
+	} else if ( /chrome/i.test( userAgent ) ) {
+		// Catches Chrome on Android as well (i.e. the default
+		// Android browser on Android >= 4.4).
+		expected = {
+			"ajax": true,
+			"attributes": true,
+			"boxSizingReliable": true,
+			"change": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"cssFloat": true,
+			"deleteExpando": true,
+			"focusin": false,
+			"html5Clone": true,
+			"htmlSerialize": true,
+			"input": true,
+			"leadingWhitespace": true,
+			"noCloneChecked": true,
+			"noCloneEvent": true,
+			"opacity": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"ownLast": false,
+			"pixelMarginRight": true,
+			"pixelPosition": true,
+			"radioValue": true,
+			"reliableHiddenOffsets": true,
+			"reliableMarginRight": true,
+			"style": true,
+			"submit": true
 		};
 	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
