@@ -2,6 +2,8 @@ define([
 	"./core",
 	"./var/document",
 	"./var/rnotwhite",
+	"./var/setTimeout",
+	"./var/clearTimeout",
 	"./ajax/var/location",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
@@ -9,7 +11,8 @@ define([
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./deferred"
-], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
+], function( jQuery, document, rnotwhite, setTimeout, clearTimeout,
+	location, nonce, rquery ) {
 
 var
 	rhash = /#.*$/,

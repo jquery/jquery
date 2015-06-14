@@ -1,8 +1,9 @@
 define([
 	"./core",
 	"./var/slice",
+	"./var/setTimeout",
 	"./callbacks"
-], function( jQuery, slice ) {
+], function( jQuery, slice, setTimeout ) {
 
 function Identity( v ) {
 	return v;

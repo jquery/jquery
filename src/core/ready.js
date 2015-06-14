@@ -1,8 +1,9 @@
 define([
 	"../core",
 	"../var/document",
+	"../var/setTimeout",
 	"../deferred"
-], function( jQuery, document ) {
+], function( jQuery, document, setTimeout ) {
 
 // The deferred used on DOM ready
 var readyList;
