@@ -6,6 +6,10 @@ define(function() {
 		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
 		var view = elem.ownerDocument.defaultView;
 
-		return ( view.opener && view || window ).getComputedStyle( elem );
+		if ( !view.opener ) {
+			view = window;
+		}
+
+		return view.getComputedStyle( elem );
 	};
 });
