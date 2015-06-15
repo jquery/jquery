@@ -48,30 +48,24 @@ test("empty set", function() {
 });
 
 test("disconnected element", function() {
-	expect(1);
+	expect( 2 );
 
-	var result;
+	var result = jQuery( document.createElement( "div" ) ).offset();
 
-	try {
-		result = jQuery( document.createElement("div") ).offset();
-	} catch ( e ) {}
-
-	ok( !result, "no position for disconnected element" );
+	equal( result.top, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
+	equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 });
 
 test("hidden (display: none) element", function() {
-	expect(1);
+	expect( 2 );
 
-	var result,
-		node = jQuery("<div style='display: none' />").appendTo("#qunit-fixture");
-
-	try {
+	var node = jQuery("<div style='display: none' />").appendTo("#qunit-fixture"),
 		result = node.offset();
-	} catch ( e ) {}
 
 	node.remove();
 
-	ok( !result, "no position for hidden (display: none) element" );
+	equal( result.top, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
+	equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 });
 
 testIframe("offset/absolute", "absolute", function($, iframe) {
