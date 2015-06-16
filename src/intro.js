@@ -13,6 +13,23 @@
  */
 
 (function( global, factory ) {
+	function invokeFactoryWith( w, noGlobal ) {
+		return factory(
+			w,
+			// For the sake of using jQuery with Node we need to use global
+			// setTimeout etc. if they're not present on the provided window
+			// instance. However, some environments provide their own
+			// window.setTimeout etc. implementations (e.g. to prevent
+			// passing strings to eval) and don't make the global ones
+			// available. Thus, we need to check both.
+			// See gh-2177 for more details.
+			w.setTimeout || setTimeout,
+			w.clearTimeout || clearTimeout,
+			w.setInterval || setInterval,
+			w.clearInterval || clearInterval,
+			noGlobal
+		);
+	}
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 		// For CommonJS and CommonJS-like environments where a proper `window`
@@ -23,19 +40,20 @@
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info.
 		module.exports = global.document ?
-			factory( global, true ) :
+			invokeFactoryWith( global, true ) :
 			function( w ) {
 				if ( !w.document ) {
 					throw new Error( "jQuery requires a window with a document" );
 				}
-				return factory( w );
+				return invokeFactoryWith( w );
 			};
 	} else {
-		factory( global );
+		invokeFactoryWith( global );
 	}
 
 // Pass this if window is not defined yet
-}(typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+}( typeof window !== "undefined" ? window : this,
+	function( window, setTimeout, clearTimeout, setInterval, clearInterval, noGlobal ) {
 
 // Support: Firefox 18+
 // Can't be in strict mode, several libs including ASP.NET trace
