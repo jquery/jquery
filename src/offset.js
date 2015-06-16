@@ -108,14 +108,20 @@ jQuery.fn.extend({
 		}
 
 		rect = elem.getBoundingClientRect();
-		win = getWindow( doc );
 
-		return {
-			top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
-				( docElem.clientTop  || 0 ),
-			left: rect.left + ( win.pageXOffset || docElem.scrollLeft ) -
-				( docElem.clientLeft || 0 )
-		};
+		if ( rect.width || rect.height || elem.getClientRects().length ) {
+			win = getWindow( doc );
+
+			return {
+				top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
+					( docElem.clientTop  || 0 ),
+				left: rect.left + ( win.pageXOffset || docElem.scrollLeft ) -
+					( docElem.clientLeft || 0 )
+			};
+		}
+
+		// Return zeros for hidden elements
+		return rect;
 	},
 
 	position: function() {

@@ -53,6 +53,9 @@ test("disconnected element", function() {
 
 	var result = jQuery( document.createElement( "div" ) ).offset();
 
+	// These tests are solely for master/compat consistency
+	// Retrieving offset on disconnected/hidden elements is not officially
+	// valid input, but will return zeros for back-compat
 	equal( result.top, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 	equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 });
@@ -65,6 +68,9 @@ test("hidden (display: none) element", function() {
 
 	node.remove();
 
+	// These tests are solely for master/compat consistency
+	// Retrieving offset on disconnected/hidden elements is not officially
+	// valid input, but will return zeros for back-compat
 	equal( result.top, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 	equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 });
@@ -406,7 +412,7 @@ testIframe("offset/table", "table", function( $ ) {
 });
 
 testIframe("offset/scroll", "scroll", function( $, win ) {
-	expect(28);
+	expect( 30 );
 
 	// If we're going to bastardize the tests, let's just DO it
 	var ie = /msie 8/i.test( navigator.userAgent );
@@ -424,6 +430,12 @@ testIframe("offset/scroll", "scroll", function( $, win ) {
 		equal( $("#scroll-1-1").offset().top, 11, "jQuery('#scroll-1-1').offset().top" );
 	}
 	equal( $("#scroll-1-1").offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
+
+	// These tests are solely for master/compat consistency
+	// Retrieving offset on disconnected/hidden elements is not officially
+	// valid input, but will return zeros for back-compat
+	equal( $("#hidden").offset().top, 0, "Hidden elements do not subtract scroll" );
+	equal( $("#hidden").offset().left, 0, "Hidden elements do not subtract scroll" );
 
 	// scroll offset tests .scrollTop/Left
 	equal( $("#scroll-1").scrollTop(), 5, "jQuery('#scroll-1').scrollTop()" );
