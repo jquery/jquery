@@ -108,21 +108,14 @@ jQuery.fn.extend({
 		}
 
 		rect = elem.getBoundingClientRect();
+		win = getWindow( doc );
 
-		// Make sure element is not hidden (display: none)
-		if ( rect.width || rect.height ) {
-			win = getWindow( doc );
-
-			return {
-				top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
-					( docElem.clientTop  || 0 ),
-				left: rect.left + ( win.pageXOffset || docElem.scrollLeft ) -
-					( docElem.clientLeft || 0 )
-			};
-		}
-
-		// Return zeros for hidden elements
-		return rect;
+		return {
+			top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
+				( docElem.clientTop  || 0 ),
+			left: rect.left + ( win.pageXOffset || docElem.scrollLeft ) -
+				( docElem.clientLeft || 0 )
+		};
 	},
 
 	position: function() {
