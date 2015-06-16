@@ -88,14 +88,14 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win, rect,
-			elem = this[ 0 ],
-			doc = elem && elem.ownerDocument;
+		var docElem, win, rect, doc,
+			elem = this[ 0 ];
 
-		if ( !doc ) {
+		if ( !elem ) {
 			return;
 		}
 
+		doc = elem.ownerDocument;
 		docElem = doc.documentElement;
 
 		// Support: IE<=11+
