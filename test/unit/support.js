@@ -51,7 +51,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	var expected,
 		userAgent = window.navigator.userAgent;
 
-	if ( /edge\/12/i.test( userAgent ) ) {
+	if ( /edge\//i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
