@@ -88,17 +88,22 @@ jQuery.fn.extend({
 				});
 		}
 
-		var docElem, win, rect, doc,
-			elem = this[ 0 ];
+		var docElem, win, rect,
+			elem = this[ 0 ],
+			doc = elem && elem.ownerDocument;
 
-		if ( !elem ) {
+		if ( !doc ) {
 			return;
 		}
+
+		docElem = doc.documentElement;
 
 		// Support: IE<=11+
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
-		if ( !elem.getClientRects().length ) {
+		// Support: IE8 only
+		// getClientRects() errors on disconnected elems
+		if ( !jQuery.contains( docElem, elem ) ) {
 			return { top: 0, left: 0 };
 		}
 
@@ -106,9 +111,7 @@ jQuery.fn.extend({
 
 		// Make sure element is not hidden (display: none)
 		if ( rect.width || rect.height ) {
-			doc = elem.ownerDocument;
 			win = getWindow( doc );
-			docElem = doc.documentElement;
 
 			return {
 				top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
@@ -118,7 +121,7 @@ jQuery.fn.extend({
 			};
 		}
 
-		// Return zeros for disconnected and hidden elements (gh-2310)
+		// Return zeros for hidden elements
 		return rect;
 	},
 
