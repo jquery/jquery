@@ -1,8 +1,9 @@
 define([
 	"./core",
 	"./var/slice",
+	"./var/timeoutSet",
 	"./callbacks"
-], function( jQuery, slice ) {
+], function( jQuery, slice, timeoutSet ) {
 
 function Identity( v ) {
 	return v;
@@ -173,7 +174,7 @@ jQuery.extend({
 							if ( depth ) {
 								process();
 							} else {
-								setTimeout( process );
+								timeoutSet( process );
 							}
 						};
 					}
