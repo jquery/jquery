@@ -90,10 +90,17 @@ jQuery.fn.extend({
 			return;
 		}
 
+		// Support: IE<=11+
+		// Running getBoundingClientRect on a
+		// disconnected node in IE throws an error
+		if ( !elem.getClientRects().length ) {
+			return { top: 0, left: 0 };
+		}
+
 		rect = elem.getBoundingClientRect();
 
-		// Make sure element is not hidden (display: none) or disconnected
-		if ( rect.width || rect.height || elem.getClientRects().length ) {
+		// Make sure element is not hidden (display: none)
+		if ( rect.width || rect.height ) {
 			doc = elem.ownerDocument;
 			win = getWindow( doc );
 			docElem = doc.documentElement;
