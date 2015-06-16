@@ -11,7 +11,7 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		requirejs = require( "requirejs" ),
 		srcFolder = __dirname + "/../../src/",
-		rdefineEnd = /\}\);[^}\w]*$/,
+		rdefineEnd = /\}\s*?\);[^}\w]*$/,
 		config = {
 			baseUrl: "src",
 			name: "jquery",
@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
 		} else {
 
 			contents = contents
-				.replace( /\s*return\s+[^\}]+(\}\);[^\w\}]*)$/, "$1" )
+				.replace( /\s*return\s+[^\}]+(\}\s*?\);[^\w\}]*)$/, "$1" )
 				// Multiple exports
 				.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
 
