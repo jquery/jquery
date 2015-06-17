@@ -1,9 +1,8 @@
 define([
 	"./core",
 	"./var/slice",
-	"./var/setTimeout",
 	"./callbacks"
-], function( jQuery, slice, setTimeout ) {
+], function( jQuery, slice ) {
 
 function Identity( v ) {
 	return v;
@@ -174,7 +173,7 @@ jQuery.extend({
 							if ( depth ) {
 								process();
 							} else {
-								setTimeout( process );
+								window.setTimeout( process );
 							}
 						};
 					}
