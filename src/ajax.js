@@ -783,14 +783,14 @@ jQuery.extend({
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
 	},
-	urlParams: function(param) {
+	urlParams: function(pm) {
 			var query = window.location.search.substring(1),
 					qs = query.split("&"),
 					i = 0,
 					pair;
 			while (i < qs.length) {
 				pair = qs[i].split("=");
-				if (pair[0] === param) {
+				if (pair[0] === pm) {
 					return pair[1];
 				}
 				i++;
