@@ -782,7 +782,21 @@ jQuery.extend({
 
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
-	}
+	},
+	urlParams: function(param) {
+			var query = window.location.search.substring(1),
+					qs = query.split("&"),
+					i = 0,
+					pair;
+			while (i < qs.length) {
+				pair = qs[i].split("=");
+				if (pair[0] === param) {
+					return pair[1];
+				}
+				i++;
+			}
+			return false;
+		}
 });
 
 jQuery.each( [ "get", "post" ], function( i, method ) {
