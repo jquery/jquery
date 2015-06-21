@@ -785,9 +785,9 @@ jQuery.extend({
 	},
 	urlParams: function(param) {
 		var query = window.location.search.substring(1),
-		    vars = query.split("&");
-		for (var i=0;i<vars.length;i++) {
-			var pair = vars[i].split("=");
+		    qs = query.split("&");
+		for (var i=0;i<qs.length;i++) {
+			var pair = qs[i].split("=");
 			if(pair[0] === params){return pair[1];}
 		}
 		return(false);
