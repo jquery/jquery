@@ -782,7 +782,6 @@ jQuery.extend({
 
 	getScript: function( url, callback ) {
 		return jQuery.get( url, undefined, callback, "script" );
-<<<<<<< HEAD
 	},
 	urlParams: function(param) {
 		var query = window.location.search.substring(1),
@@ -792,8 +791,6 @@ jQuery.extend({
 			if(pair[0] === params){return pair[1];}
 		}
 		return(false);
-=======
->>>>>>> 044bfefaa4d34739fb1219c6cbad0144592e2b68
 	}
 });
 
