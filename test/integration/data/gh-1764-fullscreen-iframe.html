@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Test for gh-1764 - test iframe</title>
+	<link rel="stylesheet" href="gh-1764-fullscreen-iframe.css">
+</head>
+
+<body class="iframe-page">
+<div class="container">
+	<div class="result"></div>
+	<button class="toggle-fullscreen">Toggle fullscreen mode - iframe</button>
+</div>
+<script src="../../../dist/jquery.js"></script>
+<script src="gh-1764-fullscreen.js"></script>
+<script>
+	bootstrapFrom( ".iframe-page", "iframe" );
+</script>
+</body>
+</html>
