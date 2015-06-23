@@ -5,7 +5,8 @@ define([
 	"../selector"
 ], function( jQuery, access, support ) {
 
-var rfocusable = /^(?:input|select|textarea|button)$/i;
+var rfocusable = /^(?:input|select|textarea|button|object)$/i,
+	rclickable = /^(?:a|area)$/i;
 
 jQuery.fn.extend({
 	prop: function( name, value ) {
@@ -13,8 +14,13 @@ jQuery.fn.extend({
 	},
 
 	removeProp: function( name ) {
+		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
-			delete this[ jQuery.propFix[ name ] || name ];
+			// try/catch handles cases where IE balks (such as removing a property on window)
+			try {
+				this[ name ] = undefined;
+				delete this[ name ];
+			} catch ( e ) {}
 		});
 	}
 });
@@ -55,10 +61,18 @@ jQuery.extend({
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
-				return elem.hasAttribute( "tabindex" ) ||
-					rfocusable.test( elem.nodeName ) || elem.href ?
-						elem.tabIndex :
-						-1;
+				// elem.tabIndex doesn't always return the
+				// correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				// Use proper attribute retrieval(#12072)
+				var tabindex = jQuery.find.attr( elem, "tabindex" );
+
+				return tabindex ?
+					parseInt( tabindex, 10 ) :
+					rfocusable.test( elem.nodeName ) ||
+						rclickable.test( elem.nodeName ) && elem.href ?
+							0 :
+							-1;
 			}
 		}
 	},
@@ -73,8 +87,14 @@ if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
-			if ( parent && parent.parentNode ) {
-				parent.parentNode.selectedIndex;
+
+			if ( parent ) {
+				parent.selectedIndex;
+
+				// Make sure that it also works with optgroups, see #5701
+				if ( parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
 			}
 			return null;
 		}
