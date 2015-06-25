@@ -1198,6 +1198,18 @@ test("jQuery.each(Object,Function)", function() {
 	equal( i, document.styleSheets.length, "Iteration over document.styleSheets" );
 });
 
+test("jQuery.each/map(undefined/null,Function)", 1, function() {
+	try {
+		jQuery.each( undefined, jQuery.noop );
+		jQuery.each( null, jQuery.noop );
+		jQuery.map( undefined, jQuery.noop );
+		jQuery.map( null, jQuery.noop );
+		ok( true, "jQuery.each/map( undefined/null, function() {} );" );
+	} catch ( e ) {
+		ok( false, "each/map must accept null and undefined values" );
+	}
+});
+
 test( "JIT compilation does not interfere with length retrieval (gh-2145)", function() {
 	expect( 4 );
 
