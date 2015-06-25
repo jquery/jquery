@@ -1783,8 +1783,9 @@ test( "non-px animation handles non-numeric start (#11971)", 2, function() {
 	this.clock.tick( 10 );
 });
 
-test("Animation callbacks (#11797)", 15, function() {
-	var targets = jQuery("#foo").children(),
+test("Animation callbacks (#11797)", 16, function() {
+	var prog = 0,
+		targets = jQuery("#foo").children(),
 		done = false,
 		expectedProgress = 0;
 
@@ -1794,7 +1795,8 @@ test("Animation callbacks (#11797)", 15, function() {
 			ok( true, "empty: start" );
 		},
 		progress: function( anim, percent ) {
-			equal( percent, 0, "empty: progress 0" );
+			equal( percent, prog, "empty: progress " + prog );
+			prog = 1;
 		},
 		done: function() {
 			ok( true, "empty: done" );
@@ -1862,6 +1864,43 @@ test("Animation callbacks (#11797)", 15, function() {
 		}
 	});
 	this.clock.tick( 10 );
+});
+
+test( "Animation callbacks in order (#2292)", 9, function( assert ) {
+	var step = 0,
+		dur = 50;
+
+	// assert? -> github.com/JamesMGreene/qunit-assert-step
+	jQuery( "#foo" ).animate( {
+		width: "5px"
+	}, {
+		duration: dur,
+		start: function() {
+			assert.step( 1 );
+		},
+		progress: function( anim, p, ms ) {
+			if ( !( step++ ) ) {
+				assert.step( 2 );
+				strictEqual( p,    0, "first progress callback: progress ratio" );
+				strictEqual( ms, dur, "first progress callback: remaining ms" );
+			} else {
+				assert.step( 3 );
+				strictEqual( p,  1, "last progress callback: progress ratio" );
+				strictEqual( ms, 0, "last progress callback: remaining ms" );
+			}
+		},
+		done: function() {
+			assert.step( 4 );
+		},
+		fail: function() {
+			ok( false, "Animation failed" );
+		},
+		always: function() {
+			assert.step( 5 );
+		}
+	}).finish();
+
+	this.clock.tick( dur + 10 );
 });
 
 test( "Animate properly sets overflow hidden when animating width/height (#12117)", 8, function() {
