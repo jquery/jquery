@@ -268,11 +268,10 @@ jQuery.extend({
 	},
 
 	each: function( obj, callback ) {
-		var i = 0,
-			length = obj.length,
-			isArray = isArraylike( obj );
+		var length, i = 0;
 
-		if ( isArray ) {
+		if ( isArrayLike( obj ) ) {
+			length = obj.length;
 			for ( ; i < length; i++ ) {
 				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
 					break;
@@ -300,15 +299,13 @@ jQuery.extend({
 	makeArray: function( arr, results ) {
 		var ret = results || [];
 
-		if ( arr != null ) {
-			if ( isArraylike( Object(arr) ) ) {
-				jQuery.merge( ret,
-					typeof arr === "string" ?
-					[ arr ] : arr
-				);
-			} else {
-				push.call( ret, arr );
-			}
+		if ( isArrayLike( Object( arr ) ) ) {
+			jQuery.merge( ret,
+				typeof arr === "string" ?
+				[ arr ] : arr
+			);
+		} else if ( arr != null ) {
+			push.call( ret, arr );
 		}
 
 		return ret;
@@ -355,14 +352,13 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var value,
+		var length, value,
 			i = 0,
-			length = elems.length,
-			isArray = isArraylike( elems ),
 			ret = [];
 
 		// Go through the array, translating each of the items to their new values
-		if ( isArray ) {
+		if ( isArrayLike( elems ) ) {
+			length = elems.length;
 			for ( ; i < length; i++ ) {
 				value = callback( elems[ i ], i, arg );
 
@@ -431,13 +427,13 @@ function(i, name) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 });
 
-function isArraylike( obj ) {
+function isArrayLike( obj ) {
 
 	// Support: iOS 8.2 (not reproducible in simulator)
 	// `in` check used to prevent JIT error (gh-2145)
 	// hasOwn isn't used here due to false negatives
 	// regarding Nodelist length in IE
-	var length = "length" in obj && obj.length,
+	var length = !!obj && "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
 	if ( type === "function" || jQuery.isWindow( obj ) ) {
