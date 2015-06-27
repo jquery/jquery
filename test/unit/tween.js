@@ -198,7 +198,7 @@ test( "jQuery.Tween - Element", function() {
 
 	ok( easingSpy.calledWith( 0.1, 0.1 * testOptions.duration, 0, 1, testOptions.duration ),
 		"...using jQuery.easing.linear with back-compat arguments" );
-	equal( parseFloat( testElement.style.height ).toFixed( 5 ), eased.toFixed( 5 ), "Set value" );
+	equal( parseFloat( testElement.style.height ).toFixed( 2 ), eased.toFixed( 2 ), "Set value" );
 
 	tween.run( 1 );
 	equal( testElement.style.height, "0px", "Checking another value" );
