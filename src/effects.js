@@ -382,8 +382,6 @@ function Animation( elem, properties, options ) {
 }
 
 jQuery.Animation = jQuery.extend( Animation, {
-<<<<<<< HEAD
-=======
 
 	tweeners: {
 		"*": [ function( prop, value ) {
@@ -393,7 +391,6 @@ jQuery.Animation = jQuery.extend( Animation, {
 		} ]
 	},
 
->>>>>>> b3b2d6c... Effects: Adding unit tests for jQuery.Animation
 	tweener: function( props, callback ) {
 		if ( jQuery.isFunction( props ) ) {
 			callback = props;

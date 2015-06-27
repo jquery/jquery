@@ -17,12 +17,8 @@ module("effects", {
 		jQuery.fx.interval = 10;
 	},
 	teardown: function() {
-<<<<<<< HEAD
-		this.clock.restore();
-=======
 		this.sandbox.restore();
 		jQuery.now = Date.now;
->>>>>>> cdaed15... Effects: Add tests for jQuery.Tween
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
