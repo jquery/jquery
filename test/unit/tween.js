@@ -160,8 +160,7 @@ test( "jQuery.Tween - Plain Object", function() {
 
 	equal( tween.now, 90, "Calculated tween" );
 
-	ok( easingSpy.calledWith( 0.1 ),
-		"...using jQuery.easing.linear with back-compat arguments" );
+	ok( easingSpy.calledWith( 0.1 ), "...using jQuery.easing.linear" );
 	equal( testObject.test, 90, "Set value" );
 
 	tween.run( 1 );
@@ -196,8 +195,7 @@ test( "jQuery.Tween - Element", function() {
 	eased = 100 - ( jQuery.easing.swing( 0.1 ) * 100 );
 	equal( tween.now, eased, "Calculated tween" );
 
-	ok( easingSpy.calledWith( 0.1 ),
-		"...using jQuery.easing.linear with back-compat arguments" );
+	ok( easingSpy.calledWith( 0.1 ), "...using jQuery.easing.linear" );
 	equal( parseFloat( testElement.style.height ).toFixed( 2 ), eased.toFixed( 2 ), "Set value" );
 
 	tween.run( 1 );
