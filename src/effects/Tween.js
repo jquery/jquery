@@ -27,17 +27,12 @@ Tween.prototype = {
 			Tween.propHooks._default.get( this );
 	},
 	run: function( percent ) {
-		var eased,
-			hooks = Tween.propHooks[ this.prop ];
+		var hooks = Tween.propHooks[ this.prop ];
 
-		if ( this.options.duration ) {
-			this.pos = eased = jQuery.easing[ this.easing ](
-				percent, this.options.duration * percent, 0, 1, this.options.duration
-			);
-		} else {
-			this.pos = eased = percent;
-		}
-		this.now = ( this.end - this.start ) * eased + this.start;
+		this.pos = this.options.duration ?
+			jQuery.easing[ this.easing ]( percent ) :
+			percent;
+		this.now = ( this.end - this.start ) * this.pos + this.start;
 
 		if ( this.options.step ) {
 			this.options.step.call( this.elem, this.now, this );

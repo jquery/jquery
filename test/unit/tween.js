@@ -217,8 +217,7 @@ QUnit.test( "jQuery.Tween - Plain Object", function( assert ) {
 		tween.now, 90, "Calculated tween"
 	);
 
-	assert.ok( easingSpy.calledWith( 0.1, 0.1 * testOptions.duration, 0, 1, testOptions.duration ),
-		"...using jQuery.easing.linear with back-compat arguments" );
+	assert.ok( easingSpy.calledWith( 0.1 ), "...using jQuery.easing.linear" );
 	assert.equal(
 		testObject.test, 90, "Set value"
 	);
@@ -281,8 +280,7 @@ QUnit.test( "jQuery.Tween - Element", function( assert ) {
 		tween.now, eased, "Calculated tween"
 	);
 
-	assert.ok( easingSpy.calledWith( 0.1, 0.1 * testOptions.duration, 0, 1, testOptions.duration ),
-		"...using jQuery.easing.linear with back-compat arguments" );
+	assert.ok( easingSpy.calledWith( 0.1 ), "...using jQuery.easing.linear" );
 	assert.equal(
 		Math.floor( parseFloat( testElement.style.height ) ), Math.floor( eased ), "Set value"
 	);
