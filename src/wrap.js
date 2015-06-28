@@ -45,13 +45,8 @@ jQuery.fn.extend({
 		return this.each(function() {
 			var self = jQuery( this ),
 				contents = self.contents();
-
-			if ( contents.length ) {
-				contents.wrapAll( html );
-
-			} else {
-				self.append( html );
-			}
+			
+			contents.length ? contents.wrapAll( html ) : self.append( html )
 		});
 	},
 
