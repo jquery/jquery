@@ -18,7 +18,6 @@ module("effects", {
 	},
 	teardown: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
