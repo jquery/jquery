@@ -1,7 +1,7 @@
 module("serialize", { teardown: moduleTeardown });
 
 test("jQuery.param()", function() {
-	expect(22);
+	expect(23);
 
 	var params, settings;
 
@@ -76,6 +76,9 @@ test("jQuery.param()", function() {
 
 	params = {"test": {"length": 3, "foo": "bar"} };
 	equal( jQuery.param( params, false ), "test%5Blength%5D=3&test%5Bfoo%5D=bar", "Sub-object with a length property" );
+
+  params = {"test": [1,2,null]};
+  equal(jQuery.param(params, false), "test%5B%5D=1&test%5B%5D=2&test%5B%5D=", "object with array property with null value");
 
 	if ( jQuery.ajaxSettings === settings ) {
 		delete jQuery.ajaxSettings;

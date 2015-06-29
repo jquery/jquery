@@ -25,7 +25,7 @@ function buildParams( prefix, obj, traditional, add ) {
 			} else {
 				// Item is non-scalar (array or object), encode its numeric index.
 				buildParams(
-					prefix + "[" + ( typeof v === "object" ? i : "" ) + "]",
+					prefix + "[" + ( typeof v === "object" && v !== null ? i : "" ) + "]",
 					v,
 					traditional,
 					add
