@@ -4,8 +4,8 @@ define([
 ], function( jQuery, support ) {
 
 (function() {
-	var div, container, style, a, pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
-		reliableHiddenOffsetsVal, reliableMarginRightVal;
+	var div, container, style, a, pixelPositionVal, boxSizingReliableVal, gBCRDimensionsVal,
+		pixelMarginRightVal, reliableHiddenOffsetsVal, reliableMarginRightVal;
 
 	// Setup
 	div = document.createElement( "div" );
@@ -53,6 +53,13 @@ define([
 				computeStyleTests();
 			}
 			return boxSizingReliableVal;
+		},
+
+		gBCRDimensions: function() {
+			if ( pixelPositionVal == null ) {
+				computeStyleTests();
+			}
+			return gBCRDimensionsVal;
 		},
 
 		pixelMarginRight: function() {
@@ -104,6 +111,10 @@ define([
 		// Assume reasonable values in the absence of getComputedStyle
 		pixelPositionVal = boxSizingReliableVal = false;
 		pixelMarginRightVal = reliableMarginRightVal = true;
+
+		// Support: IE<9
+		// In IE8 gBCR doesn't report width & height.
+		gBCRDimensionsVal = !!div.getBoundingClientRect().width;
 
 		// Check for getComputedStyle so that this code is not run in IE<9.
 		if ( window.getComputedStyle ) {
