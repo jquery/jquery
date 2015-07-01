@@ -114,7 +114,8 @@ function getWidthOrHeight( elem, name, extra ) {
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 	// Support: IE11 only
-	// Fix for edge case in IE 11. See gh-1764
+	// In IE 11 fullscreen elements inside of an iframe have
+	// 100x too small dimensions (gh-1764).
 	if ( document.msFullscreenElement && window.top !== window ) {
 		// Support: IE11 only
 		// Running getBoundingClientRect on a disconnected node
