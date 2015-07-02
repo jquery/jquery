@@ -2,7 +2,7 @@ define([
 	"./core",
 	"./manipulation/var/rcheckableType",
 	"./core/init",
-	"./traversing", // filter
+	"./traversing", // filter, selector
 	"./attributes/prop"
 ], function( jQuery, rcheckableType ) {
 
@@ -93,8 +93,8 @@ jQuery.fn.extend({
 		.filter(function() {
 			var type = this.type;
 
-			// Use .is( ":disabled" ) so that fieldset[disabled] works
-			return this.name && !jQuery( this ).is( ":disabled" ) &&
+			// Test by selector because the disabled property ignores ancestor fieldsets
+			return this.name && !jQuery.find.matchesSelector( this, ":disabled" ) &&
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
 		})
