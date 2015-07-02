@@ -105,7 +105,7 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	end: function() {
-		return this.prevObject || this.constructor( null );
+		return this.prevObject || this.constructor();
 	},
 
 	// For internal use only.
