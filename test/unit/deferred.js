@@ -167,6 +167,42 @@ test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
 	});
 });
 
+test( "jQuery.Deferred.catch", function( assert ) {
+	assert.expect( 4 );
+
+	var value1, value2, value3,
+		defer = jQuery.Deferred(),
+		piped = defer.catch(function( a, b ) {
+			return a * b;
+		}),
+		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+
+	piped.done(function( result ) {
+		value3 = result;
+	});
+
+	defer.fail(function( a, b ) {
+		value1 = a;
+		value2 = b;
+	});
+
+	defer.reject( 2, 3 ).catch(function() {
+		assert.strictEqual( value1, 2, "first reject value ok" );
+		assert.strictEqual( value2, 3, "second reject value ok" );
+		assert.strictEqual( value3, 6, "result of filter ok" );
+		done.pop().call();
+	});
+
+	jQuery.Deferred().resolve().catch(function() {
+		assert.ok( false, "then should not be called on resolve" );
+	}).then( done.pop() );
+
+	jQuery.Deferred().reject().catch( jQuery.noop ).done(function( value ) {
+		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
+		done.pop().call();
+	});
+});
+
 test( "[PIPE ONLY] jQuery.Deferred.pipe - filtering (fail)", function( assert ) {
 
 	assert.expect( 4 );

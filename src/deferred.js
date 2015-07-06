@@ -33,6 +33,9 @@ jQuery.extend({
 					deferred.done( arguments ).fail( arguments );
 					return this;
 				},
+				"catch": function( fn ) {
+					return promise.then( null, fn );
+				},
 				// Keep pipe for back-compat
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
