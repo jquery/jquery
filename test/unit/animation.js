@@ -17,15 +17,16 @@ module( "animation", {
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( startTime );
 		this._oldInterval = jQuery.fx.interval;
+		this._oldNow = jQuery.now;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
+		jQuery.now = Date.now || this._oldNow;
 		jQuery.Animation.prefilters = [ defaultPrefilter ];
 		jQuery.Animation.tweeners = { "*": [ defaultTweener ] };
 	},
 	teardown: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
+		jQuery.now = this._oldNow;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
