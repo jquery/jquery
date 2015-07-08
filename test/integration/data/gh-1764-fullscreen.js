@@ -92,7 +92,7 @@ function bootstrapFrom( mainSelector, mode ) {
 		"webkitfullscreenchange",
 		"mozfullscreenchange",
 		"fullscreenchange",
-		"MSFullscreenChange",
+		"MSFullscreenChange"
 	].join( " " ), runTest );
 
 	runTest();
