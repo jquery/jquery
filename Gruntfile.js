@@ -30,6 +30,18 @@ module.exports = function( grunt ) {
 				cache: "build/.sizecache.json"
 			}
 		},
+		babel: {
+			options: {
+				sourceMap: "inline",
+				retainLines: true
+			},
+			nodeSmokeTests: {
+				files: {
+					"test/node_smoke_tests/lib/ensure_iterability.js":
+						"test/node_smoke_tests/lib/ensure_iterability_es6.js"
+				}
+			}
+		},
 		build: {
 			all: {
 				dest: "dist/jquery.js",
@@ -71,10 +83,6 @@ module.exports = function( grunt ) {
 		jsonlint: {
 			pkg: {
 				src: [ "package.json" ]
-			},
-
-			bower: {
-				src: [ "bower.json" ]
 			}
 		},
 		jshint: {
@@ -95,14 +103,15 @@ module.exports = function( grunt ) {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
 
-			// Right now, check only test helpers
-			test: [ "test/data/testrunner.js" ],
+			// Check parts of tests that pass
+			test: [ "test/data/testrunner.js", "test/unit/animation.js", "test/unit/tween.js" ],
 			release: [ "build/*.js", "!build/release-notes.js" ],
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
 			tests: [
 				"ajax",
+				"animation",
 				"attributes",
 				"callbacks",
 				"core",
@@ -118,7 +127,8 @@ module.exports = function( grunt ) {
 				"selector",
 				"serialize",
 				"support",
-				"traversing"
+				"traversing",
+				"tween"
 			]
 		},
 		watch: {

@@ -1,11 +1,9 @@
-/* jshint node: true */
-
 "use strict";
+
+var assert = require( "assert" );
 
 // Check if the object we got is the jQuery object by invoking a basic API.
 module.exports = function ensureJQuery( jQuery ) {
-	if ( !/^jQuery/.test( jQuery.expando ) ) {
-		console.error( "jQuery.expando was not detected, the jQuery bootstrap process has failed" );
-		process.exit( 1 );
-	}
+	assert( /^jQuery/.test( jQuery.expando ),
+		"jQuery.expando was not detected, the jQuery bootstrap process has failed" );
 };

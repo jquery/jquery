@@ -1,6 +1,6 @@
-/* jshint node: true */
-
 "use strict";
+
+var assert = require( "assert" );
 
 // Ensure the jQuery property on global/window/module.exports/etc. was not
 // created in a CommonJS environment.
@@ -9,9 +9,7 @@ module.exports = function ensureGlobalNotCreated() {
 	var args = [].slice.call( arguments ).concat( global );
 
 	args.forEach( function( object ) {
-		if ( object.jQuery ) {
-			console.error( "A jQuery global was created in a CommonJS environment." );
-			process.exit( 1 );
-		}
+		assert.strictEqual( object.jQuery, undefined,
+			"A jQuery global was created in a CommonJS environment." );
 	} );
 };

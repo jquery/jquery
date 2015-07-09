@@ -21,6 +21,8 @@
 		"require": false,
 		"define": false,
 		"DOMParser": false,
+		"Promise": false,
+		"Symbol": false,
 		"QUnit": false,
 		"ok": false,
 		"equal": false,

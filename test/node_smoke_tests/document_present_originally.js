@@ -1,12 +1,9 @@
-/* jshint node: true */
-
 "use strict";
 
+var assert = require( "assert" );
+
 require( "jsdom" ).env( "", function( errors, window ) {
-	if ( errors ) {
-		console.error( errors );
-		process.exit( 1 );
-	}
+	assert.ifError( errors );
 
 	// Pretend the window is a global.
 	global.window = window;

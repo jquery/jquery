@@ -36,6 +36,10 @@ test("jQuery()", function() {
 		expected++;
 		attrObj["width"] = 10;
 	}
+	if ( jQuery.fn.offset ) {
+		expected++;
+		attrObj["offset"] = { "top": 1, "left": 1 };
+	}
 	if ( jQuery.fn.css ) {
 		expected += 2;
 		attrObj["css"] = { "paddingLeft": 1, "paddingRight": 1 };
@@ -101,10 +105,14 @@ test("jQuery()", function() {
 	elem = jQuery("\n\n<em>world</em>")[0];
 	equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery( "<div/>", attrObj );
+	elem = jQuery("<div/>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		equal( elem[0].style.width, "10px", "jQuery() quick setter width");
+	}
+
+	if ( jQuery.fn.offset ) {
+		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
 	if ( jQuery.fn.css ) {
@@ -1550,3 +1558,23 @@ testIframeWithCallback( "Don't call window.onready (#14802)", "core/onready.html
 			equal( error, false, "no call to user-defined onready" );
 	}
 );
+
+test( "Iterability of jQuery objects (gh-1693)", function() {
+	/* jshint unused: false */
+	expect( 1 );
+
+	var i, elem, result;
+
+	if ( typeof Symbol === "function" ) {
+
+		elem = jQuery( "<div></div><span></span><a></a>" );
+		result = "";
+
+		try {
+			eval( "for ( i of elem ) { result += i.nodeName; }" );
+		} catch ( e ) {}
+		equal( result, "DIVSPANA", "for-of works on jQuery objects" );
+	} else {
+		ok( true, "The browser doesn't support Symbols" );
+	}
+} );

@@ -5,7 +5,7 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		spawnTest = require( "./lib/spawn_test.js" ),
 		testsDir = "./test/node_smoke_tests/",
-		nodeSmokeTests = [ "jsdom" ];
+		nodeSmokeTests = [ "jsdom", "babel:nodeSmokeTests" ];
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
 	// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
@@ -15,7 +15,8 @@ module.exports = function( grunt ) {
 
 	fs.readdirSync( testsDir )
 		.filter( function( testFilePath ) {
-			return fs.statSync( testsDir + testFilePath ).isFile();
+			return fs.statSync( testsDir + testFilePath ).isFile() &&
+				/\.js$/.test( testFilePath );
 		} )
 		.forEach( function( testFilePath ) {
 			var taskName = "node_" + testFilePath.replace( /\.js$/, "" );

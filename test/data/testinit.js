@@ -285,7 +285,9 @@ this.loadTests = function() {
 			"unit/ajax.js",
 			"unit/effects.js",
 			"unit/offset.js",
-			"unit/dimensions.js"
+			"unit/dimensions.js",
+			"unit/animation.js",
+			"unit/tween.js"
 		];
 
 		// Ensure load order (to preserve test numbers)

@@ -51,15 +51,13 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 	var expected,
 		userAgent = window.navigator.userAgent;
 
-	if ( /chrome/i.test( userAgent ) ) {
-		// Catches Chrome on Android as well (i.e. the default
-		// Android browser on Android >= 4.4).
+	if ( /edge\//i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
-			"clearCloneStyle": true,
+			"clearCloneStyle": false,
 			"cors": true,
 			"createHTMLDocument": true,
 			"focusin": false,
@@ -107,7 +105,27 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"radioValue": false,
 			"reliableMarginRight": true
 		};
-	} else if ( /8.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /chrome/i.test( userAgent ) ) {
+		// Catches Chrome on Android as well (i.e. the default
+		// Android browser on Android >= 4.4).
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelMarginRight": true,
+			"pixelPosition": true,
+			"radioValue": true,
+			"reliableMarginRight": true
+		};
+	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,

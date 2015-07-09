@@ -846,6 +846,51 @@ testIframeWithCallback( "css('width') should work correctly before document read
 	}
 );
 
+( function() {
+	var supportsFractionalGBCR,
+		qunitFixture = document.getElementById( "qunit-fixture" ),
+		div = document.createElement( "div" );
+	div.style.width = "3.3px";
+	qunitFixture.appendChild( div );
+	supportsFractionalGBCR = div.getBoundingClientRect().width.toFixed(1) === "3.3";
+	qunitFixture.removeChild( div );
+
+	test( "css('width') and css('height') should return fractional values for nodes in the document", function() {
+		if ( !supportsFractionalGBCR ) {
+			expect( 1 );
+			ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
+			return;
+		}
+
+		expect( 2 );
+
+		var el = jQuery( "<div class='test-div'></div>" ).appendTo( "#qunit-fixture" );
+		jQuery( "<style>.test-div { width: 33.3px; height: 88.8px; }</style>" ).appendTo( "#qunit-fixture" );
+
+		equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
+			"css('width') should return fractional values" );
+		equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
+			"css('height') should return fractional values" );
+	} );
+
+	test( "css('width') and css('height') should return fractional values for disconnected nodes", function() {
+		if ( !supportsFractionalGBCR ) {
+			expect( 1 );
+			ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
+			return;
+		}
+
+		expect( 2 );
+
+		var el = jQuery( "<div style='width: 33.3px; height: 88.8px;'></div>" );
+
+		equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
+			"css('width') should return fractional values" );
+		equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
+			"css('height') should return fractional values" );
+	} );
+} )();
+
 test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
 	expect ( 3 );
 
@@ -1116,4 +1161,84 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 		ok( false, "It did throw" );
 	}
 });
+
+( function() {
+	var vendorPrefixes = [ "Webkit", "Moz", "ms" ];
+
+	function resetCssPropsFor( name ) {
+		delete jQuery.cssProps[ name ];
+		jQuery.each( vendorPrefixes, function( index, prefix ) {
+			delete jQuery.cssProps[ prefix + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
+		} );
+	}
+
+	test( "Don't default to a cached previously used wrong prefixed name (gh-2015)", function() {
+		// Note: this test needs a property we know is only supported in a prefixed version
+		// by at least one of our main supported browsers. This may get out of date so let's
+		// use -(webkit|moz)-appearance as well as those two are not on a standards track.
+		var appearanceName, transformName, elem, elemStyle,
+			transformVal = "translate(5px, 2px)",
+			emptyStyle = document.createElement( "div" ).style;
+
+		if ( "appearance" in emptyStyle ) {
+			appearanceName = "appearance";
+		} else {
+			jQuery.each( vendorPrefixes, function( index, prefix ) {
+				var prefixedProp = prefix + "Appearance";
+				if ( prefixedProp in emptyStyle ) {
+					appearanceName = prefixedProp;
+				}
+			} );
+		}
+
+		if ( "transform" in emptyStyle ) {
+			transformName = "transform";
+		} else {
+			jQuery.each( vendorPrefixes, function( index, prefix ) {
+				var prefixedProp = prefix + "Transform";
+				if ( prefixedProp in emptyStyle ) {
+					transformName = prefixedProp;
+				}
+			} );
+		}
+
+		expect( !!appearanceName + !!transformName + 1 );
+
+		resetCssPropsFor( "appearance" );
+		resetCssPropsFor( "transform" );
+
+		elem = jQuery( "<div/>" )
+			.css( {
+				msAppearance: "none",
+				appearance: "none",
+
+				// Only the ms prefix is used to make sure we haven't e.g. set
+				// webkitTransform ourselves in the test.
+				msTransform: transformVal,
+				transform: transformVal
+			} );
+		elemStyle = elem[ 0 ].style;
+
+		if ( appearanceName ) {
+			equal( elemStyle[ appearanceName ], "none", "setting properly-prefixed appearance" );
+		}
+		if ( transformName ) {
+			equal( elemStyle[ transformName ], transformVal, "setting properly-prefixed transform" );
+		}
+		equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
+	} );
+
+	test( "Don't detect fake set properties on a node when caching the prefixed version", function() {
+		expect( 1 );
+
+		var elem = jQuery( "<div/>" ),
+			style = elem[ 0 ].style;
+		style.MozFakeProperty = "old value";
+		elem.css( "fakeProperty", "new value" );
+
+		equal( style.MozFakeProperty, "old value", "Fake prefixed property is not cached" );
+	} );
+
+} )();
+
 }

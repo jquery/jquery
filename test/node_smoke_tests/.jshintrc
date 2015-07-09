@@ -10,14 +10,5 @@
 	"undef": true,
 	"unused": true,
 
-	"sub": true,
-
-	"globals": {
-		"window": true,
-
-		"jQuery": true,
-		"define": true,
-		"module": true,
-		"noGlobal": true
-	}
+	"node": true
 }
