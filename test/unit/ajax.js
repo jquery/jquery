@@ -1,12 +1,4 @@
 module( "ajax", {
-	setup: function() {
-		var jsonpCallback = this.jsonpCallback = jQuery.ajaxSettings.jsonpCallback;
-		jQuery.ajaxSettings.jsonpCallback = function() {
-			var callback = jsonpCallback.apply( this, arguments );
-			Globals.register( callback );
-			return callback;
-		};
-	},
 	teardown: function() {
 		jQuery( document ).off( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess" );
 		moduleTeardown.apply( this, arguments );
@@ -742,7 +734,7 @@ module( "ajax", {
 			}
 		]);
 
-		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label, 9, {
+		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label, 10, {
 			setup: function() {
 				Globals.register("functionToCleanUp");
 				Globals.register("XXX");
@@ -765,6 +757,11 @@ module( "ajax", {
 				crossDomain: crossDomain,
 				jsonpCallback: "jsonpResults",
 				success: function( data ) {
+					strictEqual(
+						typeof window[ "jsonpResults" ],
+						"function",
+						"should not rewrite original function"
+					);
 					ok( data.data, "JSON results returned (GET, custom callback name)" );
 				}
 			}, {
@@ -1356,16 +1353,29 @@ module( "ajax", {
 	]);
 
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
-		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
+		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 4, {
 			url: "data/jsonp.php",
 			dataType: "jsonp",
 			crossDomain: crossDomain,
 			beforeSend: function( jqXHR, s ) {
 				s.callback = s.jsonpCallback;
+
+				ok( this.callback in window, "JSONP callback name is in the window" );
 			},
 			success: function() {
 				var previous = this;
-				strictEqual( previous.jsonpCallback, undefined, "jsonpCallback option is set back to default in callbacks" );
+
+				strictEqual(
+					previous.jsonpCallback,
+					undefined,
+					"jsonpCallback option is set back to default in callbacks"
+				);
+
+				ok(
+					!( this.callback in window ),
+					"JSONP callback name was removed from the window"
+				);
+
 				jQuery.ajax({
 					url: "data/jsonp.php",
 					dataType: "jsonp",
