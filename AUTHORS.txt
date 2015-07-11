@@ -246,7 +246,7 @@ Anne-Gaelle Colom <coloma@westminster.ac.uk>
 George Mauer <gmauer@gmail.com>
 Leonardo Braga <leonardo.braga@gmail.com>
 Stephen Edgar <stephen@netweb.com.au>
-Mr21 <thomastortorini@gmail.com>
+Thomas Tortorini <thomastortorini@gmail.com>
 Winston Howes <winstonhowes@gmail.com>
 Jon Hester <jon.d.hester@gmail.com>
 Alexander O'Mara <me@alexomara.com>
@@ -259,4 +259,3 @@ Chris Rebert <github@rebertia.com>
 Gabriel Schulhof <gabriel.schulhof@intel.com>
 Gilad Peleg <giladp007@gmail.com>
 Martin Naumann <martin@geekonaut.de>
-Thomas Tortorini <thomastortorini@gmail.com>
