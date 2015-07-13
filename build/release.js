@@ -28,8 +28,7 @@ module.exports = function( Release ) {
 		 */
 		_createTag: function( paths ) {
 			Release.distVersion = Release.newVersion;
-			Release.newVersion = Release.newVersion
-				.replace( /(\d+\.\d+\.\d+)/, "$1+compat" );
+			Release.newVersion = Release.newVersion + "+compat";
 			return createTag( paths );
 		},
 		/**
