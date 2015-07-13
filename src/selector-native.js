@@ -121,6 +121,9 @@ jQuery.extend({
 
 		return results;
 	},
+	unique: function( results ) {
+		return this.uniqueSort( results );
+	},
 	text: function( elem ) {
 		var node,
 			ret = "",
