@@ -99,7 +99,7 @@ jQuery.extend({
 
 		return results;
 	},
-	unique: function( results ) {
+	uniqueSort: function( results ) {
 		var elem,
 			duplicates = [],
 			i = 0,
