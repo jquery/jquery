@@ -59,6 +59,13 @@ test("disconnected element", function() {
 	equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 });
 
+
+test("window element", function() {
+	expect( 1 );
+	strictEqual( jQuery(window).offset(), undefined, "offset() returns undefined for window element" );
+});
+
+
 test("hidden (display: none) element", function() {
 	expect( 2 );
 

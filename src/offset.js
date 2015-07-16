@@ -86,7 +86,7 @@ jQuery.fn.extend({
 		var docElem, win, rect, doc,
 			elem = this[ 0 ];
 
-		if ( !elem ) {
+		if ( !elem || elem === window ) {
 			return;
 		}
 
