@@ -20,13 +20,12 @@ Data.prototype = {
 		if ( owner.nodeType ) {
 			owner[ this.expando ] = value;
 
-		// Otherwise secure it in a non-enumerable, non-writable property
-		// configurability must be true to allow the property to be
-		// deleted with the delete operator
+		// Otherwise secure it in a non-enumerable property
+		// configurable must be true to allow the property to be
+		// deleted when data is removed
 		} else {
 			Object.defineProperty( owner, this.expando, {
 				value: value,
-				writable: true,
 				configurable: true
 			} );
 		}
@@ -144,7 +143,16 @@ Data.prototype = {
 
 		// Remove the expando if there's no more data
 		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
-			delete owner[ this.expando ];
+
+			// Support: Chrome <= 35-45+
+			// Webkit & Blink performance suffers when deleting properties
+			// from DOM nodes, so set to undefined instead
+			// https://code.google.com/p/chromium/issues/detail?id=378607
+			if ( owner.nodeType ) {
+				owner[ this.expando ] = undefined;
+			} else {
+				delete owner[ this.expando ];
+			}
 		}
 	},
 	hasData: function( owner ) {

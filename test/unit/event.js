@@ -2702,7 +2702,7 @@ QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
 } );
 
 QUnit.test( ".off() removes the expando when there's no more data", function( assert ) {
-	assert.expect( 1 );
+	assert.expect( 2 );
 
 	var key,
 		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
@@ -2717,7 +2717,10 @@ QUnit.test( ".off() removes the expando when there's no more data", function( as
 	// Make sure the expando is gone
 	for ( key in div[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
-			assert.ok( false, "Expando was not removed when there was no more data" );
+			assert.strictEqual(
+				div[ 0 ][ key ], undefined,
+				"Expando was not removed when there was no more data"
+			);
 		}
 	}
 } );

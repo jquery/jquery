@@ -2086,7 +2086,7 @@ QUnit.test( "jQuery.cleanData eliminates all private data (gh-2127)", function( 
 } );
 
 QUnit.test( "jQuery.cleanData eliminates all public data", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
 	var key,
 		div = jQuery( "<div/>" );
@@ -2100,7 +2100,7 @@ QUnit.test( "jQuery.cleanData eliminates all public data", function( assert ) {
 	// Make sure the expando is gone
 	for ( key in div[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
-			assert.ok( false, "Expando was not removed when there was no more data" );
+			assert.strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
 		}
 	}
 } );

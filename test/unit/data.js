@@ -867,7 +867,7 @@ testIframeWithCallback(
 );
 
 QUnit.test( "Check that the expando is removed when there's no more data", function( assert ) {
-	assert.expect( 1 );
+	assert.expect( 2 );
 
 	var key,
 		div = jQuery( "<div/>" );
@@ -877,6 +877,23 @@ QUnit.test( "Check that the expando is removed when there's no more data", funct
 
 	// Make sure the expando is gone
 	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			assert.strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
+QUnit.test( "Check that the expando is removed when there's no more data on non-nodes", function( assert ) {
+	assert.expect( 1 );
+
+	var key,
+		obj = jQuery( {key: 42} );
+	obj.data( "some", "data" );
+	assert.equal( obj.data( "some" ), "data", "Data is added" );
+	obj.removeData( "some" );
+
+	// Make sure the expando is gone
+	for ( key in obj[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
 			assert.ok( false, "Expando was not removed when there was no more data" );
 		}
