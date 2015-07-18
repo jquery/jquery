@@ -859,7 +859,7 @@ testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs
 });
 
 test( "Check that the expando is removed when there's no more data", function() {
-	expect( 1 );
+	expect( 2 );
 
 	var key,
 		div = jQuery( "<div/>" );
@@ -869,6 +869,23 @@ test( "Check that the expando is removed when there's no more data", function() 
 
 	// Make sure the expando is gone
 	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
+test( "Check that the expando is removed when there's no more data on non-nodes", function() {
+	expect( 1 );
+
+	var key,
+		obj = jQuery( {key: 42} );
+	obj.data( "some", "data" );
+	equal( obj.data( "some" ), "data", "Data is added" );
+	obj.removeData( "some" );
+
+	// Make sure the expando is gone
+	for ( key in obj[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
 			ok( false, "Expando was not removed when there was no more data" );
 		}
