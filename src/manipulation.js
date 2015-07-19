@@ -270,19 +270,24 @@ jQuery.extend({
 			i = 0;
 
 		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
-			if ( jQuery.acceptData( elem ) && (data = elem[ dataPriv.expando ])) {
-				if ( data.events ) {
-					for ( type in data.events ) {
-						if ( special[ type ] ) {
-							jQuery.event.remove( elem, type );
+			if ( jQuery.acceptData( elem ) ) {
+				if ( (data = elem[ dataPriv.expando ] ) ) {
+					if ( data.events ) {
+						for ( type in data.events ) {
+							if ( special[ type ] ) {
+								jQuery.event.remove( elem, type );
 
-						// This is a shortcut to avoid jQuery.event.remove's overhead
-						} else {
-							jQuery.removeEvent( elem, type, data.handle );
+							// This is a shortcut to avoid jQuery.event.remove's overhead
+							} else {
+								jQuery.removeEvent( elem, type, data.handle );
+							}
 						}
 					}
+					delete elem[ dataPriv.expando ];
 				}
-				delete elem[ dataPriv.expando ];
+				if ( elem[ dataUser.expando ] ) {
+					delete elem[ dataUser.expando ];
+				}
 			}
 		}
 	}
