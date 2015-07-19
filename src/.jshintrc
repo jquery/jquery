@@ -12,8 +12,11 @@
 
 	"sub": true,
 
+	"es3": true,
+
 	"globals": {
 		"window": true,
+		"JSON": false,
 
 		"jQuery": true,
 		"define": true,

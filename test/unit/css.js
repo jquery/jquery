@@ -1225,7 +1225,7 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 		if ( transformName ) {
 			equal( elemStyle[ transformName ], transformVal, "setting properly-prefixed transform" );
 		}
-		equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
+		equal( elemStyle[ "undefined" ], undefined, "Nothing writes to node.style.undefined" );
 	} );
 
 	test( "Don't detect fake set properties on a node when caching the prefixed version", function() {
