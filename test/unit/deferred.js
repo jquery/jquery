@@ -172,7 +172,7 @@ test( "jQuery.Deferred.catch", function( assert ) {
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
-		piped = defer.catch(function( a, b ) {
+		piped = defer[ "catch" ](function( a, b ) {
 			return a * b;
 		}),
 		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
@@ -186,18 +186,18 @@ test( "jQuery.Deferred.catch", function( assert ) {
 		value2 = b;
 	});
 
-	defer.reject( 2, 3 ).catch(function() {
+	defer.reject( 2, 3 )[ "catch" ](function() {
 		assert.strictEqual( value1, 2, "first reject value ok" );
 		assert.strictEqual( value2, 3, "second reject value ok" );
 		assert.strictEqual( value3, 6, "result of filter ok" );
 		done.pop().call();
 	});
 
-	jQuery.Deferred().resolve().catch(function() {
+	jQuery.Deferred().resolve()[ "catch" ](function() {
 		assert.ok( false, "then should not be called on resolve" );
 	}).then( done.pop() );
 
-	jQuery.Deferred().reject().catch( jQuery.noop ).done(function( value ) {
+	jQuery.Deferred().reject()[ "catch" ]( jQuery.noop ).done(function( value ) {
 		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
 		done.pop().call();
 	});

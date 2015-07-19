@@ -1579,7 +1579,7 @@ test("Initial step callback should show element as :animated (#14623)", 1, funct
 	var foo = jQuery( "#foo" );
 
 	foo.animate({
-		opacity: 0,
+		opacity: 0
 	}, {
 		duration: 100,
 		step: function() {
