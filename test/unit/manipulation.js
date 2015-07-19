@@ -2137,6 +2137,45 @@ test( "jQuery.cleanData", function() {
 	}
 });
 
+test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
+	expect( 3 );
+
+	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	jQuery._data( div[ 0 ], "gh-2127", "testing" );
+
+	ok( !jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ),  "Ensure some private data exists" );
+
+	div.remove();
+
+	ok( !jQuery.hasData( div[ 0 ] ), "Removed element hasData should return false" );
+
+	ok( jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ),
+		"Private data is empty after node is removed" );
+
+	div.remove();
+});
+
+test( "jQuery.cleanData eliminates all public data", function() {
+	expect( 2 );
+
+	var key,
+		div = jQuery( "<div/>" );
+	div.data( "some", "data" );
+	ok( !jQuery.isEmptyObject( jQuery.data( div[ 0 ] ) ),  "Ensure some public data exists" );
+
+	div.remove();
+
+	ok( !jQuery.hasData( div[ 0 ] ), "Removed element hasData should return false" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) && jQuery[ key ] !== undefined ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
+});
+
 test( "domManip plain-text caching (trac-6779)", function() {
 
 	expect( 1 );
