@@ -67,12 +67,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
@@ -85,12 +83,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": true,
 			"noCloneChecked": false,
-			"optDisabled": true,
 			"optSelected": false,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
-			"radioValue": false,
-			"reliableMarginRight": true
+			"radioValue": false
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -103,12 +99,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": true,
 			"noCloneChecked": false,
-			"optDisabled": true,
 			"optSelected": false,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
-			"radioValue": false,
-			"reliableMarginRight": true
+			"radioValue": false
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
 
@@ -124,12 +118,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -142,12 +134,10 @@ testIframeWithCallback(
 			"createHTMLDocument": false,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -160,12 +150,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -178,12 +166,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /iphone os 8/i.test( userAgent ) ) {
 		expected = {
@@ -196,12 +182,10 @@ testIframeWithCallback(
 			"createHTMLDocument": false,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
 		expected = {
@@ -214,12 +198,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
+			"radioValue": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
@@ -232,30 +214,10 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
-			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": false,
 			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": true
-		};
-	} else if ( /android 2\.3/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": true,
-			"checkClone": true,
-			"checkOn": false,
-			"clearCloneStyle": false,
-			"cors": true,
-			"createHTMLDocument": true,
-			"focusin": false,
-			"noCloneChecked": true,
-			"optDisabled": false,
-			"optSelected": true,
-			"pixelMarginRight": true,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginRight": false
+			"radioValue": true
 		};
 	}
 

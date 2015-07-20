@@ -12,9 +12,8 @@ var wrapMap = {
 	// their parent elements (except for "table" element) could be omitted
 	// since browser parsers are smart enough to auto-insert them
 
-	// Support: Android 2.3
-	// Android browser doesn't auto-insert colgroup
-	col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
+	// Auto-insert "colgroup" element
+	col: [ 2, "<table>", "</table>" ],
 
 	// Auto-insert "tbody" element
 	tr: [ 2, "<table>", "</table>" ],

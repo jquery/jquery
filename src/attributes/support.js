@@ -18,11 +18,6 @@ define( [
 	// Must access selectedIndex to make default options select
 	support.optSelected = opt.selected;
 
-	// Support: Android<=2.3
-	// Options inside disabled selects are incorrectly marked as disabled
-	select.disabled = true;
-	support.optDisabled = !opt.disabled;
-
 	// Support: IE<=11+
 	// An input loses its value after becoming a radio
 	input = document.createElement( "input" );
