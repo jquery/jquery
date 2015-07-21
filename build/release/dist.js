@@ -5,7 +5,7 @@ module.exports = function( Release, complete ) {
 		shell = require( "shelljs" ),
 		pkg = require( Release.dir.repo + "/package.json" ),
 		distRemote = Release.remote.replace( "jquery.git", "jquery-dist.git" ),
-		// These files are included with the distrubtion
+		// These files are included with the distribution
 		files = [
 			"src",
 			"LICENSE.txt",
