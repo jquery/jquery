@@ -1,5 +1,5 @@
 <?php
-	# This test page checkes CSP only for browsers with "Content-Security-Policy" header support
+	# This test page checks CSP only for browsers with "Content-Security-Policy" header support
 	# i.e. no old WebKit or old Firefox
 	header("Content-Security-Policy: default-src 'self'; report-uri csp-log.php");
 ?>

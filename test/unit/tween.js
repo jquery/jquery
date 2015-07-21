@@ -289,7 +289,7 @@ test( "jQuery.Tween - custom propHooks - advanced values", function() {
 
 	// Some day this NaN assumption might change - perhaps add a "calc" helper to the hooks?
 	ok( isNaN( tween.now ), "Used return value from propHook.get" );
-	equal( tween.pos, 0.5, "But the eased percent is still avaliable" );
+	equal( tween.pos, 0.5, "But the eased percent is still available" );
 	ok( propHook.set.calledWith( tween ), "Called propHook.set function with correct parameters" );
 
 	delete jQuery.Tween.propHooks.testHooked;

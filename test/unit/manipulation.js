@@ -498,7 +498,7 @@ test( "html(String) tag-hyphenated elements (Bug #1987)", function() {
 	var j = jQuery("<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>");
 	ok( jQuery.nodeName(j[0], "TR-MULTIPLE-HYPHENS"), "Tags with multiple hypens" );
 	ok( jQuery.nodeName(j.children()[0], "TD-WITH-HYPHEN"), "Tags with multiple hypens" );
-	equal( j.children().text(), "text", "Tags with multple hypens behave normally" );
+	equal( j.children().text(), "text", "Tags with multiple hypens behave normally" );
 });
 
 test( "IE8 serialization bug", function() {
