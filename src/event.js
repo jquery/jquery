@@ -772,13 +772,10 @@ jQuery.Event.prototype = {
 // so that event delegation works in jQuery.
 // Do the same for pointerenter/pointerleave and pointerover/pointerout
 //
-// Support: Safari<7.0
-// Safari doesn't support mouseenter/mouseleave at all.
-//
-// Support: Chrome 34+
-// Mouseenter doesn't perform while left mouse button is pressed
-// (and initiated outside the observed element)
-// https://code.google.com/p/chromium/issues/detail?id=333868
+// Support: Safari 7 only
+// Safari sends mouseenter too often; see:
+// https://code.google.com/p/chromium/issues/detail?id=470258
+// for the description of the bug (it existed in older Chrome versions as well).
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout",
