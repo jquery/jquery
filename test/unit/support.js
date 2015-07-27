@@ -268,7 +268,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"style": true,
 			"submit": true
 		};
-	} else if ( /(6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
