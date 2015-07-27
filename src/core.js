@@ -299,13 +299,15 @@ jQuery.extend({
 	makeArray: function( arr, results ) {
 		var ret = results || [];
 
-		if ( isArrayLike( Object( arr ) ) ) {
-			jQuery.merge( ret,
-				typeof arr === "string" ?
-				[ arr ] : arr
-			);
-		} else if ( arr != null ) {
-			push.call( ret, arr );
+		if ( arr != null ) {
+			if ( isArrayLike( Object( arr ) ) ) {
+				jQuery.merge( ret,
+					typeof arr === "string" ?
+					[ arr ] : arr
+				);
+			} else {
+				push.call( ret, arr );
+			}
 		}
 
 		return ret;
