@@ -1121,7 +1121,7 @@ test( "show() after hide() should always set display to initial value (#14750)",
 	equal( div.css( "display" ), "list-item", "should get last set display value" );
 });
 
-// Support: IE < 11, Safari < 7
+// Support: IE < 11
 // We have to jump through the hoops here in order to test work with "order" CSS property,
 // that some browsers do not support. This test is not, strictly speaking, correct,
 // but it's the best that we can do.
