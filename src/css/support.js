@@ -88,15 +88,10 @@ define([
 
 	function computeStyleTests() {
 		var contents, divStyle,
-			body = document.body;
-
-		if ( !body || !body.style ) {
-			// Test fired too early or in an unsupported environment, exit.
-			return;
-		}
+			documentElement = document.documentElement;
 
 		// Setup
-		body.appendChild( container );
+		documentElement.appendChild( container );
 
 		div.style.cssText =
 			// Support: Android 2.3
@@ -162,7 +157,7 @@ define([
 		}
 
 		// Teardown
-		body.removeChild( container );
+		documentElement.removeChild( container );
 	}
 
 })();
