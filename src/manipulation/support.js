@@ -1,11 +1,13 @@
 define([
 	"../core",
+	"../var/document",
 	"../var/support"
-], function( jQuery, support ) {
+], function( jQuery, document, support ) {
 
 (function() {
 	var div = document.createElement( "div" ),
-		fragment = document.createDocumentFragment();
+		fragment = document.createDocumentFragment(),
+		input = document.createElement( "input" );
 
 	// Setup
 	div.innerHTML = "  <link/><a href='/a'></a>";
@@ -29,7 +31,13 @@ define([
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	fragment.appendChild( div );
-	div.innerHTML = "<input type='radio' checked='checked' name='t'/>";
+	// Support: Windows Web Apps (WWA)
+	// `name` and `type` must use .setAttribute for WWA (#14901)
+	input.setAttribute( "type", "radio" );
+	input.setAttribute( "checked", "checked" );
+	input.setAttribute( "name", "t" );
+
+	div.appendChild( input );
 
 	// Support: Android<4.2
 	// Older WebKit doesn't clone checked state correctly in fragments

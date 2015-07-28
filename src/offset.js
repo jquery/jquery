@@ -1,6 +1,8 @@
 define([
 	"./core",
 	"./core/access",
+	"./var/document",
+	"./var/documentElement",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
@@ -9,7 +11,7 @@ define([
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, rnumnonpx, curCSS, addGetHookIf, support ) {
+], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support ) {
 
 // BuildExclude
 curCSS = curCSS.curCSS;

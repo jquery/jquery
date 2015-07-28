@@ -1,6 +1,7 @@
 define([
+	"../var/document",
 	"../var/support"
-], function( support ) {
+], function( document, support ) {
 
 // Support: Safari 8+
 // In Safari 8 documents created via document.implementation.createHTMLDocument

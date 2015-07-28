@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/rnotwhite",
 	"./var/hasOwn",
 	"./var/slice",
@@ -8,7 +9,7 @@ define([
 	"./core/init",
 	"./data",
 	"./selector"
-], function( jQuery, rnotwhite, hasOwn, slice, support ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support ) {
 
 var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,

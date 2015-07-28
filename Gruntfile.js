@@ -34,6 +34,18 @@ module.exports = function( grunt ) {
 				cache: "build/.sizecache.json"
 			}
 		},
+		babel: {
+			options: {
+				sourceMap: "inline",
+				retainLines: true
+			},
+			nodeSmokeTests: {
+				files: {
+					"test/node_smoke_tests/lib/ensure_iterability.js":
+						"test/node_smoke_tests/lib/ensure_iterability_es6.js"
+				}
+			}
+		},
 		build: {
 			all: {
 				dest: "dist/jquery.js",
@@ -159,11 +171,9 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
 
-	// Only defined for master at this time, but kept for cross-branch consistency
-	grunt.registerTask( "test_fast", [] );
+	grunt.registerTask( "test_fast", [ "node_smoke_tests" ] );
 
-	// gh-2133 TODO: cherry-pick 76df9e4e389d80bff410a9e5f08b848de1d21a2f for promises-aplus-tests
-	grunt.registerTask( "test", [ "test_fast"/*, "promises-aplus-tests"*/ ] );
+	grunt.registerTask( "test", [ "test_fast", "promises_aplus_tests" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );

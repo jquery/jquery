@@ -176,7 +176,7 @@ jQuery.extend({
 							if ( depth ) {
 								process();
 							} else {
-								setTimeout( process );
+								window.setTimeout( process );
 							}
 						};
 					}

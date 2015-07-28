@@ -1,15 +1,13 @@
 // Initialize a jQuery object
 define([
 	"../core",
+	"../var/document",
 	"./var/rsingleTag",
 	"../traversing/findFilter"
-], function( jQuery, rsingleTag ) {
+], function( jQuery, document, rsingleTag ) {
 
 // A central reference to the root jQuery(document)
 var rootjQuery,
-
-	// Use the correct document accordingly with window argument (sandbox)
-	document = window.document,
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)

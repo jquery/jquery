@@ -16,11 +16,11 @@
 	// The above browsers are failing a lot of tests in the ES5
 	// test suite at http://test262.ecmascript.org.
 	"es3": true,
-	"browser": true,
-	"wsh": true,
 
 	"globals": {
+		"window": true,
 		"JSON": false,
+
 		"jQuery": true,
 		"define": false,
 		"module": false,

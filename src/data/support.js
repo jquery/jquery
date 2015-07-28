@@ -1,6 +1,7 @@
 define([
+	"../var/document",
 	"../var/support"
-], function( support ) {
+], function( document, support ) {
 
 (function() {
 	var div = document.createElement( "div" );

@@ -9,3 +9,4 @@ test/data/readywaitasset.js
 test/data/readywaitloader.js
 test/data/support/csp.js
 test/data/support/getComputedSupport.js
+test/node_smoke_tests/lib/ensure_iterability.js

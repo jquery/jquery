@@ -1,13 +1,15 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/rnotwhite",
+	"./ajax/var/location",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
 	"./core/init",
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./deferred"
-], function( jQuery, rnotwhite, nonce, rquery ) {
+], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
 
 var
 	rhash = /#.*$/,
@@ -643,7 +645,7 @@ jQuery.extend({
 
 			// Timeout
 			if ( s.async && s.timeout > 0 ) {
-				timeoutTimer = setTimeout(function() {
+				timeoutTimer = window.setTimeout(function() {
 					jqXHR.abort("timeout");
 				}, s.timeout );
 			}
@@ -677,7 +679,7 @@ jQuery.extend({
 
 			// Clear timeout if it exists
 			if ( timeoutTimer ) {
-				clearTimeout( timeoutTimer );
+				window.clearTimeout( timeoutTimer );
 			}
 
 			// Dereference transport for early garbage collection

@@ -1,11 +1,12 @@
 define([
 	"../core",
+	"../var/document",
 	"./var/rsingleTag",
 	"../manipulation/buildFragment",
 
 	// This is the only module that needs core/support
 	"./support"
-], function( jQuery, rsingleTag, buildFragment, support ) {
+], function( jQuery, document, rsingleTag, buildFragment, support ) {
 
 // data: string of html
 // context (optional): If specified, the fragment will be created in this context,

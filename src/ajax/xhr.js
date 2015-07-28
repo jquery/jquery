@@ -1,8 +1,9 @@
 define([
 	"../core",
+	"../var/document",
 	"../var/support",
 	"../ajax"
-], function( jQuery, support ) {
+], function( jQuery, document, support ) {
 
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)

@@ -1,11 +1,12 @@
 define([
 	"exports",
 	"../core",
+	"../var/documentElement",
 	"./var/rnumnonpx",
 	"./var/rmargin",
 	"./support",
 	"../selector" // contains
-], function( exports, jQuery, rnumnonpx, rmargin, support ) {
+], function( exports, jQuery, documentElement, rnumnonpx, rmargin, support ) {
 
 var getStyles, curCSS,
 	rposition = /^(top|right|bottom|left)$/;
@@ -68,7 +69,7 @@ if ( window.getComputedStyle ) {
 			ret :
 			ret + "";
 	};
-} else if ( document.documentElement.currentStyle ) {
+} else if ( documentElement.currentStyle ) {
 	getStyles = function( elem ) {
 		return elem.currentStyle;
 	};

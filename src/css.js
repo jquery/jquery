@@ -3,12 +3,13 @@ define([
 	"./var/pnum",
 	"./core/access",
 	"./css/var/rmargin",
+	"./var/document",
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
-	"./css/curCSS",
 	"./css/var/swap",
+	"./css/curCSS",
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
 	"./css/support",
@@ -17,8 +18,8 @@ define([
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, pnum, access, rmargin, rcssNum, rnumnonpx, cssExpand, isHidden,
-	curCSS, swap, adjustCSS, addGetHookIf, support, showHide ) {
+], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
+	isHidden, swap, curCSS, adjustCSS, addGetHookIf, support, showHide ) {
 
 var
 	// BuildExclude

@@ -1,5 +1,6 @@
 define([
 	"./core",
+	"./var/document",
 	"./var/concat",
 	"./var/push",
 	"./var/deletedIds",
@@ -22,7 +23,7 @@ define([
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, concat, push, deletedIds, access,
+], function( jQuery, document, concat, push, deletedIds, access,
 	rcheckableType, rtagName, rscriptType, rleadingWhitespace, nodeNames,
 	createSafeFragment, wrapMap, getAll, setGlobalEval,
 	buildFragment, support ) {

@@ -26,7 +26,9 @@
   "dependencies": {},
   "devDependencies": {
     "commitplease": "2.0.0",
+    "core-js": "0.9.17",
     "grunt": "0.4.5",
+    "grunt-babel": "5.0.1",
     "grunt-cli": "0.1.13",
     "grunt-compare-size": "0.4.0",
     "grunt-contrib-jshint": "0.11.2",
@@ -46,7 +48,12 @@
     "sinon": "1.12.2",
     "sizzle": "2.2.0",
     "strip-json-comments": "1.0.3",
-    "testswarm": "1.1.0"
+    "testswarm": "1.1.0",
+    "win-spawn": "2.0.0"
+  },
+  "jsdomVersions": {
+    "node": "3.1.2",
+    "iojs": "5.3.0"
   },
   "scripts": {
     "build": "npm install && grunt",

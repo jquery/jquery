@@ -1,5 +1,6 @@
 define([
 	"./var/deletedIds",
+	"./var/document",
 	"./var/slice",
 	"./var/concat",
 	"./var/push",
@@ -8,7 +9,8 @@ define([
 	"./var/toString",
 	"./var/hasOwn",
 	"./var/support"
-], function( deletedIds, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
+], function( deletedIds, document, slice, concat, push, indexOf,
+	class2type, toString, hasOwn, support ) {
 
 var
 	version = "@VERSION+compat",

@@ -1,7 +1,8 @@
 define([
 	"../core",
+	"../var/document",
 	"../deferred"
-], function( jQuery ) {
+], function( jQuery, document ) {
 
 // The deferred used on DOM ready
 var readyList;
@@ -72,7 +73,7 @@ function detach() {
 function completed() {
 	// readyState === "complete" is good enough for us to call the dom ready in oldIE
 	if ( document.addEventListener ||
-		event.type === "load" ||
+		window.event.type === "load" ||
 		document.readyState === "complete" ) {
 
 		detach();
@@ -93,7 +94,7 @@ jQuery.ready.promise = function( obj ) {
 		// http://bugs.jquery.com/ticket/12282#comment:15
 		if ( document.readyState === "complete" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
-			setTimeout( jQuery.ready );
+			window.setTimeout( jQuery.ready );
 
 		// Standards-based browsers support DOMContentLoaded
 		} else if ( document.addEventListener ) {

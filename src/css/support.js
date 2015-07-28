@@ -1,32 +1,30 @@
 define([
 	"../core",
+	"../var/document",
+	"../var/documentElement",
 	"../var/support"
-], function( jQuery, support ) {
+], function( jQuery, document, documentElement, support ) {
 
 (function() {
-	var div, container, style, a, pixelPositionVal, boxSizingReliableVal, gBCRDimensionsVal,
-		pixelMarginRightVal, reliableHiddenOffsetsVal, reliableMarginRightVal;
-
-	// Setup
-	div = document.createElement( "div" );
-	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
-	a = div.getElementsByTagName( "a" )[ 0 ];
-	style = a && a.style;
+	var pixelPositionVal, boxSizingReliableVal, gBCRDimensionsVal,
+		pixelMarginRightVal, reliableHiddenOffsetsVal, reliableMarginRightVal,
+		container = document.createElement( "div" ),
+		div = document.createElement( "div" );
 
 	// Finish early in limited (non-browser) environments
-	if ( !style ) {
+	if ( !div.style ) {
 		return;
 	}
 
-	style.cssText = "float:left;opacity:.5";
+	div.style.cssText = "float:left;opacity:.5";
 
 	// Support: IE<9
 	// Make sure that element opacity exists (as opposed to filter)
-	support.opacity = style.opacity === "0.5";
+	support.opacity = div.style.opacity === "0.5";
 
 	// Verify style float existence
 	// (IE uses styleFloat instead of cssFloat)
-	support.cssFloat = !!style.cssFloat;
+	support.cssFloat = !!div.style.cssFloat;
 
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
