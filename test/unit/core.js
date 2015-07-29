@@ -174,7 +174,9 @@ test( "globalEval with 'use strict'", function() {
 	equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
 });
 
-test( "globalEval execution after script injection (#7862)", 1, function() {
+test( "globalEval execution after script injection (#7862)", function() {
+	expect( 1 );
+
 	var now,
 		script = document.createElement( "script" );
 
@@ -1198,7 +1200,9 @@ test("jQuery.each(Object,Function)", function() {
 	equal( i, document.styleSheets.length, "Iteration over document.styleSheets" );
 });
 
-test("jQuery.each/map(undefined/null,Function)", 1, function() {
+test("jQuery.each/map(undefined/null,Function)", function() {
+	expect( 1 );
+
 	try {
 		jQuery.each( undefined, jQuery.noop );
 		jQuery.each( null, jQuery.noop );
@@ -1477,7 +1481,9 @@ test("jQuery.parseJSON", function() {
 	strictEqual( jQuery.parseJSON([ 0 ]), 0, "Input cast to string" );
 });
 
-test("jQuery.parseXML", 8, function(){
+test("jQuery.parseXML", function(){
+	expect( 8 );
+
 	var xml, tmp;
 	try {
 		xml = jQuery.parseXML( "<p>A <b>well-formed</b> xml string</p>" );
