@@ -128,6 +128,7 @@ module.exports = function( grunt ) {
 			test: [
 				"test/data/testrunner.js",
 				"test/unit/animation.js",
+				"test/unit/basic.js",
 				"test/unit/tween.js",
 				"test/unit/wrap.js"
 			],
@@ -135,6 +136,13 @@ module.exports = function( grunt ) {
 		},
 		testswarm: {
 			tests: [
+
+				// A special module with basic tests, meant for
+				// not fully supported environments like Android 2.3,
+				// jsdom or PhantomJS. We run it everywhere, though,
+				// to make sure tests are not broken.
+				"basic",
+
 				"ajax",
 				"animation",
 				"attributes",
