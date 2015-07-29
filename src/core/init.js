@@ -27,7 +27,7 @@ var rootjQuery,
 		// so migrate can support jQuery.sub (gh-2101)
 		root = root || rootjQuery;
 
-		// Handle HTML strings
+		// HANDLE: HTML strings
 		if ( typeof selector === "string" ) {
 			if ( selector[0] === "<" &&
 				selector[ selector.length - 1 ] === ">" &&
