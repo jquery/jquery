@@ -1870,7 +1870,9 @@ test( "remove() with filters", function() {
 	equal( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 });
 
-test( "remove() event cleaning ", 1, function() {
+test( "remove() event cleaning ", function() {
+	expect( 1 );
+
 	var count, first, cleanUp;
 
 	count = 0;
@@ -1885,7 +1887,9 @@ test( "remove() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
-test( "remove() in document order #13779", 1, function() {
+test( "remove() in document order #13779", function() {
+	expect( 1 );
+
 	var last,
 		cleanData = jQuery.cleanData;
 
@@ -1957,7 +1961,9 @@ test("detach() with filters", function () {
   equal(jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works");
 });
 
-test( "detach() event cleaning ", 1, function() {
+test( "detach() event cleaning ", function() {
+	expect( 1 );
+
 	var count, first, cleanUp;
 
 	count = 0;
@@ -2487,7 +2493,9 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 	});
 });
 
-test( "Index for function argument should be received (#13094)", 2, function() {
+test( "Index for function argument should be received (#13094)", function() {
+	expect( 2 );
+
 	var i = 0;
 
 	jQuery("<div/><div/>").before(function( index ) {
@@ -2496,7 +2504,9 @@ test( "Index for function argument should be received (#13094)", 2, function() {
 
 });
 
-test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
+test( "Make sure jQuery.fn.remove can work on elements in documentFragment", function() {
+	expect( 1 );
+
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement("div") );
 
@@ -2505,7 +2515,9 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
 
-test( "Make sure specific elements with content created correctly (#13232)", 20, function() {
+test( "Make sure specific elements with content created correctly (#13232)", function() {
+	expect( 20 );
+
 	var results = [],
 		args = [],
 		elems = {
@@ -2534,7 +2546,9 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 	});
 });
 
-test( "Validate creation of multiple quantities of certain elements (#13818)", 44, function() {
+test( "Validate creation of multiple quantities of certain elements (#13818)", function() {
+	expect( 44 );
+
 	var tags = [ "thead", "tbody", "tfoot", "colgroup", "col", "caption", "tr", "th", "td", "optgroup", "option" ];
 
 	jQuery.each( tags, function( index, tag ) {

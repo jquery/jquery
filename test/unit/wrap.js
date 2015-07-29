@@ -148,7 +148,9 @@ test( "wrapAll(String)", function() {
 
 });
 
-test( "wrapAll(Function)", 5, function() {
+test( "wrapAll(Function)", function() {
+	expect( 5 );
+
 	var prev = jQuery( "#firstp" )[ 0 ].previousSibling,
 		p = jQuery( "#firstp,#first" )[ 0 ].parentNode,
 		result = jQuery( "#firstp,#first" ).wrapAll(function() {
@@ -162,7 +164,9 @@ test( "wrapAll(Function)", 5, function() {
 	strictEqual( jQuery( "#first" ).parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling" );
 });
 
-test( "wrapAll(Function) check execution characteristics", 3, function() {
+test( "wrapAll(Function) check execution characteristics", function() {
+	expect( 3 );
+
 	var i = 0;
 
 	jQuery( "non-existent" ).wrapAll(function() {
