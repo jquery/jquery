@@ -268,6 +268,12 @@ this.loadTests = function() {
 	// Get testSubproject from testrunner first
 	require([ "data/testrunner.js" ], function() {
 		var tests = [
+			// A special module with basic tests, meant for
+			// not fully supported environments like Android 2.3,
+			// jsdom or PhantomJS. We run it everywhere, though,
+			// to make sure tests are not broken.
+			"unit/basic.js",
+
 			"unit/core.js",
 			"unit/callbacks.js",
 			"unit/deferred.js",
