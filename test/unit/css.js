@@ -29,7 +29,7 @@ test("css(String|Hash)", function() {
 
 	equal( div2.find("input").css("height"), "20px", "Height on hidden input." );
 	equal( div2.find("textarea").css("height"), "20px", "Height on hidden textarea." );
-	equal( div2.find("div").css("height"), "20px", "Height on hidden textarea." );
+	equal( div2.find("div").css("height"), "20px", "Height on hidden div." );
 
 	div2.remove();
 
