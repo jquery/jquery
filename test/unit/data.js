@@ -70,7 +70,9 @@ function dataTests( elem ) {
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
 }
 
-test("jQuery.data(div)", 25, function() {
+test("jQuery.data(div)", function() {
+	expect( 25 );
+
 	var div = document.createElement("div");
 
 	dataTests( div );
@@ -81,11 +83,15 @@ test("jQuery.data(div)", 25, function() {
 	QUnit.expectJqData( this, div, "foo" );
 });
 
-test("jQuery.data({})", 25, function() {
+test("jQuery.data({})", function() {
+	expect( 25 );
+
 	dataTests( {} );
 });
 
-test("jQuery.data(window)", 25, function() {
+test("jQuery.data(window)", function() {
+	expect( 25 );
+
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
 	jQuery( window ).off( "unload" );
@@ -93,13 +99,17 @@ test("jQuery.data(window)", 25, function() {
 	dataTests( window );
 });
 
-test("jQuery.data(document)", 25, function() {
+test("jQuery.data(document)", function() {
+	expect( 25 );
+
 	dataTests( document );
 
 	QUnit.expectJqData( this, document, "foo" );
 });
 
-test("Expando cleanup", 4, function() {
+test("Expando cleanup", function() {
+	expect( 4 );
+
 	var div = document.createElement("div");
 
 	function assertExpandoAbsent(message) {
@@ -161,7 +171,9 @@ test("jQuery.acceptData", function() {
 });
 
 // attempting to access the data of an undefined jQuery element should be undefined
-test("jQuery().data() === undefined (#14101)", 2, function() {
+test("jQuery().data() === undefined (#14101)", function() {
+	expect( 2 );
+
 	strictEqual(jQuery().data(), undefined);
 	strictEqual(jQuery().data("key"), undefined);
 });

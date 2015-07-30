@@ -119,7 +119,9 @@ test("css(String|Hash)", function() {
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 });
 
-test( "css(String) computed values", 3, function() {
+test( "css(String) computed values", function() {
+	expect( 3 );
+
 	var div = jQuery( "<div/>" ).addClass( "get-computed-value" ),
 		fixture = document.getElementById( "qunit-fixture" );
 
@@ -130,7 +132,9 @@ test( "css(String) computed values", 3, function() {
 });
 
 
-test( "css() explicit and relative values", 29, function() {
+test( "css() explicit and relative values", function() {
+	expect( 29 );
+
 	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
@@ -217,7 +221,9 @@ test( "css() explicit and relative values", 29, function() {
 	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
 });
 
-test( "css() non-px relative values (gh-1711)", 17, function() {
+test( "css() non-px relative values (gh-1711)", function() {
+	expect( 17 );
+
 	var cssCurrent,
 		units = {},
 		$child = jQuery( "#nothiddendivchild" ),
@@ -962,7 +968,9 @@ test("certain css values of 'normal' should be convertable to a number, see #862
 
 // only run this test in IE9
 if ( document.documentMode === 9 ) {
-	test( ".css('filter') returns a string in IE9, see #12537", 1, function() {
+	test( ".css('filter') returns a string in IE9, see #12537", function() {
+		expect( 1 );
+
 		equal( jQuery("<div style='-ms-filter:\"progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)\";'></div>").css("filter"), "progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)", "IE9 returns the correct value from css('filter')." );
 	});
 }
@@ -1170,7 +1178,9 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 	window.setTimeout( start, 1000 );
 });
 
-test( "show() after hide() should always set display to initial value (#14750)", 1, function() {
+test( "show() after hide() should always set display to initial value (#14750)", function() {
+	expect( 1 );
+
 	var div = jQuery( "<div />" ),
 		fixture = jQuery( "#qunit-fixture" );
 
@@ -1189,7 +1199,9 @@ test( "show() after hide() should always set display to initial value (#14750)",
 		exist = "order" in style || "WebkitOrder" in style;
 
 	if ( exist ) {
-		test( "Don't append px to CSS \"order\" value (#14049)", 1, function() {
+		test( "Don't append px to CSS \"order\" value (#14049)", function() {
+			expect( 1 );
+
 			var $elem = jQuery( "<div/>" );
 
 			$elem.css( "order", 2 );
@@ -1198,7 +1210,9 @@ test( "show() after hide() should always set display to initial value (#14750)",
 	}
 })();
 
-test( "Do not throw on frame elements from css method (#15098)", 1, function() {
+test( "Do not throw on frame elements from css method (#15098)", function() {
+	expect( 1 );
+
 	var frameWin, frameDoc,
 		frameElement = document.createElement( "iframe" ),
 		frameWrapDiv = document.createElement( "div" );
@@ -1221,7 +1235,9 @@ test( "Do not throw on frame elements from css method (#15098)", 1, function() {
 	}
 });
 
-test( "get upper case alpha opacity in IE8", 1, function() {
+test( "get upper case alpha opacity in IE8", function() {
+	expect( 1 );
+
 	var div = document.createElement( "div" ),
 		fixture = document.getElementById( "qunit-fixture" );
 

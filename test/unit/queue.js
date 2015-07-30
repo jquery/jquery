@@ -1,6 +1,8 @@
 module( "queue", { teardown: moduleTeardown });
 
-test( "queue() with other types", 14, function() {
+test( "queue() with other types", function() {
+	expect( 14 );
+
 	stop();
 
 	var $div = jQuery({}),

@@ -20,7 +20,9 @@ module( "ajax", {
 });
 
 (function() {
-	test("Unit Testing Environment", 2, function () {
+	test("Unit Testing Environment", function () {
+		expect( 2 );
+
 		ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
 		ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
 	});
@@ -1318,7 +1320,9 @@ module( "ajax", {
 		}
 	});
 
-	test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
+	test( "#7531 - jQuery.ajax() - Location object as url", function () {
+		expect( 1 );
+
 		var xhr,
 			success = false;
 		try {
@@ -1424,7 +1428,9 @@ module( "ajax", {
 		});
 	});
 
-	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", 2, function () {
+	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", function () {
+		expect( 2 );
+
 		var success = false,
 			context = {};
 		context.field = context;
@@ -1720,7 +1726,9 @@ module( "ajax", {
 
 //----------- jQuery.domManip()
 
-	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", function() {
+		expect( 1 );
+
 		jQuery.ajaxSetup({
 			type: "POST"
 		});
@@ -2126,7 +2134,9 @@ module( "ajax", {
 
 //----------- jQuery.active
 
-	test( "jQuery.active", 1, function() {
+	test( "jQuery.active", function() {
+		expect( 1 );
+
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 	});
 
