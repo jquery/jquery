@@ -2725,7 +2725,7 @@ test( "Donor event interference", function( assert ) {
 	jQuery( "#donor-input" )[ 0 ].click();
 } );
 
-test( "originalEvent property for Chrome, Safari and FF of simualted event", function( assert ) {
+test( "originalEvent property for Chrome, Safari and FF of simulated event", function( assert ) {
 	var userAgent = window.navigator.userAgent;
 
 	if ( !(/chrome/i.test( userAgent ) ||
