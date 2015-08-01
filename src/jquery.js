@@ -20,6 +20,7 @@ define([
 	"./ajax",
 	"./ajax/xhr",
 	"./ajax/script",
+	"./ajax/plain",
 	"./ajax/jsonp",
 	"./ajax/load",
 	"./event/ajax",
