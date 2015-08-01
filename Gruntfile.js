@@ -4,12 +4,16 @@ module.exports = function( grunt ) {
 	function readOptionalJSON( filepath ) {
 		var data = {};
 		try {
-			data = grunt.file.readJSON( filepath );
+			data = JSON.parse( stripJSONComments(
+				fs.readFileSync( filepath, { encoding: "utf8" } )
+			) );
 		} catch ( e ) {}
 		return data;
 	}
 
-	var gzip = require( "gzip-js" ),
+	var fs = require( "fs" ),
+		stripJSONComments = require( "strip-json-comments" ),
+		gzip = require( "gzip-js" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
 
 	// The concatenated file won't pass onevar
