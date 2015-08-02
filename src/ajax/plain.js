@@ -21,7 +21,7 @@ jQuery.ajaxSetup({
 	} /**/
 });
 
-jQuery.ajaxPrefilter("plain", function (s /*, originalSettings, jqXHR */) {
+jQuery.ajaxPrefilter("plain", function (s) {  // originalSettings, jqXHR
 
 	s.xhrFields = {
 		responseType: "arraybuffer"
