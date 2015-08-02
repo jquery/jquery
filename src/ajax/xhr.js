@@ -87,7 +87,7 @@ jQuery.ajaxTransport(function( options ) {
 								complete(
 									xhrSuccessStatus[xhr.status] || xhr.status,
 									xhr.statusText,
-									typeof xhr.response === "undefined" 
+									typeof xhr.response !== "undefined" 
 										? { plain: xhr.response }
 										: undefined,
 									xhr.getAllResponseHeaders()
