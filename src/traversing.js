@@ -1,10 +1,12 @@
 define( [
 	"./core",
+	"./traversing/var/dir",
+	"./traversing/var/siblings",
 	"./traversing/var/rneedsContext",
 	"./core/init",
 	"./traversing/findFilter",
 	"./selector"
-], function( jQuery, rneedsContext ) {
+], function( jQuery, dir, siblings, rneedsContext ) {
 
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 
@@ -15,35 +17,6 @@ var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 		next: true,
 		prev: true
 	};
-
-jQuery.extend( {
-	dir: function( elem, dir, until ) {
-		var matched = [],
-			cur = elem[ dir ];
-
-		while ( cur && cur.nodeType !== 9 &&
-			( until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until ) ) ) {
-
-			if ( cur.nodeType === 1 ) {
-				matched.push( cur );
-			}
-			cur = cur[ dir ];
-		}
-		return matched;
-	},
-
-	sibling: function( n, elem ) {
-		var r = [];
-
-		for ( ; n; n = n.nextSibling ) {
-			if ( n.nodeType === 1 && n !== elem ) {
-				r.push( n );
-			}
-		}
-
-		return r;
-	}
-} );
 
 jQuery.fn.extend( {
 	has: function( target ) {
@@ -139,10 +112,10 @@ jQuery.each( {
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
-		return jQuery.dir( elem, "parentNode" );
+		return dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "parentNode", until );
+		return dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
 		return sibling( elem, "nextSibling" );
@@ -151,22 +124,22 @@ jQuery.each( {
 		return sibling( elem, "previousSibling" );
 	},
 	nextAll: function( elem ) {
-		return jQuery.dir( elem, "nextSibling" );
+		return dir( elem, "nextSibling" );
 	},
 	prevAll: function( elem ) {
-		return jQuery.dir( elem, "previousSibling" );
+		return dir( elem, "previousSibling" );
 	},
 	nextUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "nextSibling", until );
+		return dir( elem, "nextSibling", until );
 	},
 	prevUntil: function( elem, i, until ) {
-		return jQuery.dir( elem, "previousSibling", until );
+		return dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
-		return jQuery.sibling( ( elem.parentNode || {} ).firstChild, elem );
+		return siblings( ( elem.parentNode || {} ).firstChild, elem );
 	},
 	children: function( elem ) {
-		return jQuery.sibling( elem.firstChild );
+		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
 		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
