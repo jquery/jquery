@@ -14,7 +14,18 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		stripJSONComments = require( "strip-json-comments" ),
 		gzip = require( "gzip-js" ),
-		srcHintOptions = readOptionalJSON( "src/.jshintrc" );
+		srcHintOptions = readOptionalJSON( "src/.jshintrc" ),
+		newNode = !/^v0/.test( process.version ),
+
+		// Allow to skip jsdom-related tests in Node.js < 1.0.0
+		runJsdomTests = newNode || ( function() {
+			try {
+				require( "jsdom" );
+				return true;
+			} catch ( e ) {
+				return false;
+			}
+		} )();
 
 	// The concatenated file won't pass onevar
 	// But our modules can
@@ -182,9 +193,14 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
 
-	grunt.registerTask( "test_fast", [ "node_smoke_tests" ] );
+	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
+	// jsdom version that needs compiling, making it harder for people to compile
+	// jQuery on Windows. (see gh-2519)
+	grunt.registerTask( "test_fast", runJsdomTests ? [ "node_smoke_tests" ] : [] );
 
-	grunt.registerTask( "test", [ "test_fast", "promises_aplus_tests" ] );
+	grunt.registerTask( "test", [ "test_fast" ].concat(
+		runJsdomTests ? [ "promises_aplus_tests" ] : []
+	) );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
