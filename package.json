@@ -39,6 +39,7 @@
     "grunt-jsonlint": "1.0.4",
     "grunt-npmcopy": "0.1.0",
     "gzip-js": "0.3.2",
+    "jsdom": "5.6.1",
     "load-grunt-tasks": "1.0.0",
     "native-promise-only": "0.7.8-a",
     "promises-aplus-tests": "2.1.0",
@@ -51,10 +52,6 @@
     "strip-json-comments": "1.0.3",
     "testswarm": "1.1.0",
     "win-spawn": "2.0.0"
-  },
-  "jsdomVersions": {
-    "node": "3.1.2",
-    "iojs": "5.3.0"
   },
   "scripts": {
     "build": "npm install && grunt",

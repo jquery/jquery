@@ -5,7 +5,7 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		spawnTest = require( "./lib/spawn_test.js" ),
 		testsDir = "./test/node_smoke_tests/",
-		nodeSmokeTests = [ "jsdom", "babel:nodeSmokeTests" ];
+		nodeSmokeTests = [ "babel:nodeSmokeTests" ];
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
 	// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
