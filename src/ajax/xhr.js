@@ -80,6 +80,19 @@ jQuery.ajaxTransport(function( options ) {
 									xhr.status,
 									xhr.statusText
 								);
+							} else if (xhr.responseType && 
+								(xhr.responseType === "blob" ||
+									xhr.responseType === "arraybuffer")) {
+								// Accessing responseText when getting binary response
+								// throws an exception in Firefox
+								complete(
+									xhrSuccessStatus[xhr.status] || xhr.status,
+									xhr.statusText,
+									typeof xhr.response !== "undefined" ? {
+										plain: xhr.response 
+									} : undefined,
+									xhr.getAllResponseHeaders()
+								);
 							} else {
 								complete(
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
