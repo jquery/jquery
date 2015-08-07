@@ -28,7 +28,7 @@ function buildParams( prefix, obj, traditional, add ) {
 
 				// Item is non-scalar (array or object), encode its numeric index.
 				buildParams(
-					prefix + "[" + ( typeof v === "object" ? i : "" ) + "]",
+					prefix + "[" + ( jQuery.type( v ) === "object" ? i : "" ) + "]",
 					v,
 					traditional,
 					add
