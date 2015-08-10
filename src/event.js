@@ -33,7 +33,7 @@ function safeActiveElement() {
 }
 
 function on( elem, types, selector, data, fn, one ) {
-	var type, origFn;
+	var origFn, type;
 
 	// Types can be a map of types/handlers
 	if ( typeof types === "object" ) {
@@ -431,7 +431,7 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event );
 
-		var i, ret, handleObj, matched, j,
+		var i, j, ret, matched, handleObj,
 			handlerQueue = [],
 			args = slice.call( arguments ),
 			handlers = ( jQuery._data( this, "events" ) || {} )[ event.type ] || [],
@@ -458,9 +458,8 @@ jQuery.event = {
 			while ( (handleObj = matched.handlers[ j++ ]) &&
 				!event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or
-				// 2) have namespace(s) a subset or equal to those in the bound event
-				// (both can have no namespace).
+				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
+				// a subset or equal to those in the bound event (both can have no namespace).
 				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
@@ -488,16 +487,16 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
-		var sel, handleObj, matches, i,
+		var i, matches, sel, handleObj,
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
 
 		// Support (at least): Chrome, IE9
 		// Find delegate handlers
+		// Black-hole SVG <use> instance trees (#13180)
 		//
 		// Support: Firefox
-		// Black-hole SVG <use> instance trees (#13180)
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
 
