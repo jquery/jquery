@@ -3,7 +3,7 @@ module.exports = function( grunt ) {
 	"use strict";
 
 	grunt.registerTask( "testswarm", function( commit, configFile, projectName, browserSets,
-			timeout ) {
+			timeout, testMode ) {
 		var jobName, config, tests,
 			testswarm = require( "testswarm" ),
 			runs = {},
@@ -28,9 +28,13 @@ module.exports = function( grunt ) {
 				commit + "'>" + commit.substr( 0, 10 ) + "</a>";
 		}
 
-		tests.forEach(function( test ) {
-			runs[ test ] = config.testUrl + commit + "/test/index.html?module=" + test;
-		});
+		if ( testMode === "basic" ) {
+			runs.basic = config.testUrl + commit + "/test/index.html?module=basic";
+		} else {
+			tests.forEach( function( test ) {
+				runs[ test ] = config.testUrl + commit + "/test/index.html?module=" + test;
+			} );
+		}
 
 		testswarm.createClient({
 			url: config.swarmUrl
