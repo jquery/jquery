@@ -1416,6 +1416,26 @@ test("Submit event can be stopped (#11049)", function() {
 	form.remove();
 });
 
+test("In IE submit delegation don't try to read data on the form attribute when it's a string #14126", function() {
+	expect(1);
+
+	var $fixture = jQuery(
+		"<div>" +
+			"<button form='foo-form'>Submit</button>" +
+		"</div>"
+		)
+		// Delegate a submit event so that jQuery.event.special.submit is attached on IE8
+		.on( "submit", "some-form", jQuery.noop )
+		.appendTo( "body" )
+		.find( "button" ).click()
+		.end()
+		.off( "submit" );
+
+	ok( true, "Test should reach this point (shouldn't die)" );
+
+	$fixture.remove();
+});
+
 // Test beforeunload event only if it supported.
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload

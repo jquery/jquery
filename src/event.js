@@ -896,8 +896,8 @@ if ( !support.submit ) {
 					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ?
 						elem.form :
 						undefined;
-
-				if ( form && !jQuery._data( form, "submit" ) ) {
+				// Don't try to read data on non-element (#14126)
+				if ( form && form.nodeType === 1 && !jQuery._data( form, "submit" ) ) {
 					jQuery.event.add( form, "submit._submit", function( event ) {
 						event._submitBubble = true;
 					});
