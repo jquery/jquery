@@ -1,4 +1,4 @@
-QUnit.module( "event" );
+QUnit.module( "ready" );
 
 (function() {
 	var notYetReady, noEarlyExecution,
