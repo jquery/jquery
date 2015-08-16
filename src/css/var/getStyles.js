@@ -1,4 +1,4 @@
-define(function() {
+define( function() {
 	return function( elem ) {
 
 		// Support: IE<=11+, Firefox<=30+ (#15098, #14150)
@@ -12,4 +12,4 @@ define(function() {
 
 		return view.getComputedStyle( elem );
 	};
-});
+} );

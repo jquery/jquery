@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core"
 ], function( jQuery ) {
 
@@ -24,4 +24,4 @@ jQuery.parseXML = function( data ) {
 
 return jQuery.parseXML;
 
-});
+} );

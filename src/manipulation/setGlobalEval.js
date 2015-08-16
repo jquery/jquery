@@ -1,4 +1,4 @@
-define([
+define( [
 	"../data/var/dataPriv"
 ], function( dataPriv ) {
 
@@ -17,4 +17,4 @@ function setGlobalEval( elems, refElements ) {
 }
 
 return setGlobalEval;
-});
+} );

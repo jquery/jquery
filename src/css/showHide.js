@@ -1,4 +1,4 @@
-define([
+define( [
 	"../data/var/dataPriv"
 ], function( dataPriv ) {
 
@@ -18,6 +18,7 @@ function showHide( elements, show ) {
 		display = elem.style.display;
 		if ( show ) {
 			if ( display === "none" ) {
+
 				// Restore a pre-hide() value if we have one
 				values[ index ] = dataPriv.get( elem, "display" ) || "";
 			}
@@ -44,4 +45,4 @@ function showHide( elements, show ) {
 
 return showHide;
 
-});
+} );

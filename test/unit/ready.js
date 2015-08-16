@@ -1,6 +1,6 @@
 QUnit.module( "ready" );
 
-(function() {
+( function() {
 	var notYetReady, noEarlyExecution,
 		order = [],
 		args = {};
@@ -12,7 +12,7 @@ QUnit.module( "ready" );
 
 		assert.equal( notYetReady, true, "jQuery.isReady should not be true before DOM ready" );
 		assert.equal( jQuery.isReady, true, "jQuery.isReady should be true once DOM is ready" );
-	});
+	} );
 
 	// Create an event handler.
 	function makeHandler( testId ) {
@@ -22,7 +22,7 @@ QUnit.module( "ready" );
 		// the correct arg is being passed into the event handler.
 		return function( arg ) {
 			order.push( testId );
-			args[testId] = arg;
+			args[ testId ] = arg;
 		};
 	}
 
@@ -65,6 +65,6 @@ QUnit.module( "ready" );
 		assert.equal( order.pop(), "h", "Event handler should execute immediately" );
 		assert.equal( args.h, jQuery,
 			"Argument passed to fn in jQuery(document).ready( fn ) should be jQuery" );
-	});
+	} );
 
-})();
+} )();

@@ -29,13 +29,14 @@ var
 function makeReleaseCopies( Release ) {
 	shell.mkdir( "-p", cdnFolder );
 
-	Object.keys( releaseFiles ).forEach(function( key ) {
+	Object.keys( releaseFiles ).forEach( function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
 			unpathedFile = key.replace( /VER/g, Release.newVersion ),
 			releaseFile = cdnFolder + "/" + unpathedFile;
 
 		if ( /\.map$/.test( releaseFile ) ) {
+
 			// Map files need to reference the new uncompressed name;
 			// assume that all files reside in the same directory.
 			// "file":"jquery.min.js","sources":["jquery.js"]
@@ -47,7 +48,7 @@ function makeReleaseCopies( Release ) {
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );
 		}
-	});
+	} );
 }
 
 function makeArchives( Release, callback ) {
@@ -75,23 +76,23 @@ function makeArchives( Release, callback ) {
 
 		output.on( "error", function( err ) {
 			throw err;
-		});
+		} );
 
 		archiver.pipe( output );
 
-		files = files.map(function( item ) {
+		files = files.map( function( item ) {
 			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
 				item.replace( rver, Release.newVersion );
-		});
+		} );
 
 		sum = Release.exec( "md5sum " + files.join( " " ), "Error retrieving md5sum" );
 		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
-		files.forEach(function( file ) {
+		files.forEach( function( file ) {
 			archiver.append( fs.createReadStream( file ),
 				{ name: path.basename( file ) } );
-		});
+		} );
 
 		archiver.finalize();
 	}
@@ -104,9 +105,9 @@ function makeArchives( Release, callback ) {
 		makeArchive( "mscdn", msFilesCDN, callback );
 	}
 
-	buildGoogleCDN(function() {
+	buildGoogleCDN( function() {
 		buildMicrosoftCDN( callback );
-	});
+	} );
 }
 
 module.exports = {

@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/rnotwhite",
 	"./accepts"
@@ -29,7 +29,7 @@ Data.prototype = {
 				value: value,
 				writable: true,
 				configurable: true
-			});
+			} );
 		}
 		return owner[ this.expando ];
 	},
@@ -100,7 +100,7 @@ Data.prototype = {
 			return this.get( owner, key );
 		}
 
-		// [*]When the key is not a string, or both a key and value
+		// When the key is not a string, or both a key and value
 		// are specified, set or extend (existing objects) with either:
 		//
 		//   1. An object of properties
@@ -157,4 +157,4 @@ Data.prototype = {
 };
 
 return Data;
-});
+} );

@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/rnotwhite",
 	"../data/var/dataPriv",
@@ -11,7 +11,7 @@ function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	addClass: function( value ) {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			proceed = typeof value === "string" && value,
@@ -19,12 +19,13 @@ jQuery.fn.extend({
 			len = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
+			return this.each( function( j ) {
 				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
-			});
+			} );
 		}
 
 		if ( proceed ) {
+
 			// The disjunction here is for better compressibility (see removeClass)
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
@@ -36,13 +37,13 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( ( clazz = classes[ j++ ] ) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
 							cur += clazz + " ";
 						}
 					}
 
-					// only assign if different to avoid unneeded rendering.
+					// Only assign if different to avoid unneeded rendering.
 					finalValue = jQuery.trim( cur );
 					if ( curValue !== finalValue ) {
 						elem.setAttribute( "class", finalValue );
@@ -61,9 +62,9 @@ jQuery.fn.extend({
 			len = this.length;
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
+			return this.each( function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
-			});
+			} );
 		}
 		if ( proceed ) {
 			classes = ( value || "" ).match( rnotwhite ) || [];
@@ -78,7 +79,8 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( ( clazz = classes[ j++ ] ) ) {
+
 						// Remove *all* instances
 						while ( cur.indexOf( " " + clazz + " " ) > -1 ) {
 							cur = cur.replace( " " + clazz + " ", " " );
@@ -105,15 +107,15 @@ jQuery.fn.extend({
 		}
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( i ) {
+			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
 					value.call( this, i, getClass( this ), stateVal ),
 					stateVal
 				);
-			});
+			} );
 		}
 
-		return this.each(function() {
+		return this.each( function() {
 			var className, i, self, classNames;
 
 			if ( type === "string" ) {
@@ -138,7 +140,7 @@ jQuery.fn.extend({
 				className = getClass( this );
 				if ( className ) {
 
-					// store className if set
+					// Store className if set
 					dataPriv.set( this, "__className__", className );
 				}
 
@@ -154,7 +156,7 @@ jQuery.fn.extend({
 					);
 				}
 			}
-		});
+		} );
 	},
 
 	hasClass: function( selector ) {
@@ -162,8 +164,8 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 &&
-				( " " + getClass( this[i] ) + " " ).replace( rclass, " " )
+			if ( this[ i ].nodeType === 1 &&
+				( " " + getClass( this[ i ] ) + " " ).replace( rclass, " " )
 					.indexOf( className ) > -1
 			) {
 				return true;
@@ -172,6 +174,6 @@ jQuery.fn.extend({
 
 		return false;
 	}
-});
+} );
 
-});
+} );

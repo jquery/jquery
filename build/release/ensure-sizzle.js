@@ -8,7 +8,7 @@ var fs = require( "fs" ),
  * @param {Function(string)} callback
  */
 function getLatestSizzle( callback ) {
-	npm.load(function( err, npm ) {
+	npm.load( function( err, npm ) {
 		if ( err ) {
 			throw err;
 		}
@@ -17,8 +17,8 @@ function getLatestSizzle( callback ) {
 				throw err;
 			}
 			callback( Object.keys( info )[ 0 ] );
-		});
-	});
+		} );
+	} );
 }
 
 /**
@@ -29,11 +29,12 @@ function getLatestSizzle( callback ) {
 function ensureSizzle( Release, callback ) {
 	console.log();
 	console.log( "Checking Sizzle version..." );
-	getLatestSizzle(function( latest ) {
+	getLatestSizzle( function( latest ) {
 		var match = rversion.exec( fs.readFileSync( sizzleLoc, "utf8" ) ),
 			version = match ? match[ 1 ] : "Not Found";
 
 		if ( version !== latest ) {
+
 			// colors is inherited from jquery-release
 			console.log(
 				"The Sizzle version in the src folder (" + version.red +
@@ -44,7 +45,7 @@ function ensureSizzle( Release, callback ) {
 			console.log( "Sizzle is latest (" + latest.green + ")" );
 			callback();
 		}
-	});
+	} );
 }
 
 module.exports = ensureSizzle;

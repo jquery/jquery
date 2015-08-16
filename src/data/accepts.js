@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core"
 ], function( jQuery ) {
 
@@ -6,6 +6,7 @@ define([
  * Determines whether an object can have data
  */
 jQuery.acceptData = function( owner ) {
+
 	// Accepts only:
 	//  - Node
 	//    - Node.ELEMENT_NODE
@@ -17,4 +18,4 @@ jQuery.acceptData = function( owner ) {
 };
 
 return jQuery.acceptData;
-});
+} );

@@ -5,6 +5,7 @@ module.exports = function( Release, complete ) {
 		shell = require( "shelljs" ),
 		pkg = require( Release.dir.repo + "/package.json" ),
 		distRemote = Release.remote.replace( "jquery.git", "jquery-dist.git" ),
+
 		// These files are included with the distribution
 		files = [
 			"src",
@@ -34,7 +35,7 @@ module.exports = function( Release, complete ) {
 	 * Generate bower file for jquery-dist
 	 */
 	function generateBower() {
-		return JSON.stringify({
+		return JSON.stringify( {
 			name: pkg.name,
 			main: pkg.main,
 			license: "MIT",
@@ -42,7 +43,7 @@ module.exports = function( Release, complete ) {
 				"package.json"
 			],
 			keywords: pkg.keywords
-		}, null, 2);
+		}, null, 2 );
 	}
 
 	/**
@@ -57,14 +58,14 @@ module.exports = function( Release, complete ) {
 			"dist/jquery.js",
 			"dist/jquery.min.js",
 			"dist/jquery.min.map"
-		].forEach(function( file ) {
+		].forEach( function( file ) {
 			shell.cp( Release.dir.repo + "/" + file, distFolder );
-		});
+		} );
 
 		// Copy other files
-		files.forEach(function( file ) {
+		files.forEach( function( file ) {
 			shell.cp( "-r", Release.dir.repo + "/" + file, Release.dir.dist );
-		});
+		} );
 
 		// Write generated bower file
 		fs.writeFileSync( Release.dir.dist + "/bower.json", generateBower() );

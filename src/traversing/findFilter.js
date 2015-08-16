@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/indexOf",
 	"./var/rneedsContext",
@@ -13,14 +13,14 @@ function winnow( elements, qualifier, not ) {
 		return jQuery.grep( elements, function( elem, i ) {
 			/* jshint -W018 */
 			return !!qualifier.call( elem, i, elem ) !== not;
-		});
+		} );
 
 	}
 
 	if ( qualifier.nodeType ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( elem === qualifier ) !== not;
-		});
+		} );
 
 	}
 
@@ -34,7 +34,7 @@ function winnow( elements, qualifier, not ) {
 
 	return jQuery.grep( elements, function( elem ) {
 		return ( indexOf.call( qualifier, elem ) > -1 ) !== not;
-	});
+	} );
 }
 
 jQuery.filter = function( expr, elems, not ) {
@@ -48,10 +48,10 @@ jQuery.filter = function( expr, elems, not ) {
 		jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [] :
 		jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
 			return elem.nodeType === 1;
-		}));
+		} ) );
 };
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	find: function( selector ) {
 		var i,
 			len = this.length,
@@ -59,13 +59,13 @@ jQuery.fn.extend({
 			self = this;
 
 		if ( typeof selector !== "string" ) {
-			return this.pushStack( jQuery( selector ).filter(function() {
+			return this.pushStack( jQuery( selector ).filter( function() {
 				for ( i = 0; i < len; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
 					}
 				}
-			}) );
+			} ) );
 		}
 
 		for ( i = 0; i < len; i++ ) {
@@ -75,10 +75,10 @@ jQuery.fn.extend({
 		return this.pushStack( len > 1 ? jQuery.uniqueSort( ret ) : ret );
 	},
 	filter: function( selector ) {
-		return this.pushStack( winnow(this, selector || [], false) );
+		return this.pushStack( winnow( this, selector || [], false ) );
 	},
 	not: function( selector ) {
-		return this.pushStack( winnow(this, selector || [], true) );
+		return this.pushStack( winnow( this, selector || [], true ) );
 	},
 	is: function( selector ) {
 		return !!winnow(
@@ -92,6 +92,6 @@ jQuery.fn.extend({
 			false
 		).length;
 	}
-});
+} );
 
-});
+} );

@@ -1,4 +1,4 @@
-QUnit.module("support", { teardown: moduleTeardown });
+QUnit.module( "support", { teardown: moduleTeardown } );
 
 var computedSupport = getComputedSupport( jQuery.support );
 
@@ -45,14 +45,14 @@ testIframeWithCallback(
 
 		QUnit.stop();
 
-		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
+		supportjQuery.get( "data/support/csp.log" ).done( function( data ) {
 			assert.equal( data, "", "No log request should be sent" );
 			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
-		});
+		} );
 	}
 );
 
-(function() {
+( function() {
 	var expected,
 		userAgent = window.navigator.userAgent;
 
@@ -111,6 +111,7 @@ testIframeWithCallback(
 			"reliableMarginRight": true
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
+
 		// Catches Chrome on Android as well (i.e. the default
 		// Android browser on Android >= 4.4).
 		expected = {
@@ -270,16 +271,17 @@ testIframeWithCallback(
 			assert.expect( j );
 
 			for ( i in expected ) {
+
 				// TODO check for all modules containing support properties
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
 					assert.equal( computedSupport[ i ], expected[ i ],
 						"jQuery.support['" + i + "']: " + computedSupport[ i ] +
-							", expected['" + i + "']: " + expected[ i ]);
+							", expected['" + i + "']: " + expected[ i ] );
 				} else {
 					assert.ok( true, "no ajax; skipping jQuery.support[' " + i + " ']" );
 				}
 			}
-		});
+		} );
 	}
 
-})();
+} )();

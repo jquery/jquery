@@ -1,2 +1,2 @@
-define(function() {
-});
+define( function() {
+} );
