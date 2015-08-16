@@ -1,28 +1,28 @@
-module("selector", { teardown: moduleTeardown });
+QUnit.module("selector", { teardown: moduleTeardown });
 
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
  */
 
-test("element - jQuery only", function() {
-	expect( 7 );
+QUnit.test("element - jQuery only", function( assert ) {
+	assert.expect( 7 );
 
 	var fixture = document.getElementById("qunit-fixture");
 
-	deepEqual( jQuery("p", fixture).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a Node context." );
-	deepEqual( jQuery("p", "#qunit-fixture").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a selector context." );
-	deepEqual( jQuery("p", jQuery("#qunit-fixture")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a jQuery object context." );
-	deepEqual( jQuery("#qunit-fixture").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context via .find()." );
+	assert.deepEqual( jQuery("p", fixture).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a Node context." );
+	assert.deepEqual( jQuery("p", "#qunit-fixture").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a selector context." );
+	assert.deepEqual( jQuery("p", jQuery("#qunit-fixture")).get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a jQuery object context." );
+	assert.deepEqual( jQuery("#qunit-fixture").find("p").get(), q("firstp","ap","sndp","en","sap","first"), "Finding elements with a context via .find()." );
 
-	ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
-	ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+	assert.ok( jQuery("#length").length, "<input name=\"length\"> cannot be found under IE, see #945" );
+	assert.ok( jQuery("#lengthtest input").length, "<input name=\"length\"> cannot be found under IE, see #945" );
 
 	// #7533
-	equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
+	assert.equal( jQuery("<div id=\"A'B~C.D[E]\"><p>foo</p></div>").find("p").length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 });
 
-test("id", function() {
-	expect( 26 );
+QUnit.test("id", function( assert ) {
+	assert.expect( 26 );
 
 	var a;
 
@@ -63,17 +63,17 @@ test("id", function() {
 	t( "ID with weird characters in it", "#name\\+value", ["name+value"] );
 });
 
-test("class - jQuery only", function() {
-	expect( 4 );
+QUnit.test("class - jQuery only", function( assert ) {
+	assert.expect( 4 );
 
-	deepEqual( jQuery(".blog", document.getElementsByTagName("p")).get(), q("mark", "simon"), "Finding elements with a context." );
-	deepEqual( jQuery(".blog", "p").get(), q("mark", "simon"), "Finding elements with a context." );
-	deepEqual( jQuery(".blog", jQuery("p")).get(), q("mark", "simon"), "Finding elements with a context." );
-	deepEqual( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
+	assert.deepEqual( jQuery(".blog", document.getElementsByTagName("p")).get(), q("mark", "simon"), "Finding elements with a context." );
+	assert.deepEqual( jQuery(".blog", "p").get(), q("mark", "simon"), "Finding elements with a context." );
+	assert.deepEqual( jQuery(".blog", jQuery("p")).get(), q("mark", "simon"), "Finding elements with a context." );
+	assert.deepEqual( jQuery("p").find(".blog").get(), q("mark", "simon"), "Finding elements with a context." );
 });
 
-test("name", function() {
-	expect( 5 );
+QUnit.test("name", function( assert ) {
+	assert.expect( 5 );
 
 	var form;
 
@@ -84,24 +84,24 @@ test("name", function() {
 	t( "Name selector for grouped input", "input[name='types[]']", ["types_all", "types_anime", "types_movie"] );
 
 	form = jQuery("<form><input name='id'/></form>").appendTo("body");
-	equal( jQuery("input", form[0]).length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
+	assert.equal( jQuery("input", form[0]).length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
 
 	form.remove();
 });
 
-test( "selectors with comma", function() {
-	expect( 4 );
+QUnit.test( "selectors with comma", function( assert ) {
+	assert.expect( 4 );
 
 	var fixture = jQuery( "<div><h2><span/></h2><div><p><span/></p><p/></div></div>" );
 
-	equal( fixture.find( "h2, div p" ).filter( "p" ).length, 2, "has to find two <p>" );
-	equal( fixture.find( "h2, div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
-	equal( fixture.find( "h2 , div p" ).filter( "p" ).length, 2, "has to find two <p>" );
-	equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	assert.equal( fixture.find( "h2, div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	assert.equal( fixture.find( "h2, div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	assert.equal( fixture.find( "h2 , div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	assert.equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 });
 
-test( "child and adjacent", function() {
-	expect( 27 );
+QUnit.test( "child and adjacent", function( assert ) {
+	assert.expect( 27 );
 
 	var nothiddendiv;
 
@@ -127,10 +127,10 @@ test( "child and adjacent", function() {
 	t( "Multiple sibling combinators doesn't miss general siblings", "#siblingTest > em:first-child + em ~ span", ["siblingspan"] );
 	t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
 
-	equal( jQuery("#listWithTabIndex").length, 1, "Parent div for next test is found via ID (#8310)" );
-	equal( jQuery("#listWithTabIndex li:eq(2) ~ li").length, 1, "Find by general sibling combinator (#8310)" );
-	equal( jQuery("#__sizzle__").length, 0, "Make sure the temporary id assigned by sizzle is cleared out (#8310)" );
-	equal( jQuery("#listWithTabIndex").length, 1, "Parent div for previous test is still found via ID (#8310)" );
+	assert.equal( jQuery("#listWithTabIndex").length, 1, "Parent div for next test is found via ID (#8310)" );
+	assert.equal( jQuery("#listWithTabIndex li:eq(2) ~ li").length, 1, "Find by general sibling combinator (#8310)" );
+	assert.equal( jQuery("#__sizzle__").length, 0, "Make sure the temporary id assigned by sizzle is cleared out (#8310)" );
+	assert.equal( jQuery("#listWithTabIndex").length, 1, "Parent div for previous test is still found via ID (#8310)" );
 
 	t( "Verify deep class selector", "div.blah > p > a", [] );
 
@@ -141,8 +141,8 @@ test( "child and adjacent", function() {
 	t( "Non-existent ancestors", ".fototab > .thumbnails > a", [] );
 });
 
-test("attributes", function() {
-	expect( 54 );
+QUnit.test("attributes", function( assert ) {
+	assert.expect( 54 );
 
 	var attrbad, div, withScript;
 
@@ -221,7 +221,7 @@ test("attributes", function() {
 	t( "input[type=search]", "#form input[type=search]", ["search"] );
 
 	withScript = supportjQuery( "<div><span><script src=''/></span></div>" );
-	ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery #13777)" );
+	assert.ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery #13777)" );
 
 	div = document.getElementById("foo");
 	t( "Object.prototype property \"constructor\" (negative)", "[constructor]", [] );
@@ -234,160 +234,164 @@ test("attributes", function() {
 	t( "Value attribute is retrieved correctly", "input[value=Test]", ["text1", "text2"] );
 
 	// #12600
-	ok(
+	assert.ok(
 		jQuery("<select value='12600'><option value='option' selected='selected'></option><option value=''></option></select>")
 		.prop( "value", "option" )
 		.is(":input[value='12600']"),
 
 		":input[value=foo] selects select by attribute"
 	);
-	ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
+	assert.ok( jQuery("<input type='text' value='12600'/>").prop( "value", "option" ).is(":input[value='12600']"),
 		":input[value=foo] selects text input by attribute"
 	);
 
 	// #11115
-	ok( jQuery("<input type='checkbox' checked='checked'/>").prop( "checked", false ).is("[checked]"),
+	assert.ok( jQuery("<input type='checkbox' checked='checked'/>").prop( "checked", false ).is("[checked]"),
 		"[checked] selects by attribute (positive)"
 	);
-	ok( !jQuery("<input type='checkbox'/>").prop( "checked", true ).is("[checked]"),
+	assert.ok( !jQuery("<input type='checkbox'/>").prop( "checked", true ).is("[checked]"),
 		"[checked] selects by attribute (negative)"
 	);
 });
 
-test("disconnected nodes", function() {
-	expect( 1 );
+QUnit.test("disconnected nodes", function( assert ) {
+	assert.expect( 1 );
 
 	var $div = jQuery("<div/>");
-	equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
+	assert.equal( $div.is("div"), true, "Make sure .is('nodeName') works on disconnected nodes." );
 });
 
-test("disconnected nodes - jQuery only", function() {
-	expect( 3 );
+QUnit.test("disconnected nodes - jQuery only", function( assert ) {
+	assert.expect( 3 );
 
 	var $opt = jQuery("<option></option>").attr("value", "whipit").appendTo("#qunit-fixture").detach();
-	equal( $opt.val(), "whipit", "option value" );
-	equal( $opt.is(":selected"), false, "unselected option" );
+	assert.equal( $opt.val(), "whipit", "option value" );
+	assert.equal( $opt.is(":selected"), false, "unselected option" );
 	$opt.prop("selected", true);
-	equal( $opt.is(":selected"), true, "selected option" );
+	assert.equal( $opt.is(":selected"), true, "selected option" );
 });
 
-testIframe("selector/html5_selector", "attributes - jQuery.attr", function( jQuery, window, document ) {
-	expect( 38 );
+testIframe(
+	"selector/html5_selector",
+	"attributes - jQuery.attr",
+	function( jQuery, window, document, assert ) {
+		assert.expect( 38 );
 
-	/**
-	 * Returns an array of elements with the given IDs
-	 * q & t are added here for the iFrame's context
-	 */
-	function q() {
-		var r = [],
-			i = 0;
+		/**
+		 * Returns an array of elements with the given IDs
+		 * q & t are added here for the iFrame's context
+		 */
+		function q() {
+			var r = [],
+				i = 0;
 
-		for ( ; i < arguments.length; i++ ) {
-			r.push( document.getElementById( arguments[i] ) );
-		}
-		return r;
-	}
-
-	/**
-	 * Asserts that a select matches the given IDs
-	 * @example t("Check for something", "//[a]", ["foo", "baar"]);
-	 * @param {String} a - Assertion name
-	 * @param {String} b - Sizzle selector
-	 * @param {Array} c - Array of ids to construct what is expected
-	 */
-	function t( a, b, c ) {
-		var f = jQuery(b).get(),
-			s = "",
-			i = 0;
-
-		for ( ; i < f.length; i++ ) {
-			s += (s && ",") + "'" + f[i].id + "'";
+			for ( ; i < arguments.length; i++ ) {
+				r.push( document.getElementById( arguments[i] ) );
+			}
+			return r;
 		}
 
-		deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
+		/**
+		 * Asserts that a select matches the given IDs
+		 * @example t("Check for something", "//[a]", ["foo", "baar"]);
+		 * @param {String} a - Assertion name
+		 * @param {String} b - Sizzle selector
+		 * @param {Array} c - Array of ids to construct what is expected
+		 */
+		function t( a, b, c ) {
+			var f = jQuery(b).get(),
+				s = "",
+				i = 0;
+
+			for ( ; i < f.length; i++ ) {
+				s += (s && ",") + "'" + f[i].id + "'";
+			}
+
+			assert.deepEqual(f, q.apply( q, c ), a + " (" + b + ")");
+		}
+
+		// ====== All known boolean attributes, including html5 booleans ======
+		// autobuffer, autofocus, autoplay, async, checked,
+		// compact, controls, declare, defer, disabled,
+		// formnovalidate, hidden, indeterminate (property only),
+		// ismap, itemscope, loop, multiple, muted, nohref, noresize,
+		// noshade, nowrap, novalidate, open, pubdate, readonly, required,
+		// reversed, scoped, seamless, selected, truespeed, visible (skipping visible attribute, which is on a barprop object)
+
+		t( "Attribute Exists", "[autobuffer]",     ["video1"]);
+		t( "Attribute Exists", "[autofocus]",      ["text1"]);
+		t( "Attribute Exists", "[autoplay]",       ["video1"]);
+		t( "Attribute Exists", "[async]",          ["script1"]);
+		t( "Attribute Exists", "[checked]",        ["check1"]);
+		t( "Attribute Exists", "[compact]",        ["dl"]);
+		t( "Attribute Exists", "[controls]",       ["video1"]);
+		t( "Attribute Exists", "[declare]",        ["object1"]);
+		t( "Attribute Exists", "[defer]",          ["script1"]);
+		t( "Attribute Exists", "[disabled]",       ["check1"]);
+		t( "Attribute Exists", "[formnovalidate]", ["form1"]);
+		t( "Attribute Exists", "[hidden]",         ["div1"]);
+		t( "Attribute Exists", "[indeterminate]",  []);
+		t( "Attribute Exists", "[ismap]",          ["img1"]);
+		t( "Attribute Exists", "[itemscope]",      ["div1"]);
+		t( "Attribute Exists", "[loop]",           ["video1"]);
+		t( "Attribute Exists", "[multiple]",       ["select1"]);
+		t( "Attribute Exists", "[muted]",          ["audio1"]);
+		t( "Attribute Exists", "[nohref]",         ["area1"]);
+		t( "Attribute Exists", "[noresize]",       ["textarea1"]);
+		t( "Attribute Exists", "[noshade]",        ["hr1"]);
+		t( "Attribute Exists", "[nowrap]",         ["td1", "div1"]);
+		t( "Attribute Exists", "[novalidate]",     ["form1"]);
+		t( "Attribute Exists", "[open]",           ["details1"]);
+		t( "Attribute Exists", "[pubdate]",        ["article1"]);
+		t( "Attribute Exists", "[readonly]",       ["text1"]);
+		t( "Attribute Exists", "[required]",       ["text1"]);
+		t( "Attribute Exists", "[reversed]",       ["ol1"]);
+		t( "Attribute Exists", "[scoped]",         ["style1"]);
+		t( "Attribute Exists", "[seamless]",       ["iframe1"]);
+		t( "Attribute Exists", "[selected]",       ["option1"]);
+		t( "Attribute Exists", "[truespeed]",      ["marquee1"]);
+
+		// Enumerated attributes (these are not boolean content attributes)
+		jQuery.expandedEach = jQuery.each;
+		jQuery.expandedEach([ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
+			t( "Enumerated attribute", "[" + val + "]", ["div1"]);
+		});
+		t( "Enumerated attribute", "[spellcheck]", ["span1"]);
+
+		t( "tabindex selector does not retrieve all elements in IE6/7 (#8473)",
+			"form, [tabindex]", [ "form1", "text1" ] );
+		t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
 	}
+);
 
-	// ====== All known boolean attributes, including html5 booleans ======
-	// autobuffer, autofocus, autoplay, async, checked,
-	// compact, controls, declare, defer, disabled,
-	// formnovalidate, hidden, indeterminate (property only),
-	// ismap, itemscope, loop, multiple, muted, nohref, noresize,
-	// noshade, nowrap, novalidate, open, pubdate, readonly, required,
-	// reversed, scoped, seamless, selected, truespeed, visible (skipping visible attribute, which is on a barprop object)
-
-	t( "Attribute Exists", "[autobuffer]",     ["video1"]);
-	t( "Attribute Exists", "[autofocus]",      ["text1"]);
-	t( "Attribute Exists", "[autoplay]",       ["video1"]);
-	t( "Attribute Exists", "[async]",          ["script1"]);
-	t( "Attribute Exists", "[checked]",        ["check1"]);
-	t( "Attribute Exists", "[compact]",        ["dl"]);
-	t( "Attribute Exists", "[controls]",       ["video1"]);
-	t( "Attribute Exists", "[declare]",        ["object1"]);
-	t( "Attribute Exists", "[defer]",          ["script1"]);
-	t( "Attribute Exists", "[disabled]",       ["check1"]);
-	t( "Attribute Exists", "[formnovalidate]", ["form1"]);
-	t( "Attribute Exists", "[hidden]",         ["div1"]);
-	t( "Attribute Exists", "[indeterminate]",  []);
-	t( "Attribute Exists", "[ismap]",          ["img1"]);
-	t( "Attribute Exists", "[itemscope]",      ["div1"]);
-	t( "Attribute Exists", "[loop]",           ["video1"]);
-	t( "Attribute Exists", "[multiple]",       ["select1"]);
-	t( "Attribute Exists", "[muted]",          ["audio1"]);
-	t( "Attribute Exists", "[nohref]",         ["area1"]);
-	t( "Attribute Exists", "[noresize]",       ["textarea1"]);
-	t( "Attribute Exists", "[noshade]",        ["hr1"]);
-	t( "Attribute Exists", "[nowrap]",         ["td1", "div1"]);
-	t( "Attribute Exists", "[novalidate]",     ["form1"]);
-	t( "Attribute Exists", "[open]",           ["details1"]);
-	t( "Attribute Exists", "[pubdate]",        ["article1"]);
-	t( "Attribute Exists", "[readonly]",       ["text1"]);
-	t( "Attribute Exists", "[required]",       ["text1"]);
-	t( "Attribute Exists", "[reversed]",       ["ol1"]);
-	t( "Attribute Exists", "[scoped]",         ["style1"]);
-	t( "Attribute Exists", "[seamless]",       ["iframe1"]);
-	t( "Attribute Exists", "[selected]",       ["option1"]);
-	t( "Attribute Exists", "[truespeed]",      ["marquee1"]);
-
-	// Enumerated attributes (these are not boolean content attributes)
-	jQuery.expandedEach = jQuery.each;
-	jQuery.expandedEach([ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
-		t( "Enumerated attribute", "[" + val + "]", ["div1"]);
-	});
-	t( "Enumerated attribute", "[spellcheck]", ["span1"]);
-
-	t( "tabindex selector does not retrieve all elements in IE6/7 (#8473)",
-		"form, [tabindex]", [ "form1", "text1" ] );
-	t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", ["form1"] );
-});
-
-test( "jQuery.contains", function() {
-	expect( 16 );
+QUnit.test( "jQuery.contains", function( assert ) {
+	assert.expect( 16 );
 
 	var container = document.getElementById("nonnodes"),
 		element = container.firstChild,
 		text = element.nextSibling,
 		nonContained = container.nextSibling,
 		detached = document.createElement("a");
-	ok( element && element.nodeType === 1, "preliminary: found element" );
-	ok( text && text.nodeType === 3, "preliminary: found text" );
-	ok( nonContained, "preliminary: found non-descendant" );
-	ok( jQuery.contains(container, element), "child" );
-	ok( jQuery.contains(container.parentNode, element), "grandchild" );
-	ok( jQuery.contains(container, text), "text child" );
-	ok( jQuery.contains(container.parentNode, text), "text grandchild" );
-	ok( !jQuery.contains(container, container), "self" );
-	ok( !jQuery.contains(element, container), "parent" );
-	ok( !jQuery.contains(container, nonContained), "non-descendant" );
-	ok( !jQuery.contains(container, document), "document" );
-	ok( !jQuery.contains(container, document.documentElement), "documentElement (negative)" );
-	ok( !jQuery.contains(container, null), "Passing null does not throw an error" );
-	ok( jQuery.contains(document, document.documentElement), "documentElement (positive)" );
-	ok( jQuery.contains(document, element), "document container (positive)" );
-	ok( !jQuery.contains(document, detached), "document container (negative)" );
+	assert.ok( element && element.nodeType === 1, "preliminary: found element" );
+	assert.ok( text && text.nodeType === 3, "preliminary: found text" );
+	assert.ok( nonContained, "preliminary: found non-descendant" );
+	assert.ok( jQuery.contains(container, element), "child" );
+	assert.ok( jQuery.contains(container.parentNode, element), "grandchild" );
+	assert.ok( jQuery.contains(container, text), "text child" );
+	assert.ok( jQuery.contains(container.parentNode, text), "text grandchild" );
+	assert.ok( !jQuery.contains(container, container), "self" );
+	assert.ok( !jQuery.contains(element, container), "parent" );
+	assert.ok( !jQuery.contains(container, nonContained), "non-descendant" );
+	assert.ok( !jQuery.contains(container, document), "document" );
+	assert.ok( !jQuery.contains(container, document.documentElement), "documentElement (negative)" );
+	assert.ok( !jQuery.contains(container, null), "Passing null does not throw an error" );
+	assert.ok( jQuery.contains(document, document.documentElement), "documentElement (positive)" );
+	assert.ok( jQuery.contains(document, element), "document container (positive)" );
+	assert.ok( !jQuery.contains(document, detached), "document container (negative)" );
 });
 
-test("jQuery.uniqueSort", function() {
-	expect( 15 );
+QUnit.test("jQuery.uniqueSort", function( assert ) {
+	assert.expect( 15 );
 
 	function Arrayish( arr ) {
 		var i = this.length = arr.length;
@@ -460,24 +464,28 @@ test("jQuery.uniqueSort", function() {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		deepEqual( jQuery.uniqueSort( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		assert.deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
+		assert.deepEqual( jQuery.uniqueSort( new Arrayish(test.input) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
 	});
 
-	strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
+	assert.strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
 });
 
-testIframe("selector/sizzle_cache", "Sizzle cache collides with multiple Sizzles on a page", function( jQuery, window, document ) {
-	var $cached = window["$cached"];
+testIframe(
+	"selector/sizzle_cache",
+	"Sizzle cache collides with multiple Sizzles on a page",
+	function( jQuery, window, document, assert ) {
+		var $cached = window["$cached"];
 
-	expect(4);
-	notStrictEqual( jQuery, $cached, "Loaded two engines" );
-	deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
-	equal( jQuery(".evil a").length, 0, "Select nothing with second sizzle" );
-	equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
-});
+		assert.expect(4);
+		assert.notStrictEqual( jQuery, $cached, "Loaded two engines" );
+		assert.deepEqual( $cached(".test a").get(), [ document.getElementById("collision") ], "Select collision anchor with first sizzle" );
+		assert.equal( jQuery(".evil a").length, 0, "Select nothing with second sizzle" );
+		assert.equal( jQuery(".evil a").length, 0, "Select nothing again with second sizzle" );
+	}
+);
 
-asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
+QUnit.asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function( assert ) {
 	var loaded = false,
 		thrown = false,
 		iframe = document.getElementById( "iframe" ),
@@ -494,12 +502,12 @@ asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function() {
 		}
 
 		if ( loaded ) {
-			strictEqual( thrown, false, "No error thrown from post-reload jQuery call" );
+			assert.strictEqual( thrown, false, "No error thrown from post-reload jQuery call" );
 
 			// clean up
 			jQuery( iframe ).off();
 
-			start();
+			QUnit.start();
 		} else {
 			loaded = true;
 			form.submit();
