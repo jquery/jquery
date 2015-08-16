@@ -1,11 +1,11 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"../var/documentElement",
 	"../var/support"
 ], function( jQuery, document, documentElement, support ) {
 
-(function() {
+( function() {
 	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
@@ -29,6 +29,7 @@ define([
 	// so they're executed at the same time to save the second computation.
 	function computeStyleTests() {
 		div.style.cssText =
+
 			// Support: Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
@@ -49,6 +50,7 @@ define([
 
 	jQuery.extend( support, {
 		pixelPosition: function() {
+
 			// This test is executed only once but we still do memoizing
 			// since we can use the boxSizingReliable pre-computing.
 			// No need to check if the test was already performed, though.
@@ -62,6 +64,7 @@ define([
 			return boxSizingReliableVal;
 		},
 		pixelMarginRight: function() {
+
 			// Support: Android 4.0-4.3
 			// We're checking for boxSizingReliableVal here instead of pixelMarginRightVal
 			// since that compresses better and they're computed together anyway.
@@ -82,6 +85,7 @@ define([
 
 			// Reset CSS: box-sizing; display; margin; border; padding
 			marginDiv.style.cssText = div.style.cssText =
+
 				// Support: Android 2.3
 				// Vendor-prefix box-sizing
 				"-webkit-box-sizing:content-box;box-sizing:content-box;" +
@@ -97,9 +101,9 @@ define([
 
 			return ret;
 		}
-	});
-})();
+	} );
+} )();
 
 return support;
 
-});
+} );

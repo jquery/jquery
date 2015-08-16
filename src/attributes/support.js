@@ -1,9 +1,9 @@
-define([
+define( [
 	"../var/document",
 	"../var/support"
 ], function( document, support ) {
 
-(function() {
+( function() {
 	var input = document.createElement( "input" ),
 		select = document.createElement( "select" ),
 		opt = select.appendChild( document.createElement( "option" ) );
@@ -29,8 +29,8 @@ define([
 	input.value = "t";
 	input.type = "radio";
 	support.radioValue = input.value === "t";
-})();
+} )();
 
 return support;
 
-});
+} );

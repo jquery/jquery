@@ -1,10 +1,10 @@
-define([
+define( [
 	"../core",
 	"./var/rnumnonpx",
 	"./var/rmargin",
 	"./var/getStyles",
 	"./support",
-	"../selector" // contains
+	"../selector" // Get jQuery.contains
 ], function( jQuery, rnumnonpx, rmargin, getStyles, support ) {
 
 function curCSS( elem, name, computed ) {
@@ -46,6 +46,7 @@ function curCSS( elem, name, computed ) {
 	}
 
 	return ret !== undefined ?
+
 		// Support: IE9-11+
 		// IE returns zIndex value as an integer.
 		ret + "" :
@@ -53,4 +54,4 @@ function curCSS( elem, name, computed ) {
 }
 
 return curCSS;
-});
+} );
