@@ -137,16 +137,20 @@ function url( value ) {
 
 // Ajax testing helper
 this.ajaxTest = function( title, expect, options ) {
-	var requestOptions;
-	if ( jQuery.isFunction( options ) ) {
-		options = options();
-	}
-	options = options || [];
-	requestOptions = options.requests || options.request || options;
-	if ( !jQuery.isArray( requestOptions ) ) {
-		requestOptions = [ requestOptions ];
-	}
-	asyncTest( title, expect, function() {
+	QUnit.test( title, expect, function( assert ) {
+		var requestOptions;
+
+		if ( jQuery.isFunction( options ) ) {
+			options = options( assert );
+		}
+		options = options || [];
+		requestOptions = options.requests || options.request || options;
+		if ( !jQuery.isArray( requestOptions ) ) {
+			requestOptions = [ requestOptions ];
+		}
+
+		var done = assert.async();
+
 		if ( options.setup ) {
 			options.setup();
 		}
@@ -160,7 +164,9 @@ this.ajaxTest = function( title, expect, options ) {
 					if ( options.teardown ) {
 						options.teardown();
 					}
-					start();
+
+					// Make sure all events will be called before done()
+					setTimeout(done);
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
@@ -170,7 +176,7 @@ this.ajaxTest = function( title, expect, options ) {
 						return function( _, status ) {
 							if ( !completed ) {
 								if ( !handler ) {
-									ok( false, "unexpected " + status );
+									assert.ok( false, "unexpected " + status );
 								} else if ( jQuery.isFunction( handler ) ) {
 									handler.apply( this, arguments );
 								}
@@ -179,7 +185,7 @@ this.ajaxTest = function( title, expect, options ) {
 					};
 
 				if ( options.afterSend ) {
-					options.afterSend( request );
+					options.afterSend( request, assert );
 				}
 
 				return request
@@ -202,7 +208,8 @@ this.ajaxTest = function( title, expect, options ) {
 };
 
 this.testIframe = function( fileName, name, fn ) {
-	asyncTest(name, function() {
+	QUnit.test(name, function( assert ) {
+		var done = assert.async();
 
 		// load fixture in iframe
 		var iframe = loadFixture(),
@@ -211,10 +218,9 @@ this.testIframe = function( fileName, name, fn ) {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
 
-					start();
-
 					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win, win.document );
+					fn.call( this, win.jQuery, win, win.document, assert );
+					done();
 					document.body.removeChild( iframe );
 					iframe = null;
 				}
@@ -233,11 +239,14 @@ this.testIframe = function( fileName, name, fn ) {
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-	asyncTest( title, 1, function() {
+	QUnit.test( title, 1, function( assert ) {
 		var iframe;
+		var done = assert.async();
 
 		window.iframeCallback = function() {
-			var args = arguments;
+			var args = Array.prototype.slice.call( arguments );
+
+			args.push( assert );
 
 			setTimeout(function() {
 				this.iframeCallback = undefined;
@@ -246,7 +255,7 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 				func.apply( this, args );
 				func = function() {};
 
-				start();
+				done();
 			});
 		};
 		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
