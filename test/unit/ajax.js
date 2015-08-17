@@ -265,6 +265,33 @@ module( "ajax", {
 		error: true
 	});
 
+	ajaxTest( "jQuery.ajax() - remove extra question marks in the URL", 3, [
+		{
+			url: "data/??foo",
+			beforeSend: function( xhr, settings ) {
+				equal( settings.url, "data/?foo", "Make sure there is no extra '?' in the URL." );
+				return false;
+			},
+			error: true
+		},
+		{
+			url: "data/index.html??msg=??",
+			beforeSend: function( xhr, settings ) {
+				equal( settings.url, "data/index.html?msg=??", "Make sure there is no extra '?' in the URL." );
+				return false;
+			},
+			error: true
+		},
+		{
+			url: "data/index.html?msg=??",
+			beforeSend: function( xhr, settings ) {
+				equal( settings.url, "data/index.html?msg=??", "Make sure there is no extra '?' in the URL." );
+				return false;
+			},
+			error: true
+		}
+	]);
+
 	ajaxTest( "jQuery.ajax() - hash", 3, [
 		{
 			url: "data/name.html#foo",

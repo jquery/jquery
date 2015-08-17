@@ -13,6 +13,7 @@ define([
 
 var
 	rhash = /#.*$/,
+	rextraQuestions = /\?+/,
 	rts = /([?&])_=[^&]*/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 	// #7653, #8125, #8152: local protocol detection
@@ -489,11 +490,17 @@ jQuery.extend({
 		// Attach deferreds
 		deferred.promise( jqXHR );
 
-		// Remove hash character (#7531: and string promotion)
-		// Add protocol if not provided (prefilters might expect it)
 		// Handle falsy url in the settings object (#10093: consistency with old signature)
 		// We also use the url parameter if available
-		s.url = ( ( url || s.url || location.href ) + "" ).replace( rhash, "" )
+		s.url = ( ( url || s.url || location.href ) + "" )
+
+			// Remove hash character (#7531: and string promotion)
+			.replace( rhash, "" )
+
+			// Remove the extra "?" (gh-1791)
+			.replace( rextraQuestions, "?" )
+
+			// Add protocol if not provided (prefilters might expect it)
 			.replace( rprotocol, location.protocol + "//" );
 
 		// Alias method option to type as per ticket #12004
@@ -787,6 +794,7 @@ jQuery.extend({
 
 jQuery.each( [ "get", "post" ], function( i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
+
 		// Shift arguments if data argument was omitted
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
