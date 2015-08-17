@@ -12,44 +12,38 @@ Data.uid = 1;
 
 Data.prototype = {
 
-	register: function( owner ) {
-		var value = {};
-
-		// If it is a node unlikely to be stringify-ed or looped over
-		// use plain assignment
-		if ( owner.nodeType ) {
-			owner[ this.expando ] = value;
-
-		// Otherwise secure it in a non-enumerable property
-		// configurable must be true to allow the property to be
-		// deleted when data is removed
-		} else {
-			Object.defineProperty( owner, this.expando, {
-				value: value,
-				configurable: true
-			} );
-		}
-		return owner[ this.expando ];
-	},
 	cache: function( owner ) {
 
-		// We can accept data for non-element nodes in modern browsers,
-		// but we should not, see #8335.
-		// Always return an empty object.
-		if ( !acceptData( owner ) ) {
-			return {};
-		}
-
 		// Check if the owner object already has a cache
-		var cache = owner[ this.expando ];
+		var value = owner[ this.expando ];
 
-		// If so, return it
-		if ( cache ) {
-			return cache;
+		// If not, create one
+		if ( !value ) {
+			value = {};
+
+			// We can accept data for non-element nodes in modern browsers,
+			// but we should not, see #8335.
+			// Always return an empty object.
+			if ( acceptData( owner ) ) {
+
+				// If it is a node unlikely to be stringify-ed or looped over
+				// use plain assignment
+				if ( owner.nodeType ) {
+					owner[ this.expando ] = value;
+
+				// Otherwise secure it in a non-enumerable property
+				// configurable must be true to allow the property to be
+				// deleted when data is removed
+				} else {
+					Object.defineProperty( owner, this.expando, {
+						value: value,
+						configurable: true
+					} );
+				}
+			}
 		}
 
-		// If not, register one
-		return this.register( owner );
+		return value;
 	},
 	set: function( owner, data, value ) {
 		var prop,
