@@ -10,6 +10,8 @@
 	"undef": true,
 	"unused": true,
 
+	"es3": true,
+
 	"evil": true,
 	"sub": true,
 
@@ -21,6 +23,7 @@
 		"require": false,
 		"define": false,
 		"DOMParser": false,
+		"JSON": false,
 		"Promise": false,
 		"Symbol": false,
 		"QUnit": false,

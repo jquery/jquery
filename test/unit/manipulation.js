@@ -498,7 +498,7 @@ test( "html(String) tag-hyphenated elements (Bug #1987)", function() {
 	var j = jQuery("<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>");
 	ok( jQuery.nodeName(j[0], "TR-MULTIPLE-HYPHENS"), "Tags with multiple hypens" );
 	ok( jQuery.nodeName(j.children()[0], "TD-WITH-HYPHEN"), "Tags with multiple hypens" );
-	equal( j.children().text(), "text", "Tags with multple hypens behave normally" );
+	equal( j.children().text(), "text", "Tags with multiple hypens behave normally" );
 });
 
 test( "IE8 serialization bug", function() {
@@ -1870,7 +1870,9 @@ test( "remove() with filters", function() {
 	equal( jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works" );
 });
 
-test( "remove() event cleaning ", 1, function() {
+test( "remove() event cleaning ", function() {
+	expect( 1 );
+
 	var count, first, cleanUp;
 
 	count = 0;
@@ -1885,7 +1887,9 @@ test( "remove() event cleaning ", 1, function() {
 	cleanUp.remove();
 });
 
-test( "remove() in document order #13779", 1, function() {
+test( "remove() in document order #13779", function() {
+	expect( 1 );
+
 	var last,
 		cleanData = jQuery.cleanData;
 
@@ -1957,7 +1961,9 @@ test("detach() with filters", function () {
   equal(jQuery("#nonnodes").contents().length, 0, "Check node,textnode,comment remove works");
 });
 
-test( "detach() event cleaning ", 1, function() {
+test( "detach() event cleaning ", function() {
+	expect( 1 );
+
 	var count, first, cleanUp;
 
 	count = 0;
@@ -2064,7 +2070,7 @@ test( "jQuery.cleanData", function() {
 });
 
 test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
-	expect( 2 );
+	expect( 3 );
 
 	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
@@ -2074,10 +2080,32 @@ test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
 
 	div.remove();
 
+	ok( !jQuery.hasData( div[ 0 ] ), "Removed element hasData should return false" );
+
 	ok( jQuery.isEmptyObject( jQuery._data( div[ 0 ] ) ),
 		"Private data is empty after node is removed" );
 
 	div.remove();
+});
+
+test( "jQuery.cleanData eliminates all public data", function() {
+	expect( 2 );
+
+	var key,
+		div = jQuery( "<div/>" );
+	div.data( "some", "data" );
+	ok( !jQuery.isEmptyObject( jQuery.data( div[ 0 ] ) ),  "Ensure some public data exists" );
+
+	div.remove();
+
+	ok( !jQuery.hasData( div[ 0 ] ), "Removed element hasData should return false" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was not removed when there was no more data" );
+		}
+	}
 });
 
 test( "domManip plain-text caching (trac-6779)", function() {
@@ -2241,6 +2269,17 @@ test( "Ensure oldIE creates a new set on appendTo (#8894)", function() {
 });
 
 asyncTest( "html() - script exceptions bubble (#11743)", 2, function() {
+	// Support: Android 2.3 only
+	// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+			"errors in dynamically included scripts" );
+		ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+			"errors in dynamically included scripts" );
+		start();
+		return;
+	}
+
 	var onerror = window.onerror;
 
 	setTimeout(function() {
@@ -2454,7 +2493,9 @@ test( "insertAfter, insertBefore, etc do not work when destination is original e
 	});
 });
 
-test( "Index for function argument should be received (#13094)", 2, function() {
+test( "Index for function argument should be received (#13094)", function() {
+	expect( 2 );
+
 	var i = 0;
 
 	jQuery("<div/><div/>").before(function( index ) {
@@ -2463,7 +2504,9 @@ test( "Index for function argument should be received (#13094)", 2, function() {
 
 });
 
-test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, function() {
+test( "Make sure jQuery.fn.remove can work on elements in documentFragment", function() {
+	expect( 1 );
+
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement("div") );
 
@@ -2472,7 +2515,9 @@ test( "Make sure jQuery.fn.remove can work on elements in documentFragment", 1, 
 	equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 });
 
-test( "Make sure specific elements with content created correctly (#13232)", 20, function() {
+test( "Make sure specific elements with content created correctly (#13232)", function() {
+	expect( 20 );
+
 	var results = [],
 		args = [],
 		elems = {
@@ -2501,7 +2546,9 @@ test( "Make sure specific elements with content created correctly (#13232)", 20,
 	});
 });
 
-test( "Validate creation of multiple quantities of certain elements (#13818)", 44, function() {
+test( "Validate creation of multiple quantities of certain elements (#13818)", function() {
+	expect( 44 );
+
 	var tags = [ "thead", "tbody", "tfoot", "colgroup", "col", "caption", "tr", "th", "td", "optgroup", "option" ];
 
 	jQuery.each( tags, function( index, tag ) {

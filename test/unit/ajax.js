@@ -1,12 +1,4 @@
 module( "ajax", {
-	setup: function() {
-		var jsonpCallback = this.jsonpCallback = jQuery.ajaxSettings.jsonpCallback;
-		jQuery.ajaxSettings.jsonpCallback = function() {
-			var callback = jsonpCallback.apply( this, arguments );
-			Globals.register( callback );
-			return callback;
-		};
-	},
 	teardown: function() {
 		jQuery( document ).off( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError ajaxSuccess" );
 		moduleTeardown.apply( this, arguments );
@@ -14,7 +6,9 @@ module( "ajax", {
 });
 
 (function() {
-	test("Unit Testing Environment", 2, function () {
+	test("Unit Testing Environment", function () {
+		expect( 2 );
+
 		ok( hasPHP, "Running in an environment with PHP support. The AJAX tests only run if the environment supports PHP!" );
 		ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
 	});
@@ -769,7 +763,7 @@ module( "ajax", {
 			}
 		]);
 
-		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label, 9, {
+		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label, 10, {
 			setup: function() {
 				Globals.register("functionToCleanUp");
 				Globals.register("XXX");
@@ -792,6 +786,11 @@ module( "ajax", {
 				crossDomain: crossDomain,
 				jsonpCallback: "jsonpResults",
 				success: function( data ) {
+					strictEqual(
+						typeof window[ "jsonpResults" ],
+						"function",
+						"should not rewrite original function"
+					);
 					ok( data.data, "JSON results returned (GET, custom callback name)" );
 				}
 			}, {
@@ -1318,7 +1317,9 @@ module( "ajax", {
 		}
 	});
 
-	test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
+	test( "#7531 - jQuery.ajax() - Location object as url", function () {
+		expect( 1 );
+
 		var xhr,
 			success = false;
 		try {
@@ -1383,16 +1384,29 @@ module( "ajax", {
 	]);
 
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
-		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
+		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 4, {
 			url: "data/jsonp.php",
 			dataType: "jsonp",
 			crossDomain: crossDomain,
 			beforeSend: function( jqXHR, s ) {
 				s.callback = s.jsonpCallback;
+
+				ok( this.callback in window, "JSONP callback name is in the window" );
 			},
 			success: function() {
 				var previous = this;
-				strictEqual( previous.jsonpCallback, undefined, "jsonpCallback option is set back to default in callbacks" );
+
+				strictEqual(
+					previous.jsonpCallback,
+					undefined,
+					"jsonpCallback option is set back to default in callbacks"
+				);
+
+				ok(
+					!( this.callback in window ),
+					"JSONP callback name was removed from the window"
+				);
+
 				jQuery.ajax({
 					url: "data/jsonp.php",
 					dataType: "jsonp",
@@ -1406,7 +1420,9 @@ module( "ajax", {
 		});
 	});
 
-	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", 2, function () {
+	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", function () {
+		expect( 2 );
+
 		var success = false,
 			context = {};
 		context.field = context;
@@ -1467,6 +1483,15 @@ module( "ajax", {
 	});
 
 	asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+		// Support: Android 2.3 only
+		// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
+		if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+			ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
+				"errors in dynamically included scripts" );
+			start();
+			return;
+		}
+
 		var onerror = window.onerror;
 		window.onerror = function() {
 			ok( true, "Exception thrown" );
@@ -1707,7 +1732,9 @@ module( "ajax", {
 
 //----------- jQuery.domManip()
 
-	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", function() {
+		expect( 1 );
+
 		jQuery.ajaxSetup({
 			type: "POST"
 		});
@@ -2094,7 +2121,9 @@ module( "ajax", {
 
 //----------- jQuery.active
 
-	test( "jQuery.active", 1, function() {
+	test( "jQuery.active", function() {
+		expect( 1 );
+
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 	});
 

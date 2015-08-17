@@ -483,8 +483,9 @@ jQuery.event = {
 
 			for ( ; cur !== this; cur = cur.parentNode || this ) {
 
+				// Don't check non-elements (#13208)
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-				if ( cur.disabled !== true || event.type !== "click" ) {
+				if ( cur.nodeType === 1 && (cur.disabled !== true || event.type !== "click") ) {
 					matches = [];
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
@@ -593,7 +594,7 @@ jQuery.event = {
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Support: Safari 6.0+
+		// Support: Safari 6-8+
 		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
@@ -772,13 +773,10 @@ jQuery.Event.prototype = {
 // so that event delegation works in jQuery.
 // Do the same for pointerenter/pointerleave and pointerover/pointerout
 //
-// Support: Safari<7.0
-// Safari doesn't support mouseenter/mouseleave at all.
-//
-// Support: Chrome 34+
-// Mouseenter doesn't perform while left mouse button is pressed
-// (and initiated outside the observed element)
-// https://code.google.com/p/chromium/issues/detail?id=333868
+// Support: Safari 7 only
+// Safari sends mouseenter too often; see:
+// https://code.google.com/p/chromium/issues/detail?id=470258
+// for the description of the bug (it existed in older Chrome versions as well).
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout",

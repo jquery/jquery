@@ -126,7 +126,9 @@ function dataTests( elem ) {
 	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
 }
 
-test("jQuery.data(div)", 25, function() {
+test("jQuery.data(div)", function() {
+	expect( 25 );
+
 	var div = document.createElement("div");
 
 	dataTests( div );
@@ -137,11 +139,15 @@ test("jQuery.data(div)", 25, function() {
 	QUnit.expectJqData( this, div, "foo" );
 });
 
-test("jQuery.data({})", 25, function() {
+test("jQuery.data({})", function() {
+	expect( 25 );
+
 	dataTests( {} );
 });
 
-test("jQuery.data(window)", 25, function() {
+test("jQuery.data(window)", function() {
+	expect( 25 );
+
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
 	// transports/xhr.js
 	jQuery( window ).off( "unload" );
@@ -149,17 +155,23 @@ test("jQuery.data(window)", 25, function() {
 	dataTests( window );
 });
 
-test("jQuery.data(document)", 25, function() {
+test("jQuery.data(document)", function() {
+	expect( 25 );
+
 	dataTests( document );
 
 	QUnit.expectJqData( this, document, "foo" );
 });
 
-test("jQuery.data(<embed>)", 25, function() {
+test("jQuery.data(<embed>)", function() {
+	expect( 25 );
+
 	dataTests( document.createElement("embed") );
 });
 
-test("jQuery.data(object/flash)", 25, function() {
+test("jQuery.data(object/flash)", function() {
+	expect( 25 );
+
 	var flash = document.createElement("object");
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
 
@@ -167,7 +179,9 @@ test("jQuery.data(object/flash)", 25, function() {
 });
 
 // attempting to access the data of an undefined jQuery element should be undefined
-test("jQuery().data() === undefined (#14101)", 2, function() {
+test("jQuery().data() === undefined (#14101)", function() {
+	expect( 2 );
+
 	strictEqual(jQuery().data(), undefined);
 	strictEqual(jQuery().data("key"), undefined);
 });
@@ -826,7 +840,9 @@ test("jQuery.acceptData", function() {
 		"form with aliased DOM properties" );
 });
 
-test("Check proper data removal of non-element descendants nodes (#8335)", 1, function() {
+test("Check proper data removal of non-element descendants nodes (#8335)", function() {
+	expect( 1 );
+
 	var div = jQuery("<div>text</div>"),
 		text = div.contents();
 

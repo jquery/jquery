@@ -67,6 +67,28 @@ var hasDuplicate,
 
 		// Not directly comparable, sort on existence of method
 		return a.compareDocumentPosition ? -1 : 1;
+	},
+	uniqueSort = function( results ) {
+		var elem,
+			duplicates = [],
+			i = 0,
+			j = 0;
+
+		hasDuplicate = false;
+		results.sort( sortOrder );
+
+		if ( hasDuplicate ) {
+			while ( (elem = results[i++]) ) {
+				if ( elem === results[ i ] ) {
+					j = duplicates.push( i );
+				}
+			}
+			while ( j-- ) {
+				results.splice( duplicates[ j ], 1 );
+			}
+		}
+
+		return results;
 	};
 
 jQuery.extend({
@@ -99,28 +121,8 @@ jQuery.extend({
 
 		return results;
 	},
-	unique: function( results ) {
-		var elem,
-			duplicates = [],
-			i = 0,
-			j = 0;
-
-		hasDuplicate = false;
-		results.sort( sortOrder );
-
-		if ( hasDuplicate ) {
-			while ( (elem = results[i++]) ) {
-				if ( elem === results[ i ] ) {
-					j = duplicates.push( i );
-				}
-			}
-			while ( j-- ) {
-				results.splice( duplicates[ j ], 1 );
-			}
-		}
-
-		return results;
-	},
+	uniqueSort: uniqueSort,
+	unique: uniqueSort,
 	text: function( elem ) {
 		var node,
 			ret = "",

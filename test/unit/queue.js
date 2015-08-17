@@ -1,6 +1,8 @@
 module( "queue", { teardown: moduleTeardown });
 
-test( "queue() with other types", 14, function() {
+test( "queue() with other types", function() {
+	expect( 14 );
+
 	stop();
 
 	var $div = jQuery({}),
@@ -121,7 +123,9 @@ test("callbacks keep their place in the queue", function() {
 	});
 });
 
-test( "jQuery.queue should return array while manipulating the queue", 1, function() {
+test( "jQuery.queue should return array while manipulating the queue", function() {
+	expect( 1 );
+
 	var div = document.createElement("div");
 
 	ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );

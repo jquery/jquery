@@ -734,7 +734,8 @@ test( "prop('tabindex')", function() {
 	equal( jQuery("#linkWithNoHrefWithNegativeTabIndex").prop("tabindex"), -1, "anchor without href, no tabindex set" );
 });
 
-test( "prop('tabindex', value)", 10, function() {
+test( "prop('tabindex', value)", function() {
+	expect( 10 );
 
 	var clone,
 		element = jQuery("#divWithNoTabIndex");
@@ -1452,7 +1453,9 @@ test( "coords returns correct values in IE6/IE7, see #10828", function() {
 	equal( area.attr("coords"), "0,0,0,0", "did not retrieve coords correctly" );
 });
 
-test( "should not throw at $(option).val() (#14686)", 1, function() {
+test( "should not throw at $(option).val() (#14686)", function() {
+	expect( 1 );
+
 	try {
 		jQuery( "<option/>" ).val();
 		ok( true );

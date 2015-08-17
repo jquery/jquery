@@ -443,7 +443,9 @@ test("on(), trigger change on select", function() {
 	}).trigger("change");
 });
 
-test("on(), namespaced events, cloned events", 18, function() {
+test("on(), namespaced events, cloned events", function() {
+	expect( 18 );
+
 	var firstp = jQuery( "#firstp" );
 
 	firstp.on("custom.test",function(){
@@ -1832,6 +1834,17 @@ test( "delegated event with selector matching Object.prototype property (#13203)
 	equal( matched, 0, "Nothing matched 'toString'" );
 });
 
+test( "delegated event with intermediate DOM manipulation (#13208)", function() {
+	expect(1);
+
+	jQuery("#foo").on( "click", "[id=sap]", function() {});
+	jQuery("#sap").on( "click", "[id=anchor2]", function() {
+		document.createDocumentFragment().appendChild( this.parentNode );
+		ok( true, "Element removed" );
+	});
+	jQuery("#anchor2").trigger("click");
+});
+
 test("stopPropagation() stops directly-bound events on delegated target", function() {
 	expect(1);
 
@@ -2576,7 +2589,9 @@ test( "Namespace preserved when passed an Event (#12739)", function() {
 	equal( triggered, 3, "foo.bar triggered" );
 });
 
-test( "make sure events cloned correctly", 18, function() {
+test( "make sure events cloned correctly", function() {
+	expect( 18 );
+
 	var clone,
 		fixture = jQuery("#qunit-fixture"),
 		checkbox = jQuery("#check1"),
@@ -2725,7 +2740,7 @@ test( "Donor event interference", function( assert ) {
 	jQuery( "#donor-input" )[ 0 ].click();
 } );
 
-test( "originalEvent property for Chrome, Safari and FF of simualted event", function( assert ) {
+test( "originalEvent property for Chrome, Safari and FF of simulated event", function( assert ) {
 	var userAgent = window.navigator.userAgent;
 
 	if ( !(/chrome/i.test( userAgent ) ||
@@ -2760,7 +2775,9 @@ test( "originalEvent property for Chrome, Safari and FF of simualted event", fun
 
 // This tests are unreliable in Firefox
 if ( !(/firefox/i.test( window.navigator.userAgent )) ) {
-	test( "Check order of focusin/focusout events", 2, function() {
+	test( "Check order of focusin/focusout events", function() {
+		expect( 2 );
+
 		var focus, blur,
 			input = jQuery( "#name" );
 
