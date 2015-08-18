@@ -2089,7 +2089,7 @@ test( "jQuery.cleanData eliminates all private data (gh-2127)", function() {
 });
 
 test( "jQuery.cleanData eliminates all public data", function() {
-	expect( 2 );
+	expect( 3 );
 
 	var key,
 		div = jQuery( "<div/>" );
@@ -2103,7 +2103,7 @@ test( "jQuery.cleanData eliminates all public data", function() {
 	// Make sure the expando is gone
 	for ( key in div[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
-			ok( false, "Expando was not removed when there was no more data" );
+			strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
 		}
 	}
 });
