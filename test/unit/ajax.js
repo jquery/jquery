@@ -14,6 +14,7 @@ module( "ajax", {
 });
 
 (function() {
+	var originalConverters = jQuery.ajaxSettings.converters;
 
 	if ( !jQuery.ajax || ( isLocal && !hasPHP ) ) {
 		return;
@@ -28,14 +29,40 @@ module( "ajax", {
 		};
 	}
 
+jQuery.each( [ "", " - async flow" ], function( _, asyncFlow ) {
+
+if ( asyncFlow ) {
+	jQuery.ajaxSettings.converters = {
+		// Convert anything to text
+		"* text": function( data ) {
+			return jQuery.Deferred().resolve( String( data ) ).then();
+		},
+
+		// Text to html
+		"text html": function( data ) {
+			return jQuery.Deferred().resolve( data ).then();
+		},
+
+		// Evaluate text as a json expression
+		"text json": function( data ) {
+			return jQuery.Deferred().resolve( jQuery.parseJSON( data ) ).then();
+		},
+
+		// Parse text as xml
+		"text xml": function( data ) {
+			return jQuery.Deferred().resolve( jQuery.parseXML( data ) ).then();
+		}
+	};
+}
+
 //----------- jQuery.ajax()
 
-	testIframeWithCallback( "XMLHttpRequest - Attempt to block tests because of dangling XHR requests (IE)", "ajax/unreleasedXHR.html", function() {
+	testIframeWithCallback( "XMLHttpRequest - Attempt to block tests because of dangling XHR requests (IE)" + asyncFlow, "ajax/unreleasedXHR.html", function() {
 		expect( 1 );
 		ok( true, "done" );
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks", 8, {
+	ajaxTest( "jQuery.ajax() - success callbacks" + asyncFlow, 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -49,7 +76,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax", 8, {
+	ajaxTest( "jQuery.ajax() - success callbacks - (url, options) syntax" + asyncFlow, 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		create: function( options ) {
 			return jQuery.ajax( url("data/name.html"), options );
@@ -65,7 +92,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 8, {
+	ajaxTest( "jQuery.ajax() - success callbacks (late binding)" + asyncFlow, 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -83,7 +110,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)", 8, {
+	ajaxTest( "jQuery.ajax() - success callbacks (oncomplete binding)" + asyncFlow, 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess"),
 		url: url("data/name.html"),
 		beforeSend: function() {
@@ -101,7 +128,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - error callbacks", 8, {
+	ajaxTest( "jQuery.ajax() - error callbacks" + asyncFlow, 8, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
@@ -118,7 +145,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - textStatus and errorThrown values", 4, [
+	ajaxTest( "jQuery.ajax() - textStatus and errorThrown values" + asyncFlow, 4, [
 		{
 			url: url("data/name.php?wait=5"),
 			error: function( _, textStatus, errorThrown ) {
@@ -141,14 +168,14 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - responseText on error", 1, {
+	ajaxTest( "jQuery.ajax() - responseText on error" + asyncFlow, 1, {
 		url: url("data/errorWithText.php"),
 		error: function( xhr ) {
 			strictEqual( xhr.responseText, "plain text message", "Test jqXHR.responseText is filled for HTTP errors" );
 		}
 	});
 
-	asyncTest( "jQuery.ajax() - retry with jQuery.ajax( this )", 2, function() {
+	asyncTest( "jQuery.ajax() - retry with jQuery.ajax( this )" + asyncFlow, 2, function() {
 		var previousUrl,
 			firstTime = true;
 		jQuery.ajax({
@@ -182,7 +209,7 @@ module( "ajax", {
 		});
 	});
 
-	ajaxTest( "jQuery.ajax() - headers", 5, {
+	ajaxTest( "jQuery.ajax() - headers" + asyncFlow, 5, {
 		setup: function() {
 			jQuery( document ).ajaxSend(function( evt, xhr ) {
 				xhr.setRequestHeader( "ajax-send", "test" );
@@ -226,7 +253,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - Accept header", 1, {
+	ajaxTest( "jQuery.ajax() - Accept header" + asyncFlow, 1, {
 		url: url("data/headers.php?keys=accept"),
 		headers: {
 			Accept: "very wrong accept value"
@@ -239,7 +266,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - contentType", 2, [
+	ajaxTest( "jQuery.ajax() - contentType" + asyncFlow, 2, [
 		{
 			url: url("data/headers.php?keys=content-type"),
 			contentType: "test",
@@ -258,7 +285,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - protocol-less urls", 1, {
+	ajaxTest( "jQuery.ajax() - protocol-less urls" + asyncFlow, 1, {
 		url: "//somedomain.com",
 		beforeSend: function( xhr, settings ) {
 			equal( settings.url, location.protocol + "//somedomain.com", "Make sure that the protocol is added." );
@@ -267,7 +294,7 @@ module( "ajax", {
 		error: true
 	});
 
-	ajaxTest( "jQuery.ajax() - hash", 3, [
+	ajaxTest( "jQuery.ajax() - hash" + asyncFlow, 3, [
 		{
 			url: "data/name.html#foo",
 			beforeSend: function( xhr, settings ) {
@@ -297,7 +324,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - cross-domain detection", 7, function() {
+	ajaxTest( "jQuery.ajax() - cross-domain detection" + asyncFlow, 7, function() {
 		function request( url, title, crossDomainOrOptions ) {
 			return jQuery.extend( {
 				dataType: "jsonp",
@@ -351,7 +378,7 @@ module( "ajax", {
 		];
 	});
 
-	ajaxTest( "jQuery.ajax() - abort", 9, {
+	ajaxTest( "jQuery.ajax() - abort" + asyncFlow, 9, {
 		setup: addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxError ajaxComplete"),
 		url: url("data/name.php?wait=5"),
 		beforeSend: function() {
@@ -368,7 +395,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - events with context", 12, function() {
+	ajaxTest( "jQuery.ajax() - events with context" + asyncFlow, 12, function() {
 
 		var context = document.createElement("div");
 
@@ -406,7 +433,7 @@ module( "ajax", {
 		};
 	});
 
-	ajaxTest( "jQuery.ajax() - events without context", 3, function() {
+	ajaxTest( "jQuery.ajax() - events without context" + asyncFlow, 3, function() {
 		function nocallback( msg ) {
 			return function() {
 				equal( typeof this.url, "string", "context is settings on callback " + msg );
@@ -420,7 +447,7 @@ module( "ajax", {
 		};
 	});
 
-	ajaxTest( "#15118 - jQuery.ajax() - function without jQuery.event", 1, function() {
+	ajaxTest( "#15118 - jQuery.ajax() - function without jQuery.event" + asyncFlow, 1, function() {
 		var holder;
 		return {
 			url: url( "data/json.php" ),
@@ -436,7 +463,7 @@ module( "ajax", {
 		};
 	});
 
-	ajaxTest( "jQuery.ajax() - context modification", 1, {
+	ajaxTest( "jQuery.ajax() - context modification" + asyncFlow, 1, {
 		url: url("data/name.html"),
 		context: {},
 		beforeSend: function() {
@@ -448,7 +475,7 @@ module( "ajax", {
 		success: true
 	});
 
-	ajaxTest( "jQuery.ajax() - context modification through ajaxSetup", 3, function() {
+	ajaxTest( "jQuery.ajax() - context modification through ajaxSetup" + asyncFlow, 3, function() {
 		var obj = {};
 		return {
 			setup: function() {
@@ -472,7 +499,7 @@ module( "ajax", {
 		};
 	});
 
-	ajaxTest( "jQuery.ajax() - disabled globals", 3, {
+	ajaxTest( "jQuery.ajax() - disabled globals" + asyncFlow, 3, {
 		setup: addGlobalEvents(""),
 		global: false,
 		url: url("data/name.html"),
@@ -487,7 +514,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - xml: non-namespace elements inside namespaced elements", 3, {
+	ajaxTest( "jQuery.ajax() - xml: non-namespace elements inside namespaced elements" + asyncFlow, 3, {
 		url: url("data/with_fries.xml"),
 		dataType: "xml",
 		success: function( resp ) {
@@ -497,7 +524,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - xml: non-namespace elements inside namespaced elements (over JSONP)", 3, {
+	ajaxTest( "jQuery.ajax() - xml: non-namespace elements inside namespaced elements (over JSONP)" + asyncFlow, 3, {
 		url: url("data/with_fries_over_jsonp.php"),
 		dataType: "jsonp xml",
 		success: function( resp ) {
@@ -507,7 +534,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - HEAD requests", 2, [
+	ajaxTest( "jQuery.ajax() - HEAD requests" + asyncFlow, 2, [
 		{
 			url: url("data/name.html"),
 			type: "HEAD",
@@ -527,7 +554,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - beforeSend", 1, {
+	ajaxTest( "jQuery.ajax() - beforeSend" + asyncFlow, 1, {
 		url: url("data/name.html"),
 		beforeSend: function() {
 			this.check = true;
@@ -537,7 +564,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - beforeSend, cancel request manually", 2, {
+	ajaxTest( "jQuery.ajax() - beforeSend, cancel request manually" + asyncFlow, 2, {
 		create: function() {
 			return jQuery.ajax({
 				url: url("data/name.html"),
@@ -561,7 +588,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - dataType html", 5, {
+	ajaxTest( "jQuery.ajax() - dataType html" + asyncFlow, 5, {
 		setup: function() {
 			Globals.register("testFoo");
 			Globals.register("testBar");
@@ -576,7 +603,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - synchronous request", 1, {
+	ajaxTest( "jQuery.ajax() - synchronous request" + asyncFlow, 1, {
 		url: url("data/json_obj.js"),
 		dataType: "text",
 		async: false,
@@ -586,7 +613,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - synchronous request with callbacks", 2, {
+	ajaxTest( "jQuery.ajax() - synchronous request with callbacks" + asyncFlow, 2, {
 		url: url("data/json_obj.js"),
 		async: false,
 		dataType: "text",
@@ -601,7 +628,7 @@ module( "ajax", {
 		}
 	});
 
-	asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object", 8, function() {
+	asyncTest( "jQuery.ajax(), jQuery.get[Script|JSON](), jQuery.post(), pass-through request object" + asyncFlow, 8, function() {
 		var target = "data/name.html",
 			successCount = 0,
 			errorCount = 0,
@@ -631,7 +658,7 @@ module( "ajax", {
 		}), "generic" );
 	});
 
-	ajaxTest( "jQuery.ajax() - cache", 12, function() {
+	ajaxTest( "jQuery.ajax() - cache" + asyncFlow, 12, function() {
 
 		var re = /_=(.*?)(&|$)/g;
 
@@ -682,7 +709,7 @@ module( "ajax", {
 
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
 
-		ajaxTest( "jQuery.ajax() - JSONP - Query String (?n)" + label, 4, [
+		ajaxTest( "jQuery.ajax() - JSONP - Query String (?n)" + label + asyncFlow, 4, [
 			{
 				url: "data/jsonp.php?callback=?",
 				dataType: "jsonp",
@@ -717,7 +744,7 @@ module( "ajax", {
 			}
 		]);
 
-		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label, 9, {
+		ajaxTest( "jQuery.ajax() - JSONP - Explicit callback param" + label + asyncFlow, 9, {
 			setup: function() {
 				Globals.register("functionToCleanUp");
 				Globals.register("XXX");
@@ -781,7 +808,7 @@ module( "ajax", {
 			}]
 		});
 
-		ajaxTest( "jQuery.ajax() - JSONP - Callback in data" + label, 2, [
+		ajaxTest( "jQuery.ajax() - JSONP - Callback in data" + label + asyncFlow, 2, [
 			{
 				url: "data/jsonp.php",
 				dataType: "jsonp",
@@ -803,7 +830,7 @@ module( "ajax", {
 		]);
 
 
-		ajaxTest( "jQuery.ajax() - JSONP - POST" + label, 3, [
+		ajaxTest( "jQuery.ajax() - JSONP - POST" + label + asyncFlow, 3, [
 			{
 				type: "POST",
 				url: "data/jsonp.php",
@@ -835,7 +862,7 @@ module( "ajax", {
 			}
 		]);
 
-		ajaxTest( "jQuery.ajax() - JSONP" + label, 3, [
+		ajaxTest( "jQuery.ajax() - JSONP" + label + asyncFlow, 3, [
 			{
 				url: "data/jsonp.php",
 				dataType: "jsonp",
@@ -867,7 +894,7 @@ module( "ajax", {
 
 	});
 
-	ajaxTest( "jQuery.ajax() - script, Remote", 2, {
+	ajaxTest( "jQuery.ajax() - script, Remote" + asyncFlow, 2, {
 		setup: function() {
 			Globals.register("testBar");
 		},
@@ -878,7 +905,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - script, Remote with POST", 3, {
+	ajaxTest( "jQuery.ajax() - script, Remote with POST" + asyncFlow, 3, {
 		setup: function() {
 			Globals.register("testBar");
 		},
@@ -891,7 +918,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - script, Remote with scheme-less URL", 2, {
+	ajaxTest( "jQuery.ajax() - script, Remote with scheme-less URL" + asyncFlow, 2, {
 		setup: function() {
 			Globals.register("testBar");
 		},
@@ -902,7 +929,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - malformed JSON", 2, {
+	ajaxTest( "jQuery.ajax() - malformed JSON" + asyncFlow, 2, {
 		url: "data/badjson.js",
 		dataType: "json",
 		error: function( xhr, msg, detailedMsg ) {
@@ -911,7 +938,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - script by content-type", 2, [
+	ajaxTest( "jQuery.ajax() - script by content-type" + asyncFlow, 2, [
 		{
 			url: "data/script.php",
 			data: {
@@ -928,7 +955,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - JSON by content-type", 5, {
+	ajaxTest( "jQuery.ajax() - JSON by content-type" + asyncFlow, 5, {
 		url: "data/json.php",
 		data: {
 			"header": "json",
@@ -943,7 +970,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - JSON by content-type disabled with options", 6, {
+	ajaxTest( "jQuery.ajax() - JSON by content-type disabled with options" + asyncFlow, 6, {
 		url: url("data/json.php"),
 		data: {
 			"header": "json",
@@ -963,7 +990,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - simple get", 1, {
+	ajaxTest( "jQuery.ajax() - simple get" + asyncFlow, 1, {
 		type: "GET",
 		url: url("data/name.php?name=foo"),
 		success: function( msg ) {
@@ -971,7 +998,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - simple post", 1, {
+	ajaxTest( "jQuery.ajax() - simple post" + asyncFlow, 1, {
 		type: "POST",
 		url: url("data/name.php"),
 		data: "name=peter",
@@ -980,7 +1007,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - data option - empty bodies for non-GET requests", 1, {
+	ajaxTest( "jQuery.ajax() - data option - empty bodies for non-GET requests" + asyncFlow, 1, {
 		url: "data/echoData.php",
 		data: undefined,
 		type: "post",
@@ -1008,7 +1035,7 @@ module( "ajax", {
 				},
 				function( type, url ) {
 					url = "data/" + url + "?ts=" + ifModifiedNow++;
-					asyncTest( "jQuery.ajax() - " + type + " support" + label, 4, function() {
+					asyncTest( "jQuery.ajax() - " + type + " support" + label + asyncFlow, 4, function() {
 						jQuery.ajax({
 							url: url,
 							ifModified: true,
@@ -1043,7 +1070,7 @@ module( "ajax", {
 		/* jQuery.each arguments end */
 	);
 
-	ajaxTest( "jQuery.ajax() - failing cross-domain (non-existing)", 1, {
+	ajaxTest( "jQuery.ajax() - failing cross-domain (non-existing)" + asyncFlow, 1, {
 		// see RFC 2606
 		url: "http://example.invalid",
 		error: function( xhr, _, e ) {
@@ -1051,21 +1078,21 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - failing cross-domain", 1, {
+	ajaxTest( "jQuery.ajax() - failing cross-domain" + asyncFlow, 1, {
 		url: "http://" + externalHost,
 		error: function( xhr, _, e ) {
 			ok( true, "access denied: " + xhr.status + " => " + e );
 		}
 	});
 
-	ajaxTest( "jQuery.ajax() - atom+xml", 1, {
+	ajaxTest( "jQuery.ajax() - atom+xml" + asyncFlow, 1, {
 		url: url("data/atom+xml.php"),
 		success: function() {
 			ok( true, "success" );
 		}
 	});
 
-	asyncTest( "jQuery.ajax() - statusText", 3, function() {
+	asyncTest( "jQuery.ajax() - statusText" + asyncFlow, 3, function() {
 		jQuery.ajax( url("data/statusText.php?status=200&text=Hello") ).done(function( _, statusText, jqXHR ) {
 			strictEqual( statusText, "success", "callback status text ok for success" );
 			ok( jqXHR.statusText === "Hello" || jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
@@ -1076,7 +1103,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.ajax() - statusCode", 20, function() {
+	asyncTest( "jQuery.ajax() - statusCode" + asyncFlow, 20, function() {
 
 		var count = 12;
 
@@ -1178,7 +1205,7 @@ module( "ajax", {
 		);
 	});
 
-	ajaxTest( "jQuery.ajax() - transitive conversions", 8, [
+	ajaxTest( "jQuery.ajax() - transitive conversions" + asyncFlow, 8, [
 		{
 			url: url("data/json.php"),
 			converters: {
@@ -1212,7 +1239,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - overrideMimeType", 2, [
+	ajaxTest( "jQuery.ajax() - overrideMimeType" + asyncFlow, 2, [
 		{
 			url: url("data/json.php"),
 			beforeSend: function( xhr ) {
@@ -1231,7 +1258,7 @@ module( "ajax", {
 		}
 	]);
 
-	ajaxTest( "jQuery.ajax() - empty json gets to error callback instead of success callback.", 1, {
+	ajaxTest( "jQuery.ajax() - empty json gets to error callback instead of success callback." + asyncFlow, 1, {
 		url: url("data/echoData.php"),
 		error: function( _, __, error ) {
 			equal( typeof error === "object", true,  "Didn't get back error object for empty json response" );
@@ -1239,7 +1266,7 @@ module( "ajax", {
 		dataType: "json"
 	});
 
-	ajaxTest( "#2688 - jQuery.ajax() - beforeSend, cancel request", 2, {
+	ajaxTest( "#2688 - jQuery.ajax() - beforeSend, cancel request" + asyncFlow, 2, {
 		create: function() {
 			return jQuery.ajax({
 				url: url("data/name.html"),
@@ -1263,7 +1290,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "#2806 - jQuery.ajax() - data option - evaluate function values", 1, {
+	ajaxTest( "#2806 - jQuery.ajax() - data option - evaluate function values" + asyncFlow, 1, {
 		url: "data/echoQuery.php",
 		data: {
 			key: function() {
@@ -1275,7 +1302,7 @@ module( "ajax", {
 		}
 	});
 
-	test( "#7531 - jQuery.ajax() - Location object as url", 1, function () {
+	test( "#7531 - jQuery.ajax() - Location object as url" + asyncFlow, 1, function () {
 		var xhr,
 			success = false;
 		try {
@@ -1291,7 +1318,7 @@ module( "ajax", {
 	});
 
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
-		ajaxTest( "#7578 - jQuery.ajax() - JSONP - default for cache option" + label, 1, {
+		ajaxTest( "#7578 - jQuery.ajax() - JSONP - default for cache option" + label + asyncFlow, 1, {
 			url: "data/jsonp.php",
 			dataType: "jsonp",
 			crossDomain: crossDomain,
@@ -1303,7 +1330,7 @@ module( "ajax", {
 		});
 	});
 
-	ajaxTest( "#8107 - jQuery.ajax() - multiple method signatures introduced in 1.5", 4, [
+	ajaxTest( "#8107 - jQuery.ajax() - multiple method signatures introduced in 1.5" + asyncFlow, 4, [
 		{
 			create: function() {
 				return jQuery.ajax();
@@ -1340,7 +1367,7 @@ module( "ajax", {
 	]);
 
 	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
-		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label, 2, {
+		ajaxTest( "#8205 - jQuery.ajax() - JSONP - re-use callbacks name" + label + asyncFlow, 2, {
 			url: "data/jsonp.php",
 			dataType: "jsonp",
 			crossDomain: crossDomain,
@@ -1363,7 +1390,7 @@ module( "ajax", {
 		});
 	});
 
-	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)", 2, function () {
+	test( "#9887 - jQuery.ajax() - Context with circular references (#9887)" + asyncFlow, 2, function () {
 		var success = false,
 			context = {};
 		context.field = context;
@@ -1395,7 +1422,7 @@ module( "ajax", {
 			};
 		}
 
-		ajaxTest( "#10093 - jQuery.ajax() - falsy url " + title, 4, [
+		ajaxTest( "#10093 - jQuery.ajax() - falsy url " + title + asyncFlow, 4, [
 			request( "", "empty string" ),
 			request( false ),
 			request( null ),
@@ -1404,7 +1431,7 @@ module( "ajax", {
 
 	});
 
-	ajaxTest( "#11151 - jQuery.ajax() - parse error body", 2, {
+	ajaxTest( "#11151 - jQuery.ajax() - parse error body" + asyncFlow, 2, {
 		url: url("data/errorWithJSON.php"),
 		dataFilter: function( string ) {
 			ok( false, "dataFilter called" );
@@ -1416,14 +1443,14 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "#11426 - jQuery.ajax() - loading binary data shouldn't throw an exception in IE", 1, {
+	ajaxTest( "#11426 - jQuery.ajax() - loading binary data shouldn't throw an exception in IE" + asyncFlow, 1, {
 		url: url("data/1x1.jpg"),
 		success: function( data ) {
 			ok( data === undefined || /JFIF/.test( data ), "success callback reached" );
 		}
 	});
 
-	asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+	asyncTest( "#11743 - jQuery.ajax() - script, throws exception" + asyncFlow, 1, function() {
 		var onerror = window.onerror;
 		window.onerror = function() {
 			ok( true, "Exception thrown" );
@@ -1464,7 +1491,7 @@ module( "ajax", {
 			return options;
 		}
 
-		ajaxTest( "#12004 - jQuery.ajax() - method is an alias of type - " + globalOption + " set globally", 3, {
+		ajaxTest( "#12004 - jQuery.ajax() - method is an alias of type - " + globalOption + " set globally" + asyncFlow, 3, {
 			setup: function() {
 				var options = {};
 				options[ globalOption ] = "POST";
@@ -1479,7 +1506,7 @@ module( "ajax", {
 
 	});
 
-	ajaxTest( "#13276 - jQuery.ajax() - compatibility between XML documents from ajax requests and parsed string", 1, {
+	ajaxTest( "#13276 - jQuery.ajax() - compatibility between XML documents from ajax requests and parsed string" + asyncFlow, 1, {
 		url: "data/dashboard.xml",
 		dataType: "xml",
 		success: function( ajaxXML ) {
@@ -1501,7 +1528,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "#13292 - jQuery.ajax() - converter is bypassed for 204 requests", 3, {
+	ajaxTest( "#13292 - jQuery.ajax() - converter is bypassed for 204 requests" + asyncFlow, 3, {
 		url: "data/nocontent.php",
 		dataType: "testing",
 		converters: {
@@ -1521,7 +1548,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "#13388 - jQuery.ajax() - responseXML", 3, {
+	ajaxTest( "#13388 - jQuery.ajax() - responseXML" + asyncFlow, 3, {
 		url: url("data/with_fries.xml"),
 		dataType: "xml",
 		success: function( resp, _, jqXHR ) {
@@ -1531,7 +1558,7 @@ module( "ajax", {
 		}
 	});
 
-	ajaxTest( "#13922 - jQuery.ajax() - converter is bypassed for HEAD requests", 3, {
+	ajaxTest( "#13922 - jQuery.ajax() - converter is bypassed for HEAD requests" + asyncFlow, 3, {
 		url: "data/json.php",
 		method: "HEAD",
 		data: {
@@ -1554,12 +1581,12 @@ module( "ajax", {
 		}
 	} );
 
-	testIframeWithCallback( "#14379 - jQuery.ajax() on unload", "ajax/onunload.html", function( status ) {
+	testIframeWithCallback( "#14379 - jQuery.ajax() on unload" + asyncFlow, "ajax/onunload.html", function( status ) {
 		expect( 1 );
 		strictEqual( status, "success", "Request completed" );
 	});
 
-	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, [
+	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught" + asyncFlow, 4, [
 		{
 			url: "data/params_html.php",
 			method: "POST",
@@ -1591,7 +1618,7 @@ module( "ajax", {
 
 //----------- jQuery.ajaxPrefilter()
 
-	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, {
+	ajaxTest( "jQuery.ajaxPrefilter() - abort" + asyncFlow, 1, {
 		dataType: "prefix",
 		setup: function() {
 			// Ensure prefix does not throw an error
@@ -1612,7 +1639,7 @@ module( "ajax", {
 
 //----------- jQuery.ajaxSetup()
 
-	asyncTest( "jQuery.ajaxSetup()", 1, function() {
+	asyncTest( "jQuery.ajaxSetup()" + asyncFlow, 1, function() {
 		jQuery.ajaxSetup({
 			url: url("data/name.php?name=foo"),
 			success: function( msg ) {
@@ -1623,7 +1650,7 @@ module( "ajax", {
 		jQuery.ajax();
 	});
 
-	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) - with global timeout", 2, function() {
+	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) - with global timeout" + asyncFlow, 2, function() {
 		var passed = 0,
 			pass = function() {
 				ok( passed++ < 2, "Error callback executed" );
@@ -1651,7 +1678,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) with localtimeout", 1, function() {
+	asyncTest( "jQuery.ajaxSetup({ timeout: Number }) with localtimeout" + asyncFlow, 1, function() {
 		jQuery.ajaxSetup({
 			timeout: 50
 		});
@@ -1672,7 +1699,7 @@ module( "ajax", {
 
 //----------- jQuery.domManip()
 
-	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", 1, function() {
+	test( "#11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events" + asyncFlow, 1, function() {
 		jQuery.ajaxSetup({
 			type: "POST"
 		});
@@ -1686,13 +1713,13 @@ module( "ajax", {
 		jQuery( document ).off("ajaxStart ajaxStop");
 	});
 
-	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
+	asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated" + asyncFlow, 2, function() {
 		jQuery("#qunit-fixture").load( "data/cleanScript.html", start );
 	});
 
 //----------- jQuery.get()
 
-	asyncTest( "jQuery.get( String, Hash, Function ) - parse xml and use text() on nodes", 2, function() {
+	asyncTest( "jQuery.get( String, Hash, Function ) - parse xml and use text() on nodes" + asyncFlow, 2, function() {
 		jQuery.get( url("data/dashboard.xml"), function( xml ) {
 			var content = [];
 			jQuery( "tab", xml ).each(function() {
@@ -1704,7 +1731,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "#8277 - jQuery.get( String, Function ) - data in ajaxSettings", 1, function() {
+	asyncTest( "#8277 - jQuery.get( String, Function ) - data in ajaxSettings" + asyncFlow, 1, function() {
 		jQuery.ajaxSetup({
 			data: "helloworld"
 		});
@@ -1716,7 +1743,7 @@ module( "ajax", {
 
 //----------- jQuery.getJSON()
 
-	asyncTest( "jQuery.getJSON( String, Hash, Function ) - JSON array", 5, function() {
+	asyncTest( "jQuery.getJSON( String, Hash, Function ) - JSON array" + asyncFlow, 5, function() {
 		jQuery.getJSON(
 			url("data/json.php"),
 			{
@@ -1733,7 +1760,7 @@ module( "ajax", {
 		);
 	});
 
-	asyncTest( "jQuery.getJSON( String, Function ) - JSON object", 2, function() {
+	asyncTest( "jQuery.getJSON( String, Function ) - JSON object" + asyncFlow, 2, function() {
 		jQuery.getJSON( url("data/json.php"), function( json ) {
 			if ( json && json["data"] ) {
 				strictEqual( json["data"]["lang"], "en", "Check JSON: lang" );
@@ -1743,7 +1770,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function() {
+	asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content" + asyncFlow, 2, function() {
 		jQuery.getJSON( url( window.location.href.replace( /[^\/]*$/, "" ) + "data/json.php" ), function( json ) {
 			strictEqual( json.data.lang, "en", "Check JSON: lang" );
 			strictEqual( json.data.length, 25, "Check JSON: length" );
@@ -1753,7 +1780,7 @@ module( "ajax", {
 
 //----------- jQuery.getScript()
 
-	asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function() {
+	asyncTest( "jQuery.getScript( String, Function ) - with callback" + asyncFlow, 2, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php"), function() {
 			strictEqual( window["testBar"], "bar", "Check if script was evaluated" );
@@ -1761,12 +1788,12 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
+	asyncTest( "jQuery.getScript( String, Function ) - no callback" + asyncFlow, 1, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php") ).done( start );
 	});
 
-	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function() {
+	asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText" + asyncFlow, 2, function() {
 		Globals.register("testBar");
 		jQuery.getScript( url("data/testbar.php"), function( data, _, jqXHR ) {
 			strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
@@ -1777,7 +1804,7 @@ module( "ajax", {
 //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
-	asyncTest( "jQuery.fn.load( String )", 2, function() {
+	asyncTest( "jQuery.fn.load( String )" + asyncFlow, 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1786,7 +1813,7 @@ module( "ajax", {
 		jQuery("#first").load( "data/name.html", start );
 	});
 
-	asyncTest( "jQuery.fn.load() - 404 error callbacks", 6, function() {
+	asyncTest( "jQuery.fn.load() - 404 error callbacks" + asyncFlow, 6, function() {
 		addGlobalEvents("ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError")();
 		jQuery( document ).ajaxStop( start );
 		jQuery("<div/>").load( "data/404.html", function() {
@@ -1795,7 +1822,7 @@ module( "ajax", {
 	});
 
 	// check if load can be called with url and null data
-	asyncTest( "jQuery.fn.load( String, null )", 2, function() {
+	asyncTest( "jQuery.fn.load( String, null )" + asyncFlow, 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1805,7 +1832,7 @@ module( "ajax", {
 	});
 
 	// check if load can be called with url and undefined data
-	asyncTest( "jQuery.fn.load( String, undefined )", 2, function() {
+	asyncTest( "jQuery.fn.load( String, undefined )" + asyncFlow, 2, function() {
 		jQuery.ajaxSetup({
 			beforeSend: function() {
 				strictEqual( this.type, "GET", "no data means GET request" );
@@ -1815,7 +1842,7 @@ module( "ajax", {
 	});
 
 	// check if load can be called with only url
-	asyncTest( "jQuery.fn.load( URL_SELECTOR )", 1, function() {
+	asyncTest( "jQuery.fn.load( URL_SELECTOR )" + asyncFlow, 1, function() {
 		jQuery("#first").load( "data/test3.html div.user", function() {
 			strictEqual( jQuery( this ).children("div").length, 2, "Verify that specific elements were injected" );
 			start();
@@ -1823,21 +1850,21 @@ module( "ajax", {
 	});
 
 	// Selector should be trimmed to avoid leading spaces (#14773)
-	asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )", 1, function() {
+	asyncTest( "jQuery.fn.load( URL_SELECTOR with spaces )" + asyncFlow, 1, function() {
 		jQuery("#first").load( "data/test3.html   #superuser ", function() {
 			strictEqual( jQuery( this ).children("div").length, 1, "Verify that specific elements were injected" );
 			start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM", 2, function() {
+	asyncTest( "jQuery.fn.load( String, Function ) - simple: inject text into DOM" + asyncFlow, 2, function() {
 		jQuery("#first").load( url("data/name.html"), function() {
 			ok( /^ERROR/.test(jQuery("#first").text()), "Check if content was injected into the DOM" );
 			start();
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - check scripts", 7, function() {
+	asyncTest( "jQuery.fn.load( String, Function ) - check scripts" + asyncFlow, 7, function() {
 		var verifyEvaluation = function() {
 			strictEqual( window["testBar"], "bar", "Check if script src was evaluated after load" );
 			strictEqual( jQuery("#ap").html(), "bar", "Check if script evaluation has modified DOM");
@@ -1855,7 +1882,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag", 3, function() {
+	asyncTest( "jQuery.fn.load( String, Function ) - check file with only a script tag" + asyncFlow, 3, function() {
 		Globals.register("testFoo");
 
 		jQuery("#first").load( url("data/test2.html"), function() {
@@ -1865,7 +1892,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Function ) - dataFilter in ajaxSettings", 2, function() {
+	asyncTest( "jQuery.fn.load( String, Function ) - dataFilter in ajaxSettings" + asyncFlow, 2, function() {
 		jQuery.ajaxSetup({
 			dataFilter: function() {
 				return "Hello World";
@@ -1878,7 +1905,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, Object, Function )", 2, function() {
+	asyncTest( "jQuery.fn.load( String, Object, Function )" + asyncFlow, 2, function() {
 		jQuery("<div />").load( url("data/params_html.php"), {
 			"foo": 3,
 			"bar": "ok"
@@ -1890,7 +1917,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load( String, String, Function )", 2, function() {
+	asyncTest( "jQuery.fn.load( String, String, Function )" + asyncFlow, 2, function() {
 		jQuery("<div />").load( url("data/params_html.php"), "foo=3&bar=ok", function() {
 			var $get = jQuery( this ).find("#get");
 			strictEqual( $get.find("#foo").text(), "3", "Check if a string of data is passed correctly" );
@@ -1899,7 +1926,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.fn.load() - callbacks get the correct parameters", 8, function() {
+	asyncTest( "jQuery.fn.load() - callbacks get the correct parameters" + asyncFlow, 8, function() {
 		var completeArgs = {};
 
 		jQuery.ajaxSetup({
@@ -1938,7 +1965,7 @@ module( "ajax", {
 		).always( start );
 	});
 
-	asyncTest( "#2046 - jQuery.fn.load( String, Function ) with ajaxSetup on dataType json", 1, function() {
+	asyncTest( "#2046 - jQuery.fn.load( String, Function ) with ajaxSetup on dataType json" + asyncFlow, 1, function() {
 		jQuery.ajaxSetup({
 			dataType: "json"
 		});
@@ -1950,7 +1977,7 @@ module( "ajax", {
 		jQuery("#first").load("data/test3.html");
 	});
 
-	asyncTest( "#10524 - jQuery.fn.load() - data specified in ajaxSettings is merged in", 1, function() {
+	asyncTest( "#10524 - jQuery.fn.load() - data specified in ajaxSettings is merged in" + asyncFlow, 1, function() {
 		var data = {
 			"baz": 1
 		};
@@ -1968,7 +1995,7 @@ module( "ajax", {
 
 //----------- jQuery.post()
 
-	asyncTest( "jQuery.post() - data", 3, function() {
+	asyncTest( "jQuery.post() - data" + asyncFlow, 3, function() {
 		jQuery.when(
 			jQuery.post(
 				url("data/name.php"),
@@ -2001,7 +2028,7 @@ module( "ajax", {
 		});
 	});
 
-	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml", 4, function() {
+	asyncTest( "jQuery.post( String, Hash, Function ) - simple with xml" + asyncFlow, 4, function() {
 		jQuery.when(
 			jQuery.post(
 				url("data/name.php"),
@@ -2028,8 +2055,14 @@ module( "ajax", {
 
 //----------- jQuery.active
 
-	test( "jQuery.active", 1, function() {
+	test( "jQuery.active" + asyncFlow, 1, function() {
 		ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 	});
+
+//----------- Cleanup
+
+jQuery.ajaxSettings.converters = originalConverters;
+
+});
 
 })();

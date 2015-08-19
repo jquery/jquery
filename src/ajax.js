@@ -201,12 +201,24 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 	while ( current ) {
 
 		if ( s.responseFields[ current ] ) {
-			jqXHR[ s.responseFields[ current ] ] = response;
+			if ( response && jQuery.isFunction( response.then ) ) {
+				/* jshint ignore:start */
+				response.then( (function(current) { return function( response ) { jqXHR[ s.responseFields[ current ] ] = response; }; })( current ) );
+				/* jshint ignore:end */
+			} else {
+				jqXHR[ s.responseFields[ current ] ] = response;
+			}
 		}
 
 		// Apply the dataFilter if provided
 		if ( !prev && isSuccess && s.dataFilter ) {
-			response = s.dataFilter( response, s.dataType );
+			if ( response && jQuery.isFunction( response.then ) ) {
+				/* jshint ignore:start */
+				response = response.then( (function() { return function( response ) { response = s.dataFilter( response, s.dataType ); }; })() );
+				/* jshint ignore:end */
+			} else {
+				response = s.dataFilter( response, s.dataType );
+			}
 		}
 
 		prev = current;
@@ -256,7 +268,9 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 				if ( conv !== true ) {
 
 					// Unless errors are allowed to bubble, catch and return them
-					if ( conv && s[ "throws" ] ) {
+					if ( response && jQuery.isFunction( response.then ) ) {
+						response = response.then( conv );
+					} else if ( conv && s[ "throws" ] ) {
 						response = conv( response );
 					} else {
 						try {
@@ -270,7 +284,18 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 		}
 	}
 
-	return { state: "success", data: response };
+	if ( response && jQuery.isFunction( response.then ) ) {
+		return response.then(
+			function( response ) {
+				return { state: "success", data: response };
+			},
+			function( e ) {
+				return { state: "parsererror", error: conv ? e : "No conversion from " + prev + " to " + current };
+			}
+		);
+	} else {
+		return { state: "success", data: response };
+	}
 }
 
 jQuery.extend({
@@ -678,6 +703,13 @@ jQuery.extend({
 			// Convert no matter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
 
+			if ( response && jQuery.isFunction( response.then ) ) {
+				response.then( processResponse, processResponse );
+			} else {
+				processResponse( response );
+			}
+
+			function processResponse( response ) {
 			// If successful, handle type chaining
 			if ( isSuccess ) {
 
@@ -748,6 +780,7 @@ jQuery.extend({
 				if ( !( --jQuery.active ) ) {
 					jQuery.event.trigger("ajaxStop");
 				}
+			}
 			}
 		}
 
