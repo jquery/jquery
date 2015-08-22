@@ -252,7 +252,7 @@ jQuery.extend({
 			if ( !hooks || !("set" in hooks) ||
 				(value = hooks.set( elem, value, extra )) !== undefined ) {
 
-				style[ name ] = value;
+				if ( style[ name ] !== value ) style[ name ] = value;
 			}
 
 		} else {
