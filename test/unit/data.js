@@ -874,3 +874,19 @@ test( "Check that the expando is removed when there's no more data", function() 
 		}
 	}
 });
+
+test( ".data(prop) does not create expando", function() {
+	expect( 2 );
+
+	var key,
+		div = jQuery( "<div/>" );
+
+	div.data("foo");
+	equal( false, jQuery.hasData( div[0] ) );
+	// Make sure no expando has been added
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			ok( false, "Expando was created on access" );
+		}
+	}
+});
