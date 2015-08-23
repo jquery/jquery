@@ -72,13 +72,11 @@ Data.prototype = {
 		return cache;
 	},
 	get: function( owner, key ) {
-		var cache = this.cache( owner );
-
 		return key === undefined ?
-			cache :
+			this.cache( owner ) :
 
 			// Always use camelCase key (gh-2257)
-			cache[ jQuery.camelCase( key ) ];
+			owner[ this.expando ] && owner[ this.expando ][ jQuery.camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
 
