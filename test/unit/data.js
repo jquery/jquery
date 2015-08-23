@@ -1121,3 +1121,19 @@ testIframeWithCallback(
 		);
 	}
 );
+
+QUnit.test( ".data(prop) does not create expando", function( assert ) {
+	assert.expect( 1 );
+
+	var key,
+		div = jQuery( "<div/>" );
+
+	div.data("foo");
+	assert.equal( false, jQuery.hasData( div[0] ) );
+	// Make sure no expando has been added
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			assert.ok( false, "Expando was created on access" );
+		}
+	}
+} );
