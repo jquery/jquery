@@ -1,15 +1,14 @@
 define( [
 	"../core",
 	"../var/rnotwhite",
-	"./accepts"
-], function( jQuery, rnotwhite ) {
+	"./var/acceptData"
+], function( jQuery, rnotwhite, acceptData ) {
 
 function Data() {
 	this.expando = jQuery.expando + Data.uid++;
 }
 
 Data.uid = 1;
-Data.accepts = jQuery.acceptData;
 
 Data.prototype = {
 
@@ -38,7 +37,7 @@ Data.prototype = {
 		// We can accept data for non-element nodes in modern browsers,
 		// but we should not, see #8335.
 		// Always return an empty object.
-		if ( !Data.accepts( owner ) ) {
+		if ( !acceptData( owner ) ) {
 			return {};
 		}
 

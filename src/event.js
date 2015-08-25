@@ -6,11 +6,11 @@ define( [
 	"./var/slice",
 	"./event/support",
 	"./data/var/dataPriv",
+	"./data/var/acceptData",
 
 	"./core/init",
-	"./data/accepts",
 	"./selector"
-], function( jQuery, document, rnotwhite, hasOwn, slice, support, dataPriv ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support, dataPriv, acceptData ) {
 
 var
 	rkeyEvent = /^key/,
@@ -376,7 +376,7 @@ jQuery.event = {
 
 			// Native handler
 			handle = ontype && cur[ ontype ];
-			if ( handle && handle.apply && jQuery.acceptData( cur ) ) {
+			if ( handle && handle.apply && acceptData( cur ) ) {
 				event.result = handle.apply( cur, data );
 				if ( event.result === false ) {
 					event.preventDefault();
@@ -389,8 +389,8 @@ jQuery.event = {
 		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
 
 			if ( ( !special._default ||
-			    special._default.apply( eventPath.pop(), data ) === false ) &&
-				jQuery.acceptData( elem ) ) {
+				special._default.apply( eventPath.pop(), data ) === false ) &&
+				acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Don't do default actions on window, that's where global variables be (#6170)

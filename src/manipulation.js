@@ -14,16 +14,16 @@ define( [
 
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
+	"./data/var/acceptData",
 
 	"./core/init",
-	"./data/accepts",
 	"./traversing",
 	"./selector",
 	"./event"
 ], function( jQuery, concat, push, access,
 	rcheckableType, rtagName, rscriptType,
 	wrapMap, getAll, setGlobalEval, buildFragment, support,
-	dataPriv, dataUser ) {
+	dataPriv, dataUser, acceptData ) {
 
 var
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi,
@@ -273,7 +273,7 @@ jQuery.extend( {
 			i = 0;
 
 		for ( ; ( elem = elems[ i ] ) !== undefined; i++ ) {
-			if ( jQuery.acceptData( elem ) ) {
+			if ( acceptData( elem ) ) {
 				if ( ( data = elem[ dataPriv.expando ] ) ) {
 					if ( data.events ) {
 						for ( type in data.events ) {
