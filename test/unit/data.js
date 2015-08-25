@@ -813,31 +813,30 @@ test(".data doesn't throw when calling selection is empty. #13551", function() {
 	}
 });
 
-test("jQuery.acceptData", function() {
+test("acceptData", function() {
 	expect( 10 );
 
-	var flash, pdf;
+	var flash, pdf, form;
 
-	ok( jQuery.acceptData( document ), "document" );
-	ok( jQuery.acceptData( document.documentElement ), "documentElement" );
-	ok( jQuery.acceptData( {} ), "object" );
-	ok( jQuery.acceptData( document.createElement( "embed" ) ), "embed" );
+	equal( 42, jQuery( document ).data( "test", 42 ).data( "test" ), "document" );
+	equal( 42, jQuery( document.documentElement ).data( "test", 42 ).data( "test" ), "documentElement" );
+	equal( 42, jQuery( {} ).data( "test", 42 ).data( "test" ), "object" );
+	equal( 42, jQuery( document.createElement( "embed" ) ).data( "test", 42 ).data( "test" ), "embed" );
 
 	flash = document.createElement( "object" );
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
-	ok( jQuery.acceptData( flash ), "flash" );
+	equal( 42, jQuery( flash ).data( "test", 42 ).data( "test" ), "flash" );
 
 	pdf = document.createElement( "object" );
 	pdf.setAttribute( "classid", "clsid:CA8A9780-280D-11CF-A24D-444553540000" );
-	ok( jQuery.acceptData( pdf ), "pdf" );
+	equal( 42, jQuery( pdf ).data( "test", 42 ).data( "test" ), "pdf" );
 
-	ok( !jQuery.acceptData( document.createComment( "" ) ), "comment" );
-	ok( !jQuery.acceptData( document.createTextNode( "" ) ), "text" );
-	ok( !jQuery.acceptData( document.createDocumentFragment() ), "documentFragment" );
+	equal( undefined, jQuery( document.createComment( "" ) ).data( "test", 42 ).data( "test" ), "comment" );
+	equal( undefined, jQuery( document.createTextNode( "" ) ).data( "test", 42 ).data( "test" ), "text" );
+	equal( undefined, jQuery( document.createDocumentFragment() ).data( "test", 42 ).data( "test" ), "documentFragment" );
 
-	ok( jQuery.acceptData(
-		jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ] ),
-		"form with aliased DOM properties" );
+	form = jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ];
+	equal( 42, jQuery( form ) .data( "test", 42 ).data( "test" ), "form with aliased DOM properties" );
 });
 
 test("Check proper data removal of non-element descendants nodes (#8335)", function() {
