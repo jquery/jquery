@@ -103,13 +103,12 @@ module.exports = function( grunt ) {
 			}
 		},
 		jscs: {
-			src: "src/**/*.js",
+			src: "src",
 			gruntfile: "Gruntfile.js",
 
 			// Check parts of tests that pass
 			test: [ "test/data/testrunner.js", "test/unit/animation.js", "test/unit/tween.js" ],
-			release: [ "build/*.js", "!build/release-notes.js" ],
-			tasks: "build/tasks/*.js"
+			build: "build"
 		},
 		testswarm: {
 			tests: [
