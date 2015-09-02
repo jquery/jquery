@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core"
 ], function( jQuery ) {
 
@@ -6,7 +6,7 @@ define([
  * Determines whether an object can have data
  */
 jQuery.acceptData = function( elem ) {
-	var noData = jQuery.noData[ (elem.nodeName + " ").toLowerCase() ],
+	var noData = jQuery.noData[ ( elem.nodeName + " " ).toLowerCase() ],
 		nodeType = +elem.nodeType || 1;
 
 	// Do not set data on non-element DOM nodes because it will not be cleared (#8335).
@@ -14,8 +14,8 @@ jQuery.acceptData = function( elem ) {
 		false :
 
 		// Nodes accept data unless otherwise specified; rejection can be conditional
-		!noData || noData !== true && elem.getAttribute("classid") === noData;
+		!noData || noData !== true && elem.getAttribute( "classid" ) === noData;
 };
 
 return jQuery.acceptData;
-});
+} );

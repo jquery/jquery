@@ -1,11 +1,11 @@
-define([
+define( [
 	"../core",
 	"../event"
 ], function( jQuery ) {
 
-jQuery.each( ("blur focus focusin focusout resize scroll click dblclick " +
+jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup contextmenu").split(" "),
+	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
 	function( i, name ) {
 
 	// Handle event binding
@@ -14,9 +14,9 @@ jQuery.each( ("blur focus focusin focusout resize scroll click dblclick " +
 			this.on( name, null, data, fn ) :
 			this.trigger( name );
 	};
-});
+} );
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	},
@@ -32,11 +32,12 @@ jQuery.fn.extend({
 		return this.on( types, selector, data, fn );
 	},
 	undelegate: function( selector, types, fn ) {
+
 		// ( namespace ) or ( selector, types [, fn] )
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
 	}
-});
+} );
 
-});
+} );

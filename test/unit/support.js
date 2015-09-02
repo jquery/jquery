@@ -1,4 +1,4 @@
-module("support", { teardown: moduleTeardown });
+module( "support", { teardown: moduleTeardown } );
 
 function getComputedSupport( support ) {
 	var prop,
@@ -21,7 +21,7 @@ test( "zoom of doom (#13089)", function() {
 	expect( 1 );
 
 	ok( !document.body.style.zoom, "No zoom added to the body" );
-});
+} );
 
 if ( jQuery.css ) {
 	testIframeWithCallback( "body background is not lost if set prior to loading jQuery (#9239)", "support/bodyBackground.html", function( color, support ) {
@@ -33,19 +33,19 @@ if ( jQuery.css ) {
 		ok( okValue[ color ], "color was not reset (" + color + ")" );
 
 		stop();
+
 		// Run doc ready tests as well
-		jQuery(function() {
+		jQuery( function() {
 			deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
 			start();
-		});
-	});
+		} );
+	} );
 }
 
 testIframeWithCallback( "A background on the testElement does not cause IE8 to crash (#9823)", "support/testElementCrash.html", function() {
 	expect( 1 );
 	ok( true, "IE8 does not crash" );
-});
-
+} );
 
 // This test checks CSP only for browsers with "Content-Security-Policy" header support
 // i.e. no old WebKit or old Firefox
@@ -57,14 +57,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 		stop();
 
-		supportjQuery.get( "data/support/csp.log" ).done(function( data ) {
+		supportjQuery.get( "data/support/csp.log" ).done( function( data ) {
 			equal( data, "", "No log request should be sent" );
 			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
-		});
+		} );
 	}
 );
 
-(function() {
+( function() {
 	var expected,
 		userAgent = window.navigator.userAgent;
 
@@ -201,6 +201,7 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 			"submit": false
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
+
 		// Catches Chrome on Android as well (i.e. the default
 		// Android browser on Android >= 4.4).
 		expected = {
@@ -481,14 +482,14 @@ testIframeWithCallback( "Check CSP (https://developer.mozilla.org/en-US/docs/Sec
 
 			for ( i in expected ) {
 				if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-					equal( computedSupport[i], expected[i],
-						"jQuery.support['" + i + "']: " + computedSupport[i] +
-							", expected['" + i + "']: " + expected[i]);
+					equal( computedSupport[ i ], expected[ i ],
+						"jQuery.support['" + i + "']: " + computedSupport[ i ] +
+							", expected['" + i + "']: " + expected[ i ] );
 				} else {
 					ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 				}
 			}
-		});
+		} );
 	}
 
-})();
+} )();

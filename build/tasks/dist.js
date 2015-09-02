@@ -21,14 +21,14 @@ module.exports = function( grunt ) {
 		flags = Object.keys( this.flags );
 
 		// Combine all output target paths
-		paths = [].concat( stored, flags ).filter(function( path ) {
+		paths = [].concat( stored, flags ).filter( function( path ) {
 			return path !== "*";
-		});
+		} );
 
 		// Ensure the dist files are pure ASCII
 		nonascii = false;
 
-		distpaths.forEach(function( filename ) {
+		distpaths.forEach( function( filename ) {
 			var i, c,
 				text = fs.readFileSync( filename, "utf8" );
 
@@ -53,7 +53,7 @@ module.exports = function( grunt ) {
 			}
 
 			// Optionally copy dist files to other locations
-			paths.forEach(function( path ) {
+			paths.forEach( function( path ) {
 				var created;
 
 				if ( !/\/$/.test( path ) ) {
@@ -63,9 +63,9 @@ module.exports = function( grunt ) {
 				created = path + filename.replace( "dist/", "" );
 				grunt.file.write( created, text );
 				grunt.log.writeln( "File '" + created + "' created." );
-			});
-		});
+			} );
+		} );
 
 		return !nonascii;
-	});
+	} );
 };

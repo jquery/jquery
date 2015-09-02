@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"./support",
 	"../selector",
@@ -15,4 +15,4 @@ jQuery.expr.filters.visible = function( elem ) {
 		( ( elem.style && elem.style.display ) || jQuery.css( elem, "display" ) ) !== "none" );
 };
 
-});
+} );

@@ -1,9 +1,9 @@
-define([
+define( [
 	"../var/document",
 	"../var/support"
 ], function( document, support ) {
 
-(function() {
+( function() {
 	var a,
 		input = document.createElement( "input" ),
 		div = document.createElement( "div" ),
@@ -12,6 +12,7 @@ define([
 
 	// Setup
 	div.innerHTML = "  <link/><a href='/a'>a</a>";
+
 	// Support: Windows Web Apps (WWA)
 	// `type` must use .setAttribute for WWA (#14901)
 	input.setAttribute( "type", "checkbox" );
@@ -24,7 +25,7 @@ define([
 
 	// Get the style information from getAttribute
 	// (IE uses .cssText instead)
-	support.style = /top/.test( a.getAttribute("style") );
+	support.style = /top/.test( a.getAttribute( "style" ) );
 
 	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 	support.checkOn = !!input.value;
@@ -49,8 +50,8 @@ define([
 	input.value = "t";
 	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
-})();
+} )();
 
 return support;
 
-});
+} );

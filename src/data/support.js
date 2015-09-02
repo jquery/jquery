@@ -1,9 +1,9 @@
-define([
+define( [
 	"../var/document",
 	"../var/support"
 ], function( document, support ) {
 
-(function() {
+( function() {
 	var div = document.createElement( "div" );
 
 	// Support: IE<9
@@ -16,8 +16,8 @@ define([
 
 	// Null elements to avoid leaks in IE.
 	div = null;
-})();
+} )();
 
 return support;
 
-});
+} );

@@ -1,4 +1,4 @@
-define([
+define( [
 	"./var/nodeNames"
 ], function( nodeNames ) {
 
@@ -17,4 +17,4 @@ function createSafeFragment( document ) {
 }
 
 return createSafeFragment;
-});
+} );

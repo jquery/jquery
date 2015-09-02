@@ -1,47 +1,47 @@
-module("data", { teardown: moduleTeardown });
+module( "data", { teardown: moduleTeardown } );
 
-test("expando", function(){
-	expect(1);
+test( "expando", function() {
+	expect( 1 );
 
-	equal(jQuery.expando !== undefined, true, "jQuery is exposing the expando");
-});
+	equal( jQuery.expando !== undefined, true, "jQuery is exposing the expando" );
+} );
 
 function dataTests( elem ) {
 	var dataObj, internalDataObj;
 
-	equal( jQuery.data(elem, "foo"), undefined, "No data exists initially" );
-	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists initially" );
+	equal( jQuery.data( elem, "foo" ), undefined, "No data exists initially" );
+	strictEqual( jQuery.hasData( elem ), false, "jQuery.hasData agrees no data exists initially" );
 
-	dataObj = jQuery.data(elem);
+	dataObj = jQuery.data( elem );
 	equal( typeof dataObj, "object", "Calling data with no args gives us a data object reference" );
-	strictEqual( jQuery.data(elem), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
+	strictEqual( jQuery.data( elem ), dataObj, "Calling jQuery.data returns the same data object when called multiple times" );
 
-	strictEqual( jQuery.hasData(elem), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
+	strictEqual( jQuery.hasData( elem ), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
 
-	dataObj["foo"] = "bar";
-	equal( jQuery.data(elem, "foo"), "bar", "Data is readable by jQuery.data when set directly on a returned data object" );
+	dataObj[ "foo" ] = "bar";
+	equal( jQuery.data( elem, "foo" ), "bar", "Data is readable by jQuery.data when set directly on a returned data object" );
 
-	strictEqual( jQuery.hasData(elem), true, "jQuery.hasData agrees data exists when data exists" );
+	strictEqual( jQuery.hasData( elem ), true, "jQuery.hasData agrees data exists when data exists" );
 
-	jQuery.data(elem, "foo", "baz");
-	equal( jQuery.data(elem, "foo"), "baz", "Data can be changed by jQuery.data" );
-	equal( dataObj["foo"], "baz", "Changes made through jQuery.data propagate to referenced data object" );
+	jQuery.data( elem, "foo", "baz" );
+	equal( jQuery.data( elem, "foo" ), "baz", "Data can be changed by jQuery.data" );
+	equal( dataObj[ "foo" ], "baz", "Changes made through jQuery.data propagate to referenced data object" );
 
-	jQuery.data(elem, "foo", undefined);
-	equal( jQuery.data(elem, "foo"), "baz", "Data is not unset by passing undefined to jQuery.data" );
+	jQuery.data( elem, "foo", undefined );
+	equal( jQuery.data( elem, "foo" ), "baz", "Data is not unset by passing undefined to jQuery.data" );
 
-	jQuery.data(elem, "foo", null);
-	strictEqual( jQuery.data(elem, "foo"), null, "Setting null using jQuery.data works OK" );
+	jQuery.data( elem, "foo", null );
+	strictEqual( jQuery.data( elem, "foo" ), null, "Setting null using jQuery.data works OK" );
 
-	jQuery.data(elem, "foo", "foo1");
+	jQuery.data( elem, "foo", "foo1" );
 
-	jQuery.data(elem, { "bar" : "baz", "boom" : "bloz" });
-	strictEqual( jQuery.data(elem, "foo"), "foo1", "Passing an object extends the data object instead of replacing it" );
-	equal( jQuery.data(elem, "boom"), "bloz", "Extending the data object works" );
+	jQuery.data( elem, { "bar": "baz", "boom": "bloz" } );
+	strictEqual( jQuery.data( elem, "foo" ), "foo1", "Passing an object extends the data object instead of replacing it" );
+	equal( jQuery.data( elem, "boom" ), "bloz", "Extending the data object works" );
 
-	jQuery._data(elem, "foo", "foo2", true);
-	equal( jQuery._data(elem, "foo"), "foo2", "Setting internal data works" );
-	equal( jQuery.data(elem, "foo"), "foo1", "Setting internal data does not override user data" );
+	jQuery._data( elem, "foo", "foo2", true );
+	equal( jQuery._data( elem, "foo" ), "foo2", "Setting internal data works" );
+	equal( jQuery.data( elem, "foo" ), "foo1", "Setting internal data does not override user data" );
 
 	internalDataObj = jQuery._data( elem );
 	ok( internalDataObj, "Internal data object exists" );
@@ -49,31 +49,31 @@ function dataTests( elem ) {
 
 	strictEqual( elem.boom, undefined, "Data is never stored directly on the object" );
 
-	jQuery.removeData(elem, "foo");
-	strictEqual( jQuery.data(elem, "foo"), undefined, "jQuery.removeData removes single properties" );
+	jQuery.removeData( elem, "foo" );
+	strictEqual( jQuery.data( elem, "foo" ), undefined, "jQuery.removeData removes single properties" );
 
-	jQuery.removeData(elem);
-	strictEqual( jQuery._data(elem), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
+	jQuery.removeData( elem );
+	strictEqual( jQuery._data( elem ), internalDataObj, "jQuery.removeData does not remove internal data if it exists" );
 
-	jQuery.data(elem, "foo", "foo1");
-	jQuery._data(elem, "foo", "foo2");
+	jQuery.data( elem, "foo", "foo1" );
+	jQuery._data( elem, "foo", "foo2" );
 
-	equal( jQuery.data(elem, "foo"), "foo1", "(sanity check) Ensure data is set in user data object" );
-	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
+	equal( jQuery.data( elem, "foo" ), "foo1", "(sanity check) Ensure data is set in user data object" );
+	equal( jQuery._data( elem, "foo" ), "foo2", "(sanity check) Ensure data is set in internal data object" );
 
-	strictEqual( jQuery._data(elem, jQuery.expando), undefined, "Removing the last item in internal data destroys the internal data object" );
+	strictEqual( jQuery._data( elem, jQuery.expando ), undefined, "Removing the last item in internal data destroys the internal data object" );
 
-	jQuery._data(elem, "foo", "foo2");
-	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) Ensure data is set in internal data object" );
+	jQuery._data( elem, "foo", "foo2" );
+	equal( jQuery._data( elem, "foo" ), "foo2", "(sanity check) Ensure data is set in internal data object" );
 
-	jQuery.removeData(elem, "foo");
-	equal( jQuery._data(elem, "foo"), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
+	jQuery.removeData( elem, "foo" );
+	equal( jQuery._data( elem, "foo" ), "foo2", "(sanity check) jQuery.removeData for user data does not remove internal data" );
 }
 
-test("jQuery.data(div)", function() {
+test( "jQuery.data(div)", function() {
 	expect( 25 );
 
-	var div = document.createElement("div");
+	var div = document.createElement( "div" );
 
 	dataTests( div );
 
@@ -81,15 +81,15 @@ test("jQuery.data(div)", function() {
 	// assert that nothing else was put in there, and that that
 	// one stayed there.
 	QUnit.expectJqData( this, div, "foo" );
-});
+} );
 
-test("jQuery.data({})", function() {
+test( "jQuery.data({})", function() {
 	expect( 25 );
 
 	dataTests( {} );
-});
+} );
 
-test("jQuery.data(window)", function() {
+test( "jQuery.data(window)", function() {
 	expect( 25 );
 
 	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
@@ -97,53 +97,53 @@ test("jQuery.data(window)", function() {
 	jQuery( window ).off( "unload" );
 
 	dataTests( window );
-});
+} );
 
-test("jQuery.data(document)", function() {
+test( "jQuery.data(document)", function() {
 	expect( 25 );
 
 	dataTests( document );
 
 	QUnit.expectJqData( this, document, "foo" );
-});
+} );
 
-test("Expando cleanup", function() {
+test( "Expando cleanup", function() {
 	expect( 4 );
 
-	var div = document.createElement("div");
+	var div = document.createElement( "div" );
 
-	function assertExpandoAbsent(message) {
+	function assertExpandoAbsent( message ) {
 		strictEqual( div[ jQuery.expando ], undefined, message );
 	}
 
-	assertExpandoAbsent("There is no expando on new elements");
+	assertExpandoAbsent( "There is no expando on new elements" );
 
-	jQuery.data(div, "foo", 100);
-	jQuery.data(div, "bar", 200);
+	jQuery.data( div, "foo", 100 );
+	jQuery.data( div, "bar", 200 );
 
-	ok(jQuery.expando in div, "There is an expando on the element after using $.data()");
+	ok( jQuery.expando in div, "There is an expando on the element after using $.data()" );
 
-	jQuery.removeData(div, "foo");
+	jQuery.removeData( div, "foo" );
 
-	ok(jQuery.expando in div, "There is still an expando on the element after removing (some) of the data");
+	ok( jQuery.expando in div, "There is still an expando on the element after removing (some) of the data" );
 
-	jQuery.removeData(div, "bar");
+	jQuery.removeData( div, "bar" );
 
-	assertExpandoAbsent("Removing the last item in the data store deletes the expando");
+	assertExpandoAbsent( "Removing the last item in the data store deletes the expando" );
 
 	// Clean up unattached element
-	jQuery(div).remove();
-});
+	jQuery( div ).remove();
+} );
 
-test("Data is not being set on comment and text nodes", function() {
-	expect(2);
+test( "Data is not being set on comment and text nodes", function() {
+	expect( 2 );
 
-	ok( !jQuery.hasData( jQuery("<!-- comment -->").data("foo", 0) ) );
-	ok( !jQuery.hasData( jQuery("<span>text</span>").contents().data("foo", 0) ) );
+	ok( !jQuery.hasData( jQuery( "<!-- comment -->" ).data( "foo", 0 ) ) );
+	ok( !jQuery.hasData( jQuery( "<span>text</span>" ).contents().data( "foo", 0 ) ) );
 
-});
+} );
 
-test("jQuery.acceptData", function() {
+test( "jQuery.acceptData", function() {
 	expect( 10 );
 
 	var flash, pdf;
@@ -168,43 +168,43 @@ test("jQuery.acceptData", function() {
 	ok( jQuery.acceptData(
 		jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ] ),
 		"form with aliased DOM properties" );
-});
+} );
 
 // attempting to access the data of an undefined jQuery element should be undefined
-test("jQuery().data() === undefined (#14101)", function() {
+test( "jQuery().data() === undefined (#14101)", function() {
 	expect( 2 );
 
-	strictEqual(jQuery().data(), undefined);
-	strictEqual(jQuery().data("key"), undefined);
-});
+	strictEqual( jQuery().data(), undefined );
+	strictEqual( jQuery().data( "key" ), undefined );
+} );
 
-test(".data()", function() {
-	expect(5);
+test( ".data()", function() {
+	expect( 5 );
 
 	var div, dataObj, nodiv, obj;
 
-	div = jQuery("#foo");
-	strictEqual( div.data("foo"), undefined, "Make sure that missing result is undefined" );
-	div.data("test", "success");
+	div = jQuery( "#foo" );
+	strictEqual( div.data( "foo" ), undefined, "Make sure that missing result is undefined" );
+	div.data( "test", "success" );
 
 	dataObj = div.data();
 
-	deepEqual( dataObj, {test: "success"}, "data() returns entire data object with expected properties" );
-	strictEqual( div.data("foo"), undefined, "Make sure that missing result is still undefined" );
+	deepEqual( dataObj, { test: "success" }, "data() returns entire data object with expected properties" );
+	strictEqual( div.data( "foo" ), undefined, "Make sure that missing result is still undefined" );
 
-	nodiv = jQuery("#unfound");
+	nodiv = jQuery( "#unfound" );
 	equal( nodiv.data(), null, "data() on empty set returns null" );
 
 	obj = { foo: "bar" };
-	jQuery(obj).data("foo", "baz");
+	jQuery( obj ).data( "foo", "baz" );
 
-	dataObj = jQuery.extend(true, {}, jQuery(obj).data());
+	dataObj = jQuery.extend( true, {}, jQuery( obj ).data() );
 
 	deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
-});
+} );
 
 function testDataTypes( $obj ) {
-	jQuery.each({
+	jQuery.each( {
 		"null": null,
 		"true": true,
 		"false": false,
@@ -212,78 +212,78 @@ function testDataTypes( $obj ) {
 		"one": 1,
 		"empty string": "",
 		"empty array": [],
-		"array": [1],
+		"array": [ 1 ],
 		"empty object": {},
 		"object": { foo: "bar" },
 		"date": new Date(),
 		"regex": /test/,
 		"function": function() {}
 	}, function( type, value ) {
-		strictEqual( $obj.data( "test", value ).data("test"), value, "Data set to " + type );
-	});
+		strictEqual( $obj.data( "test", value ).data( "test" ), value, "Data set to " + type );
+	} );
 }
 
-test("jQuery(Element).data(String, Object).data(String)", function() {
+test( "jQuery(Element).data(String, Object).data(String)", function() {
 	expect( 18 );
-	var parent = jQuery("<div><div></div></div>"),
+	var parent = jQuery( "<div><div></div></div>" ),
 		div = parent.children();
 
-	strictEqual( div.data("test"), undefined, "No data exists initially" );
-	strictEqual( div.data("test", "success").data("test"), "success", "Data added" );
-	strictEqual( div.data("test", "overwritten").data("test"), "overwritten", "Data overwritten" );
-	strictEqual( div.data("test", undefined).data("test"), "overwritten", ".data(key,undefined) does nothing but is chainable (#5571)");
-	strictEqual( div.data("notexist"), undefined, "No data exists for unset key" );
+	strictEqual( div.data( "test" ), undefined, "No data exists initially" );
+	strictEqual( div.data( "test", "success" ).data( "test" ), "success", "Data added" );
+	strictEqual( div.data( "test", "overwritten" ).data( "test" ), "overwritten", "Data overwritten" );
+	strictEqual( div.data( "test", undefined ).data( "test" ), "overwritten", ".data(key,undefined) does nothing but is chainable (#5571)" );
+	strictEqual( div.data( "notexist" ), undefined, "No data exists for unset key" );
 	testDataTypes( div );
 
 	parent.remove();
-});
+} );
 
-test("jQuery(plain Object).data(String, Object).data(String)", function() {
+test( "jQuery(plain Object).data(String, Object).data(String)", function() {
 	expect( 16 );
 
 	// #3748
-	var $obj = jQuery({ exists: true });
-	strictEqual( $obj.data("nothing"), undefined, "Non-existent data returns undefined");
-	strictEqual( $obj.data("exists"), undefined, "Object properties are not returned as data" );
+	var $obj = jQuery( { exists: true } );
+	strictEqual( $obj.data( "nothing" ), undefined, "Non-existent data returns undefined" );
+	strictEqual( $obj.data( "exists" ), undefined, "Object properties are not returned as data" );
 	testDataTypes( $obj );
 
 	// Clean up
 	$obj.removeData();
-	deepEqual( $obj[0], { exists: true }, "removeData does not clear the object" );
-});
+	deepEqual( $obj[ 0 ], { exists: true }, "removeData does not clear the object" );
+} );
 
-test("data-* attributes", function() {
+test( "data-* attributes", function() {
 	expect( 46 );
 
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>"),
-		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>");
+		div = jQuery( "<div>" ),
+		child = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" ),
+		dummy = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" );
 
-	equal( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
+	equal( div.data( "attr" ), undefined, "Check for non-existing data-attr attribute" );
 
-	div.attr("data-attr", "exists");
-	equal( div.data("attr"), "exists", "Check for existing data-attr attribute" );
+	div.attr( "data-attr", "exists" );
+	equal( div.data( "attr" ), "exists", "Check for existing data-attr attribute" );
 
-	div.attr("data-attr", "exists2");
-	equal( div.data("attr"), "exists", "Check that updates to data- don't update .data()" );
+	div.attr( "data-attr", "exists2" );
+	equal( div.data( "attr" ), "exists", "Check that updates to data- don't update .data()" );
 
-	div.data("attr", "internal").attr("data-attr", "external");
-	equal( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
+	div.data( "attr", "internal" ).attr( "data-attr", "external" );
+	equal( div.data( "attr" ), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
 
 	div.remove();
 
-	child.appendTo("#qunit-fixture");
-	equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
-	equal( child.data("foo-42"), "boosh", "camelCasing does not affect numbers (#1751)" );
+	child.appendTo( "#qunit-fixture" );
+	equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
+	equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (#1751)" );
 
-	child.data("myobj", "replaced");
-	equal( child.data("myobj"), "replaced", "Original data overwritten");
+	child.data( "myobj", "replaced" );
+	equal( child.data( "myobj" ), "replaced", "Original data overwritten" );
 
-	child.data("ignored", "cache");
-	equal( child.data("ignored"), "cache", "Cached data used before DOM data-* fallback");
+	child.data( "ignored", "cache" );
+	equal( child.data( "ignored" ), "cache", "Cached data used before DOM data-* fallback" );
 
 	obj = child.data();
 	obj2 = dummy.data();
@@ -294,8 +294,8 @@ test("data-* attributes", function() {
 	dummy.remove();
 
 	for ( i = 0, l = check.length; i < l; i++ ) {
-		ok( obj[ check[i] ], "Make sure data- property exists when calling data-." );
-		ok( obj2[ check[i] ], "Make sure data- property exists when calling data-." );
+		ok( obj[ check[ i ] ], "Make sure data- property exists when calling data-." );
+		ok( obj2[ check[ i ] ], "Make sure data- property exists when calling data-." );
 	}
 
 	for ( prop in obj ) {
@@ -310,9 +310,9 @@ test("data-* attributes", function() {
 
 	equal( num2, check.length, "Make sure that the right number of properties came through." );
 
-	child.attr("data-other", "newvalue");
+	child.attr( "data-other", "newvalue" );
 
-	equal( child.data("other"), "test", "Make sure value was pulled in properly from a .data()." );
+	equal( child.data( "other" ), "test", "Make sure value was pulled in properly from a .data()." );
 
 	// attribute parsing
 	i = 0;
@@ -322,218 +322,218 @@ test("data-* attributes", function() {
 	};
 
 	child
-		.attr("data-true", "true")
-		.attr("data-false", "false")
-		.attr("data-five", "5")
-		.attr("data-point", "5.5")
-		.attr("data-pointe", "5.5E3")
-		.attr("data-grande", "5.574E9")
-		.attr("data-hexadecimal", "0x42")
-		.attr("data-pointbad", "5..5")
-		.attr("data-pointbad2", "-.")
-		.attr("data-bigassnum", "123456789123456789123456789")
-		.attr("data-badjson", "{123}")
-		.attr("data-badjson2", "[abc]")
-		.attr("data-notjson", " {}")
-		.attr("data-notjson2", "[] ")
-		.attr("data-empty", "")
-		.attr("data-space", " ")
-		.attr("data-null", "null")
-		.attr("data-string", "test");
+		.attr( "data-true", "true" )
+		.attr( "data-false", "false" )
+		.attr( "data-five", "5" )
+		.attr( "data-point", "5.5" )
+		.attr( "data-pointe", "5.5E3" )
+		.attr( "data-grande", "5.574E9" )
+		.attr( "data-hexadecimal", "0x42" )
+		.attr( "data-pointbad", "5..5" )
+		.attr( "data-pointbad2", "-." )
+		.attr( "data-bigassnum", "123456789123456789123456789" )
+		.attr( "data-badjson", "{123}" )
+		.attr( "data-badjson2", "[abc]" )
+		.attr( "data-notjson", " {}" )
+		.attr( "data-notjson2", "[] " )
+		.attr( "data-empty", "" )
+		.attr( "data-space", " " )
+		.attr( "data-null", "null" )
+		.attr( "data-string", "test" );
 
-	strictEqual( child.data("true"), true, "Primitive true read from attribute");
-	strictEqual( child.data("false"), false, "Primitive false read from attribute");
-	strictEqual( child.data("five"), 5, "Integer read from attribute");
-	strictEqual( child.data("point"), 5.5, "Floating-point number read from attribute");
-	strictEqual( child.data("pointe"), "5.5E3",
-		"Exponential-notation number read from attribute as string");
-	strictEqual( child.data("grande"), "5.574E9",
-		"Big exponential-notation number read from attribute as string");
-	strictEqual( child.data("hexadecimal"), "0x42",
-		"Hexadecimal number read from attribute as string");
-	strictEqual( child.data("pointbad"), "5..5",
-		"Extra-point non-number read from attribute as string");
-	strictEqual( child.data("pointbad2"), "-.",
-		"No-digit non-number read from attribute as string");
-	strictEqual( child.data("bigassnum"), "123456789123456789123456789",
-		"Bad bigass number read from attribute as string");
-	strictEqual( child.data("badjson"), "{123}", "Bad JSON object read from attribute as string");
-	strictEqual( child.data("badjson2"), "[abc]", "Bad JSON array read from attribute as string");
-	strictEqual( child.data("notjson"), " {}",
-		"JSON object with leading non-JSON read from attribute as string");
-	strictEqual( child.data("notjson2"), "[] ",
-		"JSON array with trailing non-JSON read from attribute as string");
-	strictEqual( child.data("empty"), "", "Empty string read from attribute");
-	strictEqual( child.data("space"), " ", "Whitespace string read from attribute");
-	strictEqual( child.data("null"), null, "Primitive null read from attribute");
-	strictEqual( child.data("string"), "test", "Typical string read from attribute");
+	strictEqual( child.data( "true" ), true, "Primitive true read from attribute" );
+	strictEqual( child.data( "false" ), false, "Primitive false read from attribute" );
+	strictEqual( child.data( "five" ), 5, "Integer read from attribute" );
+	strictEqual( child.data( "point" ), 5.5, "Floating-point number read from attribute" );
+	strictEqual( child.data( "pointe" ), "5.5E3",
+		"Exponential-notation number read from attribute as string" );
+	strictEqual( child.data( "grande" ), "5.574E9",
+		"Big exponential-notation number read from attribute as string" );
+	strictEqual( child.data( "hexadecimal" ), "0x42",
+		"Hexadecimal number read from attribute as string" );
+	strictEqual( child.data( "pointbad" ), "5..5",
+		"Extra-point non-number read from attribute as string" );
+	strictEqual( child.data( "pointbad2" ), "-.",
+		"No-digit non-number read from attribute as string" );
+	strictEqual( child.data( "bigassnum" ), "123456789123456789123456789",
+		"Bad bigass number read from attribute as string" );
+	strictEqual( child.data( "badjson" ), "{123}", "Bad JSON object read from attribute as string" );
+	strictEqual( child.data( "badjson2" ), "[abc]", "Bad JSON array read from attribute as string" );
+	strictEqual( child.data( "notjson" ), " {}",
+		"JSON object with leading non-JSON read from attribute as string" );
+	strictEqual( child.data( "notjson2" ), "[] ",
+		"JSON array with trailing non-JSON read from attribute as string" );
+	strictEqual( child.data( "empty" ), "", "Empty string read from attribute" );
+	strictEqual( child.data( "space" ), " ", "Whitespace string read from attribute" );
+	strictEqual( child.data( "null" ), null, "Primitive null read from attribute" );
+	strictEqual( child.data( "string" ), "test", "Typical string read from attribute" );
 	equal( i, 2, "Correct number of JSON parse attempts when reading from attributes" );
 
 	jQuery.parseJSON = parseJSON;
 	child.remove();
 
 	// tests from metadata plugin
-	function testData(index, elem) {
-		switch (index) {
+	function testData( index, elem ) {
+		switch ( index ) {
 		case 0:
-			equal(jQuery(elem).data("foo"), "bar", "Check foo property");
-			equal(jQuery(elem).data("bar"), "baz", "Check baz property");
+			equal( jQuery( elem ).data( "foo" ), "bar", "Check foo property" );
+			equal( jQuery( elem ).data( "bar" ), "baz", "Check baz property" );
 			break;
 		case 1:
-			equal(jQuery(elem).data("test"), "bar", "Check test property");
-			equal(jQuery(elem).data("bar"), "baz", "Check bar property");
+			equal( jQuery( elem ).data( "test" ), "bar", "Check test property" );
+			equal( jQuery( elem ).data( "bar" ), "baz", "Check bar property" );
 			break;
 		case 2:
-			equal(jQuery(elem).data("zoooo"), "bar", "Check zoooo property");
-			deepEqual(jQuery(elem).data("bar"), {"test":"baz"}, "Check bar property");
+			equal( jQuery( elem ).data( "zoooo" ), "bar", "Check zoooo property" );
+			deepEqual( jQuery( elem ).data( "bar" ), { "test":"baz" }, "Check bar property" );
 			break;
 		case 3:
-			equal(jQuery(elem).data("number"), true, "Check number property");
-			deepEqual(jQuery(elem).data("stuff"), [2,8], "Check stuff property");
+			equal( jQuery( elem ).data( "number" ), true, "Check number property" );
+			deepEqual( jQuery( elem ).data( "stuff" ), [ 2,8 ], "Check stuff property" );
 			break;
 		default:
-			ok(false, ["Assertion failed on index ", index, ", with data"].join(""));
+			ok( false, [ "Assertion failed on index ", index, ", with data" ].join( "" ) );
 		}
 	}
 
 	metadata = "<ol><li class='test test2' data-foo='bar' data-bar='baz' data-arr='[1,2]'>Some stuff</li><li class='test test2' data-test='bar' data-bar='baz'>Some stuff</li><li class='test test2' data-zoooo='bar' data-bar='{\"test\":\"baz\"}'>Some stuff</li><li class='test test2' data-number=true data-stuff='[2,8]'>Some stuff</li></ol>";
-	elem = jQuery(metadata).appendTo("#qunit-fixture");
+	elem = jQuery( metadata ).appendTo( "#qunit-fixture" );
 
-	elem.find("li").each(testData);
+	elem.find( "li" ).each( testData );
 	elem.remove();
-});
+} );
 
-test(".data(Object)", function() {
-	expect(4);
+test( ".data(Object)", function() {
+	expect( 4 );
 
 	var obj, jqobj,
-		div = jQuery("<div/>");
+		div = jQuery( "<div/>" );
 
-	div.data({ "test": "in", "test2": "in2" });
-	equal( div.data("test"), "in", "Verify setting an object in data" );
-	equal( div.data("test2"), "in2", "Verify setting an object in data" );
+	div.data( { "test": "in", "test2": "in2" } );
+	equal( div.data( "test" ), "in", "Verify setting an object in data" );
+	equal( div.data( "test2" ), "in2", "Verify setting an object in data" );
 
-	obj = {test:"unset"};
-	jqobj = jQuery(obj);
+	obj = { test:"unset" };
+	jqobj = jQuery( obj );
 
-	jqobj.data("test", "unset");
-	jqobj.data({ "test": "in", "test2": "in2" });
-	equal( jQuery.data(obj)["test"], "in", "Verify setting an object on an object extends the data object" );
-	equal( obj["test2"], undefined, "Verify setting an object on an object does not extend the object" );
+	jqobj.data( "test", "unset" );
+	jqobj.data( { "test": "in", "test2": "in2" } );
+	equal( jQuery.data( obj )[ "test" ], "in", "Verify setting an object on an object extends the data object" );
+	equal( obj[ "test2" ], undefined, "Verify setting an object on an object does not extend the object" );
 
 	// manually clean up detached elements
 	div.remove();
-});
+} );
 
-test("jQuery.removeData", function() {
-	expect(10);
+test( "jQuery.removeData", function() {
+	expect( 10 );
 
 	var obj,
-		div = jQuery("#foo")[0];
-	jQuery.data(div, "test", "testing");
-	jQuery.removeData(div, "test");
-	equal( jQuery.data(div, "test"), undefined, "Check removal of data" );
+		div = jQuery( "#foo" )[ 0 ];
+	jQuery.data( div, "test", "testing" );
+	jQuery.removeData( div, "test" );
+	equal( jQuery.data( div, "test" ), undefined, "Check removal of data" );
 
-	jQuery.data(div, "test2", "testing");
+	jQuery.data( div, "test2", "testing" );
 	jQuery.removeData( div );
-	ok( !jQuery.data(div, "test2"), "Make sure that the data property no longer exists." );
+	ok( !jQuery.data( div, "test2" ), "Make sure that the data property no longer exists." );
 	ok( !div[ jQuery.expando ], "Make sure the expando no longer exists, as well." );
 
-	jQuery.data(div, {
+	jQuery.data( div, {
 		test3: "testing",
 		test4: "testing"
-	});
+	} );
 	jQuery.removeData( div, "test3 test4" );
-	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete with spaces." );
+	ok( !jQuery.data( div, "test3" ) || jQuery.data( div, "test4" ), "Multiple delete with spaces." );
 
-	jQuery.data(div, {
+	jQuery.data( div, {
 		test3: "testing",
 		test4: "testing"
-	});
+	} );
 	jQuery.removeData( div, [ "test3", "test4" ] );
-	ok( !jQuery.data(div, "test3") || jQuery.data(div, "test4"), "Multiple delete by array." );
+	ok( !jQuery.data( div, "test3" ) || jQuery.data( div, "test4" ), "Multiple delete by array." );
 
-	jQuery.data(div, {
+	jQuery.data( div, {
 		"test3 test4": "testing",
 		"test3": "testing"
-	});
+	} );
 	jQuery.removeData( div, "test3 test4" );
-	ok( !jQuery.data(div, "test3 test4"), "Multiple delete with spaces deleted key with exact name" );
-	ok( jQuery.data(div, "test3"), "Left the partial matched key alone" );
+	ok( !jQuery.data( div, "test3 test4" ), "Multiple delete with spaces deleted key with exact name" );
+	ok( jQuery.data( div, "test3" ), "Left the partial matched key alone" );
 
 	obj = {};
-	jQuery.data(obj, "test", "testing");
-	equal( jQuery(obj).data("test"), "testing", "verify data on plain object");
-	jQuery.removeData(obj, "test");
-	equal( jQuery.data(obj, "test"), undefined, "Check removal of data on plain object" );
+	jQuery.data( obj, "test", "testing" );
+	equal( jQuery( obj ).data( "test" ), "testing", "verify data on plain object" );
+	jQuery.removeData( obj, "test" );
+	equal( jQuery.data( obj, "test" ), undefined, "Check removal of data on plain object" );
 
 	jQuery.data( window, "BAD", true );
 	jQuery.removeData( window, "BAD" );
 	ok( !jQuery.data( window, "BAD" ), "Make sure that the value was not still set." );
-});
+} );
 
-test(".removeData()", function() {
-	expect(6);
-	var div = jQuery("#foo");
-	div.data("test", "testing");
-	div.removeData("test");
-	equal( div.data("test"), undefined, "Check removal of data" );
+test( ".removeData()", function() {
+	expect( 6 );
+	var div = jQuery( "#foo" );
+	div.data( "test", "testing" );
+	div.removeData( "test" );
+	equal( div.data( "test" ), undefined, "Check removal of data" );
 
-	div.data("test", "testing");
-	div.data("test.foo", "testing2");
-	div.removeData("test.bar");
-	equal( div.data("test.foo"), "testing2", "Make sure data is intact" );
-	equal( div.data("test"), "testing", "Make sure data is intact" );
+	div.data( "test", "testing" );
+	div.data( "test.foo", "testing2" );
+	div.removeData( "test.bar" );
+	equal( div.data( "test.foo" ), "testing2", "Make sure data is intact" );
+	equal( div.data( "test" ), "testing", "Make sure data is intact" );
 
-	div.removeData("test");
-	equal( div.data("test.foo"), "testing2", "Make sure data is intact" );
-	equal( div.data("test"), undefined, "Make sure data is intact" );
+	div.removeData( "test" );
+	equal( div.data( "test.foo" ), "testing2", "Make sure data is intact" );
+	equal( div.data( "test" ), undefined, "Make sure data is intact" );
 
-	div.removeData("test.foo");
-	equal( div.data("test.foo"), undefined, "Make sure data is intact" );
-});
+	div.removeData( "test.foo" );
+	equal( div.data( "test.foo" ), undefined, "Make sure data is intact" );
+} );
 
-if (window.JSON && window.JSON.stringify) {
-	test("JSON serialization (#8108)", function () {
-		expect(1);
+if ( window.JSON && window.JSON.stringify ) {
+	test( "JSON serialization (#8108)", function() {
+		expect( 1 );
 
 		var obj = { "foo": "bar" };
-		jQuery.data(obj, "hidden", true);
+		jQuery.data( obj, "hidden", true );
 
-		equal( JSON.stringify(obj), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
-	});
+		equal( JSON.stringify( obj ), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
+	} );
 }
 
-test("jQuery.data should follow html5 specification regarding camel casing", function() {
-	expect(10);
+test( "jQuery.data should follow html5 specification regarding camel casing", function() {
+	expect( 10 );
 
-	var div = jQuery("<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>")
-		.prependTo("body");
+	var div = jQuery( "<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>" )
+		.prependTo( "body" );
 
-	equal( div.data()["wTF"], "ftw", "Verify single letter data-* key" );
-	equal( div.data()["bigALittleA"], "bouncing-b", "Verify single letter mixed data-* key" );
+	equal( div.data()[ "wTF" ], "ftw", "Verify single letter data-* key" );
+	equal( div.data()[ "bigALittleA" ], "bouncing-b", "Verify single letter mixed data-* key" );
 
-	equal( div.data()["foo"], "a", "Verify single word data-* key" );
-	equal( div.data()["fooBar"], "b", "Verify multiple word data-* key" );
-	equal( div.data()["fooBarBaz"], "c", "Verify multiple word data-* key" );
+	equal( div.data()[ "foo" ], "a", "Verify single word data-* key" );
+	equal( div.data()[ "fooBar" ], "b", "Verify multiple word data-* key" );
+	equal( div.data()[ "fooBarBaz" ], "c", "Verify multiple word data-* key" );
 
-	equal( div.data("foo"), "a", "Verify single word data-* key" );
-	equal( div.data("fooBar"), "b", "Verify multiple word data-* key" );
-	equal( div.data("fooBarBaz"), "c", "Verify multiple word data-* key" );
+	equal( div.data( "foo" ), "a", "Verify single word data-* key" );
+	equal( div.data( "fooBar" ), "b", "Verify multiple word data-* key" );
+	equal( div.data( "fooBarBaz" ), "c", "Verify multiple word data-* key" );
 
-	div.data("foo-bar", "d");
+	div.data( "foo-bar", "d" );
 
-	equal( div.data("fooBar"), "d", "Verify updated data-* key" );
-	equal( div.data("foo-bar"), "d", "Verify updated data-* key" );
+	equal( div.data( "fooBar" ), "d", "Verify updated data-* key" );
+	equal( div.data( "foo-bar" ), "d", "Verify updated data-* key" );
 
 	div.remove();
-});
+} );
 
-test("jQuery.data should not miss data with preset hyphenated property names", function() {
+test( "jQuery.data should not miss data with preset hyphenated property names", function() {
 
-	expect(2);
+	expect( 2 );
 
-	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		test = {
 			"camelBar": "camelBar",
 			"hyphen-foo": "hyphen-foo"
@@ -541,36 +541,36 @@ test("jQuery.data should not miss data with preset hyphenated property names", f
 
 	div.data( test );
 
-	jQuery.each( test , function(i, k) {
-		equal( div.data(k), k, "data with property '"+k+"' was correctly found");
-	});
-});
+	jQuery.each( test, function( i, k ) {
+		equal( div.data( k ), k, "data with property '" + k + "' was correctly found" );
+	} );
+} );
 
-test(".data should not miss attr() set data-* with hyphenated property names", function() {
-	expect(2);
+test( ".data should not miss attr() set data-* with hyphenated property names", function() {
+	expect( 2 );
 
 	var a, b;
 
-	a = jQuery("<div/>").appendTo("#qunit-fixture");
+	a = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	a.attr( "data-long-param", "test" );
-	a.data( "long-param", { a: 2 });
+	a.data( "long-param", { a: 2 } );
 
-	deepEqual( a.data("long-param"), { a: 2 }, "data with property long-param was found, 1" );
+	deepEqual( a.data( "long-param" ), { a: 2 }, "data with property long-param was found, 1" );
 
-	b = jQuery("<div/>").appendTo("#qunit-fixture");
+	b = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	b.attr( "data-long-param", "test" );
 	b.data( "long-param" );
-	b.data( "long-param", { a: 2 });
+	b.data( "long-param", { a: 2 } );
 
-	deepEqual( b.data("long-param"), { a: 2 }, "data with property long-param was found, 2" );
-});
+	deepEqual( b.data( "long-param" ), { a: 2 }, "data with property long-param was found, 2" );
+} );
 
-test(".data always sets data with the camelCased key (gh-2257)", function() {
+test( ".data always sets data with the camelCased key (gh-2257)", function() {
 	expect( 36 );
 
-	var div = jQuery("<div>").appendTo("#qunit-fixture"),
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -592,7 +592,7 @@ test(".data always sets data with the camelCased key (gh-2257)", function() {
 		var allData = div.data();
 		equal( allData[ key ], undefined, ".data(key, val) does not store with hyphenated keys" );
 		equal( allData[ jQuery.camelCase( key ) ], val, ".data(key, val) stores the camelCased key" );
-	});
+	} );
 
 	div.removeData();
 
@@ -601,8 +601,8 @@ test(".data always sets data with the camelCased key (gh-2257)", function() {
 		var allData = div.data();
 		equal( allData[ key ], undefined, ".data(object) does not store with hyphenated keys" );
 		equal( allData[ jQuery.camelCase( key ) ], val, ".data(object) stores the camelCased key" );
-	});
-});
+	} );
+} );
 
 test( ".data should not strip more than one hyphen when camelCasing (gh-2070)", function() {
 	expect( 3 );
@@ -612,10 +612,10 @@ test( ".data should not strip more than one hyphen when camelCasing (gh-2070)", 
 	equal( allData.nestedSingle, "single", "Key is correctly camelCased" );
 	equal( allData[ "nested-Double" ], "double", "Key with double hyphens is correctly camelCased" );
 	equal( allData[ "nested--Triple" ], "triple", "Key with triple hyphens is correctly camelCased" );
-});
+} );
 
-test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
-	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
+	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -625,6 +625,7 @@ test(".data supports interoperable hyphenated/camelCase get/set of properties wi
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
+
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
@@ -641,11 +642,11 @@ test(".data supports interoperable hyphenated/camelCase get/set of properties wi
 
 		deepEqual( div.data( key ), val, "get: " + key );
 		deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
-	});
-});
+	} );
+} );
 
-test("jQuery.data supports interoperable removal of hyphenated/camelCase properties", function() {
-	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+test( "jQuery.data supports interoperable removal of hyphenated/camelCase properties", function() {
+	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -655,6 +656,7 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
+
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
@@ -673,11 +675,11 @@ test("jQuery.data supports interoperable removal of hyphenated/camelCase propert
 
 		equal( div.data( key ), undefined, "get: " + key );
 
-	});
-});
+	} );
+} );
 
-test(".data supports interoperable removal of properties SET TWICE #13850", function() {
-	var div = jQuery("<div>").appendTo("#qunit-fixture"),
+test( ".data supports interoperable removal of properties SET TWICE #13850", function() {
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -687,6 +689,7 @@ test(".data supports interoperable removal of properties SET TWICE #13850", func
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
+
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
@@ -702,51 +705,54 @@ test(".data supports interoperable removal of properties SET TWICE #13850", func
 		div.removeData( key );
 
 		equal( div.data( key ), undefined, "removal: " + key );
-	});
-});
+	} );
+} );
 
 test( ".removeData supports removal of hyphenated properties via array (#12786, gh-2257)", function() {
 	expect( 4 );
 
 	var div, plain, compare;
 
-	div = jQuery("<div>").appendTo("#qunit-fixture");
-	plain = jQuery({});
+	div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+	plain = jQuery( {} );
 
 	// Properties should always be camelCased
 	compare = {
+
 		// From batch assignment .data({ "a-a": 1 })
 		"aA": 1,
+
 		// From property, value assignment .data( "b-b", 1 )
 		"bB": 1
 	};
 
 	// Mixed assignment
-	div.data({ "a-a": 1 }).data( "b-b", 1 );
-	plain.data({ "a-a": 1 }).data( "b-b", 1 );
+	div.data( { "a-a": 1 } ).data( "b-b", 1 );
+	plain.data( { "a-a": 1 } ).data( "b-b", 1 );
 
 	deepEqual( div.data(), compare, "Data appears as expected. (div)" );
 	deepEqual( plain.data(), compare, "Data appears as expected. (plain)" );
 
-	div.removeData([ "a-a", "b-b" ]);
-	plain.removeData([ "a-a", "b-b" ]);
+	div.removeData( [ "a-a", "b-b" ] );
+	plain.removeData( [ "a-a", "b-b" ] );
 
 	deepEqual( div.data(), {}, "Data is empty. (div)" );
 	deepEqual( plain.data(), {}, "Data is empty. (plain)" );
-});
+} );
 
 // Test originally by Moschel
-test("Triggering the removeData should not throw exceptions. (#10080)", function() {
-	expect(1);
+test( "Triggering the removeData should not throw exceptions. (#10080)", function() {
+	expect( 1 );
 	stop();
-	var frame = jQuery("#loadediframe");
-	jQuery(frame[0].contentWindow).on("unload", function() {
-		ok(true, "called unload");
+	var frame = jQuery( "#loadediframe" );
+	jQuery( frame[ 0 ].contentWindow ).on( "unload", function() {
+		ok( true, "called unload" );
 		start();
-	});
+	} );
+
 	// change the url to trigger unload
-	frame.attr("src", "data/iframe.html?param=true");
-});
+	frame.attr( "src", "data/iframe.html?param=true" );
+} );
 
 test( "Only check element attributes once when calling .data() - #8909", function() {
 	expect( 2 );
@@ -766,18 +772,18 @@ test( "Only check element attributes once when calling .data() - #8909", functio
 
 	// clean up data cache
 	element.remove();
-});
+} );
 
 test( "JSON data- attributes can have newlines", function() {
-	expect(1);
+	expect( 1 );
 
-	var x = jQuery("<div data-some='{\n\"foo\":\n\t\"bar\"\n}'></div>");
-	equal( x.data("some").foo, "bar", "got a JSON data- attribute with spaces" );
+	var x = jQuery( "<div data-some='{\n\"foo\":\n\t\"bar\"\n}'></div>" );
+	equal( x.data( "some" ).foo, "bar", "got a JSON data- attribute with spaces" );
 	x.remove();
-});
+} );
 
 testIframeWithCallback( "enumerate data attrs on body (#14894)", "data/dataAttrs.html", function( result ) {
-	expect(1);
+	expect( 1 );
 
-	equal(result, "ok", "enumeration of data- attrs on body" );
-});
+	equal( result, "ok", "enumeration of data- attrs on body" );
+} );

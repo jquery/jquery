@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"./var/rtagName",
 	"./var/rscriptType",
@@ -38,22 +38,22 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 			// Convert html into DOM nodes
 			} else {
-				tmp = tmp || safe.appendChild( context.createElement("div") );
+				tmp = tmp || safe.appendChild( context.createElement( "div" ) );
 
 				// Deserialize a standard representation
-				tag = (rtagName.exec( elem ) || [ "", "" ])[ 1 ].toLowerCase();
+				tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
 				wrap = wrapMap[ tag ] || wrapMap._default;
 				tmp.innerHTML = wrap[ 1 ] + jQuery.htmlPrefilter( elem ) + wrap[ 2 ];
 
 				// Descend through wrappers to the right content
-				j = wrap[0];
+				j = wrap[ 0 ];
 				while ( j-- ) {
 					tmp = tmp.lastChild;
 				}
 
 				// Manually add leading whitespace removed by IE
 				if ( !support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
-					nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
+					nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[ 0 ] ) );
 				}
 
 				jQuery.merge( nodes, tmp.childNodes );
@@ -78,7 +78,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 	}
 
 	i = 0;
-	while ( (elem = nodes[ i++ ]) ) {
+	while ( ( elem = nodes[ i++ ] ) ) {
 
 		// Skip elements already in the context collection (trac-4087)
 		if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
@@ -101,7 +101,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		// Capture executables
 		if ( scripts ) {
 			j = 0;
-			while ( (elem = tmp[ j++ ]) ) {
+			while ( ( elem = tmp[ j++ ] ) ) {
 				if ( rscriptType.test( elem.type || "" ) ) {
 					scripts.push( elem );
 				}
@@ -115,4 +115,4 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 }
 
 return buildFragment;
-});
+} );

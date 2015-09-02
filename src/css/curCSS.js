@@ -1,4 +1,4 @@
-define([
+define( [
 	"exports",
 	"../core",
 	"../var/documentElement",
@@ -13,6 +13,7 @@ var getStyles, curCSS,
 
 if ( window.getComputedStyle ) {
 	getStyles = function( elem ) {
+
 		// Support: IE<=11+, Firefox<=30+ (#15098, #14150)
 		// IE throws on elements created in popups
 		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
@@ -120,4 +121,4 @@ if ( window.getComputedStyle ) {
 exports.getStyles = getStyles;
 exports.curCSS = curCSS;
 
-});
+} );

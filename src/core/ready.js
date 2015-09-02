@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"../deferred"
@@ -8,13 +8,15 @@ define([
 var readyList;
 
 jQuery.fn.ready = function( fn ) {
+
 	// Add the callback
 	jQuery.ready.promise().done( fn );
 
 	return this;
 };
 
-jQuery.extend({
+jQuery.extend( {
+
 	// Is the DOM ready to be used? Set to true once it occurs.
 	isReady: false,
 
@@ -50,7 +52,7 @@ jQuery.extend({
 		// If there are functions bound, to execute
 		readyList.resolveWith( document, [ jQuery ] );
 	}
-});
+} );
 
 /**
  * Clean-up method for dom ready events
@@ -71,6 +73,7 @@ function detach() {
  * The ready event handler and self cleanup method
  */
 function completed() {
+
 	// readyState === "complete" is good enough for us to call the dom ready in oldIE
 	if ( document.addEventListener ||
 		window.event.type === "load" ||
@@ -93,11 +96,13 @@ jQuery.ready.promise = function( obj ) {
 		// discovered by ChrisS here:
 		// http://bugs.jquery.com/ticket/12282#comment:15
 		if ( document.readyState === "complete" ) {
+
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			window.setTimeout( jQuery.ready );
 
 		// Standards-based browsers support DOMContentLoaded
 		} else if ( document.addEventListener ) {
+
 			// Use the handy event callback
 			document.addEventListener( "DOMContentLoaded", completed );
 
@@ -107,6 +112,7 @@ jQuery.ready.promise = function( obj ) {
 		// Support: IE<9
 		// If IE event model is used
 		} else {
+
 			// Ensure firing before onload, maybe late but safe also for iframes
 			document.attachEvent( "onreadystatechange", completed );
 
@@ -120,4 +126,4 @@ jQuery.ready.promise = function( obj ) {
 // Kick off the DOM ready check even if the user does not
 jQuery.ready.promise();
 
-});
+} );

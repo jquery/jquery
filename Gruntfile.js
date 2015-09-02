@@ -20,7 +20,7 @@ module.exports = function( grunt ) {
 	// But our modules can
 	delete srcHintOptions.onevar;
 
-	grunt.initConfig({
+	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
 		"compare_size": {
@@ -107,7 +107,12 @@ module.exports = function( grunt ) {
 			gruntfile: "Gruntfile.js",
 
 			// Check parts of tests that pass
-			test: [ "test/data/testrunner.js", "test/unit/animation.js", "test/unit/tween.js" ],
+			test: [
+				"test/data/testrunner.js",
+				"test/unit/animation.js",
+				"test/unit/tween.js",
+				"test/unit/wrap.js"
+			],
 			build: "build"
 		},
 		testswarm: {
@@ -160,7 +165,7 @@ module.exports = function( grunt ) {
 				}
 			}
 		}
-	});
+	} );
 
 	// Load grunt tasks from NPM packages
 	require( "load-grunt-tasks" )( grunt );
