@@ -17,10 +17,10 @@ function bootstrapFrom( mainSelector, mode ) {
 		document.webkitExitFullscreen;
 
 	function isFullscreen() {
-		return !!(document.fullscreenElement ||
+		return !!( document.fullscreenElement ||
 		document.mozFullScreenElement ||
 		document.webkitFullscreenElement ||
-		document.msFullscreenElement);
+		document.msFullscreenElement );
 	}
 
 	function requestFullscreen( element ) {
@@ -82,7 +82,7 @@ function bootstrapFrom( mainSelector, mode ) {
 		if ( isFullscreen() ) {
 			exitFullscreen();
 		} else {
-			requestFullscreen( jQuery( mainSelector + " .container" )[0] );
+			requestFullscreen( jQuery( mainSelector + " .container" )[ 0 ] );
 		}
 	}
 

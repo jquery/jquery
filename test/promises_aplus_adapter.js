@@ -2,7 +2,7 @@
 
 "use strict";
 
-require( "jsdom" ).env( "", function ( errors, window ) {
+require( "jsdom" ).env( "", function( errors, window ) {
 	if ( errors ) {
 		console.error( errors );
 		return;
@@ -10,7 +10,7 @@ require( "jsdom" ).env( "", function ( errors, window ) {
 
 	var jQuery = require( ".." )( window );
 
-	exports.deferred = function () {
+	exports.deferred = function() {
 		var deferred = jQuery.Deferred();
 
 		return {
