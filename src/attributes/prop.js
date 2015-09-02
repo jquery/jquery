@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../core/access",
 	"./support",
@@ -8,24 +8,25 @@ define([
 var rfocusable = /^(?:input|select|textarea|button|object)$/i,
 	rclickable = /^(?:a|area)$/i;
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	prop: function( name, value ) {
 		return access( this, jQuery.prop, name, value, arguments.length > 1 );
 	},
 
 	removeProp: function( name ) {
 		name = jQuery.propFix[ name ] || name;
-		return this.each(function() {
+		return this.each( function() {
+
 			// try/catch handles cases where IE balks (such as removing a property on window)
 			try {
 				this[ name ] = undefined;
 				delete this[ name ];
 			} catch ( e ) {}
-		});
+		} );
 	}
-});
+} );
 
-jQuery.extend({
+jQuery.extend( {
 	prop: function( elem, name, value ) {
 		var ret, hooks,
 			nType = elem.nodeType;
@@ -61,6 +62,7 @@ jQuery.extend({
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
+
 				// elem.tabIndex doesn't always return the
 				// correct value when it hasn't been explicitly set
 				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
@@ -81,7 +83,7 @@ jQuery.extend({
 		"for": "htmlFor",
 		"class": "className"
 	}
-});
+} );
 
 if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
@@ -101,7 +103,7 @@ if ( !support.optSelected ) {
 	};
 }
 
-jQuery.each([
+jQuery.each( [
 	"tabIndex",
 	"readOnly",
 	"maxLength",
@@ -114,6 +116,6 @@ jQuery.each([
 	"contentEditable"
 ], function() {
 	jQuery.propFix[ this.toLowerCase() ] = this;
-});
+} );
 
-});
+} );

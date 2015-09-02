@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core"
 ], function( jQuery ) {
 
@@ -13,7 +13,7 @@ function getAll( context, tag ) {
 
 	if ( !found ) {
 		for ( found = [], elems = context.childNodes || context;
-			( elem = elems[i] ) != null;
+			( elem = elems[ i ] ) != null;
 			i++
 		) {
 			if ( !tag || jQuery.nodeName( elem, tag ) ) {
@@ -30,4 +30,4 @@ function getAll( context, tag ) {
 }
 
 return getAll;
-});
+} );

@@ -10,7 +10,7 @@ module.exports = function( Release ) {
 		npmTags = Release.npmTags,
 		createTag = Release._createTag;
 
-	Release.define({
+	Release.define( {
 		npmPublish: true,
 		issueTracker: "github",
 		/**
@@ -48,6 +48,7 @@ module.exports = function( Release ) {
 		 * for publishing the distribution repo instead
 		 */
 		npmTags: function() {
+
 			// origRepo is not defined if dist was skipped
 			Release.dir.repo = Release.dir.origRepo || Release.dir.repo;
 			return npmTags();
@@ -59,9 +60,9 @@ module.exports = function( Release ) {
 		dist: function( callback ) {
 			cdn.makeArchives( Release, function() {
 				dist( Release, callback );
-			});
+			} );
 		}
-	});
+	} );
 };
 
 module.exports.dependencies = [

@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../queue",
 	"../effects" // Delay is optional because of this dependency
@@ -15,8 +15,8 @@ jQuery.fn.delay = function( time, type ) {
 		hooks.stop = function() {
 			window.clearTimeout( timeout );
 		};
-	});
+	} );
 };
 
 return jQuery.fn.delay;
-});
+} );

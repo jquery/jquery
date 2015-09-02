@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./var/pnum",
 	"./core/access",
@@ -22,6 +22,7 @@ define([
 	isHidden, swap, curCSS, adjustCSS, addGetHookIf, support, showHide ) {
 
 var
+
 	// BuildExclude
 	getStyles = curCSS.getStyles,
 	ralpha = /alpha\([^)]*\)/i,
@@ -69,6 +70,7 @@ function vendorPropName( name ) {
 function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
+
 		// Guard against undefined "subtract", e.g., when used as in cssHooks
 		Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
 		value;
@@ -76,20 +78,24 @@ function setPositiveNumber( elem, value, subtract ) {
 
 function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 	var i = extra === ( isBorderBox ? "border" : "content" ) ?
+
 		// If we already have the right measurement, avoid augmentation
 		4 :
+
 		// Otherwise initialize for horizontal or vertical properties
 		name === "width" ? 1 : 0,
 
 		val = 0;
 
 	for ( ; i < 4; i += 2 ) {
+
 		// both box models exclude margin, so add it if we want it
 		if ( extra === "margin" ) {
 			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
 		}
 
 		if ( isBorderBox ) {
+
 			// border-box includes padding, so remove it if we want content
 			if ( extra === "content" ) {
 				val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
@@ -100,6 +106,7 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 				val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		} else {
+
 			// at this point, extra isn't content, so add padding
 			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 
@@ -122,6 +129,7 @@ function getWidthOrHeight( elem, name, extra ) {
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 	if ( support.gBCRDimensions() ) {
+
 		// Support: IE <= 11 only
 		// Running getBoundingClientRect on a disconnected node
 		// in IE throws an error.
@@ -129,6 +137,7 @@ function getWidthOrHeight( elem, name, extra ) {
 			val = elem.getBoundingClientRect()[ name ];
 		}
 	} else {
+
 		// In IE8 gBCR doesn't report width & height; we need to fall back to offset*.
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight;
 	}
@@ -144,6 +153,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
 	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
 	if ( val <= 0 || val == null ) {
+
 		// Fall back to computed then uncomputed css if necessary
 		val = curCSS( elem, name, styles );
 		if ( val < 0 || val == null ) {
@@ -151,7 +161,7 @@ function getWidthOrHeight( elem, name, extra ) {
 		}
 
 		// Computed unit is not pixels. Stop here and return.
-		if ( rnumnonpx.test(val) ) {
+		if ( rnumnonpx.test( val ) ) {
 			return val;
 		}
 
@@ -176,13 +186,15 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
-jQuery.extend({
+jQuery.extend( {
+
 	// Add in style property hooks for overriding the default
 	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
 			get: function( elem, computed ) {
 				if ( computed ) {
+
 					// We should always get a number back from opacity
 					var ret = curCSS( elem, "opacity" );
 					return ret === "" ? "1" : ret;
@@ -210,12 +222,14 @@ jQuery.extend({
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
 	cssProps: {
+
 		// normalize float css property
 		"float": support.cssFloat ? "cssFloat" : "styleFloat"
 	},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
+
 		// Don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
 			return;
@@ -238,8 +252,9 @@ jQuery.extend({
 			type = typeof value;
 
 			// Convert "+=" or "-=" to relative numbers (#7345)
-			if ( type === "string" && (ret = rcssNum.exec( value )) && ret[ 1 ] ) {
+			if ( type === "string" && ( ret = rcssNum.exec( value ) ) && ret[ 1 ] ) {
 				value = adjustCSS( elem, name, ret );
+
 				// Fixes bug #9237
 				type = "number";
 			}
@@ -257,25 +272,26 @@ jQuery.extend({
 			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
 			// but it would mean to define eight
 			// (for every problematic property) identical functions
-			if ( !support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
+			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
 				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
-			if ( !hooks || !("set" in hooks) ||
-				(value = hooks.set( elem, value, extra )) !== undefined ) {
+			if ( !hooks || !( "set" in hooks ) ||
+				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
 				// Support: IE<9
 				// Swallow errors from 'invalid' CSS values (#5509)
 				try {
 					style[ name ] = value;
-				} catch (e) {}
+				} catch ( e ) {}
 			}
 
 		} else {
+
 			// If a hook was provided get the non-computed value from there
 			if ( hooks && "get" in hooks &&
-				(ret = hooks.get( elem, false, extra )) !== undefined ) {
+				( ret = hooks.get( elem, false, extra ) ) !== undefined ) {
 
 				return ret;
 			}
@@ -319,15 +335,17 @@ jQuery.extend({
 		}
 		return val;
 	}
-});
+} );
 
-jQuery.each([ "height", "width" ], function( i, name ) {
+jQuery.each( [ "height", "width" ], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
+
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
+
 					// Support: Safari 8+
 					// Table columns in Safari have non-zero offsetWidth & zero
 					// getBoundingClientRect().width unless display is changed.
@@ -337,7 +355,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
 						swap( elem, cssShow, function() {
 							return getWidthOrHeight( elem, name, extra );
-						}) :
+						} ) :
 						getWidthOrHeight( elem, name, extra );
 			}
 		},
@@ -355,15 +373,16 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 			);
 		}
 	};
-});
+} );
 
 if ( !support.opacity ) {
 	jQuery.cssHooks.opacity = {
 		get: function( elem, computed ) {
+
 			// IE uses filters for opacity
-			return ropacity.test( (computed && elem.currentStyle ?
+			return ropacity.test( ( computed && elem.currentStyle ?
 				elem.currentStyle.filter :
-				elem.style.filter) || "" ) ?
+				elem.style.filter ) || "" ) ?
 					( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
 					computed ? "1" : "";
 		},
@@ -416,7 +435,7 @@ jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 );
 
 // These hooks are used by animate to expand properties
-jQuery.each({
+jQuery.each( {
 	margin: "",
 	padding: "",
 	border: "Width"
@@ -427,7 +446,7 @@ jQuery.each({
 				expanded = {},
 
 				// assumes a single number if not a string
-				parts = typeof value === "string" ? value.split(" ") : [ value ];
+				parts = typeof value === "string" ? value.split( " " ) : [ value ];
 
 			for ( ; i < 4; i++ ) {
 				expanded[ prefix + cssExpand[ i ] + suffix ] =
@@ -441,9 +460,9 @@ jQuery.each({
 	if ( !rmargin.test( prefix ) ) {
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
-});
+} );
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	css: function( name, value ) {
 		return access( this, function( elem, name, value ) {
 			var styles, len,
@@ -477,15 +496,15 @@ jQuery.fn.extend({
 			return state ? this.show() : this.hide();
 		}
 
-		return this.each(function() {
+		return this.each( function() {
 			if ( isHidden( this ) ) {
 				jQuery( this ).show();
 			} else {
 				jQuery( this ).hide();
 			}
-		});
+		} );
 	}
-});
+} );
 
 return jQuery;
-});
+} );

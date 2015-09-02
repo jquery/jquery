@@ -1,88 +1,88 @@
 if ( jQuery.css ) {
 
-module("css", { teardown: moduleTeardown });
+module( "css", { teardown: moduleTeardown } );
 
-test("css(String|Hash)", function() {
+test( "css(String|Hash)", function() {
 	expect( 43 );
 
-	equal( jQuery("#qunit-fixture").css("display"), "block", "Check for css property \"display\"" );
+	equal( jQuery( "#qunit-fixture" ).css( "display" ), "block", "Check for css property \"display\"" );
 
 	var $child, div, div2, width, height, child, prctval, checkval, old;
 
-	$child = jQuery("#nothiddendivchild").css({ "width": "20%", "height": "20%" });
-	notEqual( $child.css("width"), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
-	notEqual( $child.css("height"), "20px", "Retrieving a height percentage on the child of a hidden div returns percentage" );
+	$child = jQuery( "#nothiddendivchild" ).css( { "width": "20%", "height": "20%" } );
+	notEqual( $child.css( "width" ), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
+	notEqual( $child.css( "height" ), "20px", "Retrieving a height percentage on the child of a hidden div returns percentage" );
 
 	div = jQuery( "<div/>" );
 
 	// These should be "auto" (or some better value)
 	// temporarily provide "0px" for backwards compat
-	equal( div.css("width"), "0px", "Width on disconnected node." );
-	equal( div.css("height"), "0px", "Height on disconnected node." );
+	equal( div.css( "width" ), "0px", "Width on disconnected node." );
+	equal( div.css( "height" ), "0px", "Height on disconnected node." );
 
-	div.css({ "width": 4, "height": 4 });
+	div.css( { "width": 4, "height": 4 } );
 
-	equal( div.css("width"), "4px", "Width on disconnected node." );
-	equal( div.css("height"), "4px", "Height on disconnected node." );
+	equal( div.css( "width" ), "4px", "Width on disconnected node." );
+	equal( div.css( "height" ), "4px", "Height on disconnected node." );
 
-	div2 = jQuery( "<div style='display:none;'><input type='text' style='height:20px;'/><textarea style='height:20px;'/><div style='height:20px;'></div></div>").appendTo("body");
+	div2 = jQuery( "<div style='display:none;'><input type='text' style='height:20px;'/><textarea style='height:20px;'/><div style='height:20px;'></div></div>" ).appendTo( "body" );
 
-	equal( div2.find("input").css("height"), "20px", "Height on hidden input." );
-	equal( div2.find("textarea").css("height"), "20px", "Height on hidden textarea." );
-	equal( div2.find("div").css("height"), "20px", "Height on hidden div." );
+	equal( div2.find( "input" ).css( "height" ), "20px", "Height on hidden input." );
+	equal( div2.find( "textarea" ).css( "height" ), "20px", "Height on hidden textarea." );
+	equal( div2.find( "div" ).css( "height" ), "20px", "Height on hidden div." );
 
 	div2.remove();
 
 	// handle negative numbers by setting to zero #11604
-	jQuery("#nothiddendiv").css( {"width": 1, "height": 1} );
+	jQuery( "#nothiddendiv" ).css( { "width": 1, "height": 1 } );
 
-	width = parseFloat(jQuery("#nothiddendiv").css("width"));
-	height = parseFloat(jQuery("#nothiddendiv").css("height"));
-	jQuery("#nothiddendiv").css({ "overflow":"hidden", "width": -1, "height": -1 });
-	equal( parseFloat(jQuery("#nothiddendiv").css("width")), 0, "Test negative width set to 0");
-	equal( parseFloat(jQuery("#nothiddendiv").css("height")), 0, "Test negative height set to 0");
+	width = parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) );
+	height = parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) );
+	jQuery( "#nothiddendiv" ).css( { "overflow":"hidden", "width": -1, "height": -1 } );
+	equal( parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) ), 0, "Test negative width set to 0" );
+	equal( parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) ), 0, "Test negative height set to 0" );
 
-	equal( jQuery("<div style='display: none;'/>").css("display"), "none", "Styles on disconnected nodes");
+	equal( jQuery( "<div style='display: none;'/>" ).css( "display" ), "none", "Styles on disconnected nodes" );
 
-	jQuery("#floatTest").css({"float": "right"});
-	equal( jQuery("#floatTest").css("float"), "right", "Modified CSS float using \"float\": Assert float is right");
-	jQuery("#floatTest").css({"font-size": "30px"});
-	equal( jQuery("#floatTest").css("font-size"), "30px", "Modified CSS font-size: Assert font-size is 30px");
-	jQuery.each("0,0.25,0.5,0.75,1".split(","), function(i, n) {
-		jQuery("#foo").css({"opacity": n});
+	jQuery( "#floatTest" ).css( { "float": "right" } );
+	equal( jQuery( "#floatTest" ).css( "float" ), "right", "Modified CSS float using \"float\": Assert float is right" );
+	jQuery( "#floatTest" ).css( { "font-size": "30px" } );
+	equal( jQuery( "#floatTest" ).css( "font-size" ), "30px", "Modified CSS font-size: Assert font-size is 30px" );
+	jQuery.each( "0,0.25,0.5,0.75,1".split( "," ), function( i, n ) {
+		jQuery( "#foo" ).css( { "opacity": n } );
 
-		equal( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
-		jQuery("#foo").css({"opacity": parseFloat(n)});
-		equal( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
-	});
-	jQuery("#foo").css({"opacity": ""});
-	equal( jQuery("#foo").css("opacity"), "1", "Assert opacity is 1 when set to an empty String" );
+		equal( jQuery( "#foo" ).css( "opacity" ), parseFloat( n ), "Assert opacity is " + parseFloat( n ) + " as a String" );
+		jQuery( "#foo" ).css( { "opacity": parseFloat( n ) } );
+		equal( jQuery( "#foo" ).css( "opacity" ), parseFloat( n ), "Assert opacity is " + parseFloat( n ) + " as a Number" );
+	} );
+	jQuery( "#foo" ).css( { "opacity": "" } );
+	equal( jQuery( "#foo" ).css( "opacity" ), "1", "Assert opacity is 1 when set to an empty String" );
 
-	equal( jQuery("#empty").css("opacity"), "0", "Assert opacity is accessible via filter property set in stylesheet in IE" );
-	jQuery("#empty").css({ "opacity": "1" });
-	equal( jQuery("#empty").css("opacity"), "1", "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
+	equal( jQuery( "#empty" ).css( "opacity" ), "0", "Assert opacity is accessible via filter property set in stylesheet in IE" );
+	jQuery( "#empty" ).css( { "opacity": "1" } );
+	equal( jQuery( "#empty" ).css( "opacity" ), "1", "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
 	jQuery.support.opacity ?
-		ok(true, "Requires the same number of tests"):
-		ok( ~jQuery("#empty")[0].currentStyle.filter.indexOf("gradient"), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
+		ok( true, "Requires the same number of tests" ) :
+		ok( ~jQuery( "#empty" )[ 0 ].currentStyle.filter.indexOf( "gradient" ), "Assert setting opacity doesn't overwrite other filters of the stylesheet in IE" );
 
-	div = jQuery("#nothiddendiv");
-	child = jQuery("#nothiddendivchild");
+	div = jQuery( "#nothiddendiv" );
+	child = jQuery( "#nothiddendivchild" );
 
-	equal( parseInt(div.css("fontSize"), 10), 16, "Verify fontSize px set." );
-	equal( parseInt(div.css("font-size"), 10), 16, "Verify fontSize px set." );
-	equal( parseInt(child.css("fontSize"), 10), 16, "Verify fontSize px set." );
-	equal( parseInt(child.css("font-size"), 10), 16, "Verify fontSize px set." );
+	equal( parseInt( div.css( "fontSize" ), 10 ), 16, "Verify fontSize px set." );
+	equal( parseInt( div.css( "font-size" ), 10 ), 16, "Verify fontSize px set." );
+	equal( parseInt( child.css( "fontSize" ), 10 ), 16, "Verify fontSize px set." );
+	equal( parseInt( child.css( "font-size" ), 10 ), 16, "Verify fontSize px set." );
 
-	child.css("height", "100%");
-	equal( child[0].style.height, "100%", "Make sure the height is being set correctly." );
+	child.css( "height", "100%" );
+	equal( child[ 0 ].style.height, "100%", "Make sure the height is being set correctly." );
 
-	child.attr("class", "em");
-	equal( parseInt(child.css("fontSize"), 10), 32, "Verify fontSize em set." );
+	child.attr( "class", "em" );
+	equal( parseInt( child.css( "fontSize" ), 10 ), 32, "Verify fontSize em set." );
 
 	// Have to verify this as the result depends upon the browser's CSS
 	// support for font-size percentages
-	child.attr("class", "prct");
-	prctval = parseInt(child.css("fontSize"), 10);
+	child.attr( "class", "prct" );
+	prctval = parseInt( child.css( "fontSize" ), 10 );
 	checkval = 0;
 	if ( prctval === 16 || prctval === 24 ) {
 		checkval = prctval;
@@ -90,34 +90,34 @@ test("css(String|Hash)", function() {
 
 	equal( prctval, checkval, "Verify fontSize % set." );
 
-	equal( typeof child.css("width"), "string", "Make sure that a string width is returned from css('width')." );
+	equal( typeof child.css( "width" ), "string", "Make sure that a string width is returned from css('width')." );
 
-	old = child[0].style.height;
-
-	// Test NaN
-	child.css("height", parseFloat("zoo"));
-	equal( child[0].style.height, old, "Make sure height isn't changed on NaN." );
-
-	// Test null
-	child.css("height", null);
-	equal( child[0].style.height, old, "Make sure height isn't changed on null." );
-
-	old = child[0].style.fontSize;
+	old = child[ 0 ].style.height;
 
 	// Test NaN
-	child.css("font-size", parseFloat("zoo"));
-	equal( child[0].style.fontSize, old, "Make sure font-size isn't changed on NaN." );
+	child.css( "height", parseFloat( "zoo" ) );
+	equal( child[ 0 ].style.height, old, "Make sure height isn't changed on NaN." );
 
 	// Test null
-	child.css("font-size", null);
-	equal( child[0].style.fontSize, old, "Make sure font-size isn't changed on null." );
+	child.css( "height", null );
+	equal( child[ 0 ].style.height, old, "Make sure height isn't changed on null." );
+
+	old = child[ 0 ].style.fontSize;
+
+	// Test NaN
+	child.css( "font-size", parseFloat( "zoo" ) );
+	equal( child[ 0 ].style.fontSize, old, "Make sure font-size isn't changed on NaN." );
+
+	// Test null
+	child.css( "font-size", null );
+	equal( child[ 0 ].style.fontSize, old, "Make sure font-size isn't changed on null." );
 
 	strictEqual( child.css( "x-fake" ), undefined, "Make sure undefined is returned from css(nonexistent)." );
 
-	div = jQuery( "<div/>" ).css({ position: "absolute", "z-index": 1000 }).appendTo( "#qunit-fixture" );
+	div = jQuery( "<div/>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
 	strictEqual( div.css( "z-index" ), "1000",
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
-});
+} );
 
 test( "css(String) computed values", function() {
 	expect( 3 );
@@ -129,97 +129,96 @@ test( "css(String) computed values", function() {
 	strictEqual( div.css( "padding-left" ), "500px", "should get computed value for padding-left property" );
 	strictEqual( div.css( "width" ), "200px", "should get computed value for width property" );
 	strictEqual( div.css( "font-size" ), "32px", "should get computed value for font-size property" );
-});
-
+} );
 
 test( "css() explicit and relative values", function() {
 	expect( 29 );
 
-	var $elem = jQuery("#nothiddendiv");
+	var $elem = jQuery( "#nothiddendiv" );
 
-	$elem.css({ "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 });
-	equal( $elem.css("width"), "1px", "Initial css set or width/height works (hash)" );
-	equal( $elem.css("paddingLeft"), "1px", "Initial css set of paddingLeft works (hash)" );
-	equal( $elem.css("opacity"), "1", "Initial css set of opacity works (hash)" );
+	$elem.css( { "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 } );
+	equal( $elem.css( "width" ), "1px", "Initial css set or width/height works (hash)" );
+	equal( $elem.css( "paddingLeft" ), "1px", "Initial css set of paddingLeft works (hash)" );
+	equal( $elem.css( "opacity" ), "1", "Initial css set of opacity works (hash)" );
 
-	$elem.css({ width: "+=9" });
-	equal( $elem.css("width"), "10px", "'+=9' on width (hash)" );
+	$elem.css( { width: "+=9" } );
+	equal( $elem.css( "width" ), "10px", "'+=9' on width (hash)" );
 
-	$elem.css({ "width": "-=9" });
-	equal( $elem.css("width"), "1px", "'-=9' on width (hash)" );
+	$elem.css( { "width": "-=9" } );
+	equal( $elem.css( "width" ), "1px", "'-=9' on width (hash)" );
 
-	$elem.css({ "width": "+=9px" });
-	equal( $elem.css("width"), "10px", "'+=9px' on width (hash)" );
+	$elem.css( { "width": "+=9px" } );
+	equal( $elem.css( "width" ), "10px", "'+=9px' on width (hash)" );
 
-	$elem.css({ "width": "-=9px" });
-	equal( $elem.css("width"), "1px", "'-=9px' on width (hash)" );
+	$elem.css( { "width": "-=9px" } );
+	equal( $elem.css( "width" ), "1px", "'-=9px' on width (hash)" );
 
 	$elem.css( "width", "+=9" );
-	equal( $elem.css("width"), "10px", "'+=9' on width (params)" );
+	equal( $elem.css( "width" ), "10px", "'+=9' on width (params)" );
 
 	$elem.css( "width", "-=9" ) ;
-	equal( $elem.css("width"), "1px", "'-=9' on width (params)" );
+	equal( $elem.css( "width" ), "1px", "'-=9' on width (params)" );
 
 	$elem.css( "width", "+=9px" );
-	equal( $elem.css("width"), "10px", "'+=9px' on width (params)" );
+	equal( $elem.css( "width" ), "10px", "'+=9px' on width (params)" );
 
 	$elem.css( "width", "-=9px" );
-	equal( $elem.css("width"), "1px", "'-=9px' on width (params)" );
+	equal( $elem.css( "width" ), "1px", "'-=9px' on width (params)" );
 
 	$elem.css( "width", "-=-9px" );
-	equal( $elem.css("width"), "10px", "'-=-9px' on width (params)" );
+	equal( $elem.css( "width" ), "10px", "'-=-9px' on width (params)" );
 
 	$elem.css( "width", "+=-9px" );
-	equal( $elem.css("width"), "1px", "'+=-9px' on width (params)" );
+	equal( $elem.css( "width" ), "1px", "'+=-9px' on width (params)" );
 
-	$elem.css({ "paddingLeft": "+=4" });
-	equal( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (hash)" );
+	$elem.css( { "paddingLeft": "+=4" } );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4' on paddingLeft (hash)" );
 
-	$elem.css({ "paddingLeft": "-=4" });
-	equal( $elem.css("paddingLeft"), "1px", "'-=4' on paddingLeft (hash)" );
+	$elem.css( { "paddingLeft": "-=4" } );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4' on paddingLeft (hash)" );
 
-	$elem.css({ "paddingLeft": "+=4px" });
-	equal( $elem.css("paddingLeft"), "5px", "'+=4px' on paddingLeft (hash)" );
+	$elem.css( { "paddingLeft": "+=4px" } );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4px' on paddingLeft (hash)" );
 
-	$elem.css({ "paddingLeft": "-=4px" });
-	equal( $elem.css("paddingLeft"), "1px", "'-=4px' on paddingLeft (hash)" );
+	$elem.css( { "paddingLeft": "-=4px" } );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4px' on paddingLeft (hash)" );
 
-	$elem.css({ "padding-left": "+=4" });
-	equal( $elem.css("paddingLeft"), "5px", "'+=4' on padding-left (hash)" );
+	$elem.css( { "padding-left": "+=4" } );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4' on padding-left (hash)" );
 
-	$elem.css({ "padding-left": "-=4" });
-	equal( $elem.css("paddingLeft"), "1px", "'-=4' on padding-left (hash)" );
+	$elem.css( { "padding-left": "-=4" } );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4' on padding-left (hash)" );
 
-	$elem.css({ "padding-left": "+=4px" });
-	equal( $elem.css("paddingLeft"), "5px", "'+=4px' on padding-left (hash)" );
+	$elem.css( { "padding-left": "+=4px" } );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4px' on padding-left (hash)" );
 
-	$elem.css({ "padding-left": "-=4px" });
-	equal( $elem.css("paddingLeft"), "1px", "'-=4px' on padding-left (hash)" );
+	$elem.css( { "padding-left": "-=4px" } );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4px' on padding-left (hash)" );
 
 	$elem.css( "paddingLeft", "+=4" );
-	equal( $elem.css("paddingLeft"), "5px", "'+=4' on paddingLeft (params)" );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4' on paddingLeft (params)" );
 
 	$elem.css( "paddingLeft", "-=4" );
-	equal( $elem.css("paddingLeft"), "1px", "'-=4' on paddingLeft (params)" );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4' on paddingLeft (params)" );
 
 	$elem.css( "padding-left", "+=4px" );
-	equal( $elem.css("paddingLeft"), "5px", "'+=4px' on padding-left (params)" );
+	equal( $elem.css( "paddingLeft" ), "5px", "'+=4px' on padding-left (params)" );
 
 	$elem.css( "padding-left", "-=4px" );
-	equal( $elem.css("paddingLeft"), "1px", "'-=4px' on padding-left (params)" );
+	equal( $elem.css( "paddingLeft" ), "1px", "'-=4px' on padding-left (params)" );
 
-	$elem.css({ "opacity": "-=0.5" });
-	equal( $elem.css("opacity"), "0.5", "'-=0.5' on opacity (hash)" );
+	$elem.css( { "opacity": "-=0.5" } );
+	equal( $elem.css( "opacity" ), "0.5", "'-=0.5' on opacity (hash)" );
 
-	$elem.css({ "opacity": "+=0.5" });
-	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (hash)" );
+	$elem.css( { "opacity": "+=0.5" } );
+	equal( $elem.css( "opacity" ), "1", "'+=0.5' on opacity (hash)" );
 
 	$elem.css( "opacity", "-=0.5" );
-	equal( $elem.css("opacity"), "0.5", "'-=0.5' on opacity (params)" );
+	equal( $elem.css( "opacity" ), "0.5", "'-=0.5' on opacity (params)" );
 
 	$elem.css( "opacity", "+=0.5" );
-	equal( $elem.css("opacity"), "1", "'+=0.5' on opacity (params)" );
-});
+	equal( $elem.css( "opacity" ), "1", "'+=0.5' on opacity (params)" );
+} );
 
 test( "css() non-px relative values (gh-1711)", function() {
 	expect( 17 );
@@ -256,12 +255,12 @@ test( "css() non-px relative values (gh-1711)", function() {
 				"pc": parseFloat( $child.css( prop, "100pc" ).css( prop ) ) / 100,
 				"cm": parseFloat( $child.css( prop, "100cm" ).css( prop ) ) / 100,
 				"mm": parseFloat( $child.css( prop, "100mm" ).css( prop ) ) / 100,
-				"%" : parseFloat( $child.css( prop, "100%"  ).css( prop ) ) / 100
+				"%": parseFloat( $child.css( prop, "100%"  ).css( prop ) ) / 100
 			};
 		};
 
-	jQuery( "#nothiddendiv" ).css({ height: 1, padding: 0, width: 400 });
-	$child.css({ height: 1, padding: 0 });
+	jQuery( "#nothiddendiv" ).css( { height: 1, padding: 0, width: 400 } );
+	$child.css( { height: 1, padding: 0 } );
 
 	getUnits( "width" );
 	cssCurrent = parseFloat( $child.css( "width", "50%" ).css( "width" ) );
@@ -285,44 +284,44 @@ test( "css() non-px relative values (gh-1711)", function() {
 	add( "lineHeight",   1, "cm" );
 	add( "lineHeight", -20, "mm" );
 	add( "lineHeight",  50,  "%" );
-});
+} );
 
-test("css(String, Object)", function() {
+test( "css(String, Object)", function() {
 	expect( 19 );
 	var j, div, display, ret, success;
 
-	jQuery("#floatTest").css("float", "left");
-	equal( jQuery("#floatTest").css("float"), "left", "Modified CSS float using \"float\": Assert float is left");
-	jQuery("#floatTest").css("font-size", "20px");
-	equal( jQuery("#floatTest").css("font-size"), "20px", "Modified CSS font-size: Assert font-size is 20px");
+	jQuery( "#floatTest" ).css( "float", "left" );
+	equal( jQuery( "#floatTest" ).css( "float" ), "left", "Modified CSS float using \"float\": Assert float is left" );
+	jQuery( "#floatTest" ).css( "font-size", "20px" );
+	equal( jQuery( "#floatTest" ).css( "font-size" ), "20px", "Modified CSS font-size: Assert font-size is 20px" );
 
-	jQuery.each("0,0.25,0.5,0.75,1".split(","), function(i, n) {
-		jQuery("#foo").css("opacity", n);
-		equal( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a String" );
-		jQuery("#foo").css("opacity", parseFloat(n));
-		equal( jQuery("#foo").css("opacity"), parseFloat(n), "Assert opacity is " + parseFloat(n) + " as a Number" );
-	});
-	jQuery("#foo").css("opacity", "");
-	equal( jQuery("#foo").css("opacity"), "1", "Assert opacity is 1 when set to an empty String" );
+	jQuery.each( "0,0.25,0.5,0.75,1".split( "," ), function( i, n ) {
+		jQuery( "#foo" ).css( "opacity", n );
+		equal( jQuery( "#foo" ).css( "opacity" ), parseFloat( n ), "Assert opacity is " + parseFloat( n ) + " as a String" );
+		jQuery( "#foo" ).css( "opacity", parseFloat( n ) );
+		equal( jQuery( "#foo" ).css( "opacity" ), parseFloat( n ), "Assert opacity is " + parseFloat( n ) + " as a Number" );
+	} );
+	jQuery( "#foo" ).css( "opacity", "" );
+	equal( jQuery( "#foo" ).css( "opacity" ), "1", "Assert opacity is 1 when set to an empty String" );
 
 	// using contents will get comments regular, text, and comment nodes
-	j = jQuery("#nonnodes").contents();
-	j.css("overflow", "visible");
-	equal( j.css("overflow"), "visible", "Check node,textnode,comment css works" );
-	equal( jQuery("#t2037 .hidden").css("display"), "none", "Make sure browser thinks it is hidden" );
+	j = jQuery( "#nonnodes" ).contents();
+	j.css( "overflow", "visible" );
+	equal( j.css( "overflow" ), "visible", "Check node,textnode,comment css works" );
+	equal( jQuery( "#t2037 .hidden" ).css( "display" ), "none", "Make sure browser thinks it is hidden" );
 
-	div = jQuery("#nothiddendiv");
-	display = div.css("display");
-	ret = div.css("display", undefined);
+	div = jQuery( "#nothiddendiv" );
+	display = div.css( "display" );
+	ret = div.css( "display", undefined );
 
 	equal( ret, div, "Make sure setting undefined returns the original set." );
-	equal( div.css("display"), display, "Make sure that the display wasn't changed." );
+	equal( div.css( "display" ), display, "Make sure that the display wasn't changed." );
 
 	success = true;
 	try {
 		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
 	}
-	catch (e) {
+	catch ( e ) {
 		success = false;
 	}
 	ok( success, "Setting RGBA values does not throw Error (#5509)" );
@@ -330,7 +329,7 @@ test("css(String, Object)", function() {
 	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
 	strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
 		"Set font shorthand property (#14759)" );
-});
+} );
 
 test( "css(String, Object) with negative values", function() {
 	expect( 4 );
@@ -345,7 +344,7 @@ test( "css(String, Object) with negative values", function() {
 	jQuery( "#nothiddendiv" ).css( "left", "-20px" );
 	equal( jQuery( "#nothiddendiv" ).css( "top" ), "-20px", "Ensure negative top values work." );
 	equal( jQuery( "#nothiddendiv" ).css( "left" ), "-20px", "Ensure negative left values work." );
-});
+} );
 
 test( "css(Array)", function() {
 	expect( 2 );
@@ -357,30 +356,31 @@ test( "css(Array)", function() {
 		expectedSingle = {
 			"width": "16px"
 		},
-		elem = jQuery("<div></div>").appendTo("#qunit-fixture");
+		elem = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
-	deepEqual( elem.css( expectedMany ).css([ "overflow", "width" ]), expectedMany, "Getting multiple element array" );
-	deepEqual( elem.css( expectedSingle ).css([ "width" ]), expectedSingle, "Getting single element array" );
-});
+	deepEqual( elem.css( expectedMany ).css( [ "overflow", "width" ] ), expectedMany, "Getting multiple element array" );
+	deepEqual( elem.css( expectedSingle ).css( [ "width" ] ), expectedSingle, "Getting single element array" );
+} );
 
 if ( !jQuery.support.opacity ) {
-	test("css(String, Object) for MSIE", function() {
+	test( "css(String, Object) for MSIE", function() {
 		expect( 5 );
+
 		// for #1438, IE throws JS error when filter exists but doesn't have opacity in it
-		jQuery("#foo").css("filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');");
-		equal( jQuery("#foo").css("opacity"), "1", "Assert opacity is 1 when a different filter is set in IE, #1438" );
+		jQuery( "#foo" ).css( "filter", "progid:DXImageTransform.Microsoft.Chroma(color='red');" );
+		equal( jQuery( "#foo" ).css( "opacity" ), "1", "Assert opacity is 1 when a different filter is set in IE, #1438" );
 
 		var filterVal = "progid:DXImageTransform.Microsoft.Alpha(opacity=30) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)",
 			filterVal2 = "progid:DXImageTransform.Microsoft.alpha(opacity=100) progid:DXImageTransform.Microsoft.Blur(pixelradius=5)",
 			filterVal3 = "progid:DXImageTransform.Microsoft.Blur(pixelradius=5)";
-		jQuery("#foo").css("filter", filterVal);
-		equal( jQuery("#foo").css("filter"), filterVal, "css('filter', val) works" );
-		jQuery("#foo").css("opacity", 1);
-		equal( jQuery("#foo").css("filter"), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
-		equal( jQuery("#foo").css("opacity"), 1, "Setting opacity in IE with other filters works" );
-		jQuery("#foo").css("filter", filterVal3).css("opacity", 1);
-		ok( jQuery("#foo").css("filter").indexOf(filterVal3) !== -1, "Setting opacity in IE doesn't clobber other filters" );
-	});
+		jQuery( "#foo" ).css( "filter", filterVal );
+		equal( jQuery( "#foo" ).css( "filter" ), filterVal, "css('filter', val) works" );
+		jQuery( "#foo" ).css( "opacity", 1 );
+		equal( jQuery( "#foo" ).css( "filter" ), filterVal2, "Setting opacity in IE doesn't duplicate opacity filter" );
+		equal( jQuery( "#foo" ).css( "opacity" ), 1, "Setting opacity in IE with other filters works" );
+		jQuery( "#foo" ).css( "filter", filterVal3 ).css( "opacity", 1 );
+		ok( jQuery( "#foo" ).css( "filter" ).indexOf( filterVal3 ) !== -1, "Setting opacity in IE doesn't clobber other filters" );
+	} );
 
 	test( "Setting opacity to 1 properly removes filter: style (#6652)", function() {
 		var rfilter = /filter:[^;]*/i,
@@ -388,180 +388,180 @@ if ( !jQuery.support.opacity ) {
 			test2 = test.find( "div" ).css( "opacity", 1 );
 
 		function hasFilter( elem ) {
-			return !!rfilter.exec( elem[0].style.cssText );
+			return !!rfilter.exec( elem[ 0 ].style.cssText );
 		}
 		expect( 2 );
 		ok( !hasFilter( test ), "Removed filter attribute on element without filter in stylesheet" );
 		ok( hasFilter( test2 ), "Filter attribute remains on element that had filter in stylesheet" );
-	});
+	} );
 }
 
-test("css(String, Function)", function() {
-	expect(3);
+test( "css(String, Function)", function() {
+	expect( 3 );
 
 	var index,
-		sizes = ["10px", "20px", "30px"];
+		sizes = [ "10px", "20px", "30px" ];
 
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
+				 "<div class='cssFunction'></div></div>" )
+		.appendTo( "body" );
 
 	index = 0;
 
-	jQuery("#cssFunctionTest div").css("font-size", function() {
-		var size = sizes[index];
+	jQuery( "#cssFunctionTest div" ).css( "font-size", function() {
+		var size = sizes[ index ];
 		index++;
 		return size;
-	});
+	} );
 
 	index = 0;
 
-	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size"),
-			expectedSize = sizes[index];
+	jQuery( "#cssFunctionTest div" ).each( function() {
+		var computedSize = jQuery( this ).css( "font-size" ),
+			expectedSize = sizes[ index ];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
-	});
+	} );
 
-	jQuery("#cssFunctionTest").remove();
-});
+	jQuery( "#cssFunctionTest" ).remove();
+} );
 
-test("css(String, Function) with incoming value", function() {
-	expect(3);
-
-	var index,
-		sizes = ["10px", "20px", "30px"];
-
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css("font-size", function() {
-		var size = sizes[index];
-		index++;
-		return size;
-	});
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css("font-size", function(i, computedSize) {
-		var expectedSize = sizes[index];
-		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-		index++;
-		return computedSize;
-	});
-
-	jQuery("#cssFunctionTest").remove();
-});
-
-test("css(Object) where values are Functions", function() {
-	expect(3);
+test( "css(String, Function) with incoming value", function() {
+	expect( 3 );
 
 	var index,
-		sizes = ["10px", "20px", "30px"];
+		sizes = [ "10px", "20px", "30px" ];
 
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
 				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
+				 "<div class='cssFunction'></div></div>" )
+		.appendTo( "body" );
 
 	index = 0;
 
-	jQuery("#cssFunctionTest div").css({"fontSize": function() {
-		var size = sizes[index];
+	jQuery( "#cssFunctionTest div" ).css( "font-size", function() {
+		var size = sizes[ index ];
 		index++;
 		return size;
-	}});
+	} );
 
 	index = 0;
 
-	jQuery("#cssFunctionTest div").each(function() {
-		var computedSize = jQuery(this).css("font-size"),
-			expectedSize = sizes[index];
-		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
-		index++;
-	});
-
-	jQuery("#cssFunctionTest").remove();
-});
-
-test("css(Object) where values are Functions with incoming values", function() {
-	expect(3);
-
-	var index,
-		sizes = ["10px", "20px", "30px"];
-
-	jQuery("<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>")
-		.appendTo("body");
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css({"fontSize": function() {
-		var size = sizes[index];
-		index++;
-		return size;
-	}});
-
-	index = 0;
-
-	jQuery("#cssFunctionTest div").css({"font-size": function(i, computedSize) {
-		var expectedSize = sizes[index];
+	jQuery( "#cssFunctionTest div" ).css( "font-size", function( i, computedSize ) {
+		var expectedSize = sizes[ index ];
 		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
 		index++;
 		return computedSize;
-	}});
+	} );
 
-	jQuery("#cssFunctionTest").remove();
-});
+	jQuery( "#cssFunctionTest" ).remove();
+} );
 
-test("show(); hide()", function() {
+test( "css(Object) where values are Functions", function() {
+	expect( 3 );
+
+	var index,
+		sizes = [ "10px", "20px", "30px" ];
+
+	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div></div>" )
+		.appendTo( "body" );
+
+	index = 0;
+
+	jQuery( "#cssFunctionTest div" ).css( { "fontSize": function() {
+		var size = sizes[ index ];
+		index++;
+		return size;
+	} } );
+
+	index = 0;
+
+	jQuery( "#cssFunctionTest div" ).each( function() {
+		var computedSize = jQuery( this ).css( "font-size" ),
+			expectedSize = sizes[ index ];
+		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+	} );
+
+	jQuery( "#cssFunctionTest" ).remove();
+} );
+
+test( "css(Object) where values are Functions with incoming values", function() {
+	expect( 3 );
+
+	var index,
+		sizes = [ "10px", "20px", "30px" ];
+
+	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div>" +
+				 "<div class='cssFunction'></div></div>" )
+		.appendTo( "body" );
+
+	index = 0;
+
+	jQuery( "#cssFunctionTest div" ).css( { "fontSize": function() {
+		var size = sizes[ index ];
+		index++;
+		return size;
+	} } );
+
+	index = 0;
+
+	jQuery( "#cssFunctionTest div" ).css( { "font-size": function( i, computedSize ) {
+		var expectedSize = sizes[ index ];
+		equal( computedSize, expectedSize, "Div #" + index + " should be " + expectedSize );
+		index++;
+		return computedSize;
+	} } );
+
+	jQuery( "#cssFunctionTest" ).remove();
+} );
+
+test( "show(); hide()", function() {
 	expect( 4 );
 
 	var hiddendiv, div;
 
-	hiddendiv = jQuery("div.hidden");
+	hiddendiv = jQuery( "div.hidden" );
 	hiddendiv.hide();
-	equal( hiddendiv.css("display"), "none", "Cascade-hidden div after hide()" );
+	equal( hiddendiv.css( "display" ), "none", "Cascade-hidden div after hide()" );
 	hiddendiv.show();
-	equal( hiddendiv.css("display"), "none", "Show does not trump CSS cascade" );
+	equal( hiddendiv.css( "display" ), "none", "Show does not trump CSS cascade" );
 
-	div = jQuery("<div>").hide();
-	equal( div.css("display"), "none", "Detached div hidden" );
-	div.appendTo("#qunit-fixture").show();
-	equal( div.css("display"), "block", "Initially-detached div after show()" );
+	div = jQuery( "<div>" ).hide();
+	equal( div.css( "display" ), "none", "Detached div hidden" );
+	div.appendTo( "#qunit-fixture" ).show();
+	equal( div.css( "display" ), "block", "Initially-detached div after show()" );
 
-});
+} );
 
-test("show();", function() {
+test( "show();", function() {
 
 	expect( 18 );
 
 	var hiddendiv, div, pass, test;
-		hiddendiv = jQuery("div.hidden");
+		hiddendiv = jQuery( "div.hidden" );
 
-	equal(jQuery.css( hiddendiv[0], "display"), "none", "hiddendiv is display: none");
+	equal( jQuery.css( hiddendiv[ 0 ], "display" ), "none", "hiddendiv is display: none" );
 
-	hiddendiv.css("display", "block");
-	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+	hiddendiv.css( "display", "block" );
+	equal( jQuery.css( hiddendiv[ 0 ], "display" ), "block", "hiddendiv is display: block" );
 
 	hiddendiv.show();
-	equal(jQuery.css( hiddendiv[0], "display"), "block", "hiddendiv is display: block");
+	equal( jQuery.css( hiddendiv[ 0 ], "display" ), "block", "hiddendiv is display: block" );
 
-	hiddendiv.css("display","");
+	hiddendiv.css( "display", "" );
 
 	pass = true;
-	div = jQuery("#qunit-fixture div");
-	div.show().each(function(){
+	div = jQuery( "#qunit-fixture div" );
+	div.show().each( function() {
 		if ( this.style.display === "none" ) {
 			pass = false;
 		}
-	});
+	} );
 	ok( pass, "Show" );
 
 	jQuery(
@@ -572,137 +572,137 @@ test("show();", function() {
 		"<table id='test-table'></table>"
 	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
 
-	jQuery("#test-table").remove();
+	jQuery( "#test-table" ).remove();
 
 	test = {
-		"div"      : "block",
-		"p"        : "block",
-		"a"        : "inline",
-		"code"     : "inline",
-		"pre"      : "block",
-		"span"     : "inline",
-		"table"    : "table",
-		"thead"    : "table-header-group",
-		"tbody"    : "table-row-group",
-		"tr"       : "table-row",
-		"th"       : "table-cell",
-		"td"       : "table-cell",
-		"ul"       : "block",
-		"li"       : "list-item"
+		"div": "block",
+		"p": "block",
+		"a": "inline",
+		"code": "inline",
+		"pre": "block",
+		"span": "inline",
+		"table": "table",
+		"thead": "table-header-group",
+		"tbody": "table-row-group",
+		"tr": "table-row",
+		"th": "table-cell",
+		"td": "table-cell",
+		"ul": "block",
+		"li": "list-item"
 	};
 
-	jQuery.each(test, function(selector, expected) {
-		var elem = jQuery(selector, "#show-tests").show();
-		equal( elem.css("display"), expected, "Show using correct display type for " + selector );
-	});
+	jQuery.each( test, function( selector, expected ) {
+		var elem = jQuery( selector, "#show-tests" ).show();
+		equal( elem.css( "display" ), expected, "Show using correct display type for " + selector );
+	} );
 
 	// Make sure that showing or hiding a text node doesn't cause an error
-	jQuery("<div>test</div> text <span>test</span>").show().remove();
-	jQuery("<div>test</div> text <span>test</span>").hide().remove();
-});
+	jQuery( "<div>test</div> text <span>test</span>" ).show().remove();
+	jQuery( "<div>test</div> text <span>test</span>" ).hide().remove();
+} );
 
-test( "show() resolves correct default display for detached nodes", function(){
+test( "show() resolves correct default display for detached nodes", function() {
 	expect( 16 );
 
 	var div, span, tr;
 
-	div = jQuery("<div class='hidden'>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
+	div = jQuery( "<div class='hidden'>" );
+	div.show().appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "none",
 		"A shown-while-detached div can be hidden by the CSS cascade" );
 
-	div = jQuery("<div><div class='hidden'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
+	div = jQuery( "<div><div class='hidden'></div></div>" ).children( "div" );
+	div.show().appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "none",
 		"A shown-while-detached div inside a visible div can be hidden by the CSS cascade" );
 
-	span = jQuery("<span class='hidden'/>");
-	span.show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "none",
+	span = jQuery( "<span class='hidden'/>" );
+	span.show().appendTo( "#qunit-fixture" );
+	equal( span.css( "display" ), "none",
 		"A shown-while-detached span can be hidden by the CSS cascade" );
 
-	div = jQuery("div.hidden");
+	div = jQuery( "div.hidden" );
 	div.detach().show();
 	ok( !div[ 0 ].style.display,
 		"show() does not update inline style of a cascade-hidden-before-detach div" );
-	div.appendTo("#qunit-fixture");
-	equal( div.css("display"), "none",
+	div.appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "none",
 		"A shown-while-detached cascade-hidden div is hidden after attachment" );
 	div.remove();
 
-	span = jQuery("<span class='hidden'/>");
-	span.appendTo("#qunit-fixture").detach().show().appendTo("#qunit-fixture");
-	equal( span.css("display"), "none",
+	span = jQuery( "<span class='hidden'/>" );
+	span.appendTo( "#qunit-fixture" ).detach().show().appendTo( "#qunit-fixture" );
+	equal( span.css( "display" ), "none",
 		"A shown-while-detached cascade-hidden span is hidden after attachment" );
 	span.remove();
 
-	div = jQuery( document.createElement("div") );
-	div.show().appendTo("#qunit-fixture");
+	div = jQuery( document.createElement( "div" ) );
+	div.show().appendTo( "#qunit-fixture" );
 	ok( !div[ 0 ].style.display, "A shown-while-detached div has no inline style" );
-	equal( div.css("display"), "block",
+	equal( div.css( "display" ), "block",
 		"A shown-while-detached div has default display after attachment" );
 	div.remove();
 
-	div = jQuery("<div style='display: none'>");
+	div = jQuery( "<div style='display: none'>" );
 	div.show();
 	equal( div[ 0 ].style.display, "",
 		"show() updates inline style of a detached inline-hidden div" );
-	div.appendTo("#qunit-fixture");
-	equal( div.css("display"), "block",
+	div.appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "block",
 		"A shown-while-detached inline-hidden div has default display after attachment" );
 
-	div = jQuery("<div><div style='display: none'></div></div>").children("div");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "block",
+	div = jQuery( "<div><div style='display: none'></div></div>" ).children( "div" );
+	div.show().appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "block",
 		"A shown-while-detached inline-hidden div inside a visible div has default display " +
 		"after attachment" );
 
-	span = jQuery("<span style='display: none'/>");
+	span = jQuery( "<span style='display: none'/>" );
 	span.show();
 	equal( span[ 0 ].style.display, "",
 		"show() updates inline style of a detached inline-hidden span" );
-	span.appendTo("#qunit-fixture");
-	equal( span.css("display"), "inline",
+	span.appendTo( "#qunit-fixture" );
+	equal( span.css( "display" ), "inline",
 		"A shown-while-detached inline-hidden span has default display after attachment" );
 
-	div = jQuery("<div style='display: inline'/>");
-	div.show().appendTo("#qunit-fixture");
-	equal( div.css("display"), "inline",
+	div = jQuery( "<div style='display: inline'/>" );
+	div.show().appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "inline",
 		"show() does not update inline style of a detached inline-visible div" );
 	div.remove();
 
-	tr = jQuery("<tr/>");
-	jQuery("#table").append( tr );
+	tr = jQuery( "<tr/>" );
+	jQuery( "#table" ).append( tr );
 	tr.detach().hide().show();
 
 	ok( !tr[ 0 ].style.display, "Not-hidden detached tr elements have no inline style" );
 	tr.remove();
 
-	span = jQuery("<span/>").hide().show();
+	span = jQuery( "<span/>" ).hide().show();
 	ok( !span[ 0 ].style.display, "Not-hidden detached span elements have no inline style" );
 	span.remove();
-});
+} );
 
-test("toggle()", function() {
-	expect(9);
+test( "toggle()", function() {
+	expect( 9 );
 	var div, oldHide,
-		x = jQuery("#foo");
+		x = jQuery( "#foo" );
 
-	ok( x.is(":visible"), "is visible" );
+	ok( x.is( ":visible" ), "is visible" );
 	x.toggle();
-	ok( x.is(":hidden"), "is hidden" );
+	ok( x.is( ":hidden" ), "is hidden" );
 	x.toggle();
-	ok( x.is(":visible"), "is visible again" );
+	ok( x.is( ":visible" ), "is visible again" );
 
-	x.toggle(true);
-	ok( x.is(":visible"), "is visible" );
-	x.toggle(false);
-	ok( x.is(":hidden"), "is hidden" );
-	x.toggle(true);
-	ok( x.is(":visible"), "is visible again" );
+	x.toggle( true );
+	ok( x.is( ":visible" ), "is visible" );
+	x.toggle( false );
+	ok( x.is( ":hidden" ), "is hidden" );
+	x.toggle( true );
+	ok( x.is( ":visible" ), "is visible again" );
 
-	div = jQuery("<div style='display:none'><div></div></div>").appendTo("#qunit-fixture");
-	x = div.find("div");
+	div = jQuery( "<div style='display:none'><div></div></div>" ).appendTo( "#qunit-fixture" );
+	x = div.find( "div" );
 	strictEqual( x.toggle().css( "display" ), "none", "is hidden" );
 	strictEqual( x.toggle().css( "display" ), "block", "is visible" );
 
@@ -714,110 +714,110 @@ test("toggle()", function() {
 	};
 	x.toggle( name === "show" );
 	jQuery.fn.hide = oldHide;
-});
+} );
 
-test("hide hidden elements (bug #7141)", function() {
-	expect(3);
+test( "hide hidden elements (bug #7141)", function() {
+	expect( 3 );
 
-	var div = jQuery("<div style='display:none'></div>").appendTo("#qunit-fixture");
-	equal( div.css("display"), "none", "Element is hidden by default" );
+	var div = jQuery( "<div style='display:none'></div>" ).appendTo( "#qunit-fixture" );
+	equal( div.css( "display" ), "none", "Element is hidden by default" );
 	div.hide();
-	ok( !jQuery._data(div, "display"), "display data is undefined after hiding an already-hidden element" );
+	ok( !jQuery._data( div, "display" ), "display data is undefined after hiding an already-hidden element" );
 	div.show();
-	equal( div.css("display"), "block", "Show a double-hidden element" );
+	equal( div.css( "display" ), "block", "Show a double-hidden element" );
 
 	div.remove();
-});
+} );
 
-test("jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function () {
-	expect(4);
+test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function() {
+	expect( 4 );
 
-	var $checkedtest = jQuery("#checkedtest");
-	jQuery.css($checkedtest[0], "height");
+	var $checkedtest = jQuery( "#checkedtest" );
+	jQuery.css( $checkedtest[ 0 ], "height" );
 
-	ok( jQuery("input[type='radio']", $checkedtest).first().attr("checked"), "Check first radio still checked." );
-	ok( !jQuery("input[type='radio']", $checkedtest).last().attr("checked"), "Check last radio still NOT checked." );
-	ok( jQuery("input[type='checkbox']", $checkedtest).first().attr("checked"), "Check first checkbox still checked." );
-	ok( !jQuery("input[type='checkbox']", $checkedtest).last().attr("checked"), "Check last checkbox still NOT checked." );
-});
+	ok( jQuery( "input[type='radio']", $checkedtest ).first().attr( "checked" ), "Check first radio still checked." );
+	ok( !jQuery( "input[type='radio']", $checkedtest ).last().attr( "checked" ), "Check last radio still NOT checked." );
+	ok( jQuery( "input[type='checkbox']", $checkedtest ).first().attr( "checked" ), "Check first checkbox still checked." );
+	ok( !jQuery( "input[type='checkbox']", $checkedtest ).last().attr( "checked" ), "Check last checkbox still NOT checked." );
+} );
 
-test("internal ref to elem.runtimeStyle (bug #7608)", function () {
-	expect(1);
+test( "internal ref to elem.runtimeStyle (bug #7608)", function() {
+	expect( 1 );
 	var result = true;
 
 	try {
-		jQuery("#foo").css( { "width": "0%" } ).css("width");
-	} catch (e) {
+		jQuery( "#foo" ).css( { "width": "0%" } ).css( "width" );
+	} catch ( e ) {
 		result = false;
 	}
 
 	ok( result, "elem.runtimeStyle does not throw exception" );
-});
+} );
 
-test("marginRight computed style (bug #3333)", function() {
-	expect(1);
+test( "marginRight computed style (bug #3333)", function() {
+	expect( 1 );
 
-	var $div = jQuery("#foo");
-	$div.css({
+	var $div = jQuery( "#foo" );
+	$div.css( {
 		"width": "1px",
 		"marginRight": 0
-	});
+	} );
 
-	equal($div.css("marginRight"), "0px", "marginRight correctly calculated with a width and display block");
-});
+	equal( $div.css( "marginRight" ), "0px", "marginRight correctly calculated with a width and display block" );
+} );
 
-test("box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
+test( "box model properties incorrectly returning % instead of px, see #10639 and #12088", function() {
 	expect( 2 );
 
-	var container = jQuery("<div/>").width( 400 ).appendTo("#qunit-fixture"),
-		el = jQuery("<div/>").css({ "width": "50%", "marginRight": "50%" }).appendTo( container ),
-		el2 = jQuery("<div/>").css({ "width": "50%", "minWidth": "300px", "marginLeft": "25%" }).appendTo( container );
+	var container = jQuery( "<div/>" ).width( 400 ).appendTo( "#qunit-fixture" ),
+		el = jQuery( "<div/>" ).css( { "width": "50%", "marginRight": "50%" } ).appendTo( container ),
+		el2 = jQuery( "<div/>" ).css( { "width": "50%", "minWidth": "300px", "marginLeft": "25%" } ).appendTo( container );
 
-	equal( el.css("marginRight"), "200px", "css('marginRight') returning % instead of px, see #10639" );
-	equal( el2.css("marginLeft"), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
-});
+	equal( el.css( "marginRight" ), "200px", "css('marginRight') returning % instead of px, see #10639" );
+	equal( el2.css( "marginLeft" ), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
+} );
 
-test("jQuery.cssProps behavior, (bug #8402)", function() {
+test( "jQuery.cssProps behavior, (bug #8402)", function() {
 	expect( 2 );
 
-	var div = jQuery( "<div>" ).appendTo(document.body).css({
+	var div = jQuery( "<div>" ).appendTo( document.body ).css( {
 		"position": "absolute",
 		"top": 0,
 		"left": 10
-	});
+	} );
 	jQuery.cssProps.top = "left";
-	equal( div.css("top"), "10px", "the fixed property is used when accessing the computed style");
-	div.css("top", "100px");
-	equal( div[0].style.left, "100px", "the fixed property is used when setting the style");
+	equal( div.css( "top" ), "10px", "the fixed property is used when accessing the computed style" );
+	div.css( "top", "100px" );
+	equal( div[ 0 ].style.left, "100px", "the fixed property is used when setting the style" );
+
 	// cleanup jQuery.cssProps
 	jQuery.cssProps.top = undefined;
-});
+} );
 
-test("widows & orphans #8936", function () {
+test( "widows & orphans #8936", function() {
 
-	var $p = jQuery("<p>").appendTo("#qunit-fixture");
+	var $p = jQuery( "<p>" ).appendTo( "#qunit-fixture" );
 
-	if ( "widows" in $p[0].style ) {
-		expect(2);
+	if ( "widows" in $p[ 0 ].style ) {
+		expect( 2 );
 
-		$p.css({
+		$p.css( {
 			"widows": 3,
 			"orphans": 3
-		});
+		} );
 
-		equal( $p.css("widows") || jQuery.style( $p[0], "widows" ), 3, "widows correctly set to 3");
-		equal( $p.css("orphans") || jQuery.style( $p[0], "orphans" ), 3, "orphans correctly set to 3");
+		equal( $p.css( "widows" ) || jQuery.style( $p[ 0 ], "widows" ), 3, "widows correctly set to 3" );
+		equal( $p.css( "orphans" ) || jQuery.style( $p[ 0 ], "orphans" ), 3, "orphans correctly set to 3" );
 	} else {
 
-		expect(1);
-		ok( true, "jQuery does not attempt to test for style props that definitely don't exist in older versions of IE");
+		expect( 1 );
+		ok( true, "jQuery does not attempt to test for style props that definitely don't exist in older versions of IE" );
 	}
 
-
 	$p.remove();
-});
+} );
 
-test("can't get css for disconnected in IE<9, see #10254 and #8388", function() {
+test( "can't get css for disconnected in IE<9, see #10254 and #8388", function() {
 	expect( 2 );
 	var span, div;
 
@@ -826,9 +826,9 @@ test("can't get css for disconnected in IE<9, see #10254 and #8388", function() 
 
 	div = jQuery( "<div/>" ).css( "top", 10 );
 	equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
-});
+} );
 
-test("can't get background-position in IE<9, see #10796", function() {
+test( "can't get background-position in IE<9, see #10796", function() {
 	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
 		units = [
 			"0 0",
@@ -845,62 +845,63 @@ test("can't get background-position in IE<9, see #10796", function() {
 
 	expect( l );
 
-	for( ; i < l; i++ ) {
+	for ( ; i < l; i++ ) {
 		div.css( "background-position", units [ i ] );
 		ok( div.css( "background-position" ), "can't get background-position in IE<9, see #10796" );
 	}
-});
+} );
 
-test("percentage properties for bottom and right in IE<9 should not be incorrectly transformed to pixels, see #11311", function() {
+test( "percentage properties for bottom and right in IE<9 should not be incorrectly transformed to pixels, see #11311", function() {
 	expect( 1 );
-	var div = jQuery("<div style='position: absolute; width: 1px; height: 20px; bottom:50%;'></div>").appendTo( "#qunit-fixture" );
+	var div = jQuery( "<div style='position: absolute; width: 1px; height: 20px; bottom:50%;'></div>" ).appendTo( "#qunit-fixture" );
 	ok( window.getComputedStyle || div.css( "bottom" ) === "50%", "position properties get incorrectly transformed in IE<8, see #11311" );
-});
+} );
 
 if ( jQuery.fn.offset ) {
-	test("percentage properties for left and top should be transformed to pixels, see #9505", function() {
+	test( "percentage properties for left and top should be transformed to pixels, see #9505", function() {
 		expect( 2 );
-		var parent = jQuery("<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>").appendTo( "#qunit-fixture" ),
-			div = jQuery("<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%'></div>").appendTo( parent );
+		var parent = jQuery( "<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>" ).appendTo( "#qunit-fixture" ),
+			div = jQuery( "<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%'></div>" ).appendTo( parent );
 
-		equal( div.css("top"), "100px", "position properties not transformed to pixels, see #9505" );
-		equal( div.css("left"), "100px", "position properties not transformed to pixels, see #9505" );
-	});
+		equal( div.css( "top" ), "100px", "position properties not transformed to pixels, see #9505" );
+		equal( div.css( "left" ), "100px", "position properties not transformed to pixels, see #9505" );
+	} );
 }
 
-test("Do not append px (#9548, #12990)", function() {
+test( "Do not append px (#9548, #12990)", function() {
 	expect( 2 );
 
-	var $div = jQuery("<div>").appendTo("#qunit-fixture");
+	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
 
 	$div.css( "fill-opacity", 1 );
+
 	// Support: Android 2.3 (no support for fill-opacity)
 	if ( $div.css( "fill-opacity" ) ) {
-		equal( $div.css("fill-opacity"), 1, "Do not append px to 'fill-opacity'" );
+		equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
 	} else {
 		ok( true, "No support for fill-opacity CSS property" );
 	}
 
 	$div.css( "column-count", 1 );
-	if ( $div.css("column-count") ) {
-		equal( $div.css("column-count"), 1, "Do not append px to 'column-count'" );
+	if ( $div.css( "column-count" ) ) {
+		equal( $div.css( "column-count" ), 1, "Do not append px to 'column-count'" );
 	} else {
 		ok( true, "No support for column-count CSS property" );
 	}
-});
+} );
 
-test("css('width') and css('height') should respect box-sizing, see #11004", function() {
+test( "css('width') and css('height') should respect box-sizing, see #11004", function() {
 	expect( 4 );
 
 	// Support: Android 2.3 (-webkit-box-sizing).
-	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
-		el = el_dis.clone().appendTo("#qunit-fixture");
+	var el_dis = jQuery( "<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>" ),
+		el = el_dis.clone().appendTo( "#qunit-fixture" );
 
-	equal( el.css("width"), el.css("width", el.css("width")).css("width"), "css('width') is not respecting box-sizing, see #11004");
-	equal( el_dis.css("width"), el_dis.css("width", el_dis.css("width")).css("width"), "css('width') is not respecting box-sizing for disconnected element, see #11004");
-	equal( el.css("height"), el.css("height", el.css("height")).css("height"), "css('height') is not respecting box-sizing, see #11004");
-	equal( el_dis.css("height"), el_dis.css("height", el_dis.css("height")).css("height"), "css('height') is not respecting box-sizing for disconnected element, see #11004");
-});
+	equal( el.css( "width" ), el.css( "width", el.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing, see #11004" );
+	equal( el_dis.css( "width" ), el_dis.css( "width", el_dis.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing for disconnected element, see #11004" );
+	equal( el.css( "height" ), el.css( "height", el.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing, see #11004" );
+	equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see #11004" );
+} );
 
 testIframeWithCallback( "css('width') should work correctly before document ready (#14084)",
 	"css/cssWidthBeforeDocReady.html",
@@ -917,7 +918,7 @@ testIframeWithCallback( "css('width') should work correctly before document read
 	div.style.width = "3.3px";
 	qunitFixture.appendChild( div );
 	supportsFractionalGBCR = jQuery.support.gBCRDimensions() &&
-		div.getBoundingClientRect().width.toFixed(1) === "3.3";
+		div.getBoundingClientRect().width.toFixed( 1 ) === "3.3";
 	qunitFixture.removeChild( div );
 
 	test( "css('width') and css('height') should return fractional values for nodes in the document", function() {
@@ -956,23 +957,23 @@ testIframeWithCallback( "css('width') should work correctly before document read
 	} );
 } )();
 
-test("certain css values of 'normal' should be convertable to a number, see #8627", function() {
+test( "certain css values of 'normal' should be convertable to a number, see #8627", function() {
 	expect ( 3 );
 
-	var el = jQuery("<div style='letter-spacing:normal;font-weight:normal;'>test</div>").appendTo("#qunit-fixture");
+	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
-	ok( jQuery.isNumeric( parseFloat( el.css("letterSpacing") ) ), "css('letterSpacing') not convertable to number, see #8627" );
-	ok( jQuery.isNumeric( parseFloat( el.css("fontWeight") ) ), "css('fontWeight') not convertable to number, see #8627" );
+	ok( jQuery.isNumeric( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
+	ok( jQuery.isNumeric( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
 	equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
-});
+} );
 
 // only run this test in IE9
 if ( document.documentMode === 9 ) {
 	test( ".css('filter') returns a string in IE9, see #12537", function() {
 		expect( 1 );
 
-		equal( jQuery("<div style='-ms-filter:\"progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)\";'></div>").css("filter"), "progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)", "IE9 returns the correct value from css('filter')." );
-	});
+		equal( jQuery( "<div style='-ms-filter:\"progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)\";'></div>" ).css( "filter" ), "progid:DXImageTransform.Microsoft.gradient(startColorstr=#FFFFFF, endColorstr=#ECECEC)", "IE9 returns the correct value from css('filter')." );
+	} );
 }
 
 test( "cssHooks - expand", function() {
@@ -980,7 +981,7 @@ test( "cssHooks - expand", function() {
 	var result,
 		properties = {
 			margin: [ "marginTop", "marginRight", "marginBottom", "marginLeft" ],
-			borderWidth: [ "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth"],
+			borderWidth: [ "borderTopWidth", "borderRightWidth", "borderBottomWidth", "borderLeftWidth" ],
 			padding: [ "paddingTop", "paddingRight", "paddingBottom", "paddingLeft" ]
 		};
 
@@ -989,70 +990,70 @@ test( "cssHooks - expand", function() {
 			expected = {};
 		jQuery.each( keys, function( _, key ) {
 			expected[ key ] = 10;
-		});
+		} );
 		result = hook.expand( 10 );
 		deepEqual( result, expected, property + " expands properly with a number" );
 
 		jQuery.each( keys, function( _, key ) {
 			expected[ key ] = "10px";
-		});
+		} );
 		result = hook.expand( "10px" );
 		deepEqual( result, expected, property + " expands properly with '10px'" );
 
-		expected[ keys[1] ] = expected[ keys[3] ] = "20px";
+		expected[ keys[ 1 ] ] = expected[ keys[ 3 ] ] = "20px";
 		result = hook.expand( "10px 20px" );
 		deepEqual( result, expected, property + " expands properly with '10px 20px'" );
 
-		expected[ keys[2] ] = "30px";
+		expected[ keys[ 2 ] ] = "30px";
 		result = hook.expand( "10px 20px 30px" );
 		deepEqual( result, expected, property + " expands properly with '10px 20px 30px'" );
 
-		expected[ keys[3] ] = "40px";
+		expected[ keys[ 3 ] ] = "40px";
 		result = hook.expand( "10px 20px 30px 40px" );
 		deepEqual( result, expected, property + " expands properly with '10px 20px 30px 40px'" );
 
-	});
+	} );
 
-});
+} );
 
 test( "css opacity consistency across browsers (#12685)", function() {
 	expect( 4 );
 
 	var el,
-		fixture = jQuery("#qunit-fixture");
+		fixture = jQuery( "#qunit-fixture" );
 
 	// Append style element
-	jQuery("<style>.opacityWithSpaces_t12685 { opacity: 0.1; -ms-filter: 'alpha(opacity = 10)'; } .opacityNoSpaces_t12685 { opacity: 0.2; -ms-filter: 'alpha(opacity=20)'; }</style>").appendTo( fixture );
+	jQuery( "<style>.opacityWithSpaces_t12685 { opacity: 0.1; -ms-filter: 'alpha(opacity = 10)'; } .opacityNoSpaces_t12685 { opacity: 0.2; -ms-filter: 'alpha(opacity=20)'; }</style>" ).appendTo( fixture );
 
-	el = jQuery("<div class='opacityWithSpaces_t12685'></div>").appendTo(fixture);
+	el = jQuery( "<div class='opacityWithSpaces_t12685'></div>" ).appendTo( fixture );
 
-	equal( Math.round( el.css("opacity") * 100 ), 10, "opacity from style sheet (-ms-filter:alpha with spaces)" );
-	el.removeClass("opacityWithSpaces_t12685").addClass("opacityNoSpaces_t12685");
-	equal( Math.round( el.css("opacity") * 100 ), 20, "opacity from style sheet (-ms-filter:alpha without spaces)" );
+	equal( Math.round( el.css( "opacity" ) * 100 ), 10, "opacity from style sheet (-ms-filter:alpha with spaces)" );
+	el.removeClass( "opacityWithSpaces_t12685" ).addClass( "opacityNoSpaces_t12685" );
+	equal( Math.round( el.css( "opacity" ) * 100 ), 20, "opacity from style sheet (-ms-filter:alpha without spaces)" );
 	el.css( "opacity", 0.3 );
-	equal( Math.round( el.css("opacity") * 100 ), 30, "override opacity" );
+	equal( Math.round( el.css( "opacity" ) * 100 ), 30, "override opacity" );
 	el.css( "opacity", "" );
-	equal( Math.round( el.css("opacity") * 100 ), 20, "remove opacity override" );
-});
+	equal( Math.round( el.css( "opacity" ) * 100 ), 20, "remove opacity override" );
+} );
 
 test( ":visible/:hidden selectors", function() {
 	expect( 17 );
 
 	var $div, $table, $a;
 
-	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible" );
-	jQuery("#nothiddendiv").css({ display: "none" });
-	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden" );
-	jQuery("#nothiddendiv").css({ "display": "block" });
-	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
-	ok( !jQuery(window).is(":visible"), "Calling is(':visible') on window does not throw an exception (#10267).");
-	ok( !jQuery(document).is(":visible"), "Calling is(':visible') on document does not throw an exception (#10267).");
+	ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modifying CSS display: Assert element is visible" );
+	jQuery( "#nothiddendiv" ).css( { display: "none" } );
+	ok( !jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is hidden" );
+	jQuery( "#nothiddendiv" ).css( { "display": "block" } );
+	ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is visible" );
+	ok( !jQuery( window ).is( ":visible" ), "Calling is(':visible') on window does not throw an exception (#10267)." );
+	ok( !jQuery( document ).is( ":visible" ), "Calling is(':visible') on document does not throw an exception (#10267)." );
 
-	ok( jQuery("#nothiddendiv").is(":visible"), "Modifying CSS display: Assert element is visible");
-	jQuery("#nothiddendiv").css("display", "none");
-	ok( !jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is hidden");
-	jQuery("#nothiddendiv").css("display", "block");
-	ok( jQuery("#nothiddendiv").is(":visible"), "Modified CSS display: Assert element is visible");
+	ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modifying CSS display: Assert element is visible" );
+	jQuery( "#nothiddendiv" ).css( "display", "none" );
+	ok( !jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is hidden" );
+	jQuery( "#nothiddendiv" ).css( "display", "block" );
+	ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is visible" );
 
 	ok( jQuery( "#siblingspan" ).is( ":visible" ), "Span with no content is visible" );
 	$div = jQuery( "<div><span></span></div>" ).appendTo( "#qunit-fixture" );
@@ -1065,19 +1066,19 @@ test( ":visible/:hidden selectors", function() {
 	// $br = jQuery( "<br/>" ).appendTo( "#qunit-fixture" );
 	// ok( $br.is( ":visible" ), "br element is visible" );
 
-	$table = jQuery("#table");
-	$table.html("<tr><td style='display:none'>cell</td><td>cell</td></tr>");
-	equal(jQuery("#table td:visible").length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements");
-	$table.css("display", "none").html("<tr><td>cell</td><td>cell</td></tr>");
-	equal(jQuery("#table td:visible").length, 0, "hidden cell children not perceived as visible (#4512)");
+	$table = jQuery( "#table" );
+	$table.html( "<tr><td style='display:none'>cell</td><td>cell</td></tr>" );
+	equal( jQuery( "#table td:visible" ).length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements" );
+	$table.css( "display", "none" ).html( "<tr><td>cell</td><td>cell</td></tr>" );
+	equal( jQuery( "#table td:visible" ).length, 0, "hidden cell children not perceived as visible (#4512)" );
 
-	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", ["foo", "nothiddendiv"] );
+	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
 	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
-	t( "Is Hidden", "#form input:hidden", ["hidden1","hidden2"] );
+	t( "Is Hidden", "#form input:hidden", [ "hidden1","hidden2" ] );
 
 	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
 	ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
-});
+} );
 
 test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function() {
 	expect( 2 );
@@ -1087,56 +1088,59 @@ test( "Keep the last style if the new one isn't recognized by the browser (#1483
 	equal( el.css( "position" ), "absolute", "The old style is kept when setting an unrecognized value" );
 	el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", " " );
 	equal( el.css( "position" ), "absolute", "The old style is kept when setting to a space" );
-});
+} );
 
 test( "Reset the style if set to an empty string", function() {
 	expect( 1 );
 	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "" );
+
 	// Some browsers return an empty string; others "static". Both those cases mean the style
 	// was reset successfully so accept them both.
 	equal( el.css( "position" ) || "static", "static",
 		"The style can be reset by setting to an empty string" );
-});
+} );
 
 asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function() {
 	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
-	styles = [{
+	styles = [ {
 			name: "backgroundAttachment",
-			value: ["fixed"],
+			value: [ "fixed" ],
 			expected: [ "scroll" ]
 		},{
 			name: "backgroundColor",
 			value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
-			expected: ["transparent"]
+			expected: [ "transparent" ]
 		}, {
+
 			// Firefox returns auto's value
 			name: "backgroundImage",
 			value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
 			expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
 		}, {
 			name: "backgroundPosition",
-			value: ["5% 5%"],
+			value: [ "5% 5%" ],
 			expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ]
 		}, {
+
 			// Firefox returns no-repeat
 			name: "backgroundRepeat",
-			value: ["repeat-y"],
+			value: [ "repeat-y" ],
 			expected: [ "repeat", "no-repeat" ]
 		}, {
 			name: "backgroundClip",
-			value: ["padding-box"],
-			expected: ["border-box"]
+			value: [ "padding-box" ],
+			expected: [ "border-box" ]
 		}, {
 			name: "backgroundOrigin",
-			value: ["content-box"],
-			expected: ["padding-box"]
+			value: [ "content-box" ],
+			expected: [ "padding-box" ]
 		}, {
 			name: "backgroundSize",
-			value: ["80px 60px"],
+			value: [ "80px 60px" ],
 			expected: [ "auto auto" ]
-	}];
+	} ];
 
-	jQuery.each(styles, function( index, style ) {
+	jQuery.each( styles, function( index, style ) {
 		var $clone, $clonedChildren,
 			$source = jQuery( "#firstp" ),
 			source = $source[ 0 ],
@@ -1160,7 +1164,7 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 		$clone.css( style.name, "" );
 		$clonedChildren.css( style.name, "" );
 
-		window.setTimeout(function() {
+		window.setTimeout( function() {
 			notEqual( $clone.css( style.name ), style.value[ 0 ], "Cloned css was changed" );
 
 			ok( jQuery.inArray( $source.css( style.name ) !== -1, style.value ),
@@ -1173,10 +1177,10 @@ asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Eleme
 				"; result: " + $children.css( style.name ) +
 				"; expected: " + style.value.join( "," ) );
 		}, 100 );
-	});
+	} );
 
 	window.setTimeout( start, 1000 );
-});
+} );
 
 test( "show() after hide() should always set display to initial value (#14750)", function() {
 	expect( 1 );
@@ -1188,13 +1192,13 @@ test( "show() after hide() should always set display to initial value (#14750)",
 
 	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
 	equal( div.css( "display" ), "list-item", "should get last set display value" );
-});
+} );
 
 // Support: IE < 11
 // We have to jump through the hoops here in order to test work with "order" CSS property,
 // that some browsers do not support. This test is not, strictly speaking, correct,
 // but it's the best that we can do.
-(function() {
+( function() {
 	var style = document.createElement( "div" ).style,
 		exist = "order" in style || "WebkitOrder" in style;
 
@@ -1206,9 +1210,9 @@ test( "show() after hide() should always set display to initial value (#14750)",
 
 			$elem.css( "order", 2 );
 			equal( $elem.css( "order" ), "2", "2 on order" );
-		});
+		} );
 	}
-})();
+} )();
 
 test( "Do not throw on frame elements from css method (#15098)", function() {
 	expect( 1 );
@@ -1233,7 +1237,7 @@ test( "Do not throw on frame elements from css method (#15098)", function() {
 	} catch ( _ ) {
 		ok( false, "It did throw" );
 	}
-});
+} );
 
 test( "get upper case alpha opacity in IE8", function() {
 	expect( 1 );
@@ -1247,8 +1251,7 @@ test( "get upper case alpha opacity in IE8", function() {
 	equal( jQuery( div ).css( "opacity" ), "0.5", "get upper case alpha opacity in IE8 ok" );
 
 	fixture.removeChild( div );
-});
-
+} );
 
 ( function() {
 	var vendorPrefixes = [ "Webkit", "Moz", "ms" ];
@@ -1261,6 +1264,7 @@ test( "get upper case alpha opacity in IE8", function() {
 	}
 
 	test( "Don't default to a cached previously used wrong prefixed name (gh-2015)", function() {
+
 		// Note: this test needs a property we know is only supported in a prefixed version
 		// by at least one of our main supported browsers. This may get out of date so let's
 		// use -(webkit|moz)-appearance as well as those two are not on a standards track.

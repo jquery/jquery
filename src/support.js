@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./var/support",
 	"./core/init", // Needed for hasOwn support test
@@ -16,4 +16,4 @@ support.ownFirst = i === "0";
 
 // Note: most support tests are defined in their respective modules.
 
-});
+} );

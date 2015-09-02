@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./var/rnotwhite"
 ], function( jQuery, rnotwhite ) {
@@ -8,7 +8,7 @@ function createOptions( options ) {
 	var object = {};
 	jQuery.each( options.match( rnotwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
-	});
+	} );
 	return object;
 }
 
@@ -44,18 +44,25 @@ jQuery.Callbacks = function( options ) {
 
 	var // Flag to know if list is currently firing
 		firing,
+
 		// Last fire value for non-forgettable lists
 		memory,
+
 		// Flag to know if list was already fired
 		fired,
+
 		// Flag to prevent firing
 		locked,
+
 		// Actual callback list
 		list = [],
+
 		// Queue of execution data for repeatable lists
 		queue = [],
+
 		// Index of currently firing callback (modified by add/remove as needed)
 		firingIndex = -1,
+
 		// Fire callbacks
 		fire = function() {
 
@@ -114,18 +121,19 @@ jQuery.Callbacks = function( options ) {
 						queue.push( memory );
 					}
 
-					(function add( args ) {
+					( function add( args ) {
 						jQuery.each( args, function( _, arg ) {
 							if ( jQuery.isFunction( arg ) ) {
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
 							} else if ( arg && arg.length && jQuery.type( arg ) !== "string" ) {
+
 								// Inspect recursively
 								add( arg );
 							}
-						});
-					})( arguments );
+						} );
+					} )( arguments );
 
 					if ( memory && !firing ) {
 						fire();
@@ -146,7 +154,7 @@ jQuery.Callbacks = function( options ) {
 							firingIndex--;
 						}
 					}
-				});
+				} );
 				return this;
 			},
 
@@ -221,4 +229,4 @@ jQuery.Callbacks = function( options ) {
 };
 
 return jQuery;
-});
+} );

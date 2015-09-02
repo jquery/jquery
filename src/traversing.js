@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./traversing/var/rneedsContext",
 	"./core/init",
@@ -7,6 +7,7 @@ define([
 ], function( jQuery, rneedsContext ) {
 
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
+
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
 		children: true,
@@ -15,18 +16,18 @@ var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 		prev: true
 	};
 
-jQuery.extend({
+jQuery.extend( {
 	dir: function( elem, dir, until ) {
 		var matched = [],
 			cur = elem[ dir ];
 
 		while ( cur && cur.nodeType !== 9 &&
-			(until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
+			( until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until ) ) ) {
 
 			if ( cur.nodeType === 1 ) {
 				matched.push( cur );
 			}
-			cur = cur[dir];
+			cur = cur[ dir ];
 		}
 		return matched;
 	},
@@ -42,21 +43,21 @@ jQuery.extend({
 
 		return r;
 	}
-});
+} );
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	has: function( target ) {
 		var i,
 			targets = jQuery( target, this ),
 			len = targets.length;
 
-		return this.filter(function() {
+		return this.filter( function() {
 			for ( i = 0; i < len; i++ ) {
-				if ( jQuery.contains( this, targets[i] ) ) {
+				if ( jQuery.contains( this, targets[ i ] ) ) {
 					return true;
 				}
 			}
-		});
+		} );
 	},
 
 	closest: function( selectors, context ) {
@@ -69,14 +70,15 @@ jQuery.fn.extend({
 				0;
 
 		for ( ; i < l; i++ ) {
-			for ( cur = this[i]; cur && cur !== context; cur = cur.parentNode ) {
+			for ( cur = this[ i ]; cur && cur !== context; cur = cur.parentNode ) {
+
 				// Always skip document fragments
-				if ( cur.nodeType < 11 && (pos ?
-					pos.index(cur) > -1 :
+				if ( cur.nodeType < 11 && ( pos ?
+					pos.index( cur ) > -1 :
 
 					// Don't pass non-elements to Sizzle
 					cur.nodeType === 1 &&
-						jQuery.find.matchesSelector(cur, selectors)) ) {
+						jQuery.find.matchesSelector( cur, selectors ) ) ) {
 
 					matched.push( cur );
 					break;
@@ -93,18 +95,19 @@ jQuery.fn.extend({
 
 		// No argument, return index in parent
 		if ( !elem ) {
-			return ( this[0] && this[0].parentNode ) ? this.first().prevAll().length : -1;
+			return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
 		}
 
 		// index in selector
 		if ( typeof elem === "string" ) {
-			return jQuery.inArray( this[0], jQuery( elem ) );
+			return jQuery.inArray( this[ 0 ], jQuery( elem ) );
 		}
 
 		// Locate the position of the desired element
 		return jQuery.inArray(
+
 			// If it receives a jQuery object, the first element is used
-			elem.jquery ? elem[0] : elem, this );
+			elem.jquery ? elem[ 0 ] : elem, this );
 	},
 
 	add: function( selector, context ) {
@@ -117,10 +120,10 @@ jQuery.fn.extend({
 
 	addBack: function( selector ) {
 		return this.add( selector == null ?
-			this.prevObject : this.prevObject.filter(selector)
+			this.prevObject : this.prevObject.filter( selector )
 		);
 	}
-});
+} );
 
 function sibling( cur, dir ) {
 	do {
@@ -130,7 +133,7 @@ function sibling( cur, dir ) {
 	return cur;
 }
 
-jQuery.each({
+jQuery.each( {
 	parent: function( elem ) {
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
@@ -181,6 +184,7 @@ jQuery.each({
 		}
 
 		if ( this.length > 1 ) {
+
 			// Remove duplicates
 			if ( !guaranteedUnique[ name ] ) {
 				ret = jQuery.uniqueSort( ret );
@@ -194,7 +198,7 @@ jQuery.each({
 
 		return this.pushStack( ret );
 	};
-});
+} );
 
 return jQuery;
-});
+} );

@@ -23,5 +23,5 @@ module.exports = function( grunt ) {
 			args: [ "install", "jsdom@" + version ],
 			opts: { stdio: "inherit" }
 		}, this.async() );
-	});
+	} );
 };

@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../core/access",
 	"./support",
@@ -12,7 +12,7 @@ var boolHook,
 	ruseDefault = /^(?:checked|selected)$/i,
 	getSetInput = support.input;
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	attr: function( name, value ) {
 		return access( this, jQuery.attr, name, value, arguments.length > 1 );
 	},
@@ -20,11 +20,11 @@ jQuery.fn.extend({
 	removeAttr: function( name ) {
 		return this.each( function() {
 			jQuery.removeAttr( this, name );
-		});
+		} );
 	}
-});
+} );
 
-jQuery.extend({
+jQuery.extend( {
 	attr: function( elem, name, value ) {
 		var ret, hooks,
 			nType = elem.nodeType;
@@ -97,7 +97,7 @@ jQuery.extend({
 			attrNames = value && value.match( rnotwhite );
 
 		if ( attrNames && elem.nodeType === 1 ) {
-			while ( ( name = attrNames[i++] ) ) {
+			while ( ( name = attrNames[ i++ ] ) ) {
 				propName = jQuery.propFix[ name ] || name;
 
 				// Boolean attributes get special treatment (#10870)
@@ -119,7 +119,7 @@ jQuery.extend({
 			}
 		}
 	}
-});
+} );
 
 // Hooks for boolean attributes
 boolHook = {
@@ -168,7 +168,7 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) 
 			}
 		};
 	}
-});
+} );
 
 // fix oldIE attroperties
 if ( !getSetInput ) {
@@ -198,4 +198,4 @@ if ( !support.style ) {
 	};
 }
 
-});
+} );

@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/rcssNum"
 ], function( jQuery, rcssNum ) {
@@ -12,11 +12,13 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 			function() { return jQuery.css( elem, prop, "" ); },
 		initial = currentValue(),
 		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
+
 		// Starting value computation is required for potential unit mismatches
 		initialInUnit = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
 			rcssNum.exec( jQuery.css( elem, prop ) );
 
 	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
+
 		// Trust units reported by jQuery.css
 		unit = unit || initialInUnit[ 3 ];
 
@@ -27,6 +29,7 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 		initialInUnit = +initial || 1;
 
 		do {
+
 			// If previous iteration zeroed out, double until we get *something*.
 			// Use string for doubling so we don't accidentally see scale as unchanged below
 			scale = scale || ".5";
@@ -38,12 +41,13 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 		// Update scale, tolerating zero or NaN from tween.cur()
 		// Break the loop if scale is unchanged or perfect, or if we've just had enough.
 		} while (
-			scale !== (scale = currentValue() / initial) && scale !== 1 && --maxIterations
+			scale !== ( scale = currentValue() / initial ) && scale !== 1 && --maxIterations
 		);
 	}
 
 	if ( valueParts ) {
 		initialInUnit = +initialInUnit || +initial || 0;
+
 		// Apply relative offset (+=/-=) if specified
 		adjusted = valueParts[ 1 ] ?
 			initialInUnit + ( valueParts[ 1 ] + 1 ) * valueParts[ 2 ] :
@@ -58,4 +62,4 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 }
 
 return adjustCSS;
-});
+} );

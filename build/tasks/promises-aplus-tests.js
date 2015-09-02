@@ -15,6 +15,6 @@ module.exports = function( grunt ) {
 			{ stdio: "inherit" }
 		).on( "close", function( code ) {
 			done( code === 0 );
-		});
-	});
+		} );
+	} );
 };

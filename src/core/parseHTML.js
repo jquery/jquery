@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"./var/rsingleTag",
@@ -20,6 +20,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		keepScripts = context;
 		context = false;
 	}
+
 	// document.implementation stops scripts or inline event handlers from
 	// being executed immediately
 	context = context || ( support.createHTMLDocument ?
@@ -31,7 +32,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 
 	// Single tag
 	if ( parsed ) {
-		return [ context.createElement( parsed[1] ) ];
+		return [ context.createElement( parsed[ 1 ] ) ];
 	}
 
 	parsed = buildFragment( [ data ], context, scripts );
@@ -45,4 +46,4 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 
 return jQuery.parseHTML;
 
-});
+} );

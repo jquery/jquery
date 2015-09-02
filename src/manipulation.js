@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./var/document",
 	"./var/concat",
@@ -32,12 +32,13 @@ var rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
 	rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi,
 	rnoInnerhtml = /<(?:script|style|link)/i,
+
 	// checked="checked" or checked
 	rchecked = /checked\s*(?:[^=]|=\s*.checked.)/i,
 	rscriptTypeMasked = /^true\/(.*)/,
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
 	safeFragment = createSafeFragment( document ),
-	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
+	fragmentDiv = safeFragment.appendChild( document.createElement( "div" ) );
 
 // Manipulating tables requires a tbody
 function manipulationTarget( elem, content ) {
@@ -52,15 +53,15 @@ function manipulationTarget( elem, content ) {
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {
-	elem.type = (jQuery.find.attr( elem, "type" ) !== null) + "/" + elem.type;
+	elem.type = ( jQuery.find.attr( elem, "type" ) !== null ) + "/" + elem.type;
 	return elem;
 }
 function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
 	if ( match ) {
-		elem.type = match[1];
+		elem.type = match[ 1 ];
 	} else {
-		elem.removeAttribute("type");
+		elem.removeAttribute( "type" );
 	}
 	return elem;
 }
@@ -149,20 +150,20 @@ function domManip( collection, args, callback, ignored ) {
 		i = 0,
 		l = collection.length,
 		iNoClone = l - 1,
-		value = args[0],
+		value = args[ 0 ],
 		isFunction = jQuery.isFunction( value );
 
 	// We can't cloneNode fragments that contain checked, in WebKit
 	if ( isFunction ||
 			( l > 1 && typeof value === "string" &&
 				!support.checkClone && rchecked.test( value ) ) ) {
-		return collection.each(function( index ) {
+		return collection.each( function( index ) {
 			var self = collection.eq( index );
 			if ( isFunction ) {
-				args[0] = value.call( this, index, self.html() );
+				args[ 0 ] = value.call( this, index, self.html() );
 			}
 			domManip( self, args, callback, ignored );
-		});
+		} );
 	}
 
 	if ( l ) {
@@ -189,13 +190,14 @@ function domManip( collection, args, callback, ignored ) {
 
 					// Keep references to cloned scripts for later restoration
 					if ( hasScripts ) {
+
 						// Support: Android<4.1, PhantomJS<2
 						// push.apply(_, arraylike) throws on ancient WebKit
 						jQuery.merge( scripts, getAll( node, "script" ) );
 					}
 				}
 
-				callback.call( collection[i], node, i );
+				callback.call( collection[ i ], node, i );
 			}
 
 			if ( hasScripts ) {
@@ -212,6 +214,7 @@ function domManip( collection, args, callback, ignored ) {
 						jQuery.contains( doc, node ) ) {
 
 						if ( node.src ) {
+
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl ) {
 								jQuery._evalUrl( node.src );
@@ -239,7 +242,7 @@ function remove( elem, selector, keepData ) {
 		elems = selector ? jQuery.filter( selector, elem ) : elem,
 		i = 0;
 
-	for ( ; (node = elems[i]) != null; i++ ) {
+	for ( ; ( node = elems[ i ] ) != null; i++ ) {
 
 		if ( !keepData && node.nodeType === 1 ) {
 			jQuery.cleanData( getAll( node ) );
@@ -256,7 +259,7 @@ function remove( elem, selector, keepData ) {
 	return elem;
 }
 
-jQuery.extend({
+jQuery.extend( {
 	htmlPrefilter: function( html ) {
 		return html.replace( rxhtmlTag, "<$1></$2>" );
 	},
@@ -265,7 +268,7 @@ jQuery.extend({
 		var destElements, node, clone, i, srcElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
-		if ( support.html5Clone || jQuery.isXMLDoc(elem) ||
+		if ( support.html5Clone || jQuery.isXMLDoc( elem ) ||
 			!rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
 
 			clone = elem.cloneNode( true );
@@ -276,18 +279,19 @@ jQuery.extend({
 			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
 		}
 
-		if ( (!support.noCloneEvent || !support.noCloneChecked) &&
-				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
+		if ( ( !support.noCloneEvent || !support.noCloneChecked ) &&
+				( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
 			// Fix all IE cloning issues
-			for ( i = 0; (node = srcElements[i]) != null; ++i ) {
+			for ( i = 0; ( node = srcElements[ i ] ) != null; ++i ) {
+
 				// Ensure that the destination node is not null; Fixes #9587
-				if ( destElements[i] ) {
-					fixCloneNodeIssues( node, destElements[i] );
+				if ( destElements[ i ] ) {
+					fixCloneNodeIssues( node, destElements[ i ] );
 				}
 			}
 		}
@@ -298,8 +302,8 @@ jQuery.extend({
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
-				for ( i = 0; (node = srcElements[i]) != null; i++ ) {
-					cloneCopyEvent( node, destElements[i] );
+				for ( i = 0; ( node = srcElements[ i ] ) != null; i++ ) {
+					cloneCopyEvent( node, destElements[ i ] );
 				}
 			} else {
 				cloneCopyEvent( elem, clone );
@@ -326,7 +330,7 @@ jQuery.extend({
 			attributes = support.attributes,
 			special = jQuery.event.special;
 
-		for ( ; (elem = elems[i]) != null; i++ ) {
+		for ( ; ( elem = elems[ i ] ) != null; i++ ) {
 			if ( acceptData || jQuery.acceptData( elem ) ) {
 
 				id = elem[ internalKey ];
@@ -370,9 +374,9 @@ jQuery.extend({
 			}
 		}
 	}
-});
+} );
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	detach: function( selector ) {
 		return remove( this, selector, true );
 	},
@@ -386,7 +390,7 @@ jQuery.fn.extend({
 			return value === undefined ?
 				jQuery.text( this ) :
 				this.empty().append(
-					( this[0] && this[0].ownerDocument || document ).createTextNode( value )
+					( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value )
 				);
 		}, null, value, arguments.length );
 	},
@@ -397,7 +401,7 @@ jQuery.fn.extend({
 				var target = manipulationTarget( this, elem );
 				target.appendChild( elem );
 			}
-		});
+		} );
 	},
 
 	prepend: function() {
@@ -406,7 +410,7 @@ jQuery.fn.extend({
 				var target = manipulationTarget( this, elem );
 				target.insertBefore( elem, target.firstChild );
 			}
-		});
+		} );
 	},
 
 	before: function() {
@@ -414,7 +418,7 @@ jQuery.fn.extend({
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
-		});
+		} );
 	},
 
 	after: function() {
@@ -422,14 +426,15 @@ jQuery.fn.extend({
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
-		});
+		} );
 	},
 
 	empty: function() {
 		var elem,
 			i = 0;
 
-		for ( ; (elem = this[i]) != null; i++ ) {
+		for ( ; ( elem = this[ i ] ) != null; i++ ) {
+
 			// Remove element nodes and prevent memory leaks
 			if ( elem.nodeType === 1 ) {
 				jQuery.cleanData( getAll( elem, false ) );
@@ -454,9 +459,9 @@ jQuery.fn.extend({
 		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 
-		return this.map(function() {
+		return this.map( function() {
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
-		});
+		} );
 	},
 
 	html: function( value ) {
@@ -475,14 +480,15 @@ jQuery.fn.extend({
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 				( support.htmlSerialize || !rnoshimcache.test( value )  ) &&
 				( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
-				!wrapMap[ (rtagName.exec( value ) || [ "", "" ])[ 1 ].toLowerCase() ] ) {
+				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
 				value = jQuery.htmlPrefilter( value );
 
 				try {
-					for (; i < l; i++ ) {
+					for ( ; i < l; i++ ) {
+
 						// Remove element nodes and prevent memory leaks
-						elem = this[i] || {};
+						elem = this[ i ] || {};
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( getAll( elem, false ) );
 							elem.innerHTML = value;
@@ -518,9 +524,9 @@ jQuery.fn.extend({
 		// Force callback invocation
 		}, ignored );
 	}
-});
+} );
 
-jQuery.each({
+jQuery.each( {
 	appendTo: "append",
 	prependTo: "prepend",
 	insertBefore: "before",
@@ -535,8 +541,8 @@ jQuery.each({
 			last = insert.length - 1;
 
 		for ( ; i <= last; i++ ) {
-			elems = i === last ? this : this.clone(true);
-			jQuery( insert[i] )[ original ]( elems );
+			elems = i === last ? this : this.clone( true );
+			jQuery( insert[ i ] )[ original ]( elems );
 
 			// Support: IE<9, Android<4.1, PhantomJS<2
 			// .get() because push.apply(_, arraylike) throws on ancient WebKit
@@ -545,7 +551,7 @@ jQuery.each({
 
 		return this.pushStack( ret );
 	};
-});
+} );
 
 return jQuery;
-});
+} );

@@ -1,11 +1,11 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"../var/documentElement",
 	"../var/support"
 ], function( jQuery, document, documentElement, support ) {
 
-(function() {
+( function() {
 	var pixelPositionVal, boxSizingReliableVal, gBCRDimensionsVal,
 		pixelMarginRightVal, reliableHiddenOffsetsVal, reliableMarginRightVal,
 		container = document.createElement( "div" ),
@@ -36,7 +36,7 @@ define([
 	div.innerHTML = "";
 	container.appendChild( div );
 
-	jQuery.extend(support, {
+	jQuery.extend( support, {
 		reliableHiddenOffsets: function() {
 			if ( pixelPositionVal == null ) {
 				computeStyleTests();
@@ -45,6 +45,7 @@ define([
 		},
 
 		boxSizingReliable: function() {
+
 			// We're checking for pixelPositionVal here instead of boxSizingReliableVal
 			// since that compresses better and they're computed together anyway.
 			if ( pixelPositionVal == null ) {
@@ -61,6 +62,7 @@ define([
 		},
 
 		pixelMarginRight: function() {
+
 			// Support: Android 4.0-4.3
 			if ( pixelPositionVal == null ) {
 				computeStyleTests();
@@ -76,13 +78,14 @@ define([
 		},
 
 		reliableMarginRight: function() {
+
 			// Support: Android 2.3
 			if ( pixelPositionVal == null ) {
 				computeStyleTests();
 			}
 			return reliableMarginRightVal;
 		}
-	});
+	} );
 
 	function computeStyleTests() {
 		var contents, divStyle,
@@ -92,6 +95,7 @@ define([
 		documentElement.appendChild( container );
 
 		div.style.cssText =
+
 			// Support: Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
@@ -124,6 +128,7 @@ define([
 
 			// Reset CSS: box-sizing; display; margin; border; padding
 			contents.style.cssText = div.style.cssText =
+
 				// Support: Android 2.3
 				// Vendor-prefix box-sizing
 				"-webkit-box-sizing:content-box;box-sizing:content-box;" +
@@ -158,8 +163,8 @@ define([
 		documentElement.removeChild( container );
 	}
 
-})();
+} )();
 
 return support;
 
-});
+} );

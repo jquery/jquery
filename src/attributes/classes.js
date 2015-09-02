@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/rnotwhite",
 	"../core/init"
@@ -10,7 +10,7 @@ function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
-jQuery.fn.extend({
+jQuery.fn.extend( {
 	addClass: function( value ) {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0,
@@ -18,12 +18,13 @@ jQuery.fn.extend({
 			proceed = typeof value === "string" && value;
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
+			return this.each( function( j ) {
 				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
-			});
+			} );
 		}
 
 		if ( proceed ) {
+
 			// The disjunction here is for better compressibility (see removeClass)
 			classes = ( value || "" ).match( rnotwhite ) || [];
 
@@ -35,7 +36,7 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( ( clazz = classes[ j++ ] ) ) {
 						if ( cur.indexOf( " " + clazz + " " ) < 0 ) {
 							cur += clazz + " ";
 						}
@@ -60,9 +61,9 @@ jQuery.fn.extend({
 			proceed = arguments.length === 0 || typeof value === "string" && value;
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( j ) {
+			return this.each( function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
-			});
+			} );
 		}
 		if ( proceed ) {
 			classes = ( value || "" ).match( rnotwhite ) || [];
@@ -77,7 +78,8 @@ jQuery.fn.extend({
 
 				if ( cur ) {
 					j = 0;
-					while ( (clazz = classes[j++]) ) {
+					while ( ( clazz = classes[ j++ ] ) ) {
+
 						// Remove *all* instances
 						while ( cur.indexOf( " " + clazz + " " ) > -1 ) {
 							cur = cur.replace( " " + clazz + " ", " " );
@@ -104,15 +106,15 @@ jQuery.fn.extend({
 		}
 
 		if ( jQuery.isFunction( value ) ) {
-			return this.each(function( i ) {
+			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
 					value.call( this, i, getClass( this ), stateVal ),
 					stateVal
 				);
-			});
+			} );
 		}
 
-		return this.each(function() {
+		return this.each( function() {
 			var className, i, self, classNames;
 
 			if ( type === "string" ) {
@@ -153,7 +155,7 @@ jQuery.fn.extend({
 					);
 				}
 			}
-		});
+		} );
 	},
 
 	hasClass: function( selector ) {
@@ -161,8 +163,8 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
-			if ( this[i].nodeType === 1 &&
-				( " " + getClass( this[i] ) + " " ).replace( rclass, " " )
+			if ( this[ i ].nodeType === 1 &&
+				( " " + getClass( this[ i ] ) + " " ).replace( rclass, " " )
 					.indexOf( className ) > -1
 			) {
 				return true;
@@ -171,6 +173,6 @@ jQuery.fn.extend({
 
 		return false;
 	}
-});
+} );
 
-});
+} );

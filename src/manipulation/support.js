@@ -1,10 +1,10 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"../var/support"
 ], function( jQuery, document, support ) {
 
-(function() {
+( function() {
 	var div = document.createElement( "div" ),
 		fragment = document.createDocumentFragment(),
 		input = document.createElement( "input" );
@@ -31,6 +31,7 @@ define([
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
 	fragment.appendChild( div );
+
 	// Support: Windows Web Apps (WWA)
 	// `name` and `type` must use .setAttribute for WWA (#14901)
 	input.setAttribute( "type", "radio" );
@@ -52,8 +53,8 @@ define([
 	// cleanData must set properties to undefined rather than use removeAttribute
 	div[ jQuery.expando ] = 1;
 	support.attributes = !div.getAttribute( jQuery.expando );
-})();
+} )();
 
 return support;
 
-});
+} );

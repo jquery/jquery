@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"../var/document",
 	"../var/support",
@@ -8,6 +8,7 @@ define([
 // Create the request object
 // (This is still attached to ajaxSettings for backward compatibility)
 jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
+
 	// Support: IE8
 	function() {
 
@@ -35,6 +36,7 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 		return /^(get|post|head|put|delete|options)$/i.test( this.type ) &&
 			createStandardXHR() || createActiveXHR();
 	} :
+
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
 
@@ -47,7 +49,8 @@ xhrSupported = support.ajax = !!xhrSupported;
 // Create transport if the browser can provide an xhr
 if ( xhrSupported ) {
 
-	jQuery.ajaxTransport(function( options ) {
+	jQuery.ajaxTransport( function( options ) {
+
 		// Cross domain only allowed if supported through XMLHttpRequest
 		if ( !options.crossDomain || support.cors ) {
 
@@ -84,12 +87,13 @@ if ( xhrSupported ) {
 					// akin to a jigsaw puzzle, we simply never set it to be sure.
 					// (it can always be set on a per-request basis or even using ajaxSetup)
 					// For same-domain requests, won't change header if already provided.
-					if ( !options.crossDomain && !headers["X-Requested-With"] ) {
-						headers["X-Requested-With"] = "XMLHttpRequest";
+					if ( !options.crossDomain && !headers[ "X-Requested-With" ] ) {
+						headers[ "X-Requested-With" ] = "XMLHttpRequest";
 					}
 
 					// Set headers
 					for ( i in headers ) {
+
 						// Support: IE<9
 						// IE's ActiveXObject throws a 'Type Mismatch' exception when setting
 						// request header to a null-value.
@@ -112,6 +116,7 @@ if ( xhrSupported ) {
 
 						// Was never called and is aborted or complete
 						if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
+
 							// Clean up
 							callback = undefined;
 							xhr.onreadystatechange = jQuery.noop;
@@ -137,6 +142,7 @@ if ( xhrSupported ) {
 								try {
 									statusText = xhr.statusText;
 								} catch ( e ) {
+
 									// We normalize with Webkit giving an empty statusText
 									statusText = "";
 								}
@@ -148,6 +154,7 @@ if ( xhrSupported ) {
 								// can do given current implementations)
 								if ( !status && options.isLocal && !options.crossDomain ) {
 									status = responses.text ? 200 : 404;
+
 								// IE - #1450: sometimes returns 1223 when it should be 204
 								} else if ( status === 1223 ) {
 									status = 204;
@@ -162,9 +169,11 @@ if ( xhrSupported ) {
 					};
 
 					if ( !options.async ) {
+
 						// if we're in sync mode we fire the callback
 						callback();
 					} else {
+
 						// Add to the list of active xhr callbacks
 						xhr.onreadystatechange = callback;
 					}
@@ -177,7 +186,7 @@ if ( xhrSupported ) {
 				}
 			};
 		}
-	});
+	} );
 }
 
 // Functions to create xhrs
@@ -193,4 +202,4 @@ function createActiveXHR() {
 	} catch ( e ) {}
 }
 
-});
+} );

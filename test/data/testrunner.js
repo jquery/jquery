@@ -1,4 +1,4 @@
-define(function() {
+define( function() {
 
 // Store the old counts so that we only assert on tests that have actually leaked,
 // instead of asserting every time a test has leaked sometime in the past
@@ -68,6 +68,7 @@ QUnit.expectJqData = function( env, elems, key ) {
 			// be available as long as the object is not garbage collected by
 			// the js engine, and when it is, the data will be removed with it.
 			if ( !elem.nodeType ) {
+
 				// Fixes false positives for dataTests(window), dataTests({}).
 				continue;
 			}
@@ -75,6 +76,7 @@ QUnit.expectJqData = function( env, elems, key ) {
 			expando = elem[ jQuery.expando ];
 
 			if ( expando === undefined ) {
+
 				// In this case the element exists fine, but
 				// jQuery.data (or internal data) was never (in)directly
 				// called.
@@ -98,12 +100,12 @@ QUnit.expectJqData = function( env, elems, key ) {
 	}
 
 };
-QUnit.config.urlConfig.push({
+QUnit.config.urlConfig.push( {
 	id: "jqdata",
 	label: "Always check jQuery.data",
 	tooltip: "Trigger QUnit.expectJqData detection for all tests " +
 		"instead of just the ones that call it"
-});
+} );
 
 /**
  * Ensures that tests have cleaned up properly after themselves. Should be passed as the
@@ -126,6 +128,7 @@ window.moduleTeardown = function() {
 			delete jQuery.cache[ i ];
 			delete expectedDataKeys[ i ];
 		}
+
 		// In case it was removed from cache before (or never there in the first place)
 		for ( i in expectedDataKeys ) {
 			deepEqual(
@@ -170,16 +173,18 @@ window.moduleTeardown = function() {
 	}
 };
 
-QUnit.done(function() {
+QUnit.done( function() {
+
 	// Remove our own fixtures outside #qunit-fixture
 	supportjQuery( "#qunit ~ *" ).remove();
-});
+} );
 
 // jQuery-specific post-test cleanup
 reset = function() {
 
 	// Ensure jQuery events and data on the fixture are properly removed
 	jQuery( "#qunit-fixture" ).empty();
+
 	// ...even if the jQuery under test has a broken .empty()
 	supportjQuery( "#qunit-fixture" ).empty();
 
@@ -199,7 +204,7 @@ QUnit.testDone( reset );
 
 // Register globals for cleanup and the cleanup code itself
 // Explanation at http://perfectionkills.com/understanding-delete/#ie_bugs
-window.Globals = (function() {
+window.Globals = ( function() {
 	var globals = {};
 	return {
 		register: function( name ) {
@@ -218,6 +223,6 @@ window.Globals = (function() {
 			}
 		}
 	};
-})();
+} )();
 
-});
+} );

@@ -33,13 +33,14 @@ function makeReleaseCopies( Release ) {
 	var version = Release.newVersion.replace( "-compat", "" );
 	shell.mkdir( "-p", cdnFolder );
 
-	Object.keys( releaseFiles ).forEach(function( key ) {
+	Object.keys( releaseFiles ).forEach( function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
 			unpathedFile = key.replace( /VER/g, version ),
 			releaseFile = cdnFolder + "/" + unpathedFile;
 
 		if ( /\.map$/.test( releaseFile ) ) {
+
 			// Map files need to reference the new uncompressed name;
 			// assume that all files reside in the same directory.
 			// "file":"jquery.min.js","sources":["jquery.js"]
@@ -51,7 +52,7 @@ function makeReleaseCopies( Release ) {
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );
 		}
-	});
+	} );
 }
 
 function makeArchives( Release, callback ) {
@@ -80,16 +81,17 @@ function makeArchives( Release, callback ) {
 
 		output.on( "error", function( err ) {
 			throw err;
-		});
+		} );
 
 		archiver.pipe( output );
 
-		files = files.map(function( item ) {
+		files = files.map( function( item ) {
 			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
 				item.replace( rver, version );
-		});
+		} );
 
 		sum = Release.exec(
+
 			// Read jQuery files
 			"md5sum " + files.join( " " ).replace( rcompat, "." ),
 			"Error retrieving md5sum"
@@ -97,11 +99,12 @@ function makeArchives( Release, callback ) {
 		fs.writeFileSync( "./" + md5file, sum );
 		files.push( md5file );
 
-		files.forEach(function( file ) {
+		files.forEach( function( file ) {
+
 			// For Google, read jquery.js, write jquery-compat.js
 			archiver.append( fs.createReadStream( file.replace( rcompat, "." ) ),
 				{ name: path.basename( file ) } );
-		});
+		} );
 
 		archiver.finalize();
 	}
@@ -114,9 +117,9 @@ function makeArchives( Release, callback ) {
 		makeArchive( "mscdn", msFilesCDN, callback );
 	}
 
-	buildGoogleCDN(function() {
+	buildGoogleCDN( function() {
 		buildMicrosoftCDN( callback );
-	});
+	} );
 }
 
 module.exports = {
