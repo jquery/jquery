@@ -4,7 +4,7 @@ if ( !jQuery.fn.wrap ) { // no wrap module
 	return;
 }
 
-module( "wrap", {
+QUnit.module( "wrap", {
 	teardown: moduleTeardown
 } );
 
@@ -19,42 +19,50 @@ function manipulationFunctionReturningObj( value ) {
 	};
 }
 
-function testWrap( val ) {
+function testWrap( val, assert ) {
 
-	expect( 19 );
+	assert.expect( 19 );
 
 	var defaultText, result, j, i, cacheLength;
 
 	defaultText = "Try them out:";
 	result = jQuery( "#first" ).wrap( val( "<div class='red'><span></span></div>" ) ).text();
 
-	equal(
+	assert.equal(
 		defaultText, result, "Check for wrapping of on-the-fly html"
 	);
-	ok( jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
+	assert.ok(
+		jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'"
+	);
 
 	result = jQuery( "#first" ).wrap( val( document.getElementById( "empty" ) ) ).parent();
-	ok( result.is( "ol" ), "Check for element wrapping" );
-	equal(
+	assert.ok(
+		result.is( "ol" ), "Check for element wrapping"
+	);
+	assert.equal(
 		result.text(), defaultText, "Check for element wrapping"
 	);
 
 	jQuery( "#check1" ).on( "click", function() {
 		var checkbox = this;
 
-		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		assert.ok(
+		checkbox.checked, "Checkbox's state is erased after wrap() action, see #769"
+	);
 		jQuery( checkbox ).wrap( val( "<div id='c1' style='display:none;'></div>" ) );
-		ok( checkbox.checked, "Checkbox's state is erased after wrap() action, see #769" );
+		assert.ok(
+		checkbox.checked, "Checkbox's state is erased after wrap() action, see #769"
+	);
 	} ).prop( "checked", false )[ 0 ].click();
 
 	// using contents will get comments regular, text, and comment nodes
 	j = jQuery( "#nonnodes" ).contents();
 	j.wrap( val( "<i></i>" ) );
 
-	equal(
+	assert.equal(
 		jQuery( "#nonnodes > i" ).length, 3, "Check node,textnode,comment wraps ok"
 	);
-	equal(
+	assert.equal(
 		jQuery( "#nonnodes > i" ).text(),
 		j.text(),
 		"Check node,textnode,comment wraps doesn't hurt text"
@@ -67,52 +75,54 @@ function testWrap( val ) {
 	}
 
 	j = jQuery( "<label/>" ).wrap( val( "<li/>" ) );
-	equal(
+	assert.equal(
 		j[ 0 ] .nodeName.toUpperCase(), "LABEL", "Element is a label"
 	);
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped"
 	);
 
 	for ( i in jQuery.cache ) {
 		cacheLength--;
 	}
-	equal(
+	assert.equal(
 		cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)"
 	);
 
 	// Wrap an element containing a text node
 	j = jQuery( "<span/>" ).wrap( "<div>test</div>" );
-	equal(
+	assert.equal(
 		j[ 0 ].previousSibling.nodeType, 3, "Make sure the previous node is a text element"
 	);
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.nodeName.toUpperCase(), "DIV", "And that we're in the div element."
 	);
 
 	// Try to wrap an element with multiple elements (should fail)
 	j = jQuery( "<div><span></span></div>" ).children().wrap( "<p></p><div></div>" );
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.parentNode.childNodes.length,
 		1,
 		"There should only be one element wrapping."
 	);
-	equal(
+	assert.equal(
 		j.length, 1, "There should only be one element (no cloning)."
 	);
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.nodeName.toUpperCase(), "P", "The span should be in the paragraph."
 	);
 
 	// Wrap an element with a jQuery set
 	j = jQuery( "<span/>" ).wrap( jQuery( "<div></div>" ) );
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.nodeName.toLowerCase(), "div", "Wrapping works."
 	);
 
 	// Wrap an element with a jQuery set and event
 	result = jQuery( "<div></div>" ).on( "click", function() {
-		ok( true, "Event triggered." );
+		assert.ok(
+		true, "Event triggered."
+	);
 
 		// Remove handlers on detached elements
 		result.off();
@@ -120,7 +130,7 @@ function testWrap( val ) {
 	} );
 
 	j = jQuery( "<span/>" ).wrap( result );
-	equal(
+	assert.equal(
 		j[ 0 ].parentNode.nodeName.toLowerCase(), "div", "Wrapping works."
 	);
 
@@ -128,21 +138,21 @@ function testWrap( val ) {
 
 }
 
-test( "wrap(String|Element)", function() {
-	testWrap( manipulationBareObj );
+QUnit.test( "wrap(String|Element)", function( assert ) {
+	testWrap( manipulationBareObj, assert );
 } );
 
-test( "wrap(Function)", function() {
-	testWrap( manipulationFunctionReturningObj );
+QUnit.test( "wrap(Function)", function( assert ) {
+	testWrap( manipulationFunctionReturningObj, assert );
 } );
 
-test( "wrap(Function) with index (#10177)", function() {
+QUnit.test( "wrap(Function) with index (#10177)", function( assert ) {
 	var expectedIndex = 0,
 		targets = jQuery( "#qunit-fixture p" );
 
-	expect( targets.length );
+	assert.expect( targets.length );
 	targets.wrap( function( i ) {
-		equal(
+		assert.equal(
 			i,
 			expectedIndex,
 			"Check if the provided index (" + i + ") is as expected (" + expectedIndex + ")"
@@ -153,25 +163,28 @@ test( "wrap(Function) with index (#10177)", function() {
 	} );
 } );
 
-test( "wrap(String) consecutive elements (#10177)", function() {
+QUnit.test( "wrap(String) consecutive elements (#10177)", function( assert ) {
 	var targets = jQuery( "#qunit-fixture p" );
 
-	expect( targets.length * 2 );
+	assert.expect( targets.length * 2 );
 	targets.wrap( "<div class='wrapper'></div>" );
 
 	targets.each( function() {
 		var $this = jQuery( this );
 
-		ok( $this.parent().is( ".wrapper" ), "Check each elements parent is correct (.wrapper)" );
-		equal(
+		assert.ok(
+			$this.parent().is( ".wrapper" ),
+			"Check each elements parent is correct (.wrapper)"
+		);
+		assert.equal(
 		$this.siblings().length, 0, "Each element should be wrapped individually"
 	);
 	} );
 } );
 
-test( "wrapAll(String)", function() {
+QUnit.test( "wrapAll(String)", function( assert ) {
 
-	expect( 5 );
+	assert.expect( 5 );
 
 	var prev, p, result;
 
@@ -179,22 +192,28 @@ test( "wrapAll(String)", function() {
 	p = jQuery( "#firstp,#first" )[ 0 ].parentNode;
 	result = jQuery( "#firstp,#first" ).wrapAll( "<div class='red'><div class='tmp'></div></div>" );
 
-	equal(
+	assert.equal(
 		result.parent().length, 1, "Check for wrapping of on-the-fly html"
 	);
-	ok( jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	ok( jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).parent().parent().is( ".red" ),
+		"Check if wrapper has class 'red'"
+	);
+	assert.ok(
+		jQuery( "#firstp" ).parent().parent().is( ".red" ),
+		"Check if wrapper has class 'red'"
+	);
+	assert.equal(
 		jQuery( "#first" ).parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling"
 	);
-	equal(
+	assert.equal(
 		jQuery( "#first" ).parent().parent()[ 0 ].parentNode, p, "Correct Parent"
 	);
 
 } );
 
-test( "wrapAll(Function)", function() {
-	expect( 5 );
+QUnit.test( "wrapAll(Function)", function( assert ) {
+	assert.expect( 5 );
 
 	var prev = jQuery( "#firstp" )[ 0 ].previousSibling,
 		p = jQuery( "#firstp,#first" )[ 0 ].parentNode,
@@ -202,19 +221,25 @@ test( "wrapAll(Function)", function() {
 			return "<div class='red'><div class='tmp'></div></div>";
 		} );
 
-	equal(
+	assert.equal(
 		result.parent().length, 1, "Check for wrapping of on-the-fly html"
 	);
-	ok( jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	ok( jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	ok( jQuery( "#first" ).parent().parent().parent().is( p ), "Correct Parent" );
-	strictEqual(
+	assert.ok(
+		jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'"
+	);
+	assert.ok(
+		jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'"
+	);
+	assert.ok(
+		jQuery( "#first" ).parent().parent().parent().is( p ), "Correct Parent"
+	);
+	assert.strictEqual(
 		jQuery( "#first" ).parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling"
 	);
 } );
 
-test( "wrapAll(Function) check execution characteristics", function() {
-	expect( 3 );
+QUnit.test( "wrapAll(Function) check execution characteristics", function( assert ) {
+	assert.expect( 3 );
 
 	var i = 0;
 
@@ -223,20 +248,22 @@ test( "wrapAll(Function) check execution characteristics", function() {
 		return "";
 	} );
 
-	ok( !i, "should not execute function argument if target element does not exist" );
+	assert.ok(
+		!i, "should not execute function argument if target element does not exist"
+	);
 
 	jQuery( "#firstp" ).wrapAll( function( index ) {
-		strictEqual(
+		assert.strictEqual(
 		this, jQuery( "#firstp" )[ 0 ], "context must be the first found element"
 	);
-		strictEqual(
+		assert.strictEqual(
 		index, undefined, "index argument should not be included in function execution"
 	);
 	} );
 } );
 
-test( "wrapAll(Function)", function() {
-	expect( 5 );
+QUnit.test( "wrapAll(Function)", function( assert ) {
+	assert.expect( 5 );
 
 	var prev = jQuery( "#firstp" )[ 0 ].previousSibling,
 		p = jQuery( "#firstp,#first" )[ 0 ].parentNode,
@@ -244,19 +271,25 @@ test( "wrapAll(Function)", function() {
 			return "<div class='red'><div class='tmp'></div></div>";
 		} );
 
-	equal(
+	assert.equal(
 		result.parent().length, 1, "Check for wrapping of on-the-fly html"
 	);
-	ok( jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	ok( jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'" );
-	ok( jQuery( "#first" ).parent().parent().parent().is( p ), "Correct Parent" );
-	strictEqual(
+	assert.ok(
+		jQuery( "#first" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'"
+	);
+	assert.ok(
+		jQuery( "#firstp" ).parent().parent().is( ".red" ), "Check if wrapper has class 'red'"
+	);
+	assert.ok(
+		jQuery( "#first" ).parent().parent().parent().is( p ), "Correct Parent"
+	);
+	assert.strictEqual(
 		jQuery( "#first" ).parent().parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling"
 	);
 } );
 
-test( "wrapAll(Function) check execution characteristics", function() {
-	expect( 3 );
+QUnit.test( "wrapAll(Function) check execution characteristics", function( assert ) {
+	assert.expect( 3 );
 
 	var i = 0;
 
@@ -265,21 +298,23 @@ test( "wrapAll(Function) check execution characteristics", function() {
 		return "";
 	} );
 
-	ok( !i, "should not execute function argument if target element does not exist" );
+	assert.ok(
+		!i, "should not execute function argument if target element does not exist"
+	);
 
 	jQuery( "#firstp" ).wrapAll( function( index ) {
-		strictEqual(
+		assert.strictEqual(
 		this, jQuery( "#firstp" )[ 0 ], "context must be the first found element"
 	);
-		strictEqual(
+		assert.strictEqual(
 		index, undefined, "index argument should not be included in function execution"
 	);
 	} );
 } );
 
-test( "wrapAll(Element)", function() {
+QUnit.test( "wrapAll(Element)", function( assert ) {
 
-	expect( 3 );
+	assert.expect( 3 );
 
 	var prev, p;
 
@@ -287,74 +322,80 @@ test( "wrapAll(Element)", function() {
 	p = jQuery( "#first" )[ 0 ].parentNode;
 	jQuery( "#firstp,#first" ).wrapAll( document.getElementById( "empty" ) );
 
-	equal(
+	assert.equal(
 		jQuery( "#first" ).parent()[ 0 ], jQuery( "#firstp" ).parent()[ 0 ], "Same Parent"
 	);
-	equal(
+	assert.equal(
 		jQuery( "#first" ).parent()[ 0 ].previousSibling, prev, "Correct Previous Sibling"
 	);
-	equal(
+	assert.equal(
 		jQuery( "#first" ).parent()[ 0 ].parentNode, p, "Correct Parent"
 	);
 } );
 
-test( "wrapInner(String)", function() {
+QUnit.test( "wrapInner(String)", function( assert ) {
 
-	expect( 6 );
+	assert.expect( 6 );
 
 	var num;
 
 	num = jQuery( "#first" ).children().length;
 	jQuery( "#first" ).wrapInner( "<div class='red'><div id='tmp'></div></div>" );
 
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( ".red" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( ".red" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().children().length, num, "Verify Elements Intact"
 	);
 
 	num = jQuery( "#first" ).html( "foo<div>test</div><div>test2</div>" ).children().length;
 	jQuery( "#first" ).wrapInner( "<div class='red'><div id='tmp'></div></div>" );
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( ".red" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( ".red" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().children().length, num, "Verify Elements Intact"
 	);
 } );
 
-test( "wrapInner(Element)", function() {
+QUnit.test( "wrapInner(Element)", function( assert ) {
 
-	expect( 5 );
+	assert.expect( 5 );
 
 	var num,
 		div = jQuery( "<div/>" );
 
 	num = jQuery( "#first" ).children().length;
 	jQuery( "#first" ).wrapInner( document.getElementById( "empty" ) );
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( "#empty" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( "#empty" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().length, num, "Verify Elements Intact"
 	);
 
 	div.wrapInner( "<span></span>" );
-	equal(
+	assert.equal(
 		div.children().length, 1, "The contents were wrapped."
 	);
-	equal(
+	assert.equal(
 		div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted."
 	);
 } );
 
-test( "wrapInner(Function) returns String", function() {
+QUnit.test( "wrapInner(Function) returns String", function( assert ) {
 
-	expect( 6 );
+	assert.expect( 6 );
 
 	var num,
     val = manipulationFunctionReturningObj;
@@ -362,28 +403,32 @@ test( "wrapInner(Function) returns String", function() {
 	num = jQuery( "#first" ).children().length;
 	jQuery( "#first" ).wrapInner( val( "<div class='red'><div id='tmp'></div></div>" ) );
 
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( ".red" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( ".red" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().children().length, num, "Verify Elements Intact"
 	);
 
 	num = jQuery( "#first" ).html( "foo<div>test</div><div>test2</div>" ).children().length;
 	jQuery( "#first" ).wrapInner( val( "<div class='red'><div id='tmp'></div></div>" ) );
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( ".red" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( ".red" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().children().length, num, "Verify Elements Intact"
 	);
 } );
 
-test( "wrapInner(Function) returns Element", function() {
+QUnit.test( "wrapInner(Function) returns Element", function( assert ) {
 
-	expect( 5 );
+	assert.expect( 5 );
 
 	var num,
     val = manipulationFunctionReturningObj,
@@ -391,26 +436,28 @@ test( "wrapInner(Function) returns Element", function() {
 
 	num = jQuery( "#first" ).children().length;
 	jQuery( "#first" ).wrapInner( val( document.getElementById( "empty" ) ) );
-	equal(
+	assert.equal(
 		jQuery( "#first" ).children().length, 1, "Only one child"
 	);
-	ok( jQuery( "#first" ).children().is( "#empty" ), "Verify Right Element" );
-	equal(
+	assert.ok(
+		jQuery( "#first" ).children().is( "#empty" ), "Verify Right Element"
+	);
+	assert.equal(
 		jQuery( "#first" ).children().children().length, num, "Verify Elements Intact"
 	);
 
 	div.wrapInner( val( "<span></span>" ) );
-	equal(
+	assert.equal(
 		div.children().length, 1, "The contents were wrapped."
 	);
-	equal(
+	assert.equal(
 		div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted."
 	);
 } );
 
-test( "unwrap()", function() {
+QUnit.test( "unwrap()", function( assert ) {
 
-	expect( 9 );
+	assert.expect( 9 );
 
 	jQuery( "body" ).append(
 		"  <div id='unwrap' style='display: none;'> <div id='unwrap1'> <span class='unwrap'>" +
@@ -423,58 +470,58 @@ test( "unwrap()", function() {
 	var abcd = jQuery( "#unwrap1 > span, #unwrap2 > span" ).get(),
 		abcdef = jQuery( "#unwrap span" ).get();
 
-	equal(
+	assert.equal(
 		jQuery( "#unwrap1 span" ).add( "#unwrap2 span:first-child" ).unwrap().length,
 		3,
 		"make #unwrap1 and #unwrap2 go away"
 	);
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap > span" ).get(), abcd, "all four spans should still exist"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap3 span" ).unwrap().get(),
 		jQuery( "#unwrap3 > span" ).get(),
 		"make all b in #unwrap3 go away"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap3 span" ).unwrap().get(),
 		jQuery( "#unwrap > span.unwrap3" ).get(),
 		"make #unwrap3 go away"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap" ).children().get(),
 		abcdef,
 		"#unwrap only contains 6 child spans"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap > span" ).unwrap().get(),
 		jQuery( "body > span.unwrap" ).get(),
 		"make the 6 spans become children of body"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "body > span.unwrap" ).unwrap().get(),
 		jQuery( "body > span.unwrap" ).get(),
 		"can't unwrap children of body"
 	);
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "body > span.unwrap" ).unwrap().get(), abcdef, "can't unwrap children of body"
 	);
 
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "body > span.unwrap" ).get(), abcdef, "body contains 6 .unwrap child spans"
 	);
 
 	jQuery( "body > span.unwrap" ).remove();
 } );
 
-test( "unwrap( selector )", function() {
+QUnit.test( "unwrap( selector )", function( assert ) {
 
-	expect( 5 );
+	assert.expect( 5 );
 
 	jQuery( "body" ).append(
 		"  <div id='unwrap' style='display: none;'> <div id='unwrap1'>" +
@@ -485,29 +532,29 @@ test( "unwrap( selector )", function() {
 
 	// Shouldn't unwrap, no match
 	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap2" );
-	equal(
+	assert.equal(
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"
 	);
 
 	 // Shouldn't unwrap, no match
 	jQuery( "#unwrap1 span" ) .unwrap( "span" );
-	equal(
+	assert.equal(
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"
 	);
 
 	// Unwraps
 	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap1" );
-	equal(
+	assert.equal(
 		jQuery( "#unwrap1" ).length, 0, "unwrapped match"
 	);
 
 	// Check return values
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap2 span" ).get(),
 		jQuery( "#unwrap2 span" ).unwrap( "quote" ).get(),
 		"return on unmatched unwrap"
 	);
-	deepEqual(
+	assert.deepEqual(
 		jQuery( "#unwrap2 span" ).get(),
 		jQuery( "#unwrap2 span" ).unwrap( "#unwrap2" ).get(),
 		"return on matched unwrap"
@@ -516,30 +563,30 @@ test( "unwrap( selector )", function() {
 	jQuery( "body > span.unwrap" ).remove();
 } );
 
-test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function() {
+QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function( assert ) {
 
-	expect( 2 );
+	assert.expect( 2 );
 
 	var $wraptarget = jQuery( "<div id='wrap-target'>Target</div>" ).appendTo( "#qunit-fixture" ),
 		$section = jQuery( "<section>" ).appendTo( "#qunit-fixture" );
 
 	$wraptarget.wrapAll( "<aside style='background-color:green'></aside>" );
 
-	notEqual(
+	assert.notEqual(
 		$wraptarget.parent( "aside" ).get( 0 ).style.backgroundColor,
 		"transparent",
 		"HTML5 elements created with wrapAll inherit styles"
 	);
-	notEqual(
+	assert.notEqual(
 		$section.get( 0 ).style.backgroundColor,
 		"transparent",
 		"HTML5 elements create with jQuery( string ) inherit styles"
 	);
 } );
 
-test( "wrapping scripts (#10470)", function() {
+QUnit.test( "wrapping scripts (#10470)", function( assert ) {
 
-	expect( 2 );
+	assert.expect( 2 );
 
 	var script = document.createElement( "script" );
 	script.text = script.textContent =
@@ -548,7 +595,7 @@ test( "wrapping scripts (#10470)", function() {
 	document.eval10470 = false;
 	jQuery( "#qunit-fixture" ).empty()[ 0 ].appendChild( script );
 	jQuery( "#qunit-fixture script" ).wrap( "<b></b>" );
-	strictEqual(
+	assert.strictEqual(
 		script.parentNode, jQuery( "#qunit-fixture > b" )[ 0 ], "correctly wrapped"
 	);
 	jQuery( script ).remove();
