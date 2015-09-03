@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./var/slice",
 	"./callbacks"
@@ -11,18 +11,19 @@ function Thrower( ex ) {
 	throw ex;
 }
 
-jQuery.extend({
+jQuery.extend( {
 
 	Deferred: function( func ) {
 		var tuples = [
+
 				// action, add listener, callbacks,
 				// ... .then handlers, argument index, [final state]
-				[ "notify", "progress", jQuery.Callbacks("memory"),
-					jQuery.Callbacks("memory"), 2 ],
-				[ "resolve", "done", jQuery.Callbacks("once memory"),
-					jQuery.Callbacks("once memory"), 0, "resolved" ],
-				[ "reject", "fail", jQuery.Callbacks("once memory"),
-					jQuery.Callbacks("once memory"), 1, "rejected" ]
+				[ "notify", "progress", jQuery.Callbacks( "memory" ),
+					jQuery.Callbacks( "memory" ), 2 ],
+				[ "resolve", "done", jQuery.Callbacks( "once memory" ),
+					jQuery.Callbacks( "once memory" ), 0, "resolved" ],
+				[ "reject", "fail", jQuery.Callbacks( "once memory" ),
+					jQuery.Callbacks( "once memory" ), 1, "rejected" ]
 			],
 			state = "pending",
 			promise = {
@@ -36,19 +37,21 @@ jQuery.extend({
 				"catch": function( fn ) {
 					return promise.then( null, fn );
 				},
+
 				// Keep pipe for back-compat
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
 					var fns = arguments;
 
-					return jQuery.Deferred(function( newDefer ) {
+					return jQuery.Deferred( function( newDefer ) {
 						jQuery.each( tuples, function( i, tuple ) {
+
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
 							var fn = jQuery.isFunction( fns[ tuple[ 4 ] ] ) && fns[ tuple[ 4 ] ];
 
 							// deferred.progress(function() { bind to newDefer or newDefer.notify })
 							// deferred.done(function() { bind to newDefer or newDefer.resolve })
 							// deferred.fail(function() { bind to newDefer or newDefer.reject })
-							deferred[ tuple[1] ](function() {
+							deferred[ tuple[ 1 ] ]( function() {
 								var returned = fn && fn.apply( this, arguments );
 								if ( returned && jQuery.isFunction( returned.promise ) ) {
 									returned.promise()
@@ -61,10 +64,10 @@ jQuery.extend({
 										fn ? [ returned ] : arguments
 									);
 								}
-							});
-						});
+							} );
+						} );
 						fns = null;
-					}).promise();
+					} ).promise();
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
 					var maxDepth = 0;
@@ -105,6 +108,7 @@ jQuery.extend({
 
 									// Handle a returned thenable
 									if ( jQuery.isFunction( then ) ) {
+
 										// Special processors (notify) just wait for resolution
 										if ( special ) {
 											then.call(
@@ -130,6 +134,7 @@ jQuery.extend({
 
 									// Handle all other returned values
 									} else {
+
 										// Only substitue handlers pass on context
 										// and multiple values (non-spec behavior)
 										if ( handler !== Identity ) {
@@ -156,6 +161,7 @@ jQuery.extend({
 											// https://promisesaplus.com/#point-61
 											// Ignore post-resolution exceptions
 											if ( depth + 1 >= maxDepth ) {
+
 												// Only substitue handlers pass on context
 												// and multiple values (non-spec behavior)
 												if ( handler !== Thrower ) {
@@ -181,7 +187,8 @@ jQuery.extend({
 						};
 					}
 
-					return jQuery.Deferred(function( newDefer ) {
+					return jQuery.Deferred( function( newDefer ) {
+
 						// progress_handlers.add( ... )
 						tuples[ 0 ][ 3 ].add(
 							resolve(
@@ -215,8 +222,9 @@ jQuery.extend({
 									Thrower
 							)
 						);
-					}).promise();
+					} ).promise();
 				},
+
 				// Get a promise for this deferred
 				// If obj is provided, the promise aspect is added to the object
 				promise: function( obj ) {
@@ -233,12 +241,13 @@ jQuery.extend({
 			// promise.progress = list.add
 			// promise.done = list.add
 			// promise.fail = list.add
-			promise[ tuple[1] ] = list.add;
+			promise[ tuple[ 1 ] ] = list.add;
 
 			// Handle state
 			if ( stateString ) {
 				list.add(
 					function() {
+
 						// state = "resolved" (i.e., fulfilled)
 						// state = "rejected"
 						state = stateString;
@@ -261,16 +270,16 @@ jQuery.extend({
 			// deferred.notify = function() { deferred.notifyWith(...) }
 			// deferred.resolve = function() { deferred.resolveWith(...) }
 			// deferred.reject = function() { deferred.rejectWith(...) }
-			deferred[ tuple[0] ] = function() {
-				deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
+			deferred[ tuple[ 0 ] ] = function() {
+				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? promise : this, arguments );
 				return this;
 			};
 
 			// deferred.notifyWith = list.fireWith
 			// deferred.resolveWith = list.fireWith
 			// deferred.rejectWith = list.fireWith
-			deferred[ tuple[0] + "With" ] = list.fireWith;
-		});
+			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
+		} );
 
 		// Make the deferred a promise
 		promise.promise( deferred );
@@ -320,14 +329,14 @@ jQuery.extend({
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
 				if ( resolveValues[ i ] &&
-					jQuery.isFunction( (method = resolveValues[ i ].promise) ) ) {
+					jQuery.isFunction( ( method = resolveValues[ i ].promise ) ) ) {
 
 					method.call( resolveValues[ i ] )
 						.progress( updateFunc( i, progressContexts, progressValues ) )
 						.done( updateFunc( i, resolveContexts, resolveValues ) )
 						.fail( master.reject );
 				} else if ( resolveValues[ i ] &&
-					jQuery.isFunction( (method = resolveValues[ i ].then) ) ) {
+					jQuery.isFunction( ( method = resolveValues[ i ].then ) ) ) {
 
 					method.call(
 						resolveValues[ i ],
@@ -348,7 +357,7 @@ jQuery.extend({
 
 		return master.promise();
 	}
-});
+} );
 
 return jQuery;
-});
+} );

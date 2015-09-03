@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"./var/rtagName",
 	"./var/rscriptType",
@@ -23,6 +23,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 			// Add nodes directly
 			if ( jQuery.type( elem ) === "object" ) {
+
 				// Support: Android<4.1, PhantomJS<2
 				// push.apply(_, arraylike) throws on ancient WebKit
 				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
@@ -98,4 +99,4 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 }
 
 return buildFragment;
-});
+} );

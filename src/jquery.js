@@ -1,4 +1,4 @@
-define([
+define( [
 	"./core",
 	"./selector",
 	"./traversing",
@@ -31,6 +31,6 @@ define([
 	"./exports/amd"
 ], function( jQuery ) {
 
-return (window.jQuery = window.$ = jQuery);
+return ( window.jQuery = window.$ = jQuery );
 
-});
+} );

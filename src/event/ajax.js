@@ -1,10 +1,10 @@
-define([
+define( [
 	"../core",
 	"../event"
 ], function( jQuery ) {
 
 // Attach a bunch of functions for handling common AJAX events
-jQuery.each([
+jQuery.each( [
 	"ajaxStart",
 	"ajaxStop",
 	"ajaxComplete",
@@ -15,6 +15,6 @@ jQuery.each([
 	jQuery.fn[ type ] = function( fn ) {
 		return this.on( type, fn );
 	};
-});
+} );
 
-});
+} );

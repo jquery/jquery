@@ -1,2 +1,2 @@
-module("deprecated", { teardown: moduleTeardown });
+QUnit.module( "deprecated", { teardown: moduleTeardown } );
 

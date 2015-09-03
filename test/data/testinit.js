@@ -3,6 +3,7 @@
 var fireNative, originaljQuery, original$,
 	baseURL = "",
 	supportjQuery = this.jQuery,
+
 	// see RFC 2606
 	externalHost = "example.com";
 
@@ -24,7 +25,7 @@ this.q = function() {
 		i = 0;
 
 	for ( ; i < arguments.length; i++ ) {
-		r.push( document.getElementById( arguments[i] ) );
+		r.push( document.getElementById( arguments[ i ] ) );
 	}
 	return r;
 };
@@ -62,7 +63,7 @@ this.createDashboardXML = function() {
 		</locations> \
 	</dashboard>';
 
-	return jQuery.parseXML(string);
+	return jQuery.parseXML( string );
 };
 
 this.createWithFriesXML = function() {
@@ -131,22 +132,26 @@ fireNative = document.createEvent ?
  * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
-	return baseURL + value + (/\?/.test( value ) ? "&" : "?") +
+	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +
 		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
 }
 
 // Ajax testing helper
 this.ajaxTest = function( title, expect, options ) {
-	var requestOptions;
-	if ( jQuery.isFunction( options ) ) {
-		options = options();
-	}
-	options = options || [];
-	requestOptions = options.requests || options.request || options;
-	if ( !jQuery.isArray( requestOptions ) ) {
-		requestOptions = [ requestOptions ];
-	}
-	asyncTest( title, expect, function() {
+	QUnit.test( title, expect, function( assert ) {
+		var requestOptions;
+
+		if ( jQuery.isFunction( options ) ) {
+			options = options( assert );
+		}
+		options = options || [];
+		requestOptions = options.requests || options.request || options;
+		if ( !jQuery.isArray( requestOptions ) ) {
+			requestOptions = [ requestOptions ];
+		}
+
+		var done = assert.async();
+
 		if ( options.setup ) {
 			options.setup();
 		}
@@ -160,7 +165,9 @@ this.ajaxTest = function( title, expect, options ) {
 					if ( options.teardown ) {
 						options.teardown();
 					}
-					start();
+
+					// Make sure all events will be called before done()
+					setTimeout( done );
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
@@ -170,7 +177,7 @@ this.ajaxTest = function( title, expect, options ) {
 						return function( _, status ) {
 							if ( !completed ) {
 								if ( !handler ) {
-									ok( false, "unexpected " + status );
+									assert.ok( false, "unexpected " + status );
 								} else if ( jQuery.isFunction( handler ) ) {
 									handler.apply( this, arguments );
 								}
@@ -179,14 +186,14 @@ this.ajaxTest = function( title, expect, options ) {
 					};
 
 				if ( options.afterSend ) {
-					options.afterSend( request );
+					options.afterSend( request, assert );
 				}
 
 				return request
 					.done( callIfDefined( "done", "success" ) )
 					.fail( callIfDefined( "fail", "error" ) )
 					.always( complete );
-			});
+			} );
 
 		ajaxTest.abort = function( reason ) {
 			if ( !completed ) {
@@ -195,31 +202,31 @@ this.ajaxTest = function( title, expect, options ) {
 				ok( false, "aborted " + reason );
 				jQuery.each( requests, function( i, request ) {
 					request.abort();
-				});
+				} );
 			}
 		};
-	});
+	} );
 };
 
 this.testIframe = function( fileName, name, fn ) {
-	asyncTest(name, function() {
+	QUnit.test( name, function( assert ) {
+		var done = assert.async();
 
 		// load fixture in iframe
 		var iframe = loadFixture(),
 			win = iframe.contentWindow,
-			interval = setInterval(function() {
+			interval = setInterval( function() {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
 
-					start();
-
 					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win, win.document );
+					fn.call( this, win.jQuery, win, win.document, assert );
+					done();
 					document.body.removeChild( iframe );
 					iframe = null;
 				}
 			}, 15 );
-	});
+	} );
 
 	function loadFixture() {
 		var src = url( "./data/" + fileName + ".html" ),
@@ -233,26 +240,29 @@ this.testIframe = function( fileName, name, fn ) {
 };
 
 this.testIframeWithCallback = function( title, fileName, func ) {
-	asyncTest( title, 1, function() {
+	QUnit.test( title, 1, function( assert ) {
 		var iframe;
+		var done = assert.async();
 
 		window.iframeCallback = function() {
-			var args = arguments;
+			var args = Array.prototype.slice.call( arguments );
 
-			setTimeout(function() {
+			args.push( assert );
+
+			setTimeout( function() {
 				this.iframeCallback = undefined;
 
 				iframe.remove();
 				func.apply( this, args );
 				func = function() {};
 
-				start();
-			});
+				done();
+			} );
 		};
-		iframe = jQuery( "<div/>" ).css({ position: "absolute", width: "500px", left: "-600px" })
+		iframe = jQuery( "<div/>" ).css( { position: "absolute", width: "500px", left: "-600px" } )
 			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
 			.appendTo( "#qunit-fixture" );
-	});
+	} );
 };
 this.iframeCallback = undefined;
 
@@ -266,7 +276,7 @@ this.loadTests = function() {
 	loadSwarm = url && url.indexOf( "http" ) === 0;
 
 	// Get testSubproject from testrunner first
-	require([ "data/testrunner.js" ], function() {
+	require( [ "data/testrunner.js" ], function() {
 		var tests = [
 			"unit/core.js",
 			"unit/callbacks.js",
@@ -291,7 +301,7 @@ this.loadTests = function() {
 		];
 
 		// Ensure load order (to preserve test numbers)
-		(function loadDep() {
+		( function loadDep() {
 			var dep = tests.shift();
 
 			if ( dep ) {
@@ -309,14 +319,14 @@ this.loadTests = function() {
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( loadSwarm ) {
-					require( [ "http://swarm.jquery.org/js/inject.js?" + (new Date()).getTime() ],
+					require( [ "http://swarm.jquery.org/js/inject.js?" + ( new Date() ).getTime() ],
 					function() {
 						QUnit.start();
-					});
+					} );
 				} else {
 					QUnit.start();
 				}
 			}
-		})();
-	});
+		} )();
+	} );
 };

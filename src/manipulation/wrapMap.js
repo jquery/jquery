@@ -1,4 +1,4 @@
-define(function() {
+define( function() {
 
 // We have to close these tags to support XHTML (#13200)
 var wrapMap = {
@@ -32,4 +32,4 @@ wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.the
 wrapMap.th = wrapMap.td;
 
 return wrapMap;
-});
+} );

@@ -20,7 +20,7 @@ module.exports = function( grunt ) {
 	// But our modules can
 	delete srcHintOptions.onevar;
 
-	grunt.initConfig({
+	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
 		"compare_size": {
@@ -53,6 +53,7 @@ module.exports = function( grunt ) {
 					"core",
 					"selector"
 				],
+
 				// Exclude specified modules if the module matching the key is removed
 				removeWith: {
 					ajax: [ "manipulation/_evalUrl", "event/ajax" ],
@@ -104,13 +105,17 @@ module.exports = function( grunt ) {
 			}
 		},
 		jscs: {
-			src: "src/**/*.js",
+			src: "src",
 			gruntfile: "Gruntfile.js",
 
 			// Check parts of tests that pass
-			test: [ "test/data/testrunner.js", "test/unit/animation.js", "test/unit/tween.js" ],
-			release: [ "build/*.js", "!build/release-notes.js" ],
-			tasks: "build/tasks/*.js"
+			test: [
+				"test/data/testrunner.js",
+				"test/unit/animation.js",
+				"test/unit/tween.js",
+				"test/unit/wrap.js"
+			],
+			build: "build"
 		},
 		testswarm: {
 			tests: [
@@ -162,7 +167,7 @@ module.exports = function( grunt ) {
 				}
 			}
 		}
-	});
+	} );
 
 	// Load grunt tasks from NPM packages
 	require( "load-grunt-tasks" )( grunt );
@@ -177,7 +182,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test", [ "test_fast", "promises_aplus_tests" ] );
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "uglify", "remove_map_comment", "dist:*" ] );
 
 	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 };

@@ -16,12 +16,16 @@ module.exports = function( grunt ) {
 			baseUrl: "src",
 			name: "jquery",
 			out: "dist/jquery.js",
+
 			// We have multiple minify steps
 			optimize: "none",
+
 			// Include dependencies loaded with require
 			findNestedDependencies: true,
+
 			// Avoid inserting define() placeholder
 			skipModuleInsertion: true,
+
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
@@ -47,15 +51,17 @@ module.exports = function( grunt ) {
 	 */
 	function convert( name, path, contents ) {
 		var amdName;
+
 		// Convert var modules
 		if ( /.\/var\//.test( path ) ) {
 			contents = contents
-				.replace( /define\([\w\W]*?return/, "var " + (/var\/([\w-]+)/.exec(name)[1]) + " =" )
+				.replace( /define\([\w\W]*?return/, "var " + ( /var\/([\w-]+)/.exec( name )[ 1 ] ) + " =" )
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
 		} else if ( /^sizzle$/.test( name ) ) {
 			contents = "var Sizzle =\n" + contents
+
 				// Remove EXPOSE lines from Sizzle
 				.replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return Sizzle;" );
 
@@ -63,6 +69,7 @@ module.exports = function( grunt ) {
 
 			contents = contents
 				.replace( /\s*return\s+[^\}]+(\}\s*?\);[^\w\}]*)$/, "$1" )
+
 				// Multiple exports
 				.replace( /\s*exports\.\w+\s*=\s*\w+;/g, "" );
 
@@ -82,13 +89,15 @@ module.exports = function( grunt ) {
 			contents = contents
 				.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
 		}
+
 		// AMD Name
-		if ( (amdName = grunt.option( "amd" )) != null && /^exports\/amd$/.test( name ) ) {
-			if (amdName) {
+		if ( ( amdName = grunt.option( "amd" ) ) != null && /^exports\/amd$/.test( name ) ) {
+			if ( amdName ) {
 				grunt.log.writeln( "Naming jQuery with AMD name: " + amdName );
 			} else {
 				grunt.log.writeln( "AMD name now anonymous" );
 			}
+
 			// Remove the comma for anonymous defines
 			contents = contents
 				.replace( /(\s*)"jquery"(\,\s*)/, amdName ? "$1\"" + amdName + "\"$2" : "" );
@@ -121,7 +130,8 @@ module.exports = function( grunt ) {
 			excludeList = function( list, prepend ) {
 				if ( list ) {
 					prepend = prepend ? prepend + "/" : "";
-					list.forEach(function( module ) {
+					list.forEach( function( module ) {
+
 						// Exclude var modules as well
 						if ( module === "var" ) {
 							excludeList(
@@ -130,20 +140,22 @@ module.exports = function( grunt ) {
 							return;
 						}
 						if ( prepend ) {
+
 							// Skip if this is not a js file and we're walking files in a dir
-							if ( !(module = /([\w-\/]+)\.js$/.exec( module )) ) {
+							if ( !( module = /([\w-\/]+)\.js$/.exec( module ) ) ) {
 								return;
 							}
+
 							// Prepend folder name if passed
 							// Remove .js extension
-							module = prepend + module[1];
+							module = prepend + module[ 1 ];
 						}
 
 						// Avoid infinite recursion
 						if ( excluded.indexOf( module ) === -1 ) {
 							excluder( "-" + module );
 						}
-					});
+					} );
 				}
 			},
 			/**
@@ -158,12 +170,15 @@ module.exports = function( grunt ) {
 					module = m[ 2 ];
 
 				if ( exclude ) {
+
 					// Can't exclude certain modules
 					if ( minimum.indexOf( module ) === -1 ) {
+
 						// Add to excluded
 						if ( excluded.indexOf( module ) === -1 ) {
 							grunt.log.writeln( flag );
 							excluded.push( module );
+
 							// Exclude all files in the folder of the same name
 							// These are the removable dependencies
 							// It's fine if the directory is not there
@@ -173,10 +188,11 @@ module.exports = function( grunt ) {
 								grunt.verbose.writeln( e );
 							}
 						}
+
 						// Check removeWith list
 						excludeList( removeWith[ module ] );
 					} else {
-						grunt.log.error( "Module \"" + module + "\" is a minimum requirement.");
+						grunt.log.error( "Module \"" + module + "\" is a minimum requirement." );
 						if ( module === "selector" ) {
 							grunt.log.error(
 								"If you meant to replace Sizzle, use -sizzle instead."
@@ -215,13 +231,13 @@ module.exports = function( grunt ) {
 
 		// Handle Sizzle exclusion
 		// Replace with selector-native
-		if ( (index = excluded.indexOf( "sizzle" )) > -1 ) {
+		if ( ( index = excluded.indexOf( "sizzle" ) ) > -1 ) {
 			config.rawText.selector = "define(['./selector-native']);";
 			excluded.splice( index, 1 );
 		}
 
 		// Replace exports/global with a noop noConflict
-		if ( (index = excluded.indexOf( "exports/global" )) > -1 ) {
+		if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
 			config.rawText[ "exports/global" ] = "define(['../core']," +
 				"function( jQuery ) {\njQuery.noConflict = function() {};\n});";
 			excluded.splice( index, 1 );
@@ -233,9 +249,11 @@ module.exports = function( grunt ) {
 		// append excluded modules to version
 		if ( excluded.length ) {
 			version += " -" + excluded.join( ",-" );
+
 			// set pkg.version to version with excludes, so minified file picks it up
 			grunt.config.set( "pkg.version", version );
 			grunt.verbose.writeln( "Version changed to " + version );
+
 			// Have to use shallow or core will get excluded since it is a dependency
 			config.excludeShallow = excluded;
 		}
@@ -247,8 +265,10 @@ module.exports = function( grunt ) {
 		 */
 		config.out = function( compiled ) {
 			compiled = compiled
+
 				// Embed Version
 				.replace( /@VERSION/g, version )
+
 				// Embed Date
 				// yyyy-mm-ddThh:mmZ
 				.replace( /@DATE/g, ( new Date() ).toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
@@ -259,9 +279,10 @@ module.exports = function( grunt ) {
 
 		// Turn off opt-in if necessary
 		if ( !optIn ) {
+
 			// Overwrite the default inclusions with the explicit ones provided
 			config.rawText.jquery = "define([" +
-				(included.length ? included.join(",") : "") +
+				( included.length ? included.join( "," ) : "" ) +
 			"]);";
 		}
 
@@ -272,8 +293,8 @@ module.exports = function( grunt ) {
 			done();
 		}, function( err ) {
 			done( err );
-		});
-	});
+		} );
+	} );
 
 	// Special "alias" task to make custom build creation less grawlix-y
 	// Translation example
@@ -289,6 +310,6 @@ module.exports = function( grunt ) {
 
 		grunt.log.writeln( "Creating custom build...\n" );
 
-		grunt.task.run([ "build:*:*" + (modules ? ":" + modules : ""), "uglify", "dist" ]);
-	});
+		grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "uglify", "dist" ] );
+	} );
 };
