@@ -17,16 +17,16 @@ define( [
 	"./manipulation/setGlobalEval",
 	"./manipulation/buildFragment",
 	"./manipulation/support",
+	"./data/var/acceptData",
 
 	"./core/init",
-	"./data/accepts",
 	"./traversing",
 	"./selector",
 	"./event"
 ], function( jQuery, document, concat, push, deletedIds, access,
 	rcheckableType, rtagName, rscriptType, rleadingWhitespace, nodeNames,
 	createSafeFragment, wrapMap, getAll, setGlobalEval,
-	buildFragment, support ) {
+	buildFragment, support, acceptData ) {
 
 var rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
 	rnoshimcache = new RegExp( "<(?:" + nodeNames + ")[\\s/>]", "i" ),
@@ -322,7 +322,7 @@ jQuery.extend( {
 		return clone;
 	},
 
-	cleanData: function( elems, /* internal */ acceptData ) {
+	cleanData: function( elems, /* internal */ forceAcceptData ) {
 		var elem, type, id, data,
 			i = 0,
 			internalKey = jQuery.expando,
@@ -331,7 +331,7 @@ jQuery.extend( {
 			special = jQuery.event.special;
 
 		for ( ; ( elem = elems[ i ] ) != null; i++ ) {
-			if ( acceptData || jQuery.acceptData( elem ) ) {
+			if ( forceAcceptData || acceptData( elem ) ) {
 
 				id = elem[ internalKey ];
 				data = id && cache[ id ];

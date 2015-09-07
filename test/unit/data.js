@@ -224,52 +224,36 @@ QUnit.test( "Data is not being set on comment and text nodes", function( assert 
 
 } );
 
-QUnit.test( "jQuery.acceptData", function( assert ) {
+QUnit.test( "acceptData", function( assert ) {
 	assert.expect( 10 );
 
-	var flash, pdf;
+	var flash, pdf, form;
 
-	assert.ok(
-		jQuery.acceptData( document ), "document"
-	);
-	assert.ok(
-		jQuery.acceptData( document.documentElement ), "documentElement"
-	);
-	assert.ok(
-		jQuery.acceptData( {} ), "object"
-	);
-	assert.ok(
-		!jQuery.acceptData( document.createElement( "embed" ) ), "embed"
-	);
+	assert.equal( 42, jQuery( document ).data( "test", 42 ).data( "test" ), "document" );
+	assert.equal( 42, jQuery( document.documentElement ).data( "test", 42 ).data( "test" ), "documentElement" );
+	assert.equal( 42, jQuery( {} ).data( "test", 42 ).data( "test" ), "object" );
+	assert.equal( undefined, jQuery( document.createElement( "embed" ) ).data( "test", 42 ).data( "test" ), "embed" );
 
 	flash = document.createElement( "object" );
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
-	assert.ok(
-		jQuery.acceptData( flash ), "flash"
-	);
+	assert.equal( 42, jQuery( flash ).data( "test", 42 ).data( "test" ), "flash" );
 
 	pdf = document.createElement( "object" );
 	pdf.setAttribute( "classid", "clsid:CA8A9780-280D-11CF-A24D-444553540000" );
-	assert.ok(
-		!jQuery.acceptData( pdf ), "pdf"
-	);
+	assert.equal( undefined, jQuery( pdf ).data( "test", 42 ).data( "test" ), "pdf" );
 
-	assert.ok(
-		!jQuery.acceptData( document.createComment( "" ) ), "comment"
-	);
-	assert.ok(
-		!jQuery.acceptData( document.createTextNode( "" ) ), "text"
-	);
-	assert.ok(
-		!jQuery.acceptData( document.createDocumentFragment() ), "documentFragment"
-	);
+	assert.equal( undefined, jQuery( document.createComment( "" ) ).data( "test", 42 ).data( "test" ), "comment" );
+	assert.equal( undefined, jQuery( document.createTextNode( "" ) ).data( "test", 42 ).data( "test" ), "text" );
+	assert.equal( undefined, jQuery( document.createDocumentFragment() ).data( "test", 42 ).data( "test" ), "documentFragment" );
 
-	assert.ok(
-		jQuery.acceptData(
-			jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ]
-		),
-		"form with aliased DOM properties"
-	);
+	form = jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ];
+	assert.equal( 42, jQuery( form ) .data( "test", 42 ).data( "test" ), "form with aliased DOM properties" );
+
+	// Clean up.
+	jQuery.removeData( document );
+	jQuery.removeData( document.documentElement );
+	jQuery.removeData( flash );
+	jQuery.removeData( form );
 } );
 
 // attempting to access the data of an undefined jQuery element should be undefined

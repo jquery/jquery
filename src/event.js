@@ -5,11 +5,12 @@ define( [
 	"./var/hasOwn",
 	"./var/slice",
 	"./event/support",
+	"./data/var/acceptData",
 
 	"./core/init",
 	"./data",
 	"./selector"
-], function( jQuery, document, rnotwhite, hasOwn, slice, support ) {
+], function( jQuery, document, rnotwhite, hasOwn, slice, support, acceptData ) {
 
 var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
@@ -391,7 +392,7 @@ jQuery.event = {
 
 			// Native handler
 			handle = ontype && cur[ ontype ];
-			if ( handle && handle.apply && jQuery.acceptData( cur ) ) {
+			if ( handle && handle.apply && acceptData( cur ) ) {
 				event.result = handle.apply( cur, data );
 				if ( event.result === false ) {
 					event.preventDefault();
@@ -406,7 +407,7 @@ jQuery.event = {
 			if (
 				( !special._default ||
 				 special._default.apply( eventPath.pop(), data ) === false
-				) && jQuery.acceptData( elem )
+				) && acceptData( elem )
 			) {
 
 				// Call a native DOM method on the target with the same name name as the event.

@@ -1,11 +1,9 @@
-define( [
-	"../core"
-], function( jQuery ) {
+define( function() {
 
 /**
  * Determines whether an object can have data
  */
-jQuery.acceptData = function( elem ) {
+return function( elem ) {
 	var noData = jQuery.noData[ ( elem.nodeName + " " ).toLowerCase() ],
 		nodeType = +elem.nodeType || 1;
 
@@ -17,5 +15,4 @@ jQuery.acceptData = function( elem ) {
 		!noData || noData !== true && elem.getAttribute( "classid" ) === noData;
 };
 
-return jQuery.acceptData;
 } );

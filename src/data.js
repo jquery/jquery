@@ -2,8 +2,8 @@ define( [
 	"./core",
 	"./var/deletedIds",
 	"./data/support",
-	"./data/accepts"
-], function( jQuery, deletedIds, support ) {
+	"./data/var/acceptData"
+], function( jQuery, deletedIds, support, acceptData ) {
 
 var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /([A-Z])/g;
@@ -59,7 +59,7 @@ function isEmptyDataObject( obj ) {
 }
 
 function internalData( elem, key, data, pvt /* Internal Use Only */ ) {
-	if ( !jQuery.acceptData( elem ) ) {
+	if ( !acceptData( elem ) ) {
 		return;
 	}
 
@@ -140,7 +140,7 @@ function internalData( elem, key, data, pvt /* Internal Use Only */ ) {
 }
 
 function internalRemoveData( elem, key, pvt ) {
-	if ( !jQuery.acceptData( elem ) ) {
+	if ( !acceptData( elem ) ) {
 		return;
 	}
 
