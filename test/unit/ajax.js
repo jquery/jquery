@@ -172,7 +172,7 @@ QUnit.module( "ajax", {
 					firstTime = false;
 					jQuery.ajax( this );
 				} else {
-					ok ( true, "Test retrying with jQuery.ajax(this) works" );
+					assert.ok( true, "Test retrying with jQuery.ajax(this) works" );
 					jQuery.ajax( {
 						url: url( "data/errorWithText.php" ),
 						data: {
@@ -1848,20 +1848,28 @@ QUnit.module( "ajax", {
 		jQuery( document ).off( "ajaxStart ajaxStop" );
 	} );
 
-	QUnit.asyncTest( "jQuery#load() - always use GET method even if it overrided through ajaxSetup (#11264)", 1, function( assert ) {
-		jQuery.ajaxSetup( {
-			type: "POST"
-		} );
+	QUnit.test(
+		"jQuery#load() - always use GET method even if it overrided through ajaxSetup (#11264)", 1,
+		function( assert ) {
+			var done = assert.async();
 
-		jQuery( "#qunit-fixture" ).load( "data/ajax/method.php", function( method ) {
-			assert.equal( method, "GET" );
-			QUnit.start();
-		} );
-	} );
+			jQuery.ajaxSetup( {
+				type: "POST"
+			} );
 
-	QUnit.asyncTest( "#11402 - jQuery.domManip() - script in comments are properly evaluated", 2, function() {
-		jQuery( "#qunit-fixture" ).load( "data/cleanScript.html", start );
-	} );
+			jQuery( "#qunit-fixture" ).load( "data/ajax/method.php", function( method ) {
+				assert.equal( method, "GET" );
+				done();
+			} );
+		}
+	);
+
+	QUnit.test(
+		"#11402 - jQuery.domManip() - script in comments are properly evaluated", 2,
+		function( assert ) {
+			jQuery( "#qunit-fixture" ).load( "data/cleanScript.html", assert.async() );
+		}
+	);
 
 //----------- jQuery.get()
 
@@ -1926,37 +1934,43 @@ QUnit.module( "ajax", {
 
 //----------- jQuery.getScript()
 
-	QUnit.asyncTest( "jQuery.getScript( String, Function ) - with callback", 2, function( assert ) {
+	QUnit.test( "jQuery.getScript( String, Function ) - with callback", 2,
+		function( assert ) {
+			var done = assert.async();
+
+			Globals.register( "testBar" );
+			jQuery.getScript( url( "data/testbar.php" ), function() {
+				assert.strictEqual( window[ "testBar" ], "bar", "Check if script was evaluated" );
+				done();
+			} );
+		}
+	);
+
+	QUnit.test( "jQuery.getScript( String, Function ) - no callback", 1, function( assert ) {
 		Globals.register( "testBar" );
-		jQuery.getScript( url( "data/testbar.php" ), function() {
-			assert.strictEqual( window[ "testBar" ], "bar", "Check if script was evaluated" );
-			QUnit.start();
-		} );
+		jQuery.getScript( url( "data/testbar.php" ) ).done( assert.async() );
 	} );
 
-	QUnit.asyncTest( "jQuery.getScript( String, Function ) - no callback", 1, function() {
-		Globals.register( "testBar" );
-		jQuery.getScript( url( "data/testbar.php" ) ).done( start );
-	} );
+	QUnit.test( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function( assert ) {
+		var done = assert.async();
 
-	QUnit.asyncTest( "#8082 - jQuery.getScript( String, Function ) - source as responseText", 2, function( assert ) {
 		Globals.register( "testBar" );
 		jQuery.getScript( url( "data/testbar.php" ), function( data, _, jqXHR ) {
 			assert.strictEqual( data, jqXHR.responseText, "Same-domain script requests returns the source of the script" );
-			QUnit.start();
+			done();
 		} );
 	} );
 
 // //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
-	QUnit.asyncTest( "jQuery.fn.load( String )", 2, function( assert ) {
+	QUnit.test( "jQuery.fn.load( String )", 2, function( assert ) {
 		jQuery.ajaxSetup( {
 			beforeSend: function() {
 				assert.strictEqual( this.type, "GET", "no data means GET request" );
 			}
 		} );
-		jQuery( "#first" ).load( "data/name.html", start );
+		jQuery( "#first" ).load( "data/name.html", assert.async() );
 	} );
 
 	QUnit.test( "jQuery.fn.load() - 404 error callbacks", function( assert ) {
@@ -1971,23 +1985,23 @@ QUnit.module( "ajax", {
 	} );
 
 	// check if load can be called with url and null data
-	QUnit.asyncTest( "jQuery.fn.load( String, null )", 2, function( assert ) {
+	QUnit.test( "jQuery.fn.load( String, null )", 2, function( assert ) {
 		jQuery.ajaxSetup( {
 			beforeSend: function() {
 				assert.strictEqual( this.type, "GET", "no data means GET request" );
 			}
 		} );
-		jQuery( "#first" ).load( "data/name.html", null, start );
+		jQuery( "#first" ).load( "data/name.html", null, assert.async() );
 	} );
 
 	// check if load can be called with url and undefined data
-	QUnit.asyncTest( "jQuery.fn.load( String, undefined )", 2, function( assert ) {
+	QUnit.test( "jQuery.fn.load( String, undefined )", 2, function( assert ) {
 		jQuery.ajaxSetup( {
 			beforeSend: function() {
 				assert.strictEqual( this.type, "GET", "no data means GET request" );
 			}
 		} );
-		jQuery( "#first" ).load( "data/name.html", undefined, start );
+		jQuery( "#first" ).load( "data/name.html", undefined, assert.async() );
 	} );
 
 	// check if load can be called with only url

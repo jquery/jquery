@@ -26,41 +26,41 @@ QUnit.test( "id", function( assert ) {
 
 	var a;
 
-	t( "ID Selector", "#body", [ "body" ] );
-	t( "ID Selector w/ Element", "body#body", [ "body" ] );
-	t( "ID Selector w/ Element", "ul#first", [] );
-	t( "ID selector with existing ID descendant", "#firstp #simon1", [ "simon1" ] );
-	t( "ID selector with non-existent descendant", "#firstp #foobar", [] );
-	t( "ID selector using UTF8", "#台北Táiběi", [ "台北Táiběi" ] );
-	t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", [ "台北Táiběi","台北" ] );
-	t( "Descendant ID selector using UTF8", "div #台北", [ "台北" ] );
-	t( "Child ID selector using UTF8", "form > #台北", [ "台北" ] );
+	assert.t( "ID Selector", "#body", [ "body" ] );
+	assert.t( "ID Selector w/ Element", "body#body", [ "body" ] );
+	assert.t( "ID Selector w/ Element", "ul#first", [] );
+	assert.t( "ID selector with existing ID descendant", "#firstp #simon1", [ "simon1" ] );
+	assert.t( "ID selector with non-existent descendant", "#firstp #foobar", [] );
+	assert.t( "ID selector using UTF8", "#台北Táiběi", [ "台北Táiběi" ] );
+	assert.t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", [ "台北Táiběi","台北" ] );
+	assert.t( "Descendant ID selector using UTF8", "div #台北", [ "台北" ] );
+	assert.t( "Child ID selector using UTF8", "form > #台北", [ "台北" ] );
 
-	t( "Escaped ID", "#foo\\:bar", [ "foo:bar" ] );
-	t( "Escaped ID", "#test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
-	t( "Descendant escaped ID", "div #foo\\:bar", [ "foo:bar" ] );
-	t( "Descendant escaped ID", "div #test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
-	t( "Child escaped ID", "form > #foo\\:bar", [ "foo:bar" ] );
-	t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
+	assert.t( "Escaped ID", "#foo\\:bar", [ "foo:bar" ] );
+	assert.t( "Escaped ID", "#test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
+	assert.t( "Descendant escaped ID", "div #foo\\:bar", [ "foo:bar" ] );
+	assert.t( "Descendant escaped ID", "div #test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
+	assert.t( "Child escaped ID", "form > #foo\\:bar", [ "foo:bar" ] );
+	assert.t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
 
-	t( "ID Selector, child ID present", "#form > #radio1", [ "radio1" ] ); // bug #267
-	t( "ID Selector, not an ancestor ID", "#form #first", [] );
-	t( "ID Selector, not a child ID", "#form > #option1a", [] );
+	assert.t( "ID Selector, child ID present", "#form > #radio1", [ "radio1" ] ); // bug #267
+	assert.t( "ID Selector, not an ancestor ID", "#form #first", [] );
+	assert.t( "ID Selector, not a child ID", "#form > #option1a", [] );
 
-	t( "All Children of ID", "#foo > *", [ "sndp", "en", "sap" ] );
-	t( "All Children of ID with no children", "#firstUL > *", [] );
+	assert.t( "All Children of ID", "#foo > *", [ "sndp", "en", "sap" ] );
+	assert.t( "All Children of ID with no children", "#firstUL > *", [] );
 
 	a = jQuery( "<a id='backslash\\foo'></a>" ).appendTo( "#qunit-fixture" );
-	t( "ID Selector contains backslash", "#backslash\\\\foo", [ "backslash\\foo" ] );
+	assert.t( "ID Selector contains backslash", "#backslash\\\\foo", [ "backslash\\foo" ] );
 
-	t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", [ "lengthtest" ] );
+	assert.t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", [ "lengthtest" ] );
 
-	t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug #986
+	assert.t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
-	t( "Underscore ID", "#types_all", [ "types_all" ] );
-	t( "Dash ID", "#qunit-fixture", [ "qunit-fixture" ] );
+	assert.t( "Underscore ID", "#types_all", [ "types_all" ] );
+	assert.t( "Dash ID", "#qunit-fixture", [ "qunit-fixture" ] );
 
-	t( "ID with weird characters in it", "#name\\+value", [ "name+value" ] );
+	assert.t( "ID with weird characters in it", "#name\\+value", [ "name+value" ] );
 } );
 
 QUnit.test( "class - jQuery only", function( assert ) {
@@ -77,11 +77,11 @@ QUnit.test( "name", function( assert ) {
 
 	var form;
 
-	t( "Name selector", "input[name=action]", [ "text1" ] );
-	t( "Name selector with single quotes", "input[name='action']", [ "text1" ] );
-	t( "Name selector with double quotes", "input[name=\"action\"]", [ "text1" ] );
+	assert.t( "Name selector", "input[name=action]", [ "text1" ] );
+	assert.t( "Name selector with single quotes", "input[name='action']", [ "text1" ] );
+	assert.t( "Name selector with double quotes", "input[name=\"action\"]", [ "text1" ] );
 
-	t( "Name selector for grouped input", "input[name='types[]']", [ "types_all", "types_anime", "types_movie" ] );
+	assert.t( "Name selector for grouped input", "input[name='types[]']", [ "types_all", "types_anime", "types_movie" ] );
 
 	form = jQuery( "<form><input name='id'/></form>" ).appendTo( "body" );
 	assert.equal( jQuery( "input", form[ 0 ] ).length, 1, "Make sure that rooted queries on forms (with possible expandos) work." );
@@ -105,40 +105,40 @@ QUnit.test( "child and adjacent", function( assert ) {
 
 	var nothiddendiv;
 
-	t( "Child", "p > a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	t( "Child", "p> a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	t( "Child", "p >a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	t( "Child", "p>a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	t( "Child w/ Class", "p > a.blog", [ "mark","simon" ] );
-	t( "All Children", "code > *", [ "anchor1","anchor2" ] );
-	t( "All Grandchildren", "p > * > *", [ "anchor1","anchor2" ] );
-	t( "Adjacent", "p + p", [ "ap","en","sap" ] );
-	t( "Adjacent", "p#firstp + p", [ "ap" ] );
-	t( "Adjacent", "p[lang=en] + p", [ "sap" ] );
-	t( "Adjacent", "a.GROUPS + code + a", [ "mark" ] );
-	t( "Element Preceded By", "#groups ~ a", [ "mark" ] );
-	t( "Element Preceded By", "#length ~ input", [ "idTest" ] );
-	t( "Element Preceded By", "#siblingfirst ~ em", [ "siblingnext", "siblingthird" ] );
-	t( "Element Preceded By (multiple)", "#siblingTest em ~ em ~ em ~ span", [ "siblingspan" ] );
-	t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", [ "siblingfirst" ] );
+	assert.t( "Child", "p > a", [ "simon1","google","groups","mark","yahoo","simon" ] );
+	assert.t( "Child", "p> a", [ "simon1","google","groups","mark","yahoo","simon" ] );
+	assert.t( "Child", "p >a", [ "simon1","google","groups","mark","yahoo","simon" ] );
+	assert.t( "Child", "p>a", [ "simon1","google","groups","mark","yahoo","simon" ] );
+	assert.t( "Child w/ Class", "p > a.blog", [ "mark","simon" ] );
+	assert.t( "All Children", "code > *", [ "anchor1","anchor2" ] );
+	assert.t( "All Grandchildren", "p > * > *", [ "anchor1","anchor2" ] );
+	assert.t( "Adjacent", "p + p", [ "ap","en","sap" ] );
+	assert.t( "Adjacent", "p#firstp + p", [ "ap" ] );
+	assert.t( "Adjacent", "p[lang=en] + p", [ "sap" ] );
+	assert.t( "Adjacent", "a.GROUPS + code + a", [ "mark" ] );
+	assert.t( "Element Preceded By", "#groups ~ a", [ "mark" ] );
+	assert.t( "Element Preceded By", "#length ~ input", [ "idTest" ] );
+	assert.t( "Element Preceded By", "#siblingfirst ~ em", [ "siblingnext", "siblingthird" ] );
+	assert.t( "Element Preceded By (multiple)", "#siblingTest em ~ em ~ em ~ span", [ "siblingspan" ] );
+	assert.t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", [ "siblingfirst" ] );
 
-	t( "Multiple combinators selects all levels", "#siblingTest em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
-	t( "Multiple combinators selects all levels", "#siblingTest > em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
-	t( "Multiple sibling combinators doesn't miss general siblings", "#siblingTest > em:first-child + em ~ span", [ "siblingspan" ] );
-	t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
+	assert.t( "Multiple combinators selects all levels", "#siblingTest em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
+	assert.t( "Multiple combinators selects all levels", "#siblingTest > em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
+	assert.t( "Multiple sibling combinators doesn't miss general siblings", "#siblingTest > em:first-child + em ~ span", [ "siblingspan" ] );
+	assert.t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
 
 	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for next test is found via ID (#8310)" );
 	assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (#8310)" );
 	assert.equal( jQuery( "#__sizzle__" ).length, 0, "Make sure the temporary id assigned by sizzle is cleared out (#8310)" );
 	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for previous test is still found via ID (#8310)" );
 
-	t( "Verify deep class selector", "div.blah > p > a", [] );
+	assert.t( "Verify deep class selector", "div.blah > p > a", [] );
 
-	t( "No element deep selector", "div.foo > span > a", [] );
+	assert.t( "No element deep selector", "div.foo > span > a", [] );
 
 	nothiddendiv = document.getElementById( "nothiddendiv" );
 
-	t( "Non-existent ancestors", ".fototab > .thumbnails > a", [] );
+	assert.t( "Non-existent ancestors", ".fototab > .thumbnails > a", [] );
 } );
 
 QUnit.test( "attributes", function( assert ) {
@@ -146,60 +146,60 @@ QUnit.test( "attributes", function( assert ) {
 
 	var attrbad, div, withScript;
 
-	t( "Find elements with a tabindex attribute", "[tabindex]", [ "listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex" ] );
+	assert.t( "Find elements with a tabindex attribute", "[tabindex]", [ "listWithTabIndex", "foodWithNegativeTabIndex", "linkWithTabIndex", "linkWithNegativeTabIndex", "linkWithNoHrefWithTabIndex", "linkWithNoHrefWithNegativeTabIndex" ] );
 
-	t( "Attribute Exists", "#qunit-fixture a[title]", [ "google" ] );
-	t( "Attribute Exists (case-insensitive)", "#qunit-fixture a[TITLE]", [ "google" ] );
-	t( "Attribute Exists", "#qunit-fixture *[title]", [ "google" ] );
-	t( "Attribute Exists", "#qunit-fixture [title]", [ "google" ] );
-	t( "Attribute Exists", "#qunit-fixture a[ title ]", [ "google" ] );
+	assert.t( "Attribute Exists", "#qunit-fixture a[title]", [ "google" ] );
+	assert.t( "Attribute Exists (case-insensitive)", "#qunit-fixture a[TITLE]", [ "google" ] );
+	assert.t( "Attribute Exists", "#qunit-fixture *[title]", [ "google" ] );
+	assert.t( "Attribute Exists", "#qunit-fixture [title]", [ "google" ] );
+	assert.t( "Attribute Exists", "#qunit-fixture a[ title ]", [ "google" ] );
 
-	t( "Boolean attribute exists", "#select2 option[selected]", [ "option2d" ] );
-	t( "Boolean attribute equals", "#select2 option[selected='selected']", [ "option2d" ] );
+	assert.t( "Boolean attribute exists", "#select2 option[selected]", [ "option2d" ] );
+	assert.t( "Boolean attribute equals", "#select2 option[selected='selected']", [ "option2d" ] );
 
-	t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
-	t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
-	t( "Attribute Equals", "#qunit-fixture a[rel=bookmark]", [ "simon1" ] );
-	t( "Attribute Equals", "#qunit-fixture a[href='http://www.google.com/']", [ "google" ] );
-	t( "Attribute Equals", "#qunit-fixture a[ rel = 'bookmark' ]", [ "simon1" ] );
-	t( "Attribute Equals Number", "#qunit-fixture option[value=1]", [ "option1b","option2b","option3b","option4b","option5c" ] );
-	t( "Attribute Equals Number", "#qunit-fixture li[tabIndex=-1]", [ "foodWithNegativeTabIndex" ] );
+	assert.t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
+	assert.t( "Attribute Equals", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
+	assert.t( "Attribute Equals", "#qunit-fixture a[rel=bookmark]", [ "simon1" ] );
+	assert.t( "Attribute Equals", "#qunit-fixture a[href='http://www.google.com/']", [ "google" ] );
+	assert.t( "Attribute Equals", "#qunit-fixture a[ rel = 'bookmark' ]", [ "simon1" ] );
+	assert.t( "Attribute Equals Number", "#qunit-fixture option[value=1]", [ "option1b","option2b","option3b","option4b","option5c" ] );
+	assert.t( "Attribute Equals Number", "#qunit-fixture li[tabIndex=-1]", [ "foodWithNegativeTabIndex" ] );
 
 	document.getElementById( "anchor2" ).href = "#2";
-	t( "href Attribute", "p a[href^='#']", [ "anchor2" ] );
-	t( "href Attribute", "p a[href*='#']", [ "simon1", "anchor2" ] );
+	assert.t( "href Attribute", "p a[href^='#']", [ "anchor2" ] );
+	assert.t( "href Attribute", "p a[href*='#']", [ "simon1", "anchor2" ] );
 
-	t( "for Attribute", "form label[for]", [ "label-for" ] );
-	t( "for Attribute in form", "#form [for=action]", [ "label-for" ] );
+	assert.t( "for Attribute", "form label[for]", [ "label-for" ] );
+	assert.t( "for Attribute in form", "#form [for=action]", [ "label-for" ] );
 
-	t( "Attribute containing []", "input[name^='foo[']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name^='foo[bar]']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name*='[bar]']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name$='bar]']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name$='[bar]']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name$='foo[bar]']", [ "hidden2" ] );
-	t( "Attribute containing []", "input[name*='foo[bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name^='foo[']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name^='foo[bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name*='[bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name$='bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name$='[bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name$='foo[bar]']", [ "hidden2" ] );
+	assert.t( "Attribute containing []", "input[name*='foo[bar]']", [ "hidden2" ] );
 
-	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type='hidden']", [ "radio1", "radio2", "hidden1" ] );
-	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=\"hidden\"]", [ "radio1", "radio2", "hidden1" ] );
-	t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=hidden]", [ "radio1", "radio2", "hidden1" ] );
+	assert.t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type='hidden']", [ "radio1", "radio2", "hidden1" ] );
+	assert.t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=\"hidden\"]", [ "radio1", "radio2", "hidden1" ] );
+	assert.t( "Multiple Attribute Equals", "#form input[type='radio'], #form input[type=hidden]", [ "radio1", "radio2", "hidden1" ] );
 
-	t( "Attribute selector using UTF8", "span[lang=中文]", [ "台北" ] );
+	assert.t( "Attribute selector using UTF8", "span[lang=中文]", [ "台北" ] );
 
-	t( "Attribute Begins With", "a[href ^= 'http://www']", [ "google","yahoo" ] );
-	t( "Attribute Ends With", "a[href $= 'org/']", [ "mark" ] );
-	t( "Attribute Contains", "a[href *= 'google']", [ "google","groups" ] );
-	t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", [ "google","groups","anchor1" ] );
+	assert.t( "Attribute Begins With", "a[href ^= 'http://www']", [ "google","yahoo" ] );
+	assert.t( "Attribute Ends With", "a[href $= 'org/']", [ "mark" ] );
+	assert.t( "Attribute Contains", "a[href *= 'google']", [ "google","groups" ] );
+	assert.t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", [ "google","groups","anchor1" ] );
 
-	t( "Empty values", "#select1 option[value='']", [ "option1a" ] );
-	t( "Empty values", "#select1 option[value!='']", [ "option1b","option1c","option1d" ] );
+	assert.t( "Empty values", "#select1 option[value='']", [ "option1a" ] );
+	assert.t( "Empty values", "#select1 option[value!='']", [ "option1b","option1c","option1d" ] );
 
-	t( "Select options via :selected", "#select1 option:selected", [ "option1a" ] );
-	t( "Select options via :selected", "#select2 option:selected", [ "option2d" ] );
-	t( "Select options via :selected", "#select3 option:selected", [ "option3b", "option3c" ] );
-	t( "Select options via :selected", "select[name='select2'] option:selected", [ "option2d" ] );
+	assert.t( "Select options via :selected", "#select1 option:selected", [ "option1a" ] );
+	assert.t( "Select options via :selected", "#select2 option:selected", [ "option2d" ] );
+	assert.t( "Select options via :selected", "#select3 option:selected", [ "option3b", "option3c" ] );
+	assert.t( "Select options via :selected", "select[name='select2'] option:selected", [ "option2d" ] );
 
-	t( "Grouped Form Elements", "input[name='foo[bar]']", [ "hidden2" ] );
+	assert.t( "Grouped Form Elements", "input[name='foo[bar]']", [ "hidden2" ] );
 
 	// Make sure attribute value quoting works correctly. See jQuery #6093; #6428; #13894
 	// Use seeded results to bypass querySelectorAll optimizations
@@ -215,23 +215,23 @@ QUnit.test( "attributes", function( assert ) {
 		"<input type='hidden' id='attrbad_unicode' data-attr='&#x4e00;'/>"
 	).appendTo( "#qunit-fixture" ).get();
 
-	t( "Underscores don't need escaping", "input[id=types_all]", [ "types_all" ] );
+	assert.t( "Underscores don't need escaping", "input[id=types_all]", [ "types_all" ] );
 
-	t( "input[type=text]", "#form input[type=text]", [ "text1", "text2", "hidden2", "name" ] );
-	t( "input[type=search]", "#form input[type=search]", [ "search" ] );
+	assert.t( "input[type=text]", "#form input[type=text]", [ "text1", "text2", "hidden2", "name" ] );
+	assert.t( "input[type=search]", "#form input[type=search]", [ "search" ] );
 
 	withScript = supportjQuery( "<div><span><script src=''/></span></div>" );
 	assert.ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery #13777)" );
 
 	div = document.getElementById( "foo" );
-	t( "Object.prototype property \"constructor\" (negative)", "[constructor]", [] );
-	t( "Gecko Object.prototype property \"watch\" (negative)", "[watch]", [] );
+	assert.t( "Object.prototype property \"constructor\" (negative)", "[constructor]", [] );
+	assert.t( "Gecko Object.prototype property \"watch\" (negative)", "[watch]", [] );
 	div.setAttribute( "constructor", "foo" );
 	div.setAttribute( "watch", "bar" );
-	t( "Object.prototype property \"constructor\"", "[constructor='foo']", [ "foo" ] );
-	t( "Gecko Object.prototype property \"watch\"", "[watch='bar']", [ "foo" ] );
+	assert.t( "Object.prototype property \"constructor\"", "[constructor='foo']", [ "foo" ] );
+	assert.t( "Gecko Object.prototype property \"watch\"", "[watch='bar']", [ "foo" ] );
 
-	t( "Value attribute is retrieved correctly", "input[value=Test]", [ "text1", "text2" ] );
+	assert.t( "Value attribute is retrieved correctly", "input[value=Test]", [ "text1", "text2" ] );
 
 	// #12600
 	assert.ok(

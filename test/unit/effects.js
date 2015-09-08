@@ -89,7 +89,7 @@ QUnit.test( "show()", function( assert ) {
 	} );
 
 	// Tolerate data from show()/hide()
-	QUnit.expectJqData( this, div, "olddisplay" );
+	assert.expectJqData( this, div, "olddisplay" );
 
 	jQuery(
 		"<div id='show-tests'>" +
@@ -222,7 +222,7 @@ QUnit.test( "Persist correct display value", function( assert ) {
 
 	clock.tick( 300 );
 
-	QUnit.expectJqData( this, $span, "olddisplay" );
+	assert.expectJqData( this, $span, "olddisplay" );
 } );
 
 QUnit.test( "animate(Hash, Object, Function)", function( assert ) {
@@ -1123,7 +1123,7 @@ QUnit.test( "interrupt toggle", function( assert ) {
 			jQuery.data( this, "startVal", jQuery( this ).css( prop ) );
 
 			// Expect olddisplay data from our .hide() call below
-			QUnit.expectJqData( env, this, "olddisplay" );
+			assert.expectJqData( env, this, "olddisplay" );
 		} );
 
 		// Interrupt a hiding toggle
@@ -1576,7 +1576,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 	assert.strictEqual( $divInline.show()[ 0 ].style.display, "inline",
 		"show() should not change display if it already set" );
 
-	QUnit.expectJqData( env, $divNone[ 0 ], "olddisplay" );
+	assert.expectJqData( env, $divNone[ 0 ], "olddisplay" );
 
 	jQuery.each( methods, function( name, opt ) {
 		jQuery.fn[ name ].apply( jQuery( "<div/>" ), opt.concat( [ function() {

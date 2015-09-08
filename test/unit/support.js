@@ -40,14 +40,14 @@ testIframeWithCallback(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"support/csp.php",
 	function( support, assert ) {
+		var done = assert.async();
+
 		assert.expect( 2 );
 		assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
 
-		QUnit.stop();
-
 		supportjQuery.get( "data/support/csp.log" ).done( function( data ) {
 			assert.equal( data, "", "No log request should be sent" );
-			supportjQuery.get( "data/support/csp-clean.php" ).done( start );
+			supportjQuery.get( "data/support/csp-clean.php" ).done( done );
 		} );
 	}
 );
