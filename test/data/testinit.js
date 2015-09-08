@@ -271,7 +271,7 @@ QUnit.config.autostart = false;
 this.loadTests = function() {
 	var loadSwarm,
 		url = window.location.search,
-		basicTests = url.substring( 1 ).split( "&" ).indexOf( "module=basic" ) > -1;
+		basicTests = jQuery.inArray( "module=basic", url.substring( 1 ).split( "&" ) ) > -1;
 
 	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
 	loadSwarm = url && url.indexOf( "http" ) === 0;
