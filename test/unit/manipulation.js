@@ -99,11 +99,11 @@ function testText( valueObj, assert ) {
 }
 
 QUnit.test( "text(String)", function( assert ) {
-	testText(manipulationBareObj,  assert );
+	testText( manipulationBareObj,  assert );
 } );
 
 QUnit.test( "text(Function)", function( assert ) {
-	testText(manipulationFunctionReturningObj,  assert );
+	testText( manipulationFunctionReturningObj,  assert );
 } );
 
 QUnit.test( "text(Function) with incoming value", function( assert ) {
@@ -198,8 +198,8 @@ function testAppend( valueObj, assert ) {
 
 	assert.expect( 78 );
 
-	testAppendForObject( valueObj,false, assert  );
-	testAppendForObject( valueObj,true, assert  );
+	testAppendForObject( valueObj, false, assert  );
+	testAppendForObject( valueObj, true, assert  );
 
 	var defaultText, result, message, iframe, iframeDoc, j, d,
 		$input, $radioChecked, $radioUnchecked, $radioParent, $map, $table;
@@ -306,11 +306,11 @@ function testAppend( valueObj, assert ) {
 }
 
 QUnit.test( "append(String|Element|Array<Element>|jQuery)", function( assert ) {
-	testAppend(manipulationBareObj, assert  );
+	testAppend( manipulationBareObj, assert  );
 } );
 
 QUnit.test( "append(Function)", function( assert ) {
-	testAppend(manipulationFunctionReturningObj, assert  );
+	testAppend( manipulationFunctionReturningObj, assert  );
 } );
 
 QUnit.test( "append(param) to object, see #11280", function( assert ) {

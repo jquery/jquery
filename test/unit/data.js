@@ -535,8 +535,8 @@ QUnit.test( "data-* attributes", function( assert ) {
 		child.data( "notjson" ), " {}",
 		"JSON object with leading non-JSON read from attribute as string" );
 	assert.strictEqual(
-		child.data("notjson2"), "[] ",
-		"JSON array with trailing non-JSON read from attribute as string");
+		child.data( "notjson2" ), "[] ",
+		"JSON array with trailing non-JSON read from attribute as string" );
 	assert.strictEqual(
 		child.data( "empty" ), "", "Empty string read from attribute"
 	);
@@ -1128,8 +1128,9 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 	var key,
 		div = jQuery( "<div/>" );
 
-	div.data("foo");
-	assert.equal( false, jQuery.hasData( div[0] ) );
+	div.data( "foo" );
+	assert.equal( false, jQuery.hasData( div[ 0 ] ) );
+
 	// Make sure no expando has been added
 	for ( key in div[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {

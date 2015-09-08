@@ -1373,7 +1373,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 
 if ( jQuery.support.createHTMLDocument ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
-		assert.expect ( 1 );
+		assert.expect( 1 );
 
 		Globals.register( "parseHTMLError" );
 

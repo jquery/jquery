@@ -792,7 +792,7 @@ QUnit.module( "ajax", {
 						);
 					}
 
-					jQuery.ajax({
+					jQuery.ajax( {
 						url: "data/jsonp.php",
 						dataType: "jsonp",
 						crossDomain: crossDomain,
@@ -800,7 +800,7 @@ QUnit.module( "ajax", {
 							assert.strictEqual( this.jsonpCallback, previous.callback, "JSONP callback name is re-used" );
 							return false;
 						}
-					});
+					} );
 				}
 			};
 		} );
@@ -1549,7 +1549,7 @@ QUnit.module( "ajax", {
 					assert.ok( false, "error" );
 				}
 			};
-		});
+		} );
 	}
 
 	ajaxTest( "#14683 - jQuery.ajax() - Exceptions thrown synchronously by xhr.send should be caught", 4, function( assert ) {
@@ -1581,8 +1581,6 @@ QUnit.module( "ajax", {
 			} ];
 		}
 	);
-
-
 
 // //----------- jQuery.ajaxPrefilter()
 
