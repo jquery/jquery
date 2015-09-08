@@ -824,25 +824,25 @@ QUnit.test( "acceptData", function( assert ) {
 
 	var flash, pdf, form;
 
-	assert.equal( 42, jQuery( document ).data( "test", 42 ).data( "test" ), "document" );
-	assert.equal( 42, jQuery( document.documentElement ).data( "test", 42 ).data( "test" ), "documentElement" );
-	assert.equal( 42, jQuery( {} ).data( "test", 42 ).data( "test" ), "object" );
-	assert.equal( 42, jQuery( document.createElement( "embed" ) ).data( "test", 42 ).data( "test" ), "embed" );
+	assert.equal( jQuery( document ).data( "test", 42 ).data( "test" ), 42, "document" );
+	assert.equal( jQuery( document.documentElement ).data( "test", 42 ).data( "test" ), 42, "documentElement" );
+	assert.equal( jQuery( {} ).data( "test", 42 ).data( "test" ), 42, "object" );
+	assert.equal( jQuery( document.createElement( "embed" ) ).data( "test", 42 ).data( "test" ), 42, "embed" );
 
 	flash = document.createElement( "object" );
 	flash.setAttribute( "classid", "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" );
-	assert.equal( 42, jQuery( flash ).data( "test", 42 ).data( "test" ), "flash" );
+	assert.equal( jQuery( flash ).data( "test", 42 ).data( "test" ), 42, "flash" );
 
 	pdf = document.createElement( "object" );
 	pdf.setAttribute( "classid", "clsid:CA8A9780-280D-11CF-A24D-444553540000" );
-	assert.equal( 42, jQuery( pdf ).data( "test", 42 ).data( "test" ), "pdf" );
+	assert.equal( jQuery( pdf ).data( "test", 42 ).data( "test" ), 42, "pdf" );
 
-	assert.equal( undefined, jQuery( document.createComment( "" ) ).data( "test", 42 ).data( "test" ), "comment" );
-	assert.equal( undefined, jQuery( document.createTextNode( "" ) ).data( "test", 42 ).data( "test" ), "text" );
-	assert.equal( undefined, jQuery( document.createDocumentFragment() ).data( "test", 42 ).data( "test" ), "documentFragment" );
+	assert.strictEqual( jQuery( document.createComment( "" ) ).data( "test", 42 ).data( "test" ), undefined, "comment" );
+	assert.strictEqual( jQuery( document.createTextNode( "" ) ).data( "test", 42 ).data( "test" ), undefined, "text" );
+	assert.strictEqual( jQuery( document.createDocumentFragment() ).data( "test", 42 ).data( "test" ), undefined, "documentFragment" );
 
 	form = jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ];
-	assert.equal( 42, jQuery( form ) .data( "test", 42 ).data( "test" ), "form with aliased DOM properties" );
+	assert.equal( jQuery( form ) .data( "test", 42 ).data( "test" ), 42, "form with aliased DOM properties" );
 } );
 
 QUnit.test( "Check proper data removal of non-element descendants nodes (#8335)", function( assert ) {
@@ -906,8 +906,9 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 	var key,
 		div = jQuery( "<div/>" );
 
-	div.data("foo");
-	assert.equal( false, jQuery.hasData( div[0] ) );
+	div.data( "foo" );
+	assert.equal( jQuery.hasData( div[ 0 ] ), false, "No data exists after access" );
+
 	// Make sure no expando has been added
 	for ( key in div[ 0 ] ) {
 		if ( /^jQuery/.test( key ) ) {
