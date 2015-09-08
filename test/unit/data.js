@@ -1129,7 +1129,7 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 		div = jQuery( "<div/>" );
 
 	div.data( "foo" );
-	assert.equal( false, jQuery.hasData( div[ 0 ] ) );
+	assert.equal( jQuery.hasData( div[ 0 ] ), false, "No data exists after access" );
 
 	// Make sure no expando has been added
 	for ( key in div[ 0 ] ) {
