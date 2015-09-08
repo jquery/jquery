@@ -30,7 +30,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	// few here but beware of modular builds where these methods may be excluded.
 	if ( jQuery.fn.click ) {
 		expected++;
-		attrObj[ "click" ] = function() { ok( exec, "Click executed." ); };
+		attrObj[ "click" ] = function() { assert.ok( exec, "Click executed." ); };
 	}
 	if ( jQuery.fn.width ) {
 		expected++;
@@ -1303,7 +1303,9 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	assert.expect( 9 );
 
 	var test2, test3, test4, fn, cb,
-		test = function() { equal( this, thisObject, "Make sure that scope is set properly." ); },
+		test = function() {
+			assert.equal( this, thisObject, "Make sure that scope is set properly." );
+		},
 		thisObject = { foo: "bar", method: test };
 
 	// Make sure normal works
@@ -1319,15 +1321,21 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	assert.equal( jQuery.proxy( null, thisObject ), undefined, "Make sure no function was returned." );
 
 	// Partial application
-	test2 = function( a ) { equal( a, "pre-applied", "Ensure arguments can be pre-applied." ); };
+	test2 = function( a ) {
+		assert.equal( a, "pre-applied", "Ensure arguments can be pre-applied." );
+	};
 	jQuery.proxy( test2, null, "pre-applied" )();
 
 	// Partial application w/ normal arguments
-	test3 = function( a, b ) { equal( b, "normal", "Ensure arguments can be pre-applied and passed as usual." ); };
+	test3 = function( a, b ) {
+		assert.equal( b, "normal", "Ensure arguments can be pre-applied and passed as usual." );
+	};
 	jQuery.proxy( test3, null, "pre-applied" )( "normal" );
 
 	// Test old syntax
-	test4 = { "meth": function( a ) { equal( a, "boom", "Ensure old syntax works." ); } };
+	test4 = { "meth": function( a ) {
+		assert.equal( a, "boom", "Ensure old syntax works." );
+	} };
 	jQuery.proxy( test4, "meth" )( "boom" );
 
 	// jQuery 1.9 improved currying with `this` object
@@ -1386,7 +1394,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 
 if ( jQuery.support.createHTMLDocument ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
-		expect ( 1 );
+		assert.expect ( 1 );
 
 		Globals.register( "parseHTMLError" );
 

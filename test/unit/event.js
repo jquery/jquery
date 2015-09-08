@@ -235,7 +235,7 @@ QUnit.test( "on(), namespace with special add", function( assert ) {
 QUnit.test( "on(), no data", function( assert ) {
 	assert.expect( 1 );
 	var handler = function( event ) {
-		ok ( !event.data, "Check that no data is added to the event object" );
+		assert.ok( !event.data, "Check that no data is added to the event object" );
 	};
 	jQuery( "#firstp" ).on( "click", handler ).trigger( "click" );
 } );
@@ -1608,17 +1608,23 @@ QUnit.test( ".on()/.off()", function( assert ) {
 	assert.equal( clicked, 2, "off with a context" );
 
 	// Test binding with event data
-	jQuery( "#body" ).on( "click", "#foo", true, function( e ) { equal( e.data, true, "on with event data" ); } );
+	jQuery( "#body" ).on( "click", "#foo", true, function( e ) {
+		assert.equal( e.data, true, "on with event data" );
+	} );
 	jQuery( "#foo" ).trigger( "click" );
 	jQuery( "#body" ).off( "click", "#foo" );
 
 	// Test binding with trigger data
-	jQuery( "#body" ).on( "click", "#foo", function( e, data ) { equal( data, true, "on with trigger data" ); } );
+	jQuery( "#body" ).on( "click", "#foo", function( e, data ) {
+		assert.equal( data, true, "on with trigger data" );
+	} );
 	jQuery( "#foo" ).trigger( "click", true );
 	jQuery( "#body" ).off( "click", "#foo" );
 
 	// Test binding with different this object
-	jQuery( "#body" ).on( "click", "#foo", jQuery.proxy( function() { equal( this[ "foo" ], "bar", "on with event scope" ); }, { "foo": "bar" } ) );
+	jQuery( "#body" ).on( "click", "#foo", jQuery.proxy( function() {
+		assert.equal( this[ "foo" ], "bar", "on with event scope" ); }, { "foo": "bar" }
+	) );
 	jQuery( "#foo" ).trigger( "click" );
 	jQuery( "#body" ).off( "click", "#foo" );
 

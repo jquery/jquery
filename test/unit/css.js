@@ -899,7 +899,7 @@ testIframeWithCallback(
 } )();
 
 QUnit.test( "certain css values of 'normal' should be convertable to a number, see #8627", function( assert ) {
-	expect ( 3 );
+	assert.expect( 3 );
 
 	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
@@ -1013,9 +1013,9 @@ QUnit.test( ":visible/:hidden selectors", function( assert ) {
 	$table.css( "display", "none" ).html( "<tr><td>cell</td><td>cell</td></tr>" );
 	assert.equal( jQuery( "#table td:visible" ).length, 0, "hidden cell children not perceived as visible (#4512)" );
 
-	t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
-	t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
-	t( "Is Hidden", "#form input:hidden", [ "hidden1","hidden2" ] );
+	assert.t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
+	assert.t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
+	assert.t( "Is Hidden", "#form input:hidden", [ "hidden1","hidden2" ] );
 
 	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
 	assert.ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
@@ -1041,87 +1041,92 @@ QUnit.test( "Reset the style if set to an empty string", function( assert ) {
 		"The style can be reset by setting to an empty string" );
 } );
 
-QUnit.asyncTest( "Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)", 24, function( assert ) {
-	var baseUrl = document.location.href.replace( /([^\/]*)$/, "" ),
-	styles = [ {
-			name: "backgroundAttachment",
-			value: [ "fixed" ],
-			expected: [ "scroll" ]
-		},{
-			name: "backgroundColor",
-			value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
-			expected: [ "transparent" ]
-		}, {
+QUnit.test(
+	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
+	24,
+	function( assert ) {
+		var baseUrl = document.location.href.replace( /([^\/]*)$/, "" );
+		var done = assert.async();
+		var styles = [ {
+				name: "backgroundAttachment",
+				value: [ "fixed" ],
+				expected: [ "scroll" ]
+			},{
+				name: "backgroundColor",
+				value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
+				expected: [ "transparent" ]
+			}, {
 
-			// Firefox returns auto's value
-			name: "backgroundImage",
-			value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
-			expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
-		}, {
-			name: "backgroundPosition",
-			value: [ "5% 5%" ],
-			expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ]
-		}, {
+				// Firefox returns auto's value
+				name: "backgroundImage",
+				value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
+				expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
+			}, {
+				name: "backgroundPosition",
+				value: [ "5% 5%" ],
+				expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ]
+			}, {
 
-			// Firefox returns no-repeat
-			name: "backgroundRepeat",
-			value: [ "repeat-y" ],
-			expected: [ "repeat", "no-repeat" ]
-		}, {
-			name: "backgroundClip",
-			value: [ "padding-box" ],
-			expected: [ "border-box" ]
-		}, {
-			name: "backgroundOrigin",
-			value: [ "content-box" ],
-			expected: [ "padding-box" ]
-		}, {
-			name: "backgroundSize",
-			value: [ "80px 60px" ],
-			expected: [ "auto auto" ]
-	} ];
+				// Firefox returns no-repeat
+				name: "backgroundRepeat",
+				value: [ "repeat-y" ],
+				expected: [ "repeat", "no-repeat" ]
+			}, {
+				name: "backgroundClip",
+				value: [ "padding-box" ],
+				expected: [ "border-box" ]
+			}, {
+				name: "backgroundOrigin",
+				value: [ "content-box" ],
+				expected: [ "padding-box" ]
+			}, {
+				name: "backgroundSize",
+				value: [ "80px 60px" ],
+				expected: [ "auto auto" ]
+		} ];
 
-	jQuery.each( styles, function( index, style ) {
-		var $clone, $clonedChildren,
-			$source = jQuery( "#firstp" ),
-			source = $source[ 0 ],
-			$children = $source.children();
+		jQuery.each( styles, function( index, style ) {
+			var $clone, $clonedChildren,
+				$source = jQuery( "#firstp" ),
+				source = $source[ 0 ],
+				$children = $source.children();
 
-		style.expected = style.expected.concat( [ "", "auto" ] );
+			style.expected = style.expected.concat( [ "", "auto" ] );
 
-		if ( source.style[ style.name ] === undefined ) {
-			assert.ok( true, style.name +  ": style isn't supported and therefore not an issue" );
-			assert.ok( true );
+			if ( source.style[ style.name ] === undefined ) {
+				assert.ok( true, style.name +  ": style isn't supported and therefore not an issue" );
+				assert.ok( true );
 
-			return true;
-		}
+				return true;
+			}
 
-		$source.css( style.name, style.value[ 0 ] );
-		$children.css( style.name, style.value[ 0 ] );
+			$source.css( style.name, style.value[ 0 ] );
+			$children.css( style.name, style.value[ 0 ] );
 
-		$clone = $source.clone();
-		$clonedChildren = $clone.children();
+			$clone = $source.clone();
+			$clonedChildren = $clone.children();
 
-		$clone.css( style.name, "" );
-		$clonedChildren.css( style.name, "" );
+			$clone.css( style.name, "" );
+			$clonedChildren.css( style.name, "" );
 
-		window.setTimeout( function() {
-			assert.notEqual( $clone.css( style.name ), style.value[ 0 ], "Cloned css was changed" );
+			window.setTimeout( function() {
+				assert.notEqual( $clone.css( style.name ), style.value[ 0 ], "Cloned css was changed" );
 
-			assert.ok( jQuery.inArray( $source.css( style.name ) !== -1, style.value ),
-				"Clearing clone.css() doesn't affect source.css(): " + style.name +
-				"; result: " + $source.css( style.name ) +
-				"; expected: " + style.value.join( "," ) );
+				assert.ok( jQuery.inArray( $source.css( style.name ) !== -1, style.value ),
+					"Clearing clone.css() doesn't affect source.css(): " + style.name +
+					"; result: " + $source.css( style.name ) +
+					"; expected: " + style.value.join( "," ) );
 
-			assert.ok( jQuery.inArray( $children.css( style.name ) !== -1, style.value ),
-				"Clearing clonedChildren.css() doesn't affect children.css(): " + style.name +
-				"; result: " + $children.css( style.name ) +
-				"; expected: " + style.value.join( "," ) );
-		}, 100 );
-	} );
+				assert.ok( jQuery.inArray( $children.css( style.name ) !== -1, style.value ),
+					"Clearing clonedChildren.css() doesn't affect children.css(): " + style.name +
+					"; result: " + $children.css( style.name ) +
+					"; expected: " + style.value.join( "," ) );
+			}, 100 );
+		} );
 
-	window.setTimeout( start, 1000 );
-} );
+		window.setTimeout( done, 1000 );
+	}
+);
 
 QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
 	assert.expect( 1 );

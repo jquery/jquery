@@ -242,7 +242,7 @@ function testAppend( valueObj, assert ) {
 	}
 
 	jQuery( "<fieldset/>" ).appendTo( "#form" ).append( valueObj( "<legend id='legend'>test</legend>" ) );
-	t( "Append legend", "#legend", [ "legend" ] );
+	assert.t( "Append legend", "#legend", [ "legend" ] );
 
 	$map = jQuery( "<map/>" ).append( valueObj( "<area id='map01' shape='rect' coords='50,50,150,150' href='http://www.jquery.com/' alt='jQuery'>" ) );
 
@@ -270,7 +270,7 @@ function testAppend( valueObj, assert ) {
 	jQuery( "#form" )
 		.append( valueObj( "<select id='appendSelect1'></select>" ) )
 		.append( valueObj( "<select id='appendSelect2'><option>Test</option></select>" ) );
-	t( "Append Select", "#appendSelect1, #appendSelect2", [ "appendSelect1", "appendSelect2" ] );
+	assert.t( "Append Select", "#appendSelect1, #appendSelect2", [ "appendSelect1", "appendSelect2" ] );
 
 	assert.equal( "Two nodes", jQuery( "<div />" ).append( "Two", " nodes" ).text(), "Appending two text nodes (#4011)" );
 	assert.equal( jQuery( "<div />" ).append( "1", "", 3 ).text(), "13", "If median is false-like value, subsequent arguments should not be ignored" );
@@ -607,7 +607,7 @@ QUnit.test( "appendTo(jQuery)", function( assert ) {
 	assert.equal( jQuery( "#sap" ).text(), expected, "Check for appending of jQuery object" );
 
 	jQuery( "#select1" ).appendTo( "#foo" );
-	t( "Append select", "#foo select", [ "select1" ] );
+	assert.t( "Append select", "#foo select", [ "select1" ] );
 
 	div = jQuery( "<div/>" ).on( "click", function() {
 		assert.ok( true, "Running a cloned click." );
@@ -814,7 +814,7 @@ QUnit.test( "prependTo(Array<jQuery>)", function( assert ) {
 	jQuery( "<select id='prependSelect1'></select>" ).prependTo( "#form" );
 	jQuery( "<select id='prependSelect2'><option>Test</option></select>" ).prependTo( "#form" );
 
-	t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
+	assert.t( "Prepend Select", "#prependSelect2, #prependSelect1", [ "prependSelect2", "prependSelect1" ] );
 } );
 
 QUnit.test( "before(String)", function( assert ) {
