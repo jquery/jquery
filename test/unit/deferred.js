@@ -505,12 +505,14 @@ QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
 	} );
 } );
 
-QUnit.asyncTest( "jQuery.Deferred.then - spec compatibility", function( assert ) {
+QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 
 	assert.expect( 1 );
 
+	var done = assert.async();
+
 	var defer = jQuery.Deferred().done( function() {
-		setTimeout( start );
+		setTimeout( done );
 		throw new Error();
 	} );
 

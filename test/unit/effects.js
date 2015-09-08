@@ -91,7 +91,7 @@ QUnit.test( "show()", function( assert ) {
 	} );
 
 	// Tolerate data from show()/hide()
-	QUnit.expectJqData( this, div, "display" );
+	assert.expectJqData( this, div, "display" );
 
 	jQuery(
 		"<div id='show-tests'>" +
@@ -222,7 +222,7 @@ QUnit.test( "Persist correct display value", function( assert ) {
 
 	clock.tick( 300 );
 
-	QUnit.expectJqData( this, $span, "display" );
+	assert.expectJqData( this, $span, "display" );
 } );
 
 QUnit.test( "animate(Hash, Object, Function)", function( assert ) {
@@ -1141,7 +1141,7 @@ QUnit.test( "interrupt toggle", function( assert ) {
 			jQuery.data( this, "startVal", jQuery( this ).css( prop ) );
 
 			// Expect display data from our .hide() call below
-			QUnit.expectJqData( env, this, "display" );
+			assert.expectJqData( env, this, "display" );
 		} );
 
 		// Interrupt a hiding toggle

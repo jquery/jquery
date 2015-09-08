@@ -1266,7 +1266,7 @@ var testToggleClass = function( valueObj, assert ) {
 
 	// Cleanup
 	e.removeClass( "testD" );
-	QUnit.expectJqData( this, e[ 0 ], "__className__" );
+	assert.expectJqData( this, e[ 0 ], "__className__" );
 };
 
 QUnit.test( "toggleClass(String|boolean|undefined[, boolean])", function( assert ) {
@@ -1469,7 +1469,7 @@ QUnit.test( "option value not trimmed when setting via parent select", function(
 } );
 
 QUnit.test( "Insignificant white space returned for $(option).val() (#14858)", function( assert ) {
-	expect ( 3 );
+	assert.expect( 3 );
 
 	var val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );

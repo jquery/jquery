@@ -38,7 +38,7 @@ this.q = function() {
  * @example t("Check for something", "//[a]", ["foo", "baar"]);
  * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
  */
-this.t = function( a, b, c ) {
+QUnit.assert.t = function( a, b, c ) {
 	var f = jQuery( b ).get(),
 		s = "",
 		i = 0;
@@ -47,7 +47,7 @@ this.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
+	this.deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
 };
 
 this.createDashboardXML = function() {
@@ -199,7 +199,7 @@ this.ajaxTest = function( title, expect, options ) {
 			if ( !completed ) {
 				completed = true;
 				delete ajaxTest.abort;
-				ok( false, "aborted " + reason );
+				assert.ok( false, "aborted " + reason );
 				jQuery.each( requests, function( i, request ) {
 					request.abort();
 				} );
