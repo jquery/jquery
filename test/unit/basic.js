@@ -200,7 +200,7 @@ QUnit.test( "manipulation", function( assert ) {
 
 		// Support: IE 8 only
 		// IE 8 prints tag names in upper case.
-		elem1.html(),
+		elem1.html().toLowerCase(),
 		"<div></div><b></b><span></span><a></a>",
 		".after/.before"
 	);
