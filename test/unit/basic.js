@@ -179,7 +179,15 @@ QUnit.test( "manipulation", function( assert ) {
 		elem2 = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( elem1.text( "foo" ).text(), "foo", ".html getter/setter" );
-	assert.strictEqual( elem1.html( "<span/>" ).html(), "<span></span>", ".html getter/setter" );
+
+	assert.strictEqual(
+
+		// Support: IE 8 only
+		// IE 8 prints tag names in upper case.
+		elem1.html( "<span/>" ).html().toLowerCase(),
+		"<span></span>",
+		".html getter/setter"
+	);
 
 	assert.strictEqual( elem1.append( elem2 )[ 0 ].childNodes[ 1 ], elem2[ 0 ], ".append" );
 	assert.strictEqual( elem1.prepend( elem2 )[ 0 ].childNodes[ 0 ], elem2[ 0 ], ".prepend" );
@@ -187,7 +195,15 @@ QUnit.test( "manipulation", function( assert ) {
 	child = elem1.find( "span" );
 	child.after( "<a/>" );
 	child.before( "<b/>" );
-	assert.strictEqual( elem1.html(), "<div></div><b></b><span></span><a></a>", ".after/.before" );
+
+	assert.strictEqual(
+
+		// Support: IE 8 only
+		// IE 8 prints tag names in upper case.
+		elem1.html(),
+		"<div></div><b></b><span></span><a></a>",
+		".after/.before"
+	);
 } );
 
 QUnit.test( "offset", function( assert ) {
@@ -251,12 +267,34 @@ QUnit.test( "wrap", function( assert ) {
 	var elem = jQuery( "<div><a><b></b></a><a></a></div>" );
 
 	elem.find( "b" ).wrap( "<span>" );
-	assert.strictEqual( elem.html(), "<a><span><b></b></span></a><a></a>", ".wrap" );
-	elem.find( "span" ).wrapInner( "<em>" );
-	assert.strictEqual( elem.html(), "<a><span><em><b></b></em></span></a><a></a>", ".wrapInner" );
-	elem.find( "a" ).wrapAll( "<i>" );
+
 	assert.strictEqual(
-		elem.html(),
+
+		// Support: IE 8 only
+		// IE 8 prints tag names in upper case.
+		elem.html().toLowerCase(),
+		"<a><span><b></b></span></a><a></a>",
+		".wrap"
+	);
+
+	elem.find( "span" ).wrapInner( "<em>" );
+
+	assert.strictEqual(
+
+		// Support: IE 8 only
+		// IE 8 prints tag names in upper case.
+		elem.html().toLowerCase(),
+		"<a><span><em><b></b></em></span></a><a></a>",
+		".wrapInner"
+	);
+
+	elem.find( "a" ).wrapAll( "<i>" );
+
+	assert.strictEqual(
+
+		// Support: IE 8 only
+		// IE 8 prints tag names in upper case.
+		elem.html().toLowerCase(),
 		"<i><a><span><em><b></b></em></span></a><a></a></i>",
 		".wrapAll"
 	);
