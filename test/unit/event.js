@@ -2725,6 +2725,30 @@ QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
 	assert.equal( result, 42, "inline handler returned value" );
 } );
 
+QUnit.test( ".off() removes the expando when there's no more data", function( assert ) {
+	assert.expect( 2 );
+
+	var key,
+		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+
+	div.on( "click", false );
+	div.on( "custom", function() {
+		assert.ok( true, "Custom event triggered" );
+	} );
+	div.trigger( "custom" );
+	div.off( "click custom" );
+
+	// Make sure the expando is gone
+	for ( key in div[ 0 ] ) {
+		if ( /^jQuery/.test( key ) ) {
+			assert.strictEqual(
+				div[ 0 ][ key ], undefined,
+				"Expando was not removed when there was no more data"
+			);
+		}
+	}
+} );
+
 QUnit.test( "preventDefault() on focusin does not throw exception", function( assert ) {
 	assert.expect( 1 );
 
