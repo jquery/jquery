@@ -270,41 +270,49 @@ this.iframeCallback = undefined;
 QUnit.config.autostart = false;
 this.loadTests = function() {
 	var loadSwarm,
-		url = window.location.search;
+		url = window.location.search,
+		basicTests = url.substring( 1 ).split( "&" ).indexOf( "module=basic" ) > -1;
 
 	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
 	loadSwarm = url && url.indexOf( "http" ) === 0;
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
-		var tests = [
-			// A special module with basic tests, meant for
-			// not fully supported environments like Android 2.3,
-			// jsdom or PhantomJS. We run it everywhere, though,
-			// to make sure tests are not broken.
-			"unit/basic.js",
+		var tests = []
+			.concat( [
 
-			"unit/core.js",
-			"unit/callbacks.js",
-			"unit/deferred.js",
-			"unit/support.js",
-			"unit/data.js",
-			"unit/queue.js",
-			"unit/attributes.js",
-			"unit/event.js",
-			"unit/selector.js",
-			"unit/traversing.js",
-			"unit/manipulation.js",
-			"unit/wrap.js",
-			"unit/css.js",
-			"unit/serialize.js",
-			"unit/ajax.js",
-			"unit/effects.js",
-			"unit/offset.js",
-			"unit/dimensions.js",
-			"unit/animation.js",
-			"unit/tween.js"
-		];
+				// A special module with basic tests, meant for
+				// not fully supported environments like Android 2.3,
+				// jsdom or PhantomJS. We run it everywhere, though,
+				// to make sure tests are not broken.
+				//
+				// Support: Android 2.3 only
+				// When loading basic tests don't load any others to not
+				// overload Android 2.3.
+				"unit/basic.js"
+			] )
+			.concat( basicTests ? [] : [
+				"unit/core.js",
+				"unit/callbacks.js",
+				"unit/deferred.js",
+				"unit/support.js",
+				"unit/data.js",
+				"unit/queue.js",
+				"unit/attributes.js",
+				"unit/event.js",
+				"unit/selector.js",
+				"unit/traversing.js",
+				"unit/manipulation.js",
+				"unit/wrap.js",
+				"unit/css.js",
+				"unit/serialize.js",
+				"unit/ajax.js",
+				"unit/effects.js",
+				"unit/offset.js",
+				"unit/dimensions.js",
+				"unit/animation.js",
+				"unit/tween.js"
+			] );
 
 		// Ensure load order (to preserve test numbers)
 		( function loadDep() {
