@@ -843,7 +843,7 @@ QUnit.test( "acceptData", function( assert ) {
 
 	form = jQuery( "#form" ).append( "<input id='nodeType'/><input id='nodeName'/>" )[ 0 ];
 	assert.equal( 42, jQuery( form ) .data( "test", 42 ).data( "test" ), "form with aliased DOM properties" );
-});
+} );
 
 QUnit.test( "Check proper data removal of non-element descendants nodes (#8335)", function( assert ) {
 	assert.expect( 1 );

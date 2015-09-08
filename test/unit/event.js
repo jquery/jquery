@@ -2493,7 +2493,7 @@ testIframeWithCallback(
 		var input = jQuery( frameDoc ).find( "#frame-input" );
 
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-		jQuery ( "body" ).on( "focusin.iframeTest", function() {
+		jQuery( "body" ).on( "focusin.iframeTest", function() {
 			assert.ok( false, "fired a focusin event in the parent document" );
 		} );
 
