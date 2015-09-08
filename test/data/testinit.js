@@ -269,12 +269,9 @@ this.iframeCallback = undefined;
 // Tests are always loaded async
 QUnit.config.autostart = false;
 this.loadTests = function() {
-	var loadSwarm,
-		url = window.location.search,
-		basicTests = jQuery.inArray( "module=basic", url.substring( 1 ).split( "&" ) ) > -1;
-
-	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
-	loadSwarm = url && url.indexOf( "http" ) === 0;
+	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
+	var loadSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0,
+		basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
