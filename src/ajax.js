@@ -221,7 +221,7 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 		if ( current ) {
 
-		// There's only work to do if current dataType is non-auto
+			// There's only work to do if current dataType is non-auto
 			if ( current === "*" ) {
 
 				current = prev;
