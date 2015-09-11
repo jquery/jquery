@@ -5,7 +5,8 @@ define( [
 	"../core/init"
 ], function( jQuery, rnotwhite, dataPriv ) {
 
-var rclass = /[\t\r\n\f]/g;
+var rclass = /[\t\r\n\f]/g,
+	rdot = /\./g;
 
 function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
@@ -27,7 +28,7 @@ jQuery.fn.extend( {
 		if ( proceed ) {
 
 			// The disjunction here is for better compressibility (see removeClass)
-			classes = ( value || "" ).match( rnotwhite ) || [];
+			classes = ( value.replace(rdot, " ") || "" ).match( rnotwhite ) || [];
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
@@ -67,7 +68,7 @@ jQuery.fn.extend( {
 			} );
 		}
 		if ( proceed ) {
-			classes = ( value || "" ).match( rnotwhite ) || [];
+			classes = ( value.replace(rdot, " ") || "" ).match( rnotwhite ) || [];
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
@@ -123,7 +124,7 @@ jQuery.fn.extend( {
 				// Toggle individual class names
 				i = 0;
 				self = jQuery( this );
-				classNames = value.match( rnotwhite ) || [];
+				classNames = value.replace(rdot, " ").match( rnotwhite ) || [];
 
 				while ( ( className = classNames[ i++ ] ) ) {
 
@@ -160,7 +161,7 @@ jQuery.fn.extend( {
 	},
 
 	hasClass: function( selector ) {
-		var className = " " + selector + " ",
+		var className = " " + selector.replace(rdot, " ") + " ",
 			i = 0,
 			l = this.length;
 		for ( ; i < l; i++ ) {
