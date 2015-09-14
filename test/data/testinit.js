@@ -269,29 +269,19 @@ this.iframeCallback = undefined;
 // Tests are always loaded async
 QUnit.config.autostart = false;
 this.loadTests = function() {
-	var loadSwarm,
-		url = window.location.search,
-		basicTests = jQuery.inArray( "module=basic", url.substring( 1 ).split( "&" ) ) > -1;
-
-	url = decodeURIComponent( url.slice( url.indexOf( "swarmURL=" ) + "swarmURL=".length ) );
-	loadSwarm = url && url.indexOf( "http" ) === 0;
+	var loadSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0,
+		basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
-		var tests = []
-			.concat( [
-
+		var i = 0,
+			tests = [
 				// A special module with basic tests, meant for
 				// not fully supported environments like Android 2.3,
 				// jsdom or PhantomJS. We run it everywhere, though,
 				// to make sure tests are not broken.
-				//
-				// Support: Android 2.3 only
-				// When loading basic tests don't load any others to not
-				// overload Android 2.3.
-				"unit/basic.js"
-			] )
-			.concat( basicTests ? [] : [
+				"unit/basic.js",
+
 				"unit/core.js",
 				"unit/callbacks.js",
 				"unit/deferred.js",
@@ -312,14 +302,23 @@ this.loadTests = function() {
 				"unit/dimensions.js",
 				"unit/animation.js",
 				"unit/tween.js"
-			] );
+			];
 
 		// Ensure load order (to preserve test numbers)
 		( function loadDep() {
-			var dep = tests.shift();
+			var dep = tests[ i++ ];
 
 			if ( dep ) {
-				require( [ dep ], loadDep );
+				if ( !basicTests || i === 1 ) {
+					require( [ dep ], loadDep );
+
+				// Support: Android 2.3 only
+				// When running basic tests, replace other modules with dummies to avoid overloading
+				// impaired clients.
+				} else {
+					QUnit.module( dep.replace( /^.*\/|\.js$/g, "" ) );
+					loadDep();
+				}
 
 			} else {
 				QUnit.load();
