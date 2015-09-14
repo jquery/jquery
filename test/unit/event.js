@@ -2726,7 +2726,10 @@ QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
 } );
 
 QUnit.test( ".off() removes the expando when there's no more data", function( assert ) {
-	assert.expect( 2 );
+	// Support: IE 8 only
+	// IE 8 gets the expando removed via removeAttribute so the second assertion
+	// won't be reached.
+	assert.expect( document.documentMode < 9 ? 1 : 2 );
 
 	var key,
 		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
