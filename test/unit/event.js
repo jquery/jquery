@@ -2848,14 +2848,12 @@ QUnit.test( "originalEvent property for IE8", function( assert ) {
 	jQuery( "#donor-input" )[ 0 ].click();
 } );
 
-QUnit.test( "originalEvent property for Chrome, Safari and FF of simulated event", function( assert ) {
+QUnit.test( "originalEvent property for Chrome, Safari, Fx & Edge of simulated event", function( assert ) {
 	var userAgent = window.navigator.userAgent;
 
-	if ( !( /chrome/i.test( userAgent ) ||
-	       /firefox/i.test( userAgent ) ||
-	       /safari/i.test( userAgent ) ) ) {
+	if ( !( /firefox/i.test( userAgent ) || /safari/i.test( userAgent ) ) ) {
 		assert.expect( 1 );
-		assert.ok( true, "Assertions should run only in Chrome, Safari and FF" );
+		assert.ok( true, "Assertions should run only in Chrome, Safari, Fx & Edge" );
 		return;
 	}
 
@@ -2881,7 +2879,7 @@ QUnit.test( "originalEvent property for Chrome, Safari and FF of simulated event
 	jQuery( "#donor-input" ).trigger( "focus" );
 } );
 
-// This tests are unreliable in Firefox
+// These tests are unreliable in Firefox
 if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
 	QUnit.test( "Check order of focusin/focusout events", function( assert ) {
 		assert.expect( 2 );
