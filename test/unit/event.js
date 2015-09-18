@@ -879,7 +879,7 @@ QUnit.test( "withinElement implemented with jQuery.contains()", function( assert
 
 	} ).trigger( "mouseenter" );
 
-	jQuery( "#jc-inner" ).trigger( "mousenter" );
+	jQuery( "#jc-inner" ).trigger( "mouseenter" );
 
 	jQuery( "#jc-outer" ).off( "mouseenter mouseleave" ).remove();
 	jQuery( "#jc-inner" ).remove();

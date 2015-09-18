@@ -35,8 +35,8 @@ this.q = function() {
  * @param {String} a - Assertion name
  * @param {String} b - Sizzle selector
  * @param {String} c - Array of ids to construct what is expected
- * @example t("Check for something", "//[a]", ["foo", "baar"]);
- * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'baar'
+ * @example t("Check for something", "//[a]", ["foo", "bar"]);
+ * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'bar'
  */
 QUnit.assert.t = function( a, b, c ) {
 	var f = jQuery( b ).get(),
