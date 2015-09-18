@@ -302,7 +302,7 @@ t( testName, selector, [ "array", "of", "ids" ] );
 Example:
 
 ```js
-t("Check for something", "//[a]", ["foo", "baar"]);
+t("Check for something", "//[a]", ["foo", "bar"]);
 ```
 
 

@@ -293,7 +293,7 @@ testIframe(
 
 		/**
 		 * Asserts that a select matches the given IDs
-		 * @example t("Check for something", "//[a]", ["foo", "baar"]);
+		 * @example t("Check for something", "//[a]", ["foo", "bar"]);
 		 * @param {String} a - Assertion name
 		 * @param {String} b - Sizzle selector
 		 * @param {Array} c - Array of ids to construct what is expected
