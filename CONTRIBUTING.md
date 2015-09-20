@@ -95,6 +95,12 @@ Get in the habit of pulling in the "upstream" master to stay up to date as jQuer
 $ git pull upstream master
 ```
 
+Run the build script
+
+```bash
+$ npm run build
+```
+
 Run the Grunt tools:
 
 ```bash
