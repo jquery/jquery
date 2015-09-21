@@ -91,7 +91,7 @@ jQuery.ajaxTransport( function( options ) {
 									// Support: IE9
 									// Accessing binary-data responseText throws an exception
 									// (#11426)
-									typeof xhr.responseText === "string" ? {
+									(xhr.responseText && typeof xhr.responseText === "string") ? {
 										text: xhr.responseText
 									} : undefined,
 									xhr.getAllResponseHeaders()
