@@ -1,1 +1,1 @@
-define( [ "./selector-sizzle" ], function() {} );
+define( "selector", [ "./selector-sizzle" ], function() {} );
