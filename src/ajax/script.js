@@ -52,7 +52,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 						}
 					}
 				);
-				
+
 				//Compatible with nonce of CSP2.0
 				if ( s.nonce ) {
 					script.attr( "nonce", s.nonce );
