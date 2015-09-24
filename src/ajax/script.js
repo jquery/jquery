@@ -52,6 +52,10 @@ jQuery.ajaxTransport( "script", function( s ) {
 						}
 					}
 				);
+				
+				if (s.nonce) {
+					script.attr('nonce', s.nonce);
+				}
 
 				// Use native DOM manipulation to avoid our domManip AJAX trickery
 				document.head.appendChild( script[ 0 ] );
