@@ -968,7 +968,7 @@ QUnit.test( "jQuery.grep()", function( assert ) {
 } );
 
 QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
-	assert.expect( 28 );
+	assert.expect( 30 );
 
 	var empty, optionsWithLength, optionsWithDate, myKlass,
 		customObject, optionsWithCustomObject, MyNumber, ret,
@@ -1078,6 +1078,26 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.deepEqual( defaults, defaultsCopy, "Check if not modified: options1 must not be modified" );
 	assert.deepEqual( options1, options1Copy, "Check if not modified: options1 must not be modified" );
 	assert.deepEqual( options2, options2Copy, "Check if not modified: options2 must not be modified" );
+
+  // defined Properties
+  var definedObj = Object.defineProperties({}, {
+        "enumerableProp": {
+          get: function () {
+            return true;
+          },
+          enumerable: true
+        },
+        "nonenumerableProp": {
+          get: function () {
+            return true;
+          }
+        }
+      }),
+      accessorObj = {};
+
+	jQuery.extend( accessorObj, definedObj );
+	assert.equal( accessorObj.enumerableProp, true, "Verify that getters are transferred" );
+	assert.equal( accessorObj.nonenumerableProp, undefined, "Verify that non-enumerable getters are ignored" );
 } );
 
 QUnit.test( "jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed by object", function( assert ) {
