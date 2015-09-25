@@ -1221,7 +1221,7 @@ QUnit.test( "removeClass(undefined) is a no-op", function( assert ) {
 } );
 
 var testToggleClass = function( valueObj, assert ) {
-	assert.expect( 17 );
+	assert.expect( 9 );
 
 	var e = jQuery( "#firstp" );
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
@@ -1245,29 +1245,6 @@ var testToggleClass = function( valueObj, assert ) {
 	assert.ok( ( e.is( ".testA.testC" ) && !e.is( ".testB" ) ), "Assert 1 class added, 1 class removed, and 1 class kept" );
 	e.toggleClass( valueObj( "testA testC" ) );
 	assert.ok( ( !e.is( ".testA" ) && !e.is( ".testB" ) && !e.is( ".testC" ) ), "Assert no class present" );
-
-	// toggleClass storage
-	e.toggleClass( true );
-	assert.ok( e[ 0 ].className === "", "Assert class is empty (data was empty)" );
-	e.addClass( "testD testE" );
-	assert.ok( e.is( ".testD.testE" ), "Assert class present" );
-	e.toggleClass();
-	assert.ok( !e.is( ".testD.testE" ), "Assert class not present" );
-	assert.ok( jQuery._data( e[ 0 ], "__className__" ) === "testD testE", "Assert data was stored" );
-	e.toggleClass();
-	assert.ok( e.is( ".testD.testE" ), "Assert class present (restored from data)" );
-	e.toggleClass( false );
-	assert.ok( !e.is( ".testD.testE" ), "Assert class not present" );
-	e.toggleClass( true );
-	assert.ok( e.is( ".testD.testE" ), "Assert class present (restored from data)" );
-	e.toggleClass();
-	e.toggleClass( false );
-	e.toggleClass();
-	assert.ok( e.is( ".testD.testE" ), "Assert class present (restored from data)" );
-
-	// Cleanup
-	e.removeClass( "testD" );
-	assert.expectJqData( this, e[ 0 ], "__className__" );
 };
 
 QUnit.test( "toggleClass(String|boolean|undefined[, boolean])", function( assert ) {
