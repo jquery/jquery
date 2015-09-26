@@ -837,5 +837,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 	};
 } );
 
+jQuery.http = jQuery.ajax;
+
 return jQuery;
 } );
