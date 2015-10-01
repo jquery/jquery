@@ -286,6 +286,7 @@ this.loadTests = function() {
 				"unit/core.js",
 				"unit/callbacks.js",
 				"unit/deferred.js",
+				"unit/deprecated.js",
 				"unit/support.js",
 				"unit/data.js",
 				"unit/queue.js",
