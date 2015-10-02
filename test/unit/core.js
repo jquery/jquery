@@ -272,6 +272,19 @@ QUnit.test( "type", function( assert ) {
 	assert.equal( jQuery.type( new MyObject() ), "object", "Object" );
 } );
 
+QUnit.test( "type for `Symbol`", function( assert ) {
+	// Prevent reference errors
+	if( typeof Symbol !== "function" ) {
+		assert.expect( 0 );
+		return
+	}
+
+	assert.expect( 2 );
+
+	assert.equal( jQuery.type( Symbol() ), "symbol", "Symbol" );
+	assert.equal( jQuery.type( Object( Symbol() ) ), "symbol", "Symbol" );
+});
+
 QUnit.asyncTest( "isPlainObject", function( assert ) {
 	assert.expect( 15 );
 
