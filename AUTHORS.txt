@@ -1,4 +1,4 @@
-Authors ordered by first contribution.
+﻿Authors ordered by first contribution.
 
 John Resig <jeresig@gmail.com>
 Gilles van den Hoven <gilles0181@gmail.com>
@@ -259,3 +259,4 @@ Chris Rebert <github@rebertia.com>
 Gabriel Schulhof <gabriel.schulhof@intel.com>
 Gilad Peleg <giladp007@gmail.com>
 Martin Naumann <martin@geekonaut.de>
+Sergio jr <sergio@mail.com>
