@@ -500,6 +500,73 @@ QUnit.test( "html(String) tag-hyphenated elements (Bug #1987)", function( assert
 	assert.equal( j.children().text(), "text", "Tags with multiple hypens behave normally" );
 } );
 
+QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function( assert ) {
+
+	assert.expect( 240 );
+
+	var wrapper = jQuery( "<div></div>" ),
+		nameTerminatingChars = "\x20\t\r\n\f".split( "" ),
+		specialChars = "[ ] { } _ - = + \\ ( ) * & ^ % $ # @ ! ~ ` ' ; ? ¥ « µ λ ⊕ ≈ ξ ℜ ♣ €"
+			.split( " " );
+
+	specialChars.push( specialChars.join( "" ) );
+
+	jQuery.each( specialChars, function( i, characters ) {
+		assertSpecialCharsSupport( "html", characters );
+		assertSpecialCharsSupport( "append", characters );
+	} );
+
+	jQuery.each( nameTerminatingChars, function( i, character ) {
+		assertNameTerminatingCharsHandling( "html", character );
+		assertNameTerminatingCharsHandling( "append", character );
+	} );
+
+	function buildChild( method, html ) {
+		wrapper[ method ]( html );
+		return wrapper.children()[ 0 ];
+	}
+
+	function assertSpecialCharsSupport( method, characters ) {
+		var child,
+			codepoint = characters.charCodeAt( 0 ).toString( 16 ).toUpperCase(),
+			description = characters.length === 1 ?
+				"U+" + ( "000" + codepoint ).slice( -4 ) + " " + characters :
+				"all special characters",
+			nodeName = "valid" + characters + "tagname";
+
+		child = buildChild( method, "<" + nodeName + "></" + nodeName + ">" );
+		assert.equal( child.nodeName.toUpperCase(), nodeName.toUpperCase(),
+			method + "(): Paired tag name includes " + description );
+
+		child = buildChild( method, "<" + nodeName + ">" );
+		assert.equal( child.nodeName.toUpperCase(), nodeName.toUpperCase(),
+			method + "(): Unpaired tag name includes " + description );
+
+		child = buildChild( method, "<" + nodeName + "/>" );
+		assert.equal( child.nodeName.toUpperCase(), nodeName.toUpperCase(),
+			method + "(): Self-closing tag name includes " + description );
+	}
+
+	function assertNameTerminatingCharsHandling( method, character ) {
+		var child,
+			codepoint = character.charCodeAt( 0 ).toString( 16 ).toUpperCase(),
+			description = "U+" + ( "000" + codepoint ).slice( -4 ) + " " + character,
+			nodeName = "div" + character + "this-will-be-discarded";
+
+		child = buildChild( method, "<" + nodeName + "></" + nodeName + ">" );
+		assert.equal( child.nodeName.toUpperCase(), "DIV",
+			method + "(): Paired tag name terminated by " + description );
+
+		child = buildChild( method, "<" + nodeName + ">" );
+		assert.equal( child.nodeName.toUpperCase(), "DIV",
+			method + "(): Unpaired open tag name terminated by " + description );
+
+		child = buildChild( method, "<" + nodeName + "/>" );
+		assert.equal( child.nodeName.toUpperCase(), "DIV",
+			method + "(): Self-closing tag name terminated by " + description );
+	}
+} );
+
 QUnit.test( "IE8 serialization bug", function( assert ) {
 
 	assert.expect( 2 );
