@@ -471,6 +471,9 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 	jQuery( "#cssFunctionTest" ).remove();
 } );
 
+// .show(), .hide(), can be excluded from the build
+if ( jQuery.fn.show && jQuery.fn.hide ) {
+
 QUnit.test( "show(); hide()", function( assert ) {
 
 	assert.expect( 4 );
@@ -636,6 +639,35 @@ QUnit.test( "show() resolves correct default display for detached nodes", functi
 	span.remove();
 } );
 
+QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
+	assert.expect( 3 );
+
+	var div = jQuery( "<div style='display:none'></div>" ).appendTo( "#qunit-fixture" );
+	assert.equal( div.css( "display" ), "none", "Element is hidden by default" );
+	div.hide();
+	assert.ok( !jQuery._data( div, "olddisplay" ), "olddisplay is undefined after hiding an already-hidden element" );
+	div.show();
+	assert.equal( div.css( "display" ), "block", "Show a double-hidden element" );
+
+	div.remove();
+} );
+
+QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
+	assert.expect( 1 );
+
+	var div = jQuery( "<div />" ),
+		fixture = jQuery( "#qunit-fixture" );
+
+	fixture.append( div );
+
+	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
+	assert.equal( div.css( "display" ), "list-item", "should get last set display value" );
+} );
+
+}
+
+if ( jQuery.fn.toggle ) {
+
 QUnit.test( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
@@ -669,18 +701,7 @@ QUnit.test( "toggle()", function( assert ) {
 	jQuery.fn.hide = oldHide;
 } );
 
-QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
-	assert.expect( 3 );
-
-	var div = jQuery( "<div style='display:none'></div>" ).appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "none", "Element is hidden by default" );
-	div.hide();
-	assert.ok( !jQuery._data( div, "olddisplay" ), "olddisplay is undefined after hiding an already-hidden element" );
-	div.show();
-	assert.equal( div.css( "display" ), "block", "Show a double-hidden element" );
-
-	div.remove();
-} );
+}
 
 QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function( assert ) {
 	assert.expect( 4 );
@@ -1127,18 +1148,6 @@ QUnit.test(
 		window.setTimeout( done, 1000 );
 	}
 );
-
-QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
-	assert.expect( 1 );
-
-	var div = jQuery( "<div />" ),
-		fixture = jQuery( "#qunit-fixture" );
-
-	fixture.append( div );
-
-	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
-	assert.equal( div.css( "display" ), "list-item", "should get last set display value" );
-} );
 
 // Support: IE < 11
 // We have to jump through the hoops here in order to test work with "order" CSS property,

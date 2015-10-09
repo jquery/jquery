@@ -70,6 +70,7 @@ module.exports = function( grunt ) {
 					ajax: [ "manipulation/_evalUrl", "event/ajax" ],
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ],
+					"css/showHide": [ "effects" ],
 					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
