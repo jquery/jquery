@@ -13,13 +13,12 @@ define( [
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
 	"./css/support",
-	"./css/showHide",
 
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
-	isHidden, swap, curCSS, adjustCSS, addGetHookIf, support, showHide ) {
+	isHidden, swap, curCSS, adjustCSS, addGetHookIf, support ) {
 
 var
 
@@ -506,25 +505,6 @@ jQuery.fn.extend( {
 				jQuery.style( elem, name, value ) :
 				jQuery.css( elem, name );
 		}, name, value, arguments.length > 1 );
-	},
-	show: function() {
-		return showHide( this, true );
-	},
-	hide: function() {
-		return showHide( this );
-	},
-	toggle: function( state ) {
-		if ( typeof state === "boolean" ) {
-			return state ? this.show() : this.hide();
-		}
-
-		return this.each( function() {
-			if ( isHidden( this ) ) {
-				jQuery( this ).show();
-			} else {
-				jQuery( this ).hide();
-			}
-		} );
 	}
 } );
 

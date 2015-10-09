@@ -1,4 +1,6 @@
-define( [], function() {
+define( [
+	"../css/var/isHidden"
+], function( isHidden ) {
 
 function showHide( elements, show ) {
 	var display, elem,
@@ -41,6 +43,26 @@ function showHide( elements, show ) {
 	return elements;
 }
 
-return showHide;
+jQuery.fn.extend( {
+	show: function() {
+		return showHide( this, true );
+	},
+	hide: function() {
+		return showHide( this );
+	},
+	toggle: function( state ) {
+		if ( typeof state === "boolean" ) {
+			return state ? this.show() : this.hide();
+		}
+
+		return this.each( function() {
+			if ( isHidden( this ) ) {
+				jQuery( this ).show();
+			} else {
+				jQuery( this ).hide();
+			}
+		} );
+	}
+} );
 
 } );

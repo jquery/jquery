@@ -67,7 +67,9 @@ module.exports = function( grunt ) {
 				removeWith: {
 					ajax: [ "manipulation/_evalUrl", "event/ajax" ],
 					callbacks: [ "deferred" ],
-					css: [ "effects", "dimensions", "offset" ]
+					css: [ "effects", "dimensions", "offset" ],
+					"css/showHide": [ "effects" ],
+					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
 		},

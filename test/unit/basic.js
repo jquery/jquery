@@ -54,11 +54,19 @@ QUnit.test( "attributes", function( assert ) {
 
 if ( jQuery.css ) {
 QUnit.test( "css", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 1 );
 
 	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( div.css( "width", "50px" ).css( "width" ), "50px", ".css getter/setter" );
+} );
+}
+
+if ( jQuery.fn.show && jQuery.fn.hide ) {
+QUnit.test( "show/hide", function( assert ) {
+	assert.expect( 2 );
+
+	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
 
 	div.hide();
 	assert.strictEqual( div.css( "display" ), "none", "div hidden" );
