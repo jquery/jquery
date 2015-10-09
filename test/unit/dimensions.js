@@ -35,9 +35,9 @@ function testWidth( val, assert ) {
 	$div = jQuery( "#nothiddendiv" );
 	$div.width( val( 30 ) );
 	assert.equal( $div.width(), 30, "Test set to 30 correctly" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.width(), 30, "Test hidden div" );
-	$div.show();
+	$div.css( "display", "" );
 	$div.width( val( -1 ) ); // handle negative numbers by setting to 0 #11604
 	assert.equal( $div.width(), 0, "Test negative width normalized to 0" );
 	$div.css( "padding", "20px" );
@@ -88,9 +88,9 @@ function testHeight( val, assert ) {
 	$div = jQuery( "#nothiddendiv" );
 	$div.height( val( 30 ) );
 	assert.equal( $div.height(), 30, "Test set to 30 correctly" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.height(), 30, "Test hidden div" );
-	$div.show();
+	$div.css( "display", "" );
 	$div.height( val( -1 ) ); // handle negative numbers by setting to 0 #11604
 	assert.equal( $div.height(), 0, "Test negative height normalized to 0" );
 	$div.css( "padding", "20px" );
@@ -153,7 +153,7 @@ QUnit.test( "innerWidth()", function( assert ) {
 	assert.equal( $div.innerWidth(), 30, "Test with margin and border" );
 	$div.css( "padding", "20px" );
 	assert.equal( $div.innerWidth(), 70, "Test with margin, border and padding" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.innerWidth(), 70, "Test hidden div" );
 
 	// reset styles
@@ -188,7 +188,7 @@ QUnit.test( "innerHeight()", function( assert ) {
 	assert.equal( $div.innerHeight(), 30, "Test with margin and border" );
 	$div.css( "padding", "20px" );
 	assert.equal( $div.innerHeight(), 70, "Test with margin, border and padding" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.innerHeight(), 70, "Test hidden div" );
 
 	// reset styles
@@ -227,7 +227,7 @@ QUnit.test( "outerWidth()", function( assert ) {
 	assert.equal( $div.outerWidth(), 74, "Test with padding, border and margin without margin option" );
 	$div.css( "position", "absolute" );
 	assert.equal( $div.outerWidth( true ), 94, "Test with padding, border and margin with margin option" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.outerWidth( true ), 94, "Test hidden div with padding, border and margin with margin option" );
 
 	// reset styles
@@ -383,7 +383,7 @@ QUnit.test( "outerHeight()", function( assert ) {
 	$div.css( "margin", "10px" );
 	assert.equal( $div.outerHeight(), 74, "Test with padding, border and margin without margin option" );
 	assert.equal( $div.outerHeight( true ), 94, "Test with padding, border and margin with margin option" );
-	$div.hide();
+	$div.css( "display", "none" );
 	assert.equal( $div.outerHeight( true ), 94, "Test hidden div with padding, border and margin with margin option" );
 
 	// reset styles
