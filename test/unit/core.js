@@ -948,7 +948,7 @@ QUnit.test( "jQuery.merge()", function( assert ) {
 } );
 
 QUnit.test( "jQuery.grep()", function( assert ) {
-	assert.expect( 15 );
+	assert.expect( 8 );
 
 	var searchCriterion = function( value ) {
 		return value % 2 === 0;
@@ -973,6 +973,25 @@ QUnit.test( "jQuery.grep()", function( assert ) {
 	assert.deepEqual( jQuery.grep( { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, length: 6 }, searchCriterion, false ), [ 2, 4, 6 ], "Satisfying elements present, Array-like object used, but grep explicitly uninverted" );
 	assert.deepEqual( jQuery.grep( { 0: 1, 1: 3, 2: 5, 3: 7, length: 4 }, searchCriterion, false ), [], "Satisfying elements absent, Array-like object used, and grep explicitly uninverted" );
 } );
+
+QUnit.test( "jQuery.grep(Array-like)", function( assert ) {
+	assert.expect( 7 );
+
+	var searchCriterion = function( value ) {
+		return value % 2 === 0;
+	};
+
+	assert.deepEqual( jQuery.grep( { length: 0 }, searchCriterion ), [], "Empty array-like" );
+
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, length: 6 }, searchCriterion ), [ 2, 4, 6 ], "Satisfying elements present and array-like object used" );
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 3, 2: 5, 3: 7, length: 4 }, searchCriterion ), [], "Satisfying elements absent and Array-like object used" );
+
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, length: 6 }, searchCriterion, true ), [ 1, 3, 5 ], "Satisfying elements present, array-like object used, and grep inverted" );
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 3, 2: 5, 3: 7, length: 4 }, searchCriterion, true ), [ 1, 3, 5, 7 ], "Satisfying elements absent, array-like object used, and grep inverted" );
+
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, length: 6 }, searchCriterion, false ), [ 2, 4, 6 ], "Satisfying elements present, Array-like object used, but grep explicitly uninverted" );
+	assert.deepEqual( jQuery.grep( { 0: 1, 1: 3, 2: 5, 3: 7, length: 4 }, searchCriterion, false ), [], "Satisfying elements absent, Array-like object used, and grep explicitly uninverted" );
+});
 
 QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.expect( 28 );
