@@ -874,16 +874,10 @@ QUnit.test( "withinElement implemented with jQuery.contains()", function( assert
 	jQuery( "#qunit-fixture" ).append( "<div id='jc-outer'><div id='jc-inner'></div></div>" );
 
 	jQuery( "#jc-outer" ).on( "mouseenter mouseleave", function( event ) {
-
 		assert.equal( this.id, "jc-outer", this.id + " " + event.type );
-
-	} ).trigger( "mouseenter" );
+	} );
 
 	jQuery( "#jc-inner" ).trigger( "mouseenter" );
-
-	jQuery( "#jc-outer" ).off( "mouseenter mouseleave" ).remove();
-	jQuery( "#jc-inner" ).remove();
-
 } );
 
 QUnit.test( "mouseenter, mouseleave don't catch exceptions", function( assert ) {
