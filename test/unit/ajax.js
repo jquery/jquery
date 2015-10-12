@@ -1794,7 +1794,109 @@ QUnit.module( "ajax", {
 		}
 	);
 
-// //----------- jQuery.ajaxPrefilter()
+	ajaxTest( "gh-2587 - when content-type not xml, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"response": "<test/>"
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not xml"
+				);
+			}
+		};
+	} );
+
+	ajaxTest( "gh-2587 - when content-type not xml, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"response": "<test/>"
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not xml"
+				);
+			}
+		};
+	} );
+
+	ajaxTest( "gh-2587 - when content-type not json, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "test/jsontest",
+				"response": JSON.stringify({test: "test"})
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not json"
+				);
+			}
+		};
+	} );
+
+	ajaxTest( "gh-2587 - when content-type not html, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "test/htmltest",
+				"response": "<p>test</p>"
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not html"
+				);
+			}
+		};
+	} );
+
+	ajaxTest( "gh-2587 - when content-type not javascript, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "test/testjavascript",
+				"response": "alert(1)"
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not javascript"
+				);
+			}
+		};
+	} );
+
+	ajaxTest( "gh-2587 - when content-type not ecmascript, but looks like one", 1, function( assert ) {
+		return {
+			url: url( "data/ajax/content-type.php" ),
+			data: {
+				"content-type": "test/testjavascript",
+				"response": "alert(1)"
+			},
+			success: function( result ) {
+				assert.strictEqual(
+					typeof result,
+					"string",
+					"Should handle it as a string, not ecmascript"
+				);
+			}
+		};
+	} );
+
+//----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, function( assert ) {
 		return {
