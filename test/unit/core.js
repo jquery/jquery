@@ -1085,6 +1085,36 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.deepEqual( options2, options2Copy, "Check if not modified: options2 must not be modified" );
 } );
 
+QUnit.test( "jQuery.extend(Object, Object {created with \"defineProperties\"})", function( assert ) {
+
+	// Support: IE8 only
+	if ( !( "defineProperties" in Object ) ) {
+		assert.expect( 0 );
+		return;
+	}
+
+	assert.expect( 2 );
+
+	var definedObj = Object.defineProperties({}, {
+        "enumerableProp": {
+          get: function () {
+            return true;
+          },
+          enumerable: true
+        },
+        "nonenumerableProp": {
+          get: function () {
+            return true;
+          }
+        }
+      }),
+      accessorObj = {};
+
+	jQuery.extend( accessorObj, definedObj );
+	assert.equal( accessorObj.enumerableProp, true, "Verify that getters are transferred" );
+	assert.equal( accessorObj.nonenumerableProp, undefined, "Verify that non-enumerable getters are ignored" );
+} );
+
 QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
 	assert.expect( 23 );
 
