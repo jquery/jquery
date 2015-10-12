@@ -71,21 +71,6 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - do not execute js (crossOrigin)", 2, function( assert ) {
-		return {
-			create: function( options ) {
-				options.crossDomain = true;
-				return jQuery.ajax( url( "data/script.php?header=ecma" ), options );
-			},
-			success: function() {
-				assert.ok( true, "success" );
-			},
-			complete: function() {
-				assert.ok( true, "complete" );
-			}
-		};
-	} );
-
 	ajaxTest( "jQuery.ajax() - execute js for crossOrigin when dataType option is provided", 3,
 		function( assert ) {
 			return {
@@ -112,6 +97,11 @@ QUnit.module( "ajax", {
 			},
 			success: function() {
 				assert.ok( true, "success" );
+			},
+			fail: function() {
+				if (jQuery.support.cors === false) {
+					assert.ok( true, "fail" );
+				}
 			},
 			complete: function() {
 				assert.ok( true, "complete" );
@@ -1777,22 +1767,21 @@ QUnit.module( "ajax", {
 			done: function( data ) {
 				assert.ok( false, "done: " + data );
 			},
-				fail: function( jqXHR, status, error ) {
-					assert.ok( true, "exception caught: " + error );
-					assert.strictEqual( jqXHR.status, 0, "proper status code" );
-					assert.strictEqual( status, "error", "proper status" );
-				}
-			}, {
-				url: "http://domain.org:80d",
-				done: function( data ) {
-					assert.ok( false, "done: " + data );
-				},
-				fail: function( _, status, error ) {
-					assert.ok( true, "fail: " + status + " - " + error );
-				}
-			} ];
-		}
-	);
+			fail: function( jqXHR, status, error ) {
+				assert.ok( true, "exception caught: " + error );
+				assert.strictEqual( jqXHR.status, 0, "proper status code" );
+				assert.strictEqual( status, "error", "proper status" );
+			}
+		}, {
+			url: "http://domain.org:80d",
+			done: function( data ) {
+				assert.ok( false, "done: " + data );
+			},
+			fail: function( _, status, error ) {
+				assert.ok( true, "fail: " + status + " - " + error );
+			}
+		} ];
+	} );
 
 	ajaxTest( "gh-2587 - when content-type not xml, but looks like one", 1, function( assert ) {
 		return {
