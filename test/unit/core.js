@@ -276,7 +276,7 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 	// Prevent reference errors
 	if( typeof Symbol !== "function" ) {
 		assert.expect( 0 );
-		return
+		return;
 	}
 
 	assert.expect( 2 );
