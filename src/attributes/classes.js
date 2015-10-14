@@ -100,10 +100,7 @@ jQuery.fn.extend( {
 
 	toggleClass: function( value, stateVal ) {
 		var type = typeof value,
-			classNames = type === "string" ? value.match( rnotwhite ) : "",
-			checker = typeof stateVal === "boolean" ?
-				function() { return !stateVal; } :
-				jQuery.fn.hasClass;
+			classNames = type === "string" ? value.match( rnotwhite ) : [];
 
 		return this.each( function( i ) {
 			var className,
@@ -118,7 +115,7 @@ jQuery.fn.extend( {
 			// Toggle individual class names based on presence or stateVal
 			while ( ( className = classNames[ c++ ] ) ) {
 
-				if ( checker.call( self, className ) ) {
+				if ( stateVal === false || stateVal !== true && self.hasClass( className ) ) {
 					self.removeClass( className );
 				} else {
 					self.addClass( className );

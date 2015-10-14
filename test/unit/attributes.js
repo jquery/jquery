@@ -1220,7 +1220,7 @@ QUnit.test( "removeClass(undefined) is a no-op", function( assert ) {
 } );
 
 var testToggleClass = function( valueObj, assert ) {
-	assert.expect( 9 );
+	assert.expect( 11 );
 
 	var e = jQuery( "#firstp" );
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
@@ -1232,8 +1232,12 @@ var testToggleClass = function( valueObj, assert ) {
 	// class name with a boolean
 	e.toggleClass( valueObj( "test" ), false );
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
+	e.toggleClass( valueObj( "test" ), false );
+	assert.ok( !e.is( ".test" ), "Assert class still not present" );
 	e.toggleClass( valueObj( "test" ), true );
 	assert.ok( e.is( ".test" ), "Assert class present" );
+	e.toggleClass( valueObj( "test" ), true );
+	assert.ok( e.is( ".test" ), "Assert class still present" );
 	e.toggleClass( valueObj( "test" ), false );
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
 
