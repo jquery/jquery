@@ -490,6 +490,13 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.equal( t( new Date() ), false, "Instance of a Date" );
 } );
 
+QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isNumeric(Symbol)", function( assert ) {
+	assert.expect( 2 );
+
+	assert.equal( jQuery.isNumeric( Symbol() ), false, "Symbol" );
+	assert.equal( jQuery.isNumeric( Object( Symbol() ) ), false, "Symbol inside an object" );
+} );
+
 QUnit.test( "isXMLDoc - HTML", function( assert ) {
 	assert.expect( 4 );
 
