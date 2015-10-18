@@ -134,6 +134,16 @@ module.exports = function( grunt ) {
 			],
 			build: "build"
 		},
+		testserver: {
+			options: {
+				static: {
+					"/dist": __dirname + "/dist",
+					"/external": __dirname + "/external",
+					"/test": __dirname + "/test"
+				},
+				port: 8000
+			}
+		},
 		testswarm: {
 			tests: [
 
