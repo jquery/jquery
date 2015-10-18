@@ -127,6 +127,23 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableMarginLeft": true
 		};
+	} else if ( /9\.0(\.\d+|) safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optSelected": true,
+			"pixelMarginRight": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginLeft": true
+		};
 	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
