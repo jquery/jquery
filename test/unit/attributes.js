@@ -735,6 +735,13 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 	assert.equal( jQuery( "#linkWithNoHrefWithNegativeTabIndex" ).prop( "tabindex" ), -1, "anchor without href, no tabindex set" );
 } );
 
+QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
+	assert.expect( 1 );
+	var image = jQuery("<img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' />")
+		.appendTo("#qunit-fixture");
+	assert.equal( image.prop("tabIndex" ), -1, "tabIndex on image" );
+} );
+
 QUnit.test( "prop('tabindex', value)", function( assert ) {
 	assert.expect( 10 );
 
