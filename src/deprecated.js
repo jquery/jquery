@@ -1,4 +1,6 @@
-define( function() {
+define( [
+	"./core"
+], function( jQuery ) {
 
 jQuery.fn.extend( {
 
