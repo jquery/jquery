@@ -1,7 +1,8 @@
 define( [
+	"../core",
 	"../data/var/dataPriv",
 	"../css/var/isHidden"
-], function( dataPriv, isHidden ) {
+], function( jQuery, dataPriv, isHidden ) {
 
 function showHide( elements, show ) {
 	var display, elem,
