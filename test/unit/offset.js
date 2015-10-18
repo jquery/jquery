@@ -548,7 +548,9 @@ QUnit.test( "fractions (see #7730 and #7885)", function( assert ) {
 
 	result = div.offset();
 
-	assert.equal( result.top, expected.top, "Check top" );
+	// Support: Chrome 45-46+
+	// In recent Chrome these values differ a little.
+	assert.ok( Math.abs( result.top - expected.top ) < 0.25, "Check top within 0.25 of expected" );
 	assert.equal( result.left, expected.left, "Check left" );
 
 	div.remove();
