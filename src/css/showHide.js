@@ -1,6 +1,7 @@
 define( [
+	"../core",
 	"../css/var/isHidden"
-], function( isHidden ) {
+], function( jQuery, isHidden ) {
 
 function showHide( elements, show ) {
 	var display, elem,
