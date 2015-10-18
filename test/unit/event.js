@@ -1852,6 +1852,33 @@ QUnit.test( "delegated event with intermediate DOM manipulation (#13208)", funct
 	jQuery( "#anchor2" ).trigger( "click" );
 } );
 
+QUnit.test( "ignore comment nodes in event delegation (gh-2055)", function( assert ) {
+	assert.expect( 1 );
+
+	// Test if DOMNodeInserted is supported
+	// This is a back-up for when DOMNodeInserted support
+	// is eventually removed from browsers
+	function test() {
+		var ret = false;
+		var $fixture = jQuery( "#qunit-fixture" );
+		$fixture.on( "DOMNodeInserted", function() {
+			ret = true;
+			$fixture.off( "DOMNodeInserted" );
+		} ).append( "<div></div>" );
+		return ret;
+	}
+
+	var $foo = jQuery( "#foo" ).on( "DOMNodeInserted", "[id]", function() {
+		assert.ok( true, "No error thrown on comment node" );
+	} ),
+		$comment = jQuery( document.createComment( "comment" ) )
+			.appendTo( $foo.find( "#sap" ) );
+
+	if ( !test() ) {
+		fireNative( $comment[0], "DOMNodeInserted" );
+	}
+} );
+
 QUnit.test( "stopPropagation() stops directly-bound events on delegated target", function( assert ) {
 	assert.expect( 1 );
 
