@@ -152,6 +152,7 @@ module.exports = function( grunt ) {
 				"css",
 				"data",
 				"deferred",
+				"deprecated",
 				"dimensions",
 				"effects",
 				"event",
