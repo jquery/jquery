@@ -1129,6 +1129,48 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - data - x-www-form-urlencoded (gh-2658)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "post",
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.data, "devo=A+Beautiful+World", "data is '+'-encoded" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - data - text/plain (gh-2658)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "post",
+			contentType: "text/plain",
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.data, "devo=A%20Beautiful%20World", "data is %20-encoded" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - data - no processing ", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "post",
+			contentType: "x-special-sauce",
+			processData: false,
+			beforeSend: function( _, s ) {
+				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
 	var ifModifiedNow = new Date();
 
 	jQuery.each(
