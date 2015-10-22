@@ -6,7 +6,7 @@ define( [
 	"./attributes/prop"
 ], function( jQuery, rcheckableType ) {
 
-var r20 = /%20/g,
+var
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
 	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
@@ -85,7 +85,7 @@ jQuery.param = function( a, traditional ) {
 	}
 
 	// Return the resulting serialization
-	return s.join( "&" ).replace( r20, "+" );
+	return s.join( "&" );
 };
 
 jQuery.fn.extend( {

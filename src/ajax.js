@@ -12,6 +12,7 @@ define( [
 ], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
 
 var
+	r20 = /%20/g,
 	rhash = /#.*$/,
 	rts = /([?&])_=[^&]*/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
@@ -19,6 +20,7 @@ var
 	// #7653, #8125, #8152: local protocol detection
 	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
+	rformContent = /x-www-form-urlencoded/,
 	rprotocol = /^\/\//,
 
 	/* Prefilters
@@ -601,6 +603,10 @@ jQuery.extend( {
 					// Otherwise add one to the end
 					cacheURL + ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + nonce++;
 			}
+
+		// Change '%20' to '+' if this is encoded form content (gh-2658)
+		} else if ( s.data && s.processData && rformContent.test( s.contentType ) ) {
+			s.data = s.data.replace( r20, "+" );
 		}
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.

@@ -1129,6 +1129,32 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - data - x-www-form-urlencoded (gh-2658)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "post",
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.data, "devo=A+Beautiful+World", "data is '+'-encoded" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - data - URL data isn't form encoded (gh-2658)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "get",
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.url, "bogus.html?devo=A%20Beautiful%20World", "data is NOT '+'-encoded" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
 	var ifModifiedNow = new Date();
 
 	jQuery.each(
