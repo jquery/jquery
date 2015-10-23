@@ -105,11 +105,6 @@ if ( xhrSupported ) {
 						}
 					}
 
-					// Do send the request
-					// This may raise an exception which is actually
-					// handled in jQuery.ajax (so no try/catch here)
-					xhr.send( ( options.hasContent && options.data ) || null );
-
 					// Listener
 					callback = function( _, isAbort ) {
 						var status, statusText, responses;
@@ -168,14 +163,21 @@ if ( xhrSupported ) {
 						}
 					};
 
+					// Do send the request
+					// `xhr.send` may raise an exception, but it will be
+					// handled in jQuery.ajax (so no try/catch here)
 					if ( !options.async ) {
 
-						// if we're in sync mode we fire the callback
+						xhr.send( ( options.hasContent && options.data ) || null );
+
+						// If we're in sync mode we fire the callback
 						callback();
 					} else {
 
 						// Add to the list of active xhr callbacks
 						xhr.onreadystatechange = callback;
+
+						xhr.send( ( options.hasContent && options.data ) || null );
 					}
 				},
 
