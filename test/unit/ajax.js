@@ -1609,7 +1609,7 @@ QUnit.module( "ajax", {
 				assert.strictEqual( status, "error", "proper status" );
 			}
 		}, {
-			url: "http://domain.org:80d",
+			url: "http://" + externalHost + ":80q",
 			done: function( data ) {
 				assert.ok( false, "done: " + data );
 			},
