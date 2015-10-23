@@ -174,8 +174,12 @@ if ( xhrSupported ) {
 						callback();
 					} else {
 
-						// Add to the list of active xhr callbacks
-						xhr.onreadystatechange = callback;
+						// Register the callback, but delay it in case `xhr.send` throws
+						xhr.onreadystatechange = function() {
+							if ( callback ) {
+								window.setTimeout( callback );
+							}
+						};
 
 						xhr.send( ( options.hasContent && options.data ) || null );
 					}
