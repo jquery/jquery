@@ -739,7 +739,7 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 
 QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 	assert.expect( 1 );
-	var image = jQuery("<img src='data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7' />")
+	var image = jQuery("<img src='data/1x1.jpg' />")
 		.appendTo("#qunit-fixture");
 	assert.equal( image.prop("tabIndex" ), -1, "tabIndex on image" );
 } );

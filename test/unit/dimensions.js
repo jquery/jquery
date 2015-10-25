@@ -56,8 +56,6 @@ function testWidth( val, assert ) {
 	assert.equal( blah.width(), null, "Make sure 'null' is returned on an empty set" );
 
 	assert.equal( jQuery( window ).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
-
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 }
 
 QUnit.test( "width()", function( assert ) {
@@ -109,8 +107,6 @@ function testHeight( val, assert ) {
 	assert.equal( blah.height(), null, "Make sure 'null' is returned on an empty set" );
 
 	assert.equal( jQuery( window ).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
-
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 }
 
 QUnit.test( "height()", function( assert ) {
@@ -165,7 +161,6 @@ QUnit.test( "innerWidth()", function( assert ) {
 	assert.equal( div.innerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 } );
 
 QUnit.test( "innerHeight()", function( assert ) {
@@ -200,7 +195,6 @@ QUnit.test( "innerHeight()", function( assert ) {
 	assert.equal( div.innerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 } );
 
 QUnit.test( "outerWidth()", function( assert ) {
@@ -239,7 +233,6 @@ QUnit.test( "outerWidth()", function( assert ) {
 	assert.equal( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 } );
 
 QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function( assert ) {
@@ -395,7 +388,6 @@ QUnit.test( "outerHeight()", function( assert ) {
 	assert.equal( div.outerHeight(), 0, "Make sure that disconnected nodes are handled." );
 
 	div.remove();
-	assert.expectJqData( this, $div[ 0 ], "olddisplay" );
 } );
 
 QUnit.test( "passing undefined is a setter #5571", function( assert ) {
