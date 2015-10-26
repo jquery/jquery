@@ -564,7 +564,7 @@ QUnit.test( "attr('tabindex', value)", function( assert ) {
 } );
 
 QUnit.test( "removeAttr(String)", function( assert ) {
-	assert.expect( 13 );
+	assert.expect( 12 );
 	var $first;
 
 	assert.equal( jQuery( "#mark" ).removeAttr( "class" ).attr( "class" ), undefined, "remove class" );
@@ -576,8 +576,6 @@ QUnit.test( "removeAttr(String)", function( assert ) {
 
 	jQuery( "#check1" ).removeAttr( "checked" ).prop( "checked", true ).removeAttr( "checked" );
 	assert.equal( document.getElementById( "check1" ).checked, true, "removeAttr should not set checked to false, since the checked attribute does NOT mirror the checked property" );
-	jQuery( "#option1b" ).attr( "selected", "selected" ).removeAttr( "selected" ).attr( "selected", "selected" );
-	assert.notEqual( document.getElementById( "select1" ).selectedIndex, 1, "Once the selected attribute is dirty, subsequent settings should not select the option (gh-1759)" );
 	jQuery( "#text1" ).prop( "readOnly", true ).removeAttr( "readonly" );
 	assert.equal( document.getElementById( "text1" ).readOnly, false, "removeAttr sets boolean properties to false" );
 
