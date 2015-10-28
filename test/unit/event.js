@@ -2518,6 +2518,18 @@ testIframeWithCallback(
 	}
 );
 
+// need PHP here to make the incepted IFRAME hang
+if ( hasPHP ) {
+	testIframeWithCallback(
+		"jQuery.ready uses interactive",
+		"event/interactiveReady.html",
+		function( isOk, assert ) {
+			assert.expect( 1 );
+			assert.ok( isOk, "jQuery fires ready when the DOM can truly be interacted with" );
+		}
+	);
+}
+
 testIframeWithCallback(
 	"Focusing iframe element",
 	"event/focusElem.html",
