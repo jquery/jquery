@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-/*
- * jQuery Release Note Generator
- */
+
+// jQuery Release Note Generator
 
 var http = require( "http" ),
 	extract = /<a href="\/ticket\/(\d+)" title="View ticket">(.*?)<[^"]+"component">\s*(\S+)/g,
