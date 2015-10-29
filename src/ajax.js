@@ -20,7 +20,6 @@ var
 	// #7653, #8125, #8152: local protocol detection
 	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
-	rformContent = /x-www-form-urlencoded/,
 	rprotocol = /^\/\//,
 
 	/* Prefilters
@@ -604,8 +603,9 @@ jQuery.extend( {
 					cacheURL + ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + nonce++;
 			}
 
-		// Change '%20' to '+' if this is encoded form content (gh-2658)
-		} else if ( s.data && s.processData && rformContent.test( s.contentType ) ) {
+		// Change '%20' to '+' if this is encoded form body content (gh-2658)
+		} else if ( s.data && s.processData &&
+			( s.contentType || "" ).indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
 			s.data = s.data.replace( r20, "+" );
 		}
 
