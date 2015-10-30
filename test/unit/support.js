@@ -317,40 +317,6 @@ testIframeWithCallback(
 			"style": true,
 			"submit": true
 		};
-	} else if ( /7\.0(\.\d+|) safari/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"attributes": true,
-			"boxSizingReliable": true,
-			"change": true,
-			"checkClone": true,
-			"checkOn": true,
-			"clearCloneStyle": true,
-			"cors": true,
-			"createHTMLDocument": true,
-			"cssFloat": true,
-			"deleteExpando": true,
-			"focusin": false,
-			"gBCRDimensions": true,
-			"html5Clone": true,
-			"htmlSerialize": true,
-			"input": true,
-			"leadingWhitespace": true,
-			"noCloneChecked": true,
-			"noCloneEvent": true,
-			"opacity": true,
-			"optDisabled": true,
-			"optSelected": true,
-			"ownFirst": true,
-			"pixelMarginRight": true,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableHiddenOffsets": true,
-			"reliableMarginRight": true,
-			"reliableMarginLeft": true,
-			"style": true,
-			"submit": true
-		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
@@ -453,7 +419,7 @@ testIframeWithCallback(
 			"style": true,
 			"submit": true
 		};
-	} else if ( /iphone os (6|7)/i.test( userAgent ) ) {
+	} else if ( /iphone os 7/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"attributes": true,
