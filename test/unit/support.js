@@ -178,7 +178,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableMarginLeft": false
 		};
-	} else if ( /iphone os 9/i.test( userAgent ) ) {
+	} else if ( /iphone os 9_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -195,7 +195,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableMarginLeft": true
 		};
-	} else if ( /iphone os 8/i.test( userAgent ) ) {
+	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -212,7 +212,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableMarginLeft": true
 		};
-	} else if ( /iphone os 7/i.test( userAgent ) ) {
+	} else if ( /iphone os 7_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
