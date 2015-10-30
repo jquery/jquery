@@ -195,6 +195,23 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableMarginLeft": false
 		};
+	} else if ( /iphone os 9/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optSelected": true,
+			"pixelMarginRight": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginLeft": true
+		};
 	} else if ( /iphone os 8/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
