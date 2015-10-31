@@ -88,12 +88,15 @@ jQuery.ajaxTransport( function( options ) {
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
 
-									// Support: IE9
-									// Accessing binary-data responseText throws an exception
-									// (#11426)
-									typeof xhr.responseText === "string" ? {
-										text: xhr.responseText
-									} : undefined,
+									// XHR2 responseText throws an exception on binary data,
+									// return it raw and let a converter or caller handle it
+									// https://xhr.spec.whatwg.org/#the-responsetext-attribute
+									// (trac-11426, gh-2498)
+									xhr.responseType === "arraybuffer" ||
+									xhr.responseType === "blob" ||
+									typeof xhr.responseText !== "string" ?
+										{ binary: xhr.response } :
+										{ text: xhr.responseText },
 									xhr.getAllResponseHeaders()
 								);
 							}
