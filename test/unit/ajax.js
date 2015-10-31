@@ -1660,6 +1660,30 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().responseType !== "string" ) {
+
+	QUnit.skip( "No ArrayBuffer support in XHR", jQuery.noop );
+} else {
+
+	// No built-in support for binary data, but it's easy to add via a prefilter
+	jQuery.ajaxPrefilter( "arraybuffer", function ( s ) {
+		s.xhrFields = { responseType: "arraybuffer" };
+		s.responseFields.arraybuffer = "response";
+		s.converters[ "binary arraybuffer" ] = true;
+	});
+
+	ajaxTest( "gh-2498 - jQuery.ajax() - binary data shouldn't throw an exception", 2, function( assert ) {
+		return {
+			url: url( "data/1x1.jpg" ),
+			dataType: "arraybuffer",
+			success: function( data, s, jqxhr ) {
+				assert.ok( data instanceof window.ArrayBuffer, "correct data type" );
+				assert.ok( jqxhr.response instanceof window.ArrayBuffer, "data in jQXHR" );
+			}
+		};
+	} );
+}
+
 	QUnit.asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function( assert ) {
 
 		// Support: Android 2.3 only
