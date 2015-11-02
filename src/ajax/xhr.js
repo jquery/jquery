@@ -88,12 +88,10 @@ jQuery.ajaxTransport( function( options ) {
 									xhrSuccessStatus[ xhr.status ] || xhr.status,
 									xhr.statusText,
 
-									// XHR2 responseText throws an exception on binary data,
-									// return it raw and let a converter or caller handle it
-									// https://xhr.spec.whatwg.org/#the-responsetext-attribute
-									// (trac-11426, gh-2498)
-									xhr.responseType === "arraybuffer" ||
-									xhr.responseType === "blob" ||
+									// Support: IE9 only
+									// IE9 has no XHR2 but throws on binary (trac-11426)
+									// For XHR2 non-text, let the caller handle it (gh-2498)
+									( xhr.responseType || "text" ) !== "text"  ||
 									typeof xhr.responseText !== "string" ?
 										{ binary: xhr.response } :
 										{ text: xhr.responseText },
