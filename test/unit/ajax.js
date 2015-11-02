@@ -38,7 +38,7 @@ QUnit.module( "ajax", {
 	);
 
 	ajaxTest( "jQuery.ajax() - success callbacks", 8, function( assert ) {
-	    return {
+		return {
 			setup: addGlobalEvents( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess", assert ),
 			url: url( "data/name.html" ),
 			beforeSend: function() {
@@ -431,6 +431,25 @@ QUnit.module( "ajax", {
 				assert.strictEqual( xhr.readyState, 0, "XHR readyState indicates successful abortion" );
 			},
 			error: true,
+			complete: function() {
+				assert.ok( true, "complete" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
+		return {
+			url: url( "data/name.php?wait=1" ),
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				setTimeout( function() {
+					xhr.abort();
+				}, 100 );
+				return xhr;
+			},
+			error: function( xhr, msg ) {
+				assert.strictEqual( msg, "error", "Native abort triggers error callback" );
+			},
 			complete: function() {
 				assert.ok( true, "complete" );
 			}
