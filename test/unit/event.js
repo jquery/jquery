@@ -2821,7 +2821,7 @@ if ( jQuery.fn.click ) {
 
 		// Explicitly skipping focus/blur events due to their flakiness
 		var	$elem = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
-			aliases = ("resize scroll click dblclick mousedowncmouseup " +
+			aliases = ("resize scroll click dblclick mousedown mouseup " +
 				"mousemove mouseover mouseout mouseenter mouseleave change " +
 				"select submit keydown keypress keyup contextmenu").split(" ");
 		assert.expect( aliases.length );
