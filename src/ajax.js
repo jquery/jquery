@@ -5,9 +5,11 @@ define( [
 	"./ajax/var/location",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
+
 	"./core/init",
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
+	"./event/trigger",
 	"./deferred"
 ], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
 
