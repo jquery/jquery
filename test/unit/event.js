@@ -2816,25 +2816,23 @@ QUnit.test( "originalEvent property for Chrome, Safari, Fx & Edge of simulated e
 	jQuery( "#donor-input" ).trigger( "focus" );
 } );
 
-if ( jQuery.fn.click ) {
-	QUnit.test( "Event aliases", function( assert ) {
+QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
 
-		// Explicitly skipping focus/blur events due to their flakiness
-		var	$elem = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
-			aliases = ( "resize scroll click dblclick mousedown mouseup " +
-				"mousemove mouseover mouseout mouseenter mouseleave change " +
-				"select submit keydown keypress keyup contextmenu" ).split( " " );
-		assert.expect( aliases.length );
+	// Explicitly skipping focus/blur events due to their flakiness
+	var	$elem = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
+		aliases = ( "resize scroll click dblclick mousedown mouseup " +
+			"mousemove mouseover mouseout mouseenter mouseleave change " +
+			"select submit keydown keypress keyup contextmenu" ).split( " " );
+	assert.expect( aliases.length );
 
-		jQuery.each( aliases, function( i, name ) {
+	jQuery.each( aliases, function( i, name ) {
 
-			// e.g. $(elem).click(...).click();
-			$elem[ name ]( function( event ) {
-				assert.equal( event.type, name, "triggered " + name );
-			} )[ name ]().off( name );
-		} );
+		// e.g. $(elem).click(...).click();
+		$elem[ name ]( function( event ) {
+			assert.equal( event.type, name, "triggered " + name );
+		} )[ name ]().off( name );
 	} );
-}
+} );
 
 // These tests are unreliable in Firefox
 if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
