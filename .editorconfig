@@ -24,5 +24,4 @@ indent_style = tab
 indent_style = tab
 
 [test/**.css]
-indent_style = space
-indent_size = 8
+indent_style = tab
