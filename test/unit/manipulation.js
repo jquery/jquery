@@ -2162,6 +2162,17 @@ testIframeWithCallback(
 	}
 );
 
+testIframeWithCallback(
+	"domManip executes scripts in iframes in the iframes' context",
+	"manipulation/scripts-context.html",
+	function( frameWindow, bodyElement, html, assert ) {
+		assert.expect( 2 );
+		jQuery( bodyElement ).append( html );
+		assert.ok( !window.scriptTest, "script executed in iframe context" );
+		assert.ok( frameWindow.scriptTest, "script executed in iframe context" );
+	}
+);
+
 QUnit.test( "jQuery.clone - no exceptions for object elements #9587", function( assert ) {
 
 	assert.expect( 1 );
