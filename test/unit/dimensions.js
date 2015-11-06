@@ -393,43 +393,6 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	$divNormal.remove();
 } );
 
-QUnit.test( "outerHeight()", function( assert ) {
-	assert.expect( 11 );
-
-	var $div, div,
-		$win = jQuery( window ),
-		$doc = jQuery( document );
-
-	assert.equal( jQuery( window ).outerHeight(), $win.height(), "Test on window without margin option" );
-	assert.equal( jQuery( window ).outerHeight( true ), $win.height(), "Test on window with margin option" );
-	assert.equal( jQuery( document ).outerHeight(), $doc.height(), "Test on document without margin option" );
-	assert.equal( jQuery( document ).outerHeight( true ), $doc.height(), "Test on document with margin option" );
-
-	$div = jQuery( "#nothiddendiv" );
-	$div.css( "height", 30 );
-
-	assert.equal( $div.outerHeight(), 30, "Test with only width set" );
-	$div.css( "padding", "20px" );
-	assert.equal( $div.outerHeight(), 70, "Test with padding" );
-	$div.css( "border", "2px solid #fff" );
-	assert.equal( $div.outerHeight(), 74, "Test with padding and border" );
-	$div.css( "margin", "10px" );
-	assert.equal( $div.outerHeight(), 74, "Test with padding, border and margin without margin option" );
-	assert.equal( $div.outerHeight( true ), 94, "Test with padding, border and margin with margin option" );
-	$div.css( "display", "none" );
-	assert.equal( $div.outerHeight( true ), 94, "Test hidden div with padding, border and margin with margin option" );
-
-	// reset styles
-	$div.css( { "display": "", "border": "", "padding": "", "width": "", "height": "" } );
-
-	div = jQuery( "<div>" );
-
-	// Temporarily require 0 for backwards compat - should be auto
-	assert.equal( div.outerHeight(), 0, "Make sure that disconnected nodes are handled." );
-
-	div.remove();
-} );
-
 QUnit.test( "passing undefined is a setter #5571", function( assert ) {
 	assert.expect( 4 );
 	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).height( undefined ).height(), 30, ".height(undefined) is chainable (#5571)" );
