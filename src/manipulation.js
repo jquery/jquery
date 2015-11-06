@@ -192,7 +192,7 @@ function domManip( collection, args, callback, ignored ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
-							jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
+							jQuery.globalEval( node.textContent.replace( rcleanScript, "" ), doc );
 						}
 					}
 				}

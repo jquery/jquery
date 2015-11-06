@@ -258,11 +258,12 @@ jQuery.extend( {
 	},
 
 	// Evaluates a script in a global context
-	globalEval: function( code ) {
-		var script = document.createElement( "script" );
+	globalEval: function( code, context ) {
+		context = context || document;
+		var script = context.createElement( "script" );
 
 		script.text = code;
-		document.head.appendChild( script ).parentNode.removeChild( script );
+		context.head.appendChild( script ).parentNode.removeChild( script );
 	},
 
 	// Convert dashed to camelCase; used by the css and data modules
