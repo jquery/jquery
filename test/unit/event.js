@@ -2833,11 +2833,6 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( ass
 	};
 	jQuery( "#simon1" ).click();
 	assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
-
-	// test that special handlers do not blow up with VML elements (#7071)
-	jQuery( "<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />" ).appendTo( "head" );
-	jQuery( "<v:oval id='oval' style='width:100pt;height:75pt;' fillcolor='red'> </v:oval>" ).appendTo( "#form" );
-	jQuery( "#oval" ).click().keydown();
 } );
 
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
@@ -2856,6 +2851,21 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) 
 			assert.equal( event.type, name, "triggered " + name );
 		} )[ name ]().off( name );
 	} );
+} );
+
+// Support: IE9 (remove when IE9 is no longer supported)
+// https://msdn.microsoft.com/en-us/library/hh801223(v=vs.85).aspx
+QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
+	assert.expect( 1 );
+
+	var ns = jQuery( "<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />" ).appendTo( "head" );
+
+	jQuery( "<v:oval id='oval' style='width:100pt;height:75pt;' fillcolor='red'> </v:oval>" ).appendTo( "#form" );
+	jQuery( "#form" ).on( "keydown", function() {
+		assert.ok( true, "no error was thrown" );
+	} );
+	jQuery( "#oval" ).trigger( "click" ).trigger( "keydown" );
+	ns.remove();
 } );
 
 // These tests are unreliable in Firefox
