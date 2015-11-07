@@ -12,9 +12,11 @@ Note: This is the code development repository for *jQuery Core* only. Before ope
 
 ## Getting Involved
 
-We've put together [a short guide with tips, tricks, and ideas on getting started](http://contribute.jquery.org/open-source/). We're always looking for help identifying bugs, writing and reducing test cases, and documentation.
+[API design principles](https://github.com/jquery/jquery/wiki/API-design-guidelines)
 
-More information on how to contribute to this and other jQuery Foundation projects is at [contribute.jquery.org](http://contribute.jquery.org). Please review our [commit & pull request guide](http://contribute.jquery.org/commits-and-pull-requests/) and [style guides](http://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](http://contribute.jquery.org/cla/).
+We're always looking for help [identifying bugs](#how-to-report-bugs), writing and reducing test cases, and improving documentation. And although new features are rare, anything passing our [guidelines](https://github.com/jquery/jquery/wiki/Adding-new-features) will be considered.
+
+More information on how to contribute to this and other jQuery Foundation projects is at [contribute.jquery.org](http://contribute.jquery.org), including a short guide with tips, tricks, and ideas on [getting started with open source](http://contribute.jquery.org/open-source/). Please review our [commit & pull request guide](http://contribute.jquery.org/commits-and-pull-requests/) and [style guides](http://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](http://contribute.jquery.org/cla/).
 
 
 ## Questions and Discussion
