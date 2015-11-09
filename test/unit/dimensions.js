@@ -30,7 +30,7 @@ function fn( val ) {
 
 function testWidth( val, assert ) {
 	assert.expect( 9 );
-	var $div, blah;
+	var $div, $empty;
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.width( val( 30 ) );
@@ -51,9 +51,9 @@ function testWidth( val, assert ) {
 	assert.equal( jQuery( "#nothiddendivchild" ).width(), 20, "Test child width with border and padding" );
 	jQuery( "#nothiddendiv, #nothiddendivchild" ).css( { "border": "", "padding": "", "width": "" } );
 
-	blah = jQuery( "blah" );
-	assert.equal( blah.width( val( 10 ) ), blah, "Make sure that setting a width on an empty set returns the set." );
-	assert.equal( blah.width(), null, "Make sure 'null' is returned on an empty set" );
+	$empty = jQuery();
+	assert.equal( $empty.width( val( 10 ) ), $empty, "Make sure that setting a width on an empty set returns the set." );
+	assert.strictEqual( $empty.width(), undefined, "Make sure 'undefined' is returned on an empty set" );
 
 	assert.equal( jQuery( window ).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 }
@@ -104,7 +104,7 @@ function testHeight( val, assert ) {
 
 	blah = jQuery( "blah" );
 	assert.equal( blah.height( val( 10 ) ), blah, "Make sure that setting a height on an empty set returns the set." );
-	assert.equal( blah.height(), null, "Make sure 'null' is returned on an empty set" );
+	assert.strictEqual( blah.height(), undefined, "Make sure 'undefined' is returned on an empty set" );
 
 	assert.equal( jQuery( window ).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
 }
@@ -130,7 +130,7 @@ QUnit.test( "height(Function(args))", function( assert ) {
 } );
 
 QUnit.test( "innerWidth()", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 7 );
 
 	var $div, div,
 		$win = jQuery( window ),
@@ -138,6 +138,7 @@ QUnit.test( "innerWidth()", function( assert ) {
 
 	assert.equal( jQuery( window ).innerWidth(), $win.width(), "Test on window" );
 	assert.equal( jQuery( document ).innerWidth(), $doc.width(), "Test on document" );
+	assert.strictEqual( jQuery().innerWidth(), undefined, "Test on empty set" );
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.css( {
@@ -164,7 +165,7 @@ QUnit.test( "innerWidth()", function( assert ) {
 } );
 
 QUnit.test( "innerHeight()", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 7 );
 
 	var $div, div,
 		$win = jQuery( window ),
@@ -172,6 +173,7 @@ QUnit.test( "innerHeight()", function( assert ) {
 
 	assert.equal( jQuery( window ).innerHeight(), $win.height(), "Test on window" );
 	assert.equal( jQuery( document ).innerHeight(), $doc.height(), "Test on document" );
+	assert.strictEqual( jQuery().innerHeight(), undefined, "Test on empty set" );
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.css( {
@@ -198,7 +200,7 @@ QUnit.test( "innerHeight()", function( assert ) {
 } );
 
 QUnit.test( "outerWidth()", function( assert ) {
-	assert.expect( 11 );
+	assert.expect( 12 );
 
 	var $div, div,
 		$win = jQuery( window ),
@@ -209,6 +211,7 @@ QUnit.test( "outerWidth()", function( assert ) {
 	assert.equal( jQuery( window ).outerWidth( true ), winwidth, "Test on window with margin option" );
 	assert.equal( jQuery( document ).outerWidth(), $doc.width(), "Test on document without margin option" );
 	assert.equal( jQuery( document ).outerWidth( true ), $doc.width(), "Test on document with margin option" );
+	assert.strictEqual( jQuery().outerWidth(), undefined, "Test on empty set" );
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.css( "width", 30 );
@@ -237,7 +240,7 @@ QUnit.test( "outerWidth()", function( assert ) {
 } );
 
 QUnit.test( "outerHeight()", function( assert ) {
-	assert.expect( 11 );
+	assert.expect( 12 );
 
 	var $div, div,
 		$win = jQuery( window ),
@@ -248,6 +251,7 @@ QUnit.test( "outerHeight()", function( assert ) {
 	assert.equal( jQuery( window ).outerHeight( true ), winheight, "Test on window with margin option" );
 	assert.equal( jQuery( document ).outerHeight(), $doc.height(), "Test on document without margin option" );
 	assert.equal( jQuery( document ).outerHeight( true ), $doc.height(), "Test on document with margin option" );
+	assert.strictEqual( jQuery().outerHeight(), undefined, "Test on empty set" );
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.css( "height", 30 );
@@ -399,22 +403,6 @@ QUnit.test( "passing undefined is a setter #5571", function( assert ) {
 	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).innerHeight( undefined ).height(), 30, ".innerHeight(undefined) is chainable (#5571)" );
 	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).outerHeight( undefined ).height(), 30, ".outerHeight(undefined) is chainable (#5571)" );
 	assert.equal( jQuery( "#nothiddendiv" ).width( 30 ).width( undefined ).width(), 30, ".width(undefined) is chainable (#5571)" );
-} );
-
-QUnit.test( "getters on non elements should return null", function( assert ) {
-	assert.expect( 8 );
-
-	var nonElem = jQuery( "notAnElement" );
-
-	assert.strictEqual( nonElem.width(), null, ".width() is not null (#12283)" );
-	assert.strictEqual( nonElem.innerWidth(), null, ".innerWidth() is not null (#12283)" );
-	assert.strictEqual( nonElem.outerWidth(), null, ".outerWidth() is not null (#12283)" );
-	assert.strictEqual( nonElem.outerWidth( true ), null, ".outerWidth(true) is not null (#12283)" );
-
-	assert.strictEqual( nonElem.height(), null, ".height() is not null (#12283)" );
-	assert.strictEqual( nonElem.innerHeight(), null, ".innerHeight() is not null (#12283)" );
-	assert.strictEqual( nonElem.outerHeight(), null, ".outerHeight() is not null (#12283)" );
-	assert.strictEqual( nonElem.outerHeight( true ), null, ".outerHeight(true) is not null (#12283)" );
 } );
 
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
