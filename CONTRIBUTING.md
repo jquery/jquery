@@ -12,7 +12,7 @@ Note: This is the code development repository for *jQuery Core* only. Before ope
 
 ## Getting Involved
 
-[jQuery tenets](https://github.com/jquery/jquery/wiki/API-design-guidelines)
+[API design principles](https://github.com/jquery/jquery/wiki/API-design-guidelines)
 
 We're always looking for help [identifying bugs](#how-to-report-bugs), writing and reducing test cases, and improving documentation. And although new features are rare, anything passing our [guidelines](https://github.com/jquery/jquery/wiki/Adding-new-features) will be considered.
 
