@@ -460,8 +460,8 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 	assert.notEqual( $().scrollLeft( 100 ), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
 	assert.notEqual( $().scrollTop( null ), null, "jQuery().scrollTop(null) testing setter on empty jquery object" );
 	assert.notEqual( $().scrollLeft( null ), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
-	assert.strictEqual( $().scrollTop(), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
-	assert.strictEqual( $().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
+	assert.strictEqual( $().scrollTop(), undefined, "jQuery().scrollTop() testing getter on empty jquery object" );
+	assert.strictEqual( $().scrollLeft(), undefined, "jQuery().scrollLeft() testing getter on empty jquery object" );
 
 	// Tests position after parent scrolling (#15239)
 	$( "#scroll-1" ).scrollTop( 0 );
