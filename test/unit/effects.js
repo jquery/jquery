@@ -1527,16 +1527,16 @@ QUnit.test( "Animate callbacks have correct context", function( assert ) {
 	this.clock.tick( 10 );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "User supplied callback called after show when fx off (#8892)", function( assert ) {
+QUnit.test( "User supplied callback called after show when fx off (#8892)", function( assert ) {
 	assert.expect( 2 );
 
 	var foo = jQuery( "#foo" );
 	jQuery.fx.off = true;
 	foo.hide();
 	foo.fadeIn( 500, function() {
-		assert.ok( jQuery( this ).is( ":visible" ), "Element is visible in callback" );
+		assert.ok( supportjQuery( this ).is( ":visible" ), "Element is visible in callback" );
 		foo.fadeOut( 500, function() {
-			assert.ok( jQuery( this ).is( ":hidden" ), "Element is hidden in callback" );
+			assert.ok( supportjQuery( this ).is( ":hidden" ), "Element is hidden in callback" );
 			jQuery.fx.off = false;
 		} );
 	} );
@@ -2129,7 +2129,7 @@ QUnit.test( ".finish() completes all queued animations", function( assert ) {
 	if ( jQuery.find.compile ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
-		assert.ok( true, ":animated selector not supported with selector-native" );
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
 	}
 
 	// cleanup
@@ -2169,7 +2169,7 @@ QUnit.test( ".finish( false ) - unqueued animations", function( assert ) {
 	if ( jQuery.find.compile ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
-		assert.ok( true, ":animated selector not supported with selector-native" );
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
 	}
 
 	// cleanup
@@ -2208,7 +2208,7 @@ QUnit.test( ".finish( \"custom\" ) - custom queue animations", function( assert 
 	if ( jQuery.find.compile ) {
 		assert.equal( div.is( ":animated" ), true, ":animated matches" );
 	} else {
-		assert.ok( true, ":animated selector not supported with selector-native" );
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
 	}
 
 	div.finish( "custom" );
@@ -2219,7 +2219,7 @@ QUnit.test( ".finish( \"custom\" ) - custom queue animations", function( assert 
 	if ( jQuery.find.compile ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
-		assert.ok( true, ":animated selector not supported with selector-native" );
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
 	}
 
 	// cleanup

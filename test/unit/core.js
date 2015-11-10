@@ -622,7 +622,7 @@ QUnit.test( "jQuery('html')", function( assert ) {
 		assert.equal( jQuery( "element:not(<div></div>)" ).length, 0,
 			"When html is within parens, do not recognize as html." );
 	} else {
-		assert.ok( true, "Complex :not not supported in selector-native" );
+		assert.ok( "skip", "Complex :not not supported in selector-native" );
 	}
 	assert.equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 } );

@@ -504,7 +504,7 @@ QUnit.test( "siblings([String])", function( assert ) {
 	assert.equal( jQuery( "<a/>" ).siblings().length, 0, "Detached elements have no siblings (#11370)" );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "siblings([String]) - jQuery only", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "siblings([String])", function( assert ) {
 	assert.expect( 2 );
 	assert.deepEqual( jQuery( "#sndp" ).siblings( ":has(code)" ).get(), q( "sap" ), "Check for filtered siblings (has code child element)" );
 	assert.deepEqual( jQuery( "#sndp" ).siblings( ":has(a)" ).get(), q( "en", "sap" ), "Check for filtered siblings (has anchor child element)" );
@@ -516,7 +516,7 @@ QUnit.test( "children([String])", function( assert ) {
 	assert.deepEqual( jQuery( "#foo" ).children( "#en, #sap" ).get(), q( "en", "sap" ), "Check for multiple filters" );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "children([String]) - jQuery only", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "children([String])", function( assert ) {
 	assert.expect( 1 );
 	assert.deepEqual( jQuery( "#foo" ).children( ":has(code)" ).get(), q( "sndp", "sap" ), "Check for filtered children" );
 } );

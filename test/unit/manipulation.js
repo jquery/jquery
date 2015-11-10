@@ -1871,8 +1871,8 @@ QUnit.test( "remove() with filters", function( assert ) {
 		div.children().remove( "span:last" );
 		assert.equal( div.text(), "123", "positional selector in remove" );
 	} else {
-		assert.ok( true, "Positional selectors not supported in selector-native" );
-		assert.ok( true, "Positional selectors not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors not supported in selector-native" );
 	}
 
 	// using contents will get comments regular, text, and comment nodes
@@ -1968,8 +1968,8 @@ QUnit.test( "detach() with filters", function( assert ) {
 		div.children().detach( "span:last" );
 		assert.equal( div.text(), "123", "positional selector in detach" );
 	} else {
-		assert.ok( true, "positional selectors not supported in selector-native" );
-		assert.ok( true, "positional selectors not supported in selector-native" );
+		assert.ok( "skip", "positional selectors not supported in selector-native" );
+		assert.ok( "skip", "positional selectors not supported in selector-native" );
 	}
 
 	// using contents will get comments regular, text, and comment nodes

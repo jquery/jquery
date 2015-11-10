@@ -4,7 +4,7 @@ QUnit.module( "selector", { teardown: moduleTeardown } );
  * This test page is for selector tests that require jQuery in order to do the selection
  */
 
-QUnit.test( "element - jQuery only", function( assert ) {
+QUnit.test( "element", function( assert ) {
 	assert.expect( 7 );
 
 	var fixture = document.getElementById( "qunit-fixture" );
@@ -63,7 +63,7 @@ QUnit.test( "id", function( assert ) {
 	assert.t( "ID with weird characters in it", "#name\\+value", [ "name+value" ] );
 } );
 
-QUnit.test( "class - jQuery only", function( assert ) {
+QUnit.test( "class", function( assert ) {
 	assert.expect( 4 );
 
 	assert.deepEqual( jQuery( ".blog", document.getElementsByTagName( "p" ) ).get(), q( "mark", "simon" ), "Finding elements with a context." );
@@ -124,9 +124,9 @@ QUnit.test( "child and adjacent", function( assert ) {
 		assert.t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
 		assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (#8310)" );
 	} else {
-		assert.ok( true, ":contains not supported in selector-native" );
-		assert.ok( true, ":contains not supported in selector-native" );
-		assert.ok( true, ":eq not supported in selector-native" );
+		assert.ok( "skip", ":contains not supported in selector-native" );
+		assert.ok( "skip", ":contains not supported in selector-native" );
+		assert.ok( "skip", ":eq not supported in selector-native" );
 	}
 
 	assert.t( "Multiple combinators selects all levels", "#siblingTest em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
@@ -199,12 +199,12 @@ QUnit.test( "attributes", function( assert ) {
 		assert.t( "Select options via :selected", "#select3 option:selected", [ "option3b", "option3c" ] );
 		assert.t( "Select options via :selected", "select[name='select2'] option:selected", [ "option2d" ] );
 	} else {
-		assert.ok( true, "!= not supported in selector-native" );
-		assert.ok( true, "!= not supported in selector-native" );
-		assert.ok( true, ":selected not supported in selector-native" );
-		assert.ok( true, ":selected not supported in selector-native" );
-		assert.ok( true, ":selected not supported in selector-native" );
-		assert.ok( true, ":selected not supported in selector-native" );
+		assert.ok( "skip", "!= not supported in selector-native" );
+		assert.ok( "skip", "!= not supported in selector-native" );
+		assert.ok( "skip", ":selected not supported in selector-native" );
+		assert.ok( "skip", ":selected not supported in selector-native" );
+		assert.ok( "skip", ":selected not supported in selector-native" );
+		assert.ok( "skip", ":selected not supported in selector-native" );
 	}
 
 	assert.t( "Empty values", "#select1 option[value='']", [ "option1a" ] );
@@ -258,8 +258,8 @@ QUnit.test( "attributes", function( assert ) {
 			":input[value=foo] selects text input by attribute"
 		);
 	} else {
-		assert.ok( true, ":input not supported in selector-native" );
-		assert.ok( true, ":input not supported in selector-native" );
+		assert.ok( "skip", ":input not supported in selector-native" );
+		assert.ok( "skip", ":input not supported in selector-native" );
 	}
 
 
@@ -279,7 +279,7 @@ QUnit.test( "disconnected nodes", function( assert ) {
 	assert.equal( $div.is( "div" ), true, "Make sure .is('nodeName') works on disconnected nodes." );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "disconnected nodes - jQuery only", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "disconnected nodes", function( assert ) {
 	assert.expect( 3 );
 
 	var $opt = jQuery( "<option></option>" ).attr( "value", "whipit" ).appendTo( "#qunit-fixture" ).detach();
