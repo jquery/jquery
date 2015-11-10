@@ -27,7 +27,7 @@ QUnit.module( "effects", {
 	}
 } );
 
-QUnit.test( "sanity check", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "sanity check", function( assert ) {
 	assert.expect( 1 );
 	assert.equal( jQuery( "#dl:visible, #qunit-fixture:visible, #foo:visible" ).length, 3, "QUnit state is correct for testing effects" );
 } );
@@ -769,7 +769,7 @@ QUnit.test( "stop( queue, ..., ... ) - Stop single queues", function( assert ) {
         this.clock.tick( 500 );
 } );
 
-QUnit.test( "toggle()", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 6 );
 	var x = jQuery( "#foo" );
 	assert.ok( x.is( ":visible" ), "is visible" );
@@ -1534,9 +1534,9 @@ QUnit.test( "User supplied callback called after show when fx off (#8892)", func
 	jQuery.fx.off = true;
 	foo.hide();
 	foo.fadeIn( 500, function() {
-		assert.ok( jQuery( this ).is( ":visible" ), "Element is visible in callback" );
+		assert.ok( supportjQuery( this ).is( ":visible" ), "Element is visible in callback" );
 		foo.fadeOut( 500, function() {
-			assert.ok( jQuery( this ).is( ":hidden" ), "Element is hidden in callback" );
+			assert.ok( supportjQuery( this ).is( ":hidden" ), "Element is hidden in callback" );
 			jQuery.fx.off = false;
 		} );
 	} );
@@ -1592,7 +1592,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 	clock.tick( 400 );
 } );
 
-QUnit.test( "Animation callback should not show animated element as :animated (#7157)", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "Animation callback should not show animated element as :animated (#7157)", function( assert ) {
 	assert.expect( 1 );
 
 	var foo = jQuery( "#foo" );
@@ -1605,7 +1605,7 @@ QUnit.test( "Animation callback should not show animated element as :animated (#
 	this.clock.tick( 100 );
 } );
 
-QUnit.test( "Initial step callback should show element as :animated (#14623)", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "Initial step callback should show element as :animated (#14623)", function( assert ) {
 	assert.expect( 1 );
 
 	var foo = jQuery( "#foo" );
@@ -2125,7 +2125,12 @@ QUnit.test( ".finish() completes all queued animations", function( assert ) {
 		assert.equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	} );
 	assert.equal( div.queue().length, 0, "empty queue when done" );
-	assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+
+	if ( jQuery.find.compile ) {
+		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+	} else {
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
+	}
 
 	// cleanup
 	div.remove();
@@ -2160,7 +2165,12 @@ QUnit.test( ".finish( false ) - unqueued animations", function( assert ) {
 	jQuery.each( animations, function( prop, value ) {
 		assert.equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	} );
-	assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+
+	if ( jQuery.find.compile ) {
+		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+	} else {
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
+	}
 
 	// cleanup
 	div.remove();
@@ -2194,12 +2204,23 @@ QUnit.test( ".finish( \"custom\" ) - custom queue animations", function( assert 
 
 	// start the first animation
 	div.dequeue( "custom" );
-	assert.equal( div.is( ":animated" ), true, ":animated matches" );
+
+	if ( jQuery.find.compile ) {
+		assert.equal( div.is( ":animated" ), true, ":animated matches" );
+	} else {
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
+	}
+
 	div.finish( "custom" );
 	jQuery.each( animations, function( prop, value ) {
 		assert.equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	} );
-	assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+
+	if ( jQuery.find.compile ) {
+		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
+	} else {
+		assert.ok( "skip", ":animated selector not supported with selector-native" );
+	}
 
 	// cleanup
 	div.remove();

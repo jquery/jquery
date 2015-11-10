@@ -13,7 +13,7 @@ QUnit.test( "find(String) under non-elements", function( assert ) {
 	assert.equal( j.find( "div" ).addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 } );
 
-QUnit.test( "find(leading combinator)", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "find(leading combinator)", function( assert ) {
 	assert.expect( 4 );
 
 	assert.deepEqual( jQuery( "#qunit-fixture" ).find( "> div" ).get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
@@ -130,7 +130,7 @@ QUnit.test( "is(jQuery)", function( assert ) {
 	assert.ok( !jQuery( "#simon" ).is( jQuery( ".blogTest" )[ 0 ] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 } );
 
-QUnit.test( "is() with :has() selectors", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "is() with :has() selectors", function( assert ) {
 	assert.expect( 6 );
 
 	assert.ok( jQuery( "#foo" ).is( ":has(p)" ), "Check for child: Expected a child 'p' element" );
@@ -142,7 +142,7 @@ QUnit.test( "is() with :has() selectors", function( assert ) {
 	assert.ok( !jQuery( "#foo" ).is( jQuery( "div:has(ul)" ) ), "Check for child: Did not expect 'ul' element" );
 } );
 
-QUnit.test( "is() with positional selectors", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "is() with positional selectors", function( assert ) {
 	assert.expect( 27 );
 
 	var
@@ -279,7 +279,7 @@ QUnit.test( "filter(jQuery)", function( assert ) {
 	assert.deepEqual( jQuery( "#form input" ).filter( elements ).get(), q( "text1" ), "filter(Element)" );
 } );
 
-QUnit.test( "filter() with positional selectors", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "filter() with positional selectors", function( assert ) {
 	assert.expect( 19 );
 
 	var filterit = function( sel, filter, length ) {
@@ -354,7 +354,7 @@ QUnit.test( "closest()", function( assert ) {
 	assert.deepEqual( jq.contents().closest( "*" ).get(), jq.get(), "Text node input (#13332)" );
 } );
 
-QUnit.test( "closest() with positional selectors", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "closest() with positional selectors", function( assert ) {
 	assert.expect( 2 );
 
 	assert.deepEqual( jQuery( "#qunit-fixture" ).closest( "div:first" ).get(), [], "closest(div:first)" );
@@ -377,8 +377,8 @@ QUnit.test( "closest(jQuery)", function( assert ) {
 	assert.ok( $child.closest( $body.add( $parent ) ).is( "#nothiddendiv" ), "Closest ancestor retrieved." );
 } );
 
-QUnit.test( "not(Selector|undefined)", function( assert ) {
-	assert.expect( 11 );
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "not(Selector)", function( assert ) {
+	assert.expect( 7 );
 	assert.equal( jQuery( "#qunit-fixture > p#ap > a" ).not( "#google" ).length, 2, "not('selector')" );
 	assert.deepEqual( jQuery( "p" ).not( ".result" ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "not('.class')" );
 	assert.deepEqual( jQuery( "p" ).not( "#ap, #sndp, .result" ).get(), q( "firstp", "en", "sap", "first" ), "not('selector, selector')" );
@@ -387,17 +387,21 @@ QUnit.test( "not(Selector|undefined)", function( assert ) {
 	assert.deepEqual( jQuery( "#ap *" ).not( "code, #mark" ).get(), q( "google", "groups", "anchor1" ), "not('tag, ID selector')" );
 	assert.deepEqual( jQuery( "#ap *" ).not( "#mark, code" ).get(), q( "google", "groups", "anchor1" ), "not('ID, tag selector')" );
 
-	var all = jQuery( "p" ).get();
-	assert.deepEqual( jQuery( "p" ).not( null ).get(),      all, "not(null) should have no effect" );
-	assert.deepEqual( jQuery( "p" ).not( undefined ).get(), all, "not(undefined) should have no effect" );
-	assert.deepEqual( jQuery( "p" ).not( 0 ).get(),         all, "not(0) should have no effect" );
-	assert.deepEqual( jQuery( "p" ).not( "" ).get(),        all, "not('') should have no effect" );
-
 	assert.deepEqual(
 		jQuery( "#form option" ).not( "option.emptyopt:contains('Nothing'),optgroup *,[value='1']" ).get(),
 		q( "option1c", "option1d", "option2c", "option2d", "option3c", "option3d", "option3e", "option4d", "option4e", "option5a", "option5b" ),
 		"not('complex selector')"
 	);
+} );
+
+QUnit.test( "not(undefined)", function( assert ) {
+	assert.expect( 4 );
+
+	var all = jQuery( "p" ).get();
+	assert.deepEqual( jQuery( "p" ).not( null ).get(),      all, "not(null) should have no effect" );
+	assert.deepEqual( jQuery( "p" ).not( undefined ).get(), all, "not(undefined) should have no effect" );
+	assert.deepEqual( jQuery( "p" ).not( 0 ).get(),         all, "not(0) should have no effect" );
+	assert.deepEqual( jQuery( "p" ).not( "" ).get(),        all, "not('') should have no effect" );
 } );
 
 QUnit.test( "not(Element)", function( assert ) {
@@ -500,7 +504,7 @@ QUnit.test( "siblings([String])", function( assert ) {
 	assert.equal( jQuery( "<a/>" ).siblings().length, 0, "Detached elements have no siblings (#11370)" );
 } );
 
-QUnit.test( "siblings([String]) - jQuery only", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "siblings([String])", function( assert ) {
 	assert.expect( 2 );
 	assert.deepEqual( jQuery( "#sndp" ).siblings( ":has(code)" ).get(), q( "sap" ), "Check for filtered siblings (has code child element)" );
 	assert.deepEqual( jQuery( "#sndp" ).siblings( ":has(a)" ).get(), q( "en", "sap" ), "Check for filtered siblings (has anchor child element)" );
@@ -512,7 +516,7 @@ QUnit.test( "children([String])", function( assert ) {
 	assert.deepEqual( jQuery( "#foo" ).children( "#en, #sap" ).get(), q( "en", "sap" ), "Check for multiple filters" );
 } );
 
-QUnit.test( "children([String]) - jQuery only", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "children([String])", function( assert ) {
 	assert.expect( 1 );
 	assert.deepEqual( jQuery( "#foo" ).children( ":has(code)" ).get(), q( "sndp", "sap" ), "Check for filtered children" );
 } );
