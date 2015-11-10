@@ -30,7 +30,7 @@ function fn( val ) {
 
 function testWidth( val, assert ) {
 	assert.expect( 9 );
-	var $div, blah;
+	var $div, $empty;
 
 	$div = jQuery( "#nothiddendiv" );
 	$div.width( val( 30 ) );
@@ -51,9 +51,9 @@ function testWidth( val, assert ) {
 	assert.equal( jQuery( "#nothiddendivchild" ).width(), 20, "Test child width with border and padding" );
 	jQuery( "#nothiddendiv, #nothiddendivchild" ).css( { "border": "", "padding": "", "width": "" } );
 
-	blah = jQuery( "blah" );
-	assert.equal( blah.width( val( 10 ) ), blah, "Make sure that setting a width on an empty set returns the set." );
-	assert.strictEqual( blah.width(), undefined, "Make sure 'undefined' is returned on an empty set" );
+	$empty = jQuery();
+	assert.equal( $empty.width( val( 10 ) ), $empty, "Make sure that setting a width on an empty set returns the set." );
+	assert.strictEqual( $empty.width(), undefined, "Make sure 'undefined' is returned on an empty set" );
 
 	assert.equal( jQuery( window ).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 }
