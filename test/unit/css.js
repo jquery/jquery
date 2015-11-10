@@ -666,9 +666,7 @@ QUnit.test( "show() after hide() should always set display to initial value (#14
 
 }
 
-if ( jQuery.fn.toggle ) {
-
-QUnit.test( "toggle()", function( assert ) {
+QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
 		x = jQuery( "#foo" );
@@ -700,8 +698,6 @@ QUnit.test( "toggle()", function( assert ) {
 	x.toggle( name === "show" );
 	jQuery.fn.hide = oldHide;
 } );
-
-}
 
 QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function( assert ) {
 	assert.expect( 4 );
@@ -1012,7 +1008,7 @@ QUnit.test( "css opacity consistency across browsers (#12685)", function( assert
 	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 20, "remove opacity override" );
 } );
 
-QUnit.test( ":visible/:hidden selectors", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", function( assert ) {
 	assert.expect( 17 );
 
 	var $div, $table, $a;

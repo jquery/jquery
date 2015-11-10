@@ -1,8 +1,10 @@
 define( [
 	"./core",
 	"./var/document",
-	"./var/documentElement"
-], function( jQuery, document, documentElement ) {
+	"./var/documentElement",
+	"./var/hasOwn",
+	"./var/indexOf"
+], function( jQuery, document, documentElement, hasOwn, indexOf ) {
 
 /*
  * Optional (non-Sizzle) selector module for custom builds.
@@ -29,69 +31,84 @@ define( [
  * customize this stub for the project's specific needs.
  */
 
-var hasDuplicate,
+var hasDuplicate, sortInput,
+	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
 	matches = documentElement.matches ||
 		documentElement.webkitMatchesSelector ||
 		documentElement.mozMatchesSelector ||
 		documentElement.oMatchesSelector ||
-		documentElement.msMatchesSelector,
-	sortOrder = function( a, b ) {
+		documentElement.msMatchesSelector;
 
-		// Flag for duplicate removal
-		if ( a === b ) {
-			hasDuplicate = true;
-			return 0;
+function sortOrder( a, b ) {
+
+	// Flag for duplicate removal
+	if ( a === b ) {
+		hasDuplicate = true;
+		return 0;
+	}
+
+	// Sort on method existence if only one input has compareDocumentPosition
+	var compare = !a.compareDocumentPosition - !b.compareDocumentPosition;
+	if ( compare ) {
+		return compare;
+	}
+
+	// Calculate position if both inputs belong to the same document
+	compare = ( a.ownerDocument || a ) === ( b.ownerDocument || b ) ?
+		a.compareDocumentPosition( b ) :
+
+		// Otherwise we know they are disconnected
+		1;
+
+	// Disconnected nodes
+	if ( compare & 1 ) {
+
+		// Choose the first element that is related to our preferred document
+		if ( a === document || a.ownerDocument === document &&
+			jQuery.contains( document, a ) ) {
+			return -1;
+		}
+		if ( b === document || b.ownerDocument === document &&
+			jQuery.contains( document, b ) ) {
+			return 1;
 		}
 
-		var compare = b.compareDocumentPosition &&
-			a.compareDocumentPosition &&
-			a.compareDocumentPosition( b );
+		// Maintain original order
+		return sortInput ?
+			( indexOf.call( sortInput, a ) - indexOf.call( sortInput, b ) ) :
+			0;
+	}
 
-		if ( compare ) {
+	return compare & 4 ? -1 : 1;
+}
 
-			// Disconnected nodes
-			if ( compare & 1 ) {
+function uniqueSort( results ) {
+	var elem,
+		duplicates = [],
+		j = 0,
+		i = 0;
 
-				// Choose the first element that is related to our document
-				if ( a === document || jQuery.contains( document, a ) ) {
-					return -1;
-				}
-				if ( b === document || jQuery.contains( document, b ) ) {
-					return 1;
-				}
+	hasDuplicate = false;
+	sortInput = !sortStable && results.slice( 0 );
+	results.sort( sortOrder );
 
-				// Maintain original order
-				return 0;
-			}
-
-			return compare & 4 ? -1 : 1;
-		}
-
-		// Not directly comparable, sort on existence of method
-		return a.compareDocumentPosition ? -1 : 1;
-	},
-	uniqueSort = function( results ) {
-		var elem,
-			duplicates = [],
-			i = 0,
-			j = 0;
-
-		hasDuplicate = false;
-		results.sort( sortOrder );
-
-		if ( hasDuplicate ) {
-			while ( ( elem = results[ i++ ] ) ) {
-				if ( elem === results[ i ] ) {
-					j = duplicates.push( i );
-				}
-			}
-			while ( j-- ) {
-				results.splice( duplicates[ j ], 1 );
+	if ( hasDuplicate ) {
+		while ( ( elem = results[ i++ ] ) ) {
+			if ( elem === results[ i ] ) {
+				j = duplicates.push( i );
 			}
 		}
+		while ( j-- ) {
+			results.splice( duplicates[ j ], 1 );
+		}
+	}
 
-		return results;
-	};
+	// Clear input after sorting to release objects
+	// See https://github.com/jquery/sizzle/pull/225
+	sortInput = null;
+
+	return results;
+}
 
 jQuery.extend( {
 	find: function( selector, context, results, seed ) {
@@ -157,7 +174,11 @@ jQuery.extend( {
 		return a === bup || !!( bup && bup.nodeType === 1 && adown.contains( bup ) );
 	},
 	isXMLDoc: function( elem ) {
-		return ( elem.ownerDocument || elem ).documentElement.nodeName !== "HTML";
+
+		// documentElement is verified for cases where it doesn't yet exist
+		// (such as loading iframes in IE - #4833)
+		var documentElement = elem && ( elem.ownerDocument || elem ).documentElement;
+		return documentElement ? documentElement.nodeName !== "HTML" : false;
 	},
 	expr: {
 		attrHandle: {},
@@ -177,7 +198,13 @@ jQuery.extend( jQuery.find, {
 		return matches.call( elem, expr );
 	},
 	attr: function( elem, name ) {
-		return elem.getAttribute( name );
+		var fn = jQuery.expr.attrHandle[ name.toLowerCase() ],
+
+			// Don't get fooled by Object.prototype properties (jQuery #13807)
+			value = fn && hasOwn.call( jQuery.expr.attrHandle, name.toLowerCase() ) ?
+				fn( elem, name, jQuery.isXMLDoc( elem ) ) :
+				undefined;
+		return value !== undefined ? value : elem.getAttribute( name );
 	}
 } );
 
