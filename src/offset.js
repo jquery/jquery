@@ -202,7 +202,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 			} else {
 				elem[ method ] = val;
 			}
-		}, method, val, arguments.length, undefined );
+		}, method, val, arguments.length );
 	};
 } );
 
