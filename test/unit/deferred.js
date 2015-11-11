@@ -667,7 +667,6 @@ QUnit.test( "jQuery.when", function( assert ) {
 		"undefined": undefined,
 		"a plain object": {},
 		"an array": [ 1, 2, 3 ]
-
 	}, function( message, value ) {
 		assert.ok(
 			jQuery.isFunction(
@@ -698,12 +697,10 @@ QUnit.test( "jQuery.when", function( assert ) {
 	} );
 
 	jQuery.each( [ 1, 2, 3 ], function( k, i ) {
-
 		jQuery.when( cache || jQuery.Deferred( function() {
 				this.resolve( i );
 			} )
 		).done( function( value ) {
-
 			assert.strictEqual( value, 1, "Function executed" + ( i > 1 ? " only once" : "" ) );
 			cache = value;
 		} );
@@ -759,10 +756,8 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
 				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
 				code = "jQuery.when( " + id1 + ", " + id2 + " )",
-				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() :
-					( defer1.then ? window : undefined ),
-				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() :
-					( defer2.then ? window : undefined );
+				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : window,
+				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : window;
 
 			jQuery.when( defer1, defer2 ).done( function( a, b ) {
 				if ( shouldResolve ) {
@@ -879,4 +874,37 @@ QUnit.test( "jQuery.when - chaining", function( assert ) {
 	} );
 
 	defer.resolve( "other deferred" );
+} );
+
+QUnit.test( "jQuery.when - solitary thenables", function( assert ) {
+
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		rejected = new Promise( function( resolve, reject ) {
+			setTimeout( function() {
+				reject( "rejected" );
+			}, 100 );
+		} );
+
+	jQuery.when( rejected ).then(
+		function() {
+			assert.ok( false, "Rejected, solitary, non-Deferred thenable should not resolve" );
+			done();
+		},
+		function() {
+			assert.ok( true, "Rejected, solitary, non-Deferred thenable rejected properly" );
+			done();
+		}
+	);
+} );
+
+QUnit.test( "jQuery.when does not reuse a solitary jQuery Deferred (gh-2018)", function( assert ) {
+
+	assert.expect( 2 );
+	var defer = jQuery.Deferred().resolve(),
+		promise = jQuery.when( defer );
+
+	assert.equal( promise.state(), "resolved", "Master Deferred is immediately resolved" );
+	assert.notStrictEqual( defer.promise(), promise, "jQuery.when returns the master deferred's promise" );
 } );
