@@ -1,0 +1,24 @@
+{
+  "name": "jquery",
+  "version": "3.0.0-alpha1+compat",
+  "homepage": "http://jquery.com",
+  "authors": [
+    "jQuery Foundation and other contributors"
+  ],
+  "description": "JavaScript library for DOM operations",
+  "main": "dist/jquery.js",
+  "keywords": [
+    "jquery",
+    "browser",
+    "javascript",
+    "library"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
