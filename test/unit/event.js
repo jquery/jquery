@@ -900,7 +900,57 @@ QUnit.test( "mouseenter, mouseleave don't catch exceptions", function( assert ) 
 	}
 } );
 
-QUnit.test( "trigger() bubbling", function( assert ) {
+if ( jQuery.fn.click ) {
+
+	QUnit.test("trigger() shortcuts", function( assert ) {
+		assert.expect( 6 );
+
+		var counter, clickCounter,
+			elem = jQuery("<li><a href='#'>Change location</a></li>").prependTo("#firstUL");
+		elem.find("a").on("click", function() {
+			var close = jQuery("spanx", this); // same with jQuery(this).find("span");
+			assert.equal( close.length, 0, "Context element does not exist, length must be zero" );
+			assert.ok( !close[0], "Context element does not exist, direct access to element must return undefined" );
+			return false;
+		}).click();
+
+		// manually clean up detached elements
+		elem.remove();
+
+		jQuery("#check1").click(function() {
+			assert.ok( true, "click event handler for checkbox gets fired twice, see #815" );
+		}).click();
+
+		counter = 0;
+		jQuery("#firstp")[0].onclick = function() {
+			counter++;
+		};
+		jQuery("#firstp").click();
+		assert.equal( counter, 1, "Check that click, triggers onclick event handler also" );
+
+		clickCounter = 0;
+		jQuery("#simon1")[0].onclick = function() {
+			clickCounter++;
+		};
+		jQuery("#simon1").click();
+		assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
+
+		elem = jQuery("<img />").load(function(){
+			assert.ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
+		}).load();
+
+		// manually clean up detached elements
+		elem.remove();
+
+		// test that special handlers do not blow up with VML elements (#7071)
+		jQuery("<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />").appendTo("head");
+		jQuery("<v:oval id='oval' style='width:100pt;height:75pt;' fillcolor='red'> </v:oval>").appendTo("#form");
+		jQuery("#oval").click().keydown();
+	});
+
+}
+
+QUnit.test("trigger() bubbling", function( assert ) {
 	assert.expect( 18 );
 
 	var win = 0, doc = 0, html = 0, body = 0, main = 0, ap = 0;
