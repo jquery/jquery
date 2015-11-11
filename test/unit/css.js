@@ -884,51 +884,6 @@ testIframeWithCallback(
 	}
 );
 
-( function() {
-	var supportsFractionalGBCR,
-		qunitFixture = document.getElementById( "qunit-fixture" ),
-		div = document.createElement( "div" );
-	div.style.width = "3.3px";
-	qunitFixture.appendChild( div );
-	supportsFractionalGBCR = div.getBoundingClientRect().width.toFixed( 1 ) === "3.3";
-	qunitFixture.removeChild( div );
-
-	QUnit.test( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
-		if ( !supportsFractionalGBCR ) {
-			assert.expect( 1 );
-			assert.ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
-			return;
-		}
-
-		assert.expect( 2 );
-
-		var el = jQuery( "<div class='test-div'></div>" ).appendTo( "#qunit-fixture" );
-		jQuery( "<style>.test-div { width: 33.3px; height: 88.8px; }</style>" ).appendTo( "#qunit-fixture" );
-
-		assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
-			"css('width') should return fractional values" );
-		assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
-			"css('height') should return fractional values" );
-	} );
-
-	QUnit.test( "css('width') and css('height') should return fractional values for disconnected nodes", function( assert ) {
-		if ( !supportsFractionalGBCR ) {
-			assert.expect( 1 );
-			assert.ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
-			return;
-		}
-
-		assert.expect( 2 );
-
-		var el = jQuery( "<div style='width: 33.3px; height: 88.8px;'></div>" );
-
-		assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
-			"css('width') should return fractional values" );
-		assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
-			"css('height') should return fractional values" );
-	} );
-} )();
-
 QUnit.test( "certain css values of 'normal' should be convertable to a number, see #8627", function( assert ) {
 	assert.expect( 3 );
 
