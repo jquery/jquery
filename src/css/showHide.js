@@ -1,7 +1,6 @@
 define( [
-	"../data/var/dataPriv",
-	"../css/var/isHidden"
-], function( dataPriv, isHidden ) {
+	"../data/var/dataPriv"
+], function( dataPriv ) {
 
 function showHide( elements, show ) {
 	var display, elem,
@@ -44,26 +43,6 @@ function showHide( elements, show ) {
 	return elements;
 }
 
-jQuery.fn.extend( {
-	show: function() {
-		return showHide( this, true );
-	},
-	hide: function() {
-		return showHide( this );
-	},
-	toggle: function( state ) {
-		if ( typeof state === "boolean" ) {
-			return state ? this.show() : this.hide();
-		}
-
-		return this.each( function() {
-			if ( isHidden( this ) ) {
-				jQuery( this ).show();
-			} else {
-				jQuery( this ).hide();
-			}
-		} );
-	}
-} );
+return showHide;
 
 } );

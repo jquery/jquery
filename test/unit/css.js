@@ -471,9 +471,6 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 	jQuery( "#cssFunctionTest" ).remove();
 } );
 
-// .show(), .hide(), can be excluded from the build
-if ( jQuery.fn.show && jQuery.fn.hide ) {
-
 QUnit.test( "show(); hide()", function( assert ) {
 
 	assert.expect( 4 );
@@ -652,21 +649,8 @@ QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
 	div.remove();
 } );
 
-QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
-	assert.expect( 1 );
+QUnit.test( "toggle()", function( assert ) {
 
-	var div = jQuery( "<div />" ),
-		fixture = jQuery( "#qunit-fixture" );
-
-	fixture.append( div );
-
-	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
-	assert.equal( div.css( "display" ), "list-item", "should get last set display value" );
-} );
-
-}
-
-QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
 		x = jQuery( "#foo" );
@@ -1113,6 +1097,18 @@ QUnit.test(
 		window.setTimeout( done, 1000 );
 	}
 );
+
+QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
+	assert.expect( 1 );
+
+	var div = jQuery( "<div />" ),
+		fixture = jQuery( "#qunit-fixture" );
+
+	fixture.append( div );
+
+	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
+	assert.equal( div.css( "display" ), "list-item", "should get last set display value" );
+} );
 
 // Support: IE < 11
 // We have to jump through the hoops here in order to test work with "order" CSS property,
