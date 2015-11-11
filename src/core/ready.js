@@ -1,6 +1,7 @@
 define( [
 	"../core",
 	"../var/document",
+	"../core/init",
 	"../deferred"
 ], function( jQuery, document ) {
 
@@ -51,6 +52,12 @@ jQuery.extend( {
 
 		// If there are functions bound, to execute
 		readyList.resolveWith( document, [ jQuery ] );
+
+		// Trigger any bound ready events
+		if ( jQuery.fn.triggerHandler ) {
+			jQuery( document ).triggerHandler( "ready" );
+			jQuery( document ).off( "ready" );
+		}
 	}
 } );
 
