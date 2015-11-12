@@ -31,6 +31,10 @@ module.exports = function( grunt ) {
 	// But our modules can
 	delete srcHintOptions.onevar;
 
+	if ( !grunt.option( "filename" ) ) {
+		grunt.option( "filename", "jquery.js" );
+	}
+
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
@@ -173,12 +177,14 @@ module.exports = function( grunt ) {
 		uglify: {
 			all: {
 				files: {
-					"dist/jquery.min.js": [ "dist/jquery.js" ]
+					"dist/<%= grunt.option('filename').replace('.js', '.min.js') %>":
+						"dist/<%= grunt.option('filename') %>"
 				},
 				options: {
 					preserveComments: false,
 					sourceMap: true,
-					sourceMapName: "dist/jquery.min.map",
+					sourceMapName:
+						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
 					beautify: {
 						"ascii_only": true

@@ -2,11 +2,12 @@ module.exports = function( grunt ) {
 
 	"use strict";
 
-	var fs = require( "fs" ),
+	var	fs = require( "fs" ),
+		filename = grunt.option( "filename" ),
 		distpaths = [
-			"dist/jquery.js",
-			"dist/jquery.min.map",
-			"dist/jquery.min.js"
+			"dist/" + filename,
+			"dist/" + filename.replace( ".js", ".min.map" ),
+			"dist/" + filename.replace( ".js", ".min.js" )
 		];
 
 	// Process files for distribution
