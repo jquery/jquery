@@ -56,5 +56,6 @@ module.exports = function( Release ) {
 module.exports.dependencies = [
 	"archiver@0.14.2",
 	"shelljs@0.2.6",
-	"npm@2.3.0"
+	"npm@2.3.0",
+	"chalk@1.1.1"
 ];
