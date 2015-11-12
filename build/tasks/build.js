@@ -15,7 +15,6 @@ module.exports = function( grunt ) {
 		config = {
 			baseUrl: "src",
 			name: "jquery",
-			out: "dist/jquery.js",
 
 			// We have multiple minify steps
 			optimize: "none",
@@ -115,7 +114,7 @@ module.exports = function( grunt ) {
 			done = this.async(),
 			flags = this.flags,
 			optIn = flags[ "*" ],
-			name = this.data.dest,
+			name = grunt.option( "filename" ),
 			minimum = this.data.minimum,
 			removeWith = this.data.removeWith,
 			excluded = [],
@@ -204,6 +203,11 @@ module.exports = function( grunt ) {
 					included.push( module );
 				}
 			};
+
+		// Filename can be passed to the command line using
+		// command line options
+		// e.g. grunt build --filename=jquery-custom.js
+		name = name ? ( "dist/" + name ) : this.data.dest;
 
 		// append commit id to version
 		if ( process.env.COMMIT ) {

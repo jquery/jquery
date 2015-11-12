@@ -5,22 +5,23 @@ var
 
 	cdnFolder = "dist/cdn",
 
-	devFile = "dist/jquery.js",
-	minFile = "dist/jquery.min.js",
-	mapFile = "dist/jquery.min.map",
-
 	releaseFiles = {
-		"jquery-VER.js": devFile,
-		"jquery-VER.min.js": minFile,
-		"jquery-VER.min.map": mapFile
+		"jquery-VER.js": "dist/jquery.js",
+		"jquery-VER.min.js": "dist/jquery.min.js",
+		"jquery-VER.min.map": "dist/jquery.min.map",
+		"jquery-VER.slim.js": "dist/jquery.slim.js",
+		"jquery-VER.slim.min.js": "dist/jquery.slim.min.js",
+		"jquery-VER.slim.min.map": "dist/jquery.slim.min.map"
 	},
 
 	googleFilesCDN = [
-		"jquery.js", "jquery.min.js", "jquery.min.map"
+		"jquery.js", "jquery.min.js", "jquery.min.map",
+		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.map"
 	],
 
 	msFilesCDN = [
-		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map"
+		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map",
+		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.map"
 	];
 
 /**
