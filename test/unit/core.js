@@ -53,10 +53,10 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	// Basic constructor's behavior
 	assert.equal( jQuery().length, 0, "jQuery() === jQuery([])" );
-	assert.equal( jQuery( undefined ).length, 0, "jQuery(undefined) === jQuery([])" );
-	assert.equal( jQuery( null ).length, 0, "jQuery(null) === jQuery([])" );
-	assert.equal( jQuery( "" ).length, 0, "jQuery('') === jQuery([])" );
-	assert.deepEqual( jQuery( obj ).get(), obj.get(), "jQuery(jQueryObj) == jQueryObj" );
+	assert.equal( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
+	assert.equal( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
+	assert.equal( jQuery("").length, 0, "jQuery('') === jQuery([])" );
+	assert.equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 	// Invalid #id goes to Sizzle which will throw an error (gh-1682)
 	try {
@@ -165,6 +165,7 @@ QUnit.test( "globalEval", function( assert ) {
 	jQuery.globalEval( "this.globalEvalTest = 3;" );
 	assert.equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 } );
+
 
 QUnit.test( "globalEval with 'use strict'", function( assert ) {
 	assert.expect( 1 );
