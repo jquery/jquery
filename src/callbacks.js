@@ -3,9 +3,12 @@ define( [
 	"./var/rnotwhite"
 ], function( jQuery, rnotwhite ) {
 
-// Convert String-formatted options into Object-formatted ones
+// String to Object options format cache
+var optionsCache = {};
+
+// Convert String-formatted options into Object-formatted ones and store in cache
 function createOptions( options ) {
-	var object = {};
+	var object = optionsCache[ options ] = {};
 	jQuery.each( options.match( rnotwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
 	} );
@@ -39,71 +42,71 @@ jQuery.Callbacks = function( options ) {
 	// Convert options from String-formatted to Object-formatted if needed
 	// (we check in cache first)
 	options = typeof options === "string" ?
-		createOptions( options ) :
+		( optionsCache[ options ] || createOptions( options ) ) :
 		jQuery.extend( {}, options );
 
 	var // Flag to know if list is currently firing
 		firing,
 
-		// Last fire value for non-forgettable lists
+		// Last fire value (for non-forgettable lists)
 		memory,
 
 		// Flag to know if list was already fired
 		fired,
 
-		// Flag to prevent firing
+		// Flag to prevent .fire/.fireWith
 		locked,
+
+		// End of the loop when firing
+		firingLength,
+
+		// Index of currently firing callback (modified by remove if needed)
+		firingIndex,
+
+		// First callback to fire (used internally by add and fireWith)
+		firingStart,
 
 		// Actual callback list
 		list = [],
 
-		// Queue of execution data for repeatable lists
-		queue = [],
-
-		// Index of currently firing callback (modified by add/remove as needed)
-		firingIndex = -1,
+		// Stack of fire calls for repeatable lists
+		stack = !options.once && [],
 
 		// Fire callbacks
-		fire = function() {
-
-			// Enforce single-firing
+		fire = function( data ) {
 			locked = options.once;
+			memory = options.memory && data;
+			fired = true;
+			firingIndex = firingStart || 0;
+			firingStart = 0;
+			firingLength = list.length;
+			firing = true;
+			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
+				if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false &&
+					options.stopOnFalse ) {
 
-			// Execute callbacks for all pending executions,
-			// respecting firingIndex overrides and runtime changes
-			fired = firing = true;
-			for ( ; queue.length; firingIndex = -1 ) {
-				memory = queue.shift();
-				while ( ++firingIndex < list.length ) {
-
-					// Run callback and check for early termination
-					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
-						options.stopOnFalse ) {
-
-						// Jump to end and forget the data so .add doesn't re-fire
-						firingIndex = list.length;
-						memory = false;
-					}
+					memory = false; // To prevent further calls using add
+					break;
 				}
 			}
-
-			// Forget the data if we're done with it
-			if ( !options.memory ) {
-				memory = false;
-			}
-
 			firing = false;
 
-			// Clean up if we're done firing for good
-			if ( locked ) {
+			// If not disabled,
+			if ( list ) {
 
-				// Keep an empty list if we have data for future add calls
-				if ( memory ) {
+				// If repeatable, check for pending execution
+				if ( stack ) {
+					if ( stack.length ) {
+						fire( stack.shift() );
+					}
+
+				// If not repeatable but with memory, clear out spent callbacks
+				} else if ( memory ) {
 					list = [];
 
-				// Otherwise, this object is spent
+				// Else, disable
 				} else {
-					list = "";
+					self.disable();
 				}
 			}
 		},
@@ -115,19 +118,16 @@ jQuery.Callbacks = function( options ) {
 			add: function() {
 				if ( list ) {
 
-					// If we have memory from a past run, we should fire after adding
-					if ( memory && !firing ) {
-						firingIndex = list.length - 1;
-						queue.push( memory );
-					}
-
+					// First, we save the current length
+					var start = list.length;
 					( function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							if ( jQuery.isFunction( arg ) ) {
+							var type = jQuery.type( arg );
+							if ( type === "function" ) {
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
-							} else if ( arg && arg.length && jQuery.type( arg ) !== "string" ) {
+							} else if ( arg && arg.length && type !== "string" ) {
 
 								// Inspect recursively
 								add( arg );
@@ -135,8 +135,16 @@ jQuery.Callbacks = function( options ) {
 						} );
 					} )( arguments );
 
-					if ( memory && !firing ) {
-						fire();
+					// Do we need to add the callbacks to the
+					// current firing batch?
+					if ( firing ) {
+						firingLength = list.length;
+
+					// With memory, if we're not firing then
+					// we should call right away
+					} else if ( memory ) {
+						firingStart = start;
+						fire( memory );
 					}
 				}
 				return this;
@@ -144,32 +152,38 @@ jQuery.Callbacks = function( options ) {
 
 			// Remove a callback from the list
 			remove: function() {
-				jQuery.each( arguments, function( _, arg ) {
-					var index;
-					while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
-						list.splice( index, 1 );
+				if ( list ) {
+					jQuery.each( arguments, function( _, arg ) {
+						var index;
+						while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
+							list.splice( index, 1 );
 
-						// Handle firing indexes
-						if ( index <= firingIndex ) {
-							firingIndex--;
+							// Handle firing indexes
+							if ( firing ) {
+								if ( index <= firingLength ) {
+									firingLength--;
+								}
+								if ( index <= firingIndex ) {
+									firingIndex--;
+								}
+							}
 						}
-					}
-				} );
+					} );
+				}
 				return this;
 			},
 
 			// Check if a given callback is in the list.
 			// If no argument is given, return whether or not list has callbacks attached.
 			has: function( fn ) {
-				return fn ?
-					jQuery.inArray( fn, list ) > -1 :
-					list.length > 0;
+				return fn ? jQuery.inArray( fn, list ) > -1 : !!( list && list.length );
 			},
 
 			// Remove all callbacks from the list
 			empty: function() {
 				if ( list ) {
 					list = [];
+					firingLength = 0;
 				}
 				return this;
 			},
@@ -178,8 +192,8 @@ jQuery.Callbacks = function( options ) {
 			// Abort any current/pending executions
 			// Clear all callbacks and values
 			disable: function() {
-				locked = queue = [];
-				list = memory = "";
+				list = stack = memory = undefined;
+				locked = true;
 				return this;
 			},
 			disabled: function() {
@@ -190,9 +204,10 @@ jQuery.Callbacks = function( options ) {
 			// Also disable .add unless we have memory (since it would have no effect)
 			// Abort any pending executions
 			lock: function() {
-				locked = queue = [];
+				stack = undefined;
+				locked = true;
 				if ( !memory && !firing ) {
-					list = memory = "";
+					self.disable();
 				}
 				return this;
 			},
@@ -205,9 +220,10 @@ jQuery.Callbacks = function( options ) {
 				if ( !locked ) {
 					args = args || [];
 					args = [ context, args.slice ? args.slice() : args ];
-					queue.push( args );
-					if ( !firing ) {
-						fire();
+					if ( firing ) {
+						stack.push( args );
+					} else {
+						fire( args );
 					}
 				}
 				return this;
