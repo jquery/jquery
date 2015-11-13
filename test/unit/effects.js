@@ -5,11 +5,8 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame;
-
 QUnit.module( "effects", {
 	setup: function() {
-		window.requestAnimationFrame = null;
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
@@ -22,7 +19,6 @@ QUnit.module( "effects", {
 		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
 } );
@@ -2315,35 +2311,6 @@ QUnit.test( "Respect display value on inline elements (#14824)", function( asser
 	} );
 
 	clock.tick( 800 );
-} );
-
-QUnit.test( "Animation should go to its end state if document.hidden = true", function( assert ) {
-	assert.expect( 1 );
-
-	var height;
-	if ( Object.defineProperty ) {
-
-		// Can't rewrite document.hidden property if its host property
-		try {
-			Object.defineProperty( document, "hidden", {
-				get: function() {
-					return true;
-				}
-			} );
-		} catch ( e ) {}
-	} else {
-		document.hidden = true;
-	}
-
-	if ( document.hidden ) {
-		height = jQuery( "#qunit-fixture" ).animate( { height: 500 } ).height();
-
-		assert.equal( height, 500, "Animation should happen immediately if document.hidden = true" );
-		jQuery( document ).removeProp( "hidden" );
-
-	} else {
-		assert.ok( true, "Can't run the test since we can't reproduce correct environment for it" );
-	}
 } );
 
 QUnit.test( "jQuery.easing._default (gh-2218)", function( assert ) {
