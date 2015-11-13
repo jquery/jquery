@@ -56,14 +56,9 @@ QUnit.test( "jQuery()", function( assert ) {
 	assert.equal( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
 	assert.equal( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
 	assert.equal( jQuery("").length, 0, "jQuery('') === jQuery([])" );
-	assert.equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
+	assert.equal( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
 
-	// Invalid #id goes to Sizzle which will throw an error (gh-1682)
-	try {
-		jQuery( "#" );
-	} catch ( e ) {
-		assert.ok( true, "Threw an error on #id with no id" );
-	}
+	assert.equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 	// can actually yield more than one, when iframes are included, the window is an array as well
 	assert.equal( jQuery( window ).length, 1, "Correct number of elements generated for jQuery(window)" );
