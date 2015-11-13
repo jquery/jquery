@@ -206,7 +206,7 @@ jQuery.Callbacks = function( options ) {
 			lock: function() {
 				stack = undefined;
 				locked = true;
-				if ( !memory && !firing ) {
+				if ( !memory ) {
 					self.disable();
 				}
 				return this;
