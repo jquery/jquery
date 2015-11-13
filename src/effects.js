@@ -3,6 +3,7 @@ define( [
 	"./var/document",
 	"./var/rcssNum",
 	"./css/var/cssExpand",
+	"./var/rnotwhite",
 	"./css/var/isHidden",
 	"./css/adjustCSS",
 	"./css/defaultDisplay",
@@ -14,7 +15,7 @@ define( [
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, document, rcssNum, cssExpand,
+], function( jQuery, document, rcssNum, cssExpand, rnotwhite,
 	isHidden, adjustCSS, defaultDisplay, dataPriv ) {
 
 var
@@ -331,6 +332,10 @@ function Animation( elem, properties, options ) {
 	for ( ; index < length ; index++ ) {
 		result = Animation.prefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
+			if ( jQuery.isFunction( result.stop ) ) {
+				jQuery._queueHooks( animation.elem, animation.opts.queue ).stop =
+					jQuery.proxy( result.stop, result );
+			}
 			return result;
 		}
 	}
@@ -370,7 +375,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 			callback = props;
 			props = [ "*" ];
 		} else {
-			props = props.split( " " );
+			props = props.match( rnotwhite );
 		}
 
 		var prop,
