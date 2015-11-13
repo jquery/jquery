@@ -57,7 +57,7 @@ QUnit.test( "object without getBoundingClientRect", function( assert ) {
 	assert.equal( result.left, 0, "Check left" );
 });
 
-QUnit.test( "disconnected element", function( assert ) {
+QUnit.test( "disconnected node", function( assert ) {
 	assert.expect( 2 );
 
 	var result = jQuery( document.createElement( "div" ) ).offset();
@@ -65,8 +65,8 @@ QUnit.test( "disconnected element", function( assert ) {
 	// These tests are solely for master/compat consistency
 	// Retrieving offset on disconnected/hidden elements is not officially
 	// valid input, but will return zeros for back-compat
-	assert.equal( result.top, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
-	assert.equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
+	equal( result.top, 0, "Check top" );
+	equal( result.left, 0, "Check left" );
 } );
 
 QUnit.test( "hidden (display: none) element", function( assert ) {
