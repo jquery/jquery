@@ -429,7 +429,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 	}
 } );
 
-jQuery.speed = function( speed, easing, fn ) {
+function speedOption( speed, easing, fn ) {
 	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
 		complete: fn || !fn && easing ||
 			jQuery.isFunction( speed ) && speed,
@@ -466,7 +466,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	};
 
 	return opt;
-};
+}
 
 jQuery.fn.extend( {
 	fadeTo: function( speed, to, easing, callback ) {
@@ -479,7 +479,7 @@ jQuery.fn.extend( {
 	},
 	animate: function( prop, speed, easing, callback ) {
 		var empty = jQuery.isEmptyObject( prop ),
-			optall = jQuery.speed( speed, easing, callback ),
+			optall = speedOption( speed, easing, callback ),
 			doAnimation = function() {
 
 				// Operate on a copy of prop so per-property easing won't be lost
