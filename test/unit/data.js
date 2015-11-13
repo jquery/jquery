@@ -273,14 +273,14 @@ QUnit.test( ".data(object) does not retain references. #13815", function( assert
 } );
 
 QUnit.test( "data-* attributes", function( assert ) {
-	assert.expect( 46 );
+	assert.expect( 43 );
 
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		div = jQuery( "<div>" ),
-		child = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" ),
-		dummy = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" );
+		div = jQuery("<div>"),
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
 
 	assert.equal( div.data( "attr" ), undefined, "Check for non-existing data-attr attribute" );
 
@@ -295,9 +295,8 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	div.remove();
 
-	child.appendTo( "#qunit-fixture" );
-	assert.equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
-	assert.equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (#1751)" );
+	child.appendTo("#qunit-fixture");
+	assert.equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
 	child.data( "myobj", "replaced" );
 	assert.equal( child.data( "myobj" ), "replaced", "Original data overwritten" );
@@ -307,7 +306,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	obj = child.data();
 	obj2 = dummy.data();
-	check = [ "myobj", "ignored", "other", "foo-42" ];
+	check = [ "myobj", "ignored", "other" ];
 	num = 0;
 	num2 = 0;
 
