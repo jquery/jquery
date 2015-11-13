@@ -8,8 +8,10 @@ define( [
 	"./var/class2type",
 	"./var/toString",
 	"./var/hasOwn",
-	"./var/support"
-], function( arr, document, slice, concat, push, indexOf, class2type, toString, hasOwn, support ) {
+	"./var/support",
+	"./core/DOMEval"
+], function( arr, document, slice, concat,
+	push, indexOf, class2type, toString, hasOwn, support, DOMEval ) {
 
 var
 	version = "@VERSION",
@@ -258,12 +260,8 @@ jQuery.extend( {
 	},
 
 	// Evaluates a script in a global context
-	globalEval: function( code, context ) {
-		context = context || document;
-		var script = context.createElement( "script" );
-
-		script.text = code;
-		context.head.appendChild( script ).parentNode.removeChild( script );
+	globalEval: function( code ) {
+		DOMEval( code );
 	},
 
 	// Convert dashed to camelCase; used by the css and data modules
