@@ -207,9 +207,7 @@ module.exports = function( grunt ) {
 	// jQuery on Windows. (see gh-2519)
 	grunt.registerTask( "test_fast", runJsdomTests ? [ "node_smoke_tests" ] : [] );
 
-	grunt.registerTask( "test", [ "test_fast" ].concat(
-		runJsdomTests ? [ "promises_aplus_tests" ] : []
-	) );
+	grunt.registerTask( "test", [ "test_fast" ] );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
