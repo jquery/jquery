@@ -601,34 +601,6 @@ QUnit.test( ".data should not miss attr() set data-* with hyphenated property na
 	assert.deepEqual( b.data( "long-param" ), { a: 2 }, "data with property long-param was found, 2" );
 } );
 
-QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function( assert ) {
-	assert.expect( 18 );
-
-	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }"
-		};
-
-	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
-		var allData = div.data();
-		assert.equal( allData[ key ], undefined, ".data does not store with hyphenated keys" );
-		assert.equal( allData[ jQuery.camelCase( key ) ], val, ".data stores the camelCased key" );
-	} );
-} );
-
 QUnit.test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
@@ -723,20 +695,20 @@ QUnit.test( ".data supports interoperable removal of properties SET TWICE #13850
 	} );
 } );
 
-QUnit.test( ".removeData supports removal of hyphenated properties via array (#12786, gh-2257)", function( assert ) {
-	assert.expect( 4 );
+QUnit.test( ".removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
+	expect( 4 );
 
 	var div, plain, compare;
 
 	div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
 	plain = jQuery( {} );
 
-	// Properties should always be camelCased
+	// When data is batch assigned (via plain object), the properties
+	// are not camel cased as they are with (property, value) calls
 	compare = {
 
 		// From batch assignment .data({ "a-a": 1 })
-		"aA": 1,
-
+		"a-a": 1,
 		// From property, value assignment .data( "b-b", 1 )
 		"bB": 1
 	};
@@ -751,6 +723,7 @@ QUnit.test( ".removeData supports removal of hyphenated properties via array (#1
 	div.removeData( [ "a-a", "b-b" ] );
 	plain.removeData( [ "a-a", "b-b" ] );
 
+	// NOTE: Timo's proposal for "propEqual" (or similar) would be nice here
 	assert.deepEqual( div.data(), {}, "Data is empty. (div)" );
 	assert.deepEqual( plain.data(), {}, "Data is empty. (plain)" );
 } );

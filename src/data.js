@@ -112,7 +112,7 @@ jQuery.fn.extend( {
 		}
 
 		return access( this, function( value ) {
-			var data;
+			var data, camelKey;
 
 			// The calling jQuery object (element matches) is not empty
 			// (and therefore has an element appears at this[ 0 ]) and the
@@ -120,17 +120,24 @@ jQuery.fn.extend( {
 			// will result in `undefined` for elem = this[ 0 ] which will
 			// throw an exception if an attempt to read a data cache is made.
 			if ( elem && value === undefined ) {
-
 				// Attempt to get data from the cache
-				// The key will always be camelCased in Data
+				// with the key as-is
 				data = dataUser.get( elem, key );
+				if ( data !== undefined ) {
+					return data;
+				}
+
+				camelKey = jQuery.camelCase( key );
+				// Attempt to get data from the cache
+				// with the key camelized
+				data = dataUser.get( elem, camelKey );
 				if ( data !== undefined ) {
 					return data;
 				}
 
 				// Attempt to "discover" the data in
 				// HTML5 custom data-* attrs
-				data = dataAttr( elem, key );
+				data = dataAttr( elem, camelKey, undefined );
 				if ( data !== undefined ) {
 					return data;
 				}
@@ -140,11 +147,24 @@ jQuery.fn.extend( {
 			}
 
 			// Set the data...
-			this.each( function() {
+			camelKey = jQuery.camelCase( key );
+			this.each(function() {
+				// First, attempt to store a copy or reference of any
+				// data that might've been store with a camelCased key.
+				var data = dataUser.get( this, camelKey );
 
-				// We always store the camelCased key
-				dataUser.set( this, key, value );
-			} );
+				// For HTML5 data-* attribute interop, we have to
+				// store property names with dashes in a camelCase form.
+				// This might not apply to all properties...*
+				dataUser.set( this, camelKey, value );
+
+				// *... In the case of properties that might _actually_
+				// have dashes, we need to also store a copy of that
+				// unchanged property.
+				if ( key.indexOf("-") > -1 && data !== undefined ) {
+					dataUser.set( this, key, value );
+				}
+			});
 		}, null, value, arguments.length > 1, null, true );
 	},
 
