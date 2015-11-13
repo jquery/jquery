@@ -1479,7 +1479,7 @@ QUnit.test("jQuery.parseHTML", function( assert ) {
 	assert.equal( jQuery.parseHTML(), null, "Nothing in, null out." );
 	assert.equal( jQuery.parseHTML( null ), null, "Null in, null out." );
 	assert.equal( jQuery.parseHTML( "" ), null, "Empty string in, null out." );
-	throws(function() {
+	assert.throws(function() {
 		jQuery.parseHTML( "<div></div>", document.getElementById("form") );
 	}, "Passing an element as the context raises an exception (context should be a document)");
 

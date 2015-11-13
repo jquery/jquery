@@ -2701,6 +2701,6 @@ QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 			assert.ok( true, "data-URI script is not supported by this environment" );
 		}
 
-		start();
+		done();
 	});
 });
