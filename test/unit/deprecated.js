@@ -40,8 +40,8 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 		.remove();
 } );
 if ( jQuery.fn.size ) {
-	test("size()", function() {
-		expect(1);
-		equal( jQuery("#qunit-fixture p").size(), 6, "Get Number of Elements Found" );
+	QUnit.test("size()", function( assert ) {
+		assert.expect( 1 );
+		assert.equal( jQuery("#qunit-fixture p").size(), 6, "Get Number of Elements Found" );
 	});
 }

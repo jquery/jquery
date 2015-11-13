@@ -30,5 +30,3 @@ jQuery.fn.andSelf = jQuery.fn.addBack;
 
 } );
 
-
-
