@@ -1470,50 +1470,45 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	cb.call( thisObject, "arg3" );
 } );
 
-QUnit.test( "jQuery.parseHTML", function( assert ) {
-	assert.expect( 23 );
+QUnit.test("jQuery.parseHTML", function( assert ) {
+	assert.expect( 18 );
 
 	var html, nodes;
 
-	assert.deepEqual( jQuery.parseHTML(), [], "Without arguments" );
-	assert.deepEqual( jQuery.parseHTML( undefined ), [], "Undefined" );
-	assert.deepEqual( jQuery.parseHTML( null ), [], "Null" );
-	assert.deepEqual( jQuery.parseHTML( false ), [], "Boolean false" );
-	assert.deepEqual( jQuery.parseHTML( 0 ), [], "Zero" );
-	assert.deepEqual( jQuery.parseHTML( true ), [], "Boolean true" );
-	assert.deepEqual( jQuery.parseHTML( 42 ), [], "Positive number" );
-	assert.deepEqual( jQuery.parseHTML( "" ), [], "Empty string" );
-	assert.throws( function() {
-		jQuery.parseHTML( "<div></div>", document.getElementById( "form" ) );
-	}, "Passing an element as the context raises an exception (context should be a document)" );
+	assert.equal( jQuery.parseHTML(), null, "Nothing in, null out." );
+	assert.equal( jQuery.parseHTML( null ), null, "Null in, null out." );
+	assert.equal( jQuery.parseHTML( "" ), null, "Empty string in, null out." );
+	throws(function() {
+		jQuery.parseHTML( "<div></div>", document.getElementById("form") );
+	}, "Passing an element as the context raises an exception (context should be a document)");
 
-	nodes = jQuery.parseHTML( jQuery( "body" )[ 0 ].innerHTML );
+	nodes = jQuery.parseHTML( jQuery("body")[0].innerHTML );
 	assert.ok( nodes.length > 4, "Parse a large html string" );
 	assert.equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
 
 	html = "<script>undefined()</script>";
 	assert.equal( jQuery.parseHTML( html ).length, 0, "Ignore scripts by default" );
-	assert.equal( jQuery.parseHTML( html, true )[ 0 ].nodeName.toLowerCase(), "script", "Preserve scripts when requested" );
+	assert.equal( jQuery.parseHTML( html, true )[0].nodeName.toLowerCase(), "script", "Preserve scripts when requested" );
 
 	html += "<div></div>";
-	assert.equal( jQuery.parseHTML( html )[ 0 ].nodeName.toLowerCase(), "div", "Preserve non-script nodes" );
-	assert.equal( jQuery.parseHTML( html, true )[ 0 ].nodeName.toLowerCase(), "script", "Preserve script position" );
+	assert.equal( jQuery.parseHTML( html )[0].nodeName.toLowerCase(), "div", "Preserve non-script nodes" );
+	assert.equal( jQuery.parseHTML( html, true )[0].nodeName.toLowerCase(), "script", "Preserve script position");
 
-	assert.equal( jQuery.parseHTML( "text" )[ 0 ].nodeType, 3, "Parsing text returns a text node" );
-	assert.equal( jQuery.parseHTML( "\t<div></div>" )[ 0 ].nodeValue, "\t", "Preserve leading whitespace" );
+	assert.equal( jQuery.parseHTML("text")[0].nodeType, 3, "Parsing text returns a text node" );
+	assert.equal( jQuery.parseHTML( "\t<div></div>" )[0].nodeValue, "\t", "Preserve leading whitespace" );
 
-	assert.equal( jQuery.parseHTML( " <div/> " )[ 0 ].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
+	assert.equal( jQuery.parseHTML(" <div/> ")[0].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
 
 	html = jQuery.parseHTML( "<div>test div</div>" );
 
 	assert.equal( html[ 0 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 	assert.equal( html[ 0 ].innerHTML, "test div", "Content should be preserved" );
 
-	assert.equal( jQuery.parseHTML( "<span><span>" ).length, 1, "Incorrect html-strings should not break anything" );
-	assert.equal( jQuery.parseHTML( "<td><td>" )[ 1 ].parentNode.nodeType, 11,
+	assert.equal( jQuery.parseHTML("<span><span>").length, 1, "Incorrect html-strings should not break anything" );
+	assert.equal( jQuery.parseHTML("<td><td>")[ 1 ].parentNode.nodeType, 11,
 		"parentNode should be documentFragment for wrapMap (variable in manipulation module) elements too" );
-	assert.ok( jQuery.parseHTML( "<#if><tr><p>This is a test.</p></tr><#/if>" ) || true, "Garbage input should not cause error" );
-} );
+	assert.ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
+});
 
 if ( jQuery.support.createHTMLDocument ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
