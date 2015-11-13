@@ -1624,9 +1624,17 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		jQuery.ajax( {
 			url: "data/badjson.js",
 			dataType: "script",
-			throws: true
-		} );
-	} );
+			throws: true,
+			// Global events get confused by the exception
+			global: false,
+			success: function() {
+				ok( false, "Success." );
+			},
+			error: function() {
+				ok( false, "Error." );
+			}
+		});
+	});
 
 	jQuery.each( [ "method", "type" ], function( _, globalOption ) {
 		function request( assert, option ) {

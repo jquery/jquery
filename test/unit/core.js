@@ -170,21 +170,6 @@ QUnit.test( "globalEval with 'use strict'", function( assert ) {
 	assert.equal( window.strictEvalTest, 1, "Test variable declarations are global (strict mode)" );
 } );
 
-QUnit.test( "globalEval execution after script injection (#7862)", function( assert ) {
-	assert.expect( 1 );
-
-	var now,
-		script = document.createElement( "script" );
-
-	script.src = "data/longLoadScript.php?sleep=2";
-
-	now = jQuery.now();
-	document.body.appendChild( script );
-
-	jQuery.globalEval( "var strictEvalTest = " + jQuery.now() + ";" );
-	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
-} );
-
 // This is not run in AMD mode
 if ( jQuery.noConflict ) {
 	QUnit.test( "noConflict", function( assert ) {
