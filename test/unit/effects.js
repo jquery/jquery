@@ -36,13 +36,13 @@ QUnit.test( "show() basic", function( assert ) {
 	assert.expect( 2 );
 
 	var div,
-		hiddendiv = jQuery("div.hidden");
+		hiddendiv = jQuery( "div.hidden" );
 
 	hiddendiv.hide().show();
 
-	assert.equal( hiddendiv.css("display"), "block", "Make sure a pre-hidden div is visible." );
+	assert.equal( hiddendiv.css( "display" ), "block", "Make sure a pre-hidden div is visible." );
 
-	div = jQuery("<div>").hide().appendTo("#qunit-fixture").show();
+	div = jQuery( "<div>" ).hide().appendTo( "#qunit-fixture" ).show();
 
 	assert.equal( div.css( "display" ), "block", "Make sure pre-hidden divs show" );
 
@@ -99,7 +99,7 @@ QUnit.test( "show()", function( assert ) {
 	assert.expectJqData( this, div, "olddisplay" );
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery( "#qunit-fixture" ).append( "<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>" );
 
 	old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
 	jQuery( "#test-table" ).remove();
@@ -137,39 +137,39 @@ QUnit.test( "show(Number) - other displays", function( assert ) {
 	assert.expect( 15 );
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>");
+	jQuery( "#qunit-fixture" ).append( "<div id='show-tests'><div><p><a href='#'></a></p><code></code><pre></pre><span></span></div><table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table><ul><li></li></ul></div><table id='test-table'></table>" );
 
 	var test,
 		old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
 
-	jQuery("#test-table").remove();
+	jQuery( "#test-table" ).remove();
 
 	// Note: inline elements are expected to be inline-block
 	// because we're showing width/height
 	// Can't animate width/height inline
 	// See #14344
 	test = {
-		"div"      : "block",
-		"p"        : "block",
-		"a"        : "inline-block",
-		"code"     : "inline-block",
-		"pre"      : "block",
-		"span"     : "inline-block",
-		"table"    : old ? "block" : "table",
-		"thead"    : old ? "block" : "table-header-group",
-		"tbody"    : old ? "block" : "table-row-group",
-		"tr"       : old ? "block" : "table-row",
-		"th"       : old ? "block" : "table-cell",
-		"td"       : old ? "block" : "table-cell",
-		"ul"       : "block",
-		"li"       : old ? "block" : "list-item"
+		"div": "block",
+		"p": "block",
+		"a": "inline-block",
+		"code": "inline-block",
+		"pre": "block",
+		"span": "inline-block",
+		"table": old ? "block" : "table",
+		"thead": old ? "block" : "table-header-group",
+		"tbody": old ? "block" : "table-row-group",
+		"tr": old ? "block" : "table-row",
+		"th": old ? "block" : "table-cell",
+		"td": old ? "block" : "table-cell",
+		"ul": "block",
+		"li": old ? "block" : "list-item"
 	};
 
-	jQuery.each(test, function(selector, expected) {
-		var elem = jQuery(selector, "#show-tests").show(1, function() {
-			assert.equal( elem.css("display"), expected, "Show using correct display type for " + selector );
-		});
-	});
+	jQuery.each( test, function( selector, expected ) {
+		var elem = jQuery( selector, "#show-tests" ).show( 1, function() {
+			assert.equal( elem.css( "display" ), expected, "Show using correct display type for " + selector );
+		} );
+	} );
 	this.clock.tick( 10 );
 
 	jQuery( "#show-tests" ).remove();
@@ -180,7 +180,7 @@ QUnit.test( "Persist correct display value", function( assert ) {
 	assert.expect( 3 );
 
 	// #show-tests * is set display: none in CSS
-	jQuery("#qunit-fixture").append("<div id='show-tests'><span style='position:absolute;'>foo</span></div>");
+	jQuery( "#qunit-fixture" ).append( "<div id='show-tests'><span style='position:absolute;'>foo</span></div>" );
 
 	var $span = jQuery( "#show-tests span" ),
 		displayNone = $span.css( "display" ),
@@ -524,7 +524,7 @@ QUnit.test( "animate duration 0", function( assert ) {
 	assert.expect( 11 );
 
 	var $elem,
-		$elems = jQuery( [ { a:0 },{ a:0 } ] ),
+		$elems = jQuery( [ { a:0 }, { a:0 } ] ),
 		counter = 0;
 
 	assert.equal( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
@@ -929,7 +929,7 @@ jQuery.each( {
 			if ( t_w === "hide" ) {num++;}
 			if ( t_o.constructor === Number ) {num += 2;}
 			if ( t_w.constructor === Number ) {num += 2;}
-			if ( t_h.constructor === Number ) {num +=2;}
+			if ( t_h.constructor === Number ) {num += 2;}
 
 			assert.expect( num );
 
@@ -937,7 +937,7 @@ jQuery.each( {
 
 			elem.animate( anim, 50 );
 
-			jQuery.when( elem ).done(function( elem ) {
+			jQuery.when( elem ).done( function( elem ) {
 				var cur_o, cur_w, cur_h, old_h;
 
 				elem = elem[ 0 ];
@@ -1539,11 +1539,12 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 			show: [ 1 ],
 			animate: [ { width: "show" } ]
 		},
-		$divTest = jQuery("<div>test</div>"),
+		$divTest = jQuery( "<div>test</div>" ),
+
 		// parentNode = null
-		$divEmpty = jQuery("<div/>"),
-		$divNone = jQuery("<div style='display: none;'/>"),
-		$divInline = jQuery("<div style='display: inline;'/>"),
+		$divEmpty = jQuery( "<div/>" ),
+		$divNone = jQuery( "<div style='display: none;'/>" ),
+		$divInline = jQuery( "<div style='display: inline;'/>" ),
 		clock = this.clock;
 
 	assert.strictEqual( $divTest.show()[ 0 ].style.display, "block", "set display with show() for element with parentNode = document fragment" );
@@ -1556,24 +1557,24 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 	assert.expectJqData( env, $divNone[ 0 ], "olddisplay" );
 
 	jQuery.each( methods, function( name, opt ) {
-		jQuery.each([
+		jQuery.each( [
 
 			// parentNode = document fragment
-			jQuery("<div>test</div>"),
+			jQuery( "<div>test</div>" ),
 
 			// parentNode = null
-			jQuery("<div/>")
+			jQuery( "<div/>" )
 
 		], function() {
-			var callback = [function () {
+			var callback = [ function() {
 					assert.strictEqual( this.style.display, "block", "set display to block with " + name );
 
 					assert.expectJqData( env, this, "olddisplay" );
 
-			}];
+			} ];
 			jQuery.fn[ name ].apply( this, opt.concat( callback ) );
-		});
-	});
+		} );
+	} );
         clock.tick( 400 );
 } );
 
@@ -1817,7 +1818,7 @@ QUnit.test( "non-px animation handles non-numeric start (#11971)", function( ass
 	this.clock.tick( 10 );
 } );
 
-QUnit.test("Animation callbacks (#11797)", function( assert ) {
+QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 	assert.expect( 16 );
 
 	var prog = 0,
@@ -1938,7 +1939,7 @@ QUnit.test( "Animation callbacks in order (#2292)", function( assert ) {
 		always: function() {
 			assert.step( 5 );
 		}
-	}).finish();
+	} ).finish();
 
 	this.clock.tick( dur + 10 );
 } );
@@ -2316,8 +2317,8 @@ QUnit.test( "Respect display value on inline elements (#14824)", function( asser
 	clock.tick( 800 );
 } );
 
-QUnit.test( "Animation should go to its end state if document.hidden = true", function(assert) {
-	assert.expect(1);
+QUnit.test( "Animation should go to its end state if document.hidden = true", function( assert ) {
+	assert.expect( 1 );
 
 	var height;
 	if ( Object.defineProperty ) {
@@ -2328,14 +2329,14 @@ QUnit.test( "Animation should go to its end state if document.hidden = true", fu
 				get: function() {
 					return true;
 				}
-			});
+			} );
 		} catch ( e ) {}
 	} else {
 		document.hidden = true;
 	}
 
 	if ( document.hidden ) {
-		height = jQuery( "#qunit-fixture" ).animate({ height: 500 } ).height();
+		height = jQuery( "#qunit-fixture" ).animate( { height: 500 } ).height();
 
 		assert.equal( height, 500, "Animation should happen immediately if document.hidden = true" );
 		jQuery( document ).removeProp( "hidden" );
@@ -2343,7 +2344,7 @@ QUnit.test( "Animation should go to its end state if document.hidden = true", fu
 	} else {
 		assert.ok( true, "Can't run the test since we can't reproduce correct environment for it" );
 	}
-});
+} );
 
 QUnit.test( "jQuery.easing._default (gh-2218)", function( assert ) {
 	assert.expect( 2 );

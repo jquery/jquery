@@ -254,7 +254,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
 	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
 	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
-	assert.equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #9441" );
@@ -265,7 +265,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #9441" );
 	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #9441" );
 	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
+	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -327,7 +327,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #10413" );
 	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #10413" );
 	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #10413" );
-	assert.equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
+	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #10413" );
@@ -338,7 +338,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #10413" );
 	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #10413" );
 	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
+	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -409,7 +409,7 @@ QUnit.test( "getters on non elements should return null", function( assert ) {
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
 	assert.expect( 60 );
 
-	var parent = jQuery( "#foo" ).css({ width: "200px", height: "200px", "font-size": "16px" }),
+	var parent = jQuery( "#foo" ).css( { width: "200px", height: "200px", "font-size": "16px" } ),
 		el_bb = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;box-sizing:border-box;'></div>" ).appendTo( parent ),
 		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent );
 

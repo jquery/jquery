@@ -120,6 +120,7 @@ jQuery.fn.extend( {
 			// will result in `undefined` for elem = this[ 0 ] which will
 			// throw an exception if an attempt to read a data cache is made.
 			if ( elem && value === undefined ) {
+
 				// Attempt to get data from the cache
 				// with the key as-is
 				data = dataUser.get( elem, key );
@@ -128,6 +129,7 @@ jQuery.fn.extend( {
 				}
 
 				camelKey = jQuery.camelCase( key );
+
 				// Attempt to get data from the cache
 				// with the key camelized
 				data = dataUser.get( elem, camelKey );
@@ -148,7 +150,8 @@ jQuery.fn.extend( {
 
 			// Set the data...
 			camelKey = jQuery.camelCase( key );
-			this.each(function() {
+			this.each( function() {
+
 				// First, attempt to store a copy or reference of any
 				// data that might've been store with a camelCased key.
 				var data = dataUser.get( this, camelKey );
@@ -161,10 +164,10 @@ jQuery.fn.extend( {
 				// *... In the case of properties that might _actually_
 				// have dashes, we need to also store a copy of that
 				// unchanged property.
-				if ( key.indexOf("-") > -1 && data !== undefined ) {
+				if ( key.indexOf( "-" ) > -1 && data !== undefined ) {
 					dataUser.set( this, key, value );
 				}
-			});
+			} );
 		}, null, value, arguments.length > 1, null, true );
 	},
 

@@ -16,32 +16,32 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		assert.strictEqual( defer.pipe, defer.then, "pipe is an alias of then" );
 
-		createDeferred().resolve().done(function() {
+		createDeferred().resolve().done( function() {
 			assert.ok( true, "Success on resolve" );
 			assert.strictEqual( this.state(), "resolved", "Deferred is resolved (state)" );
-		}).fail(function() {
+		} ).fail( function() {
 			assert.ok( false, "Error on resolve" );
-		}).always(function() {
+		} ).always( function() {
 			assert.ok( true, "Always callback on resolve" );
-		});
+		} );
 
-		createDeferred().reject().done(function() {
+		createDeferred().reject().done( function() {
 			assert.ok( false, "Success on reject" );
-		}).fail(function() {
+		} ).fail( function() {
 			assert.ok( true, "Error on reject" );
 			assert.strictEqual( this.state(), "rejected", "Deferred is rejected (state)" );
-		}).always(function() {
+		} ).always( function() {
 			assert.ok( true, "Always callback on reject" );
-		});
+		} );
 
-		createDeferred(function( defer ) {
+		createDeferred( function( defer ) {
 			assert.ok( this === defer, "Defer passed as this & first argument" );
-			this.resolve("done");
-		}).done(function( value ) {
+			this.resolve( "done" );
+		} ).done( function( value ) {
 			assert.strictEqual( value, "done", "Passed function executed" );
-		});
+		} );
 
-		createDeferred(function( defer ) {
+		createDeferred( function( defer ) {
 			var promise = defer.promise(),
 				func = function() {},
 				funcPromise = defer.promise( func );
@@ -97,18 +97,18 @@ QUnit.test( "jQuery.Deferred.then - filtering (done)", function( assert ) {
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
-		piped = defer.then(function( a, b ) {
+		piped = defer.then( function( a, b ) {
 			return a * b;
-		});
+		} );
 
-	piped.done(function( result ) {
+	piped.done( function( result ) {
 		value3 = result;
-	});
+	} );
 
-	defer.done(function( a, b ) {
+	defer.done( function( a, b ) {
 		value1 = a;
 		value2 = b;
-	});
+	} );
 
 	defer.resolve( 2, 3 );
 
@@ -116,13 +116,13 @@ QUnit.test( "jQuery.Deferred.then - filtering (done)", function( assert ) {
 	assert.strictEqual( value2, 3, "second resolve value ok" );
 	assert.strictEqual( value3, 6, "result of filter ok" );
 
-	jQuery.Deferred().reject().then(function() {
+	jQuery.Deferred().reject().then( function() {
 		assert.ok( false, "then should not be called on reject" );
-	});
+	} );
 
-	jQuery.Deferred().resolve().then( jQuery.noop ).done(function( value ) {
+	jQuery.Deferred().resolve().then( jQuery.noop ).done( function( value ) {
 		assert.strictEqual( value, undefined, "then done callback can return undefined/null" );
-	});
+	} );
 } );
 
 QUnit.test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
@@ -132,31 +132,31 @@ QUnit.test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
 		defer = jQuery.Deferred(),
 		piped = defer.then( null, function( a, b ) {
 			return a * b;
-		});
+		} );
 
-	piped.fail(function( result ) {
+	piped.fail( function( result ) {
 		value3 = result;
-	});
+	} );
 
-	defer.fail(function( a, b ) {
+	defer.fail( function( a, b ) {
 		value1 = a;
 		value2 = b;
-	});
+	} );
 
 	defer.reject( 2, 3 );
 
-	strictEqual( value1, 2, "first reject value ok" );
-	strictEqual( value2, 3, "second reject value ok" );
-	strictEqual( value3, 6, "result of filter ok" );
+	assert.strictEqual( value1, 2, "first reject value ok" );
+	assert.strictEqual( value2, 3, "second reject value ok" );
+	assert.strictEqual( value3, 6, "result of filter ok" );
 
 	jQuery.Deferred().resolve().then( null, function() {
-		ok( false, "then should not be called on resolve" );
-	});
+		assert.ok( false, "then should not be called on resolve" );
+	} );
 
-	jQuery.Deferred().reject().then( null, jQuery.noop ).fail(function( value ) {
-		strictEqual( value, undefined, "then fail callback can return undefined/null" );
-	});
-});
+	jQuery.Deferred().reject().then( null, jQuery.noop ).fail( function( value ) {
+		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
+	} );
+} );
 
 QUnit.test( "jQuery.Deferred.then - filtering (progress)", function( assert ) {
 	assert.expect( 3 );
@@ -181,7 +181,7 @@ QUnit.test( "jQuery.Deferred.then - filtering (progress)", function( assert ) {
 	assert.strictEqual( value1, 2, "first progress value ok" );
 	assert.strictEqual( value2, 3, "second progress value ok" );
 	assert.strictEqual( value3, 6, "result of filter ok" );
-});
+} );
 
 QUnit.test( "jQuery.Deferred.then - deferred (done)", function( assert ) {
 	assert.expect( 3 );
@@ -208,7 +208,7 @@ QUnit.test( "jQuery.Deferred.then - deferred (done)", function( assert ) {
 	assert.strictEqual( value1, 2, "first resolve value ok" );
 	assert.strictEqual( value2, 3, "second resolve value ok" );
 	assert.strictEqual( value3, 6, "result of filter ok" );
-});
+} );
 
 QUnit.test( "jQuery.Deferred.then - deferred (fail)", function( assert ) {
 	assert.expect( 3 );
@@ -235,7 +235,7 @@ QUnit.test( "jQuery.Deferred.then - deferred (fail)", function( assert ) {
 	assert.strictEqual( value1, 2, "first reject value ok" );
 	assert.strictEqual( value2, 3, "second reject value ok" );
 	assert.strictEqual( value3, 6, "result of filter ok" );
-});
+} );
 
 QUnit.test( "jQuery.Deferred.then - deferred (progress)", function( assert ) {
 	assert.expect( 3 );
@@ -261,7 +261,7 @@ QUnit.test( "jQuery.Deferred.then - deferred (progress)", function( assert ) {
 	assert.strictEqual( value1, 2, "first progress value ok" );
 	assert.strictEqual( value2, 3, "second progress value ok" );
 	assert.strictEqual( value3, 6, "result of filter ok" );
-});
+} );
 
 QUnit.test( "jQuery.Deferred.then - context", function( assert ) {
 	assert.expect( 7 );
@@ -271,16 +271,16 @@ QUnit.test( "jQuery.Deferred.then - context", function( assert ) {
 
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).then( function( value ) {
 		return value * 3;
-	} ).done(function( value ) {
+	} ).done( function( value ) {
 		assert.strictEqual( this, context, "custom context correctly propagated" );
 		assert.strictEqual( value, 6, "proper value received" );
-	});
+	} );
 
-	jQuery.Deferred().resolve().then(function() {
-		return jQuery.Deferred().resolveWith(context);
-	}).done(function() {
+	jQuery.Deferred().resolve().then( function() {
+		return jQuery.Deferred().resolveWith( context );
+	} ).done( function() {
 		assert.strictEqual( this, context, "custom context of returned deferred correctly propagated" );
-	});
+	} );
 
 	defer = jQuery.Deferred();
 	piped = defer.then( function( value ) {
@@ -289,25 +289,25 @@ QUnit.test( "jQuery.Deferred.then - context", function( assert ) {
 
 	defer.resolve( 2 );
 
-	piped.done(function( value ) {
+	piped.done( function( value ) {
 		assert.strictEqual( this, piped, "default context gets updated to latest promise in the chain" );
 		assert.strictEqual( value, 6, "proper value received" );
-	});
+	} );
 	defer2 = jQuery.Deferred();
 	piped2 = defer2.then();
 
 	defer2.resolve( 2 );
 
-	piped2.done(function( value ) {
+	piped2.done( function( value ) {
 		assert.strictEqual( this, piped2, "default context gets updated to latest promise in the chain (without passing function)" );
 		assert.strictEqual( value, 2, "proper value received (without passing function)" );
-	});
-});
+	} );
+} );
 
 QUnit.test( "jQuery.when", function( assert ) {
 	assert.expect( 37 );
 
-	jQuery.each({
+	jQuery.each( {
 		"an empty string": "",
 		"a non-empty string": "some string",
 		"zero": 0,
@@ -322,21 +322,21 @@ QUnit.test( "jQuery.when", function( assert ) {
 	}, function( message, value ) {
 		assert.ok(
 			jQuery.isFunction(
-				jQuery.when( value ).done(function( resolveValue ) {
+				jQuery.when( value ).done( function( resolveValue ) {
 					assert.strictEqual( this, window, "Context is the global object with " + message );
 					assert.strictEqual( resolveValue, value, "Test the promise was resolved with " + message );
-				}).promise
+				} ).promise
 			),
 			"Test " + message + " triggers the creation of a new Promise"
 		);
-	});
+	} );
 
 	assert.ok(
 		jQuery.isFunction(
-			jQuery.when().done(function( resolveValue ) {
+			jQuery.when().done( function( resolveValue ) {
 				assert.strictEqual( this, window, "Test the promise was resolved with window as its context" );
 				assert.strictEqual( resolveValue, undefined, "Test the promise was resolved with no parameter" );
-			}).promise
+			} ).promise
 		),
 		"Test calling when with no parameter triggers the creation of a new Promise"
 	);
@@ -344,22 +344,22 @@ QUnit.test( "jQuery.when", function( assert ) {
 	var cache,
 		context = {};
 
-	jQuery.when( jQuery.Deferred().resolveWith( context ) ).done(function() {
+	jQuery.when( jQuery.Deferred().resolveWith( context ) ).done( function() {
 		assert.strictEqual( this, context, "when( promise ) propagates context" );
-	});
+	} );
 
-	jQuery.each([ 1, 2, 3 ], function( k, i ) {
+	jQuery.each( [ 1, 2, 3 ], function( k, i ) {
 
-		jQuery.when( cache || jQuery.Deferred(function() {
+		jQuery.when( cache || jQuery.Deferred( function() {
 				this.resolve( i );
-			})
-		).done(function( value ) {
+			} )
+		).done( function( value ) {
 
 			assert.strictEqual( value, 1, "Function executed" + ( i > 1 ? " only once" : "" ) );
 			cache = value;
-		});
+		} );
 
-	});
+	} );
 } );
 
 QUnit.test( "jQuery.when - joined", function( assert ) {
@@ -399,31 +399,31 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : undefined,
 				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : undefined;
 
-			jQuery.when( defer1, defer2 ).done(function( a, b ) {
+			jQuery.when( defer1, defer2 ).done( function( a, b ) {
 				if ( shouldResolve ) {
 					assert.deepEqual( [ a, b ], expected, code + " => resolve" );
 					assert.strictEqual( this[ 0 ], context1, code + " => first context OK" );
 					assert.strictEqual( this[ 1 ], context2, code + " => second context OK" );
 				} else {
-					ok( false,  code + " => resolve" );
+					assert.ok( false,  code + " => resolve" );
 				}
-			}).fail(function( a, b ) {
+			} ).fail( function( a, b ) {
 				if ( shouldError ) {
 					assert.deepEqual( [ a, b ], expected, code + " => reject" );
 				} else {
-					ok( false, code + " => reject" );
+					assert.ok( false, code + " => reject" );
 				}
-			}).progress(function( a, b ) {
+			} ).progress( function( a, b ) {
 				assert.deepEqual( [ a, b ], expectedNotify, code + " => progress" );
 				assert.strictEqual( this[ 0 ], expectedNotify[ 0 ] ? context1 : undefined, code + " => first context OK" );
 				assert.strictEqual( this[ 1 ], expectedNotify[ 1 ] ? context2 : undefined, code + " => second context OK" );
-			});
-		});
-	});
+			} );
+		} );
+	} );
 
 	deferreds.futureSuccess.resolve( 1 );
 	deferreds.futureError.reject( 0 );
-});
+} );
 
 QUnit.test( "jQuery.when - resolved", function( assert ) {
 	assert.expect( 6 );
@@ -432,16 +432,16 @@ QUnit.test( "jQuery.when - resolved", function( assert ) {
 		b = jQuery.Deferred().notify( 2 ).resolve( 5 ),
 		c = jQuery.Deferred().notify( 3 ).resolve( 6 );
 
-	jQuery.when( a, b, c ).progress(function( a, b, c ) {
+	jQuery.when( a, b, c ).progress( function( a, b, c ) {
 		assert.strictEqual( a, 1, "first notify value ok" );
 		assert.strictEqual( b, 2, "second notify value ok" );
 		assert.strictEqual( c, 3, "third notify value ok" );
-	}).done(function( a, b, c ) {
+	} ).done( function( a, b, c ) {
 		assert.strictEqual( a, 4, "first resolve value ok" );
 		assert.strictEqual( b, 5, "second resolve value ok" );
 		assert.strictEqual( c, 6, "third resolve value ok" );
-	}).fail(function() {
+	} ).fail( function() {
 		assert.ok( false, "Error on resolve" );
-	});
+	} );
 
-});
+} );

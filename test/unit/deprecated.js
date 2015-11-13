@@ -1,6 +1,5 @@
 QUnit.module( "deprecated", { teardown: moduleTeardown } );
 
-
 QUnit.test( "bind/unbind", function( assert ) {
 	assert.expect( 4 );
 
@@ -14,7 +13,7 @@ QUnit.test( "bind/unbind", function( assert ) {
 			assert.equal( e.type, "click", "correct event type" );
 			assert.equal( e.data.bindData, 19, "correct trigger data" );
 			assert.equal( trig, 42, "correct bind data" );
-			assert.equal( e.target.nodeName.toLowerCase(), "b" , "correct element" );
+			assert.equal( e.target.nodeName.toLowerCase(), "b", "correct element" );
 		} )
 		.trigger( "click", [ 42 ] )
 		.unbind( "click" )
@@ -32,7 +31,7 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 	markup
 		.delegate( "b", "click", function( e ) {
 			assert.equal( e.type, "click", "correct event type" );
-			assert.equal( e.target.nodeName.toLowerCase(), "b" , "correct element" );
+			assert.equal( e.target.nodeName.toLowerCase(), "b", "correct element" );
 		} )
 		.find( "b" )
 			.trigger( "click" )

@@ -1560,7 +1560,7 @@ QUnit.test( "clone(multiple selected options) (Bug #8129)", function( assert ) {
 	var element = jQuery( "<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>" );
 
 	function getSelectedOptions( collection ) {
-		return collection.find( "option" ).filter(function( option ) {
+		return collection.find( "option" ).filter( function( option ) {
 			return option.selected;
 		} );
 	}

@@ -52,10 +52,10 @@ QUnit.test( "object without getBoundingClientRect", function( assert ) {
 	assert.expect( 2 );
 
 	// Simulates a browser without gBCR on elements, we just want to return 0,0
-	var result = jQuery({ ownerDocument: document }).offset();
+	var result = jQuery( { ownerDocument: document } ).offset();
 	assert.equal( result.top, 0, "Check top" );
 	assert.equal( result.left, 0, "Check left" );
-});
+} );
 
 QUnit.test( "disconnected node", function( assert ) {
 	assert.expect( 2 );
@@ -65,8 +65,8 @@ QUnit.test( "disconnected node", function( assert ) {
 	// These tests are solely for master/compat consistency
 	// Retrieving offset on disconnected/hidden elements is not officially
 	// valid input, but will return zeros for back-compat
-	equal( result.top, 0, "Check top" );
-	equal( result.left, 0, "Check left" );
+	assert.equal( result.top, 0, "Check top" );
+	assert.equal( result.left, 0, "Check left" );
 } );
 
 QUnit.test( "hidden (display: none) element", function( assert ) {

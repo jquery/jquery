@@ -278,9 +278,9 @@ QUnit.test( "data-* attributes", function( assert ) {
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
-		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
+		div = jQuery( "<div>" ),
+		child = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>" ),
+		dummy = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>" );
 
 	assert.equal( div.data( "attr" ), undefined, "Check for non-existing data-attr attribute" );
 
@@ -295,8 +295,8 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	div.remove();
 
-	child.appendTo("#qunit-fixture");
-	assert.equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
+	child.appendTo( "#qunit-fixture" );
+	assert.equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
 
 	child.data( "myobj", "replaced" );
 	assert.equal( child.data( "myobj" ), "replaced", "Original data overwritten" );
@@ -408,7 +408,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 			break;
 		case 3:
 			assert.equal( jQuery( elem ).data( "number" ), true, "Check number property" );
-			assert.deepEqual( jQuery( elem ).data( "stuff" ), [ 2,8 ], "Check stuff property" );
+			assert.deepEqual( jQuery( elem ).data( "stuff" ), [ 2, 8 ], "Check stuff property" );
 			break;
 		default:
 			assert.ok( false, [ "Assertion failed on index ", index, ", with data" ].join( "" ) );
@@ -600,7 +600,7 @@ QUnit.test( ".data should not miss attr() set data-* with hyphenated property na
 	assert.deepEqual( b.data( "long-param" ), { a: 2 }, "data with property long-param was found, 2" );
 } );
 
-QUnit.test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
+QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
@@ -695,7 +695,7 @@ QUnit.test( ".data supports interoperable removal of properties SET TWICE #13850
 } );
 
 QUnit.test( ".removeData supports removal of hyphenated properties via array (#12786)", function( assert ) {
-	expect( 4 );
+	assert.expect( 4 );
 
 	var div, plain, compare;
 
@@ -708,6 +708,7 @@ QUnit.test( ".removeData supports removal of hyphenated properties via array (#1
 
 		// From batch assignment .data({ "a-a": 1 })
 		"a-a": 1,
+
 		// From property, value assignment .data( "b-b", 1 )
 		"bB": 1
 	};
@@ -842,13 +843,13 @@ QUnit.test( "Check that the expando is removed when there's no more data", funct
 			assert.strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
 		}
 	}
-});
+} );
 
 QUnit.test( "Check that the expando is removed when there's no more data on non-nodes", function( assert ) {
 	assert.expect( 1 );
 
 	var key,
-		obj = jQuery( {key: 42} );
+		obj = jQuery( { key: 42 } );
 	obj.data( "some", "data" );
 	assert.equal( obj.data( "some" ), "data", "Data is added" );
 	obj.removeData( "some" );
