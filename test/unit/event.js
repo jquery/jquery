@@ -6,7 +6,6 @@ QUnit.module( "event", {
 } );
 
 QUnit.test( "on() with non-null,defined data", function( assert ) {
-
 	assert.expect( 2 );
 
 	var handler = function( event, data ) {

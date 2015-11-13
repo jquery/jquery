@@ -70,6 +70,8 @@ function on( elem, types, selector, data, fn, one ) {
 	}
 	if ( fn === false ) {
 		fn = returnFalse;
+	} else if ( !fn ) {
+		return this;
 	}
 
 	if ( one === 1 ) {
@@ -654,7 +656,6 @@ jQuery.each( {
 } );
 
 jQuery.fn.extend( {
-
 	on: function( types, selector, data, fn ) {
 		return on( this, types, selector, data, fn );
 	},
