@@ -20,7 +20,15 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
+	},
+	size: function() {
+		return this.length;
 	}
 } );
 
+jQuery.fn.andSelf = jQuery.fn.addBack;
+
 } );
+
+
+
