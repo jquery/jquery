@@ -15,6 +15,7 @@ define( [
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
 	"./data/var/acceptData",
+	"./core/DOMEval",
 
 	"./core/init",
 	"./traversing",
@@ -23,7 +24,7 @@ define( [
 ], function( jQuery, concat, push, access,
 	rcheckableType, rtagName, rscriptType,
 	wrapMap, getAll, setGlobalEval, buildFragment, support,
-	dataPriv, dataUser, acceptData ) {
+	dataPriv, dataUser, acceptData, DOMEval ) {
 
 var
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:-]+)[^>]*)\/>/gi,
@@ -192,7 +193,7 @@ function domManip( collection, args, callback, ignored ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
-							jQuery.globalEval( node.textContent.replace( rcleanScript, "" ), doc );
+							DOMEval( node.textContent.replace( rcleanScript, "" ), doc );
 						}
 					}
 				}
