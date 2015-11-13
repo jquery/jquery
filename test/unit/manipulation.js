@@ -2678,12 +2678,3 @@ QUnit.test( "Make sure col element is appended correctly", function( assert ) {
 
 	assert.strictEqual( table.find( "td" ).width(), 150 );
 } );
-
-asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
-	Globals.register( "testFoo" );
-	jQuery( "#qunit-fixture" ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
-	setTimeout(function() {
-		strictEqual( window[ "testFoo" ], "foo", "data-URI script executed" );
-		start();
-	}, 100 );
-});
