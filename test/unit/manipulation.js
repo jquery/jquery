@@ -2679,28 +2679,11 @@ QUnit.test( "Make sure col element is appended correctly", function( assert ) {
 	assert.strictEqual( table.find( "td" ).width(), 150 );
 } );
 
-QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
+asyncTest( "Insert script with data-URI (gh-1887)", 1, function() {
 	Globals.register( "testFoo" );
-	Globals.register( "testSrcFoo" );
-
-	var script = document.createElement( "script" ),
-		fixture = document.getElementById( "qunit-fixture" ),
-		done = assert.async();
-
-	script.src = "data:text/javascript,testSrcFoo = 'foo';";
-
-	fixture.appendChild( script );
-
-	jQuery( fixture ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
-
-	setTimeout( function() {
-		if ( window[ "testSrcFoo" ] === "foo" ) {
-			assert.strictEqual( window[ "testFoo" ], window[ "testSrcFoo" ], "data-URI script executed" );
-
-		} else {
-			assert.ok( true, "data-URI script is not supported by this environment" );
-		}
-
-		done();
-	});
+	jQuery( "#qunit-fixture" ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
+	setTimeout(function() {
+		strictEqual( window[ "testFoo" ], "foo", "data-URI script executed" );
+		start();
+	}, 100 );
 });
