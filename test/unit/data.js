@@ -629,18 +629,7 @@ QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function
 	} );
 } );
 
-QUnit.test( ".data should not strip more than one hyphen when camelCasing (gh-2070)", function( assert ) {
-	assert.expect( 3 );
-	var div = jQuery( "<div data-nested-single='single' data-nested--double='double' data-nested---triple='triple'></div>" ).appendTo( "#qunit-fixture" ),
-		allData = div.data();
-
-	assert.equal( allData.nestedSingle, "single", "Key is correctly camelCased" );
-	assert.equal( allData[ "nested-Double" ], "double", "Key with double hyphens is correctly camelCased" );
-	assert.equal( allData[ "nested--Triple" ], "triple", "Key with triple hyphens is correctly camelCased" );
-} );
-
-QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
-
+QUnit.test(".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
