@@ -48,6 +48,15 @@ QUnit.test( "empty set", function( assert ) {
 	assert.strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
 } );
 
+QUnit.test( "object without getBoundingClientRect", function( assert ) {
+	assert.expect( 2 );
+
+	// Simulates a browser without gBCR on elements, we just want to return 0,0
+	var result = jQuery({ ownerDocument: document }).offset();
+	assert.equal( result.top, 0, "Check top" );
+	assert.equal( result.left, 0, "Check left" );
+});
+
 QUnit.test( "disconnected element", function( assert ) {
 	assert.expect( 2 );
 
