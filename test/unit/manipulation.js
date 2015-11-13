@@ -2297,7 +2297,7 @@ QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
 	if ( jQuery.ajax ) {
 		var onerror = window.onerror;
 		window.onerror = function() {
-			ok( true, "Exception thrown in remote script" );
+			assert.ok( true, "Exception thrown in remote script" );
 		};
 
 		jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");

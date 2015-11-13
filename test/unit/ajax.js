@@ -1628,10 +1628,10 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 			// Global events get confused by the exception
 			global: false,
 			success: function() {
-				ok( false, "Success." );
+				assert.ok( false, "Success." );
 			},
 			error: function() {
-				ok( false, "Error." );
+				assert.ok( false, "Error." );
 			}
 		});
 	});
