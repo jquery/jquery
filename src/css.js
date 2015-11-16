@@ -428,6 +428,16 @@ jQuery.cssHooks.marginLeft = addGetHookIf( support.reliableMarginLeft,
 	}
 );
 
+// Support: Android 2.3
+jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
+	function( elem, computed ) {
+		if ( computed ) {
+			return swap( elem, { "display": "inline-block" },
+				curCSS, [ elem, "marginRight" ] );
+		}
+	}
+);
+
 // These hooks are used by animate to expand properties
 jQuery.each( {
 	margin: "",

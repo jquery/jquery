@@ -67,11 +67,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginLRight": true
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
@@ -84,11 +86,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"reliableMarginRight": true
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
@@ -101,11 +105,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": true,
 			"noCloneChecked": false,
+			"optDisabled": true,
 			"optSelected": false,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -118,11 +124,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": true,
 			"noCloneChecked": false,
+			"optDisabled": true,
 			"optSelected": false,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
 
@@ -138,11 +146,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /9\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -155,11 +165,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -172,11 +184,32 @@ testIframeWithCallback(
 			"createHTMLDocument": false,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
+		};
+	} else if ( /(?:6|7)\.0(\.\d+|) safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optDisabled": true,
+			"optSelected": true,
+			"pixelMarginRight": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /5\.1(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
@@ -186,12 +219,15 @@ testIframeWithCallback(
 			"checkOn": false,
 			"clearCloneStyle": true,
 			"cors": true,
-			"focusinBubbles": false,
+			"createHTMLDocument": true,
+			"focusin": false,
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
+			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
+			"reliableMarginLeft": true,
 			"reliableMarginRight": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
@@ -205,11 +241,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"reliableMarginRight": true
 		};
 	} else if ( /iphone os 9_/i.test( userAgent ) ) {
 		expected = {
@@ -222,11 +260,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginLRight": true
 		};
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = {
@@ -239,11 +279,13 @@ testIframeWithCallback(
 			"createHTMLDocument": false,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /iphone os (?:6|7)_/i.test( userAgent ) ) {
 		expected = {
@@ -256,11 +298,13 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"reliableMarginRight": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
@@ -273,11 +317,32 @@ testIframeWithCallback(
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
+			"optDisabled": true,
 			"optSelected": true,
 			"pixelMarginRight": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"reliableMarginRight": true
+		};
+	} else if ( /android 2\.3/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": false,
+			"clearCloneStyle": false,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optDisabled": false,
+			"optSelected": true,
+			"pixelMarginRight": true,
+			"pixelPosition": false,
+			"radioValue": true,
+			"reliableMarginLeft": false,
+			"reliableMarginRight": false
 		};
 	}
 
