@@ -224,11 +224,11 @@ testIframeWithCallback(
 			"noCloneChecked": true,
 			"optDisabled": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelMarginRight": false,
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginLeft": false,
-			"reliableMarginRight": false
+			"reliableMarginRight": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
