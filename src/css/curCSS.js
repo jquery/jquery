@@ -5,7 +5,7 @@ define( [
 	"./var/getStyles",
 	"./support",
 	"../selector" // Get jQuery.contains
-], function( jQuery, rnumnonpx, rmargin, getStyles ) {
+], function( jQuery, rnumnonpx, rmargin, getStyles, support ) {
 
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
@@ -22,13 +22,12 @@ function curCSS( elem, name, computed ) {
 			ret = jQuery.style( elem, name );
 		}
 
-		// Support: iOS < 6, Android 4.0-4.3 only
 		// A tribute to the "awesome hack by Dean Edwards"
-		// iOS < 6 (at least) returns percentage for a larger set of values,
-		// but width seems to be reliably pixels
-		// this is against the CSSOM draft spec:
+		// Android Browser returns percentage for some values,
+		// but width seems to be reliably pixels.
+		// This is against the CSSOM draft spec:
 		// http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 
 			// Remember the original values
 			width = style.width;
