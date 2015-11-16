@@ -101,12 +101,6 @@ Run the build script
 $ npm run build
 ```
 
-Run the Grunt tools:
-
-```bash
-$ grunt && grunt watch
-```
-
 Now open the jQuery test suite in a browser at http://localhost/test. If there is a port, be sure to include it.
 
 Success! You just built and tested jQuery!
@@ -118,11 +112,24 @@ During the process of writing your patch, you will run the test suite MANY times
 
 Example:
 
-http://localhost/test/?filter=css
+http://localhost/test/?module=css
 
 This will only run the "css" module tests. This will significantly speed up your development and debugging.
 
 **ALWAYS RUN THE FULL SUITE BEFORE COMMITTING AND PUSHING A PATCH!**
+
+
+#### Loading changes on the test page
+
+Rather than rebuilding jQuery with `grunt` every time you make a change, you can use the included `grunt watch` task to rebuild distribution files whenever a file is saved.
+
+```bash
+$ grunt watch
+```
+
+Alternatively, you can **load tests in AMD** to avoid the need for rebuilding altogether.
+
+Click "Load with AMD" after loading the test page.
 
 
 ### Browser support
