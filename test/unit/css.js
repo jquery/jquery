@@ -293,6 +293,9 @@ QUnit.test( "css(String, Object)", function( assert ) {
 	j = jQuery( "#nonnodes" ).contents();
 	j.css( "overflow", "visible" );
 	assert.equal( j.css( "overflow" ), "visible", "Check node,textnode,comment css works" );
+
+	// Opera sometimes doesn't update 'display' correctly, see #2037
+	jQuery( "#t2037" )[ 0 ].innerHTML = jQuery( "#t2037" )[ 0 ].innerHTML;
 	assert.equal( jQuery( "#t2037 .hidden" ).css( "display" ), "none", "Make sure browser thinks it is hidden" );
 
 	div = jQuery( "#nothiddendiv" );
@@ -867,9 +870,9 @@ QUnit.test( "Do not append px (#9548, #12990)", function( assert ) {
 QUnit.test( "css('width') and css('height') should respect box-sizing, see #11004", function( assert ) {
 	assert.expect( 4 );
 
-	// Support: Android 2.3 (-webkit-box-sizing).
-	var el_dis = jQuery( "<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>" ),
-		el = el_dis.clone().appendTo( "#qunit-fixture" );
+	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
+	var el_dis = jQuery("<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>"),
+		el = el_dis.clone().appendTo("#qunit-fixture");
 
 	assert.equal( el.css( "width" ), el.css( "width", el.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing, see #11004" );
 	assert.equal( el_dis.css( "width" ), el_dis.css( "width", el_dis.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing for disconnected element, see #11004" );

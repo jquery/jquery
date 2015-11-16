@@ -1416,7 +1416,7 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 	form.remove();
 } );
 
-// Test beforeunload event only if it supported.
+// Test beforeunload event only if it supported (i.e. not Opera)
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
@@ -2520,14 +2520,15 @@ testIframeWithCallback(
 
 		var input = jQuery( frameDoc ).find( "#frame-input" );
 
+	if ( input.length ) {
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
-		jQuery( "body" ).on( "focusin.iframeTest", function() {
+		jQuery ( "body" ).on( "focusin.iframeTest", function() {
 			assert.ok( false, "fired a focusin event in the parent document" );
-		} );
+		});
 
 		input.on( "focusin", function() {
 			assert.ok( true, "fired a focusin event in the iframe" );
-		} );
+		});
 
 		// Avoid a native event; Chrome can't force focus to another frame
 		input.trigger( "focusin" );
@@ -2540,8 +2541,12 @@ testIframeWithCallback(
 
 		// Remove body handler manually since it's outside the fixture
 		jQuery( "body" ).off( "focusin.iframeTest" );
+
+	} else {
+		// Opera 12 (pre-Blink) doesn't select anything
+		assert.ok( true, "SOFTFAIL: no focus event fired in the iframe" );
 	}
-);
+});
 
 testIframeWithCallback(
 	"jQuery.ready promise",

@@ -409,9 +409,10 @@ QUnit.test( "getters on non elements should return null", function( assert ) {
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
 	assert.expect( 60 );
 
+	// Support: Firefox<29, Android 2.3 (Prefixed box-sizing versions).
 	var parent = jQuery( "#foo" ).css( { width: "200px", height: "200px", "font-size": "16px" } ),
-		el_bb = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;box-sizing:border-box;'></div>" ).appendTo( parent ),
-		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent );
+		el_bb = jQuery( "<div style='width:114px;height:114px;margin:5px;padding:3px;border:4px solid white;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;'>test</div>" ).appendTo( parent ),
+		el = jQuery( "<div style='width:100px;height:100px;margin:5px;padding:3px;border:4px solid white;'>test</div>" ).appendTo( parent );
 
 	jQuery.each( {
 		"number": { set: 100, expected: 100 },
