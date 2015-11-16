@@ -328,12 +328,12 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - hash", 3, function( assert ) {
+	ajaxTest( "jQuery.ajax() - hash", 4, function( assert ) {
 		return [
 			{
 				url: "data/name.html#foo",
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, "data/name.html", "Make sure that the URL is trimmed." );
+					assert.equal( settings.url, "data/name.html#foo", "Make sure that the URL has its hash." );
 					return false;
 				},
 				error: true
@@ -341,7 +341,7 @@ QUnit.module( "ajax", {
 			{
 				url: "data/name.html?abc#foo",
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, "data/name.html?abc", "Make sure that the URL is trimmed." );
+					assert.equal( settings.url, "data/name.html?abc#foo", "Make sure that the URL has its hash." );
 					return false;
 				},
 				error: true
@@ -352,7 +352,21 @@ QUnit.module( "ajax", {
 					"test": 123
 				},
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, "data/name.html?abc&test=123", "Make sure that the URL is trimmed." );
+					assert.equal( settings.url, "data/name.html?abc&test=123#foo", "Make sure that the URL has its hash." );
+					return false;
+				},
+				error: true
+			},
+			{
+				url: "data/name.html?abc#brownies",
+				data: {
+					"devo": "hat"
+				},
+				cache: false,
+				beforeSend: function( xhr, settings ) {
+					// Remove the random number, but ensure the cashe-buster param is there
+					var url = settings.url.replace( /\d+/, "" );
+					assert.equal( url, "data/name.html?abc&devo=hat&_=#brownies", "Make sure that the URL has its hash." );
 					return false;
 				},
 				error: true
