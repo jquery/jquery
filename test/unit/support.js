@@ -73,7 +73,7 @@ testIframeWithCallback(
 			"pixelPosition": true,
 			"radioValue": true,
 			"reliableMarginLeft": true,
-			"reliableMarginLRight": true
+			"reliableMarginRight": true
 		};
 	} else if ( /opera.*version\/12\.1/i.test( userAgent ) ) {
 		expected = {
@@ -227,8 +227,8 @@ testIframeWithCallback(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true,
-			"reliableMarginRight": true
+			"reliableMarginLeft": false,
+			"reliableMarginRight": false
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -266,7 +266,7 @@ testIframeWithCallback(
 			"pixelPosition": false,
 			"radioValue": true,
 			"reliableMarginLeft": true,
-			"reliableMarginLRight": true
+			"reliableMarginRight": true
 		};
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = {
