@@ -575,9 +575,11 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 	// Mobile Safari and Android 2.3 resize the iframe by its content
 	// meaning it's not possible to scroll the iframe only its parent element.
 	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
+	// Opera 12.1x also has problems with this test.
 	if ( /iphone os/i.test( navigator.userAgent ) ||
 	    /android 2\.3/i.test( navigator.userAgent ) ||
-	    /android 4\.0/i.test( navigator.userAgent ) ) {
+	    /android 4\.0/i.test( navigator.userAgent ) ||
+		/opera.*version\/12\.1/i.test( navigator.userAgent ) ) {
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 
