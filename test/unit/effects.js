@@ -2495,4 +2495,89 @@ QUnit.test( "Show/hide/toggle and display: inline", function( assert ) {
 	} );
 } );
 
+function testEasing( assert, speed, easing, complete ) {
+	assert.expect( 4 );
+	var options = jQuery.speed( speed, easing, complete );
+
+	assert.equal( options.duration, 10, "Duration set properly" );
+	assert.equal(
+		jQuery.isFunction( options.easing ) ? options.easing() : options.easing,
+		"linear",
+		"Easing set properly"
+	);
+	assert.equal( options.queue, "fx", "Queue defaults to fx" );
+	options.complete();
+}
+
+QUnit.test( "jQuery.speed( speed, easing, complete )", function( assert ) {
+	testEasing( assert, 10, "linear", function() {
+		assert.ok( true, "Complete called" );
+	} );
+} );
+
+QUnit.test( "jQuery.speed( speed, easing, complete ) - with easing function", function( assert ) {
+	testEasing(
+		assert,
+		10,
+		function() {
+			return "linear";
+		},
+		function() {
+			assert.ok( true, "Complete called" );
+		}
+	);
+} );
+
+QUnit.test( "jQuery.speed( options )", function( assert ) {
+	testEasing( assert, {
+		duration: 10,
+		easing: "linear",
+		complete: function() {
+			assert.ok( true, "Complete called" );
+		}
+	} );
+} );
+
+QUnit.test( "jQuery.speed( options ) - with easing function", function( assert ) {
+	testEasing( assert, {
+		duration: 10,
+		easing: function() {
+			return "linear";
+		},
+		complete: function() {
+			assert.ok( true, "Complete called" );
+		}
+	} );
+} );
+
+QUnit.test( "jQuery.speed( options ) - queue values", function( assert ) {
+	assert.expect( 5 );
+
+	var get = function( queue ) {
+		return jQuery.speed( { queue: queue } ).queue;
+	};
+
+	assert.equal( get( null ), "fx", "null defaults to 'fx'" );
+	assert.equal( get( undefined ), "fx", "undefined defaults to 'fx'" );
+	assert.equal( get( true ), "fx", "true defaults to 'fx'" );
+	assert.equal( get( "fx" ), "fx", "'fx' passed through" );
+	assert.equal( get( "custom" ), "custom", "'custom' passed through" );
+} );
+
+QUnit.test( "jQuery.speed() - durations", function( assert ) {
+	assert.expect( 5 );
+
+	var get = function( duration ) {
+		return jQuery.speed( duration ).duration;
+	};
+
+	assert.equal( get( 100 ), 100, "jQuery.speed sets number duration" );
+	assert.equal( get(), jQuery.fx.speeds._default, "jQuery.speed falls back default duration" );
+	assert.equal( get( "slow" ), jQuery.fx.speeds.slow, "jQuery.speed uses preset speeds" );
+	assert.equal( get( "fast" ), jQuery.fx.speeds.fast, "jQuery.speed uses preset speeds" );
+	jQuery.fx.off = true;
+	assert.equal( get( 100 ), 0, "jQuery.speed defaults duration to zero if fx is off" );
+	jQuery.fx.off = false;
+} );
+
 } )();
