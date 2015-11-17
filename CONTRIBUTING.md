@@ -101,12 +101,6 @@ Run the build script
 $ npm run build
 ```
 
-Build a local copy of jQuery using grunt
-
-```bash
-$ grunt
-```
-
 Now open the jQuery test suite in a browser at http://localhost/test. If there is a port, be sure to include it.
 
 Success! You just built and tested jQuery!
