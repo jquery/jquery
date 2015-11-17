@@ -127,9 +127,7 @@ module.exports = function( grunt ) {
 			// Check parts of tests that pass
 			test: [
 				"test/data/testrunner.js",
-				"test/unit/animation.js",
 				"test/unit/basic.js",
-				"test/unit/tween.js",
 				"test/unit/wrap.js"
 			],
 			build: "build"
@@ -144,7 +142,6 @@ module.exports = function( grunt ) {
 				"basic",
 
 				"ajax",
-				"animation",
 				"attributes",
 				"callbacks",
 				"core",
@@ -161,8 +158,7 @@ module.exports = function( grunt ) {
 				"selector",
 				"serialize",
 				"support",
-				"traversing",
-				"tween"
+				"traversing"
 			]
 		},
 		watch: {
