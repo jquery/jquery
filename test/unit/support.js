@@ -341,7 +341,7 @@ testIframeWithCallback(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": false,
+			"reliableMarginLeft": true,
 			"reliableMarginRight": false
 		};
 	}
