@@ -412,8 +412,8 @@ jQuery.extend( {
 			// Loop variable
 			i,
 
-			// hash from url, removed during manipulation
-			hash,
+			// uncached part of the url
+			uncached,
 
 			// Create the final options object
 			s = jQuery.ajaxSetup( {}, options ),
@@ -590,7 +590,7 @@ jQuery.extend( {
 		if ( !s.hasContent ) {
 
 			// Remember the hash so we can put it back
-			hash = s.url.slice( cacheURL.length );
+			uncached = s.url.slice( cacheURL.length );
 
 			// If data is available, append data to url
 			if ( s.data ) {
@@ -600,22 +600,14 @@ jQuery.extend( {
 				delete s.data;
 			}
 
-			// Add anti-cache in url if needed
+			// Add anti-cache in uncached url if needed
 			if ( s.cache === false ) {
-				cacheURL = rts.test( cacheURL ) ?
-
-					// If there is already a '_' parameter, set its value
-					cacheURL.replace( rts, "$1_=" + nonce++ ) :
-
-					// Otherwise add one to the end
-					cacheURL + ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + nonce++;
+				cacheURL = cacheURL.replace( rts, "" );
+				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
 			}
 
-			// Put hash back on the actual URL that will be requested (gh-1732)
-			s.url = cacheURL + hash;
-
-			// cacheURL doesn't have the anti-cache param or hash
-			cacheURL = cacheURL.replace( rts, "" );
+			// Put hash and anti-cache on the URL that will be requested (gh-1732)
+			s.url = cacheURL + uncached;
 
 		// Change '%20' to '+' if this is encoded form body content (gh-2658)
 		} else if ( s.data && s.processData &&
