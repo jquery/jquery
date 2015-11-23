@@ -525,6 +525,27 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	} catch ( _ ) {}
 } );
 
+QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
+
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		defer = jQuery.Deferred(),
+		oldWarn = console.warn;
+
+	console.warn = function( s ) {
+		assert.ok( true, "Warned -- " + s );
+		oldWarn.apply( console, arguments );
+		console.warn = oldWarn;
+	};
+
+	defer.then( function() {
+		jQuery.barf();
+	} ).then( null, done );
+
+	defer.resolve();
+} );
+
 QUnit.test( "jQuery.Deferred - 1.x/2.x compatibility", function( assert ) {
 
 	assert.expect( 8 );

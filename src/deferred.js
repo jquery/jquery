@@ -157,6 +157,10 @@ jQuery.extend( {
 											mightThrow();
 										} catch ( e ) {
 
+											if ( jQuery.Deferred.exceptionHook ) {
+												jQuery.Deferred.exceptionHook( e );
+											}
+
 											// Support: Promises/A+ section 2.3.3.3.4.1
 											// https://promisesaplus.com/#point-61
 											// Ignore post-resolution exceptions
@@ -358,6 +362,23 @@ jQuery.extend( {
 		return master.promise();
 	}
 } );
+
+if ( window.console && window.console.warn ) {
+
+	// These usually indicate a programmer mistake during development,
+	// warn about them ASAP rather than swallowing them by default.
+
+	var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
+
+	jQuery.Deferred.exceptionHook = function( error ) {
+		if ( error && rerrorNames.test( error.name ) ) {
+			window.console.warn( "jQuery.Deferred exception: " + error.message );
+			if ( window.console.trace ) {
+				window.console.trace();
+			}
+		}
+	};
+}
 
 return jQuery;
 } );
