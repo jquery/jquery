@@ -4,7 +4,7 @@
   "description": "JavaScript library for DOM operations",
   "version": "3.0.0-pre",
   "main": "dist/jquery.js",
-  "homepage": "http://jquery.com",
+  "homepage": "https://jquery.com",
   "author": {
     "name": "jQuery Foundation and other contributors",
     "url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
