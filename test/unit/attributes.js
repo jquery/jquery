@@ -451,6 +451,8 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 
 	$radio = jQuery( "<input>", {
 		"value": "sup",
+		// Use uppercase here to ensure the type
+		// attrHook is still used
 		"TYPE": "radio"
 	} ).appendTo( "#testForm" );
 	assert.equal( $radio.val(), "sup", "Value is not reset when type is set after value on a radio" );

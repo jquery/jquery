@@ -11,7 +11,7 @@ var boolHook,
 
 	// Exclusively lowercase A-Z in attribute names (gh-2730)
 	// https://dom.spec.whatwg.org/#converted-to-ascii-lowercase
-	raz = /[A-Z]/g,
+	raz = /[A-Z]+/g,
 	lowercase = function( ch ) {
 		return ch.toLowerCase();
 	};
