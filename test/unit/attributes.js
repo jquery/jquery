@@ -451,7 +451,9 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 
 	$radio = jQuery( "<input>", {
 		"value": "sup",
-		"type": "radio"
+		// Use uppercase here to ensure the type
+		// attrHook is still used
+		"TYPE": "radio"
 	} ).appendTo( "#testForm" );
 	assert.equal( $radio.val(), "sup", "Value is not reset when type is set after value on a radio" );
 
@@ -470,6 +472,15 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	assert.equal( typeof jQuery( "#name" ).attr( "maxlength", undefined ), "object", ".attr('attribute', undefined) is chainable (#5571)" );
 	assert.equal( jQuery( "#name" ).attr( "maxlength", undefined ).attr( "maxlength" ), "5", ".attr('attribute', undefined) does not change value (#5571)" );
 	assert.equal( jQuery( "#name" ).attr( "nonexisting", undefined ).attr( "nonexisting" ), undefined, ".attr('attribute', undefined) does not create attribute (#5571)" );
+} );
+
+QUnit.test( "attr(non-ASCII)", function( assert ) {
+	assert.expect( 2 );
+
+	var $div = jQuery( "<div Ω='omega' aØc='alpha'></div>" ).appendTo( "#qunit-fixture" );
+
+	assert.equal( $div.attr( "Ω" ), "omega", ".attr() exclusively lowercases characters in the range A-Z (gh-2730)" );
+	assert.equal( $div.attr( "AØC" ), "alpha", ".attr() exclusively lowercases characters in the range A-Z (gh-2730)" );
 } );
 
 QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
