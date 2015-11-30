@@ -166,7 +166,7 @@ jQuery.extend( {
 											// Ignore post-resolution exceptions
 											if ( depth + 1 >= maxDepth ) {
 
-												// Only substitue handlers pass on context
+												// Only substitute handlers pass on context
 												// and multiple values (non-spec behavior)
 												if ( handler !== Thrower ) {
 													that = undefined;
@@ -362,23 +362,6 @@ jQuery.extend( {
 		return master.promise();
 	}
 } );
-
-if ( window.console && window.console.warn ) {
-
-	// These usually indicate a programmer mistake during development,
-	// warn about them ASAP rather than swallowing them by default.
-
-	var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
-
-	jQuery.Deferred.exceptionHook = function( error ) {
-		if ( error && rerrorNames.test( error.name ) ) {
-			window.console.warn( "jQuery.Deferred exception: " + error.message );
-			if ( window.console.trace ) {
-				window.console.trace();
-			}
-		}
-	};
-}
 
 return jQuery;
 } );

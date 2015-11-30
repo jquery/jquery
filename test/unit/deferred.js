@@ -525,23 +525,30 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	} catch ( _ ) {}
 } );
 
-QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
+QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", function( assert ) {
 
 	assert.expect( 1 );
 
 	var done = assert.async(),
 		defer = jQuery.Deferred(),
-		oldWarn = console.warn;
+		oldWarn = window.console.warn;
 
-	console.warn = function( s ) {
-		assert.ok( true, "Warned -- " + s );
-		oldWarn.apply( console, arguments );
-		console.warn = oldWarn;
+	window.console.warn = function( msg ) {
+		assert.ok( true, "Message: " + msg );
 	};
-
-	defer.then( function() {
-		jQuery.barf();
-	} ).then( null, done );
+	jQuery.when(
+		defer.then( function() {
+			// Should get an error
+			jQuery.barf();
+		} ).catch( jQuery.noop ),
+		defer.then( function() {
+			// Should NOT get an error
+			throw new Error( "Make me a sandwich" );
+		} ).catch( jQuery.noop )
+	).then( function( ) {
+		window.console.warn = oldWarn;
+		done();
+	} );
 
 	defer.resolve();
 } );
