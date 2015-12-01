@@ -540,11 +540,11 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 		defer.then( function() {
 			// Should get an error
 			jQuery.barf();
-		} ).catch( jQuery.noop ),
+		} ).then( null, jQuery.noop ),
 		defer.then( function() {
 			// Should NOT get an error
 			throw new Error( "Make me a sandwich" );
-		} ).catch( jQuery.noop )
+		} ).then( null, jQuery.noop )
 	).then( function( ) {
 		window.console.warn = oldWarn;
 		done();
