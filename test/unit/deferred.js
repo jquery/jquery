@@ -534,7 +534,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 		oldWarn = window.console.warn;
 
 	window.console.warn = function( msg ) {
-		assert.ok( true, "Message: " + msg );
+		assert.ok( /barf/.test( msg ), "Message: " + msg );
 	};
 	jQuery.when(
 		defer.then( function() {
