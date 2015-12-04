@@ -135,7 +135,7 @@ jQuery.extend( {
 									// Handle all other returned values
 									} else {
 
-										// Only substitue handlers pass on context
+										// Only substitute handlers pass on context
 										// and multiple values (non-spec behavior)
 										if ( handler !== Identity ) {
 											that = undefined;
@@ -162,7 +162,7 @@ jQuery.extend( {
 											// Ignore post-resolution exceptions
 											if ( depth + 1 >= maxDepth ) {
 
-												// Only substitue handlers pass on context
+												// Only substitute handlers pass on context
 												// and multiple values (non-spec behavior)
 												if ( handler !== Thrower ) {
 													that = undefined;
