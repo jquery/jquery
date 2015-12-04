@@ -1427,7 +1427,7 @@ QUnit.assert = Assert.prototype = {
 	}
 };
 
-// Provide an alternative to assert.throws(), for enviroments that consider throws a reserved word
+// Provide an alternative to assert.throws(), for environments that consider throws a reserved word
 // Known to us are: Closure Compiler, Narwhal
 (function() {
 	/*jshint sub:true */
@@ -2788,7 +2788,7 @@ QUnit.log(function( details ) {
 
 		message += "</table>";
 
-	// this occours when pushFailure is set and we have an extracted stack trace
+	// this occurs when pushFailure is set and we have an extracted stack trace
 	} else if ( !details.result && details.source ) {
 		message += "<table>" +
 			"<tr class='test-source'><th>Source: </th><td><pre>" +

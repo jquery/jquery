@@ -2548,7 +2548,7 @@ var sinon = (function () {
 
 								var original = this;
 								var fake = this.instantiateFake();
-								fake.matchingAguments = args;
+								fake.matchingArguments = args;
 								fake.parent = this;
 								push.call(this.fakes, fake);
 
@@ -2572,7 +2572,7 @@ var sinon = (function () {
 						},
 
 						matches: function (args, strict) {
-								var margs = this.matchingAguments;
+								var margs = this.matchingArguments;
 
 								if (margs.length <= args.length &&
 										sinon.deepEqual(margs, args.slice(0, margs.length))) {
@@ -2585,16 +2585,16 @@ var sinon = (function () {
 								var args = slice.call(arguments, 1);
 								var formatter;
 
-								return (format || "").replace(/%(.)/g, function (match, specifyer) {
-										formatter = spyApi.formatters[specifyer];
+								return (format || "").replace(/%(.)/g, function (match, specifier) {
+										formatter = spyApi.formatters[specifier];
 
 										if (typeof formatter == "function") {
 												return formatter.call(null, spy, args);
-										} else if (!isNaN(parseInt(specifyer, 10))) {
-												return sinon.format(args[specifyer - 1]);
+										} else if (!isNaN(parseInt(specifier, 10))) {
+												return sinon.format(args[specifier - 1]);
 										}
 
-										return "%" + specifyer;
+										return "%" + specifier;
 								});
 						}
 				};
@@ -3969,7 +3969,7 @@ if (typeof sinon == "undefined") {
 		var isNode = typeof module !== "undefined" && module.exports && typeof require == "function";
 		var isAMD = typeof define === "function" && typeof define.amd === "object" && define.amd;
 
-		function loadDependencies(require, epxorts, module, lolex) {
+		function loadDependencies(require, exports, module, lolex) {
 				var sinon = require("./core");
 				makeApi(sinon, lolex);
 				module.exports = sinon;
@@ -5015,7 +5015,7 @@ if (typeof sinon == "undefined") {
 /**
  * The Sinon "server" mimics a web server that receives requests from
  * sinon.FakeXMLHttpRequest and provides an API to respond to those requests,
- * both synchronously and asynchronously. To respond synchronuously, canned
+ * both synchronously and asynchronously. To respond synchronously, canned
  * answers have to be provided upfront.
  *
  * @author Christian Johansen (christian@cjohansen.no)
@@ -5254,7 +5254,7 @@ if (typeof sinon == "undefined") {
  * Add-on for sinon.fakeServer that automatically handles a fake timer along with
  * the FakeXMLHttpRequest. The direct inspiration for this add-on is jQuery
  * 1.3.x, which does not use xhr object's onreadystatehandler at all - instead,
- * it polls the object for completion with setInterval. Dispite the direct
+ * it polls the object for completion with setInterval. Despite the direct
  * motivation, there is nothing jQuery-specific in this file, so it can be used
  * in any environment where the ajax implementation depends on setInterval or
  * setTimeout.
