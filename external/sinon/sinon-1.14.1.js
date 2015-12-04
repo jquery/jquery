@@ -3969,7 +3969,7 @@ if (typeof sinon == "undefined") {
 		var isNode = typeof module !== "undefined" && module.exports && typeof require == "function";
 		var isAMD = typeof define === "function" && typeof define.amd === "object" && define.amd;
 
-		function loadDependencies(require, epxorts, module, lolex) {
+		function loadDependencies(require, exports, module, lolex) {
 				var sinon = require("./core");
 				makeApi(sinon, lolex);
 				module.exports = sinon;
