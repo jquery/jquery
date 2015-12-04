@@ -169,7 +169,7 @@ QUnit.test( "Animation.prefilter - prefilter return hooks", function( assert ) {
 	);
 	assert.equal( TweenSpy.callCount, 0, "Returning something never creates tweens" );
 
-	// Test overriden usage on queues:
+	// Test overridden usage on queues:
 	prefilter.reset();
 	element = jQuery( "<div>" )
 		.css( "height", 50 )
