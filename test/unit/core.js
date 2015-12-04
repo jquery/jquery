@@ -484,7 +484,7 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.equal( t( true ), false, "Boolean true literal" );
 	assert.equal( t( false ), false, "Boolean false literal" );
 	assert.equal( t( "bcfed5.2" ), false, "Number with preceding non-numeric characters" );
-	assert.equal( t( "7.2acdgs" ), false, "Number with trailling non-numeric characters" );
+	assert.equal( t( "7.2acdgs" ), false, "Number with trailing non-numeric characters" );
 	assert.equal( t( undefined ), false, "Undefined value" );
 	assert.equal( t( null ), false, "Null value" );
 	assert.equal( t( NaN ), false, "NaN value" );
