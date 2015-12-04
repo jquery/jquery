@@ -2585,16 +2585,16 @@ var sinon = (function () {
 								var args = slice.call(arguments, 1);
 								var formatter;
 
-								return (format || "").replace(/%(.)/g, function (match, specifyer) {
-										formatter = spyApi.formatters[specifyer];
+								return (format || "").replace(/%(.)/g, function (match, specifier) {
+										formatter = spyApi.formatters[specifier];
 
 										if (typeof formatter == "function") {
 												return formatter.call(null, spy, args);
-										} else if (!isNaN(parseInt(specifyer, 10))) {
-												return sinon.format(args[specifyer - 1]);
+										} else if (!isNaN(parseInt(specifier, 10))) {
+												return sinon.format(args[specifier - 1]);
 										}
 
-										return "%" + specifyer;
+										return "%" + specifier;
 								});
 						}
 				};
