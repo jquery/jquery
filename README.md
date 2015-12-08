@@ -23,7 +23,7 @@ What you need to build your own jQuery
 
 In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
-For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](https://nodejs.org/download/).
+For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
 
 OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
@@ -176,7 +176,7 @@ grunt watch
 Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
-- Mac: [MAMP download](https://www.mamp.info/en/index.html)
+- Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
