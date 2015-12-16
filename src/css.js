@@ -14,6 +14,7 @@ define( [
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
 	"./css/support",
+	"./css/getCSSPath",
 
 	"./core/init",
 	"./core/ready",
