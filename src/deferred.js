@@ -158,7 +158,8 @@ jQuery.extend( {
 										} catch ( e ) {
 
 											if ( jQuery.Deferred.exceptionHook ) {
-												jQuery.Deferred.exceptionHook( e );
+												jQuery.Deferred.exceptionHook( e,
+													process.stackTrace );
 											}
 
 											// Support: Promises/A+ section 2.3.3.3.4.1
@@ -186,6 +187,12 @@ jQuery.extend( {
 							if ( depth ) {
 								process();
 							} else {
+
+								// Call an optional hook to record the stack, in case of exception
+								// since it's otherwise lost when execution goes async
+								if ( jQuery.Deferred.getStackHook ) {
+									process.stackTrace = jQuery.Deferred.getStackHook();
+								}
 								window.setTimeout( process );
 							}
 						};
