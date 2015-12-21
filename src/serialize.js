@@ -88,9 +88,35 @@ jQuery.param = function( a, traditional ) {
 	return s.join( "&" );
 };
 
+function serialArrayToObject( array ) {
+	var object = {};
+	jQuery.each( array, function() {
+		var 	name = this.name,
+			value = this.value;
+		
+		// If key <name> already exists, assign it within an Array
+		if ( name in object ) {
+			if ( !Array.isArray( object[ name ] ) ) {
+				object[ name ] = [
+					object[ name ]
+				];
+			}
+			object[ name ].push( value );
+		// Create new Object key with key <name> and value <value>
+		} else {
+			object[ name ] = value;
+		}
+	} );
+	// Return the resulting object
+	return object;
+}
+
 jQuery.fn.extend( {
 	serialize: function() {
 		return jQuery.param( this.serializeArray() );
+	},
+	serializeObject: function() {
+		return serialArrayToObject( this.serializeArray() );
 	},
 	serializeArray: function() {
 		return this.map( function() {
