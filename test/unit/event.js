@@ -906,7 +906,7 @@ QUnit.test( "mouseenter, mouseleave don't catch exceptions", function( assert ) 
 if ( jQuery.fn.click ) {
 
 	QUnit.test( "trigger() shortcuts", function( assert ) {
-		assert.expect( 5 );
+		assert.expect( 6 );
 
 		var counter, clickCounter,
 			elem = jQuery( "<li><a href='#'>Change location</a></li>" ).prependTo( "#firstUL" );
@@ -937,6 +937,13 @@ if ( jQuery.fn.click ) {
 		};
 		jQuery( "#simon1" ).click();
 		assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
+
+		elem = jQuery("<img />").load(function(){
+			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
+		}).load();
+
+		// manually clean up detached elements
+		elem.remove();
 
 		// test that special handlers do not blow up with VML elements (#7071)
 		jQuery( "<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />" ).appendTo( "head" );
