@@ -119,11 +119,11 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 } );
 
-QUnit.test( "css(String) computed values", function( assert ) {
-	assert.expect( 3 );
 
-test( "css() explicit and relative values", 29, function() {
-	var $elem = jQuery("#nothiddendiv");
+QUnit.test( "css() explicit and relative values", function( assert ) {
+	assert.expect( 29 );
+
+	var $elem = jQuery( "#nothiddendiv" );
 
 	$elem.css( { "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 } );
 	assert.equal( $elem.css( "width" ), "1px", "Initial css set or width/height works (hash)" );
