@@ -40,6 +40,10 @@ QUnit.test( "jQuery()", function( assert ) {
 		expected++;
 		attrObj[ "offset" ] = { "top": 1, "left": 1 };
 	}
+	if ( jQuery.fn.offset ) {
+		expected++;
+		attrObj["offset"] = { "top": 1, "left": 1 };
+	}
 	if ( jQuery.fn.css ) {
 		expected += 2;
 		attrObj[ "css" ] = { "paddingLeft": 1, "paddingRight": 1 };
@@ -105,7 +109,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	elem = jQuery( "\n\n<em>world</em>" )[ 0 ];
 	assert.equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery( "<div/>", attrObj );
+	elem = jQuery("<div/>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		assert.equal( elem[ 0 ].style.width, "10px", "jQuery() quick setter width" );
@@ -113,6 +117,10 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	if ( jQuery.fn.offset ) {
 		assert.equal( elem[ 0 ].style.top, "1px", "jQuery() quick setter offset" );
+	}
+
+	if ( jQuery.fn.offset ) {
+		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
 	}
 
 	if ( jQuery.fn.css ) {
