@@ -15,7 +15,8 @@ define( [
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, document, rcssNum, rnotwhite, cssExpand, isHidden, adjustCSS, defaultDisplay ) {
+], function( jQuery, document, rcssNum, rnotwhite, cssExpand,
+	isHidden, adjustCSS, defaultDisplay ) {
 
 var
 	fxNow, timerId,
@@ -403,7 +404,8 @@ jQuery.speed = function( speed, easing, fn ) {
 	};
 
 	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
-		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+		opt.duration in jQuery.fx.speeds ?
+			jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
 	// normalize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {

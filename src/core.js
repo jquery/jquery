@@ -295,7 +295,11 @@ jQuery.extend( {
 			// We use an anonymous function so that context is window
 			// rather than jQuery in Firefox
 			( window.execScript || function( data ) {
+
+				// jscs:disable
 				window[ "eval" ].call( window, data );
+				// jscs:enable
+
 			} )( data );
 		}
 	},
