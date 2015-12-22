@@ -1,22 +1,22 @@
 define( [
 	"./core",
-	"./var/document",
+	"./support",
 	"./var/rcssNum",
 	"./var/rnotwhite",
 	"./css/var/cssExpand",
 	"./css/var/isHidden",
 	"./css/adjustCSS",
 	"./css/defaultDisplay",
-	"./var/document",
 
+	"./var/document",
 	"./core/init",
 	"./effects/Tween",
 	"./queue",
 	"./css",
 	"./deferred",
 	"./traversing"
-], function( jQuery, document, rcssNum, rnotwhite, cssExpand,
-	isHidden, adjustCSS, defaultDisplay ) {
+], function( jQuery, support, rcssNum, rnotwhite,
+	cssExpand, isHidden, adjustCSS, defaultDisplay ) {
 
 var
 	fxNow, timerId,
@@ -120,7 +120,14 @@ function defaultPrefilter( elem, props, opts ) {
 			jQuery._data( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) : display;
 
 		if ( checkDisplay === "inline" && jQuery.css( elem, "float" ) === "none" ) {
-			style.display = "inline-block";
+
+			// inline-level elements accept inline-block;
+			// block-level elements need to be inline with layout
+			if ( !support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
+				style.display = "inline-block";
+			} else {
+				style.zoom = 1;
+			}
 		}
 	}
 

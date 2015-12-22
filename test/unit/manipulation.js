@@ -529,10 +529,10 @@ QUnit.test( "html(String) with HTML5 (Bug #6485)", function( assert ) {
 
 QUnit.test( "html(String) tag-hyphenated elements (Bug #1987)", function( assert ) {
 
-	// Support: IE8
-	if ( /msie 8\.0/i.test( navigator.userAgent ) ) {
+	// Support: IE6-IE8
+	if ( /msie [876]\.0/i.test( navigator.userAgent ) ) {
 		assert.expect( 1 );
-		assert.ok( true, "IE8 doesn't support custom elements" );
+		assert.ok( true, "IE6-8 doesn't support custom elements" );
 		return;
 	}
 
@@ -2348,22 +2348,22 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 	assert.strictEqual( jQuery( "<p/>" ).appendTo( "<div/>" ).end().length, jQuery( "<p>test</p>" ).appendTo( "<div/>" ).end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 } );
 
-test( "html() - script exceptions bubble (#11743)", function() {
+QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
 
-	expect( 2 );
+	assert.expect( 2 );
 
-	throws( function() {
+	assert.throws( function() {
 		jQuery( "#qunit-fixture" ).html( "<script>undefined(); ok( false, 'Exception not thrown' );</script>" );
-		ok( false, "Exception ignored" );
+		assert.ok( false, "Exception ignored" );
 	}, "Exception bubbled from inline script" );
 
 	if ( jQuery.ajax ) {
-		throws( function() {
+		assert.throws( function() {
 			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
-			ok( false, "Exception ignored" );
+			assert.ok( false, "Exception ignored" );
 		}, "Exception thrown in remote script" );
 	} else {
-		ok( true, "No jQuery.ajax" );
+		assert.ok( true, "No jQuery.ajax" );
 	}
 } );
 

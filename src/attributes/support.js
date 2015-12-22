@@ -11,7 +11,10 @@ define( [
 		opt = select.appendChild( document.createElement( "option" ) );
 
 	// Setup
-	div.innerHTML = "  <link/><a href='/a'>a</a>";
+	div = document.createElement( "div" );
+	div.setAttribute( "className", "t" );
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+	a = div.getElementsByTagName( "a" )[ 0 ];
 
 	// Support: Windows Web Apps (WWA)
 	// `type` must use .setAttribute for WWA (#14901)
@@ -23,17 +26,27 @@ define( [
 	// First batch of tests.
 	a.style.cssText = "top:1px";
 
+	// Test setAttribute on camelCase class.
+	// If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+	support.getSetAttribute = div.className !== "t";
+
 	// Get the style information from getAttribute
 	// (IE uses .cssText instead)
 	support.style = /top/.test( a.getAttribute( "style" ) );
 
+	// Make sure that URLs aren't manipulated
+	// (IE normalizes it by default)
+	support.hrefNormalized = a.getAttribute( "href" ) === "/a";
+
 	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 	support.checkOn = !!input.value;
 
-	// Support: IE8-11+
 	// Make sure that a selected-by-default option has a working selected property.
-	// (IE defaults to false instead of true if it's in an optgroup)
+	// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 	support.optSelected = opt.selected;
+
+	// Tests for enctype support on a form (#6743)
+	support.enctype = !!document.createElement( "form" ).enctype;
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as disabled)

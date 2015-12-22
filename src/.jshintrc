@@ -10,6 +10,7 @@
 	"undef": true,
 	"unused": true,
 
+	"evil": true,
 	"sub": true,
 
 	// Support: IE < 10, Android < 4.1

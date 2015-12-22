@@ -1422,7 +1422,7 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 	form.remove();
 } );
 
-// Test beforeunload event only if it supported.
+// Test beforeunload event only if it supported (i.e. not Opera)
 // Support: iOS 7+, Android<4.0
 // iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
 // handler making it impossible to feature-detect the support.
@@ -1430,6 +1430,7 @@ if ( window.onbeforeunload === null &&
 	!/(ipad|iphone|ipod|android 2\.3)/i.test( navigator.userAgent ) ) {
 	QUnit.asyncTest( "on(beforeunload)", 4, function( assert ) {
 		var win,
+			forIE6 = 0,
 			fired = false,
 			iframe = jQuery( "<iframe src='data/iframe.html' />" );
 
@@ -1443,7 +1444,34 @@ if ( window.onbeforeunload === null &&
 
 			assert.strictEqual( win.onbeforeunload, null, "onbeforeunload property on window object still equals null" );
 
+			// In old Safari beforeunload event will not fire on iframes
+			jQuery( win ).on( "unload", function() {
+				if ( !fired ) {
+					ok( true, "This is suppose to be true only in old Safari" );
+					checker();
+				}
+			} );
+
+			jQuery( win ).on( "beforeunload", function() {
+
+				// On iframe in IE6 beforeunload event will not
+				// fire if event is binded through window object,
+				// nevertheless, test should continue
+				window.setTimeout( function() {
+					if ( !forIE6 ) {
+						checker();
+					}
+				} );
+			} );
+
 			win.onbeforeunload = function() {
+				if ( !forIE6 ) {
+					forIE6++;
+					checker();
+				}
+			};
+
+			function checker() {
 				assert.ok( true, "window.onbeforeunload handler is called" );
 				iframe = jQuery( "<iframe src='data/iframe.html' />" );
 
@@ -1466,7 +1494,7 @@ if ( window.onbeforeunload === null &&
 
 					win.location.reload();
 				} );
-			};
+			}
 
 			win.location.reload();
 		} );
@@ -2728,10 +2756,10 @@ QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
 
 QUnit.test( ".off() removes the expando when there's no more data", function( assert ) {
 
-	// Support: IE 8 only
-	// IE 8 gets the expando removed via removeAttribute so the second assertion
+	// Support: IE 6-8
+	// IE 6-8 gets the expando removed via removeAttribute so the second assertion
 	// won't be reached.
-	assert.expect( document.documentMode < 9 ? 1 : 2 );
+	assert.expect( /msie [876]\.0/i.test( navigator.userAgent ) ? 1 : 2 );
 
 	var key,
 		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
@@ -2853,9 +2881,11 @@ QUnit.test( "originalEvent property for IE8", function( assert ) {
 QUnit.test( "originalEvent property for Chrome, Safari, Fx & Edge of simulated event", function( assert ) {
 	var userAgent = window.navigator.userAgent;
 
-	if ( !( /firefox/i.test( userAgent ) || /safari/i.test( userAgent ) ) ) {
+	if ( !(/chrome/i.test( userAgent ) ||
+		/firefox/i.test( userAgent ) ||
+		/safari/i.test( userAgent ) ) ) {
 		assert.expect( 1 );
-		assert.ok( true, "Assertions should run only in Chrome, Safari, Fx & Edge" );
+		assert.ok( true, "Assertions should run only in Chrome, Safari and FF" );
 		return;
 	}
 
@@ -2919,8 +2949,7 @@ if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
 			$text = jQuery( "#text1" ),
 			$radio = jQuery( "#radio1" ).trigger( "focus" );
 
-		// Support: IE<11
-		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
+		// IE6-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
 		QUnit.stop();
 		$radio[ 0 ].focus();

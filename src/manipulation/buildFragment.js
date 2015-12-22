@@ -1,5 +1,6 @@
 define( [
 	"../core",
+	"./var/rcheckableType",
 	"./var/rtagName",
 	"./var/rscriptType",
 	"./var/rleadingWhitespace",
@@ -8,18 +9,26 @@ define( [
 	"./getAll",
 	"./setGlobalEval",
 	"./support"
-], function( jQuery, rtagName, rscriptType, rleadingWhitespace,
+], function( jQuery, rcheckableType, rtagName, rscriptType, rleadingWhitespace,
 	createSafeFragment, wrapMap, getAll, setGlobalEval, support ) {
 
-var rhtml = /<|&#?\w+;/;
+var rhtml = /<|&#?\w+;/,
+	rtbody = /<tbody/i;
+
+function fixDefaultChecked( elem ) {
+	if ( rcheckableType.test( elem.type ) ) {
+		elem.defaultChecked = elem.checked;
+	}
+}
 
 function buildFragment( elems, context, scripts, selection, ignored ) {
 	var j, elem, contains,
-		tmp, tag, wrap,
+		tmp, tag, tbody, wrap,
 		l = elems.length,
 
 		// Ensure a safe fragment
 		safe = createSafeFragment( context ),
+
 		nodes = [],
 		i = 0;
 
@@ -43,6 +52,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 				// Deserialize a standard representation
 				tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
 				wrap = wrapMap[ tag ] || wrapMap._default;
+
 				tmp.innerHTML = wrap[ 1 ] + jQuery.htmlPrefilter( elem ) + wrap[ 2 ];
 
 				// Descend through wrappers to the right content
@@ -54,6 +64,28 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 				// Manually add leading whitespace removed by IE
 				if ( !support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
 					nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[ 0 ] ) );
+				}
+
+				// Remove IE's autoinserted <tbody> from table fragments
+				if ( !support.tbody ) {
+
+					// String was a <table>, *may* have spurious <tbody>
+					elem = tag === "table" && !rtbody.test( elem ) ?
+						tmp.firstChild :
+
+						// String was a bare <thead> or <tfoot>
+						wrap[ 1 ] === "<table>" && !rtbody.test( elem ) ?
+							tmp :
+							0;
+
+					j = elem && elem.childNodes.length;
+					while ( j-- ) {
+						if ( jQuery.nodeName( ( tbody = elem.childNodes[ j ] ), "tbody" ) &&
+							!tbody.childNodes.length ) {
+
+							elem.removeChild( tbody );
+						}
+					}
 				}
 
 				jQuery.merge( nodes, tmp.childNodes );
@@ -77,6 +109,12 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		safe.removeChild( tmp );
 	}
 
+	// Reset defaultChecked for any radios and checkboxes
+	// about to be appended to the DOM in IE 6/7 (#8060)
+	if ( !support.appendChecked ) {
+		jQuery.grep( getAll( nodes, "input" ), fixDefaultChecked );
+	}
+
 	i = 0;
 	while ( ( elem = nodes[ i++ ] ) ) {
 
@@ -85,6 +123,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 			if ( ignored ) {
 				ignored.push( elem );
 			}
+
 			continue;
 		}
 

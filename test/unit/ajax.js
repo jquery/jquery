@@ -1,8 +1,8 @@
-var isIE8 = /msie 8\.0/i.test( window.navigator.userAgent );
+var isoldIE = /msie [876]\.0/i.test( window.navigator.userAgent );
 
 QUnit.module( "ajax", {
 	setup: function() {
-		if ( !isIE8 ) {
+		if ( !isoldIE ) {
 			return;
 		}
 
@@ -52,7 +52,7 @@ QUnit.module( "ajax", {
 	);
 
 	ajaxTest( "jQuery.ajax() - success callbacks", 8, function( assert ) {
-	    return {
+		return {
 			setup: addGlobalEvents( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxSuccess", assert ),
 			url: url( "data/name.html" ),
 			beforeSend: function() {
@@ -820,7 +820,7 @@ QUnit.module( "ajax", {
 						"jsonpCallback option is set back to default in callbacks"
 					);
 
-					if ( isIE8 ) {
+					if ( isoldIE ) {
 						assert.ok( true, "IE8 can't remove property from the window" );
 
 					} else {
@@ -1417,8 +1417,8 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
-		throws( function() {
+	QUnit.test( "#11743 - jQuery.ajax() - script, throws exception", 1, function(assert) {
+		assert.throws( function() {
 			jQuery.ajax( {
 				url: "data/badjson.js",
 				dataType: "script",
@@ -1430,10 +1430,10 @@ QUnit.module( "ajax", {
 				// Global events get confused by the exception
 				global: false,
 				success: function() {
-					ok( false, "Success." );
+					assert.ok( false, "Success." );
 				},
 				error: function() {
-					ok( false, "Error." );
+					assert.ok( false, "Error." );
 				}
 			} );
 		}, "exception bubbled" );
@@ -1656,7 +1656,7 @@ QUnit.module( "ajax", {
 			url: url( "data/ajax/content-type.php" ),
 			data: {
 				"content-type": "test/jsontest",
-				"response": JSON.stringify( { test: "test" } )
+				"response": "{ \"test\": \"test\" }"
 			},
 			success: function( result ) {
 				assert.strictEqual(

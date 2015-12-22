@@ -9,7 +9,7 @@ define( [
 // (This is still attached to ajaxSettings for backward compatibility)
 jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 
-	// Support: IE8
+	// Support: IE6-IE8
 	function() {
 
 		// XHR cannot access local files, always use ActiveX for that case
@@ -17,7 +17,7 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 			return createActiveXHR();
 		}
 
-		// Support: IE 10-11
+		// Support: IE 9-11
 		// IE seems to error on cross-domain PATCH requests when ActiveX XHR
 		// is used. In IE 9+ always use the native XHR.
 		// Note: this condition won't catch Edge as it doesn't define
@@ -172,6 +172,11 @@ if ( xhrSupported ) {
 
 						// If we're in sync mode we fire the callback
 						callback();
+					} else if ( xhr.readyState === 4 ) {
+
+						// (IE6 & IE7) if it's in cache and has been
+						// retrieved directly we need to fire the callback
+						window.setTimeout( callback );
 					} else {
 
 						// Register the callback, but delay it in case `xhr.send` throws

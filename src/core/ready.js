@@ -69,7 +69,6 @@ function detach() {
 		document.removeEventListener( "DOMContentLoaded", completed );
 		window.removeEventListener( "load", completed );
 
-	// Support: IE<9
 	} else {
 		document.detachEvent( "onreadystatechange", completed );
 		window.detachEvent( "onload", completed );
@@ -116,7 +115,6 @@ jQuery.ready.promise = function( obj ) {
 			// A fallback to window.onload, that will always work
 			window.addEventListener( "load", completed );
 
-		// Support: IE<9
 		// If IE event model is used
 		} else {
 
@@ -125,6 +123,36 @@ jQuery.ready.promise = function( obj ) {
 
 			// A fallback to window.onload, that will always work
 			window.attachEvent( "onload", completed );
+
+			// If IE and not a frame
+			// continually check to see if the document is ready
+			var top = false;
+
+			try {
+				top = window.frameElement == null && document.documentElement;
+			} catch ( e ) {}
+
+			if ( top && top.doScroll ) {
+				( function doScrollCheck() {
+					if ( !jQuery.isReady ) {
+
+						try {
+
+							// Use the trick by Diego Perini
+							// http://javascript.nwbox.com/IEContentLoaded/
+							top.doScroll( "left" );
+						} catch ( e ) {
+							return window.setTimeout( doScrollCheck, 50 );
+						}
+
+						// detach all dom ready events
+						detach();
+
+						// and execute any waiting functions
+						jQuery.ready();
+					}
+				} )();
+			}
 		}
 	}
 	return readyList.promise( obj );

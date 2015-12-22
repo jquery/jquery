@@ -1,7 +1,7 @@
 /* for testing opacity set in styles in IE */
 ol#empty {
 	opacity: 0;
-	-ms-filter: "Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff')";
+	filter:Alpha(opacity=0) progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffff0000', EndColorStr='#ffffffff');
 }
 
 div#fx-tests h4 {
@@ -47,7 +47,7 @@ div.largeheight {
 }
 
 div.largeopacity {
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=100)";
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
 }
 
 div.medwidth {
@@ -60,7 +60,7 @@ div.medheight {
 
 div.medopacity {
 	opacity: 0.5;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=50)";
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
 }
 
 div.nowidth {
@@ -73,7 +73,7 @@ div.noheight {
 
 div.noopacity {
 	opacity: 0;
-	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
 }
 
 div.hidden {
@@ -143,8 +143,8 @@ dfn { display: none; }
 /* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
 body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif) no-repeat -1000px 0; }
 
-/* #6652 Remove -ms-filter: "alpha(opacity=100)" after animation */
-#t6652 div { -ms-filter: "alpha(opacity=50)"; }
+/* #6652 REMOVE FILTER:ALPHA(OPACITY=100) AFTER ANIMATION */
+#t6652 div { filter: alpha(opacity=50); }
 
 /* #10501 */
 section { background:#f0f; display:block; }

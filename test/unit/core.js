@@ -1541,7 +1541,7 @@ QUnit.test("jQuery.parseHTML", function( assert ) {
 	assert.equal( jQuery.parseHTML( "<td><td>" )[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 } );
 
-if ( jQuery.support.createHTMLDocument ) {
+if ( jQuery.support.createHTMLDocument && !/opera.*version\/12\.1/i.test( navigator.userAgent ) ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
 		assert.expect( 1 );
 

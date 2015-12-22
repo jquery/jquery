@@ -2,6 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style>
+		html {
+			/**
+			 * we need to null out border-width, because it causes bug #3838
+			 * and until we drop IE6, this test will fail in IE6 if we didn't
+			 * special case this situation.
+			 **/
+			border-width: 0;
+		}
+	</style>
 </head>
 <body>
 	<div>

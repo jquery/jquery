@@ -1,4 +1,6 @@
-define( function() {
+define( [
+	"../../core"
+], function( jQuery ) {
 
 /**
  * Determines whether an object can have data

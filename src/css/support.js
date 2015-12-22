@@ -36,6 +36,11 @@ define( [
 	div.innerHTML = "";
 	container.appendChild( div );
 
+	// Support: Firefox<29, Android 2.3
+	// Vendor-prefix box-sizing
+	support.boxSizing = div.style.boxSizing === "" || div.style.MozBoxSizing === "" ||
+		div.style.WebkitBoxSizing === "";
+
 	jQuery.extend( support, {
 		reliableHiddenOffsets: function() {
 			if ( pixelPositionVal == null ) {
@@ -133,8 +138,8 @@ define( [
 
 				// Support: Android 2.3
 				// Vendor-prefix box-sizing
-				"-webkit-box-sizing:content-box;box-sizing:content-box;" +
-				"display:block;margin:0;border:0;padding:0";
+				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
+				"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
 			contents.style.marginRight = contents.style.width = "0";
 			div.style.width = "1px";
 
@@ -144,7 +149,7 @@ define( [
 			div.removeChild( contents );
 		}
 
-		// Support: IE<9
+		// Support: IE8
 		// Check if table cells still have offsetWidth/Height when they are set
 		// to display:none and there are still other visible table cells in a
 		// table row; if so, offsetWidth/Height are not reliable for use when
