@@ -196,7 +196,7 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint", "jshint" ] );
+	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
 
 	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
 	// jsdom version that needs compiling, making it harder for people to compile
