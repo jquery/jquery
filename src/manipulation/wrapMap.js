@@ -15,7 +15,7 @@ var wrapMap = {
 
 	// IE8 can't serialize link, script, style, or any html5 (NoScope) tags,
 	// unless wrapped in a div with non-breaking characters in front of it.
-	_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>"  ]
+	_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>" ]
 };
 
 // Support: IE8-IE9
