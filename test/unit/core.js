@@ -1504,26 +1504,21 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	cb.call( thisObject, "arg3" );
 } );
 
-QUnit.test( "jQuery.parseHTML", function( assert ) {
-	assert.expect( 22 );
+QUnit.test("jQuery.parseHTML", function( assert ) {
+	expect( 17 );
 
 	var html, nodes;
 
-	assert.deepEqual( jQuery.parseHTML(), [], "Without arguments" );
-	assert.deepEqual( jQuery.parseHTML( undefined ), [], "Undefined" );
-	assert.deepEqual( jQuery.parseHTML( null ), [], "Null" );
-	assert.deepEqual( jQuery.parseHTML( false ), [], "Boolean false" );
-	assert.deepEqual( jQuery.parseHTML( 0 ), [], "Zero" );
-	assert.deepEqual( jQuery.parseHTML( true ), [], "Boolean true" );
-	assert.deepEqual( jQuery.parseHTML( 42 ), [], "Positive number" );
-	assert.deepEqual( jQuery.parseHTML( "" ), [], "Empty string" );
-	assert.throws( function() {
-		jQuery.parseHTML( "<div></div>", document.getElementById( "form" ) );
-	}, "Passing an element as the context raises an exception (context should be a document)" );
+	equal( jQuery.parseHTML(), null, "Nothing in, null out." );
+	equal( jQuery.parseHTML( null ), null, "Null in, null out." );
+	equal( jQuery.parseHTML( "" ), null, "Empty string in, null out." );
+	throws(function() {
+		jQuery.parseHTML( "<div></div>", document.getElementById("form") );
+	}, "Passing an element as the context raises an exception (context should be a document)");
 
-	nodes = jQuery.parseHTML( jQuery( "body" )[ 0 ].innerHTML );
-	assert.ok( nodes.length > 4, "Parse a large html string" );
-	assert.equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
+	nodes = jQuery.parseHTML( jQuery("body")[0].innerHTML );
+	ok( nodes.length > 4, "Parse a large html string" );
+	equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
 
 	html = "<script>undefined()</script>";
 	assert.equal( jQuery.parseHTML( html ).length, 0, "Ignore scripts by default" );
