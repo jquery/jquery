@@ -332,136 +332,46 @@ QUnit.test( "wrapInner(Function) returns Element", function( assert ) {
 
 	var num,
     val = manipulationFunctionReturningObj,
-		div = jQuery( "<div/>" );
+	div = jQuery("<div/>");
 
-	num = jQuery( "#first" ).children().length;
-	jQuery( "#first" ).wrapInner( val( document.getElementById( "empty" ) ) );
-	assert.equal(
-		jQuery( "#first" ).children().length, 1, "Only one child"
-	);
-	assert.ok(
-		jQuery( "#first" ).children().is( "#empty" ), "Verify Right Element"
-	);
-	assert.equal(
-		jQuery( "#first" ).children().children().length, num, "Verify Elements Intact"
-	);
+	num = jQuery("#first").children().length;
+	jQuery("#first").wrapInner( val(document.getElementById("empty")) );
+	equal( jQuery("#first").children().length, 1, "Only one child" );
+	ok( jQuery("#first").children().is("#empty"), "Verify Right Element" );
+	equal( jQuery("#first").children().children().length, num, "Verify Elements Intact" );
 
-	div.wrapInner( val( "<span></span>" ) );
-	assert.equal(
-		div.children().length, 1, "The contents were wrapped."
-	);
-	assert.equal(
-		div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted."
-	);
-} );
+	div.wrapInner( val("<span></span>") );
+	equal( div.children().length, 1, "The contents were wrapped." );
+	equal( div.children()[ 0 ].nodeName.toLowerCase(), "span", "A span was inserted." );
+});
 
-QUnit.test( "unwrap()", function( assert ) {
+test( "unwrap()", function() {
 
-	assert.expect( 9 );
+	expect( 9 );
 
-	jQuery( "body" ).append(
-		"  <div id='unwrap' style='display: none;'> <div id='unwrap1'> <span class='unwrap'>" +
-		"a</span> <span class='unwrap'>b</span> </div> <div id='unwrap2'>" +
-		" <span class='unwrap'>c</span> <span class='unwrap'>d</span> </div>" +
-		" <div id='unwrap3'> <b><span class='unwrap unwrap3'>e</span></b> " +
-		"<b><span class='unwrap unwrap3'>f</span></b> </div> </div>"
-	);
+	jQuery("body").append("  <div id='unwrap' style='display: none;'> <div id='unwrap1'> <span class='unwrap'>a</span> <span class='unwrap'>b</span> </div> <div id='unwrap2'> <span class='unwrap'>c</span> <span class='unwrap'>d</span> </div> <div id='unwrap3'> <b><span class='unwrap unwrap3'>e</span></b> <b><span class='unwrap unwrap3'>f</span></b> </div> </div>");
 
-	var abcd = jQuery( "#unwrap1 > span, #unwrap2 > span" ).get(),
-		abcdef = jQuery( "#unwrap span" ).get();
+	var abcd = jQuery("#unwrap1 > span, #unwrap2 > span").get(),
+		abcdef = jQuery("#unwrap span").get();
 
-	assert.equal(
-		jQuery( "#unwrap1 span" ).add( "#unwrap2 span:first-child" ).unwrap().length,
-		3,
-		"make #unwrap1 and #unwrap2 go away"
-	);
-	assert.deepEqual(
-		jQuery( "#unwrap > span" ).get(), abcd, "all four spans should still exist"
-	);
+	equal( jQuery("#unwrap1 span").add("#unwrap2 span:first-child").unwrap().length, 3, "make #unwrap1 and #unwrap2 go away" );
+	deepEqual( jQuery("#unwrap > span").get(), abcd, "all four spans should still exist" );
 
-	assert.deepEqual(
-		jQuery( "#unwrap3 span" ).unwrap().get(),
-		jQuery( "#unwrap3 > span" ).get(),
-		"make all b in #unwrap3 go away"
-	);
+	deepEqual( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap3 > span").get(), "make all b in #unwrap3 go away" );
 
-	assert.deepEqual(
-		jQuery( "#unwrap3 span" ).unwrap().get(),
-		jQuery( "#unwrap > span.unwrap3" ).get(),
-		"make #unwrap3 go away"
-	);
+	deepEqual( jQuery("#unwrap3 span").unwrap().get(), jQuery("#unwrap > span.unwrap3").get(), "make #unwrap3 go away" );
 
-	assert.deepEqual(
-		jQuery( "#unwrap" ).children().get(),
-		abcdef,
-		"#unwrap only contains 6 child spans"
-	);
+	deepEqual( jQuery("#unwrap").children().get(), abcdef, "#unwrap only contains 6 child spans" );
 
-	assert.deepEqual(
-		jQuery( "#unwrap > span" ).unwrap().get(),
-		jQuery( "body > span.unwrap" ).get(),
-		"make the 6 spans become children of body"
-	);
+	deepEqual( jQuery("#unwrap > span").unwrap().get(), jQuery("body > span.unwrap").get(), "make the 6 spans become children of body" );
 
-	assert.deepEqual(
-		jQuery( "body > span.unwrap" ).unwrap().get(),
-		jQuery( "body > span.unwrap" ).get(),
-		"can't unwrap children of body"
-	);
-	assert.deepEqual(
-		jQuery( "body > span.unwrap" ).unwrap().get(), abcdef, "can't unwrap children of body"
-	);
+	deepEqual( jQuery("body > span.unwrap").unwrap().get(), jQuery("body > span.unwrap").get(), "can't unwrap children of body" );
+	deepEqual( jQuery("body > span.unwrap").unwrap().get(), abcdef, "can't unwrap children of body" );
 
-	assert.deepEqual(
-		jQuery( "body > span.unwrap" ).get(), abcdef, "body contains 6 .unwrap child spans"
-	);
+	deepEqual( jQuery("body > span.unwrap").get(), abcdef, "body contains 6 .unwrap child spans" );
 
-	jQuery( "body > span.unwrap" ).remove();
-} );
-
-QUnit.test( "unwrap( selector )", function( assert ) {
-
-	assert.expect( 5 );
-
-	jQuery( "body" ).append(
-		"  <div id='unwrap' style='display: none;'> <div id='unwrap1'>" +
-		" <span class='unwrap'>a</span> <span class='unwrap'>b</span> </div>" +
-		" <div id='unwrap2'> <span class='unwrap'>c</span> <span class='unwrap'>d</span>" +
-		" </div> </div>"
-	);
-
-	// Shouldn't unwrap, no match
-	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap2" );
-	assert.equal(
-		jQuery( "#unwrap1" ).length, 1, "still wrapped"
-	);
-
-	 // Shouldn't unwrap, no match
-	jQuery( "#unwrap1 span" ) .unwrap( "span" );
-	assert.equal(
-		jQuery( "#unwrap1" ).length, 1, "still wrapped"
-	);
-
-	// Unwraps
-	jQuery( "#unwrap1 span" ) .unwrap( "#unwrap1" );
-	assert.equal(
-		jQuery( "#unwrap1" ).length, 0, "unwrapped match"
-	);
-
-	// Check return values
-	assert.deepEqual(
-		jQuery( "#unwrap2 span" ).get(),
-		jQuery( "#unwrap2 span" ).unwrap( "quote" ).get(),
-		"return on unmatched unwrap"
-	);
-	assert.deepEqual(
-		jQuery( "#unwrap2 span" ).get(),
-		jQuery( "#unwrap2 span" ).unwrap( "#unwrap2" ).get(),
-		"return on matched unwrap"
-	);
-
-	jQuery( "body > span.unwrap" ).remove();
-} );
+	jQuery("body > span.unwrap").remove();
+});
 
 QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function( assert ) {
 
