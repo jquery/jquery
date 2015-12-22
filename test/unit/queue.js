@@ -223,8 +223,6 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function 
 	foo.dequeue( "queue" );
 } );
 
-if ( jQuery.fn.animate ) {
-	
 QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function( assert ) {
 	var foo = jQuery( "#foo" ),
 		test = 1;
@@ -245,7 +243,6 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete befo
 	} );
 
 } );
-}
 
 QUnit.test( ".promise(obj)", function( assert ) {
 	assert.expect( 2 );
