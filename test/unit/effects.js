@@ -5,11 +5,8 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame;
-
 module("effects", {
 	setup: function() {
-		window.requestAnimationFrame = null;
 		this.clock = sinon.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.interval = 10;
@@ -18,7 +15,6 @@ module("effects", {
 		this.clock.restore();
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
 });

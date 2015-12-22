@@ -22,18 +22,6 @@ var
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rrun = /queueHooks$/;
 
-function raf() {
-	if ( timerId ) {
-		window.requestAnimationFrame( raf );
-		jQuery.fx.tick();
-	}
-}
-
-// Will get false negative for old browsers which is okay
-function isDocumentHidden() {
-	return "hidden" in document && document.hidden;
-}
-
 // Animations created synchronously will run synchronously
 function createFxNow() {
 	window.setTimeout( function() {
@@ -447,10 +435,6 @@ jQuery.fn.extend( {
 			.end().animate( { opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
-		if ( isDocumentHidden() ) {
-			return this;
-		}
-
 		var empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
@@ -623,12 +607,7 @@ jQuery.fx.interval = 13;
 
 jQuery.fx.start = function() {
 	if ( !timerId ) {
-		if ( window.requestAnimationFrame ) {
-			timerId = true;
-			window.requestAnimationFrame( raf );
-		} else {
-			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
-		}
+		timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
 	}
 };
 
