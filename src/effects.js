@@ -29,6 +29,11 @@ function raf() {
 	}
 }
 
+// Will get false negative for old browsers which is okay
+function isDocumentHidden() {
+	return "hidden" in document && document.hidden;
+}
+
 // Animations created synchronously will run synchronously
 function createFxNow() {
 	window.setTimeout( function() {
@@ -408,15 +413,8 @@ jQuery.speed = function( speed, easing, fn ) {
 		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
 	};
 
-		// Go to the end state if fx are off or if document is hidden
-	if ( jQuery.fx.off || document.hidden ) {
-		opt.duration = 0;
-
-	} else {
-		opt.duration = typeof opt.duration === "number" ?
-			opt.duration : opt.duration in jQuery.fx.speeds ?
-				jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
-	}
+	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
+		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
 	// normalize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
@@ -449,6 +447,10 @@ jQuery.fn.extend( {
 			.end().animate( { opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
+		if ( isDocumentHidden() ) {
+			return this;
+		}
+
 		var empty = jQuery.isEmptyObject( prop ),
 			optall = jQuery.speed( speed, easing, callback ),
 			doAnimation = function() {
@@ -620,18 +622,18 @@ jQuery.fx.timer = function( timer ) {
 jQuery.fx.interval = 13;
 
 jQuery.fx.start = function() {
-	timerId = window.requestAnimationFrame ?
-		window.requestAnimationFrame( raf ) :
-		window.setInterval( jQuery.fx.tick, jQuery.fx.interval );
+	if ( !timerId ) {
+		if ( window.requestAnimationFrame ) {
+			timerId = true;
+			window.requestAnimationFrame( raf );
+		} else {
+			timerId = setInterval( jQuery.fx.tick, jQuery.fx.interval );
+		}
+	}
 };
 
 jQuery.fx.stop = function() {
-	if ( window.cancelAnimationFrame ) {
-		window.cancelAnimationFrame( timerId );
-	} else {
-		window.clearInterval( timerId );
-	}
-
+	clearInterval( timerId );
 	timerId = null;
 };
 
