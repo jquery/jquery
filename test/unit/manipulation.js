@@ -2596,83 +2596,8 @@ QUnit.test( "Make sure jQuery.fn.remove can work on elements in documentFragment
 	assert.equal( fragment.childNodes.length, 0, "div element was removed from documentFragment" );
 } );
 
-QUnit.test( "Make sure tr element will be appended to tbody element of table when present", function( assert ) {
-	assert.expect( 1 );
-
-	var html,
-		table = document.createElement( "table" );
-
-	table.appendChild( document.createElement( "tbody" ) );
-	document.getElementById( "qunit-fixture" ).appendChild( table );
-
-	jQuery( table ).append( "<tr><td>test</td></tr>" );
-
-	// Lowercase and replace spaces to remove possible browser inconsistencies
-	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
-
-	assert.strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
-} );
-
-QUnit.test( "Make sure tr elements will be appended to tbody element of table when present", function( assert ) {
-	assert.expect( 1 );
-
-	var html,
-		table = document.createElement( "table" );
-
-	table.appendChild( document.createElement( "tbody" ) );
-	document.getElementById( "qunit-fixture" ).appendChild( table );
-
-	jQuery( table ).append( "<tr><td>1</td></tr><tr><td>2</td></tr>" );
-
-	// Lowercase and replace spaces to remove possible browser inconsistencies
-	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
-
-	assert.strictEqual( html, "<tbody><tr><td>1</td></tr><tr><td>2</td></tr></tbody>" );
-} );
-
-QUnit.test( "Make sure tfoot element will not be appended to tbody element of table when present", function( assert ) {
-	assert.expect( 1 );
-
-	var html,
-		table = document.createElement( "table" );
-
-	table.appendChild( document.createElement( "tbody" ) );
-	document.getElementById( "qunit-fixture" ).appendChild( table );
-
-	jQuery( table ).append( "<tfoot/>" );
-
-	// Lowercase and replace spaces to remove possible browser inconsistencies
-	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
-
-	assert.strictEqual( html, "<tbody></tbody><tfoot></tfoot>" );
-} );
-
-QUnit.test( "Make sure document fragment will be appended to tbody element of table when present", function( assert ) {
-	assert.expect( 1 );
-
-	var html,
-		fragment = document.createDocumentFragment(),
-		table = document.createElement( "table" ),
-		tr = document.createElement( "tr" ),
-		td = document.createElement( "td" );
-
-	table.appendChild( document.createElement( "tbody" ) );
-	document.getElementById( "qunit-fixture" ).appendChild( table );
-
-	fragment.appendChild( tr );
-	tr.appendChild( td );
-	td.innerHTML = "test";
-
-	jQuery( table ).append( fragment );
-
-	// Lowercase and replace spaces to remove possible browser inconsistencies
-	html = table.innerHTML.toLowerCase().replace( /\s/g, "" );
-
-	assert.strictEqual( html, "<tbody><tr><td>test</td></tr></tbody>" );
-} );
-
-QUnit.test( "Make sure col element is appended correctly", function( assert ) {
-	assert.expect( 1 );
+test( "Make sure col element is appended correctly", function() {
+	expect( 1 );
 
 	var table = jQuery( "<table cellpadding='0'><tr><td style='padding:0'>test</td></tr></table>" );
 
@@ -2680,7 +2605,7 @@ QUnit.test( "Make sure col element is appended correctly", function( assert ) {
 
 	jQuery( "<col width='150'/>" ).prependTo( table );
 
-	assert.strictEqual( table.find( "td" ).width(), 150 );
+	strictEqual( table.find( "td" ).width(), 150 );
 } );
 
 QUnit.asyncTest( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
