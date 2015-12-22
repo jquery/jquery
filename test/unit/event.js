@@ -938,9 +938,9 @@ if ( jQuery.fn.click ) {
 		jQuery( "#simon1" ).click();
 		assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 
-		elem = jQuery("<img />").load(function(){
-			ok( true, "Trigger the load event, using the shortcut .load() (#2819)");
-		}).load();
+		elem = jQuery( "<img />" ).load( function() {
+			ok( true, "Trigger the load event, using the shortcut .load() (#2819)" );
+		} ).load();
 
 		// manually clean up detached elements
 		elem.remove();
@@ -1230,7 +1230,7 @@ QUnit.test( "trigger(eventObject, [data], [fn])", function( assert ) {
 	//$child.on("foo", error );
 
 	event = new jQuery.Event( "foo" );
-	$child.trigger( event, [ 1,2,3 ] ).off();
+	$child.trigger( event, [ 1, 2, 3 ] ).off();
 	assert.equal( event.result, "result", "Check event.result attribute" );
 
 	// Will error if it bubbles
@@ -2727,6 +2727,7 @@ QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
 } );
 
 QUnit.test( ".off() removes the expando when there's no more data", function( assert ) {
+
 	// Support: IE 8 only
 	// IE 8 gets the expando removed via removeAttribute so the second assertion
 	// won't be reached.

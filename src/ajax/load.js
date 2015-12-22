@@ -5,6 +5,7 @@ define( [
 	"../traversing",
 	"../manipulation",
 	"../selector",
+
 	// Optional event/alias dependency
 	"../event/alias"
 ], function( jQuery ) {

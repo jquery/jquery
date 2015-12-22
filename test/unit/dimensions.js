@@ -57,7 +57,7 @@ function testWidth( val, assert ) {
 
 	assert.equal( jQuery( window ).width(), document.documentElement.clientWidth, "Window width is equal to width reported by window/document." );
 
-	QUnit.expectJqData( this, $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 }
 
 QUnit.test( "width()", function( assert ) {
@@ -110,7 +110,7 @@ function testHeight( val, assert ) {
 
 	assert.equal( jQuery( window ).height(), document.documentElement.clientHeight, "Window width is equal to width reported by window/document." );
 
-	QUnit.expectJqData( this, $div[0], "olddisplay" );
+	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
 }
 
 QUnit.test( "height()", function( assert ) {
@@ -167,7 +167,7 @@ QUnit.test( "innerWidth()", function( assert ) {
 	div.remove();
 
 	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
-});
+} );
 
 QUnit.test( "innerHeight()", function( assert ) {
 	assert.expect( 6 );
@@ -202,7 +202,7 @@ QUnit.test( "innerHeight()", function( assert ) {
 
 	div.remove();
 	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
-});
+} );
 
 QUnit.test( "outerWidth()", function( assert ) {
 	assert.expect( 11 );
@@ -241,7 +241,7 @@ QUnit.test( "outerWidth()", function( assert ) {
 
 	div.remove();
 	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
-});
+} );
 
 QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function( assert ) {
 	assert.expect( 16 );
@@ -262,7 +262,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
 	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
 	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
-	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+	equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #9441" );
@@ -273,7 +273,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #9441" );
 	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #9441" );
 	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #9441" );
-	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
+	equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -335,7 +335,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #10413" );
 	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #10413" );
 	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #10413" );
-	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
+	equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #10413" );
@@ -346,7 +346,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #10413" );
 	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #10413" );
 	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #10413" );
-	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
+	equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -389,7 +389,7 @@ QUnit.test( "outerHeight()", function( assert ) {
 
 	div.remove();
 	QUnit.expectJqData( this, $div[ 0 ], "olddisplay" );
-});
+} );
 
 QUnit.test( "passing undefined is a setter #5571", function( assert ) {
 	assert.expect( 4 );

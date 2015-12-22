@@ -269,6 +269,7 @@ this.iframeCallback = undefined;
 // Tests are always loaded async
 QUnit.config.autostart = false;
 this.loadTests = function() {
+
 	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
 	var loadSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0,
 		basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
@@ -277,6 +278,7 @@ this.loadTests = function() {
 	require( [ "data/testrunner.js" ], function() {
 		var i = 0,
 			tests = [
+
 				// A special module with basic tests, meant for
 				// not fully supported environments like Android 2.3,
 				// jsdom or PhantomJS. We run it everywhere, though,

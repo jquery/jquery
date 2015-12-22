@@ -378,25 +378,25 @@ QUnit.test( "data-* attributes", function( assert ) {
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		div = jQuery("<div>"),
-		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
-		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
+		div = jQuery( "<div>" ),
+		child = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>" ),
+		dummy = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>" );
 
-	equal( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
+	equal( div.data( "attr" ), undefined, "Check for non-existing data-attr attribute" );
 
-	div.attr("data-attr", "exists");
-	equal( div.data("attr"), "exists", "Check for existing data-attr attribute" );
+	div.attr( "data-attr", "exists" );
+	equal( div.data( "attr" ), "exists", "Check for existing data-attr attribute" );
 
-	div.attr("data-attr", "exists2");
-	equal( div.data("attr"), "exists", "Check that updates to data- don't update .data()" );
+	div.attr( "data-attr", "exists2" );
+	equal( div.data( "attr" ), "exists", "Check that updates to data- don't update .data()" );
 
-	div.data("attr", "internal").attr("data-attr", "external");
-	equal( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
+	div.data( "attr", "internal" ).attr( "data-attr", "external" );
+	equal( div.data( "attr" ), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
 
 	div.remove();
 
-	child.appendTo("#qunit-fixture");
-	equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
+	child.appendTo( "#qunit-fixture" );
+	equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
 
 	child.data( "myobj", "replaced" );
 	assert.equal(
@@ -567,7 +567,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 		jQuery( elem ).data( "number" ), true, "Check number property"
 	);
 			assert.deepEqual(
-		jQuery( elem ).data( "stuff" ), [ 2,8 ], "Check stuff property"
+		jQuery( elem ).data( "stuff" ), [ 2, 8 ], "Check stuff property"
 	);
 			break;
 		default:
@@ -830,10 +830,9 @@ QUnit.test(
 	}
 );
 
+test( "jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
 
-test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
-
-	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -843,6 +842,7 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
+
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
@@ -859,40 +859,42 @@ test("jQuery.data supports interoperable hyphenated/camelCase get/set of propert
 
 		deepEqual( div.data( key ), val, "get: " + key );
 		deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
-	});
-});
+	} );
+} );
 
 test( ".removeData supports removal of hyphenated properties via array (#12786)", function() {
 	expect( 4 );
 
 	var div, plain, compare;
 
-	div = jQuery("<div>").appendTo("#qunit-fixture");
-	plain = jQuery({});
+	div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+	plain = jQuery( {} );
 
 	// When data is batch assigned (via plain object), the properties
 	// are not camel cased as they are with (property, value) calls
 	compare = {
+
 		// From batch assignment .data({ "a-a": 1 })
 		"a-a": 1,
+
 		// From property, value assignment .data( "b-b", 1 )
 		"bB": 1
 	};
 
 	// Mixed assignment
-	div.data({ "a-a": 1 }).data( "b-b", 1 );
-	plain.data({ "a-a": 1 }).data( "b-b", 1 );
+	div.data( { "a-a": 1 } ).data( "b-b", 1 );
+	plain.data( { "a-a": 1 } ).data( "b-b", 1 );
 
 	deepEqual( div.data(), compare, "Data appears as expected. (div)" );
 	deepEqual( plain.data(), compare, "Data appears as expected. (plain)" );
 
-	div.removeData([ "a-a", "b-b" ]);
-	plain.removeData([ "a-a", "b-b" ]);
+	div.removeData( [ "a-a", "b-b" ] );
+	plain.removeData( [ "a-a", "b-b" ] );
 
 	// NOTE: Timo's proposal for "propEqual" (or similar) would be nice here
 	deepEqual( div.data(), {}, "Data is empty. (div)" );
 	deepEqual( plain.data(), {}, "Data is empty. (plain)" );
-});
+} );
 
 // Test originally by Moschel
 QUnit.test( "Triggering the removeData should not throw exceptions. (#10080)", function( assert ) {

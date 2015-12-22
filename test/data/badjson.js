@@ -1,1 +1,1 @@
-{bad: toTheBone}
+{bad: toTheBone;}

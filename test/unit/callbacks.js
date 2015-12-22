@@ -331,7 +331,7 @@ QUnit.test( "jQuery.Callbacks.has", function( assert ) {
 	assert.strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
 	cb.lock();
 	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
-});
+} );
 
 QUnit.test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function( assert ) {
 

@@ -113,7 +113,7 @@ QUnit.module( "ajax", {
 				assert.ok( true, "success" );
 			},
 			fail: function() {
-				if (jQuery.support.cors === false) {
+				if ( jQuery.support.cors === false ) {
 					assert.ok( true, "fail" );
 				}
 			},
@@ -1418,13 +1418,15 @@ QUnit.module( "ajax", {
 	} );
 
 	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
-		throws(function() {
-			jQuery.ajax({
+		throws( function() {
+			jQuery.ajax( {
 				url: "data/badjson.js",
 				dataType: "script",
 				"throws": true,
+
 				// TODO find a way to test this asynchronously, too
 				async: false,
+
 				// Global events get confused by the exception
 				global: false,
 				success: function() {
@@ -1433,9 +1435,9 @@ QUnit.module( "ajax", {
 				error: function() {
 					ok( false, "Error." );
 				}
-			});
+			} );
 		}, "exception bubbled" );
-	});
+	} );
 
 	jQuery.each( [ "method", "type" ], function( _, globalOption ) {
 		function request( assert, option ) {
@@ -1654,7 +1656,7 @@ QUnit.module( "ajax", {
 			url: url( "data/ajax/content-type.php" ),
 			data: {
 				"content-type": "test/jsontest",
-				"response": JSON.stringify({test: "test"})
+				"response": JSON.stringify( { test: "test" } )
 			},
 			success: function( result ) {
 				assert.strictEqual(

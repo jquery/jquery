@@ -47,7 +47,7 @@ function isEmptyDataObject( obj ) {
 	for ( name in obj ) {
 
 		// if the public data object is empty, the private is still empty
-		if ( name === "data" && jQuery.isEmptyObject( obj[name] ) ) {
+		if ( name === "data" && jQuery.isEmptyObject( obj[ name ] ) ) {
 			continue;
 		}
 		if ( name !== "toJSON" ) {
@@ -80,7 +80,7 @@ function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
 
 	// Avoid doing any more work than we need to when trying to get data on an
 	// object that has no data at all
-	if ( (!id || !cache[id] || (!pvt && !cache[id].data)) &&
+	if ( ( !id || !cache[ id ] || ( !pvt && !cache[ id ].data ) ) &&
 		data === undefined && typeof name === "string" ) {
 		return;
 	}
@@ -187,10 +187,11 @@ function internalRemoveData( elem, name, pvt ) {
 					if ( name in thisCache ) {
 						name = [ name ];
 					} else {
-						name = name.split(" ");
+						name = name.split( " " );
 					}
 				}
 			} else {
+
 				// If "name" is an array of keys...
 				// When data is initially created, via ("key", "val") signature,
 				// keys will be converted to camelCase.
@@ -202,7 +203,7 @@ function internalRemoveData( elem, name, pvt ) {
 
 			i = name.length;
 			while ( i-- ) {
-				delete thisCache[ name[i] ];
+				delete thisCache[ name[ i ] ];
 			}
 
 			// If there is no data left in the cache, we want to continue

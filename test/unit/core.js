@@ -42,7 +42,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	}
 	if ( jQuery.fn.offset ) {
 		expected++;
-		attrObj["offset"] = { "top": 1, "left": 1 };
+		attrObj[ "offset" ] = { "top": 1, "left": 1 };
 	}
 	if ( jQuery.fn.css ) {
 		expected += 2;
@@ -57,12 +57,12 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	// Basic constructor's behavior
 	equal( jQuery().length, 0, "jQuery() === jQuery([])" );
-	equal( jQuery(undefined).length, 0, "jQuery(undefined) === jQuery([])" );
-	equal( jQuery(null).length, 0, "jQuery(null) === jQuery([])" );
-	equal( jQuery("").length, 0, "jQuery('') === jQuery([])" );
-	equal( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
+	equal( jQuery( undefined ).length, 0, "jQuery(undefined) === jQuery([])" );
+	equal( jQuery( null ).length, 0, "jQuery(null) === jQuery([])" );
+	equal( jQuery( "" ).length, 0, "jQuery('') === jQuery([])" );
+	equal( jQuery( "#" ).length, 0, "jQuery('#') === jQuery([])" );
 
-	equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
+	equal( jQuery( obj ).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
 
 	// can actually yield more than one, when iframes are included, the window is an array as well
 	assert.equal( jQuery( window ).length, 1, "Correct number of elements generated for jQuery(window)" );
@@ -94,7 +94,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	assert.equal( div.length, 4, "Correct number of elements generated for div hr code b" );
 	assert.equal( div.parent().length, 0, "Make sure that the generated HTML has no parent." );
 
-	assert.equal( jQuery( [ 1,2,3 ] ).get( 1 ), 2, "Test passing an array to the factory" );
+	assert.equal( jQuery( [ 1, 2, 3 ] ).get( 1 ), 2, "Test passing an array to the factory" );
 
 	assert.equal( jQuery( document.body ).get( 0 ), jQuery( "body" ).get( 0 ), "Test passing an html node to the factory" );
 
@@ -104,7 +104,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	elem = jQuery( "\n\n<em>world</em>" )[ 0 ];
 	assert.equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery("<div/>", attrObj );
+	elem = jQuery( "<div/>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		assert.equal( elem[ 0 ].style.width, "10px", "jQuery() quick setter width" );
@@ -115,7 +115,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	}
 
 	if ( jQuery.fn.offset ) {
-		equal( elem[0].style.top, "1px", "jQuery() quick setter offset");
+		equal( elem[ 0 ].style.top, "1px", "jQuery() quick setter offset" );
 	}
 
 	if ( jQuery.fn.css ) {
@@ -172,11 +172,11 @@ test( "selector state", function() {
 	equal( test.selector, "", "Body Selector" );
 	equal( test.context, document.body, "Body Context" );
 
-	test = jQuery("#qunit-fixture");
+	test = jQuery( "#qunit-fixture" );
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
 	equal( test.context, document, "#qunit-fixture Context" );
 
-	test = jQuery("#notfoundnono");
+	test = jQuery( "#notfoundnono" );
 	equal( test.selector, "#notfoundnono", "#notfoundnono Selector" );
 	equal( test.context, document, "#notfoundnono Context" );
 
@@ -193,14 +193,14 @@ test( "selector state", function() {
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
 	equal( test.context, document.body, "#qunit-fixture Context" );
 
-	test = jQuery( document.body ).find("#qunit-fixture");
+	test = jQuery( document.body ).find( "#qunit-fixture" );
 	equal( test.selector, "#qunit-fixture", "#qunit-fixture find Selector" );
 	equal( test.context, document.body, "#qunit-fixture find Context" );
-});
+} );
 
 QUnit.test( "globalEval", function( assert ) {
 	expect( 2 );
-	Globals.register("globalEvalTest");
+	Globals.register( "globalEvalTest" );
 
 	jQuery.globalEval( "var globalEvalTest = 2;" );
 	assert.equal( window.globalEvalTest, 2, "Test variable declarations are global" );
@@ -314,8 +314,9 @@ QUnit.test( "type", function( assert ) {
 } );
 
 QUnit.test( "type for `Symbol`", function( assert ) {
+
 	// Prevent reference errors
-	if( typeof Symbol !== "function" ) {
+	if ( typeof Symbol !== "function" ) {
 		assert.expect( 0 );
 		return;
 	}
@@ -324,7 +325,7 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 
 	assert.equal( jQuery.type( Symbol() ), "symbol", "Symbol" );
 	assert.equal( jQuery.type( Object( Symbol() ) ), "symbol", "Symbol" );
-});
+} );
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
 	assert.expect( 16 );
@@ -411,7 +412,6 @@ QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isPlainObject(Symbol)"
 	assert.equal( jQuery.isPlainObject( Symbol() ), false, "Symbol" );
 	assert.equal( jQuery.isPlainObject( Object( Symbol() ) ), false, "Symbol inside an object" );
 } );
-
 
 QUnit.test( "isFunction", function( assert ) {
 	assert.expect( 19 );
@@ -963,7 +963,7 @@ QUnit.test( "jQuery.map", function( assert ) {
 	assert.ok( !result, "empty NodeList treated like array" );
 
 	result = jQuery.map( Array( 4 ), function( v, k ) {
-		return k % 2 ? k : [ k,k,k ];
+		return k % 2 ? k : [ k, k, k ];
 	} );
 	assert.equal( result.join( "" ), "00012223", "Array results flattened (#2616)" );
 } );
@@ -1115,7 +1115,7 @@ QUnit.test( "jQuery.grep(Array-like)", function( assert ) {
 		[],
 		"Satisfying elements absent, Array-like object used, and grep explicitly uninverted"
 	);
-});
+} );
 
 QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.expect( 28 );
@@ -1240,19 +1240,19 @@ QUnit.test( "jQuery.extend(Object, Object {created with \"defineProperties\"})",
 
 	assert.expect( 2 );
 
-	var definedObj = Object.defineProperties({}, {
+	var definedObj = Object.defineProperties( {}, {
         "enumerableProp": {
-          get: function () {
+          get: function() {
             return true;
           },
           enumerable: true
         },
         "nonenumerableProp": {
-          get: function () {
+          get: function() {
             return true;
           }
         }
-      }),
+      } ),
       accessorObj = {};
 
 	jQuery.extend( accessorObj, definedObj );
@@ -1287,7 +1287,7 @@ QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
 	assert.deepEqual( seen, [ 1, 2 ], "Broken array iteration" );
 
 	seen = [];
-	jQuery.each( { "a": 1, "b": 2,"c": 3 }, function( k, v ) {
+	jQuery.each( { "a": 1, "b": 2, "c": 3 }, function( k, v ) {
 		seen.push( v );
 		return false;
 	} );
@@ -1407,7 +1407,7 @@ QUnit.test( "jQuery.makeArray", function( assert ) {
 
 	assert.equal( ( function() { return jQuery.makeArray( arguments ); } )( 1, 2 ).join( "" ), "12", "Pass makeArray an arguments array" );
 
-	assert.equal( jQuery.makeArray( [ 1,2,3 ] ).join( "" ), "123", "Pass makeArray a real array" );
+	assert.equal( jQuery.makeArray( [ 1, 2, 3 ] ).join( "" ), "123", "Pass makeArray a real array" );
 
 	assert.equal( jQuery.makeArray().length, 0, "Pass nothing to makeArray and expect an empty array" );
 

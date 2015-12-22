@@ -535,6 +535,6 @@ testIframeWithCallback(
 				assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 			}
 		}
-	});
+	} );
 
 } )();

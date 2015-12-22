@@ -2348,25 +2348,24 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 	assert.strictEqual( jQuery( "<p/>" ).appendTo( "<div/>" ).end().length, jQuery( "<p>test</p>" ).appendTo( "<div/>" ).end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 } );
 
-
 test( "html() - script exceptions bubble (#11743)", function() {
 
 	expect( 2 );
 
-	throws(function() {
-		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
+	throws( function() {
+		jQuery( "#qunit-fixture" ).html( "<script>undefined(); ok( false, 'Exception not thrown' );</script>" );
 		ok( false, "Exception ignored" );
 	}, "Exception bubbled from inline script" );
 
 	if ( jQuery.ajax ) {
-		throws(function() {
-			jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
+		throws( function() {
+			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
 			ok( false, "Exception ignored" );
 		}, "Exception thrown in remote script" );
 	} else {
 		ok( true, "No jQuery.ajax" );
 	}
-});
+} );
 
 QUnit.test( "checked state is cloned with clone()", function( assert ) {
 
