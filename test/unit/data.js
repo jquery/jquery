@@ -373,51 +373,30 @@ QUnit.test( "jQuery(plain Object).data(String, Object).data(String)", function( 
 } );
 
 QUnit.test( "data-* attributes", function( assert ) {
-	assert.expect( 46 );
+	assert.expect( 43 );
 
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
 		parseJSON = jQuery.parseJSON,
-		div = jQuery( "<div>" ),
-		child = jQuery(
-			"<div data-myobj='old data' data-ignored=\"DOM\"" +
-			" data-other='test' data-foo-42='boosh'></div>"
-		),
-		dummy = jQuery(
-			"<div data-myobj='old data' data-ignored=\"DOM\"" +
-			" data-other='test' data-foo-42='boosh'></div>"
-		);
+		div = jQuery("<div>"),
+		child = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>"),
+		dummy = jQuery("<div data-myobj='old data' data-ignored=\"DOM\" data-other='test'></div>");
 
-	assert.equal(
-		div.data( "attr" ), undefined, "Check for non-existing data-attr attribute"
-	);
+	equal( div.data("attr"), undefined, "Check for non-existing data-attr attribute" );
 
-	div.attr( "data-attr", "exists" );
-	assert.equal(
-		div.data( "attr" ), "exists", "Check for existing data-attr attribute"
-	);
+	div.attr("data-attr", "exists");
+	equal( div.data("attr"), "exists", "Check for existing data-attr attribute" );
 
-	div.attr( "data-attr", "exists2" );
-	assert.equal(
-		div.data( "attr" ), "exists", "Check that updates to data- don't update .data()"
-	);
+	div.attr("data-attr", "exists2");
+	equal( div.data("attr"), "exists", "Check that updates to data- don't update .data()" );
 
-	div.data( "attr", "internal" ).attr( "data-attr", "external" );
-	assert.equal(
-		div.data( "attr" ),
-		"internal",
-		"Check for .data('attr') precedence (internal > external data-* attribute)"
-	);
+	div.data("attr", "internal").attr("data-attr", "external");
+	equal( div.data("attr"), "internal", "Check for .data('attr') precedence (internal > external data-* attribute)" );
 
 	div.remove();
 
-	child.appendTo( "#qunit-fixture" );
-	assert.equal(
-		child.data( "myobj" ), "old data", "Value accessed from data-* attribute"
-	);
-	assert.equal(
-		child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (#1751)"
-	);
+	child.appendTo("#qunit-fixture");
+	equal( child.data("myobj"), "old data", "Value accessed from data-* attribute");
 
 	child.data( "myobj", "replaced" );
 	assert.equal(
@@ -431,7 +410,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	obj = child.data();
 	obj2 = dummy.data();
-	check = [ "myobj", "ignored", "other", "foo-42" ];
+	check = [ "myobj", "ignored", "other" ];
 	num = 0;
 	num2 = 0;
 
