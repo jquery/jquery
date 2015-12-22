@@ -76,8 +76,7 @@ div.noopacity {
 	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(opacity=0)";
 }
 
-div.hidden,
-span.hidden {
+div.hidden {
 	display: none;
 }
 
@@ -125,12 +124,21 @@ div#fx-tests div.noback {
 	display: none;
 }
 
+/* tests to ensure jQuery can determine the native display mode of elements
+   that have been set as display: none in stylesheets */
+div#show-tests * { display: none; }
+
 #nothiddendiv { font-size: 16px; }
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
 
 /* For testing type on vml in IE #7071 */
 v\:oval { behavior:url(#default#VML); display:inline-block; }
+
+/* 8099 changes to default styles are read correctly */
+tt { display: none; }
+sup { display: none; }
+dfn { display: none; }
 
 /* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
 body, div { background: url(http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif) no-repeat -1000px 0; }

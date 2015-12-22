@@ -43,7 +43,7 @@ function keys( o ) {
  * @param {jQuery|HTMLElement|Object|Array} elems Target (or array of targets) for jQuery.data.
  * @param {string} key
  */
-QUnit.assert.expectJqData = function( env, elems, key ) {
+QUnit.expectJqData = QUnit.assert.expectJqData = function( env, elems, key ) {
 	var i, elem, expando;
 
 	// As of jQuery 2.0, there will be no "cache"-data is

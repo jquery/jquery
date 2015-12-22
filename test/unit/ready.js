@@ -38,7 +38,7 @@ QUnit.module( "ready" );
 	noEarlyExecution = order.length === 0;
 
 	// This assumes that QUnit tests are run on DOM ready!
-	QUnit.test("jQuery ready", function( assert ) {
+	QUnit.test("jQuery ready", function() {
 		expect(10);
 
 		ok(noEarlyExecution, "Handlers bound to DOM ready should not execute before DOM ready");
