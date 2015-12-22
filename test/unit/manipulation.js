@@ -2348,45 +2348,25 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 	assert.strictEqual( jQuery( "<p/>" ).appendTo( "<div/>" ).end().length, jQuery( "<p>test</p>" ).appendTo( "<div/>" ).end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 } );
 
-QUnit.asyncTest( "html() - script exceptions bubble (#11743)", 2, function( assert ) {
 
-	// Support: Android 2.3 only
-	// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
-	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-		assert.ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
-			"errors in dynamically included scripts" );
-		assert.ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
-			"errors in dynamically included scripts" );
-		QUnit.start();
-		return;
+test( "html() - script exceptions bubble (#11743)", function() {
+
+	expect( 2 );
+
+	throws(function() {
+		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
+		ok( false, "Exception ignored" );
+	}, "Exception bubbled from inline script" );
+
+	if ( jQuery.ajax ) {
+		throws(function() {
+			jQuery("#qunit-fixture").html("<script src='data/badcall.js'></script>");
+			ok( false, "Exception ignored" );
+		}, "Exception thrown in remote script" );
+	} else {
+		ok( true, "No jQuery.ajax" );
 	}
-
-	var onerror = window.onerror;
-
-	setTimeout( function() {
-		window.onerror = onerror;
-
-		QUnit.start();
-	}, 1000 );
-
-	window.onerror = function() {
-		assert.ok( true, "Exception thrown" );
-
-		if ( jQuery.ajax ) {
-			window.onerror = function() {
-				assert.ok( true, "Exception thrown in remote script" );
-			};
-
-			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
-			assert.ok( true, "Exception ignored" );
-		} else {
-			assert.ok( true, "No jQuery.ajax" );
-			assert.ok( true, "No jQuery.ajax" );
-		}
-	};
-
-	jQuery( "#qunit-fixture" ).html( "<script>undefined();</script>" );
-} );
+});
 
 QUnit.test( "checked state is cloned with clone()", function( assert ) {
 

@@ -1417,29 +1417,25 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	QUnit.asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function( assert ) {
-
-		// Support: Android 2.3 only
-		// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
-		if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-			assert.ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
-				"errors in dynamically included scripts" );
-			QUnit.start();
-			return;
-		}
-
-		var onerror = window.onerror;
-		window.onerror = function() {
-			assert.ok( true, "Exception thrown" );
-			window.onerror = onerror;
-			QUnit.start();
-		};
-		jQuery.ajax( {
-			url: "data/badjson.js",
-			dataType: "script",
-			throws: true
-		} );
-	} );
+	test( "#11743 - jQuery.ajax() - script, throws exception", 1, function() {
+		throws(function() {
+			jQuery.ajax({
+				url: "data/badjson.js",
+				dataType: "script",
+				"throws": true,
+				// TODO find a way to test this asynchronously, too
+				async: false,
+				// Global events get confused by the exception
+				global: false,
+				success: function() {
+					ok( false, "Success." );
+				},
+				error: function() {
+					ok( false, "Error." );
+				}
+			});
+		}, "exception bubbled" );
+	});
 
 	jQuery.each( [ "method", "type" ], function( _, globalOption ) {
 		function request( assert, option ) {

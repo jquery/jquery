@@ -209,20 +209,26 @@ QUnit.test( "globalEval", function( assert ) {
 	assert.equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 } );
 
-QUnit.test( "globalEval execution after script injection (#7862)", function( assert ) {
-	assert.expect( 1 );
+if ( jQuery.noConflict ) {
+	QUnit.test( "noConflict", function( assert ) {
+		assert.expect( 7 );
 
-	var now,
-		script = document.createElement( "script" );
+		var $$ = jQuery;
 
-	script.src = "data/longLoadScript.php?sleep=2";
+		assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
+		assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
+		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
 
-	now = jQuery.now();
-	document.body.appendChild( script );
+		jQuery = $ = $$;
 
-	jQuery.globalEval( "var strictEvalTest = " + jQuery.now() + ";" );
-	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
-} );
+		assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
+		assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
+		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+		assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
+
+		window[ "jQuery" ] = jQuery = $$;
+	} );
+}
 
 // This is not run in AMD mode
 if ( jQuery.noConflict ) {
