@@ -50,7 +50,7 @@ function defaultDisplay( nodeName ) {
 				.appendTo( doc.documentElement );
 
 			// Always write a new HTML skeleton so Webkit and Firefox don't choke on reuse
-			doc = iframe[ 0 ].contentDocument;
+			doc = ( iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument ).document;
 
 			// Support: IE
 			doc.write();
