@@ -70,21 +70,6 @@ QUnit.test( "disconnected element", function( assert ) {
 	assert.equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 } );
 
-QUnit.test( "hidden (display: none) element", function( assert ) {
-	assert.expect( 2 );
-
-	var node = jQuery( "<div style='display: none' />" ).appendTo( "#qunit-fixture" ),
-		result = node.offset();
-
-	node.remove();
-
-	// These tests are solely for master/compat consistency
-	// Retrieving offset on disconnected/hidden elements is not officially
-	// valid input, but will return zeros for back-compat
-	assert.equal( result.top, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
-	assert.equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
-} );
-
 testIframe( "offset/absolute", "absolute", function( $, iframe, document, assert ) {
 	assert.expect( 4 );
 

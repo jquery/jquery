@@ -41,7 +41,7 @@ jQuery.offset = {
 			elem.style.position = "relative";
 		}
 
-		curOffset = curElem.offset() || { top: 0, left: 0 };
+		curOffset = curElem.offset();
 		curCSSTop = jQuery.css( elem, "top" );
 		curCSSLeft = jQuery.css( elem, "left" );
 		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
@@ -89,7 +89,8 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var docElem, win, rect,
+		var docElem, win,
+			box = { top: 0, left: 0 },
 			elem = this[ 0 ],
 			doc = elem && elem.ownerDocument;
 
@@ -97,33 +98,19 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		doc = elem.ownerDocument;
 		docElem = doc.documentElement;
 
-		// Support: IE<=11+
-		// Running getBoundingClientRect on a
-		// disconnected node in IE throws an error
-		// Support: IE8 only
-		// getClientRects() errors on disconnected elems
+		// Make sure it's not a disconnected DOM node
 		if ( !jQuery.contains( docElem, elem ) ) {
-			return { top: 0, left: 0 };
+			return box;
 		}
 
-		rect = elem.getBoundingClientRect();
-
-		if ( rect.width || rect.height || elem.getClientRects().length ) {
-			win = getWindow( doc );
-
-			return {
-				top: rect.top  + ( win.pageYOffset || docElem.scrollTop ) -
-					( docElem.clientTop  || 0 ),
-				left: rect.left + ( win.pageXOffset || docElem.scrollLeft ) -
-					( docElem.clientLeft || 0 )
-			};
-		}
-
-		// Return zeros for hidden elements
-		return rect;
+		box = elem.getBoundingClientRect();
+		win = getWindow( doc );
+		return {
+			top: box.top  + ( win.pageYOffset || docElem.scrollTop )  - ( docElem.clientTop  || 0 ),
+			left: box.left + ( win.pageXOffset || docElem.scrollLeft ) - ( docElem.clientLeft || 0 )
+		};
 	},
 
 	position: function() {
