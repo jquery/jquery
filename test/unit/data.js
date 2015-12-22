@@ -812,76 +812,6 @@ QUnit.test( "jQuery.data should not miss data with preset hyphenated property na
 	} );
 } );
 
-QUnit.test( ".data should not miss attr() set data-* with hyphenated property names", function( assert ) {
-	assert.expect( 2 );
-
-	var a, b;
-
-	a = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
-
-	a.attr( "data-long-param", "test" );
-	a.data( "long-param", { a: 2 } );
-
-	assert.deepEqual(
-		a.data( "long-param" ), { a: 2 }, "data with property long-param was found, 1"
-	);
-
-	b = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
-
-	b.attr( "data-long-param", "test" );
-	b.data( "long-param" );
-	b.data( "long-param", { a: 2 } );
-
-	assert.deepEqual(
-		b.data( "long-param" ), { a: 2 }, "data with property long-param was found, 2"
-	);
-} );
-
-QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function( assert ) {
-	assert.expect( 36 );
-
-	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }"
-		};
-
-	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
-		var allData = div.data();
-		assert.equal(
-		allData[ key ], undefined, ".data(key, val) does not store with hyphenated keys"
-	);
-		assert.equal(
-		allData[ jQuery.camelCase( key ) ], val, ".data(key, val) stores the camelCased key"
-	);
-	} );
-
-	div.removeData();
-
-	div.data( datas );
-	jQuery.each( datas, function( key, val ) {
-		var allData = div.data();
-		assert.equal(
-		allData[ key ], undefined, ".data(object) does not store with hyphenated keys"
-	);
-		assert.equal(
-		allData[ jQuery.camelCase( key ) ], val, ".data(object) stores the camelCased key"
-	);
-	} );
-} );
-
 QUnit.test(
 	".data supports interoperable hyphenated/camelCase get/set of" +
 	" properties with arbitrary non-null|NaN|undefined values",
@@ -921,125 +851,69 @@ QUnit.test(
 	}
 );
 
-QUnit.test(
-	"jQuery.data supports interoperable removal of hyphenated/camelCase properties",
-	function( assert ) {
-		var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
-			datas = {
-				"non-empty": "a string",
-				"empty-string": "",
-				"one-value": 1,
-				"zero-value": 0,
-				"an-array": [],
-				"an-object": {},
-				"bool-true": true,
-				"bool-false": false,
 
-				// JSHint enforces double quotes,
-				// but JSON strings need double quotes to parse
-				// so we need escaped double quotes here
-				"some-json": "{ \"foo\": \"bar\" }"
-			};
+test("jQuery.data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function() {
 
-		assert.expect( 27 );
-
-		jQuery.each( datas, function( key, val ) {
-			div.data( key, val );
-
-			assert.deepEqual(
-			div.data( key ), val, "get: " + key
-		);
-			assert.deepEqual(
-			div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key )
-		);
-
-			div.removeData( key );
-
-			assert.equal(
-			div.data( key ), undefined, "get: " + key
-		);
-
-		} );
-	}
-);
-
-QUnit.test(
-	".data supports interoperable removal of properties SET TWICE #13850",
-	function( assert ) {
-		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-			datas = {
-				"non-empty": "a string",
-				"empty-string": "",
-				"one-value": 1,
-				"zero-value": 0,
-				"an-array": [],
-				"an-object": {},
-				"bool-true": true,
-				"bool-false": false,
-
-				// JSHint enforces double quotes,
-				// but JSON strings need double quotes to parse
-				// so we need escaped double quotes here
-				"some-json": "{ \"foo\": \"bar\" }"
-			};
-
-		assert.expect( 9 );
-
-		jQuery.each( datas, function( key, val ) {
-			div.data( key, val );
-			div.data( key, val );
-
-			div.removeData( key );
-
-			assert.equal(
-			div.data( key ), undefined, "removal: " + key
-		);
-		} );
-	}
-);
-
-QUnit.test(
-	".removeData supports removal of hyphenated properties via array (#12786, gh-2257)",
-	function( assert ) {
-		assert.expect( 4 );
-
-		var div, plain, compare;
-
-		div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
-		plain = jQuery( {} );
-
-		// Properties should always be camelCased
-		compare = {
-
-			// From batch assignment .data({ "a-a": 1 })
-			"aA": 1,
-
-			// From property, value assignment .data( "b-b", 1 )
-			"bB": 1
+	var div = jQuery("<div/>", { id: "hyphened" }).appendTo("#qunit-fixture"),
+		datas = {
+			"non-empty": "a string",
+			"empty-string": "",
+			"one-value": 1,
+			"zero-value": 0,
+			"an-array": [],
+			"an-object": {},
+			"bool-true": true,
+			"bool-false": false,
+			// JSHint enforces double quotes,
+			// but JSON strings need double quotes to parse
+			// so we need escaped double quotes here
+			"some-json": "{ \"foo\": \"bar\" }",
+			"num-1-middle": true,
+			"num-end-2": true,
+			"2-num-start": true
 		};
 
-		// Mixed assignment
-		div.data( { "a-a": 1 } ).data( "b-b", 1 );
-		plain.data( { "a-a": 1 } ).data( "b-b", 1 );
+	expect( 24 );
 
-		assert.deepEqual(
-			div.data(), compare, "Data appears as expected. (div)"
-		);
-		assert.deepEqual(
-			plain.data(), compare, "Data appears as expected. (plain)"
-		);
+	jQuery.each( datas, function( key, val ) {
+		div.data( key, val );
 
-		div.removeData( [ "a-a", "b-b" ] );
-		plain.removeData( [ "a-a", "b-b" ] );
+		deepEqual( div.data( key ), val, "get: " + key );
+		deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
+	});
+});
 
-		assert.deepEqual(
-			div.data(), {}, "Data is empty. (div)"
-		);
-		assert.deepEqual(
-			plain.data(), {}, "Data is empty. (plain)"
-		);
-	}
-);
+test( ".removeData supports removal of hyphenated properties via array (#12786)", function() {
+	expect( 4 );
+
+	var div, plain, compare;
+
+	div = jQuery("<div>").appendTo("#qunit-fixture");
+	plain = jQuery({});
+
+	// When data is batch assigned (via plain object), the properties
+	// are not camel cased as they are with (property, value) calls
+	compare = {
+		// From batch assignment .data({ "a-a": 1 })
+		"a-a": 1,
+		// From property, value assignment .data( "b-b", 1 )
+		"bB": 1
+	};
+
+	// Mixed assignment
+	div.data({ "a-a": 1 }).data( "b-b", 1 );
+	plain.data({ "a-a": 1 }).data( "b-b", 1 );
+
+	deepEqual( div.data(), compare, "Data appears as expected. (div)" );
+	deepEqual( plain.data(), compare, "Data appears as expected. (plain)" );
+
+	div.removeData([ "a-a", "b-b" ]);
+	plain.removeData([ "a-a", "b-b" ]);
+
+	// NOTE: Timo's proposal for "propEqual" (or similar) would be nice here
+	deepEqual( div.data(), {}, "Data is empty. (div)" );
+	deepEqual( plain.data(), {}, "Data is empty. (plain)" );
+});
 
 // Test originally by Moschel
 QUnit.test( "Triggering the removeData should not throw exceptions. (#10080)", function( assert ) {
