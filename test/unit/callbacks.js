@@ -65,7 +65,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 				QUnit.test( "jQuery.Callbacks( " + showFlags( flags ) + " ) - " + filterLabel, function( assert ) {
 
-					assert.expect( 29 );
+					expect( 28 );
 
 					var cblist,
 						results = resultString.split( /\s+/ );
@@ -94,7 +94,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					assert.strictEqual( cblist.disabled(), true, ".disabled() becomes true" );
 					assert.strictEqual( cblist.locked(), true, "disabling locks" );
 
-					// Emptying while firing (#13517)
+					// #13517 - Emptying while firing
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.empty );
 					cblist.add( function() {
@@ -163,16 +163,6 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					} );
 					assert.strictEqual( output, "X", "Lock early" );
 					assert.strictEqual( cblist.locked(), true, "Locking reflected in accessor" );
-
-					// Locking while firing (gh-1990)
-					output = "X";
-					cblist = jQuery.Callbacks( flags );
-					cblist.add( cblist.lock );
-					cblist.add( function( str ) {
-						output += str;
-					} );
-					cblist.fire( "A" );
-					assert.strictEqual( output, "XA", "Locking doesn't abort execution (gh-1990)" );
 
 					// Ordering
 					output = "X";
@@ -340,8 +330,8 @@ QUnit.test( "jQuery.Callbacks.has", function( assert ) {
 	cb.add( getA );
 	assert.strictEqual( cb.has(), true, "Check if unique list has callback function(s) attached" );
 	cb.lock();
-	assert.strictEqual( cb.has(), false, "locked() list is empty and returns false" );
-} );
+	strictEqual( cb.has(), false, "locked() list is empty and returns false" );
+});
 
 QUnit.test( "jQuery.Callbacks() - adding a string doesn't cause a stack overflow", function( assert ) {
 
