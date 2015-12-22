@@ -21,8 +21,6 @@ define( [
 ], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
 	isHidden, swap, curCSS, adjustCSS, defaultDisplay, addGetHookIf, support ) {
 
-	console.log(isHidden);
-
 var
 
 	// BuildExclude
