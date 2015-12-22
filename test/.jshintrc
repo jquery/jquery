@@ -37,6 +37,8 @@
 		"url": false,
 		"t": false,
 		"q": false,
+		"equal": true,
+		"expect": true,
 
 		"jQuery": true,
 		"sinon": true,

@@ -258,12 +258,10 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #9441" );
 	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #9300" );
 
-	// Support: IE 10-11, Edge
-	// Child height is not always decimal
-	assert.equal( $divChild.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "child of a hidden element height() is wrong see #9441" );
-	assert.equal( $divChild.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "child of a hidden element innerHeight() is wrong see #9441" );
-	assert.equal( $divChild.outerHeight().toFixed( 3 ), $divNormal.outerHeight().toFixed( 3 ), "child of a hidden element outerHeight() is wrong see #9441" );
-	assert.equal( $divChild.outerHeight( true ).toFixed( 3 ), $divNormal.outerHeight( true ).toFixed( 3 ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+	equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
+	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
+	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
+	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #9441" );
@@ -271,12 +269,10 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #9441" );
 	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #9300" );
 
-	// Support: IE 10-11, Edge
-	// Child height is not always decimal
-	assert.equal( $divUnconnected.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "unconnected element height() is wrong see #9441" );
-	assert.equal( $divUnconnected.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "unconnected element innerHeight() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerHeight().toFixed( 3 ), $divNormal.outerHeight().toFixed( 3 ), "unconnected element outerHeight() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerHeight( true ).toFixed( 3 ), $divNormal.outerHeight( true ).toFixed( 3 ), "unconnected element outerHeight( true ) is wrong see #9300" );
+	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #9441" );
+	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #9441" );
+	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #9441" );
+	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
 
 	// teardown html
 	$divHiddenParent.remove();
@@ -335,12 +331,10 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #10413" );
 	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #10413" );
 
-	// Support: IE 10-11, Edge
-	// Child height is not always decimal
-	assert.equal( $divChild.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "child of a hidden element height() is wrong see #10413" );
-	assert.equal( $divChild.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "child of a hidden element innerHeight() is wrong see #10413" );
-	assert.equal( $divChild.outerHeight().toFixed( 3 ), $divNormal.outerHeight().toFixed( 3 ), "child of a hidden element outerHeight() is wrong see #10413" );
-	assert.equal( $divChild.outerHeight( true ).toFixed( 3 ), $divNormal.outerHeight( true ).toFixed( 3 ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
+	equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #10413" );
+	equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #10413" );
+	equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #10413" );
+	equal( $divChild.outerHeight(true), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
 
 	// tests that child div of an unconnected div works the same as a normal div
 	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #10413" );
@@ -348,12 +342,10 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #10413" );
 	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #10413" );
 
-	// Support: IE 10-11, Edge
-	// Child height is not always decimal
-	assert.equal( $divUnconnected.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "unconnected element height() is wrong see #10413" );
-	assert.equal( $divUnconnected.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "unconnected element innerHeight() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerHeight().toFixed( 3 ), $divNormal.outerHeight().toFixed( 3 ), "unconnected element outerHeight() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerHeight( true ).toFixed( 3 ), $divNormal.outerHeight( true ).toFixed( 3 ), "unconnected element outerHeight( true ) is wrong see #10413" );
+	equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #10413" );
+	equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #10413" );
+	equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #10413" );
+	equal( $divUnconnected.outerHeight(true), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
 
 	// teardown html
 	$divHiddenParent.remove();
