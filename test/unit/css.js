@@ -122,19 +122,8 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 QUnit.test( "css(String) computed values", function( assert ) {
 	assert.expect( 3 );
 
-	var div = jQuery( "<div/>" ).addClass( "get-computed-value" ),
-		fixture = document.getElementById( "qunit-fixture" );
-
-	div.appendTo( fixture );
-	assert.strictEqual( div.css( "padding-left" ), "500px", "should get computed value for padding-left property" );
-	assert.strictEqual( div.css( "width" ), "200px", "should get computed value for width property" );
-	assert.strictEqual( div.css( "font-size" ), "32px", "should get computed value for font-size property" );
-} );
-
-QUnit.test( "css() explicit and relative values", function( assert ) {
-	assert.expect( 29 );
-
-	var $elem = jQuery( "#nothiddendiv" );
+test( "css() explicit and relative values", 29, function() {
+	var $elem = jQuery("#nothiddendiv");
 
 	$elem.css( { "width": 1, "height": 1, "paddingLeft": "1px", "opacity": 1 } );
 	assert.equal( $elem.css( "width" ), "1px", "Initial css set or width/height works (hash)" );

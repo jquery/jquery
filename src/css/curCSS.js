@@ -76,7 +76,7 @@ if ( window.getComputedStyle ) {
 	};
 
 	curCSS = function( elem, name, computed ) {
-		var left, ret,
+		var left, rs, rsLeft, ret,
 			style = elem.style;
 
 		computed = computed || getStyles( elem );
@@ -88,7 +88,7 @@ if ( window.getComputedStyle ) {
 			ret = style[ name ];
 		}
 
-		// Simplified hack by Dean Edwards
+		// From the awesome hack by Dean Edwards
 		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
 
 		// If we're not dealing with a regular pixel number
@@ -101,13 +101,21 @@ if ( window.getComputedStyle ) {
 
 			// Remember the original values
 			left = style.left;
+			rs = elem.runtimeStyle;
+			rsLeft = rs && rs.left;
 
 			// Put in the new values to get a computed value out
+			if ( rsLeft ) {
+				rs.left = elem.currentStyle.left;
+			}
 			style.left = name === "fontSize" ? "1em" : ret;
 			ret = style.pixelLeft + "px";
 
 			// Revert the changed values
 			style.left = left;
+			if ( rsLeft ) {
+				rs.left = rsLeft;
+			}
 		}
 
 		// Support: IE<9
