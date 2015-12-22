@@ -62,6 +62,8 @@ QUnit.test( "jQuery()", function( assert ) {
 	equal( jQuery("").length, 0, "jQuery('') === jQuery([])" );
 	equal( jQuery("#").length, 0, "jQuery('#') === jQuery([])" );
 
+	equal( jQuery(obj).selector, "div", "jQuery(jQueryObj) == jQueryObj" );
+
 	// can actually yield more than one, when iframes are included, the window is an array as well
 	assert.equal( jQuery( window ).length, 1, "Correct number of elements generated for jQuery(window)" );
 
@@ -153,12 +155,52 @@ QUnit.test( "jQuery(selector, context)", function( assert ) {
 	assert.deepEqual( jQuery( "div p", jQuery( "#qunit-fixture" ) ).get(), q( "sndp", "en", "sap" ), "Basic selector with jQuery object as context" );
 } );
 
-QUnit.test( "globalEval", function( assert ) {
-	assert.expect( 3 );
-	Globals.register( "globalEvalTest" );
+test( "selector state", function() {
+	expect( 18 );
 
-	jQuery.globalEval( "globalEvalTest = 1;" );
-	assert.equal( window.globalEvalTest, 1, "Test variable assignments are global" );
+	var test;
+
+	test = jQuery( undefined );
+	equal( test.selector, "", "Empty jQuery Selector" );
+	equal( test.context, undefined, "Empty jQuery Context" );
+
+	test = jQuery( document );
+	equal( test.selector, "", "Document Selector" );
+	equal( test.context, document, "Document Context" );
+
+	test = jQuery( document.body );
+	equal( test.selector, "", "Body Selector" );
+	equal( test.context, document.body, "Body Context" );
+
+	test = jQuery("#qunit-fixture");
+	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equal( test.context, document, "#qunit-fixture Context" );
+
+	test = jQuery("#notfoundnono");
+	equal( test.selector, "#notfoundnono", "#notfoundnono Selector" );
+	equal( test.context, document, "#notfoundnono Context" );
+
+	test = jQuery( "#qunit-fixture", document );
+	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equal( test.context, document, "#qunit-fixture Context" );
+
+	test = jQuery( "#qunit-fixture", document.body );
+	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equal( test.context, document.body, "#qunit-fixture Context" );
+
+	// Test cloning
+	test = jQuery( test );
+	equal( test.selector, "#qunit-fixture", "#qunit-fixture Selector" );
+	equal( test.context, document.body, "#qunit-fixture Context" );
+
+	test = jQuery( document.body ).find("#qunit-fixture");
+	equal( test.selector, "#qunit-fixture", "#qunit-fixture find Selector" );
+	equal( test.context, document.body, "#qunit-fixture find Context" );
+});
+
+QUnit.test( "globalEval", function( assert ) {
+	expect( 2 );
+	Globals.register("globalEvalTest");
 
 	jQuery.globalEval( "var globalEvalTest = 2;" );
 	assert.equal( window.globalEvalTest, 2, "Test variable declarations are global" );
