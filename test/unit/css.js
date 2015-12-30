@@ -840,8 +840,8 @@ if ( jQuery.fn.offset ) {
 	} );
 }
 
-QUnit.test( "Do not append px (#9548, #12990)", function( assert ) {
-	assert.expect( 2 );
+QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
+	assert.expect( 3 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
 
@@ -859,6 +859,15 @@ QUnit.test( "Do not append px (#9548, #12990)", function( assert ) {
 		assert.equal( $div.css( "column-count" ), 1, "Do not append px to 'column-count'" );
 	} else {
 		assert.ok( true, "No support for column-count CSS property" );
+	}
+
+	$div.css( "animation-iteration-count", 2 );
+	if ( $div.css( "animation-iteration-count" ) ) {
+		// if $div.css( "animation-iteration-count" ) return "1",
+		// it actually return the default value of animation-iteration-count
+		assert.equal( $div.css( "animation-iteration-count" ), 2, "Do not append px to 'animation-iteration-count'" );
+	} else {
+		assert.ok( true, "No support for animation-iteration-count CSS property" );
 	}
 } );
 
