@@ -848,21 +848,21 @@ QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
 	$div.css( "fill-opacity", 1 );
 
 	// Support: Android 2.3 (no support for fill-opacity)
-	if ( $div.css( "fill-opacity" ) ) {
+	if ( $div.css( "fill-opacity" ) !== undefined ) {
 		assert.equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
 	} else {
 		assert.ok( true, "No support for fill-opacity CSS property" );
 	}
 
 	$div.css( "column-count", 1 );
-	if ( $div.css( "column-count" ) ) {
+	if ( $div.css( "column-count" ) !== undefined ) {
 		assert.equal( $div.css( "column-count" ), 1, "Do not append px to 'column-count'" );
 	} else {
 		assert.ok( true, "No support for column-count CSS property" );
 	}
 
 	$div.css( "animation-iteration-count", 2 );
-	if ( $div.css( "animation-iteration-count" ) ) {
+	if ( $div.css( "animation-iteration-count" ) !== undefined ) {
 		// if $div.css( "animation-iteration-count" ) return "1",
 		// it actually return the default value of animation-iteration-count
 		assert.equal( $div.css( "animation-iteration-count" ), 2, "Do not append px to 'animation-iteration-count'" );
