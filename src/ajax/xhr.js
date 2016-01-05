@@ -40,7 +40,20 @@ jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
 	// For all other browsers, use the standard XMLHttpRequest object
 	createStandardXHR;
 
-var xhrSupported = jQuery.ajaxSettings.xhr();
+var xhrId = 0,
+	xhrCallbacks = {},
+	xhrSupported = jQuery.ajaxSettings.xhr();
+
+// Support: IE<10
+// Open requests must be manually aborted on unload (#5280)
+// See https://support.microsoft.com/kb/2856746 for more info
+if ( window.attachEvent ) {
+	window.attachEvent( "onunload", function() {
+		for ( var key in xhrCallbacks ) {
+			xhrCallbacks[ key ]( undefined, true );
+		}
+	} );
+}
 
 // Determine support properties
 support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
@@ -59,7 +72,8 @@ if ( xhrSupported ) {
 			return {
 				send: function( headers, complete ) {
 					var i,
-						xhr = options.xhr();
+						xhr = options.xhr(),
+						id = ++xhrId;
 
 					// Open the socket
 					xhr.open(
@@ -105,6 +119,11 @@ if ( xhrSupported ) {
 						}
 					}
 
+					// Do send the request
+					// This may raise an exception which is actually
+					// handled in jQuery.ajax (so no try/catch here)
+					xhr.send( ( options.hasContent && options.data ) || null );
+
 					// Listener
 					callback = function( _, isAbort ) {
 						var status, statusText, responses;
@@ -113,6 +132,7 @@ if ( xhrSupported ) {
 						if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
 
 							// Clean up
+							delete xhrCallbacks[ id ];
 							callback = undefined;
 							xhr.onreadystatechange = jQuery.noop;
 
@@ -168,8 +188,6 @@ if ( xhrSupported ) {
 					// handled in jQuery.ajax (so no try/catch here)
 					if ( !options.async ) {
 
-						xhr.send( ( options.hasContent && options.data ) || null );
-
 						// If we're in sync mode we fire the callback
 						callback();
 					} else if ( xhr.readyState === 4 ) {
@@ -180,13 +198,8 @@ if ( xhrSupported ) {
 					} else {
 
 						// Register the callback, but delay it in case `xhr.send` throws
-						xhr.onreadystatechange = function() {
-							if ( callback ) {
-								window.setTimeout( callback );
-							}
-						};
-
-						xhr.send( ( options.hasContent && options.data ) || null );
+						// Add to the list of active xhr callbacks
+						xhr.onreadystatechange = xhrCallbacks[ id ] = callback;
 					}
 				},
 
