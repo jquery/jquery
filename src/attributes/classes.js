@@ -7,7 +7,7 @@ define( [
 var rclass = /[\t\r\n\f]/g;
 
 function getClass( elem ) {
-	return elem.getAttribute && elem.getAttribute( "class" ) || "";
+	return jQuery.attr( elem, "class" ) || "";
 }
 
 jQuery.fn.extend( {
@@ -40,7 +40,7 @@ jQuery.fn.extend( {
 					// only assign if different to avoid unneeded rendering.
 					finalValue = jQuery.trim( cur );
 					if ( curValue !== finalValue ) {
-						elem.setAttribute( "class", finalValue );
+						jQuery.attr( elem, "class", finalValue );
 					}
 				}
 			}
@@ -86,7 +86,7 @@ jQuery.fn.extend( {
 					// Only assign if different to avoid unneeded rendering.
 					finalValue = jQuery.trim( cur );
 					if ( curValue !== finalValue ) {
-						elem.setAttribute( "class", finalValue );
+						jQuery.attr( elem, "class", finalValue );
 					}
 				}
 			}
