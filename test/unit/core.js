@@ -1491,7 +1491,7 @@ QUnit.test("jQuery.parseHTML", function( assert ) {
 	assert.ok( jQuery.parseHTML("<#if><tr><p>This is a test.</p></tr><#/if>") || true, "Garbage input should not cause error" );
 });
 
-if ( jQuery.support.createHTMLDocument ) {
+if ( jQuery.support.createHTMLDocument && !/opera.*version\/12\.1/i.test( navigator.userAgent ) ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
 		assert.expect( 1 );
 
