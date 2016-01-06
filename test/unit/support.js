@@ -283,12 +283,12 @@ testIframeWithCallback(
 	} else if ( /msie 7\.0/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
-			"appendChecked": true,
+			"appendChecked": false,
 			"attributes": false,
-			"boxSizing": true,
+			"boxSizing": false,
 			"boxSizingReliable": false,
 			"change": false,
-			"checkClone": true,
+			"checkClone": false,
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": false,
@@ -297,12 +297,12 @@ testIframeWithCallback(
 			"deleteExpando": false,
 			"enctype": true,
 			"focusin": true,
-			"getSetAttribute": true,
-			"hrefNormalized": true,
+			"getSetAttribute": false,
+			"hrefNormalized": false,
 			"html5Clone": false,
 			"htmlSerialize": false,
-			"inlineBlockNeedsLayout": false,
-			"input": false,
+			"inlineBlockNeedsLayout": true,
+			"input": true,
 			"leadingWhitespace": false,
 			"noCloneChecked": false,
 			"noCloneEvent": false,
@@ -318,7 +318,7 @@ testIframeWithCallback(
 			"reliableMarginLeft": false,
 			"style": false,
 			"submit": false,
-			"tbody": true
+			"tbody": false
 		};
 	} else if ( /msie 6\.0/i.test( userAgent ) ) {
 		expected = {
