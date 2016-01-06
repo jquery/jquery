@@ -159,7 +159,8 @@ define( [
 		div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
 		contents = div.getElementsByTagName( "td" );
 		contents[ 0 ].style.cssText = "margin:0;border:0;padding:0;display:none";
-		reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
+		reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0 &&
+			contents[ 0 ].getClientRects().length === 0;
 		if ( reliableHiddenOffsetsVal ) {
 			contents[ 0 ].style.display = "";
 			contents[ 1 ].style.display = "none";
