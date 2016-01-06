@@ -16,8 +16,6 @@ define( [
 // BuildExclude
 curCSS = curCSS.curCSS;
 
-var docElem = window.document.documentElement;
-
 /**
  * Gets a window from an element
  */
@@ -162,13 +160,13 @@ jQuery.fn.extend( {
 
 	offsetParent: function() {
 		return this.map( function() {
-			var offsetParent = this.offsetParent || docElem;
+			var offsetParent = this.offsetParent;
 
 			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) &&
 				jQuery.css( offsetParent, "position" ) === "static" ) ) {
 				offsetParent = offsetParent.offsetParent;
 			}
-			return offsetParent || docElem;
+			return offsetParent || documentElement;
 		} );
 	}
 } );

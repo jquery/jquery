@@ -209,7 +209,9 @@ QUnit.test( "manipulation", function( assert ) {
 QUnit.test( "offset", function( assert ) {
 	assert.expect( 3 );
 
-	var parent = jQuery( "<div style='position:fixed;top:20px;'/>" ).appendTo( "#qunit-fixture" ),
+	var parent =
+		jQuery( "<div style='position:fixed;_position:absolute;top:20px;'/>" )
+			.appendTo( "body" ),
 		elem = jQuery( "<div style='position:absolute;top:5px;'/>" ).appendTo( parent );
 
 	assert.strictEqual( elem.offset().top, 25, ".offset getter" );

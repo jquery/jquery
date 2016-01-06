@@ -1049,10 +1049,11 @@ jQuery.each( {
 
 QUnit.test( "Effects chaining", function() {
 	var remaining = 16,
+		shrinkwrap = jQuery.support.shrinkWrapBlocks(),
 		props = [ "opacity", "height", "width", "display", "overflow" ],
-		setup = function( name, selector ) {
+		setup = function( name, selector, hiddenOverflow ) {
 			var $el = jQuery( selector );
-			return $el.data( getProps( $el[0] ) ).data( "name", name );
+			return $el.data( getProps( $el[0], hiddenOverflow ) ).data( "name", name );
 		},
 		assert = function() {
 			var data = jQuery.data( this ),
@@ -1073,19 +1074,21 @@ QUnit.test( "Effects chaining", function() {
 
 	expect( remaining );
 
+	// We need to pass jQuery.support.shrinkWrapBlocks for all methods that
+	// set overflow hidden (slide* and show/hide with speed)
 	setup( ".fadeOut().fadeIn()", "#fadein div" ).fadeOut( "fast" ).fadeIn( "fast", assert );
 	setup( ".fadeIn().fadeOut()", "#fadeout div" ).fadeIn( "fast" ).fadeOut( "fast", assert );
-	setup( ".hide().show()", "#show div" ).hide("fast").show( "fast", assert );
-	setup( ".show().hide()", "#hide div" ).show("fast").hide( "fast", assert );
-	setup( ".show().hide(easing)", "#easehide div" ).show("fast").hide( "fast", "linear", assert );
-	setup( ".toggle().toggle() - in", "#togglein div" ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle() - out", "#toggleout div" ).toggle("fast").toggle( "fast", assert );
-	setup( ".toggle().toggle(easing) - out", "#easetoggleout div" ).toggle("fast").toggle( "fast", "linear", assert );
-	setup( ".slideDown().slideUp()", "#slidedown div" ).slideDown("fast").slideUp( "fast", assert );
-	setup( ".slideUp().slideDown()", "#slideup div" ).slideUp("fast").slideDown( "fast", assert );
-	setup( ".slideUp().slideDown(easing)", "#easeslideup div" ).slideUp("fast").slideDown( "fast", "linear", assert );
-	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div" ).slideToggle("fast").slideToggle( "fast", assert );
-	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div" ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".hide().show()", "#show div",  shrinkwrap ).hide("fast").show( "fast", assert );
+	setup( ".show().hide()", "#hide div",  shrinkwrap ).show("fast").hide( "fast", assert );
+	setup( ".show().hide(easing)", "#easehide div", shrinkwrap ).show("fast").hide( "fast", "linear", assert );
+	setup( ".toggle().toggle() - in", "#togglein div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle() - out", "#toggleout div", shrinkwrap ).toggle("fast").toggle( "fast", assert );
+	setup( ".toggle().toggle(easing) - out", "#easetoggleout div", shrinkwrap ).toggle("fast").toggle( "fast", "linear", assert );
+	setup( ".slideDown().slideUp()", "#slidedown div", shrinkwrap ).slideDown("fast").slideUp( "fast", assert );
+	setup( ".slideUp().slideDown()", "#slideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", assert );
+	setup( ".slideUp().slideDown(easing)", "#easeslideup div", shrinkwrap ).slideUp("fast").slideDown( "fast", "linear", assert );
+	setup( ".slideToggle().slideToggle() - in", "#slidetogglein div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
+	setup( ".slideToggle().slideToggle() - out", "#slidetoggleout div", shrinkwrap ).slideToggle("fast").slideToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - in", "#fadetogglein div" ).fadeToggle( "fast" ).fadeToggle( "fast", assert );
 	setup( ".fadeToggle().fadeToggle() - out", "#fadetoggleout div" ).fadeToggle( "fast" ).fadeToggle( "fast", assert );
 	setup( ".fadeTo(0.5).fadeTo(1.0, easing)", "#fadeto div" ).fadeTo( "fast", 0.5 ).fadeTo( "fast", 1.0, "linear", assert );
@@ -1919,8 +1922,12 @@ QUnit.test( "Animate properly sets overflow hidden when animating width/height (
 			equal( div.css( "overflow" ), "hidden",
 				"overflow: hidden set when animating " + prop + " to " + value );
 			div.stop();
-			equal( div.css( "overflow" ), "auto",
-				"overflow: auto restored after animating " + prop + " to " + value );
+			if ( jQuery.support.shrinkWrapBlocks() ) {
+				ok( true, "cannot restore overflow, shrinkWrapBlocks" );
+			} else {
+				equal( div.css( "overflow" ), "auto",
+					"overflow: auto restored after animating " + prop + " to " + value );
+			}
 		} );
 	} );
 } );

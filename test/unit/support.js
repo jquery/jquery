@@ -25,7 +25,7 @@ QUnit.test( "zoom of doom (#13089)", function( assert ) {
 	} else {
 		ok( !document.body.style.zoom, "No zoom added to the body" );
 	}
-});
+} );
 
 if ( jQuery.css ) {
 	testIframeWithCallback(
@@ -48,6 +48,18 @@ if ( jQuery.css ) {
 			} );
 		}
 	);
+
+	testIframeWithCallback(
+		"box-sizing does not affect jQuery.support.shrinkWrapBlocks",
+		"support/shrinkWrapBlocks.html",
+		function( shrinkWrapBlocks, assert ) {
+			assert.expect( 1 );
+			assert.strictEqual(
+				shrinkWrapBlocks,
+				computedSupport.shrinkWrapBlocks,
+				"jQuery.support.shrinkWrapBlocks properties are the same"
+			);
+	} );
 }
 
 testIframeWithCallback(
@@ -116,6 +128,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -156,6 +169,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -196,6 +210,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -236,6 +251,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -276,6 +292,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": false,
 			"style": false,
 			"submit": false,
 			"tbody": true
@@ -316,6 +333,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": false,
 			"style": false,
 			"submit": false,
 			"tbody": false
@@ -356,6 +374,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": false,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": true,
 			"style": false,
 			"submit": false,
 			"tbody": false
@@ -399,6 +418,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -439,6 +459,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -479,6 +500,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -519,6 +541,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -559,6 +582,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -599,6 +623,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": false,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -639,6 +664,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -679,6 +705,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -719,6 +746,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -759,6 +787,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -799,6 +828,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true
@@ -839,6 +869,7 @@ testIframeWithCallback(
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
 			"reliableMarginLeft": true,
+			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
 			"tbody": true

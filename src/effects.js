@@ -1,6 +1,6 @@
 define( [
 	"./core",
-	"./support",
+	"./effects/support",
 	"./var/rcssNum",
 	"./var/rnotwhite",
 	"./css/var/cssExpand",
@@ -133,11 +133,13 @@ function defaultPrefilter( elem, props, opts ) {
 
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
-		anim.always( function() {
-			style.overflow = opts.overflow[ 0 ];
-			style.overflowX = opts.overflow[ 1 ];
-			style.overflowY = opts.overflow[ 2 ];
-		} );
+		if ( !support.shrinkWrapBlocks() ) {
+			anim.always( function() {
+				style.overflow = opts.overflow[ 0 ];
+				style.overflowX = opts.overflow[ 1 ];
+				style.overflowY = opts.overflow[ 2 ];
+			} );
+		}
 	}
 
 	// show/hide pass
