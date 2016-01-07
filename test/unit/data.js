@@ -878,3 +878,12 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 		}
 	}
 } );
+
+QUnit.test( ".data(camelCase) retrieves hyphenated keys", function( assert ) {
+	assert.expect( 1 );
+
+	var div = jQuery( "<div/>" );
+
+	$.data( div[ 0 ], "data-test", "data" );
+	assert.equal( div.data( "dataTest" ), "data" );
+} );
