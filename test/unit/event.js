@@ -5,6 +5,21 @@ QUnit.module( "event", {
 	teardown: moduleTeardown
 } );
 
+QUnit.test( "null or undefined handler", function( assert ) {
+	assert.expect( 2 );
+
+	// Supports Fixes bug #7229
+	try {
+		jQuery( "#firstp" ).on( "click", null );
+		ok( true, "Passing a null handler will not throw an exception" );
+	} catch ( e ) {}
+
+	try {
+		jQuery( "#firstp" ).on( "click", undefined );
+		ok( true, "Passing an undefined handler will not throw an exception" );
+	} catch ( e ) {}
+} );
+
 QUnit.test( "on() with non-null,defined data", function( assert ) {
 	assert.expect( 2 );
 
