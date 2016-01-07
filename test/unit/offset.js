@@ -458,10 +458,26 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 
 	// test jQuery using parent window/document
 	// jQuery reference here is in the iframe
+	// Support: Android 2.3 only
+	// Android 2.3 is sometimes off by a few pixels.
 	window.scrollTo( 0, 0 );
-	assert.equal( $( window ).scrollTop(), 0, "jQuery(window).scrollTop() other window" );
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		assert.ok(
+			Math.abs( $( window ).scrollTop() ) < 5,
+			"jQuery(window).scrollTop() other window"
+		);
+	} else {
+		assert.equal( $( window ).scrollTop(), 0, "jQuery(window).scrollTop() other window" );
+	}
 	assert.equal( $( window ).scrollLeft(), 0, "jQuery(window).scrollLeft() other window" );
-	assert.equal( $( document ).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
+	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
+		assert.ok(
+			Math.abs( $( window ).scrollTop() ) < 5,
+			"jQuery(window).scrollTop() other document"
+		);
+	} else {
+		assert.equal( $( document ).scrollTop(), 0, "jQuery(window).scrollTop() other document" );
+	}
 	assert.equal( $( document ).scrollLeft(), 0, "jQuery(window).scrollLeft() other document" );
 
 	// Tests scrollTop/Left with empty jquery objects

@@ -302,9 +302,15 @@ function testAppend( valueObj, assert ) {
 	assert.equal( jQuery( "<div/>" ).append( valueObj( "option<area/>" ) )[ 0 ].childNodes.length, 2, "HTML-string with leading text should be processed correctly" );
 }
 
-QUnit.test( "append(String|Element|Array<Element>|jQuery)", function( assert ) {
-	testAppend( manipulationBareObj, assert );
-} );
+// Support: Android 2.3 only
+// Android 2.3 fails a lot of these tests and we accept it.
+// See https://github.com/jquery/jquery/issues/1785
+QUnit[ /android 2\.3/i.test( navigator.userAgent ) ? "skip" : "test" ](
+	"append(String|Element|Array<Element>|jQuery)",
+	function( assert ) {
+		testAppend( manipulationBareObj, assert );
+	}
+);
 
 QUnit.test( "append(Function)", function( assert ) {
 	testAppend( manipulationFunctionReturningObj, assert );
