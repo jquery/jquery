@@ -1,5 +1,6 @@
 define( [
-	"./core"
+	"./core",
+	"./traversing"
 ], function( jQuery ) {
 
 jQuery.fn.extend( {
@@ -22,5 +23,12 @@ jQuery.fn.extend( {
 			this.off( types, selector || "**", fn );
 	}
 } );
+
+// The number of elements contained in the matched element set
+jQuery.fn.size = function() {
+	return this.length;
+};
+
+jQuery.fn.andSelf = jQuery.fn.addBack;
 
 } );
