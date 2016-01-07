@@ -2293,7 +2293,10 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 } );
 
 QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
-	assert.expect( 3 );
+	// Support: Android 2.3 only
+	// Android 2.3 doesn't fire window.onerror for errors in remote scripts
+	// but we accept this reality.
+	assert.expect( /android 2\.3/i.test( navigator.userAgent ) ? 2 : 3 );
 
 	assert.throws(function() {
 		jQuery("#qunit-fixture").html("<script>undefined(); ok( false, 'Exception not thrown' );</script>");
