@@ -500,6 +500,59 @@ QUnit.test( "html(String) tag-hyphenated elements (Bug #1987)", function( assert
 	assert.equal( j.children().text(), "text", "Tags with multiple hypens behave normally" );
 } );
 
+QUnit.test( "html(String) respect the spec on how to handle special and name-terminating chars for tag names (gh-2005)", function( assert ) {
+
+	assert.expect( 240 );
+
+	var wrapper, child, nodeName,
+		nameTerminatingChars = "\x20-\t-\r-\n-\f".split( "-" ),
+		specialChars = "[ ] { } _ - = + \\ ( ) * & ^ % $ # @ ! ~ ` ' ; ? ¥ « µ λ ⊕ ≈ ξ ℜ ♣ €".split( " " );
+
+	specialChars.push( specialChars.join( "" ) );
+
+	function buildChild( method, tagName ) {
+		wrapper = jQuery( "<div></div>" );
+		wrapper[method]( tagName );
+		return wrapper.children()[0];
+	}
+
+	function assertSpecialCharsSupport( method, nodeName ) {
+		child = buildChild( method, "<" + nodeName + "></" + nodeName + ">" );
+		assert.ok( jQuery.nodeName( child, nodeName.toUpperCase() ), "Paired tagnames with special characters" );
+
+		child = buildChild( method, "<" + nodeName + ">" );
+		assert.ok( jQuery.nodeName( child, nodeName.toUpperCase() ), "Unpaired tagnames with special characters" );
+
+		child = buildChild( method, "<" + nodeName + "/>" );
+		assert.ok( jQuery.nodeName( child, nodeName.toUpperCase() ), "Self-closing tagnames with special characters" );
+	}
+
+	function assertNameTerminatingCharsHandling( method, character ) {
+		nodeName = "div" + character + "-this-will-be-discarded";
+
+		child = buildChild( method, "<" + nodeName + "></" + nodeName + ">" );
+		assert.ok( jQuery.nodeName( child, "DIV" ), "Paired tagnames with name terminating characters" );
+
+		child = buildChild( method, "<" + nodeName + ">" );
+		assert.ok( jQuery.nodeName( child, "DIV" ), "Unpaired tagnames with name terminating characters" );
+
+		child = buildChild( method, "<" + nodeName + "/>" );
+		assert.ok( jQuery.nodeName( child, "DIV" ), "Self-closing tagnames with name terminating characters" );
+	}
+
+	jQuery.each( specialChars, function( i, character ) {
+		nodeName = "valid" + character + "tagname";
+
+		assertSpecialCharsSupport( "html", nodeName );
+		assertSpecialCharsSupport( "append", nodeName );
+	} );
+
+	jQuery.each( nameTerminatingChars, function( i, character ) {
+		assertNameTerminatingCharsHandling( "html", character );
+		assertNameTerminatingCharsHandling( "append", character );
+	} );
+} );
+
 QUnit.test( "IE8 serialization bug", function( assert ) {
 
 	assert.expect( 2 );
