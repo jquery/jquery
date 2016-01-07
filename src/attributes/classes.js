@@ -96,26 +96,60 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var type = typeof value,
-			classNames = type === "string" ? value.match( rnotwhite ) : [];
+		var type = typeof value;
 
-		return this.each( function( i ) {
-			var className,
-				self = jQuery( this ),
-				c = 0;
+		if ( typeof stateVal === "boolean" && type === "string" ) {
+			return stateVal ? this.addClass( value ) : this.removeClass( value );
+		}
 
-			if ( type === "function" ) {
-				classNames = value.call( this, i, getClass( this ), stateVal )
-					.match( rnotwhite ) || [];
-			}
+		if ( jQuery.isFunction( value ) ) {
+			return this.each( function( i ) {
+				jQuery( this ).toggleClass(
+					value.call( this, i, getClass( this ), stateVal ),
+					stateVal
+				);
+			} );
+		}
 
-			// Toggle individual class names based on presence or stateVal
-			while ( ( className = classNames[ c++ ] ) ) {
+		return this.each( function() {
+			var className, i, self, classNames;
 
-				if ( stateVal === false || stateVal !== true && self.hasClass( className ) ) {
-					self.removeClass( className );
-				} else {
-					self.addClass( className );
+			if ( type === "string" ) {
+
+				// Toggle individual class names
+				i = 0;
+				self = jQuery( this );
+				classNames = value.match( rnotwhite ) || [];
+
+				while ( ( className = classNames[ i++ ] ) ) {
+
+					// Check each className given, space separated list
+					if ( self.hasClass( className ) ) {
+						self.removeClass( className );
+					} else {
+						self.addClass( className );
+					}
+				}
+
+			// Toggle whole class name
+			} else if ( value === undefined || type === "boolean" ) {
+				className = getClass( this );
+				if ( className ) {
+
+					// store className if set
+					jQuery._data( this, "__className__", className );
+				}
+
+				// If the element has a class name or if we're passed "false",
+				// then remove the whole classname (if there was one, the above saved it).
+				// Otherwise bring back whatever was previously saved (if anything),
+				// falling back to the empty string if nothing was stored.
+				if ( this.setAttribute ) {
+					this.setAttribute( "class",
+						className || value === false ?
+						"" :
+						jQuery._data( this, "__className__" ) || ""
+					);
 				}
 			}
 		} );
