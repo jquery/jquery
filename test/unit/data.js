@@ -884,6 +884,6 @@ QUnit.test( ".data(camelCase) retrieves hyphenated keys", function( assert ) {
 
 	var div = jQuery( "<div/>" );
 
-	$.data( div[ 0 ], "data-test", "data" );
+	jQuery.data( div[ 0 ], "data-test", "data" );
 	assert.equal( div.data( "dataTest" ), "data" );
 } );
