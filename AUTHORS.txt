@@ -248,3 +248,15 @@ Richard McDaniel <rm0026@uah.edu>
 Chris Rebert <github@rebertia.com>
 Gilad Peleg <giladp007@gmail.com>
 Martin Naumann <martin@geekonaut.de>
+Bruno Pérel <brunoperel@gmail.com>
+Reed Loden <reed@reedloden.com>
+Daniel Nill <daniellnill@gmail.com>
+Yongwoo Jeon <yongwoo.jeon@navercorp.com>
+Sean Henderson <seanh.za@gmail.com>
+Adrian Olek <adrianolek@gmail.com>
+Richard Kraaijenhagen <stdin+git@riichard.com>
+Gary Ye <garysye@gmail.com>
+Christian Grete <webmaster@christiangrete.com>
+Liza Ramo <liza.h.ramo@gmail.com>
+Joelle Fleurantin <joasqueeniebee@gmail.com>
+Julian Alexander Murillo <julian.alexander.murillo@gmail.com>
