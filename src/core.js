@@ -13,7 +13,7 @@ define( [
 	class2type, toString, hasOwn, support ) {
 
 var
-	version = "@VERSION+compat",
+	version = "@VERSION",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {

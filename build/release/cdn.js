@@ -10,33 +10,29 @@ var
 	mapFile = "dist/jquery.min.map",
 
 	releaseFiles = {
-		"jquery-compat-VER.js": devFile,
-		"jquery-compat-VER.min.js": minFile,
-		"jquery-compat-VER.min.map": mapFile
+		"jquery-VER.js": devFile,
+		"jquery-VER.min.js": minFile,
+		"jquery-VER.min.map": mapFile
 	},
 
 	googleFilesCDN = [
-		"jquery-compat.js", "jquery-compat.min.js", "jquery-compat.min.map"
+		"jquery.js", "jquery.min.js", "jquery.min.map"
 	],
 
 	msFilesCDN = [
-		"jquery-compat-VER.js", "jquery-compat-VER.min.js", "jquery-compat-VER.min.map"
-	],
-
-	rver = /VER/,
-	rcompat = /\-compat\./g;
+		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map"
+	];
 
 /**
  * Generates copies for the CDNs
  */
 function makeReleaseCopies( Release ) {
-	var version = Release.newVersion.replace( "-compat", "" );
 	shell.mkdir( "-p", cdnFolder );
 
 	Object.keys( releaseFiles ).forEach( function( key ) {
 		var text,
 			builtFile = releaseFiles[ key ],
-			unpathedFile = key.replace( /VER/g, version ),
+			unpathedFile = key.replace( /VER/g, Release.newVersion ),
 			releaseFile = cdnFolder + "/" + unpathedFile;
 
 		if ( /\.map$/.test( releaseFile ) ) {
@@ -59,8 +55,6 @@ function makeArchives( Release, callback ) {
 
 	Release.chdir( Release.dir.repo );
 
-	var version = Release.newVersion.replace( "-compat", "" );
-
 	function makeArchive( cdn, files, callback ) {
 		if ( Release.preRelease ) {
 			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
@@ -74,8 +68,9 @@ function makeArchives( Release, callback ) {
 			archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream(
-				cdnFolder + "/" + cdn + "-jquery-compat-" + version + ".zip"
-			);
+				cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
+			),
+			rver = /VER/;
 
 		output.on( "close", callback );
 
@@ -87,22 +82,15 @@ function makeArchives( Release, callback ) {
 
 		files = files.map( function( item ) {
 			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
-				item.replace( rver, version );
+				item.replace( rver, Release.newVersion );
 		} );
 
-		sum = Release.exec(
-
-			// Read jQuery files
-			"md5sum " + files.join( " " ).replace( rcompat, "." ),
-			"Error retrieving md5sum"
-		);
-		fs.writeFileSync( "./" + md5file, sum );
+		sum = Release.exec( "md5sum " + files.join( " " ), "Error retrieving md5sum" );
+		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
 		files.forEach( function( file ) {
-
-			// For Google, read jquery.js, write jquery-compat.js
-			archiver.append( fs.createReadStream( file.replace( rcompat, "." ) ),
+			archiver.append( fs.createReadStream( file ),
 				{ name: path.basename( file ) } );
 		} );
 

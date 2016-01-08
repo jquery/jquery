@@ -14,8 +14,8 @@ In the spirit of open source software development, jQuery always encourages comm
 Environments in which to use jQuery
 --------------------------------------
 
-- [Browser support](http://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE6-8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](http://jquery.com/browser-support/) for more info.
-- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments.
+- [Browser support](http://jquery.com/browser-support/) differs between the master branch and the 1.x branch. Specifically, the master branch does not support legacy browsers such as IE6-8. The jQuery team continues to provide support for legacy browsers on the 1.x branch. Use the latest 1.x release if support for those browsers is required. See [browser support](http://jquery.com/browser-support/) for more info.
+- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases (2.x). The 1.x branch does not support these environments.
 
 
 What you need to build your own jQuery
@@ -94,7 +94,7 @@ Some example modules that can be excluded are:
 - **exports/global**: Exclude the attachment of global jQuery variables ($ and jQuery) to the window.
 - **exports/amd**: Exclude the AMD definition.
 
-Removing Sizzle is not supported on the `compat` branch.
+Removing Sizzle is not supported on the `1.x` branch.
 
 The build process shows a message for each dependent module it excludes or includes.
 

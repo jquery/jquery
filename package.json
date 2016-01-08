@@ -1,13 +1,13 @@
 {
-  "name": "jquery-compat",
+  "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "3.0.0-pre",
+  "version": "1.12.0-pre",
   "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {
     "name": "jQuery Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/compat/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/1.12-stable/AUTHORS.txt"
   },
   "repository": {
     "type": "git",

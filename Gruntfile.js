@@ -174,7 +174,7 @@ module.exports = function( grunt ) {
 					beautify: {
 						"ascii_only": true
 					},
-					banner: "/*! jQuery Compat v<%= pkg.version %> | " +
+					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) jQuery Foundation | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,

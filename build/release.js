@@ -7,8 +7,7 @@ module.exports = function( Release ) {
 		dist = require( "./release/dist" ),
 		ensureSizzle = require( "./release/ensure-sizzle" ),
 
-		npmTags = Release.npmTags,
-		createTag = Release._createTag;
+		npmTags = Release.npmTags;
 
 	Release.define( {
 		npmPublish: true,
@@ -19,17 +18,6 @@ module.exports = function( Release ) {
 		 */
 		checkRepoState: function( callback ) {
 			ensureSizzle( Release, callback );
-		},
-		/**
-		 * The tag for compat is different
-		 * This sets a different new version for the source repo,
-		 * but after building with the correct tag
-		 * e.g. 3.0.0+compat
-		 */
-		_createTag: function( paths ) {
-			Release.distVersion = Release.newVersion;
-			Release.newVersion = Release.newVersion + "+compat";
-			return createTag( paths );
 		},
 		/**
 		 * Generates any release artifacts that should be included in the release.

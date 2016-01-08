@@ -173,7 +173,7 @@ module.exports = function( grunt ) {
 
 					// Can't exclude sizzle on this branch
 					if ( module === "sizzle" ) {
-						grunt.log.error( "Sizzle cannot be excluded on the compat branch." );
+						grunt.log.error( "Sizzle cannot be excluded on the 1.x branch." );
 
 					// Can't exclude certain modules
 					} else if ( minimum.indexOf( module ) === -1 ) {
