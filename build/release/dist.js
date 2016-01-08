@@ -62,12 +62,12 @@ module.exports = function( Release, complete ) {
 			"dist/jquery.min.js",
 			"dist/jquery.min.map"
 		].forEach( function( file ) {
-			shell.cp( Release.dir.repo + "/" + file, distFolder );
+			shell.cp( "-f", Release.dir.repo + "/" + file, distFolder );
 		} );
 
 		// Copy other files
 		files.forEach( function( file ) {
-			shell.cp( "-r", Release.dir.repo + "/" + file, Release.dir.dist );
+			shell.cp( "-rf", Release.dir.repo + "/" + file, Release.dir.dist );
 		} );
 
 		// Write generated bower file
