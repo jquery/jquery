@@ -32,6 +32,6 @@ define( [
 	"./exports/amd"
 ], function( jQuery ) {
 
-return ( window.jQuery = window.$ = jQuery );
+return ( window.jQuery = window.jquery = window.$ = jQuery );
 
 } );
