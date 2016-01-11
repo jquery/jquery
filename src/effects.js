@@ -154,9 +154,16 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 		display = jQuery.css( elem, "display" );
 		if ( display === "none" ) {
-			display = restoreDisplay || swap( elem, { "display": "" }, function() {
-				return jQuery.css( elem, "display" );
-			} );
+			if ( restoreDisplay ) {
+				display = restoreDisplay;
+			} else {
+
+				// Get nonempty value(s) by temporarily forcing visibility
+				showHide( [ elem ], true );
+				restoreDisplay = elem.style.display || restoreDisplay;
+				display = jQuery.css( elem, "display" );
+				showHide( [ elem ] );
+			}
 		}
 
 		// Animate inline elements as inline-block
