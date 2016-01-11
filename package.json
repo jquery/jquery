@@ -48,7 +48,7 @@
     "qunit-assert-step": "1.0.3",
     "requirejs": "2.1.17",
     "sinon": "1.10.3",
-    "sizzle": "2.2.1",
+    "sizzle": "2.3.0",
     "strip-json-comments": "1.0.3",
     "testswarm": "1.1.0",
     "win-spawn": "2.0.0"
