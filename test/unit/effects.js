@@ -5,7 +5,11 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame;
+var oldRaf = window.requestAnimationFrame,
+	hideOptions = {
+		inline: function() { jQuery.style( this, "display", "none" ); },
+		cascade: function() { this.className = "hidden"; }
+	};
 
 QUnit.module( "effects", {
 	setup: function() {
@@ -131,98 +135,103 @@ QUnit.test( "show()", function( assert ) {
 	jQuery( "<div>test</div> text <span>test</span>" ).hide().remove();
 } );
 
-QUnit.test( "show(Number) - other displays", function( assert ) {
-	assert.expect( 30 );
+supportjQuery.each( hideOptions, function( type, setup ) {
+	QUnit.test( "show(Number) - " + type + " hidden", function( assert ) {
+		assert.expect( 30 );
 
-	jQuery(
-		"<div id='show-tests'>" +
-		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
-		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
-		"<ul><li></li></ul></div>" +
-		"<table id='test-table'></table>"
-	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
+		jQuery(
+			"<div id='show-tests'>" +
+			"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
+			"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody>" +
+				"</table>" +
+			"<ul><li></li></ul></div>" +
+			"<table id='test-table'></table>"
+		).appendTo( "#qunit-fixture" ).find( "*" ).each( setup );
 
-	var test,
-		old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
+		var test,
+			old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
 
-	jQuery( "#test-table" ).remove();
+		jQuery( "#test-table" ).remove();
 
-	// Note: inline elements are expected to be inline-block
-	// because we're showing width/height
-	// Can't animate width/height inline
-	// See #14344
-	test = {
-		"div": "block",
-		"p": "block",
-		"a": "inline",
-		"code": "inline",
-		"pre": "block",
-		"span": "inline",
-		"table": old ? "block" : "table",
-		"thead": old ? "block" : "table-header-group",
-		"tbody": old ? "block" : "table-row-group",
-		"tr": old ? "block" : "table-row",
-		"th": old ? "block" : "table-cell",
-		"td": old ? "block" : "table-cell",
-		"ul": "block",
-		"li": old ? "block" : "list-item"
-	};
+		// Note: inline elements are expected to be inline-block
+		// because we're showing width/height
+		// Can't animate width/height inline
+		// See #14344
+		test = {
+			"div": "block",
+			"p": "block",
+			"a": "inline",
+			"code": "inline",
+			"pre": "block",
+			"span": "inline",
+			"table": old ? "block" : "table",
+			"thead": old ? "block" : "table-header-group",
+			"tbody": old ? "block" : "table-row-group",
+			"tr": old ? "block" : "table-row",
+			"th": old ? "block" : "table-cell",
+			"td": old ? "block" : "table-cell",
+			"ul": "block",
+			"li": old ? "block" : "list-item"
+		};
 
-	jQuery.each( test, function( selector ) {
-		jQuery( selector, "#show-tests" ).show( 100 );
-	} );
-	this.clock.tick( 50 );
-	jQuery.each( test, function( selector, expected ) {
-		jQuery( selector, "#show-tests" ).each( function() {
-			assert.equal(
-				jQuery( this ).css( "display" ),
-				expected === "inline" ? "inline-block" : expected,
-				"Correct display type during animation for " + selector
-			);
+		jQuery.each( test, function( selector ) {
+			jQuery( selector, "#show-tests" ).show( 100 );
 		} );
-	} );
-	this.clock.tick( 50 );
-	jQuery.each( test, function( selector, expected ) {
-		jQuery( selector, "#show-tests" ).each( function() {
-			assert.equal( jQuery( this ).css( "display" ), expected,
-				"Correct display type after animation for " + selector );
+		this.clock.tick( 50 );
+		jQuery.each( test, function( selector, expected ) {
+			jQuery( selector, "#show-tests" ).each( function() {
+				assert.equal(
+					jQuery( this ).css( "display" ),
+					expected === "inline" ? "inline-block" : expected,
+					"Correct display type during animation for " + selector
+				);
+			} );
 		} );
-	} );
+		this.clock.tick( 50 );
+		jQuery.each( test, function( selector, expected ) {
+			jQuery( selector, "#show-tests" ).each( function() {
+				assert.equal( jQuery( this ).css( "display" ), expected,
+					"Correct display type after animation for " + selector );
+			} );
+		} );
 
-	jQuery( "#show-tests" ).remove();
+		jQuery( "#show-tests" ).remove();
+	} );
 } );
 
 // Supports #7397
-QUnit.test( "Persist correct display value", function( assert ) {
-	assert.expect( 3 );
+supportjQuery.each( hideOptions, function( type, setup ) {
+	QUnit.test( "Persist correct display value - " + type + " hidden", function( assert ) {
+		assert.expect( 3 );
 
-	jQuery( "<div id='show-tests'><span style='position:absolute;'>foo</span></div>" )
-		.appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
+		jQuery( "<div id='show-tests'><span style='position:absolute;'>foo</span></div>" )
+			.appendTo( "#qunit-fixture" ).find( "*" ).each( setup );
 
-	var $span = jQuery( "#show-tests span" ),
-		displayNone = $span.css( "display" ),
-		display = "",
-		clock = this.clock;
+		var $span = jQuery( "#show-tests span" ),
+			displayNone = $span.css( "display" ),
+			display = "",
+			clock = this.clock;
 
-	$span.show();
+		$span.show();
 
-	display = $span.css( "display" );
+		display = $span.css( "display" );
 
-	$span.hide();
+		$span.hide();
 
-	$span.fadeIn( 100, function() {
-		assert.equal( $span.css( "display" ), display, "Expecting display: " + display );
-		$span.fadeOut( 100, function() {
-			assert.equal( $span.css( "display" ), displayNone, "Expecting display: " + displayNone );
-			$span.fadeIn( 100, function() {
-				assert.equal( $span.css( "display" ), display, "Expecting display: " + display );
+		$span.fadeIn( 100, function() {
+			assert.equal( $span.css( "display" ), display, "Expecting display: " + display );
+			$span.fadeOut( 100, function() {
+				assert.equal( $span.css( "display" ), displayNone, "Expecting display: " + displayNone );
+				$span.fadeIn( 100, function() {
+					assert.equal( $span.css( "display" ), display, "Expecting display: " + display );
+				} );
 			} );
 		} );
+
+		clock.tick( 300 );
+
+		assert.expectJqData( this, $span, "olddisplay" );
 	} );
-
-	clock.tick( 300 );
-
-	assert.expectJqData( this, $span, "olddisplay" );
 } );
 
 QUnit.test( "animate(Hash, Object, Function)", function( assert ) {
