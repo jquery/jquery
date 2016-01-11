@@ -62,7 +62,7 @@ QUnit.test( "disconnected node", function( assert ) {
 
 	var result = jQuery( document.createElement( "div" ) ).offset();
 
-	// These tests are solely for master/compat consistency
+	// These tests are solely for 2.x/1.x consistency
 	// Retrieving offset on disconnected/hidden elements is not officially
 	// valid input, but will return zeros for back-compat
 	assert.equal( result.top, 0, "Check top" );
@@ -77,7 +77,7 @@ QUnit.test( "hidden (display: none) element", function( assert ) {
 
 	node.remove();
 
-	// These tests are solely for master/compat consistency
+	// These tests are solely for 2.x/1.x consistency
 	// Retrieving offset on disconnected/hidden elements is not officially
 	// valid input, but will return zeros for back-compat
 	assert.equal( result.top, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
@@ -423,7 +423,7 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 	assert.equal( $( "#scroll-1-1" ).offset().top, 11, "jQuery('#scroll-1-1').offset().top" );
 	assert.equal( $( "#scroll-1-1" ).offset().left, 11, "jQuery('#scroll-1-1').offset().left" );
 
-	// These tests are solely for master/compat consistency
+	// These tests are solely for 2.x/1.x consistency
 	// Retrieving offset on disconnected/hidden elements is not officially
 	// valid input, but will return zeros for back-compat
 	// assert.equal( $( "#hidden" ).offset().top, 0, "Hidden elements do not subtract scroll" );
