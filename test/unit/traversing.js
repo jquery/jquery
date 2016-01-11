@@ -430,6 +430,17 @@ QUnit.test( "not(jQuery)", function( assert ) {
 	assert.deepEqual( jQuery( "p" ).not( jQuery( "#ap, #sndp, .result" ) ).get(), q( "firstp", "en", "sap", "first" ), "not(jQuery)" );
 } );
 
+QUnit.test( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
+	assert.expect( 3 );
+
+	var mixedContents = jQuery( "#nonnodes" ).contents(),
+		childElements = q( "nonnodesElement" );
+
+	assert.deepEqual( mixedContents.not( "*" ).get(), [], "not *" );
+	assert.deepEqual( mixedContents.not( "[id=a],[id=b]" ).get(), childElements, "not [id=a],[id=b]" );
+	assert.deepEqual( mixedContents.not( "[id=a],*,[id=b]" ).get(), [], "not [id=a],*,[id=b]" );
+} );
+
 QUnit.test( "has(Element)", function( assert ) {
 	assert.expect( 3 );
 	var obj, detached, multipleParent;
