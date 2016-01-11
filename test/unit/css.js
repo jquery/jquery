@@ -474,26 +474,7 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 // .show(), .hide(), can be excluded from the build
 if ( jQuery.fn.show && jQuery.fn.hide ) {
 
-QUnit.test( "show(); hide()", function( assert ) {
-
-	assert.expect( 4 );
-
-	var hiddendiv, div;
-
-	hiddendiv = jQuery( "div.hidden" );
-	hiddendiv.hide();
-	assert.equal( hiddendiv.css( "display" ), "none", "Cascade-hidden div after hide()" );
-	hiddendiv.show();
-	assert.equal( hiddendiv.css( "display" ), "none", "Show does not trump CSS cascade" );
-
-	div = jQuery( "<div>" ).hide();
-	assert.equal( div.css( "display" ), "none", "Detached div hidden" );
-	div.appendTo( "#qunit-fixture" ).show();
-	assert.equal( div.css( "display" ), "block", "Initially-detached div after show()" );
-
-} );
-
-QUnit.test( "show();", function( assert ) {
+QUnit.test( "show()", function( assert ) {
 
 	assert.expect( 18 );
 
@@ -557,10 +538,19 @@ QUnit.test( "show();", function( assert ) {
 	jQuery( "<div>test</div> text <span>test</span>" ).hide().remove();
 } );
 
-QUnit.test( "show() resolves correct default display for detached nodes", function( assert ) {
-	assert.expect( 16 );
+QUnit.test( "show/hide detached nodes", function( assert ) {
+	assert.expect( 19 );
 
 	var div, span, tr;
+
+	div = jQuery( "<div>" ).hide();
+	assert.equal( div.css( "display" ), "none", "hide() updates inline style of a detached div" );
+	div.appendTo( "#qunit-fixture" );
+	assert.equal( div.css( "display" ), "none",
+		"A hidden-while-detached div is hidden after attachment" );
+	div.show();
+	assert.equal( div.css( "display" ), "block",
+		"A hidden-while-detached div can be shown after attachment" );
 
 	div = jQuery( "<div class='hidden'>" );
 	div.show().appendTo( "#qunit-fixture" );
@@ -662,6 +652,190 @@ QUnit.test( "show() after hide() should always set display to initial value (#14
 
 	div.css( "display", "inline" ).hide().show().css( "display", "list-item" ).hide().show();
 	assert.equal( div.css( "display" ), "list-item", "should get last set display value" );
+} );
+
+QUnit.test( "show/hide 3.0, default display", function( assert ) {
+
+	assert.expect( 36 );
+
+	var i,
+		$elems = jQuery( "<div/>" )
+			.appendTo( "#qunit-fixture" )
+			.html( "<div title='block'/><span title='inline'/><ul><li title='list-item'/></ul>" )
+			.find( "[title]" );
+
+	$elems.each( function() {
+		var $elem = jQuery( this ),
+			name = this.nodeName + this.className.replace( /(?=.)/, "." ) +
+				( this.getAttribute( "style" ) || "" ).replace( /.+/, "[style='$&']" ),
+			sequence = [];
+
+		for ( i = 0; i < 3; i++ ) {
+			sequence.push( ".show()" );
+			$elem.show();
+			assert.equal( $elem.css( "display" ), this.title,
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "", name + sequence.join( "" ) + " inline" );
+
+			sequence.push( ".hide()" );
+			$elem.hide();
+			assert.equal( $elem.css( "display" ), "none",
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "none", name + sequence.join( "" ) + " inline" );
+		}
+	} );
+} );
+
+QUnit.test( "show/hide 3.0, cascade display", function( assert ) {
+
+	assert.expect( 36 );
+
+	var i,
+		$elems = jQuery( "<div/>" )
+			.appendTo( "#qunit-fixture" )
+			.html( "<span class='block'/><div class='inline'/><div class='list-item'/>" )
+			.children();
+
+	$elems.each( function() {
+		var $elem = jQuery( this ),
+			name = this.nodeName + this.className.replace( /(?=.)/, "." ) +
+				( this.getAttribute( "style" ) || "" ).replace( /.+/, "[style='$&']" ),
+			sequence = [];
+
+		for ( i = 0; i < 3; i++ ) {
+			sequence.push( ".show()" );
+			$elem.show();
+			assert.equal( $elem.css( "display" ), this.className,
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "", name + sequence.join( "" ) + " inline" );
+
+			sequence.push( ".hide()" );
+			$elem.hide();
+			assert.equal( $elem.css( "display" ), "none",
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "none", name + sequence.join( "" ) + " inline" );
+		}
+	} );
+} );
+
+QUnit.test( "show/hide 3.0, inline display", function( assert ) {
+
+	assert.expect( 96 );
+
+	var i,
+		$elems = jQuery( "<div/>" )
+			.appendTo( "#qunit-fixture" )
+			.html( "<span title='block' style='display:block'/>" +
+				"<span class='list-item' title='block' style='display:block'/>" +
+				"<div title='inline' style='display:inline'/>" +
+				"<div class='list-item' title='inline' style='display:inline'/>" +
+				"<ul>" +
+					"<li title='block' style='display:block'/>" +
+					"<li class='inline' title='block' style='display:block'/>" +
+					"<li title='inline' style='display:inline'/>" +
+					"<li class='block' title='inline' style='display:inline'/>" +
+				"</ul>" )
+			.find( "[title]" );
+
+	$elems.each( function() {
+		var $elem = jQuery( this ),
+			name = this.nodeName + this.className.replace( /(?=.)/, "." ) +
+				( this.getAttribute( "style" ) || "" ).replace( /.+/, "[style='$&']" ),
+			sequence = [];
+
+		for ( i = 0; i < 3; i++ ) {
+			sequence.push( ".show()" );
+			$elem.show();
+			assert.equal( $elem.css( "display" ), this.title,
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, this.title, name + sequence.join( "" ) + " inline" );
+
+			sequence.push( ".hide()" );
+			$elem.hide();
+			assert.equal( $elem.css( "display" ), "none",
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "none", name + sequence.join( "" ) + " inline" );
+		}
+	} );
+} );
+
+QUnit.test( "show/hide 3.0, cascade hidden", function( assert ) {
+
+	assert.expect( 72 );
+
+	var i,
+		$elems = jQuery( "<div/>" )
+			.appendTo( "#qunit-fixture" )
+			.html( "<div class='hidden' title='block'/>" +
+				"<div class='hidden' title='block' style='display:none'/>" +
+				"<span class='hidden' title='inline'/>" +
+				"<span class='hidden' title='inline' style='display:none'/>" +
+				"<ul>" +
+					"<li class='hidden' title='list-item'/>" +
+					"<li class='hidden' title='list-item' style='display:none'/>" +
+				"</ul>" )
+			.find( "[title]" );
+
+	$elems.each( function() {
+		var $elem = jQuery( this ),
+			name = this.nodeName + this.className.replace( /(?=.)/, "." ) +
+				( this.getAttribute( "style" ) || "" ).replace( /.+/, "[style='$&']" ),
+			sequence = [];
+
+		for ( i = 0; i < 3; i++ ) {
+			sequence.push( ".hide()" );
+			$elem.hide();
+			assert.equal( $elem.css( "display" ), "none",
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "none", name + sequence.join( "" ) + " inline" );
+
+			sequence.push( ".show()" );
+			$elem.show();
+			assert.equal( $elem.css( "display" ), this.title,
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, this.title, name + sequence.join( "" ) + " inline" );
+		}
+	} );
+} );
+
+QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
+
+	assert.expect( 84 );
+
+	var i,
+		$elems = jQuery( "<div/>" )
+			.appendTo( "#qunit-fixture" )
+			.html( "<span title='inline' style='display:none'/>" +
+				"<span class='list-item' title='list-item' style='display:none'/>" +
+				"<div title='block' style='display:none'/>" +
+				"<div class='list-item' title='list-item' style='display:none'/>" +
+				"<ul>" +
+					"<li title='list-item' style='display:none'/>" +
+					"<li class='block' title='block' style='display:none'/>" +
+					"<li class='inline' title='inline' style='display:none'/>" +
+				"</ul>" )
+			.find( "[title]" );
+
+	$elems.each( function() {
+		var $elem = jQuery( this ),
+			name = this.nodeName + this.className.replace( /(?=.)/, "." ) +
+				( this.getAttribute( "style" ) || "" ).replace( /.+/, "[style='$&']" ),
+			sequence = [];
+
+		for ( i = 0; i < 3; i++ ) {
+			sequence.push( ".hide()" );
+			$elem.hide();
+			assert.equal( $elem.css( "display" ), "none",
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "none", name + sequence.join( "" ) + " inline" );
+
+			sequence.push( ".show()" );
+			$elem.show();
+			assert.equal( $elem.css( "display" ), this.title,
+				name + sequence.join( "" ) + " computed" );
+			assert.equal( this.style.display, "", name + sequence.join( "" ) + " inline" );
+		}
+	} );
 } );
 
 }
