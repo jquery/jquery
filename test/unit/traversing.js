@@ -323,7 +323,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "filter() with positional select
 } );
 
 QUnit.test( "closest()", function( assert ) {
-	assert.expect( 13 );
+	assert.expect( 14 );
 
 	var jq;
 
@@ -344,6 +344,12 @@ QUnit.test( "closest()", function( assert ) {
 	// Test on disconnected node
 	assert.equal( jQuery( "<div><p></p></div>" ).find( "p" ).closest( "table" ).length, 0, "Make sure disconnected closest work." );
 
+	assert.deepEqual(
+		jQuery( "#firstp" ).closest( q( "qunit-fixture" ) ).get(),
+		q( "qunit-fixture" ),
+		"Non-string match target"
+	);
+
 	// Bug #7369
 	assert.equal( jQuery( "<div foo='bar'></div>" ).closest( "[foo]" ).length, 1, "Disconnected nodes with attribute selector" );
 	assert.equal( jQuery( "<div>text</div>" ).closest( "[lang]" ).length, 0, "Disconnected nodes with text and non-existent attribute selector" );
@@ -355,10 +361,17 @@ QUnit.test( "closest()", function( assert ) {
 } );
 
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( "closest() with positional selectors", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
-	assert.deepEqual( jQuery( "#qunit-fixture" ).closest( "div:first" ).get(), [], "closest(div:first)" );
-	assert.deepEqual( jQuery( "#qunit-fixture div" ).closest( "body:first div:last" ).get(), q( "fx-tests" ), "closest(body:first div:last)" );
+	assert.deepEqual( jQuery( "#qunit-fixture" ).closest( "div:first" ).get(), [],
+		"closest(div:first)" );
+	assert.deepEqual( jQuery( "#qunit-fixture div" ).closest( "body:first div:last" ).get(), [],
+		"closest(body:first div:last)" );
+	assert.deepEqual(
+		jQuery( "#qunit-fixture div" ).closest( "body:first div:last", document ).get(),
+		[],
+		"closest(body:first div:last, document)"
+	);
 } );
 
 QUnit.test( "closest(jQuery)", function( assert ) {
