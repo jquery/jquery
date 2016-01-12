@@ -710,13 +710,12 @@ QUnit.test( "jQuery.when", function( assert ) {
 
 QUnit.test( "jQuery.when - joined", function( assert ) {
 
-	assert.expect( 195 );
+	assert.expect( 81 );
 
 	var deferreds = {
 			rawValue: 1,
 			fulfilled: jQuery.Deferred().resolve( 1 ),
 			rejected: jQuery.Deferred().reject( 0 ),
-			notified: jQuery.Deferred().notify( true ),
 			eventuallyFulfilled: jQuery.Deferred().notify( true ),
 			eventuallyRejected: jQuery.Deferred().notify( true ),
 			fulfilledStandardPromise: Promise.resolve( 1 ),
@@ -733,11 +732,6 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 			eventuallyRejected: true,
 			rejectedStandardPromise: true
 		},
-		willNotify = {
-			notified: true,
-			eventuallyFulfilled: true,
-			eventuallyRejected: true
-		},
 		counter = 49;
 
 	QUnit.stop();
@@ -752,9 +746,7 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 		jQuery.each( deferreds, function( id2, defer2 ) {
 			var shouldResolve = willSucceed[ id1 ] && willSucceed[ id2 ],
 				shouldError = willError[ id1 ] || willError[ id2 ],
-				shouldNotify = willNotify[ id1 ] || willNotify[ id2 ],
 				expected = shouldResolve ? [ 1, 1 ] : [ 0, undefined ],
-				expectedNotify = shouldNotify && [ willNotify[ id1 ], willNotify[ id2 ] ],
 				code = "jQuery.when( " + id1 + ", " + id2 + " )",
 				context1 = defer1 && jQuery.isFunction( defer1.promise ) ? defer1.promise() : window,
 				context2 = defer2 && jQuery.isFunction( defer2.promise ) ? defer2.promise() : window;
@@ -773,10 +765,6 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 				} else {
 					assert.ok( false, code + " => reject" );
 				}
-			} ).progress( function( a, b ) {
-				assert.deepEqual( [ a, b ], expectedNotify, code + " => progress" );
-				assert.strictEqual( this[ 0 ], expectedNotify[ 0 ] ? context1 : undefined, code + " => first context OK" );
-				assert.strictEqual( this[ 1 ], expectedNotify[ 1 ] ? context2 : undefined, code + " => second context OK" );
 			} ).always( restart );
 		} );
 	} );
@@ -784,19 +772,15 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 	deferreds.eventuallyRejected.reject( 0 );
 } );
 
-QUnit.test( "jQuery.when - resolved", function( assert ) {
+QUnit.test( "jQuery.when - notify does not affect resolved", function( assert ) {
 
-	assert.expect( 6 );
+	assert.expect( 3 );
 
 	var a = jQuery.Deferred().notify( 1 ).resolve( 4 ),
 		b = jQuery.Deferred().notify( 2 ).resolve( 5 ),
 		c = jQuery.Deferred().notify( 3 ).resolve( 6 );
 
-	jQuery.when( a, b, c ).progress( function( a, b, c ) {
-		assert.strictEqual( a, 1, "first notify value ok" );
-		assert.strictEqual( b, 2, "second notify value ok" );
-		assert.strictEqual( c, 3, "third notify value ok" );
-	} ).done( function( a, b, c ) {
+	jQuery.when( a, b, c ).done( function( a, b, c ) {
 		assert.strictEqual( a, 4, "first resolve value ok" );
 		assert.strictEqual( b, 5, "second resolve value ok" );
 		assert.strictEqual( c, 6, "third resolve value ok" );

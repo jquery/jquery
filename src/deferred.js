@@ -311,9 +311,7 @@ jQuery.extend( {
 				return function( value ) {
 					contexts[ i ] = this;
 					values[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
-					if ( values === progressValues ) {
-						master.notifyWith( contexts, values );
-					} else if ( !( --remaining ) ) {
+					if ( !( --remaining ) ) {
 						master.resolveWith(
 							contexts.length === 1 ? contexts[ 0 ] : contexts,
 							values
@@ -321,29 +319,29 @@ jQuery.extend( {
 					}
 				};
 			},
-			progressValues, progressContexts, resolveContexts;
+			resolveContexts;
 
-		// Add listeners to Deferred subordinates; treat others as resolved
+		// Add listeners to promise-like subordinates; treat others as resolved
 		if ( length > 0 ) {
-			progressValues = new Array( length );
-			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
+
+				// jQuery.Deferred - treated specially to get resolve-sync behavior
 				if ( resolveValues[ i ] &&
 					jQuery.isFunction( ( method = resolveValues[ i ].promise ) ) ) {
 
 					method.call( resolveValues[ i ] )
-						.progress( updateFunc( i, progressContexts, progressValues ) )
 						.done( updateFunc( i, resolveContexts, resolveValues ) )
 						.fail( master.reject );
+
+				// Other thenables
 				} else if ( resolveValues[ i ] &&
 					jQuery.isFunction( ( method = resolveValues[ i ].then ) ) ) {
 
 					method.call(
 						resolveValues[ i ],
 						updateFunc( i, resolveContexts, resolveValues ),
-						master.reject,
-						updateFunc( i, progressContexts, progressValues )
+						master.reject
 					);
 				} else {
 					updateFunc( i, resolveContexts, resolveValues )( resolveValues[ i ] );
