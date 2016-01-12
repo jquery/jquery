@@ -295,7 +295,7 @@ jQuery.extend( {
 
 	// Deferred helper
 	when: function() {
-		var method,
+		var method, resolveContexts,
 			i = 0,
 			resolveValues = slice.call( arguments ),
 			length = resolveValues.length,
@@ -306,20 +306,19 @@ jQuery.extend( {
 			// the master Deferred.
 			master = jQuery.Deferred(),
 
-			// Update function for both resolve and progress values
-			updateFunc = function( i, contexts, values ) {
+			// Update function for both resolving subordinates
+			updateFunc = function( i ) {
 				return function( value ) {
-					contexts[ i ] = this;
-					values[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
+					resolveContexts[ i ] = this;
+					resolveValues[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
 					if ( !( --remaining ) ) {
 						master.resolveWith(
-							contexts.length === 1 ? contexts[ 0 ] : contexts,
-							values
+							resolveContexts.length === 1 ? resolveContexts[ 0 ] : resolveContexts,
+							resolveValues
 						);
 					}
 				};
-			},
-			resolveContexts;
+			};
 
 		// Add listeners to promise-like subordinates; treat others as resolved
 		if ( length > 0 ) {
@@ -331,7 +330,7 @@ jQuery.extend( {
 					jQuery.isFunction( ( method = resolveValues[ i ].promise ) ) ) {
 
 					method.call( resolveValues[ i ] )
-						.done( updateFunc( i, resolveContexts, resolveValues ) )
+						.done( updateFunc( i ) )
 						.fail( master.reject );
 
 				// Other thenables
@@ -340,11 +339,11 @@ jQuery.extend( {
 
 					method.call(
 						resolveValues[ i ],
-						updateFunc( i, resolveContexts, resolveValues ),
+						updateFunc( i ),
 						master.reject
 					);
 				} else {
-					updateFunc( i, resolveContexts, resolveValues )( resolveValues[ i ] );
+					updateFunc( i )( resolveValues[ i ] );
 				}
 			}
 
