@@ -295,7 +295,7 @@ jQuery.extend( {
 
 	// Deferred helper
 	when: function() {
-		var method,
+		var method, resolveContexts,
 			i = 0,
 			resolveValues = slice.call( arguments ),
 			length = resolveValues.length,
@@ -306,47 +306,44 @@ jQuery.extend( {
 			// the master Deferred.
 			master = jQuery.Deferred(),
 
-			// Update function for both resolve and progress values
-			updateFunc = function( i, contexts, values ) {
+			// Update function for both resolving subordinates
+			updateFunc = function( i ) {
 				return function( value ) {
-					contexts[ i ] = this;
-					values[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
-					if ( values === progressValues ) {
-						master.notifyWith( contexts, values );
-					} else if ( !( --remaining ) ) {
+					resolveContexts[ i ] = this;
+					resolveValues[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
+					if ( !( --remaining ) ) {
 						master.resolveWith(
-							contexts.length === 1 ? contexts[ 0 ] : contexts,
-							values
+							resolveContexts.length === 1 ? resolveContexts[ 0 ] : resolveContexts,
+							resolveValues
 						);
 					}
 				};
-			},
-			progressValues, progressContexts, resolveContexts;
+			};
 
-		// Add listeners to Deferred subordinates; treat others as resolved
+		// Add listeners to promise-like subordinates; treat others as resolved
 		if ( length > 0 ) {
-			progressValues = new Array( length );
-			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
+
+				// jQuery.Deferred - treated specially to get resolve-sync behavior
 				if ( resolveValues[ i ] &&
 					jQuery.isFunction( ( method = resolveValues[ i ].promise ) ) ) {
 
 					method.call( resolveValues[ i ] )
-						.progress( updateFunc( i, progressContexts, progressValues ) )
-						.done( updateFunc( i, resolveContexts, resolveValues ) )
+						.done( updateFunc( i ) )
 						.fail( master.reject );
+
+				// Other thenables
 				} else if ( resolveValues[ i ] &&
 					jQuery.isFunction( ( method = resolveValues[ i ].then ) ) ) {
 
 					method.call(
 						resolveValues[ i ],
-						updateFunc( i, resolveContexts, resolveValues ),
-						master.reject,
-						updateFunc( i, progressContexts, progressValues )
+						updateFunc( i ),
+						master.reject
 					);
 				} else {
-					updateFunc( i, resolveContexts, resolveValues )( resolveValues[ i ] );
+					updateFunc( i )( resolveValues[ i ] );
 				}
 			}
 
