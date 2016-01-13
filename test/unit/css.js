@@ -696,6 +696,22 @@ QUnit.test( "show/hide 3.0, default display", function( assert ) {
 	} );
 } );
 
+QUnit.test( "show/hide 3.0, default body display", function( assert ) {
+
+	assert.expect( 2 );
+
+	var hideBody = supportjQuery( "<style>body{display:none}</style>" ).appendTo( document.head ),
+		body = jQuery( document.body );
+
+	assert.equal( body.css( "display" ), "none", "Correct initial display" );
+
+	body.show();
+
+	assert.equal( body.css( "display" ), "block", "Correct display after .show()" );
+
+	hideBody.remove();
+} );
+
 QUnit.test( "show/hide 3.0, cascade display", function( assert ) {
 
 	assert.expect( 36 );
