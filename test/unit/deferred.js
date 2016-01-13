@@ -566,7 +566,6 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 		// but a custom getStackHook+exceptionHook pair could save a raw form and
 		// format it to a string only when an exception actually occurs.
 		// For the unit test we just ensure the plumbing works.
-console.trace();
 		return "NO STACK FOR YOU";
 	};
 

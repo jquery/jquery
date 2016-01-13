@@ -11,10 +11,8 @@ jQuery.Deferred.exceptionHook = function( error, stack ) {
 
 	// Support: IE9
 	// Console exists when dev tools are open, which can happen at any time
-	var warn = window.console && window.console.warn;
-
-	if ( warn && error && rerrorNames.test( error.name ) ) {
-		warn.call( window.console, "jQuery.Deferred exception: " + error.message, stack );
+	if ( window.console && window.console.warn && error && rerrorNames.test( error.name ) ) {
+		window.console.warn( "jQuery.Deferred exception: " + error.message, stack );
 	}
 };
 
