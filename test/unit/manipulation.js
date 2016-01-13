@@ -2575,7 +2575,7 @@ QUnit.test( "insertAfter, insertBefore, etc do not work when destination is orig
 			"<div id='test4087-multiple'><div class='test4087-multiple'>1</div><div class='test4087-multiple'>2</div></div>"
 		].join( "" ) ).appendTo( "#qunit-fixture" );
 
-		// complex case based on http://jsfiddle.net/pbramos/gZ7vB/
+		// complex case based on https://jsfiddle.net/pbramos/gZ7vB/
 		jQuery( "#test4087-complex div" )[ name ]( "#test4087-complex li:last-child div:last-child" );
 		assert.equal( jQuery( "#test4087-complex li:last-child div" ).length, name === "replaceAll" ? 1 : 2, name + " a node to itself, complex case." );
 

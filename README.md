@@ -1,4 +1,4 @@
-[jQuery](http://jquery.com/) — New Wave JavaScript
+[jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
 Contribution Guides
@@ -6,15 +6,15 @@ Contribution Guides
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
-1. [Getting Involved](http://contribute.jquery.org/)
-2. [Core Style Guide](http://contribute.jquery.org/style-guide/js/)
-3. [Writing Code for jQuery Foundation Projects](http://contribute.jquery.org/code/)
+1. [Getting Involved](https://contribute.jquery.org/)
+2. [Core Style Guide](https://contribute.jquery.org/style-guide/js/)
+3. [Writing Code for jQuery Foundation Projects](https://contribute.jquery.org/code/)
 
 
 Environments in which to use jQuery
 --------------------------------------
 
-- [Browser support](http://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](http://jquery.com/browser-support/) for more info.
+- [Browser support](https://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](https://jquery.com/browser-support/) for more info.
 - To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments.
 
 
@@ -23,7 +23,7 @@ What you need to build your own jQuery
 
 In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
-For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
+For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
 
 OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
@@ -176,9 +176,9 @@ grunt watch
 Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
-- Mac: [MAMP download](http://www.mamp.info/en/index.html)
+- Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
-- [Mongoose (most platforms)](http://code.google.com/p/mongoose/)
+- [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
 
 
@@ -250,7 +250,7 @@ The following are some commands that can be used there:
 * `Ctrl + S` - save
 * `Ctrl + Q` - quit
 
-[QUnit](http://api.qunitjs.com) Reference
+[QUnit](https://api.qunitjs.com) Reference
 -----------------
 
 ### Test methods ###
@@ -373,4 +373,4 @@ Questions?
 ----------
 
 If you have any questions, please feel free to ask on the
-[Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
+[Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
