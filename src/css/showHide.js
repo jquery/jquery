@@ -6,19 +6,27 @@ define( [
 
 var defaultDisplayMap = {};
 
-function setDefaultDisplay( elem ) {
-	var doc = elem.ownerDocument,
+function getDefaultDisplay( elem ) {
+	var temp,
+		doc = elem.ownerDocument,
 		nodeName = elem.nodeName,
-		temp = doc.body.appendChild( doc.createElement( nodeName ) ),
-		display = jQuery.css( temp, "display" );
+		display = defaultDisplayMap[ nodeName ];
+
+	if ( display ) {
+		return display;
+	}
+
+	temp = doc.body.appendChild( doc.createElement( nodeName ) ),
+	display = jQuery.css( temp, "display" );
 
 	temp.parentNode.removeChild( temp );
 
 	if ( display === "none" ) {
 		display = "block";
 	}
+	defaultDisplayMap[ nodeName ] = display;
 
-	return ( defaultDisplayMap[ nodeName ] = display );
+	return display;
 }
 
 function showHide( elements, show ) {
@@ -47,7 +55,7 @@ function showHide( elements, show ) {
 				}
 			}
 			if ( elem.style.display === "" && jQuery.css( elem, "display" ) === "none" ) {
-				values[ index ] = defaultDisplayMap[ elem.nodeName ] || setDefaultDisplay( elem );
+				values[ index ] = getDefaultDisplay( elem );
 			}
 		} else {
 			if ( display !== "none" ) {
