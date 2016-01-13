@@ -430,6 +430,23 @@ QUnit.test( "not(jQuery)", function( assert ) {
 	assert.deepEqual( jQuery( "p" ).not( jQuery( "#ap, #sndp, .result" ) ).get(), q( "firstp", "en", "sap", "first" ), "not(jQuery)" );
 } );
 
+QUnit.test( "contents().not(':not(:not(*)')", function( assert ) {
+	assert.expect( 1 );
+
+	var elem = jQuery( "<div>foo<b>bar</b></div>" );
+
+	assert.deepEqual( elem.contents().not( ":not(:not(*))" ).get(), [ ], "contents().not(':not(:not(*))')" );
+} );
+
+QUnit.test( "contents().not(':not(:not(:not(*))')", function( assert ) {
+	assert.expect( 2 );
+
+	var nodes = jQuery( "<div>foo<b>bar</b></div>" ).contents().not( ":not(:not(:not(*)))" ).get();
+
+	assert.deepEqual( nodes.length, 1, "contents().not(':not(:not(:not(*)))') length" );
+	assert.deepEqual( nodes[0].nodeType, 1, "contents().not(':not(:not(:not(*)))') nodeType" );
+} );
+
 QUnit.test( "has(Element)", function( assert ) {
 	assert.expect( 3 );
 	var obj, detached, multipleParent;
