@@ -495,9 +495,9 @@ QUnit.test( "html(String) tag-hyphenated elements (Bug #1987)", function( assert
 	} );
 
 	var j = jQuery( "<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>" );
-	assert.ok( jQuery.nodeName( j[ 0 ], "TR-MULTIPLE-HYPHENS" ), "Tags with multiple hypens" );
-	assert.ok( jQuery.nodeName( j.children()[ 0 ], "TD-WITH-HYPHEN" ), "Tags with multiple hypens" );
-	assert.equal( j.children().text(), "text", "Tags with multiple hypens behave normally" );
+	assert.ok( jQuery.nodeName( j[ 0 ], "TR-MULTIPLE-HYPHENS" ), "Tags with multiple hyphens" );
+	assert.ok( jQuery.nodeName( j.children()[ 0 ], "TD-WITH-HYPHEN" ), "Tags with multiple hyphens" );
+	assert.equal( j.children().text(), "text", "Tags with multiple hyphens behave normally" );
 } );
 
 QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function( assert ) {

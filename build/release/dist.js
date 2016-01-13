@@ -73,7 +73,7 @@ module.exports = function( Release, files, complete ) {
 		Release.exec( "git add .", "Error adding files." );
 		Release.exec(
 			"git commit -m 'Release " + Release.newVersion + "'",
-			"Error commiting files."
+			"Error committing files."
 		);
 		console.log();
 

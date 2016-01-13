@@ -364,7 +364,7 @@ QUnit.module( "ajax", {
 				},
 				cache: false,
 				beforeSend: function( xhr, settings ) {
-					// Remove the random number, but ensure the cashe-buster param is there
+					// Remove the random number, but ensure the cache-buster param is there
 					var url = settings.url.replace( /\d+/, "" );
 					assert.equal( url, "data/name.html?abc&devo=hat&_=#brownies", "Make sure that the URL has its hash." );
 					return false;
