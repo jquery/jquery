@@ -6,7 +6,7 @@ QUnit.module( "event", {
 } );
 
 QUnit.test( "null or undefined handler", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 4 );
 
 	// Supports Fixes bug #7229
 	try {
@@ -18,6 +18,13 @@ QUnit.test( "null or undefined handler", function( assert ) {
 		jQuery( "#firstp" ).on( "click", undefined );
 		assert.ok( true, "Passing an undefined handler will not throw an exception" );
 	} catch ( e ) {}
+
+	var expectedElem = jQuery( "#firstp" );
+	var actualElem = expectedElem.on( "click", null );
+	assert.equal(actualElem, expectedElem, "Passing a null handler should return the original element");
+
+	actualElem = expectedElem.on( "click", undefined );
+	assert.equal(actualElem, expectedElem, "Passing a null handler should return the original element");
 } );
 
 QUnit.test( "on() with non-null,defined data", function( assert ) {
