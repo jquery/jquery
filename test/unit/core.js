@@ -449,7 +449,7 @@ QUnit.test( "isFunction", function( assert ) {
 } );
 
 QUnit.test( "isNumeric", function( assert ) {
-	assert.expect( 38 );
+	assert.expect( 41 );
 
 	var t = jQuery.isNumeric,
 		ToString = function( value ) {
@@ -464,8 +464,29 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.ok( t( -16 ), "Negative integer number" );
 	assert.ok( t( 0 ), "Zero integer number" );
 	assert.ok( t( 32 ), "Positive integer number" );
+
+	if ( +"0b1" === 1 ) {
+		assert.ok( t( "0b111110" ), "Binary integer literal string" ); // jshint ignore:line
+	} else {
+		assert.ok( true, "Browser does not support binary integer literal" );
+	}
+
 	assert.ok( t( "040" ), "Octal integer literal string" );
+
 	assert.ok( t( "0xFF" ), "Hexadecimal integer literal string" );
+
+	if ( +"0b1" === 1 ) {
+		assert.ok( t( 0b111110 ), "Binary integer literal" ); // jshint ignore:line
+	} else {
+		assert.ok( true, "Browser does not support binary integer literal" );
+	}
+
+	if ( +"0o1" === 1 ) {
+		assert.ok( t( 0o76 ), "Octal integer literal" ); // jshint ignore:line
+	} else {
+		assert.ok( true, "Browser does not support octal integer literal" );
+	}
+
 	assert.ok( t( 0xFFF ), "Hexadecimal integer literal" );
 	assert.ok( t( "-1.6" ), "Negative floating point string" );
 	assert.ok( t( "4.536" ), "Positive floating point string" );
@@ -475,7 +496,7 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.ok( t( 8e5 ), "Exponential notation" );
 	assert.ok( t( "123e-2" ), "Exponential notation string" );
 
-	assert.equal( t( new ToString( "42" ) ), false, "Custom .toString returning number" );
+	assert.equal( t( new ToString( "42" ) ), false, "Only limited to strings and numbers" );
 	assert.equal( t( "" ), false, "Empty string" );
 	assert.equal( t( "        " ), false, "Whitespace characters string" );
 	assert.equal( t( "\t\t" ), false, "Tab characters string" );
