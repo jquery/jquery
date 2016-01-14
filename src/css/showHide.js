@@ -54,7 +54,12 @@ function showHide( elements, show ) {
 					elem.style.display = "";
 				}
 			}
-			if ( elem.style.display === "" && jQuery.css( elem, "display" ) === "none" ) {
+			if ( elem.style.display === "" && jQuery.css( elem, "display" ) === "none" &&
+
+					// Support: Firefox <=42 - 43
+					// Don't set inline display on disconnected elements with computed display: none
+					jQuery.contains( elem.ownerDocument, elem ) ) {
+
 				values[ index ] = getDefaultDisplay( elem );
 			}
 		} else {
