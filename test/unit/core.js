@@ -589,7 +589,7 @@ QUnit.test( "jQuery('html')", function( assert ) {
 	assert.ok( s, "Creating a script" );
 	assert.ok( !jQuery[ "foo" ], "Make sure the script wasn't executed prematurely" );
 	jQuery( "body" ).append( "<script>jQuery.foo='test';</script>" );
-	assert.ok( jQuery[ "foo" ], "Executing a scripts contents in the right context" );
+	assert.ok( jQuery[ "foo" ], "Executing a script's contents in the right context" );
 
 	// Test multi-line HTML
 	div = jQuery( "<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>" )[ 0 ];

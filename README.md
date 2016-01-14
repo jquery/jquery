@@ -14,8 +14,8 @@ In the spirit of open source software development, jQuery always encourages comm
 Environments in which to use jQuery
 --------------------------------------
 
-- [Browser support](https://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](https://jquery.com/browser-support/) for more info.
-- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments.
+- [Browser support](https://jquery.com/browser-support/)
+- jQuery also supports Node, browser extensions, and other non-browser environments.
 
 
 What you need to build your own jQuery
@@ -102,8 +102,6 @@ As a special case, you may also replace Sizzle by using a special flag `grunt cu
 - **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/master/src/selector-native.js) file for details.
 
 *Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
-
-*Note*: Removing Sizzle is not supported on the `compat` branch.
 
 The build process shows a message for each dependent module it excludes or includes.
 

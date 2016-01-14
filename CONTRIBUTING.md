@@ -137,5 +137,3 @@ Click "Load with AMD" after loading the test page.
 ### Browser support
 
 Remember that jQuery supports multiple browsers and their versions; any contributed code must work in all of them. You can refer to the [browser support page](https://jquery.com/browser-support/) for the current list of supported browsers.
-
-Note that browser support differs depending on whether you are targeting the `master` or `compat` branch.
