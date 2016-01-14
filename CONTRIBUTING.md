@@ -134,6 +134,12 @@ Alternatively, you can **load tests in AMD** to avoid the need for rebuilding al
 Click "Load with AMD" after loading the test page.
 
 
+### Repo organization
+
+The jQuery source is organized with AMD modules and then concatenated and compiled at build time.
+
+jQuery also contains some special modules we call "var modules", which are placed in folders named "var". At build time, these small modules are compiled to simple var statements. This makes it easy for us to share variables across modules. Browse the "src" folder for examples.
+
 ### Browser support
 
 Remember that jQuery supports multiple browsers and their versions; any contributed code must work in all of them. You can refer to the [browser support page](https://jquery.com/browser-support/) for the current list of supported browsers.
