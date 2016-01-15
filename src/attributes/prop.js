@@ -79,7 +79,7 @@ jQuery.extend( {
 	}
 } );
 
-// Support: IE<=11
+// Support: IE <=11 only
 // Accessing the selectedIndex property
 // forces the browser to respect setting selected
 // on the option
