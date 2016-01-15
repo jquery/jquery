@@ -796,6 +796,24 @@ QUnit.test( "prop('tabindex', value)", function( assert ) {
 	assert.equal( clone[ 0 ].getAttribute( "tabindex" ), "1", "set tabindex on cloned element" );
 } );
 
+QUnit.test( "option.prop('selected', true) affects select.selectedIndex (gh-2732)", function( assert ) {
+	assert.expect( 1 );
+
+	var $select = jQuery( "<select/>" )
+		.addClass( "check-select-index" )
+		.append(
+			jQuery( "<option/>" ).val( "a" ).text( "One" ),
+			jQuery( "<option/>" ).val( "b" ).text( "Two" ),
+			jQuery( "<option/>" ).val( "c" ).text( "Three" )
+		)
+		.find( "[value=a]" ).prop( "selected", true ).end()
+		.find( "[value=c]" ).prop( "selected", true ).end().appendTo( "#qunit-fixture" );
+
+	$select.find( "[value=b]" ).prop( "selected", true );
+
+	assert.equal( $select[ 0 ].selectedIndex, 1, "Setting option selected affects selectedIndex" );
+} );
+
 QUnit.test( "removeProp(String)", function( assert ) {
 	assert.expect( 6 );
 	var attributeNode = document.createAttribute( "irrelevant" ),
