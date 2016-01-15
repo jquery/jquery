@@ -797,21 +797,34 @@ QUnit.test( "prop('tabindex', value)", function( assert ) {
 } );
 
 QUnit.test( "option.prop('selected', true) affects select.selectedIndex (gh-2732)", function( assert ) {
-	assert.expect( 1 );
+	assert.expect( 2 );
 
-	var $select = jQuery( "<select/>" )
-		.addClass( "check-select-index" )
-		.append(
+	function addOptions( $elem ) {
+		return $elem.append(
 			jQuery( "<option/>" ).val( "a" ).text( "One" ),
 			jQuery( "<option/>" ).val( "b" ).text( "Two" ),
 			jQuery( "<option/>" ).val( "c" ).text( "Three" )
 		)
 		.find( "[value=a]" ).prop( "selected", true ).end()
-		.find( "[value=c]" ).prop( "selected", true ).end().appendTo( "#qunit-fixture" );
+		.find( "[value=c]" ).prop( "selected", true ).end();
+	}
 
+	var $optgroup,
+		$select = jQuery( "<select/>" );
+
+	// Check select with options
+	addOptions( $select ).appendTo( "#qunit-fixture" );
+	$select.find( "[value=b]" ).prop( "selected", true );
+	assert.equal( $select[ 0 ].selectedIndex, 1, "Setting option selected affects selectedIndex" );
+
+	$select.empty();
+
+	// Check select with optgroup
+	$optgroup = jQuery( "<optgroup/>" );
+	addOptions( $optgroup ).appendTo( $select );
 	$select.find( "[value=b]" ).prop( "selected", true );
 
-	assert.equal( $select[ 0 ].selectedIndex, 1, "Setting option selected affects selectedIndex" );
+	assert.equal( $select[ 0 ].selectedIndex, 1, "Setting option in optgroup selected affects selectedIndex" );
 } );
 
 QUnit.test( "removeProp(String)", function( assert ) {
