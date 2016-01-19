@@ -10,7 +10,8 @@ define( [
 	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./event/trigger",
-	"./deferred"
+	"./deferred",
+	"./serialize" // jQuery.param
 ], function( jQuery, document, rnotwhite, location, nonce, rquery ) {
 
 var
