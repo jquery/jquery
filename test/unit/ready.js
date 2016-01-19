@@ -69,4 +69,12 @@ QUnit.module( "ready" );
 			"Argument passed to fn in jQuery(document).ready( fn ) should be jQuery" );
 	} );
 
+	QUnit.test( "Promise.resolve(jQuery.ready)", function( assert ) {
+		assert.expect( 1 );
+		var done = assert.async();
+		Promise.resolve( jQuery.ready ).then( function() {
+			assert.ok( true, "Native promised resolved" );
+			done();
+		} );
+	} );
 } )();
