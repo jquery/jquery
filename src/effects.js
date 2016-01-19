@@ -238,7 +238,7 @@ function defaultPrefilter( elem, props, opts ) {
 			dataShow[ prop ] = propTween.start;
 			if ( hidden ) {
 				propTween.end = propTween.start;
-				propTween.start = prop === "width" || prop === "height" ? 1 : 0;
+				propTween.start = 0;
 			}
 		}
 	}
