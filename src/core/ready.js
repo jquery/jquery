@@ -4,7 +4,7 @@ define( [
 ], function( jQuery, document ) {
 
 var readyCallbacks = [],
-	readyFiring = -1,
+	readyFiring = false,
 	whenReady = function( fn ) {
 		readyCallbacks.push( fn );
 	};
@@ -50,16 +50,16 @@ jQuery.extend( {
 		whenReady = function( fn ) {
 			readyCallbacks.push( fn );
 
-			if ( !++readyFiring ) {
+			if ( !readyFiring ) {
+				readyFiring = true;
 				while ( readyCallbacks.length ) {
 					fn = readyCallbacks.shift();
 					if ( jQuery.isFunction( fn ) ) {
 						fn.call( document, jQuery );
 					}
 				}
+				readyFiring = false;
 			}
-
-			readyFiring--;
 		};
 
 		whenReady();
