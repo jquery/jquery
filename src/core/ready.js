@@ -1,17 +1,16 @@
 define( [
 	"../core",
-	"../var/document",
-	"../deferred"
+	"../var/document"
 ], function( jQuery, document ) {
 
-// The deferred used on DOM ready
-var readyList;
+var readyCallbacks = [],
+	readyFiring = -1,
+	whenReady = function( fn ) {
+		readyCallbacks.push( fn );
+	};
 
 jQuery.fn.ready = function( fn ) {
-
-	// Add the callback
-	jQuery.ready.promise().done( fn );
-
+	whenReady( fn );
 	return this;
 };
 
@@ -33,7 +32,6 @@ jQuery.extend( {
 		}
 	},
 
-	// Handle when the DOM is ready
 	ready: function( wait ) {
 
 		// Abort if there are pending holds or we're already ready
@@ -49,10 +47,27 @@ jQuery.extend( {
 			return;
 		}
 
-		// If there are functions bound, to execute
-		readyList.resolveWith( document, [ jQuery ] );
+		whenReady = function( fn ) {
+			readyCallbacks.push( fn );
+
+			if ( !++readyFiring ) {
+				while ( readyCallbacks.length ) {
+					fn = readyCallbacks.shift();
+					if ( jQuery.isFunction( fn ) ) {
+						fn.call( document, jQuery );
+					}
+				}
+			}
+
+			readyFiring--;
+		};
+
+		whenReady();
 	}
 } );
+
+// Make jQuery.ready promise compatible (gh-1778)
+jQuery.ready.then = jQuery.fn.ready;
 
 /**
  * The ready event handler and self cleanup method
@@ -63,34 +78,23 @@ function completed() {
 	jQuery.ready();
 }
 
-jQuery.ready.promise = function( obj ) {
-	if ( !readyList ) {
+// Catch cases where $(document).ready() is called
+// after the browser event has already occurred.
+// Support: IE9-10 only
+// Older IE sometimes signals "interactive" too soon
+if ( document.readyState === "complete" ||
+	( document.readyState !== "loading" && !document.documentElement.doScroll ) ) {
 
-		readyList = jQuery.Deferred();
+	// Handle it asynchronously to allow scripts the opportunity to delay ready
+	window.setTimeout( jQuery.ready );
 
-		// Catch cases where $(document).ready() is called
-		// after the browser event has already occurred.
-		// Support: IE9-10 only
-		// Older IE sometimes signals "interactive" too soon
-		if ( document.readyState === "complete" ||
-			( document.readyState !== "loading" && !document.documentElement.doScroll ) ) {
+} else {
 
-			// Handle it asynchronously to allow scripts the opportunity to delay ready
-			window.setTimeout( jQuery.ready );
+	// Use the handy event callback
+	document.addEventListener( "DOMContentLoaded", completed );
 
-		} else {
-
-			// Use the handy event callback
-			document.addEventListener( "DOMContentLoaded", completed );
-
-			// A fallback to window.onload, that will always work
-			window.addEventListener( "load", completed );
-		}
-	}
-	return readyList.promise( obj );
-};
-
-// Kick off the DOM ready check even if the user does not
-jQuery.ready.promise();
+	// A fallback to window.onload, that will always work
+	window.addEventListener( "load", completed );
+}
 
 } );
