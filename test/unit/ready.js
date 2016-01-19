@@ -2,6 +2,7 @@ QUnit.module( "ready" );
 
 ( function() {
 	var notYetReady, noEarlyExecution,
+		promisified = Promise.resolve( jQuery.ready ),
 		order = [],
 		args = {};
 
@@ -70,11 +71,19 @@ QUnit.module( "ready" );
 	} );
 
 	QUnit.test( "Promise.resolve(jQuery.ready)", function( assert ) {
-		assert.expect( 1 );
-		var done = assert.async();
+		assert.expect( 2 );
+
+		var beforeReady = assert.async();
+		var afterReady = assert.async();
+
+		promisified.then( function() {
+			assert.ok( true, "Native promised resolved" );
+			beforeReady();
+		} );
+
 		Promise.resolve( jQuery.ready ).then( function() {
 			assert.ok( true, "Native promised resolved" );
-			done();
+			afterReady();
 		} );
 	} );
 } )();
