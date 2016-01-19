@@ -29,10 +29,12 @@ QUnit.module( "ready" );
 	// Bind to the ready event in every possible way.
 	jQuery( makeHandler( "a" ) );
 	jQuery( document ).ready( makeHandler( "b" ) );
+	jQuery.when( jQuery.ready ).done( makeHandler( "c" ) );
 
 	// Do it twice, just to be sure.
-	jQuery( makeHandler( "c" ) );
-	jQuery( document ).ready( makeHandler( "d" ) );
+	jQuery( makeHandler( "d" ) );
+	jQuery( document ).ready( makeHandler( "e" ) );
+	jQuery.when( jQuery.ready ).done( makeHandler( "f" ) );
 
 	noEarlyExecution = order.length === 0;
 
@@ -44,7 +46,7 @@ QUnit.module( "ready" );
 			"Handlers bound to DOM ready should not execute before DOM ready" );
 
 		// Ensure execution order.
-		assert.deepEqual( order, [ "a", "b", "c", "d" ],
+		assert.deepEqual( order, [ "a", "b", "c", "d", "e", "f" ],
 			"Bound DOM ready handlers should execute in on-order" );
 
 		// Ensure handler argument is correct.
