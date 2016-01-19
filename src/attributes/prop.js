@@ -5,8 +5,7 @@ define( [
 	"../selector"
 ], function( jQuery, access, support ) {
 
-var accessIndex,
-	rfocusable = /^(?:input|select|textarea|button)$/i,
+var rfocusable = /^(?:input|select|textarea|button)$/i,
 	rclickable = /^(?:a|area)$/i;
 
 jQuery.fn.extend( {
@@ -87,19 +86,24 @@ jQuery.extend( {
 // The getter ensures a default option is selected
 // when in an optgroup
 if ( !support.optSelected ) {
-	accessIndex = function( elem ) {
-		var parent = elem.parentNode;
-		if ( parent ) {
-			parent.selectedIndex;
-
+	jQuery.propHooks.selected = {
+		get: function( elem ) {
+			var parent = elem.parentNode;
 			if ( parent && parent.parentNode ) {
 				parent.parentNode.selectedIndex;
 			}
+			return null;
+		},
+		set: function( elem ) {
+			var parent = elem.parentNode;
+			if ( parent ) {
+				parent.selectedIndex;
+
+				if ( parent && parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
+			}
 		}
-	};
-	jQuery.propHooks.selected = {
-		get: accessIndex,
-		set: accessIndex
 	};
 }
 
