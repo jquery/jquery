@@ -7,7 +7,6 @@ define( [
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
-	"./css/var/isHidden",
 	"./css/var/getStyles",
 	"./css/var/swap",
 	"./css/curCSS",
@@ -19,7 +18,7 @@ define( [
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
-	isHidden, getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
+	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
 
 var
 

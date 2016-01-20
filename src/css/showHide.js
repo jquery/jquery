@@ -1,8 +1,8 @@
 define( [
 	"../core",
 	"../data/var/dataPriv",
-	"../css/var/isHidden"
-], function( jQuery, dataPriv, isHidden ) {
+	"../css/var/isHiddenWithinTree"
+], function( jQuery, dataPriv, isHiddenWithinTree ) {
 
 var defaultDisplayMap = {};
 
@@ -95,7 +95,7 @@ jQuery.fn.extend( {
 		}
 
 		return this.each( function() {
-			if ( isHidden( this ) ) {
+			if ( isHiddenWithinTree( this ) ) {
 				jQuery( this ).show();
 			} else {
 				jQuery( this ).hide();
