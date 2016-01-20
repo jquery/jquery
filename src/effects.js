@@ -4,7 +4,7 @@ define( [
 	"./var/rcssNum",
 	"./var/rnotwhite",
 	"./css/var/cssExpand",
-	"./css/var/isHidden",
+	"./css/var/isHiddenWithinTree",
 	"./css/var/swap",
 	"./css/adjustCSS",
 	"./data/var/dataPriv",
@@ -17,7 +17,7 @@ define( [
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, rnotwhite, cssExpand, isHidden, swap,
+], function( jQuery, document, rcssNum, rnotwhite, cssExpand, isHiddenWithinTree, swap,
 	adjustCSS, dataPriv, showHide ) {
 
 var
@@ -82,7 +82,7 @@ function defaultPrefilter( elem, props, opts ) {
 		anim = this,
 		orig = {},
 		style = elem.style,
-		hidden = elem.nodeType && isHidden( elem ),
+		hidden = elem.nodeType && isHiddenWithinTree( elem ),
 		dataShow = dataPriv.get( elem, "fxshow" );
 
 	// Queue-skipping animations hijack the fx hooks
@@ -479,7 +479,7 @@ jQuery.fn.extend( {
 	fadeTo: function( speed, to, easing, callback ) {
 
 		// Show any hidden elements after setting opacity to 0
-		return this.filter( isHidden ).css( "opacity", 0 ).show()
+		return this.filter( isHiddenWithinTree ).css( "opacity", 0 ).show()
 
 			// Animate to the value specified
 			.end().animate( { opacity: to }, speed, easing, callback );
