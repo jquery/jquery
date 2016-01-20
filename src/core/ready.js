@@ -55,6 +55,9 @@ jQuery.extend( {
 				while ( readyCallbacks.length ) {
 					fn = readyCallbacks.shift();
 					if ( jQuery.isFunction( fn ) ) {
+
+						// Prefer sync with no try/catch here
+						// Backwards-compatible, maintain execution order
 						fn.call( document, jQuery );
 					}
 				}
@@ -66,7 +69,7 @@ jQuery.extend( {
 	}
 } );
 
-// Make jQuery.ready promise compatible (gh-1778)
+// Make jQuery.ready Promise consumable (gh-1778)
 jQuery.ready.then = jQuery.fn.ready;
 
 /**
