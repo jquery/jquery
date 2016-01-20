@@ -534,14 +534,32 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 		oldWarn = window.console.warn;
 
 	window.console.warn = function( msg ) {
-		assert.ok( /barf/.test( msg ), "Message: " + msg );
+
+		// Support: Chrome < 42
+		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
+		// not a function" error, not mentioning the function name. This has been fixed
+		// in Chrome 42. Relax this test there.
+		// This affects our Android 5.0 & Yandex.Browser testing.
+		var oldChromium = false;
+		if ( /chrome/i.test( navigator.userAgent ) ) {
+			oldChromium = parseInt(
+					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
+		}
+		if ( oldChromium ) {
+			assert.ok( /(?:barf|undefined)/.test( msg ), "Message: " + msg );
+		} else {
+			assert.ok( /barf/.test( msg ), "Message: " + msg );
+		}
 	};
 	jQuery.when(
 		defer.then( function() {
+
 			// Should get an error
 			jQuery.barf();
 		} ).then( null, jQuery.noop ),
+
 		defer.then( function() {
+
 			// Should NOT get an error
 			throw new Error( "Make me a sandwich" );
 		} ).then( null, jQuery.noop )
@@ -562,6 +580,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 		oldWarn = window.console.warn;
 
 	jQuery.Deferred.getStackHook = function() {
+
 		// Default exceptionHook assumes the stack is in a form console.warn can log,
 		// but a custom getStackHook+exceptionHook pair could save a raw form and
 		// format it to a string only when an exception actually occurs.
@@ -570,7 +589,22 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 	};
 
 	window.console.warn = function( msg, stack ) {
-		assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
+
+		// Support: Chrome < 42
+		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
+		// not a function" error, not mentioning the function name. This has been fixed
+		// in Chrome 42. Relax this test there.
+		// This affects our Android 5.0 & Yandex.Browser testing.
+		var oldChromium = false;
+		if ( /chrome/i.test( navigator.userAgent ) ) {
+			oldChromium = parseInt(
+					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
+		}
+		if ( oldChromium ) {
+			assert.ok( /(?:cough_up_hairball|undefined)/.test( msg ), "Function mentioned: " + msg );
+		} else {
+			assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
+		}
 		assert.ok( /NO STACK FOR YOU/.test( stack ), "Stack trace included: " + stack );
 	};
 	defer.then( function() {
