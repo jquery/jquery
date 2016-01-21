@@ -84,4 +84,18 @@ QUnit.module( "ready" );
 			done.pop()();
 		} );
 	} );
+
+	QUnit.test( "Error in ready callback does not halt all future executions (gh-1823)", function( assert ) {
+		assert.expect( 2 );
+
+		assert.throws( function() {
+			jQuery( function() {
+				throw new Error( "Ready handler error" );
+			} );
+		}, "First ready handler throws an error" );
+
+		jQuery( function() {
+			assert.ok( true, "Subsequent handler called" );
+		} );
+	} );
 } )();
