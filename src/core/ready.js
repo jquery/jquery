@@ -52,16 +52,21 @@ jQuery.extend( {
 
 			if ( !readyFiring ) {
 				readyFiring = true;
-				while ( readyCallbacks.length ) {
-					fn = readyCallbacks.shift();
-					if ( jQuery.isFunction( fn ) ) {
 
-						// Prefer sync with no try/catch here
-						// Backwards-compatible, maintain execution order
-						fn.call( document, jQuery );
+				// Prevent errors from freezing future callback execution (gh-1823)
+				try {
+					while ( readyCallbacks.length ) {
+						fn = readyCallbacks.shift();
+						if ( jQuery.isFunction( fn ) ) {
+
+							// Prefer sync with no try/catch here
+							// Backwards-compatible, maintain execution order
+							fn.call( document, jQuery );
+						}
 					}
+				} finally {
+					readyFiring = false;
 				}
-				readyFiring = false;
 			}
 		};
 
