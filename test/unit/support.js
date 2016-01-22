@@ -89,10 +89,11 @@ testIframeWithCallback(
 );
 
 ( function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /edge\//i.test( userAgent ) ) {
+		version = userAgent.match( /edge\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -102,7 +103,7 @@ testIframeWithCallback(
 			"change": true,
 			"checkClone": true,
 			"checkOn": true,
-			"clearCloneStyle": false,
+			"clearCloneStyle": version >= 13,
 			"cors": true,
 			"createHTMLDocument": true,
 			"cssFloat": true,
