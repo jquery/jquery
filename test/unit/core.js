@@ -496,7 +496,7 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.ok( t( 8e5 ), "Exponential notation" );
 	assert.ok( t( "123e-2" ), "Exponential notation string" );
 
-	assert.equal( t( new ToString( "42" ) ), false, "Custom .toString returning number" );
+	assert.equal( t( new ToString( "42" ) ), false, "Only limited to strings and numbers" );
 	assert.equal( t( "" ), false, "Empty string" );
 	assert.equal( t( "        " ), false, "Whitespace characters string" );
 	assert.equal( t( "\t\t" ), false, "Tab characters string" );
