@@ -12,7 +12,7 @@ function showHide( elements, show ) {
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
 		
-		if ( elem.getAttribute('hidden') !== "hidden") {
+		if ( elem.getAttribute("hidden") !== "hidden") {
 			values[ index ] = show === true;
 		}
 	}
