@@ -59,8 +59,8 @@ jQuery.extend( {
 						fn = readyCallbacks.shift();
 						if ( jQuery.isFunction( fn ) ) {
 
-							// Prefer sync with no try/catch here
-							// Backwards-compatible, maintain execution order
+							// For backwards compatibility,
+							// invoke synchronously and with document context
 							fn.call( document, jQuery );
 						}
 					}
