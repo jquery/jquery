@@ -27,6 +27,16 @@ QUnit.module( "ready" );
 		};
 	}
 
+	// Suppress the first error
+	var onerror = window.onerror;
+	window.onerror = function() {
+		window.onerror = onerror;
+	};
+
+	jQuery( function() {
+		throw new Error( "Subsequent callbacks called after an error" );
+	} );
+
 	// Bind to the ready event in every possible way.
 	jQuery( makeHandler( "a" ) );
 	jQuery( document ).ready( makeHandler( "b" ) );
