@@ -406,11 +406,13 @@ QUnit.test( "passing undefined is a setter #5571", function( assert ) {
 } );
 
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
-	assert.expect( 60 );
+	assert.expect( 120 );
 
 	var parent = jQuery( "#foo" ).css({ width: "200px", height: "200px", "font-size": "16px" }),
 		el_bb = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;box-sizing:border-box;'></div>" ).appendTo( parent ),
-		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent );
+		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent ),
+		el_bb_np = jQuery( "<div style='margin:5px; padding:0px; border:0px solid green;box-sizing:border-box;'></div>" ).appendTo( parent ),
+		el_np = jQuery( "<div style='margin:5px; padding:0px; border:0px solid green;'></div>" ).appendTo( parent );
 
 	jQuery.each( {
 		"number": { set: 100, expected: 100 },
@@ -421,25 +423,49 @@ QUnit.test( "setters with and without box-sizing:border-box", function( assert )
 		assert.equal( el_bb.innerWidth( values.set ).width(), values.expected - 2, "test border-box innerWidth(" + units + ") by roundtripping" );
 		assert.equal( el_bb.outerWidth( values.set ).width(), values.expected - 6, "test border-box outerWidth(" + units + ") by roundtripping" );
 		assert.equal( el_bb.outerWidth( values.set, false ).width(), values.expected - 6, "test border-box outerWidth(" + units + ", false) by roundtripping" );
-		assert.equal( el_bb.outerWidth( values.set, true ).width(), values.expected - 16, "test border-box innerWidth(" + units + ", true) by roundtripping" );
+		assert.equal( el_bb.outerWidth( values.set, true ).width(), values.expected - 16, "test border-box outerWidth(" + units + ", true) by roundtripping" );
 
 		assert.equal( el_bb.height( values.set ).height(), values.expected, "test border-box height(" + units + ") by roundtripping" );
 		assert.equal( el_bb.innerHeight( values.set ).height(), values.expected - 2, "test border-box innerHeight(" + units + ") by roundtripping" );
 		assert.equal( el_bb.outerHeight( values.set ).height(), values.expected - 6, "test border-box outerHeight(" + units + ") by roundtripping" );
 		assert.equal( el_bb.outerHeight( values.set, false ).height(), values.expected - 6, "test border-box outerHeight(" + units + ", false) by roundtripping" );
-		assert.equal( el_bb.outerHeight( values.set, true ).height(), values.expected - 16, "test border-box innerHeight(" + units + ", true) by roundtripping" );
+		assert.equal( el_bb.outerHeight( values.set, true ).height(), values.expected - 16, "test border-box outerHeight(" + units + ", true) by roundtripping" );
 
 		assert.equal( el.width( values.set ).width(), values.expected, "test non-border-box width(" + units + ") by roundtripping" );
 		assert.equal( el.innerWidth( values.set ).width(), values.expected - 2, "test non-border-box innerWidth(" + units + ") by roundtripping" );
 		assert.equal( el.outerWidth( values.set ).width(), values.expected - 6, "test non-border-box outerWidth(" + units + ") by roundtripping" );
 		assert.equal( el.outerWidth( values.set, false ).width(), values.expected - 6, "test non-border-box outerWidth(" + units + ", false) by roundtripping" );
-		assert.equal( el.outerWidth( values.set, true ).width(), values.expected - 16, "test non-border-box innerWidth(" + units + ", true) by roundtripping" );
+		assert.equal( el.outerWidth( values.set, true ).width(), values.expected - 16, "test non-border-box outerWidth(" + units + ", true) by roundtripping" );
 
 		assert.equal( el.height( values.set ).height(), values.expected, "test non-border-box height(" + units + ") by roundtripping" );
 		assert.equal( el.innerHeight( values.set ).height(), values.expected - 2, "test non-border-box innerHeight(" + units + ") by roundtripping" );
 		assert.equal( el.outerHeight( values.set ).height(), values.expected - 6, "test non-border-box outerHeight(" + units + ") by roundtripping" );
 		assert.equal( el.outerHeight( values.set, false ).height(), values.expected - 6, "test non-border-box outerHeight(" + units + ", false) by roundtripping" );
-		assert.equal( el.outerHeight( values.set, true ).height(), values.expected - 16, "test non-border-box innerHeight(" + units + ", true) by roundtripping" );
+		assert.equal( el.outerHeight( values.set, true ).height(), values.expected - 16, "test non-border-box outerHeight(" + units + ", true) by roundtripping" );
+
+		assert.equal( el_bb_np.width( values.set ).width(), values.expected, "test border-box width and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.innerWidth( values.set ).width(), values.expected, "test border-box innerWidth and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.outerWidth( values.set ).width(), values.expected, "test border-box outerWidth and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.outerWidth( values.set, false ).width(), values.expected, "test border-box outerWidth and negative padding(" + units + ", false) by roundtripping" );
+		assert.equal( el_bb_np.outerWidth( values.set, true ).width(), values.expected - 10, "test border-box outerWidth and negative padding(" + units + ", true) by roundtripping" );
+
+		assert.equal( el_bb_np.height( values.set ).height(), values.expected, "test border-box height  and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.innerHeight( values.set ).height(), values.expected, "test border-box innerHeight and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.outerHeight( values.set ).height(), values.expected, "test border-box outerHeight and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_bb_np.outerHeight( values.set, false ).height(), values.expected, "test border-box outerHeight and negative padding(" + units + ", false) by roundtripping" );
+		assert.equal( el_bb_np.outerHeight( values.set, true ).height(), values.expected - 10, "test border-box outerHeight and negative padding(" + units + ", true) by roundtripping" );
+
+		assert.equal( el_np.width( values.set ).width(), values.expected, "test non-border-box width  and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.innerWidth( values.set ).width(), values.expected, "test non-border-box innerWidth and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.outerWidth( values.set ).width(), values.expected, "test non-border-box outerWidth and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.outerWidth( values.set, false ).width(), values.expected, "test non-border-box outerWidth and negative padding(" + units + ", false) by roundtripping" );
+		assert.equal( el_np.outerWidth( values.set, true ).width(), values.expected - 10, "test non-border-box outerWidth and negative padding(" + units + ", true) by roundtripping" );
+
+		assert.equal( el_np.height( values.set ).height(), values.expected, "test non-border-box height and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.innerHeight( values.set ).height(), values.expected, "test non-border-box innerHeight and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.outerHeight( values.set ).height(), values.expected, "test non-border-box outerHeight and negative padding(" + units + ") by roundtripping" );
+		assert.equal( el_np.outerHeight( values.set, false ).height(), values.expected, "test non-border-box outerHeight and negative padding(" + units + ", false) by roundtripping" );
+		assert.equal( el_np.outerHeight( values.set, true ).height(), values.expected - 10, "test non-border-box outerHeight and negative padding(" + units + ", true) by roundtripping" );
 	} );
 } );
 
