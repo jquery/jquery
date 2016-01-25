@@ -1,81 +1,29 @@
 define( [
-	"../core",
-	"../data/var/dataPriv",
-	"../css/var/isHiddenWithinTree"
-], function( jQuery, dataPriv, isHiddenWithinTree ) {
-
-var defaultDisplayMap = {};
-
-function getDefaultDisplay( elem ) {
-	var temp,
-		doc = elem.ownerDocument,
-		nodeName = elem.nodeName,
-		display = defaultDisplayMap[ nodeName ];
-
-	if ( display ) {
-		return display;
-	}
-
-	temp = doc.body.appendChild( doc.createElement( nodeName ) ),
-	display = jQuery.css( temp, "display" );
-
-	temp.parentNode.removeChild( temp );
-
-	if ( display === "none" ) {
-		display = "block";
-	}
-	defaultDisplayMap[ nodeName ] = display;
-
-	return display;
-}
+	"../core"
+], function( jQuery ) {
 
 function showHide( elements, show ) {
-	var display, elem,
+	var elem,
 		values = [],
 		index = 0,
 		length = elements.length;
 
-	// Determine new display value for elements that need to change
+	// Determine whether the element's hidden status needs to be changed
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-
-		display = elem.style.display;
-		if ( show ) {
-
-			// Since we force visibility upon cascade-hidden elements, an immediate (and slow)
-			// check is required in this first loop unless we have a nonempty display value (either
-			// inline or about-to-be-restored)
-			if ( display === "none" ) {
-				values[ index ] = dataPriv.get( elem, "display" ) || null;
-				if ( !values[ index ] ) {
-					elem.style.display = "";
-				}
-			}
-			if ( elem.style.display === "" && jQuery.css( elem, "display" ) === "none" &&
-
-					// Support: Firefox <=42 - 43
-					// Don't set inline display on disconnected elements with computed display: none
-					jQuery.contains( elem.ownerDocument, elem ) ) {
-
-				values[ index ] = getDefaultDisplay( elem );
-			}
-		} else {
-			if ( display !== "none" ) {
-				values[ index ] = "none";
-
-				// Remember what we're overwriting
-				dataPriv.set( elem, "display", display );
-			}
+		if ( elem.getAttribute( "hidden" ) !== "hidden" ) {
+			values[ index ] = show === true;
 		}
 	}
 
-	// Set the display of the elements in a second loop to avoid constant reflow
+	// Set the hidden status of an element in a second loop to prevent constant reflow
 	for ( index = 0; index < length; index++ ) {
 		if ( values[ index ] != null ) {
-			elements[ index ].style.display = values[ index ];
+			if ( values [ index ] ) {
+				elements[ index ].removeAttribute( "hidden" );
+			} else {
+				elements[ index ].setAttribute( "hidden", "hidden" );
+			}
 		}
 	}
 
@@ -95,7 +43,7 @@ jQuery.fn.extend( {
 		}
 
 		return this.each( function() {
-			if ( isHiddenWithinTree( this ) ) {
+			if ( this.getAttribute( "hidden" ) !== null ) {
 				jQuery( this ).show();
 			} else {
 				jQuery( this ).hide();
