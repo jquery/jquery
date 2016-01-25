@@ -449,7 +449,7 @@ QUnit.test( "isFunction", function( assert ) {
 } );
 
 QUnit.test( "isNumeric", function( assert ) {
-	assert.expect( 41 );
+	assert.expect( 43 );
 
 	var t = jQuery.isNumeric,
 		ToString = function( value ) {
@@ -464,30 +464,6 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.ok( t( -16 ), "Negative integer number" );
 	assert.ok( t( 0 ), "Zero integer number" );
 	assert.ok( t( 32 ), "Positive integer number" );
-
-	if ( +"0b1" === 1 ) {
-		assert.ok( t( "0b111110" ), "Binary integer literal string" ); // jshint ignore:line
-	} else {
-		assert.ok( true, "Browser does not support binary integer literal" );
-	}
-
-	assert.ok( t( "040" ), "Octal integer literal string" );
-
-	assert.ok( t( "0xFF" ), "Hexadecimal integer literal string" );
-
-	if ( +"0b1" === 1 ) {
-		assert.ok( t( 0b111110 ), "Binary integer literal" ); // jshint ignore:line
-	} else {
-		assert.ok( true, "Browser does not support binary integer literal" );
-	}
-
-	if ( +"0o1" === 1 ) {
-		assert.ok( t( 0o76 ), "Octal integer literal" ); // jshint ignore:line
-	} else {
-		assert.ok( true, "Browser does not support octal integer literal" );
-	}
-
-	assert.ok( t( 0xFFF ), "Hexadecimal integer literal" );
 	assert.ok( t( "-1.6" ), "Negative floating point string" );
 	assert.ok( t( "4.536" ), "Positive floating point string" );
 	assert.ok( t( -2.6 ), "Negative floating point number" );
@@ -495,6 +471,26 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.ok( t( 1.5999999999999999 ), "Very precise floating point number" );
 	assert.ok( t( 8e5 ), "Exponential notation" );
 	assert.ok( t( "123e-2" ), "Exponential notation string" );
+	assert.ok( t( "040" ), "Legacy octal integer literal string" );
+	assert.ok( t( "0xFF" ), "Hexadecimal integer literal string (0x...)" );
+	assert.ok( t( "0Xba" ), "Hexadecimal integer literal string (0X...)" );
+	assert.ok( t( 0xFFF ), "Hexadecimal integer literal" );
+
+	if ( +"0b1" === 1 ) {
+		assert.ok( t( "0b111110" ), "Binary integer literal string (0b...)" );
+		assert.ok( t( "0B111110" ), "Binary integer literal string (0B...)" );
+	} else {
+		assert.ok( true, "Browser does not support binary integer literal (0b...)" );
+		assert.ok( true, "Browser does not support binary integer literal (0B...)" );
+	}
+
+	if ( +"0o1" === 1 ) {
+		assert.ok( t( "0o76" ), "Octal integer literal string (0o...)" );
+		assert.ok( t( "0O76" ), "Octal integer literal string (0O...)" );
+	} else {
+		assert.ok( true, "Browser does not support octal integer literal (0o...)" );
+		assert.ok( true, "Browser does not support octal integer literal (0O...)" );
+	}
 
 	assert.equal( t( new ToString( "42" ) ), false, "Only limited to strings and numbers" );
 	assert.equal( t( "" ), false, "Empty string" );
