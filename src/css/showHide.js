@@ -12,8 +12,8 @@ function showHide( elements, show ) {
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
 		
-		if ( elem.getAttribute('hidden') !== 'hidden') {
-			values[ index ] = show;
+		if ( elem.getAttribute('hidden') !== "hidden") {
+			values[ index ] = show === true;
 		}
 	}
 
@@ -21,10 +21,10 @@ function showHide( elements, show ) {
 	for ( index = 0; index < length; index++ ) {
 		if ( values[ index ] != null ) {
 			if (values [ index ]) {
-				elements[ index ].removeAttribute('hidden');
+				elements[ index ].removeAttribute("hidden");
 			}
 			else {
-				elements[ index ].setAttribute('hidden', 'hidden');
+				elements[ index ].setAttribute("hidden", "hidden");
 			}
 		}
 	}
@@ -45,7 +45,7 @@ jQuery.fn.extend( {
 		}
 
 		return this.each( function() {
-			if ( isHiddenWithinTree( this ) ) {
+			if ( this.getAttribute("hidden") !== null ) {
 				jQuery( this ).show();
 			} else {
 				jQuery( this ).hide();
