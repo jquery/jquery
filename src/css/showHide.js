@@ -24,7 +24,7 @@ function showHide( elements, show ) {
 				elements[ index ].removeAttribute('hidden');
 			}
 			else {
-				elements[ index ].setAttribute('hidden', 'hidden';
+				elements[ index ].setAttribute('hidden', 'hidden');
 			}
 		}
 	}
