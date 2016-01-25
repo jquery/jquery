@@ -66,6 +66,12 @@ jQuery.extend( {
 					}
 				} finally {
 					readyFiring = false;
+
+					// If there was an error in a ready callback,
+					// continue with the rest (gh-1823)
+					if ( readyCallbacks.length ) {
+						whenReady();
+					}
 				}
 			}
 		};
