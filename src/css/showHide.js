@@ -11,8 +11,7 @@ function showHide( elements, show ) {
 	// Determine whether the element's hidden status needs to be changed
 	for ( ; index < length; index++ ) {
 		elem = elements[ index ];
-		
-		if ( elem.getAttribute("hidden") !== "hidden") {
+		if ( elem.getAttribute( "hidden" ) !== "hidden" ) {
 			values[ index ] = show === true;
 		}
 	}
@@ -20,11 +19,10 @@ function showHide( elements, show ) {
 	// Set the hidden status of an element in a second loop to prevent constant reflow
 	for ( index = 0; index < length; index++ ) {
 		if ( values[ index ] != null ) {
-			if (values [ index ]) {
-				elements[ index ].removeAttribute("hidden");
-			}
-			else {
-				elements[ index ].setAttribute("hidden", "hidden");
+			if ( values [ index ] ) {
+				elements[ index ].removeAttribute( "hidden" );
+			} else {
+				elements[ index ].setAttribute( "hidden", "hidden" );
 			}
 		}
 	}
@@ -45,7 +43,7 @@ jQuery.fn.extend( {
 		}
 
 		return this.each( function() {
-			if ( this.getAttribute("hidden") !== null ) {
+			if ( this.getAttribute( "hidden" ) !== null ) {
 				jQuery( this ).show();
 			} else {
 				jQuery( this ).hide();
