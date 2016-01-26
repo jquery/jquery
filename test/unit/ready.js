@@ -27,19 +27,30 @@ QUnit.module( "ready" );
 		};
 	}
 
-	// Suppress the first error
-	var onerror = window.onerror;
-	window.onerror = function() {
-		window.onerror = onerror;
-	};
+	function throwError( num ) {
 
-	jQuery( function() {
-		throw new Error( "Subsequent callbacks called after an error" );
-	} );
+		// Not a global QUnit failure
+		var onerror = window.onerror;
+		window.onerror = function() {
+			window.onerror = onerror;
+		};
+
+		throw new Error( "Ready error " + num );
+	}
 
 	// Bind to the ready event in every possible way.
 	jQuery( makeHandler( "a" ) );
 	jQuery( document ).ready( makeHandler( "b" ) );
+
+	// Throw in an error to ensure other callbacks are called
+	jQuery( function() {
+		throwError( 1 );
+	} );
+
+	// Throw two errors in a row
+	jQuery( function() {
+		throwError( 2 );
+	} );
 	jQuery.when( jQuery.ready ).done( makeHandler( "c" ) );
 
 	// Do it twice, just to be sure.
@@ -100,7 +111,7 @@ QUnit.module( "ready" );
 
 		assert.throws( function() {
 			jQuery( function() {
-				throw new Error( "Ready handler error" );
+				throw new Error( "Ready error" );
 			} );
 		}, "First ready handler throws an error" );
 
