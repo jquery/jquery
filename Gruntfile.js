@@ -101,7 +101,7 @@ module.exports = function( grunt ) {
 
 					"requirejs/require.js": "requirejs/require.js",
 
-					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js",
+					"sinon/sinon.js": "sinon/pkg/sinon.js",
 					"sinon/LICENSE.txt": "sinon/LICENSE"
 				}
 			}
