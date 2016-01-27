@@ -1037,6 +1037,16 @@ QUnit.test( "can't get css for disconnected in IE<9, see #10254 and #8388", func
 	assert.equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
 } );
 
+QUnit.test( "Ensure styles are retrieving from parsed html on document fragments", function( assert ) {
+	assert.expect( 1 );
+
+	var $span = jQuery(
+		jQuery.parseHTML( "<span style=\"font-family: Cuprum,sans-serif; font-size: 14px; color: #999999;\">some text</span>" )
+	);
+
+	assert.equal( $span.css( "font-size" ), "14px", "Font-size retrievable on parsed HTML node" );
+} );
+
 QUnit.test( "can't get background-position in IE<9, see #10796", function( assert ) {
 	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
 		units = [
