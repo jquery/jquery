@@ -28,6 +28,7 @@
     "babel-preset-es2015": "6.3.13",
     "commitplease": "2.3.0",
     "core-js": "2.0.3",
+    "cross-spawn": "2.1.5",
     "grunt": "0.4.5",
     "grunt-babel": "6.0.0",
     "grunt-cli": "0.1.13",
@@ -51,8 +52,7 @@
     "sinon": "1.17.3",
     "sizzle": "2.3.0",
     "strip-json-comments": "2.0.0",
-    "testswarm": "1.1.0",
-    "win-spawn": "2.0.0"
+    "testswarm": "1.1.0"
   },
   "scripts": {
     "build": "npm install && grunt",
