@@ -536,3 +536,9 @@ QUnit.asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, functio
 	iframeDoc.write( "<body><form id='navigate' action='?'></form></body>" );
 	iframeDoc.close();
 } );
+
+QUnit.test( "Ensure escapeSelector exists (escape tests in Sizzle)", function( assert ) {
+	assert.expect( 1 );
+
+	assert.equal( jQuery.escapeSelector( "#foo.bar" ), "\\#foo\\.bar", "escapeSelector present" );
+} );
