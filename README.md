@@ -23,7 +23,7 @@ What you need to build your own jQuery
 
 In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
-For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
+For Windows, you have to download and install [git](https://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
 
 OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
