@@ -134,6 +134,7 @@ module.exports = function( grunt ) {
 				"test/data/testrunner.js",
 				"test/unit/animation.js",
 				"test/unit/basic.js",
+				"test/unit/support.js",
 				"test/unit/tween.js",
 				"test/unit/wrap.js"
 			],

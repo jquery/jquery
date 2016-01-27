@@ -29,7 +29,8 @@ if ( jQuery.css ) {
 			};
 			assert.ok( okValue[ color ], "color was not reset (" + color + ")" );
 
-			assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
+			assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+				"Same support properties" );
 		}
 	);
 }
@@ -43,7 +44,8 @@ testIframeWithCallback(
 		var done = assert.async();
 
 		assert.expect( 2 );
-		assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
+		assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+			"No violations of CSP polices" );
 
 		supportjQuery.get( "data/support/csp.log" ).done( function( data ) {
 			assert.equal( data, "", "No log request should be sent" );
@@ -273,6 +275,6 @@ testIframeWithCallback(
 				assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 			}
 		}
-	});
+	} );
 
 } )();
