@@ -29,7 +29,8 @@ if ( jQuery.css ) {
 			};
 			assert.ok( okValue[ color ], "color was not reset (" + color + ")" );
 
-			assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "Same support properties" );
+			assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+				"Same support properties" );
 		}
 	);
 }
@@ -43,7 +44,8 @@ testIframeWithCallback(
 		var done = assert.async();
 
 		assert.expect( 2 );
-		assert.deepEqual( jQuery.extend( {}, support ), computedSupport, "No violations of CSP polices" );
+		assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+			"No violations of CSP polices" );
 
 		supportjQuery.get( "data/support/csp.log" ).done( function( data ) {
 			assert.equal( data, "", "No log request should be sent" );
@@ -53,16 +55,17 @@ testIframeWithCallback(
 );
 
 ( function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent;
 
 	if ( /edge\//i.test( userAgent ) ) {
+		version = userAgent.match( /edge\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
-			"clearCloneStyle": false,
+			"clearCloneStyle": version >= 13,
 			"cors": true,
 			"createHTMLDocument": true,
 			"focusin": false,
@@ -272,6 +275,6 @@ testIframeWithCallback(
 				assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
 			}
 		}
-	});
+	} );
 
 } )();

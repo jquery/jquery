@@ -527,6 +527,18 @@ QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function
 	}
 
 	function assertSpecialCharsSupport( method, characters ) {
+		// Support: Android 4.4 only
+		// Chromium < 35 incorrectly upper-cases µ; Android 4.4 uses such a version by default
+		// (and its WebView, being un-updatable, will use it for eternity) so we need to blacklist
+		// that one for the tests to pass.
+		if ( characters === "µ" && /chrome/i.test( navigator.userAgent ) &&
+			navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ] < 35 ) {
+			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
+			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
+			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
+			return;
+		}
+
 		var child,
 			codepoint = characters.charCodeAt( 0 ).toString( 16 ).toUpperCase(),
 			description = characters.length === 1 ?

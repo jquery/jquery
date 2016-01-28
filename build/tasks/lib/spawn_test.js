@@ -7,7 +7,7 @@
 // See the comment in ../node_smoke_tests.js for more information.
 module.exports = function spawnTest( done ) {
 	var testPaths = [].slice.call( arguments, 1 ),
-		spawn = require( "win-spawn" );
+		spawn = require( "cross-spawn" );
 
 	spawn( "node", testPaths, { stdio: "inherit" } )
 		.on( "close", function( code ) {
