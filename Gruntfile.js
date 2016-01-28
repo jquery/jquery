@@ -224,4 +224,6 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
 
 	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
+
+	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:jshint", "newer:jscs" ] );
 };
