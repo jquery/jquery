@@ -224,5 +224,5 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 
-	grunt.registerTask( "precommit_lint", [ "newer:jsonlint:pkg", "newer:jshint:all", "newer:jshint:dist", "newer:jscs:src", "newer:jscs:test", "newer:jscs:build" ] );
+	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:jshint", "newer:jscs" ] );
 };
