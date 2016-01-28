@@ -51,12 +51,15 @@
     "sizzle": "2.3.0",
     "strip-json-comments": "1.0.3",
     "testswarm": "1.1.0",
-    "win-spawn": "2.0.0"
+    "win-spawn": "2.0.0",
+    "husky": "~0.10.2",
+    "grunt-newer": "~1.1.1"
   },
   "scripts": {
     "build": "npm install && grunt",
     "start": "grunt watch",
-    "test": "grunt && grunt test"
+    "test": "grunt && grunt test",
+    "precommit": "grunt precommit_lint"
   },
   "commitplease": {
     "components": [
