@@ -52,7 +52,7 @@
     "sinon": "1.17.3",
     "sizzle": "2.3.0",
     "strip-json-comments": "2.0.0",
-    "testswarm": "1.1.0"
+    "testswarm": "1.1.0",
     "husky": "~0.10.2",
     "grunt-newer": "~1.1.1"
   },
