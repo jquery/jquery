@@ -49,7 +49,7 @@
     "promises-aplus-tests": "2.1.1",
     "q": "1.4.1",
     "qunit-assert-step": "1.0.3",
-    "qunitjs": "1.18.0",
+    "qunitjs": "1.20.0",
     "requirejs": "2.1.22",
     "sinon": "1.17.3",
     "sizzle": "2.3.0",

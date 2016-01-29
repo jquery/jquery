@@ -393,8 +393,31 @@ QUnit.test( "closest(jQuery)", function( assert ) {
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( "not(Selector)", function( assert ) {
 	assert.expect( 7 );
 	assert.equal( jQuery( "#qunit-fixture > p#ap > a" ).not( "#google" ).length, 2, "not('selector')" );
-	assert.deepEqual( jQuery( "p" ).not( ".result" ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "not('.class')" );
-	assert.deepEqual( jQuery( "p" ).not( "#ap, #sndp, .result" ).get(), q( "firstp", "en", "sap", "first" ), "not('selector, selector')" );
+
+	assert.deepEqual(
+		jQuery( "#qunit-fixture p" ).not( ".result" ).get(),
+		q(
+			"firstp",
+			"ap",
+			"sndp",
+			"en",
+			"sap",
+			"first"
+		),
+		"not('.class')"
+	);
+
+
+	assert.deepEqual(
+		jQuery( "#qunit-fixture p" ).not( "#ap, #sndp, .result" ).get(),
+		q(
+			"firstp",
+			"en",
+			"sap",
+			"first"
+		),
+		"not('selector, selector')"
+	);
 
 	assert.deepEqual( jQuery( "#ap *" ).not( "code" ).get(), q( "google", "groups", "anchor1", "mark" ), "not('tag selector')" );
 	assert.deepEqual( jQuery( "#ap *" ).not( "code, #mark" ).get(), q( "google", "groups", "anchor1" ), "not('tag, ID selector')" );
