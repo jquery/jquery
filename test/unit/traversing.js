@@ -463,7 +463,11 @@ QUnit.test( "not(Array)", function( assert ) {
 QUnit.test( "not(jQuery)", function( assert ) {
 	assert.expect( 1 );
 
-	assert.deepEqual( jQuery( "p" ).not( jQuery( "#ap, #sndp, .result" ) ).get(), q( "firstp", "en", "sap", "first" ), "not(jQuery)" );
+	assert.deepEqual(
+		jQuery( "#qunit-fixture p" ).not( jQuery( "#ap, #sndp, .result" ) ).get(),
+		q( "firstp", "en", "sap", "first" ),
+		"not(jQuery)"
+	);
 } );
 
 QUnit.test( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
