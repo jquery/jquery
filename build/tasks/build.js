@@ -168,7 +168,8 @@ module.exports = function( grunt ) {
 			 *  whether it should included or excluded
 			 */
 			excluder = function( flag ) {
-				var m = /^(\+|\-|)([\w\/-]+)$/.exec( flag ),
+				var additional,
+					m = /^(\+|\-|)([\w\/-]+)$/.exec( flag ),
 					exclude = m[ 1 ] === "-",
 					module = m[ 2 ];
 
@@ -192,8 +193,16 @@ module.exports = function( grunt ) {
 							}
 						}
 
+						additional = removeWith[ module ];
+
 						// Check removeWith list
-						excludeList( removeWith[ module ] );
+						if ( additional ) {
+							excludeList( additional.remove || additional );
+							if ( additional.include ) {
+								included = included.concat( additional.include );
+								grunt.log.writeln( "+" + additional.include );
+							}
+						}
 					} else {
 						grunt.log.error( "Module \"" + module + "\" is a minimum requirement." );
 						if ( module === "selector" ) {

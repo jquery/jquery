@@ -1,18 +1,16 @@
 define( [
 	"../core",
-	"../var/document",
-	"../deferred"
+	"../var/document"
 ], function( jQuery, document ) {
 
-// The deferred used on DOM ready
-var readyList = jQuery.Deferred(),
-	readyPromise = readyList.promise();
+var readyCallbacks = [],
+	readyFiring = false,
+	whenReady = function( fn ) {
+		readyCallbacks.push( fn );
+	};
 
 jQuery.fn.ready = function( fn ) {
-
-	// Add the callback
-	readyPromise.done( fn );
-
+	whenReady( fn );
 	return this;
 };
 
@@ -34,7 +32,6 @@ jQuery.extend( {
 		}
 	},
 
-	// Handle when the DOM is ready
 	ready: function( wait ) {
 
 		// Abort if there are pending holds or we're already ready
@@ -50,14 +47,47 @@ jQuery.extend( {
 			return;
 		}
 
-		// If there are functions bound, to execute
-		readyList.resolveWith( document, [ jQuery ] );
+		whenReady = function( fn ) {
+			readyCallbacks.push( fn );
+
+			if ( !readyFiring ) {
+				readyFiring = true;
+
+				// Prevent errors from freezing future callback execution (gh-1823)
+				try {
+					while ( readyCallbacks.length ) {
+						fn = readyCallbacks.shift();
+						if ( jQuery.isFunction( fn ) ) {
+
+							// For backwards compatibility,
+							// invoke synchronously and with document context
+							fn.call( document, jQuery );
+						}
+					}
+				} finally {
+					readyFiring = false;
+
+					// If there was an error in a ready callback,
+					// continue with the rest (gh-1823)
+					if ( readyCallbacks.length ) {
+
+						// Retry async to allow the error to propagate to console
+						window.setTimeout( whenReady );
+					}
+				}
+			}
+		};
+
+		whenReady();
 	}
 } );
 
-jQuery.ready.then = readyPromise.then;
+// Make jQuery.ready Promise consumable (gh-1778)
+jQuery.ready.then = jQuery.fn.ready;
 
-// The ready event handler and self cleanup method
+/**
+ * The ready event handler and self cleanup method
+ */
 function completed() {
 	document.removeEventListener( "DOMContentLoaded", completed );
 	window.removeEventListener( "load", completed );
