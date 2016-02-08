@@ -415,7 +415,7 @@ testIframe( "offset/table", "table", function( $, window, document, assert ) {
 } );
 
 testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
-	assert.expect( 28 );
+	assert.expect( 24 );
 
 	assert.equal( $( "#scroll-1" ).offset().top, 7, "jQuery('#scroll-1').offset().top" );
 	assert.equal( $( "#scroll-1" ).offset().left, 7, "jQuery('#scroll-1').offset().left" );
@@ -487,17 +487,6 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 	assert.notEqual( $().scrollLeft( null ), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
 	assert.strictEqual( $().scrollTop(), undefined, "jQuery().scrollTop() testing getter on empty jquery object" );
 	assert.strictEqual( $().scrollLeft(), undefined, "jQuery().scrollLeft() testing getter on empty jquery object" );
-
-	// Tests position after parent scrolling (#15239)
-	$( "#scroll-1" ).scrollTop( 0 );
-	$( "#scroll-1" ).scrollLeft( 0 );
-	assert.equal( $( "#scroll-1-1" ).position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
-	assert.equal( $( "#scroll-1-1" ).position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
-
-	$( "#scroll-1" ).scrollTop( 5 );
-	$( "#scroll-1" ).scrollLeft( 5 );
-	assert.equal( $( "#scroll-1-1" ).position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
-	assert.equal( $( "#scroll-1-1" ).position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
 } );
 
 testIframe( "offset/body", "body", function( $, window, document, assert ) {
@@ -511,6 +500,7 @@ testIframe( "offset/body", "body", function( $, window, document, assert ) {
 
 QUnit.test( "chaining", function( assert ) {
 	assert.expect( 3 );
+
 	var coords = { "top":  1, "left":  1 };
 	assert.equal( jQuery("#absolute-1").offset(coords).selector, "#absolute-1", "offset(coords) returns jQuery object" );
 	assert.equal( jQuery("#non-existent").offset(coords).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
