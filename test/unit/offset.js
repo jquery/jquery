@@ -406,7 +406,7 @@ testIframe( "offset/table", "table", function( $, window, document, assert ) {
 } );
 
 testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
-	assert.expect( 24 );
+	assert.expect( 26 );
 
 	assert.equal( $( "#scroll-1" ).offset().top, 7, "jQuery('#scroll-1').offset().top" );
 	assert.equal( $( "#scroll-1" ).offset().left, 7, "jQuery('#scroll-1').offset().left" );
