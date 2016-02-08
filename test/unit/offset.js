@@ -412,7 +412,7 @@ testIframe( "offset/table", "table", function( $, window, document, assert ) {
 } );
 
 testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
-	assert.expect( 28 );
+	assert.expect( 24 );
 
 	// If we're going to bastardize the tests, let's just DO it
 	var ie = /msie [678]/i.test( navigator.userAgent );
@@ -495,25 +495,6 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 	assert.notEqual( $().scrollLeft( null ), null, "jQuery().scrollLeft(null) testing setter on empty jquery object" );
 	assert.strictEqual( $().scrollTop(), null, "jQuery().scrollTop(100) testing setter on empty jquery object" );
 	assert.strictEqual( $().scrollLeft(), null, "jQuery().scrollLeft(100) testing setter on empty jquery object" );
-
-	// Tests position after parent scrolling (#15239)
-	$( "#scroll-1" ).scrollTop( 0 );
-	$( "#scroll-1" ).scrollLeft( 0 );
-	if ( ie ) {
-		assert.ok( true, "TestSwarm's iframe has hosed this test in oldIE, we surrender" );
-	} else {
-		assert.equal( $( "#scroll-1-1" ).position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
-	}
-	assert.equal( $( "#scroll-1-1" ).position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
-
-	$( "#scroll-1" ).scrollTop( 5 );
-	$( "#scroll-1" ).scrollLeft( 5 );
-	if ( ie ) {
-		assert.ok( true, "TestSwarm's iframe has hosed this test in oldIE, we surrender" );
-	} else {
-		assert.equal( $( "#scroll-1-1" ).position().top, 6, "jQuery('#scroll-1-1').position().top unaffected by parent scrolling" );
-	}
-	assert.equal( $( "#scroll-1-1" ).position().left, 6, "jQuery('#scroll-1-1').position().left unaffected by parent scrolling" );
 } );
 
 testIframe( "offset/body", "body", function( $, window, document, assert ) {
@@ -528,9 +509,9 @@ testIframe( "offset/body", "body", function( $, window, document, assert ) {
 QUnit.test( "chaining", function( assert ) {
 	assert.expect( 3 );
 	var coords = { "top":  1, "left":  1 };
-	equal( jQuery( "#absolute-1" ).offset( coords ).selector, "#absolute-1", "offset(coords) returns jQuery object" );
-	equal( jQuery( "#non-existent" ).offset( coords ).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
-	equal( jQuery( "#absolute-1" ).offset( undefined ).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
+	assert.equal( jQuery( "#absolute-1" ).offset( coords ).selector, "#absolute-1", "offset(coords) returns jQuery object" );
+	assert.equal( jQuery( "#non-existent" ).offset( coords ).selector, "#non-existent", "offset(coords) with empty jQuery set returns jQuery object" );
+	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).selector, "#absolute-1", "offset(undefined) returns jQuery object (#5571)" );
 } );
 
 QUnit.test( "offsetParent", function( assert ) {
