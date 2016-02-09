@@ -27,10 +27,6 @@ module.exports = function( grunt ) {
 			}
 		} )();
 
-	// The concatenated file won't pass onevar
-	// But our modules can
-	delete srcHintOptions.onevar;
-
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
 	}
