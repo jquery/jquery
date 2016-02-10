@@ -2,7 +2,8 @@ module.exports = function( grunt ) {
 	"use strict";
 
 	function readOptionalJSON( filepath ) {
-		var data = {};
+		var stripJSONComments = require( "strip-json-comments" ),
+			data = {};
 		try {
 			data = JSON.parse( stripJSONComments(
 				fs.readFileSync( filepath, { encoding: "utf8" } )
@@ -12,7 +13,6 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		stripJSONComments = require( "strip-json-comments" ),
 		gzip = require( "gzip-js" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" ),
 		newNode = !/^v0/.test( process.version ),
