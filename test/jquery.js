@@ -18,10 +18,7 @@
 	// This detection allows AMD tests to be run in an iframe
 	if ( QUnit.urlParams.amd && window.QUnit ) {
 		require.config( {
-			baseUrl: path,
-			paths: {
-				sizzle: "external/sizzle/dist/sizzle"
-			}
+			baseUrl: path
 		} );
 		src = "src/jquery";
 
