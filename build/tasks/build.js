@@ -31,9 +31,6 @@ module.exports = function( grunt ) {
 				startFile: "src/intro.js",
 				endFile: [ "src/exports/global.js", "src/outro.js" ]
 			},
-			paths: {
-				sizzle: "../external/sizzle/dist/sizzle"
-			},
 			rawText: {},
 			onBuildWrite: convert
 		};
@@ -58,7 +55,7 @@ module.exports = function( grunt ) {
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
-		} else if ( /^sizzle$/.test( name ) ) {
+		} else if ( /\/sizzle$/.test( name ) ) {
 			contents = "var Sizzle =\n" + contents
 
 				// Remove EXPOSE lines from Sizzle
