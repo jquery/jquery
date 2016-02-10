@@ -15,17 +15,9 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
 		srcHintOptions = readOptionalJSON( "src/.jshintrc" ),
-		newNode = !/^v0/.test( process.version ),
 
-		// Allow to skip jsdom-related tests in Node.js < 1.0.0
-		runJsdomTests = newNode || ( function() {
-			try {
-				require( "jsdom" );
-				return true;
-			} catch ( e ) {
-				return false;
-			}
-		} )();
+		// Skip jsdom-related tests in Node.js 0.10 & 0.12
+		runJsdomTests = !/^v0/.test( process.version );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
