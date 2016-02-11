@@ -142,3 +142,15 @@ section { background:#f0f; display:block; }
 #span-14824 { display: block; }
 
 #display { display: list-item !important; }
+
+#div-gh-2836 {
+	position: relative;
+	overflow: auto;
+	height: 100px;
+}
+#div-gh-2836 div {
+	position: relative;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
