@@ -471,4 +471,34 @@ QUnit.test( "allow modification of coordinates argument (gh-1848)", function( as
 		"coordinates are modified (got offset.top: " +  offsetTop + ")" );
 } );
 
+QUnit.test( "outside view position (gh-2836)", function( assert ) {
+
+	// This test ported from gh-2836 example
+	assert.expect( 1 );
+
+	var parent,
+		html = [
+		"<div id=div-gh-2836>",
+			"<div></div>",
+			"<div></div>",
+			"<div></div>",
+			"<div></div>",
+			"<div></div>",
+		"</div>"
+	].join( "" ),
+	stop = assert.async();
+
+	parent = $( html );
+	parent.appendTo( "#qunit-fixture" );
+
+	parent.one( "scroll", function() {
+		var pos = parent.find( "div" ).eq( 3 ).position();
+
+		assert.strictEqual(pos.top, -100);
+		stop();
+	});
+
+	parent.scrollTop( 400 );
+} );
+
 } )();

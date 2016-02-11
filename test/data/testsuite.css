@@ -130,3 +130,15 @@ section { background:#f0f; display:block; }
 .inline { display: inline; }
 .list-item { display: list-item; }
 .hidden, .none { display: none; }
+
+#div-gh-2836 {
+	position: relative;
+	overflow: auto;
+	height: 100px;
+}
+#div-gh-2836 div {
+	position: relative;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}
