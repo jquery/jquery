@@ -514,7 +514,7 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	].join( "" ),
 	stop = assert.async();
 
-	parent = $( html );
+	parent = jQuery( html );
 	parent.appendTo( "#qunit-fixture" );
 
 	parent.one( "scroll", function() {
