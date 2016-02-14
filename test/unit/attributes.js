@@ -220,7 +220,8 @@ QUnit.test( "attr(String, Function)", function( assert ) {
 QUnit.test( "attr(Hash)", function( assert ) {
 	assert.expect( 3 );
 	var pass = true;
-	jQuery( "div" ).attr( {
+
+	jQuery( "#qunit-fixture div" ).attr( {
 		"foo": "baz",
 		"zoo": "ping"
 	} ).each( function() {
@@ -258,7 +259,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 		attributeNode, commentNode, textNode, obj,
 		table, td, j, type,
 		check, thrown, button, $radio, $radios, $svg,
-		div = jQuery( "div" ).attr( "foo", "bar" ),
+		div = jQuery( "#qunit-fixture div" ).attr( "foo", "bar" ),
 		i = 0,
 		fail = false;
 
@@ -491,9 +492,9 @@ QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
 		called = true;
 		_handle.apply( this, arguments );
 	};
-	jQuery( "input" ).attr( "checked" );
+	jQuery( "#qunit-fixture input" ).attr( "checked" );
 	called = false;
-	jQuery( "input" ).attr( "checked" );
+	jQuery( "#qunit-fixture input" ).attr( "checked" );
 	assert.ok( called, "The boolean attrHandle does not drop custom attrHandles" );
 } );
 
@@ -1027,7 +1028,7 @@ QUnit.test( "val(Function)", function( assert ) {
 QUnit.test( "val(Array of Numbers) (Bug #7123)", function( assert ) {
 	assert.expect( 4 );
 	jQuery( "#form" ).append( "<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />" );
-	var elements = jQuery( "input[name=arrayTest]" ).val( [ 1, 2 ] );
+	var elements = jQuery( "#form input[name=arrayTest]" ).val( [ 1, 2 ] );
 	assert.ok( elements[ 0 ].checked, "First element was checked" );
 	assert.ok( elements[ 1 ].checked, "Second element was checked" );
 	assert.ok( !elements[ 2 ].checked, "Third element was unchecked" );
