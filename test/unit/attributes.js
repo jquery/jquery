@@ -128,8 +128,8 @@ QUnit.test( "attr(String)", function( assert ) {
 	assert.equal( jQuery( option ).prop( "selected" ), true, "Make sure that a single option is selected, even when in an optgroup." );
 
 	$img = jQuery( "<img style='display:none' width='215' height='53' src='data/1x1.jpg'/>" ).appendTo( "body" );
-	assert.equal( $img.attr( "width" ), "215", "Retrieve width attribute an an element with display:none." );
-	assert.equal( $img.attr( "height" ), "53", "Retrieve height attribute an an element with display:none." );
+	assert.equal( $img.attr( "width" ), "215", "Retrieve width attribute on an element with display:none." );
+	assert.equal( $img.attr( "height" ), "53", "Retrieve height attribute on an element with display:none." );
 
 	// Check for style support
 	styleElem = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ).css( {
