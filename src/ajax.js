@@ -772,9 +772,11 @@ jQuery.extend( {
 				}
 			} else {
 
+				// HTTP Error 504 Gateway Timeout
 				if ( status === 504 ) {
 					statusText = "timeout";
 				}
+
 				// Extract error from statusText and normalize for non-aborts
 				error = statusText;
 				if ( status || !statusText ) {
