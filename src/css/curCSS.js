@@ -35,11 +35,14 @@ if ( window.getComputedStyle ) {
 		// getPropertyValue is only needed for .css('filter') in IE9, see #12537
 		ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined;
 
-		if ( computed ) {
+		// Support: Opera 12.1x only
+		// Fall back to style even without computed
+		// computed is undefined for elems on document fragments
+		if ( ( ret === "" || ret === undefined ) && !jQuery.contains( elem.ownerDocument, elem ) ) {
+			ret = jQuery.style( elem, name );
+		}
 
-			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
-				ret = jQuery.style( elem, name );
-			}
+		if ( computed ) {
 
 			// A tribute to the "awesome hack by Dean Edwards"
 			// Chrome < 17 and Safari 5.0 uses "computed value"
