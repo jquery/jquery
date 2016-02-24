@@ -23,4 +23,6 @@ jQuery.fn.extend( {
 	}
 } );
 
+jQuery.parseJSON = JSON.parse;
+
 } );

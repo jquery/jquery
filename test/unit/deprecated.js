@@ -40,3 +40,73 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 		.undelegate( "b", "click" )
 		.remove();
 } );
+
+QUnit.test( "jQuery.parseJSON", function( assert ) {
+	assert.expect( 20 );
+
+	assert.strictEqual( jQuery.parseJSON( null ), null, "primitive null" );
+	assert.strictEqual( jQuery.parseJSON( "0.88" ), 0.88, "Number" );
+	assert.strictEqual(
+		jQuery.parseJSON( "\" \\\" \\\\ \\/ \\b \\f \\n \\r \\t \\u007E \\u263a \"" ),
+		" \" \\ / \b \f \n \r \t ~ \u263A ",
+		"String escapes"
+	);
+	assert.deepEqual( jQuery.parseJSON( "{}" ), {}, "Empty object" );
+	assert.deepEqual( jQuery.parseJSON( "{\"test\":1}" ), { "test": 1 }, "Plain object" );
+	assert.deepEqual( jQuery.parseJSON( "[0]" ), [ 0 ], "Simple array" );
+
+	assert.deepEqual(
+		jQuery.parseJSON( "[ \"string\", -4.2, 2.7180e0, 3.14E-1, {}, [], true, false, null ]" ),
+		[ "string", -4.2, 2.718, 0.314, {}, [], true, false, null ],
+		"Array of all data types"
+	);
+	assert.deepEqual(
+		jQuery.parseJSON( "{ \"string\": \"\", \"number\": 4.2e+1, \"object\": {}," +
+			"\"array\": [[]], \"boolean\": [ true, false ], \"null\": null }" ),
+		{ string: "", number: 42, object: {}, array: [ [] ], "boolean": [ true, false ], "null": null },
+		"Dictionary of all data types"
+	);
+
+	assert.deepEqual( jQuery.parseJSON( "\n{\"test\":1}\t" ), { "test": 1 },
+		"Leading and trailing whitespace are ignored" );
+
+	assert.throws( function() {
+		jQuery.parseJSON();
+	}, null, "Undefined raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "" );
+	}, null, "Empty string raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "''" );
+	}, null, "Single-quoted string raises an error" );
+
+	assert.throws( function() {
+		var result = jQuery.parseJSON( "0101" );
+
+		// Support: IE9+
+		// Ensure base-10 interpretation on browsers that erroneously accept leading-zero numbers
+		if ( result === 101 ) {
+			throw new Error( "close enough" );
+		}
+	}, null, "Leading-zero number raises an error or is parsed as decimal" );
+	assert.throws( function() {
+		jQuery.parseJSON( "{a:1}" );
+	}, null, "Unquoted property raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "{'a':1}" );
+	}, null, "Single-quoted property raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "[,]" );
+	}, null, "Array element elision raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "{},[]" );
+	}, null, "Comma expression raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "[]\n,{}" );
+	}, null, "Newline-containing comma expression raises an error" );
+	assert.throws( function() {
+		jQuery.parseJSON( "\"\"\n\"\"" );
+	}, null, "Automatic semicolon insertion raises an error" );
+
+	assert.strictEqual( jQuery.parseJSON( [ 0 ] ), 0, "Input cast to string" );
+} );

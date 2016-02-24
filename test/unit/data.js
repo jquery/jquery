@@ -277,7 +277,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	var prop, i, l, metadata, elem,
 		obj, obj2, check, num, num2,
-		parseJSON = jQuery.parseJSON,
+		parseJSON = JSON.parse,
 		div = jQuery( "<div>" ),
 		child = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" ),
 		dummy = jQuery( "<div data-myobj='old data' data-ignored=\"DOM\" data-other='test' data-foo-42='boosh'></div>" );
@@ -336,7 +336,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	// attribute parsing
 	i = 0;
-	jQuery.parseJSON = function() {
+	JSON.parse = function() {
 		i++;
 		return parseJSON.apply( this, arguments );
 	};
@@ -389,7 +389,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 	assert.strictEqual( child.data( "string" ), "test", "Typical string read from attribute" );
 	assert.equal( i, 2, "Correct number of JSON parse attempts when reading from attributes" );
 
-	jQuery.parseJSON = parseJSON;
+	JSON.parse = parseJSON;
 	child.remove();
 
 	// tests from metadata plugin

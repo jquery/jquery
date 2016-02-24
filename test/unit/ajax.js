@@ -1120,7 +1120,7 @@ QUnit.module( "ajax", {
 			},
 			success: function( text ) {
 				assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
-				var json = jQuery.parseJSON( text );
+				var json = JSON.parse( text );
 				assert.ok( json.length >= 2, "Check length" );
 				assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
 				assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
