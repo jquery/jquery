@@ -7,7 +7,6 @@ define( [
 	"./ajax/var/rquery",
 
 	"./core/init",
-	"./ajax/parseJSON",
 	"./ajax/parseXML",
 	"./event/trigger",
 	"./deferred",
@@ -348,7 +347,7 @@ jQuery.extend( {
 			"text html": true,
 
 			// Evaluate text as a json expression
-			"text json": jQuery.parseJSON,
+			"text json": JSON.parse,
 
 			// Parse text as xml
 			"text xml": jQuery.parseXML

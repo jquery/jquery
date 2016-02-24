@@ -76,7 +76,7 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 28 );
+	assert.expect( 27 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 
@@ -135,8 +135,6 @@ QUnit.test( "core", function( assert ) {
 
 	assert.strictEqual( jQuery.parseHTML( "<div></div><span></span>" ).length,
 		2, "jQuery.parseHTML" );
-
-	assert.deepEqual( jQuery.parseJSON( "{\"a\": 2}" ), { a: 2 }, "jQuery.parseJON" );
 } );
 
 QUnit.test( "data", function( assert ) {
