@@ -12,6 +12,7 @@ module.exports = function( Release, files, complete ) {
 		// These files are included with the distribution
 		extras = [
 			"src",
+			"external/sizzle",
 			"LICENSE.txt",
 			"AUTHORS.txt",
 			"package.json"
