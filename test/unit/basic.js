@@ -187,10 +187,7 @@ QUnit.test( "manipulation", function( assert ) {
 	assert.strictEqual( elem1.text( "foo" ).text(), "foo", ".html getter/setter" );
 
 	assert.strictEqual(
-
-		// Support: IE 8 only
-		// IE 8 prints tag names in upper case.
-		elem1.html( "<span/>" ).html().toLowerCase(),
+		elem1.html( "<span/>" ).html(),
 		"<span></span>",
 		".html getter/setter"
 	);
@@ -203,10 +200,7 @@ QUnit.test( "manipulation", function( assert ) {
 	child.before( "<b/>" );
 
 	assert.strictEqual(
-
-		// Support: IE 8 only
-		// IE 8 prints tag names in upper case.
-		elem1.html().toLowerCase(),
+		elem1.html(),
 		"<div></div><b></b><span></span><a></a>",
 		".after/.before"
 	);
@@ -275,10 +269,7 @@ QUnit.test( "wrap", function( assert ) {
 	elem.find( "b" ).wrap( "<span>" );
 
 	assert.strictEqual(
-
-		// Support: IE 8 only
-		// IE 8 prints tag names in upper case.
-		elem.html().toLowerCase(),
+		elem.html(),
 		"<a><span><b></b></span></a><a></a>",
 		".wrap"
 	);
@@ -286,10 +277,7 @@ QUnit.test( "wrap", function( assert ) {
 	elem.find( "span" ).wrapInner( "<em>" );
 
 	assert.strictEqual(
-
-		// Support: IE 8 only
-		// IE 8 prints tag names in upper case.
-		elem.html().toLowerCase(),
+		elem.html(),
 		"<a><span><em><b></b></em></span></a><a></a>",
 		".wrapInner"
 	);
@@ -297,10 +285,7 @@ QUnit.test( "wrap", function( assert ) {
 	elem.find( "a" ).wrapAll( "<i>" );
 
 	assert.strictEqual(
-
-		// Support: IE 8 only
-		// IE 8 prints tag names in upper case.
-		elem.html().toLowerCase(),
+		elem.html(),
 		"<i><a><span><em><b></b></em></span></a><a></a></i>",
 		".wrapAll"
 	);

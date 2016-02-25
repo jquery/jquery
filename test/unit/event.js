@@ -431,20 +431,13 @@ QUnit.test( "on bubbling, isDefaultPrevented, stopImmediatePropagation", functio
 	$anchor2.off( "click" );
 	$main.off( "click", "**" );
 
-	// Android 2.3 doesn't support stopImmediatePropagation; jQuery fallbacks to stopPropagation
-	// in such a case.
-	// Support: Android 2.3
-	if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-		assert.ok( true, "Android 2.3, skipping native stopImmediatePropagation check" );
-	} else {
-		$anchor2.on( "click", function( e ) {
-			e.stopImmediatePropagation();
-			assert.ok( true, "anchor was clicked and prop stopped" );
-		} );
-		$anchor2[ 0 ].addEventListener( "click", neverCallMe, false );
-		fakeClick( $anchor2 );
-		$anchor2[ 0 ].removeEventListener( "click", neverCallMe );
-	}
+	$anchor2.on( "click", function( e ) {
+		e.stopImmediatePropagation();
+		assert.ok( true, "anchor was clicked and prop stopped" );
+	} );
+	$anchor2[ 0 ].addEventListener( "click", neverCallMe, false );
+	fakeClick( $anchor2 );
+	$anchor2[ 0 ].removeEventListener( "click", neverCallMe );
 } );
 
 QUnit.test( "on(), iframes", function( assert ) {
@@ -1389,29 +1382,26 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 	form.remove();
 } );
 
-// Test beforeunload event only if it supported.
-// Support: iOS 7+, Android<4.0
-// iOS & old Android have the window.onbeforeunload field but don't support the beforeunload
+// Support: iOS 7-9+
+// iOS has the window.onbeforeunload field but doesn't support the beforeunload
 // handler making it impossible to feature-detect the support.
-if ( window.onbeforeunload === null &&
-	!/(ipad|iphone|ipod|android 2\.3)/i.test( navigator.userAgent ) ) {
-	QUnit.test( "on(beforeunload)", 1, function( assert ) {
-		var iframe = jQuery( jQuery.parseHTML( "<iframe src='data/event/onbeforeunload.html'><iframe>" ) );
-		var done = assert.async();
+QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
+	"on(beforeunload)", 1, function( assert ) {
+	var iframe = jQuery( jQuery.parseHTML( "<iframe src='data/event/onbeforeunload.html'><iframe>" ) );
+	var done = assert.async();
 
-		window.onmessage = function( event ) {
-			var payload = JSON.parse( event.data );
+	window.onmessage = function( event ) {
+		var payload = JSON.parse( event.data );
 
-			assert.ok( payload.event, "beforeunload", "beforeunload event" );
+		assert.ok( payload.event, "beforeunload", "beforeunload event" );
 
-			iframe.remove();
-			window.onmessage = null;
-			done();
-		};
+		iframe.remove();
+		window.onmessage = null;
+		done();
+	};
 
-		iframe.appendTo( "#qunit-fixture" );
-	} );
-}
+	iframe.appendTo( "#qunit-fixture" );
+} );
 
 QUnit.test( "jQuery.Event( type, props )", function( assert ) {
 
@@ -2406,7 +2396,8 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 		$link = jQuery( link ),
 		evt = document.createEvent( "MouseEvents" );
 
-	// IE9+ requires element to be in the body before it will dispatch
+	// Support: IE 9-11 only
+	// IE requires element to be in the body before it will dispatch
 	$link.appendTo( "body" ).on( "click", function( e ) {
 
 		// Not trying to assert specific values here, just ensure the property exists
@@ -2876,7 +2867,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) 
 	} );
 } );
 
-// Support: IE9 (remove when IE9 is no longer supported)
+// Support: IE9 only
 // https://msdn.microsoft.com/en-us/library/hh801223(v=vs.85).aspx
 QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
 	assert.expect( 1 );

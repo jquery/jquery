@@ -249,9 +249,8 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: Firefox
+				// Support: IE 9 - 11, Edge 12 - 13+
 				// Not all browsers allow empty-string headers
-				// https://bugzilla.mozilla.org/show_bug.cgi?id=815299
 				//"Empty": ""
 			},
 			success: function( data, _, xhr ) {
@@ -1699,16 +1698,6 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 }
 
 	QUnit.asyncTest( "#11743 - jQuery.ajax() - script, throws exception", 1, function( assert ) {
-
-		// Support: Android 2.3 only
-		// Android 2.3 doesn't fire the window.onerror handler, just accept the reality there.
-		if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-			assert.ok( true, "Test skipped, Android 2.3 doesn't fire window.onerror for " +
-				"errors in dynamically included scripts" );
-			QUnit.start();
-			return;
-		}
-
 		var onerror = window.onerror;
 		window.onerror = function() {
 			assert.ok( true, "Exception thrown" );
@@ -1768,13 +1757,6 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 				var parsedXML = jQuery( jQuery.parseXML( "<tab title=\"Added\">blibli</tab>" ) ).find( "tab" );
 				ajaxXML = jQuery( ajaxXML );
 				try {
-
-					// Android 2.3 doesn't automatically adopt nodes from foreign documents.
-					// (see the comment in test/manipulation.js)
-					// Support: Android 2.3
-					if ( /android 2\.3/i.test( navigator.userAgent ) ) {
-						parsedXML = jQuery( ajaxXML[ 0 ].adoptNode( parsedXML[ 0 ] ) );
-					}
 					ajaxXML.find( "infowindowtab" ).append( parsedXML );
 				} catch ( e ) {
 					assert.strictEqual( e, undefined, "error" );

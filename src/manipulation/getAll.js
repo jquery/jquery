@@ -4,7 +4,7 @@ define( [
 
 function getAll( context, tag ) {
 
-	// Support: IE9-11+
+	// Support: IE9-11 only
 	// Use typeof to avoid zero-argument method invocation on host objects (#15151)
 	var ret = typeof context.getElementsByTagName !== "undefined" ?
 			context.getElementsByTagName( tag || "*" ) :

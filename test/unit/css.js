@@ -1088,12 +1088,7 @@ QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
 
 	$div.css( "fill-opacity", 1 );
 
-	// Support: Android 2.3 (no support for fill-opacity)
-	if ( $div.css( "fill-opacity" ) !== undefined ) {
-		assert.equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
-	} else {
-		assert.ok( true, "No support for fill-opacity CSS property" );
-	}
+	assert.equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
 
 	$div.css( "column-count", 1 );
 	if ( $div.css( "column-count" ) !== undefined ) {
@@ -1115,8 +1110,7 @@ QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
 QUnit.test( "css('width') and css('height') should respect box-sizing, see #11004", function( assert ) {
 	assert.expect( 4 );
 
-	// Support: Android 2.3 (-webkit-box-sizing).
-	var el_dis = jQuery( "<div style='width:300px;height:300px;margin:2px;padding:2px;-webkit-box-sizing:border-box;box-sizing:border-box;'>test</div>" ),
+	var el_dis = jQuery( "<div style='width:300px;height:300px;margin:2px;padding:2px;box-sizing:border-box;'>test</div>" ),
 		el = el_dis.clone().appendTo( "#qunit-fixture" );
 
 	assert.equal( el.css( "width" ), el.css( "width", el.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing, see #11004" );
@@ -1189,7 +1183,8 @@ QUnit.test( "certain css values of 'normal' should be convertable to a number, s
 	assert.equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 } );
 
-// only run this test in IE9
+// Support: IE 9 only
+// Only run this test in IE9
 if ( document.documentMode === 9 ) {
 	QUnit.test( ".css('filter') returns a string in IE9, see #12537", function( assert ) {
 		assert.expect( 1 );

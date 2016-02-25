@@ -88,7 +88,7 @@ Tween.propHooks = {
 	}
 };
 
-// Support: IE9
+// Support: IE9 only
 // Panic based approach to setting things on disconnected nodes
 Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
 	set: function( tween ) {

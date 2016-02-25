@@ -15,7 +15,7 @@ define( [
 		return;
 	}
 
-	// Support: IE9-11+
+	// Support: IE9-11 only
 	// Style of cloned element affects source element cloned (#8908)
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
@@ -66,7 +66,7 @@ define( [
 		},
 		pixelMarginRight: function() {
 
-			// Support: Android 4.0-4.3
+			// Support: Android 4.0 - 4.3 only
 			// We're checking for boxSizingReliableVal here instead of pixelMarginRightVal
 			// since that compresses better and they're computed together anyway.
 			if ( boxSizingReliableVal == null ) {
@@ -76,7 +76,7 @@ define( [
 		},
 		reliableMarginLeft: function() {
 
-			// Support: IE <=8 only, Android 4.0 - 4.3 only, Firefox <=3 - 37
+			// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44+
 			if ( boxSizingReliableVal == null ) {
 				computeStyleTests();
 			}

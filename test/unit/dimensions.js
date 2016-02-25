@@ -295,7 +295,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #9441" );
 	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #9300" );
 
-	// Support: IE 10-11, Edge
+	// Support: IE 10 - 11, Edge 12 - 13+
 	// Child height is not always decimal
 	assert.equal( $divChild.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "child of a hidden element height() is wrong see #9441" );
 	assert.equal( $divChild.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "child of a hidden element innerHeight() is wrong see #9441" );
@@ -308,7 +308,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #9441" );
 	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #9300" );
 
-	// Support: IE 10-11, Edge
+	// Support: IE 10 - 11, Edge 12 - 13+
 	// Child height is not always decimal
 	assert.equal( $divUnconnected.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "unconnected element height() is wrong see #9441" );
 	assert.equal( $divUnconnected.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "unconnected element innerHeight() is wrong see #9441" );
@@ -372,7 +372,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #10413" );
 	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #10413" );
 
-	// Support: IE 10-11, Edge
+	// Support: IE 10 - 11, Edge 12 - 13+
 	// Child height is not always decimal
 	assert.equal( $divChild.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "child of a hidden element height() is wrong see #10413" );
 	assert.equal( $divChild.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "child of a hidden element innerHeight() is wrong see #10413" );
@@ -385,7 +385,7 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #10413" );
 	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #10413" );
 
-	// Support: IE 10-11, Edge
+	// Support: IE 10 - 11, Edge 12 - 13+
 	// Child height is not always decimal
 	assert.equal( $divUnconnected.height().toFixed( 3 ), $divNormal.height().toFixed( 3 ), "unconnected element height() is wrong see #10413" );
 	assert.equal( $divUnconnected.innerHeight().toFixed( 3 ), $divNormal.innerHeight().toFixed( 3 ), "unconnected element innerHeight() is wrong see #10413" );

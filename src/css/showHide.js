@@ -56,7 +56,7 @@ function showHide( elements, show ) {
 			}
 			if ( elem.style.display === "" && jQuery.css( elem, "display" ) === "none" &&
 
-					// Support: Firefox <=42 - 43
+					// Support: Firefox 43+
 					// Don't set inline display on disconnected elements with computed display: none
 					jQuery.contains( elem.ownerDocument, elem ) ) {
 
