@@ -1541,22 +1541,6 @@ QUnit.test("jQuery.parseHTML", function( assert ) {
 	assert.equal( jQuery.parseHTML( "<td><td>" )[ 1 ].parentNode.nodeType, 11, "parentNode should be documentFragment" );
 } );
 
-if ( jQuery.support.createHTMLDocument && !/opera.*version\/12\.1/i.test( navigator.userAgent ) ) {
-	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
-		assert.expect( 1 );
-
-		Globals.register( "parseHTMLError" );
-
-		jQuery.globalEval( "parseHTMLError = false;" );
-		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
-
-		window.setTimeout( function() {
-			QUnit.start();
-			assert.equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
-		}, 2000 );
-	} );
-}
-
 QUnit.test( "jQuery.parseJSON", function( assert ) {
 	assert.expect( 20 );
 
