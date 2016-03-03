@@ -286,13 +286,19 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 });
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
-	assert.expect( 15 );
+	assert.expect( 17 );
 
-	var pass, iframe, doc,
+	var pass, iframe, doc, parentObj, childObj,
 		fn = function() {};
 
 	// The use case that we want to match
 	assert.ok( jQuery.isPlainObject( {} ), "{}" );
+	assert.ok( jQuery.isPlainObject( new Object() ), "new Object" ); // jshint ignore:line
+
+	parentObj = { foo: "bar" };
+	childObj = Object.assign( Object.create( parentObj ), { bar: "foo" } );
+
+	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
 
 	// Not objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( "" ), "string" );
