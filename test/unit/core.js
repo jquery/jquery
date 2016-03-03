@@ -268,13 +268,21 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 } );
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
-	assert.expect( 15 );
+	assert.expect( 19 );
 
-	var pass, iframe, doc,
+	var pass, iframe, doc, parentObj, childObj, deep,
 		fn = function() {};
 
 	// The use case that we want to match
 	assert.ok( jQuery.isPlainObject( {} ), "{}" );
+	assert.ok( jQuery.isPlainObject( new window.Object() ), "new Object" );
+
+	parentObj = { foo: "bar" };
+	childObj = Object.create( parentObj );
+
+	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
+	childObj.bar = "foo";
+	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
 
 	// Not objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( "" ), "string" );
@@ -301,6 +309,10 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	// Again, instantiated objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( new fn() ), "new fn" );
+
+	// Deep object
+	deep = { "foo": { "baz": true }, "foo2": document };
+	assert.ok( jQuery.isPlainObject( deep ), "Object with objects is still plain" );
 
 	// DOM Element
 	assert.ok( !jQuery.isPlainObject( document.createElement( "div" ) ), "DOM Element" );
