@@ -12,6 +12,8 @@
  * Date: @DATE
  */
 
+//这个文件为什么会少一个括号???
+
 (function( global, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
