@@ -32,14 +32,14 @@ this.q = function() {
 
 /**
  * Asserts that a select matches the given IDs
- * @param {String} a - Assertion name
- * @param {String} b - Sizzle selector
- * @param {String} c - Array of ids to construct what is expected
- * @example t("Check for something", "//[a]", ["foo", "bar"]);
- * @result returns true if "//[a]" return two elements with the IDs 'foo' and 'bar'
+ * @param {String} message - Assertion name
+ * @param {String} selector - Sizzle selector
+ * @param {String} expectedIds - Array of ids to construct what is expected
+ * @param {(String|Node)=document} context - Selector context
+ * @example match("Check for something", "p", ["foo", "bar"]);
  */
-QUnit.assert.t = function( a, b, c ) {
-	var f = jQuery( b ).get(),
+function match( message, selector, expectedIds, context ) {
+	var f = jQuery( selector, context ).get(),
 		s = "",
 		i = 0;
 
@@ -47,7 +47,31 @@ QUnit.assert.t = function( a, b, c ) {
 		s += ( s && "," ) + '"' + f[ i ].id + '"';
 	}
 
-	this.deepEqual( f, q.apply( q, c ), a + " (" + b + ")" );
+	this.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
+}
+
+/**
+ * Asserts that a select matches the given IDs.
+ * The select is not bound by a context.
+ * @param {String} message - Assertion name
+ * @param {String} selector - Sizzle selector
+ * @param {String} expectedIds - Array of ids to construct what is expected
+ * @example t("Check for something", "p", ["foo", "bar"]);
+ */
+QUnit.assert.t = function( message, selector, expectedIds ) {
+	match( message, selector, expectedIds, undefined );
+};
+
+/**
+ * Asserts that a select matches the given IDs.
+ * The select is performed within the `#qunit-fixture` context.
+ * @param {String} message - Assertion name
+ * @param {String} selector - Sizzle selector
+ * @param {String} expectedIds - Array of ids to construct what is expected
+ * @example selectInFixture("Check for something", "p", ["foo", "bar"]);
+ */
+QUnit.assert.selectInFixture = function( message, selector, expectedIds ) {
+	match( message, selector, expectedIds, "#qunit-fixture" );
 };
 
 this.createDashboardXML = function() {
