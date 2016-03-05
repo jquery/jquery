@@ -109,7 +109,7 @@ QUnit.test( "child and adjacent", function( assert ) {
 	assert.t( "Child", "p>a", [ "simon1","google","groups","mark","yahoo","simon" ] );
 	assert.t( "Child w/ Class", "p > a.blog", [ "mark","simon" ] );
 	assert.t( "All Children", "code > *", [ "anchor1","anchor2" ] );
-	assert.t( "All Grandchildren", "p > * > *", [ "anchor1","anchor2" ] );
+	assert.selectInFixture( "All Grandchildren", "p > * > *", [ "anchor1","anchor2" ] );
 	assert.t( "Adjacent", "p + p", [ "ap","en","sap" ] );
 	assert.t( "Adjacent", "p#firstp + p", [ "ap" ] );
 	assert.t( "Adjacent", "p[lang=en] + p", [ "sap" ] );
