@@ -16,7 +16,7 @@ module.exports = function( grunt ) {
 			return grunt.file.read( srcFolder + fileName );
 		},
 		globals = read( "exports/global.js" ),
-		wrapper = read( "wrapper.js" ).split( "// @CODE" ),
+		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
 		config = {
 			baseUrl: "src",
 			name: "jquery",
