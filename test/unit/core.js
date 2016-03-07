@@ -293,7 +293,7 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	// The use case that we want to match
 	assert.ok( jQuery.isPlainObject( {} ), "{}" );
-	assert.ok( jQuery.isPlainObject( new Object() ), "new Object" ); // jshint ignore:line
+	assert.ok( jQuery.isPlainObject( new window.Object() ), "new Object" );
 
 	parentObj = { foo: "bar" };
 	childObj = Object.assign( Object.create( parentObj ), { bar: "foo" } );
