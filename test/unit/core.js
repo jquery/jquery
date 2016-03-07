@@ -328,21 +328,14 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 } );
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
-	assert.expect( 20 );
+	assert.expect( 18 );
 
-	var pass, iframe, doc, parentObj, childObj, deep,
+	var pass, iframe, doc, deep,
 		fn = function() {};
 
 	// The use case that we want to match
 	assert.ok( jQuery.isPlainObject( {} ), "{}" );
 	assert.ok( jQuery.isPlainObject( new window.Object() ), "new Object" );
-
-	parentObj = { foo: "bar" };
-	childObj = Object.create( parentObj );
-
-	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
-	childObj.bar = "foo";
-	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
 
 	// Not objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( "" ), "string" );
@@ -415,6 +408,17 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 	} catch ( e ) {
 		window.iframeDone( Object, "iframes not supported" );
 	}
+} );
+
+QUnit[ typeof Object.create !== "undefined" ? "test" : "skip" ]( "isPlainObject(Object.create()", function( assert ) {
+	assert.expect( 2 );
+
+	var parentObj = { foo: "bar" },
+		childObj = Object.create( parentObj );
+
+	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
+	childObj.bar = "foo";
+	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
 } );
 
 //
