@@ -99,7 +99,7 @@ if ( !support.optSelected ) {
 			if ( parent ) {
 				parent.selectedIndex;
 
-				if ( parent && parent.parentNode ) {
+				if ( parent.parentNode ) {
 					parent.parentNode.selectedIndex;
 				}
 			}
