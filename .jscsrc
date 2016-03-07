@@ -5,6 +5,6 @@
 	// and https://github.com/jscs-dev/node-jscs/issues/1686
 	"requireCapitalizedComments": null,
 
-	"excludeFiles": [ "external", "src/intro.js", "src/outro.js",
+	"excludeFiles": [ "external",
 		"test/node_smoke_tests/lib/ensure_iterability.js", "node_modules" ]
 }

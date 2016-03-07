@@ -12,6 +12,11 @@ module.exports = function( grunt ) {
 		requirejs = require( "requirejs" ),
 		srcFolder = __dirname + "/../../src/",
 		rdefineEnd = /\}\s*?\);[^}\w]*$/,
+		read = function( fileName ) {
+			return grunt.file.read( srcFolder + fileName );
+		},
+		globals = read( "exports/global.js" ),
+		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
 		config = {
 			baseUrl: "src",
 			name: "jquery",
@@ -28,8 +33,8 @@ module.exports = function( grunt ) {
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
-				startFile: "src/intro.js",
-				endFile: [ "src/exports/global.js", "src/outro.js" ]
+				start: wrapper[ 0 ].replace( /\/\*jshint .* \*\/\n/, "" ),
+				end: globals + wrapper[ 1 ]
 			},
 			rawText: {},
 			onBuildWrite: convert
