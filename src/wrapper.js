@@ -1,3 +1,4 @@
+/*jshint unused:false */
 /*!
  * jQuery JavaScript Library v@VERSION
  * https://jquery.com/
@@ -11,10 +12,10 @@
  *
  * Date: @DATE
  */
-
-(function( global, factory ) {
+( function( global, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
+
 		// For CommonJS and CommonJS-like environments where a proper `window`
 		// is present, execute the factory and get jQuery.
 		// For environments that do not have a `window` with a `document`
@@ -35,10 +36,15 @@
 	}
 
 // Pass this if window is not defined yet
-}(typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+}( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 // Support: Firefox 18+
 // Can't be in strict mode, several libs including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if
 // you try to trace through "use strict" call chains. (#13335)
 //"use strict";
+
+// @CODE
+
+return jQuery;
+} ) );
