@@ -286,9 +286,9 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 });
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
-	assert.expect( 18 );
+	assert.expect( 19 );
 
-	var pass, iframe, doc, parentObj, childObj,
+	var pass, iframe, doc, parentObj, childObj, deep,
 		fn = function() {};
 
 	// The use case that we want to match
@@ -327,6 +327,10 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	// Again, instantiated objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( new fn() ), "new fn" );
+
+	// Deep object
+	deep = { "foo": { "baz": true }, "foo2": document };
+	assert.ok( jQuery.isPlainObject( deep ), "Object with objects is still plain" );
 
 	// DOM Element
 	assert.ok( !jQuery.isPlainObject( document.createElement( "div" ) ), "DOM Element" );
