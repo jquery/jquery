@@ -67,6 +67,9 @@ module.exports = function( Release, files, complete ) {
 			shell.cp( "-rf", Release.dir.repo + "/" + file, Release.dir.dist );
 		} );
 
+		// Remove the wrapper from the dist repo
+		shell.rm( "-f", Release.dir.dist + "/src/wrapper.js" );
+
 		// Write generated bower file
 		fs.writeFileSync( Release.dir.dist + "/bower.json", generateBower() );
 
