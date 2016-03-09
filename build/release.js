@@ -1,3 +1,4 @@
+var fs = require( "fs" );
 
 module.exports = function( Release ) {
 
@@ -27,6 +28,15 @@ module.exports = function( Release ) {
 			ensureSizzle( Release, callback );
 		},
 		/**
+		 * Set the version in the src folder for distributing AMD
+		 */
+		_setSrcVersion: function() {
+			var corePath = __dirname + "/../src/core.js",
+				contents = fs.readFileSync( corePath, "utf8" );
+			contents = contents.replace( /@VERSION/g, Release.newVersion );
+			fs.writeFileSync( corePath, contents, "utf8" );
+		},
+		/**
 		 * Generates any release artifacts that should be included in the release.
 		 * The callback must be invoked with an array of files that should be
 		 * committed before creating the tag.
@@ -40,6 +50,7 @@ module.exports = function( Release ) {
 				"Grunt custom failed"
 			);
 			cdn.makeReleaseCopies( Release );
+			Release._setSrcVersion();
 			callback( files );
 		},
 		/**
