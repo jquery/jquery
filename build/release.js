@@ -9,7 +9,8 @@ module.exports = function( Release ) {
 			"dist/jquery.min.map",
 			"dist/jquery.slim.js",
 			"dist/jquery.slim.min.js",
-			"dist/jquery.slim.min.map"
+			"dist/jquery.slim.min.map",
+			"src/core.js"
 		],
 		cdn = require( "./release/cdn" ),
 		dist = require( "./release/dist" ),
