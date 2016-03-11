@@ -268,7 +268,8 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 } );
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
-	assert.expect( 21 );
+
+	assert.expect( 22 );
 
 	var pass, iframe, doc, parentObj, childObj, deep,
 		fn = function() {};
@@ -313,6 +314,10 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	// Again, instantiated objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( new fn() ), "new fn" );
+
+	// Instantiated objects with primitive constructors shouldn't be matched
+	fn.prototype.constructor = "foo";
+	assert.ok( !jQuery.isPlainObject( new fn() ), "new fn with primitive constructor" );
 
 	// Deep object
 	deep = { "foo": { "baz": true }, "foo2": document };
