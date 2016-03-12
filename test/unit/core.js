@@ -365,13 +365,23 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 	}
 } );
 
-//
 QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isPlainObject(Symbol)", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal( jQuery.isPlainObject( Symbol() ), false, "Symbol" );
 	assert.equal( jQuery.isPlainObject( Object( Symbol() ) ), false, "Symbol inside an object" );
 } );
+
+QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...))",
+	function( assert ) {
+		assert.expect( 1 );
+
+		var parentObj = { foo: "bar" };
+		var childObj = Object.assign( Object.create( parentObj ), { bar: "foo" } );
+
+		assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.assign(...))" );
+	}
+);
 
 
 QUnit.test( "isFunction", function( assert ) {
