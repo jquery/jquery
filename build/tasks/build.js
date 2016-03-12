@@ -10,6 +10,8 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		requirejs = require( "requirejs" ),
+		Insight = require( "insight" ),
+		pkg = require( "../../package.json" ),
 		srcFolder = __dirname + "/../../src/",
 		rdefineEnd = /\}\s*?\);[^}\w]*$/,
 		read = function( fileName ) {
@@ -312,10 +314,47 @@ module.exports = function( grunt ) {
 	//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
 	grunt.registerTask( "custom", function() {
 		var args = this.args,
-			modules = args.length ? args[ 0 ].replace( /,/g, ":" ) : "";
+			modules = args.length ? args[ 0 ].replace( /,/g, ":" ) : "",
+			done = this.async(),
+			insight = new Insight( {
+				trackingCode: "UA-1076265-4",
+				pkg: pkg
+			} );
+
+		function exec( trackingAllowed ) {
+			var tracks = args.length ? args[ 0 ].split( "," ) : [];
+			var defaultPath = [ "build", "custom" ];
+
+			tracks = tracks.map( function( track ) {
+				return track.replace( /\//g, "+" );
+			} );
+
+			if ( trackingAllowed ) {
+
+				// Track individuals
+				tracks.forEach( function( module ) {
+					var path = defaultPath.concat( [ "individual" ], module );
+
+					insight.track.apply( insight, path );
+				} );
+
+				// Track full command
+				insight.track.apply( insight, defaultPath.concat( [ "full" ], tracks ) );
+			}
+
+			grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "uglify", "dist" ] );
+			done();
+		}
 
 		grunt.log.writeln( "Creating custom build...\n" );
 
-		grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "uglify", "dist" ] );
+		// Ask for permission the first time
+		if ( insight.optOut === undefined ) {
+			insight.askPermission( null, function( error, result ) {
+				exec( result );
+			} );
+		} else {
+			exec( !insight.optOut );
+		}
 	} );
 };
