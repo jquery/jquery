@@ -1,6 +1,7 @@
 define( [
 	"./var/arr",
 	"./var/document",
+	"./var/getProto",
 	"./var/slice",
 	"./var/concat",
 	"./var/push",
@@ -8,10 +9,13 @@ define( [
 	"./var/class2type",
 	"./var/toString",
 	"./var/hasOwn",
+	"./var/fnToString",
+	"./var/ObjectFunctionString",
 	"./var/support",
 	"./core/DOMEval"
-], function( arr, document, slice, concat,
-	push, indexOf, class2type, toString, hasOwn, support, DOMEval ) {
+], function( arr, document, getProto, slice, concat, push, indexOf,
+	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
+	support, DOMEval ) {
 
 var
 	version = "@VERSION",
@@ -23,10 +27,6 @@ var
 		// Need init if jQuery is called (just allow error to be thrown if not included)
 		return new jQuery.fn.init( selector, context );
 	},
-
-	getProto = Object.getPrototypeOf,
-	fnToString = jQuery.toString,
-	ObjectFunctionString = fnToString.call( Object ),
 
 	// Support: Android<4.1
 	// Make sure we trim BOM and NBSP
