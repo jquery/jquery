@@ -287,7 +287,7 @@ QUnit.test( "type for `Symbol`", function( assert ) {
 
 QUnit.asyncTest( "isPlainObject", function( assert ) {
 
-	assert.expect( 22 );
+	assert.expect( 23 );
 
 	var pass, iframe, doc, parentObj, childObj, deep,
 		fn = function() {};
@@ -300,12 +300,13 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 	assert.ok( jQuery.isPlainObject( { constructor: "foo" } ),
 		"plain object with primitive constructor property" );
 
-	parentObj = { foo: "bar" };
+	parentObj = {};
 	childObj = Object.create( parentObj );
-
-	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
+	assert.ok( !jQuery.isPlainObject( childObj ), "Object.create({})" );
+	parentObj.foo = "bar";
+	assert.ok( !jQuery.isPlainObject( childObj ), "Object.create({...})" );
 	childObj.bar = "foo";
-	assert.ok( !jQuery.isPlainObject( childObj ), "isPlainObject(Object.create({}))" );
+	assert.ok( !jQuery.isPlainObject( childObj ), "extend(Object.create({...}), ...)" );
 
 	// Not objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( "" ), "string" );
