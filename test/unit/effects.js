@@ -1563,18 +1563,18 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 		$divTest = jQuery( "<div>test</div>" ),
 		$divNone = jQuery( "<div style='display: none;'/>" ),
 		$divInline = jQuery( "<div style='display: inline;'/>" ),
-		nullParentDisplay = $divEmpty.css( "display" ),
-		underFragmentDisplay = $divTest.css( "display" ),
+		nullParentDisplay = "block",
+		underFragmentDisplay = "block",
 		clock = this.clock;
 
 	assert.strictEqual( $divEmpty[ 0 ].parentNode, null, "Setup: element with null parentNode" );
 	assert.strictEqual( ( $divTest[ 0 ].parentNode || {} ).nodeType, 11, "Setup: element under fragment" );
 
-	assert.strictEqual( $divEmpty.show()[ 0 ].style.display, "",
+	assert.strictEqual( $divEmpty.show()[ 0 ].style.display, "block",
 		"set display with show() for element with null parentNode" );
-	assert.strictEqual( $divTest.show()[ 0 ].style.display, "",
+	assert.strictEqual( $divTest.show()[ 0 ].style.display, "block",
 		"set display with show() for element under fragment" );
-	assert.strictEqual( $divNone.show()[ 0 ].style.display, "",
+	assert.strictEqual( $divNone.show()[ 0 ].style.display, "block",
 		"show() should change display if it already set to none" );
 	assert.strictEqual( $divInline.show()[ 0 ].style.display, "inline",
 		"show() should not change display if it already set" );

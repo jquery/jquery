@@ -539,7 +539,7 @@ QUnit.test( "show()", function( assert ) {
 } );
 
 QUnit.test( "show/hide detached nodes", function( assert ) {
-	assert.expect( 19 );
+	assert.expect( 17 );
 
 	var div, span, tr;
 
@@ -554,48 +554,45 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 
 	div = jQuery( "<div class='hidden'>" );
 	div.show().appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "none",
-		"A shown-while-detached div can be hidden by the CSS cascade" );
+	assert.equal( div.css( "display" ), "block",
+		"A shown-while-detached div is shown" );
 
 	div = jQuery( "<div><div class='hidden'></div></div>" ).children( "div" );
 	div.show().appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "none",
-		"A shown-while-detached div inside a visible div can be hidden by the CSS cascade" );
+	assert.equal( div.css( "display" ), "block",
+		"A shown-while-detached div inside a visible div is shown" );
 
 	span = jQuery( "<span class='hidden'/>" );
 	span.show().appendTo( "#qunit-fixture" );
-	assert.equal( span.css( "display" ), "none",
-		"A shown-while-detached span can be hidden by the CSS cascade" );
+	assert.equal( span.css( "display" ), "inline",
+		"A shown-while-detached span is shown" );
 
 	div = jQuery( "div.hidden" );
 	div.detach().show();
-	assert.ok( !div[ 0 ].style.display,
-		"show() does not update inline style of a cascade-hidden-before-detach div" );
+	assert.ok( !!div[ 0 ].style.display,
+		"show() does update inline style of a cascade-hidden-before-detach div" );
 	div.appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "none",
-		"A shown-while-detached cascade-hidden div is hidden after attachment" );
+	assert.equal( div.css( "display" ), "block",
+		"A shown-while-detached cascade-hidden div is shown after attachment" );
 	div.remove();
 
 	span = jQuery( "<span class='hidden'/>" );
 	span.appendTo( "#qunit-fixture" ).detach().show().appendTo( "#qunit-fixture" );
-	assert.equal( span.css( "display" ), "none",
-		"A shown-while-detached cascade-hidden span is hidden after attachment" );
+	assert.equal( span.css( "display" ), "inline",
+		"A shown-while-detached cascade-hidden span is shown after attachment" );
 	span.remove();
 
 	div = jQuery( document.createElement( "div" ) );
 	div.show().appendTo( "#qunit-fixture" );
-	assert.ok( !div[ 0 ].style.display, "A shown-while-detached div has no inline style" );
+	assert.ok( !!div[ 0 ].style.display, "A shown-while-detached div has inline style" );
 	assert.equal( div.css( "display" ), "block",
 		"A shown-while-detached div has default display after attachment" );
 	div.remove();
 
 	div = jQuery( "<div style='display: none'>" );
 	div.show();
-	assert.equal( div[ 0 ].style.display, "",
+	assert.equal( div[ 0 ].style.display, "block",
 		"show() updates inline style of a detached inline-hidden div" );
-	div.appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "block",
-		"A shown-while-detached inline-hidden div has default display after attachment" );
 
 	div = jQuery( "<div><div style='display: none'></div></div>" ).children( "div" );
 	div.show().appendTo( "#qunit-fixture" );
@@ -605,11 +602,8 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 
 	span = jQuery( "<span style='display: none'/>" );
 	span.show();
-	assert.equal( span[ 0 ].style.display, "",
+	assert.equal( span[ 0 ].style.display, "inline",
 		"show() updates inline style of a detached inline-hidden span" );
-	span.appendTo( "#qunit-fixture" );
-	assert.equal( span.css( "display" ), "inline",
-		"A shown-while-detached inline-hidden span has default display after attachment" );
 
 	div = jQuery( "<div style='display: inline'/>" );
 	div.show().appendTo( "#qunit-fixture" );
@@ -621,11 +615,11 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	jQuery( "#table" ).append( tr );
 	tr.detach().hide().show();
 
-	assert.ok( !tr[ 0 ].style.display, "Not-hidden detached tr elements have no inline style" );
+	assert.ok( !!tr[ 0 ].style.display, "Not-hidden detached tr elements have inline style" );
 	tr.remove();
 
 	span = jQuery( "<span/>" ).hide().show();
-	assert.ok( !span[ 0 ].style.display, "Not-hidden detached span elements have no inline style" );
+	assert.ok( !!span[ 0 ].style.display, "Not-hidden detached span elements have inline style" );
 	span.remove();
 } );
 
