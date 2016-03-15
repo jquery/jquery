@@ -1594,14 +1594,14 @@ QUnit.test( "Insignificant white space returned for $(option).val() (#14858, gh-
 	var val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );
 
-	jQuery.each( [ " ", "\n", "\t", "\f", "\r" ], function() {
-		var val = jQuery( "<option>" + this + "</option>" ).val();
+	jQuery.each( [ " ", "\n", "\t", "\f", "\r" ], function( i, character ) {
+		var val = jQuery( "<option>" + character + "</option>" ).val();
 		assert.equal( val.length, 0, "insignificant white-space returned for value" );
 
-		val = jQuery( "<option>" + this + "test" + this + "</option>" ).val();
+		val = jQuery( "<option>" + character + "test" + character + "</option>" ).val();
 		assert.equal( val.length, 4, "insignificant white-space returned for value" );
 
-		val = jQuery( "<option>te" + this + "st</option>" ).val();
+		val = jQuery( "<option>te" + character + "st</option>" ).val();
 		assert.equal( val, "te st", "Whitespace is collapsed in values" );
 	} );
 } );
