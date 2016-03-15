@@ -1107,6 +1107,48 @@ QUnit.test( "val(select) after form.reset() (Bug #2551)", function( assert ) {
 	jQuery( "#kk" ).remove();
 } );
 
+QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
+	assert.expect( 15 );
+
+	var $select = jQuery( "<select/>" ).appendTo( "#qunit-fixture" ),
+		spaces = {
+			"\\t": {
+				html: "&#09;",
+				val: "\t"
+			},
+			"\\n": {
+				html: "&#10;",
+				val: "\n"
+			},
+			"\\r": {
+				html: "&#13;",
+				val: "\r"
+			},
+			"\\f": "\f",
+			"space": " "
+		},
+		html = "";
+	jQuery.each( spaces, function( key, obj ) {
+		var value = obj.html || obj;
+		html += "<option value='bar" + value + "'>bar" + value + "</option>";
+		html += "<option value='te" + value + "st'>te" + value + "st</option>";
+		html += "<option value='" + value + "baz'>" + value + "baz</option>";
+	} );
+	$select.html( html );
+
+	jQuery.each( spaces, function( key, obj ) {
+		var val = obj.val || obj;
+		$select.val( "bar" + val );
+		assert.equal( $select.val(), "bar", "Value ending with space character (" + key + ") selected" );
+
+		$select.val( "te" + val + "st" );
+		assert.equal( $select.val(), "te st", "Value with space character (" + key + ") in the middle selected" );
+
+		$select.val( val + "baz" );
+		assert.equal( $select.val(), "baz", "Value starting with space character (" + key + ") selected" );
+	} );
+} );
+
 var testAddClass = function( valueObj, assert ) {
 	assert.expect( 9 );
 
@@ -1523,17 +1565,19 @@ QUnit.test( "option value not trimmed when setting via parent select", function(
 	assert.equal( jQuery( "<select><option> 2</option></select>" ).val( "2" ).val(), "2" );
 } );
 
-QUnit.test( "Insignificant white space returned for $(option).val() (#14858)", function( assert ) {
-	assert.expect( 3 );
+QUnit.test( "Insignificant white space returned for $(option).val() (#14858, gh-2978)", function( assert ) {
+	assert.expect( 11 );
 
 	var val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );
 
-	val = jQuery( "<option>  </option>" ).val();
-	assert.equal( val.length, 0, "insignificant white-space returned for value" );
+	jQuery.each( [ " ", "\n", "\t", "\f", "\r" ], function() {
+		var val = jQuery( "<option>" + this + "</option>" ).val();
+		assert.equal( val.length, 0, "insignificant white-space returned for value" );
 
-	val = jQuery( "<option>  test  </option>" ).val();
-	assert.equal( val.length, 4, "insignificant white-space returned for value" );
+		val = jQuery( "<option>" + this + "test" + this + "</option>" ).val();
+		assert.equal( val.length, 4, "insignificant white-space returned for value" );
+	} );
 } );
 
 QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {

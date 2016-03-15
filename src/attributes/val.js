@@ -4,7 +4,8 @@ define( [
 	"../core/init"
 ], function( jQuery, support ) {
 
-var rreturn = /\r/g;
+var rreturn = /\r/g,
+	rspaces = /\s/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -128,7 +129,12 @@ jQuery.extend( {
 			set: function( elem, value ) {
 				var optionSet, option,
 					options = elem.options,
-					values = jQuery.makeArray( value ),
+
+					// Strip and collapse whitespace to normalize set values
+					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+					values = jQuery.map( jQuery.makeArray( value ), function( val ) {
+						return jQuery.trim( val ).replace( rspaces, " " );
+					} ),
 					i = options.length;
 
 				while ( i-- ) {
