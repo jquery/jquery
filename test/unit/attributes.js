@@ -1566,7 +1566,7 @@ QUnit.test( "option value not trimmed when setting via parent select", function(
 } );
 
 QUnit.test( "Insignificant white space returned for $(option).val() (#14858, gh-2978)", function( assert ) {
-	assert.expect( 11 );
+	assert.expect( 16 );
 
 	var val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );
@@ -1577,6 +1577,9 @@ QUnit.test( "Insignificant white space returned for $(option).val() (#14858, gh-
 
 		val = jQuery( "<option>" + this + "test" + this + "</option>" ).val();
 		assert.equal( val.length, 4, "insignificant white-space returned for value" );
+
+		val = jQuery( "<option>te" + this + "st</option>" ).val();
+		assert.equal( val, "te st", "Whitespace is collapsed in values" );
 	} );
 } );
 
