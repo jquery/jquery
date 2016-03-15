@@ -4,7 +4,8 @@ define( [
 	"../core/init"
 ], function( jQuery, support ) {
 
-var rreturn = /\r/g;
+var rreturn = /\r/g,
+	rspaces = /[\x20\t\r\n\f]+/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -84,7 +85,9 @@ jQuery.extend( {
 
 					// Support: IE10-11+
 					// option.text throws exceptions (#14686, #14858)
-					jQuery.trim( jQuery.text( elem ) );
+					// Strip and collapse whitespace
+					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+					jQuery.trim( jQuery.text( elem ) ).replace( rspaces, " " );
 			}
 		},
 		select: {
@@ -138,7 +141,7 @@ jQuery.extend( {
 				while ( i-- ) {
 					option = options[ i ];
 
-					if ( jQuery.inArray( jQuery.valHooks.option.get( option ), values ) >= 0 ) {
+					if ( jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1 ) {
 
 						// Support: IE6
 						// When new option element is added to select box we need to

@@ -1098,6 +1098,71 @@ QUnit.test( "val(select) after form.reset() (Bug #2551)", function( assert ) {
 	jQuery( "#kk" ).remove();
 } );
 
+QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
+	assert.expect( 35 );
+
+	var $select = jQuery( "<select/>" ).appendTo( "#qunit-fixture" ),
+		spaces = {
+			"\\t": {
+				html: "&#09;",
+				val: "\t"
+			},
+			"\\n": {
+				html: "&#10;",
+				val: "\n"
+			},
+			"\\r": {
+				html: "&#13;",
+				val: "\r"
+			},
+			"\\f": "\f",
+			"space": " ",
+			"\\u00a0": "\u00a0",
+			"\\u1680": "\u1680"
+		},
+		html = "";
+	jQuery.each( spaces, function( key, obj ) {
+		var value = obj.html || obj;
+		html += "<option value='attr" + value + "'></option>";
+		html += "<option value='at" + value + "tr'></option>";
+		html += "<option value='" + value + "attr'></option>";
+	} );
+	$select.html( html );
+
+	jQuery.each( spaces, function( key, obj ) {
+		var val = obj.val || obj;
+		$select.val( "attr" + val );
+		assert.equal( $select.val(), "attr" + val, "Value ending with space character (" + key + ") selected (attr)" );
+
+		$select.val( "at" + val + "tr" );
+		assert.equal( $select.val(), "at" + val + "tr", "Value with space character (" + key + ") in the middle selected (attr)" );
+
+		$select.val( val + "attr" );
+		assert.equal( $select.val(), val + "attr", "Value starting with space character (" + key + ") selected (attr)" );
+	} );
+
+	jQuery.each( spaces, function( key, obj ) {
+		var value = obj.html || obj,
+			val = obj.val || obj;
+		html = "";
+		html += "<option>text" + value + "</option>";
+		html += "<option>te" + value + "xt</option>";
+		html += "<option>" + value + "text</option>";
+		$select.html( html );
+
+		$select.val( "text" );
+		assert.equal( $select.val(), "text", "Value with space character at beginning or end is stripped (" + key + ") selected (text)" );
+
+		if ( /^\\u/.test( key ) ) {
+			$select.val( "te" + val + "xt" );
+			assert.equal( $select.val(), "te" + val + "xt", "Value with non-space whitespace character (" + key + ") in the middle selected (text)" );
+		} else {
+			$select.val( "te xt" );
+			assert.equal( $select.val(), "te xt", "Value with space character (" + key + ") in the middle selected (text)" );
+		}
+	} );
+} );
+
 var testAddClass = function( valueObj, assert ) {
 	assert.expect( 9 );
 
@@ -1515,17 +1580,22 @@ QUnit.test( "option value not trimmed when setting via parent select", function(
 	assert.equal( jQuery( "<select><option> 2</option></select>" ).val( "2" ).val(), "2" );
 } );
 
-QUnit.test( "Insignificant white space returned for $(option).val() (#14858)", function( assert ) {
-	assert.expect( 3 );
+QUnit.test( "Insignificant white space returned for $(option).val() (#14858, gh-2978)", function( assert ) {
+	assert.expect( 16 );
 
 	var val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );
 
-	val = jQuery( "<option>  </option>" ).val();
-	assert.equal( val.length, 0, "insignificant white-space returned for value" );
+	jQuery.each( [ " ", "\n", "\t", "\f", "\r" ], function( i, character ) {
+		var val = jQuery( "<option>" + character + "</option>" ).val();
+		assert.equal( val.length, 0, "insignificant white-space returned for value" );
 
-	val = jQuery( "<option>  test  </option>" ).val();
-	assert.equal( val.length, 4, "insignificant white-space returned for value" );
+		val = jQuery( "<option>" + character + "test" + character + "</option>" ).val();
+		assert.equal( val.length, 4, "insignificant white-space returned for value" );
+
+		val = jQuery( "<option>te" + character + "st</option>" ).val();
+		assert.equal( val, "te st", "Whitespace is collapsed in values" );
+	} );
 } );
 
 QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {
