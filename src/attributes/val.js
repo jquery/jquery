@@ -5,7 +5,7 @@ define( [
 ], function( jQuery, support ) {
 
 var rreturn = /\r/g,
-	rspaces = /\s/g;
+	rspaces = /[\x20\t\r\n\f]+/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
