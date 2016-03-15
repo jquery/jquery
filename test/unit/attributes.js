@@ -1108,7 +1108,7 @@ QUnit.test( "val(select) after form.reset() (Bug #2551)", function( assert ) {
 } );
 
 QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
-	assert.expect( 15 );
+	assert.expect( 35 );
 
 	var $select = jQuery( "<select/>" ).appendTo( "#qunit-fixture" ),
 		spaces = {
@@ -1125,27 +1125,50 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 				val: "\r"
 			},
 			"\\f": "\f",
-			"space": " "
+			"space": " ",
+			"\\u00a0": "\u00a0",
+			"\\u1680": "\u1680"
 		},
 		html = "";
 	jQuery.each( spaces, function( key, obj ) {
 		var value = obj.html || obj;
-		html += "<option value='bar" + value + "'>bar" + value + "</option>";
-		html += "<option value='te" + value + "st'>te" + value + "st</option>";
-		html += "<option value='" + value + "baz'>" + value + "baz</option>";
+		html += "<option value='attr" + value + "'></option>";
+		html += "<option value='at" + value + "tr'></option>";
+		html += "<option value='" + value + "attr'></option>";
 	} );
 	$select.html( html );
 
 	jQuery.each( spaces, function( key, obj ) {
 		var val = obj.val || obj;
-		$select.val( "bar" + val );
-		assert.equal( $select.val(), "bar", "Value ending with space character (" + key + ") selected" );
+		$select.val( "attr" + val );
+		assert.equal( $select.val(), "attr" + val, "Value ending with space character (" + key + ") selected (attr)" );
 
-		$select.val( "te" + val + "st" );
-		assert.equal( $select.val(), "te st", "Value with space character (" + key + ") in the middle selected" );
+		$select.val( "at" + val + "tr" );
+		assert.equal( $select.val(), "at" + val + "tr", "Value with space character (" + key + ") in the middle selected (attr)" );
 
-		$select.val( val + "baz" );
-		assert.equal( $select.val(), "baz", "Value starting with space character (" + key + ") selected" );
+		$select.val( val + "attr" );
+		assert.equal( $select.val(), val + "attr", "Value starting with space character (" + key + ") selected (attr)" );
+	} );
+
+	jQuery.each( spaces, function( key, obj ) {
+		var value = obj.html || obj,
+			val = obj.val || obj;
+		html = "";
+		html += "<option>text" + value + "</option>";
+		html += "<option>te" + value + "xt</option>";
+		html += "<option>" + value + "text</option>";
+		$select.html( html );
+
+		$select.val( "text" );
+		assert.equal( $select.val(), "text", "Value with space character at beginning or end is stripped (" + key + ") selected (text)" );
+
+		if ( /^\\u/.test( key ) ) {
+			$select.val( "te" + val + "xt" );
+			assert.equal( $select.val(), "te" + val + "xt", "Value with non-space whitespace character (" + key + ") in the middle selected (text)" );
+		} else {
+			$select.val( "te xt" );
+			assert.equal( $select.val(), "te xt", "Value with space character (" + key + ") in the middle selected (text)" );
+		}
 	} );
 } );
 
