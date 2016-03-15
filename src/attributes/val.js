@@ -4,7 +4,8 @@ define( [
 	"../core/init"
 ], function( jQuery, support ) {
 
-var rreturn = /\r/g;
+var rreturn = /\r/g,
+	rspaces = /[\x20\t\r\n\f]+/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -80,9 +81,15 @@ jQuery.extend( {
 		option: {
 			get: function( elem ) {
 
-				// Support: IE<11
-				// option.value not trimmed (#14858)
-				return jQuery.trim( elem.value );
+				var val = jQuery.find.attr( elem, "value" );
+				return val != null ?
+					val :
+
+					// Support: IE10-11+
+					// option.text throws exceptions (#14686, #14858)
+					// Strip and collapse whitespace
+					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
+					jQuery.trim( jQuery.text( elem ) ).replace( rspaces, " " );
 			}
 		},
 		select: {
@@ -135,7 +142,7 @@ jQuery.extend( {
 				while ( i-- ) {
 					option = options[ i ];
 					if ( option.selected =
-							jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
+						jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
 					) {
 						optionSet = true;
 					}
