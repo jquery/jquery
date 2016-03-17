@@ -2,7 +2,7 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "1.12.2-pre",
+  "version": "1.12.2",
   "main": "dist/jquery.js",
   "homepage": "http://jquery.com",
   "author": {
