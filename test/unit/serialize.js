@@ -1,7 +1,7 @@
 QUnit.module( "serialize", { teardown: moduleTeardown } );
 
 QUnit.test( "jQuery.param()", function( assert ) {
-	assert.expect( 23 );
+	assert.expect( 24 );
 
 	var params, settings;
 
