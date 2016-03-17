@@ -1120,7 +1120,8 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 			"\\u00a0": "\u00a0",
 			"\\u1680": "\u1680"
 		},
-		html = "";
+		html = "",
+		runicode = /^\\u/;
 	jQuery.each( spaces, function( key, obj ) {
 		var value = obj.html || obj;
 		html += "<option value='attr" + value + "'></option>";
@@ -1151,9 +1152,15 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 		$select.html( html );
 
 		$select.val( "text" );
-		assert.equal( $select.val(), "text", "Value with space character at beginning or end is stripped (" + key + ") selected (text)" );
 
-		if ( /^\\u/.test( key ) ) {
+		// IE6-8 doesn't trim the option values
+		if ( runicode.test( key ) && /msie [678]\.0/i.test( window.navigator.userAgent ) ) {
+			assert.ok( true, "IE6-8 doesn't trim the option values" );
+		} else {
+			assert.equal( $select.val(), "text", "Value with space character at beginning or end is stripped (" + key + ") selected (text)" );
+		}
+
+		if ( runicode.test( key ) ) {
 			$select.val( "te" + val + "xt" );
 			assert.equal( $select.val(), "te" + val + "xt", "Value with non-space whitespace character (" + key + ") in the middle selected (text)" );
 		} else {
