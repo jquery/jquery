@@ -444,10 +444,10 @@ jQuery.extend( {
 			// Default abort message
 			strAbort = "canceled",
 
-			// Fake xhr
+			// Fake xhr (as a true Deferred instance)
 			jqXHR = deferred.promise();
 
-		// Attach deferreds
+		// Attach xhr capabilities
 		jQuery.extend( jqXHR, {
 			readyState: 0,
 
