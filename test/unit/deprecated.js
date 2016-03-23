@@ -83,7 +83,7 @@ QUnit.test( "jQuery.parseJSON", function( assert ) {
 	assert.throws( function() {
 		var result = jQuery.parseJSON( "0101" );
 
-		// Support: IE9+
+		// Support: IE <=9 only
 		// Ensure base-10 interpretation on browsers that erroneously accept leading-zero numbers
 		if ( result === 101 ) {
 			throw new Error( "close enough" );

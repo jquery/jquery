@@ -1382,7 +1382,7 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 	form.remove();
 } );
 
-// Support: iOS 7-9+
+// Support: iOS 7 - 9
 // iOS has the window.onbeforeunload field but doesn't support the beforeunload
 // handler making it impossible to feature-detect the support.
 QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
@@ -2396,7 +2396,7 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 		$link = jQuery( link ),
 		evt = document.createEvent( "MouseEvents" );
 
-	// Support: IE 9-11 only
+	// Support: IE <=9 - 11 only
 	// IE requires element to be in the body before it will dispatch
 	$link.appendTo( "body" ).on( "click", function( e ) {
 
@@ -2867,7 +2867,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) 
 	} );
 } );
 
-// Support: IE9 only
+// Support: IE <=9 only
 // https://msdn.microsoft.com/en-us/library/hh801223(v=vs.85).aspx
 QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
 	assert.expect( 1 );

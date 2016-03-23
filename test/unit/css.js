@@ -1398,7 +1398,7 @@ QUnit.test(
 	}
 );
 
-// Support: IE < 11
+// Support: IE <=10 only
 // We have to jump through the hoops here in order to test work with "order" CSS property,
 // that some browsers do not support. This test is not, strictly speaking, correct,
 // but it's the best that we can do.

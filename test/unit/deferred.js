@@ -535,7 +535,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 
 	window.console.warn = function( msg ) {
 
-		// Support: Chrome < 42
+		// Support: Chrome <=41 only
 		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
 		// not a function" error, not mentioning the function name. This has been fixed
 		// in Chrome 42. Relax this test there.
@@ -590,7 +590,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 
 	window.console.warn = function( msg, stack ) {
 
-		// Support: Chrome < 42
+		// Support: Chrome <=41 only
 		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
 		// not a function" error, not mentioning the function name. This has been fixed
 		// in Chrome 42. Relax this test there.

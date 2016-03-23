@@ -10,7 +10,7 @@ define( [
 
 	input.type = "checkbox";
 
-	// Support: Android<4.4
+	// Support: Android <=4.3 only
 	// Default value for a checkbox should be "on"
 	support.checkOn = input.value !== "";
 
