@@ -91,7 +91,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		// Support: IE<=11+
+		// Support: IE <=11 only
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
 		if ( !elem.getClientRects().length ) {
