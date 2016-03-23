@@ -446,7 +446,7 @@ jQuery.extend( {
 
 			// Fake xhr
 			jqXHR = deferred.promise();
-			
+
 		// Attach deferreds
 		jQuery.extend( jqXHR, {
 			readyState: 0,
