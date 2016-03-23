@@ -58,9 +58,9 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	jQuery( "#foo" ).css( { "opacity": "" } );
 	assert.equal( jQuery( "#foo" ).css( "opacity" ), "1", "Assert opacity is 1 when set to an empty String" );
 
-	assert.equal( jQuery( "#empty" ).css( "opacity" ), "0", "Assert opacity is accessible via filter property set in stylesheet in IE" );
+	assert.equal( jQuery( "#empty" ).css( "opacity" ), "0", "Assert opacity is accessible" );
 	jQuery( "#empty" ).css( { "opacity": "1" } );
-	assert.equal( jQuery( "#empty" ).css( "opacity" ), "1", "Assert opacity is taken from style attribute when set vs stylesheet in IE with filters" );
+	assert.equal( jQuery( "#empty" ).css( "opacity" ), "1", "Assert opacity is taken from style attribute when set" );
 
 	div = jQuery( "#nothiddendiv" );
 	child = jQuery( "#nothiddendivchild" );
@@ -478,7 +478,7 @@ QUnit.test( "show()", function( assert ) {
 
 	assert.expect( 18 );
 
-	var hiddendiv, div, pass, old, test;
+	var hiddendiv, div, pass, test;
 		hiddendiv = jQuery( "div.hidden" );
 
 	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "none", "hiddendiv is display: none" );
@@ -504,12 +504,8 @@ QUnit.test( "show()", function( assert ) {
 		"<div id='show-tests'>" +
 		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
 		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
-		"<ul><li></li></ul></div>" +
-		"<table id='test-table'></table>"
+		"<ul><li></li></ul></div>"
 	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
-
-	old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
-	jQuery( "#test-table" ).remove();
 
 	test = {
 		"div": "block",
@@ -518,14 +514,14 @@ QUnit.test( "show()", function( assert ) {
 		"code": "inline",
 		"pre": "block",
 		"span": "inline",
-		"table": old ? "block" : "table",
-		"thead": old ? "block" : "table-header-group",
-		"tbody": old ? "block" : "table-row-group",
-		"tr": old ? "block" : "table-row",
-		"th": old ? "block" : "table-cell",
-		"td": old ? "block" : "table-cell",
+		"table": "table",
+		"thead": "table-header-group",
+		"tbody": "table-row-group",
+		"tr": "table-row",
+		"th": "table-cell",
+		"td": "table-cell",
 		"ul": "block",
-		"li": old ? "block" : "list-item"
+		"li": "list-item"
 	};
 
 	jQuery.each( test, function( selector, expected ) {
@@ -1234,23 +1230,21 @@ QUnit.test( "cssHooks - expand", function( assert ) {
 } );
 
 QUnit.test( "css opacity consistency across browsers (#12685)", function( assert ) {
-	assert.expect( 4 );
+	assert.expect( 3 );
 
 	var el,
 		fixture = jQuery( "#qunit-fixture" );
 
 	// Append style element
-	jQuery( "<style>.opacityWithSpaces_t12685 { opacity: 0.1; filter: alpha(opacity = 10); } .opacityNoSpaces_t12685 { opacity: 0.2; filter: alpha(opacity=20); }</style>" ).appendTo( fixture );
+	jQuery( "<style>.opacity_t12685 { opacity: 0.1; }</style>" ).appendTo( fixture );
 
-	el = jQuery( "<div class='opacityWithSpaces_t12685'></div>" ).appendTo( fixture );
+	el = jQuery( "<div class='opacity_t12685'></div>" ).appendTo( fixture );
 
-	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 10, "opacity from style sheet (filter:alpha with spaces)" );
-	el.removeClass( "opacityWithSpaces_t12685" ).addClass( "opacityNoSpaces_t12685" );
-	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 20, "opacity from style sheet (filter:alpha without spaces)" );
+	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 10, "opacity from style sheet" );
 	el.css( "opacity", 0.3 );
 	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 30, "override opacity" );
 	el.css( "opacity", "" );
-	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 20, "remove opacity override" );
+	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 10, "remove opacity override" );
 } );
 
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", function( assert ) {

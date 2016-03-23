@@ -50,7 +50,7 @@ QUnit.test( "show() basic", function( assert ) {
 QUnit.test( "show()", function( assert ) {
 	assert.expect( 27 );
 
-	var div, speeds, old, test,
+	var div, speeds, test,
 		hiddendiv = jQuery( "div.hidden" );
 
 	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "none", "hiddendiv is display: none" );
@@ -99,12 +99,8 @@ QUnit.test( "show()", function( assert ) {
 		"<div id='show-tests'>" +
 		"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
 		"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody></table>" +
-		"<ul><li></li></ul></div>" +
-		"<table id='test-table'></table>"
+		"<ul><li></li></ul></div>"
 	).appendTo( "#qunit-fixture" ).find( "*" ).css( "display", "none" );
-
-	old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
-	jQuery( "#test-table" ).remove();
 
 	test = {
 		"div": "block",
@@ -113,14 +109,14 @@ QUnit.test( "show()", function( assert ) {
 		"code": "inline",
 		"pre": "block",
 		"span": "inline",
-		"table": old ? "block" : "table",
-		"thead": old ? "block" : "table-header-group",
-		"tbody": old ? "block" : "table-row-group",
-		"tr": old ? "block" : "table-row",
-		"th": old ? "block" : "table-cell",
-		"td": old ? "block" : "table-cell",
+		"table": "table",
+		"thead": "table-header-group",
+		"tbody": "table-row-group",
+		"tr": "table-row",
+		"th": "table-cell",
+		"td": "table-cell",
 		"ul": "block",
-		"li": old ? "block" : "list-item"
+		"li": "list-item"
 	};
 
 	jQuery.each( test, function( selector, expected ) {
@@ -144,34 +140,28 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 			"<div><p><a href='#'></a></p><code></code><pre></pre><span></span></div>" +
 			"<table><thead><tr><th></th></tr></thead><tbody><tr><td></td></tr></tbody>" +
 				"</table>" +
-			"<ul><li></li></ul></div>" +
-			"<table id='test-table'></table>"
+			"<ul><li></li></ul></div>"
 		).appendTo( "#qunit-fixture" ).find( "*" ).each( setup );
-
-		var test,
-			old = jQuery( "#test-table" ).show().css( "display" ) !== "table";
-
-		jQuery( "#test-table" ).remove();
 
 		// Note: inline elements are expected to be inline-block
 		// because we're showing width/height
 		// Can't animate width/height inline
 		// See #14344
-		test = {
+		var test = {
 			"div": "block",
 			"p": "block",
 			"a": "inline",
 			"code": "inline",
 			"pre": "block",
 			"span": "inline",
-			"table": old ? "block" : "table",
-			"thead": old ? "block" : "table-header-group",
-			"tbody": old ? "block" : "table-row-group",
-			"tr": old ? "block" : "table-row",
-			"th": old ? "block" : "table-cell",
-			"td": old ? "block" : "table-cell",
+			"table": "table",
+			"thead": "table-header-group",
+			"tbody": "table-row-group",
+			"tr": "table-row",
+			"th": "table-cell",
+			"td": "table-cell",
 			"ul": "block",
-			"li": old ? "block" : "list-item"
+			"li": "list-item"
 		};
 
 		jQuery.each( test, function( selector ) {
@@ -369,10 +359,8 @@ QUnit.test( "animate block width/height", function( assert ) {
 QUnit.test( "animate table width/height", function( assert ) {
 	assert.expect( 1 );
 
-	var displayMode = jQuery( "#table" ).css( "display" ) !== "table" ? "block" : "table";
-
 	jQuery( "#table" ).animate( { width: 42, height: 42 }, 100, function() {
-		assert.equal( jQuery( this ).css( "display" ), displayMode, "display mode is correct" );
+		assert.equal( jQuery( this ).css( "display" ), "table", "display mode is correct" );
 	} );
 	this.clock.tick( 100 );
 } );

@@ -2920,6 +2920,7 @@ if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
 			$text = jQuery( "#text1" ),
 			$radio = jQuery( "#radio1" ).trigger( "focus" );
 
+		// Support: IE <=10 only
 		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
 		QUnit.stop();

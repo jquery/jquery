@@ -60,7 +60,7 @@ function testWrap( val, assert ) {
 	j.wrap( val( "<i></i>" ) );
 
 	assert.equal(
-		jQuery( "#nonnodes > i" ).length, jQuery( "#nonnodes" )[ 0 ].childNodes.length,
+		jQuery( "#nonnodes > i" ).length, 3,
 		"Check node,textnode,comment wraps ok"
 	);
 	assert.equal(
