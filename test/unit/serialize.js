@@ -75,7 +75,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 	assert.equal( jQuery.param( params, false ), "param1=", "Make sure that null params aren't traversed." );
 
 	params = { "param1": function() {}, "param2": function() { return null; } };
-	assert.equal( jQuery.param( params, false ), "param1=&param2=", "object with method properties return null" );
+	assert.equal( jQuery.param( params, false ), "param1=&param2=", "object with function property that returns null value" );
 
 	params = { "test": { "length": 3, "foo": "bar" } };
 	assert.equal( jQuery.param( params, false ), "test%5Blength%5D=3&test%5Bfoo%5D=bar", "Sub-object with a length property" );
