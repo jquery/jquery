@@ -1966,6 +1966,11 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		};
 	} );
 
+	QUnit.test( "jQuery.ajax() returns jqXHR as an instance of jQuery.Deferred", function( assert ) {
+		assert.expect( 1 );
+		assert.ok( jQuery.ajax( "data/json_obj.js" ) instanceof jQuery.Deferred, "jqXHR should be an instance of jQuery.Deferred." );
+	} );
+
 //----------- jQuery.ajaxPrefilter()
 
 	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, function( assert ) {

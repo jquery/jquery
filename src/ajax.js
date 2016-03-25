@@ -431,7 +431,7 @@ jQuery.extend( {
 					jQuery.event,
 
 			// Deferreds
-			deferred = jQuery.Deferred(),
+			deferred = new jQuery.Deferred(),
 			completeDeferred = jQuery.Callbacks( "once memory" ),
 
 			// Status-dependent callbacks
@@ -444,8 +444,8 @@ jQuery.extend( {
 			// Default abort message
 			strAbort = "canceled",
 
-			// Fake xhr (as a true Deferred instance)
-			jqXHR = deferred.promise();
+			// Fake xhr (ref the true Deferred instance above)
+			jqXHR = deferred;
 
 		// Attach xhr capabilities
 		jQuery.extend( jqXHR, {
