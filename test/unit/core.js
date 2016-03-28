@@ -1563,6 +1563,15 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 	assert.ok( jQuery.parseHTML( "<#if><tr><p>This is a test.</p></tr><#/if>" ) || true, "Garbage input should not cause error" );
 } );
 
+QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
+	assert.expect( 1 );
+
+	var html = "<a href='test.html'></a>",
+		href = jQuery.parseHTML( html )[ 0 ].href;
+
+	assert.ok( /\/test\.html$/.test( href ), "href is not lost after parsing anchor" );
+} );
+
 if ( jQuery.support.createHTMLDocument ) {
 	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
 		assert.expect( 1 );
