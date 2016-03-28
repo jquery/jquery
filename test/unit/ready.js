@@ -27,13 +27,36 @@ QUnit.module( "ready" );
 		};
 	}
 
+	function throwError( num ) {
+
+		// Not a global QUnit failure
+		var onerror = window.onerror;
+		window.onerror = function() {
+			window.onerror = onerror;
+		};
+
+		throw new Error( "Ready error " + num );
+	}
+
 	// Bind to the ready event in every possible way.
 	jQuery( makeHandler( "a" ) );
 	jQuery( document ).ready( makeHandler( "b" ) );
 
+	// Throw in an error to ensure other callbacks are called
+	jQuery( function() {
+		throwError( 1 );
+	} );
+
+	// Throw two errors in a row
+	jQuery( function() {
+		throwError( 2 );
+	} );
+	jQuery.when( jQuery.ready ).done( makeHandler( "c" ) );
+
 	// Do it twice, just to be sure.
-	jQuery( makeHandler( "c" ) );
-	jQuery( document ).ready( makeHandler( "d" ) );
+	jQuery( makeHandler( "d" ) );
+	jQuery( document ).ready( makeHandler( "e" ) );
+	jQuery.when( jQuery.ready ).done( makeHandler( "f" ) );
 
 	noEarlyExecution = order.length === 0;
 
@@ -45,7 +68,7 @@ QUnit.module( "ready" );
 			"Handlers bound to DOM ready should not execute before DOM ready" );
 
 		// Ensure execution order.
-		assert.deepEqual( order, [ "a", "b", "c", "d" ],
+		assert.deepEqual( order, [ "a", "b", "c", "d", "e", "f" ],
 			"Bound DOM ready handlers should execute in on-order" );
 
 		// Ensure handler argument is correct.
@@ -80,6 +103,20 @@ QUnit.module( "ready" );
 		Promise.resolve( jQuery.ready ).then( function() {
 			assert.ok( jQuery.isReady, "Native promised resolved" );
 			done.pop()();
+		} );
+	} );
+
+	QUnit.test( "Error in ready callback does not halt all future executions (gh-1823)", function( assert ) {
+		assert.expect( 2 );
+
+		assert.throws( function() {
+			jQuery( function() {
+				throw new Error( "Ready error" );
+			} );
+		}, "First ready handler throws an error" );
+
+		jQuery( function() {
+			assert.ok( true, "Subsequent handler called" );
 		} );
 	} );
 } )();
