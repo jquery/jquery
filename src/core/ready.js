@@ -5,13 +5,12 @@ define( [
 ], function( jQuery, document ) {
 
 // The deferred used on DOM ready
-var readyList = jQuery.Deferred(),
-	readyPromise = readyList.promise();
+var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
 
 	// Add the callback
-	readyPromise.done( fn );
+	readyList.done( fn );
 
 	return this;
 };
@@ -55,7 +54,7 @@ jQuery.extend( {
 	}
 } );
 
-jQuery.ready.then = readyPromise.then;
+jQuery.ready.then = readyList.then;
 
 // The ready event handler and self cleanup method
 function completed() {
