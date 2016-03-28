@@ -79,16 +79,20 @@ QUnit.module( "ready" );
 
 		order = [];
 
-		// Now that the ready event has fired, again bind to the ready event
-		// in every possible way. These event handlers should execute immediately.
+		// Now that the ready event has fired, again bind to the ready event.
+		// These ready handlers should execute asynchronously.
+		var done = assert.async();
 		jQuery( makeHandler( "g" ) );
-		assert.equal( order.pop(), "g", "Event handler should execute immediately" );
-		assert.equal( args.g, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery" );
-
 		jQuery( document ).ready( makeHandler( "h" ) );
-		assert.equal( order.pop(), "h", "Event handler should execute immediately" );
-		assert.equal( args.h, jQuery,
-			"Argument passed to fn in jQuery(document).ready( fn ) should be jQuery" );
+		window.setTimeout( function() {
+			assert.equal( order.shift(), "g", "Event handler should execute immediately, but async" );
+			assert.equal( args.g, jQuery, "Argument passed to fn in jQuery( fn ) should be jQuery" );
+
+			assert.equal( order.shift(), "h", "Event handler should execute immediately, but async" );
+			assert.equal( args.h, jQuery,
+				"Argument passed to fn in jQuery(document).ready( fn ) should be jQuery" );
+			done();
+		} );
 	} );
 
 	QUnit.test( "Promise.resolve(jQuery.ready)", function( assert ) {
@@ -107,16 +111,16 @@ QUnit.module( "ready" );
 	} );
 
 	QUnit.test( "Error in ready callback does not halt all future executions (gh-1823)", function( assert ) {
-		assert.expect( 2 );
+		assert.expect( 1 );
+		var done = assert.async();
 
-		assert.throws( function() {
-			jQuery( function() {
-				throw new Error( "Ready error" );
-			} );
-		}, "First ready handler throws an error" );
+		jQuery( function() {
+			throwError( 3 );
+		} );
 
 		jQuery( function() {
 			assert.ok( true, "Subsequent handler called" );
+			done();
 		} );
 	} );
 } )();

@@ -7,6 +7,14 @@ var readyCallbacks = [],
 	readyFiring = false,
 	whenReady = function( fn ) {
 		readyCallbacks.push( fn );
+	},
+	executeReady = function( fn ) {
+
+		// Prevent errors from freezing future callback execution (gh-1823)
+		// Not backwards-compatible as this does not execute sync
+		window.setTimeout( function() {
+			fn.call( document, jQuery );
+		} );
 	};
 
 jQuery.fn.ready = function( fn ) {
@@ -53,28 +61,13 @@ jQuery.extend( {
 			if ( !readyFiring ) {
 				readyFiring = true;
 
-				// Prevent errors from freezing future callback execution (gh-1823)
-				try {
-					while ( readyCallbacks.length ) {
-						fn = readyCallbacks.shift();
-						if ( jQuery.isFunction( fn ) ) {
-
-							// For backwards compatibility,
-							// invoke synchronously and with document context
-							fn.call( document, jQuery );
-						}
-					}
-				} finally {
-					readyFiring = false;
-
-					// If there was an error in a ready callback,
-					// continue with the rest (gh-1823)
-					if ( readyCallbacks.length ) {
-
-						// Retry async to allow the error to propagate to console
-						window.setTimeout( whenReady );
+				while ( readyCallbacks.length ) {
+					fn = readyCallbacks.shift();
+					if ( jQuery.isFunction( fn ) ) {
+						executeReady( fn );
 					}
 				}
+				readyFiring = false;
 			}
 		};
 

@@ -9,8 +9,7 @@ var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
 
-	// Add the callback
-	readyList.done( fn );
+	readyList.then( fn );
 
 	return this;
 };
