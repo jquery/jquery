@@ -63,6 +63,10 @@ module.exports = function( grunt ) {
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ],
 					"css/showHide": [ "effects" ],
+					deferred: {
+						remove: [ "ajax", "effects", "queue", "core/ready" ],
+						include: [ "core/ready-no-deferred" ]
+					},
 					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
