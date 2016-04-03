@@ -293,9 +293,10 @@ this.iframeCallback = undefined;
 // Tests are always loaded async
 QUnit.config.autostart = false;
 this.loadTests = function() {
+
 	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
-	var loadSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0,
-		basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
+	QUnit.isSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0;
+	QUnit.basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
@@ -335,7 +336,7 @@ this.loadTests = function() {
 			var dep = tests[ i++ ];
 
 			if ( dep ) {
-				if ( !basicTests || i === 1 ) {
+				if ( !QUnit.basicTests || i === 1 ) {
 					require( [ dep ], loadDep );
 
 				// Support: Android 2.3 only
@@ -357,7 +358,7 @@ this.loadTests = function() {
 				}
 
 				// Load the TestSwarm listener if swarmURL is in the address.
-				if ( loadSwarm ) {
+				if ( QUnit.isSwarm ) {
 					require( [ "http://swarm.jquery.org/js/inject.js?" + ( new Date() ).getTime() ],
 					function() {
 						QUnit.start();
