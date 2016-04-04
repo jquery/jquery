@@ -1547,14 +1547,16 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 	assert.expect( 20 );
 
 	var env = this,
-		methods = {
-			toggle: [ 1 ],
-			slideToggle: [],
+		showMethods = {
 			fadeIn: [],
 			fadeTo: [ "fast", 0.5 ],
 			slideDown: [ "fast" ],
 			show: [ 1 ],
 			animate: [ { width: "show" } ]
+		},
+		toggleMethods = {
+			toggle: [ 1 ],
+			slideToggle: []
 		},
 		$divEmpty = jQuery( "<div/>" ),
 		$divTest = jQuery( "<div>test</div>" ),
@@ -1578,7 +1580,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 
 	assert.expectJqData( env, $divNone[ 0 ], "olddisplay" );
 
-	jQuery.each( methods, function( name, opt ) {
+	jQuery.each( showMethods, function( name, opt ) {
 		jQuery.fn[ name ].apply( jQuery( "<div/>" ), opt.concat( [ function() {
 			assert.strictEqual( jQuery( this ).css( "display" ), nullParentDisplay,
 				"." + name + " block with null parentNode" );
@@ -1586,6 +1588,17 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 
 		jQuery.fn[ name ].apply( jQuery( "<div>test</div>" ), opt.concat( [ function() {
 			assert.strictEqual( jQuery( this ).css( "display" ), underFragmentDisplay,
+				"." + name + " block under fragment" );
+		} ] ) );
+	} );
+	jQuery.each( toggleMethods, function( name, opt ) {
+		jQuery.fn[ name ].apply( jQuery( "<div/>" ), opt.concat( [ function() {
+			assert.strictEqual( jQuery( this ).css( "display" ), "none",
+				"." + name + " block with null parentNode" );
+		} ] ) );
+
+		jQuery.fn[ name ].apply( jQuery( "<div>test</div>" ), opt.concat( [ function() {
+			assert.strictEqual( jQuery( this ).css( "display" ), "none",
 				"." + name + " block under fragment" );
 		} ] ) );
 	} );
