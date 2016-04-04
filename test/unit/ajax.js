@@ -1796,6 +1796,25 @@ QUnit.module( "ajax", {
 	);
 
 	QUnit.test(
+		"jQuery#load() - should resolve with correct context", 2,
+		function( assert ) {
+			var done = assert.async();
+			var ps = jQuery( "<p></p><p></p>" );
+			var i = 0;
+
+			ps.appendTo( "#qunit-fixture" );
+
+			ps.load( "data/ajax/method.php", function() {
+				assert.strictEqual( this, ps[ i++ ] );
+
+				if ( i === 2 ) {
+					done();
+				}
+			} );
+		}
+	);
+
+	QUnit.test(
 		"#11402 - jQuery.domManip() - script in comments are properly evaluated", 2,
 		function( assert ) {
 			jQuery( "#qunit-fixture" ).load( "data/cleanScript.html", assert.async() );
