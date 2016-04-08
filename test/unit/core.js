@@ -382,6 +382,12 @@ QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isPlainObject(Symbol)"
 	assert.equal( jQuery.isPlainObject( Object( Symbol() ) ), false, "Symbol inside an object" );
 } );
 
+QUnit.test( "isPlainObject(localStorage)", function( assert ) {
+	assert.expect( 1 );
+
+	assert.equal( jQuery.isPlainObject( localStorage ), false );
+} );
+
 QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...))",
 	function( assert ) {
 		assert.expect( 1 );
