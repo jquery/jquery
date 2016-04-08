@@ -469,9 +469,9 @@ QUnit.test( "setters with and without box-sizing:border-box", function( assert )
 	} );
 } );
 
-testIframe(
-	"dimensions/documentLarge",
+testIframeWithCallback(
 	"window vs. large document",
+	"dimensions/documentLarge.html",
 	function( jQuery, window, document, assert ) {
 		assert.expect( 2 );
 

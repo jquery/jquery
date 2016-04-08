@@ -12,6 +12,11 @@
 <body>
 	<div>
 		<script src="../../jquery.js"></script>
+		<script>
+			jQuery( function() {
+				window.parent.iframeCallback( jQuery, window, document );
+			} );
+		</script>
 	</div>
 </body>
 </html>
