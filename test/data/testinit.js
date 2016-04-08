@@ -239,15 +239,20 @@ this.testIframe = function( fileName, name, fn ) {
 		// load fixture in iframe
 		var iframe = loadFixture(),
 			win = iframe.contentWindow,
+			self = this,
 			interval = setInterval( function() {
 				if ( win && win.jQuery && win.jQuery.isReady ) {
 					clearInterval( interval );
 
-					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win, win.document, assert );
-					done();
-					document.body.removeChild( iframe );
-					iframe = null;
+					// The iframe's isReady may fire before the ready runs, wait a tick
+					// See gh-3040
+					setTimeout( function() {
+						// call actual tests passing the correct jQuery instance to use
+						fn.call( self, win.jQuery, win, win.document, assert );
+						done();
+						document.body.removeChild( iframe );
+						iframe = null;
+					}, 15 );
 				}
 			}, 15 );
 	} );
