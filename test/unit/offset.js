@@ -35,13 +35,6 @@ QUnit.module( "offset", { setup: function() {
 	forceScroll.detach();
 }, teardown: moduleTeardown } );
 
-/*
-	Closure-compiler will roll static methods off of the jQuery object and so they will
-	not be passed with the jQuery object across the windows. To differentiate this, the
-	testIframe callbacks use the "$" symbol to refer to the jQuery object passed from
-	the iframe window and the "jQuery" symbol is used to access any static methods.
-*/
-
 QUnit.test( "empty set", function( assert ) {
 	assert.expect( 2 );
 	assert.strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
@@ -75,7 +68,7 @@ QUnit.test( "hidden (display: none) element", function( assert ) {
 	assert.equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 } );
 
-testIframe( "offset/absolute", "absolute", function( $, iframe, document, assert ) {
+testIframeWithCallback( "absolute", "offset/absolute.html", function( $, iframe, document, assert ) {
 	assert.expect( 4 );
 
 	var doc = iframe.document,
@@ -100,7 +93,7 @@ testIframe( "offset/absolute", "absolute", function( $, iframe, document, assert
 	} );
 } );
 
-testIframe( "offset/absolute", "absolute", function( $, window, document, assert ) {
+testIframeWithCallback( "absolute", "offset/absolute.html", function( $, window, document, assert ) {
 	assert.expect( 178 );
 
 	var tests, offset;
@@ -185,7 +178,7 @@ testIframe( "offset/absolute", "absolute", function( $, window, document, assert
 	} );
 } );
 
-testIframe( "offset/relative", "relative", function( $, window, document, assert ) {
+testIframeWithCallback( "relative", "offset/relative.html", function( $, window, document, assert ) {
 	assert.expect( 64 );
 
 	// get offset
@@ -243,7 +236,7 @@ testIframe( "offset/relative", "relative", function( $, window, document, assert
 	} );
 } );
 
-testIframe( "offset/static", "static", function( $, window, document, assert ) {
+testIframeWithCallback( "static", "offset/static.html", function( $, window, document, assert ) {
 	assert.expect( 80 );
 
 	// get offset
@@ -305,7 +298,7 @@ testIframe( "offset/static", "static", function( $, window, document, assert ) {
 	} );
 } );
 
-testIframe( "offset/fixed", "fixed", function( $, window, document, assert ) {
+testIframeWithCallback( "fixed", "offset/fixed.html", function( $, window, document, assert ) {
 	assert.expect( 34 );
 
 	var tests, $noTopLeft;
@@ -395,7 +388,7 @@ testIframe( "offset/fixed", "fixed", function( $, window, document, assert ) {
 	}
 } );
 
-testIframe( "offset/table", "table", function( $, window, document, assert ) {
+testIframeWithCallback( "table", "offset/table.html", function( $, window, document, assert ) {
 	assert.expect( 4 );
 
 	assert.equal( $( "#table-1" ).offset().top, 6, "jQuery('#table-1').offset().top" );
@@ -405,7 +398,7 @@ testIframe( "offset/table", "table", function( $, window, document, assert ) {
 	assert.equal( $( "#th-1" ).offset().left, 10, "jQuery('#th-1').offset().left" );
 } );
 
-testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
+testIframeWithCallback( "scroll", "offset/scroll.html", function( $, win, doc, assert ) {
 	assert.expect( 26 );
 
 	assert.equal( $( "#scroll-1" ).offset().top, 7, "jQuery('#scroll-1').offset().top" );
@@ -464,7 +457,7 @@ testIframe( "offset/scroll", "scroll", function( $, win, doc, assert ) {
 	assert.strictEqual( $().scrollLeft(), undefined, "jQuery().scrollLeft() testing getter on empty jquery object" );
 } );
 
-testIframe( "offset/body", "body", function( $, window, document, assert ) {
+testIframeWithCallback( "body", "offset/body.html", function( $, window, document, assert ) {
 	assert.expect( 4 );
 
 	assert.equal( $( "body" ).offset().top, 1, "jQuery('#body').offset().top" );

@@ -24,6 +24,7 @@
 					$(this).css({ top: pos.top, left: pos.left });
 					return false;
 				});
+				window.parent.iframeCallback( jQuery, window, document );
 			});
 		</script>
 	</head>
