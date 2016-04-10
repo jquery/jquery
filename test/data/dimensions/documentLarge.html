@@ -8,14 +8,13 @@
 			height: 1000px;
 		}
 	</style>
+	<script src="../iframeTest.js"></script>
 </head>
 <body>
 	<div>
 		<script src="../../jquery.js"></script>
 		<script>
-			jQuery( function() {
-				window.parent.iframeCallback( jQuery, window, document );
-			} );
+			jQuery( startIframeTest );
 		</script>
 	</div>
 </body>

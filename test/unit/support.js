@@ -18,10 +18,10 @@ function getComputedSupport( support ) {
 }
 
 if ( jQuery.css ) {
-	testIframeWithCallback(
+	testIframe(
 		"body background is not lost if set prior to loading jQuery (#9239)",
 		"support/bodyBackground.html",
-		function( color, support, assert ) {
+		function( assert, jQuery, window, document, color, support ) {
 			assert.expect( 2 );
 			var okValue = {
 				"#000000": true,
@@ -37,10 +37,10 @@ if ( jQuery.css ) {
 
 // This test checks CSP only for browsers with "Content-Security-Policy" header support
 // i.e. no old WebKit or old Firefox
-testIframeWithCallback(
+testIframe(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"support/csp.php",
-	function( support, assert ) {
+	function( assert, jQuery, window, document, support ) {
 		var done = assert.async();
 
 		assert.expect( 2 );

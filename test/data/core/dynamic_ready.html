@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<script src="../../jquery.js"></script>
 	<script>var $j = jQuery.noConflict();</script>
+	<script src="../iframeTest.js"></script>
 </head>
 <body>
 <iframe id="dont_return" src="dont_return.php"></iframe>
@@ -20,14 +21,14 @@
 			$(function () {
 				clearTimeout( timeoutId );
 				if ( !timeoutFired ) {
-					window.parent.iframeCallback( true );
+					startIframeTest( true );
 				}
 			});
 		});
 
 		timeoutId = setTimeout(function () {
 			timeoutFired = true;
-			window.parent.iframeCallback( false );
+			startIframeTest( false );
 		}, 10000);
 	});
 </script>

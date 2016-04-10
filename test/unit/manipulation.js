@@ -2237,21 +2237,21 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"domManip tolerates window-valued document[0] in IE9/10 (trac-12266)",
 	"manipulation/iframe-denied.html",
-	function( test, assert ) {
+	function( assert, jQuery, window, document, test ) {
 		assert.expect( 1 );
 		assert.ok( test.status, test.description );
 	}
 );
 
-testIframeWithCallback(
+testIframe(
 	"domManip executes scripts in iframes in the iframes' context",
 	"manipulation/scripts-context.html",
-	function( frameWindow, bodyElement, html, assert ) {
+	function( assert, framejQuery, frameWindow, frameDocument ) {
 		assert.expect( 2 );
-		jQuery( bodyElement ).append( html );
+		jQuery( frameDocument.body ).append( "<script>window.scriptTest = true;<\x2fscript>" );
 		assert.ok( !window.scriptTest, "script executed in iframe context" );
 		assert.ok( frameWindow.scriptTest, "script executed in iframe context" );
 	}

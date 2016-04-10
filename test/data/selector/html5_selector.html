@@ -5,7 +5,7 @@
 	<title>jQuery selector - attributes</title>
 
 	<script src="../../jquery.js"></script>
-
+	<script src="../iframeTest.js"></script>
 	<script id="script1"
 			defer
 			async></script>
@@ -16,9 +16,7 @@
 		document.createElement('article');
 		document.createElement('details');
 
-		jQuery( function() {
-			window.parent.iframeCallback( jQuery, window, document );
-		} );
+		jQuery( startIframeTest );
 	</script>
 </head>
 <body>

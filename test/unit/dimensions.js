@@ -469,10 +469,10 @@ QUnit.test( "setters with and without box-sizing:border-box", function( assert )
 	} );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"window vs. large document",
 	"dimensions/documentLarge.html",
-	function( jQuery, window, document, assert ) {
+	function( assert, jQuery, window, document ) {
 		assert.expect( 2 );
 
 		assert.ok( jQuery( document ).height() > jQuery( window ).height(), "document height is larger than window height" );
