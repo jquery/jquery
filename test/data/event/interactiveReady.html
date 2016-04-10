@@ -4,13 +4,14 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title>Test case for gh-2100</title>
 <script src="../../jquery.js"></script>
+<script src="../iframeTest.js"></script>
 </head>
 <body>
 
 <script type="text/javascript">
-jQuery( document ).ready(function () {
-	window.parent.iframeCallback( jQuery("#container").length === 1 );
-});
+jQuery( function () {
+	startIframeTest( jQuery("#container").length === 1 );
+} );
 </script>
 
 <!-- external resources that come before elements trick

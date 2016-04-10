@@ -289,10 +289,10 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "disconnected nodes", function( 
 	assert.equal( $opt.is( ":selected" ), true, "selected option" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"attributes - jQuery.attr",
 	"selector/html5_selector.html",
-	function( jQuery, window, document, assert ) {
+	function( assert, jQuery, window, document ) {
 		assert.expect( 38 );
 
 		/**
@@ -489,10 +489,10 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 	assert.strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"Sizzle cache collides with multiple Sizzles on a page",
 	"selector/sizzle_cache.html",
-	function( jQuery, window, document, assert ) {
+	function( assert, jQuery, window, document ) {
 		var $cached = window[ "$cached" ];
 
 		assert.expect( 4 );

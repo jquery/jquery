@@ -1115,10 +1115,10 @@ QUnit.test( "css('width') and css('height') should respect box-sizing, see #1100
 	assert.equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see #11004" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"css('width') should work correctly before document ready (#14084)",
 	"css/cssWidthBeforeDocReady.html",
-	function( cssWidthBeforeDocReady, assert ) {
+	function( assert, jQuery, window, document, cssWidthBeforeDocReady ) {
 		assert.expect( 1 );
 		assert.strictEqual( cssWidthBeforeDocReady, "100px", "elem.css('width') works correctly before document ready" );
 	}

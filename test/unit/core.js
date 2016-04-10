@@ -1648,14 +1648,14 @@ QUnit.test( "jQuery.camelCase()", function( assert ) {
 	} );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"Conditional compilation compatibility (#13274)",
 	"core/cc_on.html",
-	function( cc_on, errors, $, assert ) {
+	function( assert, jQuery, window, document, cc_on, errors ) {
 		assert.expect( 3 );
 		assert.ok( true, "JScript conditional compilation " + ( cc_on ? "supported" : "not supported" ) );
 		assert.deepEqual( errors, [], "No errors" );
-		assert.ok( $(), "jQuery executes" );
+		assert.ok( jQuery(), "jQuery executes" );
 	}
 );
 
@@ -1663,29 +1663,29 @@ testIframeWithCallback(
 // This makes this test fail but it doesn't seem to cause any real-life problems so blacklisting
 // this test there is preferred to complicating the hard-to-test core/ready code further.
 if ( !/iphone os 7_/i.test( navigator.userAgent ) ) {
-	testIframeWithCallback(
+	testIframe(
 		"document ready when jQuery loaded asynchronously (#13655)",
 		"core/dynamic_ready.html",
-		function( ready, assert ) {
+		function( assert, jQuery, window, document, ready ) {
 			assert.expect( 1 );
 			assert.equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
 		}
 	);
 }
 
-testIframeWithCallback(
+testIframe(
 	"Tolerating alias-masked DOM properties (#14074)",
 	"core/aliased.html",
-	function( errors, assert ) {
+	function( assert, jQuery, window, document, errors ) {
 		assert.expect( 1 );
 		assert.deepEqual( errors, [], "jQuery loaded" );
 	}
 );
 
-testIframeWithCallback(
+testIframe(
 	"Don't call window.onready (#14802)",
 	"core/onready.html",
-	function( error, assert ) {
+	function( assert, jQuery, window, document, error ) {
 		assert.expect( 1 );
 		assert.equal( error, false, "no call to user-defined onready" );
 	}

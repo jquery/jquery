@@ -232,15 +232,15 @@ this.ajaxTest = function( title, expect, options ) {
 	} );
 };
 
-this.testIframeWithCallback = function( title, fileName, func ) {
-	QUnit.test( title, 1, function( assert ) {
+this.testIframe = function( title, fileName, func ) {
+	QUnit.test( title, function( assert ) {
 		var iframe;
 		var done = assert.async();
 
 		window.iframeCallback = function() {
 			var args = Array.prototype.slice.call( arguments );
 
-			args.push( assert );
+			args.unshift( assert );
 
 			setTimeout( function() {
 				this.iframeCallback = undefined;
@@ -248,7 +248,6 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 				func.apply( this, args );
 				func = function() {};
 				iframe.remove();
-
 				done();
 			} );
 		};

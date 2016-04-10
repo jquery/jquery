@@ -5,6 +5,7 @@
 	<title>jQuery selector - sizzle cache</title>
 
 	<script src="../../jquery.js"></script>
+	<script src="../iframeTest.js"></script>
 	<script>
 		document.write(
 			"<script>var $cached = jQuery.noConflict(true);<\x2Fscript>" +
@@ -18,9 +19,7 @@
 		<a href="#" id="collision">Worlds collide</a>
 	</div>
 	<script>
-		jQuery( function() {
-			window.parent.iframeCallback( jQuery, window, document );
-		} );
+		jQuery( startIframeTest );
 	</script>
 </body>
 </html>

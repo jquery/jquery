@@ -68,7 +68,7 @@ QUnit.test( "hidden (display: none) element", function( assert ) {
 	assert.equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 } );
 
-testIframeWithCallback( "absolute", "offset/absolute.html", function( $, iframe, document, assert ) {
+testIframe( "absolute", "offset/absolute.html", function( assert, $, iframe ) {
 	assert.expect( 4 );
 
 	var doc = iframe.document,
@@ -93,7 +93,7 @@ testIframeWithCallback( "absolute", "offset/absolute.html", function( $, iframe,
 	} );
 } );
 
-testIframeWithCallback( "absolute", "offset/absolute.html", function( $, window, document, assert ) {
+testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 	assert.expect( 178 );
 
 	var tests, offset;
@@ -178,7 +178,7 @@ testIframeWithCallback( "absolute", "offset/absolute.html", function( $, window,
 	} );
 } );
 
-testIframeWithCallback( "relative", "offset/relative.html", function( $, window, document, assert ) {
+testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 	assert.expect( 64 );
 
 	// get offset
@@ -236,7 +236,7 @@ testIframeWithCallback( "relative", "offset/relative.html", function( $, window,
 	} );
 } );
 
-testIframeWithCallback( "static", "offset/static.html", function( $, window, document, assert ) {
+testIframe( "static", "offset/static.html", function( assert, $ ) {
 	assert.expect( 80 );
 
 	// get offset
@@ -298,7 +298,7 @@ testIframeWithCallback( "static", "offset/static.html", function( $, window, doc
 	} );
 } );
 
-testIframeWithCallback( "fixed", "offset/fixed.html", function( $, window, document, assert ) {
+testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 	assert.expect( 34 );
 
 	var tests, $noTopLeft;
@@ -388,7 +388,7 @@ testIframeWithCallback( "fixed", "offset/fixed.html", function( $, window, docum
 	}
 } );
 
-testIframeWithCallback( "table", "offset/table.html", function( $, window, document, assert ) {
+testIframe( "table", "offset/table.html", function( assert, $ ) {
 	assert.expect( 4 );
 
 	assert.equal( $( "#table-1" ).offset().top, 6, "jQuery('#table-1').offset().top" );
@@ -398,7 +398,7 @@ testIframeWithCallback( "table", "offset/table.html", function( $, window, docum
 	assert.equal( $( "#th-1" ).offset().left, 10, "jQuery('#th-1').offset().left" );
 } );
 
-testIframeWithCallback( "scroll", "offset/scroll.html", function( $, win, doc, assert ) {
+testIframe( "scroll", "offset/scroll.html", function( assert, $, win ) {
 	assert.expect( 26 );
 
 	assert.equal( $( "#scroll-1" ).offset().top, 7, "jQuery('#scroll-1').offset().top" );
@@ -457,7 +457,7 @@ testIframeWithCallback( "scroll", "offset/scroll.html", function( $, win, doc, a
 	assert.strictEqual( $().scrollLeft(), undefined, "jQuery().scrollLeft() testing getter on empty jquery object" );
 } );
 
-testIframeWithCallback( "body", "offset/body.html", function( $, window, document, assert ) {
+testIframe( "body", "offset/body.html", function( assert, $ ) {
 	assert.expect( 4 );
 
 	assert.equal( $( "body" ).offset().top, 1, "jQuery('#body').offset().top" );

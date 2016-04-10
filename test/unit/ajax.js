@@ -28,7 +28,7 @@ QUnit.module( "ajax", {
 
 //----------- jQuery.ajax()
 
-	testIframeWithCallback(
+	testIframe(
 		"XMLHttpRequest - Attempt to block tests because of dangling XHR requests (IE)",
 		"ajax/unreleasedXHR.html",
 		function( assert ) {
@@ -1826,10 +1826,10 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		};
 	} );
 
-	testIframeWithCallback(
+	testIframe(
 		"#14379 - jQuery.ajax() on unload",
 		"ajax/onunload.html",
-		function( status, assert ) {
+		function( assert, jQuery, window, document, status ) {
 			assert.expect( 1 );
 			assert.strictEqual( status, "success", "Request completed" );
 		}
