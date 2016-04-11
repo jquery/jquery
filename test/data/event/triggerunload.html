@@ -1,6 +1,7 @@
 <!doctype html>
 <html>
 	<script src="../../jquery.js"></script>
+	<script src="../iframeTest.js"></script>
 	<script>
 		var called = false,
 			error = false;
@@ -12,7 +13,7 @@
 			return "maybe";
 		}).on( "load", function( event ) {
 			$( window ).triggerHandler( "beforeunload" );
-			window.parent.iframeCallback( called && !error );
+			startIframeTest( called && !error );
 		});
 	</script>
 </html>

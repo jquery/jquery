@@ -290,9 +290,9 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "disconnected nodes", function( 
 } );
 
 testIframe(
-	"selector/html5_selector",
 	"attributes - jQuery.attr",
-	function( jQuery, window, document, assert ) {
+	"selector/html5_selector.html",
+	function( assert, jQuery, window, document ) {
 		assert.expect( 38 );
 
 		/**
@@ -490,9 +490,9 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 } );
 
 testIframe(
-	"selector/sizzle_cache",
 	"Sizzle cache collides with multiple Sizzles on a page",
-	function( jQuery, window, document, assert ) {
+	"selector/sizzle_cache.html",
+	function( assert, jQuery, window, document ) {
 		var $cached = window[ "$cached" ];
 
 		assert.expect( 4 );

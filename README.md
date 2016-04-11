@@ -340,32 +340,33 @@ url("data/test.php?foo=bar");
 ```
 
 
-### Load tests in an iframe ###
+### Run tests in an iframe ###
 
-Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-and fires the given callback on jQuery ready (using the jQuery loading from that page)
-and passes the iFrame's jQuery to the callback.
-
-```js
-testIframe( fileName, testName, callback );
-```
-
-Callback arguments:
+Some tests may require a document other than the standard test fixture, and
+these can be run in a separate iframe. The actual test code and assertions
+remain in jQuery's main test files; only the minimal test fixture markup
+and setup code should be placed in the iframe file.
 
 ```js
-callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
+testIframe( testName, fileName,
+  function testCallback(
+      assert, jQuery, window, document,
+	  [ additional args ] ) {
+	...
+  } );
 ```
 
-### Load tests in an iframe (window.iframeCallback) ###
+This loads a page, constructing a url with fileName `"./data/" + fileName`.
+The iframed page determines when the callback occurs in the test by
+including the "/test/data/iframeTest.js" script and calling
+`startIframeTest( [ additional args ] )` when appropriate. Often this
+will be after either document ready or `window.onload` fires.
 
-Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-The given callback is fired when window.iframeCallback is called by the page.
-The arguments passed to the callback are the same as the
-arguments passed to window.iframeCallback, whatever that may be.
+The `testCallback` receives the QUnit `assert` object created by `testIframe`
+for this test, followed by the global `jQuery`, `window`, and `document` from
+the iframe. If the iframe code passes any arguments to `startIframeTest`,
+they follow the `document` argument.
 
-```js
-testIframeWithCallback( testName, fileName, callback );
-```
 
 Questions?
 ----------

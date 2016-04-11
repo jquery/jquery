@@ -12,6 +12,7 @@
 			#marker { position: absolute; border: 2px solid #000; width: 50px; height: 50px; background: #ccc; }
 		</style>
 		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			jQuery(function($) {
 				$(".relative").click(function() {
@@ -20,6 +21,7 @@
 					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;
 				});
+				startIframeTest();
 			});
 		</script>
 	</head>

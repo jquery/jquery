@@ -857,10 +857,10 @@ QUnit.test( "Check proper data removal of non-element descendants nodes (#8335)"
 	assert.ok( !text.data( "test" ), "Be sure data is not stored in non-element" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"enumerate data attrs on body (#14894)",
 	"data/dataAttrs.html",
-	function( result, assert ) {
+	function( assert, jQuery, window, document, result ) {
 		assert.expect( 1 );
 		assert.equal( result, "ok", "enumeration of data- attrs on body" );
 	}

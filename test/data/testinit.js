@@ -232,46 +232,15 @@ this.ajaxTest = function( title, expect, options ) {
 	} );
 };
 
-this.testIframe = function( fileName, name, fn ) {
-	QUnit.test( name, function( assert ) {
-		var done = assert.async();
-
-		// load fixture in iframe
-		var iframe = loadFixture(),
-			win = iframe.contentWindow,
-			interval = setInterval( function() {
-				if ( win && win.jQuery && win.jQuery.isReady ) {
-					clearInterval( interval );
-
-					// call actual tests passing the correct jQuery instance to use
-					fn.call( this, win.jQuery, win, win.document, assert );
-					done();
-					document.body.removeChild( iframe );
-					iframe = null;
-				}
-			}, 15 );
-	} );
-
-	function loadFixture() {
-		var src = url( "./data/" + fileName + ".html" ),
-			iframe = jQuery( "<iframe />" ).appendTo( "body" )[ 0 ];
-			iframe.style.cssText = "width: 500px; height: 500px; position: absolute; " +
-				"top: -600px; left: -600px; visibility: hidden;";
-
-		iframe.contentWindow.location = src;
-		return iframe;
-	}
-};
-
-this.testIframeWithCallback = function( title, fileName, func ) {
-	QUnit.test( title, 1, function( assert ) {
+this.testIframe = function( title, fileName, func ) {
+	QUnit.test( title, function( assert ) {
 		var iframe;
 		var done = assert.async();
 
 		window.iframeCallback = function() {
 			var args = Array.prototype.slice.call( arguments );
 
-			args.push( assert );
+			args.unshift( assert );
 
 			setTimeout( function() {
 				this.iframeCallback = undefined;
@@ -279,7 +248,6 @@ this.testIframeWithCallback = function( title, fileName, func ) {
 				func.apply( this, args );
 				func = function() {};
 				iframe.remove();
-
 				done();
 			} );
 		};

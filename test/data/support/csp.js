@@ -1,3 +1,3 @@
 jQuery( function() {
-	parent.iframeCallback( getComputedSupport( jQuery.support ) );
+	startIframeTest( getComputedSupport( jQuery.support ) );
 } );
