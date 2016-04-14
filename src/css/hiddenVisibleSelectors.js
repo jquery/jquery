@@ -1,15 +1,21 @@
 define( [
 	"../core",
+	"../var/document",
 	"./support",
 	"../selector",
 	"../css"
-], function( jQuery, support ) {
+], function( jQuery, document, support ) {
 
 function getDisplay( elem ) {
 	return elem.style && elem.style.display || jQuery.css( elem, "display" );
 }
 
 function filterHidden( elem ) {
+
+	// Disconnected elements are considered hidden
+	if ( !jQuery.contains( elem.ownerDocument || document, elem ) ) {
+		return true;
+	}
 	while ( elem && elem.nodeType === 1 ) {
 		if ( getDisplay( elem ) === "none" || elem.type === "hidden" ) {
 			return true;

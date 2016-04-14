@@ -1059,7 +1059,7 @@ QUnit.test( "css opacity consistency across browsers (#12685)", function( assert
 } );
 
 QUnit.test( ":visible/:hidden selectors", function( assert ) {
-	assert.expect( 17 );
+	assert.expect( 19 );
 
 	var $div, $table, $a;
 
@@ -1100,6 +1100,9 @@ QUnit.test( ":visible/:hidden selectors", function( assert ) {
 
 	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
 	assert.ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
+
+	assert.ok( !jQuery( "<div>Test</div>" ).is( ":visible" ), "Disconnected element is not visible" );
+	assert.ok( !jQuery( "<div><div>Test</div></div>" ).find("div").is( ":visible" ), "Disconnected element is not visible" );
 } );
 
 QUnit.test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function( assert ) {
