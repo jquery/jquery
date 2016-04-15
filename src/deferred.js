@@ -60,7 +60,7 @@ jQuery.extend( {
 										.fail( newDefer.reject );
 								} else {
 									newDefer[ tuple[ 0 ] + "With" ](
-										this === promise ? newDefer.promise() : this,
+										this,
 										fn ? [ returned ] : arguments
 									);
 								}
@@ -73,7 +73,7 @@ jQuery.extend( {
 					var maxDepth = 0;
 					function resolve( depth, deferred, handler, special ) {
 						return function() {
-							var that = this === promise ? undefined : this,
+							var that = this,
 								args = arguments,
 								mightThrow = function() {
 									var returned, then;
@@ -144,8 +144,7 @@ jQuery.extend( {
 
 										// Process the value(s)
 										// Default process is resolve
-										( special || deferred.resolveWith )(
-											that || deferred.promise(), args );
+										( special || deferred.resolveWith )( that, args );
 									}
 								},
 
@@ -174,8 +173,7 @@ jQuery.extend( {
 													args = [ e ];
 												}
 
-												deferred.rejectWith( that || deferred.promise(),
-													args );
+												deferred.rejectWith( that, args );
 											}
 										}
 									};
@@ -282,7 +280,7 @@ jQuery.extend( {
 			// deferred.resolve = function() { deferred.resolveWith(...) }
 			// deferred.reject = function() { deferred.rejectWith(...) }
 			deferred[ tuple[ 0 ] ] = function() {
-				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? promise : this, arguments );
+				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? undefined : this, arguments );
 				return this;
 			};
 
