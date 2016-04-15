@@ -1028,7 +1028,7 @@ jQuery.each( {
 				jQuery( elem ).remove();
 
 			} );
-			this.clock.tick( 50 );
+			this.clock.tick( 100 );
 		} );
 	} );
 } );
