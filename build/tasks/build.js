@@ -23,6 +23,9 @@ module.exports = function( grunt ) {
 			baseUrl: "src",
 			name: "jquery",
 
+			// Allow strict mode
+			useStrict: true,
+
 			// We have multiple minify steps
 			optimize: "none",
 

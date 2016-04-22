@@ -76,10 +76,6 @@ jQuery.Callbacks = function( options ) {
 				memory = queue.shift();
 				while ( ++firingIndex < list.length ) {
 
-					// Preserve null/undefined context
-					// (which non-strict `apply` maps to the global object)
-					self.context = memory[ 0 ];
-
 					// Run callback and check for early termination
 					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
 						options.stopOnFalse ) {
@@ -96,7 +92,7 @@ jQuery.Callbacks = function( options ) {
 				memory = false;
 			}
 
-			self.context = firing = false;
+			firing = false;
 
 			// Clean up if we're done firing for good
 			if ( locked ) {
