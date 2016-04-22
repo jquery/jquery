@@ -256,38 +256,39 @@ jQuery.extend( {
 			var list = tuple[ 2 ],
 				stateString = tuple[ 5 ];
 
+			list.add( function() {
+
+				// Handle state
+				if ( stateString ) {
+
+					// state = "resolved" (i.e., fulfilled)
+					// state = "rejected"
+					state = stateString;
+
+					// progress_callbacks.lock
+					tuples[ 0 ][ 2 ].lock();
+
+					// rejected_callbacks.disable
+					// fulfilled_callbacks.disable
+					tuples[ 3 - i ][ 2 ].disable();
+				}
+
+				// Fire .then handlers, recovering null/undefined context from global `this`
+				// progress_handlers.fire
+				// fulfilled_handlers.fire
+				// rejected_handlers.fire
+				tuple[ 3 ].fireWith( list.context, arguments );
+			} );
+
 			// promise.progress = list.add
 			// promise.done = list.add
 			// promise.fail = list.add
 			promise[ tuple[ 1 ] ] = list.add;
 
-			// Handle state
-			if ( stateString ) {
-				list.add(
-					function() {
-
-						// state = "resolved" (i.e., fulfilled)
-						// state = "rejected"
-						state = stateString;
-					},
-
-					// rejected_callbacks.disable
-					// fulfilled_callbacks.disable
-					tuples[ 3 - i ][ 2 ].disable,
-
-					// progress_callbacks.lock
-					tuples[ 0 ][ 2 ].lock
-				);
-			}
-
-			// progress_handlers.fire
-			// fulfilled_handlers.fire
-			// rejected_handlers.fire
-			list.add( function() {
-
-				// Fire .then handlers, recovering null/undefined context from global `this`
-				tuple[ 3 ].fireWith( list.context, arguments );
-			} );
+			// deferred.notifyWith = list.fireWith
+			// deferred.resolveWith = list.fireWith
+			// deferred.rejectWith = list.fireWith
+			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
 
 			// deferred.notify = function() { deferred.notifyWith(...) }
 			// deferred.resolve = function() { deferred.resolveWith(...) }
@@ -296,11 +297,6 @@ jQuery.extend( {
 				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? undefined : this, arguments );
 				return this;
 			};
-
-			// deferred.notifyWith = list.fireWith
-			// deferred.resolveWith = list.fireWith
-			// deferred.rejectWith = list.fireWith
-			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
 		} );
 
 		// Make the deferred a promise
