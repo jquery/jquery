@@ -71,9 +71,11 @@ jQuery.extend( {
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
 					var maxDepth = 0;
-					function resolve( depth, deferred, handler, special ) {
+					function resolve( depth, deferred, callbacks, handler, special ) {
 						return function() {
-							var that = this,
+
+							// Recover null/undefined context from global `this`
+							var that = depth === 0 ? callbacks.context : this,
 								args = arguments,
 								mightThrow = function() {
 									var returned, then;
@@ -113,8 +115,10 @@ jQuery.extend( {
 										if ( special ) {
 											then.call(
 												returned,
-												resolve( maxDepth, deferred, Identity, special ),
-												resolve( maxDepth, deferred, Thrower, special )
+												resolve( maxDepth, deferred, callbacks, Identity,
+													special ),
+												resolve( maxDepth, deferred, callbacks, Thrower,
+													special )
 											);
 
 										// Normal processors (resolve) also hook into progress
@@ -125,9 +129,11 @@ jQuery.extend( {
 
 											then.call(
 												returned,
-												resolve( maxDepth, deferred, Identity, special ),
-												resolve( maxDepth, deferred, Thrower, special ),
-												resolve( maxDepth, deferred, Identity,
+												resolve( maxDepth, deferred, callbacks, Identity,
+													special ),
+												resolve( maxDepth, deferred, callbacks, Thrower,
+													special ),
+												resolve( maxDepth, deferred, callbacks, Identity,
 													deferred.notify )
 											);
 										}
@@ -203,6 +209,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
+								tuples[ 0 ][ 3 ],
 								jQuery.isFunction( onProgress ) ?
 									onProgress :
 									Identity,
@@ -215,6 +222,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
+								tuples[ 1 ][ 3 ],
 								jQuery.isFunction( onFulfilled ) ?
 									onFulfilled :
 									Identity
@@ -226,6 +234,7 @@ jQuery.extend( {
 							resolve(
 								0,
 								newDefer,
+								tuples[ 2 ][ 3 ],
 								jQuery.isFunction( onRejected ) ?
 									onRejected :
 									Thrower
@@ -274,7 +283,11 @@ jQuery.extend( {
 			// progress_handlers.fire
 			// fulfilled_handlers.fire
 			// rejected_handlers.fire
-			list.add( tuple[ 3 ].fire );
+			list.add( function() {
+
+				// Fire .then handlers, recovering null/undefined context from global `this`
+				tuple[ 3 ].fireWith( list.context, arguments );
+			} );
 
 			// deferred.notify = function() { deferred.notifyWith(...) }
 			// deferred.resolve = function() { deferred.resolveWith(...) }
