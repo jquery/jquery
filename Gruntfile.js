@@ -186,6 +186,7 @@ module.exports = function( grunt ) {
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) jQuery Foundation | jquery.org/license */",
 					compress: {
+						"if_return": false,
 						"hoist_funs": false,
 						loops: false,
 						unused: false
