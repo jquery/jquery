@@ -32,7 +32,7 @@
     "grunt": "1.0.1",
     "grunt-babel": "6.0.0",
     "grunt-cli": "1.2.0",
-    "grunt-compare-size": "0.4.1",
+    "grunt-compare-size": "0.4.2",
     "grunt-contrib-jshint": "1.0.0",
     "grunt-contrib-uglify": "1.0.1",
     "grunt-contrib-watch": "1.0.0",
