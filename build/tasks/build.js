@@ -81,7 +81,7 @@ module.exports = function( grunt ) {
 
 			// Remove define wrappers, closure ends, and empty declarations
 			contents = contents
-				.replace( /define\([^{]*?{/, "" )
+				.replace( /define\([^{]*?{\s*(?:("|')use strict\1(?:;|))?/, "" )
 				.replace( rdefineEnd, "" );
 
 			// Remove anything wrapped with
