@@ -39,7 +39,10 @@ module.exports = function( grunt ) {
 			skipSemiColonInsertion: true,
 			wrap: {
 				start: wrapper[ 0 ].replace( /\/\*jshint .* \*\/\n/, "" ),
-				end: globals + wrapper[ 1 ]
+				end: globals.replace(
+					/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
+					""
+				) + wrapper[ 1 ]
 			},
 			rawText: {},
 			onBuildWrite: convert
