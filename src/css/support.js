@@ -5,6 +5,8 @@ define( [
 	"../var/support"
 ], function( jQuery, document, documentElement, support ) {
 
+"use strict";
+
 ( function() {
 
 	// Executing both pixelPosition & boxSizingReliable tests require only one layout

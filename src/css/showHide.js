@@ -4,6 +4,8 @@ define( [
 	"../css/var/isHiddenWithinTree"
 ], function( jQuery, dataPriv, isHiddenWithinTree ) {
 
+"use strict";
+
 var defaultDisplayMap = {};
 
 function getDefaultDisplay( elem ) {

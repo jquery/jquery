@@ -9,6 +9,8 @@ define( [
 	"./selector"
 ], function( jQuery, indexOf, dir, siblings, rneedsContext ) {
 
+"use strict";
+
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 
 	// Methods guaranteed to produce a unique set when starting from a unique set

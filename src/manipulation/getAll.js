@@ -2,6 +2,8 @@ define( [
 	"../core"
 ], function( jQuery ) {
 
+"use strict";
+
 function getAll( context, tag ) {
 
 	// Support: IE <=9 - 11 only

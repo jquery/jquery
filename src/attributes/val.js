@@ -4,6 +4,8 @@ define( [
 	"../core/init"
 ], function( jQuery, support ) {
 
+"use strict";
+
 var rreturn = /\r/g,
 	rspaces = /[\x20\t\r\n\f]+/g;
 

@@ -5,6 +5,8 @@ define( [
 	"./data/var/dataUser"
 ], function( jQuery, access, dataPriv, dataUser ) {
 
+"use strict";
+
 //	Implementation Summary
 //
 //	1. Enforce API surface and semantic compatibility with 1.9.x branch

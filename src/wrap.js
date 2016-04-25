@@ -5,6 +5,8 @@ define( [
 	"./traversing" // parent, contents
 ], function( jQuery ) {
 
+"use strict";
+
 jQuery.fn.extend( {
 	wrapAll: function( html ) {
 		var wrap;

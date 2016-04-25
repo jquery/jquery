@@ -1,5 +1,7 @@
 define( function() {
 
+"use strict";
+
 // We have to close these tags to support XHTML (#13200)
 var wrapMap = {
 

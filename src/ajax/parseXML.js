@@ -2,6 +2,8 @@ define( [
 	"../core"
 ], function( jQuery ) {
 
+"use strict";
+
 // Cross-browser xml parsing
 jQuery.parseXML = function( data ) {
 	var xml;

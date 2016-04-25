@@ -5,6 +5,8 @@ define( [
 	"../selector"
 ], function( jQuery, access, support ) {
 
+"use strict";
+
 var rfocusable = /^(?:input|select|textarea|button)$/i,
 	rclickable = /^(?:a|area)$/i;
 

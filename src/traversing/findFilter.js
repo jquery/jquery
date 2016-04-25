@@ -5,6 +5,8 @@ define( [
 	"../selector"
 ], function( jQuery, indexOf, rneedsContext ) {
 
+"use strict";
+
 var risSimple = /^.[^:#\[\.,]*$/;
 
 // Implement the identical functionality for filter and not

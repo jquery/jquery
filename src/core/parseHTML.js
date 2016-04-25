@@ -8,6 +8,8 @@ define( [
 	"./support"
 ], function( jQuery, document, rsingleTag, buildFragment, support ) {
 
+"use strict";
+
 // Argument "data" should be string of html
 // context (optional): If specified, the fragment will be created in this context,
 // defaults to document

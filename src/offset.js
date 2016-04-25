@@ -13,6 +13,8 @@ define( [
 	"./selector" // contains
 ], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support ) {
 
+"use strict";
+
 /**
  * Gets a window from an element
  */

@@ -8,6 +8,8 @@ define( [
 	"../event"
 ], function( jQuery, document, dataPriv, acceptData, hasOwn ) {
 
+"use strict";
+
 var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/;
 
 jQuery.extend( jQuery.event, {

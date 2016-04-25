@@ -20,6 +20,8 @@ define( [
 ], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
 
+"use strict";
+
 var
 
 	// Swappable if display is none or starts with table

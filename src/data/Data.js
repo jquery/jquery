@@ -4,6 +4,8 @@ define( [
 	"./var/acceptData"
 ], function( jQuery, rnotwhite, acceptData ) {
 
+"use strict";
+
 function Data() {
 	this.expando = jQuery.expando + Data.uid++;
 }

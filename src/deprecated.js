@@ -2,6 +2,8 @@ define( [
 	"./core"
 ], function( jQuery ) {
 
+"use strict";
+
 jQuery.fn.extend( {
 
 	bind: function( types, data, fn ) {

@@ -4,6 +4,8 @@ define( [
 	"../ajax"
 ], function( jQuery, support ) {
 
+"use strict";
+
 jQuery.ajaxSettings.xhr = function() {
 	try {
 		return new window.XMLHttpRequest();

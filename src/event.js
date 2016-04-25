@@ -9,6 +9,8 @@ define( [
 	"./selector"
 ], function( jQuery, document, rnotwhite, slice, dataPriv ) {
 
+"use strict";
+
 var
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,

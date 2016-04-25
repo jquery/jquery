@@ -3,6 +3,8 @@ define( [
 	"../var/document"
 ], function( jQuery, document ) {
 
+"use strict";
+
 var readyCallbacks = [],
 	readyFiring = false,
 	whenReady = function( fn ) {

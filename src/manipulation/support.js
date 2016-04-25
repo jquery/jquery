@@ -3,6 +3,8 @@ define( [
 	"../var/support"
 ], function( document, support ) {
 
+"use strict";
+
 ( function() {
 	var fragment = document.createDocumentFragment(),
 		div = fragment.appendChild( document.createElement( "div" ) ),

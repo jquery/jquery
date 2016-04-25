@@ -7,6 +7,8 @@ define( [
 	"./trigger"
 ], function( jQuery, dataPriv, support ) {
 
+"use strict";
+
 // Support: Firefox <=44
 // Firefox doesn't have focus(in | out) events
 // Related ticket - https://bugzilla.mozilla.org/show_bug.cgi?id=687787

@@ -6,6 +6,8 @@ define( [
 	"./var/indexOf"
 ], function( jQuery, document, documentElement, hasOwn, indexOf ) {
 
+"use strict";
+
 /*
  * Optional (non-Sizzle) selector module for custom builds.
  *

@@ -3,6 +3,8 @@ define( [
 	"../var/rcssNum"
 ], function( jQuery, rcssNum ) {
 
+"use strict";
+
 function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted,
 		scale = 1,
