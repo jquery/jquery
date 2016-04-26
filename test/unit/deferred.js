@@ -824,20 +824,24 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	"use strict";
 
-	assert.expect( 48 );
+	assert.expect( 56 );
 
 	var slice = [].slice,
 		sentinel = { context: "explicit" },
+		eventuallyFulfilled = jQuery.Deferred().notify( true ),
+		eventuallyRejected = jQuery.Deferred().notify( true ),
 		inputs = {
 			promise: Promise.resolve( true ),
 			rejectedPromise: Promise.reject( false ),
 			deferred: jQuery.Deferred().resolve( true ),
-			eventuallyFulfilled: jQuery.Deferred().notify( true ),
+			eventuallyFulfilled: eventuallyFulfilled,
+			secondaryFulfilled: jQuery.Deferred().resolve( eventuallyFulfilled ),
 			multiDeferred: jQuery.Deferred().resolve( "foo", "bar" ),
 			deferredWith: jQuery.Deferred().resolveWith( sentinel, [ true ] ),
 			multiDeferredWith: jQuery.Deferred().resolveWith( sentinel, [ "foo", "bar" ] ),
 			rejectedDeferred: jQuery.Deferred().reject( false ),
-			eventuallyRejected: jQuery.Deferred().notify( true ),
+			eventuallyRejected: eventuallyRejected,
+			secondaryRejected: jQuery.Deferred().resolve( eventuallyRejected ),
 			multiRejectedDeferred: jQuery.Deferred().reject( "baz", "quux" ),
 			rejectedDeferredWith: jQuery.Deferred().rejectWith( sentinel, [ false ] ),
 			multiRejectedDeferredWith: jQuery.Deferred().rejectWith( sentinel, [ "baz", "quux" ] )
@@ -852,6 +856,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 			promise: [ true ],
 			deferred: [ true ],
 			eventuallyFulfilled: [ true ],
+			secondaryFulfilled: [ true ],
 			multiDeferred: [ "foo", "bar" ],
 			deferredWith: [ true ],
 			multiDeferredWith: [ "foo", "bar" ]
@@ -860,6 +865,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 			rejectedPromise: [ false ],
 			rejectedDeferred: [ false ],
 			eventuallyRejected: [ false ],
+			secondaryRejected: [ false ],
 			multiRejectedDeferred: [ "baz", "quux" ],
 			rejectedDeferredWith: [ false ],
 			multiRejectedDeferredWith: [ "baz", "quux" ]
@@ -869,7 +875,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		// Strict mode functions invoked without .call/.apply get global-object context
 		defaultContext = (function getDefaultContext() { return this; }).call(),
 
-		done = assert.async( 24 );
+		done = assert.async( 28 );
 
 	jQuery.each( inputs, function( message, value ) {
 		var code = "jQuery.when( " + message + " )",
@@ -909,8 +915,8 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	} );
 
 	setTimeout( function() {
-		inputs.eventuallyFulfilled.resolve( true );
-		inputs.eventuallyRejected.reject( false );
+		eventuallyFulfilled.resolve( true );
+		eventuallyRejected.reject( false );
 	}, 50 );
 } );
 
