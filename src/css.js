@@ -128,13 +128,6 @@ function getWidthOrHeight( elem, name, extra ) {
 		val = elem.getBoundingClientRect()[ name ];
 	}
 
-	// Support: IE 11 only
-	// In IE 11 fullscreen elements inside of an iframe have
-	// 100x too small dimensions (gh-1764).
-	if ( document.msFullscreenElement && window.top !== window ) {
-		val *= 100;
-	}
-
 	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
 	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
