@@ -56,7 +56,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 	assert.equal( jQuery.param( params, true ), "a=1&a=2&b=%5Bobject%20Object%5D&i=10&i=11&j=true&k=false&l=&l=0&m=cowboy%20hat%3F", "huge structure" );
 
 	params = { "a": [ 0, [ 1, 2 ], [ 3, [ 4, 5 ], [ 6 ] ], { "b": [ 7, [ 8, 9 ], [ { "c": 10, d: 11 } ], [ [ 12 ] ], [ [ [ 13 ] ] ], { "e": { "f": { "g": [ 14, [ 15 ] ] } } }, 16 ] }, 17 ] };
-	assert.equal( jQuery.param( params, true ), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject%20Object%5D&a=17", "nested arrays (not possible when jQuery.param.traditional == true)" );
+	assert.equal( jQuery.param( params, true ), "a=0&a=1%2C2&a=3%2C4%2C5%2C6&a=%5Bobject%20Object%5D&a=17", "nested arrays (not possible when traditional == true)" );
 
 	params = { a:[ 1,2 ], b:{ c:3, d:[ 4,5 ], e:{ x:[ 6 ], y:7, z:[ 8,9 ] }, f:true, g:false, h:undefined }, i:[ 10,11 ], j:true, k:false, l:[ undefined,0 ], m:"cowboy hat?" };
 	assert.equal( decodeURIComponent( jQuery.param( params ) ), "a[]=1&a[]=2&b[c]=3&b[d][]=4&b[d][]=5&b[e][x][]=6&b[e][y]=7&b[e][z][]=8&b[e][z][]=9&b[f]=true&b[g]=false&b[h]=&i[]=10&i[]=11&j=true&k=false&l[]=&l[]=0&m=cowboy hat?", "huge structure, forced not traditional" );
@@ -72,6 +72,19 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	params = { "test": [ 1, 2, null ] };
 	assert.equal( jQuery.param( params ), "test%5B%5D=1&test%5B%5D=2&test%5B%5D=", "object with array property with null value" );
+} );
+
+QUnit.test( "jQuery.param() not affected by ajaxSettings", function( assert ) {
+	assert.expect( 1 );
+
+	var oldTraditional = jQuery.ajaxSettings.traditional;
+	jQuery.ajaxSettings.traditional = true;
+	assert.equal(
+		jQuery.param( { "foo": [ "a", "b", "c" ] } ),
+		"foo%5B%5D=a&foo%5B%5D=b&foo%5B%5D=c",
+		"ajaxSettings.traditional is ignored"
+	);
+	jQuery.ajaxSettings.traditional = oldTraditional;
 } );
 
 QUnit.test( "jQuery.param() Constructed prop values", function( assert ) {
