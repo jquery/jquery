@@ -305,65 +305,72 @@ jQuery.extend( {
 	},
 
 	// Deferred helper
-	when: function() {
-		var method, resolveContexts,
-			i = 0,
+	when: function( singleValue ) {
+		var method, i,
+
+			// count of uncompleted subordinates
+			remaining = arguments.length,
+
+			// subordinate fulfillment data
+			resolveContexts = new Array( remaining ),
 			resolveValues = slice.call( arguments ),
-			length = resolveValues.length,
 
-			// the count of uncompleted subordinates
-			remaining = length,
-
-			// the master Deferred.
+			// the master Deferred
 			master = jQuery.Deferred(),
 
-			// Update function for both resolving subordinates
+			// subordinate callback factory
 			updateFunc = function( i ) {
 				return function( value ) {
 					resolveContexts[ i ] = this;
 					resolveValues[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
 					if ( !( --remaining ) ) {
-						master.resolveWith(
-							resolveContexts.length === 1 ? resolveContexts[ 0 ] : resolveContexts,
-							resolveValues
-						);
+						master.resolveWith( resolveContexts, resolveValues );
 					}
 				};
 			};
 
-		// Add listeners to promise-like subordinates; treat others as resolved
-		if ( length > 0 ) {
-			resolveContexts = new Array( length );
-			for ( ; i < length; i++ ) {
-
-				// jQuery.Deferred - treated specially to get resolve-sync behavior
-				if ( resolveValues[ i ] &&
-					jQuery.isFunction( ( method = resolveValues[ i ].promise ) ) ) {
-
-					method.call( resolveValues[ i ] )
-						.done( updateFunc( i ) )
-						.fail( master.reject );
-
-				// Other thenables
-				} else if ( resolveValues[ i ] &&
-					jQuery.isFunction( ( method = resolveValues[ i ].then ) ) ) {
-
-					method.call(
-						resolveValues[ i ],
-						updateFunc( i ),
-						master.reject
-					);
-				} else {
-
-					// Support: Android 4.0 only
-					// Strict mode functions invoked without .call/.apply get global-object context
-					updateFunc( i ).call( undefined, resolveValues[ i ] );
-				}
+		// Single- and empty arguments are adopted like Promise.resolve
+		if ( remaining <= 1 ) {
+			if ( singleValue && jQuery.isFunction( ( method = singleValue.promise ) ) ) {
+				method.call( singleValue )
+					.done( master.resolve )
+					.fail( master.reject );
+			} else if ( singleValue && jQuery.isFunction( ( method = singleValue.then ) ) ) {
+				method.call( singleValue, master.resolve, master.reject );
+			} else {
+				master.resolve( singleValue );
 			}
 
-		// If we're not waiting on anything, resolve the master
-		} else {
-			master.resolveWith();
+			// Use .then() to unwrap secondary thenables (cf. gh-3000)
+			return master.then();
+		}
+
+		// Multiple arguments are aggregated like Promise.all array elements
+		i = resolveValues.length;
+		while ( i-- ) {
+			singleValue = resolveValues[ i ];
+
+			// jQuery.Deferred - treated specially to get resolve-sync behavior
+			if ( singleValue && jQuery.isFunction( ( method = singleValue.promise ) ) ) {
+				method.call( singleValue )
+					.done( updateFunc( i ) )
+					.fail( master.reject );
+
+			// Other thenables
+			} else if ( singleValue && jQuery.isFunction( ( method = singleValue.then ) ) ) {
+				method.call(
+					singleValue,
+					updateFunc( i ),
+					master.reject
+				);
+
+			// Other non-thenables
+			} else {
+
+				// Support: Android 4.0 only
+				// Strict mode functions invoked without .call/.apply get global-object context
+				updateFunc( i ).call( undefined, singleValue );
+			}
 		}
 
 		return master.promise();
