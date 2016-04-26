@@ -13,6 +13,26 @@ function Thrower( ex ) {
 	throw ex;
 }
 
+function adoptValue( value, resolve, reject ) {
+	var method;
+
+	// Check for promise aspect first to privilege synchronous behavior
+	if ( value && jQuery.isFunction( ( method = value.promise ) ) ) {
+		method.call( value ).done( resolve ).fail( reject );
+
+	// Other thenables
+	} else if ( value && jQuery.isFunction( ( method = value.then ) ) ) {
+		method.call( value, resolve, reject );
+
+	// Other non-thenables
+	} else {
+
+		// Support: Android 4.0 only
+		// Strict mode functions invoked without .call/.apply get global-object context
+		resolve.call( undefined, value );
+	}
+}
+
 jQuery.extend( {
 
 	Deferred: function( func ) {
@@ -306,13 +326,14 @@ jQuery.extend( {
 
 	// Deferred helper
 	when: function( singleValue ) {
-		var method, i,
-
-			// count of uncompleted subordinates
+		var // count of uncompleted subordinates
 			remaining = arguments.length,
 
+			// count of unprocessed arguments
+			i = remaining,
+
 			// subordinate fulfillment data
-			resolveContexts = new Array( remaining ),
+			resolveContexts = Array( i ),
 			resolveValues = slice.call( arguments ),
 
 			// the master Deferred
@@ -331,48 +352,16 @@ jQuery.extend( {
 
 		// Single- and empty arguments are adopted like Promise.resolve
 		if ( remaining <= 1 ) {
-			if ( singleValue && jQuery.isFunction( ( method = singleValue.promise ) ) ) {
-				method.call( singleValue )
-					.done( master.resolve )
-					.fail( master.reject );
-			} else if ( singleValue && jQuery.isFunction( ( method = singleValue.then ) ) ) {
-				method.call( singleValue, master.resolve, master.reject );
-			} else {
-				master.resolve( singleValue );
-			}
+			adoptValue( singleValue, master.resolve, master.reject );
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			return master.then();
 		}
 
 		// Multiple arguments are aggregated like Promise.all array elements
-		i = resolveValues.length;
 		while ( i-- ) {
-			singleValue = resolveValues[ i ];
-
-			// jQuery.Deferred - treated specially to get resolve-sync behavior
-			if ( singleValue && jQuery.isFunction( ( method = singleValue.promise ) ) ) {
-				method.call( singleValue )
-					.done( updateFunc( i ) )
-					.fail( master.reject );
-
-			// Other thenables
-			} else if ( singleValue && jQuery.isFunction( ( method = singleValue.then ) ) ) {
-				method.call(
-					singleValue,
-					updateFunc( i ),
-					master.reject
-				);
-
-			// Other non-thenables
-			} else {
-
-				// Support: Android 4.0 only
-				// Strict mode functions invoked without .call/.apply get global-object context
-				updateFunc( i ).call( undefined, singleValue );
-			}
+			adoptValue( resolveValues[ i ], updateFunc( i ), master.reject );
 		}
-
 		return master.promise();
 	}
 } );
