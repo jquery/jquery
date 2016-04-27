@@ -326,7 +326,9 @@ jQuery.extend( {
 
 	// Deferred helper
 	when: function( singleValue ) {
-		var // count of uncompleted subordinates
+		var
+
+			// count of uncompleted subordinates
 			remaining = arguments.length,
 
 			// count of unprocessed arguments
