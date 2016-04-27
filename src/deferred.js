@@ -354,7 +354,10 @@ jQuery.extend( {
 						master.reject
 					);
 				} else {
-					updateFunc( i )( resolveValues[ i ] );
+
+					// Support: Android 4.0 only
+					// Strict mode functions invoked without .call/.apply get global-object context
+					updateFunc( i ).call( undefined, resolveValues[ i ] );
 				}
 			}
 
