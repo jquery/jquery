@@ -843,7 +843,10 @@ QUnit.test( "jQuery.when - joined", function( assert ) {
 			rejectedStandardPromise: true
 		},
 		counter = 49,
-		expectedContext = (function() { "use strict"; return this; })();
+
+		// Support: Android 4.0 only
+		// Strict mode functions invoked without .call/.apply get global-object context
+		expectedContext = (function() { "use strict"; return this; }).call();
 
 	QUnit.stop();
 
