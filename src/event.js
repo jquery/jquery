@@ -93,36 +93,6 @@ function on( elem, types, selector, data, fn, one ) {
 	} );
 }
 
-function addEventGetter( unused, name ) {
-	Object.defineProperty( jQuery.Event.prototype, name, {
-		enumerable: true,
-		configurable: true,
-
-		get: function() {
-			var value, hook;
-
-			if ( this.originalEvent ) {
-				if ( hook = jQuery.event.propHooks[ name ] ) {
-					value = hook( this.originalEvent );
-				} else {
-					value = this.originalEvent[ name ];
-				}
-			}
-
-			return value;
-		},
-
-		set: function( value ) {
-			Object.defineProperty( this, name, {
-				enumerable: true,
-				configurable: true,
-				writable: true,
-				value: value
-			} );
-		}
-	} );
-}
-
 /*
  * Helper functions for managing events -- not part of the public interface.
  * Props to Dean Edwards' addEvent library for many of the ideas.
@@ -428,75 +398,40 @@ jQuery.event = {
 		return handlerQueue;
 	},
 
-	// Includes all common event props including KeyEvent and MouseEvent specific props
-	props: ( "altKey bubbles cancelable ctrlKey detail eventPhase " +
-		"metaKey shiftKey view which char charCode key keyCode " +
-		"button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement"
-	).split( " " ),
+	addProp: function( name, hook ) {
+		var getter = jQuery.isFunction( hook ) ?
+			function hookGetter() {
+				if ( this.originalEvent ) {
+						return hook( this.originalEvent );
+				}
+			} :
+			function propGetter() {
+				if ( this.originalEvent ) {
+						return this.originalEvent[ name ];
+				}
+			};
 
-	propHooks: {
-		which: function( event ) {
-			var button = event.button;
+		Object.defineProperty( jQuery.Event.prototype, name, {
+			enumerable: true,
+			configurable: true,
 
-			// Add which for key events
-			if ( event.which == null && rkeyEvent.test( event.type ) ) {
-				return event.charCode != null ? event.charCode : event.keyCode;
+			get: getter,
+
+			set: function( value ) {
+				Object.defineProperty( this, name, {
+					enumerable: true,
+					configurable: true,
+					writable: true,
+					value: value
+				} );
 			}
-
-			// Add which for click: 1 === left; 2 === middle; 3 === right
-			if ( !event.which && button !== undefined && rmouseEvent.test( event.type ) ) {
-				return ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
-			}
-
-			return event.which;
-		},
-
-		pageX: function( event ) {
-			var eventDoc, doc, body;
-
-			// Calculate pageX if missing and clientX available
-			if ( event.pageX == null && event.clientX != null ) {
-				eventDoc = event.target.ownerDocument || document;
-				doc = eventDoc.documentElement;
-				body = eventDoc.body;
-
-				return event.clientX +
-					( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
-					( doc && doc.clientLeft || body && body.clientLeft || 0 );
-			}
-
-			return event.pageX;
-		},
-
-		pageY: function( event ) {
-			var eventDoc, doc, body;
-
-			// Calculate pageY if missing and clientY available
-			if ( event.pageY == null && event.clientY != null ) {
-				eventDoc = event.target.ownerDocument || document;
-				doc = eventDoc.documentElement;
-				body = eventDoc.body;
-
-				return event.clientY +
-					( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
-					( doc && doc.clientTop || body && body.clientTop || 0 );
-			}
-
-			return event.pageY;
-		}
+		} );
 	},
 
 	fix: function( originalEvent ) {
-		if ( originalEvent[ jQuery.expando ] ) {
-			return originalEvent;
-		}
-
-		// Setup any prop hooks added since the last fix
-		if ( this.props.length ) {
-			jQuery.each( this.props.splice( 0 ), addEventGetter );
-		}
-
-		return new jQuery.Event( originalEvent );
+		return originalEvent[ jQuery.expando ] ?
+			originalEvent :
+			new jQuery.Event( originalEvent );
 	},
 
 	special: {
@@ -649,6 +584,82 @@ jQuery.Event.prototype = {
 		this.stopPropagation();
 	}
 };
+
+// Includes all common event props including KeyEvent and MouseEvent specific props
+jQuery.each( {
+	altKey: true,
+	bubbles: true,
+	cancelable: true,
+	ctrlKey: true,
+	detail: true,
+	eventPhase: true,
+	metaKey: true,
+	shiftKey: true,
+	view: true,
+	"char": true,
+	charCode: true,
+	key: true,
+	keyCode: true,
+	button: true,
+	buttons: true,
+	clientX: true,
+	clientY: true,
+	offsetX: true,
+	offsetY: true,
+	screenX: true,
+	screenY: true,
+	toElement: true,
+
+	which: function( event ) {
+		var button = event.button;
+
+		// Add which for key events
+		if ( event.which == null && rkeyEvent.test( event.type ) ) {
+			return event.charCode != null ? event.charCode : event.keyCode;
+		}
+
+		// Add which for click: 1 === left; 2 === middle; 3 === right
+		if ( !event.which && button !== undefined && rmouseEvent.test( event.type ) ) {
+			return ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
+		}
+
+		return event.which;
+	},
+
+	pageX: function( event ) {
+		var eventDoc, doc, body;
+
+		// Calculate pageX if missing and clientX available
+		if ( event.pageX == null && event.clientX != null ) {
+			eventDoc = event.target.ownerDocument || document;
+			doc = eventDoc.documentElement;
+			body = eventDoc.body;
+
+			return event.clientX +
+				( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
+				( doc && doc.clientLeft || body && body.clientLeft || 0 );
+		}
+
+		return event.pageX;
+	},
+
+	pageY: function( event ) {
+		var eventDoc, doc, body;
+
+		// Calculate pageY if missing and clientY available
+		if ( event.pageY == null && event.clientY != null ) {
+			eventDoc = event.target.ownerDocument || document;
+			doc = eventDoc.documentElement;
+			body = eventDoc.body;
+
+			return event.clientY +
+				( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
+				( doc && doc.clientTop || body && body.clientTop || 0 );
+		}
+
+		return event.pageY;
+	}
+}, jQuery.event.addProp );
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
 // so that event delegation works in jQuery.
