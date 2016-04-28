@@ -491,23 +491,12 @@ jQuery.event = {
 			return originalEvent;
 		}
 
-		// Create a writable copy of the event object and normalize some properties
-		var event;
-
 		// Setup any prop hooks added since the last fix
 		if ( this.props.length ) {
 			jQuery.each( this.props.splice( 0 ), addEventGetter );
 		}
 
-		event = new jQuery.Event( originalEvent );
-
-		// Support: Safari <=6 - 7 only
-		// Target should not be a text node (#504, #13143)
-		if ( event.target.nodeType === 3 ) {
-			event.target = event.target.parentNode;
-		}
-
-		return event;
+		return new jQuery.Event( originalEvent );
 	},
 
 	special: {
@@ -596,7 +585,12 @@ jQuery.Event = function( src, props ) {
 			returnFalse;
 
 		// Create target properties
-		this.target = src.target;
+		// Support: Safari <=6 - 7 only
+		// Target should not be a text node (#504, #13143)
+		this.target = ( src.target.nodeType === 3 ) ?
+			src.target.parentNode :
+			src.target;
+
 		this.currentTarget = src.currentTarget;
 		this.relatedTarget = src.relatedTarget;
 
