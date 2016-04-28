@@ -501,9 +501,6 @@ jQuery.event = {
 		if ( this.props.length ) {
 			jQuery.each( this.props.splice( 0 ), addEventGetter );
 		}
-		if ( fixHook && fixHook.props && fixHook.props.length ) {
-			jQuery.each( fixHook.props.splice( 0 ), addEventGetter );
-		}
 
 		event = new jQuery.Event( originalEvent );
 
