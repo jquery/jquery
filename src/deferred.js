@@ -16,20 +16,32 @@ function Thrower( ex ) {
 function adoptValue( value, resolve, reject ) {
 	var method;
 
-	// Check for promise aspect first to privilege synchronous behavior
-	if ( value && jQuery.isFunction( ( method = value.promise ) ) ) {
-		method.call( value ).done( resolve ).fail( reject );
+	try {
 
-	// Other thenables
-	} else if ( value && jQuery.isFunction( ( method = value.then ) ) ) {
-		method.call( value, resolve, reject );
+		// Check for promise aspect first to privilege synchronous behavior
+		if ( value && jQuery.isFunction( ( method = value.promise ) ) ) {
+			method.call( value ).done( resolve ).fail( reject );
 
-	// Other non-thenables
-	} else {
+		// Other thenables
+		} else if ( value && jQuery.isFunction( ( method = value.then ) ) ) {
+			method.call( value, resolve, reject );
+
+		// Other non-thenables
+		} else {
+
+			// Support: Android 4.0 only
+			// Strict mode functions invoked without .call/.apply get global-object context
+			resolve.call( undefined, value );
+		}
+
+	// For Promises/A+, convert exceptions into rejections
+	// Since jQuery.when doesn't unwrap thenables, we can skip the extra checks appearing in
+	// Deferred#then to conditionally suppress rejection.
+	} catch ( /*jshint -W002 */ value ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		resolve.call( undefined, value );
+		reject.call( undefined, value );
 	}
 }
 
