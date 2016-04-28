@@ -434,8 +434,6 @@ jQuery.event = {
 		"button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement"
 	).split( " " ),
 
-	fixHooks: {},
-
 	propHooks: {
 		which: function( event ) {
 			var button = event.button;
@@ -494,8 +492,7 @@ jQuery.event = {
 		}
 
 		// Create a writable copy of the event object and normalize some properties
-		var event,
-			fixHook = this.fixHooks[ originalEvent.type ];
+		var event;
 
 		// Setup any prop hooks added since the last fix
 		if ( this.props.length ) {
@@ -510,7 +507,7 @@ jQuery.event = {
 			event.target = event.target.parentNode;
 		}
 
-		return fixHook && fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
+		return event;
 	},
 
 	special: {
