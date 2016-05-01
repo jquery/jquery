@@ -1289,6 +1289,27 @@ QUnit.test( "Delegated events in SVG (#10791; #13180)", function( assert ) {
 	jQuery( "#qunit-fixture" ).off( "click" );
 } );
 
+QUnit.test( "Delegated events with malformed selectors (#3071)", function( assert ) {
+	assert.expect( 2 );
+	try {
+		jQuery( "#qunit-fixture" ).on( "click", "div:not", function () { } );
+		assert.ok( false, "malformed selector throws on attach" );
+	}
+	catch ( e ) {
+		assert.ok( true, "malformed selector throws on attach" );
+	}
+
+	try {
+		jQuery( "#qunit-fixture" ).click();
+		assert.ok( true, "malformed selector does not throw on event" );
+	}
+	catch ( e ) {
+		assert.ok( false, "malformed selector does not throw on event" );
+	}
+
+	jQuery( "#qunit-fixture" ).off( "click" );
+} );
+
 QUnit.test( "Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function( assert ) {
 	assert.expect( 5 );
 
