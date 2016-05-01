@@ -594,90 +594,90 @@ testIframe( "coordinates relative to document", "offset/rel-doc.html", function(
 		FLAG_BODY_BORDER = 16,
 		FLAG_BODY_PADDING = 32;
 
-		// Test it in each situation that is made by combined properties.
-		function situations( affect, markerTopLeft, exBodyPadding, messageHead ) {
-			var flags, offset1, offset2, sumLen, labels, labelsInMessage;
+	// Test it in each situation that is made by combined properties.
+	function situations( affect, markerTopLeft, exBodyPadding, messageHead ) {
+		var flags, offset1, offset2, sumLen, labels, labelsInMessage;
 
-			function switchProp( elem, enable, styleProp, pixels, label ) {
-				if ( enable ) {
-					elem.style[ styleProp ] = pixels + "px";
-					if ( !exBodyPadding || elem !== bodyElem || styleProp !== "padding" ) {
-						sumLen += pixels;
-					}
-					labels.push( label );
-				} else {
-					elem.style[ styleProp ] = "0";
+		function switchProp( elem, enable, styleProp, pixels, label ) {
+			if ( enable ) {
+				elem.style[ styleProp ] = pixels + "px";
+				if ( !exBodyPadding || elem !== bodyElem || styleProp !== "padding" ) {
+					sumLen += pixels;
 				}
-			}
-
-			for ( flags = 0;
-					flags <= ( FLAG_DOC_MARGIN | FLAG_DOC_BORDER | FLAG_DOC_PADDING | FLAG_BODY_MARGIN | FLAG_BODY_BORDER | FLAG_BODY_PADDING );
-					flags++ ) {
-
-				sumLen = 0;
-				labels = [];
-
-				switchProp( docElem, flags & FLAG_DOC_MARGIN, "margin", DOC_MARGIN, "[document-margin]" );
-				switchProp( docElem, flags & FLAG_DOC_BORDER, "borderWidth", DOC_BORDER, "[document-border]" );
-				switchProp( docElem, flags & FLAG_DOC_PADDING, "padding", DOC_PADDING, "[document-padding]" );
-				switchProp( bodyElem, flags & FLAG_BODY_MARGIN, "margin", BODY_MARGIN, "[body-margin]" );
-				switchProp( bodyElem, flags & FLAG_BODY_BORDER, "borderWidth", BODY_BORDER, "[body-border]" );
-				switchProp( bodyElem, flags & FLAG_BODY_PADDING, "padding", BODY_PADDING, "[body-padding]" );
-
-				offset1 = $marker1.offset();
-				// If getter works correctly, the returned values can be compared with result of setter.
-				offset2 = $marker2.offset( offset1 ).offset(); // Set and Get
-
-				labelsInMessage = " - Enabled Properties: " + ( labels.length ? labels.join( ", " ) : "none" );
-				if ( affect ) {
-					assert.equal( offset1.top, markerTopLeft + sumLen, messageHead + " - Get `top` (affected)" + labelsInMessage );
-					assert.equal( offset1.left, markerTopLeft + sumLen, messageHead + " - Get `left` (affected)" + labelsInMessage );
-					assert.equal( offset2.top, markerTopLeft + sumLen, messageHead + " - Get-Set-Get `top` (affected)" + labelsInMessage );
-					assert.equal( offset2.left, markerTopLeft + sumLen, messageHead + " - Get-Set-Get `left` (affected)" + labelsInMessage );
-				} else {
-					assert.equal( offset1.top, markerTopLeft, messageHead + " - Get `top` (NOT affected)" + labelsInMessage );
-					assert.equal( offset1.left, markerTopLeft, messageHead + " - Get `left` (NOT affected)" + labelsInMessage );
-					assert.equal( offset2.top, markerTopLeft, messageHead + " - Get-Set-Get `top` (NOT affected)" + labelsInMessage );
-					assert.equal( offset2.left, markerTopLeft, messageHead + " - Get-Set-Get `left` (NOT affected)" + labelsInMessage );
-				}
+				labels.push( label );
+			} else {
+				elem.style[ styleProp ] = "0";
 			}
 		}
 
-		// ================ CASE 1
-		// When `body` has `position:static` and `marker1` has `position:absolute`,
-		// `marker1` is positioned relative to the initial container (i.e. <html>).
-		// https://developer.mozilla.org/en-US/docs/Web/CSS/position#Absolute_positioning
-		// Therefore, `top` and `left` of `marker1` must be `MARKER_LEFT_TOP` without being affected by
-		// `margin`, `border` and `padding` of document and `body`.
+		for ( flags = 0;
+				flags <= ( FLAG_DOC_MARGIN | FLAG_DOC_BORDER | FLAG_DOC_PADDING | FLAG_BODY_MARGIN | FLAG_BODY_BORDER | FLAG_BODY_PADDING );
+				flags++ ) {
 
-		bodyElem.style.position = "static";
-		marker1.style.position = "absolute";
-		marker1.style.top = MARKER_TOP_LEFT + "px";
-		marker1.style.left = MARKER_TOP_LEFT + "px";
-		situations( false, MARKER_TOP_LEFT, false, "body{position:static}" );
+			sumLen = 0;
+			labels = [];
 
-		// ================ CASE 2
-		// When `body` has `position:(non-static)` and `marker1` has `position:absolute`,
-		// `marker1` is positioned relative to `body`.
-		// Therefore, `top` and `left` of `marker1` must be `MARKER_LEFT_TOP` added
-		// `margin` and `border` of document and `body`, and `padding` of document.
+			switchProp( docElem, flags & FLAG_DOC_MARGIN, "margin", DOC_MARGIN, "[document-margin]" );
+			switchProp( docElem, flags & FLAG_DOC_BORDER, "borderWidth", DOC_BORDER, "[document-border]" );
+			switchProp( docElem, flags & FLAG_DOC_PADDING, "padding", DOC_PADDING, "[document-padding]" );
+			switchProp( bodyElem, flags & FLAG_BODY_MARGIN, "margin", BODY_MARGIN, "[body-margin]" );
+			switchProp( bodyElem, flags & FLAG_BODY_BORDER, "borderWidth", BODY_BORDER, "[body-border]" );
+			switchProp( bodyElem, flags & FLAG_BODY_PADDING, "padding", BODY_PADDING, "[body-padding]" );
 
-		bodyElem.style.position = "relative";
-		marker1.style.position = "absolute";
-		marker1.style.top = MARKER_TOP_LEFT + "px";
-		marker1.style.left = MARKER_TOP_LEFT + "px";
-		situations( true, MARKER_TOP_LEFT, true, "body{position:relative}" );
+			offset1 = $marker1.offset();
+			// If getter works correctly, the returned values can be compared with result of setter.
+			offset2 = $marker2.offset( offset1 ).offset(); // Set and Get
 
-		// ================ CASE 3
-		// When `marker1` has `position:static`, `marker1` is laid out in its current position in the flow.
-		// Therefore, `top` and `left` of `marker1` must be sum of
-		// `margin`, `border` and `padding` of document and `body`.
+			labelsInMessage = " - Enabled Properties: " + ( labels.length ? labels.join( ", " ) : "none" );
+			if ( affect ) {
+				assert.equal( offset1.top, markerTopLeft + sumLen, messageHead + " - Get `top` (affected)" + labelsInMessage );
+				assert.equal( offset1.left, markerTopLeft + sumLen, messageHead + " - Get `left` (affected)" + labelsInMessage );
+				assert.equal( offset2.top, markerTopLeft + sumLen, messageHead + " - Get-Set-Get `top` (affected)" + labelsInMessage );
+				assert.equal( offset2.left, markerTopLeft + sumLen, messageHead + " - Get-Set-Get `left` (affected)" + labelsInMessage );
+			} else {
+				assert.equal( offset1.top, markerTopLeft, messageHead + " - Get `top` (NOT affected)" + labelsInMessage );
+				assert.equal( offset1.left, markerTopLeft, messageHead + " - Get `left` (NOT affected)" + labelsInMessage );
+				assert.equal( offset2.top, markerTopLeft, messageHead + " - Get-Set-Get `top` (NOT affected)" + labelsInMessage );
+				assert.equal( offset2.left, markerTopLeft, messageHead + " - Get-Set-Get `left` (NOT affected)" + labelsInMessage );
+			}
+		}
+	}
 
-		bodyElem.style.position = "static";
-		marker1.style.position = "static";
-		marker1.style.top = "";
-		marker1.style.left = "";
-		situations( true, 0, false, "marker1{position:static}" );
+	// ================ CASE 1
+	// When `body` has `position:static` and `marker1` has `position:absolute`,
+	// `marker1` is positioned relative to the initial container (i.e. <html>).
+	// https://developer.mozilla.org/en-US/docs/Web/CSS/position#Absolute_positioning
+	// Therefore, `top` and `left` of `marker1` must be `MARKER_LEFT_TOP` without being affected by
+	// `margin`, `border` and `padding` of document and `body`.
+
+	bodyElem.style.position = "static";
+	marker1.style.position = "absolute";
+	marker1.style.top = MARKER_TOP_LEFT + "px";
+	marker1.style.left = MARKER_TOP_LEFT + "px";
+	situations( false, MARKER_TOP_LEFT, false, "body{position:static}" );
+
+	// ================ CASE 2
+	// When `body` has `position:(non-static)` and `marker1` has `position:absolute`,
+	// `marker1` is positioned relative to `body`.
+	// Therefore, `top` and `left` of `marker1` must be `MARKER_LEFT_TOP` added
+	// `margin` and `border` of document and `body`, and `padding` of document.
+
+	bodyElem.style.position = "relative";
+	marker1.style.position = "absolute";
+	marker1.style.top = MARKER_TOP_LEFT + "px";
+	marker1.style.left = MARKER_TOP_LEFT + "px";
+	situations( true, MARKER_TOP_LEFT, true, "body{position:relative}" );
+
+	// ================ CASE 3
+	// When `marker1` has `position:static`, `marker1` is laid out in its current position in the flow.
+	// Therefore, `top` and `left` of `marker1` must be sum of
+	// `margin`, `border` and `padding` of document and `body`.
+
+	bodyElem.style.position = "static";
+	marker1.style.position = "static";
+	marker1.style.top = "";
+	marker1.style.left = "";
+	situations( true, 0, false, "marker1{position:static}" );
 
 } );
 
