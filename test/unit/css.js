@@ -1105,6 +1105,15 @@ QUnit.test( ":visible/:hidden selectors", function( assert ) {
 	assert.ok( !jQuery( "<div><div>Test</div></div>" ).find("div").is( ":visible" ), "Disconnected element child is not visible" );
 } );
 
+testIframeWithCallback(
+	"Table styles do not affect reliableHiddenOffsets support test (gh-3065)",
+	"support/reliableHiddenOffsets.html",
+	function( testResult, assert ) {
+		assert.expect( 1 );
+
+		assert.equal( testResult, jQuery.support.reliableHiddenOffsets(), "reliableHiddenOffsets value not affected by table styles" );
+	} );
+
 QUnit.test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function( assert ) {
 	assert.expect( 2 );
 
