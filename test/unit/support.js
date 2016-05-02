@@ -150,7 +150,7 @@ testIframeWithCallback(
 			"reliableMarginLeft": true,
 			"reliableMarginRight": true
 		};
-	} else if ( /9\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /9(\.\d+|) safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
