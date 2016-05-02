@@ -604,6 +604,12 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 						BODY_BORDER = 16,
 						BODY_PADDING = 32,
 						MARKER_TOP_LEFT = 64;
+						// These are also each bit in the difference between an expected value and a result
+						// value when the test failed.
+						// For example, when an expected value is 16 and a result value is 34,
+						// document-border (`(34 - 16) & DOC_BORDER`) and body-border (`(34 - 16) & BODY_BORDER`)
+						// were got incorrectly.
+
 
 					// Test it in each situation that is made by combined box-properties.
 					function testWithBoxProps( affectProps, markerTopLeft ) {
