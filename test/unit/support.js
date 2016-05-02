@@ -416,7 +416,7 @@ testIframeWithCallback(
 			"submit": true,
 			"tbody": true
 		};
-	} else if ( /9(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /\b9\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
