@@ -399,23 +399,21 @@ jQuery.event = {
 	},
 
 	addProp: function( name, hook ) {
-		var getter = jQuery.isFunction( hook ) ?
-			function hookGetter() {
-				if ( this.originalEvent ) {
-						return hook( this.originalEvent );
-				}
-			} :
-			function propGetter() {
-				if ( this.originalEvent ) {
-						return this.originalEvent[ name ];
-				}
-			};
-
 		Object.defineProperty( jQuery.Event.prototype, name, {
 			enumerable: true,
 			configurable: true,
 
-			get: getter,
+			get: jQuery.isFunction( hook ) ?
+				function() {
+					if ( this.originalEvent ) {
+							return hook( this.originalEvent );
+					}
+				} :
+				function() {
+					if ( this.originalEvent ) {
+							return this.originalEvent[ name ];
+					}
+				},
 
 			set: function( value ) {
 				Object.defineProperty( this, name, {
