@@ -2410,6 +2410,30 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 	$link.off( "click" ).remove();
 } );
 
+QUnit.test( "addProp extensions", function( assert ) {
+	assert.expect( 2 );
+
+	var $fixture = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+
+	// Ensure the property doesn't exist
+	$fixture.on( "click", function( event ) {
+		assert.ok( !( "testProperty" in event ), "event.testProperty does not exist" );
+	} );
+	fireNative( $fixture[ 0 ], "click" );
+	$fixture.off( "click" );
+
+	jQuery.event.addProp( "testProperty", function() { return 42; } );
+
+	// Trigger a native click and ensure the property is set
+	$fixture.on( "click", function( event ) {
+		assert.equal( event.testProperty, 42, "event.testProperty getter was invoked" );
+	} );
+	fireNative( $fixture[ 0 ], "click" );
+	$fixture.off( "click" );
+
+	$fixture.remove();
+} );
+
 QUnit.test( "drag/drop events copy mouse-related event properties (gh-1925, gh-2009)", function( assert ) {
 	assert.expect( 4 );
 
