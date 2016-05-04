@@ -2410,38 +2410,6 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 	$link.off( "click" ).remove();
 } );
 
-QUnit.test( "fixHooks extensions", function( assert ) {
-	assert.expect( 2 );
-
-	// IE requires focusable elements to be visible, so append to body
-	var $fixture = jQuery( "<input type='text' id='hook-fixture' />" ).appendTo( "body" ),
-		saved = jQuery.event.fixHooks.click;
-
-	// Ensure the property doesn't exist
-	$fixture.on( "click", function( event ) {
-		assert.ok( !( "blurrinessLevel" in event ), "event.blurrinessLevel does not exist" );
-	} );
-	fireNative( $fixture[ 0 ], "click" );
-	$fixture.off( "click" );
-
-	jQuery.event.fixHooks.click = {
-		filter: function( event ) {
-			event.blurrinessLevel = 42;
-			return event;
-		}
-	};
-
-	// Trigger a native click and ensure the property is set
-	$fixture.on( "click", function( event ) {
-		assert.equal( event.blurrinessLevel, 42, "event.blurrinessLevel was set" );
-	} );
-	fireNative( $fixture[ 0 ], "click" );
-
-	delete jQuery.event.fixHooks.click;
-	$fixture.off( "click" ).remove();
-	jQuery.event.fixHooks.click = saved;
-} );
-
 QUnit.test( "drag/drop events copy mouse-related event properties (gh-1925, gh-2009)", function( assert ) {
 	assert.expect( 4 );
 
