@@ -1049,3 +1049,24 @@ QUnit.test( "jQuery.when - notify does not affect resolved", function( assert ) 
 		assert.ok( false, "Error on resolve" );
 	} );
 } );
+
+QUnit.test( "jQuery.when(...) - opportunistically synchronous", function( assert ) {
+
+	assert.expect( 5 );
+
+	var when = "before",
+		resolved = jQuery.Deferred().resolve( true ),
+		rejected = jQuery.Deferred().reject( false ),
+		validate = function() {
+			assert.equal( when, "before" );
+		},
+		done = assert.async( 5 );
+
+	jQuery.when().done( validate ).always( done );
+	jQuery.when( when ).done( validate ).always( done );
+	jQuery.when( resolved ).done( validate ).always( done );
+	jQuery.when( rejected ).fail( validate ).always( done );
+	jQuery.when( resolved, rejected ).always( validate ).always( done );
+
+	when = "after";
+} );
