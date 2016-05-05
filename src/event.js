@@ -588,6 +588,7 @@ jQuery.each( {
 	altKey: true,
 	bubbles: true,
 	cancelable: true,
+	changedTouches: true,
 	ctrlKey: true,
 	detail: true,
 	eventPhase: true,
@@ -607,6 +608,7 @@ jQuery.each( {
 	screenX: true,
 	screenY: true,
 	toElement: true,
+	touches: true,
 
 	which: function( event ) {
 		var button = event.button;
