@@ -592,6 +592,8 @@ jQuery.each( {
 	detail: true,
 	eventPhase: true,
 	metaKey: true,
+	pageX: true,
+	pageY: true,
 	shiftKey: true,
 	view: true,
 	"char": true,
@@ -622,40 +624,6 @@ jQuery.each( {
 		}
 
 		return event.which;
-	},
-
-	pageX: function( event ) {
-		var eventDoc, doc, body;
-
-		// Calculate pageX if missing and clientX available
-		if ( event.pageX == null && event.clientX != null ) {
-			eventDoc = event.target.ownerDocument || document;
-			doc = eventDoc.documentElement;
-			body = eventDoc.body;
-
-			return event.clientX +
-				( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) -
-				( doc && doc.clientLeft || body && body.clientLeft || 0 );
-		}
-
-		return event.pageX;
-	},
-
-	pageY: function( event ) {
-		var eventDoc, doc, body;
-
-		// Calculate pageY if missing and clientY available
-		if ( event.pageY == null && event.clientY != null ) {
-			eventDoc = event.target.ownerDocument || document;
-			doc = eventDoc.documentElement;
-			body = eventDoc.body;
-
-			return event.clientY +
-				( doc && doc.scrollTop || body && body.scrollTop || 0 ) -
-				( doc && doc.clientTop || body && body.clientTop || 0 );
-		}
-
-		return event.pageY;
 	}
 }, jQuery.event.addProp );
 
