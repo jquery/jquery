@@ -569,147 +569,74 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 } );
 
 (function() {
-	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ];
+	var
+		// Pixels
+		DOC_MARGIN = 1,
+		DOC_BORDER = 2,
+		DOC_PADDING = 4,
+		BODY_MARGIN = 8,
+		BODY_BORDER = 16,
+		BODY_PADDING = 32,
+		DIV_TOP_LEFT = 64,
+		// These are also each bit in the difference between an expected value and a result value when
+		// the test failed.
+		// For example, when an expected value is 16 and a result value is 34,
+		// document-border (`(34 - 16) & DOC_BORDER`) and body-border (`(34 - 16) & BODY_BORDER`)
+		// were got incorrectly.
+
+		POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
+		MOVED_OFFSET = { top: DIV_TOP_LEFT, left: DIV_TOP_LEFT };
 
 	supportjQuery.each( POSITION_VALUES, function( i, docPosition ) {
 		supportjQuery.each( POSITION_VALUES, function( i, bodyPosition ) {
-			supportjQuery.each( [ "static", "absolute" ], function( i, markerPosition ) {
 
-				testIframe( "coordinates relative to document" +
-							" (html{position:" + docPosition + "} body{position:" + bodyPosition + "} div{position:" + markerPosition + "})",
-						"offset/rel-doc.html", function( assert, $, iframe, doc ) {
-					assert.expect( 256 );
+			testIframe( "get coordinates relative to document" +
+						" (html{position:" + docPosition + "} body{position:" + bodyPosition + "})",
+					"offset/rel-doc.html", function( assert, $, iframe, doc ) {
+				assert.expect( 2 );
 
-					var docElem = doc.documentElement, // `<html>` element
-						bodyElem = doc.body,
-						marker1 = doc.getElementById( "marker1" ),
-						marker2 = doc.getElementById( "marker2" ),
-						$marker1 = $( marker1 ),
-						$marker2 = $( marker2 ),
-						affectProps, markerTopLeft,
+				var correctTopLeft;
 
-						// Bit as Flag of box-properties
-						FLAG_DOC_MARGIN = 1,
-						FLAG_DOC_BORDER = 2,
-						FLAG_DOC_PADDING = 4,
-						FLAG_BODY_MARGIN = 8,
-						FLAG_BODY_BORDER = 16,
-						FLAG_BODY_PADDING = 32,
+				doc.documentElement.style.position = docPosition;
+				doc.body.style.position = bodyPosition;
 
-						// Pixels
-						DOC_MARGIN = 1,
-						DOC_BORDER = 2,
-						DOC_PADDING = 4,
-						BODY_MARGIN = 8,
-						BODY_BORDER = 16,
-						BODY_PADDING = 32,
-						MARKER_TOP_LEFT = 64;
-						// These are also each bit in the difference between an expected value and a result
-						// value when the test failed.
-						// For example, when an expected value is 16 and a result value is 34,
-						// document-border (`(34 - 16) & DOC_BORDER`) and body-border (`(34 - 16) & BODY_BORDER`)
-						// were got incorrectly.
+				// div { position: static }
+				correctTopLeft = DOC_MARGIN + DOC_BORDER + DOC_PADDING + BODY_MARGIN + BODY_BORDER + BODY_PADDING;
+				assert.deepEqual(
+					supportjQuery.extend( {}, $( "#static" ).offset() ),
+					{ top: correctTopLeft, left: correctTopLeft },
+					"offset of position:static element includes <html> and <body> box styles" );
 
-
-					// Test it in each situation that is made by combined box-properties.
-					function testWithBoxProps( affectProps, markerTopLeft ) {
-						var props, offset1, offset2, sumLen, correctTopLeft, labels, labelsInMessage;
-
-						function switchProp( elem, enable, affect, styleProp, pixels, label ) {
-							if ( enable ) {
-								elem.style[ styleProp ] = pixels + "px";
-								if ( affect ) {
-									sumLen += pixels;
-									label = "[*]" + label;
-								} else {
-									label = "[v]" + label;
-								}
-							} else {
-								elem.style[ styleProp ] = "0";
-								label = "[-]" + label;
-							}
-							labels.push( label );
-						}
-
-						for ( props = 0;
-								props <= ( FLAG_DOC_MARGIN | FLAG_DOC_BORDER | FLAG_DOC_PADDING | FLAG_BODY_MARGIN | FLAG_BODY_BORDER | FLAG_BODY_PADDING );
-								props++ ) {
-
-							sumLen = 0;
-							labels = [];
-
-							switchProp( docElem, props & FLAG_DOC_MARGIN, affectProps & FLAG_DOC_MARGIN, "margin", DOC_MARGIN, "document-margin" );
-							switchProp( docElem, props & FLAG_DOC_BORDER, affectProps & FLAG_DOC_BORDER, "borderWidth", DOC_BORDER, "document-border" );
-							switchProp( docElem, props & FLAG_DOC_PADDING, affectProps & FLAG_DOC_PADDING, "padding", DOC_PADDING, "document-padding" );
-							switchProp( bodyElem, props & FLAG_BODY_MARGIN, affectProps & FLAG_BODY_MARGIN, "margin", BODY_MARGIN, "body-margin" );
-							switchProp( bodyElem, props & FLAG_BODY_BORDER, affectProps & FLAG_BODY_BORDER, "borderWidth", BODY_BORDER, "body-border" );
-							switchProp( bodyElem, props & FLAG_BODY_PADDING, affectProps & FLAG_BODY_PADDING, "padding", BODY_PADDING, "body-padding" );
-
-							offset1 = $marker1.offset();
-							// If getter works correctly, the returned values can be compared with result of setter.
-							offset2 = $marker2.offset( offset1 ).offset(); // Set and Get
-
-							correctTopLeft = markerTopLeft + sumLen;
-							// `*` means that the property should affect position
-							labelsInMessage = " - Props (v:enabled, *:affect): " + labels.join( " " );
-							assert.equal( offset1.top, correctTopLeft, "Get `top`" + labelsInMessage );
-							assert.equal( offset1.left, correctTopLeft, "Get `left`" + labelsInMessage );
-							assert.equal( offset2.top, correctTopLeft, "Set `top`" + labelsInMessage );
-							assert.equal( offset2.left, correctTopLeft, "Set `left`" + labelsInMessage );
-						}
-					}
-
-					docElem.style.position = docPosition;
-					bodyElem.style.position = bodyPosition;
-					marker1.style.position = markerPosition;
-					affectProps = 0;
-					markerTopLeft = 0;
-
-					if ( markerPosition === "absolute" ) {
-						marker1.style.top = MARKER_TOP_LEFT + "px";
-						marker1.style.left = MARKER_TOP_LEFT + "px";
-						markerTopLeft = MARKER_TOP_LEFT;
-
-						if ( bodyPosition !== "static" ) {
-							// When `<body>` has `position:(non-static)` and `marker1` has `position:absolute`,
-							// `marker1` is positioned relative to inside `<body>` border.
-							// Therefore, `.offset()` should return `top/left` of `marker1` plus
-							// * document-margin, document-border, 	document-padding
-							// * body-margin, 		body-border
-							affectProps |= FLAG_DOC_MARGIN | FLAG_DOC_BORDER | FLAG_DOC_PADDING | FLAG_BODY_MARGIN | FLAG_BODY_BORDER;
-
-						} else if ( docPosition !== "static" ) {
-							// When `<body>` has `position:static` and `<html>` has `position:(non-static)` and
-							// `marker1` has `position:absolute`, `marker1` is positioned relative to inside
-							// `<html>` border.
-							// Therefore, `.offset()` should return `top/left` of `marker1` plus
-							// * document-margin, document-border
-							affectProps |= FLAG_DOC_MARGIN | FLAG_DOC_BORDER;
-						}
-
-						// When `<body>` has `position:static` and `<html>` has `position:static` and `marker1`
-						// has `position:absolute`, `marker1` is positioned relative to the initial container
-						// (i.e. outer edge of `<html>` margin).
-						// https://developer.mozilla.org/en-US/docs/Web/CSS/position#Absolute_positioning
-						// Therefore, `.offset()` should return `top/left` of `marker1` without being
-						// affected by `margin`, `border` and `padding` of `<html>` and `<body>`.
-
-					} else {
-						// When `marker1` has `position:static`, `marker1` is laid out in its current position
-						// in the flow.
-						// Therefore, `.offset()` should return sum of
-						// * document-margin, document-border, 	document-padding
-						// * body-margin, 		body-border, 			body-padding
-						affectProps |= FLAG_DOC_MARGIN | FLAG_DOC_BORDER | FLAG_DOC_PADDING | FLAG_BODY_MARGIN | FLAG_BODY_BORDER | FLAG_BODY_PADDING;
-					}
-
-					testWithBoxProps( affectProps, markerTopLeft );
-				} );
-
+				// div { position: absolute }
+				correctTopLeft = DIV_TOP_LEFT + (
+					bodyPosition !== "static" ? DOC_MARGIN + DOC_BORDER + DOC_PADDING + BODY_MARGIN + BODY_BORDER :
+					docPosition !== "static" ? DOC_MARGIN + DOC_BORDER :
+					0);
+				assert.deepEqual(
+					supportjQuery.extend( {}, $( "#absolute" ).offset() ),
+					{ top: correctTopLeft, left: correctTopLeft },
+					"offset of position:absolute element ignores box styles of position:static ancestors" );
 			} );
+
 		} );
 	} );
 
+	// { top: -1em; left: 1px } should be set.
+	testIframe( "set coordinates relative to document", "offset/rel-doc.html", function( assert, $ ) {
+		assert.expect( 2 );
+
+		// Move div { position: static } in another element.
+		assert.deepEqual(
+			supportjQuery.extend( {}, $( "#child-static" ).offset( MOVED_OFFSET ).offset() ),
+			MOVED_OFFSET,
+			"move position:static element using different coordinates" );
+
+		// Move div { position: absolute } that is positioned relative to another element.
+		assert.deepEqual(
+			supportjQuery.extend( {}, $( "#child-absolute" ).offset( MOVED_OFFSET ).offset() ),
+			MOVED_OFFSET,
+			"move position: absolute element using different coordinates" );
+	} );
 })();
 
 } )();
