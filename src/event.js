@@ -607,6 +607,7 @@ jQuery.each( {
 	offsetY: true,
 	screenX: true,
 	screenY: true,
+	targetTouches: true,
 	toElement: true,
 	touches: true,
 
