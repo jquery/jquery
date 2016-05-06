@@ -569,23 +569,7 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 } );
 
 (function() {
-	var
-		// Pixels
-		DOC_MARGIN = 1,
-		DOC_BORDER = 2,
-		DOC_PADDING = 4,
-		BODY_MARGIN = 8,
-		BODY_BORDER = 16,
-		BODY_PADDING = 32,
-		DIV_TOP_LEFT = 64,
-		// These are also each bit in the difference between an expected value and a result value when
-		// the test failed.
-		// For example, when an expected value is 16 and a result value is 34,
-		// document-border (`(34 - 16) & DOC_BORDER`) and body-border (`(34 - 16) & BODY_BORDER`)
-		// were got incorrectly.
-
-		POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
-		MOVED_OFFSET = { top: DIV_TOP_LEFT, left: DIV_TOP_LEFT };
+	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ];
 
 	supportjQuery.each( POSITION_VALUES, function( i, docPosition ) {
 		supportjQuery.each( POSITION_VALUES, function( i, bodyPosition ) {
@@ -593,49 +577,62 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 			testIframe( "get coordinates relative to document" +
 						" (html{position:" + docPosition + "} body{position:" + bodyPosition + "})",
 					"offset/rel-doc.html", function( assert, $, iframe, doc ) {
-				assert.expect( 2 );
+				assert.expect( 8 );
 
-				var correctTopLeft;
-
+				// Establish document-relative origins for children of <body>
 				doc.documentElement.style.position = docPosition;
 				doc.body.style.position = bodyPosition;
+				var bodyContentOrigin = 10 + 20 + 40 + 80 + 160 + 320;
+				var origin =
+					bodyPosition !== "static" ? 10 + 20 + 40 + 80 + 160 :
+					docPosition !== "static" ? 10 + 20 : 0;
 
-				// div { position: static }
-				correctTopLeft = DOC_MARGIN + DOC_BORDER + DOC_PADDING + BODY_MARGIN + BODY_BORDER + BODY_PADDING;
+				// Check offsets
+				var absoluteOffset = supportjQuery.extend( {}, $( "#absolute" ).offset() );
 				assert.deepEqual(
 					supportjQuery.extend( {}, $( "#static" ).offset() ),
-					{ top: correctTopLeft, left: correctTopLeft },
+					{ top: bodyContentOrigin, left: bodyContentOrigin },
 					"offset of position:static element includes <html> and <body> box styles" );
-
-				// div { position: absolute }
-				correctTopLeft = DIV_TOP_LEFT + (
-					bodyPosition !== "static" ? DOC_MARGIN + DOC_BORDER + DOC_PADDING + BODY_MARGIN + BODY_BORDER :
-					docPosition !== "static" ? DOC_MARGIN + DOC_BORDER :
-					0);
-				assert.deepEqual(
-					supportjQuery.extend( {}, $( "#absolute" ).offset() ),
-					{ top: correctTopLeft, left: correctTopLeft },
+				assert.deepEqual( absoluteOffset, { top: origin + 20, left: origin + 20 },
 					"offset of position:absolute element ignores box styles of position:static ancestors" );
+				$( "#absolute, #static" ).offset( absoluteOffset );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#absolute" ).offset() ), absoluteOffset, "offset() round-trips" );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#static" ).offset() ), absoluteOffset, "offset() is transitive" );
+				$( "#static" ).css( "position", "static" );
+
+				// Reposition html and body, tracking origin adjustments given margin/border/padding
+				var originAdjust = 0;
+				$( doc.documentElement ).css( { top: "1.5em", left: "1.5em" } );
+				if ( docPosition !== "static" ) {
+					originAdjust += 15;
+				}
+				$( doc.body ).css( { top: "3em", left: "3em" } );
+				if ( bodyPosition === "fixed" || bodyPosition === "absolute" && docPosition === "static" ) {
+
+					// html box styles no longer matter
+					origin = 80 + 160;
+					bodyContentOrigin = origin + 320;
+					originAdjust = 30;
+				} else if ( bodyPosition !== "static" ) {
+					originAdjust += 30 - (bodyPosition === "relative" ? 0 : 40);
+				}
+
+				// Recheck offsets
+				absoluteOffset = supportjQuery.extend( {}, $( "#absolute" ).offset() );
+				assert.deepEqual(
+					supportjQuery.extend( {}, $( "#static" ).offset() ),
+					{ top: bodyContentOrigin + originAdjust, left: bodyContentOrigin + originAdjust },
+					"offset of position:static element respects ancestor positioning" );
+				assert.deepEqual(
+					absoluteOffset,
+					{ top: origin + originAdjust + 20, left: origin + originAdjust + 20 },
+					"offset of position:absolute respects ancestor positioning" );
+				$( "#absolute, #static" ).offset( absoluteOffset );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#absolute" ).offset() ), absoluteOffset, "offset() still round-trips" );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#static" ).offset() ), absoluteOffset, "offset() is still transitive" );
 			} );
 
 		} );
-	} );
-
-	// { top: -1em; left: 1px } should be set.
-	testIframe( "set coordinates relative to document", "offset/rel-doc.html", function( assert, $ ) {
-		assert.expect( 2 );
-
-		// Move div { position: static } in another element.
-		assert.deepEqual(
-			supportjQuery.extend( {}, $( "#child-static" ).offset( MOVED_OFFSET ).offset() ),
-			MOVED_OFFSET,
-			"move position:static element using different coordinates" );
-
-		// Move div { position: absolute } that is positioned relative to another element.
-		assert.deepEqual(
-			supportjQuery.extend( {}, $( "#child-absolute" ).offset( MOVED_OFFSET ).offset() ),
-			MOVED_OFFSET,
-			"move position: absolute element using different coordinates" );
 	} );
 })();
 

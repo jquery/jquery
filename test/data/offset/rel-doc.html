@@ -5,35 +5,10 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<title>body</title>
 		<style type="text/css" media="screen">
-			html, body { border: solid maroon; } /* for human */
-			html { background-color: green; } /* for human */
-			body { background-color: yellow; } /* for human */
-			#static { background-color: blue; } /* for human */
-			#absolute { background-color: aqua; } /* for human */
-			#child-static { background-color: darkviolet; } /* for human */
-			#child-absolute { background-color: violet; } /* for human */
-			html {
-				margin: 1px;
-				border-width: 2px;
-				padding: 4px;
-			}
-			body {
-				margin: 8px;
-				border-width: 16px;
-				padding: 32px;
-			}
-			#absolute {
-				position: absolute;
-				top: 64px;
-				left: 64px;
-			}
-			#parent { position: relative; }
-			#child-absolute {
-				position: absolute;
-				/* Specific coordinates for avoiding bug of `.position()` */
-				top: 0;
-				left: 0;
-			}
+			html { font-size: 10px; margin: 1em; border: 2em solid red; padding: 4em; }
+			body { margin: 8em; border: 16em solid blue; padding: 32em; }
+			#static { position: static; }
+			#absolute { position: absolute; top: 2em; left: 2em; }
 		</style>
 		<script src="../../jquery.js"></script>
 		<script src="../iframeTest.js"></script>
@@ -46,9 +21,5 @@
 	<body>
 		<div id="static">static</div>
 		<div id="absolute">absolute</div>
-		<div id="parent">
-			<div id="child-static">child-static</div>
-			<div id="child-absolute">child-absolute</div>
-		</div>
 	</body>
 </html>
