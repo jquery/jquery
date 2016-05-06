@@ -1291,21 +1291,13 @@ QUnit.test( "Delegated events in SVG (#10791; #13180)", function( assert ) {
 
 QUnit.test( "Delegated events with malformed selectors (#3071)", function( assert ) {
 	assert.expect( 2 );
-	try {
-		jQuery( "#qunit-fixture" ).on( "click", "div:not", function () { } );
-		assert.ok( false, "malformed selector throws on attach" );
-	}
-	catch ( e ) {
-		assert.ok( true, "malformed selector throws on attach" );
-	}
 
-	try {
-		jQuery( "#qunit-fixture" ).click();
-		assert.ok( true, "malformed selector does not throw on event" );
-	}
-	catch ( e ) {
-		assert.ok( false, "malformed selector does not throw on event" );
-	}
+	assert.throws( function () {
+		jQuery( "#qunit-fixture" ).on( "click", "div:not", function () { } );
+	}, null, "malformed selector throws on attach" );
+
+	jQuery( "#qunit-fixture" ).click();
+	assert.ok( true, "malformed selector does not throw on event" );
 
 	jQuery( "#qunit-fixture" ).off( "click" );
 } );
