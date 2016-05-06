@@ -369,7 +369,9 @@ jQuery.extend( {
 			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject );
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
-			if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].then ) ) {
+			if ( master.state() === "pending" ||
+				jQuery.isFunction( resolveValues[ i ] && resolveValues[ i ].then ) ) {
+
 				return master.then();
 			}
 		}
