@@ -120,6 +120,11 @@ jQuery.event = {
 			selector = handleObjIn.selector;
 		}
 
+		// If the selector is invalid, throw any exceptions at attach time
+		if ( selector ) {
+			jQuery.find( selector, elem );
+		}
+
 		// Make sure that the handler has a unique ID, used to find/remove it later
 		if ( !handler.guid ) {
 			handler.guid = jQuery.guid++;
