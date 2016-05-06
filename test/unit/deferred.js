@@ -1066,16 +1066,20 @@ QUnit.test( "jQuery.when(...) - opportunistically synchronous", function( assert
 	var when = "before",
 		resolved = jQuery.Deferred().resolve( true ),
 		rejected = jQuery.Deferred().reject( false ),
-		validate = function() {
-			assert.equal( when, "before" );
+		validate = function( label ) {
+			return function() {
+				assert.equal( when, "before", label );
+			};
 		},
 		done = assert.async( 5 );
 
-	jQuery.when().done( validate ).always( done );
-	jQuery.when( when ).done( validate ).always( done );
-	jQuery.when( resolved ).done( validate ).always( done );
-	jQuery.when( rejected ).fail( validate ).always( done );
-	jQuery.when( resolved, rejected ).always( validate ).always( done );
+	jQuery.when().done( validate( "jQuery.when()" ) ).always( done );
+	jQuery.when( when ).done( validate( "jQuery.when(nonThenable)" ) ).always( done );
+	jQuery.when( resolved ).done( validate( "jQuery.when(alreadyFulfilled)" ) ).always( done );
+	jQuery.when( rejected ).fail( validate( "jQuery.when(alreadyRejected)" ) ).always( done );
+	jQuery.when( resolved, rejected )
+		.always( validate( "jQuery.when(alreadyFulfilled, alreadyRejected)" ) )
+		.always( done );
 
 	when = "after";
 } );
