@@ -1,13 +1,14 @@
 define( [
 	"./core",
 	"./var/document",
+	"./var/documentElement",
 	"./var/rnotwhite",
 	"./var/slice",
 	"./data/var/dataPriv",
 
 	"./core/init",
 	"./selector"
-], function( jQuery, document, rnotwhite, slice, dataPriv ) {
+], function( jQuery, document, documentElement, rnotwhite, slice, dataPriv ) {
 
 "use strict";
 
@@ -120,9 +121,10 @@ jQuery.event = {
 			selector = handleObjIn.selector;
 		}
 
-		// If the selector is invalid, throw any exceptions at attach time
+		// Ensure that invalid selectors throw exceptions at attach time
+		// Evaluate against documentElement in case elem is a non-element node (e.g., document)
 		if ( selector ) {
-			jQuery.find( selector, elem );
+			jQuery.find.matchesSelector( documentElement, selector );
 		}
 
 		// Make sure that the handler has a unique ID, used to find/remove it later
