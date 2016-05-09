@@ -12,7 +12,6 @@ module.exports = function( Release, complete ) {
 		// These files are included with the distribution
 		files = [
 			"src",
-			"external/sizzle",
 			"LICENSE.txt",
 			"AUTHORS.txt",
 			"package.json"
@@ -56,7 +55,9 @@ module.exports = function( Release, complete ) {
 	function copy() {
 
 		// Copy dist files
-		var distFolder = Release.dir.dist + "/dist";
+		var distFolder = Release.dir.dist + "/dist",
+			externalFolder = Release.dir.dist + "/external";
+
 		shell.mkdir( "-p", distFolder );
 		[
 			"dist/jquery.js",
@@ -65,6 +66,10 @@ module.exports = function( Release, complete ) {
 		].forEach( function( file ) {
 			shell.cp( "-f", Release.dir.repo + "/" + file, distFolder );
 		} );
+
+		// Copy Sizzle
+		shell.mkdir( "-p", externalFolder );
+		shell.cp( "-rf", Release.dir.repo + "/external/sizzle", externalFolder );
 
 		// Copy other files
 		files.forEach( function( file ) {
