@@ -56,7 +56,20 @@ module.exports = function( Release, complete ) {
 
 		// Copy dist files
 		var distFolder = Release.dir.dist + "/dist",
-			externalFolder = Release.dir.dist + "/external";
+			externalFolder = Release.dir.dist + "/external",
+			rmIgnore = [
+				"README.md",
+				"node_modules"
+			].map( function( file ) {
+				return Release.dir.dist + "/" + file;
+			} );
+
+		shell.config.globOptions = {
+			ignore: rmIgnore
+		};
+
+		// Remove extraneous files before copy
+		shell.rm( "-rf", Release.dir.dist + "/**/*" );
 
 		shell.mkdir( "-p", distFolder );
 		[
