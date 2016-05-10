@@ -1,0 +1,55 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": "../.eslintrc",
+  "root": true,
+  "globals": {
+    "require": false,
+    "define": false,
+    "DOMParser": false,
+    "JSON": false,
+    "Promise": false,
+    "Symbol": false,
+    "QUnit": false,
+    "ajaxTest": false,
+    "testIframe": false,
+    "testIframeWithCallback": false,
+    "iframeCallback": true,
+    "createDashboardXML": false,
+    "createXMLFragment": false,
+    "moduleTeardown": false,
+    "testFoo": false,
+    "url": false,
+    "t": false,
+    "q": false,
+    "jQuery": true,
+    "sinon": true,
+    "amdDefined": true,
+    "fireNative": true,
+    "Globals": true,
+    "hasPHP": true,
+    "isLocal": true,
+    "supportjQuery": true,
+    "originaljQuery": true,
+    "$": true,
+    "original$": true,
+    "baseURL": true,
+    "externalHost": true
+  },
+  "rules": {
+	// See https://github.com/eslint/eslint/issues/6125
+	"no-unused-vars": "off",
+
+	// Too much errors
+	"max-len": "off",
+	"brace-style": "off",
+	"key-spacing": "off",
+	"camelcase": "off",
+	"dot-notaion": "off",
+
+	// Not a lot really too much, but waiting for autofix for these rules
+	"lines-around-comment": "off",
+	"dot-notation": "off"
+  }
+}

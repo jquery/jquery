@@ -1,5 +1,5 @@
-.jshintignore
-.jshintrc
+.eslintignore
+.eslintrc
 
 /.editorconfig
 /.gitattributes

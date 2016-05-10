@@ -1,0 +1,15 @@
+{
+  "env": {
+	"browser"
+  },
+  "extends": "../.eslintrc",
+  "root": true,
+  "globals": {
+    "window": true,
+    "JSON": false,
+    "jQuery": true,
+    "define": true,
+    "module": true,
+    "noGlobal": true
+  }
+}
