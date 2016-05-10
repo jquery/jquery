@@ -408,7 +408,7 @@ QUnit.test( "passing undefined is a setter #5571", function( assert ) {
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
 	assert.expect( 120 );
 
-	var parent = jQuery( "#foo" ).css({ width: "200px", height: "200px", "font-size": "16px" }),
+	var parent = jQuery( "#foo" ).css( { width: "200px", height: "200px", "font-size": "16px" } ),
 		el_bb = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;box-sizing:border-box;'></div>" ).appendTo( parent ),
 		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent ),
 		el_bb_np = jQuery( "<div style='margin:5px; padding:0px; border:0px solid green;box-sizing:border-box;'></div>" ).appendTo( parent ),
@@ -520,9 +520,9 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	parent.one( "scroll", function() {
 		var pos = parent.find( "div" ).eq( 3 ).position();
 
-		assert.strictEqual(pos.top, -100);
+		assert.strictEqual( pos.top, -100 );
 		stop();
-	});
+	} );
 
 	parent.scrollTop( 400 );
 } );

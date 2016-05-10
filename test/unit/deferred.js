@@ -776,8 +776,8 @@ QUnit.test( "jQuery.Deferred - resolved to a notifying deferred", function( asse
 		done = assert.async( 2 );
 
 	deferred.resolve( jQuery.Deferred( function( notifyingDeferred ) {
-	    notifyingDeferred.notify( "foo", "bar" );
-	    notifyingDeferred.resolve( "baz", "quux" );
+		notifyingDeferred.notify( "foo", "bar" );
+		notifyingDeferred.resolve( "baz", "quux" );
 	} ) );
 
 	// Apply an empty then to force thenable unwrapping.
@@ -808,7 +808,7 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( 20 );
 
@@ -915,7 +915,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( CASES * 2 );
 
@@ -995,7 +995,7 @@ QUnit.test( "jQuery.when(a, b) - like Promise.all", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( 98 );
 

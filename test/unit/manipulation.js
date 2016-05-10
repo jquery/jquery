@@ -609,7 +609,7 @@ QUnit.test( "append(xml)", function( assert ) {
 			// IE
 			for ( n = 0, len = aActiveX.length; n < len; n++ ) {
 				try {
-					elem = new ActiveXObject( aActiveX[ n ] );
+					elem = new window.ActiveXObject( aActiveX[ n ] );
 					return elem;
 				} catch ( _ ) {}
 			}
@@ -1175,7 +1175,7 @@ QUnit.test( ".after(disconnected node)", function( assert ) {
 
 QUnit.test( "insertAfter(String)", function( assert ) {
 
-	assert.expect( 1 ) ;
+	assert.expect( 1 );
 
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery( "<b>buga</b>" ).insertAfter( "#yahoo" );
@@ -1211,7 +1211,7 @@ QUnit.test( "insertAfter(jQuery)", function( assert ) {
 
 function testReplaceWith( val, assert ) {
 
-	var tmp, y, child, child2, set, non_existent, $div,
+	var tmp, y, child, child2, set, nonExistent, $div,
 		expected = 29;
 
 	assert.expect( expected );
@@ -1295,8 +1295,8 @@ function testReplaceWith( val, assert ) {
 	assert.deepEqual( jQuery( ".pathological", "#qunit-fixture" ).get(), [],
 		"Replacement with following sibling (context removed)" );
 
-	non_existent = jQuery( "#does-not-exist" ).replaceWith( val( "<b>should not throw an error</b>" ) );
-	assert.equal( non_existent.length, 0, "Length of non existent element." );
+	nonExistent = jQuery( "#does-not-exist" ).replaceWith( val( "<b>should not throw an error</b>" ) );
+	assert.equal( nonExistent.length, 0, "Length of non existent element." );
 
 	$div = jQuery( "<div class='replacewith'></div>" ).appendTo( "#qunit-fixture" );
 	$div.replaceWith( val( "<div class='replacewith'></div><script>" +
@@ -1623,7 +1623,7 @@ QUnit.test( "clone(multiple selected options) (Bug #8129)", function( assert ) {
 	var element = jQuery( "<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>" );
 
 	function getSelectedOptions( collection ) {
-		return collection.find( "option" ).filter(function( option ) {
+		return collection.find( "option" ).filter( function( option ) {
 			return option.selected;
 		} );
 	}
@@ -2464,7 +2464,7 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 	if ( jQuery.ajax ) {
 		Globals.register( "testBar" );
 		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "data/testbar.php" ) + "'/>" );
-		assert.strictEqual( window[ "testBar" ], "bar", "Global script evaluation" );
+		assert.strictEqual( window.testBar, "bar", "Global script evaluation" );
 	} else {
 		assert.ok( true, "No jQuery.ajax" );
 		assert.ok( true, "No jQuery.ajax" );
@@ -2745,8 +2745,8 @@ QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 	jQuery( fixture ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
 
 	setTimeout( function() {
-		if ( window[ "testSrcFoo" ] === "foo" ) {
-			assert.strictEqual( window[ "testFoo" ], window[ "testSrcFoo" ], "data-URI script executed" );
+		if ( window.testSrcFoo === "foo" ) {
+			assert.strictEqual( window.testFoo, window.testSrcFoo, "data-URI script executed" );
 
 		} else {
 			assert.ok( true, "data-URI script is not supported by this environment" );

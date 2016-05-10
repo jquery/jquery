@@ -1,5 +1,3 @@
-/* jshint esnext: true */
-
 "use strict";
 
 var assert = require( "assert" );

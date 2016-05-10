@@ -141,7 +141,7 @@ QUnit.test( "css() explicit and relative values", function( assert ) {
 	$elem.css( "width", "+=9" );
 	assert.equal( $elem.css( "width" ), "10px", "'+=9' on width (params)" );
 
-	$elem.css( "width", "-=9" ) ;
+	$elem.css( "width", "-=9" );
 	assert.equal( $elem.css( "width" ), "1px", "'-=9' on width (params)" );
 
 	$elem.css( "width", "+=9px" );
@@ -354,8 +354,8 @@ QUnit.test( "css(String, Function)", function( assert ) {
 		sizes = [ "10px", "20px", "30px" ];
 
 	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>" )
+				"<div class='cssFunction'></div>" +
+				"<div class='cssFunction'></div></div>" )
 		.appendTo( "body" );
 
 	index = 0;
@@ -385,8 +385,8 @@ QUnit.test( "css(String, Function) with incoming value", function( assert ) {
 		sizes = [ "10px", "20px", "30px" ];
 
 	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>" )
+				"<div class='cssFunction'></div>" +
+				"<div class='cssFunction'></div></div>" )
 		.appendTo( "body" );
 
 	index = 0;
@@ -416,8 +416,8 @@ QUnit.test( "css(Object) where values are Functions", function( assert ) {
 		sizes = [ "10px", "20px", "30px" ];
 
 	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>" )
+				"<div class='cssFunction'></div>" +
+				"<div class='cssFunction'></div></div>" )
 		.appendTo( "body" );
 
 	index = 0;
@@ -447,8 +447,8 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 		sizes = [ "10px", "20px", "30px" ];
 
 	jQuery( "<div id='cssFunctionTest'><div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div>" +
-				 "<div class='cssFunction'></div></div>" )
+				"<div class='cssFunction'></div>" +
+				"<div class='cssFunction'></div></div>" )
 		.appendTo( "body" );
 
 	index = 0;
@@ -988,18 +988,18 @@ QUnit.test( "computed margins (trac-3333; gh-2237)", function( assert ) {
 	assert.equal( $div.css( "marginRight" ), "0px",
 		"marginRight correctly calculated with a width and display block" );
 
-	$div.css({
+	$div.css( {
 		position: "absolute",
 		top: 0,
 		left: 0,
 		width: "100px"
-	});
-	$child.css({
+	} );
+	$child.css( {
 		width: "50px",
 		margin: "auto"
-	});
+	} );
 	assert.equal( $child.css( "marginLeft" ), "25px", "auto margins are computed to pixels" );
-});
+} );
 
 QUnit.test( "box model properties incorrectly returning % instead of px, see #10639 and #12088", function( assert ) {
 	assert.expect( 2 );
@@ -1309,7 +1309,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", fu
 
 	assert.t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
 	assert.t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
-	assert.t( "Is Hidden", "#form input:hidden", [ "hidden1","hidden2" ] );
+	assert.t( "Is Hidden", "#form input:hidden", [ "hidden1", "hidden2" ] );
 
 	$a = jQuery( "<a href='#'><h1>Header</h1></a>" ).appendTo( "#qunit-fixture" );
 	assert.ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
@@ -1345,7 +1345,7 @@ QUnit.test(
 				name: "backgroundAttachment",
 				value: [ "fixed" ],
 				expected: [ "scroll" ]
-			},{
+			}, {
 				name: "backgroundColor",
 				value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
 				expected: [ "transparent" ]

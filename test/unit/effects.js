@@ -538,7 +538,7 @@ QUnit.test( "animate duration 0", function( assert ) {
 	assert.expect( 11 );
 
 	var $elem,
-		$elems = jQuery( [ { a:0 },{ a:0 } ] ),
+		$elems = jQuery( [ { a:0 }, { a:0 } ] ),
 		counter = 0;
 
 	assert.equal( jQuery.timers.length, 0, "Make sure no animation was running from another test" );
@@ -1845,7 +1845,7 @@ QUnit.test( "non-px animation handles non-numeric start (#11971)", function( ass
 	this.clock.tick( 10 );
 } );
 
-QUnit.test("Animation callbacks (#11797)", function( assert ) {
+QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 	assert.expect( 16 );
 
 	var prog = 0,
@@ -1966,7 +1966,7 @@ QUnit.test( "Animation callbacks in order (#2292)", function( assert ) {
 		always: function() {
 			assert.step( 5 );
 		}
-	}).finish();
+	} ).finish();
 
 	this.clock.tick( dur + 10 );
 } );

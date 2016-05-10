@@ -472,7 +472,7 @@ QUnit.test( "unwrap( selector )", function( assert ) {
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"
 	);
 
-	 // Shouldn't unwrap, no match
+	// Shouldn't unwrap, no match
 	jQuery( "#unwrap1 span" ) .unwrap( "span" );
 	assert.equal(
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"

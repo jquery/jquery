@@ -180,7 +180,7 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint" ] );
+	grunt.registerTask( "lint", [ "jsonlint", "eslint:all" ] );
 
 	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
 	// jsdom version that needs compiling, making it harder for people to compile
@@ -194,6 +194,7 @@ module.exports = function( grunt ) {
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [
 			"build:*:*",
+			"newer:eslint:dev",
 			"uglify",
 			"remove_map_comment",
 			"dist:*"
@@ -202,5 +203,5 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
 
-	grunt.registerTask( "precommit_lint", [ "newer:jsonlint" ] );
+	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:eslint:all" ] );
 };

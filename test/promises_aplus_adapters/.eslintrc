@@ -1,7 +1,4 @@
 {
-	"env": {
-		"node": true
-	},
-	"extends": "../.eslintrc",
+	"extends": "../../.eslintrc",
 	"root": true
 }

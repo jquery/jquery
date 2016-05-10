@@ -29,6 +29,7 @@
     "commitplease": "2.3.1",
     "core-js": "2.2.2",
     "cross-spawn": "2.2.3",
+    "eslint-config-jquery": "0.1.2",
     "grunt": "1.0.1",
     "grunt-babel": "6.0.0",
     "grunt-cli": "1.2.0",

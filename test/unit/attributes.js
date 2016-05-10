@@ -758,9 +758,9 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 
 QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 	assert.expect( 1 );
-	var image = jQuery("<img src='data/1x1.jpg' />")
-		.appendTo("#qunit-fixture");
-	assert.equal( image.prop("tabIndex" ), -1, "tabIndex on image" );
+	var image = jQuery( "<img src='data/1x1.jpg' />" )
+		.appendTo( "#qunit-fixture" );
+	assert.equal( image.prop( "tabIndex" ), -1, "tabIndex on image" );
 } );
 
 QUnit.test( "prop('tabindex', value)", function( assert ) {
@@ -1653,7 +1653,7 @@ QUnit.test( "non-lowercase boolean attribute getters should not crash", function
 		required: "requiRed",
 		autofocus: "AUTOFOCUS"
 	}, function( lowercased, original ) {
-	    try {
+		try {
 			assert.strictEqual( elem.attr( original ), lowercased,
 				"The '" + this + "' attribute getter should return the lowercased name" );
 		} catch ( e ) {

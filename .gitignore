@@ -10,7 +10,7 @@
 
 npm-debug.log
 
-/dist
+/dist/jquery*
 /node_modules
 
 /test/node_smoke_tests/lib/ensure_iterability.js
