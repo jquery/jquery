@@ -542,28 +542,30 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	} catch ( _ ) {}
 } );
 
+// Test fails in IE9 but is skipped there because console is not active
 QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", function( assert ) {
 
-	assert.expect( 1 );
+	assert.expect( 2 );
 
 	var done = assert.async(),
 		defer = jQuery.Deferred(),
 		oldWarn = window.console.warn;
 
-	window.console.warn = function( msg ) {
+	window.console.warn = function() {
 
 		// Support: Chrome <=41 only
 		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
 		// not a function" error, not mentioning the function name. This has been fixed
 		// in Chrome 42. Relax this test there.
 		// This affects our Android 5.0 & Yandex.Browser testing.
-		var oldChromium = false;
+		var msg = Array.prototype.join.call( arguments, " " ),
+			oldChromium = false;
 		if ( /chrome/i.test( navigator.userAgent ) ) {
 			oldChromium = parseInt(
 					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
 		}
 		if ( oldChromium ) {
-			assert.ok( /(?:barf|undefined)/.test( msg ), "Message: " + msg );
+			assert.ok( /(?:barf|undefined)/.test( msg ), "Message (weak assertion): " + msg );
 		} else {
 			assert.ok( /barf/.test( msg ), "Message: " + msg );
 		}
@@ -580,7 +582,9 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 			// Should NOT get an error
 			throw new Error( "Make me a sandwich" );
 		} ).then( null, jQuery.noop )
-	).then( function( ) {
+	).then( function barf( ) {
+		jQuery.thisDiesToo();
+	} ).then( null, function( ) {
 		window.console.warn = oldWarn;
 		done();
 	} );
@@ -588,6 +592,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 	defer.resolve();
 } );
 
+// Test fails in IE9 but is skipped there because console is not active
 QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
 
 	assert.expect( 2 );
@@ -605,24 +610,26 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 		return "NO STACK FOR YOU";
 	};
 
-	window.console.warn = function( msg, stack ) {
+	window.console.warn = function() {
 
 		// Support: Chrome <=41 only
 		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
 		// not a function" error, not mentioning the function name. This has been fixed
 		// in Chrome 42. Relax this test there.
 		// This affects our Android 5.0 & Yandex.Browser testing.
-		var oldChromium = false;
+		var msg = Array.prototype.join.call( arguments, " " ),
+			oldChromium = false;
 		if ( /chrome/i.test( navigator.userAgent ) ) {
 			oldChromium = parseInt(
 					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
 		}
 		if ( oldChromium ) {
-			assert.ok( /(?:cough_up_hairball|undefined)/.test( msg ), "Function mentioned: " + msg );
+			assert.ok( /(?:cough_up_hairball|undefined)/.test( msg ),
+				"Function mentioned (weak assertion): " + msg );
 		} else {
 			assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
 		}
-		assert.ok( /NO STACK FOR YOU/.test( stack ), "Stack trace included: " + stack );
+		assert.ok( /NO STACK FOR YOU/.test( msg ), "Stack trace included: " + msg );
 	};
 	defer.then( function() {
 		jQuery.cough_up_hairball();
