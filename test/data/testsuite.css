@@ -53,11 +53,11 @@ div.medopacity {
 }
 
 div.nowidth {
-	width: 0px;
+	width: 0;
 }
 
 div.noheight {
-	height: 0px;
+	height: 0;
 }
 
 div.noopacity {
