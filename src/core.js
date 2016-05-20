@@ -20,7 +20,7 @@ define( [
 "use strict";
 
 var
-	version = "@VERSION",
+	version = "3.0.0-rc1",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
