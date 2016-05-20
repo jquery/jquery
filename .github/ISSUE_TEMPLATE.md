@@ -17,8 +17,8 @@ Frequently Reported Issues:
   * Selectors with '#' break: See https://github.com/jquery/jquery/issues/2824
 -->
 
-** Description**
+### Description ###
 
 
-** Link to test case **
+### Link to test case ###
 
