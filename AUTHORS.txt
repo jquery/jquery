@@ -292,3 +292,4 @@ Alexander K <xpyro@ya.ru>
 Damian Senn <jquery@topaxi.codes>
 Ralin Chimev <ralin.chimev@gmail.com>
 Felipe Sateler <fsateler@gmail.com>
+Christophe Tafani-Dereeper <christophetd@hotmail.fr>
