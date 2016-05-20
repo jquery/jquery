@@ -2914,7 +2914,7 @@ QUnit.test(
 		jQuery( "#qunit-fixture" ).append( element );
 
 		element.on( "focus", function( event ) {
-			assert.notOk( event.isSimulated );
+			assert.strictEqual( event.isSimulated, false );
 		} );
 
 		element.trigger( "focus" );
