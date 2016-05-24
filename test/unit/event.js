@@ -192,7 +192,7 @@ QUnit.test( "on(), multiple events at once and namespaces", function( assert ) {
 } );
 
 QUnit.test( "on(), namespace with special add", function( assert ) {
-	assert.expect( 27 );
+	assert.expect( 29 );
 
 	var i = 0,
 		div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ).on( "test", function() {

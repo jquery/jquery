@@ -104,10 +104,18 @@ jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
 
-		var handleObjIn, eventHandle, tmp,
+		var handleObjIn, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
-			elemData = dataPriv.get( elem );
+			elemData = dataPriv.get( elem ),
+			handleEventCommon = function( e ) {
+
+				// `this` for handleEvent is the handleObj
+				// Discard the second event of a jQuery.event.trigger() and
+				// when an event is called after a page has unloaded
+				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
+					jQuery.event.dispatch.apply( this, arguments ) : undefined;
+			};
 
 		// Don't attach events to noData or text/comment nodes (but allow plain objects)
 		if ( !elemData ) {
@@ -115,6 +123,7 @@ jQuery.event = {
 		}
 
 		// Caller can pass in an object of custom data in lieu of the handler
+		// (internal, only used by manipulation.js/cloneCopyEvent)
 		if ( handler.handler ) {
 			handleObjIn = handler;
 			handler = handleObjIn.handler;
@@ -135,15 +144,6 @@ jQuery.event = {
 		// Init the element's event structure and main handler, if this is the first
 		if ( !( events = elemData.events ) ) {
 			events = elemData.events = {};
-		}
-		if ( !( eventHandle = elemData.handle ) ) {
-			eventHandle = elemData.handle = function( e ) {
-
-				// Discard the second event of a jQuery.event.trigger() and
-				// when an event is called after a page has unloaded
-				return typeof jQuery !== "undefined" && jQuery.event.triggered !== e.type ?
-					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
-			};
 		}
 
 		// Handle multiple events separated by a space
@@ -177,8 +177,9 @@ jQuery.event = {
 				guid: handler.guid,
 				selector: selector,
 				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
-				namespace: namespaces.join( "." )
-			}, handleObjIn );
+				namespace: namespaces.join( "." ),
+				handleEvent: handleEventCommon
+			}, handleObjIn, { elem: elem } );
 
 			// Init the event handler queue if we're the first
 			if ( !( handlers = events[ type ] ) ) {
@@ -187,10 +188,10 @@ jQuery.event = {
 
 				// Only use addEventListener if the special events handler returns false
 				if ( !special.setup ||
-					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+					special.setup.call( elem, data, namespaces, handleObj ) === false ) {
 
 					if ( elem.addEventListener ) {
-						elem.addEventListener( type, eventHandle );
+						elem.addEventListener( type, handleObj );
 					}
 				}
 			}
@@ -198,6 +199,7 @@ jQuery.event = {
 			if ( special.add ) {
 				special.add.call( elem, handleObj );
 
+				// If special hooks changed the handler, make sure it has the right guid
 				if ( !handleObj.handler.guid ) {
 					handleObj.handler.guid = handler.guid;
 				}
@@ -219,7 +221,7 @@ jQuery.event = {
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
-		var j, origCount, tmp,
+		var j, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.hasData( elem ) && dataPriv.get( elem );
@@ -251,7 +253,7 @@ jQuery.event = {
 				new RegExp( "(^|\\.)" + namespaces.join( "\\.(?:.*\\.|)" ) + "(\\.|$)" );
 
 			// Remove matching events
-			origCount = j = handlers.length;
+			j = handlers.length;
 			while ( j-- ) {
 				handleObj = handlers[ j ];
 
@@ -268,25 +270,21 @@ jQuery.event = {
 					if ( special.remove ) {
 						special.remove.call( elem, handleObj );
 					}
+					if ( !special.teardown ||
+						special.teardown.call( elem, namespaces ) === false ) {
+						jQuery.removeEvent( elem, type, handleObj );
+					}
 				}
 			}
 
-			// Remove generic event handler if we removed something and no more handlers exist
-			// (avoids potential for endless recursion during removal of special event handlers)
-			if ( origCount && !handlers.length ) {
-				if ( !special.teardown ||
-					special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
-
-					jQuery.removeEvent( elem, type, elemData.handle );
-				}
-
+			if ( !handlers.length ) {
 				delete events[ type ];
 			}
 		}
 
 		// Remove data and the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
-			dataPriv.remove( elem, "handle events" );
+			dataPriv.remove( elem, "events" );
 		}
 	},
 
@@ -295,9 +293,10 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		var event = jQuery.event.fix( nativeEvent );
 
-		var i, j, ret, matched, handleObj, handlerQueue,
+		var i, ret, match, matches,
 			args = new Array( arguments.length ),
-			handlers = ( dataPriv.get( this, "events" ) || {} )[ event.type ] || [],
+			handleObj = this,
+			elem = this.elem,
 			special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -307,40 +306,35 @@ jQuery.event = {
 			args[ i ] = arguments[ i ];
 		}
 
-		event.delegateTarget = this;
+		event.delegateTarget = elem;
 
 		// Call the preDispatch hook for the mapped type, and let it bail if desired
-		if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
+		if ( special.preDispatch && special.preDispatch.call( elem, event ) === false ) {
 			return;
 		}
 
-		// Determine handlers
-		handlerQueue = jQuery.event.handlers.call( this, event, handlers );
+		// Determine elements this event should target
+		matches = jQuery.event.handlers.call( elem, event, handleObj );
 
 		// Run delegates first; they may want to stop propagation beneath us
 		i = 0;
-		while ( ( matched = handlerQueue[ i++ ] ) && !event.isPropagationStopped() ) {
-			event.currentTarget = matched.elem;
+		while ( ( match = matches[ i++ ] ) && !event.isPropagationStopped() ) {
+			event.currentTarget = match;
 
-			j = 0;
-			while ( ( handleObj = matched.handlers[ j++ ] ) &&
-				!event.isImmediatePropagationStopped() ) {
+			// Triggered event must either 1) have no namespace, or 2) have namespace(s)
+			// a subset or equal to those in the bound event (both can have no namespace).
+			if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
 
-				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-				// a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
+				event.handleObj = handleObj;
+				event.data = handleObj.data;
 
-					event.handleObj = handleObj;
-					event.data = handleObj.data;
+				ret = ( ( jQuery.event.special[ handleObj.origType ] || {} ).handle ||
+					handleObj.handler ).apply( match, args );
 
-					ret = ( ( jQuery.event.special[ handleObj.origType ] || {} ).handle ||
-						handleObj.handler ).apply( matched.elem, args );
-
-					if ( ret !== undefined ) {
-						if ( ( event.result = ret ) === false ) {
-							event.preventDefault();
-							event.stopPropagation();
-						}
+				if ( ret !== undefined ) {
+					if ( ( event.result = ret ) === false ) {
+						event.preventDefault();
+						event.stopPropagation();
 					}
 				}
 			}
@@ -348,16 +342,14 @@ jQuery.event = {
 
 		// Call the postDispatch hook for the mapped type
 		if ( special.postDispatch ) {
-			special.postDispatch.call( this, event );
+			special.postDispatch.call( elem, event );
 		}
 
 		return event.result;
 	},
 
-	handlers: function( event, handlers ) {
-		var i, matches, sel, handleObj,
-			handlerQueue = [],
-			delegateCount = handlers.delegateCount,
+	handlers: function( event, handleObj ) {
+		var matches = [],
 			cur = event.target;
 
 		// Support: IE <=9
@@ -366,43 +358,29 @@ jQuery.event = {
 		//
 		// Support: Firefox <=42
 		// Avoid non-left-click in FF but don't block IE radio events (#3861, gh-2343)
-		if ( delegateCount && cur.nodeType &&
+		if ( handleObj.selector && cur.nodeType &&
 			( event.type !== "click" || isNaN( event.button ) || event.button < 1 ) ) {
 
-			for ( ; cur !== this; cur = cur.parentNode || this ) {
+			for ( ; cur !== handleObj.elem; cur = cur.parentNode || this ) {
 
 				// Don't check non-elements (#13208)
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
 				if ( cur.nodeType === 1 && ( cur.disabled !== true || event.type !== "click" ) ) {
-					matches = [];
-					for ( i = 0; i < delegateCount; i++ ) {
-						handleObj = handlers[ i ];
-
-						// Don't conflict with Object.prototype properties (#13203)
-						sel = handleObj.selector + " ";
-
-						if ( matches[ sel ] === undefined ) {
-							matches[ sel ] = handleObj.needsContext ?
-								jQuery( sel, this ).index( cur ) > -1 :
-								jQuery.find( sel, this, null, [ cur ] ).length;
-						}
-						if ( matches[ sel ] ) {
-							matches.push( handleObj );
-						}
-					}
-					if ( matches.length ) {
-						handlerQueue.push( { elem: cur, handlers: matches } );
+					if ( handleObj.needsContext ?
+							jQuery( handleObj.selector, this ).index( cur ) > -1 :
+							jQuery.find( handleObj.selector, this, null, [ cur ] ).length ) {
+						matches.push( cur );
 					}
 				}
 			}
 		}
 
-		// Add the remaining (directly-bound) handlers
-		if ( delegateCount < handlers.length ) {
-			handlerQueue.push( { elem: this, handlers: handlers.slice( delegateCount ) } );
+		// Directly bound handlers
+		else {
+			matches.push( handleObj.elem );
 		}
 
-		return handlerQueue;
+		return matches;
 	},
 
 	addProp: function( name, hook ) {

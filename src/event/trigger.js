@@ -16,7 +16,7 @@ jQuery.extend( jQuery.event, {
 
 	trigger: function( event, data, elem, onlyHandlers ) {
 
-		var i, cur, tmp, bubbleType, ontype, handle, special,
+		var i, j, cur, tmp, bubbleType, ontype, handle, special,
 			eventPath = [ elem || document ],
 			type = hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split( "." ) : [];
@@ -98,11 +98,12 @@ jQuery.extend( jQuery.event, {
 				bubbleType :
 				special.bindType || type;
 
-			// jQuery handler
-			handle = ( dataPriv.get( cur, "events" ) || {} )[ event.type ] &&
-				dataPriv.get( cur, "handle" );
+			// jQuery handlers
+			handle = ( dataPriv.get( cur, "events" ) || {} )[ event.type ];
 			if ( handle ) {
-				handle.apply( cur, data );
+				for ( j = 0; j < handle.length; j++ ) {
+					handle[ j ].handleEvent.apply( handle[ j ], data );
+				}
 			}
 
 			// Native handler
