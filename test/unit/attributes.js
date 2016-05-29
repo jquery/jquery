@@ -487,7 +487,9 @@ QUnit.test( "attr(non-ASCII)", function( assert ) {
 QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
 	assert.expect( 1 );
 	var called = false,
-		_handle = jQuery.expr.attrHandle.checked || $.noop;
+		origAttrHandleHadChecked = "checked" in jQuery.expr.attrHandle,
+		origAttrHandleChecked = jQuery.expr.attrHandle.checked,
+		_handle = origAttrHandleChecked || $.noop;
 	jQuery.expr.attrHandle.checked = function() {
 		called = true;
 		_handle.apply( this, arguments );
@@ -496,6 +498,13 @@ QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
 	called = false;
 	jQuery( "#qunit-fixture input" ).attr( "checked" );
 	assert.ok( called, "The boolean attrHandle does not drop custom attrHandles" );
+
+	if ( origAttrHandleHadChecked ) {
+		jQuery.expr.attrHandle.checked = origAttrHandleChecked;
+	} else {
+		delete jQuery.expr.attrHandle.checked;
+	}
+
 } );
 
 QUnit.test( "attr(String, Object) - Loaded via XML document", function( assert ) {
