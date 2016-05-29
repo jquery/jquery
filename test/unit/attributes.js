@@ -1642,3 +1642,22 @@ QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {
 		assert.ok( !elem.hasClass( "awesome" ), "SVG element (" + this + ") toggles the class off" );
 	} );
 } );
+
+QUnit.test( "non-lowercase boolean attribute getters should not crash", function( assert ) {
+	assert.expect( 3 );
+
+	var elem = jQuery( "<input checked required autofocus type='checkbox'>" );
+
+	jQuery.each( {
+		checked: "Checked",
+		required: "requiRed",
+		autofocus: "AUTOFOCUS"
+	}, function( lowercased, original ) {
+	    try {
+			assert.strictEqual( elem.attr( original ), lowercased,
+				"The '" + this + "' attribute getter should return the lowercased name" );
+		} catch ( e ) {
+			assert.ok( false, "The '" + this + "' attribute getter threw" );
+		}
+	} );
+} );
