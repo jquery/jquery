@@ -306,6 +306,10 @@ jQuery.extend( {
 		processData: true,
 		async: true,
 		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+
+		// Make traditional explicit so Migrate can warn about the implicit case
+		traditional: false,
+
 		/*
 		timeout: 0,
 		data: null,
@@ -314,7 +318,6 @@ jQuery.extend( {
 		password: null,
 		cache: null,
 		throws: false,
-		traditional: false,
 		headers: {},
 		*/
 
