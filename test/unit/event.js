@@ -2736,6 +2736,15 @@ QUnit.test( ".off() removes the expando when there's no more data", function( as
 	}
 } );
 
+QUnit.test( "jQuery.Event( src ) does not require a target property", function( assert ) {
+	assert.expect( 2 );
+
+	var event = jQuery.Event( { type: "offtarget" } );
+
+	assert.equal( event.type, "offtarget", "correct type" );
+	assert.equal( event.target, undefined, "no target" );
+} );
+
 QUnit.test( "preventDefault() on focusin does not throw exception", function( assert ) {
 	assert.expect( 1 );
 
