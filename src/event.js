@@ -615,6 +615,8 @@ jQuery.each( {
 	clientY: true,
 	offsetX: true,
 	offsetY: true,
+	pointerId: true,
+	pointerType: true,
 	screenX: true,
 	screenY: true,
 	targetTouches: true,
