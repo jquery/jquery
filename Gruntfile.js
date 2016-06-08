@@ -108,6 +108,7 @@ module.exports = function( grunt ) {
 				"deprecated",
 				"dimensions",
 				"effects",
+				"effects-nostubs",
 				"event",
 				"manipulation",
 				"offset",
