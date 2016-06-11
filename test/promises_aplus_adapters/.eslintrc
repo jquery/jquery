@@ -2,9 +2,6 @@
 	"env": {
 		"node": true
 	},
-	"parserOptions": {
-		"ecmaVersion": 6
-	},
 	"extends": "../.eslintrc",
 	"root": true
 }

@@ -1,5 +1,3 @@
-/* jshint node: true */
-
 "use strict";
 
 require( "jsdom" ).env( "", function( errors, window ) {
@@ -8,9 +6,9 @@ require( "jsdom" ).env( "", function( errors, window ) {
 		return;
 	}
 
-	var jQuery = require( ".." )( window );
+	var jQuery = require( "../../" )( window );
 
-	exports.deferred = function() {
+	module.exports.deferred = function() {
 		var deferred = jQuery.Deferred();
 
 		return {
