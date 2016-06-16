@@ -103,7 +103,7 @@ jQuery.fn.extend( {
 		rect = elem.getBoundingClientRect();
 
 		// Make sure element is not hidden (display: none)
-		if ( rect.width || rect.height ) {
+		if ( elem.style.display !== 'none' ) {
 			doc = elem.ownerDocument;
 			win = getWindow( doc );
 			docElem = doc.documentElement;
