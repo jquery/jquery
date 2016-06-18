@@ -4,9 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>IE11 onpageshow strangeness (#14894)</title>
 	<script src="../../jquery.js"></script>
+	<script src="../iframeTest.js"></script>
 	<script>
 		$(function(){
-			window.parent.iframeCallback( $( "body" ).data().result );
+			startIframeTest( $( "body" ).data().result );
 		});
 	</script>
 </head>

@@ -4,10 +4,11 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <title>Test case for jQuery ticket #11470</title>
 <script src="../../jquery.js"></script>
+<script src="../iframeTest.js"></script>
 <script type="text/javascript">
 jQuery.when( jQuery.ready ).done(function() {
 	jQuery("body").append("<div>modifying DOM</div>");
-	window.parent.iframeCallback( $("div").text() === "modifying DOM" );
+	startIframeTest( $("div").text() === "modifying DOM" );
 });
 </script>
 </head>

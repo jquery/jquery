@@ -7,12 +7,9 @@
 	<body>
 		<div id="qunit-fixture"></div>
 		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
 		<script>
-			window.parent.iframeCallback(
-				window,
-				document.body,
-				"<script>window.scriptTest = true;<\x2fscript>"
-			);
+			startIframeTest();
 		</script>
 	</body>
 </html>

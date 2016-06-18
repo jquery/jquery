@@ -926,6 +926,30 @@ QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", 
 	jQuery.fn.hide = oldHide;
 } );
 
+QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "detached toggle()", function( assert ) {
+	assert.expect( 6 );
+	var detached = jQuery( "<p><a/><p>" ).find( "*" ).addBack(),
+		hiddenDetached = jQuery( "<p><a/></p>" ).find( "*" ).addBack().css( "display", "none" ),
+		cascadeHiddenDetached = jQuery( "<p><a/></p>" ).find( "*" ).addBack().addClass( "hidden" );
+
+	detached.toggle();
+	detached.appendTo( "#qunit-fixture" );
+	assert.equal( detached[ 0 ].style.display, "none", "detached element" );
+	assert.equal( detached[ 1 ].style.display, "none", "element in detached tree" );
+
+	hiddenDetached.toggle();
+	hiddenDetached.appendTo( "#qunit-fixture" );
+	assert.equal( hiddenDetached[ 0 ].style.display, "", "detached, hidden element" );
+	assert.equal( hiddenDetached[ 1 ].style.display, "", "hidden element in detached tree" );
+
+	cascadeHiddenDetached.toggle();
+	cascadeHiddenDetached.appendTo( "#qunit-fixture" );
+	assert.equal( cascadeHiddenDetached[ 0 ].style.display, "none",
+		"detached, cascade-hidden element" );
+	assert.equal( cascadeHiddenDetached[ 1 ].style.display, "none",
+		"cascade-hidden element in detached tree" );
+} );
+
 QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function( assert ) {
 	assert.expect( 4 );
 
@@ -1115,10 +1139,10 @@ QUnit.test( "css('width') and css('height') should respect box-sizing, see #1100
 	assert.equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see #11004" );
 } );
 
-testIframeWithCallback(
+testIframe(
 	"css('width') should work correctly before document ready (#14084)",
 	"css/cssWidthBeforeDocReady.html",
-	function( cssWidthBeforeDocReady, assert ) {
+	function( assert, jQuery, window, document, cssWidthBeforeDocReady ) {
 		assert.expect( 1 );
 		assert.strictEqual( cssWidthBeforeDocReady, "100px", "elem.css('width') works correctly before document ready" );
 	}

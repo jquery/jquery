@@ -14,8 +14,9 @@
 <body>
 <div id="test"></div>
 <script src="../../jquery.js"></script>
+<script src="../iframeTest.js"></script>
 <script>
-	window.parent.iframeCallback( jQuery( "#test" ).css( 'width' ) );
+	startIframeTest( jQuery( "#test" ).css( 'width' ) );
 </script>
 </body>
 </html>
