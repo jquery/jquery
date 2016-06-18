@@ -1,7 +1,0 @@
-{
-	"extends": "eslint-config-jquery",
-	"root": true,
-	"env": {
-		"node": true
-	}
-}
