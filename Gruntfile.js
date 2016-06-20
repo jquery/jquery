@@ -109,6 +109,7 @@ module.exports = function( grunt ) {
 				quiet: true
 			},
 			all: ".",
+			dist: "dist/jquery.js",
 			dev: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
 		},
 		testswarm: {
@@ -201,7 +202,7 @@ module.exports = function( grunt ) {
 		]
 	);
 
-	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
+	grunt.registerTask( "default", [ "dev", "eslint:dist", "test_fast", "compare_size" ] );
 
 	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:eslint:all" ] );
 };
