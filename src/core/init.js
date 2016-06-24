@@ -106,6 +106,14 @@ var rootjQuery,
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( jQuery.isFunction( selector ) ) {
+			var except;
+
+			// HANDLE: $(function, function)
+			// Shortcut for document ready
+			// with exception handler
+			if ( jQuery.isFunction( context, except ) ) {
+				except = context;
+			}
 			return root.ready !== undefined ?
 				root.ready( selector ) :
 
