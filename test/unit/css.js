@@ -3,7 +3,7 @@ if ( jQuery.css ) {
 QUnit.module( "css", { teardown: moduleTeardown } );
 
 QUnit.test( "css(String|Hash)", function( assert ) {
-	assert.expect( 42 );
+	assert.expect( 45 );
 
 	assert.equal( jQuery( "#qunit-fixture" ).css( "display" ), "block", "Check for css property \"display\"" );
 
@@ -114,6 +114,16 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	div = jQuery( "<div/>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
 	assert.strictEqual( div.css( "z-index" ), "1000",
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
+
+  // Custom CSS properties
+	jQuery( "#customPropertyTest" ).css( "--color", "blue" );
+	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "blue", "Modified CSS custom property using string: Assert value is right" );
+
+	jQuery( "#customPropertyTest" ).css( { "--color": "blue" } );
+	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "blue", "Modified CSS custom property using object: Assert value is right" );
+
+	jQuery( "#customPropertyTest" ).css( { "--theme-dark": "purple" } );
+	assert.equal( jQuery( "#customPropertyTest" ).css( "--theme-dark" ), "purple", "Modified CSS custom property with dashed name: Assert value is right" );
 } );
 
 QUnit.test( "css() explicit and relative values", function( assert ) {
