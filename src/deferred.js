@@ -121,7 +121,28 @@ jQuery.extend( {
 									if ( depth < maxDepth ) {
 										return;
 									}
-									returned = handler.apply( that, args );
+
+									try {
+
+										returned = handler.apply( that, args );
+									} catch ( e ) {
+
+										if ( typeof onException === "function" ) {
+
+											// Call the onException if provided.
+											onException( e );
+										} else {
+
+											// If no onException provided,
+											// give out the error message
+											// to the console.
+											console.error( "Error: " + e.message );
+										}
+
+										// Rethrow the exception, so that it is handled
+										// properly in mightThrow caller.
+										throw e;
+									}
 
 									// Support: Promises/A+ section 2.3.1
 									// https://promisesaplus.com/#point-48
@@ -195,18 +216,6 @@ jQuery.extend( {
 											if ( jQuery.Deferred.exceptionHook ) {
 												jQuery.Deferred.exceptionHook( e,
 													process.stackTrace );
-											}
-
-											if ( typeof onException === "function" ) {
-
-												// Call the onException if provided.
-												onException( e );
-											} else {
-
-												// If no onException provided,
-												// give out the error message
-												// to the console.
-												console.error( "Error: " + e.message );
 											}
 
 											// Support: Promises/A+ section 2.3.3.3.4.1
