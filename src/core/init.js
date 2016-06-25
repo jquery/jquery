@@ -110,12 +110,8 @@ var rootjQuery,
 
 			// HANDLE: $(function, function)
 			// Shortcut for document ready
-			// with exception handler
-<<<<<<< HEAD
+			// with exception handler.
 			if ( jQuery.isFunction( context ) ) {
-=======
-			if ( jQuery.isFunction( context, except ) ) {
->>>>>>> origin/3174-exceptions-silently-swallowed
 				except = context;
 			}
 			return root.ready !== undefined ?

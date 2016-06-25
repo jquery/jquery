@@ -134,21 +134,14 @@ jQuery.extend( {
 										} else {
 
 											// If no onException provided,
-<<<<<<< HEAD
 											// give out the error message
 											// to the console.
 											console.error( "Error: " + e.message );
 										}
 
-										// Rethrow the exception, to match the API
-										// requirements for exiting with the exception
-										// as a reason.
+										// Rethrow the exception, so that it is handled
+										// properly in mightThrow caller.
 										throw e;
-=======
-											// give out the error message to the console.
-											console.error( "Error: " + e.message );
-										}
->>>>>>> origin/3174-exceptions-silently-swallowed
 									}
 
 									// Support: Promises/A+ section 2.3.1
