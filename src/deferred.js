@@ -197,6 +197,9 @@ jQuery.extend( {
 
 												// Call the onException if provided.
 												onException( e );
+
+											// If onException is not provided, then print out
+											// the error.
 											} else if ( jQuery.Deferred.exceptionHook ) {
 												jQuery.Deferred.exceptionHook( e,
 													process.stackTrace );
