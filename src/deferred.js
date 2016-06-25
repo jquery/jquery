@@ -202,12 +202,6 @@ jQuery.extend( {
 
 												// Call the onException if provided.
 												onException( e );
-											} else {
-
-												// If no onException provided,
-												// give out the error message
-												// to the console.
-												console.error( "Error: " + e.message );
 											}
 
 											// Support: Promises/A+ section 2.3.3.3.4.1
