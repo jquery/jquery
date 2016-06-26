@@ -9,10 +9,10 @@ define( [
 // The deferred used on DOM ready
 var readyList = jQuery.Deferred();
 
-jQuery.fn.ready = function( fn ) {
+jQuery.fn.ready = function( fn, except ) {
 
-	readyList.then( fn );
-
+	// Pass only the function and its exception function.
+	readyList.then( fn, null, null, except );
 	return this;
 };
 
