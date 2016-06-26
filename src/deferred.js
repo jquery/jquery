@@ -103,7 +103,10 @@ jQuery.extend( {
 						fns = null;
 					} ).promise();
 				},
-				then: function( onFulfilled, onRejected, onProgress ) {
+
+                // The onException is there to manage that an exception is thrown
+                // inside the onFullfilled without being catched.
+				then: function( onFulfilled, onRejected, onProgress, onException ) {
 					var maxDepth = 0;
 					function resolve( depth, deferred, handler, special ) {
 						return function() {
@@ -190,10 +193,18 @@ jQuery.extend( {
 											mightThrow();
 										} catch ( e ) {
 
-											if ( jQuery.Deferred.exceptionHook ) {
+											if ( typeof onException === "function" ) {
+
+												// Call the onException if provided.
+												onException( e );
+
+											// If onException is not provided, then print out
+											// the error.
+											} else if ( jQuery.Deferred.exceptionHook ) {
 												jQuery.Deferred.exceptionHook( e,
 													process.stackTrace );
 											}
+
 
 											// Support: Promises/A+ section 2.3.3.3.4.1
 											// https://promisesaplus.com/#point-61
