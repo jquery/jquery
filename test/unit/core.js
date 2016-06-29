@@ -1,4 +1,12 @@
-QUnit.module( "core", { teardown: moduleTeardown } );
+QUnit.module( "core", {
+	setup: function() {
+		this.sandbox = sinon.sandbox.create();
+	},
+	teardown: function() {
+		this.sandbox.restore();
+		return moduleTeardown.apply( this, arguments );
+	}
+} );
 
 QUnit.test( "Basic requirements", function( assert ) {
 	assert.expect( 7 );
@@ -1708,4 +1716,46 @@ QUnit.test( "Iterability of jQuery objects (gh-1693)", function( assert ) {
 	} else {
 		assert.ok( true, "The browser doesn't support Symbols" );
 	}
+} );
+
+QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
+	assert.expect( 1 );
+
+	var message;
+
+	this.sandbox.stub( window, "setTimeout", function( fn ) {
+		try {
+			fn();
+		} catch ( error ) {
+			message = error.message;
+		}
+	} );
+
+	jQuery( function() {
+		throw new Error( "Error in jQuery ready" );
+	} );
+	assert.strictEqual(
+		message,
+		"Error in jQuery ready",
+		"The error should have been thrown in a timeout"
+	);
+} );
+
+QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (custom)", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async();
+
+	this.sandbox.stub( jQuery, "readyException", function( error ) {
+		assert.strictEqual(
+			error.message,
+			"Error in jQuery ready",
+			"The custom jQuery.readyException should have been called"
+		);
+		done();
+	} );
+
+	jQuery( function() {
+		throw new Error( "Error in jQuery ready" );
+	} );
 } );

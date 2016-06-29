@@ -1,6 +1,7 @@
 define( [
 	"../core",
 	"../var/document",
+	"../core/readyException",
 	"../deferred"
 ], function( jQuery, document ) {
 
@@ -11,7 +12,15 @@ var readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
 
-	readyList.then( fn );
+	readyList
+		.then( fn )
+
+		// Wrap jQuery.readyException in a function so that the lookup
+		// happens at the time of error handling instead of callback
+		// registration.
+		.catch( function( error ) {
+			jQuery.readyException( error );
+		} );
 
 	return this;
 };
