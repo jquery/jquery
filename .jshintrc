@@ -10,5 +10,6 @@
 	"undef": true,
 	"unused": true,
 
-	"node": true
+	"node": true,
+	"param1":true
 }
