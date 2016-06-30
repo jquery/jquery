@@ -32,7 +32,7 @@ QUnit.test( "id", function( assert ) {
 	assert.t( "ID selector with existing ID descendant", "#firstp #simon1", [ "simon1" ] );
 	assert.t( "ID selector with non-existent descendant", "#firstp #foobar", [] );
 	assert.t( "ID selector using UTF8", "#台北Táiběi", [ "台北Táiběi" ] );
-	assert.t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", [ "台北Táiběi","台北" ] );
+	assert.t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", [ "台北Táiběi", "台北" ] );
 	assert.t( "Descendant ID selector using UTF8", "div #台北", [ "台北" ] );
 	assert.t( "Child ID selector using UTF8", "form > #台北", [ "台北" ] );
 
@@ -103,14 +103,14 @@ QUnit.test( "selectors with comma", function( assert ) {
 QUnit.test( "child and adjacent", function( assert ) {
 	assert.expect( 27 );
 
-	assert.t( "Child", "p > a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	assert.t( "Child", "p> a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	assert.t( "Child", "p >a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	assert.t( "Child", "p>a", [ "simon1","google","groups","mark","yahoo","simon" ] );
-	assert.t( "Child w/ Class", "p > a.blog", [ "mark","simon" ] );
-	assert.t( "All Children", "code > *", [ "anchor1","anchor2" ] );
-	assert.selectInFixture( "All Grandchildren", "p > * > *", [ "anchor1","anchor2" ] );
-	assert.t( "Adjacent", "p + p", [ "ap","en","sap" ] );
+	assert.t( "Child", "p > a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
+	assert.t( "Child", "p> a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
+	assert.t( "Child", "p >a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
+	assert.t( "Child", "p>a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
+	assert.t( "Child w/ Class", "p > a.blog", [ "mark", "simon" ] );
+	assert.t( "All Children", "code > *", [ "anchor1", "anchor2" ] );
+	assert.selectInFixture( "All Grandchildren", "p > * > *", [ "anchor1", "anchor2" ] );
+	assert.t( "Adjacent", "p + p", [ "ap", "en", "sap" ] );
 	assert.t( "Adjacent", "p#firstp + p", [ "ap" ] );
 	assert.t( "Adjacent", "p[lang=en] + p", [ "sap" ] );
 	assert.t( "Adjacent", "a.GROUPS + code + a", [ "mark" ] );
@@ -163,7 +163,7 @@ QUnit.test( "attributes", function( assert ) {
 	assert.t( "Attribute Equals", "#qunit-fixture a[rel=bookmark]", [ "simon1" ] );
 	assert.t( "Attribute Equals", "#qunit-fixture a[href='http://www.google.com/']", [ "google" ] );
 	assert.t( "Attribute Equals", "#qunit-fixture a[ rel = 'bookmark' ]", [ "simon1" ] );
-	assert.t( "Attribute Equals Number", "#qunit-fixture option[value='1']", [ "option1b","option2b","option3b","option4b","option5c" ] );
+	assert.t( "Attribute Equals Number", "#qunit-fixture option[value='1']", [ "option1b", "option2b", "option3b", "option4b", "option5c" ] );
 	assert.t( "Attribute Equals Number", "#qunit-fixture li[tabIndex='-1']", [ "foodWithNegativeTabIndex" ] );
 
 	document.getElementById( "anchor2" ).href = "#2";
@@ -187,13 +187,13 @@ QUnit.test( "attributes", function( assert ) {
 
 	assert.t( "Attribute selector using UTF8", "span[lang=中文]", [ "台北" ] );
 
-	assert.t( "Attribute Begins With", "a[href ^= 'http://www']", [ "google","yahoo" ] );
+	assert.t( "Attribute Begins With", "a[href ^= 'http://www']", [ "google", "yahoo" ] );
 	assert.t( "Attribute Ends With", "a[href $= 'org/']", [ "mark" ] );
-	assert.t( "Attribute Contains", "a[href *= 'google']", [ "google","groups" ] );
+	assert.t( "Attribute Contains", "a[href *= 'google']", [ "google", "groups" ] );
 
 	if ( jQuery.find.compile ) {
-		assert.t( "Empty values", "#select1 option[value!='']", [ "option1b","option1c","option1d" ] );
-		assert.t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", [ "google","groups","anchor1" ] );
+		assert.t( "Empty values", "#select1 option[value!='']", [ "option1b", "option1c", "option1d" ] );
+		assert.t( "Attribute Is Not Equal", "#ap a[hreflang!='en']", [ "google", "groups", "anchor1" ] );
 		assert.t( "Select options via :selected", "#select1 option:selected", [ "option1a" ] );
 		assert.t( "Select options via :selected", "#select2 option:selected", [ "option2d" ] );
 		assert.t( "Select options via :selected", "#select3 option:selected", [ "option3b", "option3c" ] );
@@ -493,7 +493,7 @@ testIframe(
 	"Sizzle cache collides with multiple Sizzles on a page",
 	"selector/sizzle_cache.html",
 	function( assert, jQuery, window, document ) {
-		var $cached = window[ "$cached" ];
+		var $cached = window.$cached;
 
 		assert.expect( 4 );
 		assert.notStrictEqual( jQuery, $cached, "Loaded two engines" );

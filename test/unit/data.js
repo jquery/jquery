@@ -409,7 +409,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 			break;
 		case 3:
 			assert.equal( jQuery( elem ).data( "number" ), true, "Check number property" );
-			assert.deepEqual( jQuery( elem ).data( "stuff" ), [ 2,8 ], "Check stuff property" );
+			assert.deepEqual( jQuery( elem ).data( "stuff" ), [ 2, 8 ], "Check stuff property" );
 			break;
 		default:
 			assert.ok( false, [ "Assertion failed on index ", index, ", with data" ].join( "" ) );
@@ -881,13 +881,13 @@ QUnit.test( "Check that the expando is removed when there's no more data", funct
 			assert.strictEqual( div[ 0 ][ key ], undefined, "Expando was not removed when there was no more data" );
 		}
 	}
-});
+} );
 
 QUnit.test( "Check that the expando is removed when there's no more data on non-nodes", function( assert ) {
 	assert.expect( 1 );
 
 	var key,
-		obj = jQuery( {key: 42} );
+		obj = jQuery( { key: 42 } );
 	obj.data( "some", "data" );
 	assert.equal( obj.data( "some" ), "data", "Data is added" );
 	obj.removeData( "some" );

@@ -1,7 +1,6 @@
-/*jshint multistr:true, quotmark:false */
+/* eslint no-multi-str: "off" */
 
-var fireNative, originaljQuery, original$,
-	baseURL = "",
+var baseURL = "",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -12,8 +11,8 @@ this.isLocal = window.location.protocol === "file:";
 
 // Setup global variables before loading jQuery for testing .noConflict()
 supportjQuery.noConflict( true );
-originaljQuery = this.jQuery = undefined;
-original$ = this.$ = "replaced";
+window.originaljQuery = this.jQuery = undefined;
+window.original$ = this.$ = "replaced";
 
 /**
  * Returns an array of elements with the given IDs
@@ -44,7 +43,7 @@ function match( message, selector, expectedIds, context ) {
 		i = 0;
 
 	for ( ; i < f.length; i++ ) {
-		s += ( s && "," ) + '"' + f[ i ].id + '"';
+		s += ( s && "," ) + "\"" + f[ i ].id + "\"";
 	}
 
 	this.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
@@ -75,38 +74,38 @@ QUnit.assert.selectInFixture = function( message, selector, expectedIds ) {
 };
 
 this.createDashboardXML = function() {
-	var string = '<?xml version="1.0" encoding="UTF-8"?> \
+	var string = "<?xml version='1.0' encoding='UTF-8'?> \
 	<dashboard> \
-		<locations class="foo"> \
-			<location for="bar" checked="different"> \
-				<infowindowtab normal="ab" mixedCase="yes"> \
-					<tab title="Location"><![CDATA[blabla]]></tab> \
-					<tab title="Users"><![CDATA[blublu]]></tab> \
+		<locations class='foo'> \
+			<location for='bar' checked='different'> \
+				<infowindowtab normal='ab' mixedCase='yes'> \
+					<tab title='Location'><![CDATA[blabla]]></tab> \
+					<tab title='Users'><![CDATA[blublu]]></tab> \
 				</infowindowtab> \
 			</location> \
 		</locations> \
-	</dashboard>';
+	</dashboard>";
 
 	return jQuery.parseXML( string );
 };
 
 this.createWithFriesXML = function() {
-	var string = '<?xml version="1.0" encoding="UTF-8"?> \
-	<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" \
-		xmlns:xsd="http://www.w3.org/2001/XMLSchema" \
-		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> \
+	var string = "<?xml version='1.0' encoding='UTF-8'?> \
+	<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' \
+		xmlns:xsd='http://www.w3.org/2001/XMLSchema' \
+		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> \
 		<soap:Body> \
-			<jsconf xmlns="http://{{ externalHost }}/ns1"> \
-				<response xmlns:ab="http://{{ externalHost }}/ns2"> \
+			<jsconf xmlns='http://{{ externalHost }}/ns1'> \
+				<response xmlns:ab='http://{{ externalHost }}/ns2'> \
 					<meta> \
-						<component id="seite1" class="component"> \
-							<properties xmlns:cd="http://{{ externalHost }}/ns3"> \
-								<property name="prop1"> \
+						<component id='seite1' class='component'> \
+							<properties xmlns:cd='http://{{ externalHost }}/ns3'> \
+								<property name='prop1'> \
 									<thing /> \
 									<value>1</value> \
 								</property> \
-								<property name="prop2"> \
-									<thing att="something" /> \
+								<property name='prop2'> \
+									<thing att='something' /> \
 								</property> \
 								<foo_bar>foo</foo_bar> \
 							</properties> \
@@ -115,7 +114,7 @@ this.createWithFriesXML = function() {
 				</response> \
 			</jsconf> \
 		</soap:Body> \
-	</soap:Envelope>';
+	</soap:Envelope>";
 
 	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
 };
@@ -123,7 +122,7 @@ this.createWithFriesXML = function() {
 this.createXMLFragment = function() {
 	var xml, frag;
 	if ( window.ActiveXObject ) {
-		xml = new ActiveXObject( "msxml2.domdocument" );
+		xml = new window.ActiveXObject( "msxml2.domdocument" );
 	} else {
 		xml = document.implementation.createDocument( "", "", null );
 	}
@@ -135,7 +134,7 @@ this.createXMLFragment = function() {
 	return frag;
 };
 
-fireNative = document.createEvent ?
+window.fireNative = document.createEvent ?
 	function( node, type ) {
 		var event = document.createEvent( "HTMLEvents" );
 
@@ -263,8 +262,8 @@ QUnit.config.autostart = false;
 this.loadTests = function() {
 
 	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
-	QUnit.isSwarm = ( QUnit.urlParams[ "swarmURL" ] + "" ).indexOf( "http" ) === 0;
-	QUnit.basicTests = ( QUnit.urlParams[ "module" ] + "" ) === "basic";
+	QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
+	QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {

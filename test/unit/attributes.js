@@ -487,7 +487,9 @@ QUnit.test( "attr(non-ASCII)", function( assert ) {
 QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
 	assert.expect( 1 );
 	var called = false,
-		_handle = jQuery.expr.attrHandle.checked || $.noop;
+		origAttrHandleHadChecked = "checked" in jQuery.expr.attrHandle,
+		origAttrHandleChecked = jQuery.expr.attrHandle.checked,
+		_handle = origAttrHandleChecked || $.noop;
 	jQuery.expr.attrHandle.checked = function() {
 		called = true;
 		_handle.apply( this, arguments );
@@ -496,6 +498,13 @@ QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
 	called = false;
 	jQuery( "#qunit-fixture input" ).attr( "checked" );
 	assert.ok( called, "The boolean attrHandle does not drop custom attrHandles" );
+
+	if ( origAttrHandleHadChecked ) {
+		jQuery.expr.attrHandle.checked = origAttrHandleChecked;
+	} else {
+		delete jQuery.expr.attrHandle.checked;
+	}
+
 } );
 
 QUnit.test( "attr(String, Object) - Loaded via XML document", function( assert ) {
@@ -749,9 +758,9 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 
 QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 	assert.expect( 1 );
-	var image = jQuery("<img src='data/1x1.jpg' />")
-		.appendTo("#qunit-fixture");
-	assert.equal( image.prop("tabIndex" ), -1, "tabIndex on image" );
+	var image = jQuery( "<img src='data/1x1.jpg' />" )
+		.appendTo( "#qunit-fixture" );
+	assert.equal( image.prop( "tabIndex" ), -1, "tabIndex on image" );
 } );
 
 QUnit.test( "prop('tabindex', value)", function( assert ) {
@@ -1631,5 +1640,24 @@ QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {
 
 		elem.toggleClass( "awesome" );
 		assert.ok( !elem.hasClass( "awesome" ), "SVG element (" + this + ") toggles the class off" );
+	} );
+} );
+
+QUnit.test( "non-lowercase boolean attribute getters should not crash", function( assert ) {
+	assert.expect( 3 );
+
+	var elem = jQuery( "<input checked required autofocus type='checkbox'>" );
+
+	jQuery.each( {
+		checked: "Checked",
+		required: "requiRed",
+		autofocus: "AUTOFOCUS"
+	}, function( lowercased, original ) {
+		try {
+			assert.strictEqual( elem.attr( original ), lowercased,
+				"The '" + this + "' attribute getter should return the lowercased name" );
+		} catch ( e ) {
+			assert.ok( false, "The '" + this + "' attribute getter threw" );
+		}
 	} );
 } );

@@ -768,6 +768,36 @@ QUnit.test( "jQuery.Deferred - notify and resolve", function( assert ) {
 	} );
 } );
 
+QUnit.test( "jQuery.Deferred - resolved to a notifying deferred", function( assert ) {
+
+	assert.expect( 2 );
+
+    var deferred = jQuery.Deferred(),
+		done = assert.async( 2 );
+
+	deferred.resolve( jQuery.Deferred( function( notifyingDeferred ) {
+		notifyingDeferred.notify( "foo", "bar" );
+		notifyingDeferred.resolve( "baz", "quux" );
+	} ) );
+
+	// Apply an empty then to force thenable unwrapping.
+	// See https://github.com/jquery/jquery/issues/3000 for more info.
+	deferred.then().then( function() {
+		assert.deepEqual(
+			[].slice.call( arguments ),
+			[ "baz", "quux" ],
+			"The fulfilled handler receives proper params"
+		);
+		done();
+	}, null, function() {
+		assert.deepEqual(
+			[].slice.call( arguments ),
+			[ "foo", "bar" ],
+			"The progress handler receives proper params"
+		);
+		done();
+	} );
+} );
 
 QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert ) {
 	"use strict";
@@ -778,7 +808,7 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( 20 );
 
@@ -885,7 +915,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( CASES * 2 );
 
@@ -965,7 +995,7 @@ QUnit.test( "jQuery.when(a, b) - like Promise.all", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = (function getDefaultContext() { return this; }).call(),
+		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
 		done = assert.async( 98 );
 

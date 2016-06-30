@@ -1,30 +1,18 @@
 {
-	"boss": true,
-	"curly": true,
-	"eqeqeq": true,
-	"eqnull": true,
-	"expr": true,
-	"immed": true,
-	"noarg": true,
-	"quotmark": "double",
-	"strict": true,
-	"undef": true,
-	"unused": true,
-
-	"sub": true,
-
 	// Support: IE <=9 only, Android <=4.0 only
 	// The above browsers are failing a lot of tests in the ES5
 	// test suite at http://test262.ecmascript.org.
-	"es3": true,
-
+	"parserOptions": {
+		"ecmaVersion": 3
+	},
 	"globals": {
 		"window": true,
-		"JSON": false,
-
 		"jQuery": true,
 		"define": true,
 		"module": true,
 		"noGlobal": true
+	},
+	"rules": {
+		"strict": ["error", "function"]
 	}
 }

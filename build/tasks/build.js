@@ -38,7 +38,7 @@ module.exports = function( grunt ) {
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
-				start: wrapper[ 0 ].replace( /\/\*jshint .* \*\/\n/, "" ),
+				start: wrapper[ 0 ].replace( /\/\*eslint .* \*\/\n/, "" ),
 				end: globals.replace(
 					/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
 					""
@@ -64,7 +64,12 @@ module.exports = function( grunt ) {
 		// Convert var modules
 		if ( /.\/var\//.test( path.replace( process.cwd(), "" ) ) ) {
 			contents = contents
-				.replace( /define\([\w\W]*?return/, "var " + ( /var\/([\w-]+)/.exec( name )[ 1 ] ) + " =" )
+				.replace(
+					/define\([\w\W]*?return/,
+					"var " +
+					( /var\/([\w-]+)/.exec( name )[ 1 ] ) +
+					" ="
+				)
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
@@ -130,6 +135,7 @@ module.exports = function( grunt ) {
 			excluded = [],
 			included = [],
 			version = grunt.config( "pkg.version" ),
+
 			/**
 			 * Recursively calls the excluder to remove on all modules in the list
 			 * @param {Array} list
@@ -167,6 +173,7 @@ module.exports = function( grunt ) {
 					} );
 				}
 			},
+
 			/**
 			 * Adds the specified module to the excluded or included list, depending on the flag
 			 * @param {String} flag A module path relative to

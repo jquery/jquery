@@ -99,7 +99,7 @@ QUnit.module( "ajax", {
 				assert.ok( true, "success" );
 			},
 			fail: function() {
-				if (jQuery.support.cors === false) {
+				if ( jQuery.support.cors === false ) {
 					assert.ok( true, "fail" );
 				}
 			},
@@ -1737,11 +1737,11 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 } else {
 
 	// No built-in support for binary data, but it's easy to add via a prefilter
-	jQuery.ajaxPrefilter( "arraybuffer", function ( s ) {
+	jQuery.ajaxPrefilter( "arraybuffer", function( s ) {
 		s.xhrFields = { responseType: "arraybuffer" };
 		s.responseFields.arraybuffer = "response";
 		s.converters[ "binary arraybuffer" ] = true;
-	});
+	} );
 
 	ajaxTest( "gh-2498 - jQuery.ajax() - binary data shouldn't throw an exception", 2, function( assert ) {
 		return {
@@ -1961,7 +1961,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 			url: url( "data/ajax/content-type.php" ),
 			data: {
 				"content-type": "test/jsontest",
-				"response": JSON.stringify({test: "test"})
+				"response": JSON.stringify( { test: "test" } )
 			},
 			success: function( result ) {
 				assert.strictEqual(

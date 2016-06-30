@@ -79,8 +79,8 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $, iframe ) {
 		{ "id": "#absolute-1", "top": 1, "left": 1 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( jQuery( this[ "id" ], doc ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
-		assert.equal( jQuery( this[ "id" ], doc ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset().left" );
+		assert.equal( jQuery( this.id, doc ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		assert.equal( jQuery( this.id, doc ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	} );
 
 	// get position
@@ -88,8 +88,8 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $, iframe ) {
 		{ "id": "#absolute-1", "top": 0, "left": 0 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( jQuery( this[ "id" ], doc ).position().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').position().top" );
-		assert.equal( jQuery( this[ "id" ], doc ).position().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').position().left" );
+		assert.equal( jQuery( this.id, doc ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		assert.equal( jQuery( this.id, doc ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	} );
 } );
 
@@ -106,8 +106,8 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 		{ "id": "#absolute-2",     "top": 20, "left": 20 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset().left" );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	} );
 
 	// get position
@@ -118,8 +118,8 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 		{ "id": "#absolute-2",     "top": 19, "left": 19 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).position().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').position().top" );
-		assert.equal( $( this[ "id" ] ).position().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').position().left" );
+		assert.equal( $( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		assert.equal( $( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	} );
 
 	// test #5781
@@ -147,34 +147,34 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 		{ "id": "#absolute-1",     "top":  1, "left":  1 }
 	];
 	jQuery.each( tests, function() {
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ] } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset({ top: "  + this[ "top" ]  + " })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset({ left: " + this[ "left" ] + " })" );
+		$( this.id ).offset( { "top": this.top, "left": this.left } );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
-		var top = this[ "top" ], left = this[ "left" ];
+		var top = this.top, left = this.left;
 
-		$( this[ "id" ] ).offset( function( i, val ) {
+		$( this.id ).offset( function( i, val ) {
 			assert.equal( val.top, top, "Verify incoming top position." );
 			assert.equal( val.left, left, "Verify incoming top position." );
 			return { "top": top + 1, "left": left + 1 };
 		} );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 1, "jQuery('" + this[ "id" ] + "').offset({ top: "  + ( this[ "top" ]  + 1 ) + " })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 1, "jQuery('" + this[ "id" ] + "').offset({ left: " + ( this[ "left" ] + 1 ) + " })" );
+		assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + " })" );
+		assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + " })" );
 
-		$( this[ "id" ] )
-			.offset( { "left": this[ "left" ] + 2 } )
-			.offset( { "top":  this[ "top" ]  + 2 } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 2, "Setting one property at a time." );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 2, "Setting one property at a time." );
+		$( this.id )
+			.offset( { "left": this.left + 2 } )
+			.offset( { "top":  this.top  + 2 } );
+		assert.equal( $( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
+		assert.equal( $( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
 
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ], "using": function( props ) {
+		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
 				"top":  props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 1, "jQuery('" + this[ "id" ] + "').offset({ top: "  + ( this[ "top" ]  + 1 ) + ", using: fn })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 1, "jQuery('" + this[ "id" ] + "').offset({ left: " + ( this[ "left" ] + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
 	} );
 } );
 
@@ -189,8 +189,8 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 		{ "id": "#relative-2-1",   "top": 149, "left": 52 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset().left" );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	} );
 
 	// get position
@@ -201,8 +201,8 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 		{ "id": "#relative-2-1",   "top": 5, "left": 5 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).position().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').position().top" );
-		assert.equal( $( this[ "id" ] ).position().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').position().left" );
+		assert.equal( $( this.id ).position().top,  this.top,  "jQuery('" + this.id + "').position().top" );
+		assert.equal( $( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	} );
 
 	// set offset
@@ -221,18 +221,18 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 		{ "id": "#relative-1",   "top":   7, "left":   7 }
 	];
 	jQuery.each( tests, function() {
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ] } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset({ top: "  + this[ "top" ]  + " })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset({ left: " + this[ "left" ] + " })" );
+		$( this.id ).offset( { "top": this.top, "left": this.left } );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ], "using": function( props ) {
+		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
 				"top":  props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 1, "jQuery('" + this[ "id" ] + "').offset({ top: "  + ( this[ "top" ]  + 1 ) + ", using: fn })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 1, "jQuery('" + this[ "id" ] + "').offset({ left: " + ( this[ "left" ] + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
 	} );
 } );
 
@@ -247,8 +247,8 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 		{ "id": "#static-2",     "top": 122, left: 7 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset().left" );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset().top" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset().left" );
 	} );
 
 	// get position
@@ -259,8 +259,8 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 		{ "id": "#static-2",     "top": 121, "left": 6 }
 	];
 	jQuery.each( tests, function() {
-		assert.equal( $( this[ "id" ] ).position().top,  this[ "top" ],  "jQuery('" + this[ "top" ]  + "').position().top" );
-		assert.equal( $( this[ "id" ] ).position().left, this[ "left" ], "jQuery('" + this[ "left" ] + "').position().left" );
+		assert.equal( $( this.id ).position().top,  this.top,  "jQuery('" + this.top  + "').position().top" );
+		assert.equal( $( this.id ).position().left, this.left, "jQuery('" + this.left + "').position().left" );
 	} );
 
 	// set offset
@@ -283,18 +283,18 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 		{ "id": "#static-1",     "top":   7, "left":   7 }
 	];
 	jQuery.each( tests, function() {
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ] } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset({ top: "  + this[ "top" ]  + " })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset({ left: " + this[ "left" ] + " })" );
+		$( this.id ).offset( { "top": this.top, "left": this.left } );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
-		$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ], "using": function( props ) {
+		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
 				"top":  props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
-		assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 1, "jQuery('" + this[ "id" ] + "').offset({ top: "  + ( this[ "top" ]  + 1 ) + ", using: fn })" );
-		assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 1, "jQuery('" + this[ "id" ] + "').offset({ left: " + ( this[ "left" ] + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
 	} );
 } );
 
@@ -328,10 +328,10 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 			assert.ok( true, "Browser doesn't support scroll position." );
 
 		} else if ( window.supportsFixedPosition ) {
-			assert.equal( $( this[ "id" ] ).offset().top,  this[ "offsetTop" ],  "jQuery('" + this[ "id" ] + "').offset().top" );
-			assert.equal( $( this[ "id" ] ).position().top,  this[ "positionTop" ],  "jQuery('" + this[ "id" ] + "').position().top" );
-			assert.equal( $( this[ "id" ] ).offset().left, this[ "offsetLeft" ], "jQuery('" + this[ "id" ] + "').offset().left" );
-			assert.equal( $( this[ "id" ] ).position().left,  this[ "positionLeft" ],  "jQuery('" + this[ "id" ] + "').position().left" );
+			assert.equal( $( this.id ).offset().top,  this.offsetTop,  "jQuery('" + this.id + "').offset().top" );
+			assert.equal( $( this.id ).position().top,  this.positionTop,  "jQuery('" + this.id + "').position().top" );
+			assert.equal( $( this.id ).offset().left, this.offsetLeft, "jQuery('" + this.id + "').offset().left" );
+			assert.equal( $( this.id ).position().left,  this.positionLeft,  "jQuery('" + this.id + "').position().left" );
 		} else {
 
 			// need to have same number of assertions
@@ -353,18 +353,18 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 
 	jQuery.each( tests, function() {
 		if ( window.supportsFixedPosition ) {
-			$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ] } );
-			assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ],  "jQuery('" + this[ "id" ] + "').offset({ top: "  + this[ "top" ]  + " })" );
-			assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ], "jQuery('" + this[ "id" ] + "').offset({ left: " + this[ "left" ] + " })" );
+			$( this.id ).offset( { "top": this.top, "left": this.left } );
+			assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+			assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
-			$( this[ "id" ] ).offset( { "top": this[ "top" ], "left": this[ "left" ], "using": function( props ) {
+			$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 				$( this ).css( {
 					"top":  props.top  + 1,
 					"left": props.left + 1
 				} );
 			} } );
-			assert.equal( $( this[ "id" ] ).offset().top,  this[ "top" ]  + 1, "jQuery('" + this[ "id" ] + "').offset({ top: "  + ( this[ "top" ]  + 1 ) + ", using: fn })" );
-			assert.equal( $( this[ "id" ] ).offset().left, this[ "left" ] + 1, "jQuery('" + this[ "id" ] + "').offset({ left: " + ( this[ "left" ] + 1 ) + ", using: fn })" );
+			assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
+			assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
 		} else {
 
 			// need to have same number of assertions
@@ -549,8 +549,10 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 	// Mobile Safari resize the iframe by its content meaning it's not possible to scroll
 	// the iframe but only its parent element.
 	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
-	if ( /iphone os/i.test( navigator.userAgent ) ||
-	    /android 4\.0/i.test( navigator.userAgent ) ) {
+	if (
+		/iphone os/i.test( navigator.userAgent ) ||
+		/android 4\.0/i.test( navigator.userAgent )
+	) {
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 

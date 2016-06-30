@@ -21,10 +21,10 @@ QUnit.test( "null or undefined handler", function( assert ) {
 
 	var expectedElem = jQuery( "#firstp" );
 	var actualElem = expectedElem.on( "click", null );
-	assert.equal(actualElem, expectedElem, "Passing a null handler should return the original element");
+	assert.equal( actualElem, expectedElem, "Passing a null handler should return the original element" );
 
 	actualElem = expectedElem.on( "click", undefined );
-	assert.equal(actualElem, expectedElem, "Passing a null handler should return the original element");
+	assert.equal( actualElem, expectedElem, "Passing a null handler should return the original element" );
 } );
 
 QUnit.test( "on() with non-null,defined data", function( assert ) {
@@ -78,7 +78,7 @@ QUnit.test( "on(), with data", function( assert ) {
 
 	handler = function( event ) {
 		assert.ok( event.data, "on() with data, check passed data exists" );
-		assert.equal( event.data[ "foo" ], "bar", "on() with data, Check value of passed data" );
+		assert.equal( event.data.foo, "bar", "on() with data, Check value of passed data" );
 	};
 	jQuery( "#firstp" ).on( "click", { "foo": "bar" }, handler ).trigger( "click" ).off( "click", handler );
 
@@ -95,7 +95,7 @@ QUnit.test( "click(), with data", function( assert ) {
 	assert.expect( 3 );
 	var handler = function( event ) {
 		assert.ok( event.data, "on() with data, check passed data exists" );
-		assert.equal( event.data[ "foo" ], "bar", "on() with data, Check value of passed data" );
+		assert.equal( event.data.foo, "bar", "on() with data, Check value of passed data" );
 	};
 	jQuery( "#firstp" ).on( "click", { "foo": "bar" }, handler ).trigger( "click" ).off( "click", handler );
 
@@ -199,7 +199,7 @@ QUnit.test( "on(), namespace with special add", function( assert ) {
 			assert.ok( true, "Test event fired." );
 		} );
 
-	jQuery.event.special[ "test" ] = {
+	jQuery.event.special.test = {
 		_default: function( e, data ) {
 			assert.equal( e.type, "test", "Make sure we're dealing with a test event." );
 			assert.ok( data, "And that trigger data was passed." );
@@ -251,7 +251,7 @@ QUnit.test( "on(), namespace with special add", function( assert ) {
 	// Should trigger 2
 	div.appendTo( "#qunit-fixture" ).remove();
 
-	delete jQuery.event.special[ "test" ];
+	delete jQuery.event.special.test;
 } );
 
 QUnit.test( "on(), no data", function( assert ) {
@@ -726,8 +726,8 @@ QUnit.test( "on()/trigger()/off() on plain object", function( assert ) {
 	events = jQuery._data( obj, "events" );
 	assert.ok( events, "Object has events bound." );
 	assert.equal( obj[ "events" ], undefined, "Events object on plain objects is not events" );
-	assert.equal( obj[ "test" ], undefined, "Make sure that test event is not on the plain object." );
-	assert.equal( obj[ "handle" ], undefined, "Make sure that the event handler is not on the plain object." );
+	assert.equal( obj.test, undefined, "Make sure that test event is not on the plain object." );
+	assert.equal( obj.handle, undefined, "Make sure that the event handler is not on the plain object." );
 
 	// Should trigger 1
 	jQuery( obj ).trigger( "test" );
@@ -1192,7 +1192,7 @@ QUnit.test( "trigger(eventObject, [data], [fn])", function( assert ) {
 	//$child.on("foo", error );
 
 	event = new jQuery.Event( "foo" );
-	$child.trigger( event, [ 1,2,3 ] ).off();
+	$child.trigger( event, [ 1, 2, 3 ] ).off();
 	assert.equal( event.result, "result", "Check event.result attribute" );
 
 	// Will error if it bubbles
@@ -1601,7 +1601,7 @@ QUnit.test( ".on()/.off()", function( assert ) {
 
 	// Test binding with different this object
 	jQuery( "#body" ).on( "click", "#foo", jQuery.proxy( function() {
-		assert.equal( this[ "foo" ], "bar", "on with event scope" ); }, { "foo": "bar" }
+		assert.equal( this.foo, "bar", "on with event scope" ); }, { "foo": "bar" }
 	) );
 	jQuery( "#foo" ).trigger( "click" );
 	jQuery( "#body" ).off( "click", "#foo" );
@@ -1860,7 +1860,7 @@ QUnit.test( "ignore comment nodes in event delegation (gh-2055)", function( asse
 			.appendTo( $foo.find( "#sap" ) );
 
 	if ( !test() ) {
-		fireNative( $comment[0], "DOMNodeInserted" );
+		fireNative( $comment[ 0 ], "DOMNodeInserted" );
 	}
 } );
 
@@ -2234,7 +2234,7 @@ QUnit.test( ".on and .off", function( assert ) {
 QUnit.test( "special on name mapping", function( assert ) {
 	assert.expect( 7 );
 
-	jQuery.event.special[ "slap" ] = {
+	jQuery.event.special.slap = {
 		bindType: "click",
 		delegateType: "swing",
 		handle: function( event ) {
@@ -2265,9 +2265,9 @@ QUnit.test( "special on name mapping", function( assert ) {
 			.trigger( "swing" )
 		.end()
 		.remove();
-	delete jQuery.event.special[ "slap" ];
+	delete jQuery.event.special.slap;
 
-	jQuery.event.special[ "gutfeeling" ] = {
+	jQuery.event.special.gutfeeling = {
 		bindType: "click",
 		delegateType: "click",
 		handle: function( event ) {
@@ -2356,9 +2356,9 @@ QUnit.test( "clone() delegated events (#11076)", function( assert ) {
 		clone = table.clone( true );
 
 	clone.find( "td" ).trigger( "click" );
-	assert.equal( counter[ "center" ], 1, "first child" );
-	assert.equal( counter[ "fold" ], 1, "last child" );
-	assert.equal( counter[ "centerfold" ], 2, "all children" );
+	assert.equal( counter.center, 1, "first child" );
+	assert.equal( counter.fold, 1, "last child" );
+	assert.equal( counter.centerfold, 2, "all children" );
 
 	table.remove();
 	clone.remove();
@@ -2576,7 +2576,7 @@ QUnit.test( "change handler should be detached from element", function( assert )
 			originRemoveEvent( elem, type, handle );
 		};
 
-	jQuery.removeEvent = wrapperRemoveEvent ;
+	jQuery.removeEvent = wrapperRemoveEvent;
 
 	$fixture.on( "change", function() {} );
 	$fixture.off( "change" );
@@ -2736,6 +2736,15 @@ QUnit.test( ".off() removes the expando when there's no more data", function( as
 	}
 } );
 
+QUnit.test( "jQuery.Event( src ) does not require a target property", function( assert ) {
+	assert.expect( 2 );
+
+	var event = jQuery.Event( { type: "offtarget" } );
+
+	assert.equal( event.type, "offtarget", "correct type" );
+	assert.equal( event.target, undefined, "no target" );
+} );
+
 QUnit.test( "preventDefault() on focusin does not throw exception", function( assert ) {
 	assert.expect( 1 );
 
@@ -2890,9 +2899,10 @@ QUnit.test( "originalEvent property for Chrome, Safari, Fx & Edge of simulated e
 		.on( "focusin", function( event ) {
 			assert.ok( true, "focusin bubbled to outer div" );
 			assert.equal( event.originalEvent.type, "focus",
-			             "make sure originalEvent type is correct" );
+				"make sure originalEvent type is correct" );
 			assert.equal( event.type, "focusin", "make sure type is correct" );
 		} );
+
 	jQuery( "#donor-input" ).on( "focus", function() {
 		assert.ok( true, "got a focus event from the input" );
 		done();

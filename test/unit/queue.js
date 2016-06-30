@@ -232,7 +232,7 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function 
 } );
 
 if ( jQuery.fn.animate ) {
-	
+
 QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function( assert ) {
 	var foo = jQuery( "#foo" ),
 		test = 1;

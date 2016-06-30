@@ -1,5 +1,3 @@
-/* jshint node: true */
-
 "use strict";
 
 // Run Node with provided parameters: the first one being the Grunt
@@ -13,4 +11,4 @@ module.exports = function spawnTest( done ) {
 		.on( "close", function( code ) {
 			done( code === 0 );
 		} );
-} ;
+};

@@ -2,7 +2,7 @@
 
 // This file is included in a different way from all the others
 // so the "use strict" pragma is not needed.
-/* jshint strict: false */
+/* eslint strict: "off" */
 
 /* ExcludeEnd */
 

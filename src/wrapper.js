@@ -1,4 +1,4 @@
-/*jshint unused:false */
+/*eslint-disable no-unused-vars*/
 /*!
  * jQuery JavaScript Library v@VERSION
  * https://jquery.com/
@@ -38,7 +38,7 @@
 	}
 
 // Pass this if window is not defined yet
-}( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
 // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
@@ -50,4 +50,4 @@
 // build.js inserts compiled jQuery here
 
 return jQuery;
-} ) );
+} );

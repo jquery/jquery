@@ -1,0 +1,4 @@
+{
+	"extends": "../../.eslintrc",
+	"root": true
+}
