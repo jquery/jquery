@@ -166,7 +166,7 @@ function getWidthOrHeight( elem, name, extra ) {
 }
 
 function isCustomProperty( value ) {
-	return value.match( /--(.*)/ );
+	return /^--.*/.test( value );
 }
 
 jQuery.extend( {
@@ -263,8 +263,12 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-				customProperty ? style.setProperty( name, value ) : style[ name ] = value;
-			}
+                if ( customProperty ) {
+                    style.setProperty( name, value );
+                } else {
+                    style[ name ] = value;
+                }
+            }
 
 		} else {
 
@@ -317,7 +321,7 @@ jQuery.extend( {
 			return extra === true || isFinite( num ) ? num || 0 : val;
 		}
 
-		return val === undefined ? undefined : jQuery.trim( val );
+		return val;
 	}
 } );
 

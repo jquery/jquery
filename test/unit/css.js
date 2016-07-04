@@ -119,12 +119,25 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	jQuery( "#customPropertyTest" ).css( "--color", "blue" );
 	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "blue", "Modified CSS custom property using string: Assert value is right" );
 
-	jQuery( "#customPropertyTest" ).css( { "--color": "blue" } );
-	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "blue", "Modified CSS custom property using object: Assert value is right" );
+	jQuery( "#customPropertyTest" ).css( { "--color": "red" } );
+	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "red", "Modified CSS custom property using object: Assert value is right" );
 
 	jQuery( "#customPropertyTest" ).css( { "--theme-dark": "purple" } );
 	assert.equal( jQuery( "#customPropertyTest" ).css( "--theme-dark" ), "purple", "Modified CSS custom property with dashed name: Assert value is right" );
 } );
+
+testIframe(
+	"css('--customProperty') should preserve whitespace correctly (#3144)",
+	"css/customProperties.html",
+	function( assert, jQuery, window, document, element ) {
+		assert.expect( 4 );
+
+        assert.equal( element.css( "--prop1" ), " val1", "" );
+        assert.equal( element.css( "--prop2" ), "val2", "" );
+        assert.equal( element.css( "--prop3" ), "val3 ", "" );
+        assert.equal( element.css( "--prop4" ), " \"val4\" ", "" );
+    }
+);
 
 QUnit.test( "css() explicit and relative values", function( assert ) {
 	assert.expect( 29 );
