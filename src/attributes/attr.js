@@ -34,7 +34,7 @@ jQuery.extend( {
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( typeof elem.getAttribute === "undefined" ) {
+		if ( elem.getAttribute === undefined ) {
 			return jQuery.prop( elem, name, value );
 		}
 
