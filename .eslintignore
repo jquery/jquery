@@ -1,6 +1,6 @@
 external
 node_modules
-dist/jquery.min.js
+*.min.js
 test/data/jquery-1.9.1.js
 test/data/badcall.js
 test/data/badjson.js
