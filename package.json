@@ -36,7 +36,7 @@
     "grunt-compare-size": "0.4.2",
     "grunt-contrib-uglify": "1.0.1",
     "grunt-contrib-watch": "1.0.0",
-    "grunt-eslint": "19.0.0",
+    "grunt-eslint": "18.0.0",
     "grunt-git-authors": "3.2.0",
     "grunt-jsonlint": "1.0.7",
     "grunt-newer": "1.2.0",
