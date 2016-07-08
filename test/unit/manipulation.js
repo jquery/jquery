@@ -1359,7 +1359,7 @@ QUnit.test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function( ass
 		assert.strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
 		$el.html( "<b/>" ).children().replaceWith( function() { return input; } );
 		assert.strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
-		$el.html( "<i/>" ).children().replaceWith( function( i ) { i; return input; } );
+		$el.html( "<i/>" ).children().replaceWith( function( i ) { return input; } );
 		assert.strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
 		$el.html( "<p/>" ).children().replaceWith( function( i ) {
 			return i ?

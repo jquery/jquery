@@ -5,6 +5,7 @@
 		"no-multiple-empty-lines": "off",
 
 		// Because sizze is not compatible to jquery code style
+		"no-unused-expressions": "off",
 		"lines-around-comment": "off",
 		"space-in-parens": "off",
 		"camelcase": "off",

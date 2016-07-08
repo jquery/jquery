@@ -1196,7 +1196,6 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	ret = jQuery.extend( true, { "foo": 4 }, { "foo": new MyNumber( 5 ) } );
 	assert.ok( parseInt( ret.foo, 10 ) === 5, "Wrapped numbers copy correctly" );
 
-	nullUndef;
 	nullUndef = jQuery.extend( {}, options, { "xnumber2": null } );
 	assert.ok( nullUndef[ "xnumber2" ] === null, "Check to make sure null values are copied" );
 
