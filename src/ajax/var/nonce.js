@@ -1,7 +1,7 @@
 define( [
 	"../../core"
-], function( jQuery ) {
+], function() {
 	"use strict";
 
-	return jQuery.now();
+	return Date.now();
 } );

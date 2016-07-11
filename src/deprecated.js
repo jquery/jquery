@@ -22,6 +22,9 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
+	},
+	now: function() {
+		return Date.now;
 	}
 } );
 
