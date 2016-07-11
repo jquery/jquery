@@ -14,9 +14,14 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
+		oldNode = /^v0\./.test( process.version );
 
-		// Skip jsdom-related tests in Node.js 0.10 & 0.12
-		runJsdomTests = !/^v0/.test( process.version );
+	// Support: Node.js <4
+	// Skip running tasks that dropped support for Node.js 0.10 & 0.12
+	// in those Node versions.
+	function runIfNewNode( task ) {
+		return oldNode ? "print_old_node_message:" + task : task;
+	}
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -176,33 +181,50 @@ module.exports = function( grunt ) {
 	} );
 
 	// Load grunt tasks from NPM packages
-	require( "load-grunt-tasks" )( grunt );
+	// Support: Node.js <4
+	// Don't load the eslint task in old Node.js, it won't parse.
+	require( "load-grunt-tasks" )( grunt, {
+		pattern: oldNode ? [ "grunt-*", "!grunt-eslint" ] : [ "grunt-*" ]
+	} );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint", "eslint:all" ] );
+	grunt.registerTask( "print_old_node_message", function() {
+		var task = [].slice.call( arguments ).join( ":" );
+		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
+	} );
 
-	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
-	// jsdom version that needs compiling, making it harder for people to compile
-	// jQuery on Windows. (see gh-2519)
-	grunt.registerTask( "test_fast", runJsdomTests ? [ "node_smoke_tests" ] : [] );
+	grunt.registerTask( "lint", [
+		"jsonlint",
+		runIfNewNode( "eslint:all" )
+	] );
+
+	grunt.registerTask( "test_fast", [ runIfNewNode( "node_smoke_tests" ) ] );
 
 	grunt.registerTask( "test", [ "test_fast" ].concat(
-		runJsdomTests ? [ "promises_aplus_tests" ] : []
+		[ runIfNewNode( "promises_aplus_tests" ) ]
 	) );
 
 	// Short list as a high frequency watch task
 	grunt.registerTask( "dev", [
 			"build:*:*",
-			"newer:eslint:dev",
+			runIfNewNode( "newer:eslint:dev" ),
 			"uglify",
 			"remove_map_comment",
 			"dist:*"
 		]
 	);
 
-	grunt.registerTask( "default", [ "dev", "eslint:dist", "test_fast", "compare_size" ] );
+	grunt.registerTask( "default", [
+		"dev",
+		runIfNewNode( "eslint:dist" ),
+		"test_fast",
+		"compare_size"
+	] );
 
-	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:eslint:all" ] );
+	grunt.registerTask( "precommit_lint", [
+		"newer:jsonlint",
+		runIfNewNode( "newer:eslint:all" )
+	] );
 };
