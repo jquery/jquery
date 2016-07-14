@@ -50,7 +50,6 @@
 		"brace-style": "off",
 		"key-spacing": "off",
 		"camelcase": "off",
-		"dot-notaion": "off",
 
 		// Not really too much - waiting autofix features for these rules
 		"lines-around-comment": "off",
