@@ -3,9 +3,5 @@
 	"root": true,
 	"env": {
 		"node": true
-	},
-	rules: {
-		// Until https://github.com/jquery/eslint-config-jquery/issues/7 is resolved
-		"no-unused-expressions": "error"
 	}
 }
