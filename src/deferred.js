@@ -186,8 +186,13 @@ jQuery.extend( {
 								},
 
 								// Only normal processors (resolve) catch and reject exceptions
+								// Exceptions in other cases should not effect the promise result
 								process = special ?
-									mightThrow :
+									function() {
+										try {
+											mightThrow();
+										} catch ( e ) {}
+									} :
 									function() {
 										try {
 											mightThrow();
