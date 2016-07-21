@@ -401,7 +401,7 @@ jQuery.extend( {
 
 function deferredTick() {
 	processQueueTimeout = undefined;
-	jQuery.each( processQueue.splice( 0 ), function( _, process ) {
+	jQuery.each( processQueue.splice( 0, processQueue.length ), function( _, process ) {
 		process();
 	} );
 }
