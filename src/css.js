@@ -28,6 +28,7 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rcustomProperty = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",
@@ -165,10 +166,6 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
-function isCustomProperty( value ) {
-	return /^--.*/.test( value );
-}
-
 jQuery.extend( {
 
 	// Add in style property hooks for overriding the default
@@ -220,9 +217,8 @@ jQuery.extend( {
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
 			origName = jQuery.camelCase( name ),
-			customProperty = isCustomProperty( name ),
+			customProperty = rcustomProperty.test( name ),
 			style = elem.style;
-
 
 		if ( !customProperty ) {
 			name = jQuery.cssProps[ origName ] ||
@@ -263,12 +259,12 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-                if ( customProperty ) {
-                    style.setProperty( name, value );
-                } else {
-                    style[ name ] = value;
-                }
-            }
+				if ( customProperty ) {
+					style.setProperty( name, value );
+				} else {
+					style[ name ] = value;
+				}
+			}
 
 		} else {
 
@@ -287,7 +283,7 @@ jQuery.extend( {
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
 			origName = jQuery.camelCase( name ),
-			customProperty = isCustomProperty( name );
+			customProperty = rcustomProperty.test( name );
 
 		// Make sure that we're working with the right name. We don't
 		// want to modify the value if it is a CSS custom property

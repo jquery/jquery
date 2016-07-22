@@ -3,7 +3,7 @@ if ( jQuery.css ) {
 QUnit.module( "css", { teardown: moduleTeardown } );
 
 QUnit.test( "css(String|Hash)", function( assert ) {
-	assert.expect( 45 );
+	assert.expect( 42 );
 
 	assert.equal( jQuery( "#qunit-fixture" ).css( "display" ), "block", "Check for css property \"display\"" );
 
@@ -114,30 +114,35 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	div = jQuery( "<div/>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
 	assert.strictEqual( div.css( "z-index" ), "1000",
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
-
-  // Custom CSS properties
-	jQuery( "#customPropertyTest" ).css( "--color", "blue" );
-	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "blue", "Modified CSS custom property using string: Assert value is right" );
-
-	jQuery( "#customPropertyTest" ).css( { "--color": "red" } );
-	assert.equal( jQuery( "#customPropertyTest" ).css( "--color" ), "red", "Modified CSS custom property using object: Assert value is right" );
-
-	jQuery( "#customPropertyTest" ).css( { "--theme-dark": "purple" } );
-	assert.equal( jQuery( "#customPropertyTest" ).css( "--theme-dark" ), "purple", "Modified CSS custom property with dashed name: Assert value is right" );
 } );
 
-testIframe(
-	"css('--customProperty') should preserve whitespace correctly (#3144)",
-	"css/customProperties.html",
-	function( assert, jQuery, window, document, element ) {
-		assert.expect( 4 );
+QUnit.test( "css(--customProperty)", function( assert ) {
+	assert.expect( 9 );
 
-        assert.equal( element.css( "--prop1" ), " val1", "" );
-        assert.equal( element.css( "--prop2" ), "val2", "" );
-        assert.equal( element.css( "--prop3" ), "val3 ", "" );
-        assert.equal( element.css( "--prop4" ), " \"val4\" ", "" );
-    }
-);
+	var
+		div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+		$elem = jQuery( "<div>" ).addClass( "test__customProperties" ).appendTo( "#qunit-fixture" );
+
+	div.css( "--color", "blue" );
+	assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string: Assert value is right" );
+
+	div.css( "--color", "yellow" );
+	assert.equal( div.css( "--color" ), "yellow", "Overwrite CSS custom property: Assert value is right" );
+
+	div.css( { "--color": "red" } );
+	assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object: Assert value is right" );
+
+	div.css( { "--mixedCase": "green" } );
+	assert.equal( div.css( "--mixedCase" ), "green", "Modified CSS custom property with mixed case: Assert value is right" );
+
+	div.css( { "--theme-dark": "purple" } );
+	assert.equal( div.css( "--theme-dark" ), "purple", "Modified CSS custom property with dashed name: Assert value is right" );
+
+	assert.equal( $elem.css( "--prop1" ), " val1", "Preceding whitespace: assert whitespace maintained" );
+	assert.equal( $elem.css( "--prop2" ), "val2", "" );
+	assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace: assert whitespace maintained" );
+	assert.equal( $elem.css( "--prop4" ), " \"val4\" ", "Works with escaped characters" );
+} );
 
 QUnit.test( "css() explicit and relative values", function( assert ) {
 	assert.expect( 29 );
