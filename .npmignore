@@ -1,5 +1,5 @@
 .eslintignore
-.eslintrc
+.eslintrc.json
 
 /.editorconfig
 /.gitattributes
