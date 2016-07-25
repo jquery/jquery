@@ -113,7 +113,6 @@ module.exports = function( grunt ) {
 				// See https://github.com/sindresorhus/grunt-eslint/issues/119
 				quiet: true
 			},
-			all: ".",
 			dist: "dist/jquery.js",
 			dev: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
 		},
@@ -197,7 +196,8 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [
 		"jsonlint",
-		runIfNewNode( "eslint:all" )
+		runIfNewNode( "eslint:dev" ),
+		runIfNewNode( "eslint:dist" )
 	] );
 
 	grunt.registerTask( "test_fast", [ runIfNewNode( "node_smoke_tests" ) ] );
@@ -225,6 +225,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "precommit_lint", [
 		"newer:jsonlint",
-		runIfNewNode( "newer:eslint:all" )
+		runIfNewNode( "newer:eslint:dev" ),
+		runIfNewNode( "newer:eslint:dist" )
 	] );
 };
