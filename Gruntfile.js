@@ -113,8 +113,15 @@ module.exports = function( grunt ) {
 				// See https://github.com/sindresorhus/grunt-eslint/issues/119
 				quiet: true
 			},
-			dist: "dist/jquery.js",
-			dev: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+
+			// We have to explicitly declare "src" property otherwise "newer"
+			// task wouldn't work properly :/
+			dist: {
+				src: "dist/jquery.js"
+			},
+			dev: {
+				src: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+			}
 		},
 		testswarm: {
 			tests: [
@@ -148,7 +155,7 @@ module.exports = function( grunt ) {
 			]
 		},
 		watch: {
-			files: [ "<%= eslint.dev %>" ],
+			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
 		},
 		uglify: {
@@ -196,36 +203,39 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [
 		"jsonlint",
-		runIfNewNode( "eslint:dev" ),
-		runIfNewNode( "eslint:dist" )
+		runIfNewNode( "eslint" )
 	] );
 
-	grunt.registerTask( "test_fast", [ runIfNewNode( "node_smoke_tests" ) ] );
+	grunt.registerTask( "lint:newer", [
+		"newer:jsonlint",
+		runIfNewNode( "newer:eslint" )
+	] );
 
-	grunt.registerTask( "test", [ "test_fast" ].concat(
-		[ runIfNewNode( "promises_aplus_tests" ) ]
-	) );
+	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
+	grunt.registerTask( "test:slow", runIfNewNode( "promises_aplus_tests" ) );
 
-	// Short list as a high frequency watch task
+	grunt.registerTask( "test", [
+		"test:fast",
+		"test:slow"
+	] );
+
 	grunt.registerTask( "dev", [
-			"build:*:*",
-			runIfNewNode( "newer:eslint:dev" ),
-			"uglify",
-			"remove_map_comment",
-			"dist:*"
-		]
-	);
-
-	grunt.registerTask( "default", [
-		"dev",
-		runIfNewNode( "eslint:dist" ),
-		"test_fast",
+		"build:*:*",
+		runIfNewNode( "newer:eslint:dev" ),
+		"newer:uglify",
+		"remove_map_comment",
+		"dist:*",
 		"compare_size"
 	] );
 
-	grunt.registerTask( "precommit_lint", [
-		"newer:jsonlint",
-		runIfNewNode( "newer:eslint:dev" ),
-		runIfNewNode( "newer:eslint:dist" )
+	grunt.registerTask( "default", [
+		runIfNewNode( "eslint:dev" ),
+		"build:*:*",
+		"uglify",
+		"remove_map_comment",
+		"dist:*",
+		runIfNewNode( "eslint:dist" ),
+		"test:fast",
+		"compare_size"
 	] );
 };

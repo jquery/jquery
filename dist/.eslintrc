@@ -1,7 +1,7 @@
 {
 	"extends": "../src/.eslintrc",
 	"rules": {
-		// That is okay for built version
+		// That is okay for the built version
 		"no-multiple-empty-lines": "off",
 
 		// Because sizze is not compatible to jquery code style
