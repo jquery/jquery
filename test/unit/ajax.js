@@ -828,8 +828,9 @@ QUnit.module( "ajax", {
 		} ), "generic" );
 	} );
 
-	ajaxTest( "jQuery.ajax() - cache", 12, function( assert ) {
-		var re = /_=(.*?)(&|$)/g;
+	ajaxTest( "jQuery.ajax() - cache", 28, function( assert ) {
+		var re = /_=(.*?)(&|$)/g,
+			rootUrl = "data/text.php";
 
 		function request( url, title ) {
 			return {
@@ -837,6 +838,11 @@ QUnit.module( "ajax", {
 				cache: false,
 				beforeSend: function() {
 					var parameter, tmp;
+
+					// URL sanity check
+					assert.equal( this.url.indexOf( rootUrl ), 0, "root url not mangled: " + this.url );
+					assert.equal( /\&.*\?/.test( this.url ), false, "parameter delimiters in order" );
+
 					while ( ( tmp = re.exec( this.url ) ) ) {
 						assert.strictEqual( parameter, undefined, title + ": only one 'no-cache' parameter" );
 						parameter = tmp[ 1 ];
@@ -850,27 +856,31 @@ QUnit.module( "ajax", {
 
 		return [
 			request(
-				"data/text.php",
-				"no parameter"
+				rootUrl,
+				"no query"
 			),
 			request(
-				"data/text.php?pizza=true",
+				rootUrl + "?",
+				"empty query"
+			),
+			request(
+				rootUrl + "?pizza=true",
 				"1 parameter"
 			),
 			request(
-				"data/text.php?_=tobereplaced555",
+				rootUrl + "?_=tobereplaced555",
 				"_= parameter"
 			),
 			request(
-				"data/text.php?pizza=true&_=tobereplaced555",
+				rootUrl + "?pizza=true&_=tobereplaced555",
 				"1 parameter and _="
 			),
 			request(
-				"data/text.php?_=tobereplaced555&tv=false",
+				rootUrl + "?_=tobereplaced555&tv=false",
 				"_= and 1 parameter"
 			),
 			request(
-				"data/text.php?name=David&_=tobereplaced555&washere=true",
+				rootUrl + "?name=David&_=tobereplaced555&washere=true",
 				"2 parameters surrounding _="
 			)
 		];
