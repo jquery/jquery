@@ -2,6 +2,6 @@
 	"env": {
 		"es6": true
 	},
-	"extends" : "../../.eslintrc",
+	"extends" : "../../.eslintrc.json",
 	"root": true
 }
