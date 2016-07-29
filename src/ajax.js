@@ -18,7 +18,8 @@ define( [
 var
 	r20 = /%20/g,
 	rhash = /#.*$/,
-	rts = /([?&])_=[^&]*/,
+	rantiCache = /(?:[?&])_=[^&]*&?/,
+	remptyQuery = /\?$/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 
 	// #7653, #8125, #8152: local protocol detection
@@ -598,15 +599,16 @@ jQuery.extend( {
 
 			// If data is available, append data to url
 			if ( s.data ) {
-				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
+				cacheURL = cacheURL.replace( remptyQuery, "" ) +
+					( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
 
 				// #9682: remove data so that it's not used in an eventual retry
 				delete s.data;
 			}
 
-			// Add anti-cache in uncached url if needed
+			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
-				cacheURL = cacheURL.replace( rts, "" );
+				cacheURL = cacheURL.replace( rantiCache, "" ).replace( remptyQuery, "" );
 				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
 			}
 
