@@ -481,6 +481,19 @@ QUnit.test( "not(Selector) excludes non-element nodes (gh-2808)", function( asse
 	assert.deepEqual( mixedContents.not( "[id=a],*,[id=b]" ).get(), [], "not [id=a],*,[id=b]" );
 } );
 
+QUnit.test( "not(arraylike) passes non-element nodes (gh-3226)", function( assert ) {
+	assert.expect( 4 );
+
+	var mixedContents = jQuery( "#nonnodes" ).contents(),
+		mixedLength = mixedContents.length,
+		childElements = q( "nonnodesElement" );
+
+	assert.deepEqual( mixedContents.not( mixedContents.get() ).get(), [], "not everything" );
+	assert.deepEqual( mixedContents.not( childElements ).length, mixedLength - 1, "not childElements" );
+	assert.deepEqual( mixedContents.not( [ childElements[ 0 ].nextSibling ] ).length, mixedLength - 1, "not textnode" );
+	assert.deepEqual( mixedContents.not( document.body ).get(), mixedContents.get(), "not with unmatched element" );
+} );
+
 QUnit.test( "has(Element)", function( assert ) {
 	assert.expect( 3 );
 	var obj, detached, multipleParent;
