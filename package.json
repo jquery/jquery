@@ -53,7 +53,7 @@
     "qunitjs": "1.23.1",
     "requirejs": "2.2.0",
     "sinon": "1.17.3",
-    "sizzle": "2.3.0",
+    "sizzle": "2.3.1",
     "strip-json-comments": "2.0.1",
     "testswarm": "1.1.0"
   },
