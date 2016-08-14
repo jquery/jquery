@@ -128,7 +128,7 @@ QUnit.test( "jQuery.queue should return array while manipulating the queue", fun
 
 	var div = document.createElement( "div" );
 
-	assert.ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
+	assert.ok( Array.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
 } );
 
 QUnit.test( "delay()", function( assert ) {
