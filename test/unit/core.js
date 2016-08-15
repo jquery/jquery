@@ -197,27 +197,24 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 } );
 
-// This is not run in AMD mode
-if ( jQuery.noConflict ) {
-	QUnit.test( "noConflict", function( assert ) {
-		assert.expect( 7 );
+QUnit.test( "noConflict", function( assert ) {
+	assert.expect( 7 );
 
-		var $$ = jQuery;
+	var $$ = jQuery;
 
-		assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
-		assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
-		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
+	assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
+	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
 
-		jQuery = $ = $$;
+	jQuery = $ = $$;
 
-		assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
-		assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
-		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
-		assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
+	assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
+	assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
+	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
 
-		window[ "jQuery" ] = jQuery = $$;
-	} );
-}
+	window[ "jQuery" ] = jQuery = $$;
+} );
 
 QUnit.test( "trim", function( assert ) {
 	assert.expect( 13 );

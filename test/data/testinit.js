@@ -320,9 +320,7 @@ this.loadTests = function() {
 				/**
 				 * Run in noConflict mode
 				 */
-				if ( jQuery.noConflict ) {
-					jQuery.noConflict();
-				}
+				jQuery.noConflict();
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( QUnit.isSwarm ) {

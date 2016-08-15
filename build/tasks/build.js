@@ -17,7 +17,6 @@ module.exports = function( grunt ) {
 		read = function( fileName ) {
 			return grunt.file.read( srcFolder + fileName );
 		},
-		globals = read( "exports/global.js" ),
 		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
 		config = {
 			baseUrl: "src",
@@ -39,10 +38,7 @@ module.exports = function( grunt ) {
 			skipSemiColonInsertion: true,
 			wrap: {
 				start: wrapper[ 0 ].replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" ),
-				end: globals.replace(
-					/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
-					""
-				) + wrapper[ 1 ]
+				end: wrapper[ 1 ]
 			},
 			rawText: {},
 			onBuildWrite: convert
