@@ -28,6 +28,7 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rnonemptywhite = /^\s+$/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",
@@ -257,7 +258,11 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-				style[ name ] = value;
+				// Support: Edge 14
+				// Edge collapses a pure-whitespace value which causes the value to reset.
+				if ( !rnonemptywhite.test( value ) ) {
+					style[ name ] = value;
+				}
 			}
 
 		} else {
