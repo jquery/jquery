@@ -1,13 +1,13 @@
 define( [
 	"../core",
+	"../core/stripAndCollapse",
 	"./support",
 	"../core/init"
-], function( jQuery, support ) {
+], function( jQuery, stripAndCollapse, support ) {
 
 "use strict";
 
-var rreturn = /\r/g,
-	rspaces = /[\x20\t\r\n\f]+/g;
+var rreturn = /\r/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
@@ -91,7 +91,7 @@ jQuery.extend( {
 					// option.text throws exceptions (#14686, #14858)
 					// Strip and collapse whitespace
 					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
-					jQuery.trim( jQuery.text( elem ) ).replace( rspaces, " " );
+					stripAndCollapse( jQuery.text( elem ) );
 			}
 		},
 		select: {

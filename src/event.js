@@ -2,13 +2,13 @@ define( [
 	"./core",
 	"./var/document",
 	"./var/documentElement",
-	"./var/rnotwhite",
+	"./var/rnothtmlwhite",
 	"./var/slice",
 	"./data/var/dataPriv",
 
 	"./core/init",
 	"./selector"
-], function( jQuery, document, documentElement, rnotwhite, slice, dataPriv ) {
+], function( jQuery, document, documentElement, rnothtmlwhite, slice, dataPriv ) {
 
 "use strict";
 
@@ -147,7 +147,7 @@ jQuery.event = {
 		}
 
 		// Handle multiple events separated by a space
-		types = ( types || "" ).match( rnotwhite ) || [ "" ];
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[ t ] ) || [];
@@ -229,7 +229,7 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
-		types = ( types || "" ).match( rnotwhite ) || [ "" ];
+		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[ t ] ) || [];

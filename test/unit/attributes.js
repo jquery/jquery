@@ -657,6 +657,28 @@ QUnit.test( "removeAttr(Multi String, variable space width)", function( assert )
 	} );
 } );
 
+QUnit.test( "removeAttr(Multi String, non-HTML whitespace is valid in attribute names (gh-3003)", function( assert ) {
+	assert.expect( 8 );
+
+	var div = jQuery( "<div id='a' data-\xA0='b' title='c' rel='d'></div>" );
+	var tests = {
+		id: "a",
+		"data-\xA0": "b",
+		title: "c",
+		rel: "d"
+	};
+
+	jQuery.each( tests, function( key, val ) {
+		assert.equal( div.attr( key ), val, "Attribute \"" + key + "\" exists, and has a value of \"" + val + "\"" );
+	} );
+
+	div.removeAttr( "id   data-\xA0 title  rel  " );
+
+	jQuery.each( tests, function( key ) {
+		assert.equal( div.attr( key ), undefined, "Attribute \"" + key + "\" was removed" );
+	} );
+} );
+
 QUnit.test( "prop(String, Object)", function( assert ) {
 
 	assert.expect( 17 );
@@ -1117,7 +1139,7 @@ QUnit.test( "val(select) after form.reset() (Bug #2551)", function( assert ) {
 } );
 
 QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
-	assert.expect( 35 );
+	assert.expect( 37 );
 
 	var $select = jQuery( "<select/>" ).appendTo( "#qunit-fixture" ),
 		spaces = {
@@ -1168,13 +1190,17 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 		html += "<option>" + value + "text</option>";
 		$select.html( html );
 
-		$select.val( "text" );
-		assert.equal( $select.val(), "text", "Value with space character at beginning or end is stripped (" + key + ") selected (text)" );
 
 		if ( /^\\u/.test( key ) ) {
+			$select.val( val + "text" );
+			assert.equal( $select.val(), val + "text", "Value with non-HTML space character at beginning is not stripped (" + key + ") selected (" + key + "text)" );
 			$select.val( "te" + val + "xt" );
 			assert.equal( $select.val(), "te" + val + "xt", "Value with non-space whitespace character (" + key + ") in the middle selected (text)" );
+			$select.val( "text" + val );
+			assert.equal( $select.val(), "text" + val, "Value with non-HTML space character at end is not stripped (" + key + ") selected (text" + key + ")" );
 		} else {
+			$select.val( "text" );
+			assert.equal( $select.val(), "text", "Value with HTML space character at beginning or end is stripped (" + key + ") selected (text)" );
 			$select.val( "te xt" );
 			assert.equal( $select.val(), "te xt", "Value with space character (" + key + ") in the middle selected (text)" );
 		}
@@ -1539,6 +1565,24 @@ QUnit.test( "addClass, removeClass, hasClass on many elements", function( assert
 
 	assert.ok( !jQuery( "<p class='hi0'>p0</p><p class='hi1'>p1</p><p class='hi2'>p2</p>" ).hasClass( "hi" ),
 		"Did not find a class when not present" );
+} );
+
+QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-HTML whitespace (gh-3072, gh-3003)", function( assert ) {
+	assert.expect( 9 );
+
+	var $elem = jQuery( "<div class='&#xA0;test'></div>" );
+
+	function testMatches() {
+		assert.ok( $elem.is( ".\\A0 test" ), "Element matches with collapsed space" );
+		assert.ok( $elem.is( ".\\A0test" ), "Element matches with non-breaking space" );
+		assert.ok( $elem.hasClass( "\xA0test" ), "Element has class with non-breaking space" );
+	}
+
+	testMatches();
+	$elem.addClass( "foo" );
+	testMatches();
+	$elem.removeClass( "foo" );
+	testMatches();
 } );
 
 QUnit.test( "contents().hasClass() returns correct values", function( assert ) {
