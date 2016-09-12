@@ -669,13 +669,13 @@ QUnit.test( "removeAttr(Multi String, non-HTML whitespace is valid in attribute 
 	};
 
 	jQuery.each( tests, function( key, val ) {
-		assert.equal( div.attr( key ), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
+		assert.equal( div.attr( key ), val, "Attribute \"" + key + "\" exists, and has a value of \"" + val + "\"" );
 	} );
 
 	div.removeAttr( "id   data-\xA0 title  rel  " );
 
 	jQuery.each( tests, function( key ) {
-		assert.equal( div.attr( key ), undefined, "Attribute `" + key + "` was removed" );
+		assert.equal( div.attr( key ), undefined, "Attribute \"" + key + "\" was removed" );
 	} );
 } );
 
