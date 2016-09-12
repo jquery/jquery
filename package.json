@@ -47,7 +47,7 @@
     "jsdom": "5.6.1",
     "load-grunt-tasks": "3.5.0",
     "native-promise-only": "0.8.1",
-    "promises-aplus-tests": "2.1.1",
+    "promises-aplus-tests": "2.1.2",
     "q": "1.4.1",
     "qunit-assert-step": "1.0.3",
     "qunitjs": "1.23.1",
