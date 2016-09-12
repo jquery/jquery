@@ -2329,10 +2329,12 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 	// Selector should be trimmed to avoid leading spaces (#14773)
 	// Selector should include any valid non-HTML whitespace (#3003)
-	QUnit.asyncTest( "jQuery.fn.load( URL_SELECTOR with non-HTML whitespace(#3003) )", 1, function( assert ) {
-		jQuery( "#first" ).load( "data/test3.html   #whitespace\xA0 ", function() {
+	QUnit.test( "jQuery.fn.load( URL_SELECTOR with non-HTML whitespace(#3003) )", function( assert ) {
+		assert.expect( 1 );
+		var done = assert.async();
+		jQuery( "#first" ).load( "data/test3.html   #whitespace\\\\xA0 ", function() {
 			assert.strictEqual( jQuery( this ).children( "div" ).length, 1, "Verify that specific elements were injected" );
-			QUnit.start();
+			done();
 		} );
 	} );
 

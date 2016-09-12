@@ -660,13 +660,13 @@ QUnit.test( "removeAttr(Multi String, variable space width)", function( assert )
 QUnit.test( "removeAttr(Multi String, non-HTML whitespace is valid in attribute names (gh-3003)", function( assert ) {
 	assert.expect( 8 );
 
-	var div = jQuery( "<div id='a' data-\xA0='b' title='c' rel='d'></div>" ),
-		tests = {
-			id: "a",
-			"data-\xA0": "b",
-			title: "c",
-			rel: "d"
-		};
+	var div = jQuery( "<div id='a' data-\xA0='b' title='c' rel='d'></div>" );
+	var tests = {
+		id: "a",
+		"data-\xA0": "b",
+		title: "c",
+		rel: "d"
+	};
 
 	jQuery.each( tests, function( key, val ) {
 		assert.equal( div.attr( key ), val, "Attribute `" + key + "` exists, and has a value of `" + val + "`" );
