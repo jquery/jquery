@@ -43,9 +43,9 @@ function makeReleaseCopies( Release ) {
 			// "file":"jquery.min.js" ... "sources":["jquery.js"]
 			text = fs.readFileSync( builtFile, "utf8" )
 				.replace( /"file":"([^"]+)"/,
-					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) )
+					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js\"" ) )
 				.replace( /"sources":\["([^"]+)"\]/,
-					"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+					"\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 			fs.writeFileSync( releaseFile, text );
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );
