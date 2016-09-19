@@ -130,7 +130,7 @@ testIframe(
 			"radioValue": true,
 			"reliableMarginLeft": true
 		};
-	} else if ( /\b9\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -139,23 +139,6 @@ testIframe(
 			"clearCloneStyle": true,
 			"cors": true,
 			"createHTMLDocument": true,
-			"focusin": false,
-			"noCloneChecked": true,
-			"optSelected": true,
-			"pixelMarginRight": true,
-			"pixelPosition": false,
-			"radioValue": true,
-			"reliableMarginLeft": true
-		};
-	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
-		expected = {
-			"ajax": true,
-			"boxSizingReliable": true,
-			"checkClone": true,
-			"checkOn": true,
-			"clearCloneStyle": true,
-			"cors": true,
-			"createHTMLDocument": false,
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
@@ -181,7 +164,7 @@ testIframe(
 			"radioValue": true,
 			"reliableMarginLeft": false
 		};
-	} else if ( /iphone os 9_/i.test( userAgent ) ) {
+	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
