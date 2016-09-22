@@ -94,9 +94,10 @@ module.exports = function( Release, files, complete ) {
 		fs.writeFileSync( Release.dir.dist + "/bower.json", generateBower() );
 
 		console.log( "Adding files to dist..." );
-		Release.exec( "git add .", "Error adding files." );
+
+		Release.exec( "git add -A", "Error adding files." );
 		Release.exec(
-			"git commit -m 'Release " + Release.newVersion + "'",
+			"git commit -m \"Release " + Release.newVersion + "\"",
 			"Error committing files."
 		);
 		console.log();
@@ -104,7 +105,7 @@ module.exports = function( Release, files, complete ) {
 		console.log( "Tagging release on dist..." );
 		Release.exec( "git tag " + Release.newVersion,
 			"Error tagging " + Release.newVersion + " on dist repo." );
-		Release.tagTime = Release.exec( "git log -1 --format='%ad'",
+		Release.tagTime = Release.exec( "git log -1 --format=\"%ad\"",
 			"Error getting tag timestamp." ).trim();
 	}
 
