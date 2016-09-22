@@ -77,7 +77,7 @@ Jared Grippe <jared@deadlyicon.com>
 Sylvester Keil <sylvester@keil.or.at>
 Brandon Sterne <bsterne@mozilla.com>
 Mathias Bynens <mathias@qiwi.be>
-Timmy Willison <timmywillisn@gmail.com>
+Timmy Willison <4timmywil@gmail.com>
 Corey Frang <gnarf37@gmail.com>
 Digitalxero <digitalxero>
 Anton Kovalyov <anton@kovalyov.net>
