@@ -66,8 +66,8 @@ jQuery.extend( {
  */
 function detach() {
 	if ( document.addEventListener ) {
-		document.removeEventListener( "DOMContentLoaded", completed );
-		window.removeEventListener( "load", completed );
+		document.removeEventListener( "DOMContentLoaded", completed, 0);
+		window.removeEventListener( "load", completed, 0);
 
 	} else {
 		document.detachEvent( "onreadystatechange", completed );
@@ -109,10 +109,10 @@ jQuery.ready.promise = function( obj ) {
 		} else if ( document.addEventListener ) {
 
 			// Use the handy event callback
-			document.addEventListener( "DOMContentLoaded", completed );
+			document.addEventListener( "DOMContentLoaded", completed, false);
 
 			// A fallback to window.onload, that will always work
-			window.addEventListener( "load", completed );
+			window.addEventListener( "load", completed, false);
 
 		// If IE event model is used
 		} else {
