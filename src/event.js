@@ -214,6 +214,9 @@ jQuery.event = {
 			jQuery.event.global[ type ] = true;
 		}
 
+		eventHandle = undefined;
+		elemData = undefined;
+
 	},
 
 	// Detach an event or set of events from an element
