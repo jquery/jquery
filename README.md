@@ -1,6 +1,6 @@
 [jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
-
+[![CDNJS](https://img.shields.io/cdnjs/v/jquery.svg)](https://cdnjs.com/libraries/jquery)
 Contribution Guides
 --------------------------------------
 
