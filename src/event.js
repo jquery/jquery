@@ -214,8 +214,9 @@ jQuery.event = {
 			jQuery.event.global[ type ] = true;
 		}
 
-		eventHandle = undefined;
-		elemData = undefined;
+		// Nullify the eventHandle so it wouldn't be stored in the memory
+		eventHandle = null;
+		elemData = null;
 
 	},
 
