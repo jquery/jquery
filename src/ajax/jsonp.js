@@ -12,7 +12,7 @@ var oldCallbacks = [],
 
 // Default jsonp settings
 jQuery.ajaxSetup( {
-	jsonp: "callback",
+	jsonp: false,
 	jsonpCallback: function() {
 		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce++ ) );
 		this[ callback ] = true;
