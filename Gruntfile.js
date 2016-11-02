@@ -203,12 +203,21 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "lint", [
 		"jsonlint",
-		runIfNewNode( "eslint" )
+
+		// Running the full eslint task without breaking it down to targets
+		// would run the dist target first which would point to errors in the built
+		// file, making it harder to fix them. We want to check the built file only
+		// if we already know the source files pass the linter.
+		runIfNewNode( "eslint:dev" ),
+		runIfNewNode( "eslint:dist" )
 	] );
 
 	grunt.registerTask( "lint:newer", [
 		"newer:jsonlint",
-		runIfNewNode( "newer:eslint" )
+
+		// Don't replace it with just the task; see the above comment.
+		runIfNewNode( "newer:eslint:dev" ),
+		runIfNewNode( "newer:eslint:dist" )
 	] );
 
 	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );

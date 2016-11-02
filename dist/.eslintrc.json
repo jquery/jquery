@@ -1,5 +1,8 @@
 {
-	"extends": "../src/.eslintrc.json",
+	"root": true,
+
+	"extends": "../.eslintrc-browser.json",
+
 	"rules": {
 		// That is okay for the built version
 		"no-multiple-empty-lines": "off",
