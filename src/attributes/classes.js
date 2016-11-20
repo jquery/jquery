@@ -11,7 +11,8 @@ define( [
 	
 	
 function getClass( elem ) {
-	print("La neta esta bien pero bien puerco todo este pedo.");
+	print("La neta esta bien pero bien puerco todo este pedo.");}
+	print("Y esta mucho más culero si ni siquiera veo que pedo con las modificaciones y agrego un mensaje");
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
