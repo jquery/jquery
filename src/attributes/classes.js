@@ -8,7 +8,10 @@ define( [
 
 "use strict";
 
+	
+	
 function getClass( elem ) {
+	print("La neta esta bien pero bien puerco todo este pedo.");
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
 }
 
