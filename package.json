@@ -6,7 +6,7 @@
   "main": "dist/jquery.js",
   "homepage": "https://jquery.com",
   "author": {
-    "name": "jQuery Foundation and other contributors",
+    "name": "JS Foundation and other contributors",
     "url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
   },
   "repository": {
