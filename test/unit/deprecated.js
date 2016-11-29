@@ -112,5 +112,5 @@ QUnit.test( "jQuery.parseJSON", function( assert ) {
 } );
 
 QUnit.test( "jQuery.isArray", function( assert ) {
-	assert.strictEqual( jQuery.isArray, Array.isArray, "jQuery.isArray raises error" );
+	assert.strictEqual( jQuery.isArray, Array.isArray, "Array.isArray equals jQuery.isArray" );
 } );
