@@ -557,8 +557,14 @@ jQuery.extend( {
 			}
 		}
 
+		// Uppercase the type
+		s.type = s.type.toUpperCase();
+
+		// Determine if request has content
+		s.hasContent = !rnoContent.test( s.type );
+
 		// Convert data if not already a string
-		if ( s.data && s.processData && typeof s.data !== "string" ) {
+		if ( s.data && ( s.processData || !s.hasContent ) && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data, s.traditional );
 		}
 
@@ -578,12 +584,6 @@ jQuery.extend( {
 		if ( fireGlobals && jQuery.active++ === 0 ) {
 			jQuery.event.trigger( "ajaxStart" );
 		}
-
-		// Uppercase the type
-		s.type = s.type.toUpperCase();
-
-		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
 
 		// Save the URL in case we're toying with the If-Modified-Since
 		// and/or If-None-Match header later on
