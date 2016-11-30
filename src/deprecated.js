@@ -23,8 +23,10 @@ jQuery.fn.extend( {
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
 	}
+
 } );
 
+jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 
 } );

@@ -169,7 +169,7 @@ this.ajaxTest = function( title, expect, options ) {
 		}
 		options = options || [];
 		requestOptions = options.requests || options.request || options;
-		if ( !jQuery.isArray( requestOptions ) ) {
+		if ( !Array.isArray( requestOptions ) ) {
 			requestOptions = [ requestOptions ];
 		}
 

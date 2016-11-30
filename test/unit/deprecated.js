@@ -110,3 +110,7 @@ QUnit.test( "jQuery.parseJSON", function( assert ) {
 
 	assert.strictEqual( jQuery.parseJSON( [ 0 ] ), 0, "Input cast to string" );
 } );
+
+QUnit.test( "jQuery.isArray", function( assert ) {
+	assert.strictEqual( jQuery.isArray, Array.isArray, "Array.isArray equals jQuery.isArray" );
+} );

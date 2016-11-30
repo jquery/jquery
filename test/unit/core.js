@@ -1161,7 +1161,7 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.ok( jQuery.extend( true, {}, nestedarray )[ "arr" ] !== arr, "Deep extend of object must clone child array" );
 
 	// #5991
-	assert.ok( jQuery.isArray( jQuery.extend( true, { "arr": {} }, nestedarray )[ "arr" ] ), "Cloned array have to be an Array" );
+	assert.ok( Array.isArray( jQuery.extend( true, { "arr": {} }, nestedarray )[ "arr" ] ), "Cloned array have to be an Array" );
 	assert.ok( jQuery.isPlainObject( jQuery.extend( true, { "arr": arr }, { "arr": {} } )[ "arr" ] ), "Cloned object have to be an plain object" );
 
 	empty = {};
@@ -1282,7 +1282,7 @@ QUnit.test( "jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed
 	result = jQuery.extend( true, {}, initial );
 
 	assert.deepEqual( result, initial, "The [result] and [initial] have equal shape and values" );
-	assert.ok( !jQuery.isArray( result.object ), "result.object wasn't paved with an empty array" );
+	assert.ok( !Array.isArray( result.object ), "result.object wasn't paved with an empty array" );
 } );
 
 QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
