@@ -8,6 +8,7 @@
 	"globals": {
 		"window": true,
 		"jQuery": true,
+		"jQueryDefined": true,
 		"define": true,
 		"module": true,
 		"noGlobal": true
