@@ -1,29 +1,24 @@
-var $, jQuery;
-
 define( [
 	"../core"
-], function( jQueryDefined, noGlobal ) {
-
-        "use strict";
-
+], function( jQuery, noGlobal ) {
         // Map over jQuery in case of overwrite
 
-        var _jQuery = jQuery;
+        var _jQuery = this.jQuery;
 
 	// Map over the $ in case of overwrite
 
-	var _$ = $;
+	var _$ = this.$;
 
-	jQueryDefined.noConflict = function( deep ) {
-		if ( $ === jQueryDefined ) {
+	jQuery.noConflict = function( deep ) {
+		if ( $ === jQuery ) {
 			$ = _$;
 		}
 
-		if ( deep && jQuery === jQueryDefined ) {
+		if ( deep && jQuery === jQuery ) {
 			jQuery = _jQuery;
 		}
 
-		return jQueryDefined;
+		return jQuery;
 	};
 
 	// Expose jQuery and $ identifiers, even in AMD
@@ -31,6 +26,6 @@ define( [
 	// and CommonJS for browser emulators (#13566)
 
 	if ( !noGlobal ) {
-		jQuery = $ = jQueryDefined;
+		this.jQuery = this.$ = jQuery;
 	}
 } );
