@@ -1,7 +1,7 @@
 define( [
 	"../core"
 ], function( jQuery, noGlobal ) {
-	
+
         // Map over jQuery in case of overwrite
 
         var _jQuery = this.jQuery;
