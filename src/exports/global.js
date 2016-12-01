@@ -11,11 +11,11 @@ define( [
 
 	jQuery.noConflict = function( deep ) {
 		if ( $ === jQuery ) {
-			$ = _$;
+			this.$ = _$;
 		}
 
 		if ( deep && jQuery === jQuery ) {
-			jQuery = _jQuery;
+			this.jQuery = _jQuery;
 		}
 
 		return jQuery;
