@@ -6,19 +6,19 @@ define( [
 
         // Map over jQuery in case of overwrite
 
-        var _jQuery = global.jQuery;
+        var _jQuery = globalObject.jQuery;
 
 	// Map over the $ in case of overwrite
 
-	var _$ = global.$;
+	var _$ = globalObject.$;
 
 	jQuery.noConflict = function( deep ) {
-		if ( this.$ === jQuery ) {
-			global.$ = _$;
+		if ( globalObject.$ === jQuery ) {
+			globalObject.$ = _$;
 		}
 
 		if ( deep && global.jQuery === jQuery ) {
-			global.jQuery = _jQuery;
+			globalObject.jQuery = _jQuery;
 		}
 
 		return jQuery;
@@ -29,6 +29,6 @@ define( [
 	// and CommonJS for browser emulators (#13566)
 
 	if ( !noGlobal ) {
-		global.jQuery = global.$ = jQuery;
+		globalObject.jQuery = globalObject.$ = jQuery;
 	}
 } );
