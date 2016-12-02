@@ -2,21 +2,23 @@ define( [
 	"../core"
 ], function( jQuery, noGlobal ) {
 
+        'use strict';
+        
         // Map over jQuery in case of overwrite
 
-        var _jQuery = this.jQuery;
+        var _jQuery = window.jQuery;
 
 	// Map over the $ in case of overwrite
 
-	var _$ = this.$;
+	var _$ = window.$;
 
 	jQuery.noConflict = function( deep ) {
 		if ( this.$ === jQuery ) {
-			this.$ = _$;
+			window.$ = _$;
 		}
 
-		if ( deep && this.jQuery === jQuery ) {
-			this.jQuery = _jQuery;
+		if ( deep && window.jQuery === jQuery ) {
+			window.jQuery = _jQuery;
 		}
 
 		return jQuery;
@@ -27,6 +29,6 @@ define( [
 	// and CommonJS for browser emulators (#13566)
 
 	if ( !noGlobal ) {
-		this.jQuery = this.$ = jQuery;
+		window.jQuery = window.$ = jQuery;
 	}
 } );
