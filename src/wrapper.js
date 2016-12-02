@@ -60,8 +60,6 @@
                 if ( !global.window.document ) {
 	                throw new Error( "jQuery requires a window with a document" );
 	        }
-                
-                // Note: Where is noGlobal supposed to come from?
 
 		factory( global.window, false, global );
 	}
