@@ -26,26 +26,43 @@
 		module.exports = ( global.window && global.window.document ) ?
 			factory( global.window, true ) :
 			function( global ) {
-				if ( !global.document ) {
-					throw new Error( "jQuery requires a document" );
+
+                                // Allow passing either the global object or a window-like object                        
+
+                                window = global.window || global;
+                        
+				if ( !window.document ) {
+					throw new Error( "jQuery requires a window with a document" );
 				}
-				return factory( global );
+
+				return factory( window );
 			};
 	} else {
-		factory( global.window || global );
-	}
 
+                // For environments lacking module.exports (e.g. browsers)
+                // Pass a reference to the global `window` object
+
+                if ( !global.window ) {
+	                throw new Error( "jQuery requires a window" );
+	        }
+
+                if ( !global.window.document ) {
+	                throw new Error( "jQuery requires a window with a document" );
+	        }
+
+		factory( global.window );
+	}
 // Pass this if window is not defined yet
 } )( typeof global == "undefined" ? this : global, function( window, noGlobal ) {
 
-// Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
-// throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
-// arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
-// enough that all such attempts are guarded in a try block.
-"use strict";
+        // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
+        // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
+        // arguments.callee.caller (trac-13335). But as of jQuery 3.0 (2016), strict mode should be common
+        // enough that all such attempts are guarded in a try block.
+        "use strict";
 
-// @CODE
-// build.js inserts compiled jQuery here
+        // @CODE
+        // build.js inserts compiled jQuery here
 
-return jQuery;
+        return jQuery;
 } );
