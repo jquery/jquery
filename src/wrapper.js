@@ -24,18 +24,29 @@
 		// (such as Node.js), expose a factory as module.exports.
 		
 		module.exports = ( global.window && global.window.document ) ?
-			factory( global.window, true ) :
-			function( global ) {
+			factory( global.window, true, global ) :
+			function( global, window ) {
 
-                                // Allow passing either the global object or a window-like object                        
+                                // If no window reference passed...
 
-                                window = global.window || global;
+                                if ( !window ) {
+                                        
+                                        // If window is not available on the global object (or fake window object or whatever)...
+                                        
+                                        if ( !global.window ) {
+	                                       throw new Error( "jQuery requires a window" );
+	                                }
+                                        
+                                        // Get the window reference from the global object (*may* be the same object)
+                                        
+                                        window = global.window;
+                                }
                         
 				if ( !window.document ) {
 					throw new Error( "jQuery requires a window with a document" );
 				}
 
-				return factory( window );
+				return factory( window, false, global );
 			};
 	} else {
 
@@ -49,11 +60,13 @@
                 if ( !global.window.document ) {
 	                throw new Error( "jQuery requires a window with a document" );
 	        }
+                
+                // Note: Where is noGlobal supposed to come from?
 
-		factory( global.window );
+		factory( global.window, false, global );
 	}
 // Pass this if window is not defined yet
-} )( typeof global == "undefined" ? this : global, function( window, noGlobal ) {
+} )( typeof global == "undefined" ? this : global, function( window, noGlobal, globalObject ) {
 
         // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
         // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
