@@ -2,8 +2,8 @@ define( [
 	"../core"
 ], function( jQuery, noGlobal ) {
 
-        'use strict';
-        
+        "use strict";
+
         // Map over jQuery in case of overwrite
 
         var _jQuery = window.jQuery;
