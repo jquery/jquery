@@ -63,7 +63,7 @@
 
 		factory( global.window, false, global );
 	}
-// Pass this if window is not defined yet
+
 } )( typeof global == "undefined" ? this : global, function( window, noGlobal, globalObject ) {
 
         // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
