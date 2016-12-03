@@ -10,8 +10,7 @@
 		"jQuery": true,
 		"define": true,
 		"module": true,
-		"noGlobal": true,
-                "globalObject": true
+		"noGlobal": true
 	},
 	"rules": {
 		"strict": ["error", "function"]
