@@ -27,6 +27,11 @@
 
 		module.exports = ( global.window && global.window.document ) ?
 			factory( global.window, true, global ) :
+
+			// NOTE, may pass either global OR window object for first argument
+			// Second argument is used only when window is not global AND
+			// caller wants to augment the global object with $ and jQuery
+
 			function( global, window ) {
 
 				// If no window reference passed...
