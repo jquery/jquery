@@ -34,7 +34,7 @@
                                         // If window is not available on the global object (or fake window object or whatever)...
 
                                         if ( !global.window ) {
-                                                throw new Error( "jQuery requires a window" );
+                                                throw new Error( "jQuery requires a window with a document" );
                                         }
 
                                         // Get the window reference from the global object (*may* be the same object)
