@@ -14,7 +14,9 @@
  */
 ( function( global, factory ) {
 
-	"use strict";
+"use strict";
+
+	var errorMessage = "jQuery requires a window with a document";
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 
@@ -27,22 +29,20 @@
 			factory( global.window, true, global ) :
 			function( global, window ) {
 
-				var errorMessage = "jQuery requires a window with a document";
+				// If no window reference passed...
 
-                                // If no window reference passed...
+				if ( !window ) {
 
-                                if ( !window ) {
+					// If window is not available on the global object (or fake window object or whatever)...
 
-                                        // If window is not available on the global object (or fake window object or whatever)...
-
-                                        if ( !global.window ) {
+					if ( !global.window ) {
 						throw new Error( errorMessage );
-                                        }
+					}
 
-                                        // Get the window reference from the global object (*may* be the same object)
+					// Get the window reference from the global object (*may* be the same object)
 
-                                        window = global.window;
-                                }
+					window = global.window;
+				}
 
 				if ( !window.document ) {
 					throw new Error( errorMessage );
@@ -52,16 +52,16 @@
 			};
 	} else {
 
-                // For environments lacking module.exports (e.g. browsers)
-                // Pass a reference to the global `window` object
+		// For environments lacking module.exports (e.g. browsers)
+		// Pass a reference to the global `window` object
 
-                if ( !global.window ) {
-			throw new Error( "jQuery requires a window" );
-                }
+		if ( !global.window ) {
+			throw new Error( errorMessage );
+		}
 
-                if ( !global.window.document ) {
-			throw new Error( "jQuery requires a window with a document" );
-                }
+		if ( !global.window.document ) {
+			throw new Error( errorMessage );
+		}
 
 		factory( global.window, false, global );
 	}
