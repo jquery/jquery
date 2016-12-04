@@ -11,7 +11,7 @@
 		"define": true,
 		"module": true,
 		"noGlobal": true,
-                "globalObject": true
+		"globalObject": true
 	},
 	"rules": {
 		"strict": ["error", "function"]
