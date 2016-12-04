@@ -28,7 +28,7 @@
 			function( global, window ) {
 
 				var errorMessage = "jQuery requires a window with a document";
-			
+
                                 // If no window reference passed...
 
                                 if ( !window ) {
@@ -36,7 +36,7 @@
                                         // If window is not available on the global object (or fake window object or whatever)...
 
                                         if ( !global.window ) {
-                                        	throw new Error( errorMessage );
+						throw new Error( errorMessage );
                                         }
 
                                         // Get the window reference from the global object (*may* be the same object)
@@ -56,11 +56,11 @@
                 // Pass a reference to the global `window` object
 
                 if ( !global.window ) {
-                        throw new Error( "jQuery requires a window" );
+			throw new Error( "jQuery requires a window" );
                 }
 
                 if ( !global.window.document ) {
-                        throw new Error( "jQuery requires a window with a document" );
+			throw new Error( "jQuery requires a window with a document" );
                 }
 
 		factory( global.window, false, global );
