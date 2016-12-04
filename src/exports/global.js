@@ -2,11 +2,11 @@ define( [
 	"../core"
 ], function( jQuery, noGlobal, globalObject ) {
 
-        "use strict";
+"use strict";
 
-        // Map over jQuery in case of overwrite
+	// Map over jQuery in case of overwrite
 
-        var _jQuery = globalObject.jQuery;
+	var _jQuery = globalObject.jQuery;
 
 	// Map over the $ in case of overwrite
 
