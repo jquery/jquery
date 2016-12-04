@@ -17,7 +17,11 @@ module.exports = function( grunt ) {
 		read = function( fileName ) {
 			return grunt.file.read( srcFolder + fileName );
 		},
-		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
+
+		// Catch `// @CODE` and subsequent comment lines event if they don't start
+		// in the first column.
+		wrapper = read( "wrapper.js" ).split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ ),
+
 		config = {
 			baseUrl: "src",
 			name: "jquery",
