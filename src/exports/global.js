@@ -1,6 +1,6 @@
 define( [
 	"../core"
-], function( jQuery, noGlobal, globalObject ) {
+], function( jQuery, noGlobal ) {
 
 "use strict";
 
