@@ -86,7 +86,7 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var docElem, win, rect, doc,
+		var win, rect,
 			elem = this[ 0 ];
 
 		if ( !elem ) {
@@ -104,13 +104,11 @@ jQuery.fn.extend( {
 
 		// Make sure element is not hidden (display: none)
 		if ( rect.width || rect.height ) {
-			doc = elem.ownerDocument;
-			win = getWindow( doc );
-			docElem = doc.documentElement;
+			win = getWindow( elem.ownerDocument );
 
 			return {
-				top: rect.top + win.pageYOffset - docElem.clientTop,
-				left: rect.left + win.pageXOffset - docElem.clientLeft
+				top: rect.top + win.pageYOffset,
+				left: rect.left + win.pageXOffset
 			};
 		}
 

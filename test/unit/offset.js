@@ -570,4 +570,72 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 	}
 } );
 
+(function() {
+	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ];
+
+	supportjQuery.each( POSITION_VALUES, function( i, docPosition ) {
+		supportjQuery.each( POSITION_VALUES, function( i, bodyPosition ) {
+
+			testIframe( "get coordinates relative to document" +
+						" (html{position:" + docPosition + "} body{position:" + bodyPosition + "})",
+					"offset/rel-doc.html", function( assert, $, iframe, doc ) {
+				assert.expect( 8 );
+
+				// Establish document-relative origins for children of <body>
+				doc.documentElement.style.position = docPosition;
+				doc.body.style.position = bodyPosition;
+				var bodyContentOrigin = 10 + 20 + 40 + 80 + 160 + 320;
+				var origin =
+					bodyPosition !== "static" ? 10 + 20 + 40 + 80 + 160 :
+					docPosition !== "static" ? 10 + 20 : 0;
+
+				// Check offsets
+				var absoluteOffset = supportjQuery.extend( {}, $( "#absolute" ).offset() );
+				assert.deepEqual(
+					supportjQuery.extend( {}, $( "#static" ).offset() ),
+					{ top: bodyContentOrigin, left: bodyContentOrigin },
+					"offset of position:static element includes <html> and <body> box styles" );
+				assert.deepEqual( absoluteOffset, { top: origin + 20, left: origin + 20 },
+					"offset of position:absolute element ignores box styles of position:static ancestors" );
+				$( "#absolute, #static" ).offset( absoluteOffset );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#absolute" ).offset() ), absoluteOffset, "offset() round-trips" );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#static" ).offset() ), absoluteOffset, "offset() is transitive" );
+				$( "#static" ).css( "position", "static" );
+
+				// Reposition html and body, tracking origin adjustments given margin/border/padding
+				var originAdjust = 0;
+				$( doc.documentElement ).css( { top: "1.5em", left: "1.5em" } );
+				if ( docPosition !== "static" ) {
+					originAdjust += 15;
+				}
+				$( doc.body ).css( { top: "3em", left: "3em" } );
+				if ( bodyPosition === "fixed" || bodyPosition === "absolute" && docPosition === "static" ) {
+
+					// html box styles no longer matter
+					origin = 80 + 160;
+					bodyContentOrigin = origin + 320;
+					originAdjust = 30;
+				} else if ( bodyPosition !== "static" ) {
+					originAdjust += 30 - (bodyPosition === "relative" ? 0 : 40);
+				}
+
+				// Recheck offsets
+				absoluteOffset = supportjQuery.extend( {}, $( "#absolute" ).offset() );
+				assert.deepEqual(
+					supportjQuery.extend( {}, $( "#static" ).offset() ),
+					{ top: bodyContentOrigin + originAdjust, left: bodyContentOrigin + originAdjust },
+					"offset of position:static element respects ancestor positioning" );
+				assert.deepEqual(
+					absoluteOffset,
+					{ top: origin + originAdjust + 20, left: origin + originAdjust + 20 },
+					"offset of position:absolute respects ancestor positioning" );
+				$( "#absolute, #static" ).offset( absoluteOffset );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#absolute" ).offset() ), absoluteOffset, "offset() still round-trips" );
+				assert.deepEqual( supportjQuery.extend( {}, $( "#static" ).offset() ), absoluteOffset, "offset() is still transitive" );
+			} );
+
+		} );
+	} );
+})();
+
 } )();
