@@ -91,7 +91,7 @@
       "Traversing",
       "Wrap"
     ],
-    "markerPattern": "^((clos|fix|resolv)(e[sd]|ing))|(refs?)",
-    "ticketPattern": "^((Closes|Fixes) ([a-zA-Z]{2,}-)[0-9]+)|(Refs? [^#])"
+    "markerPattern": "^((clos|fix|resolv)(e[sd]|ing))|^(refs?)",
+    "ticketPattern": "^((Closes|Fixes) ([a-zA-Z]{2,}-)[0-9]+)|^(Refs? [^#])"
   }
 }
