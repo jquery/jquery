@@ -13,7 +13,7 @@ function Thrower( ex ) {
 	throw ex;
 }
 
-function adoptValue( value, count, resolve, reject ) {
+function adoptValue( value, resolve, reject, noValue ) {
 	var method;
 
 	try {
@@ -31,7 +31,7 @@ function adoptValue( value, count, resolve, reject ) {
 
 			// Support: Android 4.0 only
 			// Strict mode functions invoked without .call/.apply get global-object context
-			resolve.apply( undefined, [ value ].slice( 0, count ) );
+			resolve.apply( undefined, [ value ].slice( noValue ) );
 		}
 
 	// For Promises/A+, convert exceptions into rejections
@@ -366,7 +366,8 @@ jQuery.extend( {
 
 		// Single- and empty arguments are adopted like Promise.resolve
 		if ( remaining <= 1 ) {
-			adoptValue( singleValue, i, master.done( updateFunc( i ) ).resolve, master.reject );
+			adoptValue( singleValue, master.done( updateFunc( i ) ).resolve, master.reject,
+				!remaining );
 
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			if ( master.state() === "pending" ||
@@ -378,7 +379,7 @@ jQuery.extend( {
 
 		// Multiple arguments are aggregated like Promise.all array elements
 		while ( i-- ) {
-			adoptValue( resolveValues[ i ], 1, updateFunc( i ), master.reject );
+			adoptValue( resolveValues[ i ], updateFunc( i ), master.reject );
 		}
 
 		return master.promise();
