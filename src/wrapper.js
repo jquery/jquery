@@ -14,31 +14,64 @@
  */
 ( function( global, factory ) {
 
-	"use strict";
+"use strict";
+
+	var errorMessage = "jQuery requires a window with a document";
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 
 		// For CommonJS and CommonJS-like environments where a proper `window`
 		// is present, execute the factory and get jQuery.
-		// For environments that do not have a `window` with a `document`
+		// For environments that do not have a global `document`
 		// (such as Node.js), expose a factory as module.exports.
-		// This accentuates the need for the creation of a real `window`.
-		// e.g. var jQuery = require("jquery")(window);
-		// See ticket #14549 for more info.
-		module.exports = global.document ?
-			factory( global, true ) :
-			function( w ) {
-				if ( !w.document ) {
-					throw new Error( "jQuery requires a window with a document" );
+
+		module.exports = ( global.window && global.window.document ) ?
+			factory( global.window, true, global ) :
+
+			// NOTE, may pass either global OR window object for first argument
+			// Second argument is used only when window is not global AND
+			// caller wants to augment the global object with $ and jQuery
+
+			function( global, window ) {
+
+				// If no window reference passed...
+
+				if ( !window ) {
+
+					// If window is not available on the global object (or fake window object or whatever)...
+
+					if ( !global.window ) {
+						throw new Error( errorMessage );
+					}
+
+					// Get the window reference from the global object (*may* be the same object)
+
+					window = global.window;
 				}
-				return factory( w );
+
+				if ( !window.document ) {
+					throw new Error( errorMessage );
+				}
+
+				return factory( window, false, global );
 			};
 	} else {
-		factory( global );
+
+		// For environments lacking module.exports (e.g. browsers)
+		// Pass a reference to the global `window` object
+
+		if ( !global.window ) {
+			throw new Error( errorMessage );
+		}
+
+		if ( !global.window.document ) {
+			throw new Error( errorMessage );
+		}
+
+		factory( global.window, false, global );
 	}
 
-// Pass this if window is not defined yet
-} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+} )( typeof global == "undefined" ? this : global, function( window, noGlobal, globalObject ) {
 
 // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
 // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
