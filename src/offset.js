@@ -178,7 +178,12 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 		return access( this, function( elem, method, val ) {
 
 			// Coalesce documents and windows
-			var win = jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
+			var win;
+			if ( jQuery.isWindow( elem ) ) {
+				win = elem;
+			} else {
+				win = elem.nodeType === 9 && elem.defaultView;
+			}
 
 			if ( val === undefined ) {
 				return win ? win[ prop ] : elem[ method ];
