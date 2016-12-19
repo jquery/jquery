@@ -181,8 +181,8 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 			var win;
 			if ( jQuery.isWindow( elem ) ) {
 				win = elem;
-			} else {
-				win = elem.nodeType === 9 && elem.defaultView;
+			} else if ( elem.nodeType === 9 ) {
+				win = elem.defaultView;
 			}
 
 			if ( val === undefined ) {
