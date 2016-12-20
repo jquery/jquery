@@ -710,7 +710,7 @@ QUnit.test( "prevUntil([String])", function( assert ) {
 } );
 
 QUnit.test( "contents()", function( assert ) {
-	assert.expect( 12 );
+	assert.expect( 16 );
 	var ibody, c;
 
 	assert.equal( jQuery( "#ap" ).contents().length, 9, "Check element contents" );
@@ -741,6 +741,23 @@ QUnit.test( "contents()", function( assert ) {
 	c = jQuery( "#nonnodes" ).contents().contents();
 	assert.equal( c.length, 1, "Check node,textnode,comment contents is just one" );
 	assert.equal( c[ 0 ].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
+
+    c = jQuery( "#template" ).contents();
+    assert.equal( c.length, 7, "Check template element contents" );
+
+    assert.equal( c.find( "span" ).text(), "Hello, Web Component!", "Find span in Template and check its text" );
+
+    jQuery( "<div id=\"templateTest\" />" ).append(
+        jQuery( jQuery.map( c, function( node ) {
+            return document.importNode( node, true );
+        } ) )
+    ).appendTo( document.body );
+
+    c = jQuery( "#templateTest" ).contents();
+    assert.equal( c.length, 7, "Check cloned nodes of template element contents" );
+
+    assert.equal( c.filter( "div" ).length, 3, "Count cloned elements from template" );
+    jQuery( "#templateTest" ).remove();
 } );
 
 QUnit.test( "sort direction", function( assert ) {
