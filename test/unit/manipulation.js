@@ -2730,6 +2730,26 @@ QUnit.test( "Make sure col element is appended correctly", function( assert ) {
 	assert.strictEqual( table.find( "td" ).width(), 150 );
 } );
 
+QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", function( assert ) {
+	assert.expect( 1 );
+
+	var htmlOut,
+		htmlIn =
+			"<thead><tr><td>" +
+				"<table><tbody><tr><td>nested</td></tr></tbody></table>" +
+			"</td></tr></thead>",
+		newRow = "<tr><td>added</td></tr>",
+		htmlExpected = htmlIn.replace( "</thead>", "</thead>" + newRow ),
+		table = supportjQuery( "<table/>" ).html( htmlIn ).appendTo( "#qunit-fixture" )[ 0 ];
+
+	jQuery( table ).append( newRow );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	htmlOut = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	assert.strictEqual( htmlOut, htmlExpected );
+} );
+
 QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
