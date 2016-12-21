@@ -710,8 +710,8 @@ QUnit.test( "prevUntil([String])", function( assert ) {
 } );
 
 QUnit.test( "contents()", function( assert ) {
-	assert.expect( 16 );
-	var ibody, c;
+	assert.expect( 18 );
+	var ibody, c, iform;
 
 	assert.equal( jQuery( "#ap" ).contents().length, 9, "Check element contents" );
 	assert.ok( jQuery( "#iframe" ).contents()[ 0 ], "Check existence of IFrame document" );
@@ -758,6 +758,12 @@ QUnit.test( "contents()", function( assert ) {
 
     assert.equal( c.filter( "div" ).length, 3, "Count cloned elements from template" );
     jQuery( "#templateTest" ).remove();
+
+    iform = jQuery( "#test_contents" );
+    assert.equal( iform.contents().length, 5, "Check no conflict with Form shortcuts" );
+
+    iform.children().eq( 0 ).remove();
+    assert.equal( iform.contents().length, 4, "Check no conflict with Form shortcuts" );
 } );
 
 QUnit.test( "sort direction", function( assert ) {

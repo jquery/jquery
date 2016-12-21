@@ -143,8 +143,11 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		return elem.contentDocument ||
-            jQuery.merge( [], ( elem.content || elem ).childNodes );
+        switch ( elem.nodeName.toLowerCase() ) {
+            case "iframe":      return elem.contentDocument;
+            case "template":    elem = elem.content;
+            default:            return jQuery.merge( [], elem.childNodes );
+        }
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
