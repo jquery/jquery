@@ -143,11 +143,15 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-        switch ( elem.nodeName.toLowerCase() ) {
-            case "iframe":      return elem.contentDocument;
-            case "template":    elem = elem.content;
-            default:            return jQuery.merge( [], elem.childNodes );
+        if ( elem.nodeName === "IFRAME" ) {
+            return elem.contentDocument;
         }
+
+        if ( elem.nodeName === "TEMPLATE" ) {
+            elem = elem.content;
+        }
+
+        return jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {

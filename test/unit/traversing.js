@@ -710,8 +710,8 @@ QUnit.test( "prevUntil([String])", function( assert ) {
 } );
 
 QUnit.test( "contents()", function( assert ) {
-	assert.expect( 18 );
-	var ibody, c, iform;
+	assert.expect( 12 );
+	var ibody, c;
 
 	assert.equal( jQuery( "#ap" ).contents().length, 9, "Check element contents" );
 	assert.ok( jQuery( "#iframe" ).contents()[ 0 ], "Check existence of IFrame document" );
@@ -741,9 +741,27 @@ QUnit.test( "contents()", function( assert ) {
 	c = jQuery( "#nonnodes" ).contents().contents();
 	assert.equal( c.length, 1, "Check node,textnode,comment contents is just one" );
 	assert.equal( c[ 0 ].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
+} );
 
-    c = jQuery( "#template" ).contents();
-    assert.equal( c.length, 7, "Check template element contents" );
+QUnit.test( "contents() for <template />", function( assert ) {
+	assert.expect( 6 );
+
+    jQuery( "body" ).append(
+        "<template id=\"template\">" +
+        "    <div id=\"template-div0\">" +
+        "        <span>Hello, Web Component!</span>" +
+        "    </div>" +
+        "    <div id=\"template-div1\"></div>" +
+        "    <div id=\"template-div2\"></div>" +
+        "</template>" +
+        "<form id=\"test_contents\">" +
+        "    <input type=\"text\" name=\"contentDocument\" />" +
+        "    <input type=\"text\" name=\"content\" />" +
+        "</form>"
+    );
+
+    var c = jQuery( "#template" ).contents();
+    assert.equal( c.length, 6, "Check template element contents" );
 
     assert.equal( c.find( "span" ).text(), "Hello, Web Component!", "Find span in Template and check its text" );
 
@@ -754,16 +772,18 @@ QUnit.test( "contents()", function( assert ) {
     ).appendTo( document.body );
 
     c = jQuery( "#templateTest" ).contents();
-    assert.equal( c.length, 7, "Check cloned nodes of template element contents" );
+    assert.equal( c.length, 6, "Check cloned nodes of template element contents" );
 
     assert.equal( c.filter( "div" ).length, 3, "Count cloned elements from template" );
     jQuery( "#templateTest" ).remove();
 
-    iform = jQuery( "#test_contents" );
-    assert.equal( iform.contents().length, 5, "Check no conflict with Form shortcuts" );
+    var iform = jQuery( "#test_contents" );
+    assert.equal( iform.contents().length, 4, "Check no conflict with Form shortcuts" );
 
     iform.children().eq( 0 ).remove();
-    assert.equal( iform.contents().length, 4, "Check no conflict with Form shortcuts" );
+    assert.equal( iform.contents().length, 3, "Check no conflict with Form shortcuts" );
+
+    iform.add( iform.prev() ).remove();
 } );
 
 QUnit.test( "sort direction", function( assert ) {
