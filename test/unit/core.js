@@ -687,17 +687,19 @@ QUnit.test( "jQuery('html')", function( assert ) {
 	assert.equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 } );
 
-QUnit.test( "jQuery(tag-hyphenated elements) gh-1987", function( assert ) {
-	assert.expect( 17 );
+QUnit.test( "jQuery(symbol separated elements)", function( assert ) {
+	assert.expect( 34 );
 
-	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split( " " ), function( i, name ) {
-		var j = jQuery( "<" + name + "-d></" + name + "-d>" );
-		assert.ok( j[ 0 ], "Create a tag-hyphenated elements" );
-		assert.ok( jQuery.nodeName( j[ 0 ], name.toUpperCase() + "-D" ), "Tag-hyphenated element has expected node name" );
+	jQuery.each( "- :".split( " " ), function( i, symbol ) {
+		jQuery.each( "thead tbody tfoot colgroup caption tr th td".split( " " ), function( k, element ) {
+			var j = jQuery( "<" + element + symbol + "test></" + element + symbol + "test>" );
+			assert.ok( j[ 0 ], "Create an element with \"" + symbol + "\" in its tag" );
+			assert.ok( jQuery.nodeName( j[ 0 ], element.toUpperCase() + symbol + "TEST" ), "Element with \"" + symbol + "\" in its tag has expected node name" );
+		} );
+
+		var j = jQuery( "<tr" + symbol + "multiple" + symbol + "symbols></tr" + symbol + "multiple" + symbol + "symbols>" );
+		assert.ok( jQuery.nodeName( j[ 0 ], "TR" + symbol + "MULTIPLE" + symbol + "SYMBOLS" ), "Element with multiple \"" + symbol + "\" in its tag has expected node name" );
 	} );
-
-	var j = jQuery( "<tr-multiple-hyphens></tr-multiple-hyphens>" );
-	assert.ok( jQuery.nodeName( j[ 0 ], "TR-MULTIPLE-HYPHENS" ), "Element with multiple hyphens in its tag has expected node name" );
 } );
 
 QUnit.test( "jQuery('massive html #7990')", function( assert ) {
