@@ -143,11 +143,11 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-        if ( elem.nodeName === "IFRAME" ) {
+        if ( jQuery.nodeName( elem, "iframe" ) ) {
             return elem.contentDocument;
         }
 
-        if ( elem.nodeName === "TEMPLATE" ) {
+        if ( jQuery.nodeName( elem, "template" ) ) {
             elem = elem.content;
         }
 
