@@ -687,18 +687,21 @@ QUnit.test( "jQuery('html')", function( assert ) {
 	assert.equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 } );
 
-QUnit.test( "jQuery(symbol separated elements)", function( assert ) {
-	assert.expect( 34 );
+QUnit.test( "jQuery(element with non-alphanumeric name)", function( assert ) {
+	assert.expect( 36 );
 
-	jQuery.each( "- :".split( " " ), function( i, symbol ) {
-		jQuery.each( "thead tbody tfoot colgroup caption tr th td".split( " " ), function( k, element ) {
-			var j = jQuery( "<" + element + symbol + "test></" + element + symbol + "test>" );
-			assert.ok( j[ 0 ], "Create an element with \"" + symbol + "\" in its tag" );
-			assert.ok( jQuery.nodeName( j[ 0 ], element.toUpperCase() + symbol + "TEST" ), "Element with \"" + symbol + "\" in its tag has expected node name" );
+	jQuery.each( [ "-", ":" ], function( i, symbol ) {
+		jQuery.each( [ "thead", "tbody", "tfoot", "colgroup", "caption", "tr", "th", "td" ], function( j, tag ) {
+			var tagName = tag + symbol + "test";
+			var el = jQuery( "<" + tagName + "></" + tagName + ">" );
+			assert.ok( el[ 0 ], "Create a " + tagName + " element" );
+			assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ), tagName + " element has expected node name" );
 		} );
 
-		var j = jQuery( "<tr" + symbol + "multiple" + symbol + "symbols></tr" + symbol + "multiple" + symbol + "symbols>" );
-		assert.ok( jQuery.nodeName( j[ 0 ], "TR" + symbol + "MULTIPLE" + symbol + "SYMBOLS" ), "Element with multiple \"" + symbol + "\" in its tag has expected node name" );
+		var tagName = [ "tr", "multiple", "symbol" ].join( symbol );
+		var el = jQuery( "<" + tagName + "></" + tagName + ">" );
+		assert.ok( el[ 0 ], "Create a " + tagName + " element" );
+		assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ), tagName + " element has expected node name" );
 	} );
 } );
 
