@@ -746,7 +746,7 @@ QUnit.test( "contents()", function( assert ) {
 QUnit.test( "contents() for <template />", function( assert ) {
 	assert.expect( 6 );
 
-    jQuery( "body" ).append(
+    jQuery( "#qunit-fixture" ).append(
         "<template id=\"template\">" +
         "    <div id=\"template-div0\">" +
         "        <span>Hello, Web Component!</span>" +

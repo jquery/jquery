@@ -148,7 +148,7 @@ jQuery.each( {
         }
 
         if ( jQuery.nodeName( elem, "template" ) ) {
-            elem = elem.content;
+            elem = elem.content || elem;
         }
 
         return jQuery.merge( [], elem.childNodes );
