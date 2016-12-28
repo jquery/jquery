@@ -744,46 +744,34 @@ QUnit.test( "contents()", function( assert ) {
 } );
 
 QUnit.test( "contents() for <template />", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 4 );
 
     jQuery( "#qunit-fixture" ).append(
-        "<template id=\"template\">" +
-        "    <div id=\"template-div0\">" +
+        "<template id='template'>" +
+        "    <div id='template-div0'>" +
         "        <span>Hello, Web Component!</span>" +
         "    </div>" +
-        "    <div id=\"template-div1\"></div>" +
-        "    <div id=\"template-div2\"></div>" +
-        "</template>" +
-        "<form id=\"test_contents\">" +
-        "    <input type=\"text\" name=\"contentDocument\" />" +
-        "    <input type=\"text\" name=\"content\" />" +
-        "</form>"
+        "    <div id='template-div1'></div>" +
+        "    <div id='template-div2'></div>" +
+        "</template>"
     );
 
-    var c = jQuery( "#template" ).contents();
-    assert.equal( c.length, 6, "Check template element contents" );
+    var contents = jQuery( "#template" ).contents();
+    assert.equal( contents.length, 6, "Check template element contents" );
 
-    assert.equal( c.find( "span" ).text(), "Hello, Web Component!", "Find span in Template and check its text" );
+    assert.equal( contents.find( "span" ).text(), "Hello, Web Component!", "Find span in template and check its text" );
 
-    jQuery( "<div id=\"templateTest\" />" ).append(
-        jQuery( jQuery.map( c, function( node ) {
+    jQuery( "<div id='templateTest' />" ).append(
+        jQuery( jQuery.map( contents, function( node ) {
             return document.importNode( node, true );
         } ) )
-    ).appendTo( document.body );
+    ).appendTo( "#qunit-fixture" );
 
-    c = jQuery( "#templateTest" ).contents();
-    assert.equal( c.length, 6, "Check cloned nodes of template element contents" );
+    contents = jQuery( "#templateTest" ).contents();
+    assert.equal( contents.length, 6, "Check cloned nodes of template element contents" );
 
-    assert.equal( c.filter( "div" ).length, 3, "Count cloned elements from template" );
+    assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
     jQuery( "#templateTest" ).remove();
-
-    var iform = jQuery( "#test_contents" );
-    assert.equal( iform.contents().length, 4, "Check no conflict with Form shortcuts" );
-
-    iform.children().eq( 0 ).remove();
-    assert.equal( iform.contents().length, 3, "Check no conflict with Form shortcuts" );
-
-    iform.add( iform.prev() ).remove();
 } );
 
 QUnit.test( "sort direction", function( assert ) {
