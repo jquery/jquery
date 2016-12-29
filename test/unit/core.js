@@ -691,17 +691,20 @@ QUnit.test( "jQuery(element with non-alphanumeric name)", function( assert ) {
 	assert.expect( 36 );
 
 	jQuery.each( [ "-", ":" ], function( i, symbol ) {
-		jQuery.each( [ "thead", "tbody", "tfoot", "colgroup", "caption", "tr", "th", "td" ], function( j, tag ) {
+		jQuery.each( [ "thead", "tbody", "tfoot", "colgroup", "caption", "tr", "th", "td" ],
+			function( j, tag ) {
 			var tagName = tag + symbol + "test";
 			var el = jQuery( "<" + tagName + "></" + tagName + ">" );
 			assert.ok( el[ 0 ], "Create a " + tagName + " element" );
-			assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ), tagName + " element has expected node name" );
+			assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+				tagName + " element has expected node name" );
 		} );
 
 		var tagName = [ "tr", "multiple", "symbol" ].join( symbol );
 		var el = jQuery( "<" + tagName + "></" + tagName + ">" );
 		assert.ok( el[ 0 ], "Create a " + tagName + " element" );
-		assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ), tagName + " element has expected node name" );
+		assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+			tagName + " element has expected node name" );
 	} );
 } );
 
