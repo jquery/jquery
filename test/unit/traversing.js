@@ -743,8 +743,7 @@ QUnit.test( "contents()", function( assert ) {
 	assert.equal( c[ 0 ].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 } );
 
-QUnit.test( "contents() for <template />", function( assert ) {
-	assert.expect( 4 );
+QUnit.test( "contents() for <template />", 4, function( assert ) {
 
     jQuery( "#qunit-fixture" ).append(
         "<template id='template'>" +
@@ -771,8 +770,28 @@ QUnit.test( "contents() for <template />", function( assert ) {
     assert.equal( contents.length, 6, "Check cloned nodes of template element contents" );
 
     assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
-    jQuery( "#templateTest" ).remove();
 } );
+
+QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ](
+	"contents() for <template /> remains inert",
+    2,
+	function( assert ) {
+		Globals.register( "testScript" );
+		Globals.register( "testImgOnload" );
+
+        jQuery( "#qunit-fixture" ).append(
+            "<template id='template'>" +
+            "    <script>testScript = 1;</script>" +
+            "    <img src='data/1x1.jpg' onload='testImgOnload = 1' >" +
+            "</template>"
+        );
+
+        var content = jQuery( "#template" ).contents();
+
+        assert.strictEqual( window.testScript, true, "script in template isn't executed" );
+        assert.strictEqual( window.testImgOnload, true, "onload of image in template isn't executed" );
+	}
+);
 
 QUnit.test( "sort direction", function( assert ) {
 	assert.expect( 12 );
