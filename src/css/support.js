@@ -1,12 +1,11 @@
 define([
 	"../core",
-	"../var/document",
-	"../var/documentElement",
 	"../var/support"
-], function( jQuery, document, documentElement, support ) {
+], function( jQuery, support ) {
 
 (function() {
-	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
+	var pixelPositionVal, boxSizingReliableVal,
+		docElem = document.documentElement,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -20,30 +19,27 @@ define([
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
-		"padding:0;margin-top:1px;position:absolute";
+	container.style.cssText = "border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;" +
+		"position:absolute";
 	container.appendChild( div );
 
 	// Executing both pixelPosition & boxSizingReliable tests require only one layout
 	// so they're executed at the same time to save the second computation.
-	function computeStyleTests() {
+	function computePixelPositionAndBoxSizingReliable() {
 		div.style.cssText =
-			// Support: Android 2.3
+			// Support: Firefox<29, Android 2.3
 			// Vendor-prefix box-sizing
-			"-webkit-box-sizing:border-box;box-sizing:border-box;" +
-			"display:block;position:absolute;" +
-			"margin:0;margin-top:1%;margin-right:50%;" +
-			"border:1px;padding:1px;" +
-			"top:1%;width:50%;height:4px";
+			"-webkit-box-sizing:border-box;-moz-box-sizing:border-box;" +
+			"box-sizing:border-box;display:block;margin-top:1%;top:1%;" +
+			"border:1px;padding:1px;width:4px;position:absolute";
 		div.innerHTML = "";
-		documentElement.appendChild( container );
+		docElem.appendChild( container );
 
 		var divStyle = window.getComputedStyle( div, null );
 		pixelPositionVal = divStyle.top !== "1%";
-		boxSizingReliableVal = divStyle.height === "4px";
-		pixelMarginRightVal = divStyle.marginRight === "4px";
+		boxSizingReliableVal = divStyle.width === "4px";
 
-		documentElement.removeChild( container );
+		docElem.removeChild( container );
 	}
 
 	// Support: node.js jsdom
@@ -51,26 +47,18 @@ define([
 	if ( window.getComputedStyle ) {
 		jQuery.extend( support, {
 			pixelPosition: function() {
+
 				// This test is executed only once but we still do memoizing
 				// since we can use the boxSizingReliable pre-computing.
 				// No need to check if the test was already performed, though.
-				computeStyleTests();
+				computePixelPositionAndBoxSizingReliable();
 				return pixelPositionVal;
 			},
 			boxSizingReliable: function() {
 				if ( boxSizingReliableVal == null ) {
-					computeStyleTests();
+					computePixelPositionAndBoxSizingReliable();
 				}
 				return boxSizingReliableVal;
-			},
-			pixelMarginRight: function() {
-				// Support: Android 4.0-4.3
-				// We're checking for boxSizingReliableVal here instead of pixelMarginRightVal
-				// since that compresses better and they're computed together anyway.
-				if ( boxSizingReliableVal == null ) {
-					computeStyleTests();
-				}
-				return pixelMarginRightVal;
 			},
 			reliableMarginRight: function() {
 
@@ -84,17 +72,17 @@ define([
 
 				// Reset CSS: box-sizing; display; margin; border; padding
 				marginDiv.style.cssText = div.style.cssText =
-					// Support: Android 2.3
+					// Support: Firefox<29, Android 2.3
 					// Vendor-prefix box-sizing
-					"-webkit-box-sizing:content-box;box-sizing:content-box;" +
-					"display:block;margin:0;border:0;padding:0";
+					"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
+					"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
 				marginDiv.style.marginRight = marginDiv.style.width = "0";
 				div.style.width = "1px";
-				documentElement.appendChild( container );
+				docElem.appendChild( container );
 
 				ret = !parseFloat( window.getComputedStyle( marginDiv, null ).marginRight );
 
-				documentElement.removeChild( container );
+				docElem.removeChild( container );
 				div.removeChild( marginDiv );
 
 				return ret;

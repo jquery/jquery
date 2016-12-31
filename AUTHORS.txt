@@ -225,23 +225,3 @@ Philip Jägenstedt <philip@foolip.org>
 Christian Kosmowski <ksmwsk@gmail.com>
 Liang Peng <poppinlp@gmail.com>
 TJ VanToll <tj.vantoll@gmail.com>
-Senya Pugach <upisfree@outlook.com>
-Aurelio De Rosa <aurelioderosa@gmail.com>
-Nazar Mokrynskyi <nazar@mokrynskyi.com>
-Amit Merchant <bullredeyes@gmail.com>
-Jason Bedard <jason+github@jbedard.ca>
-Arthur Verschaeve <contact@arthurverschaeve.be>
-Dan Hart <danhart@notonthehighstreet.com>
-Bin Xin <rhyzix@gmail.com>
-David Corbacho <davidcorbacho@gmail.com>
-Veaceslav Grimalschi <grimalschi@yandex.ru>
-Daniel Husar <dano.husar@gmail.com>
-Frederic Hemberger <mail@frederic-hemberger.de>
-Ben Toews <mastahyeti@gmail.com>
-Aditya Raghavan <araghavan3@gmail.com>
-Victor Homyakov <vkhomyackov@gmail.com>
-Shivaji Varma <contact@shivajivarma.com>
-Nicolas HENRY <icewil@gmail.com>
-Anne-Gaelle Colom <coloma@westminster.ac.uk>
-George Mauer <gmauer@gmail.com>
-Leonardo Braga <leonardo.braga@gmail.com>

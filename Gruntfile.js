@@ -19,7 +19,7 @@ module.exports = function( grunt ) {
 	grunt.initConfig({
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
-		"compare_size": {
+		compare_size: {
 			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
 			options: {
 				compress: {
@@ -46,25 +46,27 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		npmcopy: {
-			all: {
+		bowercopy: {
+			options: {
+				clean: true
+			},
+			src: {
+				files: {
+					"src/sizzle/dist": "sizzle/dist",
+					"src/sizzle/test/data": "sizzle/test/data",
+					"src/sizzle/test/unit": "sizzle/test/unit",
+					"src/sizzle/test/index.html": "sizzle/test/index.html",
+					"src/sizzle/test/jquery.js": "sizzle/test/jquery.js"
+				}
+			},
+			tests: {
 				options: {
-					destPrefix: "external"
+					destPrefix: "test/libs"
 				},
 				files: {
-					"sizzle/dist": "sizzle/dist",
-					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
-
-					"npo/npo.js": "native-promise-only/npo.js",
-
-					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
-					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
-					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
-
-					"requirejs/require.js": "requirejs/require.js",
-
-					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js",
-					"sinon/LICENSE.txt": "sinon/LICENSE"
+					"qunit": "qunit/qunit",
+					"require.js": "requirejs/require.js",
+					"sinon/fake_timers.js": "sinon/lib/sinon/util/fake_timers.js"
 				}
 			}
 		},
@@ -95,35 +97,17 @@ module.exports = function( grunt ) {
 			src: "src/**/*.js",
 			gruntfile: "Gruntfile.js",
 
-			// Right now, check only test helpers
-			test: [ "test/data/testrunner.js" ],
-			release: [ "build/*.js", "!build/release-notes.js" ],
+			// Right know, check only test helpers
+			test: [ "test/data/testrunner.js", "test/data/testinit.js" ],
+			release: "build/*.js",
 			tasks: "build/tasks/*.js"
 		},
 		testswarm: {
-			tests: [
-				"ajax",
-				"attributes",
-				"callbacks",
-				"core",
-				"css",
-				"data",
-				"deferred",
-				"dimensions",
-				"effects",
-				"event",
-				"manipulation",
-				"offset",
-				"queue",
-				"selector",
-				"serialize",
-				"support",
-				"traversing"
-			]
+			tests: "ajax attributes callbacks core css data deferred dimensions effects event manipulation offset queue selector serialize support traversing".split( " " )
 		},
 		watch: {
 			files: [ "<%= jshint.all.src %>" ],
-			tasks: [ "dev" ]
+			tasks: "dev"
 		},
 		uglify: {
 			all: {
@@ -132,16 +116,17 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					preserveComments: false,
-					sourceMap: true,
-					sourceMapName: "dist/jquery.min.map",
+					sourceMap: "dist/jquery.min.map",
+					sourceMappingURL: "jquery.min.map",
 					report: "min",
 					beautify: {
-						"ascii_only": true
+						ascii_only: true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) jQuery Foundation | jquery.org/license */",
+						"(c) 2005, <%= grunt.template.today('yyyy') %> jQuery Foundation, Inc. | " +
+						"jquery.org/license */",
 					compress: {
-						"hoist_funs": false,
+						hoist_funs: false,
 						loops: false,
 						unused: false
 					}
@@ -156,14 +141,25 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
+	grunt.registerTask( "bower", "bowercopy" );
+	grunt.registerTask( "lint", [ "jshint", "jscs" ] );
 
-	grunt.registerTask( "test_fast", [ "node_smoke_test" ] );
-
-	grunt.registerTask( "test", [ "test_fast", "promises-aplus-tests" ] );
+	grunt.registerTask( "node-smoke-test", function() {
+	    var done = this.async();
+		require( "jsdom" ).env( "", function( errors, window ) {
+			if ( errors ) {
+				console.error( errors );
+				done( false );
+			}
+			require( "./" )( window );
+			done();
+		});
+	});
 
 	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
+	grunt.registerTask( "dev", [ "build:*:*", "lint" ] );
 
-	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
+	// Default grunt
+	grunt.registerTask( "default",
+		[ "jsonlint", "dev", "uglify", "dist:*", "compare_size", "node-smoke-test" ] );
 };
