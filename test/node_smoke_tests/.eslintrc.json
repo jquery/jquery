@@ -1,0 +1,13 @@
+{
+	"root": true,
+
+	"extends": "../../.eslintrc-node.json",
+
+	"parserOptions": {
+		"ecmaVersion": 6
+	},
+
+	"env": {
+		"es6": true
+	}
+}

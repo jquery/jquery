@@ -1,5 +1,5 @@
 // Use the right jQuery source on the test page (and iframes)
-(function() {
+( function() {
 	/* global loadTests: false */
 
 	var src,
@@ -8,21 +8,20 @@
 		require = window.require || parent.require;
 
 	// iFrames won't load AMD (the iframe tests synchronously expect jQuery to be there)
-	QUnit.config.urlConfig.push({
+	QUnit.config.urlConfig.push( {
 		id: "amd",
 		label: "Load with AMD",
 		tooltip: "Load the AMD jQuery file (and its dependencies)"
-	});
+	} );
+
 	// If QUnit is on window, this is the main window
 	// This detection allows AMD tests to be run in an iframe
 	if ( QUnit.urlParams.amd && window.QUnit ) {
-		require.config({
-			baseUrl: path,
-			paths: {
-				sizzle: "external/sizzle/dist/sizzle"
-			}
-		});
+		require.config( {
+			baseUrl: path
+		} );
 		src = "src/jquery";
+
 		// Include tests if specified
 		if ( typeof loadTests !== "undefined" ) {
 			require( [ src ], loadTests );
@@ -33,11 +32,11 @@
 	}
 
 	// Config parameter to use minified jQuery
-	QUnit.config.urlConfig.push({
+	QUnit.config.urlConfig.push( {
 		id: "dev",
 		label: "Load unminified",
 		tooltip: "Load the development (unminified) jQuery file"
-	});
+	} );
 	if ( QUnit.urlParams.dev ) {
 		src = "dist/jquery.js";
 	} else {
@@ -50,7 +49,7 @@
 	// Synchronous-only tests
 	// Other tests are loaded from the test page
 	if ( typeof loadTests !== "undefined" ) {
-		document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>");
+		document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>" );
 	}
 
-})();
+} )();

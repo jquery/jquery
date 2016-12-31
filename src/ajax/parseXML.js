@@ -1,6 +1,8 @@
-define([
+define( [
 	"../core"
 ], function( jQuery ) {
+
+"use strict";
 
 // Cross-browser xml parsing
 jQuery.parseXML = function( data ) {
@@ -9,7 +11,8 @@ jQuery.parseXML = function( data ) {
 		return null;
 	}
 
-	// Support: IE9
+	// Support: IE 9 - 11 only
+	// IE throws on parseFromString with invalid input.
 	try {
 		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
 	} catch ( e ) {
@@ -24,4 +27,4 @@ jQuery.parseXML = function( data ) {
 
 return jQuery.parseXML;
 
-});
+} );

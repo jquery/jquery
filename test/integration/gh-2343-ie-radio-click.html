@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Test for gh-2343 (IE11)</title>
+	<script src="../../dist/jquery.js"></script>
+	<script>
+		$(document).ready(function() {
+			$( "fieldset" ).on( "click", "input", function() {
+				$( ".result" ).append( "click " + this.value + "<br />" );
+			} );
+		} );
+	</script>
+</head>
+
+<body>
+
+<h1>Test for gh-2343 (IE11)</h1>
+<p>
+Instructions: In <b>IE11</b>, click on or focus the first radio button.
+Then use the left/right arrow keys to select the other radios.
+You should see events logged in the results below.
+</p>
+<fieldset>
+	<input type="radio" name="rad" value="0" /> 0
+	<input type="radio" name="rad" value="1" /> 1
+	<input type="radio" name="rad" value="2" /> 2
+</fieldset>
+<div class="result"></div>
+
+</body>
+</html>
