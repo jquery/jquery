@@ -81,7 +81,7 @@ jQuery.fn.extend( {
 				} );
 		}
 
-		var doc, docElem, rect, win,
+		var rect, win,
 			elem = this[ 0 ];
 
 		if ( !elem ) {
@@ -97,14 +97,22 @@ jQuery.fn.extend( {
 		}
 
 		rect = elem.getBoundingClientRect();
+		win = elem.ownerDocument.defaultView;
 
-		doc = elem.ownerDocument;
-		docElem = doc.documentElement;
-		win = doc.defaultView;
+		// Check for viewport-relative data
+		for ( ; elem; elem = elem.offsetParent ) {
+			if ( jQuery.css( elem, "position" ) === "fixed" ) {
+				return {
+					top: rect.top,
+					left: rect.left
+				};
+			}
+		}
 
+		// Absent fixed positioning, add back the viewport scroll
 		return {
-			top: rect.top + win.pageYOffset - docElem.clientTop,
-			left: rect.left + win.pageXOffset - docElem.clientLeft
+			top: rect.top + win.pageYOffset,
+			left: rect.left + win.pageXOffset
 		};
 	},
 
