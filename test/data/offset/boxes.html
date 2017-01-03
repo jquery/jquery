@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="documentElement">
+	<head>
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<meta name="description" content="horizontal values 2^N; vertical doubled">
+		<title>Nonempty margin/border/padding/position</title>
+		<style type="text/css" media="screen">
+			html, body, div {
+				font-size: 4px;
+				border-style: solid;
+			}
+			html {
+				/* start the index at 16 to allow for doubled div displacement */
+				margin: 32em 16em;
+				border-width: 64em 32em;
+				padding: 128em 64em;
+			}
+			body {
+				margin: 256em 128em;
+				border-width: 512em 256em;
+				padding: 1024em 512em;
+			}
+			div {
+				min-width: 300px;
+
+				top: 2em;
+				left: 1em;
+				margin: 8em 4em;
+				border-width: 4px 2px;
+			}
+			.forceScroll { width: 5000px; height: 5000px; }
+			.static { position: static; }
+			.relative { position: relative; }
+			.absolute { position: absolute; }
+			.fixed { position: fixed; }
+
+			/* for humans */
+			html {
+				border-color: hsl(20, 100%, 70%);
+				background-color: hsl(110, 100%, 70%);
+			}
+			body {
+				border-color: hsl(200, 100%, 70%);
+				background-color: hsl(290, 100%, 70%);
+			}
+			html::after,
+			body::after {
+				font: italic 16px sans-serif;
+				content: attr(id);
+			}
+			div {
+				background-color: hsla(0, 0%, 70%, 0.5);
+				opacity: 0.7;
+			}
+			div div {
+				background-color: hsla(60, 100%, 70%, 0.5);
+			}
+			p {
+				font: 20px sans-serif;
+			}
+			span {
+				font: 20px monospace;
+			}
+		</style>
+		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			jQuery( function() {
+				window.scrollTo( 1, 2 );
+				startIframeTest();
+			} );
+		</script>
+	</head>
+	<body id="body" class="forceScroll">
+		<div id="relative" class="relative">
+			<div id="relative-relative" class="relative"><span>relative &gt; relative</span></div>
+			<div id="relative-absolute" class="absolute"><span>relative &gt; absolute</span></div>
+		</div>
+		<div id="absolute" class="absolute">
+			<div id="absolute-relative" class="relative"><span>absolute &gt; relative</span></div>
+			<div id="absolute-absolute" class="absolute"><span>absolute &gt; absolute</span></div>
+		</div>
+		<div id="fixed" class="fixed">
+			<div id="fixed-relative" class="relative"><span>fixed &gt; relative</span></div>
+			<div id="fixed-absolute" class="absolute"><span>fixed &gt; absolute</span></div>
+		</div>
+		<p id="positionTest" class="absolute">position:absolute with no top/left values</p>
+		<div class="forceScroll"></div>
+	</body>
+</html>

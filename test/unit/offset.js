@@ -503,6 +503,52 @@ QUnit.test( "chaining", function( assert ) {
 	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
 } );
 
+testIframe( "getters", "offset/boxes.html", function( assert, $, iframe ) {
+	assert.expect( 9 );
+
+	var tests,
+
+		// em-to-px
+		scale = 4,
+
+		// body content origin
+		oX = scale * ( 16 + 32 + 64 + 128 + 256 + 512 ),
+		oY = 2 * oX,
+
+		// position displacement
+		pX = scale * 1,
+		pY = 2 * pX,
+
+		// margin displacement
+		mX = scale * 4,
+		mY = 2 * mX,
+
+		// combined position/margin displacement
+		dX = pX + mX,
+		dY = pY + mY,
+
+		// intervening borders
+		iX = 2,
+		iY = 2 * iX;
+
+	// offset (relative to document)
+	tests = {
+		"relative":          { top: oY + dY,           left:  oX + dX },
+		"relative-relative": { top: oY + dY + iY + dY, left:  oX + dX + iX + dX },
+		"relative-absolute": { top: oY + dY + iY + dY, left:  oX + dX + iX + dX },
+		"absolute":          { top:      dY,           left:       dX },
+		"absolute-relative": { top:      dY + iY + dY, left:       dX + iX + dX },
+		"absolute-absolute": { top:      dY + iY + dY, left:       dX + iX + dX },
+		"fixed":             { top:      dY,           left:       dX },
+		"fixed-relative":    { top:      dY + iY + dY, left:       dX + iX + dX },
+		"fixed-absolute":    { top:      dY + iY + dY, left:       dX + iX + dX }
+	};
+	jQuery.each( tests, function( id, offset ) {
+		assert.deepEqual( $.extend( {}, $( "#" + id ).offset() ), offset,
+			"jQuery(#" + id + ").offset()" );
+	} );
+} );
+
 QUnit.test( "offsetParent", function( assert ) {
 	assert.expect( 13 );
 
