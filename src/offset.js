@@ -7,13 +7,12 @@ define( [
 	"./css/curCSS",
 	"./css/addGetHookIf",
 	"./css/support",
-	"./core/nodeName",
 
 	"./core/init",
 	"./css",
 	"./selector" // contains
 ], function( jQuery, access, document, documentElement, rnumnonpx,
-             curCSS, addGetHookIf, support, nodeName ) {
+             curCSS, addGetHookIf, support ) {
 
 "use strict";
 
@@ -121,7 +120,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		var offsetParent, offset,
+		var offsetParent, offset, doc,
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
@@ -133,21 +132,27 @@ jQuery.fn.extend( {
 			offset = elem.getBoundingClientRect();
 
 		} else {
-
-			// Get *real* offsetParent
-			offsetParent = this.offsetParent();
-
-			// Get correct offsets
 			offset = this.offset();
-			if ( !nodeName( offsetParent[ 0 ], "html" ) ) {
-				parentOffset = offsetParent.offset();
-			}
 
-			// Add offsetParent borders
-			parentOffset = {
-				top: parentOffset.top + jQuery.css( offsetParent[ 0 ], "borderTopWidth", true ),
-				left: parentOffset.left + jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true )
-			};
+			// Account for the *real* offset parent, which can be the document or its root element
+			// when a statically positioned element is identified
+			doc = elem.ownerDocument;
+			offsetParent = elem.offsetParent || doc.documentElement;
+			while ( offsetParent &&
+				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				jQuery.css( offsetParent, "position" ) === "static" ) {
+
+				offsetParent = offsetParent.parentNode;
+			}
+			if ( offsetParent && offsetParent.nodeType === 1 ) {
+
+				// Incorporate borders into its offset, since they are outside its content origin
+				parentOffset = jQuery( offsetParent ).offset();
+				parentOffset = {
+					top: parentOffset.top + jQuery.css( offsetParent, "borderTopWidth", true ),
+					left: parentOffset.left + jQuery.css( offsetParent, "borderLeftWidth", true )
+				};
+			}
 		}
 
 		// Subtract parent offsets and element margins
