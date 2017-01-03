@@ -504,7 +504,7 @@ QUnit.test( "chaining", function( assert ) {
 } );
 
 testIframe( "getters", "offset/boxes.html", function( assert, $, iframe ) {
-	assert.expect( 9 );
+	assert.expect( 18 );
 
 	var tests,
 
@@ -546,6 +546,21 @@ testIframe( "getters", "offset/boxes.html", function( assert, $, iframe ) {
 	jQuery.each( tests, function( id, offset ) {
 		assert.deepEqual( $.extend( {}, $( "#" + id ).offset() ), offset,
 			"jQuery(#" + id + ").offset()" );
+	} );
+
+	// position (relative to offset parent, excluding contributions from margins)
+	jQuery.each( tests, function( id, offset ) {
+
+		// computed left/top values are accurate for most positioned elements
+		var expected = { top: pY, left: pX };
+
+		// ...but elements relative to a static body are _actually_ relative to the document
+		if ( id === "relative" ) {
+			expected = { top: offset.top - mY, left: offset.left - mX };
+		}
+
+		assert.deepEqual( $.extend( {}, $( "#" + id ).position() ), expected,
+			"jQuery(#" + id + ").position()" );
 	} );
 } );
 
