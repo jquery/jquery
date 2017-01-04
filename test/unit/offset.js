@@ -503,66 +503,124 @@ QUnit.test( "chaining", function( assert ) {
 	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
 } );
 
-testIframe( "getters", "offset/boxes.html", function( assert, $, iframe ) {
-	assert.expect( 18 );
-
-	var tests,
+// Test complex content under a variety of <html>/<body> positioning styles
+( function() {
+	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
 
 		// em-to-px
-		scale = 4,
+		scale = 4;
 
-		// body content origin
-		oX = scale * ( 16 + 32 + 64 + 128 + 256 + 512 ),
-		oY = 2 * oX,
+	supportjQuery.each( POSITION_VALUES, function( _, docPos ) {
+		supportjQuery.each( POSITION_VALUES, function( _, bodyPos ) {
+			var label = "nonempty box properties - html." + docPos + " body." + bodyPos,
+				propKeys = ( "left top  marginLeft marginTop  borderLeft borderTop" +
+					"  paddingLeft paddingTop  position  parent" ).split( /\s+/g ),
+				divProps = [ 1, 2,  4, 8,  2 / scale, 4 / scale,  0, 0 ],
+				unscaledProps = {
+					"documentElement": [ docPos !== "static" && 1024, docPos !== "static" && 2048,
+						16,   32,   32,  64,   64,  128,  docPos ],
+					"body":            [ bodyPos !== "static" && 2048, bodyPos !== "static" && 4096,
+						128, 256,  256, 512,  512, 1024,  bodyPos,
+						bodyPos !== "fixed" && "documentElement" ],
+					"relative":          divProps.concat( "relative", "body" ),
+					"relative-relative": divProps.concat( "relative", "relative" ),
+					"relative-absolute": divProps.concat( "absolute", "relative" ),
+					"absolute":          divProps.concat( "absolute", "body" ),
+					"absolute-relative": divProps.concat( "relative", "absolute" ),
+					"absolute-absolute": divProps.concat( "absolute", "absolute" ),
+					"fixed":             divProps.concat( "fixed" ),
+					"fixed-relative":    divProps.concat( "relative", "fixed" ),
+					"fixed-absolute":    divProps.concat( "absolute", "fixed" )
+				},
+				scaledProp = function( unscaled, name ) {
+					var prop = unscaled[ propKeys.indexOf( name ) ];
+					return typeof prop === "string" ?
+						prop :
+						scale * prop;
+				},
+				expectations = {};
 
-		// position displacement
-		pX = scale * 1,
-		pY = 2 * pX,
+			// Define expectations
+			supportjQuery.each( unscaledProps, function( id, unscaled ) {
+				var pos = {
+						top: scaledProp( unscaled, "top" ),
+						left: scaledProp( unscaled, "left" )
+					},
+					offset = {
+						top: pos.top + scaledProp( unscaled, "marginTop" ),
+						left: pos.left + scaledProp( unscaled, "marginLeft" )
+					},
+					test = {
+						offset: offset,
+						pos: pos,
+						parent: scaledProp( unscaled, "parent" ),
+						style: scaledProp( unscaled, "position" ),
+						unscaled: unscaled
+					},
+					parent = expectations[ test.parent ];
 
-		// margin displacement
-		mX = scale * 4,
-		mY = 2 * mX,
+				for ( ; parent; parent = expectations[ parent.parent ] ) {
 
-		// combined position/margin displacement
-		dX = pX + mX,
-		dY = pY + mY,
+					// Static/relative offset: add DOM parent offset+border+padding
+					// Absolute offset: add offset parent offset+border
+					if ( test.style !== "absolute" || parent.style !== "static" ) {
+						offset.top += parent.offset.top +
+							scaledProp( parent.unscaled, "borderTop" );
+						offset.left += parent.offset.left +
+							scaledProp( parent.unscaled, "borderLeft" );
+						if ( test.style !== "absolute" ) {
+							offset.top += scaledProp( parent.unscaled, "paddingTop" );
+							offset.left += scaledProp( parent.unscaled, "paddingLeft" );
 
-		// intervening borders
-		iX = 2,
-		iY = 2 * iX;
+							// Static/relative position: add DOM parent padding
+							// and (if static) position+excludes
+							pos.top += scaledProp( parent.unscaled, "paddingTop" );
+							pos.left += scaledProp( parent.unscaled, "paddingLeft" );
+							if ( parent.style === "static" ) {
+								pos.top += parent.pos.top +
+									scaledProp( parent.unscaled, "marginTop" ) +
+									scaledProp( parent.unscaled, "borderTop" );
+								pos.left += parent.pos.left +
+									scaledProp( parent.unscaled, "marginLeft" ) +
+									scaledProp( parent.unscaled, "borderLeft" );
+							}
+						}
+						break;
+					}
+				}
 
-	// offset (relative to document)
-	tests = {
-		"relative":          { top: oY + dY,           left:  oX + dX },
-		"relative-relative": { top: oY + dY + iY + dY, left:  oX + dX + iX + dX },
-		"relative-absolute": { top: oY + dY + iY + dY, left:  oX + dX + iX + dX },
-		"absolute":          { top:      dY,           left:       dX },
-		"absolute-relative": { top:      dY + iY + dY, left:       dX + iX + dX },
-		"absolute-absolute": { top:      dY + iY + dY, left:       dX + iX + dX },
-		"fixed":             { top:      dY,           left:       dX },
-		"fixed-relative":    { top:      dY + iY + dY, left:       dX + iX + dX },
-		"fixed-absolute":    { top:      dY + iY + dY, left:       dX + iX + dX }
-	};
-	jQuery.each( tests, function( id, offset ) {
-		assert.deepEqual( $.extend( {}, $( "#" + id ).offset() ), offset,
-			"jQuery(#" + id + ").offset()" );
+				expectations[ id ] = test;
+			} );
+
+			testIframe( label, "offset/boxes.html", function( assert, $, iframe, doc ) {
+				assert.expect( 22 );
+
+				// Setup documentElement and body styles
+				doc.documentElement.style.position = docPos;
+				doc.body.style.position = bodyPos;
+
+				// offset (relative to document)
+				supportjQuery.each( expectations, function( id, test ) {
+					assert.deepEqual(
+						supportjQuery.extend( {}, $( "#" + id ).offset() ),
+						test.offset,
+						"jQuery(#" + id + ").offset()" );
+				} );
+
+				// position (relative to offset parent, excluding contributions from margins)
+				supportjQuery.each( expectations, function( id, test ) {
+
+					assert.deepEqual(
+						supportjQuery.extend( {}, $( "#" + id ).position() ),
+						test.pos,
+						"jQuery(#" + id + ").position()" );
+				} );
+
+				// TODO assert round-tripping
+			} );
+		} );
 	} );
-
-	// position (relative to offset parent, excluding contributions from margins)
-	jQuery.each( tests, function( id, offset ) {
-
-		// computed left/top values are accurate for most positioned elements
-		var expected = { top: pY, left: pX };
-
-		// ...but elements relative to a static body are _actually_ relative to the document
-		if ( id === "relative" ) {
-			expected = { top: offset.top - mY, left: offset.left - mX };
-		}
-
-		assert.deepEqual( $.extend( {}, $( "#" + id ).position() ), expected,
-			"jQuery(#" + id + ").position()" );
-	} );
-} );
+} )();
 
 QUnit.test( "offsetParent", function( assert ) {
 	assert.expect( 13 );

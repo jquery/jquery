@@ -144,7 +144,7 @@ jQuery.fn.extend( {
 
 				offsetParent = offsetParent.parentNode;
 			}
-			if ( offsetParent && offsetParent.nodeType === 1 ) {
+			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
 
 				// Incorporate borders into its offset, since they are outside its content origin
 				parentOffset = jQuery( offsetParent ).offset();
