@@ -216,7 +216,7 @@ jQuery.extend( {
 	},
 
 	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
+		return obj != null && obj === obj.window && toString.call(obj) === '[object Window]';
 	},
 
 	isNumeric: function( obj ) {
