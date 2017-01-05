@@ -69,6 +69,8 @@ jQuery.offset = {
 };
 
 jQuery.fn.extend( {
+
+	// Get or set position relative to document origin
 	offset: function( options ) {
 
 		// Preserve chaining for setter
@@ -115,6 +117,7 @@ jQuery.fn.extend( {
 		};
 	},
 
+	// Get position relative to offset parent, excluding contributions from margins
 	position: function() {
 		if ( !this[ 0 ] ) {
 			return;
@@ -124,11 +127,10 @@ jQuery.fn.extend( {
 			elem = this[ 0 ],
 			parentOffset = { top: 0, left: 0 };
 
-		// Fixed elements are offset from window (parentOffset = {top:0, left: 0},
-		// because it is its only offset parent
+		// position:fixed elements are offset from the viewport, which itself always has zero offset
 		if ( jQuery.css( elem, "position" ) === "fixed" ) {
 
-			// Assume getBoundingClientRect is there when computed position is fixed
+			// Assume position:fixed implies availability of getBoundingClientRect
 			offset = elem.getBoundingClientRect();
 
 		} else {
