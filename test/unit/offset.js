@@ -517,15 +517,15 @@ QUnit.test( "chaining", function( assert ) {
 			return propObj;
 		},
 		divProps = function( position, parentId ) {
-			return props( 4, 8,  16, 32,  2, 4,  0, 0,  position, parentId );
+			return props( 4, 8,  8, 16,  2, 4,  16, 32,  position, parentId );
 		},
 		docProps = function( position ) {
-			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 8192,
-				64, 128,  128, 256,  256, 512,  position );
+			return props( position === "static" ? 0 : 2048, position === "static" ? 0 : 4096,
+				32, 64,  64, 128,  128, 256,  position );
 		},
 		bodyProps = function( position ) {
-			return props( position === "static" ? 0 : 8192, position === "static" ? 0 : 16384,
-				512, 1024,  1024, 2048,  2048, 4096,  position,
+			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 8192,
+				256, 512,  512, 1024,  1024, 2048,  position,
 				position !== "fixed" && "documentElement" );
 		};
 
