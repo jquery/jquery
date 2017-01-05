@@ -585,13 +585,13 @@ QUnit.test( "chaining", function( assert ) {
 
 			// Test them
 			testIframe( label, "offset/boxes.html", function( assert, $, iframe, doc ) {
-				assert.expect( 22 );
+				assert.expect( 33 );
 
 				// Setup documentElement and body styles
 				doc.documentElement.style.position = docPos;
 				doc.body.style.position = bodyPos;
 
-				// offset (relative to document)
+				// Verify expected document offset
 				supportjQuery.each( expectations, function( id, descriptor ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).offset() ),
@@ -599,16 +599,34 @@ QUnit.test( "chaining", function( assert ) {
 						"jQuery('#" + id + "').offset()" );
 				} );
 
-				// position (relative to offset parent, excluding contributions from margins)
+				// Verify expected relative position
 				supportjQuery.each( expectations, function( id, descriptor ) {
-
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).position() ),
 						descriptor.pos,
 						"jQuery('#" + id + "').position()" );
 				} );
 
-				// TODO assert round-tripping
+				// Verify that values round-trip
+				supportjQuery.each( Object.keys( expectations ).reverse(), function( _, id ) {
+					var $el = $( "#" + id ),
+						pos = supportjQuery.extend( {}, $el.position() );
+
+					$el.css( { top: pos.top, left: pos.left } );
+					if ( $el.css( "position" ) === "relative" ) {
+
+						// $relative.position() includes parent padding; switch to absolute
+						// positioning so we don't double its effects.
+						$el.css( { position: "absolute" } );
+					}
+					assert.deepEqual( supportjQuery.extend( {}, $el.position() ), pos,
+						"jQuery('#" + id + "').position() round-trips" );
+
+					// TODO Verify .offset(...)
+					// assert.deepEqual( $el.offset( offset ).offset(), offset )
+					// assert.deepEqual( $el.offset( adjustedOffset ).offset(), adjustedOffset )
+					// assert.deepEqual( $new.offset( offset ).offset(), offset )
+				} );
 			} );
 		} );
 	} );
