@@ -1,47 +1,49 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html id="documentElement">
+<html id="documentElement" class="box">
 	<head>
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<meta name="description" content="horizontal values 2^N; vertical doubled">
 		<title>Nonempty margin/border/padding/position</title>
 		<style type="text/css" media="screen">
-			html, body, div {
-				font-size: 4px;
-				border-style: solid;
-			}
-			html {
-				/* start the index at 16 to allow for doubled div displacement */
-				margin: 32em 16em;
-				border-width: 64em 32em;
-				padding: 128em 64em;
-
-				top: 2048em;
-				left: 1024em;
-			}
-			body {
-				margin: 256em 128em;
-				border-width: 512em 256em;
-				padding: 1024em 512em;
-
-				top: 4096em;
-				left: 2048em;
-			}
-			div {
-				min-width: 300px;
-
-				top: 2em;
-				left: 1em;
-				margin: 8em 4em;
-				border-width: 4px 2px;
-			}
-			.forceScroll { width: 5000px; height: 5000px; }
+			/* work with convenient classes, units, and dimensions */
 			.static { position: static; }
 			.relative { position: relative; }
 			.absolute { position: absolute; }
 			.fixed { position: fixed; }
+			.box {
+				font-size: 4px;
+				border-style: solid;
+				min-width: 300px;
+			}
 
-			/* for humans */
+			/* start the exponential scales, reserving the first bit for scroll position */
+			.box {
+				border-width:    1em         0.5em;
+				top:             2em; left:    1em;
+				margin:          8em           4em;
+			}
+			#documentElement {
+				margin:         32em          16em;
+				border-width:   64em          32em;
+				padding:       128em          64em;
+			}
+			#body {
+				margin:        256em         128em;
+				border-width:  512em         256em;
+				padding:      1024em         512em;
+			}
+			#documentElement {
+				top:          2048em; left: 1024em;
+			}
+			#body {
+				top:          4096em; left: 2048em;
+			}
+
+			/* style for humans */
+			:not(.box) {
+				font-size: 20px;
+			}
 			html {
 				border-color: hsl(20, 100%, 70%);
 				background-color: hsl(110, 100%, 70%);
@@ -55,18 +57,12 @@
 				font: italic 16px sans-serif;
 				content: attr(id);
 			}
-			div {
+			div.box {
 				background-color: hsla(0, 0%, 70%, 0.5);
 				opacity: 0.7;
 			}
-			div div {
+			div.box div.box {
 				background-color: hsla(60, 100%, 70%, 0.5);
-			}
-			p {
-				font: 20px sans-serif;
-			}
-			span {
-				font: 20px monospace;
 			}
 		</style>
 		<script src="../../jquery.js"></script>
@@ -78,20 +74,25 @@
 			} );
 		</script>
 	</head>
-	<body id="body" class="forceScroll">
-		<div id="relative" class="relative">
-			<div id="relative-relative" class="relative"><span>relative &gt; relative</span></div>
-			<div id="relative-absolute" class="absolute"><span>relative &gt; absolute</span></div>
+	<body id="body" class="box">
+		<div id="relative" class="relative box">
+			<div id="relative-relative" class="relative box"><code
+				>relative &gt; relative</code></div>
+			<div id="relative-absolute" class="absolute box"><code
+				>relative &gt; absolute</code></div>
 		</div>
-		<div id="absolute" class="absolute">
-			<div id="absolute-relative" class="relative"><span>absolute &gt; relative</span></div>
-			<div id="absolute-absolute" class="absolute"><span>absolute &gt; absolute</span></div>
+		<div id="absolute" class="absolute box">
+			<div id="absolute-relative" class="relative box"><code
+				>absolute &gt; relative</code></div>
+			<div id="absolute-absolute" class="absolute box"><code
+				>absolute &gt; absolute</code></div>
 		</div>
-		<div id="fixed" class="fixed">
-			<div id="fixed-relative" class="relative"><span>fixed &gt; relative</span></div>
-			<div id="fixed-absolute" class="absolute"><span>fixed &gt; absolute</span></div>
+		<div id="fixed" class="fixed box">
+			<div id="fixed-relative" class="relative box"><code
+				>fixed &gt; relative</code></div>
+			<div id="fixed-absolute" class="absolute box"><code
+				>fixed &gt; absolute</code></div>
 		</div>
 		<p id="positionTest" class="absolute">position:absolute with no top/left values</p>
-		<div class="forceScroll"></div>
 	</body>
 </html>

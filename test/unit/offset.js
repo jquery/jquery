@@ -506,92 +506,84 @@ QUnit.test( "chaining", function( assert ) {
 // Test complex content under a variety of <html>/<body> positioning styles
 ( function() {
 	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
-
-		// em-to-px
-		scale = 4;
+		BOX_PROPS =
+			( "left top  marginLeft marginTop  borderLeft borderTop  paddingLeft paddingTop" +
+            "  style  parent" ).split( /\s+/g ),
+		props = function() {
+			var propObj = {};
+			supportjQuery.each( arguments, function( i, value ) {
+				propObj[ BOX_PROPS[ i ] ] = value;
+			} );
+			return propObj;
+		},
+		divProps = function( position, parentId ) {
+			return props( 4, 8,  16, 32,  2, 4,  0, 0,  position, parentId );
+		},
+		docProps = function( position ) {
+			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 8192,
+				64, 128,  128, 256,  256, 512,  position );
+		},
+		bodyProps = function( position ) {
+			return props( position === "static" ? 0 : 8192, position === "static" ? 0 : 16384,
+				512, 1024,  1024, 2048,  2048, 4096,  position,
+				position !== "fixed" && "documentElement" );
+		};
 
 	supportjQuery.each( POSITION_VALUES, function( _, docPos ) {
 		supportjQuery.each( POSITION_VALUES, function( _, bodyPos ) {
-			var label = "nonempty box properties - html." + docPos + " body." + bodyPos,
-				propKeys = ( "left top  marginLeft marginTop  borderLeft borderTop" +
-					"  paddingLeft paddingTop  position  parent" ).split( /\s+/g ),
-				divProps = [ 1, 2,  4, 8,  2 / scale, 4 / scale,  0, 0 ],
-				unscaledProps = {
-					"documentElement": [ docPos !== "static" && 1024, docPos !== "static" && 2048,
-						16,   32,   32,  64,   64,  128,  docPos ],
-					"body":            [ bodyPos !== "static" && 2048, bodyPos !== "static" && 4096,
-						128, 256,  256, 512,  512, 1024,  bodyPos,
-						bodyPos !== "fixed" && "documentElement" ],
-					"relative":          divProps.concat( "relative", "body" ),
-					"relative-relative": divProps.concat( "relative", "relative" ),
-					"relative-absolute": divProps.concat( "absolute", "relative" ),
-					"absolute":          divProps.concat( "absolute", "body" ),
-					"absolute-relative": divProps.concat( "relative", "absolute" ),
-					"absolute-absolute": divProps.concat( "absolute", "absolute" ),
-					"fixed":             divProps.concat( "fixed" ),
-					"fixed-relative":    divProps.concat( "relative", "fixed" ),
-					"fixed-absolute":    divProps.concat( "absolute", "fixed" )
-				},
-				scaledProp = function( unscaled, name ) {
-					var prop = unscaled[ propKeys.indexOf( name ) ];
-					return typeof prop === "string" ?
-						prop :
-						scale * prop;
-				},
-				expectations = {};
+			var label = "nonzero box properties - html." + docPos + " body." + bodyPos,
+				expectations = {
+					"documentElement":   docProps( docPos ),
+					"body":              bodyProps( bodyPos ),
+					"relative":          divProps( "relative", "body" ),
+					"relative-relative": divProps( "relative", "relative" ),
+					"relative-absolute": divProps( "absolute", "relative" ),
+					"absolute":          divProps( "absolute", "body" ),
+					"absolute-relative": divProps( "relative", "absolute" ),
+					"absolute-absolute": divProps( "absolute", "absolute" ),
+					"fixed":             divProps( "fixed" ),
+					"fixed-relative":    divProps( "relative", "fixed" ),
+					"fixed-absolute":    divProps( "absolute", "fixed" )
+				};
 
 			// Define expectations
-			supportjQuery.each( unscaledProps, function( id, unscaled ) {
-				var pos = {
-						top: scaledProp( unscaled, "top" ),
-						left: scaledProp( unscaled, "left" )
+			supportjQuery.each( expectations, function( id, props ) {
+				var pos = props.pos = {
+						top: props.top,
+						left: props.left
 					},
-					offset = {
-						top: pos.top + scaledProp( unscaled, "marginTop" ),
-						left: pos.left + scaledProp( unscaled, "marginLeft" )
+					offset = props.offset = {
+						top: pos.top + props.marginTop,
+						left: pos.left + props.marginLeft
 					},
-					test = {
-						offset: offset,
-						pos: pos,
-						parent: scaledProp( unscaled, "parent" ),
-						style: scaledProp( unscaled, "position" ),
-						unscaled: unscaled
-					},
-					parent = expectations[ test.parent ];
+					parent = expectations[ props.parent ];
 
 				for ( ; parent; parent = expectations[ parent.parent ] ) {
 
-					// Static/relative offset: add DOM parent offset+border+padding
-					// Absolute offset: add offset parent offset+border
-					if ( test.style !== "absolute" || parent.style !== "static" ) {
-						offset.top += parent.offset.top +
-							scaledProp( parent.unscaled, "borderTop" );
-						offset.left += parent.offset.left +
-							scaledProp( parent.unscaled, "borderLeft" );
-						if ( test.style !== "absolute" ) {
-							offset.top += scaledProp( parent.unscaled, "paddingTop" );
-							offset.left += scaledProp( parent.unscaled, "paddingLeft" );
+					// Absolute offset: add offset+border from (non-static) offset parent
+					// Static/relative offset: add offset+border+padding from DOM parent
+					if ( props.style !== "absolute" || parent.style !== "static" ) {
+						offset.top += parent.offset.top + parent.borderTop;
+						offset.left += parent.offset.left + parent.borderLeft;
+						if ( props.style !== "absolute" ) {
+							offset.top += parent.paddingTop;
+							offset.left += parent.paddingLeft;
 
-							// Static/relative position: add DOM parent padding
-							// and (if static) position+excludes
-							pos.top += scaledProp( parent.unscaled, "paddingTop" );
-							pos.left += scaledProp( parent.unscaled, "paddingLeft" );
+							// Static/relative position: add padding from DOM parent
+							// and (if the parent is position:static) its position+margin+border
+							pos.top += parent.paddingTop;
+							pos.left += parent.paddingLeft;
 							if ( parent.style === "static" ) {
-								pos.top += parent.pos.top +
-									scaledProp( parent.unscaled, "marginTop" ) +
-									scaledProp( parent.unscaled, "borderTop" );
-								pos.left += parent.pos.left +
-									scaledProp( parent.unscaled, "marginLeft" ) +
-									scaledProp( parent.unscaled, "borderLeft" );
+								pos.top += parent.pos.top + parent.marginTop + parent.borderTop;
+								pos.left += parent.pos.left + parent.marginLeft + parent.borderLeft;
 							}
 						}
 						break;
 					}
 				}
-
-				expectations[ id ] = test;
 			} );
 
+			// Test them
 			testIframe( label, "offset/boxes.html", function( assert, $, iframe, doc ) {
 				assert.expect( 22 );
 
@@ -600,19 +592,19 @@ QUnit.test( "chaining", function( assert ) {
 				doc.body.style.position = bodyPos;
 
 				// offset (relative to document)
-				supportjQuery.each( expectations, function( id, test ) {
+				supportjQuery.each( expectations, function( id, descriptor ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).offset() ),
-						test.offset,
+						descriptor.offset,
 						"jQuery(#" + id + ").offset()" );
 				} );
 
 				// position (relative to offset parent, excluding contributions from margins)
-				supportjQuery.each( expectations, function( id, test ) {
+				supportjQuery.each( expectations, function( id, descriptor ) {
 
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).position() ),
-						test.pos,
+						descriptor.pos,
 						"jQuery(#" + id + ").position()" );
 				} );
 
