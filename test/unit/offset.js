@@ -596,7 +596,7 @@ QUnit.test( "chaining", function( assert ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).offset() ),
 						descriptor.offset,
-						"jQuery(#" + id + ").offset()" );
+						"jQuery('#" + id + "').offset()" );
 				} );
 
 				// position (relative to offset parent, excluding contributions from margins)
@@ -605,7 +605,7 @@ QUnit.test( "chaining", function( assert ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).position() ),
 						descriptor.pos,
-						"jQuery(#" + id + ").position()" );
+						"jQuery('#" + id + "').position()" );
 				} );
 
 				// TODO assert round-tripping
