@@ -35,7 +35,7 @@ QUnit.assert.expectJqData = function( env, elems, key ) {
 		if ( elems.jquery && elems.toArray ) {
 			elems = elems.toArray();
 		}
-		if ( !supportjQuery.isArray( elems ) ) {
+		if ( !Array.isArray( elems ) ) {
 			elems = [ elems ];
 		}
 

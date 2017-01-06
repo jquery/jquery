@@ -2,7 +2,7 @@ define( [
 	"./core",
 	"./var/document",
 	"./var/rcssNum",
-	"./var/rnotwhite",
+	"./var/rnothtmlwhite",
 	"./css/var/cssExpand",
 	"./css/var/isHiddenWithinTree",
 	"./css/var/swap",
@@ -17,7 +17,7 @@ define( [
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, document, rcssNum, rnotwhite, cssExpand, isHiddenWithinTree, swap,
+], function( jQuery, document, rcssNum, rnothtmlwhite, cssExpand, isHiddenWithinTree, swap,
 	adjustCSS, dataPriv, showHide ) {
 
 "use strict";
@@ -256,7 +256,7 @@ function propFilter( props, specialEasing ) {
 		name = jQuery.camelCase( index );
 		easing = specialEasing[ name ];
 		value = props[ index ];
-		if ( jQuery.isArray( value ) ) {
+		if ( Array.isArray( value ) ) {
 			easing = value[ 1 ];
 			value = props[ index ] = value[ 0 ];
 		}
@@ -415,7 +415,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 			callback = props;
 			props = [ "*" ];
 		} else {
-			props = props.match( rnotwhite );
+			props = props.match( rnothtmlwhite );
 		}
 
 		var prop,
@@ -453,9 +453,14 @@ jQuery.speed = function( speed, easing, fn ) {
 		opt.duration = 0;
 
 	} else {
-		opt.duration = typeof opt.duration === "number" ?
-			opt.duration : opt.duration in jQuery.fx.speeds ?
-				jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
+		if ( typeof opt.duration !== "number" ) {
+			if ( opt.duration in jQuery.fx.speeds ) {
+				opt.duration = jQuery.fx.speeds[ opt.duration ];
+
+			} else {
+				opt.duration = jQuery.fx.speeds._default;
+			}
+		}
 	}
 
 	// Normalize opt.queue - true/undefined/null -> "fx"

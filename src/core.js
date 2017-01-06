@@ -1,5 +1,5 @@
 /* global Symbol */
-// Defining this global in .eslintrc would create a danger of using the global
+// Defining this global in .eslintrc.json would create a danger of using the global
 // unguarded in another place, it seems safer to define global only for this module
 
 define( [
@@ -64,13 +64,14 @@ jQuery.fn = jQuery.prototype = {
 	// Get the Nth element in the matched element set OR
 	// Get the whole matched element set as a clean array
 	get: function( num ) {
-		return num != null ?
 
-			// Return just the one element from the set
-			( num < 0 ? this[ num + this.length ] : this[ num ] ) :
+		// Return all the elements in a clean array
+		if ( num == null ) {
+			return slice.call( this );
+		}
 
-			// Return all the elements in a clean array
-			slice.call( this );
+		// Return just the one element from the set
+		return num < 0 ? this[ num + this.length ] : this[ num ];
 	},
 
 	// Take an array of elements and push it onto the stack
@@ -171,11 +172,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Recurse if we're merging plain objects or arrays
 				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
-					( copyIsArray = jQuery.isArray( copy ) ) ) ) {
+					( copyIsArray = Array.isArray( copy ) ) ) ) {
 
 					if ( copyIsArray ) {
 						copyIsArray = false;
-						clone = src && jQuery.isArray( src ) ? src : [];
+						clone = src && Array.isArray( src ) ? src : [];
 
 					} else {
 						clone = src && jQuery.isPlainObject( src ) ? src : {};
@@ -213,8 +214,6 @@ jQuery.extend( {
 	isFunction: function( obj ) {
 		return jQuery.type( obj ) === "function";
 	},
-
-	isArray: Array.isArray,
 
 	isWindow: function( obj ) {
 		return obj != null && obj === obj.window;

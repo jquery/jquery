@@ -25,6 +25,7 @@ jQuery.fn.extend( {
 	}
 } );
 
+jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 
 } );

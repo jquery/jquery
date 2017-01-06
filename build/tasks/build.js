@@ -17,8 +17,11 @@ module.exports = function( grunt ) {
 		read = function( fileName ) {
 			return grunt.file.read( srcFolder + fileName );
 		},
-		globals = read( "exports/global.js" ),
-		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
+
+		// Catch `// @CODE` and subsequent comment lines event if they don't start
+		// in the first column.
+		wrapper = read( "wrapper.js" ).split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ ),
+
 		config = {
 			baseUrl: "src",
 			name: "jquery",
@@ -38,11 +41,8 @@ module.exports = function( grunt ) {
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
-				start: wrapper[ 0 ].replace( /\/\*eslint .* \*\/\n/, "" ),
-				end: globals.replace(
-					/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
-					""
-				) + wrapper[ 1 ]
+				start: wrapper[ 0 ].replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" ),
+				end: wrapper[ 1 ]
 			},
 			rawText: {},
 			onBuildWrite: convert

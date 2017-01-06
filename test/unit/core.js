@@ -1,4 +1,12 @@
-QUnit.module( "core", { teardown: moduleTeardown } );
+QUnit.module( "core", {
+	setup: function() {
+		this.sandbox = sinon.sandbox.create();
+	},
+	teardown: function() {
+		this.sandbox.restore();
+		return moduleTeardown.apply( this, arguments );
+	}
+} );
 
 QUnit.test( "Basic requirements", function( assert ) {
 	assert.expect( 7 );
@@ -189,27 +197,24 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 } );
 
-// This is not run in AMD mode
-if ( jQuery.noConflict ) {
-	QUnit.test( "noConflict", function( assert ) {
-		assert.expect( 7 );
+QUnit.test( "noConflict", function( assert ) {
+	assert.expect( 7 );
 
-		var $$ = jQuery;
+	var $$ = jQuery;
 
-		assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
-		assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
-		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
+	assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
+	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
 
-		jQuery = $ = $$;
+	jQuery = $ = $$;
 
-		assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
-		assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
-		assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
-		assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
+	assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
+	assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
+	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
 
-		window[ "jQuery" ] = jQuery = $$;
-	} );
-}
+	window[ "jQuery" ] = jQuery = $$;
+} );
 
 QUnit.test( "trim", function( assert ) {
 	assert.expect( 13 );
@@ -682,17 +687,26 @@ QUnit.test( "jQuery('html')", function( assert ) {
 	assert.equal( jQuery( "\\<div\\>" ).length, 0, "Ignore escaped html characters" );
 } );
 
-QUnit.test( "jQuery(tag-hyphenated elements) gh-1987", function( assert ) {
-	assert.expect( 17 );
+QUnit.test( "jQuery(element with non-alphanumeric name)", function( assert ) {
+	assert.expect( 36 );
 
-	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split( " " ), function( i, name ) {
-		var j = jQuery( "<" + name + "-d></" + name + "-d>" );
-		assert.ok( j[ 0 ], "Create a tag-hyphenated elements" );
-		assert.ok( jQuery.nodeName( j[ 0 ], name.toUpperCase() + "-D" ), "Tag-hyphenated element has expected node name" );
+	jQuery.each( [ "-", ":" ], function( i, symbol ) {
+		jQuery.each( [ "thead", "tbody", "tfoot", "colgroup", "caption", "tr", "th", "td" ],
+			function( j, tag ) {
+				var tagName = tag + symbol + "test";
+				var el = jQuery( "<" + tagName + "></" + tagName + ">" );
+				assert.ok( el[ 0 ], "Create a " + tagName + " element" );
+				assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+					tagName + " element has expected node name" );
+			}
+		);
+
+		var tagName = [ "tr", "multiple", "symbol" ].join( symbol );
+		var el = jQuery( "<" + tagName + "></" + tagName + ">" );
+		assert.ok( el[ 0 ], "Create a " + tagName + " element" );
+		assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+			tagName + " element has expected node name" );
 	} );
-
-	var j = jQuery( "<tr-multiple-hyphens></tr-multiple-hyphens>" );
-	assert.ok( jQuery.nodeName( j[ 0 ], "TR-MULTIPLE-HYPHENS" ), "Element with multiple hyphens in its tag has expected node name" );
 } );
 
 QUnit.test( "jQuery('massive html #7990')", function( assert ) {
@@ -1156,7 +1170,7 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.ok( jQuery.extend( true, {}, nestedarray )[ "arr" ] !== arr, "Deep extend of object must clone child array" );
 
 	// #5991
-	assert.ok( jQuery.isArray( jQuery.extend( true, { "arr": {} }, nestedarray )[ "arr" ] ), "Cloned array have to be an Array" );
+	assert.ok( Array.isArray( jQuery.extend( true, { "arr": {} }, nestedarray )[ "arr" ] ), "Cloned array have to be an Array" );
 	assert.ok( jQuery.isPlainObject( jQuery.extend( true, { "arr": arr }, { "arr": {} } )[ "arr" ] ), "Cloned object have to be an plain object" );
 
 	empty = {};
@@ -1188,7 +1202,6 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	ret = jQuery.extend( true, { "foo": 4 }, { "foo": new MyNumber( 5 ) } );
 	assert.ok( parseInt( ret.foo, 10 ) === 5, "Wrapped numbers copy correctly" );
 
-	nullUndef;
 	nullUndef = jQuery.extend( {}, options, { "xnumber2": null } );
 	assert.ok( nullUndef[ "xnumber2" ] === null, "Check to make sure null values are copied" );
 
@@ -1278,7 +1291,7 @@ QUnit.test( "jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed
 	result = jQuery.extend( true, {}, initial );
 
 	assert.deepEqual( result, initial, "The [result] and [initial] have equal shape and values" );
-	assert.ok( !jQuery.isArray( result.object ), "result.object wasn't paved with an empty array" );
+	assert.ok( !Array.isArray( result.object ), "result.object wasn't paved with an empty array" );
 } );
 
 QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
@@ -1708,4 +1721,46 @@ QUnit.test( "Iterability of jQuery objects (gh-1693)", function( assert ) {
 	} else {
 		assert.ok( true, "The browser doesn't support Symbols" );
 	}
+} );
+
+QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
+	assert.expect( 1 );
+
+	var message;
+
+	this.sandbox.stub( window, "setTimeout", function( fn ) {
+		try {
+			fn();
+		} catch ( error ) {
+			message = error.message;
+		}
+	} );
+
+	jQuery( function() {
+		throw new Error( "Error in jQuery ready" );
+	} );
+	assert.strictEqual(
+		message,
+		"Error in jQuery ready",
+		"The error should have been thrown in a timeout"
+	);
+} );
+
+QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (custom)", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async();
+
+	this.sandbox.stub( jQuery, "readyException", function( error ) {
+		assert.strictEqual(
+			error.message,
+			"Error in jQuery ready",
+			"The custom jQuery.readyException should have been called"
+		);
+		done();
+	} );
+
+	jQuery( function() {
+		throw new Error( "Error in jQuery ready" );
+	} );
 } );

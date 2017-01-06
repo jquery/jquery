@@ -169,7 +169,7 @@ this.ajaxTest = function( title, expect, options ) {
 		}
 		options = options || [];
 		requestOptions = options.requests || options.request || options;
-		if ( !jQuery.isArray( requestOptions ) ) {
+		if ( !Array.isArray( requestOptions ) ) {
 			requestOptions = [ requestOptions ];
 		}
 
@@ -320,9 +320,7 @@ this.loadTests = function() {
 				/**
 				 * Run in noConflict mode
 				 */
-				if ( jQuery.noConflict ) {
-					jQuery.noConflict();
-				}
+				jQuery.noConflict();
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( QUnit.isSwarm ) {

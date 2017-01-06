@@ -13,10 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-
-		// Skip jsdom-related tests in Node.js 0.10 & 0.12
-		runJsdomTests = !/^v0/.test( process.version );
+		gzip = require( "gzip-js" );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -108,9 +105,15 @@ module.exports = function( grunt ) {
 				// See https://github.com/sindresorhus/grunt-eslint/issues/119
 				quiet: true
 			},
-			all: ".",
-			dist: "dist/jquery.js",
-			dev: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+
+			// We have to explicitly declare "src" property otherwise "newer"
+			// task wouldn't work properly :/
+			dist: {
+				src: "dist/jquery.js"
+			},
+			dev: {
+				src: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+			}
 		},
 		testswarm: {
 			tests: [
@@ -144,7 +147,7 @@ module.exports = function( grunt ) {
 			]
 		},
 		watch: {
-			files: [ "<%= eslint.dev %>" ],
+			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
 		},
 		uglify: {
@@ -164,7 +167,7 @@ module.exports = function( grunt ) {
 						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) jQuery Foundation | jquery.org/license */",
+						"(c) JS Foundation and other contributors | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,
 						loops: false,
@@ -181,28 +184,50 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint", "eslint:all" ] );
+	grunt.registerTask( "lint", [
+		"jsonlint",
 
-	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
-	// jsdom version that needs compiling, making it harder for people to compile
-	// jQuery on Windows. (see gh-2519)
-	grunt.registerTask( "test_fast", runJsdomTests ? [ "node_smoke_tests" ] : [] );
+		// Running the full eslint task without breaking it down to targets
+		// would run the dist target first which would point to errors in the built
+		// file, making it harder to fix them. We want to check the built file only
+		// if we already know the source files pass the linter.
+		"eslint:dev",
+		"eslint:dist"
+	] );
 
-	grunt.registerTask( "test", [ "test_fast" ].concat(
-		runJsdomTests ? [ "promises_aplus_tests" ] : []
-	) );
+	grunt.registerTask( "lint:newer", [
+		"newer:jsonlint",
 
-	// Short list as a high frequency watch task
+		// Don't replace it with just the task; see the above comment.
+		"newer:eslint:dev",
+		"newer:eslint:dist"
+	] );
+
+	grunt.registerTask( "test:fast", "node_smoke_tests" );
+	grunt.registerTask( "test:slow", "promises_aplus_tests" );
+
+	grunt.registerTask( "test", [
+		"test:fast",
+		"test:slow"
+	] );
+
 	grunt.registerTask( "dev", [
-			"build:*:*",
-			"newer:eslint:dev",
-			"uglify",
-			"remove_map_comment",
-			"dist:*"
-		]
-	);
+		"build:*:*",
+		"newer:eslint:dev",
+		"newer:uglify",
+		"remove_map_comment",
+		"dist:*",
+		"compare_size"
+	] );
 
-	grunt.registerTask( "default", [ "dev", "eslint:dist", "test_fast", "compare_size" ] );
-
-	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:eslint:all" ] );
+	grunt.registerTask( "default", [
+		"eslint:dev",
+		"build:*:*",
+		"uglify",
+		"remove_map_comment",
+		"dist:*",
+		"eslint:dist",
+		"test:fast",
+		"compare_size"
+	] );
 };

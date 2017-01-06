@@ -70,15 +70,17 @@ function setPositiveNumber( elem, value, subtract ) {
 }
 
 function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
-	var i = extra === ( isBorderBox ? "border" : "content" ) ?
-
-		// If we already have the right measurement, avoid augmentation
-		4 :
-
-		// Otherwise initialize for horizontal or vertical properties
-		name === "width" ? 1 : 0,
-
+	var i,
 		val = 0;
+
+	// If we already have the right measurement, avoid augmentation
+	if ( extra === ( isBorderBox ? "border" : "content" ) ) {
+		i = 4;
+
+	// Otherwise initialize for horizontal or vertical properties
+	} else {
+		i = name === "width" ? 1 : 0;
+	}
 
 	for ( ; i < 4; i += 2 ) {
 
@@ -402,7 +404,7 @@ jQuery.fn.extend( {
 				map = {},
 				i = 0;
 
-			if ( jQuery.isArray( name ) ) {
+			if ( Array.isArray( name ) ) {
 				styles = getStyles( elem );
 				len = name.length;
 

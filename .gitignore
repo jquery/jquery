@@ -8,11 +8,11 @@
 .bower.json
 .sizecache.json
 
-npm-debug.log
+npm-debug.log*
 
 # Ignore everything in dist folder except for eslint config
 /dist/*
-!/dist/.eslintrc
+!/dist/.eslintrc.json
 
 /node_modules
 

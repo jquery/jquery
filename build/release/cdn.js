@@ -40,11 +40,12 @@ function makeReleaseCopies( Release ) {
 
 			// Map files need to reference the new uncompressed name;
 			// assume that all files reside in the same directory.
-			// "file":"jquery.min.js","sources":["jquery.js"]
+			// "file":"jquery.min.js" ... "sources":["jquery.js"]
 			text = fs.readFileSync( builtFile, "utf8" )
-				.replace( /"file":"([^"]+)","sources":\["([^"]+)"\]/,
-					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js" ) +
-					"\",\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+				.replace( /"file":"([^"]+)"/,
+					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js\"" ) )
+				.replace( /"sources":\["([^"]+)"\]/,
+					"\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
 			fs.writeFileSync( releaseFile, text );
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );

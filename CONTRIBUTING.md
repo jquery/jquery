@@ -8,7 +8,7 @@
 Note: This is the code development repository for *jQuery Core* only. Before opening an issue or making a pull request, be sure you're in the right place.
 * jQuery plugin issues should be reported to the author of the plugin.
 * jQuery Core API documentation issues can be filed [at the API repo](https://github.com/jquery/api.jquery.com/issues).
-* Bugs or suggestions for other jQuery Foundation projects should be filed in [their respective repos](https://github.com/jquery/).
+* Bugs or suggestions for other jQuery organization projects should be filed in [their respective repos](https://github.com/jquery/).
 
 ## Getting Involved
 
@@ -16,7 +16,7 @@ Note: This is the code development repository for *jQuery Core* only. Before ope
 
 We're always looking for help [identifying bugs](#how-to-report-bugs), writing and reducing test cases, and improving documentation. And although new features are rare, anything passing our [guidelines](https://github.com/jquery/jquery/wiki/Adding-new-features) will be considered.
 
-More information on how to contribute to this and other jQuery Foundation projects is at [contribute.jquery.org](https://contribute.jquery.org), including a short guide with tips, tricks, and ideas on [getting started with open source](https://contribute.jquery.org/open-source/). Please review our [commit & pull request guide](https://contribute.jquery.org/commits-and-pull-requests/) and [style guides](https://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](https://contribute.jquery.org/cla/).
+More information on how to contribute to this and other jQuery organization projects is at [contribute.jquery.org](https://contribute.jquery.org), including a short guide with tips, tricks, and ideas on [getting started with open source](https://contribute.jquery.org/open-source/). Please review our [commit & pull request guide](https://contribute.jquery.org/commits-and-pull-requests/) and [style guides](https://contribute.jquery.org/style-guide/) for instructions on how to maintain a fork and submit patches. Before we can merge any pull request, we'll also need you to sign our [contributor license agreement](https://contribute.jquery.org/cla/).
 
 
 ## Questions and Discussion
