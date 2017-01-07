@@ -743,7 +743,8 @@ QUnit.test( "contents()", function( assert ) {
 	assert.equal( c[ 0 ].nodeValue, "hi", "Check node,textnode,comment contents is just the one from span" );
 } );
 
-QUnit.test( "contents() for <template />", 4, function( assert ) {
+QUnit.test( "contents() for <template />", function( assert ) {
+    assert.expect( 4 );
 
     jQuery( "#qunit-fixture" ).append(
         "<template id='template'>" +
@@ -774,8 +775,9 @@ QUnit.test( "contents() for <template />", 4, function( assert ) {
 
 QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ](
 	"contents() for <template /> remains inert",
-    2,
 	function( assert ) {
+        assert.expect( 2 );
+
 		Globals.register( "testScript" );
 		Globals.register( "testImgOnload" );
 
