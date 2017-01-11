@@ -2364,33 +2364,48 @@ QUnit.test( "clone() delegated events (#11076)", function( assert ) {
 	clone.remove();
 } );
 
-QUnit.test( "checkbox state (#3827)", function( assert ) {
-	assert.expect( 9 );
+QUnit.test( "checkbox state (#3827, gh-3423)", function( assert ) {
+	assert.expect( 17 );
 
-	var markup = jQuery( "<div><input type=checkbox><div>" ).appendTo( "#qunit-fixture" ),
-		cb = markup.find( "input" )[ 0 ];
+	var cbParent = jQuery( "<div><input type=checkbox><div>" ).appendTo( "#qunit-fixture" ),
+		cb = cbParent.find( "input" )[ 0 ],
+		radioParent = jQuery(
+			"<div><input type=radio name=gh3423><input type=radio name=gh3423><div>"
+		).appendTo( "#qunit-fixture" ),
+		radio = radioParent.find( "input" )[ 0 ],
+		radio2 = radioParent.find( "input" )[ 1 ];
 
 	jQuery( cb ).on( "click", function() {
 		assert.equal( this.checked, false, "just-clicked checkbox is not checked" );
 	} );
-	markup.on( "click", function() {
+	cbParent.on( "click", function() {
 		assert.equal( cb.checked, false, "checkbox is not checked in bubbled event" );
+	} );
+	radioParent.on( "click", function() {
+		assert.equal( radio.checked, false, "radio is not checked in bubbled event" );
 	} );
 
 	// Native click
-	cb.checked = true;
+	cb.checked = radio.checked = true;
 	assert.equal( cb.checked, true, "native - checkbox is initially checked" );
+	assert.equal( radio.checked, true, "native - radio is initially checked" );
 	cb.click();
+	radio2.click();
 	assert.equal( cb.checked, false, "native - checkbox is no longer checked" );
+	assert.equal( radio.checked, false, "native - radio is no longer checked" );
 
 	// jQuery click
-	cb.checked = true;
-	assert.equal( cb.checked, true, "jQuery - checkbox is initially checked" );
-	jQuery( cb ).trigger( "click" );
-	assert.equal( cb.checked, false, "jQuery - checkbox is no longer checked" );
+	cb.checked = radio.checked = true;
+	assert.equal( cb.checked, true, ".trigger - checkbox is initially checked" );
+	assert.equal( radio.checked, true, ".trigger - radio is initially checked" );
+	jQuery( [ cb, radio2 ] ).trigger( "click" );
+	assert.equal( cb.checked, false, ".trigger - checkbox is no longer checked" );
+	assert.equal( radio.checked, false, ".trigger - radio is no longer checked" );
 
 	// Handlers only; checkbox state remains false
-	jQuery( cb ).triggerHandler( "click" );
+	jQuery( [ cb, radio2 ] ).triggerHandler( "click" );
+	assert.equal( cb.checked, false, ".triggerHandler - checkbox is still unchecked" );
+	assert.equal( radio.checked, false, ".triggerHandler - radio is still unchecked" );
 } );
 
 QUnit.test( "hover event no longer special since 1.9", function( assert ) {
