@@ -4,6 +4,7 @@ define( [
 	"./var/documentElement",
 	"./var/isFunction",
 	"./var/rnothtmlwhite",
+	"./var/rcheckableType",
 	"./var/slice",
 	"./data/var/dataPriv",
 	"./core/nodeName",
@@ -11,7 +12,7 @@ define( [
 	"./core/init",
 	"./selector"
 ], function( jQuery, document, documentElement, isFunction, rnothtmlwhite,
-	slice, dataPriv, nodeName ) {
+	rcheckableType, slice, dataPriv, nodeName ) {
 
 "use strict";
 
@@ -477,9 +478,11 @@ jQuery.event = {
 		},
 		click: {
 
-			// For checkbox, fire native event so checked state will be right
+			// For checkable types, fire native event so checked state will be right
 			trigger: function() {
-				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
+				if ( rcheckableType.test( this.type ) &&
+					this.click && nodeName( this, "input" ) ) {
+
 					this.click();
 					return false;
 				}
