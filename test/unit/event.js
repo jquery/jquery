@@ -2383,11 +2383,13 @@ QUnit.test( "clone() delegated events (#11076)", function( assert ) {
 	clone.remove();
 } );
 
-QUnit.test( "checkbox state (#3827)", function( assert ) {
-	assert.expect( 9 );
+QUnit.test( "checkbox state (trac-3827)", function( assert ) {
+	assert.expect( 16 );
 
-	var markup = jQuery( "<div><input type=checkbox><div>" ).appendTo( "#qunit-fixture" ),
+	var markup = jQuery( "<div class='parent'><input type=checkbox><div>" ),
 		cb = markup.find( "input" )[ 0 ];
+
+	markup.appendTo( "#qunit-fixture" );
 
 	jQuery( cb ).on( "click", function() {
 		assert.equal( this.checked, false, "just-clicked checkbox is not checked" );
@@ -2398,18 +2400,31 @@ QUnit.test( "checkbox state (#3827)", function( assert ) {
 
 	// Native click
 	cb.checked = true;
-	assert.equal( cb.checked, true, "native - checkbox is initially checked" );
+	assert.equal( cb.checked, true, "native event - checkbox is initially checked" );
 	cb.click();
-	assert.equal( cb.checked, false, "native - checkbox is no longer checked" );
+	assert.equal( cb.checked, false, "native event - checkbox is no longer checked" );
 
 	// jQuery click
 	cb.checked = true;
-	assert.equal( cb.checked, true, "jQuery - checkbox is initially checked" );
+	assert.equal( cb.checked, true, "jQuery event - checkbox is initially checked" );
 	jQuery( cb ).trigger( "click" );
-	assert.equal( cb.checked, false, "jQuery - checkbox is no longer checked" );
+	assert.equal( cb.checked, false, "jQuery event - checkbox is no longer checked" );
 
 	// Handlers only; checkbox state remains false
 	jQuery( cb ).triggerHandler( "click" );
+	assert.equal( cb.checked, false, "handlers only - checkbox is still unchecked" );
+
+	// Trigger parameters are preserved (trac-13353, gh-4139)
+	cb.checked = true;
+	assert.equal( cb.checked, true, "jQuery event with data - checkbox is initially checked" );
+	jQuery( cb ).on( "click", function( e, data ) {
+		assert.equal( data, "clicked", "trigger data passed to handler" );
+	} );
+	markup.on( "click", function( e, data ) {
+		assert.equal( data, "clicked", "trigger data passed to bubbled handler" );
+	} );
+	jQuery( cb ).trigger( "click", [ "clicked" ] );
+	assert.equal( cb.checked, false, "jQuery event with data - checkbox is no longer checked" );
 } );
 
 QUnit.test( "event object properties on natively-triggered event", function( assert ) {
@@ -2876,18 +2891,16 @@ QUnit.test(
 QUnit.test( "originalEvent type of simulated event", function( assert ) {
 	assert.expect( 2 );
 
-	var done = assert.async(),
-		outer = jQuery(
+	var outer = jQuery(
 			"<div id='donor-outer'>" +
 				"<form id='donor-form'>" +
-					"<input id='donor-input' type='checkbox' />" +
+					"<input id='donor-input' type='text' />" +
 				"</form>" +
 			"</div>"
 		).appendTo( "#qunit-fixture" ),
 		input = jQuery( "#donor-input" ),
-		expectedType = jQuery.support.focusin ? "focusin" : "focus",
+		done = assert.async(),
 		finish = function() {
-			finish = null;
 
 			// Remove jQuery handlers to ensure removal of capturing handlers on the document
 			outer.off( "focusin" );
@@ -2897,23 +2910,15 @@ QUnit.test( "originalEvent type of simulated event", function( assert ) {
 
 	outer.on( "focusin", function( event ) {
 		assert.equal( event.type, "focusin", "focusin event at ancestor" );
-		assert.equal( event.originalEvent.type, expectedType,
+		assert.equal( event.originalEvent.type, "click",
 			"focus event at ancestor has correct originalEvent type" );
 		setTimeout( finish );
 	} );
-	input.trigger( "focus" );
 
-	// DOM focus is unreliable in TestSwarm; set a simulated event workaround timeout
-	setTimeout( function() {
-		if ( !finish ) {
-			return;
-		}
-		input[ 0 ].addEventListener( "click", function( nativeEvent ) {
-			expectedType = nativeEvent.type;
-			jQuery.event.simulate( "focusin", this, jQuery.event.fix( nativeEvent ) );
-		} );
-		input[ 0 ].click();
-	}, QUnit.config.testTimeout / 4 || 1000 );
+	input[ 0 ].addEventListener( "click", function( nativeEvent ) {
+		jQuery.event.simulate( "focusin", this, jQuery.event.fix( nativeEvent ) );
+	} );
+	input[ 0 ].click();
 } );
 
 QUnit.test( "trigger('click') on radio passes extra params", function( assert ) {
@@ -2951,7 +2956,11 @@ QUnit.test( "Check order of focusin/focusout events", function( assert ) {
 		.on( "focus", function() {
 			focus = true;
 		} )
-		.on( "focusin", function() {
+
+		// PR gh-4279 fixed a lot of `focus`-related issues but made `focusin` fire twice.
+		// We've decided to accept this drawback for now. If it's fixed, change `one` to `on`
+		// in the following line:
+		.one( "focusin", function() {
 			assert.ok( !focus, "Focusin event should fire before focus does" );
 			focus = true;
 		} )
@@ -2984,11 +2993,11 @@ QUnit.test( "focus-blur order (#12868)", function( assert ) {
 
 	var order,
 		$text = jQuery( "#text1" ),
-		$radio = jQuery( "#radio1" ).trigger( "focus" ),
+		$radio = jQuery( "#radio1" ),
 
-		// Support: IE <=10 only
-		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
-		// IE's browser window must be topmost for this to work properly!!
+		// Support: IE <=9 - 11+
+		// focus and blur events are asynchronous; this is the resulting mess.
+		// The browser window must be topmost for this to work properly!!
 		done = assert.async();
 
 	$radio[ 0 ].focus();
@@ -3035,3 +3044,97 @@ QUnit.test( "focus-blur order (#12868)", function( assert ) {
 		}, 50 );
 	}, 50 );
 } );
+
+QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", function( assert ) {
+	assert.expect( 17 );
+
+	var parent = supportjQuery(
+			"<div class='parent'><input type='checkbox'><input type='radio'></div>"
+		).appendTo( "#qunit-fixture" ),
+		targets = jQuery( parent[ 0 ].childNodes ),
+		checkbox = jQuery( targets[ 0 ] ),
+		data = [ "arg1", "arg2" ],
+		slice = data.slice,
+
+		// Support: IE <=9 - 11+
+		// focus and blur events are asynchronous; this is the resulting mess.
+		// The browser window must be topmost for this to work properly!!
+		done = assert.async();
+
+	// click (gh-4139)
+	assert.strictEqual( targets[ 0 ].checked, false, "checkbox unchecked before click" );
+	assert.strictEqual( targets[ 1 ].checked, false, "radio unchecked before click" );
+	targets.add( parent ).on( "click", function( event ) {
+		var type = event.target.type,
+			level = event.currentTarget === parent[ 0 ] ? "parent" : "";
+		assert.strictEqual( event.target.checked, true,
+			type + " toggled before invoking " + level + " handler" );
+		assert.deepEqual( slice.call( arguments, 1 ), data,
+			type + " " + level + " handler received correct data" );
+	} );
+	targets.trigger( "click", data );
+	assert.strictEqual( targets[ 0 ].checked, true,
+		"checkbox toggled after click (default action)" );
+	assert.strictEqual( targets[ 1 ].checked, true,
+		"radio toggled after event (default action)" );
+
+	// focus (gh-1741)
+	assert.notEqual( document.activeElement, checkbox[ 0 ],
+		"element not focused before focus event" );
+	checkbox.on( "focus blur", function( event ) {
+		var type = event.type;
+		assert.deepEqual( slice.call( arguments, 1 ), data,
+			type + " handler received correct data" );
+	} );
+	checkbox.trigger( "focus", data );
+	setTimeout( function() {
+		assert.strictEqual( document.activeElement, checkbox[ 0 ],
+			"element focused after focus event (default action)" );
+		checkbox.trigger( "blur", data );
+		setTimeout( function() {
+			assert.notEqual( document.activeElement, checkbox[ 0 ],
+				"element not focused after blur event (default action)" );
+			done();
+		}, 50 );
+	}, 50 );
+} );
+
+// TODO replace with an adaptation of
+// https://github.com/jquery/jquery/pull/1367/files#diff-a215316abbaabdf71857809e8673ea28R2464
+( function() {
+	supportjQuery.each(
+		{
+			checkbox: "<input type='checkbox'>",
+			radio: "<input type='radio'>"
+		},
+		makeTestFor3751
+	);
+
+	function makeTestFor3751( type, html ) {
+		var testName = "native-backed namespaced clicks are handled correctly (gh-3751) - " + type;
+		QUnit.test( testName, function( assert ) {
+			assert.expect( 2 );
+
+			var parent = supportjQuery( "<div class='parent'>" + html + "</div>" ),
+				target = jQuery( parent[ 0 ].firstChild );
+
+			parent.appendTo( "#qunit-fixture" );
+
+			target.add( parent )
+				.on( "click.notFired", function( event ) {
+					assert.ok( false, "namespaced event should not be received" +
+						" by wrong-namespace listener at " + event.currentTarget.nodeName );
+				} )
+				.on( "click.fired", function( event ) {
+					assert.equal( event.target.checked, true,
+						"toggled before invoking handler at " + event.currentTarget.nodeName );
+				} )
+				.on( "click", function( event ) {
+					assert.ok( false, "namespaced event should not be received" +
+						" by non-namespaced listener at " + event.currentTarget.nodeName );
+				} );
+
+			target.trigger( "click.fired" );
+		} );
+	}
+} )();

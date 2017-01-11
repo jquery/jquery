@@ -4,6 +4,7 @@ define( [
 	"./var/documentElement",
 	"./var/isFunction",
 	"./var/rnothtmlwhite",
+	"./var/rcheckableType",
 	"./var/slice",
 	"./data/var/dataPriv",
 	"./core/nodeName",
@@ -11,7 +12,7 @@ define( [
 	"./core/init",
 	"./selector"
 ], function( jQuery, document, documentElement, isFunction, rnothtmlwhite,
-	slice, dataPriv, nodeName ) {
+	rcheckableType, slice, dataPriv, nodeName ) {
 
 "use strict";
 
@@ -329,9 +330,10 @@ jQuery.event = {
 			while ( ( handleObj = matched.handlers[ j++ ] ) &&
 				!event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-				// a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
+				// If the event is namespaced, then each handler is only invoked if it is
+				// specially universal or its namespaces are a superset of the event's.
+				if ( !event.rnamespace || handleObj.namespace === false ||
+					event.rnamespace.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
@@ -457,37 +459,101 @@ jQuery.event = {
 		},
 		focus: {
 
-			// Fire native event if possible so blur/focus sequence is correct
-			trigger: function() {
-				if ( this !== safeActiveElement() && this.focus ) {
-					this.focus();
-					return false;
-				}
+			// Utilize native event if possible so blur/focus sequence is correct
+			setup: function() {
+
+				// Claim the first handler
+				// dataPriv.set( this, "focus", ... )
+				leverageNative( this, "focus", false, function( el ) {
+					return el !== safeActiveElement();
+				} );
+
+				// Return false to allow normal processing in the caller
+				return false;
 			},
+			trigger: function() {
+
+				// Force setup before trigger
+				leverageNative( this, "focus", returnTrue );
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
 			delegateType: "focusin"
 		},
 		blur: {
-			trigger: function() {
-				if ( this === safeActiveElement() && this.blur ) {
-					this.blur();
-					return false;
-				}
+
+			// Utilize native event if possible so blur/focus sequence is correct
+			setup: function() {
+
+				// Claim the first handler
+				// dataPriv.set( this, "blur", ... )
+				leverageNative( this, "blur", false, function( el ) {
+					return el === safeActiveElement();
+				} );
+
+				// Return false to allow normal processing in the caller
+				return false;
 			},
+			trigger: function() {
+
+				// Force setup before trigger
+				leverageNative( this, "blur", returnTrue );
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
 			delegateType: "focusout"
 		},
 		click: {
 
-			// For checkbox, fire native event so checked state will be right
-			trigger: function() {
-				if ( this.type === "checkbox" && this.click && nodeName( this, "input" ) ) {
-					this.click();
-					return false;
+			// Utilize native event to ensure correct state for checkable inputs
+			setup: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Claim the first handler
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) &&
+					dataPriv.get( el, "click" ) === undefined ) {
+
+					// dataPriv.set( el, "click", ... )
+					leverageNative( el, "click", false, returnFalse );
 				}
+
+				// Return false to allow normal processing in the caller
+				return false;
+			},
+			trigger: function( data ) {
+
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
+
+				// Force setup before triggering a click
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) &&
+					dataPriv.get( el, "click" ) === undefined ) {
+
+					leverageNative( el, "click", returnTrue );
+				}
+
+				// Return non-false to allow normal event-path propagation
+				return true;
 			},
 
-			// For cross-browser consistency, don't fire native .click() on links
+			// For cross-browser consistency, suppress native .click() on links
+			// Also prevent it if we're currently inside a leveraged native-event stack
 			_default: function( event ) {
-				return nodeName( event.target, "a" );
+				var target = event.target;
+				return rcheckableType.test( target.type ) &&
+					target.click && nodeName( target, "input" ) &&
+					dataPriv.get( target, "click" ) ||
+					nodeName( target, "a" );
 			}
 		},
 
@@ -503,6 +569,77 @@ jQuery.event = {
 		}
 	}
 };
+
+// Ensure the presence of an event listener that handles manually-triggered
+// synthetic events by interrupting progress until reinvoked in response to
+// *native* events that it fires directly, ensuring that state changes have
+// already occurred before other listeners are invoked.
+function leverageNative( el, type, forceAdd, allowAsync ) {
+
+	// Setup must go through jQuery.event.add
+	if ( forceAdd ) {
+		jQuery.event.add( el, type, forceAdd );
+		return;
+	}
+
+	// Register the controller as a special universal handler for all event namespaces
+	dataPriv.set( el, type, forceAdd );
+	jQuery.event.add( el, type, {
+		namespace: false,
+		handler: function( event ) {
+			var maybeAsync, result,
+				saved = dataPriv.get( this, type );
+
+			// Interrupt processing of the outer synthetic .trigger()ed event
+			if ( ( event.isTrigger & 1 ) && this[ type ] && !saved ) {
+
+				// Store arguments for use when handling the inner native event
+				saved = slice.call( arguments );
+				dataPriv.set( this, type, saved );
+
+				// Trigger the native event and capture its result
+				// Support: IE <=9 - 11+
+				// focus() and blur() are asynchronous
+				maybeAsync = allowAsync( this, type );
+				this[ type ]();
+				result = dataPriv.get( this, type );
+				if ( result !== saved ) {
+					dataPriv.set( this, type, false );
+
+					// Cancel the outer synthetic event
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					return result;
+				} else if ( maybeAsync ) {
+
+					// Cancel the outer synthetic event in expectation of a followup
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					return;
+				} else {
+					dataPriv.set( this, type, false );
+				}
+
+			// If this is a native event triggered above, everything is now in order
+			// Fire an inner synthetic event with the original arguments
+			} else if ( !event.isTrigger && saved ) {
+
+				// ...and capture the result
+				dataPriv.set( this, type, jQuery.event.trigger(
+
+					// Support: IE <=9 - 11+
+					// Extend with the prototype to reset the above stopImmediatePropagation()
+					jQuery.extend( saved.shift(), jQuery.Event.prototype ),
+					saved,
+					this
+				) );
+
+				// Abort handling of the native event
+				event.stopImmediatePropagation();
+			}
+		}
+	} );
+}
 
 jQuery.removeEvent = function( elem, type, handle ) {
 

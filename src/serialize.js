@@ -1,7 +1,7 @@
 define( [
 	"./core",
 	"./core/toType",
-	"./manipulation/var/rcheckableType",
+	"./var/rcheckableType",
 	"./var/isFunction",
 	"./core/init",
 	"./traversing", // filter

@@ -4,8 +4,8 @@ define( [
 	"./var/concat",
 	"./var/isFunction",
 	"./var/push",
+	"./var/rcheckableType",
 	"./core/access",
-	"./manipulation/var/rcheckableType",
 	"./manipulation/var/rtagName",
 	"./manipulation/var/rscriptType",
 	"./manipulation/wrapMap",
@@ -24,8 +24,8 @@ define( [
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, isAttached, concat, isFunction, push, access,
-	rcheckableType, rtagName, rscriptType,
+], function( jQuery, isAttached, concat, isFunction, push, rcheckableType,
+	access, rtagName, rscriptType,
 	wrapMap, getAll, setGlobalEval, buildFragment, support,
 	dataPriv, dataUser, acceptData, DOMEval, nodeName ) {
 
