@@ -651,7 +651,7 @@ jQuery.fx.tick = function() {
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
 
-		// Checks the timer has not already been removed
+		// Run the timer and safely remove it when done (allowing for external removal)
 		if ( !timer() && timers[ i ] === timer ) {
 			timers.splice( i--, 1 );
 		}
@@ -664,11 +664,16 @@ jQuery.fx.tick = function() {
 };
 
 jQuery.fx.timer = function( timer ) {
-	jQuery.timers.push( timer );
+	var i = jQuery.timers.push( timer ) - 1,
+		timers = jQuery.timers;
+
 	if ( timer() ) {
 		jQuery.fx.start();
-	} else {
-		jQuery.timers.pop();
+
+	// If the timer finished immediately, safely remove it (allowing for external removal)
+	// Use a superfluous post-decrement for better compressibility w.r.t. jQuery.fx.tick above
+	} else if ( timers[ i ] === timer ) {
+		timers.splice( i--, 1 );
 	}
 };
 
