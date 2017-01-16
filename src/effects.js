@@ -552,7 +552,7 @@ jQuery.fn.extend( {
 
 					timers[ index ].anim.stop( gotoEnd );
 					dequeue = false;
-					lis.push(index);
+					lis.push( index );
 					timers.splice( index, 1 );
 				}
 			}
@@ -641,12 +641,12 @@ jQuery.fx.tick = function() {
 
 	fxNow = jQuery.now();
 	oldLength = timers.length;
-	for ( ; i < old_length; i++ ) {
+	for ( ; i < oldLength; i++ ) {
 		var removedTimers = 0;
 
-		for (var j = 0; j < lis.length; j++) {
+		for ( var j = 0; j < lis.length; j++ ) {
 			if ( lis[ j ] <= i ) {
-				removeTimers++;
+				removedTimers++;
 			}
 				lis.splice( j, 1 );
 			}
