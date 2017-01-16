@@ -392,7 +392,7 @@ function Animation( elem, properties, options ) {
 		animation.opts.start.call( elem, animation );
 	}
 
-	// attach callbacks from options
+	// Attach callbacks from options
 	animation
 		.progress( animation.opts.progress )
 		.done( animation.opts.done, animation.opts.complete )
