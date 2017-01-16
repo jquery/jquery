@@ -483,7 +483,7 @@ jQuery.speed = function( speed, easing, fn ) {
 
 	return opt;
 };
-
+var lis = [];
 jQuery.fn.extend( {
 	fadeTo: function( speed, to, easing, callback ) {
 
@@ -552,6 +552,7 @@ jQuery.fn.extend( {
 
 					timers[ index ].anim.stop( gotoEnd );
 					dequeue = false;
+					lis.push(index);
 					timers.splice( index, 1 );
 				}
 			}
@@ -590,6 +591,7 @@ jQuery.fn.extend( {
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && timers[ index ].queue === type ) {
 					timers[ index ].anim.stop( true );
+					lis.push( index );
 					timers.splice( index, 1 );
 				}
 			}
@@ -631,15 +633,25 @@ jQuery.each( {
 } );
 
 jQuery.timers = [];
+var oldLength = 0;
 jQuery.fx.tick = function() {
 	var timer,
 		i = 0,
 		timers = jQuery.timers;
 
 	fxNow = jQuery.now();
+	oldLength = timers.length;
+	for ( ; i < old_length; i++ ) {
+		var removedTimers = 0;
 
-	for ( ; i < timers.length; i++ ) {
-		timer = timers[ i ];
+		for (var j = 0; j < lis.length; j++) {
+			if ( lis[ j ] <= i ) {
+				removeTimers++;
+			}
+				lis.splice( j, 1 );
+			}
+			i = i - removedTimers;
+			timer = timers[ i ];
 
 		// Checks the timer has not already been removed
 		if ( !timer() && timers[ i ] === timer ) {
