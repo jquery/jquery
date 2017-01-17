@@ -289,10 +289,6 @@ jQuery.extend( {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
-	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
-	},
-
 	each: function( obj, callback ) {
 		var length, i = 0;
 

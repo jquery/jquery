@@ -29,6 +29,9 @@ jQuery.fn.extend( {
 		} else {
 			jQuery.ready( true );
 		}
+},
+	nodeName: function( elem, name ) {
+		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
 	}
 } );
 
