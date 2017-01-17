@@ -5,9 +5,10 @@ define( [
 	"./traversing/var/siblings",
 	"./traversing/var/rneedsContext",
 	"./core/init",
+	"./core/nodeName",
 	"./traversing/findFilter",
 	"./selector"
-], function( jQuery, indexOf, dir, siblings, rneedsContext ) {
+], function( jQuery, indexOf, dir, siblings, rneedsContext, nodeName ) {
 
 "use strict";
 
@@ -143,14 +144,14 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-        if ( jQuery.nodeName( elem, "iframe" ) ) {
+        if ( nodeName( elem, "iframe" ) ) {
             return elem.contentDocument;
         }
 
         // Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
         // Treat the template element as a regular one in browsers that
         // don't support it.
-        if ( jQuery.nodeName( elem, "template" ) ) {
+        if ( nodeName( elem, "template" ) ) {
             elem = elem.content || elem;
         }
 
