@@ -477,7 +477,8 @@ jQuery.event = {
 			// For checkable types, fire native event so checked state will be right
 			trigger: function() {
 				if ( rcheckableType.test( this.type ) &&
-					this.click && jQuery.nodeName( this, "input" ) ) {
+				this.click && jQuery.nodeName( this, "input" ) ) {
+
 					this.click();
 					return false;
 				}
