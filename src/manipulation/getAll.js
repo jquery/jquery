@@ -1,11 +1,11 @@
 define( [
 	"../core",
 	"../core/nodeName"
-], function( jQuery ) {
+], function( jQuery, nodeName ) {
 
 "use strict";
 
-function getAll( context, tag, nodeName ) {
+function getAll( context, tag ) {
 
 	// Support: IE <=9 - 11 only
 	// Use typeof to avoid zero-argument method invocation on host objects (#15151)

@@ -4,7 +4,7 @@ define( [
 	"./support",
 	"../core/init",
 	"../core/nodeName"
-], function( jQuery, stripAndCollapse, support , nodeName ) {
+], function( jQuery, stripAndCollapse, support, nodeName ) {
 
 "use strict";
 
