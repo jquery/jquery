@@ -2,8 +2,9 @@ define( [
 	"../core",
 	"../core/stripAndCollapse",
 	"./support",
-	"../core/init"
-], function( jQuery, stripAndCollapse, support ) {
+	"../core/init",
+	"../core/nodeName"
+], function( jQuery, stripAndCollapse, support , nodeName ) {
 
 "use strict";
 
@@ -121,7 +122,7 @@ jQuery.extend( {
 							// Don't return options that are disabled or in a disabled optgroup
 							!option.disabled &&
 							( !option.parentNode.disabled ||
-								!jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
+								!nodeName( option.parentNode, "optgroup" ) ) ) {
 
 						// Get the specific value for the option
 						value = jQuery( option ).val();

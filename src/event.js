@@ -7,8 +7,10 @@ define( [
 	"./var/slice",
 	"./data/var/dataPriv",
 	"./core/init",
+	"./core/nodeName",
 	"./selector"
-], function( jQuery, document, documentElement, rnothtmlwhite, rcheckableType, slice, dataPriv ) {
+], function( jQuery, document, documentElement, rnothtmlwhite, rcheckableType, slice, dataPriv,
+  nodeName ) {
 
 "use strict";
 
@@ -477,7 +479,7 @@ jQuery.event = {
 			// For checkable types, fire native event so checked state will be right
 			trigger: function() {
 				if ( rcheckableType.test( this.type ) &&
-					this.click && jQuery.nodeName( this, "input" ) ) {
+					this.click && nodeName( this, "input" ) ) {
 
 					this.click();
 					return false;
@@ -486,7 +488,7 @@ jQuery.event = {
 
 			// For cross-browser consistency, don't fire native .click() on links
 			_default: function( event ) {
-				return jQuery.nodeName( event.target, "a" );
+				return nodeName( event.target, "a" );
 			}
 		},
 
