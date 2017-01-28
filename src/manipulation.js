@@ -16,9 +16,9 @@ define( [
 	"./data/var/dataUser",
 	"./data/var/acceptData",
 	"./core/DOMEval",
+	"./core/nodeName",
 
 	"./core/init",
-	"./core/nodeName",
 	"./traversing",
 	"./selector",
 	"./event"
