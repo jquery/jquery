@@ -22,7 +22,8 @@ jQuery.fn.extend( {
 		return arguments.length === 1 ?
 			this.off( selector, "**" ) :
 			this.off( types, selector || "**", fn );
-	}
+	},
+	isArray: Array.isArray
 } );
 
 jQuery.isArray = Array.isArray;
