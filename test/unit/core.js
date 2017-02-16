@@ -696,7 +696,7 @@ QUnit.test( "jQuery(element with non-alphanumeric name)", function( assert ) {
 				var tagName = tag + symbol + "test";
 				var el = jQuery( "<" + tagName + "></" + tagName + ">" );
 				assert.ok( el[ 0 ], "Create a " + tagName + " element" );
-				assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+				assert.ok( el[ 0 ].nodeName === tagName.toUpperCase(),
 					tagName + " element has expected node name" );
 			}
 		);
@@ -704,7 +704,7 @@ QUnit.test( "jQuery(element with non-alphanumeric name)", function( assert ) {
 		var tagName = [ "tr", "multiple", "symbol" ].join( symbol );
 		var el = jQuery( "<" + tagName + "></" + tagName + ">" );
 		assert.ok( el[ 0 ], "Create a " + tagName + " element" );
-		assert.ok( jQuery.nodeName( el[ 0 ], tagName.toUpperCase() ),
+		assert.ok( el[ 0 ].nodeName === tagName.toUpperCase(),
 			tagName + " element has expected node name" );
 	} );
 } );
