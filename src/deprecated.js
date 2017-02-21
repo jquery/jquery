@@ -1,6 +1,7 @@
 define( [
-	"./core"
-], function( jQuery ) {
+	"./core",
+	"./core/nodeName"
+], function( jQuery, nodeName ) {
 
 "use strict";
 
@@ -30,9 +31,7 @@ jQuery.fn.extend( {
 			jQuery.ready( true );
 		}
 },
-	nodeName: function( elem, name ) {
-		return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
-	}
+	nodeName: nodeName
 } );
 
 jQuery.isArray = Array.isArray;
