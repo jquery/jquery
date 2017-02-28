@@ -128,7 +128,7 @@ function domManip( collection, args, callback, ignored ) {
 	// Flatten any nested arrays
 	args = concat.apply( [], args );
 
-	var fragment, first, scripts, hasScripts, node, doc,
+	var fragment, first, scripts, hasScripts, node, doc, nonce,
 		i = 0,
 		l = collection.length,
 		iNoClone = l - 1,
@@ -202,7 +202,10 @@ function domManip( collection, args, callback, ignored ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
-							DOMEval( node.textContent.replace( rcleanScript, "" ), doc );
+							if ( node.hasAttribute && node.hasAttribute( "nonce" ) ) {
+								nonce = node.getAttribute( "nonce" );
+							}
+							DOMEval( node.textContent.replace( rcleanScript, "" ), doc, nonce );
 						}
 					}
 				}
