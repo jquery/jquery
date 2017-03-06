@@ -7,13 +7,13 @@ define( [
 	"./css/curCSS",
 	"./css/addGetHookIf",
 	"./css/support",
+	"./core/nodeName",
 
 	"./core/init",
-	"./core/nodeName",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support,
-	nodeName ) {
+], function( jQuery, access, document, documentElement, rnumnonpx,
+             curCSS, addGetHookIf, support, nodeName ) {
 
 "use strict";
 
