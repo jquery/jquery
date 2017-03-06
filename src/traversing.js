@@ -4,8 +4,8 @@ define( [
 	"./traversing/var/dir",
 	"./traversing/var/siblings",
 	"./traversing/var/rneedsContext",
-	"./core/init",
 	"./core/nodeName",
+	"./core/init",
 	"./traversing/findFilter",
 	"./selector"
 ], function( jQuery, indexOf, dir, siblings, rneedsContext, nodeName ) {

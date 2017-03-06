@@ -8,8 +8,8 @@ define( [
 	"./css/addGetHookIf",
 	"./css/support",
 
-	"./core/init",
 	"./core/nodeName",
+	"./core/init",
 	"./css",
 	"./selector" // contains
 ], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support,
