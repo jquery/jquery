@@ -30,11 +30,11 @@ jQuery.fn.extend( {
 		} else {
 			jQuery.ready( true );
 		}
-},
-	nodeName: nodeName
+	}
 } );
 
 jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
+jQuery.nodeName = nodeName;
 
 } );

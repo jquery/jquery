@@ -6,8 +6,8 @@ define( [
 	"./var/rcheckableType",
 	"./var/slice",
 	"./data/var/dataPriv",
-	"./core/init",
 	"./core/nodeName",
+	"./core/init",
 	"./selector"
 ], function( jQuery, document, documentElement, rnothtmlwhite, rcheckableType, slice, dataPriv,
   nodeName ) {
