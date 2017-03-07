@@ -1,5 +1,5 @@
-[jQuery](https://jquery.com/) — New Wave JavaScript
-==================================================
+[jQuery](https://jquery.com/) — New Wave JavaScript :)
+===================================================
 
 Contribution Guides
 --------------------------------------
