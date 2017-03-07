@@ -1558,10 +1558,12 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 
 ( function() {
 	var supportsCssVars,
-		div = jQuery( "<div>" ).appendTo( "#qunit-fixture" )[ 0 ];
+		elem = jQuery( "<div>" ).appendTo( document.body ),
+		div = elem[ 0 ];
 
 	div.style.setProperty( "--prop", "value" );
-	supportsCssVars = getComputedStyle( div ).getPropertyValue( "--prop" );
+	supportsCssVars = !!getComputedStyle( div ).getPropertyValue( "--prop" );
+	elem.remove();
 
 	QUnit[ supportsCssVars ? "test" : "skip" ]( "css(--customProperty)", function( assert ) {
 		jQuery( "#qunit-fixture" ).append(
