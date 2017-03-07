@@ -1556,68 +1556,79 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 
 } )();
 
+( function() {
+	var supportsCssVars,
+		div = jQuery( "<div>" ).appendTo( "#qunit-fixture" )[ 0 ];
 
-QUnit.test( "css(--customProperty)", function( assert ) {
-	jQuery( "#qunit-fixture" ).append(
-		"<style>\n" +
-		"    .test__customProperties {\n" +
-		"        --prop1:val1;\n" +
-		"        --prop2: val2;\n" +
-		"        --prop3:val3 ;\n" +
-		"        --prop4:\"val4\";\n" +
-		"        --prop5:'val5';\n" +
-		"    }\n" +
-		"</style>"
-	);
+	div.style.setProperty( "--prop", "value" );
+	supportsCssVars = getComputedStyle( div ).getPropertyValue( "--prop" );
 
-	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		$elem = jQuery( "<div>" ).addClass( "test__customProperties" ).appendTo( "#qunit-fixture" ),
-		webkit = /\bsafari\b/i.test( navigator.userAgent ) &&
-			!/\firefox\b/i.test( navigator.userAgent ) &&
-			!/\edge\b/i.test( navigator.userAgent ),
-		oldSafari = webkit && ( /\b9\.\d(\.\d+)* safari/i.test( navigator.userAgent ) ||
-			/\b10\.0(\.\d+)* safari/i.test( navigator.userAgent ) ),
-		expected = 10;
+	QUnit[ supportsCssVars ? "test" : "skip" ]( "css(--customProperty)", function( assert ) {
+		jQuery( "#qunit-fixture" ).append(
+			"<style>\n" +
+			"    .test__customProperties {\n" +
+			"        --prop1:val1;\n" +
+			"        --prop2: val2;\n" +
+			"        --prop3:val3 ;\n" +
+			"        --prop4:\"val4\";\n" +
+			"        --prop5:'val5';\n" +
+			"    }\n" +
+			"</style>"
+		);
 
-	if ( webkit ) {
-		expected -= 2;
-	}
-	if ( oldSafari ) {
-		expected -= 2;
-	}
-	assert.expect( expected );
+		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+			$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
+				.appendTo( "#qunit-fixture" ),
+			webkit = /\bsafari\b/i.test( navigator.userAgent ) &&
+				!/\firefox\b/i.test( navigator.userAgent ) &&
+				!/\edge\b/i.test( navigator.userAgent ),
+			oldSafari = webkit && ( /\b9\.\d(\.\d+)* safari/i.test( navigator.userAgent ) ||
+				/\b10\.0(\.\d+)* safari/i.test( navigator.userAgent ) ||
+				/iphone os (?:9|10)_/i.test( navigator.userAgent ) ),
+			expected = 10;
 
-	div.css( "--color", "blue" );
-	assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );
+		if ( webkit ) {
+			expected -= 2;
+		}
+		if ( oldSafari ) {
+			expected -= 2;
+		}
+		assert.expect( expected );
 
-	div.css( "--color", "yellow" );
-	assert.equal( div.css( "--color" ), "yellow", "Overwrite CSS custom property" );
+		div.css( "--color", "blue" );
+		assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );
 
-	div.css( { "--color": "red" } );
-	assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object" );
+		div.css( "--color", "yellow" );
+		assert.equal( div.css( "--color" ), "yellow", "Overwrite CSS custom property" );
 
-	div.css( { "--mixedCase": "green" } );
-	assert.equal( div.css( "--mixedCase" ), "green", "Modified CSS custom property with mixed case" );
+		div.css( { "--color": "red" } );
+		assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object" );
 
-	div.css( { "--theme-dark": "purple" } );
-	assert.equal( div.css( "--theme-dark" ), "purple", "Modified CSS custom property with dashed name" );
+		div.css( { "--mixedCase": "green" } );
+		assert.equal( div.css( "--mixedCase" ), "green",
+			"Modified CSS custom property with mixed case" );
 
-	assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
+		div.css( { "--theme-dark": "purple" } );
+		assert.equal( div.css( "--theme-dark" ), "purple",
+			"Modified CSS custom property with dashed name" );
 
-	// Support: Safari 9.1-10.0 only
-	// Safari collapses whitespaces & quotes. Ignore it.
-	if ( !oldSafari ) {
-		assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
-		assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
-	}
+		assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
 
-	// Support: Chrome 49-55, Safari 9.1-10.0
-	// Chrome treats single quotes as double ones.
-	// Safari treats double quotes as single ones.
-	if ( !webkit ) {
-		assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
-		assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
-	}
-} );
+		// Support: Safari 9.1-10.0 only
+		// Safari collapses whitespaces & quotes. Ignore it.
+		if ( !oldSafari ) {
+			assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
+			assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
+		}
+
+		// Support: Chrome 49-55, Safari 9.1-10.0
+		// Chrome treats single quotes as double ones.
+		// Safari treats double quotes as single ones.
+		if ( !webkit ) {
+			assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
+			assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
+		}
+	} );
+} )();
 
 }
