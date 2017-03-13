@@ -123,11 +123,6 @@ function getWidthOrHeight( elem, name, extra ) {
 		val = curCSS( elem, name, styles ),
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
-	// Fall back to uncomputed css if necessary
-	if ( val < 0 || val == null ) {
-		val = elem.style[ name ];
-	}
-
 	// Computed unit is not pixels. Stop here and return.
 	if ( rnumnonpx.test( val ) ) {
 		return val;
