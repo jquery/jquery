@@ -116,3 +116,51 @@ QUnit.test( "jQuery.isArray", function( assert ) {
 
 	assert.strictEqual( jQuery.isArray, Array.isArray, "Array.isArray equals jQuery.isArray" );
 } );
+
+QUnit.test( "jQuery.nodeName", function( assert ) {
+	assert.expect( 8 );
+
+	assert.strictEqual( typeof jQuery.nodeName, "function", "jQuery.nodeName is a function" );
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "div" ),
+		true,
+		"Basic usage (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "span" ),
+		false,
+		"Basic usage (false)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "DIV" ),
+		true,
+		"Ignores case in the name parameter"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "section" ), "section" ),
+		true,
+		"Works on HTML5 tags (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "section" ), "article" ),
+		false,
+		"Works on HTML5 tags (false)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "custom-element" ), "custom-element" ),
+		true,
+		"Works on custom elements (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "custom-element" ), "my-element" ),
+		false,
+		"Works on custom elements (true)"
+	);
+} );

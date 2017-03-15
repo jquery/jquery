@@ -1,10 +1,11 @@
 define( [
 	"../core",
 	"../core/access",
+	"../core/nodeName",
 	"./support",
 	"../var/rnothtmlwhite",
 	"../selector"
-], function( jQuery, access, support, rnothtmlwhite ) {
+], function( jQuery, access, nodeName, support, rnothtmlwhite ) {
 
 "use strict";
 
@@ -74,7 +75,7 @@ jQuery.extend( {
 		type: {
 			set: function( elem, value ) {
 				if ( !support.radioValue && value === "radio" &&
-					jQuery.nodeName( elem, "input" ) ) {
+					nodeName( elem, "input" ) ) {
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {

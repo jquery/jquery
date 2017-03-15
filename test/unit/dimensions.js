@@ -527,4 +527,15 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	parent.scrollTop( 400 );
 } );
 
+QUnit.test( "width/height on element with transform (gh-3193)", function( assert ) {
+
+	assert.expect( 2 );
+
+	var $elem = jQuery( "<div style='width: 200px; height: 200px; transform: scale(2);' />" )
+		.appendTo( "#qunit-fixture" );
+
+	assert.equal( $elem.width(), 200, "Width ignores transforms" );
+	assert.equal( $elem.height(), 200, "Height ignores transforms" );
+} );
+
 } )();

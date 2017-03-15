@@ -7,11 +7,13 @@ define( [
 	"./css/curCSS",
 	"./css/addGetHookIf",
 	"./css/support",
+	"./core/nodeName",
 
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, addGetHookIf, support ) {
+], function( jQuery, access, document, documentElement, rnumnonpx,
+             curCSS, addGetHookIf, support, nodeName ) {
 
 "use strict";
 
@@ -129,7 +131,7 @@ jQuery.fn.extend( {
 
 			// Get correct offsets
 			offset = this.offset();
-			if ( !jQuery.nodeName( offsetParent[ 0 ], "html" ) ) {
+			if ( !nodeName( offsetParent[ 0 ], "html" ) ) {
 				parentOffset = offsetParent.offset();
 			}
 

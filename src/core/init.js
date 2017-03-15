@@ -3,6 +3,7 @@ define( [
 	"../core",
 	"../var/document",
 	"./var/rsingleTag",
+
 	"../traversing/findFilter"
 ], function( jQuery, document, rsingleTag ) {
 

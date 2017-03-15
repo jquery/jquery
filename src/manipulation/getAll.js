@@ -1,6 +1,7 @@
 define( [
-	"../core"
-], function( jQuery ) {
+	"../core",
+	"../core/nodeName"
+], function( jQuery, nodeName ) {
 
 "use strict";
 
@@ -20,7 +21,7 @@ function getAll( context, tag ) {
 		ret = [];
 	}
 
-	if ( tag === undefined || tag && jQuery.nodeName( context, tag ) ) {
+	if ( tag === undefined || tag && nodeName( context, tag ) ) {
 		return jQuery.merge( [ context ], ret );
 	}
 

@@ -366,3 +366,24 @@ QUnit.test( "jQuery.Callbacks() - disabled callback doesn't fire (gh-1790)", fun
 	cb.fire();
 	assert.ok( !fired, "Disabled callback function didn't fire" );
 } );
+
+QUnit.test( "jQuery.Callbacks() - list with memory stays locked (gh-3469)", function( assert ) {
+
+	assert.expect( 3 );
+
+	var cb = jQuery.Callbacks( "memory" ),
+		fired = 0,
+		count1 = function() { fired += 1; },
+		count2 = function() { fired += 10; };
+
+	cb.add( count1 );
+	cb.fire();
+	assert.equal( fired, 1, "Pre-lock() fire" );
+
+	cb.lock();
+	cb.add( count2 );
+	assert.equal( fired, 11, "Post-lock() add" );
+
+	cb.fire();
+	assert.equal( fired, 11, "Post-lock() fire ignored" );
+} );

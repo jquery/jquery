@@ -1256,17 +1256,18 @@ QUnit.test( "animate with CSS shorthand properties", function( assert ) {
 } );
 
 QUnit.test( "hide hidden elements, with animation (bug #7141)", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
-	var div = jQuery( "<div style='display:none'></div>" ).appendTo( "#qunit-fixture" );
-	assert.equal( div.css( "display" ), "none", "Element is hidden by default" );
-	div.hide( 1, function() {
-		assert.ok( !jQuery._data( div, "olddisplay" ), "olddisplay is undefined after hiding an already-hidden element" );
-		div.show( 1, function() {
-			assert.equal( div.css( "display" ), "block", "Show a double-hidden element" );
+	var div = jQuery( "<div id='bug7141' style='display:none'/>" ).appendTo( "#qunit-fixture" );
+	assert.equal( div.css( "display" ), "none", "Element is initially hidden" );
+	div.hide( 10, function() {
+		assert.equal( div.css( "display" ), "none", "Element is hidden in .hide() callback" );
+		div.show( 11, function() {
+			assert.equal( div.css( "display" ), "block", "Element is visible in .show() callback" );
 		} );
 	} );
-	this.clock.tick( 10 );
+	this.clock.tick( 50 );
+	assert.equal( div.css( "display" ), "block", "Element is visible after animations" );
 } );
 
 QUnit.test( "animate unit-less properties (#4966)", function( assert ) {
@@ -1846,12 +1847,12 @@ QUnit.test( "non-px animation handles non-numeric start (#11971)", function( ass
 } );
 
 QUnit.test( "Animation callbacks (#11797)", function( assert ) {
-	assert.expect( 16 );
+	assert.expect( 15 );
 
 	var prog = 0,
 		targets = jQuery( "#foo" ).children(),
 		done = false,
-		expectedProgress = 0;
+		expectedProgress = 1;
 
 	targets.eq( 0 ).animate( {}, {
 		duration: 1,
@@ -1909,14 +1910,7 @@ QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 			assert.ok( true, "async: start" );
 		},
 		progress: function( anim, percent ) {
-
-			// occasionally the progress handler is called twice in first frame.... *shrug*
-			if ( percent === 0 && expectedProgress === 1 ) {
-				return;
-			}
 			assert.equal( percent, expectedProgress, "async: progress " + expectedProgress );
-
-			// once at 0, once at 1
 			expectedProgress++;
 		},
 		done: function() {
