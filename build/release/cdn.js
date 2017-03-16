@@ -87,7 +87,7 @@ function makeArchives( Release, callback ) {
 				item.replace( rver, Release.newVersion );
 		} );
 
-		sum = Release.exec( "md5sum " + files.join( " " ), "Error retrieving md5sum" );
+		sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
 		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
