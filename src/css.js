@@ -144,6 +144,12 @@ function getWidthOrHeight( elem, name, extra ) {
 	valueIsBorderBox = isBorderBox &&
 		( support.boxSizingReliable() || val === elem.style[ name ] );
 
+	// Fall back to offsetWidth/Height when value is "auto"
+	// This happens for inline elements with no explicit setting (gh-3571)
+	if ( val === "auto" ) {
+		val = elem[ "offset" + name[ 0 ].toUpperCase() + name.slice( 1 ) ];
+	}
+
 	// Normalize "", auto, and prepare for extra
 	val = parseFloat( val ) || 0;
 

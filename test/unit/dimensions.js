@@ -538,4 +538,18 @@ QUnit.test( "width/height on element with transform (gh-3193)", function( assert
 	assert.equal( $elem.height(), 200, "Height ignores transforms" );
 } );
 
+QUnit.test( "width/height on an inline element with no explicitly-set dimensions (gh-3571)", function( assert ) {
+	assert.expect( 8 );
+
+	var $elem = jQuery( "<span style='border: 2px solid black;padding: 1px;margin: 3px;'>Hello, I'm some text.</span>" ).appendTo( "#qunit-fixture" );
+
+	jQuery.each( [ "Width", "Height" ], function( i, method ) {
+		var val = $elem[ method.toLowerCase() ]();
+		assert.notEqual( val, 0, method + " should not be zero on inline element." );
+		assert.equal( $elem[ "inner" + method ](), val + 2, "inner" + method + " should include padding" );
+		assert.equal( $elem[ "outer" + method ](), val + 6, "outer" + method + " should include padding and border" );
+		assert.equal( $elem[ "outer" + method ]( true ), val + 12, "outer" + method + "(true) should include padding, border, and margin" );
+	} );
+} );
+
 } )();
