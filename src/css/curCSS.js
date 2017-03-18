@@ -10,8 +10,7 @@ define( [
 "use strict";
 
 function curCSS( elem, name, computed ) {
-	var width, minWidth, maxWidth, ret,
-		style = elem.style;
+	var width, minWidth, maxWidth, ret, style;
 
 	computed = computed || getStyles( elem );
 
@@ -31,6 +30,7 @@ function curCSS( elem, name, computed ) {
 		// This is against the CSSOM draft spec:
 		// https://drafts.csswg.org/cssom/#resolved-values
 		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
+			style = elem.style;
 
 			// Remember the original values
 			width = style.width;
