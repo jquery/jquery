@@ -531,7 +531,8 @@ QUnit.test( "chaining", function( assert ) {
 			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 8192,
 				256, 512,  512, 1024,  1024, 2048,  position,
 				position !== "fixed" && "documentElement" );
-		};
+		},
+		viewportScroll = { left: 1, top: 2 };
 
 	// Cover each combination of <html> position and <body> position
 	supportjQuery.each( POSITION_VALUES, function( _, htmlPos ) {
@@ -602,6 +603,13 @@ QUnit.test( "chaining", function( assert ) {
 						}
 					}
 					break;
+				}
+
+				// Viewport scroll affects position:fixed elements, except when a position:fixed
+				// html element makes the page unscrollable
+				if ( props.style === "fixed" && expectations.documentElement.style !== "fixed" ) {
+					offset.top += viewportScroll.top;
+					offset.left += viewportScroll.left;
 				}
 			} );
 

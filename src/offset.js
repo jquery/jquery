@@ -97,21 +97,9 @@ jQuery.fn.extend( {
 			return { top: 0, left: 0 };
 		}
 
-		// gBCR returns position relative to the viewport
+		// Get document-relative position by adding viewport scroll to viewport-relative gBCR
 		rect = elem.getBoundingClientRect();
 		win = elem.ownerDocument.defaultView;
-
-		// Check for viewport-relative data
-		for ( ; elem; elem = elem.offsetParent ) {
-			if ( jQuery.css( elem, "position" ) === "fixed" ) {
-				return {
-					top: rect.top,
-					left: rect.left
-				};
-			}
-		}
-
-		// Add the viewport scroll to get document-relative values
 		return {
 			top: rect.top + win.pageYOffset,
 			left: rect.left + win.pageXOffset
