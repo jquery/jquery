@@ -506,6 +506,8 @@ QUnit.test( "chaining", function( assert ) {
 // Test complex content under a variety of <html>/<body> positioning styles
 ( function() {
 	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
+
+		// Use shorthands for describing an element's relevant properties
 		BOX_PROPS =
 			( "left top  marginLeft marginTop  borderLeft borderTop  paddingLeft paddingTop" +
             "  style  parent" ).split( /\s+/g ),
@@ -516,10 +518,12 @@ QUnit.test( "chaining", function( assert ) {
 			} );
 			return propObj;
 		},
+
+		// Values must stay synchronized with test/data/offset/boxes.html
 		divProps = function( position, parentId ) {
 			return props( 4, 8,  8, 16,  2, 4,  16, 32,  position, parentId );
 		},
-		docProps = function( position ) {
+		htmlProps = function( position ) {
 			return props( position === "static" ? 0 : 2048, position === "static" ? 0 : 4096,
 				32, 64,  64, 128,  128, 256,  position );
 		},
@@ -529,11 +533,14 @@ QUnit.test( "chaining", function( assert ) {
 				position !== "fixed" && "documentElement" );
 		};
 
-	supportjQuery.each( POSITION_VALUES, function( _, docPos ) {
+	// Cover each combination of <html> position and <body> position
+	supportjQuery.each( POSITION_VALUES, function( _, htmlPos ) {
 		supportjQuery.each( POSITION_VALUES, function( _, bodyPos ) {
-			var label = "nonzero box properties - html." + docPos + " body." + bodyPos,
+			var label = "nonzero box properties - html." + htmlPos + " body." + bodyPos,
+
+				// Initialize data about page elements
 				expectations = {
-					"documentElement":   docProps( docPos ),
+					"documentElement":   htmlProps( htmlPos ),
 					"body":              bodyProps( bodyPos ),
 					"relative":          divProps( "relative", "body" ),
 					"relative-relative": divProps( "relative", "relative" ),
@@ -546,40 +553,55 @@ QUnit.test( "chaining", function( assert ) {
 					"fixed-absolute":    divProps( "absolute", "fixed" )
 				};
 
-			// Define expectations
+			// Define position and offset expectations for page elements
 			supportjQuery.each( expectations, function( id, props ) {
-				var pos = props.pos = {
+				var parent = expectations[ props.parent ],
+
+					// position() relates an element's margin box to its offset parent's padding box
+					pos = props.pos = {
 						top: props.top,
 						left: props.left
 					},
+
+					// offset() relates an element's border box to the document origin
 					offset = props.offset = {
 						top: pos.top + props.marginTop,
 						left: pos.left + props.marginLeft
-					},
-					parent = expectations[ props.parent ];
+					};
 
+				// Account for ancestors differently by element position
+				// fixed: ignore them
+				// absolute: offset includes offsetParent offset+border
+				// relative: position includes parent padding (and also position+margin+border when
+				//   parent is not offsetParent); offset includes parent offset+border+padding
+				// static: same as relative
 				for ( ; parent; parent = expectations[ parent.parent ] ) {
-
-					// Absolute offset: add offset+border from (non-static) offset parent
-					// Static/relative offset: add offset+border+padding from DOM parent
-					if ( props.style !== "absolute" || parent.style !== "static" ) {
-						offset.top += parent.offset.top + parent.borderTop;
-						offset.left += parent.offset.left + parent.borderLeft;
-						if ( props.style !== "absolute" ) {
-							offset.top += parent.paddingTop;
-							offset.left += parent.paddingLeft;
-
-							// Static/relative position: add padding from DOM parent
-							// and (if the parent is position:static) its position+margin+border
-							pos.top += parent.paddingTop;
-							pos.left += parent.paddingLeft;
-							if ( parent.style === "static" ) {
-								pos.top += parent.pos.top + parent.marginTop + parent.borderTop;
-								pos.left += parent.pos.left + parent.marginLeft + parent.borderLeft;
-							}
-						}
+					// position:fixed
+					if ( props.style === "fixed" ) {
 						break;
 					}
+
+					// position:absolute bypass
+					if ( props.style === "absolute" && parent.style === "static" ) {
+						continue;
+					}
+
+					// Offset update
+					offset.top += parent.offset.top + parent.borderTop;
+					offset.left += parent.offset.left + parent.borderLeft;
+					if ( props.style !== "absolute" ) {
+						offset.top += parent.paddingTop;
+						offset.left += parent.paddingLeft;
+
+						// position:relative or position:static position update
+						pos.top += parent.paddingTop;
+						pos.left += parent.paddingLeft;
+						if ( parent.style === "static" ) {
+							pos.top += parent.pos.top + parent.marginTop + parent.borderTop;
+							pos.left += parent.pos.left + parent.marginLeft + parent.borderLeft;
+						}
+					}
+					break;
 				}
 			} );
 
@@ -588,7 +610,7 @@ QUnit.test( "chaining", function( assert ) {
 				assert.expect( 33 );
 
 				// Setup documentElement and body styles
-				doc.documentElement.style.position = docPos;
+				doc.documentElement.style.position = htmlPos;
 				doc.body.style.position = bodyPos;
 
 				// Verify expected document offset

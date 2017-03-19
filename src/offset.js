@@ -70,7 +70,7 @@ jQuery.offset = {
 
 jQuery.fn.extend( {
 
-	// Get or set position relative to document origin
+	// offset() relates an element's border box to the document origin
 	offset: function( options ) {
 
 		// Preserve chaining for setter
@@ -97,6 +97,7 @@ jQuery.fn.extend( {
 			return { top: 0, left: 0 };
 		}
 
+		// gBCR returns position relative to the viewport
 		rect = elem.getBoundingClientRect();
 		win = elem.ownerDocument.defaultView;
 
@@ -110,14 +111,15 @@ jQuery.fn.extend( {
 			}
 		}
 
-		// Absent fixed positioning, add back the viewport scroll
+		// Add the viewport scroll to get document-relative values
 		return {
 			top: rect.top + win.pageYOffset,
 			left: rect.left + win.pageXOffset
 		};
 	},
 
-	// Get position relative to offset parent, excluding contributions from margins
+	// position() relates an element's margin box to its offset parent's padding box
+	// This corresponds to the behavior of CSS absolute positioning
 	position: function() {
 		if ( !this[ 0 ] ) {
 			return;
