@@ -18,6 +18,6 @@ module.exports = function ensureIterability() {
 			result += i.nodeName;
 		}
 
-		assert.strictEqual( result, "DIVSPANA", "for-of doesn't work on jQuery objects" );
+		assert.strictEqual( result, "DIVSPANA", "for-of works on jQuery objects" );
 	} );
 };
