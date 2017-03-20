@@ -10,7 +10,13 @@ define( [
 "use strict";
 
 function curCSS( elem, name, computed ) {
-	var width, minWidth, maxWidth, ret, style;
+	var width, minWidth, maxWidth, ret,
+
+		// Support: Firefox 51+
+		// Retrieving style before computed somehow
+		// fixes an issue with getting wrong values
+		// on detached elements
+		style = elem.style;
 
 	computed = computed || getStyles( elem );
 
@@ -30,7 +36,6 @@ function curCSS( elem, name, computed ) {
 		// This is against the CSSOM draft spec:
 		// https://drafts.csswg.org/cssom/#resolved-values
 		if ( !support.pixelMarginRight() && rnumnonpx.test( ret ) && rmargin.test( name ) ) {
-			style = elem.style;
 
 			// Remember the original values
 			width = style.width;
