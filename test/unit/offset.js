@@ -509,7 +509,7 @@ QUnit.test( "chaining", function( assert ) {
 
 		// Use shorthands for describing an element's relevant properties
 		BOX_PROPS =
-			( "left top  marginLeft marginTop  borderLeft borderTop  paddingLeft paddingTop" +
+			( "top left  marginTop marginLeft  borderTop borderLeft  paddingTop paddingLeft" +
             "  style  parent" ).split( /\s+/g ),
 		props = function() {
 			var propObj = {};
@@ -521,18 +521,18 @@ QUnit.test( "chaining", function( assert ) {
 
 		// Values must stay synchronized with test/data/offset/boxes.html
 		divProps = function( position, parentId ) {
-			return props( 4, 8,  8, 16,  2, 4,  16, 32,  position, parentId );
+			return props( 8, 4,  16, 8,  4, 2,  32, 16,  position, parentId );
 		},
 		htmlProps = function( position ) {
-			return props( position === "static" ? 0 : 2048, position === "static" ? 0 : 4096,
-				32, 64,  64, 128,  128, 256,  position );
+			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 2048,
+				64, 32,  128, 64,  256, 128,  position );
 		},
 		bodyProps = function( position ) {
-			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 8192,
-				256, 512,  512, 1024,  1024, 2048,  position,
+			return props( position === "static" ? 0 : 8192, position === "static" ? 0 : 4096,
+				512, 256,  1024, 512,  2048, 1024,  position,
 				position !== "fixed" && "documentElement" );
 		},
-		viewportScroll = { left: 1, top: 2 },
+		viewportScroll = { top: 2, left: 1 },
 
 		alwaysScrollable = false;
 
