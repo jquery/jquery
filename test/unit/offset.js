@@ -510,7 +510,7 @@ QUnit.test( "chaining", function( assert ) {
 		// Use shorthands for describing an element's relevant properties
 		BOX_PROPS =
 			( "top left  marginTop marginLeft  borderTop borderLeft  paddingTop paddingLeft" +
-            "  style  parent" ).split( /\s+/g ),
+			"  style  parent" ).split( /\s+/g ),
 		props = function() {
 			var propObj = {};
 			supportjQuery.each( arguments, function( i, value ) {
