@@ -2915,6 +2915,16 @@ QUnit.test( "originalEvent property for Chrome, Safari, Fx & Edge of simulated e
 	outer.off( "focusin" );
 } );
 
+QUnit.test( "trigger('click') on radio passes extra params", function( assert ) {
+	assert.expect( 1 );
+	var $radio = jQuery( "<input type='radio' />" ).appendTo( "#qunit-fixture" )
+		.on( "click", function( e, data ) {
+			assert.ok( data, "Trigger data is passed to radio click handler" );
+		} );
+
+	$radio.trigger( "click", [ true ] );
+} );
+
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( assert ) {
 	assert.expect( 5 );
 
