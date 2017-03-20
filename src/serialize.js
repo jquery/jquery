@@ -1,6 +1,6 @@
 define( [
 	"./core",
-	"./var/rcheckableType",
+	"./manipulation/var/rcheckableType",
 	"./core/init",
 	"./traversing", // filter
 	"./attributes/prop"
