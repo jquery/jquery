@@ -637,10 +637,14 @@ QUnit.test( "chaining", function( assert ) {
 		// Support: IE<=10 only
 		// Fudge the tests to work around <html>.gBCR() erroneously including margins
 		if ( /MSIE (?:9|10)\./.test( navigator.userAgent ) ) {
-			expectations.documentElement.pos.top -= 62;
-			expectations.documentElement.offset.top -= 62;
-			expectations.documentElement.pos.left -= 31;
-			expectations.documentElement.offset.left -= 31;
+			expectations.documentElement.pos.top -= expectations.documentElement.marginTop -
+				viewportScroll.top;
+			expectations.documentElement.offset.top -= expectations.documentElement.marginTop -
+				viewportScroll.top;
+			expectations.documentElement.pos.left -= expectations.documentElement.marginLeft -
+				viewportScroll.left;
+			expectations.documentElement.offset.left -= expectations.documentElement.marginLeft -
+				viewportScroll.left;
 			if ( htmlPos !== "static" ) {
 				delete expectations.documentElement;
 				delete expectations.body;
