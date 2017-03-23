@@ -527,7 +527,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - timeout", 2, function( assert ) {
+	ajaxTest( "jQuery.ajax() - native timeout", 2, function( assert ) {
 		return {
 			url: url( "data/name.php?wait=1" ),
 			xhr: function() {
@@ -536,7 +536,7 @@ QUnit.module( "ajax", {
 				return xhr;
 			},
 			error: function( xhr, msg ) {
-				assert.strictEqual( msg, "error", "Timeout triggers error callback" );
+				assert.strictEqual( msg, "error", "Native timeout triggers error callback" );
 			},
 			complete: function() {
 				assert.ok( true, "complete" );
