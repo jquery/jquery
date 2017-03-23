@@ -526,6 +526,23 @@ QUnit.module( "ajax", {
 			}
 		};
 	} );
+	
+	ajaxTest( "jQuery.ajax() - timeout", 2, function( assert ) {
+		return {
+			url: url( "data/name.php?wait=1" ),
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				x.timeout = 1;
+				return xhr;
+			},
+			error: function( xhr, msg ) {
+				assert.strictEqual( msg, "error", "Timeout triggers error callback" );
+			},
+			complete: function() {
+				assert.ok( true, "complete" );
+			}
+		};
+	} );
 
 	ajaxTest( "jQuery.ajax() - events with context", 12, function( assert ) {
 		var context = document.createElement( "div" );
