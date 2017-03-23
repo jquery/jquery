@@ -526,13 +526,13 @@ QUnit.module( "ajax", {
 			}
 		};
 	} );
-	
+
 	ajaxTest( "jQuery.ajax() - timeout", 2, function( assert ) {
 		return {
 			url: url( "data/name.php?wait=1" ),
 			xhr: function() {
 				var xhr = new window.XMLHttpRequest();
-				x.timeout = 1;
+				xhr.timeout = 1;
 				return xhr;
 			},
 			error: function( xhr, msg ) {
