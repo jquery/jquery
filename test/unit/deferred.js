@@ -524,11 +524,13 @@ QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
 
 QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 
-	assert.expect( 1 );
+	assert.expect( 2 );
 
 	var done = assert.async();
 
-	var defer = jQuery.Deferred().done( function() {
+	var defer, defer2;
+
+	defer = jQuery.Deferred().done( function() {
 		setTimeout( done );
 		throw new Error();
 	} );
@@ -536,6 +538,16 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	defer.then( function() {
 		assert.ok( true, "errors in .done callbacks don't stop .then handlers" );
 	} );
+
+	function functionExoticToStringTag() {
+		assert.ok( true, "function with exotic toStringTag gets called" );
+	}
+
+	functionExoticToStringTag[ Symbol.toStringTag ] = "foo";
+
+	defer2 = jQuery.Deferred()
+		.resolve( 2 )
+		.then( functionExoticToStringTag );
 
 	try {
 		defer.resolve();
@@ -861,7 +873,19 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	"use strict";
 
-	var CASES = 16,
+	function promiseExoticToStringTag() {
+		var promise = {
+			then: function( onFulfilled ) {
+				onFulfilled();
+			}
+		};
+
+		promise.then[ Symbol.toStringTag ] = "foo";
+
+		return promise;
+	}
+
+	var CASES = 17,
 		slice = [].slice,
 		sentinel = { context: "explicit" },
 		eventuallyFulfilled = jQuery.Deferred().notify( true ),
@@ -871,6 +895,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		inputs = {
 			promise: Promise.resolve( true ),
 			rejectedPromise: Promise.reject( false ),
+			promiseExoticToStringTag: promiseExoticToStringTag(),
 			deferred: jQuery.Deferred().resolve( true ),
 			eventuallyFulfilled: eventuallyFulfilled,
 			secondaryFulfilled: secondaryFulfilled,
@@ -894,6 +919,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		},
 		willSucceed = {
 			promise: [ true ],
+			promiseExoticToStringTag: [ ],
 			deferred: [ true ],
 			eventuallyFulfilled: [ true ],
 			secondaryFulfilled: [ true ],
