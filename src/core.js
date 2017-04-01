@@ -212,7 +212,7 @@ jQuery.extend( {
 	noop: function() {},
 
 	isFunction: function( obj ) {
-		return jQuery.type( obj ) === "function";
+		return obj instanceof Function && typeof obj === "function";
 	},
 
 	isWindow: function( obj ) {
