@@ -406,9 +406,9 @@ QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...)
 
 
 QUnit.test( "isFunction", function( assert ) {
-	assert.expect( 19 );
+	assert.expect( 20 );
 
-	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
+	var mystr, myarr, myfunction, fn, inheriting, obj, nodes, first, input, a;
 
 	// Make sure that false values return false
 	assert.ok( !jQuery.isFunction(), "No Value" );
@@ -438,6 +438,9 @@ QUnit.test( "isFunction", function( assert ) {
 	// Make sure normal functions still work
 	fn = function() {};
 	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
+
+	inheriting = Object.create( fn );
+	assert.ok( !jQuery.isFunction( inheriting ), "object inheriting function" );
 
 	obj = document.createElement( "object" );
 
@@ -489,6 +492,10 @@ QUnit.test( "isFunction", function( assert ) {
 	callme( function() {
 		callme( function() {} );
 	} );
+
+	function fnExoticToStringTag() {}
+	fnExoticToStringTag[ Symbol.toStringTag ] = "foo";
+	assert.ok( jQuery.isFunction( fnExoticToStringTag ), "function with exotic @@toStringTag" );
 } );
 
 QUnit.test( "isNumeric", function( assert ) {
