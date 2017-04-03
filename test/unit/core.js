@@ -1642,25 +1642,6 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	}
 } );
 
-QUnit.test( "jQuery.camelCase()", function( assert ) {
-
-	var tests = {
-		"foo-bar": "fooBar",
-		"foo-bar-baz": "fooBarBaz",
-		"girl-u-want": "girlUWant",
-		"the-4th-dimension": "the-4thDimension",
-		"-o-tannenbaum": "OTannenbaum",
-		"-moz-illa": "MozIlla",
-		"-ms-take": "msTake"
-	};
-
-	assert.expect( 7 );
-
-	jQuery.each( tests, function( key, val ) {
-		assert.equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
-	} );
-} );
-
 testIframe(
 	"Conditional compilation compatibility (#13274)",
 	"core/cc_on.html",

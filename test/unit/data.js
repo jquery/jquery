@@ -602,7 +602,7 @@ QUnit.test( ".data should not miss attr() set data-* with hyphenated property na
 } );
 
 QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function( assert ) {
-	assert.expect( 18 );
+	assert.expect( 9 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
@@ -625,7 +625,6 @@ QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function
 		div.data( key, val );
 		var allData = div.data();
 		assert.equal( allData[ key ], undefined, ".data does not store with hyphenated keys" );
-		assert.equal( allData[ jQuery.camelCase( key ) ], val, ".data stores the camelCased key" );
 	} );
 } );
 
@@ -639,7 +638,7 @@ QUnit.test( ".data should not strip more than one hyphen when camelCasing (gh-20
 	assert.equal( allData[ "nested--Triple" ], "triple", "Key with triple hyphens is correctly camelCased" );
 } );
 
-QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
+QUnit.test( ".data supports interoperable hyphenated get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
@@ -661,17 +660,16 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 			"2-num-start": true
 		};
 
-	assert.expect( 24 );
+	assert.expect( 12 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
 
 		assert.deepEqual( div.data( key ), val, "get: " + key );
-		assert.deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
 	} );
 } );
 
-QUnit.test( ".data supports interoperable removal of hyphenated/camelCase properties", function( assert ) {
+QUnit.test( ".data supports interoperable removal of hyphenated properties", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
@@ -689,13 +687,12 @@ QUnit.test( ".data supports interoperable removal of hyphenated/camelCase proper
 			"some-json": "{ \"foo\": \"bar\" }"
 		};
 
-	assert.expect( 27 );
+	assert.expect( 18 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
 
 		assert.deepEqual( div.data( key ), val, "get: " + key );
-		assert.deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
 
 		div.removeData( key );
 
