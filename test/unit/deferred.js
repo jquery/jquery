@@ -524,11 +524,13 @@ QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
 
 QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 
-	assert.expect( 1 );
+	assert.expect( 2 );
 
-	var done = assert.async();
+	var done = assert.async( 2 ),
+		defer = jQuery.Deferred(),
+		defer2 = jQuery.Deferred().resolve( 2 );
 
-	var defer = jQuery.Deferred().done( function() {
+	defer.done( function() {
 		setTimeout( done );
 		throw new Error();
 	} );
@@ -536,6 +538,14 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	defer.then( function() {
 		assert.ok( true, "errors in .done callbacks don't stop .then handlers" );
 	} );
+
+	function faker() {
+		assert.ok( true, "handler with non-'Function' @@toStringTag gets invoked" );
+		done();
+	}
+	faker[ typeof Symbol === "function" && Symbol.toStringTag ] = "foo";
+
+	defer2.then( faker );
 
 	try {
 		defer.resolve();
@@ -861,7 +871,19 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	"use strict";
 
-	var CASES = 16,
+	function customToStringThen() {
+		var promise = {
+			then: function( onFulfilled ) {
+				onFulfilled();
+			}
+		};
+
+		promise.then[ typeof Symbol === "function" && Symbol.toStringTag ] = "foo";
+
+		return promise;
+	}
+
+	var CASES = 17,
 		slice = [].slice,
 		sentinel = { context: "explicit" },
 		eventuallyFulfilled = jQuery.Deferred().notify( true ),
@@ -871,6 +893,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		inputs = {
 			promise: Promise.resolve( true ),
 			rejectedPromise: Promise.reject( false ),
+			customToStringThen: customToStringThen(),
 			deferred: jQuery.Deferred().resolve( true ),
 			eventuallyFulfilled: eventuallyFulfilled,
 			secondaryFulfilled: secondaryFulfilled,
@@ -894,6 +917,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		},
 		willSucceed = {
 			promise: [ true ],
+			customToStringThen: [],
 			deferred: [ true ],
 			eventuallyFulfilled: [ true ],
 			secondaryFulfilled: [ true ],
