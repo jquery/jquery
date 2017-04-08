@@ -406,9 +406,10 @@ QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...)
 
 
 QUnit.test( "isFunction", function( assert ) {
-	assert.expect( 20 );
+	assert.expect( 21 );
 
-	var mystr, myarr, myfunction, fn, inheriting, obj, nodes, first, input, a;
+	var mystr, myarr, myfunction, fn, inheriting, obj, nodes, first, input, a, iframe, doc,
+		done = assert.async();
 
 	// Make sure that false values return false
 	assert.ok( !jQuery.isFunction(), "No Value" );
@@ -493,10 +494,54 @@ QUnit.test( "isFunction", function( assert ) {
 		callme( function() {} );
 	} );
 
-	function fnExoticToStringTag() {}
-	fnExoticToStringTag[ Symbol.toStringTag ] = "foo";
-	assert.ok( jQuery.isFunction( fnExoticToStringTag ), "function with exotic @@toStringTag" );
+	// Functions from other windows should be matched
+	Globals.register( "iframeDone" );
+	window.iframeDone = function( fn, detail ) {
+		window.iframeDone = undefined;
+		assert.ok( jQuery.isFunction( fn ), "cross-realm function" +
+			( detail ? " - " + detail : "" ) );
+		done();
+	};
+
+	try {
+		iframe = jQuery( "#qunit-fixture" )[ 0 ].appendChild( document.createElement( "iframe" ) );
+		doc = iframe.contentDocument || iframe.contentWindow.document;
+		doc.open();
+		doc.write( "<body onload='window.parent.iframeDone( function() {} );'>" );
+		doc.close();
+	} catch ( e ) {
+		window.iframeDone( function() {}, "iframes not supported" );
+	}
 } );
+
+( function() {
+	var generator;
+	try {
+		generator = Function( "return function* () {}" )();
+	} catch ( e ) {}
+
+	QUnit[ generator ? "test" : "skip" ]( "isFunction(standard Function subclass)",
+		function( assert ) {
+			assert.expect( 1 );
+
+			assert.equal( jQuery.isFunction( generator ), true, "GeneratorFunction" );
+		}
+	);
+} )();
+
+QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isFunction(custom @@toStringTag)",
+	function( assert ) {
+		assert.expect( 2 );
+
+		var obj = {},
+			fn = function() {};
+		obj[ Symbol.toStringTag ] = "Function";
+		fn[ Symbol.toStringTag ] = "Object";
+
+		assert.equal( jQuery.isFunction( obj ), false, "function-mimicking object" );
+		assert.equal( jQuery.isFunction( fn ), true, "object-mimicking function" );
+	}
+);
 
 QUnit.test( "isNumeric", function( assert ) {
 	assert.expect( 43 );
