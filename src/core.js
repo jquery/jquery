@@ -212,7 +212,10 @@ jQuery.extend( {
 	noop: function() {},
 
 	isFunction: function( obj ) {
-		return obj instanceof Function && typeof obj === "function";
+
+		// Support: Chrome <=57, Firefox <=52
+		// Don't classify callable <object>s as functions
+		return typeof obj === "function" && typeof obj.nodeType !== "number";
 	},
 
 	isWindow: function( obj ) {
