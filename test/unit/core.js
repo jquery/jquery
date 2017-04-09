@@ -503,15 +503,11 @@ QUnit.test( "isFunction", function( assert ) {
 		done();
 	};
 
-	try {
-		iframe = jQuery( "#qunit-fixture" )[ 0 ].appendChild( document.createElement( "iframe" ) );
-		doc = iframe.contentDocument || iframe.contentWindow.document;
-		doc.open();
-		doc.write( "<body onload='window.parent.iframeDone( function() {} );'>" );
-		doc.close();
-	} catch ( e ) {
-		window.iframeDone( function() {}, "iframes not supported" );
-	}
+	iframe = jQuery( "#qunit-fixture" )[ 0 ].appendChild( document.createElement( "iframe" ) );
+	doc = iframe.contentDocument || iframe.contentWindow.document;
+	doc.open();
+	doc.write( "<body onload='window.parent.iframeDone( function() {} );'>" );
+	doc.close();
 } );
 
 ( function() {
