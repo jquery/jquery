@@ -467,7 +467,7 @@ function isArrayLike( obj ) {
 	var length = !!obj && "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
-	if ( type === "function" || jQuery.isWindow( obj ) ) {
+	if ( jQuery.isFunction( obj ) || jQuery.isWindow( obj ) ) {
 		return false;
 	}
 
