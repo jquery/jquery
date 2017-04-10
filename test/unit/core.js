@@ -406,10 +406,9 @@ QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...)
 
 
 QUnit.test( "isFunction", function( assert ) {
-	assert.expect( 21 );
+	assert.expect( 20 );
 
-	var mystr, myarr, myfunction, fn, inheriting, obj, nodes, first, input, a, iframe, doc,
-		done = assert.async();
+	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
 
 	// Make sure that false values return false
 	assert.ok( !jQuery.isFunction(), "No Value" );
@@ -440,8 +439,7 @@ QUnit.test( "isFunction", function( assert ) {
 	fn = function() {};
 	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
 
-	inheriting = Object.create( fn );
-	assert.ok( !jQuery.isFunction( inheriting ), "object inheriting function" );
+	assert.ok( !jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
 
 	obj = document.createElement( "object" );
 
@@ -493,6 +491,13 @@ QUnit.test( "isFunction", function( assert ) {
 	callme( function() {
 		callme( function() {} );
 	} );
+} );
+
+QUnit.test( "isFunction(cross-realm function)", function( assert ) {
+	assert.expect( 1 );
+
+	var iframe, doc,
+		done = assert.async();
 
 	// Functions from other windows should be matched
 	Globals.register( "iframeDone" );
@@ -510,20 +515,26 @@ QUnit.test( "isFunction", function( assert ) {
 	doc.close();
 } );
 
-( function() {
-	var generator;
-	try {
-		generator = Function( "return function* () {}" )();
-	} catch ( e ) {}
+supportjQuery.each(
+	{
+		GeneratorFunction: "function*() {}",
+		AsyncFunction: "async function() {}"
+	},
+	function( subclass, source ) {
+		var fn;
+		try {
+			fn = Function( "return " + source )();
+		} catch ( e ) {}
 
-	QUnit[ generator ? "test" : "skip" ]( "isFunction(standard Function subclass)",
-		function( assert ) {
-			assert.expect( 1 );
+		QUnit[ fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
+			function( assert ) {
+				assert.expect( 1 );
 
-			assert.equal( jQuery.isFunction( generator ), true, "GeneratorFunction" );
-		}
-	);
-} )();
+				assert.equal( jQuery.isFunction( fn ), true, source );
+			}
+		);
+	}
+);
 
 QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isFunction(custom @@toStringTag)",
 	function( assert ) {
