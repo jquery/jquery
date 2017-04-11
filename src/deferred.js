@@ -184,7 +184,7 @@ jQuery.extend( {
 								},
 
 								// Only normal processors (resolve) catch and reject exceptions
-								process = special ?
+								var process = special ?
 									mightThrow :
 									function() {
 										try {
