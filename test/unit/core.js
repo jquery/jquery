@@ -536,7 +536,8 @@ supportjQuery.each(
 	}
 );
 
-QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isFunction(custom @@toStringTag)",
+QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
+	"isFunction(custom @@toStringTag)",
 	function( assert ) {
 		assert.expect( 2 );
 
