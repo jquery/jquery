@@ -555,7 +555,7 @@ QUnit[ typeof Symbol === "function" ? "test" : "skip" ](
 		function faker() {
 			assert.ok( true, "handler with non-'Function' @@toStringTag gets invoked" );
 		}
-		faker[ typeof Symbol === "function" && Symbol.toStringTag ] = "String";
+		faker[ Symbol.toStringTag ] = "String";
 
 		defer.then( faker ).then( done );
 
@@ -882,15 +882,13 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	"use strict";
 
-	function customToStringThen() {
-		var promise = {
-			then: function( onFulfilled ) {
-				onFulfilled();
-			}
-		};
-		promise.then[ typeof Symbol === "function" && Symbol.toStringTag ] = "String";
-
-		return promise;
+	var customToStringThen = {
+		then: function( onFulfilled ) {
+			onFulfilled();
+		}
+	};
+	if ( typeof Symbol === "function" ) {
+		customToStringThen.then[ Symbol.toStringTag ] = "String";
 	}
 
 	var slice = [].slice,
@@ -901,7 +899,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		secondaryRejected = jQuery.Deferred().resolve( eventuallyRejected ),
 		inputs = {
 			promise: Promise.resolve( true ),
-			customToStringThen: customToStringThen(),
+			customToStringThen: customToStringThen,
 			rejectedPromise: Promise.reject( false ),
 			deferred: jQuery.Deferred().resolve( true ),
 			eventuallyFulfilled: eventuallyFulfilled,
