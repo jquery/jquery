@@ -214,7 +214,7 @@ jQuery.extend( {
 	isFunction: function( obj ) {
 
 		// Support: Chrome <=57, Firefox <=52
-		// Don't classify callable <object>s as functions
+		// Don't classify callable <object> elements as functions
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
 	},
 
