@@ -503,6 +503,215 @@ QUnit.test( "chaining", function( assert ) {
 	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
 } );
 
+// Test complex content under a variety of <html>/<body> positioning styles
+( function() {
+	var POSITION_VALUES = [ "static", "relative", "absolute", "fixed" ],
+
+		// Use shorthands for describing an element's relevant properties
+		BOX_PROPS =
+			( "top left  marginTop marginLeft  borderTop borderLeft  paddingTop paddingLeft" +
+			"  style  parent" ).split( /\s+/g ),
+		props = function() {
+			var propObj = {};
+			supportjQuery.each( arguments, function( i, value ) {
+				propObj[ BOX_PROPS[ i ] ] = value;
+			} );
+			return propObj;
+		},
+
+		// Values must stay synchronized with test/data/offset/boxes.html
+		divProps = function( position, parentId ) {
+			return props( 8, 4,  16, 8,  4, 2,  32, 16,  position, parentId );
+		},
+		htmlProps = function( position ) {
+			return props( position === "static" ? 0 : 4096, position === "static" ? 0 : 2048,
+				64, 32,  128, 64,  256, 128,  position );
+		},
+		bodyProps = function( position ) {
+			return props( position === "static" ? 0 : 8192, position === "static" ? 0 : 4096,
+				512, 256,  1024, 512,  2048, 1024,  position,
+				position !== "fixed" && "documentElement" );
+		},
+		viewportScroll = { top: 2, left: 1 },
+
+		alwaysScrollable = false;
+
+	// Support: iOS <=7
+	// Detect viewport scrollability for pages with position:fixed document element
+	( function() {
+		var $iframe = jQuery( "<iframe/>" )
+			.css( { position: "absolute", width: "50px", left: "-60px" } )
+			.attr( "src", url( "./data/offset/boxes.html" ) );
+
+		// Hijack the iframe test infrastructure
+		window.iframeCallback = function( $, win, doc ) {
+			doc.documentElement.style.position = "fixed";
+			alwaysScrollable = win.pageXOffset !== 0;
+			window.iframeCallback = undefined;
+			$iframe.remove();
+			return;
+		};
+
+		$iframe.appendTo( document.body );
+		return;
+	} )();
+
+	function getExpectations( htmlPos, bodyPos ) {
+
+		// Initialize data about page elements
+		var expectations = {
+				"documentElement":   htmlProps( htmlPos ),
+				"body":              bodyProps( bodyPos ),
+				"relative":          divProps( "relative", "body" ),
+				"relative-relative": divProps( "relative", "relative" ),
+				"relative-absolute": divProps( "absolute", "relative" ),
+				"absolute":          divProps( "absolute", "body" ),
+				"absolute-relative": divProps( "relative", "absolute" ),
+				"absolute-absolute": divProps( "absolute", "absolute" ),
+				"fixed":             divProps( "fixed" ),
+				"fixed-relative":    divProps( "relative", "fixed" ),
+				"fixed-absolute":    divProps( "absolute", "fixed" )
+			};
+
+		// Define position and offset expectations for page elements
+		supportjQuery.each( expectations, function( id, props ) {
+			var parent = expectations[ props.parent ],
+
+				// position() relates an element's margin box to its offset parent's padding box
+				pos = props.pos = {
+					top: props.top,
+					left: props.left
+				},
+
+				// offset() relates an element's border box to the document origin
+				offset = props.offset = {
+					top: pos.top + props.marginTop,
+					left: pos.left + props.marginLeft
+				};
+
+			// Account for ancestors differently by element position
+			// fixed: ignore them
+			// absolute: offset includes offsetParent offset+border
+			// relative: position includes parent padding (and also position+margin+border when
+			//   parent is not offsetParent); offset includes parent offset+border+padding
+			// static: same as relative
+			for ( ; parent; parent = expectations[ parent.parent ] ) {
+				// position:fixed
+				if ( props.style === "fixed" ) {
+					break;
+				}
+
+				// position:absolute bypass
+				if ( props.style === "absolute" && parent.style === "static" ) {
+					continue;
+				}
+
+				// Offset update
+				offset.top += parent.offset.top + parent.borderTop;
+				offset.left += parent.offset.left + parent.borderLeft;
+				if ( props.style !== "absolute" ) {
+					offset.top += parent.paddingTop;
+					offset.left += parent.paddingLeft;
+
+					// position:relative or position:static position update
+					pos.top += parent.paddingTop;
+					pos.left += parent.paddingLeft;
+					if ( parent.style === "static" ) {
+						pos.top += parent.pos.top + parent.marginTop + parent.borderTop;
+						pos.left += parent.pos.left + parent.marginLeft + parent.borderLeft;
+					}
+				}
+				break;
+			}
+
+			// Viewport scroll affects position:fixed elements, except when the page is
+			// unscrollable.
+			if ( props.style === "fixed" &&
+				( alwaysScrollable || expectations.documentElement.style !== "fixed" ) ) {
+
+				offset.top += viewportScroll.top;
+				offset.left += viewportScroll.left;
+			}
+		} );
+
+		// Support: IE<=10 only
+		// Fudge the tests to work around <html>.gBCR() erroneously including margins
+		if ( /MSIE (?:9|10)\./.test( navigator.userAgent ) ) {
+			expectations.documentElement.pos.top -= expectations.documentElement.marginTop -
+				viewportScroll.top;
+			expectations.documentElement.offset.top -= expectations.documentElement.marginTop -
+				viewportScroll.top;
+			expectations.documentElement.pos.left -= expectations.documentElement.marginLeft -
+				viewportScroll.left;
+			expectations.documentElement.offset.left -= expectations.documentElement.marginLeft -
+				viewportScroll.left;
+			if ( htmlPos !== "static" ) {
+				delete expectations.documentElement;
+				delete expectations.body;
+				delete expectations.relative;
+				delete expectations.absolute;
+			}
+		}
+
+		return expectations;
+	}
+
+	// Cover each combination of <html> position and <body> position
+	supportjQuery.each( POSITION_VALUES, function( _, htmlPos ) {
+		supportjQuery.each( POSITION_VALUES, function( _, bodyPos ) {
+			var label = "nonzero box properties - html." + htmlPos + " body." + bodyPos;
+			testIframe( label, "offset/boxes.html", function( assert, $, win, doc ) {
+
+				// Define expectations at runtime so alwaysScrollable is correct
+				var expectations = getExpectations( htmlPos, bodyPos );
+
+				assert.expect( 3 * Object.keys( expectations ).length );
+
+				// Setup documentElement and body styles
+				doc.documentElement.style.position = htmlPos;
+				doc.body.style.position = bodyPos;
+
+				// Verify expected document offset
+				supportjQuery.each( expectations, function( id, descriptor ) {
+					assert.deepEqual(
+						supportjQuery.extend( {}, $( "#" + id ).offset() ),
+						descriptor.offset,
+						"jQuery('#" + id + "').offset()" );
+				} );
+
+				// Verify expected relative position
+				supportjQuery.each( expectations, function( id, descriptor ) {
+					assert.deepEqual(
+						supportjQuery.extend( {}, $( "#" + id ).position() ),
+						descriptor.pos,
+						"jQuery('#" + id + "').position()" );
+				} );
+
+				// Verify that values round-trip
+				supportjQuery.each( Object.keys( expectations ).reverse(), function( _, id ) {
+					var $el = $( "#" + id ),
+						pos = supportjQuery.extend( {}, $el.position() );
+
+					$el.css( { top: pos.top, left: pos.left } );
+					if ( $el.css( "position" ) === "relative" ) {
+
+						// $relative.position() includes parent padding; switch to absolute
+						// positioning so we don't double its effects.
+						$el.css( { position: "absolute" } );
+					}
+					assert.deepEqual( supportjQuery.extend( {}, $el.position() ), pos,
+						"jQuery('#" + id + "').position() round-trips" );
+
+					// TODO Verify .offset(...)
+					// assert.deepEqual( $el.offset( offset ).offset(), offset )
+					// assert.deepEqual( $el.offset( adjustedOffset ).offset(), adjustedOffset )
+					// assert.deepEqual( $new.offset( offset ).offset(), offset )
+				} );
+			} );
+		} );
+	} );
+} )();
+
 QUnit.test( "offsetParent", function( assert ) {
 	assert.expect( 13 );
 
@@ -578,7 +787,7 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 	// the iframe but only its parent element.
 	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
 	if (
-		/iphone os/i.test( navigator.userAgent ) ||
+		/iphone os|ipad/i.test( navigator.userAgent ) ||
 		/android 4\.0/i.test( navigator.userAgent )
 	) {
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
