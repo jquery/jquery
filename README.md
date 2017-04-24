@@ -12,7 +12,7 @@ In the spirit of open source software development, jQuery always encourages comm
 
 
 Environments in which to use jQuery
----------------------------------------
+--------------------------------------
 
 - [Browser support](https://jquery.com/browser-support/)
 - jQuery also supports Node, browser extensions, and other non-browser environments.
