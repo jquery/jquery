@@ -214,7 +214,9 @@ jQuery.extend( {
 	isFunction: function( obj ) {
 
 		// Support: Chrome <=57, Firefox <=52
-		// Don't classify callable <object> elements as functions
+		// In some browsers, typeof returns "function" for HTML <object> elements
+		// (i.e., `typeof document.createElement( "object" ) === "function"`).
+		// We don't want to classify *any* DOM node as a function.
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
 	},
 

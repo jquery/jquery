@@ -439,11 +439,11 @@ QUnit.test( "isFunction", function( assert ) {
 	fn = function() {};
 	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
 
-	assert.ok( !jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
+	assert.notOk( jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
 
 	obj = document.createElement( "object" );
 
-	// Firefox says this is a function
+	// Some versions of Firefox and Chrome say this is a function
 	assert.ok( !jQuery.isFunction( obj ), "Object Element" );
 
 	// Since 1.3, this isn't supported (#2968)
