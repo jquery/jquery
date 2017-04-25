@@ -26,18 +26,17 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 		// Support: iOS <=7
 		// Hijack the iframe test infrastructure to detect viewport scrollability
 		// for pages with position:fixed document element
-		var done = assert.async(),
-			$iframe = supportjQuery( "<iframe/>" )
-				.css( { position: "absolute", width: "50px", left: "-60px" } )
-				.attr( "src", url( "./data/offset/boxes.html" ) );
-		window.iframeCallback = function( $, win, doc ) {
-			doc.documentElement.style.position = "fixed";
-			alwaysScrollable = win.pageXOffset !== 0;
-			window.iframeCallback = undefined;
-			$iframe.remove();
-			done();
-		};
-		$iframe.appendTo( document.body );
+		var done = assert.async();
+		testIframe(
+			null,
+			"offset/boxes.html",
+			function( assert, $, win, doc ) {
+				doc.documentElement.style.position = "fixed";
+				alwaysScrollable = win.pageXOffset !== 0;
+				done();
+			},
+			function( _, mockTest ) { mockTest( assert ); }
+		);
 	};
 
 QUnit.module( "offset", { setup: function( assert ) {

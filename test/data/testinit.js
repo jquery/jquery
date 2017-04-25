@@ -231,8 +231,11 @@ this.ajaxTest = function( title, expect, options ) {
 	} );
 };
 
-this.testIframe = function( title, fileName, func ) {
-	QUnit.test( title, function( assert ) {
+this.testIframe = function( title, fileName, func, wrapper ) {
+	if ( !wrapper ) {
+		wrapper = QUnit.test;
+	}
+	wrapper.call( QUnit, title, function( assert ) {
 		var done = assert.async(),
 			$iframe = supportjQuery( "<iframe/>" )
 				.css( { position: "absolute", width: "500px", left: "-600px" } )
