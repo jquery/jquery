@@ -671,7 +671,8 @@ QUnit.test( "chaining", function( assert ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).offset() ),
 						descriptor.offset,
-						"jQuery('#" + id + "').offset()" );
+						"jQuery('#" + id + "').offset(): top " + descriptor.offset.top +
+							", left " + descriptor.offset.left );
 				} );
 
 				// Verify expected relative position
@@ -679,7 +680,8 @@ QUnit.test( "chaining", function( assert ) {
 					assert.deepEqual(
 						supportjQuery.extend( {}, $( "#" + id ).position() ),
 						descriptor.pos,
-						"jQuery('#" + id + "').position()" );
+						"jQuery('#" + id + "').position(): top " + descriptor.pos.top +
+							", left " + descriptor.pos.left );
 				} );
 
 				// Verify that values round-trip
