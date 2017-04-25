@@ -4,28 +4,45 @@ if ( !jQuery.fn.offset ) {
 	return;
 }
 
-var supportsScroll, supportsFixedPosition,
-	forceScroll = jQuery( "<div/>" ).css( { width: 2000, height: 2000 } ),
-	checkSupport = function() {
+var supportsFixedPosition, supportsScroll, alwaysScrollable,
+	forceScroll = supportjQuery( "<div/>" ).css( { width: 2000, height: 2000 } ),
+	checkSupport = function( assert ) {
 
 		// Only run once
 		checkSupport = false;
 
-		var checkFixed = jQuery( "<div/>" ).css( { position: "fixed", top: "20px" } ).appendTo( "#qunit-fixture" );
+		var checkFixed = supportjQuery( "<div/>" )
+			.css( { position: "fixed", top: "20px" } )
+			.appendTo( "#qunit-fixture" );
+		supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
+		checkFixed.remove();
 
-		// Must append to body because #qunit-fixture is hidden and elements inside it don't have a scrollTop
+		// Append forceScroll to the body instead of #qunit-fixture because the latter is hidden
 		forceScroll.appendTo( "body" );
 		window.scrollTo( 200, 200 );
 		supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
 		forceScroll.detach();
 
-		supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
-		checkFixed.remove();
+		// Support: iOS <=7
+		// Hijack the iframe test infrastructure to detect viewport scrollability
+		// for pages with position:fixed document element
+		var done = assert.async(),
+			$iframe = supportjQuery( "<iframe/>" )
+				.css( { position: "absolute", width: "50px", left: "-60px" } )
+				.attr( "src", url( "./data/offset/boxes.html" ) );
+		window.iframeCallback = function( $, win, doc ) {
+			doc.documentElement.style.position = "fixed";
+			alwaysScrollable = win.pageXOffset !== 0;
+			window.iframeCallback = undefined;
+			$iframe.remove();
+			done();
+		};
+		$iframe.appendTo( document.body );
 	};
 
-QUnit.module( "offset", { setup: function() {
+QUnit.module( "offset", { setup: function( assert ) {
 	if ( typeof checkSupport === "function" ) {
-		checkSupport();
+		checkSupport( assert );
 	}
 
 	// Force a scroll value on the main window to ensure incorrect results
@@ -532,29 +549,7 @@ QUnit.test( "chaining", function( assert ) {
 				512, 256,  1024, 512,  2048, 1024,  position,
 				position !== "fixed" && "documentElement" );
 		},
-		viewportScroll = { top: 2, left: 1 },
-
-		alwaysScrollable = false;
-
-	// Support: iOS <=7
-	// Detect viewport scrollability for pages with position:fixed document element
-	( function() {
-		var $iframe = jQuery( "<iframe/>" )
-			.css( { position: "absolute", width: "50px", left: "-60px" } )
-			.attr( "src", url( "./data/offset/boxes.html" ) );
-
-		// Hijack the iframe test infrastructure
-		window.iframeCallback = function( $, win, doc ) {
-			doc.documentElement.style.position = "fixed";
-			alwaysScrollable = win.pageXOffset !== 0;
-			window.iframeCallback = undefined;
-			$iframe.remove();
-			return;
-		};
-
-		$iframe.appendTo( document.body );
-		return;
-	} )();
+		viewportScroll = { top: 2, left: 1 };
 
 	function getExpectations( htmlPos, bodyPos ) {
 

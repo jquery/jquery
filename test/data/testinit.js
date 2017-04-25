@@ -236,6 +236,7 @@ this.testIframe = function( title, fileName, func ) {
 		var iframe;
 		var done = assert.async();
 
+		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {
 			var args = Array.prototype.slice.call( arguments );
 
