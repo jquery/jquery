@@ -259,7 +259,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 
 		// Attach iframe to the body for visibility-dependent code
 		// It will be removed by either the above code, or the testDone callback in testrunner.js
-		$iframe.appendTo( document.body );
+		$iframe.prependTo( document.body );
 	} );
 };
 this.iframeCallback = undefined;
