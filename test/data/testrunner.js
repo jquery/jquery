@@ -167,6 +167,9 @@ QUnit.testDone( function() {
 	// ...even if the jQuery under test has a broken .empty()
 	supportjQuery( "#qunit-fixture" ).empty();
 
+	// Remove the iframe fixture
+	supportjQuery( "#qunit-fixture-iframe" ).remove();
+
 	// Reset internal jQuery state
 	jQuery.event.global = {};
 	if ( ajaxSettings ) {
