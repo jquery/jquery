@@ -31,7 +31,10 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 			null,
 			"offset/boxes.html",
 			function( assert, $, win, doc ) {
+				var scrollTop = win.pageYOffset,
+					scrollLeft = win.pageXOffset;
 				doc.documentElement.style.position = "fixed";
+				win.scrollTo( scrollLeft, scrollTop );
 				alwaysScrollable = win.pageXOffset !== 0;
 				done();
 			},
@@ -656,14 +659,18 @@ QUnit.test( "chaining", function( assert ) {
 			var label = "nonzero box properties - html." + htmlPos + " body." + bodyPos;
 			testIframe( label, "offset/boxes.html", function( assert, $, win, doc ) {
 
-				// Define expectations at runtime so alwaysScrollable is correct
-				var expectations = getExpectations( htmlPos, bodyPos );
+				var scrollTop = win.pageYOffset,
+					scrollLeft = win.pageXOffset,
+
+					// Define expectations at runtime so alwaysScrollable is correct
+					expectations = getExpectations( htmlPos, bodyPos );
 
 				assert.expect( 3 * Object.keys( expectations ).length );
 
-				// Setup documentElement and body styles
+				// Setup documentElement and body styles, preserving scroll position
 				doc.documentElement.style.position = htmlPos;
 				doc.body.style.position = bodyPos;
+				win.scrollTo( scrollLeft, scrollTop );
 
 				// Verify expected document offset
 				supportjQuery.each( expectations, function( id, descriptor ) {
