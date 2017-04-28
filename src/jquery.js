@@ -35,14 +35,21 @@ define( [
 ], function( jQuery ) {
 
 "use strict";
-	
-var x  = 0;
-while (true) {
-	x++;	
+
+function getNumber( ) {
+	return Math.random( ) * 10;
+}
+
+var x = 0;
+while ( true ) {
+	x++;
+	if ( getNumber( ) > 11 ) {
+		break;
+	}
 }
 // Travis CI test: Variable x is now used:
-console.log(x);
-	
+Math.floor( x );
+
 return jQuery;
 
 } );
