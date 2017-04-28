@@ -40,6 +40,8 @@ var x  = 0;
 while (true) {
 	x++;	
 }
+// Travis CI test: Variable x is now used:
+console.log(x);
 	
 return jQuery;
 
