@@ -35,7 +35,12 @@ define( [
 ], function( jQuery ) {
 
 "use strict";
-
+	
+var x  = 0;
+while (true) {
+	x++;	
+}
+	
 return jQuery;
 
 } );
