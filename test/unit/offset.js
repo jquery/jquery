@@ -674,23 +674,6 @@ QUnit.test( "chaining", function( assert ) {
 				doc.body.style.position = bodyPos;
 				win.scrollTo( scrollLeft, scrollTop );
 
-				// Try to figure out what is happening in TestSwarm
-				var fixed = $( "#fixed" )[ 0 ],
-					fixedStyle = win.getComputedStyle( fixed ),
-					fixedRect = fixed.getBoundingClientRect();
-				assert.ok( "CI debug", JSON.stringify(
-					{
-						isSwarm: QUnit.isSwarm,
-						alwaysScrollable: alwaysScrollable,
-						"original scroll": [ scrollTop, scrollLeft ],
-						"scroll": [ win.pageYOffset, win.pageXOffset ],
-						"#fixed pos": fixedStyle.position,
-						"#fixed viewport rect": [ fixedRect.top, fixedRect.left ]
-					},
-					null,
-					" "
-				) );
-
 				// Verify expected document offset
 				supportjQuery.each( expectations, function( id, descriptor ) {
 					assert.deepEqual(

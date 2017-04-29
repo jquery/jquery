@@ -239,13 +239,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 		var done = assert.async(),
 			$iframe = supportjQuery( "<iframe/>" )
 				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } )
-				.css( {
-					position: "absolute",
-					top: "0",
-					left: "-600px",
-					height: "300px",
-					width: "500px"
-				} );
+				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } );
 
 		// Try to overcome TestSwarm iframe visibilty quirks
 		if ( QUnit.isSwarm ) {
