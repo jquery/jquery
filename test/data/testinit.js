@@ -238,8 +238,19 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 	wrapper.call( QUnit, title, function( assert ) {
 		var done = assert.async(),
 			$iframe = supportjQuery( "<iframe/>" )
-				.css( { position: "absolute", width: "500px", left: "-600px" } )
-				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } );
+				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } )
+				.css( {
+					position: "absolute",
+					top: "0",
+					left: "-600px",
+					height: "300px",
+					width: "500px"
+				} );
+
+		// Overcome TestSwarm iframe visibilty quirks
+		if ( QUnit.isSwarm ) {
+			$iframe.css( { left: "0" } );
+		}
 
 		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {
