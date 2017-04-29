@@ -247,7 +247,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 					width: "500px"
 				} );
 
-		// Overcome TestSwarm iframe visibilty quirks
+		// Try to overcome TestSwarm iframe visibilty quirks
 		if ( QUnit.isSwarm ) {
 			$iframe.css( { left: "0" } );
 		}
