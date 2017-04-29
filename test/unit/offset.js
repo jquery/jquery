@@ -38,7 +38,11 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 				alwaysScrollable = win.pageXOffset !== 0;
 				done();
 			},
-			function( _, mockTest ) { mockTest( assert ); }
+			function mockQUnit_test( _, testCallback ) {
+				setTimeout( function() {
+					testCallback( assert );
+				} );
+			}
 		);
 	};
 
@@ -665,12 +669,28 @@ QUnit.test( "chaining", function( assert ) {
 					// Define expectations at runtime so alwaysScrollable is correct
 					expectations = getExpectations( htmlPos, bodyPos );
 
-				assert.expect( 3 * Object.keys( expectations ).length );
+				assert.expect( 1 + 3 * Object.keys( expectations ).length );
 
 				// Setup documentElement and body styles, preserving scroll position
 				doc.documentElement.style.position = htmlPos;
 				doc.body.style.position = bodyPos;
 				win.scrollTo( scrollLeft, scrollTop );
+
+				// Try to figure out what is happening in TestSwarm
+				var fixed = $( "#fixed" )[ 0 ],
+					fixedStyle = win.getComputedStyle( fixed ),
+					fixedRect = fixed.getBoundingClientRect();
+				assert.ok( "CI debug", JSON.stringify(
+					{
+						alwaysScrollable: alwaysScrollable,
+						"original scroll": [ scrollTop, scrollLeft ],
+						"scroll": [ win.pageYOffset, win.pageXOffset ],
+						"#fixed pos": fixedStyle.position,
+						"#fixed viewport rect": [ fixedRect.top, fixedRect.left ]
+					},
+					null,
+					" "
+				) );
 
 				// Verify expected document offset
 				supportjQuery.each( expectations, function( id, descriptor ) {
