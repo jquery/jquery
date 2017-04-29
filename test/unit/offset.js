@@ -667,7 +667,7 @@ QUnit.test( "chaining", function( assert ) {
 					scrollLeft = win.pageXOffset,
 					expectations = getExpectations( htmlPos, bodyPos, scrollTop, scrollLeft );
 
-				assert.expect( 1 + 3 * Object.keys( expectations ).length );
+				assert.expect( 3 * Object.keys( expectations ).length );
 
 				// Setup documentElement and body styles, preserving scroll position
 				doc.documentElement.style.position = htmlPos;
