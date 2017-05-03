@@ -80,18 +80,18 @@ function setPositiveNumber( elem, value, subtract ) {
 		value;
 }
 
-function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
+function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles, computedVal ) {
 	var i,
-		val = 0;
+		val = 0,
+		boxSum = 0;
 
 	// If we already have the right measurement, avoid augmentation
 	if ( extra === ( isBorderBox ? "border" : "content" ) ) {
-		i = 4;
-
-	// Otherwise initialize for horizontal or vertical properties
-	} else {
-		i = name === "width" ? 1 : 0;
+		return 0;
 	}
+
+	// Initialize for horizontal or vertical properties
+	i = name === "width" ? 1 : 0;
 
 	for ( ; i < 4; i += 2 ) {
 
@@ -116,11 +116,28 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 			// At this point, extra isn't content, so add padding
 			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 
+			// Sum border and padding values in case we need them later
+			boxSum += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+			boxSum += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+
 			// At this point, extra isn't content nor padding, so add border
 			if ( extra !== "padding" ) {
 				val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
+	}
+
+	// Account for positive content-box scroll gutter when requested by providing computedVal
+	if ( !isBorderBox && computedVal >= 0 ) {
+
+		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
+		// Assuming integer scroll gutter, subtract the rest and round down
+		val += Math.max( 0, Math.ceil(
+			elem[ "offset" + name[ 0 ].toUpperCase() + name.slice( 1 ) ] -
+			computedVal -
+			boxSum -
+			0.5
+		) );
 	}
 
 	return val;
@@ -160,7 +177,10 @@ function getWidthOrHeight( elem, name, extra ) {
 			name,
 			extra || ( isBorderBox ? "border" : "content" ),
 			valueIsBorderBox,
-			styles
+			styles,
+
+			// Provide the current computed value for scroll gutter calculation (gh-3589)
+			val
 		)
 	) + "px";
 }
