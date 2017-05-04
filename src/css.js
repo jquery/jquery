@@ -81,17 +81,14 @@ function setPositiveNumber( elem, value, subtract ) {
 }
 
 function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computedVal ) {
-	var i,
-		delta = 0,
-		boxSum = 0;
+	var i = dimension === "width" ? 1 : 0,
+		extra = 0,
+		delta = 0;
 
 	// Adjustment may not be necessary
 	if ( box === ( isBorderBox ? "border" : "content" ) ) {
 		return 0;
 	}
-
-	// Initialize for horizontal or vertical properties
-	i = dimension === "width" ? 1 : 0;
 
 	for ( ; i < 4; i += 2 ) {
 
@@ -100,9 +97,24 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 			delta += jQuery.css( elem, box + cssExpand[ i ], true, styles );
 		}
 
+		// If we get here with a content-box, we're seeking "padding" or "border" or "margin"
+		if ( !isBorderBox ) {
+
+			// Add padding
+			delta += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
+
+			// For "border" or "margin", add border
+			if ( box !== "padding" ) {
+				delta += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+
+			// But still keep track of it otherwise
+			} else {
+				extra += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+			}
+
 		// If we get here with a border-box (content + padding + border), we're seeking "content" or
 		// "padding" or "margin"
-		if ( isBorderBox ) {
+		} else {
 
 			// For "content", subtract padding
 			if ( box === "content" ) {
@@ -112,21 +124,6 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 			// For "content" or "padding", subtract border
 			if ( box !== "margin" ) {
 				delta -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-			}
-
-		// If we get here with a content-box, we're seeking "padding" or "border" or "margin"
-		} else {
-
-			// Add padding
-			delta += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
-
-			// Sum border and padding values in case we need them later
-			boxSum += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
-			boxSum += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-
-			// For "border" or "margin", add border
-			if ( box !== "padding" ) {
-				delta += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
 	}
@@ -139,7 +136,8 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		delta += Math.max( 0, Math.ceil(
 			elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
 			computedVal -
-			boxSum -
+			delta -
+			extra -
 			0.5
 		) );
 	}
@@ -370,7 +368,7 @@ jQuery.each( [ "height", "width" ], function( i, dimension ) {
 
 		set: function( elem, value, extra ) {
 			var matches,
-				styles = extra && getStyles( elem ),
+				styles = getStyles( elem ),
 				subtract = extra && boxModelAdjustment(
 					elem,
 					dimension,
