@@ -98,11 +98,22 @@ var rootjQuery,
 				return this.constructor( context ).find( selector );
 			}
 
-		// HANDLE: $(DOMElement)
+		// HANDLE: $(DOMElement, ...)
 		} else if ( selector.nodeType ) {
-			this[ 0 ] = selector;
-			this.length = 1;
-			return this;
+
+			if ( !context ) {
+				this[ 0 ] = selector;
+				this.length = 1;
+				return this;
+
+			} else {
+
+				if ( !context.jquery ) {
+					context = this.constructor( context );
+				}
+
+				return context.find( selector );
+			}
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
