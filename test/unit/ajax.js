@@ -249,7 +249,7 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: IE 9 - 11, Edge 12 - 13+
+				// Support: IE 9 - 11, Edge 12 - 14 only
 				// Not all browsers allow empty-string headers
 				//"Empty": ""
 			},
