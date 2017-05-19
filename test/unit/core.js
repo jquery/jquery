@@ -813,7 +813,7 @@ QUnit.test( "end()", function( assert ) {
 
 	var x = jQuery( "#yahoo" );
 	x.parent();
-	assert.equal( "Yahoo", jQuery( "#yahoo" ).text(), "check for non-destructive behaviour" );
+	assert.equal( "Yahoo", jQuery( "#yahoo" ).text(), "check for non-destructive behavior" );
 } );
 
 QUnit.test( "length", function( assert ) {

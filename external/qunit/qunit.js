@@ -1172,7 +1172,7 @@ Test.prototype = {
 			filter = filter.slice( 1 );
 		}
 
-		// If the filter matches, we need to honour include
+		// If the filter matches, we need to honor include
 		if ( fullName.indexOf( filter ) !== -1 ) {
 			return include;
 		}
