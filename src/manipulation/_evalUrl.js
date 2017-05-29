@@ -1,14 +1,14 @@
 define( [
-	"../ajax"
+	"../fey"
 ], function( jQuery ) {
 
 "use strict";
 
 jQuery._evalUrl = function( url ) {
-	return jQuery.ajax( {
+	return jQuery.fey( {
 		url: url,
 
-		// Make this explicit, since user can override this through ajaxSetup (#11264)
+		// Make this explicit, since user can override this through feySetup (#11264)
 		type: "GET",
 		dataType: "script",
 		cache: true,

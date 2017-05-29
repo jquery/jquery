@@ -1,12 +1,12 @@
 define( [
 	"../core",
 	"../var/support",
-	"../ajax"
+	"../fey"
 ], function( jQuery, support ) {
 
 "use strict";
 
-jQuery.ajaxSettings.xhr = function() {
+jQuery.feySettings.xhr = function() {
 	try {
 		return new window.XMLHttpRequest();
 	} catch ( e ) {}
@@ -21,12 +21,12 @@ var xhrSuccessStatus = {
 		// #1450: sometimes IE returns 1223 when it should be 204
 		1223: 204
 	},
-	xhrSupported = jQuery.ajaxSettings.xhr();
+	xhrSupported = jQuery.feySettings.xhr();
 
 support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-support.ajax = xhrSupported = !!xhrSupported;
+support.fey = xhrSupported = !!xhrSupported;
 
-jQuery.ajaxTransport( function( options ) {
+jQuery.feyTransport( function( options ) {
 	var callback, errorCallback;
 
 	// Cross domain only allowed if supported through XMLHttpRequest
@@ -59,7 +59,7 @@ jQuery.ajaxTransport( function( options ) {
 				// X-Requested-With header
 				// For cross-domain requests, seeing as conditions for a preflight are
 				// akin to a jigsaw puzzle, we simply never set it to be sure.
-				// (it can always be set on a per-request basis or even using ajaxSetup)
+				// (it can always be set on a per-request basis or even using feySetup)
 				// For same-domain requests, won't change header if already provided.
 				if ( !options.crossDomain && !headers[ "X-Requested-With" ] ) {
 					headers[ "X-Requested-With" ] = "XMLHttpRequest";

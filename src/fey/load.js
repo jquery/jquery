@@ -2,7 +2,7 @@ define( [
 	"../core",
 	"../core/stripAndCollapse",
 	"../core/parseHTML",
-	"../ajax",
+	"../fey",
 	"../traversing",
 	"../manipulation",
 	"../selector"
@@ -37,12 +37,12 @@ jQuery.fn.load = function( url, params, callback ) {
 
 	// If we have elements to modify, make the request
 	if ( self.length > 0 ) {
-		jQuery.ajax( {
+		jQuery.fey( {
 			url: url,
 
 			// If "type" variable is undefined, then "GET" method will be used.
 			// Make value of this field explicit since
-			// user can override it through ajaxSetup method
+			// user can override it through feySetup method
 			type: type || "GET",
 			dataType: "html",
 			data: params
