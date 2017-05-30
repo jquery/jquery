@@ -9,6 +9,7 @@
 .sizecache.json
 
 npm-debug.log*
+package-lock.json
 
 # Ignore everything in dist folder except for eslint config
 /dist/*
