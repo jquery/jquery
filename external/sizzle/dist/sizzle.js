@@ -249,31 +249,17 @@ function Sizzle( selector, context, results, seed ) {
 					// Document context
 					if ( nodeType === 9 ) {
 						if ( (elem = context.getElementById( m )) ) {
-
-							// Support: IE, Opera, Webkit
-							// TODO: identify versions
-							// getElementById can match elements by name instead of ID
-							if ( elem.id === m ) {
-								results.push( elem );
-								return results;
-							}
-						} else {
-							return results;
+							results.push( elem );
 						}
+						return results;
 
 					// Element context
-					} else {
+					} else if ( newContext &&
+						(elem = newContext.getElementById( m )) &&
+						contains( context, elem ) ) {
 
-						// Support: IE, Opera, Webkit
-						// TODO: identify versions
-						// getElementById can match elements by name instead of ID
-						if ( newContext && (elem = newContext.getElementById( m )) &&
-							contains( context, elem ) &&
-							elem.id === m ) {
-
-							results.push( elem );
-							return results;
-						}
+						results.push( elem );
+						return results;
 					}
 
 				// Type selector
