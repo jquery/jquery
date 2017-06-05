@@ -334,7 +334,7 @@ jQuery.extend( {
 		}
 
 		// All done!
-		return deferred;
+		return this === jQuery ? deferred : jQuery.extend( this, deferred );
 	},
 
 	// Deferred helper

@@ -434,7 +434,7 @@ jQuery.extend( {
 					jQuery.event,
 
 			// Deferreds
-			deferred = jQuery.Deferred(),
+			deferred = new jQuery.Deferred(),
 			completeDeferred = jQuery.Callbacks( "once memory" ),
 
 			// Status-dependent callbacks
@@ -447,80 +447,80 @@ jQuery.extend( {
 			// Default abort message
 			strAbort = "canceled",
 
-			// Fake xhr
-			jqXHR = {
-				readyState: 0,
+			// Fake xhr (ref the true Deferred instance above)
+			jqXHR = deferred;
 
-				// Builds headers hashtable if needed
-				getResponseHeader: function( key ) {
-					var match;
-					if ( completed ) {
-						if ( !responseHeaders ) {
-							responseHeaders = {};
-							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
-								responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
-							}
-						}
-						match = responseHeaders[ key.toLowerCase() ];
-					}
-					return match == null ? null : match;
-				},
+		// Attach xhr capabilities
+		jQuery.extend( jqXHR, {
+			readyState: 0,
 
-				// Raw string
-				getAllResponseHeaders: function() {
-					return completed ? responseHeadersString : null;
-				},
-
-				// Caches the header
-				setRequestHeader: function( name, value ) {
-					if ( completed == null ) {
-						name = requestHeadersNames[ name.toLowerCase() ] =
-							requestHeadersNames[ name.toLowerCase() ] || name;
-						requestHeaders[ name ] = value;
-					}
-					return this;
-				},
-
-				// Overrides response content-type header
-				overrideMimeType: function( type ) {
-					if ( completed == null ) {
-						s.mimeType = type;
-					}
-					return this;
-				},
-
-				// Status-dependent callbacks
-				statusCode: function( map ) {
-					var code;
-					if ( map ) {
-						if ( completed ) {
-
-							// Execute the appropriate callbacks
-							jqXHR.always( map[ jqXHR.status ] );
-						} else {
-
-							// Lazy-add the new callbacks in a way that preserves old ones
-							for ( code in map ) {
-								statusCode[ code ] = [ statusCode[ code ], map[ code ] ];
-							}
+			// Builds headers hashtable if needed
+			getResponseHeader: function( key ) {
+				var match;
+				if ( completed ) {
+					if ( !responseHeaders ) {
+						responseHeaders = {};
+						while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
+							responseHeaders[ match[ 1 ].toLowerCase() ] = match[ 2 ];
 						}
 					}
-					return this;
-				},
-
-				// Cancel the request
-				abort: function( statusText ) {
-					var finalText = statusText || strAbort;
-					if ( transport ) {
-						transport.abort( finalText );
-					}
-					done( 0, finalText );
-					return this;
+					match = responseHeaders[ key.toLowerCase() ];
 				}
-			};
+				return match == null ? null : match;
+			},
 
-		// Attach deferreds
-		deferred.promise( jqXHR );
+			// Raw string
+			getAllResponseHeaders: function() {
+				return completed ? responseHeadersString : null;
+			},
+
+			// Caches the header
+			setRequestHeader: function( name, value ) {
+				if ( completed == null ) {
+					name = requestHeadersNames[ name.toLowerCase() ] =
+						requestHeadersNames[ name.toLowerCase() ] || name;
+					requestHeaders[ name ] = value;
+				}
+				return this;
+			},
+
+			// Overrides response content-type header
+			overrideMimeType: function( type ) {
+				if ( completed == null ) {
+					s.mimeType = type;
+				}
+				return this;
+			},
+
+			// Status-dependent callbacks
+			statusCode: function( map ) {
+				var code;
+				if ( map ) {
+					if ( completed ) {
+
+						// Execute the appropriate callbacks
+						jqXHR.always( map[ jqXHR.status ] );
+					} else {
+
+						// Lazy-add the new callbacks in a way that preserves old ones
+						for ( code in map ) {
+							statusCode[ code ] = [ statusCode[ code ], map[ code ] ];
+						}
+					}
+				}
+				return this;
+			},
+
+			// Cancel the request
+			abort: function( statusText ) {
+				var finalText = statusText || strAbort;
+				if ( transport ) {
+					transport.abort( finalText );
+				}
+				done( 0, finalText );
+				return this;
+			}
+		} );
 
 		// Add protocol if not provided (prefilters might expect it)
 		// Handle falsy url in the settings object (#10093: consistency with old signature)
