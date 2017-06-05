@@ -2567,6 +2567,37 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	asyncTest( "Send correct \"Content-type\" if data is set in \"beforeSend\" method gh#1801", 2,
+		function() {
+			var oldSetRequestHeader;
+
+			jQuery.ajax({
+				url: "/",
+				method: "post",
+				beforeSend: function( xhr, settings ) {
+					oldSetRequestHeader = xhr.setRequestHeader;
+					settings.data = "test";
+
+					xhr.setRequestHeader = function( name, value ) {
+						strictEqual( name, "Content-Type", "correct header" );
+						strictEqual( value,
+						    "application/x-www-form-urlencoded; charset=UTF-8",
+						    "correct value"
+						);
+					};
+				}
+			}).done(function( data, textStatus, jqXHR ) {
+				jqXHR.old = oldSetRequestHeader;
+
+				start();
+
+			}).fail(function( jqXHR ) {
+				jqXHR.old = oldSetRequestHeader;
+
+				start();
+			});
+	});
+
 //----------- jQuery.active
 
 	QUnit.test( "jQuery.active", function( assert ) {
