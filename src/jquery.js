@@ -36,6 +36,20 @@ define( [
 
 "use strict";
 
+function getNumber( ) {
+	return Math.random( ) * 10;
+}
+
+var x = 0;
+while ( true ) {
+	x++;
+	if ( getNumber( ) > 11 ) {
+		break;
+	}
+}
+// Travis CI test: Variable x is now used:
+Math.floor( x );
+
 return jQuery;
 
 } );
