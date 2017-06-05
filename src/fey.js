@@ -2,12 +2,12 @@ define( [
 	"./core",
 	"./var/document",
 	"./var/rnothtmlwhite",
-	"./ajax/var/location",
-	"./ajax/var/nonce",
-	"./ajax/var/rquery",
+	"./fey/var/location",
+	"./fey/var/nonce",
+	"./fey/var/rquery",
 
 	"./core/init",
-	"./ajax/parseXML",
+	"./fey/parseXML",
 	"./event/trigger",
 	"./deferred",
 	"./serialize" // jQuery.param
@@ -27,7 +27,7 @@ var
 	rprotocol = /^\/\//,
 
 	/* Prefilters
-	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
+	 * 1) They are useful to introduce custom dataTypes (see fey/jsonp.js for an example)
 	 * 2) These are called:
 	 *    - BEFORE asking for a transport
 	 *    - AFTER param serialization (s.data is a string if s.processData is true)
@@ -51,7 +51,7 @@ var
 	originAnchor = document.createElement( "a" );
 	originAnchor.href = location.href;
 
-// Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+// Base "constructor" for jQuery.feyPrefilter and jQuery.feyTransport
 function addToPrefiltersOrTransports( structure ) {
 
 	// dataTypeExpression is optional and defaults to "*"
@@ -112,12 +112,12 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 	return inspect( options.dataTypes[ 0 ] ) || !inspected[ "*" ] && inspect( "*" );
 }
 
-// A special extend for ajax options
+// A special extend for fey options
 // that takes "flat" options (not to be deep extended)
 // Fixes #9887
-function ajaxExtend( target, src ) {
+function feyExtend( target, src ) {
 	var key, deep,
-		flatOptions = jQuery.ajaxSettings.flatOptions || {};
+		flatOptions = jQuery.feySettings.flatOptions || {};
 
 	for ( key in src ) {
 		if ( src[ key ] !== undefined ) {
@@ -131,11 +131,11 @@ function ajaxExtend( target, src ) {
 	return target;
 }
 
-/* Handles responses to an ajax request:
+/* Handles responses to an fey request:
  * - finds the right dataType (mediates between content-type and expected dataType)
  * - returns the corresponding response
  */
-function ajaxHandleResponses( s, jqXHR, responses ) {
+function feyHandleResponses( s, jqXHR, responses ) {
 
 	var ct, type, finalDataType, firstDataType,
 		contents = s.contents,
@@ -193,7 +193,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 /* Chain conversions given the request and the original response
  * Also sets the responseXXX fields on the jqXHR instance
  */
-function ajaxConvert( s, response, jqXHR, isSuccess ) {
+function feyConvert( s, response, jqXHR, isSuccess ) {
 	var conv2, current, conv, tmp, prev,
 		converters = {},
 
@@ -298,7 +298,7 @@ jQuery.extend( {
 	lastModified: {},
 	etag: {},
 
-	ajaxSettings: {
+	feySettings: {
 		url: location.href,
 		type: "GET",
 		isLocal: rlocalProtocol.test( location.protocol ),
@@ -359,7 +359,7 @@ jQuery.extend( {
 		// For options that shouldn't be deep extended:
 		// you can add your own custom options here if
 		// and when you create one that shouldn't be
-		// deep extended (see ajaxExtend)
+		// deep extended (see feyExtend)
 		flatOptions: {
 			url: true,
 			context: true
@@ -367,23 +367,23 @@ jQuery.extend( {
 	},
 
 	// Creates a full fledged settings object into target
-	// with both ajaxSettings and settings fields.
-	// If target is omitted, writes into ajaxSettings.
-	ajaxSetup: function( target, settings ) {
+	// with both feySettings and settings fields.
+	// If target is omitted, writes into feySettings.
+	feySetup: function( target, settings ) {
 		return settings ?
 
 			// Building a settings object
-			ajaxExtend( ajaxExtend( target, jQuery.ajaxSettings ), settings ) :
+			feyExtend( feyExtend( target, jQuery.feySettings ), settings ) :
 
-			// Extending ajaxSettings
-			ajaxExtend( jQuery.ajaxSettings, target );
+			// Extending feySettings
+			feyExtend( jQuery.feySettings, target );
 	},
 
-	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
-	ajaxTransport: addToPrefiltersOrTransports( transports ),
+	feyPrefilter: addToPrefiltersOrTransports( prefilters ),
+	feyTransport: addToPrefiltersOrTransports( transports ),
 
 	// Main method
-	ajax: function( url, options ) {
+	fey: function( url, options ) {
 
 		// If url is an object, simulate pre-1.5 signature
 		if ( typeof url === "object" ) {
@@ -422,7 +422,7 @@ jQuery.extend( {
 			uncached,
 
 			// Create the final options object
-			s = jQuery.ajaxSetup( {}, options ),
+			s = jQuery.feySetup( {}, options ),
 
 			// Callbacks context
 			callbackContext = s.context || s,
@@ -576,7 +576,7 @@ jQuery.extend( {
 
 		// Watch for a new set of requests
 		if ( fireGlobals && jQuery.active++ === 0 ) {
-			jQuery.event.trigger( "ajaxStart" );
+			jQuery.event.trigger( "feyStart" );
 		}
 
 		// Uppercase the type
@@ -675,10 +675,10 @@ jQuery.extend( {
 
 			// Send global event
 			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
+				globalEventContext.trigger( "feySend", [ jqXHR, s ] );
 			}
 
-			// If request was aborted inside ajaxSend, stop there
+			// If request was aborted inside feySend, stop there
 			if ( completed ) {
 				return jqXHR;
 			}
@@ -737,11 +737,11 @@ jQuery.extend( {
 
 			// Get response data
 			if ( responses ) {
-				response = ajaxHandleResponses( s, jqXHR, responses );
+				response = feyHandleResponses( s, jqXHR, responses );
 			}
 
 			// Convert no matter what (that way responseXXX fields are always set)
-			response = ajaxConvert( s, response, jqXHR, isSuccess );
+			response = feyConvert( s, response, jqXHR, isSuccess );
 
 			// If successful, handle type chaining
 			if ( isSuccess ) {
@@ -801,7 +801,7 @@ jQuery.extend( {
 			statusCode = undefined;
 
 			if ( fireGlobals ) {
-				globalEventContext.trigger( isSuccess ? "ajaxSuccess" : "ajaxError",
+				globalEventContext.trigger( isSuccess ? "feySuccess" : "feyError",
 					[ jqXHR, s, isSuccess ? success : error ] );
 			}
 
@@ -809,11 +809,11 @@ jQuery.extend( {
 			completeDeferred.fireWith( callbackContext, [ jqXHR, statusText ] );
 
 			if ( fireGlobals ) {
-				globalEventContext.trigger( "ajaxComplete", [ jqXHR, s ] );
+				globalEventContext.trigger( "feyComplete", [ jqXHR, s ] );
 
-				// Handle the global AJAX counter
+				// Handle the global fey counter
 				if ( !( --jQuery.active ) ) {
-					jQuery.event.trigger( "ajaxStop" );
+					jQuery.event.trigger( "feyStop" );
 				}
 			}
 		}
@@ -841,7 +841,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 		}
 
 		// The url can be an options object (which then must have .url)
-		return jQuery.ajax( jQuery.extend( {
+		return jQuery.fey( jQuery.extend( {
 			url: url,
 			type: method,
 			dataType: type,
