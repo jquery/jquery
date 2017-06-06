@@ -3069,3 +3069,18 @@ if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
 		}, 50 );
 	} );
 }
+
+QUnit.test( "contextmenu", function( assert ) {
+	assert.expect( 1 );
+
+	var times = 0,
+	    handler = function() { ++times; };
+
+	jQuery( "#firstp" )
+	    .contextmenu( handler )
+	    .contextmenu()
+	    .trigger( "contextmenu" );
+
+	assert.equal( times, 2, "contextmenu handlers fired" );
+
+} );
