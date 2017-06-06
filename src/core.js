@@ -117,6 +117,12 @@ jQuery.fn = jQuery.prototype = {
 		return this.pushStack( j >= 0 && j < len ? [ this[ j ] ] : [] );
 	},
 
+	fold: function( callback, current ) {
+		return jQuery.fold(this, function( current, elem, i ) {
+			return callback.call( elem, current, i, elem );
+		});
+	},
+
 	end: function() {
 		return this.prevObject || this.constructor();
 	},
@@ -409,6 +415,15 @@ jQuery.extend( {
 
 		// Flatten any nested arrays
 		return concat.apply( [], ret );
+	},
+
+	// folds elems to a single value
+	fold: function( elems, callback, current ) {
+
+		jQuery.each(elems, function (i, elem) {
+			current = callback(current, elem, i);
+		});
+		return current;
 	},
 
 	// A global GUID counter for objects
