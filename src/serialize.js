@@ -93,6 +93,16 @@ jQuery.fn.extend( {
 	serialize: function() {
 		return jQuery.param( this.serializeArray() );
 	},
+	serializeObject: function() {
+		var arr = this.serializeArray();
+
+		var temp = {};
+		for ( var i in arr ) {
+			temp[ arr[ i ].name ] = arr[ i ].value;
+		}
+
+		return temp;
+	},
 	serializeArray: function() {
 		return this.map( function() {
 
