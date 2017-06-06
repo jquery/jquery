@@ -739,6 +739,11 @@ jQuery.extend( {
 			if ( responses ) {
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
+			
+			if ( status === 0 ) {
+			    // Android 2.2+ returns 0 for appcached files sometimes
+			    status = 200;
+			}
 
 			// Convert no matter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
