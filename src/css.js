@@ -191,6 +191,7 @@ jQuery.extend( {
 		"flexShrink": true,
 		"fontWeight": true,
 		"lineHeight": true,
+		"msFlexOrder": true,
 		"opacity": true,
 		"order": true,
 		"orphans": true,
