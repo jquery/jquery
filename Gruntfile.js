@@ -158,6 +158,7 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					preserveComments: false,
+					sourceMapIncludeSources: true,
 					sourceMap: true,
 					ASCIIOnly: true,
 					sourceMapName:
