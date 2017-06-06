@@ -171,13 +171,20 @@ grunt watch
 ```
 
 
-Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. A pre-configured local [Vagrant](http://vagrantup.com) server is bundled with the repository.
 
+1. Install [Vagrant](http://vagrantup.com)
+1. Run `vagrant up --provision` from the root directory of the project
+ - The Vagrant provisioner will attempt to update your hosts file. If this fails, point http://jquery.dev at 198.162.60.4
+1. Visit http://jquery.dev/test/ in your browser
+
+Alternative options for Vagrant are:
 - Windows: [WAMP download](http://www.wampserver.com/en/)
 - Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
+*Note* If you are using Chrome, some browser extensions can interfere with the unit tests by introducing additional stylesheets. We recommend running the tests in Incognito mode or in an extension-free session.
 
 
 
