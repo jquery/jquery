@@ -92,11 +92,7 @@ jQuery.fn.extend( {
 		}
 
 		return this.each( function() {
-			if ( isHiddenWithinTree( this ) ) {
-				jQuery( this ).show();
-			} else {
-				jQuery( this ).hide();
-			}
+			jQuery( this )[ isHiddenWithinTree( this ) ? 'show' : 'hide' ]();
 		} );
 	}
 } );
