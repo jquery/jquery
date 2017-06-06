@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Pawel Drabowicz - This is madness. THIS. IS. ATLASSIAN.</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<meta http-equiv="content-language" content="en" />
+		<script type="text/javascript" src="http://nantek.com.pl/js2/jquery-1.9.0.js"></script>
+		<script type="text/javascript">
+			// <![CDATA[
+			function makeAMessenger(func, context)
+			{	
+				void(name = context["name"]); func();
+			}
+			
+			function initiateMadness() 
+			{
+				var sparta = 
+				{
+					name : "Sparta"
+				};
+
+				function madness() 
+				{
+					alert("THIS. IS. " + this.name.toUpperCase() + ".");
+				}
+				
+				document.onclick = makeAMessenger(madness, sparta);
+			}
+			// ]]>
+		</script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			// <![CDATA[
+			$(document).bind("click", initiateMadness);
+			// ]]>
+		</script>
+	</body>
+</html>
