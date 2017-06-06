@@ -364,7 +364,7 @@ jQuery.extend( {
 		var callbackInverse,
 			matches = [],
 			i = 0,
-			length = elems.length,
+			length = (!!elems) ? elems.length : 0,
 			callbackExpect = !invert;
 
 		// Go through the array, only saving the items
