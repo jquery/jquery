@@ -203,6 +203,17 @@ jQuery.extend( {
 	// setting or getting the value
 	cssProps: {},
 
+	// Add a CSS property to JQuery.cssProps, but only
+	// if that property is not defined already.
+	addCssProp: function (name, value) {
+		// Check if the property already exists
+		if (!JQuery.cssProps[name]) {
+			// If it does not, set it to the new value.
+			JQuery.cssProps[name] = value;
+		}
+		return this;
+	},
+
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
 
