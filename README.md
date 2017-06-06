@@ -27,6 +27,7 @@ For Windows, you have to download and install [git](https://git-scm.com/download
 
 OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
+Mashal
 
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
 if you swing that way. Easy-peasy.
