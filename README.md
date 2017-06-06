@@ -1,6 +1,8 @@
 [jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
+[![Join the chat at https://gitter.im/jquery/jquery](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jquery/jquery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Contribution Guides
 --------------------------------------
 
