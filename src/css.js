@@ -35,7 +35,7 @@ var
 		fontWeight: "400"
 	},
 
-	cssPrefixes = [ "Webkit", "Moz", "ms" ],
+	cssPrefixes = [ "webkit", "Moz", "ms" ],
 	emptyStyle = document.createElement( "div" ).style;
 
 // Return a css property mapped to a potentially vendor prefixed property
