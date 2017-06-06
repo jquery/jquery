@@ -120,7 +120,7 @@ jQuery.ajaxTransport( function( options ) {
 				// Support: IE 9 only
 				// Use onreadystatechange to replace onabort
 				// to handle uncaught aborts
-				if ( xhr.onabort !== undefined ) {
+				if ( typeof xhr.onabort !== "undefined" ) {
 					xhr.onabort = errorCallback;
 				} else {
 					xhr.onreadystatechange = function() {
