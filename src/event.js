@@ -229,6 +229,9 @@ jQuery.event = {
 			return;
 		}
 
+                // Remove empty namespace (ie trailing dots)
+                types = types.replace(/\.+\s/, " ").replace(/\.+$/, "");
+
 		// Once for each type.namespace in types; type may be omitted
 		types = ( types || "" ).match( rnothtmlwhite ) || [ "" ];
 		t = types.length;
