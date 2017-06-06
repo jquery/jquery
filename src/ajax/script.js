@@ -62,6 +62,11 @@ jQuery.ajaxTransport( "script", function( s ) {
 					}
 				);
 
+				//Compatible with nonce of CSP2.0
+				if ( s.nonce ) {
+					script.attr( "nonce", s.nonce );
+				}
+
 				// Use native DOM manipulation to avoid our domManip AJAX trickery
 				document.head.appendChild( script[ 0 ] );
 			},
