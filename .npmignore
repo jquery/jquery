@@ -6,6 +6,7 @@
 /.mailmap
 /.travis.yml
 
+/src
 /build
 /speed
 /test
