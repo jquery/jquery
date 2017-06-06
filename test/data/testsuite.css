@@ -1,12 +1,12 @@
-ol#empty {
+#empty {
 	opacity: 0;
 }
 
-div#fx-tests h4 {
+#fx-tests h4 {
 	background: red;
 }
 
-div#fx-tests h4.pass {
+div#fx-tests .pass {
 	background: green;
 }
 
