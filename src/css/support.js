@@ -43,6 +43,7 @@ define( [
 		// Nullify the div so it wouldn't be stored in the memory and
 		// it will also be a sign that checks already performed
 		div = null;
+		container = null;
 	}
 
 	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal, reliableMarginLeftVal,
@@ -51,6 +52,8 @@ define( [
 
 	// Finish early in limited (non-browser) environments
 	if ( !div.style ) {
+		container = null;
+		div = null;
 		return;
 	}
 
@@ -67,18 +70,22 @@ define( [
 	jQuery.extend( support, {
 		pixelPosition: function() {
 			computeStyleTests();
+			div = null;
 			return pixelPositionVal;
 		},
 		boxSizingReliable: function() {
 			computeStyleTests();
+			div = null;
 			return boxSizingReliableVal;
 		},
 		pixelMarginRight: function() {
 			computeStyleTests();
+			div = null;
 			return pixelMarginRightVal;
 		},
 		reliableMarginLeft: function() {
 			computeStyleTests();
+			div = null;
 			return reliableMarginLeftVal;
 		}
 	} );

@@ -215,6 +215,10 @@ jQuery.event = {
 			jQuery.event.global[ type ] = true;
 		}
 
+		// Nullify the eventHandle so it wouldn't be stored in the memory
+		eventHandle = null;
+		elemData = null;
+
 	},
 
 	// Detach an event or set of events from an element
