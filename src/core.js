@@ -136,7 +136,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 		deep = false;
 
 	// Handle a deep copy situation
-	if ( typeof target === "boolean" ) {
+	if ( target === true ) {
 		deep = target;
 
 		// Skip the boolean and the target
