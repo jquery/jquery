@@ -5,7 +5,6 @@
 define( [
 	"./var/arr",
 	"./var/document",
-	"./var/getProto",
 	"./var/slice",
 	"./var/concat",
 	"./var/push",
@@ -17,7 +16,7 @@ define( [
 	"./var/ObjectFunctionString",
 	"./var/support",
 	"./core/DOMEval"
-], function( arr, document, getProto, slice, concat, push, indexOf,
+], function( arr, document, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
 	support, DOMEval ) {
 
@@ -247,7 +246,7 @@ jQuery.extend( {
 			return false;
 		}
 
-		proto = getProto( obj );
+		proto = Object.getPrototypeOf( obj );
 
 		// Objects with no prototype (e.g., `Object.create( null )`) are plain
 		if ( !proto ) {
