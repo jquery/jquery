@@ -1,0 +1,22 @@
+Download both the files and include in your header file. jquery.waitingpopup.ui.js defines the loader UI and jquery.waitingpop.loader.js
+defines the logic to show loader in the your application.
+
+Loader will be shown when either DOM gets ready or first ajax request sent or Iframe gets ready or leaving the page.
+Loader will stop when UI gets completely loaded and all ajax request complete and Iframe gets completely loaded.
+
+To attach for Iframe event you need to call attachIframeEvent() method after defining Iframe. No other exteral configuration
+required.
+
+To run this application you need to use jQuery.
+
+For downloading any sample file, loader get start but didn't get stop. To stop loader from starting on download evet, use
+follwing code:
+
+
+$(window).unbind('beforeunload');
+
+// Your Download logic
+
+setTimeout('bindBeforeunload()', 1000);
+
+This will unbind the leaving event of page.
