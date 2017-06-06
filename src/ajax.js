@@ -583,7 +583,7 @@ jQuery.extend( {
 		s.type = s.type.toUpperCase();
 
 		// Determine if request has content
-		s.hasContent = !rnoContent.test( s.type );
+		s.hasContent = rnoContent.test( s.type ) && s.processData;
 
 		// Save the URL in case we're toying with the If-Modified-Since
 		// and/or If-None-Match header later on
@@ -591,7 +591,7 @@ jQuery.extend( {
 		cacheURL = s.url.replace( rhash, "" );
 
 		// More options handling for requests with no content
-		if ( !s.hasContent ) {
+		if ( s.hasContent ) {
 
 			// Remember the hash so we can put it back
 			uncached = s.url.slice( cacheURL.length );
