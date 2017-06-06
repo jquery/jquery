@@ -25,8 +25,8 @@
 		// This accentuates the need for the creation of a real `window`.
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info.
-		module.exports = global.document ?
-			factory( global, true ) :
+		module.exports = (global.window && global.window.document) ?
+			factory( global.window, true ) :
 			function( w ) {
 				if ( !w.document ) {
 					throw new Error( "jQuery requires a window with a document" );
@@ -34,11 +34,11 @@
 				return factory( w );
 			};
 	} else {
-		factory( global );
+		factory( global.window || global );
 	}
 
 // Pass this if window is not defined yet
-} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
+} )( typeof global == 'undefined' ? this : global, function( window, noGlobal ) {
 
 // Edge <= 12 - 13+, Firefox <=18 - 45+, IE 10 - 11, Safari 5.1 - 9+, iOS 6 - 9.1
 // throw exceptions when non-strict code (e.g., ASP.NET 4.5) accesses strict mode
