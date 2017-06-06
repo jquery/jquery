@@ -3108,7 +3108,7 @@ QUnit.diff = ( function() {
 			var chars, lineStart, lineEnd, lineArrayLength, line;
 			chars = "";
 			// Walk the text, pulling out a substring for each line.
-			// text.split('\n') would would temporarily double our memory footprint.
+			// text.split('\n') would temporarily double our memory footprint.
 			// Modifying text would create many large strings to garbage collect.
 			lineStart = 0;
 			lineEnd = -1;
