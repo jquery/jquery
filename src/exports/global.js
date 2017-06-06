@@ -21,6 +21,14 @@ jQuery.noConflict = function( deep ) {
 		window.jQuery = _jQuery;
 	}
 
+	// Do not pollute window object with undefined properties
+	if ( window.jQuery === undefined ) {
+		delete window.jQuery;
+	}
+	if ( window.$ === undefined ) {
+		delete window.$;
+	}
+
 	return jQuery;
 };
 
