@@ -1,9 +1,8 @@
-var fs = require( "fs" );
+const fs = require( "fs" );
 
-module.exports = function( Release ) {
+export default function( Release ) {
 
-	var
-		files = [
+	let files = [
 			"dist/jquery.js",
 			"dist/jquery.min.js",
 			"dist/jquery.min.map",
@@ -12,9 +11,10 @@ module.exports = function( Release ) {
 			"dist/jquery.slim.min.map",
 			"src/core.js"
 		],
-		cdn = require( "./release/cdn" ),
-		dist = require( "./release/dist" ),
-		ensureSizzle = require( "./release/ensure-sizzle" ),
+
+		const cdn = require( "./release/cdn" ),
+		const dist = require( "./release/dist" ),
+		const ensureSizzle = require( "./release/ensure-sizzle" ),
 
 		npmTags = Release.npmTags;
 
@@ -34,7 +34,7 @@ module.exports = function( Release ) {
 		 * Set the version in the src folder for distributing AMD
 		 */
 		_setSrcVersion: function() {
-			var corePath = __dirname + "/../src/core.js",
+			let corePath = __dirname + "/../src/core.js",
 				contents = fs.readFileSync( corePath, "utf8" );
 			contents = contents.replace( /@VERSION/g, Release.newVersion );
 			fs.writeFileSync( corePath, contents, "utf8" );
