@@ -34,7 +34,49 @@ function safeActiveElement() {
 	} catch ( err ) { }
 }
 
+
+function typeAbb(s){
+        return s==="function"? "fn" : ( s==="boolean"? "bool" : s.substr(0,3) );
+}
+function typeArg(args,begin,end){
+        var count = {}, obj = {} ;
+        begin = begin || 0;
+        end =   end   || args.length;
+
+        for(var type, i = begin; i < end; i++){
+            type = typeAbb( jQuery.type(args[i]) );
+            (count[type]===undefined) ? (count[type]=0) : (count[type]++);
+            obj[type + count[type]] = args[i];
+        }
+        obj.except = function(str){
+            str += " except";
+            for(var i in this)
+                if(str.indexOf(i) === -1 )
+                    return this[i];
+        }
+        return obj;
+}
+
 function on( elem, types, selector, data, fn, one ) {
+
+        var a = typeArg(arguments,1);			
+        fn = a.fn0;
+        if(fn){
+                types = a.str0 ;
+                selector = a.str1 ;
+                data = a.obj0 ;
+        }else{
+                types =  a.obj0 ;
+                selector = a.str0 ;
+                data = a.obj1 ;
+        }
+
+        one = a.num0;
+        
+        
+        
+        
+	
 	var origFn, type;
 
 	// Types can be a map of types/handlers
