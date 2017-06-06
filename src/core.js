@@ -272,14 +272,18 @@ jQuery.extend( {
 	},
 
 	type: function( obj ) {
+		var type;
+
 		if ( obj == null ) {
 			return obj + "";
 		}
 
+		type = typeof obj;
+
 		// Support: Android <=2.3 only (functionish RegExp)
-		return typeof obj === "object" || typeof obj === "function" ?
+		return type === "object" || type === "function" ?
 			class2type[ toString.call( obj ) ] || "object" :
-			typeof obj;
+			type;
 	},
 
 	// Evaluates a script in a global context
