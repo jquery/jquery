@@ -306,6 +306,7 @@ jQuery.extend( {
 			}
 		} else {
 			for ( i in obj ) {
+				if (obj.hasOwnProperty(i)) continue;
 				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
 					break;
 				}
