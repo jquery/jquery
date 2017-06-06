@@ -39,6 +39,7 @@ var
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 
 	// Matches dashed string for camelizing
+	rdash = /-/,
 	rmsPrefix = /^-ms-/,
 	rdashAlpha = /-([a-z])/g,
 
@@ -291,7 +292,7 @@ jQuery.extend( {
 	// Support: IE <=9 - 11, Edge 12 - 15
 	// Microsoft forgot to hump their vendor prefix (#9572)
 	camelCase: function( string ) {
-		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+		return string.search( rdash ) === -1 ? string : string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
 	each: function( obj, callback ) {
