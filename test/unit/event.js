@@ -440,6 +440,26 @@ QUnit.test( "on bubbling, isDefaultPrevented, stopImmediatePropagation", functio
 	$anchor2[ 0 ].removeEventListener( "click", neverCallMe );
 } );
 
+QUnit.test( "triggerd events stopPropagation() for natively-bound events", function( assert ) {
+	assert.expect( 1 );
+
+	var $button = jQuery( "#button" ),
+		$parent = $button.parent(),
+		neverCallMe = function() {
+			assert.ok( false, "propagation should have been stopped" );
+		},
+		stopPropagationCallback = function( e ) {
+			assert.ok( true, "propagation is stopped" );
+			e.stopPropagation();
+		};
+
+	$parent[ 0 ].addEventListener( "click", neverCallMe );
+	$button.on( "click", stopPropagationCallback );
+	$button.trigger( "click" );
+	$parent[ 0 ].removeEventListener( "click", neverCallMe );
+	$button.off( "click", stopPropagationCallback );
+} );
+
 QUnit.test( "on(), iframes", function( assert ) {
 	assert.expect( 1 );
 
