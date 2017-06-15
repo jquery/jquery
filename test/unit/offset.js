@@ -65,7 +65,7 @@ QUnit.test( "empty set", function( assert ) {
 } );
 
 QUnit.test( "disconnected element", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	var result = jQuery( document.createElement( "div" ) ).offset();
 
@@ -75,10 +75,11 @@ QUnit.test( "disconnected element", function( assert ) {
 	assert.equal( result.top, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 	assert.equal( result.left, 0, "Retrieving offset on disconnected elements returns zeros (gh-2310)" );
 	assert.equal( Object.keys( result ).length, 2, "Retrieving offset on disconnected elements returns offset object (gh-3167)" );
+	assert.equal( jQuery.isPlainObject( result ), true, "Retrieving offset on disconnected elements returns plain object (gh-3612)" );
 } );
 
 QUnit.test( "hidden (display: none) element", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	var node = jQuery( "<div style='display: none' />" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
@@ -91,10 +92,11 @@ QUnit.test( "hidden (display: none) element", function( assert ) {
 	assert.equal( result.top, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 	assert.equal( result.left, 0, "Retrieving offset on hidden elements returns zeros (gh-2310)" );
 	assert.equal( Object.keys( result ).length, 2, "Retrieving offset on hidden elements returns offset object (gh-3167)" );
+	assert.equal( jQuery.isPlainObject( result ), true, "Retrieving offset on hidden elements returns plain object (gh-3612)" );
 } );
 
 QUnit.test( "0 sized element", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	var node = jQuery( "<div style='margin: 5px; width: 0; height: 0' />" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
@@ -104,10 +106,11 @@ QUnit.test( "0 sized element", function( assert ) {
 	assert.notEqual( result.top, 0, "Retrieving offset on 0 sized elements (gh-3167)" );
 	assert.notEqual( result.left, 0, "Retrieving offset on 0 sized elements (gh-3167)" );
 	assert.equal( Object.keys( result ).length, 2, "Retrieving offset on 0 sized elements returns offset object (gh-3167)" );
+	assert.equal( jQuery.isPlainObject( result ), true, "Retrieving offset on 0 sized elements returns plain object (gh-3612)" );
 } );
 
 QUnit.test( "hidden (visibility: hidden) element", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	var node = jQuery( "<div style='margin: 5px; visibility: hidden' />" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
@@ -117,6 +120,23 @@ QUnit.test( "hidden (visibility: hidden) element", function( assert ) {
 	assert.notEqual( result.top, 0, "Retrieving offset on visibility:hidden elements (gh-3167)" );
 	assert.notEqual( result.left, 0, "Retrieving offset on visibility:hidden elements (gh-3167)" );
 	assert.equal( Object.keys( result ).length, 2, "Retrieving offset on visibility:hidden elements returns offset object (gh-3167)" );
+	assert.equal( jQuery.isPlainObject( result ), true, "Retrieving offset on visibility:hidden elements returns plain object (gh-3612)" );
+} );
+
+QUnit.test( "normal element", function( assert ) {
+	assert.expect( 4 );
+
+	var node = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+		offset = node.offset(),
+		position = node.position();
+
+	node.remove();
+
+	assert.equal( Object.keys( offset ).length, 2, "Retrieving offset on normal elements returns offset object (gh-3612)" );
+	assert.equal( jQuery.isPlainObject( offset ), true, "Retrieving offset on normal elements returns plain object (gh-3612)" );
+
+	assert.equal( Object.keys( position ).length, 2, "Retrieving position on normal elements returns offset object (gh-3612)" );
+	assert.equal( jQuery.isPlainObject( position ), true, "Retrieving position on normal elements returns plain object (gh-3612)" );
 } );
 
 testIframe( "absolute", "offset/absolute.html", function( assert, $, iframe ) {
@@ -350,7 +370,7 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 } );
 
 testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
-	assert.expect( 34 );
+	assert.expect( 38 );
 
 	var tests, $noTopLeft;
 
@@ -377,8 +397,12 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
+			assert.ok( true, "Browser doesn't support scroll position." );
+			assert.ok( true, "Browser doesn't support scroll position." );
 
 		} else if ( window.supportsFixedPosition ) {
+			assert.equal( jQuery.isPlainObject( $( this.id ).offset() ), true, "jQuery('" + this.id + "').offset() is plain object" );
+			assert.equal( jQuery.isPlainObject( $( this.id ).position() ), true, "jQuery('" + this.id + "').position() is plain object" );
 			assert.equal( $( this.id ).offset().top,  this.offsetTop,  "jQuery('" + this.id + "').offset().top" );
 			assert.equal( $( this.id ).position().top,  this.positionTop,  "jQuery('" + this.id + "').position().top" );
 			assert.equal( $( this.id ).offset().left, this.offsetLeft, "jQuery('" + this.id + "').offset().left" );
@@ -386,6 +410,8 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 		} else {
 
 			// need to have same number of assertions
+			assert.ok( true, "Fixed position is not supported" );
+			assert.ok( true, "Fixed position is not supported" );
 			assert.ok( true, "Fixed position is not supported" );
 			assert.ok( true, "Fixed position is not supported" );
 			assert.ok( true, "Fixed position is not supported" );
