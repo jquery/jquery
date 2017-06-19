@@ -544,4 +544,87 @@ QUnit.test( "width/height on an inline element with no explicitly-set dimensions
 	} );
 } );
 
+QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
+	assert.expect( 36 );
+
+	var i,
+		suffix = "",
+		updater = function( adjustment ) {
+			return function( i, old ) {
+				return old + adjustment;
+			};
+		},
+		parent = jQuery( "<div/>" )
+			.css( { position: "absolute", width: "1000px", height: "1000px" } )
+			.appendTo( "#qunit-fixture" ),
+		fraction = jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1,
+		borderWidth = 1,
+		padding = 2,
+		size = 100 + fraction,
+		scrollBox = {
+			position: "absolute",
+			overflow: "scroll",
+			width: size + "px",
+			height: size + "px"
+		},
+		borderBox = {
+			border: borderWidth + "px solid blue",
+			padding: padding + "px"
+		},
+		plainContentBox = jQuery( "<div />" )
+			.css( scrollBox )
+			.css( { "box-sizing": "content-box" } )
+			.appendTo( parent ),
+		contentBox = jQuery( "<div />" )
+			.css( scrollBox )
+			.css( borderBox )
+			.css( { "box-sizing": "content-box" } )
+			.appendTo( parent ),
+		borderBox = jQuery( "<div />" )
+			.css( scrollBox )
+			.css( borderBox )
+			.css( { "box-sizing": "border-box" } )
+			.appendTo( parent ),
+		$boxes = jQuery( [ plainContentBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ] ] );
+
+	for ( i = 0; i < 3; i++ ) {
+		if ( i === 1 ) {
+			suffix = " after increasing inner* by " + i;
+			size += i;
+			$boxes.innerWidth( updater( i ) ).innerHeight( updater( i ) );
+		} else if ( i === 2 ) {
+			suffix = " after increasing outer* by " + i;
+			size += i;
+			$boxes.outerWidth( updater( i ) ).outerHeight( updater( i ) );
+		}
+
+		assert.equal( plainContentBox.innerWidth(), size,
+			"plain content-box innerWidth includes scroll gutter" + suffix );
+		assert.equal( plainContentBox.innerHeight(), size,
+			"plain content-box innerHeight includes scroll gutter" + suffix );
+		assert.equal( plainContentBox.outerWidth(), size,
+			"plain content-box outerWidth includes scroll gutter" + suffix );
+		assert.equal( plainContentBox.outerHeight(), size,
+			"plain content-box outerHeight includes scroll gutter" + suffix );
+
+		assert.equal( contentBox.innerWidth(), size + 2 * padding,
+			"content-box innerWidth includes scroll gutter" + suffix );
+		assert.equal( contentBox.innerHeight(), size + 2 * padding,
+			"content-box innerHeight includes scroll gutter" + suffix );
+		assert.equal( contentBox.outerWidth(), size + 2 * padding + 2 * borderWidth,
+			"content-box outerWidth includes scroll gutter" + suffix );
+		assert.equal( contentBox.outerHeight(), size + 2 * padding + 2 * borderWidth,
+			"content-box outerHeight includes scroll gutter" + suffix );
+
+		assert.equal( borderBox.innerWidth(), size - 2 * borderWidth,
+			"border-box innerWidth includes scroll gutter" + suffix );
+		assert.equal( borderBox.innerHeight(), size - 2 * borderWidth,
+			"border-box innerHeight includes scroll gutter" + suffix );
+		assert.equal( borderBox.outerWidth(), size,
+			"border-box outerWidth includes scroll gutter" + suffix );
+		assert.equal( borderBox.outerHeight(), size,
+			"border-box outerHeight includes scroll gutter" + suffix );
+	}
+} );
+
 } )();
