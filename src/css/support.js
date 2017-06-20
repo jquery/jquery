@@ -33,6 +33,10 @@ define( [
 		reliableMarginLeftVal = divStyle.marginLeft === "2px";
 		boxSizingReliableVal = divStyle.width === "4px";
 
+		// Support: IE 9 only
+		// Detect misreporting of content dimensions for border-box elements (gh-3699)
+		borderBoxReliableVal = parseFloat( divStyle.width ) >= 4;
+
 		// Support: Android 4.0 - 4.3 only
 		// Some styles come back with percentage values, even though they shouldn't
 		div.style.marginRight = "50%";
@@ -45,7 +49,8 @@ define( [
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal, reliableMarginLeftVal,
+	var pixelPositionVal, boxSizingReliableVal, borderBoxReliableVal, pixelMarginRightVal,
+		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
 
@@ -65,13 +70,17 @@ define( [
 	container.appendChild( div );
 
 	jQuery.extend( support, {
-		pixelPosition: function() {
+		borderBoxReliable: function() {
 			computeStyleTests();
-			return pixelPositionVal;
+			return borderBoxReliableVal;
 		},
 		boxSizingReliable: function() {
 			computeStyleTests();
 			return boxSizingReliableVal;
+		},
+		pixelPosition: function() {
+			computeStyleTests();
+			return pixelPositionVal;
 		},
 		pixelMarginRight: function() {
 			computeStyleTests();
