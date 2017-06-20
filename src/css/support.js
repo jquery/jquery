@@ -31,16 +31,16 @@ define( [
 
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
 		reliableMarginLeftVal = divStyle.marginLeft === "2px";
-		boxSizingReliableVal = divStyle.width === "4px";
+		boxSizingReliableVal = divStyle.width === "5px";
 
 		// Support: IE 9 only
 		// Detect misreporting of content dimensions for border-box elements (gh-3699)
-		borderBoxReliableVal = parseFloat( divStyle.width ) >= 4;
+		borderBoxReliableVal = divStyle.width[ 0 ] === "5";
 
 		// Support: Android 4.0 - 4.3 only
 		// Some styles come back with percentage values, even though they shouldn't
 		div.style.marginRight = "50%";
-		pixelMarginRightVal = divStyle.marginRight === "4px";
+		pixelMarginRightVal = divStyle.marginRight === "5px";
 
 		documentElement.removeChild( container );
 
@@ -65,7 +65,7 @@ define( [
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:8px;height:0;top:0;left:-9999px;" +
+	container.style.cssText = "border:0;width:10px;height:0;top:0;left:-9999px;" +
 		"padding:0;margin-top:1px;position:absolute";
 	container.appendChild( div );
 
