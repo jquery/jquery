@@ -440,7 +440,7 @@ QUnit.test( "on bubbling, isDefaultPrevented, stopImmediatePropagation", functio
 	$anchor2[ 0 ].removeEventListener( "click", neverCallMe );
 } );
 
-QUnit.test( "triggerd events stopPropagation() for natively-bound events", function( assert ) {
+QUnit.test( "triggered events stopPropagation() for natively-bound events", function( assert ) {
 	assert.expect( 1 );
 
 	var $button = jQuery( "#button" ),
