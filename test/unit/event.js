@@ -460,6 +460,27 @@ QUnit.test( "triggered events stopPropagation() for natively-bound events", func
 	$button.off( "click", stopPropagationCallback );
 } );
 
+QUnit.test( "trigger() works with events that were previously stopped", function( assert ) {
+	assert.expect( 0 );
+
+	var $button = jQuery( "#button" ),
+		$parent = $button.parent(),
+		neverCallMe = function() {
+			assert.ok( false, "propagation should have been stopped" );
+		};
+
+	$parent[ 0 ].addEventListener( "click", neverCallMe );
+	$button.on( "click", neverCallMe );
+
+	var clickEvent =  jQuery.Event( "click" );
+	clickEvent.stopPropagation();
+	$button.trigger( clickEvent );
+
+	$parent[ 0 ].removeEventListener( "click", neverCallMe );
+	$button.off( "click", neverCallMe );
+} );
+
+
 QUnit.test( "on(), iframes", function( assert ) {
 	assert.expect( 1 );
 
