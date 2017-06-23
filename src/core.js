@@ -16,10 +16,11 @@ define( [
 	"./var/fnToString",
 	"./var/ObjectFunctionString",
 	"./var/support",
+	"./var/isWindow",
 	"./core/DOMEval"
 ], function( arr, document, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, DOMEval ) {
+	support, isWindow, DOMEval ) {
 
 "use strict";
 
@@ -218,10 +219,6 @@ jQuery.extend( {
 		// (i.e., `typeof document.createElement( "object" ) === "function"`).
 		// We don't want to classify *any* DOM node as a function.
 		return typeof obj === "function" && typeof obj.nodeType !== "number";
-	},
-
-	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
 	},
 
 	isNumeric: function( obj ) {
@@ -469,7 +466,7 @@ function isArrayLike( obj ) {
 	var length = !!obj && "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
-	if ( jQuery.isFunction( obj ) || jQuery.isWindow( obj ) ) {
+	if ( jQuery.isFunction( obj ) || isWindow( obj ) ) {
 		return false;
 	}
 
