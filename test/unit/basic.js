@@ -76,7 +76,7 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 27 );
+	assert.expect( 25 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 

@@ -165,7 +165,7 @@ QUnit.test( "jQuery.nodeName", function( assert ) {
 	);
 } );
 
-QUnit.test( "isWindow", function( assert ) {
+QUnit.test( "jQuery.isWindow", function( assert ) {
 	assert.expect( 14 );
 
 	assert.ok( jQuery.isWindow( window ), "window" );

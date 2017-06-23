@@ -1,7 +1,8 @@
 define( [
 	"./core",
-	"./core/nodeName"
-], function( jQuery, nodeName ) {
+	"./core/nodeName",
+	"./var/isWindow"
+], function( jQuery, nodeName, isWindow ) {
 
 "use strict";
 
@@ -36,5 +37,6 @@ jQuery.holdReady = function( hold ) {
 jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
+jQuery.isWindow = isWindow;
 
 } );
