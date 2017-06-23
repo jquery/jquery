@@ -680,25 +680,6 @@ QUnit.test( "isXMLDoc - XML", function( assert ) {
 	assert.ok( jQuery.isXMLDoc( jQuery( "tab", xml )[ 0 ] ), "XML Tab Element" );
 } );
 
-QUnit.test( "isWindow", function( assert ) {
-	assert.expect( 14 );
-
-	assert.ok( jQuery.isWindow( window ), "window" );
-	assert.ok( jQuery.isWindow( document.getElementsByTagName( "iframe" )[ 0 ].contentWindow ), "iframe.contentWindow" );
-	assert.ok( !jQuery.isWindow(), "empty" );
-	assert.ok( !jQuery.isWindow( null ), "null" );
-	assert.ok( !jQuery.isWindow( undefined ), "undefined" );
-	assert.ok( !jQuery.isWindow( document ), "document" );
-	assert.ok( !jQuery.isWindow( document.documentElement ), "documentElement" );
-	assert.ok( !jQuery.isWindow( "" ), "string" );
-	assert.ok( !jQuery.isWindow( 1 ), "number" );
-	assert.ok( !jQuery.isWindow( true ), "boolean" );
-	assert.ok( !jQuery.isWindow( {} ), "object" );
-	assert.ok( !jQuery.isWindow( { setInterval: function() {} } ), "fake window" );
-	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
-	assert.ok( !jQuery.isWindow( function() {} ), "function" );
-} );
-
 QUnit.test( "jQuery('html')", function( assert ) {
 	assert.expect( 18 );
 
