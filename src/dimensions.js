@@ -1,8 +1,8 @@
 define( [
 	"./core",
 	"./core/access",
-	"./css",
-	"./var/isWindow"
+	"./var/isWindow",
+	"./css"
 ], function( jQuery, access, isWindow ) {
 
 "use strict";

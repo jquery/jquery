@@ -6,7 +6,7 @@ define( [
 	"../var/hasOwn",
 	"../var/isWindow",
 	"../event"
-], function( jQuery, document, dataPriv, acceptData, isWindow, hasOwn ) {
+], function( jQuery, document, dataPriv, acceptData, hasOwn, isWindow ) {
 
 "use strict";
 
