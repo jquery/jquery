@@ -65,7 +65,8 @@ jQuery.extend( {
  * Clean-up method for dom ready events
  */
 function detach() {
-	if ( document.addEventListener ) {
+	if ( document.addEventListener &&
+		document.removeEventListener ) {
 		document.removeEventListener( "DOMContentLoaded", completed );
 		window.removeEventListener( "load", completed );
 
