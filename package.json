@@ -55,7 +55,8 @@
     "sinon": "2.3.6",
     "sizzle": "2.3.3",
     "strip-json-comments": "2.0.1",
-    "testswarm": "1.1.0"
+    "testswarm": "1.1.0",
+    "uglify-js": "3.0.24"
   },
   "scripts": {
     "build": "npm install && grunt",
