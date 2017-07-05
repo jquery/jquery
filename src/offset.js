@@ -140,10 +140,8 @@ jQuery.fn.extend( {
 
 				// Incorporate borders into its offset, since they are outside its content origin
 				parentOffset = jQuery( offsetParent ).offset();
-				parentOffset = {
-					top: parentOffset.top + jQuery.css( offsetParent, "borderTopWidth", true ),
-					left: parentOffset.left + jQuery.css( offsetParent, "borderLeftWidth", true )
-				};
+				parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
+				parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
 			}
 		}
 
