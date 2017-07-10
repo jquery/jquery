@@ -7,12 +7,12 @@ define( [
 	"./css/curCSS",
 	"./css/addGetHookIf",
 	"./css/support",
-
+	"./var/isWindow",
 	"./core/init",
 	"./css",
 	"./selector" // contains
 ], function( jQuery, access, document, documentElement, rnumnonpx,
-             curCSS, addGetHookIf, support ) {
+             curCSS, addGetHookIf, support, isWindow ) {
 
 "use strict";
 
@@ -186,7 +186,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 
 			// Coalesce documents and windows
 			var win;
-			if ( jQuery.isWindow( elem ) ) {
+			if ( isWindow( elem ) ) {
 				win = elem;
 			} else if ( elem.nodeType === 9 ) {
 				win = elem.defaultView;
