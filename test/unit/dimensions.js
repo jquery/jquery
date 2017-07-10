@@ -585,7 +585,14 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.css( borderBox )
 			.css( { "box-sizing": "border-box" } )
 			.appendTo( parent ),
-		$boxes = jQuery( [ plainContentBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ] ] );
+		$boxes = jQuery( [ plainContentBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ] ] ),
+
+		// Support: IE 9 only
+		// Computed width seems to report content width even with "box-sizing: border-box", and
+		// "overflow: scroll" actually _shrinks_ the element (gh-3699).
+		borderBoxLoss =
+			borderBox.clone().css( { overflow: "auto" } ).appendTo( parent )[ 0 ].offsetWidth -
+			borderBox[ 0 ].offsetWidth;
 
 	for ( i = 0; i < 3; i++ ) {
 		if ( i === 1 ) {
@@ -616,13 +623,13 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		assert.equal( contentBox.outerHeight(), size + 2 * padding + 2 * borderWidth,
 			"content-box outerHeight includes scroll gutter" + suffix );
 
-		assert.equal( borderBox.innerWidth(), size - 2 * borderWidth,
+		assert.equal( borderBox.innerWidth(), size - borderBoxLoss - 2 * borderWidth,
 			"border-box innerWidth includes scroll gutter" + suffix );
-		assert.equal( borderBox.innerHeight(), size - 2 * borderWidth,
+		assert.equal( borderBox.innerHeight(), size - borderBoxLoss - 2 * borderWidth,
 			"border-box innerHeight includes scroll gutter" + suffix );
-		assert.equal( borderBox.outerWidth(), size,
+		assert.equal( borderBox.outerWidth(), size - borderBoxLoss,
 			"border-box outerWidth includes scroll gutter" + suffix );
-		assert.equal( borderBox.outerHeight(), size,
+		assert.equal( borderBox.outerHeight(), size - borderBoxLoss,
 			"border-box outerHeight includes scroll gutter" + suffix );
 	}
 } );
