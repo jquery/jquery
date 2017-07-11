@@ -1,5 +1,8 @@
+.babelrc
 .eslintignore
 .eslintrc.json
+.eslint-browser.json
+.eslint-node.json
 
 /.editorconfig
 /.gitattributes
@@ -11,6 +14,11 @@
 /test
 /Gruntfile.js
 
+/external/npo
 /external/qunit
+/external/qunit-assert-step
 /external/requirejs
 /external/sinon
+
+/.github
+/src
