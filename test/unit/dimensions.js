@@ -545,7 +545,7 @@ QUnit.test( "width/height on an inline element with no explicitly-set dimensions
 } );
 
 QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
-	assert.expect( 36 );
+	assert.expect( 48 );
 
 	var i,
 		suffix = "",
@@ -561,31 +561,29 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
-		scrollBox = {
-			position: "absolute",
-			overflow: "scroll",
-			width: size + "px",
-			height: size + "px"
-		},
-		borderBox = {
-			border: borderWidth + "px solid blue",
-			padding: padding + "px"
-		},
-		plainContentBox = jQuery( "<div />" )
-			.css( scrollBox )
-			.css( { "box-sizing": "content-box" } )
-			.appendTo( parent ),
-		contentBox = jQuery( "<div />" )
-			.css( scrollBox )
-			.css( borderBox )
-			.css( { "box-sizing": "content-box" } )
-			.appendTo( parent ),
-		borderBox = jQuery( "<div />" )
-			.css( scrollBox )
-			.css( borderBox )
-			.css( { "box-sizing": "border-box" } )
-			.appendTo( parent ),
-		$boxes = jQuery( [ plainContentBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ] ] ),
+		plainBox = jQuery( "<div />" )
+			.css( {
+				"box-sizing": "content-box",
+				position: "absolute",
+				overflow: "scroll",
+				width: size + "px",
+				height: size + "px"
+			} ),
+		contentBox = plainBox
+			.clone()
+			.css( {
+				border: borderWidth + "px solid blue",
+				padding: padding + "px"
+			} ),
+		borderBox = contentBox
+			.clone()
+			.css( { "box-sizing": "border-box" } ),
+		relativeBorderBox = borderBox
+			.clone()
+			.css( { position: "relative" } ),
+		$boxes = jQuery(
+			[ plainBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ], relativeBorderBox[ 0 ] ]
+		).appendTo( parent ),
 
 		// Support: IE 9 only
 		// Computed width seems to report content width even with "box-sizing: border-box", and
@@ -593,6 +591,13 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		borderBoxLoss =
 			borderBox.clone().css( { overflow: "auto" } ).appendTo( parent )[ 0 ].offsetWidth -
 			borderBox[ 0 ].offsetWidth;
+
+	if ( borderBoxLoss > 0 ) {
+		borderBox.css( {
+			width: ( size + borderBoxLoss ) + "px",
+			height: ( size + borderBoxLoss ) + "px"
+		} );
+	}
 
 	for ( i = 0; i < 3; i++ ) {
 		if ( i === 1 ) {
@@ -605,13 +610,13 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			$boxes.outerWidth( updater( i ) ).outerHeight( updater( i ) );
 		}
 
-		assert.equal( plainContentBox.innerWidth(), size,
+		assert.equal( plainBox.innerWidth(), size,
 			"plain content-box innerWidth includes scroll gutter" + suffix );
-		assert.equal( plainContentBox.innerHeight(), size,
+		assert.equal( plainBox.innerHeight(), size,
 			"plain content-box innerHeight includes scroll gutter" + suffix );
-		assert.equal( plainContentBox.outerWidth(), size,
+		assert.equal( plainBox.outerWidth(), size,
 			"plain content-box outerWidth includes scroll gutter" + suffix );
-		assert.equal( plainContentBox.outerHeight(), size,
+		assert.equal( plainBox.outerHeight(), size,
 			"plain content-box outerHeight includes scroll gutter" + suffix );
 
 		assert.equal( contentBox.innerWidth(), size + 2 * padding,
@@ -623,14 +628,23 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		assert.equal( contentBox.outerHeight(), size + 2 * padding + 2 * borderWidth,
 			"content-box outerHeight includes scroll gutter" + suffix );
 
-		assert.equal( borderBox.innerWidth(), size - borderBoxLoss - 2 * borderWidth,
+		assert.equal( borderBox.innerWidth(), size - 2 * borderWidth,
 			"border-box innerWidth includes scroll gutter" + suffix );
-		assert.equal( borderBox.innerHeight(), size - borderBoxLoss - 2 * borderWidth,
+		assert.equal( borderBox.innerHeight(), size - 2 * borderWidth,
 			"border-box innerHeight includes scroll gutter" + suffix );
-		assert.equal( borderBox.outerWidth(), size - borderBoxLoss,
+		assert.equal( borderBox.outerWidth(), size,
 			"border-box outerWidth includes scroll gutter" + suffix );
-		assert.equal( borderBox.outerHeight(), size - borderBoxLoss,
+		assert.equal( borderBox.outerHeight(), size,
 			"border-box outerHeight includes scroll gutter" + suffix );
+
+		assert.equal( relativeBorderBox.innerWidth(), size - 2 * borderWidth,
+			"relative border-box innerWidth includes scroll gutter" + suffix );
+		assert.equal( relativeBorderBox.innerHeight(), size - 2 * borderWidth,
+			"relative border-box innerHeight includes scroll gutter" + suffix );
+		assert.equal( relativeBorderBox.outerWidth(), size,
+			"relative border-box outerWidth includes scroll gutter" + suffix );
+		assert.equal( relativeBorderBox.outerHeight(), size,
+			"relative border-box outerHeight includes scroll gutter" + suffix );
 	}
 } );
 
