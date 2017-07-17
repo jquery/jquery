@@ -73,7 +73,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
@@ -90,7 +91,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -107,7 +109,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": false
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
 
@@ -127,7 +130,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
@@ -144,7 +148,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -161,7 +166,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"scrollboxSize": true
 		};
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = {
@@ -178,7 +184,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = {
@@ -195,7 +202,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /iphone os 7_/i.test( userAgent ) ) {
 		expected = {
@@ -212,7 +220,8 @@ testIframe(
 			"pixelMarginRight": true,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
@@ -229,7 +238,8 @@ testIframe(
 			"pixelMarginRight": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"scrollboxSize": true
 		};
 	}
 

@@ -31,11 +31,14 @@ define( [
 
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
 		reliableMarginLeftVal = divStyle.marginLeft === "2px";
+
+		// Support: IE 9 - 11 only
+		// Detect misreporting of content dimensions for box-sizing:border-box elements
 		boxSizingReliableVal = divStyle.width === "5px";
 
 		// Support: IE 9 only
 		// Detect misreporting of content dimensions for border-box elements (gh-3699)
-		borderBoxReliableVal = divStyle.width[ 0 ] === "5";
+		scrollboxSizeVal = divStyle.width[ 0 ] === "5";
 
 		// Support: Android 4.0 - 4.3 only
 		// Some styles come back with percentage values, even though they shouldn't
@@ -49,7 +52,7 @@ define( [
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, borderBoxReliableVal, pixelMarginRightVal,
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelMarginRightVal,
 		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
@@ -70,10 +73,6 @@ define( [
 	container.appendChild( div );
 
 	jQuery.extend( support, {
-		borderBoxReliable: function() {
-			computeStyleTests();
-			return borderBoxReliableVal;
-		},
 		boxSizingReliable: function() {
 			computeStyleTests();
 			return boxSizingReliableVal;
@@ -89,6 +88,10 @@ define( [
 		reliableMarginLeft: function() {
 			computeStyleTests();
 			return reliableMarginLeftVal;
+		},
+		scrollboxSize: function() {
+			computeStyleTests();
+			return scrollboxSizeVal;
 		}
 	} );
 } )();
