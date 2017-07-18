@@ -44,7 +44,7 @@ define( [
 		// Support: IE 9 only
 		// Detect overflow:scroll screwiness (gh-3699)
 		div.style.position = "absolute";
-		scrollboxSizeVal = div.offsetWidth === 36;
+		scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
 
 		documentElement.removeChild( container );
 

@@ -110,7 +110,7 @@ testIframe(
 			"pixelPosition": true,
 			"radioValue": false,
 			"reliableMarginLeft": true,
-			"scrollboxSize": false
+			"scrollboxSize": "absolute"
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
 
