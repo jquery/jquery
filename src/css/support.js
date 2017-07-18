@@ -18,12 +18,13 @@ define( [
 			return;
 		}
 
+		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
+			"margin-top:1px;padding:0;border:0";
 		div.style.cssText =
 			"position:relative;display:block;box-sizing:border-box;overflow:scroll;" +
 			"margin:auto;border:1px;padding:1px;" +
 			"width:60%;top:1%";
-		div.innerHTML = "";
-		documentElement.appendChild( container );
+		documentElement.appendChild( container ).appendChild( div );
 
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
@@ -67,10 +68,6 @@ define( [
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
-
-	container.style.cssText = "position:absolute;top:0;height:0;left:-9999px;width:60px;" +
-		"margin-top:1px;padding:0;border:0";
-	container.appendChild( div );
 
 	jQuery.extend( support, {
 		boxSizingReliable: function() {
