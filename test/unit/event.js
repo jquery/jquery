@@ -2811,11 +2811,20 @@ QUnit.test( "preventDefault() on focusin does not throw exception", function( as
 		done = null;
 	} );
 
-	// This test can be flaky in CI... try two methods to prompt a focusin event
+	// This test can be unreliable in CI... try two methods to prompt a focusin event
+	// and set an abort timeout
 	input.trigger( "focus" );
 	try {
 		input[ 0 ].focus();
 	} catch ( e ) {}
+	setTimeout( function() {
+		if ( !done ) {
+			return;
+		}
+		assert.ok( true, "Did not intercept focusin" );
+		done();
+		done = null;
+	}, QUnit.config.testTimeout / 2 || 1000 );
 } );
 
 QUnit.test( "Donor event interference", function( assert ) {
