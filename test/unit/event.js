@@ -2792,21 +2792,30 @@ QUnit.test( "preventDefault() on focusin does not throw exception", function( as
 	var done = assert.async(),
 		input = jQuery( "<input/>" ).appendTo( "#form" );
 
-	input
-		.on( "focusin", function( event ) {
-			var exceptionCaught;
+	input.on( "focusin", function( event ) {
+		if ( !done ) {
+			return;
+		}
 
-			try {
-				event.preventDefault();
-			} catch ( theException ) {
-				exceptionCaught = theException;
-			}
+		var exceptionCaught;
+		try {
+			event.preventDefault();
+		} catch ( theException ) {
+			exceptionCaught = theException;
+		}
 
-			assert.strictEqual( exceptionCaught, undefined,
-				"Preventing default on focusin throws no exception" );
+		assert.strictEqual( exceptionCaught, undefined,
+			"Preventing default on focusin throws no exception" );
 
-			done();
-		} ).trigger( "focus" );
+		done();
+		done = null;
+	} );
+
+	// This test can be flaky in CI... try two methods to prompt a focusin event
+	input.trigger( "focus" );
+	try {
+		input[ 0 ].focus();
+	} catch ( e ) {}
 } );
 
 QUnit.test( "Donor event interference", function( assert ) {
