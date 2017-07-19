@@ -1,4 +1,4 @@
-define([
+define( [
 	"../core",
 	"./var/rtagName",
 	"./var/rscriptType",
@@ -6,6 +6,8 @@ define([
 	"./getAll",
 	"./setGlobalEval"
 ], function( jQuery, rtagName, rscriptType, wrapMap, getAll, setGlobalEval ) {
+
+"use strict";
 
 var rhtml = /<|&#?\w+;/;
 
@@ -23,7 +25,8 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 			// Add nodes directly
 			if ( jQuery.type( elem ) === "object" ) {
-				// Support: Android<4.1, PhantomJS<2
+
+				// Support: Android <=4.0 only, PhantomJS 1 only
 				// push.apply(_, arraylike) throws on ancient WebKit
 				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
@@ -46,7 +49,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 					tmp = tmp.lastChild;
 				}
 
-				// Support: Android<4.1, PhantomJS<2
+				// Support: Android <=4.0 only, PhantomJS 1 only
 				// push.apply(_, arraylike) throws on ancient WebKit
 				jQuery.merge( nodes, tmp.childNodes );
 
@@ -98,4 +101,4 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 }
 
 return buildFragment;
-});
+} );

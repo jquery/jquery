@@ -1,57 +1,51 @@
-define([
+define( [
 	"../core",
-	"../var/rnotwhite",
-	"./accepts"
-], function( jQuery, rnotwhite ) {
+	"../var/rnothtmlwhite",
+	"./var/acceptData"
+], function( jQuery, rnothtmlwhite, acceptData ) {
+
+"use strict";
 
 function Data() {
 	this.expando = jQuery.expando + Data.uid++;
 }
 
 Data.uid = 1;
-Data.accepts = jQuery.acceptData;
 
 Data.prototype = {
 
-	register: function( owner ) {
-		var value = {};
-
-		// If it is a node unlikely to be stringify-ed or looped over
-		// use plain assignment
-		if ( owner.nodeType ) {
-			owner[ this.expando ] = value;
-
-		// Otherwise secure it in a non-enumerable, non-writable property
-		// configurability must be true to allow the property to be
-		// deleted with the delete operator
-		} else {
-			Object.defineProperty( owner, this.expando, {
-				value: value,
-				writable: true,
-				configurable: true
-			});
-		}
-		return owner[ this.expando ];
-	},
 	cache: function( owner ) {
 
-		// We can accept data for non-element nodes in modern browsers,
-		// but we should not, see #8335.
-		// Always return an empty object.
-		if ( !Data.accepts( owner ) ) {
-			return {};
-		}
-
 		// Check if the owner object already has a cache
-		var cache = owner[ this.expando ];
+		var value = owner[ this.expando ];
 
-		// If so, return it
-		if ( cache ) {
-			return cache;
+		// If not, create one
+		if ( !value ) {
+			value = {};
+
+			// We can accept data for non-element nodes in modern browsers,
+			// but we should not, see #8335.
+			// Always return an empty object.
+			if ( acceptData( owner ) ) {
+
+				// If it is a node unlikely to be stringify-ed or looped over
+				// use plain assignment
+				if ( owner.nodeType ) {
+					owner[ this.expando ] = value;
+
+				// Otherwise secure it in a non-enumerable property
+				// configurable must be true to allow the property to be
+				// deleted when data is removed
+				} else {
+					Object.defineProperty( owner, this.expando, {
+						value: value,
+						configurable: true
+					} );
+				}
+			}
 		}
 
-		// If not, register one
-		return this.register( owner );
+		return value;
 	},
 	set: function( owner, data, value ) {
 		var prop,
@@ -73,13 +67,11 @@ Data.prototype = {
 		return cache;
 	},
 	get: function( owner, key ) {
-		var cache = this.cache( owner );
-
 		return key === undefined ?
-			cache :
+			this.cache( owner ) :
 
 			// Always use camelCase key (gh-2257)
-			cache[ jQuery.camelCase( key ) ];
+			owner[ this.expando ] && owner[ this.expando ][ jQuery.camelCase( key ) ];
 	},
 	access: function( owner, key, value ) {
 
@@ -100,7 +92,7 @@ Data.prototype = {
 			return this.get( owner, key );
 		}
 
-		// [*]When the key is not a string, or both a key and value
+		// When the key is not a string, or both a key and value
 		// are specified, set or extend (existing objects) with either:
 		//
 		//   1. An object of properties
@@ -123,7 +115,7 @@ Data.prototype = {
 		if ( key !== undefined ) {
 
 			// Support array or space separated string of keys
-			if ( jQuery.isArray( key ) ) {
+			if ( Array.isArray( key ) ) {
 
 				// If key is an array of keys...
 				// We always set camelCase keys, so remove that.
@@ -135,7 +127,7 @@ Data.prototype = {
 				// Otherwise, create an array by matching non-whitespace
 				key = key in cache ?
 					[ key ] :
-					( key.match( rnotwhite ) || [] );
+					( key.match( rnothtmlwhite ) || [] );
 			}
 
 			i = key.length;
@@ -147,7 +139,16 @@ Data.prototype = {
 
 		// Remove the expando if there's no more data
 		if ( key === undefined || jQuery.isEmptyObject( cache ) ) {
-			delete owner[ this.expando ];
+
+			// Support: Chrome <=35 - 45
+			// Webkit & Blink performance suffers when deleting properties
+			// from DOM nodes, so set to undefined instead
+			// https://bugs.chromium.org/p/chromium/issues/detail?id=378607 (bug restricted)
+			if ( owner.nodeType ) {
+				owner[ this.expando ] = undefined;
+			} else {
+				delete owner[ this.expando ];
+			}
 		}
 	},
 	hasData: function( owner ) {
@@ -157,4 +158,4 @@ Data.prototype = {
 };
 
 return Data;
-});
+} );

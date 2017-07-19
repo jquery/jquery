@@ -1,6 +1,8 @@
-define([
+define( [
 	"../data/var/dataPriv"
 ], function( dataPriv ) {
+
+"use strict";
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {
@@ -17,4 +19,4 @@ function setGlobalEval( elems, refElements ) {
 }
 
 return setGlobalEval;
-});
+} );

@@ -13,7 +13,8 @@
 	<script src="data/jquery-1.9.1.js"></script>
 
 	<script src="../external/qunit/qunit.js"></script>
-	<script src="../external/sinon/sinon-1.14.1.js"></script>
+	<script src="../external/qunit-assert-step/qunit-assert-step.js"></script>
+	<script src="../external/sinon/sinon.js"></script>
 	<script src="../external/npo/npo.js"></script>
 	<script src="../external/requirejs/require.js"></script>
 	<!-- See testinit for the list of tests -->
@@ -39,7 +40,7 @@
 	<div id="qunit"></div>
 
 	<!-- Test HTML -->
-	<!-- this iframe is outside the #qunit-fixture so it won't reload constantly wasting time, but it means the tests must be "safe" and clean up after themselves -->
+	<!-- this iframe is outside the #qunit-fixture so it won't waste time by constantly reloading; the tests are "safe" and clean up after themselves -->
 	<iframe id="loadediframe" name="loadediframe" style="display:none;" src="data/iframe.html"></iframe>
 	<dl id="dl" style="position:absolute;top:-32767px;left:-32767px;width:1px;">
 	<div id="donor-outer">

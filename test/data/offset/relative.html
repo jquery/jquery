@@ -8,23 +8,26 @@
 			body { margin: 1px; padding: 5px; }
 			div.relative { position: relative; top: 0; left: 0; margin: 1px; border: 2px solid #000; padding: 5px; width: 100px; height: 100px; background: #fff; overflow: hidden; }
 			#relative-2 { top: 20px; left: 20px; }
+			#relative-2-1 { margin: auto; width: 50px; }
 			#marker { position: absolute; border: 2px solid #000; width: 50px; height: 50px; background: #ccc; }
 		</style>
 		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			jQuery(function($) {
-				$('.relative').click(function() {
-					$('#marker').css( $(this).offset() );
+				$(".relative").click(function() {
+					$("#marker").css( $(this).offset() );
 					var pos = $(this).position();
 					$(this).css({ position: 'absolute', top: pos.top, left: pos.left });
 					return false;
 				});
+				startIframeTest();
 			});
 		</script>
 	</head>
 	<body>
 		<div id="relative-1" class="relative"><div id="relative-1-1" class="relative"><div id="relative-1-1-1" class="relative"></div></div></div>
-		<div id="relative-2" class="relative"></div>
+		<div id="relative-2" class="relative"><div id="relative-2-1" class="relative"></div></div>
 		<div id="marker"></div>
 		<p class="instructions">Click the white box to move the marker to it. Clicking the box also changes the position to absolute (if not already) and sets the position according to the position method.</p>
 	</body>

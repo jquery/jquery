@@ -20,10 +20,6 @@ div#fx-tests div.overflow {
 	overflow: visible;
 }
 
-div.inline {
-	display: inline;
-}
-
 div.autoheight {
 	height: auto;
 }
@@ -57,20 +53,15 @@ div.medopacity {
 }
 
 div.nowidth {
-	width: 0px;
+	width: 0;
 }
 
 div.noheight {
-	height: 0px;
+	height: 0;
 }
 
 div.noopacity {
 	opacity: 0;
-}
-
-div.hidden,
-span.hidden {
-	display: none;
 }
 
 div#fx-tests div.widewidth {
@@ -134,3 +125,20 @@ section { background:#f0f; display:block; }
 #span-14824 { display: block; }
 
 #display { display: list-item !important; }
+
+.block { display: block; }
+.inline { display: inline; }
+.list-item { display: list-item; }
+.hidden, .none { display: none; }
+
+#div-gh-2836 {
+	position: relative;
+	overflow: auto;
+	height: 100px;
+}
+#div-gh-2836 div {
+	position: relative;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+}

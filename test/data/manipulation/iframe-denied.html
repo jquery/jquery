@@ -7,6 +7,7 @@
 	<body>
 		<div id="qunit-fixture"></div>
 		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
 		<script>
 			var script = document.getElementsByTagName( "script" )[ 0 ],
 				div = document.createElement( "div" ),
@@ -25,7 +26,7 @@
 					error = e;
 				}
 
-				window.parent.iframeCallback({
+				startIframeTest({
 					status: success,
 					description: "buildFragment sets the context without throwing an exception" +
 						( error ? ": " + error : "" )

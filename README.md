@@ -1,4 +1,4 @@
-[jQuery](http://jquery.com/) — New Wave JavaScript
+[jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
 Contribution Guides
@@ -6,16 +6,16 @@ Contribution Guides
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
-1. [Getting Involved](http://contribute.jquery.org/)
-2. [Core Style Guide](http://contribute.jquery.org/style-guide/js/)
-3. [Writing Code for jQuery Foundation Projects](http://contribute.jquery.org/code/)
+1. [Getting Involved](https://contribute.jquery.org/)
+2. [Core Style Guide](https://contribute.jquery.org/style-guide/js/)
+3. [Writing Code for jQuery Foundation Projects](https://contribute.jquery.org/code/)
 
 
 Environments in which to use jQuery
 --------------------------------------
 
-- [Browser support](http://jquery.com/browser-support/) differs between the master branch and the compat branch. Specifically, the master branch does not support legacy browsers such as IE8. The jQuery team continues to provide support for legacy browsers on the compat branch. Use the latest compat release if support for those browsers is required. See [browser support](http://jquery.com/browser-support/) for more info.
-- To use jQuery in Node, browser extensions, and other non-browser environments, use only master branch releases given the name "jquery" rather than "jquery-compat". The compat branch does not support these environments.
+- [Browser support](https://jquery.com/browser-support/)
+- jQuery also supports Node, browser extensions, and other non-browser environments.
 
 
 What you need to build your own jQuery
@@ -23,7 +23,7 @@ What you need to build your own jQuery
 
 In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
-For Windows, you have to download and install [git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/download/).
+For Windows, you have to download and install [git](https://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
 
 OS X users should install [Homebrew](http://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
@@ -81,12 +81,15 @@ Some example modules that can be excluded are:
 - **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
-- **css**: The `.css()` method plus non-animated `.show()`, `.hide()` and `.toggle()`. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
+- **css**: The `.css()` method. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
+- **css/showHide**:  Non-animated `.show()`, `.hide()` and `.toggle()`; can be excluded if you use classes or explicit `.css()` calls to set the `display` property. Also removes the **effects** module.
 - **deprecated**: Methods documented as deprecated but not yet removed.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
 - **event**: The `.on()` and `.off()` methods and all event functionality. Also removes `event/alias`.
 - **event/alias**: All event attaching/triggering shorthands like `.click()` or `.mouseover()`.
+- **event/focusin**: Cross-browser support for the focusin and focusout events.
+- **event/trigger**: The `.trigger()` and `.triggerHandler()` methods. Used by **alias** and **focusin** modules.
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
 - **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks bound with `jQuery()` will simply be called immediately. However, `jQuery(document).ready()` will not be a function and `.on("ready", ...)` or similar will not be triggered.
@@ -99,8 +102,6 @@ As a special case, you may also replace Sizzle by using a special flag `grunt cu
 - **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/master/src/selector-native.js) file for details.
 
 *Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
-
-*Note*: Removing Sizzle is not supported on the `compat` branch.
 
 The build process shows a message for each dependent module it excludes or includes.
 
@@ -173,9 +174,9 @@ grunt watch
 Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
-- Mac: [MAMP download](http://www.mamp.info/en/index.html)
+- Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
-- [Mongoose (most platforms)](http://code.google.com/p/mongoose/)
+- [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
 
 
@@ -247,7 +248,7 @@ The following are some commands that can be used there:
 * `Ctrl + S` - save
 * `Ctrl + Q` - quit
 
-[QUnit](http://api.qunitjs.com) Reference
+[QUnit](https://api.qunitjs.com) Reference
 -----------------
 
 ### Test methods ###
@@ -302,7 +303,7 @@ t( testName, selector, [ "array", "of", "ids" ] );
 Example:
 
 ```js
-t("Check for something", "//[a]", ["foo", "baar"]);
+t("Check for something", "//[a]", ["foo", "bar"]);
 ```
 
 
@@ -339,35 +340,36 @@ url("data/test.php?foo=bar");
 ```
 
 
-### Load tests in an iframe ###
+### Run tests in an iframe ###
 
-Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-and fires the given callback on jQuery ready (using the jQuery loading from that page)
-and passes the iFrame's jQuery to the callback.
-
-```js
-testIframe( fileName, testName, callback );
-```
-
-Callback arguments:
+Some tests may require a document other than the standard test fixture, and
+these can be run in a separate iframe. The actual test code and assertions
+remain in jQuery's main test files; only the minimal test fixture markup
+and setup code should be placed in the iframe file.
 
 ```js
-callback( jQueryFromIFrame, iFrameWindow, iFrameDocument );
+testIframe( testName, fileName,
+  function testCallback(
+      assert, jQuery, window, document,
+	  [ additional args ] ) {
+	...
+  } );
 ```
 
-### Load tests in an iframe (window.iframeCallback) ###
+This loads a page, constructing a url with fileName `"./data/" + fileName`.
+The iframed page determines when the callback occurs in the test by
+including the "/test/data/iframeTest.js" script and calling
+`startIframeTest( [ additional args ] )` when appropriate. Often this
+will be after either document ready or `window.onload` fires.
 
-Loads a given page constructing a url with fileName: `"./data/" + fileName + ".html"`
-The given callback is fired when window.iframeCallback is called by the page.
-The arguments passed to the callback are the same as the
-arguments passed to window.iframeCallback, whatever that may be.
+The `testCallback` receives the QUnit `assert` object created by `testIframe`
+for this test, followed by the global `jQuery`, `window`, and `document` from
+the iframe. If the iframe code passes any arguments to `startIframeTest`,
+they follow the `document` argument.
 
-```js
-testIframeWithCallback( testName, fileName, callback );
-```
 
 Questions?
 ----------
 
 If you have any questions, please feel free to ask on the
-[Developing jQuery Core forum](http://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
+[Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
