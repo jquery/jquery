@@ -2858,12 +2858,11 @@ QUnit.test( "Donor event interference", function( assert ) {
 } );
 
 QUnit.test(
-	"native stop(Immediate)Propagation/preventDefault methods shouldn't be called",
+	"simulated events shouldn't forward stopPropagation/preventDefault methods",
 	function( assert ) {
 		assert.expect( 3 );
 
-		var done = assert.async(),
-			outer = jQuery(
+		var outer = jQuery(
 				"<div id='donor-outer'>" +
 					"<form id='donor-form'>" +
 						"<input id='donor-input' type='checkbox' />" +
@@ -2871,46 +2870,39 @@ QUnit.test(
 				"</div>"
 			).appendTo( "#qunit-fixture" ),
 			input = jQuery( "#donor-input" ),
-			spy = {},
-			finish = function() {
-				finish = null;
-				assert.strictEqual( spy.prevent.called, false, "Native preventDefault not called" );
-				assert.strictEqual( spy.stop.called, false, "Native stopPropagation not called" );
-				assert.strictEqual( spy.immediate.called, false,
-					"Native stopImmediatePropagation not called" );
+			spy = {};
 
-				// Remove jQuery handlers to ensure removal of capturing handlers on the document
-				outer.off( "focusin" );
-
-				done();
-			};
-
-		outer
-			.on( "focusin", function( event ) {
+		jQuery( "#donor-form" )
+			.on( "simulated", function( event ) {
 				spy.prevent = sinon.stub( event.originalEvent, "preventDefault" );
 				event.preventDefault();
-				setTimeout( finish );
 			} )
-			.on( "focusin", function( event ) {
+			.on( "simulated", function( event ) {
 				spy.stop = sinon.stub( event.originalEvent, "stopPropagation" );
 				event.stopPropagation();
 			} )
-			.on( "focusin", function( event ) {
+			.on( "simulated", function( event ) {
 				spy.immediate = sinon.stub( event.originalEvent, "stopImmediatePropagation" );
 				event.stopImmediatePropagation();
+			} )
+			.on( "simulated", function( event ) {
+				assert.ok( false, "simulated event immediate propagation stopped" );
 			} );
-		input.trigger( "focus" );
+		outer
+			.on( "simulated", function( event ) {
+				assert.ok( false, "simulated event propagation stopped" );
+			} );
 
-		// DOM focus is unreliable in TestSwarm; set a simulated event workaround timeout
-		setTimeout( function() {
-			if ( !finish ) {
-				return;
-			}
-			input[ 0 ].addEventListener( "click", function( nativeEvent ) {
-				jQuery.event.simulate( "focusin", this, jQuery.event.fix( nativeEvent ) );
-			} );
-			input[ 0 ].click();
-		}, QUnit.config.testTimeout / 4 || 1000 );
+		// Force a simulated event
+		input[ 0 ].addEventListener( "click", function( nativeEvent ) {
+			jQuery.event.simulate( "simulated", this, jQuery.event.fix( nativeEvent ) );
+		} );
+		input[ 0 ].click();
+
+		assert.strictEqual( spy.prevent.called, false, "Native preventDefault not called" );
+		assert.strictEqual( spy.stop.called, false, "Native stopPropagation not called" );
+		assert.strictEqual( spy.immediate.called, false,
+			"Native stopImmediatePropagation not called" );
 	}
 );
 
@@ -2926,7 +2918,7 @@ QUnit.test( "originalEvent type of simulated event", function( assert ) {
 			"</div>"
 		).appendTo( "#qunit-fixture" ),
 		input = jQuery( "#donor-input" ),
-		expectedType = "focus",
+		expectedType = jQuery.support.focusin ? "focusin" : "focus",
 		finish = function() {
 			finish = null;
 
@@ -3034,80 +3026,97 @@ QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
 	ns.remove();
 } );
 
-// These tests are unreliable in Firefox
-if ( !( /firefox/i.test( window.navigator.userAgent ) ) ) {
-	QUnit.test( "Check order of focusin/focusout events", function( assert ) {
-		assert.expect( 2 );
+QUnit.test( "Check order of focusin/focusout events", function( assert ) {
+	assert.expect( 2 );
 
-		var focus, blur,
-			input = jQuery( "#name" );
+	var focus, blur,
+		input = jQuery( "#name" );
 
-		input.on( "focus", function() {
+	input
+		.on( "focus", function() {
 			focus = true;
-
-		} ).on( "focusin", function() {
+		} )
+		.on( "focusin", function() {
 			assert.ok( !focus, "Focusin event should fire before focus does" );
-
-		} ).on( "blur", function() {
+			focus = true;
+		} )
+		.on( "blur", function() {
 			blur = true;
-
-		} ).on( "focusout", function() {
+		} )
+		.on( "focusout", function() {
 			assert.ok( !blur, "Focusout event should fire before blur does" );
+			blur = true;
 		} );
 
-		// gain focus
-		input.trigger( "focus" );
+	// gain focus
+	input.trigger( "focus" );
 
-		// then lose it
-		jQuery( "#search" ).trigger( "focus" );
+	// then lose it
+	jQuery( "#search" ).trigger( "focus" );
 
-		// cleanup
-		input.off();
-	} );
+	// cleanup
+	input.off();
 
-	QUnit.test( "focus-blur order (#12868)", function( assert ) {
-		assert.expect( 5 );
+	// DOM focus is unreliable in TestSwarm
+	if ( !focus ) {
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
+	}
+} );
 
-		var order,
-			$text = jQuery( "#text1" ),
-			$radio = jQuery( "#radio1" ).trigger( "focus" );
+QUnit.test( "focus-blur order (#12868)", function( assert ) {
+	assert.expect( 5 );
+
+	var order,
+		$text = jQuery( "#text1" ),
+		$radio = jQuery( "#radio1" ).trigger( "focus" ),
 
 		// Support: IE <=10 only
 		// IE8-10 fire focus/blur events asynchronously; this is the resulting mess.
 		// IE's browser window must be topmost for this to work properly!!
-		QUnit.stop();
-		$radio[ 0 ].focus();
+		done = assert.async();
 
+	$radio[ 0 ].focus();
+
+	setTimeout( function() {
+
+		$text
+			.on( "focus", function() {
+				assert.equal( order++, 1, "text focus" );
+			} )
+			.on( "blur", function() {
+				assert.equal( order++, 0, "text blur" );
+			} );
+		$radio
+			.on( "focus", function() {
+				assert.equal( order++, 1, "radio focus" );
+			} )
+			.on( "blur", function() {
+				assert.equal( order++, 0, "radio blur" );
+			} );
+
+		// Enabled input getting focus
+		order = 0;
+		assert.equal( document.activeElement, $radio[ 0 ], "radio has focus" );
+		$text.trigger( "focus" );
 		setTimeout( function() {
 
-			$text
-				.on( "focus", function() {
-					assert.equal( order++, 1, "text focus" );
-				} )
-				.on( "blur", function() {
-					assert.equal( order++, 0, "text blur" );
-				} );
-			$radio
-				.on( "focus", function() {
-					assert.equal( order++, 1, "radio focus" );
-				} )
-				.on( "blur", function() {
-					assert.equal( order++, 0, "radio blur" );
-				} );
+			// DOM focus is unreliable in TestSwarm
+			if ( order === 0 ) {
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+			}
 
-			// Enabled input getting focus
-			order = 0;
-			assert.equal( document.activeElement, $radio[ 0 ], "radio has focus" );
-			$text.trigger( "focus" );
-			setTimeout( function() {
-				assert.equal( document.activeElement, $text[ 0 ], "text has focus" );
+			assert.equal( document.activeElement, $text[ 0 ], "text has focus" );
 
-				// Run handlers without native method on an input
-				order = 1;
-				$radio.triggerHandler( "focus" );
-				$text.off();
-				QUnit.start();
-			}, 50 );
+			// Run handlers without native method on an input
+			order = 1;
+			$radio.triggerHandler( "focus" );
+
+			// Clean up
+			$text.off();
+			$radio.off();
+			done();
 		}, 50 );
-	} );
-}
+	}, 50 );
+} );
