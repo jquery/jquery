@@ -19,14 +19,8 @@ jQuery.fn.extend( {
 		if ( typeof value === "string" && value ) {
 			classes = value.match( rnothtmlwhite ) || [];
 			proceed = true;
-		} else if ( value.constructor === Array ) {
-			for ( var count = 0; count < value.length; count++ ) {
-				if ( typeof value[ count ] === "string" && value[ count ] ) {
-					var temp = value[ count ].match( rnothtmlwhite ) || [];
-					classes = classes.concat( temp );
-				}
-			}
-
+		} else if ( Array.isArray( value ) ) {
+			classes = value;
 			proceed = true;
 		}
 
@@ -64,57 +58,51 @@ jQuery.fn.extend( {
 		return this;
 	},
 
-	removeClass: function (value) {
+	removeClass: function( value ) {
 			var classes = [];
 			var proceed = false;
-			if (typeof value === "string" && value) {
-				classes = value.match(rnothtmlwhite) || [];
+			if ( typeof value === "string" && value ) {
+				classes = value.match( rnothtmlwhite ) || [];
 				proceed = true;
-			} else if (value.constructor === Array) {
-				for (var count = 0; count < value.length; count++) {
-					if (typeof value[count] === "string" && value[count]) {
-						var temp = value[count].match(rnothtmlwhite) || [];
-						classes = classes.concat(temp);
-					}
-				}
-
+			} else if ( Array.isArray( value ) ) {
+				classes = value;
 				proceed = true;
 			}
 
 			var elem, cur, curValue, clazz, j, finalValue,
 				i = 0;
 
-			if (jQuery.isFunction(value)) {
-				return this.each(function (j) {
-					jQuery(this).removeClass(value.call(this, j, getClass(this)));
-				});
+			if ( jQuery.isFunction( value )  ) {
+				return this.each( function( j ) {
+					jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
+				} );
 			}
 
-			if (!arguments.length) {
-				return this.attr("class", "");
+			if ( !arguments.length ) {
+				return this.attr( "class", "" );
 			}
 
-			if (proceed) {
-				while ((elem = this[i++])) {
-					curValue = getClass(elem);
+			if ( proceed ) {
+				while ( ( elem = this[ i++ ] ) ) {
+					curValue = getClass( elem );
 
 					// This expression is here for better compressibility (see addClass)
-					cur = elem.nodeType === 1 && (" " + stripAndCollapse(curValue) + " ");
+					cur = elem.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
 
-					if (cur) {
+					if ( cur ) {
 						j = 0;
-						while ((clazz = classes[j++])) {
+						while ( ( clazz = classes[ j++ ] ) ) {
 
 							// Remove *all* instances
-							while (cur.indexOf(" " + clazz + " ") > -1) {
-								cur = cur.replace(" " + clazz + " ", " ");
+							while ( cur.indexOf( " " + clazz + " " ) > -1 ) {
+								cur = cur.replace( " " + clazz + " ", " " );
 							}
 						}
 
 						// Only assign if different to avoid unneeded rendering.
-						finalValue = stripAndCollapse(cur);
-						if (curValue !== finalValue) {
-							elem.setAttribute("class", finalValue);
+						finalValue = stripAndCollapse( cur );
+						if ( curValue !== finalValue ) {
+							elem.setAttribute( "class", finalValue );
 						}
 					}
 				}
@@ -123,60 +111,55 @@ jQuery.fn.extend( {
 			return this;
 		},
 
-		toggleClass: function ( value, stateVal ) {
+		toggleClass: function( value, stateVal ) {
 			var type = typeof value;
 
-			if (typeof stateVal === "boolean" && (type === "string" || value.constructor === Array)) {
-				return stateVal ? this.addClass(value) : this.removeClass(value);
+			if ( typeof stateVal === "boolean" && ( type === "string" ||
+				Array.isArray( value ) ) ) {
+				return stateVal ? this.addClass( value ) : this.removeClass( value );
 			}
 
-			if (jQuery.isFunction(value)) {
-				return this.each(function (i) {
-					jQuery(this).toggleClass(
-						value.call(this, i, getClass(this), stateVal),
+			if ( jQuery.isFunction( value ) ) {
+				return this.each( function( i ) {
+					jQuery( this ).toggleClass(
+						value.call( this, i, getClass( this ), stateVal ),
 						stateVal
 					);
-				});
+				} );
 			}
 
-			return this.each(function () {
+			return this.each( function() {
 				var className, i, self;
 				var classNames = [];
 				var proceed = false;
-				if (value.constructor === Array) {
-					for (var count = 0; count < value.length; count++) {
-						if (typeof value[count] === "string" && value[count]) {
-							var temp = value[count].match(rnothtmlwhite) || [];
-							classNames = classNames.concat(temp);
-						}
-					}
+				if ( Array.isArray( value ) ) {
+					classNames = value;
 					proceed = true;
-				} else if (type === "string") {
-					classNames = value.match(rnothtmlwhite) || [];
+				} else if ( type === "string" ) {
+					classNames = value.match( rnothtmlwhite ) || [];
 					proceed = true;
 				}
-				
 				if ( proceed ) {
+
 					// Toggle individual class names
 					i = 0;
-					self = jQuery(this);
+					self = jQuery( this );
 
 					while ( ( className = classNames[ i++ ] ) ) {
 
 						// Check each className given, space separated list
-						if ( self.hasClass(className) ) {
-							self.removeClass(className);
+						if ( self.hasClass( className ) ) {
+							self.removeClass( className );
 						} else {
-							self.addClass(className);
+							self.addClass( className );
 						}
 					}
-				}
-				else if ( value === undefined || type === "boolean" ) {
-					className = getClass(this);
-					if (className) {
+				} else if ( value === undefined || type === "boolean" ) {
+					className = getClass( this );
+					if ( className ) {
 
 						// Store className if set
-						dataPriv.set(this, "__className__", className);
+						dataPriv.set( this, "__className__", className );
 					}
 
 					// If the element has a class name or if we're passed `false`,
@@ -184,14 +167,14 @@ jQuery.fn.extend( {
 					// Otherwise bring back whatever was previously saved (if anything),
 					// falling back to the empty string if nothing was stored.
 					if ( this.setAttribute ) {
-						this.setAttribute("class",
+						this.setAttribute( "class",
 							className || value === false ?
 								"" :
-								dataPriv.get(this, "__className__") || ""
+								dataPriv.get( this, "__className__" ) || ""
 						);
 					}
 				}
-			});
+			} );
 		},
 
 	hasClass: function( selector ) {
