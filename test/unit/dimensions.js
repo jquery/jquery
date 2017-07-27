@@ -544,6 +544,25 @@ QUnit.test( "width/height on an inline element with no explicitly-set dimensions
 	} );
 } );
 
+QUnit.test( "width/height on a table row with phantom borders (gh-3698)", function( assert ) {
+	assert.expect( 4 );
+
+	jQuery( "<table id='gh3698' style='border-collapse: separate; border-spacing: 0;'><tbody>" +
+		"<tr style='margin: 0; border: 10px solid black; padding: 0'>" +
+			"<td style='margin: 0; border: 0; padding: 0; height: 42px; width: 42px;'></td>" +
+		"</tr>" +
+	"</tbody></table>" ).appendTo( "#qunit-fixture" );
+
+	var $elem = jQuery( "#gh3698 tr" );
+
+	jQuery.each( [ "Width", "Height" ], function( i, method ) {
+		assert.equal( $elem[ "outer" + method ](), 42,
+			"outer" + method + " should match content dimensions" );
+		assert.equal( $elem[ "outer" + method ]( true ), 42,
+			"outer" + method + "(true) should match content dimensions" );
+	} );
+} );
+
 QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 	assert.expect( 48 );
 
