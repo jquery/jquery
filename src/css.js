@@ -153,9 +153,13 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox;
 
-	// Computed unit is not pixels. Stop here and return.
+	// Support: Firefox <=54
+	// Return a confounding non-pixel value or feign ignorance, as appropriate.
 	if ( rnumnonpx.test( val ) ) {
-		return val;
+		if ( !extra ) {
+			return val;
+		}
+		val = "auto";
 	}
 
 	// Check for style in case a browser which returns unreliable values
