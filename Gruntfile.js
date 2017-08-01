@@ -221,6 +221,7 @@ module.exports = function( grunt ) {
 		"newer:uglify",
 		"remove_map_comment",
 		"dist:*",
+		"qunit_fixture",
 		"compare_size"
 	] );
 
@@ -230,6 +231,7 @@ module.exports = function( grunt ) {
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
+		"qunit_fixture",
 		"eslint:dist",
 		"test:fast",
 		"compare_size"

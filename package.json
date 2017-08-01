@@ -62,7 +62,7 @@
     "build": "npm install && grunt",
     "start": "grunt watch",
     "test": "grunt && grunt test:slow",
-    "precommit": "grunt lint:newer",
+    "precommit": "grunt lint:newer qunit_fixture",
     "commitmsg": "node node_modules/commitplease"
   },
   "commitplease": {
