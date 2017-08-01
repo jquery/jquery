@@ -1281,8 +1281,7 @@ QUnit.test( ".trigger() doesn't bubble load event (#10717)", function( assert ) 
 		assert.ok( false, "load fired on window" );
 	} );
 
-	// It's not an image, but as long as it fires load...
-	jQuery( "<img src='index.html' />" )
+	jQuery( "<img src='" + baseURL + "1x1.jpg' />" )
 		.appendTo( "body" )
 		.on( "load", function() {
 			assert.ok( true, "load fired on img" );
@@ -1443,7 +1442,7 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 // handler making it impossible to feature-detect the support.
 QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
 	"on(beforeunload)", 1, function( assert ) {
-	var iframe = jQuery( jQuery.parseHTML( "<iframe src='data/event/onbeforeunload.html'><iframe>" ) );
+	var iframe = jQuery( jQuery.parseHTML( "<iframe src='" + baseURL + "event/onbeforeunload.html'><iframe>" ) );
 	var done = assert.async();
 
 	window.onmessage = function( event ) {

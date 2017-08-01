@@ -127,7 +127,7 @@ QUnit.test( "attr(String)", function( assert ) {
 
 	assert.equal( jQuery( option ).prop( "selected" ), true, "Make sure that a single option is selected, even when in an optgroup." );
 
-	$img = jQuery( "<img style='display:none' width='215' height='53' src='data/1x1.jpg'/>" ).appendTo( "body" );
+	$img = jQuery( "<img style='display:none' width='215' height='53' src='" + baseURL + "1x1.jpg'/>" ).appendTo( "body" );
 	assert.equal( $img.attr( "width" ), "215", "Retrieve width attribute on an element with display:none." );
 	assert.equal( $img.attr( "height" ), "53", "Retrieve height attribute on an element with display:none." );
 
@@ -780,7 +780,7 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 
 QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 	assert.expect( 1 );
-	var image = jQuery( "<img src='data/1x1.jpg' />" )
+	var image = jQuery( "<img src='" + baseURL + "1x1.jpg' />" )
 		.appendTo( "#qunit-fixture" );
 	assert.equal( image.prop( "tabIndex" ), -1, "tabIndex on image" );
 } );

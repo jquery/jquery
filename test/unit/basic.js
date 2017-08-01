@@ -8,7 +8,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "GET",
-		url: url( "data/name.php?name=foo" ),
+		url: url( "mock.php?action=name&name=foo" ),
 		success: function( msg ) {
 			assert.strictEqual( msg, "bar", "Check for GET" );
 			done.pop()();
@@ -17,7 +17,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "POST",
-		url: url( "data/name.php" ),
+		url: url( "mock.php?action=name" ),
 		data: "name=peter",
 		success: function( msg ) {
 			assert.strictEqual( msg, "pan", "Check for POST" );
@@ -25,7 +25,7 @@ QUnit.test( "ajax", function( assert ) {
 		}
 	} );
 
-	jQuery( "#first" ).load( url( "data/name.html" ), function() {
+	jQuery( "#first" ).load( url( "name.html" ), function() {
 		assert.ok( /^ERROR/.test( jQuery( "#first" ).text() ),
 			"Check if content was injected into the DOM" );
 		done.pop()();

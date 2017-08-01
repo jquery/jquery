@@ -147,6 +147,88 @@ module.exports = function( grunt ) {
 				"tween"
 			]
 		},
+		karma: {
+			options: {
+				customContextFile: "test/karma.context.html",
+				customDebugFile: "test/karma.debug.html",
+				frameworks: [ "qunit" ],
+				middleware: [ "mockserver" ],
+				plugins: [
+					"karma-*",
+					{
+						"middleware:mockserver": [
+							"factory",
+							require( "./test/middleware-mockserver.js" )
+						]
+					}
+				],
+				files: [
+					"test/data/jquery-1.9.1.js",
+					"external/qunit-assert-step/qunit-assert-step.js",
+					"external/sinon/sinon.js",
+					"external/npo/npo.js",
+					"external/requirejs/require.js",
+					"test/data/testinit.js",
+
+					"dist/jquery.min.js",
+
+					// Replacement for testinit.js#loadTests()
+					"test/data/testrunner.js",
+					"test/unit/basic.js",
+					"test/unit/core.js",
+					"test/unit/callbacks.js",
+					"test/unit/deferred.js",
+					"test/unit/deprecated.js",
+					"test/unit/support.js",
+					"test/unit/data.js",
+					"test/unit/queue.js",
+					"test/unit/attributes.js",
+					"test/unit/event.js",
+					"test/unit/selector.js",
+					"test/unit/traversing.js",
+					"test/unit/manipulation.js",
+					"test/unit/wrap.js",
+					"test/unit/css.js",
+					"test/unit/serialize.js",
+					"test/unit/ajax.js",
+					"test/unit/effects.js",
+					"test/unit/offset.js",
+					"test/unit/dimensions.js",
+					"test/unit/animation.js",
+					"test/unit/tween.js",
+					"test/unit/ready.js",
+
+					{ pattern: "dist/jquery.js", included: false, served: true },
+					{ pattern: "dist/*.map", included: false, served: true },
+					{ pattern: "external/qunit/qunit.css", included: false, served: true },
+					{
+						pattern: "test/**/*.@(js|css|jpg|html|xml)",
+						included: false,
+						served: true
+					}
+				],
+				reporters: [ "dots" ],
+				autoWatch: false,
+				concurrency: 3,
+				captureTimeout: 20 * 1000,
+
+				// To debug tests with Karma:
+				// - Run 'grunt karma:chrome' or 'grunt karma:firefox'
+				//   (any karma subtask that has singleRun=false)
+				// - Press "Debug" in the opened browser window.
+				singleRun: false
+			},
+			main: {
+				browsers: [ "ChromeHeadless" ],
+				singleRun: true
+			},
+			chrome: {
+				browsers: [ "Chrome" ]
+			},
+			firefox: {
+				browsers: [ "Firefox" ]
+			}
+		},
 		watch: {
 			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
@@ -222,6 +304,7 @@ module.exports = function( grunt ) {
 		"newer:uglify",
 		"remove_map_comment",
 		"dist:*",
+		"qunit_fixture",
 		"compare_size"
 	] );
 
@@ -231,6 +314,7 @@ module.exports = function( grunt ) {
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
+		"qunit_fixture",
 		"eslint:dist",
 		"test:fast",
 		"compare_size"
