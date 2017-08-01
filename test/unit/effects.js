@@ -33,7 +33,7 @@ QUnit.module( "effects", {
 
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( "sanity check", function( assert ) {
 	assert.expect( 1 );
-	assert.equal( jQuery( "#dl:visible, #qunit-fixture:visible, #foo:visible" ).length, 3, "QUnit state is correct for testing effects" );
+	assert.equal( jQuery( "#qunit-fixture:visible, #foo:visible" ).length, 2, "QUnit state is correct for testing effects" );
 } );
 
 QUnit.test( "show() basic", function( assert ) {
