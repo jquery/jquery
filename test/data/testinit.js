@@ -271,14 +271,20 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 };
 this.iframeCallback = undefined;
 
-// Tests are always loaded async
-QUnit.config.autostart = false;
+if ( window.__karma__ ) {
+	// In Karma, files are served from /base
+	baseURL = "base/test/data/";
+} else {
+	// Tests are always loaded async
+	// except when running tests in Karma (See Gruntfile)
+	QUnit.config.autostart = false;
+}
+
+// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
+QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
+QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
+
 this.loadTests = function() {
-
-	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
-	QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
-	QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
-
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
 		var i = 0,

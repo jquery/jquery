@@ -1349,7 +1349,6 @@ QUnit.test(
 	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
 	24,
 	function( assert ) {
-		var baseUrl = document.location.href.replace( /([^\/]*)$/, "" );
 		var done = assert.async();
 		var styles = [ {
 				name: "backgroundAttachment",
@@ -1363,7 +1362,7 @@ QUnit.test(
 
 				// Firefox returns auto's value
 				name: "backgroundImage",
-				value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
+				value: [ "url('test.png')", "url(" + baseURL + "test.png)", "url(\"" + baseURL + "test.png\")" ],
 				expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
 			}, {
 				name: "backgroundPosition",
