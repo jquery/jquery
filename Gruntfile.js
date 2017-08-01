@@ -189,8 +189,7 @@ module.exports = function( grunt ) {
 					"test/unit/wrap.js",
 					"test/unit/css.js",
 					"test/unit/serialize.js",
-
-					// "test/unit/ajax.js", TODO: port remaining mock responses
+					"test/unit/ajax.js",
 					"test/unit/effects.js",
 					"test/unit/offset.js",
 					"test/unit/dimensions.js",
@@ -213,8 +212,8 @@ module.exports = function( grunt ) {
 				captureTimeout: 20 * 1000,
 
 				// To debug tests with Karma:
-				// - Set 'singleRun' to false.
-				// - Run 'grunt karma:chrome' (or some other subtask)
+				// - Run 'grunt karma:chrome' or 'grunt karma:firefox'
+				//   (any karma subtask that has singleRun=false)
 				// - Press "Debug" in the opened browser window.
 				singleRun: false
 			},

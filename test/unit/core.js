@@ -188,7 +188,7 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 	var now,
 		script = document.createElement( "script" );
 
-	script.src = baseURL + "longLoadScript.php?sleep=2";
+	script.src = baseURL + "mock.php?action=wait&wait=2&script=1";
 
 	now = jQuery.now();
 	document.body.appendChild( script );
@@ -1627,10 +1627,10 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
 	assert.expect( 1 );
 
-	var html = "<a href='test.html'></a>",
+	var html = "<a href='example.html'></a>",
 		href = jQuery.parseHTML( html )[ 0 ].href;
 
-	assert.ok( /\/test\.html$/.test( href ), "href is not lost after parsing anchor" );
+	assert.ok( /\/example\.html$/.test( href ), "href is not lost after parsing anchor" );
 } );
 
 if ( jQuery.support.createHTMLDocument ) {

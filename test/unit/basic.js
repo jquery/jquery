@@ -8,7 +8,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "GET",
-		url: url( "name.php?name=foo" ),
+		url: url( "mock.php?action=name&name=foo" ),
 		success: function( msg ) {
 			assert.strictEqual( msg, "bar", "Check for GET" );
 			done.pop()();
@@ -17,7 +17,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "POST",
-		url: url( "name.php" ),
+		url: url( "mock.php?action=name" ),
 		data: "name=peter",
 		success: function( msg ) {
 			assert.strictEqual( msg, "pan", "Check for POST" );

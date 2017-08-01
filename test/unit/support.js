@@ -39,7 +39,7 @@ if ( jQuery.css ) {
 // i.e. no old WebKit or old Firefox
 testIframe(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
-	"support/csp.php",
+	"mock.php?action=cspFrame",
 	function( assert, jQuery, window, document, support ) {
 		var done = assert.async();
 
@@ -49,7 +49,7 @@ testIframe(
 
 		supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
 			assert.equal( data, "", "No log request should be sent" );
-			supportjQuery.get( baseURL + "support/csp-clean.php" ).done( done );
+			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
 		} );
 	}
 );

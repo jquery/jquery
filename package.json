@@ -68,7 +68,8 @@
   "scripts": {
     "build": "npm install && grunt",
     "start": "grunt watch",
-    "test": "grunt && grunt test:slow",
+    "test": "grunt && grunt test:slow karma:main",
+    "jenkins": "grunt && grunt test:slow",
     "precommit": "grunt lint:newer qunit_fixture",
     "commitmsg": "node node_modules/commitplease"
   },

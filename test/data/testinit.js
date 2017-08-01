@@ -155,11 +155,11 @@ window.fireNative = document.createEvent ?
  *
  * Also prefixes with baseURL automatically.
  *
- * @example url("test.html")
- * @result "data/test.html?10538358428943"
+ * @example url("index.html")
+ * @result "data/index.html?10538358428943"
  *
- * @example url("test.php?foo=bar")
- * @result "data/test.php?foo=bar&10538358345554"
+ * @example url("mock.php?foo=bar")
+ * @result "data/mock.php?foo=bar&10538358345554"
  */
 function url( value ) {
 	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +

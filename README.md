@@ -323,20 +323,20 @@ fireNative( jQuery("#elem")[0], "click" );
 ### Add random number to url to stop caching ###
 
 ```js
-url( "some/url.php" );
+url( "some/url" );
 ```
 
 Example:
 
 ```js
-url("data/test.html");
+url("index.html");
 
-=> "data/test.html?10538358428943"
+=> "data/index.html?10538358428943"
 
 
-url("data/test.php?foo=bar");
+url("mock.php?foo=bar");
 
-=> "data/test.php?foo=bar&10538358345554"
+=> "data/mock.php?foo=bar&10538358345554"
 ```
 
 
