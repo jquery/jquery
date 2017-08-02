@@ -2377,7 +2377,7 @@ QUnit.asyncTest( "html() - script exceptions bubble (#11743)", 2, function( asse
 				assert.ok( true, "Exception thrown in remote script" );
 			};
 
-			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
+			jQuery( "#qunit-fixture" ).html( "<script src='" + baseURL + "badcall.js'></script>" );
 			assert.ok( true, "Exception ignored" );
 		} else {
 			assert.ok( true, "No jQuery.ajax" );
@@ -2463,7 +2463,7 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 
 	if ( jQuery.ajax ) {
 		Globals.register( "testBar" );
-		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "data/testbar.php" ) + "'/>" );
+		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "testbar.php" ) + "'/>" );
 		assert.strictEqual( window.testBar, "bar", "Global script evaluation" );
 	} else {
 		assert.ok( true, "No jQuery.ajax" );

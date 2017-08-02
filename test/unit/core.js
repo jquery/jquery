@@ -188,7 +188,7 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 	var now,
 		script = document.createElement( "script" );
 
-	script.src = "data/longLoadScript.php?sleep=2";
+	script.src = baseURL + "longLoadScript.php?sleep=2";
 
 	now = jQuery.now();
 	document.body.appendChild( script );

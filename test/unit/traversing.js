@@ -784,7 +784,7 @@ QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ](
         jQuery( "#qunit-fixture" ).append(
             "<template id='template'>" +
             "    <script>testScript = 1;</script>" +
-            "    <img src='data/1x1.jpg' onload='testImgOnload = 1' >" +
+            "    <img src='" + baseURL + "1x1.jpg' onload='testImgOnload = 1' >" +
             "</template>"
         );
 

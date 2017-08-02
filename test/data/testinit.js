@@ -1,6 +1,11 @@
 /* eslint no-multi-str: "off" */
 
-var baseURL = "",
+// baseURL is intentionally set to "data/" instead of "".
+// This is not just for convenience (since most files are in data/)
+// but also to ensure that urls without prefix fail.
+// Otherwise it's easy to write tests that pass on test/index.html
+// but fail in Karma runner (where the baseURL is different).
+var baseURL = "data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -148,10 +153,12 @@ window.fireNative = document.createEvent ?
 /**
  * Add random number to url to stop caching
  *
- * @example url("data/test.html")
+ * Also prefixes with baseURL automatically.
+ *
+ * @example url("test.html")
  * @result "data/test.html?10538358428943"
  *
- * @example url("data/test.php?foo=bar")
+ * @example url("test.php?foo=bar")
  * @result "data/test.php?foo=bar&10538358345554"
  */
 function url( value ) {
@@ -239,7 +246,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 		var done = assert.async(),
 			$iframe = supportjQuery( "<iframe/>" )
 				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
-				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } );
+				.attr( { id: "qunit-fixture-iframe", src: url( fileName ) } );
 
 		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {

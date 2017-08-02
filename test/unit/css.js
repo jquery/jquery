@@ -1050,7 +1050,7 @@ QUnit.test( "can't get css for disconnected in IE<9, see #10254 and #8388", func
 	assert.expect( 2 );
 	var span, div;
 
-	span = jQuery( "<span/>" ).css( "background-image", "url(data/1x1.jpg)" );
+	span = jQuery( "<span/>" ).css( "background-image", "url(" + baseURL + "1x1.jpg)" );
 	assert.notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see #10254" );
 
 	div = jQuery( "<div/>" ).css( "top", 10 );
