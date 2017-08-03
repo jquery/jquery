@@ -1807,7 +1807,8 @@ QUnit.test( "animate does not change start value for non-px animation (#7109)", 
 		}
 	} ).queue( function( next ) {
 		var ratio = computed[ 0 ] / actual;
-		assert.ok( ratio > 0.9 && ratio < 1.1, "Starting width was close enough" );
+		assert.ok( ratio > 0.9 && ratio < 1.1,
+			"Starting width was close enough (" + computed[ 0 ] + " approximates " + actual + ")" );
 		next();
 		parent.remove();
 	} );
