@@ -544,6 +544,29 @@ QUnit.test( "width/height on an inline element with no explicitly-set dimensions
 	} );
 } );
 
+QUnit.test( "width/height on an inline element with percentage dimensions (gh-3611)",
+	function( assert ) {
+		assert.expect( 4 );
+
+		jQuery( "<div id='gh3611' style='width: 100px;'>" +
+			"<span style='width: 100%; padding: 0 5px'>text</span>" +
+		"</div>" ).appendTo( "#qunit-fixture" );
+
+		var $elem = jQuery( "#gh3611 span" ),
+			actualWidth = $elem[ 0 ].getBoundingClientRect().width,
+			marginWidth = $elem.outerWidth( true ),
+			borderWidth = $elem.outerWidth(),
+			paddingWidth = $elem.innerWidth(),
+			contentWidth = $elem.width();
+
+		assert.equal( Math.round( borderWidth ), Math.round( actualWidth ),
+			".outerWidth(): " + borderWidth + " approximates " + actualWidth );
+		assert.equal( marginWidth, borderWidth, ".outerWidth(true) matches .outerWidth()" );
+		assert.equal( paddingWidth, borderWidth, ".innerWidth() matches .outerWidth()" );
+		assert.equal( contentWidth, borderWidth - 10, ".width() excludes padding" );
+	}
+);
+
 QUnit.test( "width/height on a table row with phantom borders (gh-3698)", function( assert ) {
 	assert.expect( 4 );
 
