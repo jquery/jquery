@@ -7,7 +7,7 @@
 		// That is okay for the built version
 		"no-multiple-empty-lines": "off",
 
-		// Because sizze is not compatible to jquery code style
+		// Because sizzle is not compatible to jquery code style
 		"no-nested-ternary": "off",
 		"no-unused-expressions": "off",
 		"lines-around-comment": "off",
