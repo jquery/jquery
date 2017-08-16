@@ -165,6 +165,11 @@ module.exports = function( grunt ) {
 					output: {
 						"ascii_only": true
 					},
+
+					// Support: Android 4.0 only
+					// UglifyJS 3 breaks Android 4.0 if this option is not enabled.
+					ie8: true,
+
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) JS Foundation and other contributors | jquery.org/license */",
 					compress: {
