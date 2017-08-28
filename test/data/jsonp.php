@@ -1,5 +1,6 @@
 <?php
 error_reporting(0);
+header("Content-Type: application/javascript");
 $callback = $_REQUEST['callback'];
 if ( ! $callback ) {
 	$callback = explode("?",end(explode("/",$_SERVER['REQUEST_URI'])));
