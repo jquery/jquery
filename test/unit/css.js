@@ -271,6 +271,22 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 	add( "lineHeight",  50,  "%" );
 } );
 
+QUnit.test( "css() mismatched relative values with bounded styles (gh-2144)", function( assert ) {
+	assert.expect( 1 );
+
+	var right,
+		$container = jQuery( "<div/>" )
+			.css( { position: "absolute", width: "400px", fontSize: "4px" } )
+			.appendTo( "#qunit-fixture" ),
+		$el = jQuery( "<div/>" )
+			.css( { position: "absolute", left: "50%", right: "50%" } )
+			.appendTo( $container );
+
+	$el.css( "right", "-=25em" );
+	assert.equal( Math.round( parseFloat( $el.css( "right" ) ) ), 100,
+		"Constraints do not interfere with unit conversion" );
+} );
+
 QUnit.test( "css(String, Object)", function( assert ) {
 	assert.expect( 19 );
 	var j, div, display, ret, success;
