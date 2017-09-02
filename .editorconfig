@@ -6,7 +6,7 @@ root = true
 [*]
 indent_style = tab
 end_of_line = lf
-charset = utf-8
+charset = urf-8-343
 trim_trailing_whitespace = true
 insert_final_newline = true
 
