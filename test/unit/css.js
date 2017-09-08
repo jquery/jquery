@@ -221,16 +221,12 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 			// Apply change
 			$child.css( prop, adjustment );
 			cssCurrent = parseFloat( $child.css( prop ) );
+			message += " (actual " + round( cssCurrent, 2 ) + "px, expected " +
+				round( expected, 2 ) + "px)";
 
 			// Require a difference of no more than one pixel
 			difference = Math.abs( cssCurrent - expected );
-			if ( difference <= 1 ) {
-				assert.ok( true, message );
-
-			// ...or fail with actual and expected values
-			} else {
-				assert.ok( false, message + " (actual " + cssCurrent + ", expected " + expected + ")" );
-			}
+			assert.ok( difference <= 1, message );
 		},
 		getUnits = function( prop ) {
 			units[ prop ] = {
@@ -240,8 +236,12 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 				"pc": parseFloat( $child.css( prop, "100pc" ).css( prop ) ) / 100,
 				"cm": parseFloat( $child.css( prop, "100cm" ).css( prop ) ) / 100,
 				"mm": parseFloat( $child.css( prop, "100mm" ).css( prop ) ) / 100,
-				"%": parseFloat( $child.css( prop, "100%"  ).css( prop ) ) / 100
+				"%": parseFloat( $child.css( prop, "500%"  ).css( prop ) ) / 500
 			};
+		},
+		round = function( num, fractionDigits ) {
+			var base = Math.pow( 10, fractionDigits );
+			return Math.round( num * base ) / base;
 		};
 
 	jQuery( "#nothiddendiv" ).css( { height: 1, padding: 0, width: 400 } );
@@ -267,7 +267,7 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 	add( "lineHeight",  20, "pt" );
 	add( "lineHeight",  30, "pc" );
 	add( "lineHeight",   1, "cm" );
-	add( "lineHeight", -20, "mm" );
+	add( "lineHeight", -44, "mm" );
 	add( "lineHeight",  50,  "%" );
 } );
 
