@@ -2,7 +2,6 @@ define( [
 	"./core",
 	"./var/pnum",
 	"./core/access",
-	"./css/var/rmargin",
 	"./var/document",
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
@@ -17,7 +16,7 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
+], function( jQuery, pnum, access, document, rcssNum, rnumnonpx, cssExpand,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
 
 "use strict";
@@ -447,7 +446,7 @@ jQuery.each( {
 		}
 	};
 
-	if ( !rmargin.test( prefix ) ) {
+	if ( prefix !== "margin" ) {
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 } );
