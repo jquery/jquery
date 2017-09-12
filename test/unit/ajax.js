@@ -1273,12 +1273,27 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - data - no processing ", 1, function( assert ) {
+	ajaxTest( "jQuery.ajax() - data - no processing POST", 1, function( assert ) {
 		return {
 			url: "bogus.html",
 			data: { devo: "A Beautiful World" },
 			type: "post",
 			contentType: "x-special-sauce",
+			processData: false,
+			beforeSend: function( _, s ) {
+				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - data - no processing GET", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "get",
+			contentType: "x-something-else",
 			processData: false,
 			beforeSend: function( _, s ) {
 				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
