@@ -89,6 +89,29 @@ QUnit.module( "ajax", {
 		}
 	);
 
+	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 4,
+		function( assert ) {
+			var nonceValue = "0123456789";
+			return {
+				create: function( options ) {
+					var xhr;
+					options.dataType = "script";
+					options.scriptAttrs = { id: "jquery-ajax-test", nonce: nonceValue };
+					xhr = jQuery.ajax( url( "data/script.php?header=ecma" ), options );
+					// Ensure the script tag has the nonce attr on it
+					assert.ok( nonceValue === jQuery( "#jquery-ajax-test" ).attr( "nonce" ), "nonce value" );
+					return xhr;
+				},
+				success: function() {
+					assert.ok( true, "success" );
+				},
+				complete: function() {
+					assert.ok( true, "complete" );
+				}
+			};
+		}
+	);
+
 	ajaxTest( "jQuery.ajax() - do not execute js (crossOrigin)", 2, function( assert ) {
 		return {
 			create: function( options ) {
