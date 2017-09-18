@@ -32,10 +32,10 @@ define( [
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
 		reliableMarginLeftVal = divStyle.marginLeft === "12px";
 
-		// Support: Android 4.0 - 4.3 only
+		// Support: Android 4.0 - 4.3 only, Safari <=9.1 - 10.1, iOS <=7.0 - 9.3
 		// Some styles come back with percentage values, even though they shouldn't
-		div.style.marginRight = "60%";
-		pixelMarginRightVal = divStyle.marginRight === "36px";
+		div.style.right = "60%";
+		pixelBoxStylesVal = divStyle.right === "36px";
 
 		// Support: IE 9 - 11 only
 		// Detect misreporting of content dimensions for box-sizing:border-box elements
@@ -53,7 +53,7 @@ define( [
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelMarginRightVal,
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
 		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
@@ -74,13 +74,13 @@ define( [
 			computeStyleTests();
 			return boxSizingReliableVal;
 		},
+		pixelBoxStyles: function() {
+			computeStyleTests();
+			return pixelBoxStylesVal;
+		},
 		pixelPosition: function() {
 			computeStyleTests();
 			return pixelPositionVal;
-		},
-		pixelMarginRight: function() {
-			computeStyleTests();
-			return pixelMarginRightVal;
 		},
 		reliableMarginLeft: function() {
 			computeStyleTests();
