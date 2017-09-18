@@ -777,7 +777,7 @@ QUnit.test( ".removeData should not throw exceptions. (#10080)", function( asser
 	} );
 
 	// change the url to trigger unload
-	frame.attr( "src", "data/iframe.html?param=true" );
+	frame.attr( "src", baseURL + "iframe.html?param=true" );
 } );
 
 QUnit.test( ".data only checks element attributes once. #8909", function( assert ) {
