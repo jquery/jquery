@@ -26,7 +26,7 @@
   "dependencies": {},
   "devDependencies": {
     "babel-core": "7.0.0-beta.0",
-    "babel-preset-env": "2.0.0-beta.0",
+    "babel-plugin-transform-es2015-for-of": "7.0.0-beta.0",
     "commitplease": "2.7.10",
     "core-js": "2.4.1",
     "cross-spawn": "5.1.0",
