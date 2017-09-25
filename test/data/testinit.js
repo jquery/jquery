@@ -231,11 +231,17 @@ this.ajaxTest = function( title, expect, options ) {
 	} );
 };
 
-this.testIframe = function( title, fileName, func ) {
-	QUnit.test( title, function( assert ) {
-		var iframe;
-		var done = assert.async();
+this.testIframe = function( title, fileName, func, wrapper ) {
+	if ( !wrapper ) {
+		wrapper = QUnit.test;
+	}
+	wrapper.call( QUnit, title, function( assert ) {
+		var done = assert.async(),
+			$iframe = supportjQuery( "<iframe/>" )
+				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
+				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } );
 
+		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {
 			var args = Array.prototype.slice.call( arguments );
 
@@ -246,13 +252,14 @@ this.testIframe = function( title, fileName, func ) {
 
 				func.apply( this, args );
 				func = function() {};
-				iframe.remove();
+				$iframe.remove();
 				done();
 			} );
 		};
-		iframe = jQuery( "<div/>" ).css( { position: "absolute", width: "500px", left: "-600px" } )
-			.append( jQuery( "<iframe/>" ).attr( "src", url( "./data/" + fileName ) ) )
-			.appendTo( "#qunit-fixture" );
+
+		// Attach iframe to the body for visibility-dependent code
+		// It will be removed by either the above code, or the testDone callback in testrunner.js
+		$iframe.prependTo( document.body );
 	} );
 };
 this.iframeCallback = undefined;

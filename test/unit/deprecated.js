@@ -164,3 +164,22 @@ QUnit.test( "jQuery.nodeName", function( assert ) {
 		"Works on custom elements (true)"
 	);
 } );
+
+QUnit.test( "jQuery.isWindow", function( assert ) {
+	assert.expect( 14 );
+
+	assert.ok( jQuery.isWindow( window ), "window" );
+	assert.ok( jQuery.isWindow( document.getElementsByTagName( "iframe" )[ 0 ].contentWindow ), "iframe.contentWindow" );
+	assert.ok( !jQuery.isWindow(), "empty" );
+	assert.ok( !jQuery.isWindow( null ), "null" );
+	assert.ok( !jQuery.isWindow( undefined ), "undefined" );
+	assert.ok( !jQuery.isWindow( document ), "document" );
+	assert.ok( !jQuery.isWindow( document.documentElement ), "documentElement" );
+	assert.ok( !jQuery.isWindow( "" ), "string" );
+	assert.ok( !jQuery.isWindow( 1 ), "number" );
+	assert.ok( !jQuery.isWindow( true ), "boolean" );
+	assert.ok( !jQuery.isWindow( {} ), "object" );
+	assert.ok( !jQuery.isWindow( { setInterval: function() {} } ), "fake window" );
+	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
+	assert.ok( !jQuery.isWindow( function() {} ), "function" );
+} );

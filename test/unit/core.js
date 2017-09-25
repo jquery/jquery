@@ -406,7 +406,7 @@ QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...)
 
 
 QUnit.test( "isFunction", function( assert ) {
-	assert.expect( 19 );
+	assert.expect( 20 );
 
 	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
 
@@ -439,9 +439,11 @@ QUnit.test( "isFunction", function( assert ) {
 	fn = function() {};
 	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
 
+	assert.notOk( jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
+
 	obj = document.createElement( "object" );
 
-	// Firefox says this is a function
+	// Some versions of Firefox and Chrome say this is a function
 	assert.ok( !jQuery.isFunction( obj ), "Object Element" );
 
 	// Since 1.3, this isn't supported (#2968)
@@ -490,6 +492,64 @@ QUnit.test( "isFunction", function( assert ) {
 		callme( function() {} );
 	} );
 } );
+
+QUnit.test( "isFunction(cross-realm function)", function( assert ) {
+	assert.expect( 1 );
+
+	var iframe, doc,
+		done = assert.async();
+
+	// Functions from other windows should be matched
+	Globals.register( "iframeDone" );
+	window.iframeDone = function( fn, detail ) {
+		window.iframeDone = undefined;
+		assert.ok( jQuery.isFunction( fn ), "cross-realm function" +
+			( detail ? " - " + detail : "" ) );
+		done();
+	};
+
+	iframe = jQuery( "#qunit-fixture" )[ 0 ].appendChild( document.createElement( "iframe" ) );
+	doc = iframe.contentDocument || iframe.contentWindow.document;
+	doc.open();
+	doc.write( "<body onload='window.parent.iframeDone( function() {} );'>" );
+	doc.close();
+} );
+
+supportjQuery.each(
+	{
+		GeneratorFunction: "function*() {}",
+		AsyncFunction: "async function() {}"
+	},
+	function( subclass, source ) {
+		var fn;
+		try {
+			fn = Function( "return " + source )();
+		} catch ( e ) {}
+
+		QUnit[ fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
+			function( assert ) {
+				assert.expect( 1 );
+
+				assert.equal( jQuery.isFunction( fn ), true, source );
+			}
+		);
+	}
+);
+
+QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
+	"isFunction(custom @@toStringTag)",
+	function( assert ) {
+		assert.expect( 2 );
+
+		var obj = {},
+			fn = function() {};
+		obj[ Symbol.toStringTag ] = "Function";
+		fn[ Symbol.toStringTag ] = "Object";
+
+		assert.equal( jQuery.isFunction( obj ), false, "function-mimicking object" );
+		assert.equal( jQuery.isFunction( fn ), true, "object-mimicking function" );
+	}
+);
 
 QUnit.test( "isNumeric", function( assert ) {
 	assert.expect( 43 );
@@ -620,25 +680,6 @@ QUnit.test( "isXMLDoc - XML", function( assert ) {
 	assert.ok( jQuery.isXMLDoc( jQuery( "tab", xml )[ 0 ] ), "XML Tab Element" );
 } );
 
-QUnit.test( "isWindow", function( assert ) {
-	assert.expect( 14 );
-
-	assert.ok( jQuery.isWindow( window ), "window" );
-	assert.ok( jQuery.isWindow( document.getElementsByTagName( "iframe" )[ 0 ].contentWindow ), "iframe.contentWindow" );
-	assert.ok( !jQuery.isWindow(), "empty" );
-	assert.ok( !jQuery.isWindow( null ), "null" );
-	assert.ok( !jQuery.isWindow( undefined ), "undefined" );
-	assert.ok( !jQuery.isWindow( document ), "document" );
-	assert.ok( !jQuery.isWindow( document.documentElement ), "documentElement" );
-	assert.ok( !jQuery.isWindow( "" ), "string" );
-	assert.ok( !jQuery.isWindow( 1 ), "number" );
-	assert.ok( !jQuery.isWindow( true ), "boolean" );
-	assert.ok( !jQuery.isWindow( {} ), "object" );
-	assert.ok( !jQuery.isWindow( { setInterval: function() {} } ), "fake window" );
-	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
-	assert.ok( !jQuery.isWindow( function() {} ), "function" );
-} );
-
 QUnit.test( "jQuery('html')", function( assert ) {
 	assert.expect( 18 );
 
@@ -753,7 +794,7 @@ QUnit.test( "end()", function( assert ) {
 
 	var x = jQuery( "#yahoo" );
 	x.parent();
-	assert.equal( "Yahoo", jQuery( "#yahoo" ).text(), "check for non-destructive behaviour" );
+	assert.equal( "Yahoo", jQuery( "#yahoo" ).text(), "check for non-destructive behavior" );
 } );
 
 QUnit.test( "length", function( assert ) {

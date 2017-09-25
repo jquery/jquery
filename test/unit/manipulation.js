@@ -2279,7 +2279,7 @@ QUnit.test( "Cloned, detached HTML5 elems (#10667,10670)", function( assert ) {
 	// First clone
 	$clone = $section.clone();
 
-	// This branch tests a known behaviour in modern browsers that should never fail.
+	// This branch tests a known behavior in modern browsers that should never fail.
 	// Included for expected test count symmetry (expecting 1)
 	assert.equal( $clone[ 0 ].nodeName, "SECTION", "detached clone nodeName matches 'SECTION'" );
 

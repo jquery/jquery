@@ -249,7 +249,7 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: IE 9 - 11, Edge 12 - 13+
+				// Support: IE 9 - 11, Edge 12 - 14 only
 				// Not all browsers allow empty-string headers
 				//"Empty": ""
 			},
@@ -520,6 +520,23 @@ QUnit.module( "ajax", {
 			},
 			error: function( xhr, msg ) {
 				assert.strictEqual( msg, "error", "Native abort triggers error callback" );
+			},
+			complete: function() {
+				assert.ok( true, "complete" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - native timeout", 2, function( assert ) {
+		return {
+			url: url( "data/name.php?wait=1" ),
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				xhr.timeout = 1;
+				return xhr;
+			},
+			error: function( xhr, msg ) {
+				assert.strictEqual( msg, "error", "Native timeout triggers error callback" );
 			},
 			complete: function() {
 				assert.ok( true, "complete" );

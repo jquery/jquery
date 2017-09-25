@@ -526,9 +526,10 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 
 	assert.expect( 1 );
 
-	var done = assert.async();
+	var done = assert.async(),
+		defer = jQuery.Deferred();
 
-	var defer = jQuery.Deferred().done( function() {
+	defer.done( function() {
 		setTimeout( done );
 		throw new Error();
 	} );
@@ -541,6 +542,26 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 		defer.resolve();
 	} catch ( _ ) {}
 } );
+
+QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
+	"jQuery.Deferred.then - IsCallable determination (gh-3596)",
+	function( assert ) {
+
+		assert.expect( 1 );
+
+		var done = assert.async(),
+			defer = jQuery.Deferred();
+
+		function faker() {
+			assert.ok( true, "handler with non-'Function' @@toStringTag gets invoked" );
+		}
+		faker[ Symbol.toStringTag ] = "String";
+
+		defer.then( faker ).then( done );
+
+		defer.resolve();
+	}
+);
 
 // Test fails in IE9 but is skipped there because console is not active
 QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", function( assert ) {
@@ -861,8 +882,16 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 	"use strict";
 
-	var CASES = 16,
-		slice = [].slice,
+	var customToStringThen = {
+		then: function( onFulfilled ) {
+			onFulfilled();
+		}
+	};
+	if ( typeof Symbol === "function" ) {
+		customToStringThen.then[ Symbol.toStringTag ] = "String";
+	}
+
+	var slice = [].slice,
 		sentinel = { context: "explicit" },
 		eventuallyFulfilled = jQuery.Deferred().notify( true ),
 		eventuallyRejected = jQuery.Deferred().notify( true ),
@@ -870,6 +899,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		secondaryRejected = jQuery.Deferred().resolve( eventuallyRejected ),
 		inputs = {
 			promise: Promise.resolve( true ),
+			customToStringThen: customToStringThen,
 			rejectedPromise: Promise.reject( false ),
 			deferred: jQuery.Deferred().resolve( true ),
 			eventuallyFulfilled: eventuallyFulfilled,
@@ -894,6 +924,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		},
 		willSucceed = {
 			promise: [ true ],
+			customToStringThen: [],
 			deferred: [ true ],
 			eventuallyFulfilled: [ true ],
 			secondaryFulfilled: [ true ],
@@ -912,14 +943,15 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 			rejectedDeferredWith: [ false ],
 			multiRejectedDeferredWith: [ "baz", "quux" ]
 		},
+		numCases = Object.keys( willSucceed ).length + Object.keys( willError ).length,
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
 		defaultContext = ( function getDefaultContext() { return this; } ).call(),
 
-		done = assert.async( CASES * 2 );
+		done = assert.async( numCases * 2 );
 
-	assert.expect( CASES * 4 );
+	assert.expect( numCases * 4 );
 
 	jQuery.each( inputs, function( message, value ) {
 		var code = "jQuery.when( " + message + " )",
