@@ -36,7 +36,8 @@ module.exports = function( grunt ) {
 		babel: {
 			options: {
 				sourceMap: "inline",
-				retainLines: true
+				retainLines: true,
+				plugins: [ "transform-es2015-for-of" ]
 			},
 			nodeSmokeTests: {
 				files: {
