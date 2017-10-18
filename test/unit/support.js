@@ -133,6 +133,24 @@ testIframe(
 			"reliableMarginLeft": true,
 			"scrollboxSize": true
 		};
+	} else if ( /\b11\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optSelected": true,
+			"pixelBoxStyles": true,
+			"pixelPosition": true,
+			"radioValue": true,
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
+		};
 	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
