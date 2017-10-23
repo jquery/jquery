@@ -597,7 +597,7 @@ jQuery.extend( {
 			uncached = s.url.slice( cacheURL.length );
 
 			// If data is available and should be processed, append data to url
-			if ( s.data && s.processData ) {
+			if ( s.data && ( s.processData || typeof s.data === "string" ) ) {
 				cacheURL += ( rquery.test( cacheURL ) ? "&" : "?" ) + s.data;
 
 				// #9682: remove data so that it's not used in an eventual retry
