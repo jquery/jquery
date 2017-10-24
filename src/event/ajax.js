@@ -15,7 +15,7 @@ jQuery.each( [
 	"ajaxSend"
 ], function( i, type ) {
 	jQuery.fn[ type ] = function( fn ) {
-		return this.on( type, fn );
+		return this.bind( type, fn );
 	};
 } );
 
