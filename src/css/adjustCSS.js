@@ -7,7 +7,7 @@ define( [
 
 function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted, scale,
-		maxIterations = 20,
+		maxIterations = 200,
 		currentValue = tween ?
 			function() {
 				return tween.cur();
