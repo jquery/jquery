@@ -13,11 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-		srcHintOptions = readOptionalJSON( "src/.jshintrc" ),
-
-		// Skip jsdom-related tests in Node.js 0.10 & 0.12
-		runJsdomTests = !/^v0/.test( process.version );
+		gzip = require( "gzip-js" );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -40,7 +36,8 @@ module.exports = function( grunt ) {
 		babel: {
 			options: {
 				sourceMap: "inline",
-				retainLines: true
+				retainLines: true,
+				plugins: [ "transform-es2015-for-of" ]
 			},
 			nodeSmokeTests: {
 				files: {
@@ -103,34 +100,21 @@ module.exports = function( grunt ) {
 				src: [ "package.json" ]
 			}
 		},
-		jshint: {
-			all: {
-				src: [
-					"src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js"
-				],
-				options: {
-					jshintrc: true
-				}
-			},
-			dist: {
-				src: "dist/jquery.js",
-				options: srcHintOptions
-			}
-		},
-		jscs: {
-			src: "src",
-			gruntfile: "Gruntfile.js",
+		eslint: {
+			options: {
 
-			// Check parts of tests that pass
-			test: [
-				"test/data/testrunner.js",
-				"test/unit/animation.js",
-				"test/unit/basic.js",
-				"test/unit/support.js",
-				"test/unit/tween.js",
-				"test/unit/wrap.js"
-			],
-			build: "build"
+				// See https://github.com/sindresorhus/grunt-eslint/issues/119
+				quiet: true
+			},
+
+			// We have to explicitly declare "src" property otherwise "newer"
+			// task wouldn't work properly :/
+			dist: {
+				src: "dist/jquery.js"
+			},
+			dev: {
+				src: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+			}
 		},
 		testswarm: {
 			tests: [
@@ -164,7 +148,7 @@ module.exports = function( grunt ) {
 			]
 		},
 		watch: {
-			files: [ "<%= jshint.all.src %>" ],
+			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
 		},
 		uglify: {
@@ -176,19 +160,23 @@ module.exports = function( grunt ) {
 				options: {
 					preserveComments: false,
 					sourceMap: true,
-					ASCIIOnly: true,
 					sourceMapName:
 						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
-					beautify: {
+					output: {
 						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) jQuery Foundation | jquery.org/license */",
+						"(c) JS Foundation and other contributors | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,
 						loops: false,
-						unused: false
+						unused: false,
+
+						// Support: IE <11
+						// typeofs transformation is unsafe for IE9-10
+						// See https://github.com/mishoo/UglifyJS2/issues/2198
+						typeofs: false
 					}
 				}
 			}
@@ -201,21 +189,50 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "lint", [ "jsonlint", "jshint", "jscs" ] );
+	grunt.registerTask( "lint", [
+		"jsonlint",
 
-	// Don't run Node-related tests in Node.js < 1.0.0 as they require an old
-	// jsdom version that needs compiling, making it harder for people to compile
-	// jQuery on Windows. (see gh-2519)
-	grunt.registerTask( "test_fast", runJsdomTests ? [ "node_smoke_tests" ] : [] );
+		// Running the full eslint task without breaking it down to targets
+		// would run the dist target first which would point to errors in the built
+		// file, making it harder to fix them. We want to check the built file only
+		// if we already know the source files pass the linter.
+		"eslint:dev",
+		"eslint:dist"
+	] );
 
-	grunt.registerTask( "test", [ "test_fast" ].concat(
-		runJsdomTests ? [ "promises_aplus_tests" ] : []
-	) );
+	grunt.registerTask( "lint:newer", [
+		"newer:jsonlint",
 
-	// Short list as a high frequency watch task
-	grunt.registerTask( "dev", [ "build:*:*", "lint", "uglify", "remove_map_comment", "dist:*" ] );
+		// Don't replace it with just the task; see the above comment.
+		"newer:eslint:dev",
+		"newer:eslint:dist"
+	] );
 
-	grunt.registerTask( "default", [ "dev", "test_fast", "compare_size" ] );
+	grunt.registerTask( "test:fast", "node_smoke_tests" );
+	grunt.registerTask( "test:slow", "promises_aplus_tests" );
 
-	grunt.registerTask( "precommit_lint", [ "newer:jsonlint", "newer:jshint:all", "newer:jscs" ] );
+	grunt.registerTask( "test", [
+		"test:fast",
+		"test:slow"
+	] );
+
+	grunt.registerTask( "dev", [
+		"build:*:*",
+		"newer:eslint:dev",
+		"newer:uglify",
+		"remove_map_comment",
+		"dist:*",
+		"compare_size"
+	] );
+
+	grunt.registerTask( "default", [
+		"eslint:dev",
+		"build:*:*",
+		"uglify",
+		"remove_map_comment",
+		"dist:*",
+		"eslint:dist",
+		"test:fast",
+		"compare_size"
+	] );
 };

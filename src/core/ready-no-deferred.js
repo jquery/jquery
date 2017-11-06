@@ -6,7 +6,6 @@ define( [
 "use strict";
 
 var readyCallbacks = [],
-	readyFiring = false,
 	whenReady = function( fn ) {
 		readyCallbacks.push( fn );
 	},
@@ -33,15 +32,6 @@ jQuery.extend( {
 	// the ready event fires. See #6781
 	readyWait: 1,
 
-	// Hold (or release) the ready event
-	holdReady: function( hold ) {
-		if ( hold ) {
-			jQuery.readyWait++;
-		} else {
-			jQuery.ready( true );
-		}
-	},
-
 	ready: function( wait ) {
 
 		// Abort if there are pending holds or we're already ready
@@ -60,16 +50,11 @@ jQuery.extend( {
 		whenReady = function( fn ) {
 			readyCallbacks.push( fn );
 
-			if ( !readyFiring ) {
-				readyFiring = true;
-
-				while ( readyCallbacks.length ) {
-					fn = readyCallbacks.shift();
-					if ( jQuery.isFunction( fn ) ) {
-						executeReady( fn );
-					}
+			while ( readyCallbacks.length ) {
+				fn = readyCallbacks.shift();
+				if ( jQuery.isFunction( fn ) ) {
+					executeReady( fn );
 				}
-				readyFiring = false;
 			}
 		};
 

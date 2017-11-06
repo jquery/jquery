@@ -1,8 +1,8 @@
 define( [
 	"../core",
-	"../var/rnotwhite",
+	"../var/rnothtmlwhite",
 	"./var/acceptData"
-], function( jQuery, rnotwhite, acceptData ) {
+], function( jQuery, rnothtmlwhite, acceptData ) {
 
 "use strict";
 
@@ -115,7 +115,7 @@ Data.prototype = {
 		if ( key !== undefined ) {
 
 			// Support array or space separated string of keys
-			if ( jQuery.isArray( key ) ) {
+			if ( Array.isArray( key ) ) {
 
 				// If key is an array of keys...
 				// We always set camelCase keys, so remove that.
@@ -127,7 +127,7 @@ Data.prototype = {
 				// Otherwise, create an array by matching non-whitespace
 				key = key in cache ?
 					[ key ] :
-					( key.match( rnotwhite ) || [] );
+					( key.match( rnothtmlwhite ) || [] );
 			}
 
 			i = key.length;

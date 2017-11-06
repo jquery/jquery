@@ -55,26 +55,26 @@ testIframe(
 );
 
 ( function() {
-	var expected, version,
+	var expected,
 		userAgent = window.navigator.userAgent;
 
 	if ( /edge\//i.test( userAgent ) ) {
-		version = userAgent.match( /edge\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
 			"checkClone": true,
 			"checkOn": true,
-			"clearCloneStyle": version >= 13,
+			"clearCloneStyle": true,
 			"cors": true,
 			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
 		expected = {
@@ -88,10 +88,11 @@ testIframe(
 			"focusin": true,
 			"noCloneChecked": false,
 			"optSelected": false,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = {
@@ -105,10 +106,11 @@ testIframe(
 			"focusin": true,
 			"noCloneChecked": false,
 			"optSelected": false,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": true,
 			"pixelPosition": true,
 			"radioValue": false,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": "absolute"
 		};
 	} else if ( /chrome/i.test( userAgent ) ) {
 
@@ -125,12 +127,13 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
-	} else if ( /\b9\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+	} else if ( /\b11\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -142,12 +145,13 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
-			"pixelPosition": false,
+			"pixelBoxStyles": true,
+			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
-	} else if ( /8\.0(\.\d+|) safari/i.test( userAgent ) ) {
+	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -155,14 +159,15 @@ testIframe(
 			"checkOn": true,
 			"clearCloneStyle": true,
 			"cors": true,
-			"createHTMLDocument": false,
+			"createHTMLDocument": true,
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = {
@@ -176,12 +181,13 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"scrollboxSize": true
 		};
-	} else if ( /iphone os 9_/i.test( userAgent ) ) {
+	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -193,10 +199,11 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = {
@@ -210,10 +217,11 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /iphone os 7_/i.test( userAgent ) ) {
 		expected = {
@@ -227,10 +235,11 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": true,
+			"pixelBoxStyles": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": true
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
 		};
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = {
@@ -244,10 +253,11 @@ testIframe(
 			"focusin": false,
 			"noCloneChecked": true,
 			"optSelected": true,
-			"pixelMarginRight": false,
+			"pixelBoxStyles": false,
 			"pixelPosition": false,
 			"radioValue": true,
-			"reliableMarginLeft": false
+			"reliableMarginLeft": false,
+			"scrollboxSize": true
 		};
 	}
 

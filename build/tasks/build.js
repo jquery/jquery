@@ -17,8 +17,11 @@ module.exports = function( grunt ) {
 		read = function( fileName ) {
 			return grunt.file.read( srcFolder + fileName );
 		},
-		globals = read( "exports/global.js" ),
-		wrapper = read( "wrapper.js" ).split( /\/\/ \@CODE\n\/\/[^\n]+/ ),
+
+		// Catch `// @CODE` and subsequent comment lines event if they don't start
+		// in the first column.
+		wrapper = read( "wrapper.js" ).split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ ),
+
 		config = {
 			baseUrl: "src",
 			name: "jquery",
@@ -38,11 +41,8 @@ module.exports = function( grunt ) {
 			// Avoid breaking semicolons inserted by r.js
 			skipSemiColonInsertion: true,
 			wrap: {
-				start: wrapper[ 0 ].replace( /\/\*jshint .* \*\/\n/, "" ),
-				end: globals.replace(
-					/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
-					""
-				) + wrapper[ 1 ]
+				start: wrapper[ 0 ].replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" ),
+				end: wrapper[ 1 ]
 			},
 			rawText: {},
 			onBuildWrite: convert
@@ -64,7 +64,12 @@ module.exports = function( grunt ) {
 		// Convert var modules
 		if ( /.\/var\//.test( path.replace( process.cwd(), "" ) ) ) {
 			contents = contents
-				.replace( /define\([\w\W]*?return/, "var " + ( /var\/([\w-]+)/.exec( name )[ 1 ] ) + " =" )
+				.replace(
+					/define\([\w\W]*?return/,
+					"var " +
+					( /var\/([\w-]+)/.exec( name )[ 1 ] ) +
+					" ="
+				)
 				.replace( rdefineEnd, "" );
 
 		// Sizzle treatment
@@ -130,6 +135,7 @@ module.exports = function( grunt ) {
 			excluded = [],
 			included = [],
 			version = grunt.config( "pkg.version" ),
+
 			/**
 			 * Recursively calls the excluder to remove on all modules in the list
 			 * @param {Array} list
@@ -167,6 +173,7 @@ module.exports = function( grunt ) {
 					} );
 				}
 			},
+
 			/**
 			 * Adds the specified module to the excluded or included list, depending on the flag
 			 * @param {String} flag A module path relative to

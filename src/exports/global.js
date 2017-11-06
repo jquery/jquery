@@ -1,10 +1,8 @@
-/* ExcludeStart */
+define( [
+	"../core"
+], function( jQuery, noGlobal ) {
 
-// This file is included in a different way from all the others
-// so the "use strict" pragma is not needed.
-/* jshint strict: false */
-
-/* ExcludeEnd */
+"use strict";
 
 var
 
@@ -32,3 +30,5 @@ jQuery.noConflict = function( deep ) {
 if ( !noGlobal ) {
 	window.jQuery = window.$ = jQuery;
 }
+
+} );

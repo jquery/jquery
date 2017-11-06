@@ -14,22 +14,28 @@
 		#output { background-color: green }
 		#expectedOutput { background-color: green }
 	</style>
-	<script src="jquery.js"></script>
+	<script src="../jquery.js"></script>
+	<script src="./iframeTest.js"></script>
 
 	<!-- Load the script loader that uses
 		jQuery.readyWait -->
-	<script src="data/readywaitloader.js"></script>
 
 	<script type="text/javascript">
-	jQuery(function() {
-		// The delayedMessage is defined by
-		// the readywaitasset.js file, so the
-		// next line will only work if this DOM
-		// ready callback is called after readyWait
-		// has been decremented by readywaitloader.js
-		// If an error occurs.
-		jQuery("#output").append(delayedMessage);
-	});
+	(function() {
+		var released = false;
+		// Hold on jQuery!
+		jQuery.holdReady( true );
+
+		setTimeout( function() {
+			released = true;
+			jQuery.holdReady( false );
+		}, 300 );
+
+		jQuery(function() {
+			jQuery( "#output" ).text( "Ready called, holdReady released: " + released );
+			startIframeTest( released );
+		});
+	})();
 	</script>
 </head>
 <body>

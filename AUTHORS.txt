@@ -77,7 +77,7 @@ Jared Grippe <jared@deadlyicon.com>
 Sylvester Keil <sylvester@keil.or.at>
 Brandon Sterne <bsterne@mozilla.com>
 Mathias Bynens <mathias@qiwi.be>
-Timmy Willison <timmywillisn@gmail.com>
+Timmy Willison <4timmywil@gmail.com>
 Corey Frang <gnarf37@gmail.com>
 Digitalxero <digitalxero>
 Anton Kovalyov <anton@kovalyov.net>
@@ -184,7 +184,7 @@ Karl Sieburg <ksieburg@yahoo.com>
 Pascal Borreli <pascal@borreli.com>
 Nguyen Phuc Lam <ruado1987@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
-Michał Gołębiowski <m.goleb@gmail.com>
+Michał Gołębiowski-Owczarek <m.goleb@gmail.com>
 Li Xudong <istonelee@gmail.com>
 Steven Benner <admin@stevenbenner.com>
 Tom H Fuertes <tomfuertes@gmail.com>
@@ -293,3 +293,9 @@ Damian Senn <jquery@topaxi.codes>
 Ralin Chimev <ralin.chimev@gmail.com>
 Felipe Sateler <fsateler@gmail.com>
 Christophe Tafani-Dereeper <christophetd@hotmail.fr>
+Manoj Kumar <nithmanoj@gmail.com>
+David Broder-Rodgers <broder93@gmail.com>
+Alex Louden <alex@louden.com>
+Alex Padilla <alexonezero@outlook.com>
+南漂一卒 <shiy007@qq.com>
+karan-96 <karanbatra96@gmail.com>

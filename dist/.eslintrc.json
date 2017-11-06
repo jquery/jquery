@@ -1,0 +1,22 @@
+{
+	"root": true,
+
+	"extends": "../.eslintrc-browser.json",
+
+	"rules": {
+		// That is okay for the built version
+		"no-multiple-empty-lines": "off",
+
+		// Because sizzle is not compatible to jquery code style
+		"no-nested-ternary": "off",
+		"no-unused-expressions": "off",
+		"lines-around-comment": "off",
+		"space-in-parens": "off",
+		"camelcase": "off",
+		"computed-property-spacing": "off",
+		"max-len": "off",
+		"dot-notation": "off",
+		"semi-spacing": "off",
+		"brace-style": "off"
+	}
+}

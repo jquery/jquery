@@ -50,6 +50,15 @@ module.exports = function( Release, files, complete ) {
 	}
 
 	/**
+	 * Replace the version in the README
+	 * @param {string} readme
+	 */
+	function editReadme( readme ) {
+		var rprev = new RegExp( Release.prevVersion, "g" );
+		return readme.replace( rprev, Release.newVersion );
+	}
+
+	/**
 	 * Copy necessary files over to the dist repo
 	 */
 	function copy() {
@@ -57,6 +66,7 @@ module.exports = function( Release, files, complete ) {
 		// Copy dist files
 		var distFolder = Release.dir.dist + "/dist",
 			externalFolder = Release.dir.dist + "/external",
+			readme = fs.readFileSync( Release.dir.dist + "/README.md", "utf8" ),
 			rmIgnore = files
 				.concat( [
 					"README.md",
@@ -93,10 +103,20 @@ module.exports = function( Release, files, complete ) {
 		// Write generated bower file
 		fs.writeFileSync( Release.dir.dist + "/bower.json", generateBower() );
 
+		fs.writeFileSync( Release.dir.dist + "/README.md", editReadme( readme ) );
+
+		console.log( "Files ready to add." );
+		console.log( "Edit the dist README.md to include the latest blog post link." );
+	}
+
+	/**
+	 * Add, commit, and tag the dist files
+	 */
+	function commit() {
 		console.log( "Adding files to dist..." );
-		Release.exec( "git add .", "Error adding files." );
+		Release.exec( "git add -A", "Error adding files." );
 		Release.exec(
-			"git commit -m 'Release " + Release.newVersion + "'",
+			"git commit -m \"Release " + Release.newVersion + "\"",
 			"Error committing files."
 		);
 		console.log();
@@ -104,7 +124,7 @@ module.exports = function( Release, files, complete ) {
 		console.log( "Tagging release on dist..." );
 		Release.exec( "git tag " + Release.newVersion,
 			"Error tagging " + Release.newVersion + " on dist repo." );
-		Release.tagTime = Release.exec( "git log -1 --format='%ad'",
+		Release.tagTime = Release.exec( "git log -1 --format=\"%ad\"",
 			"Error getting tag timestamp." ).trim();
 	}
 
@@ -127,6 +147,10 @@ module.exports = function( Release, files, complete ) {
 		Release._section( "Copy files to distribution repo" ),
 		clone,
 		copy,
+		Release.confirmReview,
+
+		Release._section( "Add, commit, and tag files in distribution repo" ),
+		commit,
 		Release.confirmReview,
 
 		Release._section( "Pushing files to distribution repo" ),

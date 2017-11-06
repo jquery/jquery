@@ -474,13 +474,13 @@ QUnit.test( "html(String) tag-hyphenated elements (Bug #1987)", function( assert
 	jQuery.each( "thead tbody tfoot colgroup caption tr th td".split( " " ), function( i, name ) {
 		var j = jQuery( "<" + name + "-d></" + name + "-d><" + name + "-d></" + name + "-d>" );
 		assert.ok( j[ 0 ], "Create a tag-hyphenated element" );
-		assert.ok( jQuery.nodeName( j[ 0 ], name.toUpperCase() + "-D" ), "Hyphenated node name" );
-		assert.ok( jQuery.nodeName( j[ 1 ], name.toUpperCase() + "-D" ), "Hyphenated node name" );
+		assert.ok( j[ 0 ].nodeName === name.toUpperCase() + "-D", "Hyphenated node name" );
+		assert.ok( j[ 1 ].nodeName === name.toUpperCase() + "-D", "Hyphenated node name" );
 	} );
 
 	var j = jQuery( "<tr-multiple-hyphens><td-with-hyphen>text</td-with-hyphen></tr-multiple-hyphens>" );
-	assert.ok( jQuery.nodeName( j[ 0 ], "TR-MULTIPLE-HYPHENS" ), "Tags with multiple hyphens" );
-	assert.ok( jQuery.nodeName( j.children()[ 0 ], "TD-WITH-HYPHEN" ), "Tags with multiple hyphens" );
+	assert.ok( j[ 0 ].nodeName === "TR-MULTIPLE-HYPHENS", "Tags with multiple hyphens" );
+	assert.ok( j.children()[ 0 ].nodeName === "TD-WITH-HYPHEN", "Tags with multiple hyphens" );
 	assert.equal( j.children().text(), "text", "Tags with multiple hyphens behave normally" );
 } );
 
@@ -609,7 +609,7 @@ QUnit.test( "append(xml)", function( assert ) {
 			// IE
 			for ( n = 0, len = aActiveX.length; n < len; n++ ) {
 				try {
-					elem = new ActiveXObject( aActiveX[ n ] );
+					elem = new window.ActiveXObject( aActiveX[ n ] );
 					return elem;
 				} catch ( _ ) {}
 			}
@@ -1175,7 +1175,7 @@ QUnit.test( ".after(disconnected node)", function( assert ) {
 
 QUnit.test( "insertAfter(String)", function( assert ) {
 
-	assert.expect( 1 ) ;
+	assert.expect( 1 );
 
 	var expected = "This is a normal link: Yahoobuga";
 	jQuery( "<b>buga</b>" ).insertAfter( "#yahoo" );
@@ -1211,7 +1211,7 @@ QUnit.test( "insertAfter(jQuery)", function( assert ) {
 
 function testReplaceWith( val, assert ) {
 
-	var tmp, y, child, child2, set, non_existent, $div,
+	var tmp, y, child, child2, set, nonExistent, $div,
 		expected = 29;
 
 	assert.expect( expected );
@@ -1295,8 +1295,8 @@ function testReplaceWith( val, assert ) {
 	assert.deepEqual( jQuery( ".pathological", "#qunit-fixture" ).get(), [],
 		"Replacement with following sibling (context removed)" );
 
-	non_existent = jQuery( "#does-not-exist" ).replaceWith( val( "<b>should not throw an error</b>" ) );
-	assert.equal( non_existent.length, 0, "Length of non existent element." );
+	nonExistent = jQuery( "#does-not-exist" ).replaceWith( val( "<b>should not throw an error</b>" ) );
+	assert.equal( nonExistent.length, 0, "Length of non existent element." );
 
 	$div = jQuery( "<div class='replacewith'></div>" ).appendTo( "#qunit-fixture" );
 	$div.replaceWith( val( "<div class='replacewith'></div><script>" +
@@ -1359,7 +1359,7 @@ QUnit.test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function( ass
 		assert.strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
 		$el.html( "<b/>" ).children().replaceWith( function() { return input; } );
 		assert.strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
-		$el.html( "<i/>" ).children().replaceWith( function( i ) { i; return input; } );
+		$el.html( "<i/>" ).children().replaceWith( function( i ) { return input; } );
 		assert.strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
 		$el.html( "<p/>" ).children().replaceWith( function( i ) {
 			return i ?
@@ -1623,7 +1623,7 @@ QUnit.test( "clone(multiple selected options) (Bug #8129)", function( assert ) {
 	var element = jQuery( "<select><option>Foo</option><option selected>Bar</option><option selected>Baz</option></select>" );
 
 	function getSelectedOptions( collection ) {
-		return collection.find( "option" ).filter(function( option ) {
+		return collection.find( "option" ).filter( function( option ) {
 			return option.selected;
 		} );
 	}
@@ -2279,7 +2279,7 @@ QUnit.test( "Cloned, detached HTML5 elems (#10667,10670)", function( assert ) {
 	// First clone
 	$clone = $section.clone();
 
-	// This branch tests a known behaviour in modern browsers that should never fail.
+	// This branch tests a known behavior in modern browsers that should never fail.
 	// Included for expected test count symmetry (expecting 1)
 	assert.equal( $clone[ 0 ].nodeName, "SECTION", "detached clone nodeName matches 'SECTION'" );
 
@@ -2464,7 +2464,7 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 	if ( jQuery.ajax ) {
 		Globals.register( "testBar" );
 		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "data/testbar.php" ) + "'/>" );
-		assert.strictEqual( window[ "testBar" ], "bar", "Global script evaluation" );
+		assert.strictEqual( window.testBar, "bar", "Global script evaluation" );
 	} else {
 		assert.ok( true, "No jQuery.ajax" );
 		assert.ok( true, "No jQuery.ajax" );
@@ -2616,14 +2616,14 @@ QUnit.test( "Make sure specific elements with content created correctly (#13232)
 
 	jQuery.each( elems, function( name, value ) {
 		var html = "<" + name + ">" + value + "</" + name + ">";
-		assert.ok( jQuery.nodeName( jQuery.parseHTML( "<" + name + ">" + value + "</" + name + ">" )[ 0 ], name ), name + " is created correctly" );
+		assert.ok( jQuery.parseHTML( "<" + name + ">" + value + "</" + name + ">" )[ 0 ].nodeName.toLowerCase() === name, name + " is created correctly" );
 
 		results.push( name );
 		args.push( html );
 	} );
 
 	jQuery.fn.append.apply( jQuery( "<div/>" ), args ).children().each( function( i ) {
-		assert.ok( jQuery.nodeName( this, results[ i ] ) );
+		assert.ok( this.nodeName.toLowerCase() === results[ i ] );
 	} );
 } );
 
@@ -2634,11 +2634,11 @@ QUnit.test( "Validate creation of multiple quantities of certain elements (#1381
 
 	jQuery.each( tags, function( index, tag ) {
 		jQuery( "<" + tag + "/><" + tag + "/>" ).each( function() {
-			assert.ok( jQuery.nodeName( this, tag ), tag + " empty elements created correctly" );
+			assert.ok( this.nodeName.toLowerCase() === tag, tag + " empty elements created correctly" );
 		} );
 
 		jQuery( "<" + this + "></" + tag + "><" + tag + "></" + tag + ">" ).each( function() {
-			assert.ok( jQuery.nodeName( this, tag ), tag + " elements with closing tag created correctly" );
+			assert.ok( this.nodeName.toLowerCase() === tag, tag + " elements with closing tag created correctly" );
 		} );
 	} );
 } );
@@ -2730,6 +2730,26 @@ QUnit.test( "Make sure col element is appended correctly", function( assert ) {
 	assert.strictEqual( table.find( "td" ).width(), 150 );
 } );
 
+QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", function( assert ) {
+	assert.expect( 1 );
+
+	var htmlOut,
+		htmlIn =
+			"<thead><tr><td>" +
+				"<table><tbody><tr><td>nested</td></tr></tbody></table>" +
+			"</td></tr></thead>",
+		newRow = "<tr><td>added</td></tr>",
+		htmlExpected = htmlIn.replace( "</thead>", "</thead>" + newRow ),
+		table = supportjQuery( "<table/>" ).html( htmlIn ).appendTo( "#qunit-fixture" )[ 0 ];
+
+	jQuery( table ).append( newRow );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	htmlOut = table.innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	assert.strictEqual( htmlOut, htmlExpected );
+} );
+
 QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
@@ -2745,8 +2765,8 @@ QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 	jQuery( fixture ).append( "<script src=\"data:text/javascript,testFoo = 'foo';\"></script>" );
 
 	setTimeout( function() {
-		if ( window[ "testSrcFoo" ] === "foo" ) {
-			assert.strictEqual( window[ "testFoo" ], window[ "testSrcFoo" ], "data-URI script executed" );
+		if ( window.testSrcFoo === "foo" ) {
+			assert.strictEqual( window.testFoo, window.testSrcFoo, "data-URI script executed" );
 
 		} else {
 			assert.ok( true, "data-URI script is not supported by this environment" );

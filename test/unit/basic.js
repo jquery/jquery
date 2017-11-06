@@ -76,7 +76,7 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 27 );
+	assert.expect( 25 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 
@@ -99,9 +99,6 @@ QUnit.test( "core", function( assert ) {
 	assert.ok( jQuery.isXMLDoc( jQuery.parseXML(
 		"<?xml version='1.0' encoding='UTF-8'?><foo bar='baz'></foo>"
 	) ), "jQuery.isXMLDoc" );
-
-	assert.ok( jQuery.isWindow( window ), "jQuery.isWindow(window)" );
-	assert.ok( !jQuery.isWindow( 2 ), "jQuery.isWindow(Number)" );
 
 	assert.strictEqual( jQuery.inArray( 3, [ "a", 6, false, 3, {} ] ), 3, "jQuery.inArray - true" );
 	assert.strictEqual(

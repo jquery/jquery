@@ -21,6 +21,7 @@ module.exports = function( Release ) {
 	Release.define( {
 		npmPublish: true,
 		issueTracker: "github",
+
 		/**
 		 * Ensure the repo is in a proper state before release
 		 * @param {Function} callback
@@ -28,6 +29,7 @@ module.exports = function( Release ) {
 		checkRepoState: function( callback ) {
 			ensureSizzle( Release, callback );
 		},
+
 		/**
 		 * Set the version in the src folder for distributing AMD
 		 */
@@ -37,6 +39,7 @@ module.exports = function( Release ) {
 			contents = contents.replace( /@VERSION/g, Release.newVersion );
 			fs.writeFileSync( corePath, contents, "utf8" );
 		},
+
 		/**
 		 * Generates any release artifacts that should be included in the release.
 		 * The callback must be invoked with an array of files that should be
@@ -46,7 +49,7 @@ module.exports = function( Release ) {
 		generateArtifacts: function( callback ) {
 			Release.exec( "grunt", "Grunt command failed" );
 			Release.exec(
-				"grunt custom:-ajax,-effects,-deprecated --filename=jquery.slim.js && " +
+				"grunt custom:-ajax,-effects --filename=jquery.slim.js && " +
 					"grunt remove_map_comment --filename=jquery.slim.js",
 				"Grunt custom failed"
 			);
@@ -54,6 +57,7 @@ module.exports = function( Release ) {
 			Release._setSrcVersion();
 			callback( files );
 		},
+
 		/**
 		 * Acts as insertion point for restoring Release.dir.repo
 		 * It was changed to reuse npm publish code in jquery-release
@@ -65,6 +69,7 @@ module.exports = function( Release ) {
 			Release.dir.repo = Release.dir.origRepo || Release.dir.repo;
 			return npmTags();
 		},
+
 		/**
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
@@ -78,8 +83,8 @@ module.exports = function( Release ) {
 };
 
 module.exports.dependencies = [
-	"archiver@0.14.2",
-	"shelljs@0.7.0",
-	"npm@2.3.0",
-	"chalk@1.1.1"
+	"archiver@1.3.0",
+	"shelljs@0.7.7",
+	"npm@4.4.1",
+	"chalk@1.1.3"
 ];

@@ -128,7 +128,7 @@ QUnit.test( "jQuery.queue should return array while manipulating the queue", fun
 
 	var div = document.createElement( "div" );
 
-	assert.ok( jQuery.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
+	assert.ok( Array.isArray( jQuery.queue( div, "fx", jQuery.noop ) ), "jQuery.queue should return an array while manipulating the queue" );
 } );
 
 QUnit.test( "delay()", function( assert ) {
@@ -232,7 +232,7 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function 
 } );
 
 if ( jQuery.fn.animate ) {
-	
+
 QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function( assert ) {
 	var foo = jQuery( "#foo" ),
 		test = 1;

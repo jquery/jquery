@@ -9,7 +9,7 @@ QUnit.module( "wrap", {
 } );
 
 // See test/unit/manipulation.js for explanation about these 2 functions
-function manipulationBareObj( value ) {
+function manipulationBareObj( value ) {
 	return value;
 }
 
@@ -472,7 +472,7 @@ QUnit.test( "unwrap( selector )", function( assert ) {
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"
 	);
 
-	 // Shouldn't unwrap, no match
+	// Shouldn't unwrap, no match
 	jQuery( "#unwrap1 span" ) .unwrap( "span" );
 	assert.equal(
 		jQuery( "#unwrap1" ).length, 1, "still wrapped"
