@@ -283,6 +283,32 @@ QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function( assert
 	} );
 } );
 
+QUnit.test( "jQuery.Callbacks.fireWith - works with number argument", function( assert ) {
+
+	assert.expect( 1 );
+
+	var cb = jQuery.Callbacks( "memory" );
+
+	cb.fireWith( null, 42 );
+
+	cb.add( function( meaning ) {
+		assert.strictEqual( meaning, 42, "works with number argument" );
+	} );
+} );
+
+QUnit.test( "jQuery.Callbacks.fireWith - works with string argument", function( assert ) {
+
+	assert.expect( 1 );
+
+	var cb = jQuery.Callbacks( "memory" );
+
+	cb.fireWith( null, "hello" );
+
+	cb.add( function( hello ) {
+		assert.strictEqual( hello, "hello", "works with string argument" );
+	} );
+} );
+
 QUnit.test( "jQuery.Callbacks.remove - should remove all instances", function( assert ) {
 
 	assert.expect( 1 );
