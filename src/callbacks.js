@@ -206,7 +206,12 @@ jQuery.Callbacks = function( options ) {
 			fireWith: function( context, args ) {
 				if ( !locked ) {
 					args = args || [];
-					args = [ context, args.slice ? args.slice() : args ];
+					if ( args.slice && typeof args !== "string" ) {
+						args = args.slice();
+					} else if ( args.toString() !== "[object Arguments]" ) {
+						args = [ args ];
+					}
+					args = [ context, args ];
 					queue.push( args );
 					if ( !firing ) {
 						fire();
