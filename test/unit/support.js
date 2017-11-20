@@ -187,6 +187,24 @@ testIframe(
 			"reliableMarginLeft": false,
 			"scrollboxSize": true
 		};
+	} else if ( /iphone os 11_/i.test( userAgent ) ) {
+		expected = {
+			"ajax": true,
+			"boxSizingReliable": true,
+			"checkClone": true,
+			"checkOn": true,
+			"clearCloneStyle": true,
+			"cors": true,
+			"createHTMLDocument": true,
+			"focusin": false,
+			"noCloneChecked": true,
+			"optSelected": true,
+			"pixelBoxStyles": true,
+			"pixelPosition": true,
+			"radioValue": true,
+			"reliableMarginLeft": true,
+			"scrollboxSize": true
+		};
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = {
 			"ajax": true,
