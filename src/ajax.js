@@ -463,7 +463,7 @@ jQuery.extend( {
 						}
 						match = responseHeaders[ key.toLowerCase() ];
 					}
-					return match == null ? null : match;
+					return match === null ? null : match;
 				},
 
 				// Raw string
