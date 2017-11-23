@@ -154,7 +154,6 @@ module.exports = function( grunt ) {
 							);
 							return;
 						}
-						
 						if ( prepend ) {
 
 							// Skip if this is not a js file and we're walking files in a dir
@@ -314,7 +313,7 @@ module.exports = function( grunt ) {
 			// Overwrite the default inclusions with the explicit ones provided
 			config.rawText.jquery = "define([" +
 				( included.length ? included.join( "," ) : "" ) +
-				"]);";
+			"]);";
 		}
 
 		// Trace dependencies and concatenate files
