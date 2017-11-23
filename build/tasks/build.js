@@ -154,6 +154,7 @@ module.exports = function( grunt ) {
 							);
 							return;
 						}
+						
 						if ( prepend ) {
 
 							// Skip if this is not a js file and we're walking files in a dir
