@@ -4,6 +4,7 @@
   "description": "JavaScript library for DOM operations",
   "version": "3.2.2-pre",
   "main": "dist/jquery.js",
+  "browser": "dist/jquery.min.js",
   "homepage": "https://jquery.com",
   "author": {
     "name": "JS Foundation and other contributors",
