@@ -1797,6 +1797,22 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
+QUnit.test( "html(script type module)", function( assert ) {
+	assert.expect( 1 );
+	var fixture = jQuery( "#qunit-fixture" ),
+	tmp = fixture.html(
+		[
+			"<script type='module'>ok( true, 'evaluated: module' );</script>",
+			"<script type='module' src='./data/module.js'></script>",
+			"<div>",
+				"<script type='module'>ok( true, 'evaluated: inner module' );</script>",
+				"<script type='module' src='./data/inner_module.js'></script>",
+			"</div>"
+		].join( "" )
+	).find( "script" );
+	assert.equal( tmp.length, 4, "All script tags remain." );
+} );
+
 QUnit.test( "html(Function) with incoming value -- direct selection", function( assert ) {
 
 	assert.expect( 4 );
