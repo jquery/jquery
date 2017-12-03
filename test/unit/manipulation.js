@@ -1757,11 +1757,13 @@ function testHtml( valueObj, assert ) {
 			"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
 			"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
 			"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
+			"<script type='module'>ok( true, 'evaluated: module' );</script>",
 			"<script>ok( true, 'evaluated: no type' );</script>",
 			"<div>",
 				"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
 				"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
 				"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
+				"<script type='module'>ok( true, 'evaluated: inner module' );</script>",
 				"<script>ok( true, 'evaluated: inner no type' );</script>",
 			"</div>"
 		].join( "" ) )
