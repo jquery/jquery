@@ -1,8 +1,9 @@
 define( [
 	"./core",
 	"./core/nodeName",
+	"./core/camelCase",
 	"./var/isWindow"
-], function( jQuery, nodeName, isWindow ) {
+], function( jQuery, nodeName, camelCase, isWindow ) {
 
 "use strict";
 
@@ -38,5 +39,6 @@ jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
 jQuery.isWindow = isWindow;
+jQuery.camelCase = camelCase;
 
 } );
