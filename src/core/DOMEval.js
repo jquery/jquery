@@ -6,19 +6,12 @@ define( [
 	function DOMEval( code, doc, node ) {
 		doc = doc || document;
 
-		var script = doc.createElement( "script" );
-		if ( code ) {
-			script.text = code;
+		var i,
+			script = doc.createElement( "script" );
+		script.text = code;
+		for ( i in { type: true, src: true } ) {
+			script[ i ] = node[ i ];
 		}
-		jQuery.each( [
-			"type",
-			"nomodule",
-			"src"
-		], function() {
-			if ( node[ this ] ) {
-				script[ this ] = node[ this ];
-			}
-		} );
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
 

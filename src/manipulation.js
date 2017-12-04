@@ -193,7 +193,7 @@ function domManip( collection, args, callback, ignored ) {
 						!dataPriv.access( node, "globalEval" ) &&
 						jQuery.contains( doc, node ) ) {
 
-						if ( node.src && !/^module$/i.test( node.type ) ) {
+						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl ) {
