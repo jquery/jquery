@@ -602,29 +602,57 @@ QUnit.test( ".data should not miss attr() set data-* with hyphenated property na
 } );
 
 QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function( assert ) {
-	assert.expect( 9 );
+	assert.expect( 18 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
+			"non-empty": {
+				key: "nonEmpty",
+				value: "a string"
+			},
+			"empty-string": {
+				key: "emptyString",
+				value: ""
+			},
+			"one-value": {
+				key: "oneValue",
+				value: 1
+			},
+			"zero-value": {
+				key: "zeroValue",
+				value: 0
+			},
+			"an-array": {
+				key: "anArray",
+				value: []
+			},
+			"an-object": {
+				key: "anObject",
+				value: {}
+			},
+			"bool-true": {
+				key: "boolTrue",
+				value: true
+			},
+			"bool-false": {
+				key: "boolFalse",
+				value: false
+			},
 
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }"
+			"some-json": {
+				key: "someJson",
+				value: "{ \"foo\": \"bar\" }"
+			}
 		};
 
 	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
+		div.data( key, val.value );
 		var allData = div.data();
 		assert.equal( allData[ key ], undefined, ".data does not store with hyphenated keys" );
+		assert.equal( allData[ val.key ], val.value, ".data stores the camelCased key" );
 	} );
 } );
 
@@ -638,38 +666,76 @@ QUnit.test( ".data should not strip more than one hyphen when camelCasing (gh-20
 	assert.equal( allData[ "nested--Triple" ], "triple", "Key with triple hyphens is correctly camelCased" );
 } );
 
-QUnit.test( ".data supports interoperable hyphenated get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
+QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
+			"non-empty": {
+				key: "nonEmpty",
+				value: "a string"
+			},
+			"empty-string": {
+				key: "emptyString",
+				value: ""
+			},
+			"one-value": {
+				key: "oneValue",
+				value: 1
+			},
+			"zero-value": {
+				key: "zeroValue",
+				value: 0
+			},
+			"an-array": {
+				key: "anArray",
+				value: []
+			},
+			"an-object": {
+				key: "anObject",
+				value: {}
+			},
+			"bool-true": {
+				key: "boolTrue",
+				value: true
+			},
+			"bool-false": {
+				key: "boolFalse",
+				value: false
+			},
 
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }",
-			"num-1-middle": true,
-			"num-end-2": true,
-			"2-num-start": true
+			"some-json": {
+				key: "someJson",
+				value: "{ \"foo\": \"bar\" }"
+			},
+
+			"num-1-middle": {
+				key: "num-1Middle",
+				value: true
+			},
+			"num-end-2": {
+				key: "numEnd-2",
+				value: true
+			},
+			"2-num-start": {
+				key: "2NumStart",
+				value: true
+			}
 		};
 
-	assert.expect( 12 );
+	assert.expect( 24 );
 
 	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
+		div.data( key, val.value );
 
-		assert.deepEqual( div.data( key ), val, "get: " + key );
+		assert.deepEqual( div.data( key ), val.value, "get: " + key );
+		assert.deepEqual( div.data( val.key ), val.value, "get: " + val.key );
 	} );
 } );
 
-QUnit.test( ".data supports interoperable removal of hyphenated properties", function( assert ) {
+QUnit.test( ".data supports interoperable removal of hyphenated/camelCase properties", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
@@ -687,12 +753,13 @@ QUnit.test( ".data supports interoperable removal of hyphenated properties", fun
 			"some-json": "{ \"foo\": \"bar\" }"
 		};
 
-	assert.expect( 18 );
+	assert.expect( 27 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
 
 		assert.deepEqual( div.data( key ), val, "get: " + key );
+		assert.deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
 
 		div.removeData( key );
 
