@@ -1164,6 +1164,15 @@ testIframe(
 	}
 );
 
+testIframe(
+	"css('width') should work correctly with browser zooming",
+	"css/cssWidthBrowserZoom.html",
+	function( assert, jQuery, window, document, cssWidthBrowserZoom ) {
+		assert.expect( 1 );
+		assert.strictEqual( cssWidthBrowserZoom, "100px", "elem.css('width') works correctly with browser zoom" );
+	}
+);
+
 ( function() {
 	var supportsFractionalGBCR,
 		qunitFixture = document.getElementById( "qunit-fixture" ),
