@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		html {
+			zoom: 1.1;
+		}
+		#test {
+			width: 100px;
+			height: 100px;
+			padding: 10px;
+			border: 1px solid pink;
+			box-sizing: border-box;
+		}
+	</style>
+</head>
+<body>
+<div id="test"></div>
+<script src="../../jquery.js"></script>
+<script src="../iframeTest.js"></script>
+<script>
+	startIframeTest( jQuery( "#test" ).css( 'width' ) );
+</script>
+</body>
+</html>
