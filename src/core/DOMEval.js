@@ -9,8 +9,12 @@ define( [
 		var i,
 			script = doc.createElement( "script" );
 		script.text = code;
-		for ( i in { type: true, src: true } ) {
-			script[ i ] = node[ i ];
+		if ( node ) {
+			for ( i in { type: true, src: true } ) {
+				if ( node[ i ] ) {
+					script[ i ] = node[ i ];
+				}
+			}
 		}
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
