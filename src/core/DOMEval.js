@@ -3,14 +3,18 @@ define( [
 ], function( document ) {
 	"use strict";
 
-	function DOMEval( code, doc, node ) {
+	var
+
+	preservedScriptAttributes = { type: true, src: true, noModule: true };
+
+		function DOMEval( code, doc, node ) {
 		doc = doc || document;
 
 		var i,
 			script = doc.createElement( "script" );
 		script.text = code;
 		if ( node ) {
-			for ( i in { type: true, src: true } ) {
+			for ( i in preservedScriptAttributes ) {
 				if ( node[ i ] ) {
 					script[ i ] = node[ i ];
 				}
