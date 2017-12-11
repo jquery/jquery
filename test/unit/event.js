@@ -694,8 +694,8 @@ QUnit.test( "on(), with different this object", function( assert ) {
 		};
 
 	jQuery( "#firstp" )
-		.on( "click", jQuery.proxy( handler1, thisObject ) ).trigger( "click" ).off( "click", handler1 )
-		.on( "click", data, jQuery.proxy( handler2, thisObject ) ).trigger( "click" ).off( "click", handler2 );
+		.on( "click", handler1.bind( thisObject ) ).trigger( "click" ).off( "click", handler1 )
+		.on( "click", data, handler2.bind( thisObject ) ).trigger( "click" ).off( "click", handler2 );
 
 	assert.ok( !jQuery._data( jQuery( "#firstp" )[ 0 ], "events" ), "Event handler unbound when using different this object and data." );
 } );
@@ -1641,18 +1641,19 @@ QUnit.test( ".on()/.off()", function( assert ) {
 	jQuery( "#body" ).off( "click", "#foo" );
 
 	// Test binding with different this object
-	jQuery( "#body" ).on( "click", "#foo", jQuery.proxy( function() {
-		assert.equal( this.foo, "bar", "on with event scope" ); }, { "foo": "bar" }
-	) );
+	jQuery( "#body" ).on( "click", "#foo", function() {
+			assert.equal( this.foo, "bar", "on with event scope" );
+	}.bind( { "foo": "bar" } ) );
+
 	jQuery( "#foo" ).trigger( "click" );
 	jQuery( "#body" ).off( "click", "#foo" );
 
 	// Test binding with different this object, event data, and trigger data
-	jQuery( "#body" ).on( "click", "#foo", true, jQuery.proxy( function( e, data ) {
+	jQuery( "#body" ).on( "click", "#foo", true, function( e, data ) {
 		assert.equal( e.data, true, "on with with different this object, event data, and trigger data" );
 		assert.equal( this.foo, "bar", "on with with different this object, event data, and trigger data" );
 		assert.equal( data, true, "on with with different this object, event data, and trigger data" );
-	}, { "foo": "bar" } ) );
+	}.bind( { "foo": "bar" } ) );
 	jQuery( "#foo" ).trigger( "click", true );
 	jQuery( "#body" ).off( "click", "#foo" );
 
