@@ -41,4 +41,6 @@ jQuery.nodeName = nodeName;
 jQuery.isWindow = isWindow;
 jQuery.camelCase = camelCase;
 
+jQuery.now = Date.now;
+
 } );

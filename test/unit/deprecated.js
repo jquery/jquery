@@ -202,3 +202,9 @@ QUnit.test( "jQuery.camelCase()", function( assert ) {
 		assert.equal( jQuery.camelCase( key ), val, "Converts: " + key + " => " + val );
 	} );
 } );
+
+QUnit.test( "jQuery.now", function( assert ) {
+	assert.expect( 1 );
+
+	assert.ok( typeof jQuery.now() === "number", "jQuery.now is a function" );
+} );

@@ -190,10 +190,10 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 
 	script.src = baseURL + "mock.php?action=wait&wait=2&script=1";
 
-	now = jQuery.now();
+	now = Date.now();
 	document.body.appendChild( script );
 
-	jQuery.globalEval( "var strictEvalTest = " + jQuery.now() + ";" );
+	jQuery.globalEval( "var strictEvalTest = " + Date.now() + ";" );
 	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 } );
 

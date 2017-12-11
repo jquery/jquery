@@ -15,11 +15,9 @@ QUnit.module( "tween", {
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
 	},
 	teardown: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
