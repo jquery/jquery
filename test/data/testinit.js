@@ -171,7 +171,7 @@ this.ajaxTest = function( title, expect, options ) {
 	QUnit.test( title, expect, function( assert ) {
 		var requestOptions;
 
-		if ( jQuery.isFunction( options ) ) {
+		if ( typeof options === "function" ) {
 			options = options( assert );
 		}
 		options = options || [];
@@ -208,7 +208,7 @@ this.ajaxTest = function( title, expect, options ) {
 							if ( !completed ) {
 								if ( !handler ) {
 									assert.ok( false, "unexpected " + status );
-								} else if ( jQuery.isFunction( handler ) ) {
+								} else if ( typeof handler === "function" ) {
 									handler.apply( this, arguments );
 								}
 							}

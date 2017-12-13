@@ -2,6 +2,7 @@ define( [
 	"./core",
 	"./core/camelCase",
 	"./var/document",
+	"./var/isFunction",
 	"./var/rcssNum",
 	"./var/rnothtmlwhite",
 	"./css/var/cssExpand",
@@ -18,8 +19,8 @@ define( [
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, camelCase, document, rcssNum, rnothtmlwhite, cssExpand, isHiddenWithinTree,
-	swap, adjustCSS, dataPriv, showHide ) {
+], function( jQuery, camelCase, document, isFunction, rcssNum, rnothtmlwhite, cssExpand,
+	isHiddenWithinTree, swap, adjustCSS, dataPriv, showHide ) {
 
 "use strict";
 
@@ -385,7 +386,7 @@ function Animation( elem, properties, options ) {
 	for ( ; index < length; index++ ) {
 		result = Animation.prefilters[ index ].call( animation, elem, props, animation.opts );
 		if ( result ) {
-			if ( jQuery.isFunction( result.stop ) ) {
+			if ( isFunction( result.stop ) ) {
 				jQuery._queueHooks( animation.elem, animation.opts.queue ).stop =
 					result.stop.bind( result );
 			}
@@ -395,7 +396,7 @@ function Animation( elem, properties, options ) {
 
 	jQuery.map( props, createTween, animation );
 
-	if ( jQuery.isFunction( animation.opts.start ) ) {
+	if ( isFunction( animation.opts.start ) ) {
 		animation.opts.start.call( elem, animation );
 	}
 
@@ -428,7 +429,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 	},
 
 	tweener: function( props, callback ) {
-		if ( jQuery.isFunction( props ) ) {
+		if ( isFunction( props ) ) {
 			callback = props;
 			props = [ "*" ];
 		} else {
@@ -460,9 +461,9 @@ jQuery.Animation = jQuery.extend( Animation, {
 jQuery.speed = function( speed, easing, fn ) {
 	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
 		complete: fn || !fn && easing ||
-			jQuery.isFunction( speed ) && speed,
+			isFunction( speed ) && speed,
 		duration: speed,
-		easing: fn && easing || easing && !jQuery.isFunction( easing ) && easing
+		easing: fn && easing || easing && !isFunction( easing ) && easing
 	};
 
 	// Go to the end state if fx are off
@@ -489,7 +490,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.old = opt.complete;
 
 	opt.complete = function() {
-		if ( jQuery.isFunction( opt.old ) ) {
+		if ( isFunction( opt.old ) ) {
 			opt.old.call( this );
 		}
 

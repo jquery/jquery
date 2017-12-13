@@ -2507,7 +2507,7 @@ function testEasing( assert, speed, easing, complete ) {
 
 	assert.equal( options.duration, 10, "Duration set properly" );
 	assert.equal(
-		jQuery.isFunction( options.easing ) ? options.easing() : options.easing,
+		typeof options.easing === "function" ? options.easing() : options.easing,
 		"linear",
 		"Easing set properly"
 	);

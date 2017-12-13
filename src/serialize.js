@@ -1,10 +1,11 @@
 define( [
 	"./core",
 	"./manipulation/var/rcheckableType",
+	"./var/isFunction",
 	"./core/init",
 	"./traversing", // filter
 	"./attributes/prop"
-], function( jQuery, rcheckableType ) {
+], function( jQuery, rcheckableType, isFunction ) {
 
 "use strict";
 
@@ -60,7 +61,7 @@ jQuery.param = function( a, traditional ) {
 		add = function( key, valueOrFunction ) {
 
 			// If value is a function, invoke it and use its return value
-			var value = jQuery.isFunction( valueOrFunction ) ?
+			var value = isFunction( valueOrFunction ) ?
 				valueOrFunction() :
 				valueOrFunction;
 

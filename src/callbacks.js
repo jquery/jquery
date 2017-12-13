@@ -1,7 +1,8 @@
 define( [
 	"./core",
+	"./var/isFunction",
 	"./var/rnothtmlwhite"
-], function( jQuery, rnothtmlwhite ) {
+], function( jQuery, isFunction, rnothtmlwhite ) {
 
 "use strict";
 
@@ -125,7 +126,7 @@ jQuery.Callbacks = function( options ) {
 
 					( function add( args ) {
 						jQuery.each( args, function( _, arg ) {
-							if ( jQuery.isFunction( arg ) ) {
+							if ( isFunction( arg ) ) {
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}

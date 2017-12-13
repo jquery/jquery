@@ -1,6 +1,7 @@
 define( [
 	"./core",
 	"./var/document",
+	"./var/isFunction",
 	"./var/rnothtmlwhite",
 	"./ajax/var/location",
 	"./ajax/var/nonce",
@@ -11,7 +12,7 @@ define( [
 	"./event/trigger",
 	"./deferred",
 	"./serialize" // jQuery.param
-], function( jQuery, document, rnothtmlwhite, location, nonce, rquery ) {
+], function( jQuery, document, isFunction, rnothtmlwhite, location, nonce, rquery ) {
 
 "use strict";
 
@@ -66,7 +67,7 @@ function addToPrefiltersOrTransports( structure ) {
 			i = 0,
 			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
 
-		if ( jQuery.isFunction( func ) ) {
+		if ( isFunction( func ) ) {
 
 			// For each dataType in the dataTypeExpression
 			while ( ( dataType = dataTypes[ i++ ] ) ) {
@@ -834,7 +835,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
 
 		// Shift arguments if data argument was omitted
-		if ( jQuery.isFunction( data ) ) {
+		if ( isFunction( data ) ) {
 			type = type || callback;
 			callback = data;
 			data = undefined;

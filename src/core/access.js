@@ -1,6 +1,7 @@
 define( [
-	"../core"
-], function( jQuery ) {
+	"../core",
+	"../var/isFunction"
+], function( jQuery, isFunction ) {
 
 "use strict";
 
@@ -22,7 +23,7 @@ var access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
 	} else if ( value !== undefined ) {
 		chainable = true;
 
-		if ( !jQuery.isFunction( value ) ) {
+		if ( !isFunction( value ) ) {
 			raw = true;
 		}
 

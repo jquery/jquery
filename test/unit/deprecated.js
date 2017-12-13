@@ -165,6 +165,161 @@ QUnit.test( "jQuery.nodeName", function( assert ) {
 	);
 } );
 
+
+QUnit.test( "core", function( assert ) {
+	assert.expect( 2 );
+
+	assert.ok( jQuery.isFunction( jQuery.noop ), "jQuery.isFunction(jQuery.noop)" );
+	assert.ok( !jQuery.isFunction( 2 ), "jQuery.isFunction(Number)" );
+} );
+
+
+QUnit.test( "isFunction", function( assert ) {
+	assert.expect( 20 );
+
+	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
+
+	// Make sure that false values return false
+	assert.ok( !jQuery.isFunction(), "No Value" );
+	assert.ok( !jQuery.isFunction( null ), "null Value" );
+	assert.ok( !jQuery.isFunction( undefined ), "undefined Value" );
+	assert.ok( !jQuery.isFunction( "" ), "Empty String Value" );
+	assert.ok( !jQuery.isFunction( 0 ), "0 Value" );
+
+	// Check built-ins
+	assert.ok( jQuery.isFunction( String ), "String Function(" + String + ")" );
+	assert.ok( jQuery.isFunction( Array ), "Array Function(" + Array + ")" );
+	assert.ok( jQuery.isFunction( Object ), "Object Function(" + Object + ")" );
+	assert.ok( jQuery.isFunction( Function ), "Function Function(" + Function + ")" );
+
+	// When stringified, this could be misinterpreted
+	mystr = "function";
+	assert.ok( !jQuery.isFunction( mystr ), "Function String" );
+
+	// When stringified, this could be misinterpreted
+	myarr = [ "function" ];
+	assert.ok( !jQuery.isFunction( myarr ), "Function Array" );
+
+	// When stringified, this could be misinterpreted
+	myfunction = { "function": "test" };
+	assert.ok( !jQuery.isFunction( myfunction ), "Function Object" );
+
+	// Make sure normal functions still work
+	fn = function() {};
+	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
+
+	assert.notOk( jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
+
+	obj = document.createElement( "object" );
+
+	// Some versions of Firefox and Chrome say this is a function
+	assert.ok( !jQuery.isFunction( obj ), "Object Element" );
+
+	// Since 1.3, this isn't supported (#2968)
+	//ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
+
+	nodes = document.body.childNodes;
+
+	// Safari says this is a function
+	assert.ok( !jQuery.isFunction( nodes ), "childNodes Property" );
+
+	first = document.body.firstChild;
+
+	// Normal elements are reported ok everywhere
+	assert.ok( !jQuery.isFunction( first ), "A normal DOM Element" );
+
+	input = document.createElement( "input" );
+	input.type = "text";
+	document.body.appendChild( input );
+
+	// Since 1.3, this isn't supported (#2968)
+	//ok( jQuery.isFunction(input.focus), "A default function property" );
+
+	document.body.removeChild( input );
+
+	a = document.createElement( "a" );
+	a.href = "some-function";
+	document.body.appendChild( a );
+
+	// This serializes with the word 'function' in it
+	assert.ok( !jQuery.isFunction( a ), "Anchor Element" );
+
+	document.body.removeChild( a );
+
+	// Recursive function calls have lengths and array-like properties
+	function callme( callback ) {
+		function fn( response ) {
+			callback( response );
+		}
+
+		assert.ok( jQuery.isFunction( fn ), "Recursive Function Call" );
+
+		fn( { some: "data" } );
+	}
+
+	callme( function() {
+		callme( function() {} );
+	} );
+} );
+
+QUnit.test( "isFunction(cross-realm function)", function( assert ) {
+	assert.expect( 1 );
+
+	var iframe, doc,
+		done = assert.async();
+
+	// Functions from other windows should be matched
+	Globals.register( "iframeDone" );
+	window.iframeDone = function( fn, detail ) {
+		window.iframeDone = undefined;
+		assert.ok( jQuery.isFunction( fn ), "cross-realm function" +
+			( detail ? " - " + detail : "" ) );
+		done();
+	};
+
+	iframe = jQuery( "#qunit-fixture" )[ 0 ].appendChild( document.createElement( "iframe" ) );
+	doc = iframe.contentDocument || iframe.contentWindow.document;
+	doc.open();
+	doc.write( "<body onload='window.parent.iframeDone( function() {} );'>" );
+	doc.close();
+} );
+
+supportjQuery.each(
+	{
+		GeneratorFunction: "function*() {}",
+		AsyncFunction: "async function() {}"
+	},
+	function( subclass, source ) {
+		var fn;
+		try {
+			fn = Function( "return " + source )();
+		} catch ( e ) {}
+
+		QUnit[ fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
+			function( assert ) {
+				assert.expect( 1 );
+
+				assert.equal( jQuery.isFunction( fn ), true, source );
+			}
+		);
+	}
+);
+
+QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
+	"isFunction(custom @@toStringTag)",
+	function( assert ) {
+		assert.expect( 2 );
+
+		var obj = {},
+			fn = function() {};
+		obj[ Symbol.toStringTag ] = "Function";
+		fn[ Symbol.toStringTag ] = "Object";
+
+		assert.equal( jQuery.isFunction( obj ), false, "function-mimicking object" );
+		assert.equal( jQuery.isFunction( fn ), true, "object-mimicking function" );
+	}
+);
+
 QUnit.test( "jQuery.isWindow", function( assert ) {
 	assert.expect( 14 );
 

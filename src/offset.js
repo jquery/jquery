@@ -3,6 +3,7 @@ define( [
 	"./core/access",
 	"./var/document",
 	"./var/documentElement",
+	"./var/isFunction",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
@@ -11,7 +12,7 @@ define( [
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, rnumnonpx,
+], function( jQuery, access, document, documentElement, isFunction, rnumnonpx,
              curCSS, addGetHookIf, support, isWindow ) {
 
 "use strict";
@@ -46,7 +47,7 @@ jQuery.offset = {
 			curLeft = parseFloat( curCSSLeft ) || 0;
 		}
 
-		if ( jQuery.isFunction( options ) ) {
+		if ( isFunction( options ) ) {
 
 			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
 			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
