@@ -1,9 +1,10 @@
 define( [
 	"../core",
 	"../var/indexOf",
+	"../var/isFunction",
 	"./var/rneedsContext",
 	"../selector"
-], function( jQuery, indexOf, rneedsContext ) {
+], function( jQuery, indexOf, isFunction, rneedsContext ) {
 
 "use strict";
 
@@ -11,7 +12,7 @@ var risSimple = /^.[^:#\[\.,]*$/;
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
-	if ( jQuery.isFunction( qualifier ) ) {
+	if ( isFunction( qualifier ) ) {
 		return jQuery.grep( elements, function( elem, i ) {
 			return !!qualifier.call( elem, i, elem ) !== not;
 		} );

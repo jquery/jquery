@@ -2,9 +2,10 @@ define( [
 	"./core",
 	"./core/nodeName",
 	"./core/camelCase",
+	"./var/isFunction",
 	"./var/isWindow",
 	"./var/slice"
-], function( jQuery, nodeName, camelCase, isWindow, slice ) {
+], function( jQuery, nodeName, camelCase, isFunction, isWindow, slice ) {
 
 "use strict";
 
@@ -44,7 +45,7 @@ jQuery.proxy = function( fn, context ) {
 
 	// Quick check to determine if target is callable, in the spec
 	// this throws a TypeError, but we will just return undefined.
-	if ( !jQuery.isFunction( fn ) ) {
+	if ( !isFunction( fn ) ) {
 		return undefined;
 	}
 
@@ -70,6 +71,7 @@ jQuery.holdReady = function( hold ) {
 jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
+jQuery.isFunction = isFunction;
 jQuery.isWindow = isWindow;
 jQuery.camelCase = camelCase;
 

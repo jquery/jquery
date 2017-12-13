@@ -16,11 +16,12 @@ define( [
 	"./var/fnToString",
 	"./var/ObjectFunctionString",
 	"./var/support",
+	"./var/isFunction",
 	"./var/isWindow",
 	"./core/DOMEval"
 ], function( arr, document, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, isWindow, DOMEval ) {
+	support, isFunction, isWindow, DOMEval ) {
 
 "use strict";
 
@@ -137,7 +138,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// Handle case when target is a string or something (possible in deep copy)
-	if ( typeof target !== "object" && !jQuery.isFunction( target ) ) {
+	if ( typeof target !== "object" && !isFunction( target ) ) {
 		target = {};
 	}
 
@@ -202,15 +203,6 @@ jQuery.extend( {
 	},
 
 	noop: function() {},
-
-	isFunction: function( obj ) {
-
-		// Support: Chrome <=57, Firefox <=52
-		// In some browsers, typeof returns "function" for HTML <object> elements
-		// (i.e., `typeof document.createElement( "object" ) === "function"`).
-		// We don't want to classify *any* DOM node as a function.
-		return typeof obj === "function" && typeof obj.nodeType !== "number";
-	},
 
 	isNumeric: function( obj ) {
 
@@ -419,7 +411,7 @@ function isArrayLike( obj ) {
 	var length = !!obj && "length" in obj && obj.length,
 		type = jQuery.type( obj );
 
-	if ( jQuery.isFunction( obj ) || isWindow( obj ) ) {
+	if ( isFunction( obj ) || isWindow( obj ) ) {
 		return false;
 	}
 

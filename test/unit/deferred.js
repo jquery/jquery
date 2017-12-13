@@ -14,7 +14,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		var defer = createDeferred();
 
-		assert.ok( jQuery.isFunction( defer.pipe ), "defer.pipe is a function" );
+		assert.ok( typeof defer.pipe === "function", "defer.pipe is a function" );
 
 		defer.resolve().done( function() {
 			assert.ok( true, "Success on resolve" );
@@ -49,7 +49,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			assert.strictEqual( defer.promise(), promise, "promise is always the same" );
 			assert.strictEqual( funcPromise, func, "non objects get extended" );
 			jQuery.each( promise, function( key ) {
-				if ( !jQuery.isFunction( promise[ key ] ) ) {
+				if ( typeof promise[ key ] !== "function" ) {
 					assert.ok( false, key + " is a function (" + jQuery.type( promise[ key ] ) + ")" );
 				}
 				if ( promise[ key ] !== func[ key ] ) {
@@ -1097,7 +1097,7 @@ QUnit.test( "jQuery.when - always returns a new promise", function( assert ) {
 	}, function( label, args ) {
 		var result = jQuery.when.apply( jQuery, args );
 
-		assert.ok( jQuery.isFunction( result.then ), "Thenable returned from " + label );
+		assert.ok( typeof result.then === "function", "Thenable returned from " + label );
 		assert.strictEqual( result.resolve, undefined, "Non-deferred returned from " + label );
 		assert.strictEqual( result.promise(), result, "Promise returned from " + label );
 

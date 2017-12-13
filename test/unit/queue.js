@@ -261,7 +261,7 @@ QUnit.test( ".promise(obj)", function( assert ) {
 	var obj = {},
 		promise = jQuery( "#foo" ).promise( "promise", obj );
 
-	assert.ok( jQuery.isFunction( promise.promise ), ".promise(type, obj) returns a promise" );
+	assert.ok( typeof promise.promise === "function", ".promise(type, obj) returns a promise" );
 	assert.strictEqual( promise, obj, ".promise(type, obj) returns obj" );
 } );
 

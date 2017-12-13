@@ -76,7 +76,7 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 25 );
+	assert.expect( 23 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 
@@ -89,9 +89,6 @@ QUnit.test( "core", function( assert ) {
 
 	assert.ok( jQuery.isPlainObject( { "a": 2 } ), "jQuery.isPlainObject(object)" );
 	assert.ok( !jQuery.isPlainObject( "foo" ), "jQuery.isPlainObject(String)" );
-
-	assert.ok( jQuery.isFunction( jQuery.noop ), "jQuery.isFunction(jQuery.noop)" );
-	assert.ok( !jQuery.isFunction( 2 ), "jQuery.isFunction(Number)" );
 
 	assert.ok( jQuery.isNumeric( "-2" ), "jQuery.isNumeric(String representing a number)" );
 	assert.ok( !jQuery.isNumeric( "" ), "jQuery.isNumeric(\"\")" );
