@@ -1223,8 +1223,8 @@ QUnit.test( "certain css values of 'normal' should be convertable to a number, s
 
 	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
-	assert.ok( jQuery.isNumeric( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
-	assert.ok( jQuery.isNumeric( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
 	assert.equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 } );
 
