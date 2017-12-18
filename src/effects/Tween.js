@@ -1,7 +1,8 @@
 define( [
 	"../core",
+	"../css/var/cssProps",
 	"../css"
-], function( jQuery ) {
+], function( jQuery, cssProps ) {
 
 "use strict";
 
@@ -85,7 +86,7 @@ Tween.propHooks = {
 			if ( jQuery.fx.step[ tween.prop ] ) {
 				jQuery.fx.step[ tween.prop ]( tween );
 			} else if ( tween.elem.nodeType === 1 &&
-				( tween.elem.style[ jQuery.cssProps[ tween.prop ] ] != null ||
+				( tween.elem.style[ cssProps[ tween.prop ] ] != null ||
 					jQuery.cssHooks[ tween.prop ] ) ) {
 				jQuery.style( tween.elem, tween.prop, tween.now + tween.unit );
 			} else {
