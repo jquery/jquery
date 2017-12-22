@@ -5,20 +5,23 @@ define( [
 	"./ajax/var/location",
 	"./ajax/var/nonce",
 	"./ajax/var/rquery",
-
+	"./ajax/var/rqueryend",
+	"./ajax/var/rampersandstart",
 	"./core/init",
 	"./ajax/parseXML",
 	"./event/trigger",
 	"./deferred",
 	"./serialize" // jQuery.param
-], function( jQuery, document, rnothtmlwhite, location, nonce, rquery ) {
+], function( jQuery, document, rnothtmlwhite, location, nonce, rquery, rqueryend,
+	rampersandstart ) {
 
 "use strict";
 
 var
 	r20 = /%20/g,
 	rhash = /#.*$/,
-	rantiCache = /([?&])_=[^&]*/,
+	rantiCacheQuery = /\?_=[^&]*(&?)/,
+	rantiCacheFragment = /&_=[^&]*(&?)/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 
 	// #7653, #8125, #8152: local protocol detection
@@ -606,12 +609,15 @@ jQuery.extend( {
 
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
-				cacheURL = cacheURL.replace( rantiCache, "$1" );
+				cacheURL = cacheURL.replace( rantiCacheQuery, "?" )
+					.replace( rantiCacheFragment, "$1" );
 				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
 			}
 
 			// Put hash and anti-cache on the URL that will be requested (gh-1732)
-			s.url = cacheURL + uncached;
+			// Make sure to remove extra ampersand if cacheURL ends with ? (gh-3682)
+			s.url = ( rqueryend.test( cacheURL ) && rampersandstart.test( uncached ) ) ?
+				cacheURL + uncached.substring( 1 ) : cacheURL + uncached;
 
 		// Change '%20' to '+' if this is encoded form body content (gh-2658)
 		} else if ( s.data && s.processData &&
