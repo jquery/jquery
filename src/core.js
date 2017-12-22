@@ -455,6 +455,7 @@ if ( typeof Symbol === "function" ) {
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
 function( i, name ) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
+	class2type[ "[object AsyncFunction]" ] = "function";
 } );
 
 function isArrayLike( obj ) {
