@@ -439,6 +439,13 @@ QUnit.test( "isFunction", function( assert ) {
 	fn = function() {};
 	assert.ok( jQuery.isFunction( fn ), "Normal Function" );
 
+	// Make sure ES7 async functions also work.
+	// Because our code should work in ES5 we can't define `var asyncFn = async function() {};` directly.
+	function AsyncFunction() { }
+	AsyncFunction.prototype[ Symbol.toStringTag ] = "AsyncFunction";
+	var asyncFn = new AsyncFunction();
+	assert.ok( jQuery.isFunction( asyncFn ), "Async Function" );
+
 	assert.notOk( jQuery.isFunction( Object.create( fn ) ), "custom Function subclass" );
 
 	obj = document.createElement( "object" );
