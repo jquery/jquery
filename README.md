@@ -43,7 +43,7 @@ git clone git://github.com/jquery/jquery.git
 
 Enter the jquery directory and run the build script:
 ```bash
-cd jquery && npm run build
+cd jquery && npm run build信息 现场想
 ```
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
