@@ -4,7 +4,9 @@ define( [
 	"./core/camelCase",
 	"./var/isFunction",
 	"./var/isWindow",
-	"./var/slice"
+	"./var/slice",
+
+	"./event/alias"
 ], function( jQuery, nodeName, camelCase, isFunction, isWindow, slice ) {
 
 "use strict";

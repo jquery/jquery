@@ -41,6 +41,82 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 		.remove();
 } );
 
+if ( jQuery.fn.hover ) {
+	QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
+		assert.expect( 1 );
+
+		var times = 0,
+			handler1 = function() { ++times; },
+			handler2 = function() { ++times; };
+
+		jQuery( "#firstp" )
+			.hover( handler1, handler2 )
+			.mouseenter().mouseleave()
+			.off( "mouseenter", handler1 )
+			.off( "mouseleave", handler2 )
+			.hover( handler1 )
+			.mouseenter().mouseleave()
+			.off( "mouseenter mouseleave", handler1 )
+			.mouseenter().mouseleave();
+
+		assert.equal( times, 4, "hover handlers fired" );
+
+	} );
+}
+
+
+QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( assert ) {
+	assert.expect( 5 );
+
+	var counter, clickCounter,
+		elem = jQuery( "<li><a href='#'>Change location</a></li>" ).prependTo( "#firstUL" );
+	elem.find( "a" ).on( "click", function() {
+		var close = jQuery( "spanx", this ); // same with jQuery(this).find("span");
+		assert.equal( close.length, 0, "Context element does not exist, length must be zero" );
+		assert.ok( !close[ 0 ], "Context element does not exist, direct access to element must return undefined" );
+		return false;
+	} ).click();
+
+	// manually clean up detached elements
+	elem.remove();
+
+	jQuery( "#check1" ).click( function() {
+		assert.ok( true, "click event handler for checkbox gets fired twice, see #815" );
+	} ).click();
+
+	counter = 0;
+	jQuery( "#firstp" )[ 0 ].onclick = function() {
+		counter++;
+	};
+	jQuery( "#firstp" ).click();
+	assert.equal( counter, 1, "Check that click, triggers onclick event handler also" );
+
+	clickCounter = 0;
+	jQuery( "#simon1" )[ 0 ].onclick = function() {
+		clickCounter++;
+	};
+	jQuery( "#simon1" ).click();
+	assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
+} );
+
+QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
+
+	// Explicitly skipping focus/blur events due to their flakiness
+	var	$elem = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
+		aliases = ( "resize scroll click dblclick mousedown mouseup " +
+			"mousemove mouseover mouseout mouseenter mouseleave change " +
+			"select submit keydown keypress keyup contextmenu" ).split( " " );
+	assert.expect( aliases.length );
+
+	jQuery.each( aliases, function( i, name ) {
+
+		// e.g. $(elem).click(...).click();
+		$elem[ name ]( function( event ) {
+			assert.equal( event.type, name, "triggered " + name );
+		} )[ name ]().off( name );
+	} );
+} );
+
 QUnit.test( "jQuery.parseJSON", function( assert ) {
 	assert.expect( 20 );
 
