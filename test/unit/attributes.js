@@ -12,6 +12,10 @@ function functionReturningObj( value ) {
 	};
 }
 
+function arrayFromString( value ) {
+	return value ? value.split( " " ) : [];
+}
+
 /*
 	======== local reference =======
 	bareObj and functionReturningObj can be used to test passing functions to setters
@@ -1261,6 +1265,10 @@ QUnit.test( "addClass(Function)", function( assert ) {
 	testAddClass( functionReturningObj, assert );
 } );
 
+QUnit.test( "addClass(Array)", function( assert ) {
+	testAddClass( arrayFromString, assert );
+} );
+
 QUnit.test( "addClass(Function) with incoming value", function( assert ) {
 	assert.expect( 52 );
 	var pass, i,
@@ -1332,6 +1340,10 @@ QUnit.test( "removeClass(String) - simple", function( assert ) {
 
 QUnit.test( "removeClass(Function) - simple", function( assert ) {
 	testRemoveClass( functionReturningObj, assert );
+} );
+
+QUnit.test( "removeClass(Array) - simple", function( assert ) {
+	testRemoveClass( arrayFromString, assert );
 } );
 
 QUnit.test( "removeClass(Function) with incoming value", function( assert ) {
@@ -1430,6 +1442,10 @@ QUnit.test( "toggleClass(String|boolean|undefined[, boolean])", function( assert
 
 QUnit.test( "toggleClass(Function[, boolean])", function( assert ) {
 	testToggleClass( functionReturningObj, assert );
+} );
+
+QUnit.test( "toggleClass(Array[, boolean])", function( assert ) {
+	testToggleClass( arrayFromString, assert );
 } );
 
 QUnit.test( "toggleClass(Function[, boolean]) with incoming value", function( assert ) {
@@ -1565,6 +1581,40 @@ QUnit.test( "addClass, removeClass, hasClass on many elements", function( assert
 
 	assert.ok( !jQuery( "<p class='hi0'>p0</p><p class='hi1'>p1</p><p class='hi2'>p2</p>" ).hasClass( "hi" ),
 		"Did not find a class when not present" );
+} );
+
+QUnit.test( "addClass, removeClass, hasClass on many elements - Array", function( assert ) {
+	assert.expect( 16 );
+
+	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
+
+	elem.addClass( [ "hi" ] );
+	assert.equal( elem[ 0 ].className, "hi", "Check single added class" );
+	assert.equal( elem[ 1 ].className, "hi", "Check single added class" );
+	assert.equal( elem[ 2 ].className, "hi", "Check single added class" );
+
+	elem.addClass( [ "foo",  "bar" ] );
+	assert.equal( elem[ 0 ].className, "hi foo bar", "Check more added classes" );
+	assert.equal( elem[ 1 ].className, "hi foo bar", "Check more added classes" );
+	assert.equal( elem[ 2 ].className, "hi foo bar", "Check more added classes" );
+
+	elem.removeClass();
+	assert.equal( elem[ 0 ].className, "", "Remove all classes" );
+	assert.equal( elem[ 1 ].className, "", "Remove all classes" );
+	assert.equal( elem[ 2 ].className, "", "Remove all classes" );
+
+	elem.addClass( [ "hi", "foo", "bar", "baz" ] );
+	elem.removeClass( [ "foo" ] );
+	assert.equal( elem[ 0 ].className, "hi bar baz", "Check removal of one class" );
+	assert.equal( elem[ 1 ].className, "hi bar baz", "Check removal of one class" );
+	assert.equal( elem[ 2 ].className, "hi bar baz", "Check removal of one class" );
+
+	elem.removeClass( [ "bar baz" ] );
+	assert.equal( elem[ 0 ].className, "hi", "Check removal of two classes" );
+	assert.equal( elem[ 1 ].className, "hi", "Check removal of two classes" );
+	assert.equal( elem[ 2 ].className, "hi", "Check removal of two classes" );
+
+	assert.ok( elem.hasClass( "hi" ), "Check has1" );
 } );
 
 QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-HTML whitespace (gh-3072, gh-3003)", function( assert ) {
