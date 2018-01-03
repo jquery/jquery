@@ -39,4 +39,6 @@ jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
 jQuery.isWindow = isWindow;
 
+jQuery.now = Date.now;
+
 } );

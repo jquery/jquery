@@ -183,3 +183,9 @@ QUnit.test( "jQuery.isWindow", function( assert ) {
 	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
 	assert.ok( !jQuery.isWindow( function() {} ), "function" );
 } );
+
+QUnit.test( "jQuery.now", function( assert ) {
+	assert.expect( 1 );
+
+	assert.ok( typeof jQuery.now() === "number", "jQuery.now is a function" );
+} );
