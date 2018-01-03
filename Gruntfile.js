@@ -246,7 +246,12 @@ module.exports = function( grunt ) {
 						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
 					output: {
-						"ascii_only": true
+						"ascii_only": true,
+
+						// Support: Android 4.0 only
+						// UglifyJS 3 breaks Android 4.0 if this option is not enabled.
+						// This is in lieu of setting ie8 for all of mangle, compress, and output
+						"ie8": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) JS Foundation and other contributors | jquery.org/license */",
