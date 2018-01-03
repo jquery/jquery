@@ -524,6 +524,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	// Support: Android <= 4.0 - 4.3 only
 	// Android 4.0-4.3 does not have ontimeout on an xhr
 	if ( "ontimeout" in new window.XMLHttpRequest() ) {
 		ajaxTest( "jQuery.ajax() - native timeout", 2, function( assert ) {
