@@ -1028,23 +1028,6 @@ QUnit.test( "box model properties incorrectly returning % instead of px, see #10
 	assert.equal( el2.css( "marginLeft" ), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
 } );
 
-QUnit.test( "jQuery.cssProps behavior, (bug #8402)", function( assert ) {
-	assert.expect( 2 );
-
-	var div = jQuery( "<div>" ).appendTo( document.body ).css( {
-		"position": "absolute",
-		"top": 0,
-		"left": 10
-	} );
-	jQuery.cssProps.top = "left";
-	assert.equal( div.css( "top" ), "10px", "the fixed property is used when accessing the computed style" );
-	div.css( "top", "100px" );
-	assert.equal( div[ 0 ].style.left, "100px", "the fixed property is used when setting the style" );
-
-	// cleanup jQuery.cssProps
-	jQuery.cssProps.top = undefined;
-} );
-
 QUnit.test( "widows & orphans #8936", function( assert ) {
 
 	var $p = jQuery( "<p>" ).appendTo( "#qunit-fixture" );

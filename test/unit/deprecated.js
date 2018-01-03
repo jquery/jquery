@@ -183,3 +183,20 @@ QUnit.test( "jQuery.isWindow", function( assert ) {
 	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
 	assert.ok( !jQuery.isWindow( function() {} ), "function" );
 } );
+
+QUnit.test( "jQuery.cssProps behavior, (bug #8402)", function( assert ) {
+	assert.expect( 2 );
+
+	var div = jQuery( "<div>" ).appendTo( document.body ).css( {
+		"position": "absolute",
+		"top": 0,
+		"left": 10
+	} );
+	jQuery.cssProps.top = "left";
+	assert.equal( div.css( "top" ), "10px", "the fixed property is used when accessing the computed style" );
+	div.css( "top", "100px" );
+	assert.equal( div[ 0 ].style.left, "100px", "the fixed property is used when setting the style" );
+
+	// cleanup jQuery.cssProps
+	jQuery.cssProps.top = undefined;
+} );

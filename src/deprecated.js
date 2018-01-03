@@ -1,8 +1,9 @@
 define( [
 	"./core",
 	"./core/nodeName",
-	"./var/isWindow"
-], function( jQuery, nodeName, isWindow ) {
+	"./var/isWindow",
+	"./css/var/cssProps"
+], function( jQuery, nodeName, isWindow, cssProps ) {
 
 "use strict";
 
@@ -38,5 +39,6 @@ jQuery.isArray = Array.isArray;
 jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
 jQuery.isWindow = isWindow;
+jQuery.cssProps = cssProps;
 
 } );

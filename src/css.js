@@ -5,6 +5,7 @@ define( [
 	"./var/document",
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
+	"./css/var/cssProps",
 	"./css/var/cssExpand",
 	"./css/var/getStyles",
 	"./css/var/swap",
@@ -16,7 +17,7 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, pnum, access, document, rcssNum, rnumnonpx, cssExpand,
+], function( jQuery, pnum, access, document, rcssNum, rnumnonpx, cssProps, cssExpand,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
 
 "use strict";
@@ -57,12 +58,12 @@ function vendorPropName( name ) {
 	}
 }
 
-// Return a property mapped along what jQuery.cssProps suggests or to
+// Return a property mapped along what cssProps suggests or to
 // a vendor prefixed property.
 function finalPropName( name ) {
-	var ret = jQuery.cssProps[ name ];
+	var ret = cssProps[ name ];
 	if ( !ret ) {
-		ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
+		ret = cssProps[ name ] = vendorPropName( name ) || name;
 	}
 	return ret;
 }
@@ -230,10 +231,6 @@ jQuery.extend( {
 		"zIndex": true,
 		"zoom": true
 	},
-
-	// Add in properties whose names you wish to fix before
-	// setting or getting the value
-	cssProps: {},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
