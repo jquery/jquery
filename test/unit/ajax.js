@@ -2281,6 +2281,24 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	QUnit.test( "jQuery.getScript( Object ) - with callback", 2, function( assert ) {
+		var done = assert.async();
+
+		Globals.register( "testBar" );
+		jQuery.getScript( {
+			url: url( "mock.php?action=testbar" ),
+			success: function() {
+				assert.strictEqual( window[ "testBar" ], "bar", "Check if script was evaluated" );
+				done();
+			}
+		} );
+	} );
+
+	QUnit.test( "jQuery.getScript( Object ) - no callback", 1, function( assert ) {
+		Globals.register( "testBar" );
+		jQuery.getScript( { url: url( "mock.php?action=testbar" ) } ).done( assert.async() );
+	} );
+
 // //----------- jQuery.fn.load()
 
 	// check if load can be called with only url
