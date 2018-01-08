@@ -687,15 +687,15 @@ QUnit.test( "on(), with different this object", function( assert ) {
 		data = { myData: true },
 		handler1 = function() {
 			assert.equal( this, thisObject, "on() with different this object" );
-		},
+		}.bind( thisObject ),
 		handler2 = function( event ) {
 			assert.equal( this, thisObject, "on() with different this object and data" );
 			assert.equal( event.data, data, "on() with different this object and data" );
-		};
+		}.bind( thisObject );
 
 	jQuery( "#firstp" )
-		.on( "click", handler1.bind( thisObject ) ).trigger( "click" ).off( "click", handler1 )
-		.on( "click", data, handler2.bind( thisObject ) ).trigger( "click" ).off( "click", handler2 );
+		.on( "click", handler1 ).trigger( "click" ).off( "click", handler1 )
+		.on( "click", data, handler2 ).trigger( "click" ).off( "click", handler2 );
 
 	assert.ok( !jQuery._data( jQuery( "#firstp" )[ 0 ], "events" ), "Event handler unbound when using different this object and data." );
 } );
