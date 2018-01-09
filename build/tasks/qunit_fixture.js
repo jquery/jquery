@@ -11,7 +11,7 @@ module.exports = function( grunt ) {
 				fs.readFileSync(
 					"./test/data/qunit-fixture.html",
 					"utf8"
-				).toString()
+				).toString().replace( /\r\n/g, "\n" )
 			) +
 			";\n" +
 			"// Compat with QUnit 1.x:\n" +
