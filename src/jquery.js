@@ -11,7 +11,6 @@ define( [
 	"./queue/delay",
 	"./attributes",
 	"./event",
-	"./event/alias",
 	"./event/focusin",
 	"./manipulation",
 	"./manipulation/_evalUrl",
