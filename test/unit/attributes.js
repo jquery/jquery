@@ -592,7 +592,7 @@ QUnit.test( "removeAttr(String)", function( assert ) {
 	assert.expect( 12 );
 	var $first;
 
-	assert.equal( jQuery( "#mark" ).removeAttr( "class" ).attr( "class" ), undefined, "remove class" );
+	assert.equal( jQuery( "<div class='hello' />" ).removeAttr( "class" ).attr( "class" ), undefined, "remove class" );
 	assert.equal( jQuery( "#form" ).removeAttr( "id" ).attr( "id" ), undefined, "Remove id" );
 	assert.equal( jQuery( "#foo" ).attr( "style", "position:absolute;" ).removeAttr( "style" ).attr( "style" ), undefined, "Check removing style attribute" );
 	assert.equal( jQuery( "#form" ).attr( "style", "position:absolute;" ).removeAttr( "style" ).attr( "style" ), undefined, "Check removing style attribute on a form" );
