@@ -262,13 +262,13 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 
 	getUnits( "lineHeight" );
 	cssCurrent = parseFloat( $child.css( "lineHeight", "1em" ).css( "lineHeight" ) );
+	add( "lineHeight",  50,  "%" );
 	add( "lineHeight",   2, "em" );
 	add( "lineHeight", -10, "px" );
 	add( "lineHeight",  20, "pt" );
 	add( "lineHeight",  30, "pc" );
 	add( "lineHeight",   1, "cm" );
 	add( "lineHeight", -44, "mm" );
-	add( "lineHeight",  50,  "%" );
 } );
 
 QUnit.test( "css() mismatched relative values with bounded styles (gh-2144)", function( assert ) {
