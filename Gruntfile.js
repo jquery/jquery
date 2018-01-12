@@ -211,22 +211,25 @@ module.exports = function( grunt ) {
 				autoWatch: false,
 				concurrency: 3,
 				captureTimeout: 20 * 1000,
-
-				// To debug tests with Karma:
-				// - Run 'grunt karma:chrome' or 'grunt karma:firefox'
-				//   (any karma subtask that has singleRun=false)
-				// - Press "Debug" in the opened browser window.
-				singleRun: false
-			},
-			main: {
-				browsers: [ "ChromeHeadless" ],
 				singleRun: true
 			},
-			chrome: {
-				browsers: [ "Chrome" ]
+			main: {
+				browsers: [ "ChromeHeadless" ]
 			},
-			firefox: {
-				browsers: [ "Firefox" ]
+
+			// To debug tests with Karma:
+			// 1. Run 'grunt karma:chrome-debug' or 'grunt karma:firefox-debug'
+			//    (any karma subtask that has singleRun=false)
+			// 2. Press "Debug" in the opened browser window to start
+			//    the tests. Unlike the other karma tasks, the debug task will
+			//    keep the browser window open.
+			"chrome-debug": {
+				browsers: [ "Chrome" ],
+				singleRun: false
+			},
+			"firefox-debug": {
+				browsers: [ "Firefox" ],
+				singleRun: false
 			}
 		},
 		watch: {
