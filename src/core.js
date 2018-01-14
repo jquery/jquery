@@ -18,10 +18,11 @@ define( [
 	"./var/support",
 	"./var/isFunction",
 	"./var/isWindow",
-	"./core/DOMEval"
+	"./core/DOMEval",
+	"./core/toType"
 ], function( arr, document, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, isFunction, isWindow, DOMEval ) {
+	support, isFunction, isWindow, DOMEval, toType ) {
 
 "use strict";
 
@@ -237,17 +238,6 @@ jQuery.extend( {
 		return true;
 	},
 
-	type: function( obj ) {
-		if ( obj == null ) {
-			return obj + "";
-		}
-
-		// Support: Android <=2.3 only (functionish RegExp)
-		return typeof obj === "object" || typeof obj === "function" ?
-			class2type[ toString.call( obj ) ] || "object" :
-			typeof obj;
-	},
-
 	// Evaluates a script in a global context
 	globalEval: function( code ) {
 		DOMEval( code );
@@ -395,7 +385,7 @@ function isArrayLike( obj ) {
 	// hasOwn isn't used here due to false negatives
 	// regarding Nodelist length in IE
 	var length = !!obj && "length" in obj && obj.length,
-		type = jQuery.type( obj );
+		type = toType( obj );
 
 	if ( isFunction( obj ) || isWindow( obj ) ) {
 		return false;

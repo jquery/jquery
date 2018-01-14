@@ -238,58 +238,6 @@ QUnit.test( "trim", function( assert ) {
 	assert.equal( jQuery.trim( "\uFEFF \xA0! | \uFEFF" ), "! |", "leading/trailing should be trimmed" );
 } );
 
-QUnit.test( "type", function( assert ) {
-	assert.expect( 28 );
-
-	assert.equal( jQuery.type( null ), "null", "null" );
-	assert.equal( jQuery.type( undefined ), "undefined", "undefined" );
-	assert.equal( jQuery.type( true ), "boolean", "Boolean" );
-	assert.equal( jQuery.type( false ), "boolean", "Boolean" );
-	assert.equal( jQuery.type( Boolean( true ) ), "boolean", "Boolean" );
-	assert.equal( jQuery.type( 0 ), "number", "Number" );
-	assert.equal( jQuery.type( 1 ), "number", "Number" );
-	assert.equal( jQuery.type( Number( 1 ) ), "number", "Number" );
-	assert.equal( jQuery.type( "" ), "string", "String" );
-	assert.equal( jQuery.type( "a" ), "string", "String" );
-	assert.equal( jQuery.type( String( "a" ) ), "string", "String" );
-	assert.equal( jQuery.type( {} ), "object", "Object" );
-	assert.equal( jQuery.type( /foo/ ), "regexp", "RegExp" );
-	assert.equal( jQuery.type( new RegExp( "asdf" ) ), "regexp", "RegExp" );
-	assert.equal( jQuery.type( [ 1 ] ), "array", "Array" );
-	assert.equal( jQuery.type( new Date() ), "date", "Date" );
-	assert.equal( jQuery.type( new Function( "return;" ) ), "function", "Function" );
-	assert.equal( jQuery.type( function() {} ), "function", "Function" );
-	assert.equal( jQuery.type( new Error() ), "error", "Error" );
-	assert.equal( jQuery.type( window ), "object", "Window" );
-	assert.equal( jQuery.type( document ), "object", "Document" );
-	assert.equal( jQuery.type( document.body ), "object", "Element" );
-	assert.equal( jQuery.type( document.createTextNode( "foo" ) ), "object", "TextNode" );
-	assert.equal( jQuery.type( document.getElementsByTagName( "*" ) ), "object", "NodeList" );
-
-	// Avoid Lint complaints
-	var MyString = String,
-		MyNumber = Number,
-		MyBoolean = Boolean,
-		MyObject = Object;
-	assert.equal( jQuery.type( new MyBoolean( true ) ), "boolean", "Boolean" );
-	assert.equal( jQuery.type( new MyNumber( 1 ) ), "number", "Number" );
-	assert.equal( jQuery.type( new MyString( "a" ) ), "string", "String" );
-	assert.equal( jQuery.type( new MyObject() ), "object", "Object" );
-} );
-
-QUnit.test( "type for `Symbol`", function( assert ) {
-	// Prevent reference errors
-	if ( typeof Symbol !== "function" ) {
-		assert.expect( 0 );
-		return;
-	}
-
-	assert.expect( 2 );
-
-	assert.equal( jQuery.type( Symbol() ), "symbol", "Symbol" );
-	assert.equal( jQuery.type( Object( Symbol() ) ), "symbol", "Symbol" );
-} );
-
 QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	assert.expect( 23 );
@@ -1328,7 +1276,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 
 	nodes = jQuery.parseHTML( jQuery( "body" )[ 0 ].innerHTML );
 	assert.ok( nodes.length > 4, "Parse a large html string" );
-	assert.equal( jQuery.type( nodes ), "array", "parseHTML returns an array rather than a nodelist" );
+	assert.ok( Array.isArray( nodes ), "parseHTML returns an array rather than a nodelist" );
 
 	html = "<script>undefined()</script>";
 	assert.equal( jQuery.parseHTML( html ).length, 0, "Ignore scripts by default" );

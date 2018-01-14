@@ -242,13 +242,51 @@ QUnit.test( "jQuery.nodeName", function( assert ) {
 } );
 
 
-QUnit.test( "core", function( assert ) {
-	assert.expect( 2 );
+QUnit.test( "type", function( assert ) {
+	assert.expect( 28 );
 
-	assert.ok( jQuery.isFunction( jQuery.noop ), "jQuery.isFunction(jQuery.noop)" );
-	assert.ok( !jQuery.isFunction( 2 ), "jQuery.isFunction(Number)" );
+	assert.equal( jQuery.type( null ), "null", "null" );
+	assert.equal( jQuery.type( undefined ), "undefined", "undefined" );
+	assert.equal( jQuery.type( true ), "boolean", "Boolean" );
+	assert.equal( jQuery.type( false ), "boolean", "Boolean" );
+	assert.equal( jQuery.type( Boolean( true ) ), "boolean", "Boolean" );
+	assert.equal( jQuery.type( 0 ), "number", "Number" );
+	assert.equal( jQuery.type( 1 ), "number", "Number" );
+	assert.equal( jQuery.type( Number( 1 ) ), "number", "Number" );
+	assert.equal( jQuery.type( "" ), "string", "String" );
+	assert.equal( jQuery.type( "a" ), "string", "String" );
+	assert.equal( jQuery.type( String( "a" ) ), "string", "String" );
+	assert.equal( jQuery.type( {} ), "object", "Object" );
+	assert.equal( jQuery.type( /foo/ ), "regexp", "RegExp" );
+	assert.equal( jQuery.type( new RegExp( "asdf" ) ), "regexp", "RegExp" );
+	assert.equal( jQuery.type( [ 1 ] ), "array", "Array" );
+	assert.equal( jQuery.type( new Date() ), "date", "Date" );
+	assert.equal( jQuery.type( new Function( "return;" ) ), "function", "Function" );
+	assert.equal( jQuery.type( function() {} ), "function", "Function" );
+	assert.equal( jQuery.type( new Error() ), "error", "Error" );
+	assert.equal( jQuery.type( window ), "object", "Window" );
+	assert.equal( jQuery.type( document ), "object", "Document" );
+	assert.equal( jQuery.type( document.body ), "object", "Element" );
+	assert.equal( jQuery.type( document.createTextNode( "foo" ) ), "object", "TextNode" );
+	assert.equal( jQuery.type( document.getElementsByTagName( "*" ) ), "object", "NodeList" );
+
+	// Avoid Lint complaints
+	var MyString = String,
+		MyNumber = Number,
+		MyBoolean = Boolean,
+		MyObject = Object;
+	assert.equal( jQuery.type( new MyBoolean( true ) ), "boolean", "Boolean" );
+	assert.equal( jQuery.type( new MyNumber( 1 ) ), "number", "Number" );
+	assert.equal( jQuery.type( new MyString( "a" ) ), "string", "String" );
+	assert.equal( jQuery.type( new MyObject() ), "object", "Object" );
 } );
 
+QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "type for `Symbol`", function( assert ) {
+	assert.expect( 2 );
+
+	assert.equal( jQuery.type( Symbol() ), "symbol", "Symbol" );
+	assert.equal( jQuery.type( Object( Symbol() ) ), "symbol", "Symbol" );
+} );
 
 QUnit.test( "isFunction", function( assert ) {
 	assert.expect( 20 );

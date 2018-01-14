@@ -937,7 +937,7 @@ QUnit.module( "ajax", {
 					dataType: "jsonp",
 					crossDomain: crossDomain,
 					success: function( data ) {
-						assert.strictEqual( jQuery.type( data ), "array", "JSON results returned (GET, REST-like with param)" );
+						assert.ok( Array.isArray( data ), "JSON results returned (GET, REST-like with param)" );
 					}
 				}
 			];

@@ -50,7 +50,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			assert.strictEqual( funcPromise, func, "non objects get extended" );
 			jQuery.each( promise, function( key ) {
 				if ( typeof promise[ key ] !== "function" ) {
-					assert.ok( false, key + " is a function (" + jQuery.type( promise[ key ] ) + ")" );
+					assert.ok( false, key + " is a function (" + typeof( promise[ key ] ) + ")" );
 				}
 				if ( promise[ key ] !== func[ key ] ) {
 					assert.strictEqual( func[ key ], promise[ key ], key + " is the same" );

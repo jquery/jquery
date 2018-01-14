@@ -76,16 +76,12 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 21 );
+	assert.expect( 17 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 
 	assert.strictEqual( elem.length, 2, "Correct number of elements" );
 	assert.strictEqual( jQuery.trim( "  hello   " ), "hello", "jQuery.trim" );
-
-	assert.strictEqual( jQuery.type( null ), "null", "jQuery.type(null)" );
-	assert.strictEqual( jQuery.type( undefined ), "undefined", "jQuery.type(undefined)" );
-	assert.strictEqual( jQuery.type( "a" ), "string", "jQuery.type(String)" );
 
 	assert.ok( jQuery.isPlainObject( { "a": 2 } ), "jQuery.isPlainObject(object)" );
 	assert.ok( !jQuery.isPlainObject( "foo" ), "jQuery.isPlainObject(String)" );
