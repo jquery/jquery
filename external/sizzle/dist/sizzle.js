@@ -129,7 +129,18 @@ var i,
 	rnative = /^[^{]+\{\s*\[native \w/,
 
 	// Easily-parseable/retrievable ID or TAG or CLASS selectors
-	rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,
+	// ID: #((?:[\w-]|\\[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\\\[\]\^\`\{\|\}\~]|\\[a-f0-9]{1,6})+)
+	//     Starts with '#' and repetition of one of:
+	//     - Any letter or number or minus ('-')
+	//     - Special character escaped with backslash
+	//     - Codepoint escaped prefixed with balckash
+	// TAG: (\w+) Letters or number without any special characters
+	// CLASS: \.([\w-]+)
+	//     Starts with '.' and repetition of one of:
+	//     - Any letter or number or minus ('-')
+	//     - Special character escaped with backslash
+	//     - Codepoint escaped prefixed with balckash
+	rquickExpr = /^(?:#((?:[\w-]|\\[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\\\[\]\^\`\{\|\}\~]|\\[a-f0-9]{1,6})+)|(\w+)|(?:.((?:[\w-]|\\[\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\\\[\]\^\`\{\|\}\~]|\\[a-f0-9]{1,6})+)))$/,
 
 	rsibling = /[+~]/,
 
