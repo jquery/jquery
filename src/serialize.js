@@ -1,11 +1,12 @@
 define( [
 	"./core",
+	"./core/toType",
 	"./manipulation/var/rcheckableType",
 	"./var/isFunction",
 	"./core/init",
 	"./traversing", // filter
 	"./attributes/prop"
-], function( jQuery, rcheckableType, isFunction ) {
+], function( jQuery, toType, rcheckableType, isFunction ) {
 
 "use strict";
 
@@ -39,7 +40,7 @@ function buildParams( prefix, obj, traditional, add ) {
 			}
 		} );
 
-	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
+	} else if ( !traditional && toType( obj ) === "object" ) {
 
 		// Serialize object item.
 		for ( name in obj ) {
