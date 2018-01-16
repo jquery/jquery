@@ -220,7 +220,13 @@ module.exports = function( grunt ) {
 			},
 			main: {
 				browsers: [ "ChromeHeadless" ],
-				singleRun: true
+				singleRun: true,
+
+				// Temporary workaround.
+				// Karma can't access the binaries on travis
+				// without root access.
+				// See https://github.com/travis-ci/travis-ci/issues/8836
+				sudo: "required"
 			},
 			chrome: {
 				browsers: [ "Chrome" ]
