@@ -1274,7 +1274,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - data - no processing ", 1, function( assert ) {
+	ajaxTest( "jQuery.ajax() - data - no processing POST", 1, function( assert ) {
 		return {
 			url: "bogus.html",
 			data: { devo: "A Beautiful World" },
@@ -1283,6 +1283,37 @@ QUnit.module( "ajax", {
 			processData: false,
 			beforeSend: function( _, s ) {
 				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - data - no processing GET", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: { devo: "A Beautiful World" },
+			type: "get",
+			contentType: "x-something-else",
+			processData: false,
+			beforeSend: function( _, s ) {
+				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+		ajaxTest( "jQuery.ajax() - data - process string with GET", 2, function( assert ) {
+		return {
+			url: "bogus.html",
+			data: "a=1&b=2",
+			type: "get",
+			contentType: "x-something-else",
+			processData: false,
+			beforeSend: function( _, s ) {
+				assert.equal( s.url, "bogus.html?a=1&b=2", "added data to url" );
+				assert.equal( s.data, undefined, "removed data from settings" );
 				return false;
 			},
 			error: true
