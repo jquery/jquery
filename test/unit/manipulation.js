@@ -1797,20 +1797,26 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-QUnit.test( "html(script type module)", function( assert ) {
-	assert.expect( 1 );
-	var fixture = jQuery( "#qunit-fixture" ),
-	tmp = fixture.html(
+QUnit[ QUnit.moduleTypeSupported ? "test" : "skip" ]( "html(script type module)", function( assert ) {
+	assert.expect( 4 );
+	var done = assert.async(),
+		$fixture = jQuery( "#qunit-fixture" );
+
+	$fixture.html(
 		[
 			"<script type='module'>ok( true, 'evaluated: module' );</script>",
-			"<script type='module' src='./data/module.js'></script>",
+			"<script type='module' src='" + url( "module.js" ) + "'></script>",
 			"<div>",
 				"<script type='module'>ok( true, 'evaluated: inner module' );</script>",
-				"<script type='module' src='./data/inner_module.js'></script>",
+				"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
 			"</div>"
 		].join( "" )
-	).find( "script" );
-	assert.equal( tmp.length, 4, "All script tags remain." );
+	);
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		done();
+	}, 1000 );
 } );
 
 QUnit.test( "html(Function) with incoming value -- direct selection", function( assert ) {
