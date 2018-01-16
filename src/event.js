@@ -10,7 +10,7 @@ define( [
 
 	"./core/init",
 	"./selector"
-], function( jQuery, document, isFunction, documentElement, rnothtmlwhite,
+], function( jQuery, document, documentElement, isFunction, rnothtmlwhite,
 	slice, dataPriv, nodeName ) {
 
 "use strict";
