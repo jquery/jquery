@@ -470,7 +470,7 @@ QUnit.test( "not(jQuery)", function( assert ) {
 	);
 } );
 
-QUnit.test( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
+QUnit[ jQuery.find.compile ? "test" : "skip" ]( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
 	assert.expect( 3 );
 
 	var mixedContents = jQuery( "#nonnodes" ).contents(),
