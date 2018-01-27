@@ -406,7 +406,7 @@ supportjQuery.each(
 	function( subclass, source ) {
 		var fn;
 		try {
-			fn = Function( "return " + source )();
+			fn = Function( "return " + source );
 		} catch ( e ) {}
 
 		QUnit[ fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
@@ -429,8 +429,8 @@ QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
 		obj[ Symbol.toStringTag ] = "Function";
 		fn[ Symbol.toStringTag ] = "Object";
 
-		assert.equal( jQuery.isFunction( obj ), false, "function-mimicking object" );
-		assert.equal( jQuery.isFunction( fn ), true, "object-mimicking function" );
+		assert.equal( jQuery.isFunction( obj ), true, "function-mimicking object" );
+		assert.equal( jQuery.isFunction( fn ), false, "object-mimicking function" );
 	}
 );
 
