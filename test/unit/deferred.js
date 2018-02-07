@@ -884,7 +884,9 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 	var customToStringThen = {
 		then: function( onFulfilled ) {
-			onFulfilled();
+			// Support: Android 4.0 only
+			// Strict mode functions invoked without .call/.apply get global-object context
+			onFulfilled.call();
 		}
 	};
 	if ( typeof Symbol === "function" ) {
