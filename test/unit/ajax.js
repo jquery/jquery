@@ -505,24 +505,26 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
-		return {
-			url: url( "mock.php?action=wait&wait=1" ),
-			xhr: function() {
-				var xhr = new window.XMLHttpRequest();
-				setTimeout( function() {
-					xhr.abort();
-				}, 100 );
-				return xhr;
-			},
-			error: function( xhr, msg ) {
-				assert.strictEqual( msg, "error", "Native abort triggers error callback" );
-			},
-			complete: function() {
-				assert.ok( true, "complete" );
-			}
-		};
-	} );
+	if ( !/android 4\.0/i.test( navigator.userAgent ) ) {
+		ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
+			return {
+				url: url( "mock.php?action=wait&wait=1" ),
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+					setTimeout( function() {
+						xhr.abort();
+					}, 100 );
+					return xhr;
+				},
+				error: function( xhr, msg ) {
+					assert.strictEqual( msg, "error", "Native abort triggers error callback" );
+				},
+				complete: function() {
+					assert.ok( true, "complete" );
+				}
+			};
+		} );
+	}
 
 	// Support: Android <= 4.0 - 4.3 only
 	// Android 4.0-4.3 does not have ontimeout on an xhr
