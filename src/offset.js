@@ -132,7 +132,8 @@ jQuery.fn.extend( {
 			doc = elem.ownerDocument;
 			offsetParent = elem.offsetParent || doc.documentElement;
 			while ( offsetParent &&
-				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				offsetParent !== doc &&
+				( offsetParent !== doc.body && offsetParent !== doc.documentElement ) &&
 				jQuery.css( offsetParent, "position" ) === "static" ) {
 
 				offsetParent = offsetParent.parentNode;
