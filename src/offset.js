@@ -131,6 +131,9 @@ jQuery.fn.extend( {
 			// when a statically positioned element is identified
 			doc = elem.ownerDocument;
 			offsetParent = elem.offsetParent || doc.documentElement;
+			while ((offsetParent.nodeName == "TD" || offsetParent.nodeName == "TABLE") && 
+			       jQuery.css(offsetParent, "position") === "static")
+				offsetParent = offsetParent.offsetParent || doc.documentElement;
 			while ( offsetParent &&
 				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
 				jQuery.css( offsetParent, "position" ) === "static" ) {
