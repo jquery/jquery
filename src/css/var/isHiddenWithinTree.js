@@ -1,9 +1,9 @@
 define( [
 	"../../core",
-	"../../selector"
+	"../../var/isAttached"
 
 	// css is assumed
-], function( jQuery ) {
+], function( jQuery, isAttached ) {
 	"use strict";
 
 	// isHiddenWithinTree reports if an element has a non-"none" display style (inline and/or
@@ -27,7 +27,7 @@ define( [
 			// Support: Firefox <=43 - 45
 			// Disconnected elements can have computed display: none, so first confirm that elem is
 			// in the document.
-			jQuery.contains( elem.ownerDocument, elem ) &&
+			isAttached( elem ) &&
 
 			jQuery.css( elem, "display" ) === "none";
 	};
