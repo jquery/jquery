@@ -36,17 +36,17 @@ define( [
 var hasDuplicate, sortInput,
 	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
 	matches = documentElement.matches ||
-		  documentElement.matchesSelector || 
-		  documentElement.mozMatchesSelector ||
-		  documentElement.msMatchesSelector || 
-		  documentElement.oMatchesSelector || 
-		  documentElement.webkitMatchesSelector ||
-		  function(s) {
-			var matchingEl = (this.document || this.ownerDocument).querySelectorAll(s),
-			i = matchingEl.length;
-		    	while (--i >= 0 && matchingEl.item(i) !== this) {}
-		    	return i > -1;            
-		  },
+			documentElement.matchesSelector ||
+			documentElement.mozMatchesSelector ||
+			documentElement.msMatchesSelector ||
+			documentElement.oMatchesSelector ||
+			documentElement.webkitMatchesSelector ||
+			function( s ) {
+				var matchingEl = ( this.document || this.ownerDocument ).querySelectorAll( s ),
+				i = matchingEl.length;
+				while ( --i >= 0 && matchingEl.item( i ) !== this ) {}
+				return i > -1;
+			},
 
 	// CSS string/identifier serialization
 	// https://drafts.csswg.org/cssom/#common-serializing-idioms
