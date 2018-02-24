@@ -13,12 +13,13 @@ define( [
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
 	"./css/support",
+	"./css/finalPropName",
 
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, camelCase, document, rcssNum, rnumnonpx, cssExpand,
-	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support ) {
+	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
 
 "use strict";
 
@@ -33,40 +34,7 @@ var
 	cssNormalTransform = {
 		letterSpacing: "0",
 		fontWeight: "400"
-	},
-
-	cssPrefixes = [ "Webkit", "Moz", "ms" ],
-	emptyStyle = document.createElement( "div" ).style;
-
-// Return a css property mapped to a potentially vendor prefixed property
-function vendorPropName( name ) {
-
-	// Shortcut for names that are not vendor prefixed
-	if ( name in emptyStyle ) {
-		return name;
-	}
-
-	// Check for vendor prefixed names
-	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
-		i = cssPrefixes.length;
-
-	while ( i-- ) {
-		name = cssPrefixes[ i ] + capName;
-		if ( name in emptyStyle ) {
-			return name;
-		}
-	}
-}
-
-// Return a property mapped along what jQuery.cssProps suggests or to
-// a vendor prefixed property.
-function finalPropName( name ) {
-	var ret = jQuery.cssProps[ name ];
-	if ( !ret ) {
-		ret = jQuery.cssProps[ name ] = vendorPropName( name ) || name;
-	}
-	return ret;
-}
+	};
 
 function setPositiveNumber( elem, value, subtract ) {
 
