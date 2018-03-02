@@ -259,9 +259,9 @@ module.exports = function( grunt ) {
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) JS Foundation and other contributors | jquery.org/license */",
 					compress: {
+						"pure_getters": true,
 						"hoist_funs": false,
 						loops: false,
-						unused: false,
 
 						// Support: IE <11
 						// typeofs transformation is unsafe for IE9-10
