@@ -261,7 +261,6 @@ module.exports = function( grunt ) {
 					compress: {
 						"hoist_funs": false,
 						loops: false,
-						unused: false,
 
 						// Support: IE <11
 						// typeofs transformation is unsafe for IE9-10
