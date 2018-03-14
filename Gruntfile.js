@@ -13,7 +13,8 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" );
+		gzip = require( "gzip-js" ),
+		isTravis = process.env.TRAVIS;
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -151,6 +152,12 @@ module.exports = function( grunt ) {
 			options: {
 				customContextFile: "test/karma.context.html",
 				customDebugFile: "test/karma.debug.html",
+				customLaunchers: {
+					ChromeHeadlessNoSandbox: {
+						base: "ChromeHeadless",
+						flags: [ "--no-sandbox" ]
+					}
+				},
 				frameworks: [ "qunit" ],
 				middleware: [ "mockserver" ],
 				plugins: [
@@ -214,7 +221,9 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-				browsers: [ "ChromeHeadless" ]
+
+				// The Chrome sandbox doesn't work on Travis.
+				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
 			},
 
 			// To debug tests with Karma:
