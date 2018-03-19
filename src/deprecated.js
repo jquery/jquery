@@ -5,9 +5,7 @@ define( [
 	"./core/toType",
 	"./var/isFunction",
 	"./var/isWindow",
-	"./var/slice",
-
-	"./event/alias"
+	"./var/slice"
 ], function( jQuery, nodeName, camelCase, toType, isFunction, isWindow, slice ) {
 
 "use strict";
