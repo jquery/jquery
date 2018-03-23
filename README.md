@@ -1,5 +1,5 @@
 [jQuery](https://jquery.com/) — New Wave JavaScript
-（基于jquery源码3.3.1添加注释）
+(基于jquery源码3.3.1添加注释)
 ==================================================
 
 Contribution Guides
