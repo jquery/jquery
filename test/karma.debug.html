@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" id="html">
+<head>
+%X_UA_COMPATIBLE%
+  <title>DEBUG</title>
+  <meta charset="utf-8">
+  <!-- Karma serves this page from /context.html. Other files are served from /base -->
+  <link rel="stylesheet" href="/base/external/qunit/qunit.css" />
+  <link rel="stylesheet" href="/base/test/data/testsuite.css" />
+</head>
+<body id="body">
+  <div id="qunit"></div>
+
+  <!-- Start: jQuery Test HTML -->
+  <!-- this iframe is outside the #qunit-fixture so it won't waste time by constantly reloading; the tests are "safe" and clean up after themselves -->
+  <iframe id="loadediframe" name="loadediframe" style="display:none;" src="/base/test/data/iframe.html"></iframe>
+  <div id="qunit-fixture"></div>
+  <!-- End: jQuery Test HTML -->
+
+  <!-- Start: Karma boilerplate -->
+  <script src="/context.js"></script>
+  <script src="/debug.js"></script>
+  <script>
+    %CLIENT_CONFIG%
+
+    %MAPPINGS%
+  </script>
+  %SCRIPTS%
+  <!-- End: Karma boilerplate -->
+
+  <script src="/base/test/data/qunit-fixture.js"></script>
+  <script>
+    // Workaround: Remove call to window.__karma__.loaded()
+    // in favour of calling window.__karma__.start() at window.onload
+    // because tests such as unit/ready.js should run after document ready
+    window.addEventListener('load', function() {
+      window.__karma__.start();
+
+      // Workaround: https://github.com/karma-runner/karma-qunit/issues/92
+      QUnit.testStart(function () {
+        // Restore content
+        document.getElementById("qunit-fixture").innerHTML = QUnit.config.fixture;
+      });
+    });
+  </script>
+</body>
+</html>

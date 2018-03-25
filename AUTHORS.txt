@@ -184,7 +184,7 @@ Karl Sieburg <ksieburg@yahoo.com>
 Pascal Borreli <pascal@borreli.com>
 Nguyen Phuc Lam <ruado1987@gmail.com>
 Dmitry Gusev <dmitry.gusev@gmail.com>
-Michał Gołębiowski <m.goleb@gmail.com>
+Michał Gołębiowski-Owczarek <m.goleb@gmail.com>
 Li Xudong <istonelee@gmail.com>
 Steven Benner <admin@stevenbenner.com>
 Tom H Fuertes <tomfuertes@gmail.com>
@@ -299,3 +299,15 @@ Alex Louden <alex@louden.com>
 Alex Padilla <alexonezero@outlook.com>
 南漂一卒 <shiy007@qq.com>
 karan-96 <karanbatra96@gmail.com>
+Boom Lee <teabyii@gmail.com>
+Andreas Solleder <asol@num42.de>
+CDAGaming <cstack2011@yahoo.com>
+Pierre Spring <pierre@nelm.io>
+Shashanka Nataraj <shashankan.10@gmail.com>
+Erik Lax <erik@datahack.se>
+Matan Kotler-Berkowitz <205matan@gmail.com>
+Jordan Beland <jordan.beland@gmail.com>
+Henry Zhu <hi@henryzoo.com>
+Saptak Sengupta <saptak013@gmail.com>
+Nilton Cesar <niltoncms@gmail.com>
+basil.belokon <basil.belokon@gmail.com>

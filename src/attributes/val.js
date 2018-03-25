@@ -3,9 +3,10 @@ define( [
 	"../core/stripAndCollapse",
 	"./support",
 	"../core/nodeName",
+	"../var/isFunction",
 
 	"../core/init"
-], function( jQuery, stripAndCollapse, support, nodeName ) {
+], function( jQuery, stripAndCollapse, support, nodeName, isFunction ) {
 
 "use strict";
 
@@ -13,7 +14,7 @@ var rreturn = /\r/g;
 
 jQuery.fn.extend( {
 	val: function( value ) {
-		var hooks, ret, isFunction,
+		var hooks, ret, valueIsFunction,
 			elem = this[ 0 ];
 
 		if ( !arguments.length ) {
@@ -42,7 +43,7 @@ jQuery.fn.extend( {
 			return;
 		}
 
-		isFunction = jQuery.isFunction( value );
+		valueIsFunction = isFunction( value );
 
 		return this.each( function( i ) {
 			var val;
@@ -51,7 +52,7 @@ jQuery.fn.extend( {
 				return;
 			}
 
-			if ( isFunction ) {
+			if ( valueIsFunction ) {
 				val = value.call( this, i, jQuery( this ).val() );
 			} else {
 				val = value;

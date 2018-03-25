@@ -1,6 +1,11 @@
 /* eslint no-multi-str: "off" */
 
-var baseURL = "",
+// baseURL is intentionally set to "data/" instead of "".
+// This is not just for convenience (since most files are in data/)
+// but also to ensure that urls without prefix fail.
+// Otherwise it's easy to write tests that pass on test/index.html
+// but fail in Karma runner (where the baseURL is different).
+var baseURL = "data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -148,11 +153,13 @@ window.fireNative = document.createEvent ?
 /**
  * Add random number to url to stop caching
  *
- * @example url("data/test.html")
- * @result "data/test.html?10538358428943"
+ * Also prefixes with baseURL automatically.
  *
- * @example url("data/test.php?foo=bar")
- * @result "data/test.php?foo=bar&10538358345554"
+ * @example url("index.html")
+ * @result "data/index.html?10538358428943"
+ *
+ * @example url("mock.php?foo=bar")
+ * @result "data/mock.php?foo=bar&10538358345554"
  */
 function url( value ) {
 	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +
@@ -164,7 +171,7 @@ this.ajaxTest = function( title, expect, options ) {
 	QUnit.test( title, expect, function( assert ) {
 		var requestOptions;
 
-		if ( jQuery.isFunction( options ) ) {
+		if ( typeof options === "function" ) {
 			options = options( assert );
 		}
 		options = options || [];
@@ -201,7 +208,7 @@ this.ajaxTest = function( title, expect, options ) {
 							if ( !completed ) {
 								if ( !handler ) {
 									assert.ok( false, "unexpected " + status );
-								} else if ( jQuery.isFunction( handler ) ) {
+								} else if ( typeof handler === "function" ) {
 									handler.apply( this, arguments );
 								}
 							}
@@ -239,7 +246,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 		var done = assert.async(),
 			$iframe = supportjQuery( "<iframe/>" )
 				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
-				.attr( { id: "qunit-fixture-iframe", src: url( "./data/" + fileName ) } );
+				.attr( { id: "qunit-fixture-iframe", src: url( fileName ) } );
 
 		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {
@@ -264,13 +271,29 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 };
 this.iframeCallback = undefined;
 
-// Tests are always loaded async
-QUnit.config.autostart = false;
-this.loadTests = function() {
+if ( window.__karma__ ) {
+	// In Karma, files are served from /base
+	baseURL = "base/test/data/";
+} else {
+	// Tests are always loaded async
+	// except when running tests in Karma (See Gruntfile)
+	QUnit.config.autostart = false;
+}
 
-	// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
-	QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
-	QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
+// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
+QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
+QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
+
+// Async test for module script type support
+function moduleTypeSupported() {
+	var script = document.createElement( "script" );
+	script.type = "module";
+	script.text = "QUnit.moduleTypeSupported = true";
+	document.head.appendChild( script ).parentNode.removeChild( script );
+}
+moduleTypeSupported();
+
+this.loadTests = function() {
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {

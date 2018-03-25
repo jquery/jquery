@@ -221,16 +221,12 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 			// Apply change
 			$child.css( prop, adjustment );
 			cssCurrent = parseFloat( $child.css( prop ) );
+			message += " (actual " + round( cssCurrent, 2 ) + "px, expected " +
+				round( expected, 2 ) + "px)";
 
 			// Require a difference of no more than one pixel
 			difference = Math.abs( cssCurrent - expected );
-			if ( difference <= 1 ) {
-				assert.ok( true, message );
-
-			// ...or fail with actual and expected values
-			} else {
-				assert.ok( false, message + " (actual " + cssCurrent + ", expected " + expected + ")" );
-			}
+			assert.ok( difference <= 1, message );
 		},
 		getUnits = function( prop ) {
 			units[ prop ] = {
@@ -240,8 +236,12 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 				"pc": parseFloat( $child.css( prop, "100pc" ).css( prop ) ) / 100,
 				"cm": parseFloat( $child.css( prop, "100cm" ).css( prop ) ) / 100,
 				"mm": parseFloat( $child.css( prop, "100mm" ).css( prop ) ) / 100,
-				"%": parseFloat( $child.css( prop, "100%"  ).css( prop ) ) / 100
+				"%": parseFloat( $child.css( prop, "500%"  ).css( prop ) ) / 500
 			};
+		},
+		round = function( num, fractionDigits ) {
+			var base = Math.pow( 10, fractionDigits );
+			return Math.round( num * base ) / base;
 		};
 
 	jQuery( "#nothiddendiv" ).css( { height: 1, padding: 0, width: 400 } );
@@ -262,13 +262,29 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 
 	getUnits( "lineHeight" );
 	cssCurrent = parseFloat( $child.css( "lineHeight", "1em" ).css( "lineHeight" ) );
+	add( "lineHeight",  50,  "%" );
 	add( "lineHeight",   2, "em" );
 	add( "lineHeight", -10, "px" );
 	add( "lineHeight",  20, "pt" );
 	add( "lineHeight",  30, "pc" );
 	add( "lineHeight",   1, "cm" );
-	add( "lineHeight", -20, "mm" );
-	add( "lineHeight",  50,  "%" );
+	add( "lineHeight", -44, "mm" );
+} );
+
+QUnit.test( "css() mismatched relative values with bounded styles (gh-2144)", function( assert ) {
+	assert.expect( 1 );
+
+	var right,
+		$container = jQuery( "<div/>" )
+			.css( { position: "absolute", width: "400px", fontSize: "4px" } )
+			.appendTo( "#qunit-fixture" ),
+		$el = jQuery( "<div/>" )
+			.css( { position: "absolute", left: "50%", right: "50%" } )
+			.appendTo( $container );
+
+	$el.css( "right", "-=25em" );
+	assert.equal( Math.round( parseFloat( $el.css( "right" ) ) ), 100,
+		"Constraints do not interfere with unit conversion" );
 } );
 
 QUnit.test( "css(String, Object)", function( assert ) {
@@ -1050,7 +1066,7 @@ QUnit.test( "can't get css for disconnected in IE<9, see #10254 and #8388", func
 	assert.expect( 2 );
 	var span, div;
 
-	span = jQuery( "<span/>" ).css( "background-image", "url(data/1x1.jpg)" );
+	span = jQuery( "<span/>" ).css( "background-image", "url(" + baseURL + "1x1.jpg)" );
 	assert.notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see #10254" );
 
 	div = jQuery( "<div/>" ).css( "top", 10 );
@@ -1148,6 +1164,15 @@ testIframe(
 	}
 );
 
+testIframe(
+	"css('width') should work correctly with browser zooming",
+	"css/cssWidthBrowserZoom.html",
+	function( assert, jQuery, window, document, cssWidthBrowserZoom ) {
+		assert.expect( 1 );
+		assert.strictEqual( cssWidthBrowserZoom, "100px", "elem.css('width') works correctly with browser zoom" );
+	}
+);
+
 ( function() {
 	var supportsFractionalGBCR,
 		qunitFixture = document.getElementById( "qunit-fixture" ),
@@ -1198,8 +1223,8 @@ QUnit.test( "certain css values of 'normal' should be convertable to a number, s
 
 	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
-	assert.ok( jQuery.isNumeric( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
-	assert.ok( jQuery.isNumeric( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
 	assert.equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 } );
 
@@ -1316,22 +1341,23 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", fu
 } );
 
 QUnit.test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 1 );
 
-	var el;
-	el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "fake value" );
+	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "fake value" );
 	assert.equal( el.css( "position" ), "absolute", "The old style is kept when setting an unrecognized value" );
-	el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", " " );
+} );
 
-	// Support: Edge 14
-	// Edge collapses whitespace-only values when setting a style property and
-	// there is no easy way for us to work around it. Just skip the test there
-	// and hope for the better future.
-	if ( /edge\//i.test( navigator.userAgent ) ) {
-		assert.ok( true, "Skipped (Edge 14 handles whitespace-only values incorrectly)" );
-	} else {
-		assert.equal( el.css( "position" ), "absolute", "The old style is kept when setting to a space" );
-	}
+// Support: Edge 14 - 15
+// Edge collapses whitespace-only values when setting a style property and
+// there is no easy way for us to work around it. Just skip the test there
+// and hope for the better future.
+QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ](
+	"Keep the last style if the new one is a non-empty whitespace (gh-3204)",
+	function( assert ) {
+	assert.expect( 1 );
+
+	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", " " );
+	assert.equal( el.css( "position" ), "absolute", "The old style is kept when setting to a space" );
 } );
 
 QUnit.test( "Reset the style if set to an empty string", function( assert ) {
@@ -1348,7 +1374,6 @@ QUnit.test(
 	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
 	24,
 	function( assert ) {
-		var baseUrl = document.location.href.replace( /([^\/]*)$/, "" );
 		var done = assert.async();
 		var styles = [ {
 				name: "backgroundAttachment",
@@ -1362,7 +1387,7 @@ QUnit.test(
 
 				// Firefox returns auto's value
 				name: "backgroundImage",
-				value: [ "url('test.png')", "url(" + baseUrl + "test.png)", "url(\"" + baseUrl + "test.png\")" ],
+				value: [ "url('test.png')", "url(" + baseURL + "test.png)", "url(\"" + baseURL + "test.png\")" ],
 				expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
 			}, {
 				name: "backgroundPosition",

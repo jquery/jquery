@@ -3,4 +3,16 @@ sudo: false
 node_js:
 - "4"
 - "6"
-- "7"
+- "8"
+- "9"
+addons:
+  chrome: stable
+env:
+  - NPM_SCRIPT=test:browserless
+matrix:
+  include:
+    # Run browser tests only on one Node.js version to save time.
+    - node_js: "8"
+      env: NPM_SCRIPT=test:browser
+script:
+  - npm run $NPM_SCRIPT

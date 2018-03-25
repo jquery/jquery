@@ -19,11 +19,9 @@ QUnit.module( "effects", {
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
 	},
 	teardown: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
@@ -33,7 +31,7 @@ QUnit.module( "effects", {
 
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( "sanity check", function( assert ) {
 	assert.expect( 1 );
-	assert.equal( jQuery( "#dl:visible, #qunit-fixture:visible, #foo:visible" ).length, 3, "QUnit state is correct for testing effects" );
+	assert.equal( jQuery( "#qunit-fixture:visible, #foo:visible" ).length, 2, "QUnit state is correct for testing effects" );
 } );
 
 QUnit.test( "show() basic", function( assert ) {
@@ -1807,7 +1805,8 @@ QUnit.test( "animate does not change start value for non-px animation (#7109)", 
 		}
 	} ).queue( function( next ) {
 		var ratio = computed[ 0 ] / actual;
-		assert.ok( ratio > 0.9 && ratio < 1.1, "Starting width was close enough" );
+		assert.ok( ratio > 0.9 && ratio < 1.1,
+			"Starting width was close enough (" + computed[ 0 ] + " approximates " + actual + ")" );
 		next();
 		parent.remove();
 	} );
@@ -2508,7 +2507,7 @@ function testEasing( assert, speed, easing, complete ) {
 
 	assert.equal( options.duration, 10, "Duration set properly" );
 	assert.equal(
-		jQuery.isFunction( options.easing ) ? options.easing() : options.easing,
+		typeof options.easing === "function" ? options.easing() : options.easing,
 		"linear",
 		"Easing set properly"
 	);

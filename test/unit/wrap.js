@@ -9,7 +9,7 @@ QUnit.module( "wrap", {
 } );
 
 // See test/unit/manipulation.js for explanation about these 2 functions
-function manipulationBareObj( value ) {
+function manipulationBareObj( value ) {
 	return value;
 }
 

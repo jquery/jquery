@@ -14,7 +14,7 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 		var defer = createDeferred();
 
-		assert.ok( jQuery.isFunction( defer.pipe ), "defer.pipe is a function" );
+		assert.ok( typeof defer.pipe === "function", "defer.pipe is a function" );
 
 		defer.resolve().done( function() {
 			assert.ok( true, "Success on resolve" );
@@ -49,8 +49,8 @@ jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 			assert.strictEqual( defer.promise(), promise, "promise is always the same" );
 			assert.strictEqual( funcPromise, func, "non objects get extended" );
 			jQuery.each( promise, function( key ) {
-				if ( !jQuery.isFunction( promise[ key ] ) ) {
-					assert.ok( false, key + " is a function (" + jQuery.type( promise[ key ] ) + ")" );
+				if ( typeof promise[ key ] !== "function" ) {
+					assert.ok( false, key + " is a function (" + typeof( promise[ key ] ) + ")" );
 				}
 				if ( promise[ key ] !== func[ key ] ) {
 					assert.strictEqual( func[ key ], promise[ key ], key + " is the same" );
@@ -884,7 +884,9 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 	var customToStringThen = {
 		then: function( onFulfilled ) {
-			onFulfilled();
+			// Support: Android 4.0 only
+			// Strict mode functions invoked without .call/.apply get global-object context
+			onFulfilled.call();
 		}
 	};
 	if ( typeof Symbol === "function" ) {
@@ -1097,7 +1099,7 @@ QUnit.test( "jQuery.when - always returns a new promise", function( assert ) {
 	}, function( label, args ) {
 		var result = jQuery.when.apply( jQuery, args );
 
-		assert.ok( jQuery.isFunction( result.then ), "Thenable returned from " + label );
+		assert.ok( typeof result.then === "function", "Thenable returned from " + label );
 		assert.strictEqual( result.resolve, undefined, "Non-deferred returned from " + label );
 		assert.strictEqual( result.promise(), result, "Promise returned from " + label );
 

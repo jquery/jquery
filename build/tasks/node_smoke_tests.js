@@ -22,7 +22,7 @@ module.exports = function( grunt ) {
 			var taskName = "node_" + testFilePath.replace( /\.js$/, "" );
 
 			grunt.registerTask( taskName, function() {
-				spawnTest( this.async(), "test/node_smoke_tests/" + testFilePath );
+				spawnTest( this.async(), "node \"test/node_smoke_tests/" + testFilePath + "\"" );
 			} );
 
 			nodeSmokeTests.push( taskName );

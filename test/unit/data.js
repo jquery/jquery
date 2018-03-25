@@ -606,26 +606,53 @@ QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
+			"non-empty": {
+				key: "nonEmpty",
+				value: "a string"
+			},
+			"empty-string": {
+				key: "emptyString",
+				value: ""
+			},
+			"one-value": {
+				key: "oneValue",
+				value: 1
+			},
+			"zero-value": {
+				key: "zeroValue",
+				value: 0
+			},
+			"an-array": {
+				key: "anArray",
+				value: []
+			},
+			"an-object": {
+				key: "anObject",
+				value: {}
+			},
+			"bool-true": {
+				key: "boolTrue",
+				value: true
+			},
+			"bool-false": {
+				key: "boolFalse",
+				value: false
+			},
 
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }"
+			"some-json": {
+				key: "someJson",
+				value: "{ \"foo\": \"bar\" }"
+			}
 		};
 
 	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
+		div.data( key, val.value );
 		var allData = div.data();
 		assert.equal( allData[ key ], undefined, ".data does not store with hyphenated keys" );
-		assert.equal( allData[ jQuery.camelCase( key ) ], val, ".data stores the camelCased key" );
+		assert.equal( allData[ val.key ], val.value, ".data stores the camelCased key" );
 	} );
 } );
 
@@ -643,31 +670,68 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
-			"non-empty": "a string",
-			"empty-string": "",
-			"one-value": 1,
-			"zero-value": 0,
-			"an-array": [],
-			"an-object": {},
-			"bool-true": true,
-			"bool-false": false,
+			"non-empty": {
+				key: "nonEmpty",
+				value: "a string"
+			},
+			"empty-string": {
+				key: "emptyString",
+				value: ""
+			},
+			"one-value": {
+				key: "oneValue",
+				value: 1
+			},
+			"zero-value": {
+				key: "zeroValue",
+				value: 0
+			},
+			"an-array": {
+				key: "anArray",
+				value: []
+			},
+			"an-object": {
+				key: "anObject",
+				value: {}
+			},
+			"bool-true": {
+				key: "boolTrue",
+				value: true
+			},
+			"bool-false": {
+				key: "boolFalse",
+				value: false
+			},
 
 			// JSHint enforces double quotes,
 			// but JSON strings need double quotes to parse
 			// so we need escaped double quotes here
-			"some-json": "{ \"foo\": \"bar\" }",
-			"num-1-middle": true,
-			"num-end-2": true,
-			"2-num-start": true
+			"some-json": {
+				key: "someJson",
+				value: "{ \"foo\": \"bar\" }"
+			},
+
+			"num-1-middle": {
+				key: "num-1Middle",
+				value: true
+			},
+			"num-end-2": {
+				key: "numEnd-2",
+				value: true
+			},
+			"2-num-start": {
+				key: "2NumStart",
+				value: true
+			}
 		};
 
 	assert.expect( 24 );
 
 	jQuery.each( datas, function( key, val ) {
-		div.data( key, val );
+		div.data( key, val.value );
 
-		assert.deepEqual( div.data( key ), val, "get: " + key );
-		assert.deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
+		assert.deepEqual( div.data( key ), val.value, "get: " + key );
+		assert.deepEqual( div.data( val.key ), val.value, "get: " + val.key );
 	} );
 } );
 
@@ -777,7 +841,7 @@ QUnit.test( ".removeData should not throw exceptions. (#10080)", function( asser
 	} );
 
 	// change the url to trigger unload
-	frame.attr( "src", "data/iframe.html?param=true" );
+	frame.attr( "src", baseURL + "iframe.html?param=true" );
 } );
 
 QUnit.test( ".data only checks element attributes once. #8909", function( assert ) {
