@@ -202,7 +202,7 @@ QUnit.test( "innerHeight()", function( assert ) {
 QUnit.test( "outerWidth()", function( assert ) {
 	assert.expect( 12 );
 
-	var $div, div,
+	var $div, div, $divSvg,
 		$win = jQuery( window ),
 		$doc = jQuery( document ),
 		winwidth = $win.prop( "innerWidth" );
@@ -237,10 +237,10 @@ QUnit.test( "outerWidth()", function( assert ) {
 	assert.equal( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
 	// SVG outerWidth test
-	div = jQuery( "<svg width=\"100\" height=\"100\" style=\"padding: 2px;\"></svg>" );
+	$divSvg = jQuery( "<svg>" ).css( { "width": "100px", "height": "100px", "padding": "2px" } );
 
-	// Check outerWide returns 100 + 2 + 2 = 104 px
-	assert.equal( div.outerWidth(), 104, "Make sure that SVG nodes are handled." );
+	// Check outerWidth returns 100 + 2 + 2 = 104 px
+	assert.equal( $divSvg.outerWidth(), 104, "Make sure that SVG nodes are handled." );
 
 	div.remove();
 } );
