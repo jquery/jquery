@@ -236,12 +236,6 @@ QUnit.test( "outerWidth()", function( assert ) {
 	// Temporarily require 0 for backwards compat - should be auto
 	assert.equal( div.outerWidth(), 0, "Make sure that disconnected nodes are handled." );
 
-	// SVG outerWidth test
-	div = jQuery( "<svg width=\"100\" height=\"100\" style=\"padding: 2px;\"></svg>" );
-
-	// Check outerWide returns 100 + 2 + 2 = 104 px
-	assert.equal( div.outerWidth(), 104, "Make sure that SVG nodes are handled." );
-
 	div.remove();
 } );
 
