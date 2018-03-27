@@ -102,7 +102,7 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		// offsetWidth/offsetHeight is a rounded sum of content, padding, scroll gutter, and border
 		// Assuming integer scroll gutter, subtract the rest and round down
 		delta += Math.max( 0, Math.ceil(
-			elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] -
+			( elem[ "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ) ] || 0 ) -
 			computedVal -
 			delta -
 			extra -
