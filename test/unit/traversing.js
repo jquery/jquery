@@ -795,6 +795,22 @@ QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ](
 	}
 );
 
+QUnit.test( "contents() for <object />", function( assert ) {
+	assert.expect( 2 );
+
+	var svgObject = jQuery( "<object id='svg-object' data='" + baseURL + "1x1.svg'></object>" );
+	var done = assert.async();
+
+	svgObject.on( "load", function() {
+		var contents = jQuery( "#svg-object" ).contents();
+		assert.equal( contents.length, 1, "Check object contents" );
+		assert.equal( contents.find( "svg" ).length, 1, "Find svg within object" );
+		done();
+	} );
+
+	jQuery( "#qunit-fixture" ).append( svgObject );
+} );
+
 QUnit.test( "sort direction", function( assert ) {
 	assert.expect( 12 );
 
