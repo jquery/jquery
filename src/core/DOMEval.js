@@ -9,11 +9,11 @@ define( [
 		noModule: true
 	};
 
-  var nonce;
+  var cspNonce;
 
-  if ( window.__csp_nonce__ ) {
-    nonce = window.__csp_nonce__;
-    delete window.__csp_nonce__;
+  if ( window.__cspNonce__ ) {
+    cspNonce = window.__cspNonce__;
+    delete window.__cspNonce__;
   }
 
 	function DOMEval( code, doc, node ) {
@@ -31,8 +31,8 @@ define( [
 			}
 		}
 
-    if ( nonce ) {
-      script.setAttribute( "nonce", nonce );
+    if ( cspNonce ) {
+      script.setAttribute( "nonce", cspNonce );
     }
 
 		doc.head.appendChild( script ).parentNode.removeChild( script );
