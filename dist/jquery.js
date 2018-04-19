@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2018-01-20T17:24Z
+ * Date: 2018-04-19T18:38Z
  */
 ( function( global, factory ) {
 
@@ -94,6 +94,13 @@ var isWindow = function isWindow( obj ) {
 		noModule: true
 	};
 
+  var nonce;
+
+  if ( window.__csp_nonce__ ) {
+    nonce = window.__csp_nonce__;
+    delete window.__csp_nonce__;
+  }
+
 	function DOMEval( code, doc, node ) {
 		doc = doc || document;
 
@@ -108,6 +115,11 @@ var isWindow = function isWindow( obj ) {
 				}
 			}
 		}
+
+    if ( nonce ) {
+      script.setAttribute( "nonce", nonce );
+    }
+
 		doc.head.appendChild( script ).parentNode.removeChild( script );
 	}
 
