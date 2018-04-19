@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2018-04-19T18:53Z
+ * Date: 2018-04-19T19:03Z
  */
 ( function( global, factory ) {
 
@@ -96,9 +96,9 @@ var isWindow = function isWindow( obj ) {
 
   var cspNonce;
 
-  if ( window.__cspNonce__ ) {
-    cspNonce = window.__cspNonce__;
-    delete window.__cspNonce__;
+  if ( window.__csp_nonce__ ) {
+    cspNonce = window.__csp_nonce__;
+    delete window.__csp_nonce__;
   }
 
 	function DOMEval( code, doc, node ) {
