@@ -11,9 +11,9 @@ define( [
 
   var cspNonce;
 
-  if ( window.__cspNonce__ ) {
-    cspNonce = window.__cspNonce__;
-    delete window.__cspNonce__;
+  if ( window.__csp_nonce__ ) {
+    cspNonce = window.__csp_nonce__;
+    delete window.__csp_nonce__;
   }
 
 	function DOMEval( code, doc, node ) {
