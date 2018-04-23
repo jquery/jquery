@@ -7,6 +7,7 @@ define( [
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
+	"./css/var/autoPx",
 	"./css/var/getStyles",
 	"./css/var/swap",
 	"./css/curCSS",
@@ -19,7 +20,7 @@ define( [
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, camelCase, document, rcssNum, rnumnonpx, cssExpand,
-	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
+	autoPx, getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
 
 "use strict";
 
@@ -183,23 +184,6 @@ jQuery.extend( {
 		}
 	},
 
-	// Don't automatically add "px" to these possibly-unitless properties
-	cssNumber: {
-		"animationIterationCount": true,
-		"columnCount": true,
-		"fillOpacity": true,
-		"flexGrow": true,
-		"flexShrink": true,
-		"fontWeight": true,
-		"lineHeight": true,
-		"opacity": true,
-		"order": true,
-		"orphans": true,
-		"widows": true,
-		"zIndex": true,
-		"zoom": true
-	},
-
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
 	cssProps: {},
@@ -247,7 +231,7 @@ jQuery.extend( {
 
 			// If a number was passed in, add the unit (except for certain CSS properties)
 			if ( type === "number" ) {
-				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
+				value += ret && ret[ 3 ] || ( autoPx[ origName ] ? "px" : "" );
 			}
 
 			// background-* props affect original clone's values
