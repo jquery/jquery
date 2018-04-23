@@ -1,9 +1,10 @@
 define( [
 	"../core",
+	"../css/isAutoPx",
 	"../css/finalPropName",
 
 	"../css"
-], function( jQuery, finalPropName ) {
+], function( jQuery, isAutoPx, finalPropName ) {
 
 "use strict";
 
@@ -21,7 +22,7 @@ Tween.prototype = {
 		this.options = options;
 		this.start = this.now = this.cur();
 		this.end = end;
-		this.unit = unit || ( jQuery.cssNumber[ prop ] ? "" : "px" );
+		this.unit = unit || ( isAutoPx( prop ) ? "px" : "" );
 	},
 	cur: function() {
 		var hooks = Tween.propHooks[ this.prop ];

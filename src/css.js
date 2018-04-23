@@ -5,6 +5,7 @@ define( [
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
+	"./css/isAutoPx",
 	"./css/var/getStyles",
 	"./css/var/swap",
 	"./css/curCSS",
@@ -16,7 +17,7 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, access, camelCase, rcssNum, rnumnonpx, cssExpand,
+], function( jQuery, access, camelCase, rcssNum, rnumnonpx, cssExpand, isAutoPx,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
 
 "use strict";
@@ -198,30 +199,6 @@ jQuery.extend( {
 		}
 	},
 
-	// Don't automatically add "px" to these possibly-unitless properties
-	cssNumber: {
-		"animationIterationCount": true,
-		"columnCount": true,
-		"fillOpacity": true,
-		"flexGrow": true,
-		"flexShrink": true,
-		"fontWeight": true,
-		"gridArea": true,
-		"gridColumn": true,
-		"gridColumnEnd": true,
-		"gridColumnStart": true,
-		"gridRow": true,
-		"gridRowEnd": true,
-		"gridRowStart": true,
-		"lineHeight": true,
-		"opacity": true,
-		"order": true,
-		"orphans": true,
-		"widows": true,
-		"zIndex": true,
-		"zoom": true
-	},
-
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
 	cssProps: {},
@@ -267,11 +244,9 @@ jQuery.extend( {
 				return;
 			}
 
-			// If a number was passed in, add the unit (except for certain CSS properties)
-			// The isCustomProp check can be removed in jQuery 4.0 when we only auto-append
-			// "px" to a few hardcoded values.
-			if ( type === "number" && !isCustomProp ) {
-				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
+			// If the value is a number, add `px` for certain CSS properties
+			if ( type === "number" ) {
+				value += ret && ret[ 3 ] || ( isAutoPx( origName ) ? "px" : "" );
 			}
 
 			// background-* props affect original clone's values

@@ -1198,13 +1198,16 @@ if ( jQuery.fn.offset ) {
 }
 
 QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
 
 	$div.css( "fill-opacity", 1 );
-
 	assert.equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
+
+	$div.css( "font-size", "27px" );
+	$div.css( "line-height", 2 );
+	assert.equal( $div.css( "line-height" ), "54px", "Do not append px to 'line-height'" );
 
 	$div.css( "column-count", 1 );
 	if ( $div.css( "column-count" ) !== undefined ) {
@@ -1270,6 +1273,81 @@ QUnit[
 		}
 
 		$div.remove();
+	}
+} );
+
+QUnit.test( "Do not append px to most properties not accepting integer values", function( assert ) {
+	assert.expect( 3 );
+
+	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+
+	$div.css( "font-size", "27px" );
+
+	$div.css( "font-size", 2 );
+	assert.equal( $div.css( "font-size" ), "27px", "Do not append px to 'font-size'" );
+
+	$div.css( "fontSize", 2 );
+	assert.equal( $div.css( "fontSize" ), "27px", "Do not append px to 'fontSize'" );
+
+	$div.css( "letter-spacing", "2px" );
+	$div.css( "letter-spacing", 3 );
+	assert.equal( $div.css( "letter-spacing" ), "2px", "Do not append px to 'letter-spacing'" );
+} );
+
+QUnit.test( "Append px to whitelisted properties", function( assert ) {
+	var prop,
+		$div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+		whitelist = {
+			margin: "marginTop",
+			marginTop: undefined,
+			marginRight: undefined,
+			marginBottom: undefined,
+			marginLeft: undefined,
+			padding: "paddingTop",
+			paddingTop: undefined,
+			paddingRight: undefined,
+			paddingBottom: undefined,
+			paddingLeft: undefined,
+			top: undefined,
+			right: undefined,
+			bottom: undefined,
+			left: undefined,
+			width: undefined,
+			height: undefined,
+			minWidth: undefined,
+			minHeight: undefined,
+			maxWidth: undefined,
+			maxHeight: undefined,
+			border: "borderTopWidth",
+			borderWidth: "borderTopWidth",
+			borderTop: "borderTopWidth",
+			borderTopWidth: undefined,
+			borderRight: "borderRightWidth",
+			borderRightWidth: undefined,
+			borderBottom: "borderBottomWidth",
+			borderBottomWidth: undefined,
+			borderLeft: "borderLeftWidth",
+			borderLeftWidth: undefined
+		};
+
+	assert.expect( ( Object.keys( whitelist ).length ) * 2 );
+
+	for ( prop in whitelist ) {
+		var propToCheck = whitelist[ prop ] || prop,
+			kebabProp = prop.replace( /[A-Z]/g, function( match ) {
+				return "-" + match.toLowerCase();
+			} ),
+			kebabPropToCheck = propToCheck.replace( /[A-Z]/g, function( match ) {
+				return "-" + match.toLowerCase();
+			} );
+		$div.css( prop, 3 )
+			.css( "position", "absolute" )
+			.css( "border-style", "solid" );
+		assert.equal( $div.css( propToCheck ), "3px", "Append px to '" + prop + "'" );
+		$div.css( kebabProp, 3 )
+			.css( "position", "absolute" )
+			.css( "border-style", "solid" );
+		assert.equal( $div.css( kebabPropToCheck ), "3px", "Append px to '" + kebabProp + "'" );
 	}
 } );
 
