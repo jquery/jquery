@@ -1,4 +1,4 @@
-[jQuery](https://jquery.com/) — New Wave JavaScript
+Malu - [jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
 Contribution Guides
@@ -18,7 +18,7 @@ Environments in which to use jQuery
 - jQuery also supports Node, browser extensions, and other non-browser environments.
 
 
-What you need to build your own jQuery
+Malu - What you need to build your own jQuery
 --------------------------------------
 
 In order to build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
