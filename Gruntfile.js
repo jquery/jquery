@@ -209,7 +209,7 @@ module.exports = function( grunt ) {
 					{ pattern: "dist/*.map", included: false, served: true },
 					{ pattern: "external/qunit/qunit.css", included: false, served: true },
 					{
-						pattern: "test/**/*.@(js|css|jpg|html|xml)",
+						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
 						served: true
 					}

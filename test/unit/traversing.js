@@ -811,6 +811,23 @@ QUnit.test( "contents() for <object />", function( assert ) {
 	jQuery( "#qunit-fixture" ).append( svgObject );
 } );
 
+QUnit.test( "contents() for <frame />", function( assert ) {
+	assert.expect( 2 );
+
+	var iframe = jQuery( "<iframe id='frame-contents' src='" + baseURL + "frame.html'></iframe>" );
+	var done = assert.async();
+
+	iframe.on( "load", function() {
+		var container = jQuery( "#frame-contents" ).contents();
+		var contents = container.find( "#test-frame" ).contents();
+		assert.equal( contents.length, 1, "Check frame contents" );
+		assert.equal( contents.find( "body" ).length, 1, "Find body within frame" );
+		done();
+	} );
+
+	jQuery( "#qunit-fixture" ).append( iframe );
+} );
+
 QUnit.test( "sort direction", function( assert ) {
 	assert.expect( 12 );
 

@@ -145,7 +145,7 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-        if ( nodeName( elem, "iframe" ) || nodeName( elem, "object" ) ) {
+				if ( typeof elem.contentDocument !== "undefined" ) {
             return elem.contentDocument;
         }
 
