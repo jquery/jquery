@@ -1,7 +1,8 @@
 define( [
 	"../core",
+	"./var/autoPx",
 	"../var/rcssNum"
-], function( jQuery, rcssNum ) {
+], function( jQuery, autoPx, rcssNum ) {
 
 "use strict";
 
@@ -16,10 +17,11 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 				return jQuery.css( elem, prop, "" );
 			},
 		initial = currentValue(),
-		unit = valueParts && valueParts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
+		unit = valueParts && valueParts[ 3 ] || ( autoPx[ prop ] ? "px" : "" ),
 
 		// Starting value computation is required for potential unit mismatches
-		initialInUnit = ( jQuery.cssNumber[ prop ] || unit !== "px" && +initial ) &&
+		initialInUnit = elem.nodeType &&
+			( !autoPx[ prop ] || unit !== "px" && +initial ) &&
 			rcssNum.exec( jQuery.css( elem, prop ) );
 
 	if ( initialInUnit && initialInUnit[ 3 ] !== unit ) {
