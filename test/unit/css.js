@@ -1658,6 +1658,21 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 			assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
 		}
 	} );
+
+	QUnit[ supportsCssVars ? "test" : "skip" ]( "Don't append px to CSS vars", function( assert ) {
+		assert.expect( 3 );
+
+		var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+
+		$div
+			.css( "--a", 3 )
+			.css( "--line-height", 4 )
+			.css( "--lineHeight", 5 );
+
+		assert.equal( $div.css( "--a" ), "3", "--a: 3" );
+		assert.equal( $div.css( "--line-height" ), "4", "--line-height: 4" );
+		assert.equal( $div.css( "--lineHeight" ), "5", "--lineHeight: 5" );
+	} );
 } )();
 
 }
