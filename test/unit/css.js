@@ -1632,10 +1632,12 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 		assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object" );
 
 		div.css( { "--mixedCase": "green" } );
+		div.css( { "--mixed-case": "red" } );
 		assert.equal( div.css( "--mixedCase" ), "green",
 			"Modified CSS custom property with mixed case" );
 
 		div.css( { "--theme-dark": "purple" } );
+		div.css( { "--themeDark": "red" } );
 		assert.equal( div.css( "--theme-dark" ), "purple",
 			"Modified CSS custom property with dashed name" );
 
