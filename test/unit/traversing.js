@@ -744,56 +744,86 @@ QUnit.test( "contents()", function( assert ) {
 } );
 
 QUnit.test( "contents() for <template />", function( assert ) {
-    assert.expect( 4 );
+	assert.expect( 4 );
 
-    jQuery( "#qunit-fixture" ).append(
-        "<template id='template'>" +
-        "    <div id='template-div0'>" +
-        "        <span>Hello, Web Component!</span>" +
-        "    </div>" +
-        "    <div id='template-div1'></div>" +
-        "    <div id='template-div2'></div>" +
-        "</template>"
-    );
+	jQuery( "#qunit-fixture" ).append(
+		"<template id='template'>" +
+		"    <div id='template-div0'>" +
+		"        <span>Hello, Web Component!</span>" +
+		"    </div>" +
+		"    <div id='template-div1'></div>" +
+		"    <div id='template-div2'></div>" +
+		"</template>"
+	);
 
-    var contents = jQuery( "#template" ).contents();
-    assert.equal( contents.length, 6, "Check template element contents" );
+	var contents = jQuery( "#template" ).contents();
+	assert.equal( contents.length, 6, "Check template element contents" );
 
-    assert.equal( contents.find( "span" ).text(), "Hello, Web Component!", "Find span in template and check its text" );
+	assert.equal( contents.find( "span" ).text(), "Hello, Web Component!", "Find span in template and check its text" );
 
-    jQuery( "<div id='templateTest' />" ).append(
-        jQuery( jQuery.map( contents, function( node ) {
-            return document.importNode( node, true );
-        } ) )
-    ).appendTo( "#qunit-fixture" );
+	jQuery( "<div id='templateTest' />" ).append(
+			jQuery( jQuery.map( contents, function( node ) {
+					return document.importNode( node, true );
+			} ) )
+	).appendTo( "#qunit-fixture" );
 
-    contents = jQuery( "#templateTest" ).contents();
-    assert.equal( contents.length, 6, "Check cloned nodes of template element contents" );
+	contents = jQuery( "#templateTest" ).contents();
+	assert.equal( contents.length, 6, "Check cloned nodes of template element contents" );
 
-    assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
+	assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
 } );
 
-QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ](
-	"contents() for <template /> remains inert",
-	function( assert ) {
-        assert.expect( 2 );
+QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ]( "contents() for <template /> remains inert", function( assert ) {
+	assert.expect( 2 );
 
-		Globals.register( "testScript" );
-		Globals.register( "testImgOnload" );
+	Globals.register( "testScript" );
+	Globals.register( "testImgOnload" );
 
-        jQuery( "#qunit-fixture" ).append(
-            "<template id='template'>" +
-            "    <script>testScript = 1;</script>" +
-            "    <img src='" + baseURL + "1x1.jpg' onload='testImgOnload = 1' >" +
-            "</template>"
-        );
+	jQuery( "#qunit-fixture" ).append(
+		"<template id='template'>" +
+		"    <script>testScript = 1;</script>" +
+		"    <img src='" + baseURL + "1x1.jpg' onload='testImgOnload = 1' >" +
+		"</template>"
+	);
 
-        var content = jQuery( "#template" ).contents();
+	var content = jQuery( "#template" ).contents();
 
-        assert.strictEqual( window.testScript, true, "script in template isn't executed" );
-        assert.strictEqual( window.testImgOnload, true, "onload of image in template isn't executed" );
-	}
-);
+	assert.strictEqual( window.testScript, true, "script in template isn't executed" );
+	assert.strictEqual( window.testImgOnload, true, "onload of image in template isn't executed" );
+} );
+
+QUnit.test( "contents() for <object />", function( assert ) {
+	assert.expect( 2 );
+
+	var svgObject = jQuery( "<object id='svg-object' data='" + baseURL + "1x1.svg'></object>" );
+	var done = assert.async();
+
+	svgObject.on( "load", function() {
+		var contents = jQuery( "#svg-object" ).contents();
+		assert.equal( contents.length, 1, "Check object contents" );
+		assert.equal( contents.find( "svg" ).length, 1, "Find svg within object" );
+		done();
+	} );
+
+	jQuery( "#qunit-fixture" ).append( svgObject );
+} );
+
+QUnit.test( "contents() for <frame />", function( assert ) {
+	assert.expect( 2 );
+
+	var iframe = jQuery( "<iframe id='frame-contents' src='" + baseURL + "frame.html'></iframe>" );
+	var done = assert.async();
+
+	iframe.on( "load", function() {
+		var container = jQuery( "#frame-contents" ).contents();
+		var contents = container.find( "#test-frame" ).contents();
+		assert.equal( contents.length, 1, "Check frame contents" );
+		assert.equal( contents.find( "body" ).length, 1, "Find body within frame" );
+		done();
+	} );
+
+	jQuery( "#qunit-fixture" ).append( iframe );
+} );
 
 QUnit.test( "sort direction", function( assert ) {
 	assert.expect( 12 );
