@@ -7,6 +7,7 @@
 			zoom: 1.1;
 		}
 		#test {
+			position: absolute;
 			width: 100px;
 			height: 100px;
 			padding: 10px;
@@ -20,7 +21,10 @@
 <script src="../../jquery.js"></script>
 <script src="../iframeTest.js"></script>
 <script>
-	startIframeTest( jQuery( "#test" ).css( 'width' ) );
+	startIframeTest(
+		jQuery( "#test" ).css( 'width' ),
+		jQuery( "#test" ).css( 'width', '100px' ).css( 'width' )
+	);
 </script>
 </body>
 </html>
