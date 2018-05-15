@@ -1,6 +1,8 @@
 [jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjquery%2Fjquery.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjquery%2Fjquery?ref=badge_shield)
+
 Contribution Guides
 --------------------------------------
 
