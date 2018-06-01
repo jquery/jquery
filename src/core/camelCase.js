@@ -15,7 +15,8 @@ function fcamelCase( all, letter ) {
 // Support: IE <=9 - 11, Edge 12 - 15
 // Microsoft forgot to hump their vendor prefix (#9572)
 function camelCase( string ) {
-	return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+	if (typeof(string) == "string")
+		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 }
 
 return camelCase;
