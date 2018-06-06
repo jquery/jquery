@@ -221,9 +221,13 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
+				browsers: [
 
-				// The Chrome sandbox doesn't work on Travis.
-				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
+					// The Chrome sandbox doesn't work on Travis.
+					isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless",
+
+					"FirefoxHeadless"
+				]
 			},
 
 			// To debug tests with Karma:
