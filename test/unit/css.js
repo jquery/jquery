@@ -1348,11 +1348,11 @@ QUnit.test( "Keep the last style if the new one isn't recognized by the browser 
 	assert.equal( el.css( "position" ), "absolute", "The old style is kept when setting an unrecognized value" );
 } );
 
-// Support: Edge 14 - 15
+// Support: Edge 14 - 16 only
 // Edge collapses whitespace-only values when setting a style property and
 // there is no easy way for us to work around it. Just skip the test there
 // and hope for the better future.
-QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ](
+QUnit[ /\bedge\/16\./i.test( navigator.userAgent ) ? "skip" : "test" ](
 	"Keep the last style if the new one is a non-empty whitespace (gh-3204)",
 	function( assert ) {
 	assert.expect( 1 );
