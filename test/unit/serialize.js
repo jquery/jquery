@@ -1,7 +1,7 @@
 QUnit.module( "serialize", { teardown: moduleTeardown } );
 
 QUnit.test( "jQuery.param()", function( assert ) {
-	assert.expect( 23 );
+	assert.expect( 24 );
 
 	var params;
 
@@ -72,6 +72,9 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	params = { "test": [ 1, 2, null ] };
 	assert.equal( jQuery.param( params ), "test%5B%5D=1&test%5B%5D=2&test%5B%5D=", "object with array property with null value" );
+
+	params = undefined;
+	assert.equal( jQuery.param( params ), "", "jQuery.param( undefined ) === empty string" );
 } );
 
 QUnit.test( "jQuery.param() not affected by ajaxSettings", function( assert ) {
