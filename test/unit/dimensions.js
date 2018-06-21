@@ -352,6 +352,66 @@ QUnit.test( "table dimensions", function( assert ) {
 	assert.equal( colElem.width(), 300, "col elements have width(), see #12243" );
 } );
 
+QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
+	assert.expect( 8 );
+
+	var svg = jQuery( "<svg width='100' height='100'></svg>" ).appendTo( "#qunit-fixture" );
+
+	assert.equal( svg.width(), 100 );
+	assert.equal( svg.height(), 100 );
+
+	assert.equal( svg.innerWidth(), 100 );
+	assert.equal( svg.innerHeight(), 100 );
+
+	assert.equal( svg.outerWidth(), 100 );
+	assert.equal( svg.outerHeight(), 100 );
+
+	assert.equal( svg.outerWidth( true ), 100 );
+	assert.equal( svg.outerHeight( true ), 100 );
+
+	svg.remove();
+} );
+
+QUnit.test( "SVG dimensions (content-box)", function( assert ) {
+	assert.expect( 8 );
+
+	var svg = jQuery( "<svg width='100' height='100' style='box-sizing: content-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+
+	assert.equal( svg.width(), 100 );
+	assert.equal( svg.height(), 100 );
+
+	assert.equal( svg.innerWidth(), 104 );
+	assert.equal( svg.innerHeight(), 104 );
+
+	assert.equal( svg.outerWidth(), 106 );
+	assert.equal( svg.outerHeight(), 106 );
+
+	assert.equal( svg.outerWidth( true ), 112 );
+	assert.equal( svg.outerHeight( true ), 112 );
+
+	svg.remove();
+} );
+
+QUnit.test( "SVG dimensions (border-box)", function( assert ) {
+	assert.expect( 8 );
+
+	var svg = jQuery( "<svg width='100' height='100' style='box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+
+	assert.equal( svg.width(), 94 );
+	assert.equal( svg.height(), 94 );
+
+	assert.equal( svg.innerWidth(), 98 );
+	assert.equal( svg.innerHeight(), 98 );
+
+	assert.equal( svg.outerWidth(), 100 );
+	assert.equal( svg.outerHeight(), 100 );
+
+	assert.equal( svg.outerWidth( true ), 106 );
+	assert.equal( svg.outerHeight( true ), 106 );
+
+	svg.remove();
+} );
+
 QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function( assert ) {
 	assert.expect( 16 );
 
