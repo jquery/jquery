@@ -1,6 +1,7 @@
 [jQuery](https://jquery.com/) — New Wave JavaScript
 ==================================================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c9b76d78aa6947bba3583e76bfa71d4e)](https://app.codacy.com/app/opensource/jquery?utm_source=github.com&utm_medium=referral&utm_content=jquery/jquery&utm_campaign=badger)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjquery%2Fjquery.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjquery%2Fjquery?ref=badge_shield)
 
 Contribution Guides
