@@ -160,7 +160,7 @@ testIframe(
 				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
-			firefox: {
+			firefox_60: {
 				"ajax": true,
 				"boxSizingReliable": true,
 				"checkClone": true,
@@ -175,6 +175,23 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": false,
+				"scrollboxSize": true
+			},
+			firefox: {
+				"ajax": true,
+				"boxSizingReliable": true,
+				"checkClone": true,
+				"checkOn": true,
+				"clearCloneStyle": true,
+				"cors": true,
+				"createHTMLDocument": true,
+				"focusin": false,
+				"noCloneChecked": true,
+				"optSelected": true,
+				"pixelBoxStyles": true,
+				"pixelPosition": true,
+				"radioValue": true,
+				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
 			ios_11: {
@@ -279,6 +296,8 @@ testIframe(
 		expected = expectedMap.safari_11;
 	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
+	} else if ( /firefox\/60/i.test( userAgent ) ) {
+		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
 	} else if ( /iphone os 11_/i.test( userAgent ) ) {
