@@ -422,6 +422,9 @@ jQuery.extend( {
 			// uncached part of the url
 			uncached,
 
+			// real content-type, .headers member wins
+			realContentType,
+
 			// Create the final options object
 			s = jQuery.ajaxSetup( {}, options ),
 
@@ -615,9 +618,18 @@ jQuery.extend( {
 			s.url = cacheURL + uncached;
 
 		// Change '%20' to '+' if this is encoded form body content (gh-2658)
-		} else if ( s.data && s.processData &&
-			( s.contentType || "" ).indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
-			s.data = s.data.replace( r20, "+" );
+		} else if ( s.data && s.processData ) {
+
+			// Build content-type from opts and headers section (gh-4119)
+			realContentType = s.contentType || "";
+			for ( i in s.headers ) {
+				if ( i.toLowerCase() === "content-type" ) {
+					realContentType = s.headers[ i ] || "";
+				}
+			}
+			if ( realContentType.indexOf( "application/x-www-form-urlencoded" ) === 0 ) {
+				s.data = s.data.replace( r20, "+" );
+			}
 		}
 
 		// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
