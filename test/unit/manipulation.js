@@ -2772,6 +2772,21 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 	assert.strictEqual( htmlOut, htmlExpected );
 } );
 
+QUnit.test( "Make sure tags with single-character names are found (gh-4124)", function( assert ) {
+	assert.expect( 1 );
+
+	var htmlOut,
+		htmlIn = "<p>foo<!--<td>--></p>",
+		$el = jQuery( "<div/>" );
+
+	$el.html( htmlIn );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	htmlOut = $el[ 0 ].innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	assert.strictEqual( htmlOut, htmlIn );
+} );
+
 QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
