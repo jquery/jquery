@@ -50,11 +50,6 @@
 	// Otherwise, load synchronously
 	} else {
 		document.write( "<script id='jquery-js' src='" + parentUrl + src + "'><\x2Fscript>" );
-
-		// Synchronous-only tests (other tests are loaded from the test page)
-		if ( typeof loadTests !== "undefined" ) {
-			document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>" );
-		}
 	}
 
 } )();

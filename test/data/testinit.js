@@ -1,11 +1,17 @@
 /* eslint no-multi-str: "off" */
 
-// baseURL is intentionally set to "data/" instead of "".
-// This is not just for convenience (since most files are in data/)
-// but also to ensure that urls without prefix fail.
-// Otherwise it's easy to write tests that pass on test/index.html
-// but fail in Karma runner (where the baseURL is different).
-var baseURL = "data/",
+var FILEPATH = "/test/data/testinit.js",
+	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
+	parentUrl = activeScript ?
+		activeScript.src + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+		"../",
+
+	// baseURL is intentionally set to "data/" instead of "".
+	// This is not just for convenience (since most files are in data/)
+	// but also to ensure that urls without prefix fail.
+	// Otherwise it's easy to write tests that pass on test/index.html
+	// but fail in Karma runner (where the baseURL is different).
+	baseURL = "data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -294,6 +300,11 @@ function moduleTypeSupported() {
 moduleTypeSupported();
 
 this.loadTests = function() {
+
+	// Directly load tests that need synchronous evaluation
+	if ( document.readyState !== "complete" ) {
+		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
+	}
 
 	// Get testSubproject from testrunner first
 	require( [ "data/testrunner.js" ], function() {
