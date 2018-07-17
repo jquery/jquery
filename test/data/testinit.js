@@ -11,7 +11,7 @@ var FILEPATH = "/test/data/testinit.js",
 	// but also to ensure that urls without prefix fail.
 	// Otherwise it's easy to write tests that pass on test/index.html
 	// but fail in Karma runner (where the baseURL is different).
-	baseURL = "data/",
+	baseURL = parentUrl + "test/data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -277,12 +277,9 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 };
 this.iframeCallback = undefined;
 
-if ( window.__karma__ ) {
-	// In Karma, files are served from /base
-	baseURL = "base/test/data/";
-} else {
-	// Tests are always loaded async
-	// except when running tests in Karma (See Gruntfile)
+// Tests are always loaded async
+// except when running tests in Karma (See Gruntfile)
+if ( !window.__karma__ ) {
 	QUnit.config.autostart = false;
 }
 
