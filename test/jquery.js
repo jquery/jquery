@@ -2,8 +2,11 @@
 ( function() {
 	/* global loadTests: false */
 
-	var pathname = window.location.pathname,
-		path = pathname.slice( 0, pathname.lastIndexOf( "test" ) ),
+	var FILEPATH = "/test/jquery.js",
+		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
+		parentUrl = activeScript ?
+			activeScript.src + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+			"../",
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require,
 
@@ -33,7 +36,7 @@
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( urlParams.amd && window.QUnit ) {
 		require.config( {
-			baseUrl: path
+			baseUrl: parentUrl
 		} );
 		src = "src/jquery";
 
@@ -46,7 +49,7 @@
 
 	// Otherwise, load synchronously
 	} else {
-		document.write( "<script id='jquery-js' src='" + path + src + "'><\x2Fscript>" );
+		document.write( "<script id='jquery-js' src='" + parentUrl + src + "'><\x2Fscript>" );
 
 		// Synchronous-only tests (other tests are loaded from the test page)
 		if ( typeof loadTests !== "undefined" ) {
