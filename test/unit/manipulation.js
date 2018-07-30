@@ -1797,7 +1797,13 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-QUnit[ QUnit.moduleTypeSupported ? "test" : "skip" ]( "html(script type module)", function( assert ) {
+QUnit[
+	// Support: Edge 16-17
+	// Edge sometimes doesn't execute module scripts so skip the test there.
+	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
+		"test" :
+		"skip"
+]( "html(script type module)", function( assert ) {
 	assert.expect( 4 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
