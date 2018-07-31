@@ -266,6 +266,11 @@ jQuery.extend( {
 
 				if ( isCustomProp ) {
 					style.setProperty( name, value );
+				} else if ( value.indexOf( "!important" !== -1 ) ) {
+
+					//Added else if to resolve #3713
+					var splitValue = value.split( "!" );
+					style.setProperty( name,  splitValue[ 0 ], splitValue[ 1 ] );
 				} else {
 					style[ name ] = value;
 				}
