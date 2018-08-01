@@ -217,6 +217,7 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
+			argName = name,
 			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
@@ -263,14 +264,13 @@ jQuery.extend( {
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
+				if ( value.indexOf( "!" ) !== -1 ) {
 
-				if ( isCustomProp ) {
-					style.setProperty( name, value );
-				} else if ( value.indexOf( "!important" !== -1 ) ) {
-
-					//Added else if to resolve #3713
+					// Support !important priority (gh-3713).
 					var splitValue = value.split( "!" );
-					style.setProperty( name,  splitValue[ 0 ], splitValue[ 1 ] );
+					style.setProperty( argName,  splitValue[ 0 ], splitValue[ 1 ] );
+				} else if ( isCustomProp ) {
+					style.setProperty( name, value );
 				} else {
 					style[ name ] = value;
 				}
