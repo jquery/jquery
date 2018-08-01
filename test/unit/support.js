@@ -300,7 +300,7 @@ testIframe(
 		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /iphone os 11_/i.test( userAgent ) ) {
+	} else if ( /(?:iphone|ipad);.*(?:iphone)? os 11_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_11;
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_9_10;
