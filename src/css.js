@@ -264,7 +264,7 @@ jQuery.extend( {
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
-				if ( value.indexOf( "!" ) !== -1 ) {
+				if ( typeof value === "string" && value.includes( "!important" ) ) {
 
 					// Support !important priority (gh-3713).
 					var splitValue = value.split( "!" );
