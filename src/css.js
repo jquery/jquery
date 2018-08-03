@@ -86,22 +86,12 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 
 			// For "content", subtract padding
 			if ( box === "content" ) {
-				var padding = jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
-				if ( delta > padding ) {
-					delta -= padding;
-				} else {
-					delta = 0;
-				}
+				delta -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 			}
 
 			// For "content" or "padding", subtract border
 			if ( box !== "margin" ) {
-				var width = jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-				if ( delta > width ) {
-					delta -= width;
-				} else {
-					delta = 0;
-				}
+				delta -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		}
 	}
@@ -123,7 +113,7 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		) ) || 0;
 	}
 
-	return delta;
+	return Math.max( 0, delta );
 }
 
 function getWidthOrHeight( elem, dimension, extra ) {
