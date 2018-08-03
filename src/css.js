@@ -113,7 +113,7 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		) ) || 0;
 	}
 
-	return delta;
+	return Math.max( 0, delta );
 }
 
 function getWidthOrHeight( elem, dimension, extra ) {
