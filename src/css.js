@@ -83,10 +83,11 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 		// If we get here with a border-box (content + padding + border), we're seeking "content" or
 		// "padding" or "margin"
 		} else {
+
 			// For "content", subtract padding
 			if ( box === "content" ) {
 				var padding = jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
-				if(delta > padding) {
+				if ( delta > padding ) {
 					delta -= padding;
 				} else {
 					delta = 0;
@@ -95,9 +96,9 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 
 			// For "content" or "padding", subtract border
 			if ( box !== "margin" ) {
-				var borderWidth = jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
-				if(delta > borderWidth) {
-					delta -= borderWidth;
+				var width = jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
+				if ( delta > width ) {
+					delta -= width;
 				} else {
 					delta = 0;
 				}
