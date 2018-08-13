@@ -355,7 +355,7 @@ QUnit.test( "table dimensions", function( assert ) {
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg width='100' height='100'></svg>" ).appendTo( "#qunit-fixture" );
+	var svg = jQuery( "<svg style='width: 100px; height: 100px;'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 100 );
 	assert.equal( svg.height(), 100 );
@@ -375,7 +375,7 @@ QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
 QUnit.test( "SVG dimensions (content-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg width='100' height='100' style='box-sizing: content-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+	var svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: content-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 100 );
 	assert.equal( svg.height(), 100 );
@@ -395,7 +395,7 @@ QUnit.test( "SVG dimensions (content-box)", function( assert ) {
 QUnit.test( "SVG dimensions (border-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg width='100' height='100' style='box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+	var svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 94 );
 	assert.equal( svg.height(), 94 );
