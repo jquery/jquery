@@ -1143,6 +1143,56 @@ QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
 	}
 } );
 
+
+QUnit[
+	jQuery( "<div/>" )[ 0 ].style.gridArea === "" ?
+	"test" :
+	"skip"
+]( "Do not append px to CSS Grid-related properties (gh-4007)", function( assert ) {
+	assert.expect( 12 );
+
+	var prop, value, subProp, subValue, $div,
+		gridProps = {
+			"grid-area": {
+				"grid-row-start": "2",
+				"grid-row-end": "auto",
+				"grid-column-start": "auto",
+				"grid-column-end": "auto"
+			},
+			"grid-column": {
+				"grid-column-start": "2",
+				"grid-column-end": "auto"
+			},
+			"grid-column-end": true,
+			"grid-column-start": true,
+			"grid-row": {
+				"grid-row-start": "2",
+				"grid-row-end": "auto"
+			},
+			"grid-row-end": true,
+			"grid-row-start": true
+		};
+
+	for ( prop in gridProps ) {
+		$div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+		$div.css( prop, 2 );
+
+		value = gridProps[ prop ];
+
+		if ( typeof value === "object" ) {
+			for ( subProp in value ) {
+				subValue = value[ subProp ];
+				assert.equal( $div.css( subProp ), subValue,
+					"Do not append px to '" + prop + "' (retrieved " + subProp + ")" );
+			}
+		} else {
+			assert.equal( $div.css( prop ), "2", "Do not append px to '" + prop + "'" );
+		}
+
+		$div.remove();
+	}
+} );
+
 QUnit.test( "css('width') and css('height') should respect box-sizing, see #11004", function( assert ) {
 	assert.expect( 4 );
 
