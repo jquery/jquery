@@ -299,12 +299,18 @@ moduleTypeSupported();
 this.loadTests = function() {
 
 	// Directly load tests that need synchronous evaluation
-	if ( document.readyState !== "complete" ) {
+	if ( !QUnit.urlParams.amd || document.readyState === "loading" ) {
 		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
+	} else {
+		QUnit.module( "ready", function() {
+			QUnit.test( "jQuery ready", function( assert ) {
+				assert.ok( false, "Test should be initialized before DOM ready" );
+			} );
+		} );
 	}
 
 	// Get testSubproject from testrunner first
-	require( [ "data/testrunner.js" ], function() {
+	require( [ parentUrl + "test/data/testrunner.js" ], function() {
 		var i = 0,
 			tests = [
 				// A special module with basic tests, meant for
@@ -342,7 +348,7 @@ this.loadTests = function() {
 
 			if ( dep ) {
 				if ( !QUnit.basicTests || i === 1 ) {
-					require( [ dep ], loadDep );
+					require( [ parentUrl + "test/" + dep ], loadDep );
 
 				// Support: Android 2.3 only
 				// When running basic tests, replace other modules with dummies to avoid overloading

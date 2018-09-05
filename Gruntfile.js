@@ -206,7 +206,8 @@ module.exports = function( grunt ) {
 					"test/unit/ready.js",
 
 					{ pattern: "dist/jquery.*", included: false, served: true },
-					{ pattern: "external/qunit/qunit.css", included: false, served: true },
+					{ pattern: "src/**", included: false, served: true },
+					{ pattern: "external/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
