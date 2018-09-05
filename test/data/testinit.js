@@ -279,7 +279,7 @@ this.iframeCallback = undefined;
 
 // Tests are always loaded async
 // except when running tests in Karma (See Gruntfile)
-if ( !window.__karma__  ) {
+if ( !window.__karma__ ) {
 	QUnit.config.autostart = false;
 }
 
