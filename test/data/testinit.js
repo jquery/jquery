@@ -2,8 +2,8 @@
 
 var FILEPATH = "/test/data/testinit.js",
 	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
-	parentUrl = activeScript ?
-		activeScript.src + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+	parentUrl = activeScript && activeScript.src ?
+		activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 		"../",
 
 	// baseURL is intentionally set to "data/" instead of "".
@@ -279,7 +279,7 @@ this.iframeCallback = undefined;
 
 // Tests are always loaded async
 // except when running tests in Karma (See Gruntfile)
-if ( !window.__karma__ ) {
+if ( !window.__karma__  ) {
 	QUnit.config.autostart = false;
 }
 

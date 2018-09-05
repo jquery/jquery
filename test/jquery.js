@@ -4,8 +4,8 @@
 
 	var FILEPATH = "/test/jquery.js",
 		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
-		parentUrl = activeScript ?
-			activeScript.src + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+		parentUrl = activeScript && activeScript.src ?
+			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 			"../",
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require,
