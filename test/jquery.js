@@ -20,11 +20,16 @@
 
 	// Define configuration parameters controlling how jQuery is loaded
 	if ( QUnit ) {
-		QUnit.config.urlConfig.push( {
-			id: "amd",
-			label: "Load with AMD",
-			tooltip: "Load the AMD jQuery file (and its dependencies)"
-		} );
+
+		// AMD loading is asynchronous and incompatible with synchronous test loading in Karma
+		if ( !window.__karma__ ) {
+			QUnit.config.urlConfig.push( {
+				id: "amd",
+				label: "Load with AMD",
+				tooltip: "Load the AMD jQuery file (and its dependencies)"
+			} );
+		}
+
 		QUnit.config.urlConfig.push( {
 			id: "dev",
 			label: "Load unminified",
