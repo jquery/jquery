@@ -177,7 +177,7 @@ module.exports = function( grunt ) {
 					"external/requirejs/require.js",
 					"test/data/testinit.js",
 
-					"dist/jquery.min.js",
+					"test/jquery.js",
 
 					// Replacement for testinit.js#loadTests()
 					"test/data/testrunner.js",
@@ -205,9 +205,9 @@ module.exports = function( grunt ) {
 					"test/unit/tween.js",
 					"test/unit/ready.js",
 
-					{ pattern: "dist/jquery.js", included: false, served: true },
-					{ pattern: "dist/*.map", included: false, served: true },
-					{ pattern: "external/qunit/qunit.css", included: false, served: true },
+					{ pattern: "dist/jquery.*", included: false, served: true },
+					{ pattern: "src/**", included: false, served: true },
+					{ pattern: "external/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
