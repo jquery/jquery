@@ -454,17 +454,19 @@ jQuery.extend( {
 
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
-					var match;
+					var match, existingHeaderValues, headerValues;
 					if ( completed ) {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
 							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
-								responseHeaders[ match[ 1 ].toLowerCase() ] = (responseHeaders[ match[ 1 ].toLowerCase() ] || []).concat(match[ 2 ]);
+								existingHeaderValues = responseHeaders[ match[ 1 ].toLowerCase() ];
+								headerValues = ( existingHeaderValues || [] ).concat( match[ 2 ] );
+								responseHeaders[ match[ 1 ].toLowerCase() ] = headerValues;
 							}
 						}
 						match = responseHeaders[ key.toLowerCase() ];
 					}
-					return match == null ? null : match.join(", ");
+					return match == null ? null : match.join( ", " );
 				},
 
 				// Raw string
