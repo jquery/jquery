@@ -2,7 +2,7 @@ define( [
 	"../core",
 	"../var/getShadowRoot",
 	"../var/document",
-	"../selector" // Get jQuery.contains
+	"../selector" // jQuery.contains
 ], function( jQuery, getShadowRoot, document ) {
 	"use strict";
 
@@ -10,7 +10,7 @@ define( [
 
 	var isAttached;
 
-	// Check if browser supports Shadow DOM
+	// Check attachment across shadow DOM boundaries when possible (gh-3504)
 	if ( document.head.createShadowRoot ) {
 		isAttached = function( elem ) {
 			return jQuery.contains( elem.ownerDocument, elem ) ||

@@ -190,7 +190,7 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 // Supports #7397
 supportjQuery.each( hideOptions, function( type, setup ) {
 	QUnit.test( "Persist correct display value - " + type + " hidden", function( assert ) {
-		assert.expect( 3 );
+		assert.expect( 6 );
 
 		jQuery( "<div id='show-tests'><span style='position:absolute;'>foo</span></div>" )
 			.appendTo( "#qunit-fixture" ).find( "*" ).each( setup );
@@ -212,6 +212,26 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 				assert.equal( $span.css( "display" ), displayNone, "Expecting display: " + displayNone );
 				$span.fadeIn( 100, function() {
 					assert.equal( $span.css( "display" ), display, "Expecting display: " + display );
+				} );
+			} );
+		} );
+
+		clock.tick( 300 );
+
+		jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+		var shadowHost = document.querySelector( "#shadowHost" );
+		var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+		shadowRoot.innerHTML = "<style>.hidden{display: none;}</style>" +
+			"<div id='shadowChild' class='hidden'></div>";
+		var shadowChild = shadowRoot.querySelector( "#shadowChild" );
+
+		var $shadowChild = jQuery( shadowChild );
+		$shadowChild.fadeIn( 100, function() {
+			assert.equal( $shadowChild.css( "display" ), "block", "Expecting shadow display: " + "block" );
+			$shadowChild.fadeOut( 100, function() {
+				assert.equal( $shadowChild.css( "display" ), "none", "Expecting shadow display: " + "none" );
+				$shadowChild.fadeIn( 100, function() {
+					assert.equal( $shadowChild.css( "display" ), "block", "Expecting shadow display: " + "block" );
 				} );
 			} );
 		} );

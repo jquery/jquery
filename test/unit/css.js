@@ -641,6 +641,63 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	span.remove();
 } );
 
+QUnit[ document.head.createShadowRoot ? "test" : "skip" ]( "show/hide shadow child nodes", function( assert ) {
+	assert.expect( 28 );
+	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+	var shadowHost = document.querySelector( "#shadowHost" );
+	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+	shadowRoot.innerHTML = "" +
+		"<style>.hidden{display: none;}</style>" +
+		"<div class='hidden' id='shadowdiv'>" +
+		"	<p class='hidden' id='shadowp'>" +
+		"		<a href='#' class='hidden' id='shadowa'></a>" +
+		"	</p>" +
+		"	<code class='hidden' id='shadowcode'></code>" +
+		"	<pre class='hidden' id='shadowpre'></pre>" +
+		"	<span class='hidden' id='shadowspan'></span>" +
+		"</div>" +
+		"<table class='hidden' id='shadowtable'>" +
+		"	<thead class='hidden' id='shadowthead'>" +
+		"		<tr class='hidden' id='shadowtr'>" +
+		"			<th class='hidden' id='shadowth'></th>" +
+		"		</tr>" +
+		"	</thead>" +
+		"	<tbody class='hidden' id='shadowtbody'>" +
+		"		<tr class='hidden'>" +
+		"			<td class='hidden' id='shadowtd'></td>" +
+		"		</tr>" +
+		"	</tbody>" +
+		"</table>" +
+		"<ul class='hidden' id='shadowul'>" +
+		"	<li class='hidden' id='shadowli'></li>" +
+		"</ul>";
+
+	var test = {
+		"div": "block",
+		"p": "block",
+		"a": "inline",
+		"code": "inline",
+		"pre": "block",
+		"span": "inline",
+		"table": "table",
+		"thead": "table-header-group",
+		"tbody": "table-row-group",
+		"tr": "table-row",
+		"th": "table-cell",
+		"td": "table-cell",
+		"ul": "block",
+		"li": "list-item"
+	};
+
+	jQuery.each( test, function( selector, expected ) {
+		var shadowChild = shadowRoot.querySelector( "#shadow" + selector );
+		var $shadowChild = jQuery( shadowChild );
+		assert.strictEqual( $shadowChild.css( "display" ), "none", "is hidden" );
+		$shadowChild.show();
+		assert.strictEqual( $shadowChild.css( "display" ), expected, "Show using correct display type for " + selector );
+	} );
+} );
+
 QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
 	assert.expect( 3 );
 
@@ -964,6 +1021,29 @@ QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "detached to
 		"detached, cascade-hidden element" );
 	assert.equal( cascadeHiddenDetached[ 1 ].style.display, "none",
 		"cascade-hidden element in detached tree" );
+} );
+
+QUnit[ jQuery.find.compile && jQuery.fn.toggle && document.head.createShadowRoot ? "test" : "skip" ]( "shadow toggle()", function( assert ) {
+	assert.expect( 4 );
+	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+	var shadowHost = document.querySelector( "#shadowHost" );
+	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+	shadowRoot.innerHTML = "" +
+		"<style>.hidden{display: none;}</style>" +
+		"<div id='shadowHiddenChild' class='hidden'></div>" +
+		"<div id='shadowChild'></div>";
+	var shadowChild = shadowRoot.querySelector( "#shadowChild" );
+	var shadowHiddenChild = shadowRoot.querySelector( "#shadowHiddenChild" );
+
+	var $shadowChild = jQuery( shadowChild );
+	assert.strictEqual( $shadowChild.css( "display" ), "block", "is visible" );
+	$shadowChild.toggle();
+	assert.strictEqual( $shadowChild.css( "display" ), "none", "is hidden" );
+
+	$shadowChild = jQuery( shadowHiddenChild );
+	assert.strictEqual( $shadowChild.css( "display" ), "none", "is hidden" );
+	$shadowChild.toggle();
+	assert.strictEqual( $shadowChild.css( "display" ), "block", "is visible" );
 } );
 
 QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function( assert ) {
