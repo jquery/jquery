@@ -107,7 +107,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": false,
 				"reliableMarginLeft": true,
-				"scrollboxSize": "absolute"
+				"scrollboxSize": false
 			},
 			chrome: {
 				"ajax": true,
