@@ -2,14 +2,15 @@ var fs = require( "fs" );
 
 module.exports = function( Release ) {
 
+// 	Release Files
 	var
 		files = [
 			"dist/jquery.js",
-			"dist/jquery.min.js",
-			"dist/jquery.min.map",
+			"dist/jquery.min.js", // min refers to minified
+			"dist/jquery.min.map", // min refers to minified
 			"dist/jquery.slim.js",
-			"dist/jquery.slim.min.js",
-			"dist/jquery.slim.min.map",
+			"dist/jquery.slim.min.js", // min refers to minified
+			"dist/jquery.slim.min.map", // min refers to minified
 			"src/core.js"
 		],
 		cdn = require( "./release/cdn" ),
