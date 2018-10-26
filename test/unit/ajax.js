@@ -89,6 +89,27 @@ QUnit.module( "ajax", {
 		}
 	);
 
+	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 4,
+		function( assert ) {
+			return {
+				create: function( options ) {
+					var xhr;
+					options.dataType = "script";
+					options.scriptAttrs = { id: "jquery-ajax-test", async: "async" };
+					xhr = jQuery.ajax( url( "mock.php?action=script" ), options );
+					assert.equal( jQuery( "#jquery-ajax-test" ).attr( "async" ), "async", "attr value" );
+					return xhr;
+				},
+				success: function() {
+					assert.ok( true, "success" );
+				},
+				complete: function() {
+					assert.ok( true, "complete" );
+				}
+			};
+		}
+	);
+
 	ajaxTest( "jQuery.ajax() - do not execute js (crossOrigin)", 2, function( assert ) {
 		return {
 			create: function( options ) {
@@ -324,12 +345,13 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - hash", 4, function( assert ) {
+	ajaxTest( "jQuery.ajax() - URL fragment component preservation", 4, function( assert ) {
 		return [
 			{
 				url: baseURL + "name.html#foo",
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, baseURL + "name.html#foo", "Make sure that the URL has its hash." );
+					assert.equal( settings.url, baseURL + "name.html#foo",
+						"hash preserved for request with no query component." );
 					return false;
 				},
 				error: true
@@ -337,7 +359,8 @@ QUnit.module( "ajax", {
 			{
 				url: baseURL + "name.html?abc#foo",
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, baseURL + "name.html?abc#foo", "Make sure that the URL has its hash." );
+					assert.equal( settings.url, baseURL + "name.html?abc#foo",
+						"hash preserved for request with query component." );
 					return false;
 				},
 				error: true
@@ -348,7 +371,8 @@ QUnit.module( "ajax", {
 					"test": 123
 				},
 				beforeSend: function( xhr, settings ) {
-					assert.equal( settings.url, baseURL + "name.html?abc&test=123#foo", "Make sure that the URL has its hash." );
+					assert.equal( settings.url, baseURL + "name.html?abc&test=123#foo",
+						"hash preserved for request with query component and data." );
 					return false;
 				},
 				error: true
@@ -360,9 +384,10 @@ QUnit.module( "ajax", {
 				},
 				cache: false,
 				beforeSend: function( xhr, settings ) {
-					// Remove the random number, but ensure the cache-buster param is there
-					var url = settings.url.replace( /\d+/, "" );
-					assert.equal( url, baseURL + "name.html?abc&devo=hat&_=#brownies", "Make sure that the URL has its hash." );
+					// Clear the cache-buster param value
+					var url = settings.url.replace( /_=[^&#]+/, "_=" );
+					assert.equal( url, baseURL + "name.html?abc&devo=hat&_=#brownies",
+						"hash preserved for cache-busting request with query component and data." );
 					return false;
 				},
 				error: true
@@ -505,24 +530,26 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
-		return {
-			url: url( "mock.php?action=wait&wait=1" ),
-			xhr: function() {
-				var xhr = new window.XMLHttpRequest();
-				setTimeout( function() {
-					xhr.abort();
-				}, 100 );
-				return xhr;
-			},
-			error: function( xhr, msg ) {
-				assert.strictEqual( msg, "error", "Native abort triggers error callback" );
-			},
-			complete: function() {
-				assert.ok( true, "complete" );
-			}
-		};
-	} );
+	if ( !/android 4\.0/i.test( navigator.userAgent ) ) {
+		ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
+			return {
+				url: url( "mock.php?action=wait&wait=1" ),
+				xhr: function() {
+					var xhr = new window.XMLHttpRequest();
+					setTimeout( function() {
+						xhr.abort();
+					}, 100 );
+					return xhr;
+				},
+				error: function( xhr, msg ) {
+					assert.strictEqual( msg, "error", "Native abort triggers error callback" );
+				},
+				complete: function() {
+					assert.ok( true, "complete" );
+				}
+			};
+		} );
+	}
 
 	// Support: Android <= 4.0 - 4.3 only
 	// Android 4.0-4.3 does not have ontimeout on an xhr
@@ -1110,7 +1137,7 @@ QUnit.module( "ajax", {
 			setup: function() {
 				Globals.register( "testBar" );
 			},
-			url: window.location.href.replace( /[^\/]*$/, "" ) + baseURL + "mock.php?action=testbar",
+			url: url( "mock.php?action=testbar" ),
 			dataType: "script",
 			success: function() {
 				assert.strictEqual( window[ "testBar" ], "bar", "Script results returned (GET, no callback)" );
@@ -1123,7 +1150,7 @@ QUnit.module( "ajax", {
 			setup: function() {
 				Globals.register( "testBar" );
 			},
-			url: window.location.href.replace( /[^\/]*$/, "" ) + baseURL + "mock.php?action=testbar",
+			url: url( "mock.php?action=testbar" ),
 			type: "POST",
 			dataType: "script",
 			success: function( data, status ) {
@@ -1138,7 +1165,7 @@ QUnit.module( "ajax", {
 			setup: function() {
 				Globals.register( "testBar" );
 			},
-			url: window.location.href.replace( /[^\/]*$/, "" ).replace( /^.*?\/\//, "//" ) + baseURL + "mock.php?action=testbar",
+			url: url( "mock.php?action=testbar" ),
 			dataType: "script",
 			success: function() {
 				assert.strictEqual( window[ "testBar" ], "bar", "Script results returned (GET, no callback)" );
@@ -2280,7 +2307,22 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	} );
 
 	QUnit.asyncTest( "jQuery.getJSON( String, Function ) - JSON object with absolute url to local content", 2, function( assert ) {
-		jQuery.getJSON( window.location.href.replace( /[^\/]*$/, "" ) + url( "mock.php?action=json" ), function( json ) {
+		var absoluteUrl = url( "mock.php?action=json" );
+
+		// Make a relative URL absolute relative to the document location
+		if ( !/^[a-z][a-z0-9+.-]*:/i.test( absoluteUrl ) ) {
+
+			// An absolute path replaces everything after the host
+			if ( absoluteUrl.charAt( 0 ) === "/" ) {
+				absoluteUrl = window.location.href.replace( /(:\/*[^/]*).*$/, "$1" ) + absoluteUrl;
+
+			// A relative path replaces the last slash-separated path segment
+			} else {
+				absoluteUrl = window.location.href.replace( /[^/]*$/, "" ) + absoluteUrl;
+			}
+		}
+
+		jQuery.getJSON( absoluteUrl, function( json ) {
 			assert.strictEqual( json.data.lang, "en", "Check JSON: lang" );
 			assert.strictEqual( json.data.length, 25, "Check JSON: length" );
 			QUnit.start();

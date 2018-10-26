@@ -607,6 +607,17 @@ QUnit.test( "animate non-element", function( assert ) {
 	this.clock.tick( 200 );
 } );
 
+QUnit.test( "animate non-element's zIndex without appending \"px\"", function( assert ) {
+	assert.expect( 1 );
+
+	var obj = { zIndex: 0 };
+
+	jQuery( obj ).animate( { zIndex: 200 }, 200, function() {
+		assert.equal( obj.zIndex, 200, "The custom property should be modified without appending \"px\"." );
+	} );
+	this.clock.tick( 200 );
+} );
+
 QUnit.test( "stop()", function( assert ) {
 	assert.expect( 4 );
 

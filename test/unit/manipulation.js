@@ -1797,7 +1797,13 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-QUnit[ QUnit.moduleTypeSupported ? "test" : "skip" ]( "html(script type module)", function( assert ) {
+QUnit[
+	// Support: Edge 16-17
+	// Edge sometimes doesn't execute module scripts so skip the test there.
+	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
+		"test" :
+		"skip"
+]( "html(script type module)", function( assert ) {
 	assert.expect( 4 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
@@ -2770,6 +2776,21 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 	htmlOut = table.innerHTML.toLowerCase().replace( /\s/g, "" );
 
 	assert.strictEqual( htmlOut, htmlExpected );
+} );
+
+QUnit.test( "Make sure tags with single-character names are found (gh-4124)", function( assert ) {
+	assert.expect( 1 );
+
+	var htmlOut,
+		htmlIn = "<p>foo<!--<td>--></p>",
+		$el = jQuery( "<div/>" );
+
+	$el.html( htmlIn );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	htmlOut = $el[ 0 ].innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	assert.strictEqual( htmlOut, htmlIn );
 } );
 
 QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {

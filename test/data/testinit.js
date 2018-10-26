@@ -1,11 +1,17 @@
 /* eslint no-multi-str: "off" */
 
-// baseURL is intentionally set to "data/" instead of "".
-// This is not just for convenience (since most files are in data/)
-// but also to ensure that urls without prefix fail.
-// Otherwise it's easy to write tests that pass on test/index.html
-// but fail in Karma runner (where the baseURL is different).
-var baseURL = "data/",
+var FILEPATH = "/test/data/testinit.js",
+	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
+	parentUrl = activeScript && activeScript.src ?
+		activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+		"../",
+
+	// baseURL is intentionally set to "data/" instead of "".
+	// This is not just for convenience (since most files are in data/)
+	// but also to ensure that urls without prefix fail.
+	// Otherwise it's easy to write tests that pass on test/index.html
+	// but fail in Karma runner (where the baseURL is different).
+	baseURL = parentUrl + "test/data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -271,12 +277,9 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 };
 this.iframeCallback = undefined;
 
-if ( window.__karma__ ) {
-	// In Karma, files are served from /base
-	baseURL = "base/test/data/";
-} else {
-	// Tests are always loaded async
-	// except when running tests in Karma (See Gruntfile)
+// Tests are always loaded async
+// except when running tests in Karma (See Gruntfile)
+if ( !window.__karma__ ) {
 	QUnit.config.autostart = false;
 }
 
@@ -295,8 +298,19 @@ moduleTypeSupported();
 
 this.loadTests = function() {
 
+	// Directly load tests that need synchronous evaluation
+	if ( !QUnit.urlParams.amd || document.readyState === "loading" ) {
+		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
+	} else {
+		QUnit.module( "ready", function() {
+			QUnit.test( "jQuery ready", function( assert ) {
+				assert.ok( false, "Test should be initialized before DOM ready" );
+			} );
+		} );
+	}
+
 	// Get testSubproject from testrunner first
-	require( [ "data/testrunner.js" ], function() {
+	require( [ parentUrl + "test/data/testrunner.js" ], function() {
 		var i = 0,
 			tests = [
 				// A special module with basic tests, meant for
@@ -334,7 +348,7 @@ this.loadTests = function() {
 
 			if ( dep ) {
 				if ( !QUnit.basicTests || i === 1 ) {
-					require( [ dep ], loadDep );
+					require( [ parentUrl + "test/" + dep ], loadDep );
 
 				// Support: Android 2.3 only
 				// When running basic tests, replace other modules with dummies to avoid overloading

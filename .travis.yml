@@ -1,14 +1,9 @@
 language: node_js
-# Temporary workaround.
-# Karma can't access the binaries on travis
-# without root access.
-# See https://github.com/travis-ci/travis-ci/issues/8836
-sudo: required
+sudo: false
 node_js:
-- "4"
 - "6"
 - "8"
-- "9"
+- "10"
 addons:
   chrome: stable
 env:
