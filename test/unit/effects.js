@@ -230,7 +230,7 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		var shadowHost = document.querySelector( "#shadowHost" );
 		var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
 		shadowRoot.innerHTML = "<style>.hidden{display: none;}</style>" +
-			"<div id='shadowChild' class='hidden'></div>";
+			"<span id='shadowChild' class='hidden'></span>";
 		var shadowChild = shadowRoot.querySelector( "#shadowChild" );
 
 		var $shadowChild = jQuery( shadowChild );
