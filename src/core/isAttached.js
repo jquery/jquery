@@ -1,9 +1,8 @@
 define( [
 	"../core",
-	"../var/getShadowRoot",
-	"../var/document",
+	"../var/documentElement",
 	"../selector" // jQuery.contains
-], function( jQuery, getShadowRoot, document ) {
+], function( jQuery, documentElement ) {
 	"use strict";
 
 	// Replace the use of contains function to check attachment (gh-3504)
@@ -11,10 +10,10 @@ define( [
 	var isAttached;
 
 	// Check attachment across shadow DOM boundaries when possible (gh-3504)
-	if ( document.head.createShadowRoot ) {
+	if ( documentElement.attachShadow ) {
 		isAttached = function( elem ) {
 			return jQuery.contains( elem.ownerDocument, elem ) ||
-				getShadowRoot( elem ) === elem.ownerDocument;
+				elem.getRootNode( { composed: true } ) === elem.ownerDocument;
 		};
 	} else {
 		isAttached = function( elem ) {

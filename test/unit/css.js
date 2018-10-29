@@ -641,7 +641,7 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	span.remove();
 } );
 
-QUnit[ document.head.createShadowRoot ? "test" : "skip" ]( "show/hide shadow child nodes", function( assert ) {
+QUnit[ document.body.attachShadow ? "test" : "skip" ]( "show/hide shadow child nodes", function( assert ) {
 	assert.expect( 28 );
 	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
 	var shadowHost = document.querySelector( "#shadowHost" );
@@ -1023,7 +1023,7 @@ QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "detached to
 		"cascade-hidden element in detached tree" );
 } );
 
-QUnit[ jQuery.find.compile && jQuery.fn.toggle && document.head.createShadowRoot ? "test" : "skip" ]( "shadow toggle()", function( assert ) {
+QUnit[ jQuery.find.compile && jQuery.fn.toggle && document.body.attachShadow ? "test" : "skip" ]( "shadow toggle()", function( assert ) {
 	assert.expect( 4 );
 	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
 	var shadowHost = document.querySelector( "#shadowHost" );
