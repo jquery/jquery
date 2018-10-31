@@ -4,6 +4,7 @@ node_js:
 - "6"
 - "8"
 - "10"
+- "11"
 addons:
   chrome: stable
 env:
