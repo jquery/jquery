@@ -134,7 +134,9 @@ var mocks = {
 			"Empty-Header": "",
 			"Sample-Header2": "Hello World 2",
 			"List-Header": "Item 1",
-			"list-header": "Item 2"
+			"list-header": "Item 2",
+			"Constructor": "prototype collision (constructor)",
+			"__Proto__": "prototype collision (__proto__)"
 		} );
 		req.query.keys.split( "|" ).forEach( function( key ) {
 			if ( req.headers[ key.toLowerCase() ] ) {
