@@ -234,8 +234,8 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		var shadowChild = shadowRoot.querySelector( "#shadowChild" );
 
 		var $shadowChild = jQuery( shadowChild );
-		var displayNone = $shadowChild.css( "display" );
-		var display = "block";
+		var displayNone = "none";
+		var display = "inline";
 		var clock = this.clock;
 
 		$shadowChild.fadeIn( 100, function() {
