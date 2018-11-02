@@ -461,7 +461,7 @@ jQuery.extend( {
 							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
 								responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
 									( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
-									.concat( match[ 2 ] );
+										.concat( match[ 2 ] );
 							}
 						}
 						match = responseHeaders[ key.toLowerCase() + " " ];
