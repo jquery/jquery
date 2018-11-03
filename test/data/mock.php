@@ -116,8 +116,7 @@ ok( true, "mock executed");';
 		header( 'Sample-Header2: Hello World 2' );
 		header( 'List-Header: Item 1' );
 		header( 'list-header: Item 2' );
-		header( 'Constructor: prototype collision (constructor)' );
-		header( '__Proto__: prototype collision (__proto__)' );
+		header( 'constructor: prototype collision (constructor)' );
 
 		foreach ( explode( '|' , $req->query[ 'keys' ] ) as $key ) {
 			// Only echo if key exists in the header
