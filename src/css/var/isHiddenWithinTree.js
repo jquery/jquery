@@ -1,6 +1,6 @@
 define( [
 	"../../core",
-	"../../var/isAttached"
+	"../../core/isAttached"
 
 	// css is assumed
 ], function( jQuery, isAttached ) {

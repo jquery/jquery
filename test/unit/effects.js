@@ -220,6 +220,38 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 
 		assert.expectJqData( this, $span, "olddisplay" );
 	} );
+
+	QUnit[ document.body.attachShadow ? "test" : "skip" ](
+		"Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
+		assert.expect( 3 );
+
+		jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+
+		var shadowHost = document.querySelector( "#shadowHost" );
+		var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+		shadowRoot.innerHTML = "<style>.hidden{display: none;}</style>" +
+			"<span id='shadowChild' class='hidden'></span>";
+		var shadowChild = shadowRoot.querySelector( "#shadowChild" );
+
+		var $shadowChild = jQuery( shadowChild );
+		var displayNone = "none";
+		var display = "inline";
+		var clock = this.clock;
+
+		$shadowChild.fadeIn( 100, function() {
+			assert.equal( $shadowChild.css( "display" ), display, "Expecting shadow display: " + display );
+			$shadowChild.fadeOut( 100, function() {
+				assert.equal( $shadowChild.css( "display" ), displayNone, "Expecting shadow display: " + displayNone );
+				$shadowChild.fadeIn( 100, function() {
+					assert.equal( $shadowChild.css( "display" ), display, "Expecting shadow display: " + display );
+				} );
+			} );
+		} );
+
+		clock.tick( 300 );
+
+		assert.expectJqData( this, $shadowChild, "olddisplay" );
+	} );
 } );
 
 QUnit.test( "animate(Hash, Object, Function)", function( assert ) {
