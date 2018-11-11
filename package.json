@@ -43,7 +43,7 @@
     "grunt-newer": "1.3.0",
     "grunt-npmcopy": "0.1.0",
     "gzip-js": "0.3.2",
-    "husky": "0.14.3",
+    "husky": "1.1.3",
     "insight": "0.10.1",
     "jsdom": "5.6.1",
     "karma": "2.0.3",
@@ -71,9 +71,7 @@
     "test:browserless": "grunt && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
     "test": "grunt && grunt test:slow && grunt karma:main",
-    "jenkins": "npm run test:browserless",
-    "precommit": "grunt lint:newer qunit_fixture",
-    "commitmsg": "node node_modules/commitplease"
+    "jenkins": "npm run test:browserless"
   },
   "commitplease": {
     "nohook": true,
@@ -104,5 +102,11 @@
     ],
     "markerPattern": "^((clos|fix|resolv)(e[sd]|ing))|^(refs?)",
     "ticketPattern": "^((Closes|Fixes) ([a-zA-Z]{2,}-)[0-9]+)|^(Refs? [^#])"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "node node_modules/commitplease",
+      "pre-commit": "grunt lint:newer qunit_fixture"
+    }
   }
 }
