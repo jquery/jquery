@@ -142,3 +142,7 @@ section { background:#f0f; display:block; }
 	padding: 0;
 	margin: 0;
 }
+
+.border-box, .border-box * {
+	box-sizing: border-box;
+}

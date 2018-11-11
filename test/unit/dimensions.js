@@ -659,7 +659,9 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		parent = jQuery( "<div/>" )
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
-		fraction = jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1,
+		fraction = jQuery.support.boxSizingReliable() ?
+			jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1 :
+			0,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
@@ -695,10 +697,8 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			borderBox[ 0 ].offsetWidth;
 
 	if ( borderBoxLoss > 0 ) {
-		borderBox.css( {
-			width: ( size + borderBoxLoss ) + "px",
-			height: ( size + borderBoxLoss ) + "px"
-		} );
+		borderBox[ 0 ].style.width = ( size + borderBoxLoss ) + "px";
+		borderBox[ 0 ].style.height = ( size + borderBoxLoss ) + "px";
 	}
 
 	for ( i = 0; i < 3; i++ ) {
@@ -748,6 +748,28 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		assert.equal( relativeBorderBox.outerHeight(), size,
 			"relative border-box outerHeight includes scroll gutter" + suffix );
 	}
+} );
+
+QUnit.test( "outerWidth/Height for table cells and textarea with border-box in IE 11 (gh-4102)", function( assert ) {
+	assert.expect( 5 );
+	var $table = jQuery( "<table class='border-box' style='border-collapse: separate' />" ).appendTo( "#qunit-fixture" ),
+		$thead = jQuery( "<thead />" ).appendTo( $table ),
+		$firstTh = jQuery( "<th style='width: 200px;padding: 5px' />" ),
+		$secondTh = jQuery( "<th style='width: 190px;padding: 5px' />" ),
+		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px' />" ),
+		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid'>text</td>" ),
+		$tbody = jQuery( "<tbody />" ).appendTo( $table ),
+		$textarea = jQuery( "<textarea style='height: 0;padding: 2px;border: 1px solid;box-sizing: border-box' />" ).appendTo( "#qunit-fixture" );
+	jQuery( "<tr />" ).appendTo( $thead ).append( $firstTh );
+	jQuery( "<tr />" ).appendTo( $thead ).append( $secondTh );
+	jQuery( "<tr />" ).appendTo( $thead ).append( $thirdTh );
+	jQuery( "<tr><td></td></tr>" ).appendTo( $tbody ).append( $td );
+
+	assert.strictEqual( $firstTh.outerWidth(), 200, "First th has outerWidth 200." );
+	assert.strictEqual( $secondTh.outerWidth(), 200, "Second th has outerWidth 200." );
+	assert.strictEqual( $thirdTh.outerWidth(), 200, "Third th has outerWidth 200." );
+	assert.strictEqual( $td.outerHeight(), 30, "outerHeight of td with border-box should include padding." );
+	assert.strictEqual( $textarea.outerHeight(), 6, "outerHeight of textarea with border-box should include padding and border." );
 } );
 
 } )();
