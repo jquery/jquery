@@ -13,7 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
+		gzip = require( "pako" ).gzip,
 		isTravis = process.env.TRAVIS;
 
 	if ( !grunt.option( "filename" ) ) {
@@ -28,7 +28,7 @@ module.exports = function( grunt ) {
 			options: {
 				compress: {
 					gz: function( contents ) {
-						return gzip.zip( contents, {} ).length;
+						return gzip( contents, {} ).length;
 					}
 				},
 				cache: "build/.sizecache.json"
