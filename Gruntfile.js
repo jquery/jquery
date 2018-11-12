@@ -239,6 +239,10 @@ module.exports = function( grunt ) {
 			"firefox-debug": {
 				browsers: [ "Firefox" ],
 				singleRun: false
+			},
+			"ie-debug": {
+				browsers: [ "IE" ],
+				singleRun: false
 			}
 		},
 		watch: {
