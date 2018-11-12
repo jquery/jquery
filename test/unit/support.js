@@ -160,23 +160,6 @@ testIframe(
 				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
-			firefox_60: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"focusin": false,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": false,
-				"scrollboxSize": true
-			},
 			firefox: {
 				"ajax": true,
 				"boxSizingReliable": true,
@@ -192,6 +175,23 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"scrollboxSize": true
+			},
+			firefox_60: {
+				"ajax": true,
+				"boxSizingReliable": true,
+				"checkClone": true,
+				"checkOn": true,
+				"clearCloneStyle": true,
+				"cors": true,
+				"createHTMLDocument": true,
+				"focusin": false,
+				"noCloneChecked": true,
+				"optSelected": true,
+				"pixelBoxStyles": true,
+				"pixelPosition": true,
+				"radioValue": true,
+				"reliableMarginLeft": false,
 				"scrollboxSize": true
 			},
 			ios_11: {
