@@ -1427,8 +1427,7 @@ QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", 
 	assert.expect( 1 );
 
 	var message;
-
-	this.sandbox.stub( window, "setTimeout", function( fn ) {
+	this.sandbox.stub( window, "setTimeout" ).callsFake( function( fn ) {
 		try {
 			fn();
 		} catch ( error ) {
@@ -1451,7 +1450,7 @@ QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (custom)", fu
 
 	var done = assert.async();
 
-	this.sandbox.stub( jQuery, "readyException", function( error ) {
+	this.sandbox.stub( jQuery, "readyException" ).callsFake( function( error ) {
 		assert.strictEqual(
 			error.message,
 			"Error in jQuery ready",

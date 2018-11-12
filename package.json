@@ -59,11 +59,11 @@
     "qunitjs": "1.23.1",
     "raw-body": "2.3.3",
     "requirejs": "2.3.5",
-    "sinon": "2.3.7",
+    "sinon": "7.1.1",
     "sizzle": "2.3.3",
     "strip-json-comments": "2.0.1",
     "testswarm": "1.1.0",
-    "uglify-js": "3.4.0"
+    "uglify-js": "3.4.9"
   },
   "scripts": {
     "build": "npm install && grunt",
