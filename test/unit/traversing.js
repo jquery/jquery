@@ -1,4 +1,4 @@
-QUnit.module( "traversing", { teardown: moduleTeardown } );
+QUnit.module( "traversing", { afterEach: moduleTeardown } );
 
 QUnit.test( "find(String)", function( assert ) {
 	assert.expect( 1 );

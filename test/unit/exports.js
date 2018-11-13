@@ -1,4 +1,4 @@
-QUnit.module( "exports", { teardown: moduleTeardown } );
+QUnit.module( "exports", { afterEach: moduleTeardown } );
 
 QUnit.test( "amdModule", function( assert ) {
 	assert.expect( 1 );

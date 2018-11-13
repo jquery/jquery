@@ -1,4 +1,4 @@
-QUnit.module( "deprecated", { teardown: moduleTeardown } );
+QUnit.module( "deprecated", { afterEach: moduleTeardown } );
 
 
 QUnit.test( "bind/unbind", function( assert ) {

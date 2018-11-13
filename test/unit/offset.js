@@ -46,7 +46,7 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 		);
 	};
 
-QUnit.module( "offset", { setup: function( assert ) {
+QUnit.module( "offset", { beforeEach: function( assert ) {
 	if ( typeof checkSupport === "function" ) {
 		checkSupport( assert );
 	}
@@ -56,7 +56,7 @@ QUnit.module( "offset", { setup: function( assert ) {
 	forceScroll.appendTo( "body" );
 	window.scrollTo( 1, 1 );
 	forceScroll.detach();
-}, teardown: moduleTeardown } );
+}, afterEach: moduleTeardown } );
 
 QUnit.test( "empty set", function( assert ) {
 	assert.expect( 2 );

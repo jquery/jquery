@@ -1,4 +1,4 @@
-QUnit.module( "selector", { teardown: moduleTeardown } );
+QUnit.module( "selector", { afterEach: moduleTeardown } );
 
 /**
  * This test page is for selector tests that require jQuery in order to do the selection
@@ -503,11 +503,13 @@ testIframe(
 	}
 );
 
-QUnit.asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, function( assert ) {
+QUnit.test( "Iframe dispatch should not affect jQuery (#13936)", function( assert ) {
+	assert.expect( 1 );
 	var loaded = false,
 		thrown = false,
 		iframe = document.getElementById( "iframe" ),
-		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+		iframeDoc = iframe.contentDocument || iframe.contentWindow.document,
+		done = assert.async();
 
 	jQuery( iframe ).on( "load", function() {
 		var form;
@@ -525,7 +527,7 @@ QUnit.asyncTest( "Iframe dispatch should not affect jQuery (#13936)", 1, functio
 			// clean up
 			jQuery( iframe ).off();
 
-			QUnit.start();
+			done();
 		} else {
 			loaded = true;
 			form.submit();
