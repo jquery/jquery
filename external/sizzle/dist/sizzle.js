@@ -127,7 +127,7 @@ var i,
 	},
 
 	rinputs = /^(?:input|select|textarea|button)$/i,
-	rheader = /^h\d$/i,
+	rheader = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'],
 
 	rnative = /^[^{]+\{\s*\[native \w/,
 
@@ -1431,7 +1431,7 @@ Expr = Sizzle.selectors = {
 
 		// Element/input types
 		"header": function( elem ) {
-			return rheader.test( elem.nodeName );
+			return !!~~rheader.indexOf(elem.nodeName);
 		},
 
 		"input": function( elem ) {
