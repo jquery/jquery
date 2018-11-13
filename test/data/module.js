@@ -1,1 +1,1 @@
-window.ok( true, "evaluated: module with src" );
+QUnit.assert.ok( true, "evaluated: module with src" );

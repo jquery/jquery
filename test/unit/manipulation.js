@@ -1,5 +1,5 @@
 QUnit.module( "manipulation", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 // Ensure that an extended Array prototype doesn't break jQuery
@@ -1300,7 +1300,7 @@ function testReplaceWith( val, assert ) {
 
 	$div = jQuery( "<div class='replacewith'></div>" ).appendTo( "#qunit-fixture" );
 	$div.replaceWith( val( "<div class='replacewith'></div><script>" +
-		"equal( jQuery('.replacewith').length, 1, 'Check number of elements in page.' );" +
+		"QUnit.assert.equal( jQuery('.replacewith').length, 1, 'Check number of elements in page.' );" +
 		"</script>" ) );
 
 	jQuery( "#qunit-fixture" ).append( "<div id='replaceWith'></div>" );
@@ -1754,15 +1754,15 @@ function testHtml( valueObj, assert ) {
 
 	tmp = fixture.html(
 		valueObj( [
-			"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
-			"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
-			"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
-			"<script>ok( true, 'evaluated: no type' );</script>",
+			"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: non-script' );</script>",
+			"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: text/javascript' );</script>",
+			"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: text/ecmascript' );</script>",
+			"<script>QUnit.assert.ok( true, 'evaluated: no type' );</script>",
 			"<div>",
-				"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
-				"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
-				"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
-				"<script>ok( true, 'evaluated: inner no type' );</script>",
+				"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: inner non-script' );</script>",
+				"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: inner text/javascript' );</script>",
+				"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: inner text/ecmascript' );</script>",
+				"<script>QUnit.assert.ok( true, 'evaluated: inner no type' );</script>",
 			"</div>"
 		].join( "" ) )
 	).find( "script" );
@@ -1770,19 +1770,19 @@ function testHtml( valueObj, assert ) {
 	assert.equal( tmp[ 0 ].type, "something/else", "Non-evaluated type." );
 	assert.equal( tmp[ 1 ].type, "text/javascript", "Evaluated type." );
 
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "foo <form><script type='text/javascript'>ok( true, 'Injection of identical script (#975)' );</script></form>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "foo <form><script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script (#975)' );</script></form>" ) );
 
 	jQuery.scriptorder = 0;
 	fixture.html( valueObj( [
 		"<script>",
-			"equal( jQuery('#scriptorder').length, 1,'Execute after html' );",
-			"equal( jQuery.scriptorder++, 0, 'Script is executed in order' );",
+			"QUnit.assert.equal( jQuery('#scriptorder').length, 1,'Execute after html' );",
+			"QUnit.assert.equal( jQuery.scriptorder++, 0, 'Script is executed in order' );",
 		"</script>",
-		"<span id='scriptorder'><script>equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
-		"<script>equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
+		"<span id='scriptorder'><script>QUnit.assert.equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
+		"<script>QUnit.assert.equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
 	].join( "" ) ) );
 
 	fixture.html( valueObj( fixture.text() ) );
@@ -1810,10 +1810,10 @@ QUnit[
 
 	$fixture.html(
 		[
-			"<script type='module'>ok( true, 'evaluated: module' );</script>",
+			"<script type='module'>QUnit.assert.ok( true, 'evaluated: module' );</script>",
 			"<script type='module' src='" + url( "module.js" ) + "'></script>",
 			"<div>",
-				"<script type='module'>ok( true, 'evaluated: inner module' );</script>",
+				"<script type='module'>QUnit.assert.ok( true, 'evaluated: inner module' );</script>",
 				"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
 			"</div>"
 		].join( "" )
@@ -2243,7 +2243,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<!--",
-		"ok( true, '<!-- handled' );",
+		"QUnit.assert.ok( true, '<!-- handled' );",
 		"//-->",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2251,7 +2251,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<![CDATA[",
-		"ok( true, '<![CDATA[ handled' );",
+		"QUnit.assert.ok( true, '<![CDATA[ handled' );",
 		"//]]>",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2259,7 +2259,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<!--//--><![CDATA[//><!--",
-		"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+		"QUnit.assert.ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
 		"//--><!]]>",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2388,13 +2388,15 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 	assert.strictEqual( jQuery( "<p/>" ).appendTo( "<div/>" ).end().length, jQuery( "<p>test</p>" ).appendTo( "<div/>" ).end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 } );
 
-QUnit.asyncTest( "html() - script exceptions bubble (#11743)", 2, function( assert ) {
-	var onerror = window.onerror;
+QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
+	assert.expect( 2 );
+	var done = assert.async(),
+		onerror = window.onerror;
 
 	setTimeout( function() {
 		window.onerror = onerror;
 
-		QUnit.start();
+		done();
 	}, 1000 );
 
 	window.onerror = function() {
@@ -2463,15 +2465,15 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 
 	objGlobal.ok = notOk;
 	scriptsIn = jQuery( [
-		"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
-		"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
-		"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
-		"<script>ok( true, 'evaluated: no type' );</script>",
+		"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: non-script' );</script>",
+		"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: text/javascript' );</script>",
+		"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: text/ecmascript' );</script>",
+		"<script>QUnit.assert.ok( true, 'evaluated: no type' );</script>",
 		"<div>",
-			"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
-			"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
-			"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
-			"<script>ok( true, 'evaluated: inner no type' );</script>",
+			"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: inner non-script' );</script>",
+			"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: inner text/javascript' );</script>",
+			"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: inner text/ecmascript' );</script>",
+			"<script>QUnit.assert.ok( true, 'evaluated: inner no type' );</script>",
 		"</div>"
 	].join( "" ) );
 	scriptsIn.appendTo( jQuery( "<div class='detached'/>" ) );
@@ -2793,7 +2795,8 @@ QUnit.test( "Make sure tags with single-character names are found (gh-4124)", fu
 	assert.strictEqual( htmlOut, htmlIn );
 } );
 
-QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
+QUnit.test( "Insert script with data-URI (gh-1887)", function( assert ) {
+	assert.expect( 1 );
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
 

@@ -814,7 +814,7 @@ Test.prototype = {
 		config.current = this;
 
 		if ( this.async ) {
-			QUnit.stop();
+			
 		}
 
 		this.callbackStarted = now();
@@ -1054,7 +1054,7 @@ Test.prototype = {
 		if ( promise != null ) {
 			then = promise.then;
 			if ( QUnit.objectType( then ) === "function" ) {
-				QUnit.stop();
+				
 				then.call(
 					promise,
 					function() { QUnit.start(); },

@@ -5,7 +5,7 @@ if ( !jQuery.fn.wrap ) { // no wrap module
 }
 
 QUnit.module( "wrap", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 // See test/unit/manipulation.js for explanation about these 2 functions
@@ -522,7 +522,7 @@ QUnit.test( "wrapping scripts (#10470)", function( assert ) {
 
 	var script = document.createElement( "script" );
 	script.text = script.textContent =
-		"ok( !document.eval10470, 'script evaluated once' ); document.eval10470 = true;";
+		"QUnit.assert.ok( !document.eval10470, 'script evaluated once' ); document.eval10470 = true;";
 
 	document.eval10470 = false;
 	jQuery( "#qunit-fixture" ).empty()[ 0 ].appendChild( script );

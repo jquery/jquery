@@ -1,8 +1,8 @@
 QUnit.module( "core", {
-	setup: function() {
+	beforeEach: function() {
 		this.sandbox = sinon.sandbox.create();
 	},
-	teardown: function() {
+	afterEach: function() {
 		this.sandbox.restore();
 		return moduleTeardown.apply( this, arguments );
 	}
@@ -238,7 +238,8 @@ QUnit.test( "trim", function( assert ) {
 	assert.equal( jQuery.trim( "\uFEFF \xA0! | \uFEFF" ), "! |", "leading/trailing should be trimmed" );
 } );
 
-QUnit.asyncTest( "isPlainObject", function( assert ) {
+QUnit.test( "isPlainObject", function( assert ) {
+	var done = assert.async();
 
 	assert.expect( 23 );
 
@@ -314,7 +315,7 @@ QUnit.asyncTest( "isPlainObject", function( assert ) {
 		window.iframeDone = undefined;
 		iframe.parentNode.removeChild( iframe );
 		assert.ok( jQuery.isPlainObject( new otherObject() ), "new otherObject" + ( detail ? " - " + detail : "" ) );
-		QUnit.start();
+		done();
 	};
 
 	try {
@@ -380,14 +381,14 @@ QUnit.test( "isXMLDoc - HTML", function( assert ) {
 } );
 
 QUnit.test( "XSS via location.hash", function( assert ) {
+	var done = assert.async();
 	assert.expect( 1 );
 
-	QUnit.stop();
 	jQuery[ "_check9521" ] = function( x ) {
 		assert.ok( x, "script called from #id-like selector with inline handler" );
 		jQuery( "#check9521" ).remove();
 		delete jQuery[ "_check9521" ];
-		QUnit.start();
+		done();
 	};
 	try {
 
@@ -1312,7 +1313,8 @@ QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
 } );
 
 if ( jQuery.support.createHTMLDocument ) {
-	QUnit.asyncTest( "jQuery.parseHTML", function( assert ) {
+	QUnit.test( "jQuery.parseHTML", function( assert ) {
+		var done = assert.async();
 		assert.expect( 1 );
 
 		Globals.register( "parseHTMLError" );
@@ -1321,8 +1323,8 @@ if ( jQuery.support.createHTMLDocument ) {
 		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
 
 		window.setTimeout( function() {
-			QUnit.start();
 			assert.equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+			done();
 		}, 2000 );
 	} );
 }

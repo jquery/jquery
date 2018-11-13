@@ -1,4 +1,4 @@
-QUnit.module( "basic", { teardown: moduleTeardown } );
+QUnit.module( "basic", { afterEach: moduleTeardown } );
 
 if ( jQuery.ajax ) {
 QUnit.test( "ajax", function( assert ) {

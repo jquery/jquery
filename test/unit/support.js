@@ -1,4 +1,4 @@
-QUnit.module( "support", { teardown: moduleTeardown } );
+QUnit.module( "support", { afterEach: moduleTeardown } );
 
 var computedSupport = getComputedSupport( jQuery.support );
 

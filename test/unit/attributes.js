@@ -1,5 +1,5 @@
 QUnit.module( "attributes", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 function bareObj( value ) {

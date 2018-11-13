@@ -8,7 +8,7 @@ if ( !jQuery.fx ) {
 var oldRaf = window.requestAnimationFrame;
 
 QUnit.module( "tween", {
-	setup: function() {
+	beforeEach: function() {
 		window.requestAnimationFrame = null;
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
@@ -16,7 +16,7 @@ QUnit.module( "tween", {
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
 	},
-	teardown: function() {
+	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
