@@ -84,7 +84,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 	assert.equal( cssStub.callCount, 0, "Did not call jQuery.css" );
 
 	fakeTween.prop = "testMissing";
-	assert.equal( defaultHook.get( fakeTween ), 10, "Can get missing property on element" );
+	assert.equal( defaultHook.get( fakeTween ), 0, "Can get missing property on element" );
 	assert.ok( cssStub.calledWith( testElement, "testMissing", "" ), "...using jQuery.css" );
 
 	cssStub.returns( "" );

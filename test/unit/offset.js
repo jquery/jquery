@@ -747,7 +747,6 @@ QUnit.test( "offsetParent", function( assert ) {
 	assert.expect( 13 );
 
 	var body, header, div, area;
-
 	body = jQuery( "body" ).offsetParent();
 	assert.equal( body.length, 1, "Only one offsetParent found." );
 	assert.equal( body[ 0 ], document.documentElement, "The html element is the offsetParent of the body." );
@@ -756,9 +755,9 @@ QUnit.test( "offsetParent", function( assert ) {
 	assert.equal( header.length, 1, "Only one offsetParent found." );
 	assert.equal( header[ 0 ], document.documentElement, "The html element is the offsetParent of #qunit." );
 
-	div = jQuery( "#nothiddendivchild" ).offsetParent();
+	div = jQuery( "#nothiddendiv" ).offsetParent();
 	assert.equal( div.length, 1, "Only one offsetParent found." );
-	assert.equal( div[ 0 ], document.getElementById( "qunit-fixture" ), "The #qunit-fixture is the offsetParent of #nothiddendivchild." );
+	assert.equal( div[ 0 ], document.getElementById( "qunit-fixture" ), "The #qunit-fixture is the offsetParent of #nothiddendiv." );
 
 	jQuery( "#nothiddendiv" ).css( "position", "relative" );
 

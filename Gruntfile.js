@@ -80,9 +80,9 @@ module.exports = function( grunt ) {
 
 					"npo/npo.js": "native-promise-only/npo.js",
 
-					"qunit/qunit.js": "qunitjs/qunit/qunit.js",
-					"qunit/qunit.css": "qunitjs/qunit/qunit.css",
-					"qunit/LICENSE.txt": "qunitjs/LICENSE.txt",
+					"qunit/qunit.js": "qunit/qunit/qunit.js",
+					"qunit/qunit.css": "qunit/qunit/qunit.css",
+					"qunit/LICENSE.txt": "qunit/LICENSE.txt",
 
 					"qunit-assert-step/qunit-assert-step.js":
 					"qunit-assert-step/qunit-assert-step.js",
