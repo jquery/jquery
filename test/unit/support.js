@@ -126,7 +126,7 @@ testIframe(
 				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
-			safari_11: {
+			safari: {
 				"ajax": true,
 				"boxSizingReliable": true,
 				"checkClone": true,
@@ -160,23 +160,6 @@ testIframe(
 				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
-			firefox_60: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"focusin": false,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": false,
-				"scrollboxSize": true
-			},
 			firefox: {
 				"ajax": true,
 				"boxSizingReliable": true,
@@ -194,7 +177,24 @@ testIframe(
 				"reliableMarginLeft": true,
 				"scrollboxSize": true
 			},
-			ios_11: {
+			firefox_60: {
+				"ajax": true,
+				"boxSizingReliable": true,
+				"checkClone": true,
+				"checkOn": true,
+				"clearCloneStyle": true,
+				"cors": true,
+				"createHTMLDocument": true,
+				"focusin": false,
+				"noCloneChecked": true,
+				"optSelected": true,
+				"pixelBoxStyles": true,
+				"pixelPosition": true,
+				"radioValue": true,
+				"reliableMarginLeft": false,
+				"scrollboxSize": true
+			},
+			ios: {
 				"ajax": true,
 				"boxSizingReliable": true,
 				"checkClone": true,
@@ -292,16 +292,16 @@ testIframe(
 		// Catches Chrome on Android as well (i.e. the default
 		// Android browser on Android >= 4.4).
 		expected = expectedMap.chrome;
-	} else if ( /\b11\.\d(\.\d+)* safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari_11;
+	} else if ( /\b(?:11|12)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+		expected = expectedMap.safari;
 	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
 	} else if ( /firefox\/(?:52|60)/i.test( userAgent ) ) {
 		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /(?:iphone|ipad);.*(?:iphone)? os 11_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_11;
+	} else if ( /(?:iphone|ipad);.*(?:iphone)? os (?:11|12)_/i.test( userAgent ) ) {
+		expected = expectedMap.ios;
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_9_10;
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
