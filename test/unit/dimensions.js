@@ -646,9 +646,7 @@ QUnit.test( "width/height on a table row with phantom borders (gh-3698)", functi
 	} );
 } );
 
-// Because we fallback to offsetWidth/offsetHeight,
-// IE9-11 does not report fractional values
-QUnit[ jQuery.support.boxSizingReliable() ? "test" : "skip" ]( "interaction with scrollbars (gh-3589)", function( assert ) {
+QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 	assert.expect( 48 );
 
 	var i,
@@ -661,7 +659,9 @@ QUnit[ jQuery.support.boxSizingReliable() ? "test" : "skip" ]( "interaction with
 		parent = jQuery( "<div/>" )
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
-		fraction = jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1,
+		fraction = jQuery.support.boxSizingReliable() ?
+			jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1 :
+			0,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
