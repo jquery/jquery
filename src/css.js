@@ -117,7 +117,9 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Start with computed style
-	var isBorderBox, valueIsBorderBox, offsetProp, offsetVal,
+	var isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+		valueIsBorderBox = isBorderBox && support.boxSizingReliable(),
+		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ),
 		styles = getStyles( elem ),
 		val = curCSS( elem, dimension, styles );
 
@@ -130,9 +132,6 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		val = "auto";
 	}
 
-	isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
-	valueIsBorderBox = isBorderBox && support.boxSizingReliable();
-	offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 	// Fall back to offsetWidth/offsetHeight when value is "auto"
 	// This happens for inline elements with no explicit setting (gh-3571)
@@ -141,21 +140,19 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// Support: IE 9-11 only
 	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
 	// Do not use offset for elements that don't have it (e.g. SVG)
-	if ( typeof elem[ offsetProp ] !== "undefined" &&
-		( val === "auto" || ( isBorderBox && !valueIsBorderBox ) ||
+	// Computed value for SVG elements does not respect border-box in IE 9-11
+	// so valueIsBorderBox should be false there
+	if ( elem.hasOwnProperty( offsetProp ) &&
+		( val === "auto" || ( isBorderBox !== valueIsBorderBox ) ||
 			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) ) {
 
-		offsetVal = elem[ offsetProp ];
-
 		// Support: IE 9-11 only
-		// offsetWidth/offsetHeight is zero for disconnect elements
+		// offsetWidth/offsetHeight is zero for disconnected elements
 		// and children of hidden elements
-		if ( offsetVal || !parseFloat( val ) ) {
-			val = offsetVal;
-		}
+		val = elem[ offsetProp ] || val;
 
 		// offsetWidth/offsetHeight provide border-box values
-		// In the case where val is not set,
+		// In the case where val remains unchanged,
 		// computed value can then be trusted to be border-box
 		valueIsBorderBox = true;
 	}
