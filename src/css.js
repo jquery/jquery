@@ -117,11 +117,11 @@ function boxModelAdjustment( elem, dimension, box, isBorderBox, styles, computed
 function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Start with computed style
-	var isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+	var styles = getStyles( elem ),
+		val = curCSS( elem, dimension, styles ),
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox && support.boxSizingReliable(),
-		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 ),
-		styles = getStyles( elem ),
-		val = curCSS( elem, dimension, styles );
+		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 	// Support: Firefox <=54
 	// Return a confounding non-pixel value or feign ignorance, as appropriate.
@@ -142,9 +142,9 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// Do not use offset for elements that don't have it (e.g. SVG)
 	// Computed value for SVG elements does not respect border-box in IE 9-11
 	// so valueIsBorderBox should be false there
-	if ( elem.hasOwnProperty( offsetProp ) &&
-		( val === "auto" || ( isBorderBox !== valueIsBorderBox ) ||
-			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) ) {
+	if ( ( val === "auto" || ( isBorderBox !== valueIsBorderBox ) ||
+			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+			typeof elem[ offsetProp ] !== "undefined" ) {
 
 		// Support: IE 9-11 only
 		// offsetWidth/offsetHeight is zero for disconnected elements
