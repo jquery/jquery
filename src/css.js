@@ -120,7 +120,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	var styles = getStyles( elem ),
 		val = curCSS( elem, dimension, styles ),
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
-		valueIsBorderBox = isBorderBox && support.boxSizingReliable(),
+		valueIsBorderBox = isBorderBox,
 		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 	// Support: Firefox <=54
@@ -139,22 +139,19 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// Also use offsetWidth/offsetHeight for misreported inline dimensions (gh-3602)
 	// Support: IE 9-11 only
 	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
-	// Do not use offset for elements that don't have it (e.g. SVG)
-	// Computed value for SVG elements does not respect border-box in IE 9-11
-	// so valueIsBorderBox should be false there
-	if ( ( val === "auto" || ( isBorderBox !== valueIsBorderBox ) ||
-			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
-			offsetProp in elem ) {
+	// We use getClientRects() to check for hidden/disconnected.
+	// In those cases, the computed value can be trusted to be border-box
+	if ( ( isBorderBox && !support.boxSizingReliable() || val === "auto" ||
+		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
+		elem.getClientRects().length ) {
 
-		// Support: IE 9-11 only
-		// offsetWidth/offsetHeight is zero for disconnected elements
-		// and children of hidden elements
-		val = elem[ offsetProp ] || val;
-
-		// offsetWidth/offsetHeight provide border-box values
-		// In the case where val remains unchanged,
-		// computed value can then be trusted to be border-box
-		valueIsBorderBox = true;
+		// Where available, offsetWidth/offsetHeight approximate border box dimensions.
+		// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
+		// retrieved value as a content box dimension.
+		valueIsBorderBox = offsetProp in elem;
+		if ( valueIsBorderBox ) {
+			val = elem[ offsetProp ];
+		}
 	}
 
 	// Normalize "" and auto
