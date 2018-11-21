@@ -144,7 +144,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// so valueIsBorderBox should be false there
 	if ( ( val === "auto" || ( isBorderBox !== valueIsBorderBox ) ||
 			!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
-			typeof elem[ offsetProp ] !== "undefined" ) {
+			offsetProp in elem ) {
 
 		// Support: IE 9-11 only
 		// offsetWidth/offsetHeight is zero for disconnected elements
