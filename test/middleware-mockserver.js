@@ -132,7 +132,10 @@ var mocks = {
 		resp.writeHead( 200, {
 			"Sample-Header": "Hello World",
 			"Empty-Header": "",
-			"Sample-Header2": "Hello World 2"
+			"Sample-Header2": "Hello World 2",
+			"List-Header": "Item 1",
+			"list-header": "Item 2",
+			"constructor": "prototype collision (constructor)"
 		} );
 		req.query.keys.split( "|" ).forEach( function( key ) {
 			if ( req.headers[ key.toLowerCase() ] ) {

@@ -252,7 +252,7 @@ QUnit.module( "ajax", {
 		} );
 	} );
 
-	ajaxTest( "jQuery.ajax() - headers", 5, function( assert ) {
+	ajaxTest( "jQuery.ajax() - headers", 8, function( assert ) {
 		return {
 			setup: function() {
 				jQuery( document ).ajaxSend( function( evt, xhr ) {
@@ -293,6 +293,9 @@ QUnit.module( "ajax", {
 					assert.strictEqual( emptyHeader, "", "Empty header received" );
 				}
 				assert.strictEqual( xhr.getResponseHeader( "Sample-Header2" ), "Hello World 2", "Second sample header received" );
+				assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
+				assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
+				assert.strictEqual( xhr.getResponseHeader( "__proto__" ), null, "Undefined __proto__ header not received" );
 			}
 		};
 	} );
