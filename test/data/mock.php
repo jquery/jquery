@@ -115,7 +115,7 @@ ok( true, "mock executed");';
 		header( 'Empty-Header: ' );
 		header( 'Sample-Header2: Hello World 2' );
 		header( 'List-Header: Item 1' );
-		header( 'list-header: Item 2' );
+		header( 'list-header: Item 2', FALSE );
 		header( 'constructor: prototype collision (constructor)' );
 
 		foreach ( explode( '|' , $req->query[ 'keys' ] ) as $key ) {
