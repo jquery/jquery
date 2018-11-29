@@ -757,7 +757,11 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 		$firstTh = jQuery( "<th style='width: 200px;padding: 5px' />" ),
 		$secondTh = jQuery( "<th style='width: 190px;padding: 5px' />" ),
 		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px' />" ),
-		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid'>text</td>" ),
+		// Support Firefox 63, Edge 16-17, Android 8, iOS 7-11
+		// These browsers completely ignore the border-box and height settings
+		// The computed height is instead just line-height + border
+		// Either way, what we're doing in css.js is correct
+		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid;line-height:18px'>text</td>" ),
 		$tbody = jQuery( "<tbody />" ).appendTo( $table ),
 		$textarea = jQuery( "<textarea style='height: 0;padding: 2px;border: 1px solid;box-sizing: border-box' />" ).appendTo( "#qunit-fixture" );
 	jQuery( "<tr />" ).appendTo( $thead ).append( $firstTh );
