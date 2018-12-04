@@ -384,6 +384,14 @@ function isArrayLike( obj ) {
 	var length = !!obj && "length" in obj && obj.length,
 		type = toType( obj );
 
+    // Support: Safari 5.1
+    // Safari returns HTMLCollections and NodeLists that have
+    // typeof === "function"
+    if ( obj instanceof window.HTMLCollection ||
+         obj instanceof window.NodeList ) {
+        return true;
+    }
+
 	if ( isFunction( obj ) || isWindow( obj ) ) {
 		return false;
 	}
