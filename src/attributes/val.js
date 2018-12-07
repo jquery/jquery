@@ -188,4 +188,12 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 	}
 } );
 
+jQuery.each( [ "text", "hidden" ], function() {
+	jQuery.valHooks[ this ] = {
+		set: function( elem, val ) {
+			elem.setAttribute( "value", val );
+		}
+	};
+} );
+
 } );

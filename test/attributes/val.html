@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>QUnit basic example</title>
+	<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.8.0.css">
+	<script src="/jquery.js" type="text/javascript"></script>
+	<!--	<script src="https://code.jquery.com/jquery-3.3.1.js"
+				integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+				crossorigin="anonymous"></script> -->
+	<style>
+		table {
+			margin: 20px;
+		}
+
+			table td {
+				border: 1px solid black;
+			}
+	</style>
+</head>
+<body>
+	<table>
+		<thead>
+			<tr>
+				<td>
+					Element
+				</td>
+				<td>
+					value geted with $.fn.val
+				</td>
+				<td>
+					value geted with slector [value=] and $.fn.attr("value")
+				</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<input type="text" id="inptext" value="" data-role="teste" />
+				</td>
+				<td>
+					<span id="inptextval"></span>
+				</td>
+				<td>
+					<span id="inptextattr"></span>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input type="hidden" id="inphidden" value="" data-role="teste" />
+					<span id="inphiddenvalue"></span>
+				</td>
+				<td>
+					<span id="inphiddenval"></span>
+				</td>
+				<td>
+					<span id="inphiddenattr"></span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	<script src="https://code.jquery.com/qunit/qunit-2.8.0.js"></script>
+	<script>
+		QUnit.test( "Set value with $.fn.val and get with selector [value=])", function ( assert ) {
+			var value = "hello";
+			var tvalue = value + " text";
+			var hvalue = value + " hidden";
+			var resmsg = "We expect value to be ";
+
+			// Set the value hellho with the $.fn.val function
+			jQuery( "#inptext" ).val( tvalue );
+			jQuery( "#inphidden" ).val( hvalue );
+			jQuery( "#inphiddenvalue" ).html( hvalue );
+
+			// Get the value with the $.fn.val function
+			jQuery( "#inptextval" ).html( jQuery( "#inptext" ).val() );
+			jQuery( "#inphiddenval" ).html( jQuery( "#inphidden" ).val() );
+
+			// Get the value with the $.fn.val function
+			jQuery( "#inptextattr" ).html( jQuery( "input[value='" + tvalue + "'" ).attr( "value" ) );
+			jQuery( "#inphiddenattr" ).html( jQuery( "input[value='" + hvalue + "'" ).attr( "value" ) );
+
+			assert.equal( jQuery( "#inptext" ).val(), tvalue, resmsg + tvalue );
+			assert.equal( jQuery( "input[value='" + tvalue + "'" ).attr( "value" ), tvalue, resmsg + tvalue );
+
+			assert.equal( jQuery( "#inphidden" ).val(), hvalue, resmsg + hvalue );
+			assert.equal( jQuery( "input[value='" + hvalue + "'" ).attr( "value" ), hvalue, resmsg + hvalue );
+
+		} );
+	</script>
+</body>
+</html>
