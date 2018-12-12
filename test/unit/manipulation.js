@@ -2818,3 +2818,20 @@ QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 		done();
 	}, 100 );
 } );
+
+QUnit.test( "Ignore content from unsuccessful responses (gh-4126)", 1, function( assert ) {
+	var globalEval = jQuery.globalEval;
+	jQuery.globalEval = function( code ) {
+		assert.ok( false, "no attempt to evaluate code from an unsuccessful response" );
+	};
+
+	try {
+		jQuery( "#qunit-fixture" ).append(
+			"<script src='" + url( "mock.php?action=error" ) + "'/>" );
+		assert.ok( true, "no error thrown from embedding script with unsuccessful-response src" );
+	} catch ( e ) {
+		throw e;
+	} finally {
+		jQuery.globalEval = globalEval;
+	}
+} );
