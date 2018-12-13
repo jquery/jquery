@@ -10,15 +10,17 @@ jQuery._evalUrl = function( url ) {
 
 		// Make this explicit, since user can override this through ajaxSetup (#11264)
 		type: "GET",
-		dataType: "text",
+		dataType: "script",
 		cache: true,
 		async: false,
 		global: false,
-		"throws": true,
 
 		// Only evaluate the response if it is successful (gh-4126)
-		success: function( text ) {
-			jQuery.globalEval( text );
+		converters: {
+			"text script": function() {}
+		},
+		dataFilter: function( response ) {
+			jQuery.globalEval( response );
 		}
 	} );
 };
