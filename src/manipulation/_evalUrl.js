@@ -16,6 +16,8 @@ jQuery._evalUrl = function( url ) {
 		global: false,
 
 		// Only evaluate the response if it is successful (gh-4126)
+		// dataFilter is not invoked for failure responses, so using it instead
+		// of the default converter is kludgy but it works.
 		converters: {
 			"text script": function() {}
 		},
