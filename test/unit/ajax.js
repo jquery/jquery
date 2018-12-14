@@ -273,6 +273,7 @@ QUnit.module( "ajax", {
 			},
 			success: function( data, _, xhr ) {
 				var i, emptyHeader,
+					isAndroid = /android 4\.[0-3]/i.test( navigator.userAgent ),
 					requestHeaders = jQuery.extend( this.headers, {
 						"ajax-send": "test"
 					} ),
@@ -293,7 +294,16 @@ QUnit.module( "ajax", {
 					assert.strictEqual( emptyHeader, "", "Empty header received" );
 				}
 				assert.strictEqual( xhr.getResponseHeader( "Sample-Header2" ), "Hello World 2", "Second sample header received" );
-				assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
+
+				if ( isAndroid ) {
+					// Support: Android 4.0-4.3 only
+					// Android Browser only returns the last value for each header
+					// so there's no way for jQuery get all parts.
+					assert.ok( true, "Android doesn't support repeated header names" );
+				} else {
+					assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
+				}
+
 				assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
 				assert.strictEqual( xhr.getResponseHeader( "__proto__" ), null, "Undefined __proto__ header not received" );
 			}
