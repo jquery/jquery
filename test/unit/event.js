@@ -2382,11 +2382,13 @@ QUnit.test( "clone() delegated events (#11076)", function( assert ) {
 	clone.remove();
 } );
 
-QUnit.test( "checkbox state (#3827)", function( assert ) {
-	assert.expect( 9 );
+QUnit.test( "checkbox state (trac-3827)", function( assert ) {
+	assert.expect( 16 );
 
-	var markup = jQuery( "<div><input type=checkbox><div>" ).appendTo( "#qunit-fixture" ),
+	var markup = jQuery( "<div class='parent'><input type=checkbox><div>" ),
 		cb = markup.find( "input" )[ 0 ];
+
+	markup.appendTo( "#qunit-fixture" );
 
 	jQuery( cb ).on( "click", function() {
 		assert.equal( this.checked, false, "just-clicked checkbox is not checked" );
@@ -2397,18 +2399,31 @@ QUnit.test( "checkbox state (#3827)", function( assert ) {
 
 	// Native click
 	cb.checked = true;
-	assert.equal( cb.checked, true, "native - checkbox is initially checked" );
+	assert.equal( cb.checked, true, "native event - checkbox is initially checked" );
 	cb.click();
-	assert.equal( cb.checked, false, "native - checkbox is no longer checked" );
+	assert.equal( cb.checked, false, "native event - checkbox is no longer checked" );
 
 	// jQuery click
 	cb.checked = true;
-	assert.equal( cb.checked, true, "jQuery - checkbox is initially checked" );
+	assert.equal( cb.checked, true, "jQuery event - checkbox is initially checked" );
 	jQuery( cb ).trigger( "click" );
-	assert.equal( cb.checked, false, "jQuery - checkbox is no longer checked" );
+	assert.equal( cb.checked, false, "jQuery event - checkbox is no longer checked" );
 
 	// Handlers only; checkbox state remains false
 	jQuery( cb ).triggerHandler( "click" );
+	assert.equal( cb.checked, false, "handlers only - checkbox is still unchecked" );
+
+	// provided data (trac-13353)
+	cb.checked = true;
+	assert.equal( cb.checked, true, "jQuery event with data - checkbox is initially checked" );
+	jQuery( cb ).on( "click", function( e, data ) {
+		assert.equal( data, "clicked", "trigger data passed to handler" );
+	} );
+	markup.on( "click", function( e, data ) {
+		assert.equal( data, "clicked", "trigger data passed to bubbled handler" );
+	} );
+	jQuery( cb ).trigger( "click", [ "clicked" ] );
+	assert.equal( cb.checked, false, "jQuery event with data - checkbox is no longer checked" );
 } );
 
 QUnit.test( "event object properties on natively-triggered event", function( assert ) {

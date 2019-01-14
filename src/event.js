@@ -478,19 +478,48 @@ jQuery.event = {
 		},
 		click: {
 
-			// For checkable types, fire native event so checked state will be right
-			trigger: function() {
-				if ( rcheckableType.test( this.type ) &&
-					this.click && nodeName( this, "input" ) ) {
+			// Utilize native event to ensure correct state for checkable inputs
+			setup: function( data ) {
 
-					this.click();
-					return false;
+				// Force post-minification `this` variable for better similarity with _default
+				var el = this || data;
+
+				// Claim the first handler
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) &&
+					dataPriv.get( el, "click" ) === undefined ) {
+
+					leverageNative( el, "click", false );
 				}
+
+				// Return false to allow normal processing in the caller
+				return false;
+			},
+			trigger: function( data ) {
+
+				// Force post-minification `this` variable for better similarity with _default
+				var el = this || data;
+
+				// Force setup before triggering a click
+				if ( rcheckableType.test( el.type ) &&
+					el.click && nodeName( el, "input" ) &&
+					dataPriv.get( el, "click" ) === undefined ) {
+
+					leverageNative( el, "click", returnTrue );
+				}
+
+				// Return non-false to allow normal event-path propagation
+				return true;
 			},
 
-			// For cross-browser consistency, don't fire native .click() on links
+			// For cross-browser consistency, suppress native .click() on links
+			// Also prevent it if we're currently inside a leveraged native-event stack
 			_default: function( event ) {
-				return nodeName( event.target, "a" );
+				var target = event.target;
+				return rcheckableType.test( target.type ) &&
+					target.click && nodeName( target, "input" ) &&
+					dataPriv.get( target, "click" ) ||
+					nodeName( target, "a" );
 			}
 		},
 
@@ -506,6 +535,54 @@ jQuery.event = {
 		}
 	}
 };
+
+// Ensure the presence of an event listener that handles manually-triggered
+// synthetic events by interrupting progress until reinvoked in response to
+// *native* events that it fires directly, ensuring that state changes have
+// already occurred before other listeners are invoked.
+function leverageNative( el, type, forceAdd ) {
+
+	if ( forceAdd ) {
+
+		// Force setup through jQuery.event.add
+		jQuery.event.add( el, type, forceAdd );
+		return;
+	}
+
+	// Register the controller
+	dataPriv.set( el, type, forceAdd );
+	jQuery.event.add( el, type, function( event ) {
+		var args = dataPriv.get( this, type );
+
+		// Interrupt processing of the outermost synthetic .trigger()ed event
+		if ( ( event.isTrigger & 1 ) && !args ) {
+
+			// Store arguments for use when handling the inner synthetic event
+			dataPriv.set( this, type, slice.call( arguments, 1 ) );
+
+			// Trigger the native event and capture its result
+			this[ type ]();
+			args = dataPriv.get( this, type );
+			dataPriv.set( this, type, false );
+
+			// Cancel the outermost synthetic event
+			event.stopImmediatePropagation();
+			event.preventDefault();
+
+			return args;
+
+		// If this is a native event triggered above, everything is now in order
+		// Fire an inner synthetic event with the original arguments
+		} else if ( !event.isTrigger && args ) {
+
+			// ...and capture the result
+			dataPriv.set( this, type, jQuery.event.trigger( event, args, this ) );
+
+			// Abort handling of the native event
+			event.stopImmediatePropagation();
+		}
+	} );
+}
 
 jQuery.removeEvent = function( elem, type, handle ) {
 
