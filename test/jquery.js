@@ -54,7 +54,7 @@
 
 	// Otherwise, load synchronously
 	} else {
-		document.write( "<script id='jquery-js' src='" + parentUrl + src + "'><\x2Fscript>" );
+		document.write( "<script id='jquery-js' nonce='jquery+hardcoded+nonce' src='" + parentUrl + src + "'><\x2Fscript>" );
 	}
 
 } )();
