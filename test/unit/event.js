@@ -2413,7 +2413,7 @@ QUnit.test( "checkbox state (trac-3827)", function( assert ) {
 	jQuery( cb ).triggerHandler( "click" );
 	assert.equal( cb.checked, false, "handlers only - checkbox is still unchecked" );
 
-	// provided data (trac-13353)
+	// Trigger parameters are preserved (trac-13353, gh-4139)
 	cb.checked = true;
 	assert.equal( cb.checked, true, "jQuery event with data - checkbox is initially checked" );
 	jQuery( cb ).on( "click", function( e, data ) {
