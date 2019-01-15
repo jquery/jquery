@@ -330,9 +330,10 @@ jQuery.event = {
 			while ( ( handleObj = matched.handlers[ j++ ] ) &&
 				!event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-				// a subset or equal to those in the bound event (both can have no namespace).
-				if ( !event.rnamespace || event.rnamespace.test( handleObj.namespace ) ) {
+				// If the event is namespaced, then each handler is only invoked if it is
+				// specially universal or its namespaces are a superset of the event's.
+				if ( !event.rnamespace || handleObj.namespace === false ||
+					event.rnamespace.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
@@ -542,44 +543,47 @@ jQuery.event = {
 // already occurred before other listeners are invoked.
 function leverageNative( el, type, forceAdd ) {
 
+	// Setup must go through jQuery.event.add
 	if ( forceAdd ) {
-
-		// Force setup through jQuery.event.add
 		jQuery.event.add( el, type, forceAdd );
 		return;
 	}
 
-	// Register the controller
+	// Register the controller as a special namespace-universal handler
 	dataPriv.set( el, type, forceAdd );
-	jQuery.event.add( el, type, function( event ) {
-		var args = dataPriv.get( this, type );
+	jQuery.event.add( el, type, {
+		namespace: false,
+		handler: function( event ) {
+			var saved = dataPriv.get( this, type );
 
-		// Interrupt processing of the outermost synthetic .trigger()ed event
-		if ( ( event.isTrigger & 1 ) && !args ) {
+			// Interrupt processing of the outermost synthetic .trigger()ed event
+			if ( ( event.isTrigger & 1 ) && !saved ) {
 
-			// Store arguments for use when handling the inner synthetic event
-			dataPriv.set( this, type, slice.call( arguments, 1 ) );
+				// Store arguments for use when handling the inner native event
+				dataPriv.set( this, type, slice.call( arguments ) );
 
-			// Trigger the native event and capture its result
-			this[ type ]();
-			args = dataPriv.get( this, type );
-			dataPriv.set( this, type, false );
+				// Trigger the native event and capture its result
+				this[ type ]();
+				saved = dataPriv.get( this, type );
+				dataPriv.set( this, type, false );
 
-			// Cancel the outermost synthetic event
-			event.stopImmediatePropagation();
-			event.preventDefault();
+				// Cancel the outermost synthetic event
+				event.stopImmediatePropagation();
+				event.preventDefault();
 
-			return args;
+				return saved;
 
-		// If this is a native event triggered above, everything is now in order
-		// Fire an inner synthetic event with the original arguments
-		} else if ( !event.isTrigger && args ) {
+			// If this is a native event triggered above, everything is now in order
+			// Fire an inner synthetic event with the original arguments
+			} else if ( !event.isTrigger && saved ) {
 
-			// ...and capture the result
-			dataPriv.set( this, type, jQuery.event.trigger( event, args, this ) );
+				// ...and capture the result
+				dataPriv.set( this, type,
+					jQuery.event.trigger( saved.shift(), saved, this ) );
 
-			// Abort handling of the native event
-			event.stopImmediatePropagation();
+				// Abort handling of the native event
+				event.stopImmediatePropagation();
+			}
 		}
 	} );
 }
