@@ -3049,3 +3049,41 @@ QUnit.test( "focus-blur order (#12868)", function( assert ) {
 		}, 50 );
 	}, 50 );
 } );
+
+( function() {
+	supportjQuery.each(
+		{
+			checkbox: "<input type='checkbox'>",
+			radio: "<input type='radio'>"
+		},
+		makeTestFor3751
+	);
+
+	function makeTestFor3751( type, html ) {
+		var testName = "native-backed namespaced clicks are handled correctly (gh-3751) - " + type;
+		QUnit.test( testName, function( assert ) {
+			assert.expect( 2 );
+
+			var parent = supportjQuery( "<div class='parent'>" + html + "</div>" ),
+				target = jQuery( parent[ 0 ].firstChild );
+
+			parent.appendTo( "#qunit-fixture" );
+
+			target.add( parent )
+				.on( "click.notFired", function( event ) {
+					assert.ok( false, "namespaced event should not be received" +
+						" by wrong-namespace listener at " + event.currentTarget.nodeName );
+				} )
+				.on( "click.fired", function( event ) {
+					assert.equal( event.target.checked, true,
+						"toggled before invoking handler at " + event.currentTarget.nodeName );
+				} )
+				.on( "click", function( event ) {
+					assert.ok( false, "namespaced event should not be received" +
+						" by non-namespaced listener at " + event.currentTarget.nodeName );
+				} );
+
+			target.trigger( "click.fired" );
+		} );
+	}
+} )();
