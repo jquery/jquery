@@ -459,22 +459,50 @@ jQuery.event = {
 		},
 		focus: {
 
-			// Fire native event if possible so blur/focus sequence is correct
-			trigger: function() {
-				if ( this !== safeActiveElement() && this.focus ) {
-					this.focus();
-					return false;
-				}
+			// Utilize native event if possible so blur/focus sequence is correct
+			setup: function() {
+
+				// Claim the first handler
+				leverageNative( this, "focus", false, function( el ) {
+					return el !== safeActiveElement();
+				} );
+
+				// Return false to allow normal processing in the caller
+				return false;
 			},
+			trigger: function() {
+
+				// Force setup before trigger
+				leverageNative( this, "focus", returnTrue );
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
 			delegateType: "focusin"
 		},
 		blur: {
-			trigger: function() {
-				if ( this === safeActiveElement() && this.blur ) {
-					this.blur();
-					return false;
-				}
+
+			// Utilize native event if possible so blur/focus sequence is correct
+			setup: function() {
+
+				// Claim the first handler
+				leverageNative( this, "blur", false, function( el ) {
+					return el === safeActiveElement();
+				} );
+
+				// Return false to allow normal processing in the caller
+				return false;
 			},
+			trigger: function() {
+
+				// Force setup before trigger
+				leverageNative( this, "blur", returnTrue );
+
+				// Return non-false to allow normal event-path propagation
+				return true;
+			},
+
 			delegateType: "focusout"
 		},
 		click: {
@@ -490,7 +518,7 @@ jQuery.event = {
 					el.click && nodeName( el, "input" ) &&
 					dataPriv.get( el, "click" ) === undefined ) {
 
-					leverageNative( el, "click", false );
+					leverageNative( el, "click", false, returnFalse );
 				}
 
 				// Return false to allow normal processing in the caller
@@ -541,7 +569,7 @@ jQuery.event = {
 // synthetic events by interrupting progress until reinvoked in response to
 // *native* events that it fires directly, ensuring that state changes have
 // already occurred before other listeners are invoked.
-function leverageNative( el, type, forceAdd ) {
+function leverageNative( el, type, forceAdd, allowAsync ) {
 
 	// Setup must go through jQuery.event.add
 	if ( forceAdd ) {
@@ -554,32 +582,52 @@ function leverageNative( el, type, forceAdd ) {
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var saved = dataPriv.get( this, type );
+			var maybeAsync, result,
+				saved = dataPriv.get( this, type );
 
 			// Interrupt processing of the outermost synthetic .trigger()ed event
-			if ( ( event.isTrigger & 1 ) && !saved ) {
+			if ( ( event.isTrigger & 1 ) && this[ type ] && !saved ) {
 
 				// Store arguments for use when handling the inner native event
-				dataPriv.set( this, type, slice.call( arguments ) );
+				saved = slice.call( arguments );
+				dataPriv.set( this, type, saved );
 
 				// Trigger the native event and capture its result
+				// Support: IE <=9 - 11+
+				// focus() and blur() are asynchronous
+				maybeAsync = allowAsync( this, type );
 				this[ type ]();
-				saved = dataPriv.get( this, type );
-				dataPriv.set( this, type, false );
+				result = dataPriv.get( this, type );
+				if ( result !== saved ) {
+					dataPriv.set( this, type, false );
 
-				// Cancel the outermost synthetic event
-				event.stopImmediatePropagation();
-				event.preventDefault();
+					// Cancel the outermost synthetic event
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					return result;
+				} else if ( maybeAsync ) {
 
-				return saved;
+					// Cancel the outermost synthetic event in expectation of a followup
+					event.stopImmediatePropagation();
+					event.preventDefault();
+					return;
+				} else {
+					dataPriv.set( this, type, false );
+				}
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
 			} else if ( !event.isTrigger && saved ) {
 
 				// ...and capture the result
-				dataPriv.set( this, type,
-					jQuery.event.trigger( saved.shift(), saved, this ) );
+				dataPriv.set( this, type, jQuery.event.trigger(
+
+					// Support: IE <=9 - 11+
+					// Extend with the prototype to reset the above stopImmediatePropagation()
+					jQuery.extend( saved.shift(), jQuery.Event.prototype ),
+					saved,
+					this
+				) );
 
 				// Abort handling of the native event
 				event.stopImmediatePropagation();
