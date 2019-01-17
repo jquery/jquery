@@ -1798,7 +1798,7 @@ QUnit.test( "html(Function)", function( assert ) {
 } );
 
 QUnit[
-	// Support: Edge 16-17
+	// Support: Edge 16-18+
 	// Edge sometimes doesn't execute module scripts so skip the test there.
 	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
 		"test" :
@@ -1815,6 +1815,36 @@ QUnit[
 			"<div>",
 				"<script type='module'>ok( true, 'evaluated: inner module' );</script>",
 				"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
+			"</div>"
+		].join( "" )
+	);
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		done();
+	}, 1000 );
+} );
+
+QUnit[
+	// Support: IE 9-11 only, Android 4.0-4.4 only, iOS 7-10 only
+	// `nomodule` scripts should be executed by legacy browsers only.
+	// iOS 10 supports `<script type="module">` but doesn't support the nomodule attribute
+	// so let's skip it here; sites supporting it must handle `nomodule` in a custom way anyway.
+	!/iphone os 10_/i.test( navigator.userAgent ) ?
+		"test" :
+		"skip"
+]( "html(script nomodule)", function( assert ) {
+	assert.expect( QUnit.moduleTypeSupported ? 0 : 4 );
+	var done = assert.async(),
+		$fixture = jQuery( "#qunit-fixture" );
+
+	$fixture.html(
+		[
+			"<script nomodule>ok( !QUnit.moduleTypeSupported, 'evaluated: nomodule script' );</script>",
+			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
+			"<div>",
+				"<script nomodule>ok( !QUnit.moduleTypeSupported, 'evaluated: inner nomodule script' );</script>",
+				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
 			"</div>"
 		].join( "" )
 	);
