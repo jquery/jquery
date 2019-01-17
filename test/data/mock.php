@@ -201,9 +201,10 @@ ok( true, "mock executed");';
 	protected function cspNonce( $req ) {
 		// This is CSP only for browsers with "Content-Security-Policy" header support
 		// i.e. no old WebKit or old Firefox
+		$test = $req->query['test'] ? '-' . $req->query['test'] : '';
 		header( "Content-Security-Policy: script-src 'nonce-jquery+hardcoded+nonce'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
-		echo file_get_contents( __DIR__ . '/csp-nonce.html' );
+		echo file_get_contents( __DIR__ . '/csp-nonce' . $test . '.html' );
 	}
 
 	protected function cspLog( $req ) {
