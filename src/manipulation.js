@@ -198,7 +198,7 @@ function domManip( collection, args, callback, ignored ) {
 						if ( node.src && ( node.type || "" ).toLowerCase()  !== "module" ) {
 
 							// Optional AJAX dependency, but won't run scripts if not present
-							if ( jQuery._evalUrl ) {
+							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src );
 							}
 						} else {
