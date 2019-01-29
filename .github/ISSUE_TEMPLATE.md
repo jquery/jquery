@@ -11,7 +11,7 @@ Bug Reports:
   *  Which browsers are affected?
   Provide a *minimal* test case, see https://webkit.org/test-case-reduction/
   Use the latest shipping version of jQuery in your test case!
-  We prefer test cases on https://jsbin.com or https://jsfiddle.net
+  We prefer test cases on JS Bin (https://jsbin.com/qawicop/edit?html,css,js,output) or CodePen (https://codepen.io/mgol/pen/wNWJbZ)
 
 Frequently Reported Issues:
   * Selectors with '#' break: See https://github.com/jquery/jquery/issues/2824
