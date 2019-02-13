@@ -330,7 +330,7 @@ QUnit.test( "isFunction", function( assert ) {
 	assert.ok( !jQuery.isFunction( obj ), "Object Element" );
 
 	// Since 1.3, this isn't supported (#2968)
-	//ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
+	//assert.ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
 
 	nodes = document.body.childNodes;
 
@@ -347,7 +347,7 @@ QUnit.test( "isFunction", function( assert ) {
 	document.body.appendChild( input );
 
 	// Since 1.3, this isn't supported (#2968)
-	//ok( jQuery.isFunction(input.focus), "A default function property" );
+	//assert.ok( jQuery.isFunction(input.focus), "A default function property" );
 
 	document.body.removeChild( input );
 
