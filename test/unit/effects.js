@@ -12,7 +12,7 @@ var oldRaf = window.requestAnimationFrame,
 	};
 
 QUnit.module( "effects", {
-	setup: function() {
+	beforeEach: function() {
 		window.requestAnimationFrame = null;
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
@@ -20,7 +20,7 @@ QUnit.module( "effects", {
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
 	},
-	teardown: function() {
+	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
@@ -453,8 +453,8 @@ QUnit.test( "animate resets overflow-x and overflow-y when finished", function( 
 
 /* // This test ends up being flaky depending upon the CPU load
 QUnit.test("animate option (queue === false)", function( assert ) {
+	var done = assert.async();
 	assert.expect(1);
-	QUnit.stop();
 
 	var order = [];
 
@@ -463,7 +463,7 @@ QUnit.test("animate option (queue === false)", function( assert ) {
 		// should finish after unqueued animation so second
 		order.push(2);
 		assert.deepEqual( order, [ 1, 2 ], "Animations finished in the correct order" );
-		QUnit.start();
+		done();
 	});
 	$foo.animate({fontSize:"2em"}, {queue:false, duration:10, complete:function () {
 		// short duration and out of queue so should finish first

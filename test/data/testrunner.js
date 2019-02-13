@@ -13,8 +13,7 @@ var oldCacheLength = 0,
  * QUnit configuration
  */
 
-// Max time for stop() and asyncTest() until it aborts test
-// and start()'s the next test.
+// Max time for done() to fire in an async test.
 QUnit.config.testTimeout = 60e3; // 1 minute
 
 // Enforce an "expect" argument or expect() call in all test bodies.

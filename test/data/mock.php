@@ -16,7 +16,7 @@ class MockServer {
 			header( 'Content-type: text/javascript' );
 		} else {
 			header( 'Content-type: text/html' );
-			echo 'ERROR <script>ok( true, "mock executed" );</script>';
+			echo 'ERROR <script>QUnit.assert.ok( true, "mock executed" );</script>';
 		}
 	}
 
@@ -54,7 +54,7 @@ class MockServer {
 		} else {
 			header( 'Content-type: text/html' );
 		}
-		echo 'ok( true, "mock executed" );';
+		echo 'QUnit.assert.ok( true, "mock executed" );';
 	}
 
 	// Used to be in test.js, but was renamed to testbar.php
@@ -62,7 +62,7 @@ class MockServer {
 	protected function testbar( $req ) {
 		echo 'this.testBar = "bar";
 jQuery("#ap").html("bar");
-ok( true, "mock executed");';
+QUnit.assert.ok( true, "mock executed");';
 	}
 
 	protected function json( $req ) {

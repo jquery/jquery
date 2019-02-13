@@ -1,8 +1,8 @@
 QUnit.module( "event", {
-	setup: function() {
+	beforeEach: function() {
 		document.body.focus();
 	},
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 QUnit.test( "null or undefined handler", function( assert ) {
@@ -1418,7 +1418,8 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 // iOS has the window.onbeforeunload field but doesn't support the beforeunload
 // handler making it impossible to feature-detect the support.
 QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
-	"on(beforeunload)", 1, function( assert ) {
+	"on(beforeunload)", function( assert ) {
+	assert.expect( 1 );
 	var iframe = jQuery( jQuery.parseHTML( "<iframe src='" + baseURL + "event/onbeforeunload.html'><iframe>" ) );
 	var done = assert.async();
 

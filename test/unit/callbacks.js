@@ -1,5 +1,5 @@
 QUnit.module( "callbacks", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 ( function() {

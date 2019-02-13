@@ -21,7 +21,7 @@ var mocks = {
 				resp.writeHead( 200, { "content-type": "text/javascript" } );
 			} else {
 				resp.writeHead( 200, { "content-type": "text/html" } );
-				resp.end( "ERROR <script>ok( true, \"mock executed\" );</script>" );
+				resp.end( "ERROR <script>QUnit.assert.ok( true, \"mock executed\" );</script>" );
 			}
 		}, wait );
 	},
@@ -67,14 +67,14 @@ var mocks = {
 		} else {
 			resp.writeHead( 200, { "content-type": "text/html" } );
 		}
-		resp.end( "ok( true, \"mock executed\" );" );
+		resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
 	},
 	testbar: function( req, resp ) {
 		resp.writeHead( 200 );
 		resp.end(
 			"this.testBar = 'bar'; " +
 			"jQuery('#ap').html('bar'); " +
-			"ok( true, 'mock executed');"
+			"QUnit.assert.ok( true, 'mock executed');"
 		);
 	},
 	json: function( req, resp ) {

@@ -48,7 +48,7 @@ this.q = function() {
  * @param {(String|Node)=document} context - Selector context
  * @example match("Check for something", "p", ["foo", "bar"]);
  */
-function match( message, selector, expectedIds, context ) {
+function match( message, selector, expectedIds, context, assert ) {
 	var f = jQuery( selector, context ).get(),
 		s = "",
 		i = 0;
@@ -57,7 +57,7 @@ function match( message, selector, expectedIds, context ) {
 		s += ( s && "," ) + "\"" + f[ i ].id + "\"";
 	}
 
-	this.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
+	assert.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
 }
 
 /**
@@ -69,7 +69,7 @@ function match( message, selector, expectedIds, context ) {
  * @example t("Check for something", "p", ["foo", "bar"]);
  */
 QUnit.assert.t = function( message, selector, expectedIds ) {
-	match( message, selector, expectedIds, undefined );
+	match( message, selector, expectedIds, undefined, QUnit.assert );
 };
 
 /**
@@ -81,7 +81,7 @@ QUnit.assert.t = function( message, selector, expectedIds ) {
  * @example selectInFixture("Check for something", "p", ["foo", "bar"]);
  */
 QUnit.assert.selectInFixture = function( message, selector, expectedIds ) {
-	match( message, selector, expectedIds, "#qunit-fixture" );
+	match( message, selector, expectedIds, "#qunit-fixture", QUnit.assert );
 };
 
 this.createDashboardXML = function() {
@@ -174,7 +174,8 @@ function url( value ) {
 
 // Ajax testing helper
 this.ajaxTest = function( title, expect, options ) {
-	QUnit.test( title, expect, function( assert ) {
+	QUnit.test( title, function( assert ) {
+		assert.expect( expect );
 		var requestOptions;
 
 		if ( typeof options === "function" ) {
