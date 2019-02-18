@@ -19,10 +19,8 @@
 
 	"globals": {
 		"window": true,
-		"jQuery": true,
 		"define": true,
-		"module": true,
-		"noGlobal": true
+		"module": true
 	},
 
 	"rules": {
