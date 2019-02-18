@@ -1,4 +1,4 @@
-QUnit.module( "serialize", { teardown: moduleTeardown } );
+QUnit.module( "serialize", { afterEach: moduleTeardown } );
 
 QUnit.test( "jQuery.param()", function( assert ) {
 	assert.expect( 24 );

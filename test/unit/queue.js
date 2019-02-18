@@ -1,9 +1,9 @@
-QUnit.module( "queue", { teardown: moduleTeardown } );
+QUnit.module( "queue", { afterEach: moduleTeardown } );
 
 QUnit.test( "queue() with other types", function( assert ) {
+	var done = assert.async( 2 );
 	assert.expect( 14 );
 
-	QUnit.stop();
 
 	var $div = jQuery( {} ),
 		counter = 0;
@@ -30,7 +30,7 @@ QUnit.test( "queue() with other types", function( assert ) {
 
 	$div.promise( "foo" ).done( function() {
 		assert.equal( counter, 4, "Testing previous call to dequeue in deferred"  );
-		QUnit.start();
+		done();
 	} );
 
 	assert.equal( $div.queue( "foo" ).length, 4, "Testing queue length" );
@@ -51,7 +51,7 @@ QUnit.test( "queue() with other types", function( assert ) {
 
 	assert.equal( counter, 4, "Testing previous call to dequeue" );
 	assert.equal( $div.queue( "foo" ).length, 0, "Testing queue length" );
-
+	done();
 } );
 
 QUnit.test( "queue(name) passes in the next item in the queue as a parameter", function( assert ) {
@@ -74,8 +74,8 @@ QUnit.test( "queue(name) passes in the next item in the queue as a parameter", f
 } );
 
 QUnit.test( "queue() passes in the next item in the queue as a parameter to fx queues", function( assert ) {
+	var done = assert.async();
 	assert.expect( 3 );
-	QUnit.stop();
 
 	var div = jQuery( {} ),
 		counter = 0;
@@ -92,13 +92,13 @@ QUnit.test( "queue() passes in the next item in the queue as a parameter to fx q
 
 	jQuery.when( div.promise( "fx" ), div ).done( function() {
 		assert.equal( counter, 2, "Deferreds resolved" );
-		QUnit.start();
+		done();
 	} );
 } );
 
 QUnit.test( "callbacks keep their place in the queue", function( assert ) {
+	var done = assert.async();
 	assert.expect( 5 );
-	QUnit.stop();
 	var div = jQuery( "<div>" ),
 		counter = 0;
 
@@ -119,7 +119,7 @@ QUnit.test( "callbacks keep their place in the queue", function( assert ) {
 
 	div.promise( "fx" ).done( function() {
 		assert.equal( counter, 4, "Deferreds resolved" );
-		QUnit.start();
+		done();
 	} );
 } );
 
@@ -132,24 +132,23 @@ QUnit.test( "jQuery.queue should return array while manipulating the queue", fun
 } );
 
 QUnit.test( "delay()", function( assert ) {
+	var done = assert.async();
 	assert.expect( 2 );
-	QUnit.stop();
 
 	var foo = jQuery( {} ), run = 0;
 
 	foo.delay( 100 ).queue( function() {
 		run = 1;
 		assert.ok( true, "The function was dequeued." );
-		QUnit.start();
+		done();
 	} );
 
 	assert.equal( run, 0, "The delay delayed the next function from running." );
 } );
 
 QUnit.test( "clearQueue(name) clears the queue", function( assert ) {
+	var done = assert.async( 2 );
 	assert.expect( 2 );
-
-	QUnit.stop();
 
 	var div = jQuery( {} ),
 		counter = 0;
@@ -164,12 +163,13 @@ QUnit.test( "clearQueue(name) clears the queue", function( assert ) {
 
 	div.promise( "foo" ).done( function() {
 		assert.ok( true, "dequeue resolves the deferred" );
-		QUnit.start();
+		done();
 	} );
 
 	div.dequeue( "foo" );
 
 	assert.equal( counter, 1, "the queue was cleared" );
+	done();
 } );
 
 QUnit.test( "clearQueue() clears the fx queue", function( assert ) {
@@ -191,9 +191,11 @@ QUnit.test( "clearQueue() clears the fx queue", function( assert ) {
 	div.removeData();
 } );
 
-QUnit.asyncTest( "fn.promise() - called when fx queue is empty", 3, function( assert ) {
+QUnit.test( "fn.promise() - called when fx queue is empty", function( assert ) {
+	assert.expect( 3 );
 	var foo = jQuery( "#foo" ).clone().addBack(),
-		promised = false;
+		promised = false,
+		done = assert.async();
 
 	foo.queue( function( next ) {
 
@@ -203,11 +205,13 @@ QUnit.asyncTest( "fn.promise() - called when fx queue is empty", 3, function( as
 	} );
 	foo.promise().done( function() {
 		assert.ok( promised = true, "Promised" );
-		QUnit.start();
+		done();
 	} );
 } );
 
-QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function is dequeued", 5, function( assert ) {
+QUnit.test( "fn.promise( \"queue\" ) - called whenever last queue function is dequeued", function( assert ) {
+	assert.expect( 5 );
+	var done = assert.async();
 	var foo = jQuery( "#foo" ),
 		test;
 	foo.promise( "queue" ).done( function() {
@@ -222,7 +226,7 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function 
 		setTimeout( function() {
 			next();
 			assert.strictEqual( test++, 4, "step four" );
-			QUnit.start();
+			done();
 		}, 10 );
 	} ).promise( "queue" ).done( function() {
 		assert.strictEqual( test++, 3, "step three" );
@@ -233,7 +237,9 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - called whenever last queue function 
 
 if ( jQuery.fn.animate ) {
 
-QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", 2, function( assert ) {
+QUnit.test( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", function( assert ) {
+	assert.expect( 2 );
+	var done = assert.async();
 	var foo = jQuery( "#foo" ),
 		test = 1;
 
@@ -249,7 +255,7 @@ QUnit.asyncTest( "fn.promise( \"queue\" ) - waits for animation to complete befo
 
 	foo.promise( "queue" ).done( function() {
 		assert.strictEqual( test++, 2, "step two" );
-		QUnit.start();
+		done();
 	} );
 
 } );
@@ -267,19 +273,18 @@ QUnit.test( ".promise(obj)", function( assert ) {
 
 if ( jQuery.fn.stop ) {
 	QUnit.test( "delay() can be stopped", function( assert ) {
+		var done = assert.async();
 		assert.expect( 3 );
-		QUnit.stop();
-
-		var done = {};
+		var storage = {};
 		jQuery( {} )
 			.queue( "alternate", function( next ) {
-				done.alt1 = true;
+				storage.alt1 = true;
 				assert.ok( true, "This first function was dequeued" );
 				next();
 			} )
 			.delay( 1000, "alternate" )
 			.queue( "alternate", function() {
-				done.alt2 = true;
+				storage.alt2 = true;
 				assert.ok( true, "The function was dequeued immediately, the delay was stopped" );
 			} )
 			.dequeue( "alternate" )
@@ -290,21 +295,23 @@ if ( jQuery.fn.stop ) {
 			// this test
 			.delay( 1 )
 			.queue( function() {
-				done.default1 = true;
+				storage.default1 = true;
 				assert.ok( false, "This queue should never run" );
 			} )
 
 			// stop( clearQueue ) should clear the queue
 			.stop( true, false );
 
-		assert.deepEqual( done, { alt1: true, alt2: true }, "Queue ran the proper functions" );
+		assert.deepEqual( storage, { alt1: true, alt2: true }, "Queue ran the proper functions" );
 
 		setTimeout( function() {
-			QUnit.start();
+			done();
 		}, 1500 );
 	} );
 
-	QUnit.asyncTest( "queue stop hooks", 2, function( assert ) {
+	QUnit.test( "queue stop hooks", function( assert ) {
+		assert.expect( 2 );
+		var done = assert.async();
 		var foo = jQuery( "#foo" );
 
 		foo.queue( function( next, hooks ) {
@@ -317,7 +324,7 @@ if ( jQuery.fn.stop ) {
 		foo.queue( function( next, hooks ) {
 			hooks.stop = function( gotoEnd ) {
 				assert.equal( gotoEnd, true, "Stopped with gotoEnd" );
-				QUnit.start();
+				done();
 			};
 		} );
 

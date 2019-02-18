@@ -1,4 +1,4 @@
-QUnit.module( "data", { teardown: moduleTeardown } );
+QUnit.module( "data", { afterEach: moduleTeardown } );
 
 QUnit.test( "expando", function( assert ) {
 	assert.expect( 1 );
@@ -832,12 +832,12 @@ QUnit.test( ".removeData supports removal of hyphenated properties via array (#1
 
 // Test originally by Moschel
 QUnit.test( ".removeData should not throw exceptions. (#10080)", function( assert ) {
+	var done = assert.async();
 	assert.expect( 1 );
-	QUnit.stop();
 	var frame = jQuery( "#loadediframe" );
 	jQuery( frame[ 0 ].contentWindow ).on( "unload", function() {
 		assert.ok( true, "called unload" );
-		QUnit.start();
+		done();
 	} );
 
 	// change the url to trigger unload

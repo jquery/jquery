@@ -4,7 +4,7 @@ if ( !jQuery.fn.width ) {
 	return;
 }
 
-QUnit.module( "dimensions", { teardown: moduleTeardown } );
+QUnit.module( "dimensions", { afterEach: moduleTeardown } );
 
 function pass( val ) {
 	return val;

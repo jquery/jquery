@@ -1,6 +1,6 @@
 if ( jQuery.css ) {
 
-QUnit.module( "css", { teardown: moduleTeardown } );
+QUnit.module( "css", { afterEach: moduleTeardown } );
 
 QUnit.test( "css(String|Hash)", function( assert ) {
 	assert.expect( 42 );
@@ -1503,8 +1503,8 @@ QUnit.test( "Reset the style if set to an empty string", function( assert ) {
 
 QUnit.test(
 	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
-	24,
 	function( assert ) {
+		assert.expect( 24 );
 		var done = assert.async();
 		var styles = [ {
 				name: "backgroundAttachment",

@@ -1,5 +1,5 @@
 QUnit.module( "deferred", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
