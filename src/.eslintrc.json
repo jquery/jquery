@@ -1,5 +1,9 @@
 {
 	"root": true,
 
-	"extends": "../.eslintrc-browser.json"
+	"extends": "../.eslintrc-browser.json",
+
+	"globals": {
+		"jQuery": true
+	}
 }
