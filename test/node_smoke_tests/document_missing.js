@@ -1,10 +1,10 @@
 "use strict";
 
-var assert = require( "assert" ),
-	ensureGlobalNotCreated = require( "./lib/ensure_global_not_created" ),
-	jQueryFactory = require( "../../dist/jquery.js" );
+const assert = require( "assert" );
+const ensureGlobalNotCreated = require( "./lib/ensure_global_not_created" );
+const jQueryFactory = require( "../../dist/jquery.js" );
 
-assert.throws( function() {
+assert.throws( () => {
 	jQueryFactory( {} );
 }, /jQuery requires a window with a document/ );
 

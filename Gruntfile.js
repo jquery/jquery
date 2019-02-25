@@ -42,8 +42,8 @@ module.exports = function( grunt ) {
 			},
 			nodeSmokeTests: {
 				files: {
-					"test/node_smoke_tests/lib/ensure_iterability.js":
-						"test/node_smoke_tests/lib/ensure_iterability_es6.js"
+					"test/data/core/jquery-iterability-transpiled.js":
+						"test/data/core/jquery-iterability-transpiled-es6.js"
 				}
 			}
 		},

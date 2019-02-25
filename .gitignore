@@ -18,4 +18,4 @@ npm-debug.log*
 
 /node_modules
 
-/test/node_smoke_tests/lib/ensure_iterability.js
+/test/data/core/jquery-iterability-transpiled.js
