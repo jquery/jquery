@@ -14,7 +14,15 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS;
+		isTravis = process.env.TRAVIS,
+		oldNode = /^v6\./.test( process.version );
+
+	// Support: Node.js <8
+	// Skip running tasks that dropped support for Node.js 6
+	// in those Node versions.
+	function runIfNewNode( task ) {
+		return oldNode ? "print_old_node_message:" + task : task;
+	}
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -220,6 +228,33 @@ module.exports = function( grunt ) {
 				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
 			},
 
+			jsdom: {
+				options: {
+					files: [
+						"test/data/jquery-1.9.1.js",
+						"test/data/testinit-jsdom.js",
+
+						// We don't support various loading methods like AMD,
+						// choosing a version etc. for jsdom.
+						"dist/jquery.js",
+
+						// Replacement for testinit.js#loadTests()
+						"test/data/testrunner.js",
+
+						// jsdom only runs basic tests
+						"test/unit/basic.js",
+
+						{ pattern: "external/**", included: false, served: true },
+						{
+							pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
+							included: false,
+							served: true
+						}
+					]
+				},
+				browsers: [ "jsdom" ]
+			},
+
 			// To debug tests with Karma:
 			// 1. Run 'grunt karma:chrome-debug' or 'grunt karma:firefox-debug'
 			//    (any karma subtask that has singleRun=false)
@@ -285,6 +320,13 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
+	// Support: Node.js <8
+	// Print a message on Node.js <8 notifying the task is skipped there.
+	grunt.registerTask( "print_old_node_message", function() {
+		var task = [].slice.call( arguments ).join( ":" );
+		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
+	} );
+
 	grunt.registerTask( "lint", [
 		"jsonlint",
 
@@ -305,7 +347,13 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "test:fast", "node_smoke_tests" );
-	grunt.registerTask( "test:slow", "promises_aplus_tests" );
+	grunt.registerTask( "test:slow", [
+		"promises_aplus_tests",
+
+		// Support: Node.js <8
+		// Karma no longer supports Node.js <8 as it relies on async-await internally.
+		runIfNewNode( "karma:jsdom" )
+	] );
 
 	grunt.registerTask( "test", [
 		"test:fast",
