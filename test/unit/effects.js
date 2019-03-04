@@ -1971,36 +1971,37 @@ QUnit.test( "Animation callbacks (#11797)", function( assert ) {
 QUnit.test( "Animation callbacks in order (#2292)", function( assert ) {
 	assert.expect( 9 );
 
-	var step = 0,
+	var done = assert.async(),
+		step = 0,
 		dur = 50;
 
-	// assert? -> github.com/JamesMGreene/qunit-assert-step
 	jQuery( "#foo" ).animate( {
 		width: "5px"
 	}, {
 		duration: dur,
 		start: function() {
-			assert.step( 1 );
+			assert.step( "start" );
 		},
 		progress: function( anim, p, ms ) {
 			if ( !( step++ ) ) {
-				assert.step( 2 );
+				assert.step( "progress" );
 				assert.strictEqual( p, 0, "first progress callback: progress ratio" );
 				assert.strictEqual( ms, dur, "first progress callback: remaining ms" );
 			} else {
-				assert.step( 3 );
+				assert.step( "last progress" );
 				assert.strictEqual( p, 1, "last progress callback: progress ratio" );
 				assert.strictEqual( ms, 0, "last progress callback: remaining ms" );
 			}
 		},
 		done: function() {
-			assert.step( 4 );
+			assert.step( "done" );
 		},
 		fail: function() {
 			assert.ok( false, "Animation failed" );
 		},
 		always: function() {
-			assert.step( 5 );
+			assert.verifySteps( [ "start", "progress", "last progress", "done" ] );
+			done();
 		}
 	} ).finish();
 

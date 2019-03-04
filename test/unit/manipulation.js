@@ -1840,10 +1840,10 @@ QUnit[
 
 	$fixture.html(
 		[
-			"<script nomodule>ok( !QUnit.moduleTypeSupported, 'evaluated: nomodule script' );</script>",
+			"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: nomodule script' );</script>",
 			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
 			"<div>",
-				"<script nomodule>ok( !QUnit.moduleTypeSupported, 'evaluated: inner nomodule script' );</script>",
+				"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: inner nomodule script' );</script>",
 				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
 			"</div>"
 		].join( "" )

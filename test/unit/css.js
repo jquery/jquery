@@ -1455,7 +1455,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", fu
 	// Safari 6-7 and iOS 6-7 report 0 width for br elements
 	// When newer browsers propagate, re-enable this test
 	// $br = jQuery( "<br/>" ).appendTo( "#qunit-fixture" );
-	// ok( $br.is( ":visible" ), "br element is visible" );
+	// assert.ok( $br.is( ":visible" ), "br element is visible" );
 
 	$table = jQuery( "#table" );
 	$table.html( "<tr><td style='display:none'>cell</td><td>cell</td></tr>" );
