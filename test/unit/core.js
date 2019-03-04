@@ -1425,6 +1425,17 @@ QUnit.test( "Iterability of jQuery objects (gh-1693)", function( assert ) {
 	}
 } );
 
+testIframe(
+	"Iterability of jQuery objects with Symbol polyfill (gh-1693)",
+	"core/jquery-iterability-transpiled.html",
+	function( assert, jQuery, window, document, testString ) {
+		assert.expect( 1 );
+
+		assert.strictEqual( testString, "DIVSPANA",
+			"for-of works on jQuery objects with Symbol polyfilled" );
+	}
+);
+
 QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
 	assert.expect( 1 );
 

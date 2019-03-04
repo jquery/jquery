@@ -1,11 +1,11 @@
-module.exports = function( grunt ) {
+module.exports = ( grunt ) => {
 
 	"use strict";
 
-	var fs = require( "fs" ),
-		spawnTest = require( "./lib/spawn_test.js" ),
-		testsDir = "./test/node_smoke_tests/",
-		nodeSmokeTests = [ "babel:nodeSmokeTests" ];
+	const fs = require( "fs" );
+	const spawnTest = require( "./lib/spawn_test.js" );
+	const testsDir = "./test/node_smoke_tests/";
+	const nodeSmokeTests = [ "babel:nodeSmokeTests" ];
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
 	// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
@@ -14,15 +14,15 @@ module.exports = function( grunt ) {
 	// each other, e.g. so that they don't share the require cache.
 
 	fs.readdirSync( testsDir )
-		.filter( function( testFilePath ) {
-			return fs.statSync( testsDir + testFilePath ).isFile() &&
-				/\.js$/.test( testFilePath );
-		} )
-		.forEach( function( testFilePath ) {
-			var taskName = "node_" + testFilePath.replace( /\.js$/, "" );
+		.filter( ( testFilePath ) =>
+			fs.statSync( testsDir + testFilePath ).isFile() &&
+				/\.js$/.test( testFilePath )
+		)
+		.forEach( ( testFilePath ) => {
+			const taskName = `node_${ testFilePath.replace( /\.js$/, "" ) }`;
 
 			grunt.registerTask( taskName, function() {
-				spawnTest( this.async(), "node \"test/node_smoke_tests/" + testFilePath + "\"" );
+				spawnTest( this.async(), `node "test/node_smoke_tests/${ testFilePath }"` );
 			} );
 
 			nodeSmokeTests.push( taskName );

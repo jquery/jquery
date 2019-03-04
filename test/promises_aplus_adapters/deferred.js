@@ -1,20 +1,17 @@
 "use strict";
 
-require( "jsdom" ).env( "", function( errors, window ) {
-	if ( errors ) {
-		console.error( errors );
-		return;
-	}
+const { JSDOM } = require( "jsdom" );
 
-	var jQuery = require( "../../" )( window );
+const { window } = new JSDOM( "" );
 
-	module.exports.deferred = function() {
-		var deferred = jQuery.Deferred();
+const jQuery = require( "../../" )( window );
 
-		return {
-			promise: deferred.promise(),
-			resolve: deferred.resolve.bind( deferred ),
-			reject: deferred.reject.bind( deferred )
-		};
+module.exports.deferred = () => {
+	const deferred = jQuery.Deferred();
+
+	return {
+		promise: deferred.promise(),
+		resolve: deferred.resolve.bind( deferred ),
+		reject: deferred.reject.bind( deferred )
 	};
-} );
+};

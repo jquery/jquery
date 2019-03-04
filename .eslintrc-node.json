@@ -4,10 +4,11 @@
 	"extends": "jquery",
 
 	"parserOptions": {
-		"ecmaVersion": 5
+		"ecmaVersion": 2017
 	},
 
 	"env": {
+		"es6": true,
 		"node": true
 	}
 }

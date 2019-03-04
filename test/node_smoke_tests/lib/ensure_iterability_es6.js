@@ -1,23 +1,25 @@
 "use strict";
 
-var assert = require( "assert" );
+const assert = require( "assert" );
 
-module.exports = function ensureIterability() {
-	require( "jsdom" ).env( "", function( errors, window ) {
-		assert.ifError( errors );
+const ensureIterability = () => {
+	const { JSDOM } = require( "jsdom" );
 
-		var i,
-			ensureJQuery = require( "./ensure_jquery" ),
-			jQuery = require( "../../../dist/jquery.js" )( window ),
-			elem = jQuery( "<div></div><span></span><a></a>" ),
-			result = "";
+	const { window } = new JSDOM( "" );
 
-		ensureJQuery( jQuery );
+	let i;
+	const ensureJQuery = require( "./ensure_jquery" );
+	const jQuery = require( "../../../dist/jquery.js" )( window );
+	const elem = jQuery( "<div></div><span></span><a></a>" );
+	let result = "";
 
-		for ( i of elem ) {
-			result += i.nodeName;
-		}
+	ensureJQuery( jQuery );
 
-		assert.strictEqual( result, "DIVSPANA", "for-of works on jQuery objects" );
-	} );
+	for ( i of elem ) {
+		result += i.nodeName;
+	}
+
+	assert.strictEqual( result, "DIVSPANA", "for-of works on jQuery objects" );
 };
+
+module.exports = ensureIterability;

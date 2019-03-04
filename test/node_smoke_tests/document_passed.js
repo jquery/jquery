@@ -1,14 +1,12 @@
 "use strict";
 
-var assert = require( "assert" );
+const { JSDOM } = require( "jsdom" );
 
-require( "jsdom" ).env( "", function( errors, window ) {
-	assert.ifError( errors );
+const { window } = new JSDOM( "" );
 
-	var ensureJQuery = require( "./lib/ensure_jquery" ),
-		ensureGlobalNotCreated = require( "./lib/ensure_global_not_created" ),
-		jQuery = require( "../../dist/jquery.js" )( window );
+const ensureJQuery = require( "./lib/ensure_jquery" );
+const ensureGlobalNotCreated = require( "./lib/ensure_global_not_created" );
+const jQuery = require( "../../dist/jquery.js" )( window );
 
-	ensureJQuery( jQuery );
-	ensureGlobalNotCreated( module.exports );
-} );
+ensureJQuery( jQuery );
+ensureGlobalNotCreated( module.exports );
