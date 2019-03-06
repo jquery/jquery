@@ -1,9 +1,8 @@
-module.exports = function( grunt ) {
+"use strict";
 
-	"use strict";
-
-	var timeout = 2000,
-		spawnTest = require( "./lib/spawn_test.js" );
+module.exports = grunt => {
+	const timeout = 2000;
+	const spawnTest = require( "./lib/spawn_test.js" );
 
 	grunt.registerTask( "promises_aplus_tests",
 		[ "promises_aplus_tests:deferred", "promises_aplus_tests:when" ] );
@@ -12,6 +11,7 @@ module.exports = function( grunt ) {
 		spawnTest( this.async(),
 			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
 				" test/promises_aplus_adapters/deferred.js" +
+				" --reporter dot" +
 				" --timeout " + timeout
 		);
 	} );
@@ -20,6 +20,7 @@ module.exports = function( grunt ) {
 		spawnTest( this.async(),
 			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
 				" test/promises_aplus_adapters/when.js" +
+				" --reporter dot" +
 				" --timeout " + timeout
 		);
 	} );
