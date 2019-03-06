@@ -13,9 +13,7 @@ module.exports = function( grunt ) {
 					"utf8"
 				).toString().replace( /\r\n/g, "\n" )
 			) +
-			";\n" +
-			"// Compat with QUnit 1.x:\n" +
-			"document.getElementById( \"qunit-fixture\" ).innerHTML = QUnit.config.fixture;\n"
+			";\n"
 		);
 		grunt.log.ok( "Updated " + dest + "." );
 	} );
