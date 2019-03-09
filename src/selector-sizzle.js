@@ -1,5 +1,5 @@
 define( [
-	"./core",
+	"./core/init",
 	"../external/sizzle/dist/sizzle"
 ], function( jQuery, Sizzle ) {
 

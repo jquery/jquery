@@ -1,5 +1,5 @@
 define( [
-	"./core",
+	"./core/init",
 	"./var/document",
 	"./var/documentElement",
 	"./var/hasOwn",
