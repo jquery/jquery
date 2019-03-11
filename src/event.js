@@ -463,6 +463,7 @@ jQuery.event = {
 			setup: function() {
 
 				// Claim the first handler
+				// dataPriv.set( this, "focus", ... )
 				leverageNative( this, "focus", false, function( el ) {
 					return el !== safeActiveElement();
 				} );
@@ -487,6 +488,7 @@ jQuery.event = {
 			setup: function() {
 
 				// Claim the first handler
+				// dataPriv.set( this, "blur", ... )
 				leverageNative( this, "blur", false, function( el ) {
 					return el === safeActiveElement();
 				} );
@@ -518,6 +520,7 @@ jQuery.event = {
 					el.click && nodeName( el, "input" ) &&
 					dataPriv.get( el, "click" ) === undefined ) {
 
+					// dataPriv.set( el, "click", ... )
 					leverageNative( el, "click", false, returnFalse );
 				}
 
@@ -577,7 +580,7 @@ function leverageNative( el, type, forceAdd, allowAsync ) {
 		return;
 	}
 
-	// Register the controller as a special namespace-universal handler
+	// Register the controller as a special universal handler for all event namespaces
 	dataPriv.set( el, type, forceAdd );
 	jQuery.event.add( el, type, {
 		namespace: false,
@@ -585,7 +588,7 @@ function leverageNative( el, type, forceAdd, allowAsync ) {
 			var maybeAsync, result,
 				saved = dataPriv.get( this, type );
 
-			// Interrupt processing of the outermost synthetic .trigger()ed event
+			// Interrupt processing of the outer synthetic .trigger()ed event
 			if ( ( event.isTrigger & 1 ) && this[ type ] && !saved ) {
 
 				// Store arguments for use when handling the inner native event
@@ -601,13 +604,13 @@ function leverageNative( el, type, forceAdd, allowAsync ) {
 				if ( result !== saved ) {
 					dataPriv.set( this, type, false );
 
-					// Cancel the outermost synthetic event
+					// Cancel the outer synthetic event
 					event.stopImmediatePropagation();
 					event.preventDefault();
 					return result;
 				} else if ( maybeAsync ) {
 
-					// Cancel the outermost synthetic event in expectation of a followup
+					// Cancel the outer synthetic event in expectation of a followup
 					event.stopImmediatePropagation();
 					event.preventDefault();
 					return;
