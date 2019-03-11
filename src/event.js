@@ -512,7 +512,8 @@ jQuery.event = {
 			// Utilize native event to ensure correct state for checkable inputs
 			setup: function( data ) {
 
-				// Force post-minification `this` variable for better similarity with _default
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
 				var el = this || data;
 
 				// Claim the first handler
@@ -529,7 +530,8 @@ jQuery.event = {
 			},
 			trigger: function( data ) {
 
-				// Force post-minification `this` variable for better similarity with _default
+				// For mutual compressibility with _default, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
 				var el = this || data;
 
 				// Force setup before triggering a click
