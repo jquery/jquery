@@ -55,7 +55,10 @@
 
 	"overrides": [
 		{
-			"files": ["data/core/jquery-iterability-transpiled-es6.js"],
+			"files": [
+				"data/core/jquery-iterability-transpiled-es6.js",
+				"data/testinit-jsdom.js"
+			],
 			"parserOptions": {
 				"ecmaVersion": 2015
 			}

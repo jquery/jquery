@@ -51,6 +51,7 @@
     "karma-chrome-launcher": "2.2.0",
     "karma-firefox-launcher": "1.1.0",
     "karma-ie-launcher": "1.0.0",
+    "karma-jsdom-launcher": "7.1.0",
     "karma-qunit": "3.0.0",
     "load-grunt-tasks": "4.0.0",
     "native-promise-only": "0.8.1",
