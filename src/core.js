@@ -356,7 +356,27 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
-		return concat.apply( [], ret );
+
+            if ([].flat) return ret.flat();
+
+
+            var ret2 = [];
+
+            ret.forEach(function (i) {
+
+                if (i instanceof Array) {
+
+                    i.forEach(function (i2) {
+                        ret2.push(i2);
+                    });
+
+                } else {
+                    ret2.push(i);
+                }
+
+            });
+
+            return ret2;
 	},
 
 	// A global GUID counter for objects
