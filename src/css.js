@@ -118,9 +118,15 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Start with computed style
 	var styles = getStyles( elem ),
-		val = curCSS( elem, dimension, styles ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+
+		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
+		// Fake content-box until we know it's needed to know the true value.
+		boxSizingNeeded = !support.boxSizingReliable() || extra,
+		isBorderBox = boxSizingNeeded &&
+			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox,
+
+		val = curCSS( elem, dimension, styles ),
 		offsetProp = "offset" + dimension[ 0 ].toUpperCase() + dimension.slice( 1 );
 
 	// Support: Firefox <=54
@@ -141,9 +147,12 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
 	// We use getClientRects() to check for hidden/disconnected.
 	// In those cases, the computed value can be trusted to be border-box
-	if ( ( isBorderBox && !support.boxSizingReliable() || val === "auto" ||
+	if ( ( !support.boxSizingReliable() && isBorderBox ||
+		val === "auto" ||
 		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
 		elem.getClientRects().length ) {
+
+		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
 		// Where available, offsetWidth/offsetHeight approximate border box dimensions.
 		// Where not available (e.g., SVG), assume unreliable box-sizing and interpret the
