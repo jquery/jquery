@@ -397,17 +397,17 @@ QUnit.test( "SVG dimensions (border-box)", function( assert ) {
 
 	var svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
 
-	assert.equal( svg.width(), 94 );
-	assert.equal( svg.height(), 94 );
+	assert.equal( svg.width(), 94, "width" );
+	assert.equal( svg.height(), 94, "height" );
 
-	assert.equal( svg.innerWidth(), 98 );
-	assert.equal( svg.innerHeight(), 98 );
+	assert.equal( svg.innerWidth(), 98, "innerWidth" );
+	assert.equal( svg.innerHeight(), 98, "innerHeight" );
 
-	assert.equal( svg.outerWidth(), 100 );
-	assert.equal( svg.outerHeight(), 100 );
+	assert.equal( svg.outerWidth(), 100, "outerWidth" );
+	assert.equal( svg.outerHeight(), 100, "outerHeight" );
 
-	assert.equal( svg.outerWidth( true ), 106 );
-	assert.equal( svg.outerHeight( true ), 106 );
+	assert.equal( svg.outerWidth( true ), 106, "outerWidth( true )" );
+	assert.equal( svg.outerHeight( true ), 106, "outerHeight( true )" );
 
 	svg.remove();
 } );
