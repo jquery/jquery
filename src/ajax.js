@@ -19,7 +19,9 @@ define( [
 var
 	r20 = /%20/g,
 	rhash = /#.*$/,
-	rantiCache = /([?&])_=[^&]*/,
+	rantiCacheParam = /^([^?]*(?=\?)(.(.*(?=&)|)|).)_=\d*&?/,
+	rqueryParameterPrefix = /^([^?]*(?=\?)(.(.*(?=&).|)$|))/,
+
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 
 	// #7653, #8125, #8152: local protocol detection
@@ -609,8 +611,19 @@ jQuery.extend( {
 
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
-				cacheURL = cacheURL.replace( rantiCache, "$1" );
-				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
+				cacheURL = cacheURL.replace( rantiCacheParam, "$1" );
+				uncached = ( "?&".replace(
+
+					// If there is a "?", remove all characters before the first one,
+					// and additionally remove the entire query if it is safe to append a naked "name=value".
+					// Then consider the first remaining character:
+					// * "?" for a nonempty query not terminated with "&" (parameter prefix needed: "&")
+					// * nonexistent for a terminated or empty query (parameter prefix needed: "")
+					// * a path character otherwise (parameter prefix needed: "?")
+
+					cacheURL.replace( rqueryParameterPrefix, "" )[ 0 ] || "?&",
+					""
+				)[ 0 ] || "" ) + "_=" + ( nonce++ ) + uncached;
 			}
 
 			// Put hash and anti-cache on the URL that will be requested (gh-1732)
