@@ -4,7 +4,7 @@ define( [
 
 "use strict";
 
-jQuery._evalUrl = function( url ) {
+jQuery._evalUrl = function( url, options ) {
 	return jQuery.ajax( {
 		url: url,
 
@@ -22,7 +22,7 @@ jQuery._evalUrl = function( url ) {
 			"text script": function() {}
 		},
 		dataFilter: function( response ) {
-			jQuery.globalEval( response );
+			jQuery.globalEval( response, options );
 		}
 	} );
 };
