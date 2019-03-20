@@ -2946,6 +2946,48 @@ QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
 	ns.remove();
 } );
 
+QUnit.test( "Check order of focusin/focusout events", function( assert ) {
+	assert.expect( 2 );
+
+	var focus, blur,
+		input = jQuery( "#name" );
+
+	input
+		.on( "focus", function() {
+			focus = true;
+		} )
+
+		// PR gh-4279 fixed a lot of `focus`-related issues but made `focusin` fire twice.
+		// We've decided to accept this drawback for now. If it's fixed, change `one` to `on`
+		// in the following line:
+		.one( "focusin", function() {
+			assert.ok( !focus, "Focusin event should fire before focus does" );
+			focus = true;
+		} )
+		.on( "blur", function() {
+			blur = true;
+		} )
+		.on( "focusout", function() {
+			assert.ok( !blur, "Focusout event should fire before blur does" );
+			blur = true;
+		} );
+
+	// gain focus
+	input.trigger( "focus" );
+
+	// then lose it
+	jQuery( "#search" ).trigger( "focus" );
+
+	// cleanup
+	input.off();
+
+	// DOM focus is unreliable in TestSwarm
+	if ( !focus ) {
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
+	}
+} );
+
 QUnit.test( "focus-blur order (#12868)", function( assert ) {
 	assert.expect( 5 );
 
