@@ -605,21 +605,17 @@ function leverageNative( el, type, allowAsync ) {
 					maybeAsync = allowAsync( this, type );
 					this[ type ]();
 					result = dataPriv.get( this, type );
-					if ( result !== saved ) {
+					if ( saved !== result || !maybeAsync ) {
 						dataPriv.set( this, type, false );
+					} else {
+						result = undefined;
+					}
+					if ( saved !== result ) {
 
 						// Cancel the outer synthetic event
 						event.stopImmediatePropagation();
 						event.preventDefault();
 						return result;
-					} else if ( maybeAsync ) {
-
-						// Cancel the outer synthetic event in expectation of a followup
-						event.stopImmediatePropagation();
-						event.preventDefault();
-						return;
-					} else {
-						dataPriv.set( this, type, false );
 					}
 
 				// If this is an inner synthetic event for an event with a bubbling surrogate
