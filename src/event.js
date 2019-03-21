@@ -590,39 +590,51 @@ function leverageNative( el, type, forceAdd, allowAsync ) {
 			var maybeAsync, result,
 				saved = dataPriv.get( this, type );
 
-			// Interrupt processing of the outer synthetic .trigger()ed event
-			if ( ( event.isTrigger & 1 ) && this[ type ] && !saved ) {
+			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
-				// Store arguments for use when handling the inner native event
-				saved = slice.call( arguments );
-				dataPriv.set( this, type, saved );
+				// Interrupt processing of the outer synthetic .trigger()ed event
+				if ( !saved ) {
 
-				// Trigger the native event and capture its result
-				// Support: IE <=9 - 11+
-				// focus() and blur() are asynchronous
-				maybeAsync = allowAsync( this, type );
-				this[ type ]();
-				result = dataPriv.get( this, type );
-				if ( result !== saved ) {
-					dataPriv.set( this, type, false );
+					// Store arguments for use when handling the inner native event
+					saved = slice.call( arguments );
+					dataPriv.set( this, type, saved );
 
-					// Cancel the outer synthetic event
-					event.stopImmediatePropagation();
-					event.preventDefault();
-					return result;
-				} else if ( maybeAsync ) {
+					// Trigger the native event and capture its result
+					// Support: IE <=9 - 11+
+					// focus() and blur() are asynchronous
+					maybeAsync = allowAsync( this, type );
+					this[ type ]();
+					result = dataPriv.get( this, type );
+					if ( result !== saved ) {
+						dataPriv.set( this, type, false );
 
-					// Cancel the outer synthetic event in expectation of a followup
-					event.stopImmediatePropagation();
-					event.preventDefault();
-					return;
-				} else {
-					dataPriv.set( this, type, false );
+						// Cancel the outer synthetic event
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						return result;
+					} else if ( maybeAsync ) {
+
+						// Cancel the outer synthetic event in expectation of a followup
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						return;
+					} else {
+						dataPriv.set( this, type, false );
+					}
+
+				// If this is an inner synthetic event for an event with a bubbling surrogate
+				// (focus or blur), assume that the surrogate already propagated from triggering the
+				// native event and prevent that from happening again here.
+				// This technically gets the ordering wrong w.r.t. to `.trigger()`, but that seems
+				// less bad than duplication.
+				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
+
+					event.stopPropagation();
 				}
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
-			} else if ( !event.isTrigger && saved ) {
+			} else if ( saved ) {
 
 				// ...and capture the result
 				dataPriv.set( this, type, jQuery.event.trigger(
