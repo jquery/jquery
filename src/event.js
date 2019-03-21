@@ -460,21 +460,29 @@ jQuery.event = {
 		focus: {
 
 			// Utilize native event if possible so blur/focus sequence is correct
-			setup: function() {
+			setup: function( data ) {
+
+				// For mutual compressibility with click, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
 
 				// Claim the first handler
-				// dataPriv.set( this, "focus", ... )
-				leverageNative( this, "focus", function( el ) {
+				// dataPriv.set( el, "focus", ... )
+				leverageNative( el, "focus", function( el ) {
 					return el !== safeActiveElement();
 				} );
 
 				// Return false to allow normal processing in the caller
 				return false;
 			},
-			trigger: function() {
+			trigger: function( data ) {
+
+				// For mutual compressibility with click, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
 
 				// Force setup before trigger
-				leverageNative( this, "focus" );
+				leverageNative( el, "focus" );
 
 				// Return non-false to allow normal event-path propagation
 				return true;
@@ -485,21 +493,29 @@ jQuery.event = {
 		blur: {
 
 			// Utilize native event if possible so blur/focus sequence is correct
-			setup: function() {
+			setup: function( data ) {
+
+				// For mutual compressibility with click, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
 
 				// Claim the first handler
-				// dataPriv.set( this, "blur", ... )
-				leverageNative( this, "blur", function( el ) {
+				// dataPriv.set( el, "blur", ... )
+				leverageNative( el, "blur", function( el ) {
 					return el === safeActiveElement();
 				} );
 
 				// Return false to allow normal processing in the caller
 				return false;
 			},
-			trigger: function() {
+			trigger: function( data ) {
+
+				// For mutual compressibility with click, replace `this` access with a local var.
+				// `|| data` is dead code meant only to preserve the variable through minification.
+				var el = this || data;
 
 				// Force setup before trigger
-				leverageNative( this, "blur" );
+				leverageNative( el, "blur" );
 
 				// Return non-false to allow normal event-path propagation
 				return true;
