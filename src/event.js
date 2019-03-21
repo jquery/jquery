@@ -464,7 +464,7 @@ jQuery.event = {
 
 				// Claim the first handler
 				// dataPriv.set( this, "focus", ... )
-				leverageNative( this, "focus", false, function( el ) {
+				leverageNative( this, "focus", function( el ) {
 					return el !== safeActiveElement();
 				} );
 
@@ -474,7 +474,7 @@ jQuery.event = {
 			trigger: function() {
 
 				// Force setup before trigger
-				leverageNative( this, "focus", returnTrue );
+				leverageNative( this, "focus" );
 
 				// Return non-false to allow normal event-path propagation
 				return true;
@@ -489,7 +489,7 @@ jQuery.event = {
 
 				// Claim the first handler
 				// dataPriv.set( this, "blur", ... )
-				leverageNative( this, "blur", false, function( el ) {
+				leverageNative( this, "blur", function( el ) {
 					return el === safeActiveElement();
 				} );
 
@@ -499,7 +499,7 @@ jQuery.event = {
 			trigger: function() {
 
 				// Force setup before trigger
-				leverageNative( this, "blur", returnTrue );
+				leverageNative( this, "blur" );
 
 				// Return non-false to allow normal event-path propagation
 				return true;
@@ -522,7 +522,7 @@ jQuery.event = {
 					dataPriv.get( el, "click" ) === undefined ) {
 
 					// dataPriv.set( el, "click", ... )
-					leverageNative( el, "click", false, returnFalse );
+					leverageNative( el, "click", returnFalse );
 				}
 
 				// Return false to allow normal processing in the caller
@@ -539,7 +539,7 @@ jQuery.event = {
 					el.click && nodeName( el, "input" ) &&
 					dataPriv.get( el, "click" ) === undefined ) {
 
-					leverageNative( el, "click", returnTrue );
+					leverageNative( el, "click" );
 				}
 
 				// Return non-false to allow normal event-path propagation
@@ -574,16 +574,16 @@ jQuery.event = {
 // synthetic events by interrupting progress until reinvoked in response to
 // *native* events that it fires directly, ensuring that state changes have
 // already occurred before other listeners are invoked.
-function leverageNative( el, type, forceAdd, allowAsync ) {
+function leverageNative( el, type, allowAsync ) {
 
-	// Setup must go through jQuery.event.add
-	if ( forceAdd ) {
-		jQuery.event.add( el, type, forceAdd );
+	// Missing allowAsync indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !allowAsync ) {
+		jQuery.event.add( el, type, returnTrue );
 		return;
 	}
 
 	// Register the controller as a special universal handler for all event namespaces
-	dataPriv.set( el, type, forceAdd );
+	dataPriv.set( el, type, false );
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
