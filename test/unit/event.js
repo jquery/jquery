@@ -2956,11 +2956,7 @@ QUnit.test( "Check order of focusin/focusout events", function( assert ) {
 		.on( "focus", function() {
 			focus = true;
 		} )
-
-		// PR gh-4279 fixed a lot of `focus`-related issues but made `focusin` fire twice.
-		// We've decided to accept this drawback for now. If it's fixed, change `one` to `on`
-		// in the following line:
-		.one( "focusin", function() {
+		.on( "focusin", function() {
 			assert.ok( !focus, "Focusin event should fire before focus does" );
 			focus = true;
 		} )
