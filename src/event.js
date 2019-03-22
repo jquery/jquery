@@ -469,7 +469,7 @@ jQuery.event = {
 				// Claim the first handler
 				// dataPriv.set( el, "focus", ... )
 				leverageNative( el, "focus", function( el ) {
-					return el !== safeActiveElement();
+					return el === safeActiveElement();
 				} );
 
 				// Return false to allow normal processing in the caller
@@ -502,7 +502,7 @@ jQuery.event = {
 				// Claim the first handler
 				// dataPriv.set( el, "blur", ... )
 				leverageNative( el, "blur", function( el ) {
-					return el === safeActiveElement();
+					return el !== safeActiveElement();
 				} );
 
 				// Return false to allow normal processing in the caller
@@ -538,7 +538,7 @@ jQuery.event = {
 					dataPriv.get( el, "click" ) === undefined ) {
 
 					// dataPriv.set( el, "click", ... )
-					leverageNative( el, "click", returnFalse );
+					leverageNative( el, "click", returnTrue );
 				}
 
 				// Return false to allow normal processing in the caller
@@ -590,10 +590,10 @@ jQuery.event = {
 // synthetic events by interrupting progress until reinvoked in response to
 // *native* events that it fires directly, ensuring that state changes have
 // already occurred before other listeners are invoked.
-function leverageNative( el, type, allowAsync ) {
+function leverageNative( el, type, expectSync ) {
 
-	// Missing allowAsync indicates a trigger call, which must force setup through jQuery.event.add
-	if ( !allowAsync ) {
+	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !expectSync ) {
 		jQuery.event.add( el, type, returnTrue );
 		return;
 	}
@@ -603,7 +603,7 @@ function leverageNative( el, type, allowAsync ) {
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var maybeAsync, result,
+			var notAsync, result,
 				saved = dataPriv.get( this, type );
 
 			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
@@ -618,10 +618,10 @@ function leverageNative( el, type, allowAsync ) {
 					// Trigger the native event and capture its result
 					// Support: IE <=9 - 11+
 					// focus() and blur() are asynchronous
-					maybeAsync = allowAsync( this, type );
+					notAsync = expectSync( this, type );
 					this[ type ]();
 					result = dataPriv.get( this, type );
-					if ( saved !== result || !maybeAsync ) {
+					if ( saved !== result || notAsync ) {
 						dataPriv.set( this, type, false );
 					} else {
 						result = undefined;
