@@ -762,30 +762,22 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 	jQuery.event.special[ type ] = {
 
 		// Utilize native event if possible so blur/focus sequence is correct
-		setup: function( data ) {
-
-			// For mutual compressibility with click, replace `this` access with a local var.
-			// `|| data` is dead code meant only to preserve the variable through minification.
-			var el = this || data;
+		setup: function() {
 
 			// Claim the first handler
-			// dataPriv.set( el, "focus", ... )
-			// dataPriv.set( el, "blur", ... )
-			leverageNative( el, type, function( el ) {
+			// dataPriv.set( this, "focus", ... )
+			// dataPriv.set( this, "blur", ... )
+			leverageNative( this, type, function( el ) {
 				return ( el === safeActiveElement() ) === ( type === "focus" );
 			} );
 
 			// Return false to allow normal processing in the caller
 			return false;
 		},
-		trigger: function( data ) {
-
-			// For mutual compressibility with click, replace `this` access with a local var.
-			// `|| data` is dead code meant only to preserve the variable through minification.
-			var el = this || data;
+		trigger: function() {
 
 			// Force setup before trigger
-			leverageNative( el, type );
+			leverageNative( this, type );
 
 			// Return non-false to allow normal event-path propagation
 			return true;
