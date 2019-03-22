@@ -30,7 +30,14 @@ function returnFalse() {
 }
 
 // Support: IE <=9 only
-// See #13393 for more info
+// https://bugs.jquery.com/ticket/13393
+function expectSync( elem, type ) {
+
+	// Expect focus to be synchronous when the element is already active,
+	// and blur to be synchronous when the element is not already active
+	// (even in IE)
+	return ( elem === safeActiveElement() ) === ( type === "focus" );
+}
 function safeActiveElement() {
 	try {
 		return document.activeElement;
@@ -767,9 +774,7 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 			// Claim the first handler
 			// dataPriv.set( this, "focus", ... )
 			// dataPriv.set( this, "blur", ... )
-			leverageNative( this, type, function( el ) {
-				return ( el === safeActiveElement() ) === ( type === "focus" );
-			} );
+			leverageNative( this, type, expectSync );
 
 			// Return false to allow normal processing in the caller
 			return false;
