@@ -29,15 +29,19 @@ function returnFalse() {
 	return false;
 }
 
-// Support: IE <=9 only
-// https://bugs.jquery.com/ticket/13393
+// Support: IE <=9 - 11+
+// focus() and blur() are asynchronous, except when they are no-op.
+// So expect focus to be synchronous when the element is already active,
+// and blur to be synchronous when the element is not already active.
+// (focus and blur are always synchronous in other supported browsers,
+// this just defines when we can count on it).
 function expectSync( elem, type ) {
-
-	// Expect focus to be synchronous when the element is already active,
-	// and blur to be synchronous when the element is not already active
-	// (even in IE)
 	return ( elem === safeActiveElement() ) === ( type === "focus" );
 }
+
+// Support: IE <=9 only
+// Accessing document.activeElement can throw unexpectedly
+// https://bugs.jquery.com/ticket/13393
 function safeActiveElement() {
 	try {
 		return document.activeElement;
@@ -578,10 +582,10 @@ function leverageNative( el, type, expectSync ) {
 				// If this is an inner synthetic event for an event with a bubbling surrogate
 				// (focus or blur), assume that the surrogate already propagated from triggering the
 				// native event and prevent that from happening again here.
-				// This technically gets the ordering wrong w.r.t. to `.trigger()`, but that seems
+				// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
+				// bubbling surrogate propagates *after* the non-bubbling base), but that seems
 				// less bad than duplication.
 				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
-
 					event.stopPropagation();
 				}
 
