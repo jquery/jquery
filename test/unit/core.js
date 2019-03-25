@@ -1062,6 +1062,13 @@ QUnit.test( "jQuery.extend(true,{},{a:[], o:{}}); deep copy with array, followed
 	assert.ok( !Array.isArray( result.object ), "result.object wasn't paved with an empty array" );
 } );
 
+QUnit.test( "jQuery.extend( true, ... ) Object.prototype pollution", function( assert ) {
+	assert.expect( 1 );
+
+	jQuery.extend( true, {}, JSON.parse( "{\"__proto__\": {\"devMode\": true}}" ) );
+	assert.ok( !( "devMode" in {} ), "Object.prototype not polluted" );
+} );
+
 QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
 	assert.expect( 23 );
 
