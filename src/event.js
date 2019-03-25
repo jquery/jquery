@@ -29,8 +29,19 @@ function returnFalse() {
 	return false;
 }
 
+// Support: IE <=9 - 11+
+// focus() and blur() are asynchronous, except when they are no-op.
+// So expect focus to be synchronous when the element is already active,
+// and blur to be synchronous when the element is not already active.
+// (focus and blur are always synchronous in other supported browsers,
+// this just defines when we can count on it).
+function expectSync( elem, type ) {
+	return ( elem === safeActiveElement() ) === ( type === "focus" );
+}
+
 // Support: IE <=9 only
-// See #13393 for more info
+// Accessing document.activeElement can throw unexpectedly
+// https://bugs.jquery.com/ticket/13393
 function safeActiveElement() {
 	try {
 		return document.activeElement;
@@ -457,56 +468,6 @@ jQuery.event = {
 			// Prevent triggered image.load events from bubbling to window.load
 			noBubble: true
 		},
-		focus: {
-
-			// Utilize native event if possible so blur/focus sequence is correct
-			setup: function() {
-
-				// Claim the first handler
-				// dataPriv.set( this, "focus", ... )
-				leverageNative( this, "focus", false, function( el ) {
-					return el !== safeActiveElement();
-				} );
-
-				// Return false to allow normal processing in the caller
-				return false;
-			},
-			trigger: function() {
-
-				// Force setup before trigger
-				leverageNative( this, "focus", returnTrue );
-
-				// Return non-false to allow normal event-path propagation
-				return true;
-			},
-
-			delegateType: "focusin"
-		},
-		blur: {
-
-			// Utilize native event if possible so blur/focus sequence is correct
-			setup: function() {
-
-				// Claim the first handler
-				// dataPriv.set( this, "blur", ... )
-				leverageNative( this, "blur", false, function( el ) {
-					return el === safeActiveElement();
-				} );
-
-				// Return false to allow normal processing in the caller
-				return false;
-			},
-			trigger: function() {
-
-				// Force setup before trigger
-				leverageNative( this, "blur", returnTrue );
-
-				// Return non-false to allow normal event-path propagation
-				return true;
-			},
-
-			delegateType: "focusout"
-		},
 		click: {
 
 			// Utilize native event to ensure correct state for checkable inputs
@@ -522,7 +483,7 @@ jQuery.event = {
 					dataPriv.get( el, "click" ) === undefined ) {
 
 					// dataPriv.set( el, "click", ... )
-					leverageNative( el, "click", false, returnFalse );
+					leverageNative( el, "click", returnTrue );
 				}
 
 				// Return false to allow normal processing in the caller
@@ -539,7 +500,7 @@ jQuery.event = {
 					el.click && nodeName( el, "input" ) &&
 					dataPriv.get( el, "click" ) === undefined ) {
 
-					leverageNative( el, "click", returnTrue );
+					leverageNative( el, "click" );
 				}
 
 				// Return non-false to allow normal event-path propagation
@@ -574,55 +535,63 @@ jQuery.event = {
 // synthetic events by interrupting progress until reinvoked in response to
 // *native* events that it fires directly, ensuring that state changes have
 // already occurred before other listeners are invoked.
-function leverageNative( el, type, forceAdd, allowAsync ) {
+function leverageNative( el, type, expectSync ) {
 
-	// Setup must go through jQuery.event.add
-	if ( forceAdd ) {
-		jQuery.event.add( el, type, forceAdd );
+	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !expectSync ) {
+		jQuery.event.add( el, type, returnTrue );
 		return;
 	}
 
 	// Register the controller as a special universal handler for all event namespaces
-	dataPriv.set( el, type, forceAdd );
+	dataPriv.set( el, type, false );
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var maybeAsync, result,
+			var notAsync, result,
 				saved = dataPriv.get( this, type );
 
-			// Interrupt processing of the outer synthetic .trigger()ed event
-			if ( ( event.isTrigger & 1 ) && this[ type ] && !saved ) {
+			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
-				// Store arguments for use when handling the inner native event
-				saved = slice.call( arguments );
-				dataPriv.set( this, type, saved );
+				// Interrupt processing of the outer synthetic .trigger()ed event
+				if ( !saved ) {
 
-				// Trigger the native event and capture its result
-				// Support: IE <=9 - 11+
-				// focus() and blur() are asynchronous
-				maybeAsync = allowAsync( this, type );
-				this[ type ]();
-				result = dataPriv.get( this, type );
-				if ( result !== saved ) {
-					dataPriv.set( this, type, false );
+					// Store arguments for use when handling the inner native event
+					saved = slice.call( arguments );
+					dataPriv.set( this, type, saved );
 
-					// Cancel the outer synthetic event
-					event.stopImmediatePropagation();
-					event.preventDefault();
-					return result;
-				} else if ( maybeAsync ) {
+					// Trigger the native event and capture its result
+					// Support: IE <=9 - 11+
+					// focus() and blur() are asynchronous
+					notAsync = expectSync( this, type );
+					this[ type ]();
+					result = dataPriv.get( this, type );
+					if ( saved !== result || notAsync ) {
+						dataPriv.set( this, type, false );
+					} else {
+						result = undefined;
+					}
+					if ( saved !== result ) {
 
-					// Cancel the outer synthetic event in expectation of a followup
-					event.stopImmediatePropagation();
-					event.preventDefault();
-					return;
-				} else {
-					dataPriv.set( this, type, false );
+						// Cancel the outer synthetic event
+						event.stopImmediatePropagation();
+						event.preventDefault();
+						return result;
+					}
+
+				// If this is an inner synthetic event for an event with a bubbling surrogate
+				// (focus or blur), assume that the surrogate already propagated from triggering the
+				// native event and prevent that from happening again here.
+				// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
+				// bubbling surrogate propagates *after* the non-bubbling base), but that seems
+				// less bad than duplication.
+				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
+					event.stopPropagation();
 				}
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
-			} else if ( !event.isTrigger && saved ) {
+			} else if ( saved ) {
 
 				// ...and capture the result
 				dataPriv.set( this, type, jQuery.event.trigger(
@@ -799,6 +768,33 @@ jQuery.each( {
 		return event.which;
 	}
 }, jQuery.event.addProp );
+
+jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+	jQuery.event.special[ type ] = {
+
+		// Utilize native event if possible so blur/focus sequence is correct
+		setup: function() {
+
+			// Claim the first handler
+			// dataPriv.set( this, "focus", ... )
+			// dataPriv.set( this, "blur", ... )
+			leverageNative( this, type, expectSync );
+
+			// Return false to allow normal processing in the caller
+			return false;
+		},
+		trigger: function() {
+
+			// Force setup before trigger
+			leverageNative( this, type );
+
+			// Return non-false to allow normal event-path propagation
+			return true;
+		},
+
+		delegateType: delegateType
+	};
+} );
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
 // so that event delegation works in jQuery.
