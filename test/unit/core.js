@@ -1,6 +1,6 @@
 QUnit.module( "core", {
 	beforeEach: function() {
-		this.sandbox = sinon.sandbox.create();
+		this.sandbox = sinon.createSandbox();
 	},
 	afterEach: function() {
 		this.sandbox.restore();
@@ -1448,7 +1448,7 @@ QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", 
 
 	var message;
 
-	this.sandbox.stub( window, "setTimeout", function( fn ) {
+	this.sandbox.stub( window, "setTimeout" ).callsFake( function( fn ) {
 		try {
 			fn();
 		} catch ( error ) {
@@ -1471,7 +1471,7 @@ QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (custom)", fu
 
 	var done = assert.async();
 
-	this.sandbox.stub( jQuery, "readyException", function( error ) {
+	this.sandbox.stub( jQuery, "readyException" ).callsFake( function( error ) {
 		assert.strictEqual(
 			error.message,
 			"Error in jQuery ready",
