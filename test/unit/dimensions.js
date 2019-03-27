@@ -757,13 +757,16 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 		$firstTh = jQuery( "<th style='width: 200px;padding: 5px' />" ),
 		$secondTh = jQuery( "<th style='width: 190px;padding: 5px' />" ),
 		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px' />" ),
-		// Support Firefox 63, Edge 16-17, Android 8, iOS 7-11
+
+		// Support: Firefox 63, Edge 16-17, Android 8, iOS 7-11
 		// These browsers completely ignore the border-box and height settings
 		// The computed height is instead just line-height + border
 		// Either way, what we're doing in css.js is correct
 		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid;line-height:18px'>text</td>" ),
+
 		$tbody = jQuery( "<tbody />" ).appendTo( $table ),
 		$textarea = jQuery( "<textarea style='height: 0;padding: 2px;border: 1px solid;box-sizing: border-box' />" ).appendTo( "#qunit-fixture" );
+
 	jQuery( "<tr />" ).appendTo( $thead ).append( $firstTh );
 	jQuery( "<tr />" ).appendTo( $thead ).append( $secondTh );
 	jQuery( "<tr />" ).appendTo( $thead ).append( $thirdTh );
@@ -772,7 +775,18 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 	assert.strictEqual( $firstTh.outerWidth(), 200, "First th has outerWidth 200." );
 	assert.strictEqual( $secondTh.outerWidth(), 200, "Second th has outerWidth 200." );
 	assert.strictEqual( $thirdTh.outerWidth(), 200, "Third th has outerWidth 200." );
-	assert.strictEqual( $td.outerHeight(), 30, "outerHeight of td with border-box should include padding." );
+
+	// Support: Android 4.0-4.3 only
+	// Android Browser disregards td's box-sizing, treating it like it was content-box.
+	// Unlike in IE, offsetHeight shares the same issue so there's no easy way to workaround
+	// the issue without incurring high size penalty. Let's at least check we get the size
+	// as the browser sees it.
+	if ( /android 4\.[0-3]/i.test( navigator.userAgent ) ) {
+		assert.ok( [ 30, 32 ].indexOf( $td.outerHeight() ) > -1,
+			"outerHeight of td with border-box should include padding." );
+	} else {
+		assert.strictEqual( $td.outerHeight(), 30, "outerHeight of td with border-box should include padding." );
+	}
 	assert.strictEqual( $textarea.outerHeight(), 6, "outerHeight of textarea with border-box should include padding and border." );
 } );
 
