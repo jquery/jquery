@@ -28,7 +28,7 @@
     "@babel/core": "7.4.3",
     "@babel/plugin-transform-for-of": "7.4.3",
     "commitplease": "3.2.0",
-    "core-js": "3.0.0",
+    "core-js-bundle": "3.0.0",
     "eslint-config-jquery": "1.0.1",
     "grunt": "1.0.4",
     "grunt-babel": "8.0.0",
