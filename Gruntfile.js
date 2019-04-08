@@ -14,15 +14,7 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS,
-		oldNode = /^v6\./.test( process.version );
-
-	// Support: Node.js <8
-	// Skip running tasks that dropped support for Node.js 6
-	// in those Node versions.
-	function runIfNewNode( task ) {
-		return oldNode ? "print_old_node_message:" + task : task;
-	}
+		isTravis = process.env.TRAVIS;
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -123,10 +115,9 @@ module.exports = function( grunt ) {
 		testswarm: {
 			tests: [
 
-				// A special module with basic tests, meant for
-				// not fully supported environments like Android 2.3,
-				// jsdom or PhantomJS. We run it everywhere, though,
-				// to make sure tests are not broken.
+				// A special module with basic tests, meant for not fully
+				// supported environments like jsdom. We run it everywhere,
+				// though, to make sure tests are not broken.
 				"basic",
 
 				"ajax",
@@ -291,23 +282,13 @@ module.exports = function( grunt ) {
 						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
 					output: {
-						"ascii_only": true,
-
-						// Support: Android 4.0 only
-						// UglifyJS 3 breaks Android 4.0 if this option is not enabled.
-						// This is in lieu of setting ie8 for all of mangle, compress, and output
-						"ie8": true
+						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) JS Foundation and other contributors | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,
-						loops: false,
-
-						// Support: IE <11
-						// typeofs transformation is unsafe for IE9-10
-						// See https://github.com/mishoo/UglifyJS2/issues/2198
-						typeofs: false
+						loops: false
 					}
 				}
 			}
@@ -319,13 +300,6 @@ module.exports = function( grunt ) {
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
-
-	// Support: Node.js <8
-	// Print a message on Node.js <8 notifying the task is skipped there.
-	grunt.registerTask( "print_old_node_message", function() {
-		var task = [].slice.call( arguments ).join( ":" );
-		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
-	} );
 
 	grunt.registerTask( "lint", [
 		"jsonlint",
@@ -349,10 +323,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test:fast", "node_smoke_tests" );
 	grunt.registerTask( "test:slow", [
 		"promises_aplus_tests",
-
-		// Support: Node.js <8
-		// Karma no longer supports Node.js <8 as it relies on async-await internally.
-		runIfNewNode( "karma:jsdom" )
+		"karma:jsdom"
 	] );
 
 	grunt.registerTask( "test", [

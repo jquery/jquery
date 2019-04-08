@@ -1,11 +1,10 @@
 define( [
 	"../core",
 	"../core/stripAndCollapse",
-	"../var/isFunction",
 	"../var/rnothtmlwhite",
 	"../data/var/dataPriv",
 	"../core/init"
-], function( jQuery, stripAndCollapse, isFunction, rnothtmlwhite, dataPriv ) {
+], function( jQuery, stripAndCollapse, rnothtmlwhite, dataPriv ) {
 
 "use strict";
 
@@ -28,7 +27,7 @@ jQuery.fn.extend( {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( isFunction( value ) ) {
+		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
 				jQuery( this ).addClass( value.call( this, j, getClass( this ) ) );
 			} );
@@ -65,7 +64,7 @@ jQuery.fn.extend( {
 		var classes, elem, cur, curValue, clazz, j, finalValue,
 			i = 0;
 
-		if ( isFunction( value ) ) {
+		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
 				jQuery( this ).removeClass( value.call( this, j, getClass( this ) ) );
 			} );
@@ -114,7 +113,7 @@ jQuery.fn.extend( {
 			return stateVal ? this.addClass( value ) : this.removeClass( value );
 		}
 
-		if ( isFunction( value ) ) {
+		if ( typeof value === "function" ) {
 			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
 					value.call( this, i, getClass( this ), stateVal ),

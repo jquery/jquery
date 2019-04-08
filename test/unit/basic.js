@@ -179,7 +179,11 @@ QUnit.test( "manipulation", function( assert ) {
 		".html getter/setter"
 	);
 
-	assert.strictEqual( elem1.append( elem2 )[ 0 ].childNodes[ 1 ], elem2[ 0 ], ".append" );
+	assert.strictEqual(
+		elem1.append( elem2 )[ 0 ].childNodes[ elem1[ 0 ].childNodes.length - 1 ],
+		elem2[ 0 ],
+		".append"
+	);
 	assert.strictEqual( elem1.prepend( elem2 )[ 0 ].childNodes[ 0 ], elem2[ 0 ], ".prepend" );
 
 	child = elem1.find( "span" );

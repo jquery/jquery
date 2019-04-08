@@ -98,16 +98,6 @@ Tween.propHooks = {
 	}
 };
 
-// Support: IE <=9 only
-// Panic based approach to setting things on disconnected nodes
-Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
-	set: function( tween ) {
-		if ( tween.elem.nodeType && tween.elem.parentNode ) {
-			tween.elem[ tween.prop ] = tween.now;
-		}
-	}
-};
-
 jQuery.easing = {
 	linear: function( p ) {
 		return p;

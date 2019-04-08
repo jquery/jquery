@@ -1,5 +1,7 @@
 /* eslint no-multi-str: "off" */
 
+"use strict";
+
 var FILEPATH = "/test/data/testinit.js",
 	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
 	parentUrl = activeScript && activeScript.src ?
@@ -100,43 +102,9 @@ this.createDashboardXML = function() {
 	return jQuery.parseXML( string );
 };
 
-this.createWithFriesXML = function() {
-	var string = "<?xml version='1.0' encoding='UTF-8'?> \
-	<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' \
-		xmlns:xsd='http://www.w3.org/2001/XMLSchema' \
-		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> \
-		<soap:Body> \
-			<jsconf xmlns='http://{{ externalHost }}/ns1'> \
-				<response xmlns:ab='http://{{ externalHost }}/ns2'> \
-					<meta> \
-						<component id='seite1' class='component'> \
-							<properties xmlns:cd='http://{{ externalHost }}/ns3'> \
-								<property name='prop1'> \
-									<thing /> \
-									<value>1</value> \
-								</property> \
-								<property name='prop2'> \
-									<thing att='something' /> \
-								</property> \
-								<foo_bar>foo</foo_bar> \
-							</properties> \
-						</component> \
-					</meta> \
-				</response> \
-			</jsconf> \
-		</soap:Body> \
-	</soap:Envelope>";
-
-	return jQuery.parseXML( string.replace( /\{\{\s*externalHost\s*\}\}/g, externalHost ) );
-};
-
 this.createXMLFragment = function() {
-	var xml, frag;
-	if ( window.ActiveXObject ) {
-		xml = new window.ActiveXObject( "msxml2.domdocument" );
-	} else {
+	var frag,
 		xml = document.implementation.createDocument( "", "", null );
-	}
 
 	if ( xml ) {
 		frag = xml.createElement( "data" );
@@ -314,10 +282,9 @@ this.loadTests = function() {
 	require( [ parentUrl + "test/data/testrunner.js" ], function() {
 		var i = 0,
 			tests = [
-				// A special module with basic tests, meant for
-				// not fully supported environments like Android 2.3,
-				// jsdom or PhantomJS. We run it everywhere, though,
-				// to make sure tests are not broken.
+				// A special module with basic tests, meant for not fully
+				// supported environments like jsdom. We run it everywhere,
+				// though, to make sure tests are not broken.
 				"unit/basic.js",
 
 				"unit/core.js",
@@ -351,7 +318,6 @@ this.loadTests = function() {
 				if ( !QUnit.basicTests || i === 1 ) {
 					require( [ parentUrl + "test/" + dep ], loadDep );
 
-				// Support: Android 2.3 only
 				// When running basic tests, replace other modules with dummies to avoid overloading
 				// impaired clients.
 				} else {

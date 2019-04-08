@@ -35,11 +35,10 @@ define( [
 
 var hasDuplicate, sortInput,
 	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
-	matches = documentElement.matches ||
-		documentElement.webkitMatchesSelector ||
-		documentElement.mozMatchesSelector ||
-		documentElement.oMatchesSelector ||
-		documentElement.msMatchesSelector,
+
+	// Support: IE 9 - 11+
+	// IE requires a prefix.
+	matches = documentElement.matches || documentElement.msMatchesSelector,
 
 	// CSS string/identifier serialization
 	// https://drafts.csswg.org/cssom/#common-serializing-idioms

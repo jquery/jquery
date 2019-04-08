@@ -120,9 +120,7 @@ QUnit.module( "ajax", {
 				assert.ok( true, "success" );
 			},
 			fail: function() {
-				if ( jQuery.support.cors === false ) {
-					assert.ok( true, "fail" );
-				}
+				assert.ok( false, "fail" );
 			},
 			complete: function() {
 				assert.ok( true, "complete" );
@@ -269,13 +267,12 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: IE 9 - 11, Edge 12 - 14 only
+				// Support: IE 9 - 11+, Edge 12 - 14 only
 				// Not all browsers allow empty-string headers
 				//"Empty": ""
 			},
 			success: function( data, _, xhr ) {
 				var i, emptyHeader,
-					isAndroid = /android 4\.[0-3]/i.test( navigator.userAgent ),
 					requestHeaders = jQuery.extend( this.headers, {
 						"ajax-send": "test"
 					} ),
@@ -296,25 +293,8 @@ QUnit.module( "ajax", {
 					assert.strictEqual( emptyHeader, "", "Empty header received" );
 				}
 				assert.strictEqual( xhr.getResponseHeader( "Sample-Header2" ), "Hello World 2", "Second sample header received" );
-
-				if ( isAndroid ) {
-					// Support: Android 4.0-4.3 only
-					// Android Browser only returns the last value for each header
-					// so there's no way for jQuery get all parts.
-					assert.ok( true, "Android doesn't support repeated header names" );
-				} else {
-					assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
-				}
-
-				if ( isAndroid && QUnit.isSwarm ) {
-					// Support: Android 4.0-4.3 on BrowserStack only
-					// Android Browser versions provided by BrowserStack fail this test
-					// while locally fired emulators don't, even when they connect
-					// to TestSwarm. Just skip the test there to avoid a red build.
-					assert.ok( true, "BrowserStack's Android fails the \"prototype collision (constructor)\" test" );
-				} else {
-					assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
-				}
+				assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
+				assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
 				assert.strictEqual( xhr.getResponseHeader( "__proto__" ), null, "Undefined __proto__ header not received" );
 			}
 		};
@@ -553,47 +533,41 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	if ( !/android 4\.0/i.test( navigator.userAgent ) ) {
-		ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
-			return {
-				url: url( "mock.php?action=wait&wait=1" ),
-				xhr: function() {
-					var xhr = new window.XMLHttpRequest();
-					setTimeout( function() {
-						xhr.abort();
-					}, 100 );
-					return xhr;
-				},
-				error: function( xhr, msg ) {
-					assert.strictEqual( msg, "error", "Native abort triggers error callback" );
-				},
-				complete: function() {
-					assert.ok( true, "complete" );
-				}
-			};
-		} );
-	}
+	ajaxTest( "jQuery.ajax() - native abort", 2, function( assert ) {
+		return {
+			url: url( "mock.php?action=wait&wait=1" ),
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				setTimeout( function() {
+					xhr.abort();
+				}, 100 );
+				return xhr;
+			},
+			error: function( xhr, msg ) {
+				assert.strictEqual( msg, "error", "Native abort triggers error callback" );
+			},
+			complete: function() {
+				assert.ok( true, "complete" );
+			}
+		};
+	} );
 
-	// Support: Android <= 4.0 - 4.3 only
-	// Android 4.0-4.3 does not have ontimeout on an xhr
-	if ( "ontimeout" in new window.XMLHttpRequest() ) {
-		ajaxTest( "jQuery.ajax() - native timeout", 2, function( assert ) {
-			return {
-				url: url( "mock.php?action=wait&wait=1" ),
-				xhr: function() {
-					var xhr = new window.XMLHttpRequest();
-					xhr.timeout = 1;
-					return xhr;
-				},
-				error: function( xhr, msg ) {
-					assert.strictEqual( msg, "error", "Native timeout triggers error callback" );
-				},
-				complete: function() {
-					assert.ok( true, "complete" );
-				}
-			};
-		} );
-	}
+	ajaxTest( "jQuery.ajax() - native timeout", 2, function( assert ) {
+		return {
+			url: url( "mock.php?action=wait&wait=1" ),
+			xhr: function() {
+				var xhr = new window.XMLHttpRequest();
+				xhr.timeout = 1;
+				return xhr;
+			},
+			error: function( xhr, msg ) {
+				assert.strictEqual( msg, "error", "Native timeout triggers error callback" );
+			},
+			complete: function() {
+				assert.ok( true, "complete" );
+			}
+		};
+	} );
 
 	ajaxTest( "jQuery.ajax() - events with context", 12, function( assert ) {
 		var context = document.createElement( "div" );

@@ -3,11 +3,8 @@
 
 	"extends": "jquery",
 
-	// Support: IE <=9 only, Android <=4.0 only
-	// The above browsers are failing a lot of tests in the ES5
-	// test suite at http://test262.ecmascript.org.
 	"parserOptions": {
-		"ecmaVersion": 3
+		"ecmaVersion": 5
 	},
 
 	// The browser env is not enabled on purpose so that code takes

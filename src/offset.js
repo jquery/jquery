@@ -3,17 +3,13 @@ define( [
 	"./core/access",
 	"./var/document",
 	"./var/documentElement",
-	"./var/isFunction",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
-	"./css/addGetHookIf",
-	"./css/support",
 	"./var/isWindow",
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, isFunction, rnumnonpx,
-             curCSS, addGetHookIf, support, isWindow ) {
+], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, isWindow ) {
 
 "use strict";
 
@@ -47,7 +43,7 @@ jQuery.offset = {
 			curLeft = parseFloat( curCSSLeft ) || 0;
 		}
 
-		if ( isFunction( options ) ) {
+		if ( typeof options === "function" ) {
 
 			// Use jQuery.extend here to allow modification of coordinates argument (gh-1848)
 			options = options.call( elem, i, jQuery.extend( {}, curOffset ) );
@@ -91,7 +87,7 @@ jQuery.fn.extend( {
 		}
 
 		// Return zeros for disconnected and hidden (display: none) elements (gh-2310)
-		// Support: IE <=11 only
+		// Support: IE <=11+
 		// Running getBoundingClientRect on a
 		// disconnected node in IE throws an error
 		if ( !elem.getClientRects().length ) {
@@ -206,27 +202,6 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 			}
 		}, method, val, arguments.length );
 	};
-} );
-
-// Support: Safari <=7 - 9.1, Chrome <=37 - 49
-// Add the top/left cssHooks using jQuery.fn.position
-// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
-// getComputedStyle returns percent when specified for top/left/bottom/right;
-// rather than make the css module depend on the offset module, just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
-	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
-		function( elem, computed ) {
-			if ( computed ) {
-				computed = curCSS( elem, prop );
-
-				// If curCSS returns percentage, fallback to offset
-				return rnumnonpx.test( computed ) ?
-					jQuery( elem ).position()[ prop ] + "px" :
-					computed;
-			}
-		}
-	);
 } );
 
 return jQuery;

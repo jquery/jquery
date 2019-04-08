@@ -1,5 +1,7 @@
 ( function() {
 
+"use strict";
+
 // Store the old counts so that we only assert on tests that have actually leaked,
 // instead of asserting every time a test has leaked sometime in the past
 var oldCacheLength = 0,
