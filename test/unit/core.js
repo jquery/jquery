@@ -329,7 +329,7 @@ QUnit.test( "isPlainObject", function( assert ) {
 	}
 } );
 
-QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isPlainObject(Symbol)", function( assert ) {
+QUnit.testUnlessIE( "isPlainObject(Symbol)", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal( jQuery.isPlainObject( Symbol() ), false, "Symbol" );
@@ -342,7 +342,7 @@ QUnit.test( "isPlainObject(localStorage)", function( assert ) {
 	assert.equal( jQuery.isPlainObject( localStorage ), false );
 } );
 
-QUnit[ "assign" in Object ? "test" : "skip" ]( "isPlainObject(Object.assign(...))",
+QUnit.testUnlessIE( "isPlainObject(Object.assign(...))",
 	function( assert ) {
 		assert.expect( 1 );
 

@@ -4,6 +4,9 @@
 // jsdom implements a throwing `window.scrollTo`.
 QUnit.config.scrolltop = false;
 
+QUnit.isIE = false;
+QUnit.testUnlessIE = QUnit.test;
+
 const FILEPATH = "/test/data/testinit-jsdom.js";
 const activeScript = document.currentScript;
 const parentUrl = activeScript && activeScript.src ?

@@ -659,9 +659,9 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		parent = jQuery( "<div/>" )
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
-		fraction = jQuery.support.boxSizingReliable() ?
-			jQuery( "<div style='width:4.5px;'/>" ).appendTo( parent ).width() % 1 :
-			0,
+
+		// Workarounds for IE kill fractional output here.
+		fraction = document.documentMode ? 0 : 0.5,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,

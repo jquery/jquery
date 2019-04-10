@@ -513,16 +513,14 @@ QUnit.test( ".removeData()", function( assert ) {
 	assert.equal( div.data( "test.foo" ), undefined, "Make sure data is intact" );
 } );
 
-if ( window.JSON && window.JSON.stringify ) {
-	QUnit.test( "JSON serialization (#8108)", function( assert ) {
-		assert.expect( 1 );
+QUnit.test( "JSON serialization (#8108)", function( assert ) {
+	assert.expect( 1 );
 
-		var obj = { "foo": "bar" };
-		jQuery.data( obj, "hidden", true );
+	var obj = { "foo": "bar" };
+	jQuery.data( obj, "hidden", true );
 
-		assert.equal( JSON.stringify( obj ), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
-	} );
-}
+	assert.equal( JSON.stringify( obj ), "{\"foo\":\"bar\"}", "Expando is hidden from JSON.stringify" );
+} );
 
 QUnit.test( ".data should follow html5 specification regarding camel casing", function( assert ) {
 	assert.expect( 12 );

@@ -2,10 +2,10 @@ define( [
 	"../core",
 	"../core/access",
 	"../core/nodeName",
-	"./support",
 	"../var/rnothtmlwhite",
+	"../var/isIE",
 	"../selector"
-], function( jQuery, access, nodeName, support, rnothtmlwhite ) {
+], function( jQuery, access, nodeName, rnothtmlwhite, isIE ) {
 
 "use strict";
 
@@ -74,8 +74,10 @@ jQuery.extend( {
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
-				if ( !support.radioValue && value === "radio" &&
-					nodeName( elem, "input" ) ) {
+
+				// Support: IE <=11+
+				// An input loses its value after becoming a radio
+				if ( isIE && value === "radio" && nodeName( elem, "input" ) ) {
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {

@@ -260,7 +260,7 @@ QUnit.module( "ajax", {
 				} );
 			},
 			url: url( "mock.php?action=headers&keys=siMPle|SometHing-elsE|OthEr|Nullable|undefined|Empty|ajax-send" ),
-			headers: {
+			headers: supportjQuery.extend( {
 				"siMPle": "value",
 				"SometHing-elsE": "other value",
 				"OthEr": "something else",
@@ -268,11 +268,12 @@ QUnit.module( "ajax", {
 				"undefined": undefined
 
 				// Support: IE 9 - 11+, Edge 12 - 14 only
-				// Not all browsers allow empty-string headers
-				//"Empty": ""
-			},
+				// IE can receive empty headers but not send them.
+			}, QUnit.isIE ? {} : {
+				"Empty": ""
+			} ),
 			success: function( data, _, xhr ) {
-				var i, emptyHeader,
+				var i,
 					requestHeaders = jQuery.extend( this.headers, {
 						"ajax-send": "test"
 					} ),
@@ -285,13 +286,7 @@ QUnit.module( "ajax", {
 				assert.strictEqual( data, tmp, "Headers were sent" );
 				assert.strictEqual( xhr.getResponseHeader( "Sample-Header" ), "Hello World", "Sample header received" );
 				assert.ok( data.indexOf( "undefined" ) < 0, "Undefined header value was not sent" );
-
-				emptyHeader = xhr.getResponseHeader( "Empty-Header" );
-				if ( emptyHeader === null ) {
-					assert.ok( true, "Firefox doesn't support empty headers" );
-				} else {
-					assert.strictEqual( emptyHeader, "", "Empty header received" );
-				}
+				assert.strictEqual( xhr.getResponseHeader( "Empty-Header" ), "", "Empty header received" );
 				assert.strictEqual( xhr.getResponseHeader( "Sample-Header2" ), "Hello World 2", "Second sample header received" );
 				assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
 				assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );

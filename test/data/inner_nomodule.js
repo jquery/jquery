@@ -1,1 +1,1 @@
-QUnit.assert.ok( !QUnit.moduleTypeSupported, "evaluated: inner nomodule script with src" );
+QUnit.assert.ok( QUnit.isIE, "evaluated: inner nomodule script with src" );

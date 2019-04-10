@@ -445,18 +445,16 @@ QUnit.test( "append HTML5 sectioning elements (Bug #6485)", function( assert ) {
 	assert.equal( aside.length, 1, "HTML5 elements do not collapse their children" );
 } );
 
-if ( jQuery.css ) {
-	QUnit.test( "HTML5 Elements inherit styles from style rules (Bug #10501)", function( assert ) {
+QUnit[ jQuery.fn.css ? "test" : "skip" ]( "HTML5 Elements inherit styles from style rules (Bug #10501)", function( assert ) {
 
-		assert.expect( 1 );
+	assert.expect( 1 );
 
-		jQuery( "#qunit-fixture" ).append( "<article id='article'></article>" );
-		jQuery( "#article" ).append( "<section>This section should have a pink background.</section>" );
+	jQuery( "#qunit-fixture" ).append( "<article id='article'></article>" );
+	jQuery( "#article" ).append( "<section>This section should have a pink background.</section>" );
 
-		// In IE, the missing background color will claim its value is "transparent"
-		assert.notEqual( jQuery( "section" ).css( "background-color" ), "transparent", "HTML5 elements inherit styles" );
-	} );
-}
+	// In IE, the missing background color will claim its value is "transparent"
+	assert.notEqual( jQuery( "section" ).css( "background-color" ), "transparent", "HTML5 elements inherit styles" );
+} );
 
 QUnit.test( "html(String) with HTML5 (Bug #6485)", function( assert ) {
 
@@ -1767,9 +1765,9 @@ QUnit.test( "html(Function)", function( assert ) {
 QUnit[
 	// Support: Edge 16 - 18+
 	// Edge sometimes doesn't execute module scripts so skip the test there.
-	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
-		"test" :
-		"skip"
+	( QUnit.isIE || /edge\//i.test( navigator.userAgent ) ) ?
+		"skip" :
+		"test"
 ]( "html(script type module)", function( assert ) {
 	assert.expect( 4 );
 	var done = assert.async(),
@@ -1794,18 +1792,17 @@ QUnit[
 
 QUnit.test( "html(script nomodule)", function( assert ) {
 
-	// Support: IE 9 - 11+
 	// `nomodule` scripts should be executed by legacy browsers only.
-	assert.expect( QUnit.moduleTypeSupported ? 0 : 4 );
+	assert.expect( QUnit.isIE ? 4 : 0 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
 
 	$fixture.html(
 		[
-			"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: nomodule script' );</script>",
+			"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: nomodule script' );</script>",
 			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
 			"<div>",
-				"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: inner nomodule script' );</script>",
+				"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: inner nomodule script' );</script>",
 				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
 			"</div>"
 		].join( "" )

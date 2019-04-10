@@ -1,9 +1,9 @@
 define( [
 	"../core",
 	"../core/access",
-	"./support",
+	"../var/isIE",
 	"../selector"
-], function( jQuery, access, support ) {
+], function( jQuery, access, isIE ) {
 
 "use strict";
 
@@ -90,14 +90,11 @@ jQuery.extend( {
 } );
 
 // Support: IE <=11+
-// Accessing the selectedIndex property
-// forces the browser to respect setting selected
-// on the option
-// The getter ensures a default option is selected
-// when in an optgroup
-// eslint rule "no-unused-expressions" is disabled for this code
-// since it considers such accessions noop
-if ( !support.optSelected ) {
+// Accessing the selectedIndex property forces the browser to respect
+// setting selected on the option. The getter ensures a default option
+// is selected when in an optgroup. ESLint rule "no-unused-expressions"
+// is disabled for this code since it considers such accessions noop.
+if ( isIE ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 

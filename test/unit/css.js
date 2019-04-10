@@ -641,7 +641,11 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	span.remove();
 } );
 
-QUnit[ document.body.getRootNode ? "test" : "skip" ]( "show/hide shadow child nodes", function( assert ) {
+// Support: IE 11+, Edge 12 - 18+
+// IE/Edge don't support Shadow DOM.
+QUnit[ document.body.getRootNode ? "test" : "skip" ](
+	"show/hide shadow child nodes", function( assert ) {
+
 	assert.expect( 28 );
 	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
 	var shadowHost = document.querySelector( "#shadowHost" );
@@ -1210,11 +1214,10 @@ QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
 } );
 
 
-QUnit[
-	jQuery( "<div/>" )[ 0 ].style.gridArea === "" ?
-	"test" :
-	"skip"
-]( "Do not append px to CSS Grid-related properties (gh-4007)", function( assert ) {
+// IE doesn't support the standard version of CSS Grid.
+QUnit.testUnlessIE( "Do not append px to CSS Grid-related properties (gh-4007)",
+	function( assert ) {
+
 	assert.expect( 12 );
 
 	var prop, value, subProp, subValue, $div,
@@ -1365,50 +1368,28 @@ testIframe(
 	}
 );
 
-( function() {
-	var supportsFractionalGBCR,
-		qunitFixture = document.getElementById( "qunit-fixture" ),
-		div = document.createElement( "div" );
-	div.style.width = "3.3px";
-	qunitFixture.appendChild( div );
-	supportsFractionalGBCR = div.getBoundingClientRect().width.toFixed( 1 ) === "3.3";
-	qunitFixture.removeChild( div );
+QUnit.testUnlessIE( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
+	assert.expect( 2 );
 
-	QUnit.test( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
-		if ( !supportsFractionalGBCR ) {
-			assert.expect( 1 );
-			assert.ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
-			return;
-		}
+	var el = jQuery( "<div class='test-div'></div>" ).appendTo( "#qunit-fixture" );
+	jQuery( "<style>.test-div { width: 33.3px; height: 88.8px; }</style>" ).appendTo( "#qunit-fixture" );
 
-		assert.expect( 2 );
+	assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
+		"css('width') should return fractional values" );
+	assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
+		"css('height') should return fractional values" );
+} );
 
-		var el = jQuery( "<div class='test-div'></div>" ).appendTo( "#qunit-fixture" );
-		jQuery( "<style>.test-div { width: 33.3px; height: 88.8px; }</style>" ).appendTo( "#qunit-fixture" );
+QUnit.testUnlessIE( "css('width') and css('height') should return fractional values for disconnected nodes", function( assert ) {
+	assert.expect( 2 );
 
-		assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
-			"css('width') should return fractional values" );
-		assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
-			"css('height') should return fractional values" );
-	} );
+	var el = jQuery( "<div style='width: 33.3px; height: 88.8px;'></div>" );
 
-	QUnit.test( "css('width') and css('height') should return fractional values for disconnected nodes", function( assert ) {
-		if ( !supportsFractionalGBCR ) {
-			assert.expect( 1 );
-			assert.ok( true, "This browser doesn't support fractional values in getBoundingClientRect()" );
-			return;
-		}
-
-		assert.expect( 2 );
-
-		var el = jQuery( "<div style='width: 33.3px; height: 88.8px;'></div>" );
-
-		assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
-			"css('width') should return fractional values" );
-		assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
-			"css('height') should return fractional values" );
-	} );
-} )();
+	assert.equal( Number( el.css( "width" ).replace( /px$/, "" ) ).toFixed( 1 ), "33.3",
+		"css('width') should return fractional values" );
+	assert.equal( Number( el.css( "height" ).replace( /px$/, "" ) ).toFixed( 1 ), "88.8",
+		"css('height') should return fractional values" );
+} );
 
 QUnit.test( "certain css values of 'normal' should be convertable to a number, see #8627", function( assert ) {
 	assert.expect( 3 );
@@ -1736,94 +1717,87 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 
 } )();
 
-( function() {
-	var supportsCssVars,
-		elem = jQuery( "<div>" ).appendTo( document.body ),
-		div = elem[ 0 ];
+// IE doesn't support CSS variables.
+QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 
-	div.style.setProperty( "--prop", "value" );
-	supportsCssVars = !!getComputedStyle( div ).getPropertyValue( "--prop" );
-	elem.remove();
+	jQuery( "#qunit-fixture" ).append(
+		"<style>\n" +
+		"    .test__customProperties {\n" +
+		"        --prop1:val1;\n" +
+		"        --prop2: val2;\n" +
+		"        --prop3:val3 ;\n" +
+		"        --prop4:\"val4\";\n" +
+		"        --prop5:'val5';\n" +
+		"    }\n" +
+		"</style>"
+	);
 
-	QUnit[ supportsCssVars ? "test" : "skip" ]( "css(--customProperty)", function( assert ) {
-		jQuery( "#qunit-fixture" ).append(
-			"<style>\n" +
-			"    .test__customProperties {\n" +
-			"        --prop1:val1;\n" +
-			"        --prop2: val2;\n" +
-			"        --prop3:val3 ;\n" +
-			"        --prop4:\"val4\";\n" +
-			"        --prop5:'val5';\n" +
-			"    }\n" +
-			"</style>"
-		);
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
+			.appendTo( "#qunit-fixture" ),
+		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ) &&
+			!/\bfirefox\b/i.test( navigator.userAgent ) &&
+			!/\bedge\b/i.test( navigator.userAgent ),
+		expected = 10;
 
-		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-			$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
-				.appendTo( "#qunit-fixture" ),
-			webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ) &&
-				!/\bfirefox\b/i.test( navigator.userAgent ) &&
-				!/\bedge\b/i.test( navigator.userAgent ),
-			expected = 10;
+	if ( webkitOrBlink ) {
+		expected -= 2;
+	}
+	assert.expect( expected );
 
-		if ( webkitOrBlink ) {
-			expected -= 2;
-		}
-		assert.expect( expected );
+	div.css( "--color", "blue" );
+	assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );
 
-		div.css( "--color", "blue" );
-		assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );
+	div.css( "--color", "yellow" );
+	assert.equal( div.css( "--color" ), "yellow", "Overwrite CSS custom property" );
 
-		div.css( "--color", "yellow" );
-		assert.equal( div.css( "--color" ), "yellow", "Overwrite CSS custom property" );
+	div.css( { "--color": "red" } );
+	assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object" );
 
-		div.css( { "--color": "red" } );
-		assert.equal( div.css( "--color" ), "red", "Modified CSS custom property using object" );
+	div.css( { "--mixedCase": "green" } );
+	div.css( { "--mixed-case": "red" } );
+	assert.equal( div.css( "--mixedCase" ), "green",
+		"Modified CSS custom property with mixed case" );
 
-		div.css( { "--mixedCase": "green" } );
-		div.css( { "--mixed-case": "red" } );
-		assert.equal( div.css( "--mixedCase" ), "green",
-			"Modified CSS custom property with mixed case" );
+	div.css( { "--theme-dark": "purple" } );
+	div.css( { "--themeDark": "red" } );
+	assert.equal( div.css( "--theme-dark" ), "purple",
+		"Modified CSS custom property with dashed name" );
 
-		div.css( { "--theme-dark": "purple" } );
-		div.css( { "--themeDark": "red" } );
-		assert.equal( div.css( "--theme-dark" ), "purple",
-			"Modified CSS custom property with dashed name" );
+	assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
 
-		assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
+	assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
+	assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
 
-		assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
-		assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
+	// Support: Chrome <=49 - 73+, Safari <=9.1 - 12.1+
+	// Chrome treats single quotes as double ones.
+	// Safari treats double quotes as single ones.
+	if ( !webkitOrBlink ) {
+		assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
+		assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
+	}
+} );
 
-		// Support: Chrome <=49 - 73+, Safari <=9.1 - 12.1+
-		// Chrome treats single quotes as double ones.
-		// Safari treats double quotes as single ones.
-		if ( !webkitOrBlink ) {
-			assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
-			assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
-		}
-	} );
+// IE doesn't support CSS variables.
+QUnit.testUnlessIE( "Don't append px to CSS vars", function( assert ) {
 
-	QUnit[ supportsCssVars ? "test" : "skip" ]( "Don't append px to CSS vars", function( assert ) {
-		assert.expect( 3 );
+	assert.expect( 3 );
 
-		var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
 
-		$div
-			.css( "--a", 3 )
-			.css( "--line-height", 4 )
-			.css( "--lineHeight", 5 );
+	$div
+		.css( "--a", 3 )
+		.css( "--line-height", 4 )
+		.css( "--lineHeight", 5 );
 
-		assert.equal( $div.css( "--a" ), "3", "--a: 3" );
-		assert.equal( $div.css( "--line-height" ), "4", "--line-height: 4" );
-		assert.equal( $div.css( "--lineHeight" ), "5", "--lineHeight: 5" );
-	} );
-} )();
-
-}
+	assert.equal( $div.css( "--a" ), "3", "--a: 3" );
+	assert.equal( $div.css( "--line-height" ), "4", "--line-height: 4" );
+	assert.equal( $div.css( "--lineHeight" ), "5", "--lineHeight: 5" );
+} );
 
 // Support: IE 11+
-if ( document.documentMode ) {
+// This test requires Grid to be *not supported* to work.
+if ( QUnit.isIE ) {
 	// Make sure explicitly provided IE vendor prefix (`-ms-`) is not converted
 	// to a non-working `Ms` prefix in JavaScript.
 	QUnit.test( "IE vendor prefixes are not mangled", function( assert ) {
@@ -1835,4 +1809,6 @@ if ( document.documentMode ) {
 
 		assert.strictEqual( div.css( "-ms-grid-row" ), "1", "IE vendor prefixing" );
 	} );
+}
+
 }

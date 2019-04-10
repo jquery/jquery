@@ -543,25 +543,23 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	} catch ( _ ) {}
 } );
 
-QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
-	"jQuery.Deferred.then - IsCallable determination (gh-3596)",
+QUnit.testUnlessIE( "jQuery.Deferred.then - IsCallable determination (gh-3596)",
 	function( assert ) {
 
-		assert.expect( 1 );
+	assert.expect( 1 );
 
-		var done = assert.async(),
-			defer = jQuery.Deferred();
+	var done = assert.async(),
+		defer = jQuery.Deferred();
 
-		function faker() {
-			assert.ok( true, "handler with non-'Function' @@toStringTag gets invoked" );
-		}
-		faker[ Symbol.toStringTag ] = "String";
-
-		defer.then( faker ).then( done );
-
-		defer.resolve();
+	function faker() {
+		assert.ok( true, "handler with non-'Function' @@toStringTag gets invoked" );
 	}
-);
+	faker[ Symbol.toStringTag ] = "String";
+
+	defer.then( faker ).then( done );
+
+	defer.resolve();
+} );
 
 QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
 

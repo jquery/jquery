@@ -458,6 +458,12 @@ jQuery.extend( {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
 							while ( ( match = rheaders.exec( responseHeadersString ) ) ) {
+
+								// Support: IE 11+
+								// `getResponseHeader( key )` in IE doesn't combine all header
+								// values for the provided key into a single result with values
+								// joined by commas as other browsers do. Instead, it returns
+								// them on separate lines.
 								responseHeaders[ match[ 1 ].toLowerCase() + " " ] =
 									( responseHeaders[ match[ 1 ].toLowerCase() + " " ] || [] )
 										.concat( match[ 2 ] );

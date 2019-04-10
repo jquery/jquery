@@ -138,7 +138,7 @@ var mocks = {
 			"constructor": "prototype collision (constructor)"
 		} );
 		req.query.keys.split( "|" ).forEach( function( key ) {
-			if ( req.headers[ key.toLowerCase() ] ) {
+			if ( key.toLowerCase() in req.headers ) {
 				resp.write( key + ": " + req.headers[ key.toLowerCase() ] + "\n" );
 			}
 		} );
