@@ -554,7 +554,9 @@ function leverageNative( el, type, expectSync ) {
 			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
 				// Interrupt processing of the outer synthetic .trigger()ed event
-				if ( !saved ) {
+				// Saved data should be false in such cases, but might be a leftover capture object
+				// from an async native handler (gh-4350)
+				if ( !( saved.length >= 0 ) ) {
 
 					// Store arguments for use when handling the inner native event
 					saved = slice.call( arguments );
@@ -569,14 +571,14 @@ function leverageNative( el, type, expectSync ) {
 					if ( saved !== result || notAsync ) {
 						dataPriv.set( this, type, false );
 					} else {
-						result = undefined;
+						result = {};
 					}
 					if ( saved !== result ) {
 
 						// Cancel the outer synthetic event
 						event.stopImmediatePropagation();
 						event.preventDefault();
-						return result;
+						return result.value;
 					}
 
 				// If this is an inner synthetic event for an event with a bubbling surrogate
@@ -591,17 +593,17 @@ function leverageNative( el, type, expectSync ) {
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
-			} else if ( saved ) {
+			} else if ( saved.length >= 0 ) {
 
 				// ...and capture the result
-				dataPriv.set( this, type, jQuery.event.trigger(
+				dataPriv.set( this, type, { value: jQuery.event.trigger(
 
 					// Support: IE <=9 - 11+
 					// Extend with the prototype to reset the above stopImmediatePropagation()
 					jQuery.extend( saved.shift(), jQuery.Event.prototype ),
 					saved,
 					this
-				) );
+				) } );
 
 				// Abort handling of the native event
 				event.stopImmediatePropagation();
