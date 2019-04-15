@@ -556,7 +556,7 @@ function leverageNative( el, type, expectSync ) {
 				// Interrupt processing of the outer synthetic .trigger()ed event
 				// Saved data should be false in such cases, but might be a leftover capture object
 				// from an async native handler (gh-4350)
-				if ( !( saved.length >= 0 ) ) {
+				if ( !saved.length ) {
 
 					// Store arguments for use when handling the inner native event
 					saved = slice.call( arguments );
@@ -593,15 +593,15 @@ function leverageNative( el, type, expectSync ) {
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
-			} else if ( saved.length >= 0 ) {
+			} else if ( saved.length ) {
 
 				// ...and capture the result
 				dataPriv.set( this, type, { value: jQuery.event.trigger(
 
 					// Support: IE <=9 - 11+
 					// Extend with the prototype to reset the above stopImmediatePropagation()
-					jQuery.extend( saved.shift(), jQuery.Event.prototype ),
-					saved,
+					jQuery.extend( saved[ 0 ], jQuery.Event.prototype ),
+					saved.slice( 1 ),
 					this
 				) } );
 
