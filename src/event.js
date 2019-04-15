@@ -479,8 +479,7 @@ jQuery.event = {
 
 				// Claim the first handler
 				if ( rcheckableType.test( el.type ) &&
-					el.click && nodeName( el, "input" ) &&
-					dataPriv.get( el, "click" ) === undefined ) {
+					el.click && nodeName( el, "input" ) ) {
 
 					// dataPriv.set( el, "click", ... )
 					leverageNative( el, "click", returnTrue );
@@ -497,8 +496,7 @@ jQuery.event = {
 
 				// Force setup before triggering a click
 				if ( rcheckableType.test( el.type ) &&
-					el.click && nodeName( el, "input" ) &&
-					dataPriv.get( el, "click" ) === undefined ) {
+					el.click && nodeName( el, "input" ) ) {
 
 					leverageNative( el, "click" );
 				}
