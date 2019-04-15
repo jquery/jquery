@@ -9,6 +9,7 @@
 .sizecache.json
 yarn.lock
 package-lock.json
+.idea
 
 npm-debug.log*
 
