@@ -3060,7 +3060,7 @@ QUnit.test( "focus-blur order (#12868)", function( assert ) {
 		setTimeout( function() {
 
 			// DOM focus is unreliable in TestSwarm
-			if ( order === 0 ) {
+			if ( QUnit.isSwarm && order === 0 ) {
 				assert.ok( true, "GAP: Could not observe focus change" );
 				assert.ok( true, "GAP: Could not observe focus change" );
 			}
