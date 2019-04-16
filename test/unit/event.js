@@ -3073,7 +3073,7 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 
 	// DOM focus is unreliable in TestSwarm
 	setTimeout( function() {
-		if ( remaining === 3 ) {
+		if ( QUnit.isSwarm && remaining === 3 ) {
 			assert.ok( true, "GAP: Could not observe focus change" );
 			assert.ok( true, "GAP: Could not observe focus change" );
 			assert.ok( true, "GAP: Could not observe focus change" );
