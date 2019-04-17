@@ -1,14 +1,14 @@
 define( [
 	"./core",
 	"./core/nodeName",
-	"./core/camelCase",
 	"./core/toType",
+	"./css/cssCamelCase",
 	"./var/isFunction",
 	"./var/isWindow",
 	"./var/slice",
 
 	"./event/alias"
-], function( jQuery, nodeName, camelCase, toType, isFunction, isWindow, slice ) {
+], function( jQuery, nodeName, toType, cssCamelCase, isFunction, isWindow, slice ) {
 
 "use strict";
 
@@ -76,7 +76,7 @@ jQuery.parseJSON = JSON.parse;
 jQuery.nodeName = nodeName;
 jQuery.isFunction = isFunction;
 jQuery.isWindow = isWindow;
-jQuery.camelCase = camelCase;
+jQuery.camelCase = cssCamelCase;
 jQuery.type = toType;
 
 jQuery.now = Date.now;

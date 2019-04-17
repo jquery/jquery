@@ -1885,3 +1885,18 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 } )();
 
 }
+
+// Support: IE 11+
+if ( document.documentMode ) {
+	// Make sure explicitly provided IE vendor prefix (`-ms-`) is not converted
+	// to a non-working `Ms` prefix in JavaScript.
+	QUnit.test( "IE vendor prefixes are not mangled", function( assert ) {
+		assert.expect( 1 );
+
+		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+
+		div.css( "-ms-grid-row", "1" );
+
+		assert.strictEqual( div.css( "-ms-grid-row" ), "1", "IE vendor prefixing" );
+	} );
+}
