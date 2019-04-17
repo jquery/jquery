@@ -3,7 +3,12 @@
 
 	"extends": "../.eslintrc-browser.json",
 
-	"globals": {
-		"jQuery": true
-	}
+	"overrides": [
+		{
+			"files": "wrapper.js",
+			"globals": {
+				"jQuery": false
+			}
+		}
+	]
 }
