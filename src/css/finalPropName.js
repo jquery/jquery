@@ -1,7 +1,6 @@
 define( [
-	"../var/document",
-	"../core"
-], function( document, jQuery ) {
+	"../var/document"
+], function( document ) {
 
 "use strict";
 
@@ -24,9 +23,9 @@ function vendorPropName( name ) {
 	}
 }
 
-// Return a potentially-mapped jQuery.cssProps or vendor prefixed property
+// Return a potentially-mapped vendor prefixed property
 function finalPropName( name ) {
-	var final = jQuery.cssProps[ name ] || vendorProps[ name ];
+	var final = vendorProps[ name ];
 
 	if ( final ) {
 		return final;
