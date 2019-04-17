@@ -1,15 +1,12 @@
 define( [
 	"./core",
 	"./core/access",
-	"./var/document",
 	"./var/documentElement",
-	"./css/var/rnumnonpx",
-	"./css/curCSS",
 	"./var/isWindow",
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, rnumnonpx, curCSS, isWindow ) {
+], function( jQuery, access, documentElement, isWindow ) {
 
 "use strict";
 
