@@ -806,6 +806,41 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 2, function( assert ) {
+		return {
+			dataType: "script",
+			url: url( "missing_script_file.js" ),
+			fail: function( _, status, error ) {
+				assert.strictEqual( status, "error", "Check missing script file status" );
+				assert.strictEqual( error, "File not found", "Check missing script file error message" );
+			}
+		};
+	} );
+
+	QUnit.test( "jQuery.ajax() - script from unsuccessful response does not throw (gh-4250)", function( assert ) {
+		assert.expect( 1 );
+		var done = assert.async();
+
+		var globalEval = jQuery.globalEval;
+		jQuery.globalEval = function( code ) {
+			assert.ok( false, "no attempt to evaluate code from an unsuccessful response" );
+		};
+
+		try {
+			var xhr = jQuery.ajax( {
+				dataType: "script",
+				url: url( "missing_script_file.js" )
+			} );
+			assert.ok( true, "no error thrown from embedding script with unsuccessful-response src" );
+			done();
+		} catch ( e ) {
+			assert.ok( false, "uncaught error" );
+		} finally {
+			xhr.abort();
+			jQuery.globalEval = globalEval;
+		};
+	} );
+
 	ajaxTest( "jQuery.ajax() - synchronous request", 1, function( assert ) {
 		return {
 			url: url( "json_obj.js" ),
