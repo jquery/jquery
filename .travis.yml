@@ -15,3 +15,7 @@ matrix:
       env: NPM_SCRIPT=test:browser
 script:
   - npm run $NPM_SCRIPT
+branches:
+  only:
+    - master
+    - /wip-.*/
