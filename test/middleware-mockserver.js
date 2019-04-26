@@ -226,6 +226,18 @@ var mocks = {
 		cspLog = "";
 		resp.writeHead( 200 );
 		resp.end();
+	},
+	errorWithScript: function( req, resp ) {
+		if ( req.query.withScriptContentType ) {
+			resp.writeHead( 404, { "Content-Type": "application/javascript" } );
+		} else {
+			resp.writeHead( 404 );
+		}
+		if ( req.query.callback ) {
+			resp.end( req.query.callback + "( {\"status\": 404, \"msg\": \"Not Found\"} )" );
+		} else {
+			resp.end( "QUnit.assert.ok( false, \"Mock return erroneously executed\" );" );
+		}
 	}
 };
 var handlers = {
