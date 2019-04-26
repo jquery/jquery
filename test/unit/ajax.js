@@ -837,6 +837,121 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
+		var globalEval = jQuery.globalEval;
+
+		var failConverters = {
+			"text script": function() {
+				assert.ok( false, "No converter for unsuccessful response" );
+			}
+		};
+
+		function request( title, options ) {
+			var testMsg = title + ": expected file missing status";
+			return jQuery.extend( {
+				beforeSend: function() {
+					jQuery.globalEval = function() {
+						assert.ok( false, "Should not eval" );
+					};
+				},
+				complete: function() {
+					jQuery.globalEval = globalEval;
+				},
+				// error is the significant assertion
+				error: function( xhr ) {
+					assert.strictEqual( xhr.status, 404, testMsg );
+				},
+				success: function() {
+					assert.ok( false, "Unanticipated success" );
+				}
+			}, options );
+		}
+
+		return [
+			request(
+				"HTML reply",
+				{
+					url: url( "404.txt" )
+				}
+			),
+			request(
+				"HTML reply with dataType",
+				{
+					dataType: "script",
+					url: url( "404.txt" )
+				}
+			),
+			request(
+				"script reply",
+				{
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
+				}
+			),
+			request(
+				"non-script reply",
+				{
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with dataType",
+				{
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
+				}
+			),
+			request(
+				"non-script reply with dataType",
+				{
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with converter",
+				{
+					converters: failConverters,
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
+				}
+			),
+			request(
+				"non-script reply with converter",
+				{
+					converters: failConverters,
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with converter and dataType",
+				{
+					converters: failConverters,
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
+				}
+			),
+			request(
+				"non-script reply with converter and dataType",
+				{
+					converters: failConverters,
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"JSONP reply with dataType",
+				{
+					dataType: "jsonp",
+					url: url( "mock.php?action=errorWithScript" ),
+					beforeSend: function() {
+						jQuery.globalEval = function( response ) {
+							assert.ok( /"status": 404, "msg": "Not Found"/.test( response ), "Error object returned" );
+						};
+					}
+				}
+			)
+		];
+	} );
+
 	ajaxTest( "jQuery.ajax() - synchronous request", 1, function( assert ) {
 		return {
 			url: url( "json_obj.js" ),
