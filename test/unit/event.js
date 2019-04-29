@@ -2946,39 +2946,62 @@ QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
 	ns.remove();
 } );
 
-QUnit.test( "Check order of focusin/focusout events", function( assert ) {
-	assert.expect( 2 );
+QUnit.test( "focusout/focusin support", function( assert ) {
+	assert.expect( 6 );
 
-	var focus, blur,
-		input = jQuery( "#name" );
+	var focus,
+		parent = jQuery( "<div>" ),
+		input = jQuery( "<input>" ),
+		inputExternal = jQuery( "<input>" );
+
+	parent.append( input );
+	jQuery( "#qunit-fixture" ).append( parent ).append( inputExternal );
+
+	parent
+		.on( "focus", function() {
+			assert.ok( false, "parent: focus not fired" );
+		} )
+		.on( "focusin", function() {
+			assert.ok( true, "parent: focusin fired" );
+		} )
+		.on( "blur", function() {
+			assert.ok( false, "parent: blur not fired" );
+		} )
+		.on( "focusout", function() {
+			assert.ok( true, "parent: focusout fired" );
+		} );
 
 	input
 		.on( "focus", function() {
+			assert.ok( true, "element: focus fired" );
 			focus = true;
 		} )
 		.on( "focusin", function() {
-			assert.ok( !focus, "Focusin event should fire before focus does" );
-			focus = true;
+			assert.ok( true, "element: focusin fired" );
 		} )
 		.on( "blur", function() {
-			blur = true;
+			assert.ok( true, "parent: blur fired" );
 		} )
 		.on( "focusout", function() {
-			assert.ok( !blur, "Focusout event should fire before blur does" );
-			blur = true;
+			assert.ok( true, "element: focusout fired" );
 		} );
 
 	// gain focus
 	input.trigger( "focus" );
 
 	// then lose it
-	jQuery( "#search" ).trigger( "focus" );
+	inputExternal.trigger( "focus" );
 
 	// cleanup
+	parent.off();
 	input.off();
 
 	// DOM focus is unreliable in TestSwarm
-	if ( !focus ) {
+	if ( QUnit.isSwarm && !focus ) {
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
 		assert.ok( true, "GAP: Could not observe focus change" );
 		assert.ok( true, "GAP: Could not observe focus change" );
 	}
