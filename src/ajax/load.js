@@ -1,13 +1,12 @@
 define( [
 	"../core",
 	"../core/stripAndCollapse",
-	"../var/isFunction",
 	"../core/parseHTML",
 	"../ajax",
 	"../traversing",
 	"../manipulation",
 	"../selector"
-], function( jQuery, stripAndCollapse, isFunction ) {
+], function( jQuery, stripAndCollapse ) {
 
 "use strict";
 
@@ -25,7 +24,7 @@ jQuery.fn.load = function( url, params, callback ) {
 	}
 
 	// If it's a function
-	if ( isFunction( params ) ) {
+	if ( typeof params === "function" ) {
 
 		// We assume that it's the callback
 		callback = params;

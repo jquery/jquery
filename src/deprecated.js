@@ -3,12 +3,11 @@ define( [
 	"./core/nodeName",
 	"./core/toType",
 	"./css/cssCamelCase",
-	"./var/isFunction",
 	"./var/isWindow",
 	"./var/slice",
 
 	"./event/alias"
-], function( jQuery, nodeName, toType, cssCamelCase, isFunction, isWindow, slice ) {
+], function( jQuery, nodeName, toType, cssCamelCase, isWindow, slice ) {
 
 "use strict";
 
@@ -48,7 +47,7 @@ jQuery.proxy = function( fn, context ) {
 
 	// Quick check to determine if target is callable, in the spec
 	// this throws a TypeError, but we will just return undefined.
-	if ( !isFunction( fn ) ) {
+	if ( typeof fn !== "function" ) {
 		return undefined;
 	}
 

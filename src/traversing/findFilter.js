@@ -1,16 +1,15 @@
 define( [
 	"../core",
 	"../var/indexOf",
-	"../var/isFunction",
 	"./var/rneedsContext",
 	"../selector"
-], function( jQuery, indexOf, isFunction, rneedsContext ) {
+], function( jQuery, indexOf, rneedsContext ) {
 
 "use strict";
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
-	if ( isFunction( qualifier ) ) {
+	if ( typeof qualifier === "function" ) {
 		return jQuery.grep( elements, function( elem, i ) {
 			return !!qualifier.call( elem, i, elem ) !== not;
 		} );

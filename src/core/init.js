@@ -2,11 +2,10 @@
 define( [
 	"../core",
 	"../var/document",
-	"../var/isFunction",
 	"./var/rsingleTag",
 
 	"../traversing/findFilter"
-], function( jQuery, document, isFunction, rsingleTag ) {
+], function( jQuery, document, rsingleTag ) {
 
 "use strict";
 
@@ -64,7 +63,7 @@ var rootjQuery,
 						for ( match in context ) {
 
 							// Properties of context are called as methods if possible
-							if ( isFunction( this[ match ] ) ) {
+							if ( typeof this[ match ] === "function" ) {
 								this[ match ]( context[ match ] );
 
 							// ...and otherwise set as attributes
@@ -107,7 +106,7 @@ var rootjQuery,
 
 		// HANDLE: $(function)
 		// Shortcut for document ready
-		} else if ( isFunction( selector ) ) {
+		} else if ( typeof selector === "function" ) {
 			return root.ready !== undefined ?
 				root.ready( selector ) :
 

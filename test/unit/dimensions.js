@@ -687,19 +687,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.css( { position: "relative" } ),
 		$boxes = jQuery(
 			[ plainBox[ 0 ], contentBox[ 0 ], borderBox[ 0 ], relativeBorderBox[ 0 ] ]
-		).appendTo( parent ),
-
-		// Support: IE 9 only
-		// Computed width seems to report content width even with "box-sizing: border-box", and
-		// "overflow: scroll" actually _shrinks_ the element (gh-3699).
-		borderBoxLoss =
-			borderBox.clone().css( { overflow: "auto" } ).appendTo( parent )[ 0 ].offsetWidth -
-			borderBox[ 0 ].offsetWidth;
-
-	if ( borderBoxLoss > 0 ) {
-		borderBox[ 0 ].style.width = ( size + borderBoxLoss ) + "px";
-		borderBox[ 0 ].style.height = ( size + borderBoxLoss ) + "px";
-	}
+		).appendTo( parent );
 
 	for ( i = 0; i < 3; i++ ) {
 		if ( i === 1 ) {
@@ -758,10 +746,9 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 		$secondTh = jQuery( "<th style='width: 190px;padding: 5px' />" ),
 		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px' />" ),
 
-		// Support: Firefox 63, Edge 16-17, Android 8, iOS 7-11
-		// These browsers completely ignore the border-box and height settings
-		// The computed height is instead just line-height + border
-		// Either way, what we're doing in css.js is correct
+		// Most browsers completely ignore the border-box and height settings.
+		// The computed height is instead just line-height + border.
+		// Either way, what we're doing in css.js is correct.
 		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid;line-height:18px'>text</td>" ),
 
 		$tbody = jQuery( "<tbody />" ).appendTo( $table ),
@@ -775,18 +762,7 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 	assert.strictEqual( $firstTh.outerWidth(), 200, "First th has outerWidth 200." );
 	assert.strictEqual( $secondTh.outerWidth(), 200, "Second th has outerWidth 200." );
 	assert.strictEqual( $thirdTh.outerWidth(), 200, "Third th has outerWidth 200." );
-
-	// Support: Android 4.0-4.3 only
-	// Android Browser disregards td's box-sizing, treating it like it was content-box.
-	// Unlike in IE, offsetHeight shares the same issue so there's no easy way to workaround
-	// the issue without incurring high size penalty. Let's at least check we get the size
-	// as the browser sees it.
-	if ( /android 4\.[0-3]/i.test( navigator.userAgent ) ) {
-		assert.ok( [ 30, 32 ].indexOf( $td.outerHeight() ) > -1,
-			"outerHeight of td with border-box should include padding." );
-	} else {
-		assert.strictEqual( $td.outerHeight(), 30, "outerHeight of td with border-box should include padding." );
-	}
+	assert.strictEqual( $td.outerHeight(), 30, "outerHeight of td with border-box should include padding." );
 	assert.strictEqual( $textarea.outerHeight(), 6, "outerHeight of textarea with border-box should include padding and border." );
 } );
 

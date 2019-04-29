@@ -511,18 +511,6 @@ QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function
 	}
 
 	function assertSpecialCharsSupport( method, characters ) {
-		// Support: Android 4.4 only
-		// Chromium < 35 incorrectly upper-cases µ; Android 4.4 uses such a version by default
-		// (and its WebView, being un-updatable, will use it for eternity) so we need to blacklist
-		// that one for the tests to pass.
-		if ( characters === "µ" && /chrome/i.test( navigator.userAgent ) &&
-			navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ] < 35 ) {
-			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
-			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
-			assert.ok( true, "This Chromium version upper-cases µ incorrectly; skip test" );
-			return;
-		}
-
 		var child,
 			codepoint = characters.charCodeAt( 0 ).toString( 16 ).toUpperCase(),
 			description = characters.length === 1 ?
@@ -592,28 +580,7 @@ QUnit.test( "append(xml)", function( assert ) {
 	var xmlDoc, xml1, xml2;
 
 	function createXMLDoc() {
-
-		// Initialize DOM based upon latest installed MSXML or Netscape
-		var elem, n, len,
-			aActiveX =
-				[ "MSXML6.DomDocument",
-				"MSXML3.DomDocument",
-				"MSXML2.DomDocument",
-				"MSXML.DomDocument",
-				"Microsoft.XmlDom" ];
-
-		if ( document.implementation && "createDocument" in document.implementation ) {
-			return document.implementation.createDocument( "", "", null );
-		} else {
-
-			// IE
-			for ( n = 0, len = aActiveX.length; n < len; n++ ) {
-				try {
-					elem = new window.ActiveXObject( aActiveX[ n ] );
-					return elem;
-				} catch ( _ ) {}
-			}
-		}
+		return document.implementation.createDocument( "", "", null );
 	}
 
 	xmlDoc = createXMLDoc();
@@ -1798,7 +1765,7 @@ QUnit.test( "html(Function)", function( assert ) {
 } );
 
 QUnit[
-	// Support: Edge 16-18+
+	// Support: Edge 16 - 18+
 	// Edge sometimes doesn't execute module scripts so skip the test there.
 	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
 		"test" :
@@ -1825,15 +1792,10 @@ QUnit[
 	}, 1000 );
 } );
 
-QUnit[
-	// Support: IE 9-11 only, Android 4.0-4.4 only, iOS 7-10 only
+QUnit.test( "html(script nomodule)", function( assert ) {
+
+	// Support: IE 9 - 11+
 	// `nomodule` scripts should be executed by legacy browsers only.
-	// iOS 10 supports `<script type="module">` but doesn't support the nomodule attribute
-	// so let's skip it here; sites supporting it must handle `nomodule` in a custom way anyway.
-	!/iphone os 10_/i.test( navigator.userAgent ) ?
-		"test" :
-		"skip"
-]( "html(script nomodule)", function( assert ) {
 	assert.expect( QUnit.moduleTypeSupported ? 0 : 4 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
@@ -2676,14 +2638,18 @@ QUnit.test( "Make sure specific elements with content created correctly (#13232)
 
 	jQuery.each( elems, function( name, value ) {
 		var html = "<" + name + ">" + value + "</" + name + ">";
-		assert.ok( jQuery.parseHTML( "<" + name + ">" + value + "</" + name + ">" )[ 0 ].nodeName.toLowerCase() === name, name + " is created correctly" );
+		assert.strictEqual(
+			jQuery.parseHTML( "<" + name + ">" + value + "</" + name + ">" )[ 0 ].nodeName.toLowerCase(),
+			name,
+			name + " is created correctly"
+		);
 
 		results.push( name );
 		args.push( html );
 	} );
 
 	jQuery.fn.append.apply( jQuery( "<div/>" ), args ).children().each( function( i ) {
-		assert.ok( this.nodeName.toLowerCase() === results[ i ] );
+		assert.strictEqual( this.nodeName.toLowerCase(), results[ i ] );
 	} );
 } );
 
@@ -2827,6 +2793,7 @@ QUnit.test( "Make sure tags with single-character names are found (gh-4124)", fu
 
 QUnit.test( "Insert script with data-URI (gh-1887)", function( assert ) {
 	assert.expect( 1 );
+
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
 
@@ -2885,36 +2852,30 @@ testIframe(
 		} );
 	},
 
-	// Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
+	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
 	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	// Old iOS & Android Browser versions support script-src but not nonce, making this test
-	// impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
-	// script-src restrictions completely.
-	QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
 
 testIframe(
-    "Check if CSP nonce is preserved for external scripts with src attribute",
-    "mock.php?action=cspNonce&test=external",
-    function( assert, jQuery, window, document ) {
-        var done = assert.async();
+	"Check if CSP nonce is preserved for external scripts with src attribute",
+	"mock.php?action=cspNonce&test=external",
+	function( assert, jQuery, window, document ) {
+		var done = assert.async();
 
-        assert.expect( 1 );
+		assert.expect( 1 );
 
-        supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
-            assert.equal( data, "", "No log request should be sent" );
-            supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
-        } );
-    },
+		supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
+			assert.equal( data, "", "No log request should be sent" );
+			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
+		} );
+	},
 
-    // Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
-    // Edge doesn't support nonce in non-inline scripts.
-    // See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-    // Old iOS & Android Browser versions support script-src but not nonce, making this test
-    // impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
-    // script-src restrictions completely.
-    QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+	// Support: Edge <=18+
+	// Edge doesn't support nonce in non-inline scripts.
+	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
 
 testIframe(
@@ -2931,11 +2892,8 @@ testIframe(
 		} );
 	},
 
-	// Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
+	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
 	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	// Old iOS & Android Browser versions support script-src but not nonce, making this test
-	// impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
-	// script-src restrictions completely.
-	QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );

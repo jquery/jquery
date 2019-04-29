@@ -172,7 +172,7 @@ QUnit.test( "jQuery.Deferred.catch", function( assert ) {
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
-		piped = defer[ "catch" ]( function( a, b ) {
+		piped = defer.catch( function( a, b ) {
 			return a * b;
 		} ),
 		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
@@ -186,18 +186,18 @@ QUnit.test( "jQuery.Deferred.catch", function( assert ) {
 		value2 = b;
 	} );
 
-	defer.reject( 2, 3 )[ "catch" ]( function() {
+	defer.reject( 2, 3 ).catch( function() {
 		assert.strictEqual( value1, 2, "first reject value ok" );
 		assert.strictEqual( value2, 3, "second reject value ok" );
 		assert.strictEqual( value3, 6, "result of filter ok" );
 		done.pop().call();
 	} );
 
-	jQuery.Deferred().resolve()[ "catch" ]( function() {
+	jQuery.Deferred().resolve().catch( function() {
 		assert.ok( false, "then should not be called on resolve" );
 	} ).then( done.pop() );
 
-	jQuery.Deferred().reject()[ "catch" ]( jQuery.noop ).done( function( value ) {
+	jQuery.Deferred().reject().catch( jQuery.noop ).done( function( value ) {
 		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
 		done.pop().call();
 	} );
@@ -563,8 +563,7 @@ QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
 	}
 );
 
-// Test fails in IE9 but is skipped there because console is not active
-QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", function( assert ) {
+QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
 
 	assert.expect( 2 );
 
@@ -573,24 +572,10 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 		oldWarn = window.console.warn;
 
 	window.console.warn = function() {
-
-		// Support: Chrome <=41 only
-		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
-		// not a function" error, not mentioning the function name. This has been fixed
-		// in Chrome 42. Relax this test there.
-		// This affects our Android 5.0 & Yandex.Browser testing.
-		var msg = Array.prototype.join.call( arguments, " " ),
-			oldChromium = false;
-		if ( /chrome/i.test( navigator.userAgent ) ) {
-			oldChromium = parseInt(
-					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
-		}
-		if ( oldChromium ) {
-			assert.ok( /(?:barf|undefined)/.test( msg ), "Message (weak assertion): " + msg );
-		} else {
-			assert.ok( /barf/.test( msg ), "Message: " + msg );
-		}
+		var msg = Array.prototype.join.call( arguments, " " );
+		assert.ok( /barf/.test( msg ), "Message: " + msg );
 	};
+
 	jQuery.when(
 		defer.then( function() {
 
@@ -613,8 +598,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 	defer.resolve();
 } );
 
-// Test fails in IE9 but is skipped there because console is not active
-QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
+QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
 
 	assert.expect( 2 );
 
@@ -632,26 +616,11 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with s
 	};
 
 	window.console.warn = function() {
-
-		// Support: Chrome <=41 only
-		// Some Chrome versions newer than 30 but older than 42 display the "undefined is
-		// not a function" error, not mentioning the function name. This has been fixed
-		// in Chrome 42. Relax this test there.
-		// This affects our Android 5.0 & Yandex.Browser testing.
-		var msg = Array.prototype.join.call( arguments, " " ),
-			oldChromium = false;
-		if ( /chrome/i.test( navigator.userAgent ) ) {
-			oldChromium = parseInt(
-					navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ], 10 ) < 42;
-		}
-		if ( oldChromium ) {
-			assert.ok( /(?:cough_up_hairball|undefined)/.test( msg ),
-				"Function mentioned (weak assertion): " + msg );
-		} else {
-			assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
-		}
+		var msg = Array.prototype.join.call( arguments, " " );
+		assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
 		assert.ok( /NO STACK FOR YOU/.test( msg ), "Stack trace included: " + msg );
 	};
+
 	defer.then( function() {
 		jQuery.cough_up_hairball();
 	} ).then( null, function( ) {
@@ -825,11 +794,7 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 
 	assert.expect( 44 );
 
-	var
-
-		// Support: Android 4.0 only
-		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+	var defaultContext = ( function getDefaultContext() { return this; } )(),
 
 		done = assert.async( 20 );
 
@@ -884,9 +849,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 	var customToStringThen = {
 		then: function( onFulfilled ) {
-			// Support: Android 4.0 only
-			// Strict mode functions invoked without .call/.apply get global-object context
-			onFulfilled.call();
+			onFulfilled();
 		}
 	};
 	if ( typeof Symbol === "function" ) {
@@ -947,9 +910,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 		},
 		numCases = Object.keys( willSucceed ).length + Object.keys( willError ).length,
 
-		// Support: Android 4.0 only
-		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+		defaultContext = ( function getDefaultContext() { return this; } )(),
 
 		done = assert.async( numCases * 2 );
 
@@ -1027,9 +988,7 @@ QUnit.test( "jQuery.when(a, b) - like Promise.all", function( assert ) {
 			rejectedStandardPromise: true
 		},
 
-		// Support: Android 4.0 only
-		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+		defaultContext = ( function getDefaultContext() { return this; } )(),
 
 		done = assert.async( 98 );
 

@@ -1319,22 +1319,20 @@ QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
 	assert.ok( /\/example\.html$/.test( href ), "href is not lost after parsing anchor" );
 } );
 
-if ( jQuery.support.createHTMLDocument ) {
-	QUnit.test( "jQuery.parseHTML", function( assert ) {
-		var done = assert.async();
-		assert.expect( 1 );
+QUnit.test( "jQuery.parseHTML", function( assert ) {
+	var done = assert.async();
+	assert.expect( 1 );
 
-		Globals.register( "parseHTMLError" );
+	Globals.register( "parseHTMLError" );
 
-		jQuery.globalEval( "parseHTMLError = false;" );
-		jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
+	jQuery.globalEval( "parseHTMLError = false;" );
+	jQuery.parseHTML( "<img src=x onerror='parseHTMLError = true'>" );
 
-		window.setTimeout( function() {
-			assert.equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
-			done();
-		}, 2000 );
-	} );
-}
+	window.setTimeout( function() {
+		assert.equal( window.parseHTMLError, false, "onerror eventhandler has not been called." );
+		done();
+	}, 2000 );
+} );
 
 QUnit.test( "jQuery.parseXML", function( assert ) {
 	assert.expect( 8 );
@@ -1371,29 +1369,13 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 } );
 
 testIframe(
-	"Conditional compilation compatibility (#13274)",
-	"core/cc_on.html",
-	function( assert, jQuery, window, document, cc_on, errors ) {
-		assert.expect( 3 );
-		assert.ok( true, "JScript conditional compilation " + ( cc_on ? "supported" : "not supported" ) );
-		assert.deepEqual( errors, [], "No errors" );
-		assert.ok( jQuery(), "jQuery executes" );
+	"document ready when jQuery loaded asynchronously (#13655)",
+	"core/dynamic_ready.html",
+	function( assert, jQuery, window, document, ready ) {
+		assert.expect( 1 );
+		assert.equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
 	}
 );
-
-// iOS7 doesn't fire the load event if the long-loading iframe gets its source reset to about:blank.
-// This makes this test fail but it doesn't seem to cause any real-life problems so blacklisting
-// this test there is preferred to complicating the hard-to-test core/ready code further.
-if ( !/iphone os 7_/i.test( navigator.userAgent ) ) {
-	testIframe(
-		"document ready when jQuery loaded asynchronously (#13655)",
-		"core/dynamic_ready.html",
-		function( assert, jQuery, window, document, ready ) {
-			assert.expect( 1 );
-			assert.equal( true, ready, "document ready correctly fired when jQuery is loaded after DOMContentLoaded" );
-		}
-	);
-}
 
 testIframe(
 	"Tolerating alias-masked DOM properties (#14074)",

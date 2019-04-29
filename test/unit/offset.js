@@ -4,18 +4,12 @@ if ( !jQuery.fn.offset ) {
 	return;
 }
 
-var supportsFixedPosition, supportsScroll, alwaysScrollable,
+var supportsScroll, alwaysScrollable,
 	forceScroll = supportjQuery( "<div/>" ).css( { width: 2000, height: 2000 } ),
 	checkSupport = function( assert ) {
 
 		// Only run once
 		checkSupport = false;
-
-		var checkFixed = supportjQuery( "<div/>" )
-			.css( { position: "fixed", top: "20px" } )
-			.appendTo( "#qunit-fixture" );
-		supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
-		checkFixed.remove();
 
 		// Append forceScroll to the body instead of #qunit-fixture because the latter is hidden
 		forceScroll.appendTo( "body" );
@@ -23,7 +17,7 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 		supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
 		forceScroll.detach();
 
-		// Support: iOS <=7
+		// Support: iOS <=7 - 12+
 		// Hijack the iframe test infrastructure to detect viewport scrollability
 		// for pages with position:fixed document element
 		var done = assert.async();
@@ -400,22 +394,13 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
 
-		} else if ( window.supportsFixedPosition ) {
+		} else {
 			assert.equal( jQuery.isPlainObject( $( this.id ).offset() ), true, "jQuery('" + this.id + "').offset() is plain object" );
 			assert.equal( jQuery.isPlainObject( $( this.id ).position() ), true, "jQuery('" + this.id + "').position() is plain object" );
 			assert.equal( $( this.id ).offset().top,  this.offsetTop,  "jQuery('" + this.id + "').offset().top" );
 			assert.equal( $( this.id ).position().top,  this.positionTop,  "jQuery('" + this.id + "').position().top" );
 			assert.equal( $( this.id ).offset().left, this.offsetLeft, "jQuery('" + this.id + "').offset().left" );
 			assert.equal( $( this.id ).position().left,  this.positionLeft,  "jQuery('" + this.id + "').position().left" );
-		} else {
-
-			// need to have same number of assertions
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
 		}
 	} );
 
@@ -429,40 +414,25 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 	];
 
 	jQuery.each( tests, function() {
-		if ( window.supportsFixedPosition ) {
-			$( this.id ).offset( { "top": this.top, "left": this.left } );
-			assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
-			assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
+		$( this.id ).offset( { "top": this.top, "left": this.left } );
+		assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
+		assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
 
-			$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
-				$( this ).css( {
-					"top":  props.top  + 1,
-					"left": props.left + 1
-				} );
-			} } );
-			assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
-			assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
-		} else {
-
-			// need to have same number of assertions
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-			assert.ok( true, "Fixed position is not supported" );
-		}
+		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
+			$( this ).css( {
+				"top":  props.top  + 1,
+				"left": props.left + 1
+			} );
+		} } );
+		assert.equal( $( this.id ).offset().top,  this.top  + 1, "jQuery('" + this.id + "').offset({ top: "  + ( this.top  + 1 ) + ", using: fn })" );
+		assert.equal( $( this.id ).offset().left, this.left + 1, "jQuery('" + this.id + "').offset({ left: " + ( this.left + 1 ) + ", using: fn })" );
 	} );
 
 	// Bug 8316
 	$noTopLeft = $( "#fixed-no-top-left" );
-	if ( window.supportsFixedPosition ) {
-		assert.equal( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
-		assert.equal( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
-	} else {
 
-		// need to have same number of assertions
-		assert.ok( true, "Fixed position is not supported" );
-		assert.ok( true, "Fixed position is not supported" );
-	}
+	assert.equal( $noTopLeft.offset().top, 1007, "Check offset top for fixed element with no top set" );
+	assert.equal( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
 } );
 
 testIframe( "table", "offset/table.html", function( assert, $ ) {
@@ -660,25 +630,6 @@ QUnit.test( "chaining", function( assert ) {
 			}
 		} );
 
-		// Support: IE<=10 only
-		// Fudge the tests to work around <html>.gBCR() erroneously including margins
-		if ( /MSIE (?:9|10)\./.test( navigator.userAgent ) ) {
-			expectations.documentElement.pos.top -= expectations.documentElement.marginTop -
-				scrollTop;
-			expectations.documentElement.offset.top -= expectations.documentElement.marginTop -
-				scrollTop;
-			expectations.documentElement.pos.left -= expectations.documentElement.marginLeft -
-				scrollLeft;
-			expectations.documentElement.offset.left -= expectations.documentElement.marginLeft -
-				scrollLeft;
-			if ( htmlPos !== "static" ) {
-				delete expectations.documentElement;
-				delete expectations.body;
-				delete expectations.relative;
-				delete expectations.absolute;
-			}
-		}
-
 		return expectations;
 	}
 
@@ -803,10 +754,10 @@ QUnit.test( "fractions (see #7730 and #7885)", function( assert ) {
 
 	result = div.offset();
 
-	// Support: Chrome <=45 - 46
+	// Support: Chrome <=45 - 73+
 	// In recent Chrome these values differ a little.
 	assert.ok( Math.abs( result.top - expected.top ) < 0.25, "Check top within 0.25 of expected" );
-	assert.equal( result.left, expected.left, "Check left" );
+	assert.ok( Math.abs( result.left - expected.left ) < 0.25, "Check left within 0.25 of expected" );
 
 	div.remove();
 } );
@@ -816,13 +767,10 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
 
-	// Mobile Safari resize the iframe by its content meaning it's not possible to scroll
+	// Support: iOS <=8 - 12+
+	// Mobile Safari resizes the iframe by its content meaning it's not possible to scroll
 	// the iframe but only its parent element.
-	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
-	if (
-		/iphone os|ipad/i.test( navigator.userAgent ) ||
-		/android 4\.0/i.test( navigator.userAgent )
-	) {
+	if ( /iphone os|ipad/i.test( navigator.userAgent ) ) {
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 		assert.equal( true, true, "Can't scroll iframes in this environment" );
 

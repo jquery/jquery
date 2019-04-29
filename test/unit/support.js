@@ -36,7 +36,7 @@ if ( jQuery.css ) {
 }
 
 // This test checks CSP only for browsers with "Content-Security-Policy" header support
-// i.e. no old WebKit or old Firefox
+// i.e. no IE
 testIframe(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"mock.php?action=cspFrame",
@@ -59,244 +59,63 @@ testIframe(
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			edge: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
+				boxSizingReliable: true,
+				clearCloneStyle: true,
+				noCloneChecked: true,
+				optSelected: true,
+				radioValue: true
 			},
-			ie_10_11: {
-				"ajax": true,
-				"boxSizingReliable": false,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": false,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": false,
-				"optSelected": false,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": false,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			ie_9: {
-				"ajax": true,
-				"boxSizingReliable": false,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": false,
-				"cors": false,
-				"createHTMLDocument": true,
-				"noCloneChecked": false,
-				"optSelected": false,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": false,
-				"reliableMarginLeft": true,
-				"scrollboxSize": false
+			ie_11: {
+				boxSizingReliable: false,
+				clearCloneStyle: false,
+				noCloneChecked: false,
+				optSelected: false,
+				radioValue: false
 			},
 			chrome: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
+				boxSizingReliable: true,
+				clearCloneStyle: true,
+				noCloneChecked: true,
+				optSelected: true,
+				radioValue: true
 			},
 			safari: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			safari_9_10: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": false,
-				"pixelPosition": false,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
+				boxSizingReliable: true,
+				clearCloneStyle: true,
+				noCloneChecked: true,
+				optSelected: true,
+				radioValue: true
 			},
 			firefox: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			firefox_60: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": false,
-				"scrollboxSize": true
+				boxSizingReliable: true,
+				clearCloneStyle: true,
+				noCloneChecked: true,
+				optSelected: true,
+				radioValue: true
 			},
 			ios: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": true,
-				"pixelPosition": true,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			ios_9_10: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": false,
-				"pixelPosition": false,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			ios_8: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": false,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": false,
-				"pixelPosition": false,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			ios_7: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": true,
-				"checkOn": true,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": false,
-				"pixelPosition": false,
-				"radioValue": true,
-				"reliableMarginLeft": true,
-				"scrollboxSize": true
-			},
-			android: {
-				"ajax": true,
-				"boxSizingReliable": true,
-				"checkClone": false,
-				"checkOn": false,
-				"clearCloneStyle": true,
-				"cors": true,
-				"createHTMLDocument": true,
-				"noCloneChecked": true,
-				"optSelected": true,
-				"pixelBoxStyles": false,
-				"pixelPosition": false,
-				"radioValue": true,
-				"reliableMarginLeft": false,
-				"scrollboxSize": true
+				boxSizingReliable: true,
+				clearCloneStyle: true,
+				noCloneChecked: true,
+				optSelected: true,
+				radioValue: true
 			}
 		};
 
 	if ( /edge\//i.test( userAgent ) ) {
 		expected = expectedMap.edge;
-	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
-		expected = expectedMap.ie_10_11;
-	} else if ( /msie 9\.0/i.test( userAgent ) ) {
-		expected = expectedMap.ie_9;
+	} else if ( document.documentMode ) {
+		expected = expectedMap.ie_11;
 	} else if ( /chrome/i.test( userAgent ) ) {
 
-		// Catches Chrome on Android as well (i.e. the default
-		// Android browser on Android >= 4.4).
+		// Catches Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
-	} else if ( /\b(?:11|12)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
-	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari_9_10;
-	} else if ( /firefox\/(?:52|60)/i.test( userAgent ) ) {
-		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /(?:iphone|ipad);.*(?:iphone)? os (?:11|12)_/i.test( userAgent ) ) {
+	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
-	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_9_10;
-	} else if ( /iphone os 8_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_8;
-	} else if ( /iphone os 7_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_7;
-	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
-		expected = expectedMap.android;
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
@@ -315,13 +134,9 @@ testIframe(
 		assert.expect( j );
 
 		for ( i in expected ) {
-			if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
-				assert.equal( computedSupport[ i ], expected[ i ],
-					"jQuery.support['" + i + "']: " + computedSupport[ i ] +
-						", expected['" + i + "']: " + expected[ i ] );
-			} else {
-				assert.ok( true, "no ajax; skipping jQuery.support['" + i + "']" );
-			}
+			assert.equal( computedSupport[ i ], expected[ i ],
+				"jQuery.support['" + i + "']: " + computedSupport[ i ] +
+					", expected['" + i + "']: " + expected[ i ] );
 		}
 	} );
 
@@ -331,10 +146,7 @@ testIframe(
 		var prop, browserKey, supportTestName,
 			i = 0,
 			supportProps = {},
-			failingSupportProps = {},
-			whitelist = {
-				ajax: true
-			};
+			failingSupportProps = {};
 
 		for ( prop in computedSupport ) {
 			i++;
@@ -342,8 +154,8 @@ testIframe(
 
 		assert.expect( i );
 
-		// Record all support props and the failing ones and ensure everyone
-		// except a few on a whitelist are failing at least once.
+		// Record all support props and the failing ones and ensure every test
+		// is failing at least once.
 		for ( browserKey in expectedMap ) {
 			for ( supportTestName in expectedMap[ browserKey ] ) {
 				supportProps[ supportTestName ] = true;
@@ -354,8 +166,9 @@ testIframe(
 		}
 
 		for ( supportTestName in supportProps ) {
-			assert.ok( whitelist[ supportTestName ] || failingSupportProps[ supportTestName ],
-				"jQuery.support['" + supportTestName + "'] always succeeds; remove it?" );
+			assert.ok( failingSupportProps[ supportTestName ],
+				"jQuery.support['" + supportTestName +
+					"'] is expected to fail at least in one browser" );
 		}
 	} );
 

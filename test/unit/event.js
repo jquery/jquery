@@ -1414,7 +1414,7 @@ QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
 	form.remove();
 } );
 
-// Support: iOS 7 - 9
+// Support: iOS <=7 - 12+
 // iOS has the window.onbeforeunload field but doesn't support the beforeunload
 // handler making it impossible to feature-detect the support.
 QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
@@ -2434,7 +2434,7 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 		$link = jQuery( link ),
 		evt = document.createEvent( "MouseEvents" );
 
-	// Support: IE <=9 - 11 only
+	// Support: IE <=9 - 11+
 	// IE requires element to be in the body before it will dispatch
 	$link.appendTo( "body" ).on( "click", function( e ) {
 
@@ -2929,21 +2929,6 @@ QUnit.test( "trigger('click') on radio passes extra params", function( assert ) 
 		} );
 
 	$radio.trigger( "click", [ true ] );
-} );
-
-// Support: IE <=9 only
-// https://msdn.microsoft.com/en-us/library/hh801223(v=vs.85).aspx
-QUnit.test( "VML with special event handlers (trac-7071)", function( assert ) {
-	assert.expect( 1 );
-
-	var ns = jQuery( "<xml:namespace ns='urn:schemas-microsoft-com:vml' prefix='v' />" ).appendTo( "head" );
-
-	jQuery( "<v:oval id='oval' style='width:100pt;height:75pt;' fillcolor='red'> </v:oval>" ).appendTo( "#form" );
-	jQuery( "#form" ).on( "keydown", function() {
-		assert.ok( true, "no error was thrown" );
-	} );
-	jQuery( "#oval" ).trigger( "click" ).trigger( "keydown" );
-	ns.remove();
 } );
 
 QUnit.test( "focusout/focusin support", function( assert ) {

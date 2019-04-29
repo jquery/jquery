@@ -221,7 +221,7 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		assert.expectJqData( this, $span, "olddisplay" );
 	} );
 
-	QUnit[ document.body.attachShadow ? "test" : "skip" ](
+	QUnit[ document.body.getRootNode ? "test" : "skip" ](
 		"Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
 		assert.expect( 3 );
 
@@ -690,44 +690,35 @@ QUnit.test( "stop()", function( assert ) {
 	this.clock.tick( 100 );
 } );
 
-// In IE9 inside testswarm this test doesn't work properly
-( function() {
-	var type = "test";
+QUnit.test( "stop() - several in queue", function( assert ) {
+	assert.expect( 5 );
 
-	if ( QUnit.isSwarm && /msie 9\.0/i.test( window.navigator.userAgent ) ) {
-		type = "skip";
-	}
+	var nw, $foo = jQuery( "#foo" );
 
-	QUnit[ type ]( "stop() - several in queue", function( assert ) {
-		assert.expect( 5 );
+	// default duration is 400ms, so 800px ensures we aren't 0 or 1 after 1ms
+	$foo.hide().css( "width", 800 );
 
-		var nw, $foo = jQuery( "#foo" );
+	$foo.animate( { "width": "show" }, 400, "linear" );
+	$foo.animate( { "width": "hide" } );
+	$foo.animate( { "width": "show" } );
 
-		// default duration is 400ms, so 800px ensures we aren't 0 or 1 after 1ms
-		$foo.hide().css( "width", 800 );
+	this.clock.tick( 1 );
 
-		$foo.animate( { "width": "show" }, 400, "linear" );
-		$foo.animate( { "width": "hide" } );
-		$foo.animate( { "width": "show" } );
+	jQuery.fx.tick();
+	assert.equal( $foo.queue().length, 3, "3 in the queue" );
 
-		this.clock.tick( 1 );
+	nw = $foo.css( "width" );
+	assert.notEqual( parseFloat( nw ), 1, "An animation occurred " + nw );
+	$foo.stop();
 
-		jQuery.fx.tick();
-		assert.equal( $foo.queue().length, 3, "3 in the queue" );
+	assert.equal( $foo.queue().length, 2, "2 in the queue" );
+	nw = $foo.css( "width" );
+	assert.notEqual( parseFloat( nw ), 1, "Stop didn't reset the animation " + nw );
 
-		nw = $foo.css( "width" );
-		assert.notEqual( parseFloat( nw ), 1, "An animation occurred " + nw );
-		$foo.stop();
+	$foo.stop( true );
 
-		assert.equal( $foo.queue().length, 2, "2 in the queue" );
-		nw = $foo.css( "width" );
-		assert.notEqual( parseFloat( nw ), 1, "Stop didn't reset the animation " + nw );
-
-		$foo.stop( true );
-
-		assert.equal( $foo.queue().length, 0, "0 in the queue" );
-	} );
-} )();
+	assert.equal( $foo.queue().length, 0, "0 in the queue" );
+} );
 
 QUnit.test( "stop(clearQueue)", function( assert ) {
 	assert.expect( 4 );
