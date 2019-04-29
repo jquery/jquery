@@ -831,7 +831,7 @@ QUnit.module( "ajax", {
 				dataType: "script",
 				url: url( "missing_script_file.js" )
 			} );
-			assert.ok( true, "no error thrown from embedding script with unsuccessful-response src" );
+			assert.ok( true, "no error thrown for missing script" );
 			done();
 		} catch ( e ) {
 			assert.ok( false, "uncaught error" );
