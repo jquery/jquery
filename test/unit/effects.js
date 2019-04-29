@@ -221,8 +221,11 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		assert.expectJqData( this, $span, "olddisplay" );
 	} );
 
-	QUnit[ document.body.attachShadow ? "test" : "skip" ](
-		"Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
+	QUnit[
+		document.body.attachShadow && document.body.getRootNode ?
+			"test" :
+			"skip"
+		]( "Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
 		assert.expect( 3 );
 
 		jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
