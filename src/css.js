@@ -199,10 +199,6 @@ jQuery.extend( {
 		}
 	},
 
-	// Add in properties whose names you wish to fix before
-	// setting or getting the value
-	cssProps: {},
-
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
 
