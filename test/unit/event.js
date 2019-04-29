@@ -3041,6 +3041,49 @@ QUnit.test( "focus-blur order (#12868)", function( assert ) {
 	}, 50 );
 } );
 
+QUnit.test( "Event handling works with multiple async focus events (gh-4350)", function( assert ) {
+	assert.expect( 3 );
+
+	var remaining = 3,
+		input = jQuery( "#name" ),
+
+		// Support: IE <=9 - 11+
+		// focus and blur events are asynchronous; this is the resulting mess.
+		// The browser window must be topmost for this to work properly!!
+		done = assert.async();
+
+	input
+		.on( "focus", function() {
+			remaining--;
+			assert.ok( true, "received focus event, expecting " + remaining + " more" );
+			if ( remaining > 0 ) {
+				input.trigger( "blur" );
+			} else {
+				done();
+			}
+		} )
+		.on( "blur", function() {
+			setTimeout( function() {
+				input.trigger( "focus" );
+			} );
+		} );
+
+	// gain focus
+	input.trigger( "focus" );
+
+	// DOM focus is unreliable in TestSwarm
+	setTimeout( function() {
+		if ( QUnit.isSwarm && remaining === 3 ) {
+			assert.ok( true, "GAP: Could not observe focus change" );
+			assert.ok( true, "GAP: Could not observe focus change" );
+			assert.ok( true, "GAP: Could not observe focus change" );
+			setTimeout( function() {
+				done();
+			} );
+		}
+	} );
+} );
+
 QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", function( assert ) {
 	assert.expect( 17 );
 
