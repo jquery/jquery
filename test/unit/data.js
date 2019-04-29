@@ -722,10 +722,28 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 			"2-num-start": {
 				key: "2NumStart",
 				value: true
+			},
+
+			// Vendor prefixes are not treated in a special way.
+			"-ms-foo": {
+				key: "MsFoo",
+				value: true
+			},
+			"-moz-foo": {
+				key: "MozFoo",
+				value: true
+			},
+			"-webkit-foo": {
+				key: "WebkitFoo",
+				value: true
+			},
+			"-fake-foo": {
+				key: "FakeFoo",
+				value: true
 			}
 		};
 
-	assert.expect( 24 );
+	assert.expect( 32 );
 
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val.value );

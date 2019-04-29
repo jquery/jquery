@@ -1,11 +1,11 @@
 define( [
 	"./core",
 	"./core/access",
-	"./core/camelCase",
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/isAutoPx",
+	"./css/cssCamelCase",
 	"./css/var/getStyles",
 	"./css/var/swap",
 	"./css/curCSS",
@@ -17,7 +17,7 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, access, camelCase, rcssNum, rnumnonpx, cssExpand, isAutoPx,
+], function( jQuery, access, rcssNum, rnumnonpx, cssExpand, isAutoPx, cssCamelCase,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
 
 "use strict";
@@ -213,7 +213,7 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
-			origName = camelCase( name ),
+			origName = cssCamelCase( name ),
 			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
@@ -281,7 +281,7 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = camelCase( name ),
+			origName = cssCamelCase( name ),
 			isCustomProp = rcustomProp.test( name );
 
 		// Make sure that we're working with the right name. We don't

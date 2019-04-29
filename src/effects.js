@@ -1,6 +1,5 @@
 define( [
 	"./core",
-	"./core/camelCase",
 	"./var/document",
 	"./var/isFunction",
 	"./var/rcssNum",
@@ -9,6 +8,7 @@ define( [
 	"./css/var/isHiddenWithinTree",
 	"./css/var/swap",
 	"./css/adjustCSS",
+	"./css/cssCamelCase",
 	"./data/var/dataPriv",
 	"./css/showHide",
 
@@ -19,8 +19,8 @@ define( [
 	"./manipulation",
 	"./css",
 	"./effects/Tween"
-], function( jQuery, camelCase, document, isFunction, rcssNum, rnothtmlwhite, cssExpand,
-	isHiddenWithinTree, swap, adjustCSS, dataPriv, showHide ) {
+], function( jQuery, document, isFunction, rcssNum, rnothtmlwhite, cssExpand,
+	isHiddenWithinTree, swap, adjustCSS, cssCamelCase, dataPriv, showHide ) {
 
 "use strict";
 
@@ -261,7 +261,7 @@ function propFilter( props, specialEasing ) {
 
 	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
-		name = camelCase( index );
+		name = cssCamelCase( index );
 		easing = specialEasing[ name ];
 		value = props[ index ];
 		if ( Array.isArray( value ) ) {
