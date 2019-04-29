@@ -2952,59 +2952,74 @@ QUnit.test( "focusout/focusin support", function( assert ) {
 	var focus,
 		parent = jQuery( "<div>" ),
 		input = jQuery( "<input>" ),
-		inputExternal = jQuery( "<input>" );
+		inputExternal = jQuery( "<input>" ),
+
+		// Support: IE <=9 - 11+
+		// focus and blur events are asynchronous; this is the resulting mess.
+		// The browser window must be topmost for this to work properly!!
+		done = assert.async();
 
 	parent.append( input );
 	jQuery( "#qunit-fixture" ).append( parent ).append( inputExternal );
 
-	parent
-		.on( "focus", function() {
-			assert.ok( false, "parent: focus not fired" );
-		} )
-		.on( "focusin", function() {
-			assert.ok( true, "parent: focusin fired" );
-		} )
-		.on( "blur", function() {
-			assert.ok( false, "parent: blur not fired" );
-		} )
-		.on( "focusout", function() {
-			assert.ok( true, "parent: focusout fired" );
-		} );
+	// initially, lose focus
+	inputExternal[ 0 ].focus();
 
-	input
-		.on( "focus", function() {
-			assert.ok( true, "element: focus fired" );
-			focus = true;
-		} )
-		.on( "focusin", function() {
-			assert.ok( true, "element: focusin fired" );
-		} )
-		.on( "blur", function() {
-			assert.ok( true, "parent: blur fired" );
-		} )
-		.on( "focusout", function() {
-			assert.ok( true, "element: focusout fired" );
-		} );
+	setTimeout( function() {
+		parent
+			.on( "focus", function() {
+				assert.ok( false, "parent: focus not fired" );
+			} )
+			.on( "focusin", function() {
+				assert.ok( true, "parent: focusin fired" );
+			} )
+			.on( "blur", function() {
+				assert.ok( false, "parent: blur not fired" );
+			} )
+			.on( "focusout", function() {
+				assert.ok( true, "parent: focusout fired" );
+			} );
 
-	// gain focus
-	input.trigger( "focus" );
+		input
+			.on( "focus", function() {
+				assert.ok( true, "element: focus fired" );
+			} )
+			.on( "focusin", function() {
+				assert.ok( true, "element: focusin fired" );
+				focus = true;
+			} )
+			.on( "blur", function() {
+				assert.ok( true, "parent: blur fired" );
+			} )
+			.on( "focusout", function() {
+				assert.ok( true, "element: focusout fired" );
+			} );
 
-	// then lose it
-	inputExternal.trigger( "focus" );
+		// gain focus
+		input[ 0 ].focus();
 
-	// cleanup
-	parent.off();
-	input.off();
+		// then lose it
+		inputExternal[ 0 ].focus();
 
-	// DOM focus is unreliable in TestSwarm
-	if ( QUnit.isSwarm && !focus ) {
-		assert.ok( true, "GAP: Could not observe focus change" );
-		assert.ok( true, "GAP: Could not observe focus change" );
-		assert.ok( true, "GAP: Could not observe focus change" );
-		assert.ok( true, "GAP: Could not observe focus change" );
-		assert.ok( true, "GAP: Could not observe focus change" );
-		assert.ok( true, "GAP: Could not observe focus change" );
-	}
+		setTimeout( function() {
+
+			// DOM focus is unreliable in TestSwarm
+			if ( QUnit.isSwarm && !focus ) {
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+				assert.ok( true, "GAP: Could not observe focus change" );
+			}
+
+			// cleanup
+			parent.off();
+			input.off();
+
+			done();
+		}, 50 );
+	}, 50 );
 } );
 
 QUnit.test( "focus-blur order (#12868)", function( assert ) {
