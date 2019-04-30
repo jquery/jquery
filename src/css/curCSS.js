@@ -2,7 +2,7 @@ define( [
 	"../core",
 	"../core/isAttached",
 	"./var/getStyles"
-], function( jQuery, isAttached, rboxStyle, getStyles ) {
+], function( jQuery, isAttached, getStyles ) {
 
 "use strict";
 
