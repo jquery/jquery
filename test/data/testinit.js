@@ -49,7 +49,7 @@ this.q = function() {
 /**
  * Asserts that a select matches the given IDs
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - DOM selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @param {(String|Node)=document} context - Selector context
  * @example match("Check for something", "p", ["foo", "bar"]);
@@ -64,7 +64,7 @@ function match( message, selector, expectedIds, context, assert ) {
  * Asserts that a select matches the given IDs.
  * The select is not bound by a context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - DOM selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example t("Check for something", "p", ["foo", "bar"]);
  */
@@ -76,7 +76,7 @@ QUnit.assert.t = function( message, selector, expectedIds ) {
  * Asserts that a select matches the given IDs.
  * The select is performed within the `#qunit-fixture` context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - DOM selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example selectInFixture("Check for something", "p", ["foo", "bar"]);
  */

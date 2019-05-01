@@ -76,7 +76,7 @@ module.exports = function( grunt ) {
 						include: [ "core/ready-no-deferred" ]
 					},
 					event: [ "deprecated/ajax-event-alias", "deprecated/event" ],
-					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
+					"selector-full": [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
 		},
@@ -86,9 +86,6 @@ module.exports = function( grunt ) {
 					destPrefix: "external"
 				},
 				files: {
-					"sizzle/dist": "sizzle/dist",
-					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
-
 					"core-js/core-js.js": "core-js/client/core.min.js",
 					"core-js/LICENSE.txt": "core-js/LICENSE",
 

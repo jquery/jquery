@@ -18,21 +18,12 @@ module.exports = function( Release ) {
 	];
 	const cdn = require( "./release/cdn" );
 	const dist = require( "./release/dist" );
-	const ensureSizzle = require( "./release/ensure-sizzle" );
 
 	const npmTags = Release.npmTags;
 
 	Release.define( {
 		npmPublish: true,
 		issueTracker: "github",
-
-		/**
-		 * Ensure the repo is in a proper state before release
-		 * @param {Function} callback
-		 */
-		checkRepoState: function( callback ) {
-			ensureSizzle( Release, callback );
-		},
 
 		/**
 		 * Set the version in the src folder for distributing AMD

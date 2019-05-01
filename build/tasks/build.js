@@ -72,13 +72,6 @@ module.exports = function( grunt ) {
 				)
 				.replace( rdefineEnd, "" );
 
-		// Sizzle treatment
-		} else if ( /\/sizzle$/.test( name ) ) {
-			contents = "var Sizzle =\n" + contents
-
-				// Remove EXPOSE lines from Sizzle
-				.replace( /\/\/\s*EXPOSE[\w\W]*\/\/\s*EXPOSE/, "return Sizzle;" );
-
 		} else {
 
 			contents = contents
@@ -220,7 +213,8 @@ module.exports = function( grunt ) {
 						grunt.log.error( "Module \"" + module + "\" is a minimum requirement." );
 						if ( module === "selector" ) {
 							grunt.log.error(
-								"If you meant to replace Sizzle, use -sizzle instead."
+								"If you meant to replace the full selector module, " +
+								"use `-selector-full` instead."
 							);
 						}
 					}
@@ -259,9 +253,12 @@ module.exports = function( grunt ) {
 			excluder( flag );
 		}
 
-		// Handle Sizzle exclusion
-		// Replace with selector-native
-		if ( ( index = excluded.indexOf( "sizzle" ) ) > -1 ) {
+		// Handle full selector module exclusion.
+		// Replace with selector-native.
+		// Recognize the legacy `sizzle` alias
+		if ( ( index = excluded.indexOf( "selector-full" ) ) > -1 ||
+			( index = excluded.indexOf( "sizzle" ) ) > -1
+		) {
 			config.rawText.selector = "define(['./selector-native']);";
 			excluded.splice( index, 1 );
 		}

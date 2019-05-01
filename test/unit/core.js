@@ -66,7 +66,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	assert.equal( jQuery( "" ).length, 0, "jQuery('') === jQuery([])" );
 	assert.deepEqual( jQuery( obj ).get(), obj.get(), "jQuery(jQueryObj) == jQueryObj" );
 
-	// Invalid #id goes to Sizzle which will throw an error (gh-1682)
+	// Invalid #id will throw an error (gh-1682)
 	try {
 		jQuery( "#" );
 	} catch ( e ) {

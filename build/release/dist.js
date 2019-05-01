@@ -69,7 +69,6 @@ module.exports = function( Release, files, complete ) {
 
 		// Copy dist files
 		const distFolder = `${ Release.dir.dist }/dist`;
-		const externalFolder = `${ Release.dir.dist }/external`;
 		const readme = await fs.readFile(
 			`${ Release.dir.repo }/build/fixtures/README.md`, "utf8" );
 		const rmIgnore = [ ...files, "node_modules" ]
@@ -92,10 +91,6 @@ module.exports = function( Release, files, complete ) {
 		files.forEach( function( file ) {
 			shell.cp( "-f", `${ Release.dir.repo }/${ file }`, distFolder );
 		} );
-
-		// Copy Sizzle
-		shell.mkdir( "-p", externalFolder );
-		shell.cp( "-rf", `${ Release.dir.repo }/external/sizzle`, externalFolder );
 
 		// Copy other files
 		extras.forEach( function( file ) {
