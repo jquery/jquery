@@ -64,8 +64,7 @@ module.exports = function( grunt ) {
 					deferred: {
 						remove: [ "ajax", "effects", "queue", "core/ready" ],
 						include: [ "core/ready-no-deferred" ]
-					},
-					sizzle: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
+					}
 				}
 			}
 		},
@@ -75,9 +74,6 @@ module.exports = function( grunt ) {
 					destPrefix: "external"
 				},
 				files: {
-					"sizzle/dist": "sizzle/dist",
-					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
-
 					"npo/npo.js": "native-promise-only/npo.js",
 
 					"qunit/qunit.js": "qunit/qunit/qunit.js",

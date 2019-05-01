@@ -45,7 +45,7 @@ this.q = function() {
 /**
  * Asserts that a select matches the given IDs
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @param {(String|Node)=document} context - Selector context
  * @example match("Check for something", "p", ["foo", "bar"]);
@@ -60,7 +60,7 @@ function match( message, selector, expectedIds, context, assert ) {
  * Asserts that a select matches the given IDs.
  * The select is not bound by a context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example t("Check for something", "p", ["foo", "bar"]);
  */
@@ -72,7 +72,7 @@ QUnit.assert.t = function( message, selector, expectedIds ) {
  * Asserts that a select matches the given IDs.
  * The select is performed within the `#qunit-fixture` context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example selectInFixture("Check for something", "p", ["foo", "bar"]);
  */
@@ -279,6 +279,18 @@ if ( !window.__karma__ ) {
 // Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
 QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
 QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
+
+// Says whether jQuery positional selector extensions are supported.
+// A full selector engine is required to support them as they need to be evaluated
+// left-to-right. Remove that property when support for positional selectors is dropped.
+// if your custom jQuery versions relies more on native qSA.
+QUnit.jQuerySelectorsPos = true;
+
+// Says whether jQuery selector extensions are supported. Change that to `false`
+// if your custom jQuery versions relies more on native qSA.
+// This doesn't include support for positional selectors (see above).
+// TODO do we want to keep this or just assume support for jQuery extensions?
+QUnit.jQuerySelectors = true;
 
 // Support: IE 11+
 // A variable to make it easier to skip specific tests in IE, mostly

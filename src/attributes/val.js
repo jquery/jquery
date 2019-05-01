@@ -84,7 +84,7 @@ jQuery.extend( {
 		option: {
 			get: function( elem ) {
 
-				var val = jQuery.find.attr( elem, "value" );
+				var val = elem.getAttribute( "value" );
 				return val != null ?
 					val :
 
