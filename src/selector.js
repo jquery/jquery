@@ -351,26 +351,6 @@ function markFunction( fn ) {
 }
 
 /**
- * Support testing using an element
- * @param {Function} fn Passed the created element and returns a boolean result
- */
-function assert( fn ) {
-	var el = document.createElement( "fieldset" );
-
-	try {
-		return !!fn( el );
-	} catch ( e ) {
-		return false;
-	} finally {
-
-		// Remove from its parent by default
-		if ( el.parentNode ) {
-			el.parentNode.removeChild( el );
-		}
-	}
-}
-
-/**
  * Returns a function to use in pseudos for input types
  * @param {String} type
  */
@@ -603,29 +583,31 @@ setDocument = Sizzle.setDocument = function( node ) {
 
 	rbuggyQSA = [];
 
-	assert( function( el ) {
-		el.innerHTML = "<a href='' disabled='disabled'></a>" +
-			"<select disabled='disabled'><option/></select>";
+	var testEl = document.createElement( "fieldset" );
 
-		// Support: Windows 8 Native Apps
-		// The type and name attributes are restricted during .innerHTML assignment
-		var input = document.createElement( "input" );
-		input.setAttribute( "type", "hidden" );
-		el.appendChild( input ).setAttribute( "name", "D" );
+	testEl.innerHTML = "<a href='' disabled='disabled'></a>" +
+		"<select disabled='disabled'><option/></select>";
 
-		// Support: Chrome 74+
-		// :enabled/:disabled and hidden elements (hidden elements are still enabled)
-		if ( el.querySelectorAll( ":enabled" ).length !== 2 ) {
-			rbuggyQSA.push( ":enabled", ":disabled" );
-		}
+	// Support: Windows 8 Native Apps
+	// The type and name attributes are restricted during .innerHTML assignment
+	var input = document.createElement( "input" );
+	input.setAttribute( "type", "hidden" );
+	testEl.appendChild( input ).setAttribute( "name", "D" );
 
-		// Support: IE 9 - 11+
-		// IE's :disabled selector does not pick up the children of disabled fieldsets
-		docElem.appendChild( el ).disabled = true;
-		if ( el.querySelectorAll( ":disabled" ).length !== 2 ) {
-			rbuggyQSA.push( ":enabled", ":disabled" );
-		}
-	} );
+	// Support: Chrome 74+
+	// :enabled/:disabled and hidden elements (hidden elements are still enabled)
+	if ( testEl.querySelectorAll( ":enabled" ).length !== 2 ) {
+		rbuggyQSA.push( ":enabled", ":disabled" );
+	}
+
+	// Support: IE 9 - 11+
+	// IE's :disabled selector does not pick up the children of disabled fieldsets
+	docElem.appendChild( testEl ).disabled = true;
+	if ( testEl.querySelectorAll( ":disabled" ).length !== 2 ) {
+		rbuggyQSA.push( ":enabled", ":disabled" );
+	}
+
+	docElem.removeChild( testEl );
 
 	matches = docElem.matches || docElem.msMatchesSelector;
 
