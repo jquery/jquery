@@ -808,6 +808,19 @@ QUnit.test( "contents() for <object />", function( assert ) {
 	jQuery( "#qunit-fixture" ).append( svgObject );
 } );
 
+QUnit.test( "contents() for <object /> with children", function( assert ) {
+	assert.expect( 1 );
+
+	var object = "<object type='application/x-shockwave-flash' width='200' height='300' id='penguin'>" +
+		"<param name='movie' value='flash/penguin.swf'>" +
+		"<param name='quality' value='high'>" +
+		"<img src='images/penguin.jpg' width='200' height='300' alt='Penguin'>" +
+	"</object>";
+
+	var contents = jQuery( object ).contents();
+	assert.equal( contents.length, 3, "Check object contents children are correct" );
+} );
+
 QUnit.test( "contents() for <frame />", function( assert ) {
 	assert.expect( 2 );
 
