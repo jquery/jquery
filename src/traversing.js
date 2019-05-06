@@ -1,5 +1,6 @@
 define( [
 	"./core",
+	"./var/getProto",
 	"./var/indexOf",
 	"./traversing/var/dir",
 	"./traversing/var/siblings",
@@ -9,7 +10,7 @@ define( [
 	"./core/init",
 	"./traversing/findFilter",
 	"./selector"
-], function( jQuery, indexOf, dir, siblings, rneedsContext, nodeName ) {
+], function( jQuery, getProto, indexOf, dir, siblings, rneedsContext, nodeName ) {
 
 "use strict";
 
@@ -145,7 +146,13 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		if ( elem.contentDocument != null ) {
+		if ( elem.contentDocument != null &&
+
+			// Support: IE 11+
+			// <object> elements with no `data` attribute has an object
+			// `contentDocument` with a `null` prototype.
+			getProto( elem.contentDocument ) ) {
+
 			return elem.contentDocument;
 		}
 
