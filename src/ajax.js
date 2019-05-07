@@ -748,9 +748,9 @@ jQuery.extend( {
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
 
-			// Use a noop converter for bad returns
-			if ( !isSuccess ) {
-				s.converters[ "text " + s.dataType ] = function() {};
+			// Use a noop converter for missing script
+			if ( !isSuccess && s.dataType === "script" ) {
+				s.converters[ "text script" ] = function() {};
 			}
 
 			// Convert no matter what (that way responseXXX fields are always set)
