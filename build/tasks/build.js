@@ -65,7 +65,7 @@ module.exports = function( grunt ) {
 		if ( /.\/var\//.test( path.replace( process.cwd(), "" ) ) ) {
 			contents = contents
 				.replace(
-					/define\([\w\W]*?return/,
+					/define\(\s*(["'])[\w\W]*?\1[\w\W]*?return/,
 					"var " +
 					( /var\/([\w-]+)/.exec( name )[ 1 ] ) +
 					" ="
