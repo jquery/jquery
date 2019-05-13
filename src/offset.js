@@ -1,7 +1,6 @@
 define( [
 	"./core",
 	"./core/access",
-	"./var/document",
 	"./var/documentElement",
 	"./var/isFunction",
 	"./css/var/rnumnonpx",
@@ -12,8 +11,8 @@ define( [
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, isFunction, rnumnonpx,
-             curCSS, addGetHookIf, support, isWindow ) {
+], function( jQuery, access, documentElement, isFunction, rnumnonpx,
+	curCSS, addGetHookIf, support, isWindow ) {
 
 "use strict";
 
@@ -214,7 +213,7 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 // Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
 // getComputedStyle returns percent when specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
+jQuery.each( [ "top", "left" ], function( _i, prop ) {
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function( elem, computed ) {
 			if ( computed ) {

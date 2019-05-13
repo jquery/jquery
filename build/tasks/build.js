@@ -372,7 +372,7 @@ module.exports = function( grunt ) {
 
 		// Ask for permission the first time
 		if ( insight.optOut === undefined ) {
-			insight.askPermission( null, function( error, result ) {
+			insight.askPermission( null, function( _error, result ) {
 				exec( result );
 			} );
 		} else {
