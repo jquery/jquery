@@ -118,7 +118,7 @@ jQuery.each( {
 	parents: function( elem ) {
 		return dir( elem, "parentNode" );
 	},
-	parentsUntil: function( elem, i, until ) {
+	parentsUntil: function( elem, _i, until ) {
 		return dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
@@ -133,10 +133,10 @@ jQuery.each( {
 	prevAll: function( elem ) {
 		return dir( elem, "previousSibling" );
 	},
-	nextUntil: function( elem, i, until ) {
+	nextUntil: function( elem, _i, until ) {
 		return dir( elem, "nextSibling", until );
 	},
-	prevUntil: function( elem, i, until ) {
+	prevUntil: function( elem, _i, until ) {
 		return dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {

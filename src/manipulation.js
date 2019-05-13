@@ -4,7 +4,6 @@ define( [
 	"./var/concat",
 	"./var/isIE",
 	"./var/push",
-	"./var/rcheckableType",
 	"./core/access",
 	"./manipulation/var/rtagName",
 	"./manipulation/var/rscriptType",
@@ -23,9 +22,8 @@ define( [
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, isAttached, concat, isIE, push,
-	rcheckableType, access, rtagName, rscriptType,
-	wrapMap, getAll, setGlobalEval, buildFragment,
+], function( jQuery, isAttached, concat, isIE, push, access, rtagName,
+	rscriptType, wrapMap, getAll, setGlobalEval, buildFragment,
 	dataPriv, dataUser, acceptData, DOMEval, nodeName ) {
 
 "use strict";

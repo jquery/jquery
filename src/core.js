@@ -4,7 +4,6 @@
 
 define( [
 	"./var/arr",
-	"./var/document",
 	"./var/getProto",
 	"./var/slice",
 	"./var/concat",
@@ -20,7 +19,7 @@ define( [
 	"./var/isWindow",
 	"./core/DOMEval",
 	"./core/toType"
-], function( arr, document, getProto, slice, concat, push, indexOf,
+], function( arr, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
 	trim, support, isWindow, DOMEval, toType ) {
 
@@ -365,7 +364,7 @@ if ( typeof Symbol === "function" ) {
 
 // Populate the class2type map
 jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symbol".split( " " ),
-function( i, name ) {
+function( _i, name ) {
 	class2type[ "[object " + name + "]" ] = name.toLowerCase();
 } );
 
