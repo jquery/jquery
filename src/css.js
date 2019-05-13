@@ -2,6 +2,7 @@ define( [
 	"./core",
 	"./core/access",
 	"./var/rcssNum",
+	"./var/isIE",
 	"./css/var/rnumnonpx",
 	"./css/var/cssExpand",
 	"./css/isAutoPx",
@@ -10,14 +11,13 @@ define( [
 	"./css/var/swap",
 	"./css/curCSS",
 	"./css/adjustCSS",
-	"./css/support",
 	"./css/finalPropName",
 
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, access, rcssNum, rnumnonpx, cssExpand, isAutoPx, cssCamelCase,
-	getStyles, swap, curCSS, adjustCSS, support, finalPropName ) {
+], function( jQuery, access, rcssNum, isIE, rnumnonpx, cssExpand, isAutoPx,
+	cssCamelCase, getStyles, swap, curCSS, adjustCSS, finalPropName ) {
 
 "use strict";
 
@@ -121,7 +121,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
 		// Fake content-box until we know it's needed to know the true value.
-		boxSizingNeeded = !support.boxSizingReliable() || extra,
+		boxSizingNeeded = isIE || extra,
 		isBorderBox = boxSizingNeeded &&
 			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox,
@@ -140,11 +140,12 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 	// Fall back to offsetWidth/offsetHeight when value is "auto"
 	// This happens for inline elements with no explicit setting (gh-3571)
+	//
 	// Support: IE 9 - 11+
 	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
 	// We use getClientRects() to check for hidden/disconnected.
 	// In those cases, the computed value can be trusted to be border-box
-	if ( ( !support.boxSizingReliable() && isBorderBox || val === "auto" ) &&
+	if ( ( isIE && isBorderBox || val === "auto" ) &&
 		elem.getClientRects().length ) {
 
 		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
@@ -239,8 +240,9 @@ jQuery.extend( {
 				value += ret && ret[ 3 ] || ( isAutoPx( origName ) ? "px" : "" );
 			}
 
-			// background-* props affect original clone's values
-			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
+			// Support: IE <=9 - 11+
+			// background-* props of a cloned element affect the source element (#8908)
+			if ( isIE && value === "" && name.indexOf( "background" ) === 0 ) {
 				style[ name ] = "inherit";
 			}
 

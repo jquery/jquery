@@ -773,7 +773,7 @@ QUnit.test( "contents() for <template />", function( assert ) {
 	assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
 } );
 
-QUnit[ "content" in document.createElement( "template" ) ? "test" : "skip" ]( "contents() for <template /> remains inert", function( assert ) {
+QUnit.testUnlessIE( "contents() for <template /> remains inert", function( assert ) {
 	assert.expect( 2 );
 
 	Globals.register( "testScript" );

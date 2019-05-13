@@ -58,48 +58,12 @@ testIframe(
 	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
-			edge: {
-				boxSizingReliable: true,
-				clearCloneStyle: true,
-				noCloneChecked: true,
-				optSelected: true,
-				radioValue: true
-			},
-			ie_11: {
-				boxSizingReliable: false,
-				clearCloneStyle: false,
-				noCloneChecked: false,
-				optSelected: false,
-				radioValue: false
-			},
-			chrome: {
-				boxSizingReliable: true,
-				clearCloneStyle: true,
-				noCloneChecked: true,
-				optSelected: true,
-				radioValue: true
-			},
-			safari: {
-				boxSizingReliable: true,
-				clearCloneStyle: true,
-				noCloneChecked: true,
-				optSelected: true,
-				radioValue: true
-			},
-			firefox: {
-				boxSizingReliable: true,
-				clearCloneStyle: true,
-				noCloneChecked: true,
-				optSelected: true,
-				radioValue: true
-			},
-			ios: {
-				boxSizingReliable: true,
-				clearCloneStyle: true,
-				noCloneChecked: true,
-				optSelected: true,
-				radioValue: true
-			}
+			edge: {},
+			ie_11: {},
+			chrome: {},
+			safari: {},
+			firefox: {},
+			ios: {}
 		};
 
 	if ( /edge\//i.test( userAgent ) ) {
@@ -140,8 +104,8 @@ testIframe(
 		}
 	} );
 
-	QUnit.test( "Verify most support tests are failing in one " +
-		"of tested browsers", function( assert ) {
+	QUnit.test( "Verify support tests are failing in one of tested browsers",
+		function( assert ) {
 
 		var prop, browserKey, supportTestName,
 			i = 0,

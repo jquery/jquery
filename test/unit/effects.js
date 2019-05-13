@@ -221,6 +221,8 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		assert.expectJqData( this, $span, "olddisplay" );
 	} );
 
+	// Support: IE 11+, Edge 12 - 18+
+	// IE/Edge don't support Shadow DOM.
 	QUnit[ document.body.getRootNode ? "test" : "skip" ](
 		"Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
 		assert.expect( 3 );

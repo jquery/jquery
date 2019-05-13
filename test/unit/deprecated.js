@@ -41,29 +41,25 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 		.remove();
 } );
 
-if ( jQuery.fn.hover ) {
-	QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
-		assert.expect( 1 );
+QUnit[ jQuery.fn.hover ? "test" : "skip" ]( "hover() mouseenter mouseleave", function( assert ) {
+	assert.expect( 1 );
 
-		var times = 0,
-			handler1 = function() { ++times; },
-			handler2 = function() { ++times; };
+	var times = 0,
+		handler1 = function() { ++times; },
+		handler2 = function() { ++times; };
 
-		jQuery( "#firstp" )
-			.hover( handler1, handler2 )
-			.mouseenter().mouseleave()
-			.off( "mouseenter", handler1 )
-			.off( "mouseleave", handler2 )
-			.hover( handler1 )
-			.mouseenter().mouseleave()
-			.off( "mouseenter mouseleave", handler1 )
-			.mouseenter().mouseleave();
+	jQuery( "#firstp" )
+		.hover( handler1, handler2 )
+		.mouseenter().mouseleave()
+		.off( "mouseenter", handler1 )
+		.off( "mouseleave", handler2 )
+		.hover( handler1 )
+		.mouseenter().mouseleave()
+		.off( "mouseenter mouseleave", handler1 )
+		.mouseenter().mouseleave();
 
-		assert.equal( times, 4, "hover handlers fired" );
-
-	} );
-}
-
+	assert.equal( times, 4, "hover handlers fired" );
+} );
 
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( assert ) {
 	assert.expect( 5 );

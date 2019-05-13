@@ -989,29 +989,37 @@ QUnit.test( "val() with non-matching values on dropdown list", function( assert 
 	select6.remove();
 } );
 
-if ( "value" in document.createElement( "meter" ) &&
-			"value" in document.createElement( "progress" ) ) {
+QUnit.test( "val() respects numbers without exception (Bug #9319) - progress",
+	function( assert ) {
 
-	QUnit.test( "val() respects numbers without exception (Bug #9319)", function( assert ) {
+	assert.expect( 2 );
 
-		assert.expect( 4 );
+	var $progress = jQuery( "<progress max='10' value='1.5'></progress>" );
 
-		var $meter = jQuery( "<meter min='0' max='10' value='5.6'></meter>" ),
-			$progress = jQuery( "<progress max='10' value='1.5'></progress>" );
+	try {
+		assert.equal( typeof $progress.val(), "number", "progress, returns a number and does not throw exception" );
+		assert.equal( $progress.val(), $progress[ 0 ].value, "progress, api matches host and does not throw exception" );
 
-		try {
-			assert.equal( typeof $meter.val(), "number", "meter, returns a number and does not throw exception" );
-			assert.equal( $meter.val(), $meter[ 0 ].value, "meter, api matches host and does not throw exception" );
+	} catch ( e ) {}
 
-			assert.equal( typeof $progress.val(), "number", "progress, returns a number and does not throw exception" );
-			assert.equal( $progress.val(), $progress[ 0 ].value, "progress, api matches host and does not throw exception" );
+	$progress.remove();
+} );
 
-		} catch ( e ) {}
+// IE doesn't support <meter>
+QUnit.testUnlessIE( "val() respects numbers without exception (Bug #9319) - meter",
+	function( assert ) {
 
-		$meter.remove();
-		$progress.remove();
-	} );
-}
+	assert.expect( 2 );
+
+	var $meter = jQuery( "<meter min='0' max='10' value='5.6'></meter>" );
+
+	try {
+		assert.equal( typeof $meter.val(), "number", "meter, returns a number and does not throw exception" );
+		assert.equal( $meter.val(), $meter[ 0 ].value, "meter, api matches host and does not throw exception" );
+	} catch ( e ) {}
+
+	$meter.remove();
+} );
 
 var testVal = function( valueObj, assert ) {
 	assert.expect( 9 );

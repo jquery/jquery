@@ -271,64 +271,61 @@ QUnit.test( ".promise(obj)", function( assert ) {
 	assert.strictEqual( promise, obj, ".promise(type, obj) returns obj" );
 } );
 
-if ( jQuery.fn.stop ) {
-	QUnit.test( "delay() can be stopped", function( assert ) {
-		var done = assert.async();
-		assert.expect( 3 );
-		var storage = {};
-		jQuery( {} )
-			.queue( "alternate", function( next ) {
-				storage.alt1 = true;
-				assert.ok( true, "This first function was dequeued" );
-				next();
-			} )
-			.delay( 1000, "alternate" )
-			.queue( "alternate", function() {
-				storage.alt2 = true;
-				assert.ok( true, "The function was dequeued immediately, the delay was stopped" );
-			} )
-			.dequeue( "alternate" )
+QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "delay() can be stopped", function( assert ) {
+	var done = assert.async();
+	assert.expect( 3 );
+	var storage = {};
+	jQuery( {} )
+		.queue( "alternate", function( next ) {
+			storage.alt1 = true;
+			assert.ok( true, "This first function was dequeued" );
+			next();
+		} )
+		.delay( 1000, "alternate" )
+		.queue( "alternate", function() {
+			storage.alt2 = true;
+			assert.ok( true, "The function was dequeued immediately, the delay was stopped" );
+		} )
+		.dequeue( "alternate" )
 
-			// stop( "alternate", false ) will NOT clear the queue, so it should automatically dequeue the next
-			.stop( "alternate", false, false )
+		// stop( "alternate", false ) will NOT clear the queue, so it should automatically dequeue the next
+		.stop( "alternate", false, false )
 
-			// this test
-			.delay( 1 )
-			.queue( function() {
-				storage.default1 = true;
-				assert.ok( false, "This queue should never run" );
-			} )
+		// this test
+		.delay( 1 )
+		.queue( function() {
+			storage.default1 = true;
+			assert.ok( false, "This queue should never run" );
+		} )
 
-			// stop( clearQueue ) should clear the queue
-			.stop( true, false );
+		// stop( clearQueue ) should clear the queue
+		.stop( true, false );
 
-		assert.deepEqual( storage, { alt1: true, alt2: true }, "Queue ran the proper functions" );
+	assert.deepEqual( storage, { alt1: true, alt2: true }, "Queue ran the proper functions" );
 
-		setTimeout( function() {
+	setTimeout( function() {
+		done();
+	}, 1500 );
+} );
+
+QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "queue stop hooks", function( assert ) {
+	assert.expect( 2 );
+	var done = assert.async();
+	var foo = jQuery( "#foo" );
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			assert.equal( !!gotoEnd, false, "Stopped without gotoEnd" );
+		};
+	} );
+	foo.stop();
+
+	foo.queue( function( next, hooks ) {
+		hooks.stop = function( gotoEnd ) {
+			assert.equal( gotoEnd, true, "Stopped with gotoEnd" );
 			done();
-		}, 1500 );
+		};
 	} );
 
-	QUnit.test( "queue stop hooks", function( assert ) {
-		assert.expect( 2 );
-		var done = assert.async();
-		var foo = jQuery( "#foo" );
-
-		foo.queue( function( next, hooks ) {
-			hooks.stop = function( gotoEnd ) {
-				assert.equal( !!gotoEnd, false, "Stopped without gotoEnd" );
-			};
-		} );
-		foo.stop();
-
-		foo.queue( function( next, hooks ) {
-			hooks.stop = function( gotoEnd ) {
-				assert.equal( gotoEnd, true, "Stopped with gotoEnd" );
-				done();
-			};
-		} );
-
-		foo.stop( false, true );
-	} );
-
-} // if ( jQuery.fn.stop )
+	foo.stop( false, true );
+} );
