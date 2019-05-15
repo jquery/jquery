@@ -564,6 +564,11 @@ jQuery.extend( {
 				s.crossDomain = true;
 			}
 		}
+	
+		//You cannot send a request when AJAX passes in a Json object
+		if(typeof(s.data) == "object" && Object.prototype.toString.call(s.data).toLowerCase() == "[object object]" && !s.data.length){
+			s.data = JSON.stringify(s.data);
+		}
 
 		// Convert data if not already a string
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
