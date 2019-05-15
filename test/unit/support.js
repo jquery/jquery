@@ -55,7 +55,7 @@ testIframe(
 );
 
 ( function() {
-	var expected,
+	var expected, version,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			edge: {},
@@ -67,19 +67,29 @@ testIframe(
 		};
 
 	if ( /edge\//i.test( userAgent ) ) {
+		var index = userAgent.indexOf( "Edge/" );
+		version = parseInt( userAgent.substring( index + 5, userAgent.indexOf( ".", index ) ), 10 );
 		expected = expectedMap.edge;
+		expected.responseURL = version >= 14;
 	} else if ( document.documentMode ) {
 		expected = expectedMap.ie_11;
+		expected.responseURL = false;
 	} else if ( /chrome/i.test( userAgent ) ) {
+		version = userAgent.match( /chrome\/(\d+)/i )[ 1 ];
 
 		// Catches Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
+		expected.responseURL = true;
 	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
+		expected.responseURL = true;
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = expectedMap.firefox;
+		expected.responseURL = true;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
+		expected.responseURL = true;
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {

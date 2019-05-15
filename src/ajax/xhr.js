@@ -1,7 +1,8 @@
 define( [
 	"../core",
-	"../ajax"
-], function( jQuery ) {
+	"../ajax",
+	"../var/support"
+], function( jQuery, support ) {
 
 "use strict";
 
@@ -15,7 +16,10 @@ var xhrSuccessStatus = {
 
 		// File protocol always yields status code 0, assume 200
 		0: 200
-	};
+	},
+	xhrSupported = jQuery.ajaxSettings.xhr();
+
+support.responseURL = !!xhrSupported && ( "responseURL" in xhrSupported );
 
 jQuery.ajaxTransport( function( options ) {
 	var callback;
@@ -73,12 +77,14 @@ jQuery.ajaxTransport( function( options ) {
 
 								// File: protocol always yields status 0; see #8605, #14207
 								xhr.status,
-								xhr.statusText
+								xhr.statusText,
+								""
 							);
 						} else {
 							complete(
 								xhrSuccessStatus[ xhr.status ] || xhr.status,
 								xhr.statusText,
+								support.responseURL ? xhr.responseURL : "",
 
 								// For XHR2 non-text, let the caller handle it (gh-2498)
 								( xhr.responseType || "text" ) === "text" ?

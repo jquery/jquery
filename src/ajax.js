@@ -451,6 +451,8 @@ jQuery.extend( {
 			jqXHR = {
 				readyState: 0,
 
+				responseURL: "",
+
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
 					var match;
@@ -714,7 +716,7 @@ jQuery.extend( {
 		}
 
 		// Callback for when everything is done
-		function done( status, nativeStatusText, responses, headers ) {
+		function done( status, nativeStatusText, responseURL, responses, headers ) {
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
 
@@ -796,6 +798,9 @@ jQuery.extend( {
 			// Set data for the fake xhr object
 			jqXHR.status = status;
 			jqXHR.statusText = ( nativeStatusText || statusText ) + "";
+
+			// Set the responseURL for the fake xhr object
+			jqXHR.responseURL = responseURL;
 
 			// Success/Error
 			if ( isSuccess ) {

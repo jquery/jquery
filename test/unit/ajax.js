@@ -1325,7 +1325,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-		ajaxTest( "jQuery.ajax() - data - process string with GET", 2, function( assert ) {
+	ajaxTest( "jQuery.ajax() - data - process string with GET", 2, function( assert ) {
 		return {
 			url: "bogus.html",
 			data: "a=1&b=2",
@@ -1339,6 +1339,84 @@ QUnit.module( "ajax", {
 			},
 			error: true
 		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - responseURL", 12, function( assert ) {
+		function expectedUrl( url ) {
+			return jQuery.support.responseURL ? url : "";
+		}
+
+		var baseUrl = window.location.href.replace( /[^\/]*$/, "" ),
+			successUrl = baseUrl + url( "data/responseURL.php" ),
+			errorUrl = "http://example.invalid",
+			redirectAndSuccessUrl = baseUrl + "data/responseURL.php?url=" + encodeURIComponent( successUrl ),
+			redirectAndErrorUrl = baseUrl + "data/responseURL.php?url=" + encodeURIComponent( errorUrl ),
+			jsonpUrl = baseUrl + "data/jsonp.php?callback=?",
+			scriptUrl = baseUrl + "data/testbar.php";
+
+		return [
+			{
+				url: successUrl,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, expectedUrl( successUrl ), "jqXHR responseURL ok for success" );
+				}
+			},
+			{
+				url: errorUrl,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for error" );
+				}
+			},
+			{
+				url: redirectAndSuccessUrl,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, expectedUrl( successUrl ), "jqXHR responseURL ok for redirect success" );
+				}
+			},
+			{
+				url: redirectAndErrorUrl,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for redirect error" );
+				}
+			},
+			{
+				url: jsonpUrl,
+				dataType: "jsonp",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for JSONP" );
+				}
+			},
+			{
+				setup: function() {
+					Globals.register( "testBar" );
+				},
+				url: scriptUrl,
+				dataType: "script",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for script" );
+				}
+			}
+		];
 	} );
 
 	var ifModifiedNow = new Date();
