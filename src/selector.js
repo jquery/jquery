@@ -727,13 +727,7 @@ Sizzle.attr = function( elem, name ) {
 		return val;
 	}
 
-	if ( !documentIsHTML ) {
-		return elem.getAttribute( name );
-	}
-
-	return ( val = elem.getAttributeNode( name ) ) && val.specified ?
-		val.value :
-		null;
+	return elem.getAttribute( name );
 };
 
 Sizzle.escape = function( sel ) {
