@@ -215,6 +215,14 @@ QUnit.assert.ok( true, "mock executed");';
 		file_put_contents( $this->cspFile, '' );
 		unlink( $this->cspFile );
 	}
+	
+	public function responseURL($req) {
+		if ( isset($req->query["url"]) ) {
+			header( "Location: $req->query[url]" );
+			exit;
+		}
+		echo "OK";
+	}
 
 	protected function errorWithScript( $req ) {
 		header( 'HTTP/1.0 404 Not Found' );
