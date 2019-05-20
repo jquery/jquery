@@ -1524,17 +1524,12 @@ QUnit.module( "ajax", {
 	} );
 
 	ajaxTest( "jQuery.ajax() - responseURL", 13, function( assert ) {
-		function expectedUrl( url ) {
-			return jQuery.support.responseURL ? url : "";
-		}
 
-		/**
-		 * this function generates complete
-		 * absolute URL without any relative path components
-		 * example:
-		 * input: http://localhost:9876/base/test/data/testinit.js/../../../test/data/mock.php?action=responseURL&155821644568982930
-		 * output: http://localhost:9876/base/test/data/mock.php?action=responseURL&155821644568982930
-		 */
+		// This function generates complete
+		// absolute URL without any relative path components
+		// Example:
+		// Input: http://localhost:9876/base/test/data/testinit.js/../../../test/data/mock.php?action=responseURL&155821644568982930
+		// Output: http://localhost:9876/base/test/data/mock.php?action=responseURL&155821644568982930
 		function removeRelativePathComponents( url ) {
 			var reg = RegExp( "(\\.\\.\\/)+" ), match;
 			match = reg.exec( url );
@@ -1548,25 +1543,25 @@ QUnit.module( "ajax", {
 			return url;
 		}
 
-		var successUrl = removeRelativePathComponents( url( "mock.php?action=responseURL" ) ),
-			errorUrl = "http://example.invalid",
-			redirectAndSuccessUrl = removeRelativePathComponents( url( "mock.php?action=responseURL" ) ) + "&url=" + encodeURIComponent( successUrl ),
-			redirectAndErrorUrl = url( "mock.php?action=responseURL&url=" + encodeURIComponent( errorUrl ) ),
-			jsonpUrl = url( "mock.php?action=jsonp&callback=?" ),
-			scriptUrl = url( "mock.php?action=testbar" );
+		var successURL = removeRelativePathComponents( url( "mock.php?action=responseURL" ) ),
+			errorURL = "http://example.invalid",
+			redirectAndSuccessURL = url( "mock.php?action=responseURL" ) + "&url=" + encodeURIComponent( successURL ),
+			redirectAndErrorURL = url( "mock.php?action=responseURL&url=" + encodeURIComponent( errorURL ) ),
+			jsonpURL = baseURL + "mock.php?action=jsonp&callback=?",
+			scriptURL = url( "mock.php?action=testbar" );
 
 		return [
 			{
-				url: successUrl,
-				beforeSend: function( jqXHR, settings ) {
+				url: successURL,
+				beforeSend: function( jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, expectedUrl( successUrl ), "jqXHR responseURL ok for success" );
+					assert.strictEqual( jqXHR.responseURL, successURL, "jqXHR responseURL ok for success" );
 				}
 			},
 			{
-				url: errorUrl,
+				url: errorURL,
 				beforeSend: function( jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
 				},
@@ -1575,16 +1570,16 @@ QUnit.module( "ajax", {
 				}
 			},
 			{
-				url: redirectAndSuccessUrl,
+				url: redirectAndSuccessURL,
 				beforeSend: function( jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, expectedUrl( successUrl ), "jqXHR responseURL ok for redirect success" );
+					assert.strictEqual( jqXHR.responseURL, successURL, "jqXHR responseURL ok for redirect success" );
 				}
 			},
 			{
-				url: redirectAndErrorUrl,
+				url: redirectAndErrorURL,
 				beforeSend: function( jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
 				},
@@ -1593,7 +1588,7 @@ QUnit.module( "ajax", {
 				}
 			},
 			{
-				url: jsonpUrl,
+				url: jsonpURL,
 				dataType: "jsonp",
 				crossDomain: true,
 				beforeSend: function( jqXHR ) {
@@ -1607,7 +1602,7 @@ QUnit.module( "ajax", {
 				setup: function() {
 					Globals.register( "testBar" );
 				},
-				url: scriptUrl,
+				url: scriptURL,
 				dataType: "script",
 				crossDomain: true,
 				beforeSend: function( jqXHR ) {

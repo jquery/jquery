@@ -56,45 +56,36 @@ testIframe(
 
 ( function() {
 	var expected,
-		version,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			edge: {
 				reliableTrDimensions: false,
-				scope: undefined,
-				responseURL:true
+				scope: undefined
 			},
 			ie_11: {
 				reliableTrDimensions: false,
-				scope: undefined,
-				responseURL:false
+				scope: undefined
 			},
 			chrome: {
 				reliableTrDimensions: true,
-				scope: true,
-				responseURL:true
+				scope: true
 			},
 			safari: {
 				reliableTrDimensions: true,
-				scope: true,
-				responseURL:true
+				scope: true
 			},
 			firefox: {
 				reliableTrDimensions: true,
-				scope: true,
-				responseURL:true
+				scope: true
 			},
 			ios: {
 				reliableTrDimensions: true,
-				scope: true,
-				responseURL:true
+				scope: true
 			}
 		};
 
 	if ( /edge\//i.test( userAgent ) ) {
-		version = parseInt( ( /edge\/([0-9.]+)/i ).exec( navigator.userAgent )[ 1 ] );
 		expected = expectedMap.edge;
-		expected.responseURL = version >= 14;
 	} else if ( document.documentMode ) {
 		expected = expectedMap.ie_11;
 	} else if ( /chrome/i.test( userAgent ) ) {
@@ -108,6 +99,7 @@ testIframe(
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	}
+
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
 		if ( !expected ) {
 			assert.expect( 1 );
