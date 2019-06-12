@@ -749,7 +749,7 @@ jQuery.extend( {
 			}
 
 			// Use a noop converter for missing script
-			if ( !isSuccess && s.dataType === "script" ) {
+			if ( !isSuccess && jQuery.inArray( "script", s.dataTypes ) > -1 ) {
 				s.converters[ "text script" ] = function() {};
 			}
 

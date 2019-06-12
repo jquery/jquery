@@ -806,39 +806,90 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 2, function( assert ) {
-		return {
-			dataType: "script",
-			url: url( "missing_script_file.js" ),
-			fail: function( _, status, error ) {
-				assert.strictEqual( status, "error", "Check missing script file status" );
-				assert.ok( error.length > 0, "Check for error message" );
-			}
-		};
-	} );
-
-	QUnit.test( "jQuery.ajax() - script from unsuccessful response does not throw (gh-4250)", function( assert ) {
-		assert.expect( 1 );
-		var done = assert.async();
-
+	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 7, function( assert ) {
 		var globalEval = jQuery.globalEval;
-		jQuery.globalEval = function( code ) {
-			assert.ok( false, "no attempt to evaluate code from an unsuccessful response" );
-		};
 
-		try {
-			var xhr = jQuery.ajax( {
-				dataType: "script",
-				url: url( "missing_script_file.js" )
-			} );
-			assert.ok( true, "no error thrown for missing script" );
-			done();
-		} catch ( e ) {
-			assert.ok( false, "uncaught error" );
-		} finally {
-			xhr.abort();
-			jQuery.globalEval = globalEval;
-		};
+		function request( title, options, overrides ) {
+			var testMsg = title + ": expected file missing status";
+			return jQuery.extend( options, {
+				beforeSend: function() {
+					jQuery.globalEval = function() {
+						assert.ok( false, "Should not eval" );
+					};
+				},
+				complete: function() {
+					jQuery.globalEval = globalEval;
+				},
+				// error is the significant assertion
+				error: function( xhr ) {
+					assert.strictEqual( xhr.status, 404, testMsg );
+				},
+				success: function() {
+					assert.ok( false, "Unanticipated success" );
+				}
+			}, overrides );
+		}
+
+		return [
+			request(
+				"HTML reply",
+				{
+					url: url( "404.js" )
+				}
+			),
+			request(
+				"HTML reply with dataType",
+				{
+					dataType: "script",
+					url: url( "404.js" )
+				}
+			),
+			request(
+				"script reply",
+				{
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with dataType",
+				{
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with converter",
+				{
+					converters: { "text script": function() {
+						assert.ok( false, "No converter for unsuccessful response" );
+					} },
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"script reply with converter and dataType",
+				{
+					converters: { "text script": function() {
+						assert.ok( false, "No converter for unsuccessful response" );
+					} },
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript" )
+				}
+			),
+			request(
+				"JSONP reply with dataType",
+				{
+					dataType: "jsonp",
+					url: url( "mock.php?action=errorWithScript" )
+				}, {
+					beforeSend: function() {
+						jQuery.globalEval = function( response ) {
+							assert.ok( /"status": 404, "msg": "Not Found"/.test( response ), "Error object returned" );
+						};
+					}
+				}
+			)
+		];
 	} );
 
 	ajaxTest( "jQuery.ajax() - synchronous request", 1, function( assert ) {
