@@ -1270,7 +1270,7 @@ QUnit.test( "addClass(Array)", function( assert ) {
 } );
 
 QUnit.test( "addClass(Function) with incoming value", function( assert ) {
-	assert.expect( 52 );
+	assert.expect( 57 );
 	var pass, i,
 		div = jQuery( "#qunit-fixture div" ),
 		old = div.map( function() {
@@ -1278,10 +1278,8 @@ QUnit.test( "addClass(Function) with incoming value", function( assert ) {
 		} );
 
 	div.addClass( function( i, val ) {
-		if ( this.id !== "_firebugConsole" ) {
-			assert.equal( val, old[ i ], "Make sure the incoming value is correct." );
-			return "test";
-		}
+		assert.equal( val, old[ i ], "Make sure the incoming value is correct." );
+		return "test";
 	} );
 
 	pass = true;
@@ -1347,17 +1345,15 @@ QUnit.test( "removeClass(Array) - simple", function( assert ) {
 } );
 
 QUnit.test( "removeClass(Function) with incoming value", function( assert ) {
-	assert.expect( 52 );
+	assert.expect( 57 );
 
 	var $divs = jQuery( "#qunit-fixture div" ).addClass( "test" ), old = $divs.map( function() {
 		return jQuery( this ).attr( "class" );
 	} );
 
 	$divs.removeClass( function( i, val ) {
-		if ( this.id !== "_firebugConsole" ) {
-			assert.equal( val, old[ i ], "Make sure the incoming value is correct." );
-			return "test";
-		}
+		assert.equal( val, old[ i ], "Make sure the incoming value is correct." );
+		return "test";
 	} );
 
 	assert.ok( !$divs.is( ".test" ), "Remove Class" );

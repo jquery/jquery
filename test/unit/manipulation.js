@@ -193,7 +193,7 @@ function testAppendForObject( valueObj, isFragment, assert ) {
 
 function testAppend( valueObj, assert ) {
 
-	assert.expect( 78 );
+	assert.expect( 82 );
 
 	testAppendForObject( valueObj, false, assert );
 	testAppendForObject( valueObj, true, assert );

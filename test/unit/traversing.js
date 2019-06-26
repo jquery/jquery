@@ -50,8 +50,24 @@ QUnit.test( "find(node|jQuery object)", function( assert ) {
 	assert.equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see trac-12009" );
 } );
 
-QUnit.test( "is(String|undefined)", function( assert ) {
-	assert.expect( 23 );
+QUnit.test( "is(falsy|invalid)", function( assert ) {
+	assert.expect( 5 );
+
+	assert.ok( !jQuery( "#foo" ).is( 0 ), "Expected false for an invalid expression - 0" );
+	assert.ok( !jQuery( "#foo" ).is( null ), "Expected false for an invalid expression - null" );
+	assert.ok( !jQuery( "#foo" ).is( "" ), "Expected false for an invalid expression - \"\"" );
+	assert.ok( !jQuery( "#foo" ).is( undefined ), "Expected false for an invalid expression - undefined" );
+	assert.ok( !jQuery( "#foo" ).is( { plain: "object" } ), "Check passing invalid object" );
+} );
+
+QUnit.test( "is(String)", function( assert ) {
+	assert.expect( 33 );
+
+	var link = document.getElementById( "simon1" ),
+		input = document.getElementById( "text1" ),
+		option = document.getElementById( "option1a" ),
+		disconnected = document.createElement( "div" );
+
 	assert.ok( jQuery( "#form" ).is( "form" ), "Check for element: A form must be a form" );
 	assert.ok( !jQuery( "#form" ).is( "div" ), "Check for element: A form is not a div" );
 	assert.ok( jQuery( "#mark" ).is( ".blog" ), "Check for class: Expected class 'blog'" );
@@ -67,17 +83,56 @@ QUnit.test( "is(String|undefined)", function( assert ) {
 	assert.ok( jQuery( "#radio2" ).is( ":checked" ), "Check for pseudoclass: Expected to be checked" );
 	assert.ok( !jQuery( "#radio1" ).is( ":checked" ), "Check for pseudoclass: Expected not checked" );
 
-	assert.ok( !jQuery( "#foo" ).is( 0 ), "Expected false for an invalid expression - 0" );
-	assert.ok( !jQuery( "#foo" ).is( null ), "Expected false for an invalid expression - null" );
-	assert.ok( !jQuery( "#foo" ).is( "" ), "Expected false for an invalid expression - \"\"" );
-	assert.ok( !jQuery( "#foo" ).is( undefined ), "Expected false for an invalid expression - undefined" );
-	assert.ok( !jQuery( "#foo" ).is( { plain: "object" } ), "Check passing invalid object" );
-
 	// test is() with comma-separated expressions
 	assert.ok( jQuery( "#en" ).is( "[lang=\"en\"],[lang=\"de\"]" ), "Comma-separated; Check for lang attribute: Expect en or de" );
 	assert.ok( jQuery( "#en" ).is( "[lang=\"de\"],[lang=\"en\"]" ), "Comma-separated; Check for lang attribute: Expect en or de" );
 	assert.ok( jQuery( "#en" ).is( "[lang=\"en\"] , [lang=\"de\"]" ), "Comma-separated; Check for lang attribute: Expect en or de" );
 	assert.ok( jQuery( "#en" ).is( "[lang=\"de\"] , [lang=\"en\"]" ), "Comma-separated; Check for lang attribute: Expect en or de" );
+
+	link.title = "Don't click me";
+	assert.ok( jQuery( link ).is( "[rel='bookmark']" ), "attribute-equals string (delimited via apostrophes)" );
+	assert.ok( jQuery( link ).is( "[rel=bookmark]" ), "attribute-equals identifier" );
+	assert.ok( jQuery( link ).is( "[\nrel = bookmark\t]" ),
+		"attribute-equals identifier (whitespace ignored)" );
+	assert.ok( jQuery( link ).is( "a[title=\"Don't click me\"]" ),
+		"attribute-equals string containing single quote" );
+
+	// jQuery trac-12303
+	input.setAttribute( "data-pos", ":first" );
+	assert.ok( jQuery( input ).is( "input[data-pos=\\:first]" ),
+		"attribute-equals POS in identifier" );
+	assert.ok( jQuery( input ).is( "input[data-pos=':first']" ),
+		"attribute-equals POS in string" );
+
+	if ( jQuery.find.compile ) {
+		assert.ok( jQuery( input ).is( ":input[data-pos=':first']" ),
+			"attribute-equals POS in string after pseudo" );
+	} else {
+		assert.ok( "skip", ":input not supported in selector-native" );
+	}
+
+	option.setAttribute( "test", "" );
+	assert.ok( jQuery( option ).is( "[id=option1a]" ),
+		"id attribute-equals identifier" );
+
+	if ( jQuery.find.compile ) {
+		assert.ok( jQuery( option ).is( "[id*=option1][type!=checkbox]" ),
+			"attribute-not-equals identifier" );
+	} else {
+		assert.ok( "skip", "attribute-not-equals not supported in selector-native" );
+	}
+
+	assert.ok( jQuery( option ).is( "[id*=option1]" ), "attribute-contains identifier" );
+	assert.ok( !jQuery( option ).is( "[test^='']" ),
+		"attribute-starts-with empty string (negative)" );
+
+	option.className = "=]";
+	assert.ok( jQuery( option ).is( ".\\=\\]" ),
+		"class selector with attribute-equals confusable" );
+
+	assert.ok( jQuery( disconnected ).is( "div" ), "disconnected element" );
+	assert.ok( jQuery( link ).is( "* > *" ), "child combinator matches in document" );
+	assert.ok( !jQuery( disconnected ).is( "* > *" ), "child combinator fails in fragment" );
 } );
 
 QUnit.test( "is() against non-elements (trac-10178)", function( assert ) {
@@ -561,7 +616,11 @@ QUnit.test( "siblings([String])", function( assert ) {
 	assert.expect( 6 );
 	assert.deepEqual( jQuery( "#en" ).siblings().get(), q( "sndp", "sap" ), "Check for siblings" );
 	assert.deepEqual( jQuery( "#nonnodes" ).contents().eq( 1 ).siblings().get(), q( "nonnodesElement" ), "Check for text node siblings" );
-	assert.deepEqual( jQuery( "#foo" ).siblings( "form, b" ).get(), q( "form", "floatTest", "lengthtest", "name-tests", "testForm" ), "Check for multiple filters" );
+	assert.deepEqual(
+		jQuery( "#foo" ).siblings( "form, b" ).get(),
+		q( "form", "floatTest", "lengthtest", "name-tests", "testForm", "disabled-tests" ),
+		"Check for multiple filters"
+	);
 
 	var set = q( "sndp", "en", "sap" );
 	assert.deepEqual( jQuery( "#en, #sndp" ).siblings().get(), set, "Check for unique results from siblings" );

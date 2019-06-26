@@ -55,15 +55,9 @@ this.q = function() {
  * @example match("Check for something", "p", ["foo", "bar"]);
  */
 function match( message, selector, expectedIds, context, assert ) {
-	var f = jQuery( selector, context ).get(),
-		s = "",
-		i = 0;
+	var elems = jQuery( selector, context ).get();
 
-	for ( ; i < f.length; i++ ) {
-		s += ( s && "," ) + "\"" + f[ i ].id + "\"";
-	}
-
-	assert.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
+	assert.deepEqual( elems, q.apply( q, expectedIds ), message + " (" + selector + ")" );
 }
 
 /**
@@ -102,6 +96,36 @@ this.createDashboardXML = function() {
 			</location> \
 		</locations> \
 	</dashboard>";
+
+	return jQuery.parseXML( string );
+};
+
+this.createWithFriesXML = function() {
+	var string = "<?xml version='1.0' encoding='UTF-8'?> \
+	<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' \
+		xmlns:xsd='http://www.w3.org/2001/XMLSchema' \
+		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> \
+		<soap:Body> \
+			<jsconf xmlns='http://www.example.com/ns1'> \
+				<response xmlns:ab='http://www.example.com/ns2'> \
+					<meta> \
+						<component id='seite1' class='component'> \
+							<properties xmlns:cd='http://www.example.com/ns3'> \
+								<property name='prop1'> \
+									<thing /> \
+									<value>1</value> \
+								</property> \
+								<property name='prop2'> \
+									<thing att='something' /> \
+								</property> \
+								<foo_bar>foo</foo_bar> \
+							</properties> \
+						</component> \
+					</meta> \
+				</response> \
+			</jsconf> \
+		</soap:Body> \
+	</soap:Envelope>";
 
 	return jQuery.parseXML( string );
 };
