@@ -380,6 +380,52 @@ QUnit.test( "isXMLDoc - HTML", function( assert ) {
 	document.body.removeChild( iframe );
 } );
 
+QUnit.test( "isXMLDoc - embedded SVG", function( assert ) {
+	assert.expect( 6 );
+
+	var htmlTree = jQuery( "<div>" +
+		"<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='1' width='1'>" +
+		"<desc></desc>" +
+		"</svg>" +
+		"</div>"
+	)[ 0 ];
+
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree ), false, "disconnected div element" );
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree.firstChild ), true,
+		"disconnected HTML-embedded SVG root element" );
+
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree.firstChild.firstChild ), true,
+		"disconnected HTML-embedded SVG child element" );
+
+	document.getElementById( "qunit-fixture" ).appendChild( htmlTree );
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree ), false, "connected div element" );
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree.firstChild ), true,
+		"connected HTML-embedded SVG root element" );
+
+	assert.strictEqual( jQuery.isXMLDoc( htmlTree.firstChild.firstChild ), true,
+		"disconnected HTML-embedded SVG child element" );
+} );
+
+QUnit.test( "isXMLDoc - XML", function( assert ) {
+	assert.expect( 8 );
+
+	var xml = createDashboardXML();
+	var svg = jQuery.parseXML(
+		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" " +
+		"\"http://www.w3.org/Gaphics/SVG/1.1/DTD/svg11.dtd\">" +
+		"<svg version='1.1' xmlns='http://www.w3.org/2000/svg'><desc/></svg>"
+	);
+	assert.ok( jQuery.isXMLDoc( xml ), "XML document" );
+	assert.ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
+	assert.ok( jQuery.isXMLDoc( xml.documentElement.firstChild ), "XML child element" );
+	assert.ok( jQuery.isXMLDoc( jQuery( "tab", xml )[ 0 ] ), "XML tab Element" );
+
+	assert.ok( jQuery.isXMLDoc( svg ), "SVG document" );
+	assert.ok( jQuery.isXMLDoc( svg.documentElement ), "SVG documentElement" );
+	assert.ok( jQuery.isXMLDoc( svg.documentElement.firstChild ), "SVG child element" );
+	assert.ok( jQuery.isXMLDoc( jQuery( "desc", svg )[ 0 ] ), "XML desc Element" );
+} );
+
 QUnit.test( "XSS via location.hash", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );
@@ -397,14 +443,6 @@ QUnit.test( "XSS via location.hash", function( assert ) {
 	} catch ( err ) {
 		jQuery[ "_check9521" ]( true );
 	}
-} );
-
-QUnit.test( "isXMLDoc - XML", function( assert ) {
-	assert.expect( 3 );
-	var xml = createDashboardXML();
-	assert.ok( jQuery.isXMLDoc( xml ), "XML document" );
-	assert.ok( jQuery.isXMLDoc( xml.documentElement ), "XML documentElement" );
-	assert.ok( jQuery.isXMLDoc( jQuery( "tab", xml )[ 0 ] ), "XML Tab Element" );
 } );
 
 QUnit.test( "jQuery('html')", function( assert ) {

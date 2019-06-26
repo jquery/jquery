@@ -1,8 +1,8 @@
 <p id="firstp">See <a id="simon1" href="http://simon.incutio.com/archive/2003/03/25/#getElementsBySelector" rel="bookmark">this blog entry</a> for more information.</p>
 <p id="ap">
-	Here are some links in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
+	Here are some [links] in a normal paragraph: <a id="google" href="http://www.google.com/" title="Google!">Google</a>,
 	<a id="groups" href="http://groups.google.com/" class="GROUPS">Google Groups (Link)</a>.
-	This link has <code><a href="http://smin" id="anchor1">class="blog"</a></code>:
+	This link has <code id="code1"><a href="http://smin" id="anchor1">class="blog"</a></code>:
 	<a href="http://diveintomark.org/" class="blog" hreflang="en" id="mark">diveintomark</a>
 
 </p>
@@ -78,11 +78,11 @@
 		<param name="p2" value="x2" />
 	</object>
 
-	<span id="台北Táiběi"></span>
+	<span id="台北Táiběi"><span id="台北Táiběi-child"></span></span>
 	<span id="台北" lang="中文"></span>
-	<span id="utf8class1" class="台北Táiběi 台北"></span>
+	<span id="utf8class1" class="台北Táiběi 台北">"'台北Táiběi"'</span>
 	<span id="utf8class2" class="台北"></span>
-	<span id="foo:bar" class="foo:bar"></span>
+	<span id="foo:bar" class="foo:bar"><span id="foo_descendant"></span></span>
 	<span id="test.foo[5]bar" class="test.foo[5]bar"></span>
 
 	<foo_bar id="foobar">test element</foo_bar>
@@ -163,7 +163,26 @@ Z</textarea>
 	<div id="t6652">
 		<div></div>
 	</div>
+	<div id="t12087">
+		<input type="hidden" id="el12087" data-comma="0,1"/>
+	</div>
 	<div id="no-clone-exception"><object><embed></embed></object></div>
+	<div id="names-group">
+		<span id="name-is-example" name="example"></span>
+		<span id="name-is-div" name="div"></span>
+	</div>
+	<div id="id-name-tests">
+		<a id="tName1ID" name="tName1"><span></span></a>
+		<a id="tName2ID" name="tName2"><span></span></a>
+		<div id="tName1"><span id="tName1-span">C</span></div>
+	</div>
+	<div id="whitespace-lists">
+		<input id="t15233-single" data-15233="foo"/>
+		<input id="t15233-double" data-15233="foo bar"/>
+		<input id="t15233-double-tab" data-15233="foo	bar"/>
+		<input id="t15233-double-nl" data-15233="foo&#xA;bar"/>
+		<input id="t15233-triple" data-15233="foo bar baz"/>
+	</div>
 </div>
 
 <div id="tabindex-tests">
@@ -194,6 +213,53 @@ Z</textarea>
 	<span id="liveSpan2"><a href="#" id="liveLink2"></a></span>
 </div>
 
+<form id="disabled-tests">
+	<fieldset id="disabled-fieldset" disabled="disabled">
+		<a id="disabled-fieldset-a" href="#"></a>
+		<input id="disabled-fieldset-input" name="disabled-fieldset-input" type="text" />
+		<textarea id="disabled-fieldset-textarea" name="disabled-fieldset-textarea" ></textarea>
+		<button id="disabled-fieldset-button" name="disabled-fieldset-button">Go</button>
+		<!-- exclude <select> because IE6 is bugged and fails
+		<select id="disabled-fieldset-select" name="disabled-fieldset-select"></select>
+		-->
+		<span id="disabled-fieldset-span">Neither enabled nor disabled</span>
+	</fieldset>
+	<fieldset id="enabled-fieldset">
+		<a id="disabled-a" href="#" disabled="disabled"></a>
+		<input id="disabled-input" name="disabled-input" type="text" disabled="disabled"/>
+		<textarea id="disabled-textarea" name="disabled-textarea" disabled="disabled"></textarea>
+		<button id="disabled-button" name="disabled-button" disabled="disabled">Go</button>
+		<select id="disabled-select" name="disabled-select" disabled="disabled">
+			<optgroup id="disabled-optgroup" label="and" disabled="disabled">
+				<option id="disabled-option" disabled="disabled">Black</option>
+			</optgroup>
+		</select>
+		<input id="enabled-input" name="enabled-input" type="text"/>
+		<textarea id="enabled-textarea" name="enabled-textarea"></textarea>
+		<button id="enabled-button" name="enabled-button">Go</button>
+		<select id="enabled-select" name="enabled-select">
+			<optgroup id="enabled-optgroup" label="and">
+				<option id="enabled-option">Gold</option>
+			</optgroup>
+		</select>
+		<span id="enabled-fieldset-span">Neither enabled nor disabled</span>
+	</fieldset>
+	<select id="disabled-select-inherit" name="disabled-select-inherit" disabled="disabled">
+		<optgroup id="disabled-optgroup-inherit" label="and" disabled="disabled">
+			<option id="disabled-optgroup-option">Black</option>
+		</optgroup>
+		<optgroup id="enabled-optgroup-inherit" label="and">
+			<option id="enabled-optgroup-option">Gold</option>
+		</optgroup>
+	</select>
+	<select id="enabled-select-inherit" name="enabled-select-inherit">
+		<optgroup id="en_disabled-optgroup-inherit" label="and" disabled="disabled">
+			<option id="en_disabled-optgroup-option">Black</option>
+		</optgroup>
+		<option id="enabled-select-option">Black</option>
+	</select>
+</form>
+
 <div id="siblingTest">
 	<em id="siblingfirst">1</em>
 	<em id="siblingnext">2</em>
@@ -208,7 +274,7 @@ Z</textarea>
 </div>
 <div id="fx-test-group" style="position: absolute; width: 1px; height: 1px; overflow: hidden;">
 	<div id="fx-queue" name="test">
-		<div id="fadein" class='chain-test' name='div'>fadeIn<div>fadeIn</div></div>
+		<div id="fadein" class='chain-test'>fadeIn<div>fadeIn</div></div>
 		<div id="fadeout" class='chain-test chain-test-out'>fadeOut<div>fadeOut</div></div>
 
 		<div id="show" class='chain-test'>show<div>show</div></div>
@@ -235,3 +301,4 @@ Z</textarea>
 	<div id="fx-tests"></div>
 	<span id="display"></span>
 </div>
+<br id="last"/>
