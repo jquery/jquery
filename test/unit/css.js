@@ -965,7 +965,7 @@ QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
 	} );
 } );
 
-QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
+QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
 		x = jQuery( "#foo" );
@@ -998,7 +998,7 @@ QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", 
 	jQuery.fn.hide = oldHide;
 } );
 
-QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "detached toggle()", function( assert ) {
+QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "detached toggle()", function( assert ) {
 	assert.expect( 6 );
 	var detached = jQuery( "<p><a></a><p>" ).find( "*" ).addBack(),
 		hiddenDetached = jQuery( "<p><a></a></p>" ).find( "*" ).addBack().css( "display", "none" ),
@@ -1022,12 +1022,14 @@ QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "detached to
 		"cascade-hidden element in detached tree" );
 } );
 
-QUnit[ jQuery.find.compile && jQuery.fn.toggle &&
+QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle &&
 	document.body.attachShadow && document.body.getRootNode ?
 		"test" :
 		"skip"
 ]( "shadow toggle()", function( assert ) {
+
 	assert.expect( 4 );
+
 	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
 	var shadowHost = document.querySelector( "#shadowHost" );
 	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
@@ -1450,7 +1452,7 @@ QUnit.test( "css opacity consistency across browsers (trac-12685)", function( as
 	assert.equal( Math.round( el.css( "opacity" ) * 100 ), 10, "remove opacity override" );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( ":visible/:hidden selectors", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( ":visible/:hidden selectors", function( assert ) {
 	assert.expect( 17 );
 
 	var $div, $table, $a;

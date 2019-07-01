@@ -1,5 +1,7 @@
 /* eslint no-multi-str: "off" */
 
+"use strict";
+
 var FILEPATH = "/test/data/testinit.js",
 	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
 	parentUrl = activeScript && activeScript.src ?
@@ -329,6 +331,11 @@ if ( !window.__karma__ ) {
 // Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
 QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
 QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
+
+// Says whether jQuery selector extensions are supported. Change that to `false`
+// if your custom jQuery versions relies more on native qSA.
+// TODO do we want to keep this or just assume support for jQuery extensions?
+QUnit.jQuerySelectors = true;
 
 // Async test for module script type support
 function moduleTypeSupported() {

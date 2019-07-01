@@ -153,7 +153,7 @@ QUnit.test( "jQuery()", function( assert ) {
 		"Empty attributes object is not interpreted as a document (trac-8950)" );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
 	assert.expect( 3 );
 	assert.deepEqual( jQuery( "div p", "#qunit-fixture" ).get(), q( "sndp", "en", "sap" ), "Basic selector with string as context" );
 	assert.deepEqual( jQuery( "div p", q( "qunit-fixture" )[ 0 ] ).get(), q( "sndp", "en", "sap" ), "Basic selector with element as context" );
@@ -475,7 +475,7 @@ QUnit.test( "jQuery('html')", function( assert ) {
 
 	//equal( jQuery( "element[attribute=<div></div>]" ).length, 0,
 	//	"When html is within brackets, do not recognize as html." );
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( jQuery( "element:not(<div></div>)" ).length, 0,
 			"When html is within parens, do not recognize as html." );
 	} else {

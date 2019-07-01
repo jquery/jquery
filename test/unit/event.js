@@ -1840,7 +1840,7 @@ QUnit.test( "events with type matching an Object.prototype property, cloned elem
 } );
 
 // selector-native does not support scope-fixing in delegation
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "delegated event with delegateTarget-relative selector", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "delegated event with delegateTarget-relative selector", function( assert ) {
 	assert.expect( 3 );
 	var markup = jQuery( "<div><ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul></div>" ).appendTo( "#qunit-fixture" );
 

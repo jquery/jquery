@@ -1984,7 +1984,7 @@ QUnit.test( "remove() with filters", function( assert ) {
 	div.children().remove( "span:nth-child(2n)" );
 	assert.equal( div.text(), "13", "relative selector in remove" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		div = jQuery( markup );
 		div.children().remove( "span:first" );
 		assert.equal( div.text(), "234", "positional selector in remove" );
@@ -2081,7 +2081,7 @@ QUnit.test( "detach() with filters", function( assert ) {
 	div.children().detach( "span:nth-child(2n)" );
 	assert.equal( div.text(), "13", "relative selector in detach" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		div = jQuery( markup );
 		div.children().detach( "span:first" );
 		assert.equal( div.text(), "234", "positional selector in detach" );
