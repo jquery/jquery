@@ -36,7 +36,6 @@ define( [
  */
 
 var hasDuplicate, sortInput,
-	rhtmlSuffix = /HTML$/i,
 	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
 	matches = documentElement.matches ||
 		documentElement.webkitMatchesSelector ||
@@ -170,16 +169,6 @@ jQuery.extend( {
 		}
 
 		return results;
-	},
-	isXMLDoc: function( elem ) {
-		var namespace = elem.namespaceURI,
-			documentElement = ( elem.ownerDocument || elem ).documentElement;
-
-		// Assume HTML when documentElement doesn't yet exist, such as inside
-		// document fragments.
-		return !rhtmlSuffix.test( namespace ||
-			documentElement && documentElement.nodeName ||
-			"HTML" );
 	},
 	expr: {
 		attrHandle: {},

@@ -110,7 +110,6 @@ var i,
 			whitespace + "*((?:-\\d)?\\d*)" + whitespace + "*\\)|)(?=[^-]|$)", "i" )
 	},
 
-	rhtml = /HTML$/i,
 	rinputs = /^(?:input|select|textarea|button)$/i,
 	rheader = /^h\d$/i,
 
@@ -421,20 +420,6 @@ function createPositionalPseudo( fn ) {
 function testContext( context ) {
 	return context && typeof context.getElementsByTagName !== "undefined" && context;
 }
-
-/**
- * Detects XML nodes
- * @param {Element|Object} elem An element or a document
- * @returns {Boolean} True iff elem is a non-HTML XML node
- */
-jQuery.isXMLDoc = function( elem ) {
-	var namespace = elem.namespaceURI,
-		docElem = ( elem.ownerDocument || elem ).documentElement;
-
-	// Assume HTML when documentElement doesn't yet exist, such as inside
-	// document fragments.
-	return !rhtml.test( namespace || docElem && docElem.nodeName || "HTML" );
-};
 
 /**
  * Sets document-related variables once based on the current document
