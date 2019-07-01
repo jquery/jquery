@@ -21,14 +21,10 @@ var preferredDoc = document;
 
 var i,
 	Expr,
-	tokenize,
-	compile,
-	select,
 	outermostContext,
 	hasDuplicate,
 
 	// Local document vars
-	setDocument,
 	document,
 	docElem,
 	documentIsHTML,
@@ -445,7 +441,7 @@ jQuery.isXMLDoc = function( elem ) {
  * @param {Element|Object} [doc] An element or document object to use to set the document
  * @returns {Object} Returns the current document
  */
-setDocument = find.setDocument = function( node ) {
+function setDocument( node ) {
 	var subWindow,
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
@@ -624,7 +620,7 @@ setDocument = find.setDocument = function( node ) {
 	};
 
 	return document;
-};
+}
 
 find.matches = function( expr, elements ) {
 	return find( expr, null, null, elements );
@@ -1261,7 +1257,7 @@ function setFilters() {}
 setFilters.prototype = Expr.filters = Expr.pseudos;
 Expr.setFilters = new setFilters();
 
-tokenize = function( selector, parseOnly ) {
+function tokenize( selector, parseOnly ) {
 	var matched, match, tokens, type,
 		soFar, groups, preFilters,
 		cached = tokenCache[ selector + " " ];
@@ -1331,7 +1327,7 @@ tokenize = function( selector, parseOnly ) {
 
 		// Cache the tokens
 		tokenCache( selector, groups ).slice( 0 );
-};
+}
 
 function toSelector( tokens ) {
 	var i = 0,
@@ -1722,7 +1718,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 		superMatcher;
 }
 
-compile = function( selector, match /* Internal Use Only */ ) {
+function compile( selector, match /* Internal Use Only */ ) {
 	var i,
 		setMatchers = [],
 		elementMatchers = [],
@@ -1752,7 +1748,7 @@ compile = function( selector, match /* Internal Use Only */ ) {
 		cached.selector = selector;
 	}
 	return cached;
-};
+}
 
 /**
  * A low-level selection function that works with jQuery's compiled
@@ -1763,7 +1759,7 @@ compile = function( selector, match /* Internal Use Only */ ) {
  * @param {Array} [results]
  * @param {Array} [seed] A set of elements to match against
  */
-select = function( selector, context, results, seed ) {
+function select( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
 		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
@@ -1836,7 +1832,7 @@ select = function( selector, context, results, seed ) {
 		!context || rsibling.test( selector ) && testContext( context.parentNode ) || context
 	);
 	return results;
-};
+}
 
 // Initialize against the default document
 setDocument();
@@ -1847,11 +1843,12 @@ jQuery.find = find;
 jQuery.expr[ ":" ] = jQuery.expr.pseudos;
 jQuery.unique = jQuery.uniqueSort;
 
-// These have always been private but they used to be documented
+// These have always been private, but they used to be documented
 // as part of Sizzle so let's maintain them in the 3.x line
 // for backwards compatibility purposes.
 find.compile = compile;
 find.select = select;
+find.setDocument = setDocument;
 
 find.contains = jQuery.contains;
 find.escape = jQuery.escapeSelector;
