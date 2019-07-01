@@ -7,7 +7,8 @@ define( [
 	"./var/push",
 	"./selector/support",
 
-	"./selector/contains" // jQuery.contains
+	"./selector/contains", // jQuery.contains
+	"./selector/escapeSelector"
 ], function( jQuery, document, indexOf, hasOwn, pop, push, support ) {
 
 "use strict";
@@ -20,7 +21,6 @@ var preferredDoc = document;
 
 var i,
 	Expr,
-	isXML,
 	tokenize,
 	compile,
 	select,
@@ -143,25 +143,6 @@ var i,
 			String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
 	},
 
-	// CSS string/identifier serialization
-	// https://drafts.csswg.org/cssom/#common-serializing-idioms
-	rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g,
-	fcssescape = function( ch, asCodePoint ) {
-		if ( asCodePoint ) {
-
-			// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-			if ( ch === "\0" ) {
-				return "\uFFFD";
-			}
-
-			// Control characters and (dependent upon position) numbers get escaped as code points
-			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
-		}
-
-		// Other potentially-special ASCII characters get backslash-escaped
-		return "\\" + ch;
-	},
-
 	// Used for iframes; see `setDocument`.
 	// Support: IE 9 - 11+, Edge 12 - 18+
 	// Removing the function wrapper causes a "Permission Denied"
@@ -267,7 +248,7 @@ function find( selector, context, results, seed ) {
 
 					// Capture the context ID, setting it first if necessary
 					if ( ( nid = context.getAttribute( "id" ) ) ) {
-						nid = nid.replace( rcssescape, fcssescape );
+						nid = jQuery.escapeSelector( nid );
 					} else {
 						context.setAttribute( "id", ( nid = expando ) );
 					}
@@ -450,7 +431,7 @@ function testContext( context ) {
  * @param {Element|Object} elem An element or a document
  * @returns {Boolean} True iff elem is a non-HTML XML node
  */
-isXML = find.isXML = function( elem ) {
+jQuery.isXMLDoc = function( elem ) {
 	var namespace = elem.namespaceURI,
 		docElem = ( elem.ownerDocument || elem ).documentElement;
 
@@ -476,7 +457,7 @@ setDocument = find.setDocument = function( node ) {
 	// Update global variables
 	document = doc;
 	docElem = document.documentElement;
-	documentIsHTML = !isXML( document );
+	documentIsHTML = !jQuery.isXMLDoc( document );
 
 	// Support: IE 9 - 11+, Edge 12 - 18+
 	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
@@ -658,7 +639,7 @@ find.matchesSelector = function( elem, expr ) {
 
 	if ( documentIsHTML &&
 		!nonnativeSelectorCache[ expr + " " ] &&
-		( !rbuggyQSA     || !rbuggyQSA.test( expr ) ) ) {
+		( !rbuggyQSA || !rbuggyQSA.test( expr ) ) ) {
 
 		try {
 			var ret = matches.call( elem, expr );
@@ -698,10 +679,6 @@ find.attr = function( elem, name ) {
 	}
 
 	return elem.getAttribute( name );
-};
-
-find.escape = function( sel ) {
-	return ( sel + "" ).replace( rcssescape, fcssescape );
 };
 
 find.error = function( msg ) {
@@ -774,7 +751,7 @@ jQuery.text = function( elem ) {
 	return ret;
 };
 
-Expr = find.selectors = {
+Expr = jQuery.expr = {
 
 	// Can be adjusted by the user
 	cacheLength: 50,
@@ -1324,7 +1301,7 @@ function setFilters() {}
 setFilters.prototype = Expr.filters = Expr.pseudos;
 Expr.setFilters = new setFilters();
 
-tokenize = find.tokenize = function( selector, parseOnly ) {
+tokenize = function( selector, parseOnly ) {
 	var matched, match, tokens, type,
 		soFar, groups, preFilters,
 		cached = tokenCache[ selector + " " ];
@@ -1785,7 +1762,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 		superMatcher;
 }
 
-compile = find.compile = function( selector, match /* Internal Use Only */ ) {
+compile = function( selector, match /* Internal Use Only */ ) {
 	var i,
 		setMatchers = [],
 		elementMatchers = [],
@@ -1826,7 +1803,7 @@ compile = find.compile = function( selector, match /* Internal Use Only */ ) {
  * @param {Array} [results]
  * @param {Array} [seed] A set of elements to match against
  */
-select = find.select = function( selector, context, results, seed ) {
+select = function( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
 		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
@@ -1905,16 +1882,23 @@ select = find.select = function( selector, context, results, seed ) {
 setDocument();
 
 jQuery.find = find;
-jQuery.expr = find.selectors;
 
 // Deprecated
 jQuery.expr[ ":" ] = jQuery.expr.pseudos;
+jQuery.unique = jQuery.uniqueSort;
+
+// These have always been private but they used to be documented
+// as part of Sizzle so let's maintain them in the 3.x line
+// for backwards compatibility purposes.
+find.compile = compile;
+find.select = select;
 
 find.contains = jQuery.contains;
-find.uniqueSort = jQuery.unique = jQuery.uniqueSort;
+find.escape = jQuery.escapeSelector;
 find.getText = jQuery.text;
-jQuery.isXMLDoc = find.isXML;
-jQuery.escapeSelector = find.escape;
+find.isXML = jQuery.isXMLDoc;
+find.selectors = jQuery.expr;
+find.uniqueSort = jQuery.uniqueSort;
 
 	/* eslint-enable */
 
