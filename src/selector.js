@@ -5,7 +5,9 @@ define( [
 	"./var/hasOwn",
 	"./var/pop",
 	"./var/push",
-	"./selector/support"
+	"./selector/support",
+
+	"./selector/contains" // jQuery.contains
 ], function( jQuery, document, indexOf, hasOwn, pop, push, support ) {
 
 "use strict";
@@ -32,7 +34,6 @@ var i,
 	documentIsHTML,
 	rbuggyQSA,
 	matches,
-	contains,
 
 	// Instance-specific data
 	expando = jQuery.expando,
@@ -229,7 +230,7 @@ function find( selector, context, results, seed ) {
 						// Support: IE 9 only
 						// getElementById can match elements by name instead of ID
 						if ( newContext && ( elem = newContext.getElementById( m ) ) &&
-							contains( context, elem ) &&
+							jQuery.contains( context, elem ) &&
 							elem.id === m ) {
 
 							results.push( elem );
@@ -596,25 +597,6 @@ setDocument = find.setDocument = function( node ) {
 
 	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
 
-	/* Contains
-	---------------------------------------------------------------------- */
-
-	// Element contains another
-	// Purposefully self-exclusive
-	// As in, an element does not contain itself
-	contains = function( a, b ) {
-		var adown = a.nodeType === 9 ? a.documentElement : a,
-			bup = b && b.parentNode;
-		return a === bup || !!( bup && bup.nodeType === 1 && (
-
-			// Support: IE 9 - 11+
-			// IE doesn't have `contains` on SVG.
-			adown.contains ?
-				adown.contains( bup ) :
-				a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
-		) );
-	};
-
 	/* Sorting
 	---------------------------------------------------------------------- */
 
@@ -645,11 +627,11 @@ setDocument = find.setDocument = function( node ) {
 
 			// Choose the first element that is related to our preferred document
 			if ( a === document || a.ownerDocument === preferredDoc &&
-				contains( preferredDoc, a ) ) {
+				jQuery.contains( preferredDoc, a ) ) {
 				return -1;
 			}
 			if ( b === document || b.ownerDocument === preferredDoc &&
-				contains( preferredDoc, b ) ) {
+				jQuery.contains( preferredDoc, b ) ) {
 				return 1;
 			}
 
@@ -695,15 +677,6 @@ find.matchesSelector = function( elem, expr ) {
 	}
 
 	return find( expr, document, null, [ elem ] ).length > 0;
-};
-
-find.contains = function( context, elem ) {
-
-	// Set document vars if needed
-	if ( ( context.ownerDocument || context ) !== document ) {
-		setDocument( context );
-	}
-	return contains( context, elem );
 };
 
 find.attr = function( elem, name ) {
@@ -1937,10 +1910,10 @@ jQuery.expr = find.selectors;
 // Deprecated
 jQuery.expr[ ":" ] = jQuery.expr.pseudos;
 
+find.contains = jQuery.contains;
 find.uniqueSort = jQuery.unique = jQuery.uniqueSort;
 find.getText = jQuery.text;
 jQuery.isXMLDoc = find.isXML;
-jQuery.contains = find.contains;
 jQuery.escapeSelector = find.escape;
 
 	/* eslint-enable */

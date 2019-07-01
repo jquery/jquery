@@ -1,7 +1,7 @@
 define( [
 	"../core",
 	"../var/documentElement",
-	"../selector" // jQuery.contains
+	"../selector/contains" // jQuery.contains
 ], function( jQuery, documentElement ) {
 	"use strict";
 
