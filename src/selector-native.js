@@ -3,7 +3,9 @@ define( [
 	"./var/document",
 	"./var/documentElement",
 	"./var/hasOwn",
-	"./var/indexOf"
+	"./var/indexOf",
+
+	"./selector/contains" // jQuery.contains
 ], function( jQuery, document, documentElement, hasOwn, indexOf ) {
 
 "use strict";
@@ -168,36 +170,6 @@ jQuery.extend( {
 		}
 
 		return results;
-	},
-	text: function( elem ) {
-		var node,
-			ret = "",
-			i = 0,
-			nodeType = elem.nodeType;
-
-		if ( !nodeType ) {
-
-			// If no nodeType, this is expected to be an array
-			while ( ( node = elem[ i++ ] ) ) {
-
-				// Do not traverse comment nodes
-				ret += jQuery.text( node );
-			}
-		} else if ( nodeType === 1 || nodeType === 9 || nodeType === 11 ) {
-
-			// Use textContent for elements
-			return elem.textContent;
-		} else if ( nodeType === 3 || nodeType === 4 ) {
-			return elem.nodeValue;
-		}
-
-		// Do not include comment or processing instruction nodes
-
-		return ret;
-	},
-	contains: function( a, b ) {
-		var bup = b && b.parentNode;
-		return a === bup || !!( bup && bup.nodeType === 1 && a.contains( bup ) );
 	},
 	isXMLDoc: function( elem ) {
 		var namespace = elem.namespaceURI,
