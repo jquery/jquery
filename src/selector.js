@@ -178,7 +178,7 @@ var i,
 		{ dir: "parentNode", next: "legend" }
 	);
 
-function Sizzle( selector, context, results, seed ) {
+function find( selector, context, results, seed ) {
 	var m, i, elem, nid, match, groups, newSelector,
 		newContext = context && context.ownerDocument,
 
@@ -329,7 +329,7 @@ function createCache() {
 }
 
 /**
- * Mark a function for special use by Sizzle
+ * Mark a function for special use by jQuery selector module
  * @param {Function} fn The function to mark
  */
 function markFunction( fn ) {
@@ -438,7 +438,7 @@ function createPositionalPseudo( fn ) {
 }
 
 /**
- * Checks a node for validity as a Sizzle context
+ * Checks a node for validity as a jQuery selector context
  * @param {Element|Object=} context
  * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
  */
@@ -451,7 +451,7 @@ function testContext( context ) {
  * @param {Element|Object} elem An element or a document
  * @returns {Boolean} True iff elem is a non-HTML XML node
  */
-isXML = Sizzle.isXML = function( elem ) {
+isXML = find.isXML = function( elem ) {
 	var namespace = elem.namespaceURI,
 		docElem = ( elem.ownerDocument || elem ).documentElement;
 
@@ -465,7 +465,7 @@ isXML = Sizzle.isXML = function( elem ) {
  * @param {Element|Object} [doc] An element or document object to use to set the document
  * @returns {Object} Returns the current document
  */
-setDocument = Sizzle.setDocument = function( node ) {
+setDocument = find.setDocument = function( node ) {
 	var subWindow,
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
@@ -668,11 +668,11 @@ setDocument = Sizzle.setDocument = function( node ) {
 	return document;
 };
 
-Sizzle.matches = function( expr, elements ) {
-	return Sizzle( expr, null, null, elements );
+find.matches = function( expr, elements ) {
+	return find( expr, null, null, elements );
 };
 
-Sizzle.matchesSelector = function( elem, expr ) {
+find.matchesSelector = function( elem, expr ) {
 
 	// Set document vars if needed
 	if ( ( elem.ownerDocument || elem ) !== document ) {
@@ -700,10 +700,10 @@ Sizzle.matchesSelector = function( elem, expr ) {
 		}
 	}
 
-	return Sizzle( expr, document, null, [ elem ] ).length > 0;
+	return find( expr, document, null, [ elem ] ).length > 0;
 };
 
-Sizzle.contains = function( context, elem ) {
+find.contains = function( context, elem ) {
 
 	// Set document vars if needed
 	if ( ( context.ownerDocument || context ) !== document ) {
@@ -712,7 +712,7 @@ Sizzle.contains = function( context, elem ) {
 	return contains( context, elem );
 };
 
-Sizzle.attr = function( elem, name ) {
+find.attr = function( elem, name ) {
 
 	// Set document vars if needed
 	if ( ( elem.ownerDocument || elem ) !== document ) {
@@ -733,11 +733,11 @@ Sizzle.attr = function( elem, name ) {
 	return elem.getAttribute( name );
 };
 
-Sizzle.escape = function( sel ) {
+find.escape = function( sel ) {
 	return ( sel + "" ).replace( rcssescape, fcssescape );
 };
 
-Sizzle.error = function( msg ) {
+find.error = function( msg ) {
 	throw new Error( "Syntax error, unrecognized expression: " + msg );
 };
 
@@ -745,7 +745,7 @@ Sizzle.error = function( msg ) {
  * Document sorting and removing duplicates
  * @param {ArrayLike} results
  */
-Sizzle.uniqueSort = function( results ) {
+find.uniqueSort = function( results ) {
 	var elem,
 		duplicates = [],
 		j = 0,
@@ -771,7 +771,7 @@ Sizzle.uniqueSort = function( results ) {
  * Utility function for retrieving the text value of an array of DOM nodes
  * @param {Array|Element} elem
  */
-getText = Sizzle.getText = function( elem ) {
+getText = find.getText = function( elem ) {
 	var node,
 		ret = "",
 		i = 0,
@@ -807,7 +807,7 @@ getText = Sizzle.getText = function( elem ) {
 	return ret;
 };
 
-Expr = Sizzle.selectors = {
+Expr = find.selectors = {
 
 	// Can be adjusted by the user
 	cacheLength: 50,
@@ -860,7 +860,7 @@ Expr = Sizzle.selectors = {
 
 				// nth-* requires argument
 				if ( !match[ 3 ] ) {
-					Sizzle.error( match[ 0 ] );
+					find.error( match[ 0 ] );
 				}
 
 				// numeric x and y parameters for Expr.filter.CHILD
@@ -873,7 +873,7 @@ Expr = Sizzle.selectors = {
 
 			// other types prohibit arguments
 			} else if ( match[ 3 ] ) {
-				Sizzle.error( match[ 0 ] );
+				find.error( match[ 0 ] );
 			}
 
 			return match;
@@ -941,7 +941,7 @@ Expr = Sizzle.selectors = {
 
 		"ATTR": function( name, operator, check ) {
 			return function( elem ) {
-				var result = Sizzle.attr( elem, name );
+				var result = find.attr( elem, name );
 
 				if ( result == null ) {
 					return operator === "!=";
@@ -1097,11 +1097,11 @@ Expr = Sizzle.selectors = {
 			// Remember that setFilters inherits from pseudos
 			var args,
 				fn = Expr.pseudos[ pseudo ] || Expr.setFilters[ pseudo.toLowerCase() ] ||
-					Sizzle.error( "unsupported pseudo: " + pseudo );
+					find.error( "unsupported pseudo: " + pseudo );
 
 			// The user may use createPseudo to indicate that
 			// arguments are needed to create the filter function
-			// just as Sizzle does
+			// just as jQuery does
 			if ( fn[ expando ] ) {
 				return fn( argument );
 			}
@@ -1165,7 +1165,7 @@ Expr = Sizzle.selectors = {
 
 		"has": markFunction( function( selector ) {
 			return function( elem ) {
-				return Sizzle( selector, elem ).length > 0;
+				return find( selector, elem ).length > 0;
 			};
 		} ),
 
@@ -1187,7 +1187,7 @@ Expr = Sizzle.selectors = {
 
 			// lang value must be a valid identifier
 			if ( !ridentifier.test( lang || "" ) ) {
-				Sizzle.error( "unsupported lang: " + lang );
+				find.error( "unsupported lang: " + lang );
 			}
 			lang = lang.replace( runescape, funescape ).toLowerCase();
 			return function( elem ) {
@@ -1357,7 +1357,7 @@ function setFilters() {}
 setFilters.prototype = Expr.filters = Expr.pseudos;
 Expr.setFilters = new setFilters();
 
-tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
+tokenize = find.tokenize = function( selector, parseOnly ) {
 	var matched, match, tokens, type,
 		soFar, groups, preFilters,
 		cached = tokenCache[ selector + " " ];
@@ -1423,7 +1423,7 @@ tokenize = Sizzle.tokenize = function( selector, parseOnly ) {
 	}
 
 	return soFar ?
-		Sizzle.error( selector ) :
+		find.error( selector ) :
 
 		// Cache the tokens
 		tokenCache( selector, groups ).slice( 0 );
@@ -1519,7 +1519,7 @@ function multipleContexts( selector, contexts, results ) {
 	var i = 0,
 		len = contexts.length;
 	for ( ; i < len; i++ ) {
-		Sizzle( selector, contexts[ i ], results );
+		find( selector, contexts[ i ], results );
 	}
 	return results;
 }
@@ -1800,7 +1800,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				if ( outermost && !seed && setMatched.length > 0 &&
 					( matchedCount + setMatchers.length ) > 1 ) {
 
-					Sizzle.uniqueSort( results );
+					find.uniqueSort( results );
 				}
 			}
 
@@ -1818,7 +1818,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 		superMatcher;
 }
 
-compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
+compile = find.compile = function( selector, match /* Internal Use Only */ ) {
 	var i,
 		setMatchers = [],
 		elementMatchers = [],
@@ -1851,15 +1851,15 @@ compile = Sizzle.compile = function( selector, match /* Internal Use Only */ ) {
 };
 
 /**
- * A low-level selection function that works with Sizzle's compiled
+ * A low-level selection function that works with jQuery's compiled
  *  selector functions
  * @param {String|Function} selector A selector or a pre-compiled
- *  selector function built with Sizzle.compile
+ *  selector function built with jQuery selector compile
  * @param {Element} context
  * @param {Array} [results]
  * @param {Array} [seed] A set of elements to match against
  */
-select = Sizzle.select = function( selector, context, results, seed ) {
+select = find.select = function( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
 		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
@@ -1937,17 +1937,17 @@ select = Sizzle.select = function( selector, context, results, seed ) {
 // Initialize against the default document
 setDocument();
 
-jQuery.find = Sizzle;
-jQuery.expr = Sizzle.selectors;
+jQuery.find = find;
+jQuery.expr = find.selectors;
 
 // Deprecated
 jQuery.expr[ ":" ] = jQuery.expr.pseudos;
 
-jQuery.uniqueSort = jQuery.unique = Sizzle.uniqueSort;
-jQuery.text = Sizzle.getText;
-jQuery.isXMLDoc = Sizzle.isXML;
-jQuery.contains = Sizzle.contains;
-jQuery.escapeSelector = Sizzle.escape;
+jQuery.uniqueSort = jQuery.unique = find.uniqueSort;
+jQuery.text = find.getText;
+jQuery.isXMLDoc = find.isXML;
+jQuery.contains = find.contains;
+jQuery.escapeSelector = find.escape;
 
 	/* eslint-enable */
 

@@ -1902,7 +1902,7 @@ testIframe(
 
 testIframe(
 	"jQuery selector cache collides with multiple jQueries on a page",
-	"selector/sizzle_cache.html",
+	"selector/cache.html",
 	function( assert, jQuery, window, document ) {
 		var $cached = window.$cached;
 
