@@ -197,7 +197,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "is() with :has() selectors", 
 	assert.ok( !jQuery( "#foo" ).is( jQuery( "div:has(ul)" ) ), "Check for child: Did not expect 'ul' element" );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "is() with positional selectors", function( assert ) {
+QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "is() with positional selectors", function( assert ) {
 	assert.expect( 27 );
 
 	var
@@ -334,7 +334,7 @@ QUnit.test( "filter(jQuery)", function( assert ) {
 	assert.deepEqual( jQuery( "#form input" ).filter( elements ).get(), q( "text1" ), "filter(Element)" );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "filter() with positional selectors", function( assert ) {
+QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "filter() with positional selectors", function( assert ) {
 	assert.expect( 19 );
 
 	var filterit = function( sel, filter, length ) {
@@ -415,7 +415,7 @@ QUnit.test( "closest()", function( assert ) {
 	assert.deepEqual( jq.contents().closest( "*" ).get(), jq.get(), "Text node input (trac-13332)" );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "closest() with positional selectors", function( assert ) {
+QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "closest() with positional selectors", function( assert ) {
 	assert.expect( 3 );
 
 	assert.deepEqual( jQuery( "#qunit-fixture" ).closest( "div:first" ).get(), [],

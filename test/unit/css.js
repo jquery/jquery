@@ -1488,7 +1488,12 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( ":visible/:hidden selectors", 
 	$table.css( "display", "none" ).html( "<tr><td>cell</td><td>cell</td></tr>" );
 	assert.equal( jQuery( "#table td:visible" ).length, 0, "hidden cell children not perceived as visible (trac-4512)" );
 
-	assert.t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
+	if ( QUnit.jQuerySelectorsPos ) {
+		assert.t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
+	} else {
+		assert.ok( "skip", "Positional selectors are not supported" );
+	}
+
 	assert.t( "Is Not Hidden", "#qunit-fixture:hidden", [] );
 	assert.t( "Is Hidden", "#form input:hidden", [ "hidden1", "hidden2" ] );
 

@@ -100,10 +100,10 @@ QUnit.test( "element", function( assert ) {
 	jQuery( "<h1 id='h1'/><h2 id='h2'/><h2 id='h2-2'/>" ).prependTo( "#qunit-fixture" );
 	assert.t( "Checking sort order", "#qunit-fixture h2, #qunit-fixture h1", [ "h1", "h2", "h2-2" ] );
 
-	if ( QUnit.jQuerySelectors ) {
+	if ( QUnit.jQuerySelectorsPos ) {
 		assert.t( "Checking sort order", "#qunit-fixture h2:first, #qunit-fixture h1:first", [ "h1", "h2" ] );
 	} else {
-		assert.ok( "skip", ":first not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	assert.t( "Checking sort order", "#qunit-fixture p, #qunit-fixture p a",
@@ -453,12 +453,16 @@ QUnit.test( "child and adjacent", function( assert ) {
 			"Element Directly Preceded By with a context." );
 		assert.deepEqual( jQuery.find( "~ em", siblingFirst ), q( "siblingnext", "siblingthird" ),
 			"Element Preceded By with a context." );
-		assert.deepEqual( jQuery.find( "~ em:first", siblingFirst ), q( "siblingnext" ),
-			"Element Preceded By positional with a context." );
 	} else {
 		assert.ok( "skip", "leading + not supported in selector-native" );
 		assert.ok( "skip", "leading ~ not supported in selector-native" );
-		assert.ok( "skip", "leading ~ not supported in selector-native" );
+	}
+
+	if ( QUnit.jQuerySelectorsPos ) {
+		assert.deepEqual( jQuery.find( "~ em:first", siblingFirst ), q( "siblingnext" ),
+			"Element Preceded By positional with a context." );
+	} else {
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	if ( QUnit.jQuerySelectors ) {
@@ -475,6 +479,12 @@ QUnit.test( "child and adjacent", function( assert ) {
 	if ( QUnit.jQuerySelectors ) {
 		assert.t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", [ "siblingfirst" ] );
 		assert.t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
+	} else {
+		assert.ok( "skip", ":contains not supported in selector-native" );
+		assert.ok( "skip", ":contains not supported in selector-native" );
+	}
+
+	if ( QUnit.jQuerySelectorsPos ) {
 		assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (trac-8310)" );
 
 		nothiddendiv = document.getElementById( "nothiddendiv" );
@@ -484,14 +494,11 @@ QUnit.test( "child and adjacent", function( assert ) {
 			"Verify child context positional selector" );
 		assert.deepEqual( jQuery.find( "> *:first", nothiddendiv ), q( "nothiddendivchild" ),
 			"Verify child context positional selector" );
-
 	} else {
-		assert.ok( "skip", ":contains not supported in selector-native" );
-		assert.ok( "skip", ":contains not supported in selector-native" );
-		assert.ok( "skip", ":eq not supported in selector-native" );
-		assert.ok( "skip", ":first not supported in selector-native" );
-		assert.ok( "skip", ":eq not supported in selector-native" );
-		assert.ok( "skip", ":first not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	assert.t( "Multiple combinators selects all levels", "#siblingTest em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
@@ -538,8 +545,8 @@ QUnit.test( "attributes - equals", function( assert ) {
 		assert.t( "negative number",
 			"#qunit-fixture li[tabIndex=-1]", [ "foodWithNegativeTabIndex" ] );
 	} else {
-		assert.ok( true, "Number value not supported in selector-native" );
-		assert.ok( true, "Negative number value not supported in selector-native" );
+		assert.ok( "skip", "Number value not supported in selector-native" );
+		assert.ok( "skip", "Negative number value not supported in selector-native" );
 	}
 
 	assert.t( "Non-ASCII identifier", "span[lang=中文]", [ "台北" ] );
@@ -1064,9 +1071,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 		assert.t( "Pseudo followed by token containing ')'", "p:contains(id=\"foo\")[id!=')']", [ "sndp" ] );
 
 		assert.t( "Multi-pseudo", "#ap:has(*), #ap:has(*)", [ "ap" ] );
-		assert.t( "Multi-positional", "#ap:gt(0), #ap:lt(1)", [ "ap" ] );
 		assert.t( "Multi-pseudo with leading nonexistent id", "#nonexistent:has(*), #ap:has(*)", [ "ap" ] );
-		assert.t( "Multi-positional with leading nonexistent id", "#nonexistent:gt(0), #ap:lt(1)", [ "ap" ] );
 
 		assert.t( "Tokenization stressor", "a[class*=blog]:not(:has(*, :contains(!)), :contains(!)), br:contains(]), p:contains(]), :not(:empty):not(:parent)", [ "ap", "mark", "yahoo", "simon" ] );
 	} else {
@@ -1079,11 +1084,17 @@ QUnit.test( "pseudo - misc", function( assert ) {
 		assert.ok( "skip", ":contains not supported in selector-native" );
 
 		assert.ok( "skip", ":has not supported in selector-native" );
-		assert.ok( "skip", ":lt & :gt not supported in selector-native" );
 		assert.ok( "skip", ":has supported in selector-native" );
-		assert.ok( "skip", ":lt & :gt not supported in selector-native" );
 
 		assert.ok( "skip", ":has not supported in selector-native" );
+	}
+
+	if ( QUnit.jQuerySelectorsPos ) {
+		assert.t( "Multi-positional", "#ap:gt(0), #ap:lt(1)", [ "ap" ] );
+		assert.t( "Multi-positional with leading nonexistent id", "#nonexistent:gt(0), #ap:lt(1)", [ "ap" ] );
+	} else {
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 } );
 
@@ -1093,15 +1104,17 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( "Not", "a.blog:not(.link)", [ "mark" ] );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.t( ":not() with :first", "#foo p:not(:first) .link", [ "simon" ] );
-
 		assert.t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", [ "option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e", "option5b", "option5c" ] );
 		assert.t( "Not - recursive", "#form option:not(:not(:selected))[id^='option3']", [ "option3b", "option3c" ] );
 	} else {
-		assert.ok( "skip", ":first not supported in selector-native" );
-
 		assert.ok( "skip", ":contains not supported in selector-native" );
 		assert.ok( "skip", ":selected not supported in selector-native" );
+	}
+
+	if ( QUnit.jQuerySelectorsPos ) {
+		assert.t( ":not() with :first", "#foo p:not(:first) .link", [ "simon" ] );
+	} else {
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	assert.t( ":not() failing interior", "#qunit-fixture p:not(.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
@@ -1181,7 +1194,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.ok( "skip", ":contains not supported in selector-native" );
 	}
 
-	if ( QUnit.jQuerySelectors ) {
+	if ( QUnit.jQuerySelectorsPos ) {
 		assert.t( "positional :not()", "#foo p:not(:last)", [ "sndp", "en" ] );
 		assert.t( "positional :not() prefix", "#foo p:not(:last) a", [ "yahoo" ] );
 		assert.t( "compound positional :not()", "#foo p:not(:first, :last)", [ "en" ] );
@@ -1194,21 +1207,21 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.t( "positional :not() with pre-filter", "#foo p:not([lang]:first)", [ "sndp", "sap" ] );
 		assert.t( "positional :not() with post-filter", "#foo p:not(:first[lang])", [ "sndp", "en", "sap" ] );
 	} else {
-		assert.ok( "skip", ":last not supported in selector-native" );
-		assert.ok( "skip", ":last not supported in selector-native" );
-		assert.ok( "skip", ":first, :last not supported in selector-native" );
-		assert.ok( "skip", ":first, :even not supported in selector-native" );
-		assert.ok( "skip", ":first, :odd not supported in selector-native" );
-		assert.ok( "skip", ":first, :odd not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 
-		assert.ok( "skip", ":first not supported in selector-native" );
-		assert.ok( "skip", ":first not supported in selector-native" );
-		assert.ok( "skip", ":first not supported in selector-native" );
-		assert.ok( "skip", ":first not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - position", function( assert ) {
+QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "pseudo - position", function( assert ) {
 	assert.expect( 34 );
 
 	assert.t( "First element", "#qunit-fixture p:first", [ "firstp" ] );
@@ -1355,7 +1368,7 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 				"enabled-select", "enabled-optgroup", "enabled-option" ]
 		);
 	} else {
-		assert.ok( true, ":enabled broken in Chrome in selector-native" );
+		assert.ok( "skip", ":enabled broken in Chrome in selector-native" );
 	}
 } );
 
@@ -1629,12 +1642,12 @@ QUnit.test( "caching does not introduce bugs", function( assert ) {
 		"Reusing selector with new context"
 	);
 
-	if ( QUnit.jQuerySelectors ) {
+	if ( QUnit.jQuerySelectorsPos ) {
 		assert.t( "Deep ancestry caching in post-positional element matcher (jQuery #14657)",
 			"#qunit-fixture a:lt(3):parent",
 			[ "simon1", "google", "groups" ] );
 	} else {
-		assert.ok( "skip", ":lt not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	sap.className = "original";

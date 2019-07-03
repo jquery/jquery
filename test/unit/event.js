@@ -1858,18 +1858,23 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "delegated event with delegate
 		.find( "#a0_0" ).trigger( "click" ).end()
 		.off( "click" );
 
-	// Positional selector (trac-11315)
-	markup.find( "ul" ).eq( 0 )
-		.on( "click", ">li>a", function() {
-			assert.ok( this.id === "a0", "child li was clicked" );
-		} )
-		.find( "#ul0" )
-			.on( "click", "li:first>a", function() {
-				assert.ok( this.id === "a0_0", "first li under #u10 was clicked" );
+	if ( QUnit.jQuerySelectorsPos ) {
+		// Positional selector (trac-11315)
+		markup.find( "ul" ).eq( 0 )
+			.on( "click", ">li>a", function() {
+				assert.ok( this.id === "a0", "child li was clicked" );
 			} )
-		.end()
-		.find( "a" ).trigger( "click" ).end()
-		.find( "#ul0" ).off();
+			.find( "#ul0" )
+				.on( "click", "li:first>a", function() {
+					assert.ok( this.id === "a0_0", "first li under #u10 was clicked" );
+				} )
+			.end()
+			.find( "a" ).trigger( "click" ).end()
+			.find( "#ul0" ).off();
+	} else {
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+	}
 
 	markup.remove();
 } );
