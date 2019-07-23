@@ -809,9 +809,9 @@ QUnit.module( "ajax", {
 	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 7, function( assert ) {
 		var globalEval = jQuery.globalEval;
 
-		function request( title, options, overrides ) {
+		function request( title, options ) {
 			var testMsg = title + ": expected file missing status";
-			return jQuery.extend( options, {
+			return jQuery.extend( {
 				beforeSend: function() {
 					jQuery.globalEval = function() {
 						assert.ok( false, "Should not eval" );
@@ -827,7 +827,7 @@ QUnit.module( "ajax", {
 				success: function() {
 					assert.ok( false, "Unanticipated success" );
 				}
-			}, overrides );
+			}, options );
 		}
 
 		return [
@@ -880,8 +880,7 @@ QUnit.module( "ajax", {
 				"JSONP reply with dataType",
 				{
 					dataType: "jsonp",
-					url: url( "mock.php?action=errorWithScript" )
-				}, {
+					url: url( "mock.php?action=errorWithScript" ),
 					beforeSend: function() {
 						jQuery.globalEval = function( response ) {
 							assert.ok( /"status": 404, "msg": "Not Found"/.test( response ), "Error object returned" );
