@@ -834,14 +834,14 @@ QUnit.module( "ajax", {
 			request(
 				"HTML reply",
 				{
-					url: url( "404.js" )
+					url: url( "404.txt" )
 				}
 			),
 			request(
 				"HTML reply with dataType",
 				{
 					dataType: "script",
-					url: url( "404.js" )
+					url: url( "404.txt" )
 				}
 			),
 			request(
