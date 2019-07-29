@@ -1943,7 +1943,7 @@ QUnit.test( "remove() with filters", function( assert ) {
 	div.children().remove( "span:nth-child(2n)" );
 	assert.equal( div.text(), "13", "relative selector in remove" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectorsPos ) {
 		div = jQuery( markup );
 		div.children().remove( "span:first" );
 		assert.equal( div.text(), "234", "positional selector in remove" );
@@ -1951,8 +1951,8 @@ QUnit.test( "remove() with filters", function( assert ) {
 		div.children().remove( "span:last" );
 		assert.equal( div.text(), "123", "positional selector in remove" );
 	} else {
-		assert.ok( "skip", "Positional selectors not supported in selector-native" );
-		assert.ok( "skip", "Positional selectors not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	// using contents will get comments regular, text, and comment nodes
@@ -2040,7 +2040,7 @@ QUnit.test( "detach() with filters", function( assert ) {
 	div.children().detach( "span:nth-child(2n)" );
 	assert.equal( div.text(), "13", "relative selector in detach" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectorsPos ) {
 		div = jQuery( markup );
 		div.children().detach( "span:first" );
 		assert.equal( div.text(), "234", "positional selector in detach" );
@@ -2048,8 +2048,8 @@ QUnit.test( "detach() with filters", function( assert ) {
 		div.children().detach( "span:last" );
 		assert.equal( div.text(), "123", "positional selector in detach" );
 	} else {
-		assert.ok( "skip", "positional selectors not supported in selector-native" );
-		assert.ok( "skip", "positional selectors not supported in selector-native" );
+		assert.ok( "skip", "Positional selectors are not supported" );
+		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
 	// using contents will get comments regular, text, and comment nodes

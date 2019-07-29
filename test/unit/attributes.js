@@ -488,29 +488,6 @@ QUnit.test( "attr(non-ASCII)", function( assert ) {
 	assert.equal( $div.attr( "AØC" ), "alpha", ".attr() exclusively lowercases characters in the range A-Z (gh-2730)" );
 } );
 
-QUnit.test( "attr - extending the boolean attrHandle", function( assert ) {
-	assert.expect( 1 );
-	var called = false,
-		origAttrHandleHadChecked = "checked" in jQuery.expr.attrHandle,
-		origAttrHandleChecked = jQuery.expr.attrHandle.checked,
-		_handle = origAttrHandleChecked || $.noop;
-	jQuery.expr.attrHandle.checked = function() {
-		called = true;
-		_handle.apply( this, arguments );
-	};
-	jQuery( "#qunit-fixture input" ).attr( "checked" );
-	called = false;
-	jQuery( "#qunit-fixture input" ).attr( "checked" );
-	assert.ok( called, "The boolean attrHandle does not drop custom attrHandles" );
-
-	if ( origAttrHandleHadChecked ) {
-		jQuery.expr.attrHandle.checked = origAttrHandleChecked;
-	} else {
-		delete jQuery.expr.attrHandle.checked;
-	}
-
-} );
-
 QUnit.test( "attr(String, Object) - Loaded via XML document", function( assert ) {
 	assert.expect( 2 );
 	var xml = createDashboardXML(),
