@@ -74,7 +74,7 @@ module.exports = function( grunt ) {
 					destPrefix: "external"
 				},
 				files: {
-					"npo/npo.js": "native-promise-only/npo.js",
+					"npo/npo.js": "native-promise-only/lib/npo.src.js",
 
 					"qunit/qunit.js": "qunit/qunit/qunit.js",
 					"qunit/qunit.css": "qunit/qunit/qunit.css",
