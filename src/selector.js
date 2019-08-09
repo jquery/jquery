@@ -4,12 +4,13 @@ define( [
 	"./var/indexOf",
 	"./var/pop",
 	"./var/push",
+	"./selector/support",
 
 	// The following utils are attached directly to the jQuery object.
 	"./selector/contains",
 	"./selector/escapeSelector",
 	"./selector/uniqueSort"
-], function( jQuery, document, indexOf, pop, push ) {
+], function( jQuery, document, indexOf, pop, push, support ) {
 
 "use strict";
 
@@ -153,7 +154,7 @@ function selectorError( msg ) {
 }
 
 function find( selector, context, results, seed ) {
-	var m, i, elem, nid, match, groups, newSelector,
+	var m, i, elem, nid, match, groups, newSelector, canUseScope,
 		newContext = context && context.ownerDocument,
 
 		// nodeType defaults to 9, since context defaults to document
@@ -230,24 +231,31 @@ function find( selector, context, results, seed ) {
 				// Thanks to Andrew Dupont for this technique.
 				if ( nodeType === 1 && rdescend.test( selector ) ) {
 
+					// Expand context for sibling selectors
+					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
+						context;
+
+					// We can use :scope instead of the ID hack if the browser
+					// supports it & if we're not changing the context.
+					canUseScope = newContext === context && support.scope;
+
 					// Capture the context ID, setting it first if necessary
-					if ( ( nid = context.getAttribute( "id" ) ) ) {
-						nid = jQuery.escapeSelector( nid );
-					} else {
-						context.setAttribute( "id", ( nid = expando ) );
+					if ( !canUseScope ) {
+						if ( ( nid = context.getAttribute( "id" ) ) ) {
+							nid = jQuery.escapeSelector( nid );
+						} else {
+							context.setAttribute( "id", ( nid = expando ) );
+						}
 					}
 
 					// Prefix every selector in the list
 					groups = tokenize( selector );
 					i = groups.length;
 					while ( i-- ) {
-						groups[ i ] = "#" + nid + " " + toSelector( groups[ i ] );
+						groups[ i ] = ( canUseScope || "#" + nid ) + " " +
+							toSelector( groups[ i ] );
 					}
 					newSelector = groups.join( "," );
-
-					// Expand context for sibling selectors
-					newContext = rsibling.test( selector ) && testContext( context.parentNode ) ||
-						context;
 				}
 
 				try {
