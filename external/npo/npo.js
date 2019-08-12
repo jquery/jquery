@@ -2,4 +2,372 @@
     v0.8.1 (c) Kyle Simpson
     MIT License: http://getify.mit-license.org
 */
-!function(t,n,e){n[t]=n[t]||e(),"undefined"!=typeof module&&module.exports?module.exports=n[t]:"function"==typeof define&&define.amd&&define(function(){return n[t]})}("Promise","undefined"!=typeof global?global:this,function(){"use strict";function t(t,n){l.add(t,n),h||(h=y(l.drain))}function n(t){var n,e=typeof t;return null==t||"object"!=e&&"function"!=e||(n=t.then),"function"==typeof n?n:!1}function e(){for(var t=0;t<this.chain.length;t++)o(this,1===this.state?this.chain[t].success:this.chain[t].failure,this.chain[t]);this.chain.length=0}function o(t,e,o){var r,i;try{e===!1?o.reject(t.msg):(r=e===!0?t.msg:e.call(void 0,t.msg),r===o.promise?o.reject(TypeError("Promise-chain cycle")):(i=n(r))?i.call(r,o.resolve,o.reject):o.resolve(r))}catch(c){o.reject(c)}}function r(o){var c,u=this;if(!u.triggered){u.triggered=!0,u.def&&(u=u.def);try{(c=n(o))?t(function(){var t=new f(u);try{c.call(o,function(){r.apply(t,arguments)},function(){i.apply(t,arguments)})}catch(n){i.call(t,n)}}):(u.msg=o,u.state=1,u.chain.length>0&&t(e,u))}catch(a){i.call(new f(u),a)}}}function i(n){var o=this;o.triggered||(o.triggered=!0,o.def&&(o=o.def),o.msg=n,o.state=2,o.chain.length>0&&t(e,o))}function c(t,n,e,o){for(var r=0;r<n.length;r++)!function(r){t.resolve(n[r]).then(function(t){e(r,t)},o)}(r)}function f(t){this.def=t,this.triggered=!1}function u(t){this.promise=t,this.state=0,this.triggered=!1,this.chain=[],this.msg=void 0}function a(n){if("function"!=typeof n)throw TypeError("Not a function");if(0!==this.__NPO__)throw TypeError("Not a promise");this.__NPO__=1;var o=new u(this);this.then=function(n,r){var i={success:"function"==typeof n?n:!0,failure:"function"==typeof r?r:!1};return i.promise=new this.constructor(function(t,n){if("function"!=typeof t||"function"!=typeof n)throw TypeError("Not a function");i.resolve=t,i.reject=n}),o.chain.push(i),0!==o.state&&t(e,o),i.promise},this["catch"]=function(t){return this.then(void 0,t)};try{n.call(void 0,function(t){r.call(o,t)},function(t){i.call(o,t)})}catch(c){i.call(o,c)}}var s,h,l,p=Object.prototype.toString,y="undefined"!=typeof setImmediate?function(t){return setImmediate(t)}:setTimeout;try{Object.defineProperty({},"x",{}),s=function(t,n,e,o){return Object.defineProperty(t,n,{value:e,writable:!0,configurable:o!==!1})}}catch(d){s=function(t,n,e){return t[n]=e,t}}l=function(){function t(t,n){this.fn=t,this.self=n,this.next=void 0}var n,e,o;return{add:function(r,i){o=new t(r,i),e?e.next=o:n=o,e=o,o=void 0},drain:function(){var t=n;for(n=e=h=void 0;t;)t.fn.call(t.self),t=t.next}}}();var g=s({},"constructor",a,!1);return a.prototype=g,s(g,"__NPO__",0,!1),s(a,"resolve",function(t){var n=this;return t&&"object"==typeof t&&1===t.__NPO__?t:new n(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");n(t)})}),s(a,"reject",function(t){return new this(function(n,e){if("function"!=typeof n||"function"!=typeof e)throw TypeError("Not a function");e(t)})}),s(a,"all",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):0===t.length?n.resolve([]):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");var r=t.length,i=Array(r),f=0;c(n,t,function(t,n){i[t]=n,++f===r&&e(i)},o)})}),s(a,"race",function(t){var n=this;return"[object Array]"!=p.call(t)?n.reject(TypeError("Not an array")):new n(function(e,o){if("function"!=typeof e||"function"!=typeof o)throw TypeError("Not a function");c(n,t,function(t,n){e(n)},o)})}),a});
+
+(function UMD(name,context,definition){
+	// special form of UMD for polyfilling across evironments
+	context[name] = context[name] || definition();
+	if (typeof module != "undefined" && module.exports) { module.exports = context[name]; }
+	else if (typeof define == "function" && define.amd) { define(function $AMD$(){ return context[name]; }); }
+})("Promise",typeof global != "undefined" ? global : this,function DEF(){
+	/*jshint validthis:true */
+	"use strict";
+
+	var builtInProp, cycle, scheduling_queue,
+		ToString = Object.prototype.toString,
+		timer = (typeof setImmediate != "undefined") ?
+			function timer(fn) { return setImmediate(fn); } :
+			setTimeout
+	;
+
+	// dammit, IE8.
+	try {
+		Object.defineProperty({},"x",{});
+		builtInProp = function builtInProp(obj,name,val,config) {
+			return Object.defineProperty(obj,name,{
+				value: val,
+				writable: true,
+				configurable: config !== false
+			});
+		};
+	}
+	catch (err) {
+		builtInProp = function builtInProp(obj,name,val) {
+			obj[name] = val;
+			return obj;
+		};
+	}
+
+	// Note: using a queue instead of array for efficiency
+	scheduling_queue = (function Queue() {
+		var first, last, item;
+
+		function Item(fn,self) {
+			this.fn = fn;
+			this.self = self;
+			this.next = void 0;
+		}
+
+		return {
+			add: function add(fn,self) {
+				item = new Item(fn,self);
+				if (last) {
+					last.next = item;
+				}
+				else {
+					first = item;
+				}
+				last = item;
+				item = void 0;
+			},
+			drain: function drain() {
+				var f = first;
+				first = last = cycle = void 0;
+
+				while (f) {
+					f.fn.call(f.self);
+					f = f.next;
+				}
+			}
+		};
+	})();
+
+	function schedule(fn,self) {
+		scheduling_queue.add(fn,self);
+		if (!cycle) {
+			cycle = timer(scheduling_queue.drain);
+		}
+	}
+
+	// promise duck typing
+	function isThenable(o) {
+		var _then, o_type = typeof o;
+
+		if (o != null &&
+			(
+				o_type == "object" || o_type == "function"
+			)
+		) {
+			_then = o.then;
+		}
+		return typeof _then == "function" ? _then : false;
+	}
+
+	function notify() {
+		for (var i=0; i<this.chain.length; i++) {
+			notifyIsolated(
+				this,
+				(this.state === 1) ? this.chain[i].success : this.chain[i].failure,
+				this.chain[i]
+			);
+		}
+		this.chain.length = 0;
+	}
+
+	// NOTE: This is a separate function to isolate
+	// the `try..catch` so that other code can be
+	// optimized better
+	function notifyIsolated(self,cb,chain) {
+		var ret, _then;
+		try {
+			if (cb === false) {
+				chain.reject(self.msg);
+			}
+			else {
+				if (cb === true) {
+					ret = self.msg;
+				}
+				else {
+					ret = cb.call(void 0,self.msg);
+				}
+
+				if (ret === chain.promise) {
+					chain.reject(TypeError("Promise-chain cycle"));
+				}
+				else if (_then = isThenable(ret)) {
+					_then.call(ret,chain.resolve,chain.reject);
+				}
+				else {
+					chain.resolve(ret);
+				}
+			}
+		}
+		catch (err) {
+			chain.reject(err);
+		}
+	}
+
+	function resolve(msg) {
+		var _then, self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		try {
+			if (_then = isThenable(msg)) {
+				schedule(function(){
+					var def_wrapper = new MakeDefWrapper(self);
+					try {
+						_then.call(msg,
+							function $resolve$(){ resolve.apply(def_wrapper,arguments); },
+							function $reject$(){ reject.apply(def_wrapper,arguments); }
+						);
+					}
+					catch (err) {
+						reject.call(def_wrapper,err);
+					}
+				})
+			}
+			else {
+				self.msg = msg;
+				self.state = 1;
+				if (self.chain.length > 0) {
+					schedule(notify,self);
+				}
+			}
+		}
+		catch (err) {
+			reject.call(new MakeDefWrapper(self),err);
+		}
+	}
+
+	function reject(msg) {
+		var self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		self.msg = msg;
+		self.state = 2;
+		if (self.chain.length > 0) {
+			schedule(notify,self);
+		}
+	}
+
+	function iteratePromises(Constructor,arr,resolver,rejecter) {
+		for (var idx=0; idx<arr.length; idx++) {
+			(function IIFE(idx){
+				Constructor.resolve(arr[idx])
+				.then(
+					function $resolver$(msg){
+						resolver(idx,msg);
+					},
+					rejecter
+				);
+			})(idx);
+		}
+	}
+
+	function MakeDefWrapper(self) {
+		this.def = self;
+		this.triggered = false;
+	}
+
+	function MakeDef(self) {
+		this.promise = self;
+		this.state = 0;
+		this.triggered = false;
+		this.chain = [];
+		this.msg = void 0;
+	}
+
+	function Promise(executor) {
+		if (typeof executor != "function") {
+			throw TypeError("Not a function");
+		}
+
+		if (this.__NPO__ !== 0) {
+			throw TypeError("Not a promise");
+		}
+
+		// instance shadowing the inherited "brand"
+		// to signal an already "initialized" promise
+		this.__NPO__ = 1;
+
+		var def = new MakeDef(this);
+
+		this["then"] = function then(success,failure) {
+			var o = {
+				success: typeof success == "function" ? success : true,
+				failure: typeof failure == "function" ? failure : false
+			};
+			// Note: `then(..)` itself can be borrowed to be used against
+			// a different promise constructor for making the chained promise,
+			// by substituting a different `this` binding.
+			o.promise = new this.constructor(function extractChain(resolve,reject) {
+				if (typeof resolve != "function" || typeof reject != "function") {
+					throw TypeError("Not a function");
+				}
+
+				o.resolve = resolve;
+				o.reject = reject;
+			});
+			def.chain.push(o);
+
+			if (def.state !== 0) {
+				schedule(notify,def);
+			}
+
+			return o.promise;
+		};
+		this["catch"] = function $catch$(failure) {
+			return this.then(void 0,failure);
+		};
+
+		try {
+			executor.call(
+				void 0,
+				function publicResolve(msg){
+					resolve.call(def,msg);
+				},
+				function publicReject(msg) {
+					reject.call(def,msg);
+				}
+			);
+		}
+		catch (err) {
+			reject.call(def,err);
+		}
+	}
+
+	var PromisePrototype = builtInProp({},"constructor",Promise,
+		/*configurable=*/false
+	);
+
+	// Note: Android 4 cannot use `Object.defineProperty(..)` here
+	Promise.prototype = PromisePrototype;
+
+	// built-in "brand" to signal an "uninitialized" promise
+	builtInProp(PromisePrototype,"__NPO__",0,
+		/*configurable=*/false
+	);
+
+	builtInProp(Promise,"resolve",function Promise$resolve(msg) {
+		var Constructor = this;
+
+		// spec mandated checks
+		// note: best "isPromise" check that's practical for now
+		if (msg && typeof msg == "object" && msg.__NPO__ === 1) {
+			return msg;
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			resolve(msg);
+		});
+	});
+
+	builtInProp(Promise,"reject",function Promise$reject(msg) {
+		return new this(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			reject(msg);
+		});
+	});
+
+	builtInProp(Promise,"all",function Promise$all(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+		if (arr.length === 0) {
+			return Constructor.resolve([]);
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			var len = arr.length, msgs = Array(len), count = 0;
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg) {
+				msgs[idx] = msg;
+				if (++count === len) {
+					resolve(msgs);
+				}
+			},reject);
+		});
+	});
+
+	builtInProp(Promise,"race",function Promise$race(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg){
+				resolve(msg);
+			},reject);
+		});
+	});
+
+	return Promise;
+});
