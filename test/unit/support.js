@@ -65,16 +65,16 @@ testIframe(
 				scope: undefined
 			},
 			chrome: {
-				scope: ":scope"
+				scope: true
 			},
 			safari: {
-				scope: ":scope"
+				scope: true
 			},
 			firefox: {
-				scope: ":scope"
+				scope: true
 			},
 			ios: {
-				scope: ":scope"
+				scope: true
 			}
 		};
 

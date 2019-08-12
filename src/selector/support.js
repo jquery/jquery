@@ -9,7 +9,7 @@ define( [
 	// IE/Edge don't support the :scope pseudo-class.
 	try {
 		document.querySelectorAll( ":scope" );
-		support.scope = ":scope";
+		support.scope = true;
 	} catch ( e ) {}
 
 	return support;

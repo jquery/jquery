@@ -154,7 +154,7 @@ function selectorError( msg ) {
 }
 
 function find( selector, context, results, seed ) {
-	var m, i, elem, nid, match, groups, newSelector, canUseScope,
+	var m, i, elem, nid, match, groups, newSelector,
 		newContext = context && context.ownerDocument,
 
 		// nodeType defaults to 9, since context defaults to document
@@ -237,10 +237,9 @@ function find( selector, context, results, seed ) {
 
 					// We can use :scope instead of the ID hack if the browser
 					// supports it & if we're not changing the context.
-					canUseScope = newContext === context && support.scope;
+					if ( newContext !== context || !support.scope ) {
 
-					// Capture the context ID, setting it first if necessary
-					if ( !canUseScope ) {
+						// Capture the context ID, setting it first if necessary
 						if ( ( nid = context.getAttribute( "id" ) ) ) {
 							nid = jQuery.escapeSelector( nid );
 						} else {
@@ -252,7 +251,7 @@ function find( selector, context, results, seed ) {
 					groups = tokenize( selector );
 					i = groups.length;
 					while ( i-- ) {
-						groups[ i ] = ( canUseScope || "#" + nid ) + " " +
+						groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
 							toSelector( groups[ i ] );
 					}
 					newSelector = groups.join( "," );
