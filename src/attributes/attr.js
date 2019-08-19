@@ -9,9 +9,6 @@ define( [
 
 "use strict";
 
-var boolHook,
-	attrHandle = jQuery.expr.attrHandle;
-
 jQuery.fn.extend( {
 	attr: function( name, value ) {
 		return access( this, jQuery.attr, name, value, arguments.length > 1 );
@@ -42,8 +39,7 @@ jQuery.extend( {
 		// Attribute hooks are determined by the lowercase version
 		// Grab necessary hook if one is defined
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
-			hooks = jQuery.attrHooks[ name.toLowerCase() ] ||
-				( jQuery.expr.match.bool.test( name ) ? boolHook : undefined );
+			hooks = jQuery.attrHooks[ name.toLowerCase() ];
 		}
 
 		if ( value !== undefined ) {
@@ -65,7 +61,7 @@ jQuery.extend( {
 			return ret;
 		}
 
-		ret = jQuery.find.attr( elem, name );
+		ret = elem.getAttribute( name );
 
 		// Non-existent attributes return null, we normalize to undefined
 		return ret == null ? undefined : ret;
@@ -105,38 +101,31 @@ jQuery.extend( {
 	}
 } );
 
-// Hooks for boolean attributes
-boolHook = {
-	set: function( elem, value, name ) {
-		if ( value === false ) {
-
-			// Remove boolean attributes when set to false
-			jQuery.removeAttr( elem, name );
-		} else {
-			elem.setAttribute( name, name );
-		}
-		return name;
-	}
-};
-
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name ) {
-	var getter = attrHandle[ name ] || jQuery.find.attr;
+	jQuery.attrHooks[ name ] = {
+		get: function( elem ) {
+			var ret,
+				isXML = jQuery.isXMLDoc( elem ),
+				lowercaseName = name.toLowerCase();
 
-	attrHandle[ name ] = function( elem, name, isXML ) {
-		var ret, handle,
-			lowercaseName = name.toLowerCase();
+			if ( !isXML ) {
+				ret = elem.getAttribute( name ) != null ?
+					lowercaseName :
+					null;
+			}
+			return ret;
+		},
 
-		if ( !isXML ) {
+		set: function( elem, value, name ) {
+			if ( value === false ) {
 
-			// Avoid an infinite loop by temporarily removing this function from the getter
-			handle = attrHandle[ lowercaseName ];
-			attrHandle[ lowercaseName ] = ret;
-			ret = getter( elem, name, isXML ) != null ?
-				lowercaseName :
-				null;
-			attrHandle[ lowercaseName ] = handle;
+				// Remove boolean attributes when set to false
+				jQuery.removeAttr( elem, name );
+			} else {
+				elem.setAttribute( name, name );
+			}
+			return name;
 		}
-		return ret;
 	};
 } );
 

@@ -100,12 +100,6 @@ Some example modules that can be excluded are:
 - **exports/global**: Exclude the attachment of global jQuery variables ($ and jQuery) to the window.
 - **exports/amd**: Exclude the AMD definition.
 
-As a special case, you may also replace Sizzle by using a special flag `grunt custom:-sizzle`.
-
-- **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/master/src/selector-native.js) file for details.
-
-*Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
-
 The build process shows a message for each dependent module it excludes or includes.
 
 ##### AMD name
@@ -156,7 +150,7 @@ Exclude a bunch of modules:
 grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event/alias,-offset,-wrap
 ```
 
-For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process. The non-Sizzle selector engine currently does not pass unit tests because it is missing too much essential functionality.
+For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.
 
 Running the Unit Tests
 --------------------------------------

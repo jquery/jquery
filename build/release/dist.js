@@ -65,7 +65,6 @@ module.exports = function( Release, files, complete ) {
 
 		// Copy dist files
 		var distFolder = Release.dir.dist + "/dist",
-			externalFolder = Release.dir.dist + "/external",
 			readme = fs.readFileSync( Release.dir.dist + "/README.md", "utf8" ),
 			rmIgnore = files
 				.concat( [
@@ -87,10 +86,6 @@ module.exports = function( Release, files, complete ) {
 		files.forEach( function( file ) {
 			shell.cp( "-f", Release.dir.repo + "/" + file, distFolder );
 		} );
-
-		// Copy Sizzle
-		shell.mkdir( "-p", externalFolder );
-		shell.cp( "-rf", Release.dir.repo + "/external/sizzle", externalFolder );
 
 		// Copy other files
 		extras.forEach( function( file ) {
