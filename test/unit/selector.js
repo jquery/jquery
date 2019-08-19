@@ -1640,6 +1640,41 @@ QUnit.test( "context", function( assert ) {
 	}
 } );
 
+// Support: IE 11+, Edge 12 - 18+
+// IE/Edge don't support the :scope pseudo-class so they will trigger MutationObservers.
+// The test is skipped there.
+QUnit[
+	( QUnit.isIE || /edge\//i.test( navigator.userAgent ) ) ?
+		"skip" :
+		"test"
+	]( "selectors maintaining context don't trigger mutation observers", function( assert ) {
+	assert.expect( 1 );
+
+	var timeout,
+		done = assert.async(),
+		container = jQuery( "<div/>" ),
+		child = jQuery( "<div/>" );
+
+	child.appendTo( container );
+	container.appendTo( "#qunit-fixture" );
+
+	var observer = new MutationObserver(  function() {
+		clearTimeout( timeout );
+		observer.disconnect();
+		assert.ok( false, "Mutation observer fired during selection" );
+		done();
+	} );
+	observer.observe( container[ 0 ], { attributes: true } );
+
+	container.find( "div div" );
+
+	timeout = setTimeout( function() {
+		observer.disconnect();
+		assert.ok( true, "Mutation observer didn't fire during selection" );
+		done();
+	} );
+} );
+
 QUnit.test( "caching does not introduce bugs", function( assert ) {
 	assert.expect( 3 );
 

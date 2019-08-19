@@ -77,6 +77,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
+				scope: false,
 				scrollboxSize: true
 			},
 			ie_10_11: {
@@ -98,6 +99,7 @@ testIframe(
 				radioValue: false,
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
+				scope: false,
 				scrollboxSize: true
 			},
 			ie_9: {
@@ -119,6 +121,7 @@ testIframe(
 				radioValue: false,
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
+				scope: false,
 				scrollboxSize: false
 			},
 			chrome: {
@@ -140,6 +143,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			safari: {
@@ -161,6 +165,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			safari_9_10: {
@@ -182,6 +187,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			firefox: {
@@ -203,6 +209,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
+				scope: true,
 				scrollboxSize: true
 			},
 			firefox_60: {
@@ -224,6 +231,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: false,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			ios: {
@@ -245,6 +253,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			ios_9_10: {
@@ -266,6 +275,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			ios_8: {
@@ -287,6 +297,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			ios_7: {
@@ -308,6 +319,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
+				scope: true,
 				scrollboxSize: true
 			},
 			android: {
@@ -329,6 +341,7 @@ testIframe(
 				radioValue: true,
 				reliableMarginLeft: false,
 				reliableTrDimensions: true,
+				scope: false,
 				scrollboxSize: true
 			}
 		};
@@ -385,6 +398,15 @@ testIframe(
 			j++;
 		}
 
+		// Add an assertion per undefined support prop as it may
+		// not even exist on computedSupport but we still want to run
+		// the check.
+		for ( prop in expected ) {
+			if ( expected[ prop ] === undefined ) {
+				j++;
+			}
+		}
+
 		assert.expect( j );
 
 		for ( i in expected ) {
@@ -413,6 +435,15 @@ testIframe(
 			i++;
 		}
 
+		// Add an assertion per undefined support prop as it may
+		// not even exist on computedSupport but we still want to run
+		// the check.
+		for ( prop in expected ) {
+			if ( expected[ prop ] === undefined ) {
+				i++;
+			}
+		}
+
 		assert.expect( i );
 
 		// Record all support props and the failing ones and ensure everyone
@@ -420,7 +451,7 @@ testIframe(
 		for ( browserKey in expectedMap ) {
 			for ( supportTestName in expectedMap[ browserKey ] ) {
 				supportProps[ supportTestName ] = true;
-				if ( expectedMap[ browserKey ][ supportTestName ] !== true ) {
+				if ( !expectedMap[ browserKey ][ supportTestName ] ) {
 					failingSupportProps[ supportTestName ] = true;
 				}
 			}
