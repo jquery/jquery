@@ -216,28 +216,6 @@ QUnit.test( "noConflict", function( assert ) {
 	window[ "jQuery" ] = jQuery = $$;
 } );
 
-QUnit.test( "trim", function( assert ) {
-	assert.expect( 13 );
-
-	var nbsp = String.fromCharCode( 160 );
-
-	assert.equal( jQuery.trim( "hello  " ), "hello", "trailing space" );
-	assert.equal( jQuery.trim( "  hello" ), "hello", "leading space" );
-	assert.equal( jQuery.trim( "  hello   " ), "hello", "space on both sides" );
-	assert.equal( jQuery.trim( "  " + nbsp + "hello  " + nbsp + " " ), "hello", "&nbsp;" );
-
-	assert.equal( jQuery.trim(), "", "Nothing in." );
-	assert.equal( jQuery.trim( undefined ), "", "Undefined" );
-	assert.equal( jQuery.trim( null ), "", "Null" );
-	assert.equal( jQuery.trim( 5 ), "5", "Number" );
-	assert.equal( jQuery.trim( false ), "false", "Boolean" );
-
-	assert.equal( jQuery.trim( " " ), "", "space should be trimmed" );
-	assert.equal( jQuery.trim( "ipad\xA0" ), "ipad", "nbsp should be trimmed" );
-	assert.equal( jQuery.trim( "\uFEFF" ), "", "zwsp should be trimmed" );
-	assert.equal( jQuery.trim( "\uFEFF \xA0! | \uFEFF" ), "! |", "leading/trailing should be trimmed" );
-} );
-
 QUnit.asyncTest( "isPlainObject", function( assert ) {
 
 	assert.expect( 23 );
