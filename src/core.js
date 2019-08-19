@@ -4,10 +4,9 @@
 
 define( [
 	"./var/arr",
-	"./var/document",
 	"./var/getProto",
 	"./var/slice",
-	"./var/concat",
+	"./var/flat",
 	"./var/push",
 	"./var/indexOf",
 	"./var/class2type",
@@ -20,7 +19,7 @@ define( [
 	"./var/isWindow",
 	"./core/DOMEval",
 	"./core/toType"
-], function( arr, document, getProto, slice, concat, push, indexOf,
+], function( arr, getProto, slice, flat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
 	support, isFunction, isWindow, DOMEval, toType ) {
 
@@ -369,7 +368,7 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
-		return concat.apply( [], ret );
+		return flat( ret );
 	},
 
 	// A global GUID counter for objects

@@ -1,7 +1,7 @@
 define( [
 	"./core",
 	"./core/isAttached",
-	"./var/concat",
+	"./var/flat",
 	"./var/isFunction",
 	"./var/push",
 	"./var/rcheckableType",
@@ -24,7 +24,7 @@ define( [
 	"./traversing",
 	"./selector",
 	"./event"
-], function( jQuery, isAttached, concat, isFunction, push, rcheckableType,
+], function( jQuery, isAttached, flat, isFunction, push, rcheckableType,
 	access, rtagName, rscriptType,
 	wrapMap, getAll, setGlobalEval, buildFragment, support,
 	dataPriv, dataUser, acceptData, DOMEval, nodeName ) {
@@ -126,7 +126,7 @@ function fixInput( src, dest ) {
 function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
-	args = concat.apply( [], args );
+	args = flat( args );
 
 	var fragment, first, scripts, hasScripts, node, doc,
 		i = 0,

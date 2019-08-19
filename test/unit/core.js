@@ -703,7 +703,7 @@ QUnit.test( "map()", function( assert ) {
 } );
 
 QUnit.test( "jQuery.map", function( assert ) {
-	assert.expect( 25 );
+	assert.expect( 28 );
 
 	var i, label, result, callback;
 
@@ -803,6 +803,24 @@ QUnit.test( "jQuery.map", function( assert ) {
 		return k % 2 ? k : [ k, k, k ];
 	} );
 	assert.equal( result.join( "" ), "00012223", "Array results flattened (#2616)" );
+
+	result = jQuery.map( [ [ [ 1, 2 ], 3 ], 4 ], function( v, k ) {
+		return v;
+	} );
+	assert.equal( result.length, 3, "Array flatten only one level down" );
+	assert.ok( Array.isArray( result[ 0 ] ), "Array flatten only one level down" );
+
+	// Support: IE 9 - 11+, Edge 18+, Android Browser 4.0 - 4.3 only, iOS 7 - 11 only,
+	// Safari 11 only, Firefox <= 61 only
+	// Skip the test in browsers without Array#flat.
+	if ( Array.prototype.flat ) {
+		result = jQuery.map( Array( 300000 ), function( v, k ) {
+			return k;
+		} );
+		assert.equal( result.length, 300000, "Able to map 300000 records without any problems (#4320)" );
+	} else {
+		assert.ok( "skip", "Array#flat doesn't supported on all browsers" );
+	}
 } );
 
 QUnit.test( "jQuery.merge()", function( assert ) {
