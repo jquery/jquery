@@ -70,5 +70,4 @@ jQuery.holdReady = function( hold ) {
 jQuery.trim = function( text ) {
 	return text == null ? "" : trim.call( text );
 };
-
 } );
