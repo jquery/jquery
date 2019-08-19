@@ -6,15 +6,6 @@ var rbuggyQSA = [],
 	testEl = document.createElement( "div" ),
 	input = document.createElement( "input" );
 
-testEl.innerHTML = "<a href=''></a>";
-
-// Support: Chrome 38 - 77 only
-// Chrome considers anchor elements with href to match ":enabled"
-// See https://bugs.chromium.org/p/chromium/issues/detail?id=993387
-if ( testEl.querySelectorAll( ":enabled" ).length ) {
-	rbuggyQSA.push( ":enabled" );
-}
-
 // Support: IE 9 - 11+
 // IE's :disabled selector does not pick up the children of disabled fieldsets
 if ( isIE ) {
