@@ -7,12 +7,12 @@ define( [
 
 // Support: IE, chrome < 69, firefox < 62, opera < 56, safari < 12
 // Provide fallback for browsers without Array#flat.
-return arr.flat ? function() {
+return arr.flat ? function( array ) {
 
 	// Flat with depth = 1 to give the same result of concat.apply.
-	return arr.flat.call( this, 1 );
-} : function() {
-	return concat.apply( [], this );
+	return arr.flat.call( array, 1 );
+} : function( array ) {
+	return concat.apply( [], array );
 };
 
 } );
