@@ -395,7 +395,7 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
-		return flat.call( ret );
+		return flat( ret );
 	},
 
 	// A global GUID counter for objects
