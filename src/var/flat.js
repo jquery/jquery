@@ -6,7 +6,7 @@ define( [
 "use strict";
 
 // Support: IE, chrome < 69, firefox < 62, opera < 56, safari < 12
-// IE and other browsers earlier versions doesn't have `flat` method
+// Provide fallback for browsers without Array#flat.
 return arr.flat ? function() {
 
 	// Flat with depth = 1 to give the same result of concat.apply.
