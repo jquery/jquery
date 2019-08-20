@@ -221,8 +221,8 @@ QUnit.test( "broken selectors throw", function( assert ) {
 		.appendTo( "#qunit-fixture" );
 
 	broken( "Attribute equals non-value", "input[name=]" );
-	broken( "Attribute equals unquoted non-identifer", "input[name=foo.baz]" );
-	broken( "Attribute equals unquoted non-identifer", "input[name=foo[baz]]" );
+	broken( "Attribute equals unquoted non-identifier", "input[name=foo.baz]" );
+	broken( "Attribute equals unquoted non-identifier", "input[name=foo[baz]]" );
 	broken( "Attribute equals bad string", "input[name=''double-quoted'']" );
 	broken( "Attribute equals bad string", "input[name='apostrophe'd']" );
 } );
@@ -638,7 +638,7 @@ QUnit.test( "attributes - hyphen-prefix matches", function( assert ) {
 } );
 
 QUnit.test( "attributes - special characters", function( assert ) {
-	assert.expect( 14 );
+	assert.expect( 16 );
 
 	var attrbad;
 	var div = document.createElement( "div" );
@@ -656,6 +656,7 @@ QUnit.test( "attributes - special characters", function( assert ) {
 		"<input type='hidden' id='attrbad_space' name='foo bar'/>" +
 		"<input type='hidden' id='attrbad_dot' value='2' name='foo.baz'/>" +
 		"<input type='hidden' id='attrbad_brackets' value='2' name='foo[baz]'/>" +
+		"<input type='hidden' id='attrbad_leading_digits' name='agent' value='007'/>" +
 		"<input type='hidden' id='attrbad_injection' data-attr='foo_baz&#39;]'/>" +
 		"<input type='hidden' id='attrbad_quote' data-attr='&#39;'/>" +
 		"<input type='hidden' id='attrbad_backslash' data-attr='&#92;'/>" +
@@ -677,6 +678,13 @@ QUnit.test( "attributes - special characters", function( assert ) {
 	assert.deepEqual( jQuery.find( "input[data-attr='foo_baz\\']']", null, null, attrbad ),
 		q( "attrbad_injection" ),
 		"string containing quote and right bracket" );
+
+	assert.deepEqual( jQuery.find( "input[value=\\30 \\30\\37 ]", null, null, attrbad ),
+		q( "attrbad_leading_digits" ),
+		"identifier containing escaped leading digits with whitespace termination" );
+	assert.deepEqual( jQuery.find( "input[value=\\00003007]", null, null, attrbad ),
+		q( "attrbad_leading_digits" ),
+		"identifier containing escaped leading digits without whitespace termination" );
 
 	assert.deepEqual( jQuery.find( "input[data-attr='\\'']", null, null, attrbad ),
 		q( "attrbad_quote" ),
