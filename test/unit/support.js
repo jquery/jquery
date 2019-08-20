@@ -58,12 +58,24 @@ testIframe(
 	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
-			edge: {},
-			ie_11: {},
-			chrome: {},
-			safari: {},
-			firefox: {},
-			ios: {}
+			edge: {
+				scope: undefined
+			},
+			ie_11: {
+				scope: undefined
+			},
+			chrome: {
+				scope: true
+			},
+			safari: {
+				scope: true
+			},
+			firefox: {
+				scope: true
+			},
+			ios: {
+				scope: true
+			}
 		};
 
 	if ( /edge\//i.test( userAgent ) ) {
@@ -95,6 +107,15 @@ testIframe(
 			j++;
 		}
 
+		// Add an assertion per undefined support prop as it may
+		// not even exist on computedSupport but we still want to run
+		// the check.
+		for ( prop in expected ) {
+			if ( expected[ prop ] === undefined ) {
+				j++;
+			}
+		}
+
 		assert.expect( j );
 
 		for ( i in expected ) {
@@ -116,6 +137,15 @@ testIframe(
 			i++;
 		}
 
+		// Add an assertion per undefined support prop as it may
+		// not even exist on computedSupport but we still want to run
+		// the check.
+		for ( prop in expected ) {
+			if ( expected[ prop ] === undefined ) {
+				i++;
+			}
+		}
+
 		assert.expect( i );
 
 		// Record all support props and the failing ones and ensure every test
@@ -123,7 +153,7 @@ testIframe(
 		for ( browserKey in expectedMap ) {
 			for ( supportTestName in expectedMap[ browserKey ] ) {
 				supportProps[ supportTestName ] = true;
-				if ( expectedMap[ browserKey ][ supportTestName ] !== true ) {
+				if ( !expectedMap[ browserKey ][ supportTestName ] ) {
 					failingSupportProps[ supportTestName ] = true;
 				}
 			}

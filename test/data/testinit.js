@@ -283,7 +283,6 @@ QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
 // Says whether jQuery positional selector extensions are supported.
 // A full selector engine is required to support them as they need to be evaluated
 // left-to-right. Remove that property when support for positional selectors is dropped.
-// if your custom jQuery versions relies more on native qSA.
 QUnit.jQuerySelectorsPos = true;
 
 // Says whether jQuery selector extensions are supported. Change that to `false`
