@@ -81,7 +81,6 @@ QUnit.test( "core", function( assert ) {
 	var elem = jQuery( "<div></div><span></span>" );
 
 	assert.strictEqual( elem.length, 2, "Correct number of elements" );
-	assert.strictEqual( jQuery.trim( "  hello   " ), "hello", "jQuery.trim" );
 
 	assert.ok( jQuery.isPlainObject( { "a": 2 } ), "jQuery.isPlainObject(object)" );
 	assert.ok( !jQuery.isPlainObject( "foo" ), "jQuery.isPlainObject(String)" );
