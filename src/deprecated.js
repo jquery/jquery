@@ -1,9 +1,9 @@
 define( [
 	"./core",
 	"./var/slice",
-
+	"./var/trim",
 	"./event/alias"
-], function( jQuery, slice ) {
+], function( jQuery, trim, slice ) {
 
 "use strict";
 
@@ -65,5 +65,9 @@ jQuery.holdReady = function( hold ) {
 	} else {
 		jQuery.ready( true );
 	}
+};
+
+jQuery.trim = function( text ) {
+	return text == null ? "" : trim.call( text );
 };
 } );

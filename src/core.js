@@ -14,14 +14,13 @@ define( [
 	"./var/hasOwn",
 	"./var/fnToString",
 	"./var/ObjectFunctionString",
-	"./var/trim",
 	"./var/support",
 	"./var/isWindow",
 	"./core/DOMEval",
 	"./core/toType"
 ], function( arr, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	trim, support, isWindow, DOMEval, toType ) {
+	support, isWindow, DOMEval, toType ) {
 
 "use strict";
 
@@ -298,9 +297,6 @@ jQuery.extend( {
 		return ret;
 	},
 
-	trim: function( text ) {
-		return text == null ? "" : trim.call( text );
-	},
 
 	// results is for internal usage only
 	makeArray: function( arr, results ) {
