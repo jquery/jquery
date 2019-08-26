@@ -1409,14 +1409,28 @@ QUnit.test( "pseudo - fieldset:(dis|en)abled", function( assert ) {
 QUnit.test( "pseudo - :disabled by ancestry", function( assert ) {
 	assert.expect( 1 );
 
-	// Don't test for presence of select
-	// IE6 doesn't visibly or functionally disable them when the fieldset is disabled
 	assert.t(
 		"Inputs inherit disabled from fieldset",
 		"#disabled-fieldset :disabled",
 		[ "disabled-fieldset-input", "disabled-fieldset-textarea",
 			"disabled-fieldset-button" ]
 	);
+} );
+
+QUnit.test( "pseudo - a:(dis|en)abled", function( assert ) {
+	assert.expect( 2 );
+
+	var enabled, disabled,
+		container = jQuery( "<div/>" ),
+		anchor = jQuery( "<a href='#'>Link</a>" );
+
+	container.appendTo( "#qunit-fixture" );
+
+	enabled = container.find( "a:enabled" );
+	disabled = container.find( "a:disabled" );
+
+	assert.strictEqual( enabled.length, 0, ":enabled doesn't match anchor elements" );
+	assert.strictEqual( disabled.length, 0, ":disabled doesn't match anchor elements" );
 } );
 
 QUnit.test( "pseudo - :target and :root", function( assert ) {
