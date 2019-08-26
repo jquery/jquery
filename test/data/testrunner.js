@@ -4,12 +4,16 @@
 
 // Store the old counts so that we only assert on tests that have actually leaked,
 // instead of asserting every time a test has leaked sometime in the past
-var oldCacheLength = 0,
+var ajaxSettings,
+	oldCacheLength = 0,
 	oldActive = 0,
 
 	expectedDataKeys = {},
-	splice = [].splice,
+	splice = [].splice;
+
+if ( window.jQuery ) {
 	ajaxSettings = jQuery.ajaxSettings;
+}
 
 /**
  * QUnit configuration
