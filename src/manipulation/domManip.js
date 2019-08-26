@@ -65,6 +65,11 @@ function domManip( collection, args, callback, ignored ) {
 
 					// Keep references to cloned scripts for later restoration
 					if ( hasScripts ) {
+
+						// TODO: check if this can be replaced with
+						// `push.apply( scripts, getAll( node, "script" ) )`
+						// but remember about gh-4320. When looking into it,
+						// perhaps simplify jQuery.merge itself.
 						jQuery.merge( scripts, getAll( node, "script" ) );
 					}
 				}
