@@ -10,7 +10,3 @@
 /speed
 /test
 /Gruntfile.js
-
-/external/qunit
-/external/requirejs
-/external/sinon
