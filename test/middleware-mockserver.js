@@ -228,7 +228,11 @@ var mocks = {
 		resp.end();
 	},
 	errorWithScript: function( req, resp ) {
-		resp.writeHead( 404, { "Content-Type": "application/javascript" } );
+		if ( req.query.scriptReply ) {
+			resp.writeHead( 404, { "Content-Type": "application/javascript" } );
+		} else {
+			resp.writeHead( 404 );
+		}
 		if ( req.query.callback ) {
 			resp.end( req.query.callback + "( {\"status\": 404, \"msg\": \"Not Found\"} )" );
 		} else {

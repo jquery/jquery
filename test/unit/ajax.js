@@ -806,8 +806,14 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 7, function( assert ) {
+	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
 		var globalEval = jQuery.globalEval;
+
+		var fail_converters = {
+			"text script": function() {
+				assert.ok( false, "No converter for unsuccessful response" );
+			}
+		};
 
 		function request( title, options ) {
 			var testMsg = title + ": expected file missing status";
@@ -847,11 +853,24 @@ QUnit.module( "ajax", {
 			request(
 				"script reply",
 				{
+					url: url( "mock.php?action=errorWithScript&scriptReply" )
+				}
+			),
+			request(
+				"non-script reply",
+				{
 					url: url( "mock.php?action=errorWithScript" )
 				}
 			),
 			request(
 				"script reply with dataType",
+				{
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript&scriptReply" )
+				}
+			),
+			request(
+				"non-script reply with dataType",
 				{
 					dataType: "script",
 					url: url( "mock.php?action=errorWithScript" )
@@ -860,18 +879,29 @@ QUnit.module( "ajax", {
 			request(
 				"script reply with converter",
 				{
-					converters: { "text script": function() {
-						assert.ok( false, "No converter for unsuccessful response" );
-					} },
+					converters: fail_converters,
+					url: url( "mock.php?action=errorWithScript&scriptReply" )
+				}
+			),
+			request(
+				"non-script reply with converter",
+				{
+					converters: fail_converters,
 					url: url( "mock.php?action=errorWithScript" )
 				}
 			),
 			request(
 				"script reply with converter and dataType",
 				{
-					converters: { "text script": function() {
-						assert.ok( false, "No converter for unsuccessful response" );
-					} },
+					converters: fail_converters,
+					dataType: "script",
+					url: url( "mock.php?action=errorWithScript&scriptReply" )
+				}
+			),
+			request(
+				"non-script reply with converter and dataType",
+				{
+					converters: fail_converters,
 					dataType: "script",
 					url: url( "mock.php?action=errorWithScript" )
 				}
