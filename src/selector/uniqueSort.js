@@ -1,7 +1,8 @@
 define( [
 	"../core",
-	"../var/document"
-], function( jQuery, document ) {
+	"../var/document",
+	"../var/sort"
+], function( jQuery, document, sort ) {
 
 "use strict";
 
@@ -61,7 +62,7 @@ jQuery.uniqueSort = function( results ) {
 
 	hasDuplicate = false;
 
-	results.sort( sortOrder );
+	sort.call( results, sortOrder );
 
 	if ( hasDuplicate ) {
 		while ( ( elem = results[ i++ ] ) ) {
