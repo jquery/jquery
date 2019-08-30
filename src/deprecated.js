@@ -3,7 +3,7 @@ define( [
 	"./var/slice",
 	"./var/trim",
 	"./event/alias"
-], function( jQuery, trim, slice ) {
+], function( jQuery, slice, trim ) {
 
 "use strict";
 
