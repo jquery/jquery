@@ -15,7 +15,7 @@ define( [
 	if ( documentElement.getRootNode ) {
 		isAttached = function( elem ) {
 			return jQuery.contains( elem.ownerDocument, elem ) ||
-				elem.getRootNode( composed ) === elem.ownerDocument;
+				(elem.getRootNode && elem.getRootNode( composed ) === elem.ownerDocument);
 		};
 	}
 
