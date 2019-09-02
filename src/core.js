@@ -101,15 +101,15 @@ jQuery.fn = jQuery.prototype = {
 	},
 
 	even: function() {
-		return this.filter( function( i ) {
+		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
 			return ( i + 1 ) % 2;
-		} );
+		} ) );
 	},
 
 	odd: function() {
-		return this.filter( function( i ) {
+		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
 			return i % 2;
-		} );
+		} ) );
 	},
 
 	eq: function( i ) {
