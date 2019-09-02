@@ -648,6 +648,18 @@ QUnit.test( "first()/last()", function( assert ) {
 	assert.deepEqual( $none.last().get(), [], "last() none" );
 } );
 
+QUnit.test( "even()/odd()", function( assert ) {
+	assert.expect( 4 );
+
+	var $links = jQuery( "#ap a" ), $none = jQuery( "asdf" );
+
+	assert.deepEqual( $links.even().get(), q( "google", "anchor1" ), "even()" );
+	assert.deepEqual( $links.odd().get(), q( "groups", "mark" ), "odd()" );
+
+	assert.deepEqual( $none.even().get(), [], "even() none" );
+	assert.deepEqual( $none.odd().get(), [], "odd() none" );
+} );
+
 QUnit.test( "map()", function( assert ) {
 	assert.expect( 2 );
 
