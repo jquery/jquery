@@ -228,7 +228,7 @@ var mocks = {
 		resp.end();
 	},
 	errorWithScript: function( req, resp ) {
-		if ( req.query.scriptReply ) {
+		if ( req.query.withScriptContentType ) {
 			resp.writeHead( 404, { "Content-Type": "application/javascript" } );
 		} else {
 			resp.writeHead( 404 );

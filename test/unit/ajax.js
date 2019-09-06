@@ -853,7 +853,7 @@ QUnit.module( "ajax", {
 			request(
 				"script reply",
 				{
-					url: url( "mock.php?action=errorWithScript&scriptReply" )
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
 				}
 			),
 			request(
@@ -866,7 +866,7 @@ QUnit.module( "ajax", {
 				"script reply with dataType",
 				{
 					dataType: "script",
-					url: url( "mock.php?action=errorWithScript&scriptReply" )
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
 				}
 			),
 			request(
@@ -880,7 +880,7 @@ QUnit.module( "ajax", {
 				"script reply with converter",
 				{
 					converters: failConverters,
-					url: url( "mock.php?action=errorWithScript&scriptReply" )
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
 				}
 			),
 			request(
@@ -895,7 +895,7 @@ QUnit.module( "ajax", {
 				{
 					converters: failConverters,
 					dataType: "script",
-					url: url( "mock.php?action=errorWithScript&scriptReply" )
+					url: url( "mock.php?action=errorWithScript&withScriptContentType" )
 				}
 			),
 			request(

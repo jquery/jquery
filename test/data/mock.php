@@ -218,7 +218,7 @@ QUnit.assert.ok( true, "mock executed");';
 
 	protected function errorWithScript( $req ) {
 		header( 'HTTP/1.0 404 Not Found' );
-		if ( isset( $req->query['scriptReply'] ) ) {
+		if ( isset( $req->query['withScriptContentType'] ) ) {
 			header( 'Content-Type: application/javascript' );
 		}
 		if ( isset( $req->query['callback'] ) ) {
