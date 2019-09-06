@@ -809,7 +809,7 @@ QUnit.module( "ajax", {
 	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
 		var globalEval = jQuery.globalEval;
 
-		var fail_converters = {
+		var failConverters = {
 			"text script": function() {
 				assert.ok( false, "No converter for unsuccessful response" );
 			}
@@ -879,21 +879,21 @@ QUnit.module( "ajax", {
 			request(
 				"script reply with converter",
 				{
-					converters: fail_converters,
+					converters: failConverters,
 					url: url( "mock.php?action=errorWithScript&scriptReply" )
 				}
 			),
 			request(
 				"non-script reply with converter",
 				{
-					converters: fail_converters,
+					converters: failConverters,
 					url: url( "mock.php?action=errorWithScript" )
 				}
 			),
 			request(
 				"script reply with converter and dataType",
 				{
-					converters: fail_converters,
+					converters: failConverters,
 					dataType: "script",
 					url: url( "mock.php?action=errorWithScript&scriptReply" )
 				}
@@ -901,7 +901,7 @@ QUnit.module( "ajax", {
 			request(
 				"non-script reply with converter and dataType",
 				{
-					converters: fail_converters,
+					converters: failConverters,
 					dataType: "script",
 					url: url( "mock.php?action=errorWithScript" )
 				}
