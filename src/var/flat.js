@@ -1,7 +1,6 @@
 define( [
-	"./arr",
-	"./concat"
-], function( arr, concat ) {
+	"./arr"
+], function( arr ) {
 
 "use strict";
 
@@ -10,7 +9,7 @@ define( [
 return arr.flat ? function( array ) {
 	return arr.flat.call( array );
 } : function( array ) {
-	return concat.apply( [], array );
+	return arr.concat.apply( [], array );
 };
 
 } );
