@@ -172,14 +172,7 @@ function find( selector, context, results, seed ) {
 
 	// Try to shortcut find operations (as opposed to filters) in HTML documents
 	if ( !seed ) {
-
-		// Support: IE 11+, Edge 17 - 18+
-		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-		// two documents; shallow comparisons work.
-		// eslint-disable-next-line eqeqeq
-		if ( ( context ? context.ownerDocument || context : preferredDoc ) != document ) {
-			setDocument( context );
-		}
+		setDocument( context );
 		context = context || document;
 
 		if ( documentIsHTML ) {
@@ -461,15 +454,7 @@ find.matches = function( expr, elements ) {
 };
 
 find.matchesSelector = function( elem, expr ) {
-
-	// Set document vars if needed
-	// Support: IE 11+, Edge 17 - 18+
-	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
-	// two documents; shallow comparisons work.
-	// eslint-disable-next-line eqeqeq
-	if ( ( elem.ownerDocument || elem ) != document ) {
-		setDocument( elem );
-	}
+	setDocument( elem );
 
 	if ( documentIsHTML &&
 		!nonnativeSelectorCache[ expr + " " ] &&
