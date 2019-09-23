@@ -798,7 +798,8 @@ QUnit.test( "jQuery.map", function( assert ) {
 	assert.equal( result.length, 3, "Array flatten only one level down" );
 	assert.ok( Array.isArray( result[ 0 ] ), "Array flatten only one level down" );
 
-
+	// Support: IE 11+, Edge 18+
+	// Skip the test in browsers without Array#flat.
 	if ( Array.prototype.flat ) {
 		result = jQuery.map( Array( 300000 ), function( v, k ) {
 			return k;
