@@ -292,22 +292,22 @@ testIframe(
 		// Catches Chrome on Android as well (i.e. the default
 		// Android browser on Android >= 4.4).
 		expected = expectedMap.chrome;
-	} else if ( /\b(?:11|12)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari;
-	} else if ( /\b(?:9|10)\.\d(\.\d+)* safari/i.test( userAgent ) ) {
+	} else if ( /\b(?:9|10)\.\d+(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
+	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
+		expected = expectedMap.safari;
 	} else if ( /firefox\/(?:52|60)/i.test( userAgent ) ) {
 		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /(?:iphone|ipad);.*(?:iphone)? os (?:11|12)_/i.test( userAgent ) ) {
-		expected = expectedMap.ios;
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_9_10;
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_8;
 	} else if ( /iphone os 7_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_7;
+	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
+		expected = expectedMap.ios;
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = expectedMap.android;
 	}
