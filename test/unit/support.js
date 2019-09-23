@@ -294,12 +294,12 @@ testIframe(
 		expected = expectedMap.chrome;
 	} else if ( /\b(?:9|10)\.\d+(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
-	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari;
 	} else if ( /firefox\/(?:52|60)/i.test( userAgent ) ) {
 		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
+	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
+		expected = expectedMap.android;
 	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_9_10;
 	} else if ( /iphone os 8_/i.test( userAgent ) ) {
@@ -308,8 +308,8 @@ testIframe(
 		expected = expectedMap.ios_7;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
-	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
-		expected = expectedMap.android;
+	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
+		expected = expectedMap.safari;
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
