@@ -190,7 +190,7 @@ function find( selector, context, results, seed ) {
 					// Document context
 					if ( nodeType === 9 ) {
 						if ( ( elem = context.getElementById( m ) ) ) {
-							results.push( elem );
+							push.call( results, elem );
 						}
 						return results;
 
@@ -199,7 +199,7 @@ function find( selector, context, results, seed ) {
 						if ( newContext && ( elem = newContext.getElementById( m ) ) &&
 							jQuery.contains( context, elem ) ) {
 
-							results.push( elem );
+							push.call( results, elem );
 							return results;
 						}
 					}
@@ -1426,7 +1426,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 					}
 					while ( ( matcher = elementMatchers[ j++ ] ) ) {
 						if ( matcher( elem, context || document, xml ) ) {
-							results.push( elem );
+							push.call( results, elem );
 							break;
 						}
 					}
