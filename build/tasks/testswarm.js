@@ -1,7 +1,6 @@
+"use strict";
+
 module.exports = function( grunt ) {
-
-	"use strict";
-
 	grunt.registerTask( "testswarm", function( commit, configFile, projectName, browserSets,
 			timeout, testMode ) {
 		var jobName, config, tests,
