@@ -3,13 +3,16 @@ var fs = require( "fs" );
 module.exports = function( Release ) {
 
 	var
-		files = [
+		distFiles = [
 			"dist/jquery.js",
 			"dist/jquery.min.js",
 			"dist/jquery.min.map",
 			"dist/jquery.slim.js",
 			"dist/jquery.slim.min.js",
-			"dist/jquery.slim.min.map",
+			"dist/jquery.slim.min.map"
+		],
+		filesToCommit = [
+			...distFiles,
 			"src/core.js"
 		],
 		cdn = require( "./release/cdn" ),
@@ -55,7 +58,7 @@ module.exports = function( Release ) {
 			);
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
-			callback( files );
+			callback( filesToCommit );
 		},
 
 		/**
@@ -76,7 +79,7 @@ module.exports = function( Release ) {
 		 */
 		dist: function( callback ) {
 			cdn.makeArchives( Release, function() {
-				dist( Release, files, callback );
+				dist( Release, distFiles, callback );
 			} );
 		}
 	} );
