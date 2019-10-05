@@ -135,7 +135,8 @@ module.exports = function( Release, files, complete ) {
 		Release.chdir( Release.dir.dist );
 
 		console.log( "Pushing release to dist repo..." );
-		Release.exec( "git push " + distRemote + " master --tags",
+		Release.exec( "git push " + ( Release.isTest ? " --dry-run " : "" ) +
+			distRemote + " master --tags",
 			"Error pushing master and tags to git repo." );
 
 		// Set repo for npm publish
