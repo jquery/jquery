@@ -59,21 +59,27 @@ testIframe(
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			edge: {
+				reliableTrDimensions: false,
 				scope: undefined
 			},
 			ie_11: {
+				reliableTrDimensions: false,
 				scope: undefined
 			},
 			chrome: {
+				reliableTrDimensions: true,
 				scope: true
 			},
 			safari: {
+				reliableTrDimensions: true,
 				scope: true
 			},
 			firefox: {
+				reliableTrDimensions: true,
 				scope: true
 			},
 			ios: {
+				reliableTrDimensions: true,
 				scope: true
 			}
 		};
