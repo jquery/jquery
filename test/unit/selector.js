@@ -536,7 +536,7 @@ QUnit.test( "attributes - equals", function( assert ) {
 	assert.t( "Identifier with underscore", "input[id=types_all]", [ "types_all" ] );
 	assert.t( "String", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
 	assert.t( "String (whitespace ignored)", "#qunit-fixture a[ rel = 'bookmark' ]", [ "simon1" ] );
-	assert.t( "Non-identifier string", "#qunit-fixture a[href='http://www.google.com/']", [ "google" ] );
+	assert.t( "Non-identifier string", "#qunit-fixture a[href='https://www.google.com/']", [ "google" ] );
 	assert.t( "Empty string", "#select1 option[value='']", [ "option1a" ] );
 
 	if ( QUnit.jQuerySelectors ) {
@@ -591,7 +591,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "attributes - does not equal",
 QUnit.test( "attributes - starts with", function( assert ) {
 	assert.expect( 4 );
 
-	assert.t( "string (whitespace ignored)", "a[href ^= 'http://www']", [ "google", "yahoo" ] );
+	assert.t( "string (whitespace ignored)", "a[href ^= 'https://www']", [ "google", "yahoo" ] );
 	assert.t( "href starts with hash", "p a[href^='#']", [ "anchor2" ] );
 	assert.t( "string containing '['", "input[name^='foo[']", [ "hidden2" ] );
 	assert.t( "string containing '[' ... ']'", "input[name^='foo[bar]']", [ "hidden2" ] );
@@ -1015,7 +1015,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	tmp.id = "tmp_input";
 	tmp.innerHTML = "<span>Hello I am focusable.</span>";
 	// Setting tabIndex should make the element focusable
-	// http://dev.w3.org/html5/spec/single-page.html#focus-management
+	// https://html.spec.whatwg.org/#the-tabindex-attribute
 	document.body.appendChild( tmp );
 	tmp.tabIndex = 0;
 	tmp.focus();
