@@ -229,7 +229,7 @@ jQuery.extend( {
 				// Support: IE <=11+
 				// IE fails to set the defaultValue to the correct value when
 				// cloning textareas.
-				if ( destElements[ i ].nodeName.toLowerCase() === "textarea" ) {
+				if ( nodeName( destElements[ i ], "textarea" ) ) {
 					destElements[ i ].defaultValue = srcElements[ i ].defaultValue;
 				}
 			}
