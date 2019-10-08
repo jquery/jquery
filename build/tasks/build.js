@@ -4,10 +4,9 @@
  * and includes/excludes specified modules
  */
 
+"use strict";
+
 module.exports = function( grunt ) {
-
-	"use strict";
-
 	var fs = require( "fs" ),
 		requirejs = require( "requirejs" ),
 		Insight = require( "insight" ),

@@ -1,3 +1,5 @@
+"use strict";
+
 var fs = require( "fs" ),
 	npm = require( "npm" ),
 	chalk = require( "chalk" ),
