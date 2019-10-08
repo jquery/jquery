@@ -1,3 +1,5 @@
+"use strict";
+
 module.exports = function( Release, files, complete ) {
 
 	var
