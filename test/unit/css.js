@@ -1535,6 +1535,13 @@ QUnit.test( "Reset the style if set to an empty string", function( assert ) {
 		"The style can be reset by setting to an empty string" );
 } );
 
+QUnit.test( "Override !important when changing styles (#14394)", function( assert ) {
+	assert.expect( 1 );
+
+	var el = jQuery( "<div style='display: block !important;'></div>" ).css( "display", "none" );
+	assert.equal( el.css( "display" ), "none", "New style replaced !important" );
+} );
+
 QUnit.test(
 	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
 	function( assert ) {

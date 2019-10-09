@@ -1,6 +1,7 @@
 define( [
 	"./core",
 	"./core/access",
+	"./core/kebabCase",
 	"./var/rcssNum",
 	"./var/isIE",
 	"./css/var/rnumnonpx",
@@ -16,7 +17,7 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, access, rcssNum, isIE, rnumnonpx, cssExpand, isAutoPx,
+], function( jQuery, access, kebabCase, rcssNum, isIE, rnumnonpx, cssExpand, isAutoPx,
 	cssCamelCase, getStyles, swap, curCSS, adjustCSS, finalPropName ) {
 
 "use strict";
@@ -27,6 +28,7 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rmsPropPrefix = /^ms[A-Z]/,
 	rcustomProp = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
@@ -250,11 +252,12 @@ jQuery.extend( {
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
 
-				if ( isCustomProp ) {
-					style.setProperty( name, value );
-				} else {
-					style[ name ] = value;
-				}
+				style.setProperty(
+					isCustomProp ?
+						name :
+						kebabCase( name.replace( rmsPropPrefix, "-$&" ) ),
+					value
+				);
 			}
 
 		} else {

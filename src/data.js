@@ -2,9 +2,10 @@ define( [
 	"./core",
 	"./core/access",
 	"./core/camelCase",
+	"./core/kebabCase",
 	"./data/var/dataPriv",
 	"./data/var/dataUser"
-], function( jQuery, access, camelCase, dataPriv, dataUser ) {
+], function( jQuery, access, camelCase, kebabCase, dataPriv, dataUser ) {
 
 "use strict";
 
@@ -18,8 +19,7 @@ define( [
 //	5. Avoid exposing implementation details on user objects (eg. expando properties)
 //	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 
-var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
-	rmultiDash = /[A-Z]/g;
+var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/;
 
 function getData( data ) {
 	if ( data === "true" ) {
@@ -52,7 +52,7 @@ function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		name = "data-" + key.replace( rmultiDash, "-$&" ).toLowerCase();
+		name = "data-" + kebabCase( key );
 		data = elem.getAttribute( name );
 
 		if ( typeof data === "string" ) {
