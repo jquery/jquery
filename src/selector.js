@@ -5,6 +5,7 @@ import documentElement from "./var/documentElement.js";
 import indexOf from "./var/indexOf.js";
 import pop from "./var/pop.js";
 import push from "./var/push.js";
+import whitespace from "./selector/var/whitespace.js";
 import rbuggyQSA from "./selector/rbuggyQSA.js";
 import support from "./selector/support.js";
 
@@ -40,9 +41,6 @@ var i,
 		"loop|multiple|open|readonly|required|scoped",
 
 	// Regular expressions
-
-	// https://www.w3.org/TR/css3-selectors/#whitespace
-	whitespace = "[\\x20\\t\\r\\n\\f]",
 
 	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
 	identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace +
