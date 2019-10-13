@@ -58,8 +58,8 @@
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( config.esmodules && QUnit ) {
 
-		// Support: IE 11+, Edge 12 - 18+
-		// IE/Edge don't support the dynamic import syntax so they'd crash
+		// Support: IE 11+
+		// IE doesn't support the dynamic import syntax so it would crash
 		// with a SyntaxError here.
 		dynamicImportSource = "" +
 			"import( `${ parentUrl }src/jquery.js` )\n" +

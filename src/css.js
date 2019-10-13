@@ -11,7 +11,6 @@ import getStyles from "./css/var/getStyles.js";
 import swap from "./css/var/swap.js";
 import curCSS from "./css/curCSS.js";
 import adjustCSS from "./css/adjustCSS.js";
-import support from "./css/support.js";
 import finalPropName from "./css/finalPropName.js";
 
 import "./core/init.js";
@@ -135,15 +134,19 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	}
 
 
-	// Support: IE 9 - 11+
-	// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-	// In those cases, the computed value can be trusted to be border-box.
-	if ( ( isIE && isBorderBox ||
+	if ( ( isIE &&
+		(
 
-		// Support: IE 10 - 11+, Edge 15 - 18+
-		// IE/Edge misreport `getComputedStyle` of table rows with width/height
-		// set in CSS while `offset*` properties report correct values.
-		!support.reliableTrDimensions() && nodeName( elem, "tr" ) ||
+			// Support: IE 9 - 11+
+			// Use offsetWidth/offsetHeight for when box sizing is unreliable.
+			// In those cases, the computed value can be trusted to be border-box.
+			isBorderBox ||
+
+			// Support: IE 10 - 11+
+			// IE misreports `getComputedStyle` of table rows with width/height
+			// set in CSS while `offset*` properties report correct values.
+			nodeName( elem, "tr" )
+		) ||
 
 		// Fall back to offsetWidth/offsetHeight when value is "auto"
 		// This happens for inline elements with no explicit setting (gh-3571)

@@ -638,9 +638,9 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	span.remove();
 } );
 
-// Support: IE 11+, Edge 12 - 18+
-// IE/Edge don't support Shadow DOM.
-QUnit[ document.body.getRootNode ? "test" : "skip" ](
+// Support: IE 11+
+// IE doesn't support Shadow DOM.
+QUnit.testUnlessIE(
 	"show/hide shadow child nodes", function( assert ) {
 
 	assert.expect( 28 );
@@ -1022,7 +1022,7 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "detached 
 		"cascade-hidden element in detached tree" );
 } );
 
-QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle && document.body.getRootNode ? "test" : "skip" ](
+QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle && !QUnit.isIE ? "test" : "skip" ](
 	"shadow toggle()", function( assert ) {
 
 	assert.expect( 4 );
@@ -1758,9 +1758,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" ),
-		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ) &&
-			!/\bfirefox\b/i.test( navigator.userAgent ) &&
-			!/\bedge\b/i.test( navigator.userAgent ),
+		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ),
 		expected = 10;
 
 	if ( webkitOrBlink ) {

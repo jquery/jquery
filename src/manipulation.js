@@ -23,9 +23,8 @@ import "./event.js";
 
 var
 
-	// Support: IE <=10 - 11+, Edge 12 - 13 only
-	// In IE/Edge using regex groups here causes severe slowdowns.
-	// See https://connect.microsoft.com/IE/feedback/details/1736512/
+	// Support: IE <=10 - 11+
+	// In IE using regex groups here causes severe slowdowns.
 	rnoInnerhtml = /<script|<style|<link/i,
 
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
@@ -157,7 +156,7 @@ function domManip( collection, args, callback, ignored ) {
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
-									nonce: node.nonce || node.getAttribute( "nonce" ),
+									nonce: node.nonce,
 									crossOrigin: node.crossOrigin
 								}, doc );
 							}
