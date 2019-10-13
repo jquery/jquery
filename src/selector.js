@@ -7,7 +7,7 @@ import pop from "./var/pop.js";
 import push from "./var/push.js";
 import whitespace from "./selector/var/whitespace.js";
 import rbuggyQSA from "./selector/rbuggyQSA.js";
-import support from "./selector/support.js";
+import isIE from "./var/isIE.js";
 
 // The following utils are attached directly to the jQuery object.
 import "./selector/contains.js";
@@ -131,9 +131,9 @@ var i,
 	},
 
 	// Used for iframes; see `setDocument`.
-	// Support: IE 9 - 11+, Edge 12 - 18+
+	// Support: IE 9 - 11+
 	// Removing the function wrapper causes a "Permission Denied"
-	// error in IE/Edge.
+	// error in IE.
 	unloadHandler = function() {
 		setDocument();
 	},
@@ -150,7 +150,7 @@ function selectorError( msg ) {
 }
 
 function find( selector, context, results, seed ) {
-	var m, i, elem, nid, match, groups, newSelector,
+	var m, i, elem, nid, match, groups, newSelector, canUseScope,
 		newContext = context && context.ownerDocument,
 
 		// nodeType defaults to 9, since context defaults to document
@@ -231,9 +231,10 @@ function find( selector, context, results, seed ) {
 
 					// We can use :scope instead of the ID hack if the browser
 					// supports it & if we're not changing the context.
-					if ( newContext !== context || !support.scope ) {
+					canUseScope = newContext === context && !isIE;
 
-						// Capture the context ID, setting it first if necessary
+					// Capture the context ID, setting it first if necessary
+					if ( !canUseScope ) {
 						if ( ( nid = context.getAttribute( "id" ) ) ) {
 							nid = jQuery.escapeSelector( nid );
 						} else {
@@ -360,7 +361,6 @@ function createDisabledPseudo( disabled ) {
 				return elem.isDisabled === disabled ||
 
 					// Where there is no isDisabled, check manually
-					/* jshint -W018 */
 					elem.isDisabled !== !disabled &&
 						inDisabledFieldset( elem ) === disabled;
 			}
@@ -419,8 +419,8 @@ function setDocument( node ) {
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
 	// Return early if doc is invalid or already selected
-	// Support: IE 11+, Edge 17 - 18+
-	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// Support: IE 11+
+	// IE sometimes throws a "Permission denied" error when strict-comparing
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
 	if ( doc == document || doc.nodeType !== 9 ) {
@@ -432,16 +432,14 @@ function setDocument( node ) {
 	documentElement = document.documentElement;
 	documentIsHTML = !jQuery.isXMLDoc( document );
 
-	// Support: IE 9 - 11+, Edge 12 - 18+
+	// Support: IE 9 - 11+
 	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
-	// Support: IE 11+, Edge 17 - 18+
-	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// Support: IE 11+
+	// IE sometimes throws a "Permission denied" error when strict-comparing
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
-	if ( preferredDoc != document &&
+	if ( isIE && preferredDoc != document &&
 		( subWindow = document.defaultView ) && subWindow.top !== subWindow ) {
-
-		// Support: IE 9 - 11+, Edge 12 - 18+
 		subWindow.addEventListener( "unload", unloadHandler );
 	}
 }
@@ -926,7 +924,7 @@ Expr = jQuery.expr = {
 			// Accessing the selectedIndex property
 			// forces the browser to treat the default option as
 			// selected when in an optgroup.
-			if ( elem.parentNode ) {
+			if ( isIE && elem.parentNode ) {
 				// eslint-disable-next-line no-unused-expressions
 				elem.parentNode.selectedIndex;
 			}
@@ -1410,8 +1408,8 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 
 			if ( outermost ) {
 
-				// Support: IE 11+, Edge 17 - 18+
-				// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+				// Support: IE 11+
+				// IE sometimes throws a "Permission denied" error when strict-comparing
 				// two documents; shallow comparisons work.
 				// eslint-disable-next-line eqeqeq
 				outermostContext = context == document || context || outermost;
@@ -1422,8 +1420,8 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				if ( byElement && elem ) {
 					j = 0;
 
-					// Support: IE 11+, Edge 17 - 18+
-					// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+					// Support: IE 11+
+					// IE sometimes throws a "Permission denied" error when strict-comparing
 					// two documents; shallow comparisons work.
 					// eslint-disable-next-line eqeqeq
 					if ( !context && elem.ownerDocument != document ) {

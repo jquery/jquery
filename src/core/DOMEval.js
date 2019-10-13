@@ -17,13 +17,14 @@ function DOMEval( code, node, doc ) {
 	if ( node ) {
 		for ( i in preservedScriptAttributes ) {
 
-			// Support: Firefox <=64 - 66+, Edge <=18+
-			// Some browsers don't support the "nonce" property on scripts.
+			// Support: Firefox <=64 - 66+
+			// Firefox doesn't support the "nonce" property on scripts.
 			// On the other hand, just using `getAttribute` is not enough as
 			// the `nonce` attribute is reset to an empty string whenever it
 			// becomes browsing-context connected.
 			// See https://github.com/whatwg/html/issues/2369
 			// See https://html.spec.whatwg.org/#nonce-attributes
+			// See https://bugzilla.mozilla.org/show_bug.cgi?id=1389421
 			// The `node.getAttribute` check was added for the sake of
 			// `jQuery.globalEval` so that it can fake a nonce-containing node
 			// via an object.

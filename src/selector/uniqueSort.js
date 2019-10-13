@@ -20,8 +20,8 @@ function sortOrder( a, b ) {
 	}
 
 	// Calculate position if both inputs belong to the same document
-	// Support: IE 11+, Edge 17 - 18+
-	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// Support: IE 11+
+	// IE sometimes throws a "Permission denied" error when strict-comparing
 	// two documents; shallow comparisons work.
 	// eslint-disable-next-line eqeqeq
 	compare = ( a.ownerDocument || a ) == ( b.ownerDocument || b ) ?
@@ -34,8 +34,8 @@ function sortOrder( a, b ) {
 	if ( compare & 1 ) {
 
 		// Choose the first element that is related to the document
-		// Support: IE 11+, Edge 17 - 18+
-		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+		// Support: IE 11+
+		// IE sometimes throws a "Permission denied" error when strict-comparing
 		// two documents; shallow comparisons work.
 		// eslint-disable-next-line eqeqeq
 		if ( a == document || a.ownerDocument == document &&
@@ -43,8 +43,8 @@ function sortOrder( a, b ) {
 			return -1;
 		}
 
-		// Support: IE 11+, Edge 17 - 18+
-		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+		// Support: IE 11+
+		// IE sometimes throws a "Permission denied" error when strict-comparing
 		// two documents; shallow comparisons work.
 		// eslint-disable-next-line eqeqeq
 		if ( b == document || b.ownerDocument == document &&

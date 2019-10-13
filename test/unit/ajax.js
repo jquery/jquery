@@ -267,7 +267,7 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: IE 9 - 11+, Edge 12 - 14 only
+				// Support: IE 9 - 11+
 				// IE can receive empty headers but not send them.
 			}, QUnit.isIE ? {} : {
 				"Empty": ""

@@ -1,7 +1,7 @@
 import arr from "./arr.js";
 
-// Support: IE 11+, Edge 18+
-// Provide fallback for browsers without Array#flat.
+// Support: IE 11+
+// IE doesn't have Array#flat; provide a fallback.
 export default arr.flat ? function( array ) {
 	return arr.flat.call( array );
 } : function( array ) {
