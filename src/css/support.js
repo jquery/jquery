@@ -1,8 +1,9 @@
 define( [
+	"../core",
 	"../var/document",
 	"../var/documentElement",
 	"../var/support"
-], function( document, documentElement, support ) {
+], function( jQuery, document, documentElement, support ) {
 
 "use strict";
 
@@ -12,23 +13,15 @@ var reliableTrDimensionsVal;
 // IE/Edge misreport `getComputedStyle` of table rows with width/height
 // set in CSS while `offset*` properties report correct values.
 support.reliableTrDimensions = function() {
-	var table, tr, trChild;
+	var table;
 	if ( reliableTrDimensionsVal == null ) {
 		table = document.createElement( "table" );
-		tr = document.createElement( "tr" );
-		trChild = document.createElement( "div" );
+		jQuery.extend( table.style, { position: "absolute", left: "-11111px" } );
+		documentElement.appendChild( table ).innerHTML =
+			"<tbody><tr style='height:1px'><div style='height:11px'></div></tr></tbody>";
 
-		table.style.cssText = "position:absolute;left:-11111px";
-		tr.style.height = "1px";
-		trChild.style.height = "9px";
-
-		documentElement
-			.appendChild( table )
-			.appendChild( tr )
-			.appendChild( trChild );
-
-		var trStyle = window.getComputedStyle( tr );
-		reliableTrDimensionsVal = parseInt( trStyle.height ) > 3;
+		reliableTrDimensionsVal = parseFloat(
+			window.getComputedStyle( table.firstChild.firstChild ).height ) > 3;
 
 		documentElement.removeChild( table );
 	}
