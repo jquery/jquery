@@ -73,6 +73,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": false,
 				"scrollboxSize": true
 			},
 			ie_10_11: {
@@ -90,6 +91,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": false,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": false,
 				"scrollboxSize": true
 			},
 			ie_9: {
@@ -107,6 +109,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": false,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": false,
 				"scrollboxSize": false
 			},
 			chrome: {
@@ -124,6 +127,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			safari: {
@@ -141,6 +145,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			safari_9_10: {
@@ -158,6 +163,7 @@ testIframe(
 				"pixelPosition": false,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			firefox: {
@@ -175,6 +181,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			firefox_60: {
@@ -192,6 +199,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": false,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			ios: {
@@ -209,6 +217,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			ios_9_10: {
@@ -226,6 +235,7 @@ testIframe(
 				"pixelPosition": false,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			ios_8: {
@@ -243,6 +253,7 @@ testIframe(
 				"pixelPosition": false,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			ios_7: {
@@ -260,6 +271,7 @@ testIframe(
 				"pixelPosition": false,
 				"radioValue": true,
 				"reliableMarginLeft": true,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			},
 			android: {
@@ -277,6 +289,7 @@ testIframe(
 				"pixelPosition": false,
 				"radioValue": true,
 				"reliableMarginLeft": false,
+				"reliableTrDimensions": true,
 				"scrollboxSize": true
 			}
 		};
