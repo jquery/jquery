@@ -1352,6 +1352,26 @@ QUnit.test( "css('width') and css('height') should respect box-sizing, see #1100
 	assert.equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see #11004" );
 } );
 
+QUnit.test( "table rows width/height should be unaffected by inline styles", function( assert ) {
+	assert.expect( 2 );
+
+	var table = jQuery(
+		"<table>\n" +
+		"  <tr id=\"row\" style=\"height: 1px; width: 1px;\">\n" +
+		"    <td>\n" +
+		"      <div style=\"height: 100px; width: 100px;\"></div>\n" +
+		"    </div>\n" +
+		"  </tr>\n" +
+		"</table>"
+	);
+	var tr = table.find( "tr" );
+
+	table.appendTo( "#qunit-fixture" );
+
+	assert.ok( parseInt( tr.css( "width" ) ) > 10, "tr width unaffected by inline style" );
+	assert.ok( parseInt( tr.css( "height" ) ) > 10, "tr height unaffected by inline style" );
+} );
+
 testIframe(
 	"css('width') should work correctly before document ready (#14084)",
 	"css/cssWidthBeforeDocReady.html",
