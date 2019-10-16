@@ -11,7 +11,7 @@
 <script>
 	var doc = parent.document,
 		unframed = [ doc.getElementById( "qunit-fixture" ), doc.body, doc.documentElement ],
-		framed = jQuery.find( "*" );
+		framed = jQuery( "*" ).get();
 
 	startIframeTest(
 		jQuery.uniqueSort( unframed.concat( framed ) ),
