@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars*/
 /*!
  * jQuery JavaScript Library v@VERSION
  * https://jquery.com/
@@ -35,6 +34,7 @@
 	}
 
 // Pass this if window is not defined yet
+// eslint-disable-next-line no-unused-vars
 } )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 "use strict";
