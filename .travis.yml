@@ -6,6 +6,7 @@ node_js:
 - "12"
 addons:
   chrome: stable
+  firefox: latest
 env:
   - NPM_SCRIPT=test:browserless
 matrix:

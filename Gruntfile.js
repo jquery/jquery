@@ -192,8 +192,13 @@ module.exports = function( grunt ) {
 			},
 			main: {
 
-				// The Chrome sandbox doesn't work on Travis.
-				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
+				browsers: [
+
+					// The Chrome sandbox doesn't work on Travis.
+					isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless",
+
+					"FirefoxHeadless"
+				]
 			},
 
 			jsdom: {
