@@ -13,8 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS;
+		gzip = require( "gzip-js" );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -191,9 +190,7 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-
-				// The Chrome sandbox doesn't work on Travis.
-				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
+				browsers: [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
 
 			jsdom: {
