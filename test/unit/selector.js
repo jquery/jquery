@@ -179,7 +179,7 @@ QUnit.test( "XML Document Selectors", function( assert ) {
 } );
 
 QUnit.test( "broken selectors throw", function( assert ) {
-	assert.expect( 32 );
+	assert.expect( 33 );
 
 	function broken( name, selector ) {
 		assert.throws( function() {
@@ -197,6 +197,7 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Broken Selector", "," );
 	broken( "Broken Selector", ",a" );
 	broken( "Broken Selector", "a," );
+	broken( "Post-comma invalid selector", "*,:x" );
 	broken( "Identifier with bad escape", "foo\\\fbaz" );
 	broken( "Broken Selector", "[id=012345678901234567890123456789" );
 	broken( "Doesn't exist", ":visble" );
