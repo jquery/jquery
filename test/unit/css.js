@@ -1573,7 +1573,7 @@ QUnit.test(
 				// Firefox returns auto's value
 				name: "backgroundImage",
 				value: [ "url('test.png')", "url(" + baseURL + "test.png)", "url(\"" + baseURL + "test.png\")" ],
-				expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
+				expected: [ "none", "url(\"https://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
 			}, {
 				name: "backgroundPosition",
 				value: [ "5% 5%" ],

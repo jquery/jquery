@@ -503,7 +503,7 @@ QUnit.module( "ajax", {
 				}
 			),
 			request(
-				" http://otherdomain.com",
+				" https://otherdomain.com",
 				"Cross-domain url with leading space is detected as cross-domain"
 			)
 		];
@@ -1507,7 +1507,7 @@ QUnit.module( "ajax", {
 		return {
 
 			// see RFC 2606
-			url: "http://example.invalid",
+			url: "https://example.invalid",
 			error: function( xhr, _, e ) {
 				assert.ok( true, "file not found: " + xhr.status + " => " + e );
 			}
@@ -1516,7 +1516,7 @@ QUnit.module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - failing cross-domain", 1, function( assert ) {
 		return {
-			url: "http://" + externalHost,
+			url: "https://" + externalHost,
 			error: function( xhr, _, e ) {
 				assert.ok( true, "access denied: " + xhr.status + " => " + e );
 			}
@@ -2113,7 +2113,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 				assert.strictEqual( status, "error", "proper status" );
 			}
 		}, {
-			url: "http://" + externalHost + ":80q",
+			url: "https://" + externalHost + ":80q",
 			done: function( data ) {
 				assert.ok( false, "done: " + data );
 			},
