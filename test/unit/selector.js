@@ -13,17 +13,17 @@ QUnit.test( "empty", function( assert ) {
 
 	var form;
 
-	assert.strictEqual( jQuery.find( "" ).length, 0,
+	assert.strictEqual( jQuery( "" ).length, 0,
 		"Empty selector returns an empty array" );
 
-	assert.deepEqual( jQuery.find( "div", document.createTextNode( "" ) ), [],
+	assert.deepEqual( jQuery( "div", document.createTextNode( "" ) ).get(), [],
 		"Text element as context fails silently" );
 	form = document.getElementById( "form" );
 	assert.ok( !jQuery( form ).is( "" ), "Empty string passed to .is() does not match" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.equal( jQuery.find( " " ).length, 0, "Empty selector returns an empty array" );
-		assert.equal( jQuery.find( "\t" ).length, 0, "Empty selector returns an empty array" );
+		assert.equal( jQuery( " " ).length, 0, "Empty selector returns an empty array" );
+		assert.equal( jQuery( "\t" ).length, 0, "Empty selector returns an empty array" );
 	} else {
 		assert.ok( "skip", "whitespace-only selector not supported in selector-native" );
 		assert.ok( "skip", "whitespace-only selector not supported in selector-native" );
@@ -34,7 +34,7 @@ QUnit.test( "star", function( assert ) {
 	assert.expect( 2 );
 
 	var good, i;
-	var all = jQuery.find( "*" );
+	var all = jQuery( "*" );
 
 	assert.ok( all.length >= 30, "Select all" );
 	good = true;
@@ -63,8 +63,8 @@ QUnit.test( "element", function( assert ) {
 	// #7533
 	assert.equal( jQuery( "<div id=\"A'B~C.D[E]\"><p>foo</p></div>" ).find( "p" ).length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 
-	assert.equal( jQuery.find( "" ).length, 0, "Empty selector returns an empty array" );
-	assert.deepEqual( jQuery.find( "div", document.createTextNode( "" ) ), [],
+	assert.equal( jQuery( "" ).length, 0, "Empty selector returns an empty array" );
+	assert.deepEqual( jQuery( "div", document.createTextNode( "" ) ).get(), [],
 		"Text element as context fails silently" );
 
 	assert.t( "Element Selector", "html", [ "html" ] );
@@ -84,18 +84,18 @@ QUnit.test( "element", function( assert ) {
 	assert.t( "Trailing form feed", "#qunit-fixture p\f", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 
 	assert.deepEqual(
-		jQuery( jQuery.find( "div ol" ) ).filter( "#qunit-fixture *" ).get(),
+		jQuery( jQuery( "div ol" ) ).filter( "#qunit-fixture *" ).get(),
 		q( "empty", "listWithTabIndex" ),
 		"Parent Element"
 	);
 	assert.deepEqual(
-		jQuery( jQuery.find( "div\tol" ) ).filter( "#qunit-fixture *" ).get(),
+		jQuery( jQuery( "div\tol" ) ).filter( "#qunit-fixture *" ).get(),
 		q( "empty", "listWithTabIndex" ),
 		"Parent Element (non-space descendant combinator)"
 	);
 
 	// Check for unique-ness and sort order
-	assert.deepEqual( jQuery.find( "p, div p" ), jQuery.find( "p" ), "Check for duplicates: p, div p" );
+	assert.deepEqual( jQuery( "p, div p" ), jQuery( "p" ), "Check for duplicates: p, div p" );
 
 	jQuery( "<h1 id='h1'/><h2 id='h2'/><h2 id='h2-2'/>" ).prependTo( "#qunit-fixture" );
 	assert.t( "Checking sort order", "#qunit-fixture h2, #qunit-fixture h1", [ "h1", "h2", "h2-2" ] );
@@ -112,20 +112,20 @@ QUnit.test( "element", function( assert ) {
 
 	// Test Conflict ID
 	lengthtest = document.getElementById( "lengthtest" );
-	assert.deepEqual( jQuery.find( "#idTest", lengthtest ), q( "idTest" ),
+	assert.deepEqual( jQuery( "#idTest", lengthtest ).get(), q( "idTest" ),
 		"Finding element with id of ID." );
-	assert.deepEqual( jQuery.find( "[name='id']", lengthtest ), q( "idTest" ),
+	assert.deepEqual( jQuery( "[name='id']", lengthtest ).get(), q( "idTest" ),
 		"Finding element with id of ID." );
-	assert.deepEqual( jQuery.find( "input[id='idTest']", lengthtest ), q( "idTest" ),
+	assert.deepEqual( jQuery( "input[id='idTest']", lengthtest ).get(), q( "idTest" ),
 		"Finding elements with id of ID." );
 
 	if ( QUnit.jQuerySelectors ) {
 		siblingTest = document.getElementById( "siblingTest" );
-		assert.deepEqual( jQuery.find( "div em", siblingTest ), [],
+		assert.deepEqual( jQuery( "div em", siblingTest ).get(), [],
 			"Element-rooted QSA does not select based on document context" );
-		assert.deepEqual( jQuery.find( "div em, div em, div em:not(div em)", siblingTest ), [],
+		assert.deepEqual( jQuery( "div em, div em, div em:not(div em)", siblingTest ).get(), [],
 			"Element-rooted QSA does not select based on document context" );
-		assert.deepEqual( jQuery.find( "div em, em\\,", siblingTest ), [],
+		assert.deepEqual( jQuery( "div em, em\\,", siblingTest ).get(), [],
 			"Escaped commas do not get treated with an id in element-rooted QSA" );
 	} else {
 		assert.ok( "skip", "Element-rooted QSA behavior different in selector-native" );
@@ -138,9 +138,9 @@ QUnit.test( "element", function( assert ) {
 		html = "<div>" + html + "</div>";
 	}
 	html = jQuery( html ).appendTo( document.body );
-	assert.ok( !!jQuery.find( "body div div div" ).length,
+	assert.ok( !!jQuery( "body div div div" ).length,
 		"No stack or performance problems with large amounts of descendants" );
-	assert.ok( !!jQuery.find( "body>div div div" ).length,
+	assert.ok( !!jQuery( "body>div div div" ).length,
 		"No stack or performance problems with large amounts of descendants" );
 	html.remove();
 
@@ -154,23 +154,23 @@ QUnit.test( "XML Document Selectors", function( assert ) {
 
 	var xml = createWithFriesXML();
 
-	assert.equal( jQuery.find( "foo_bar", xml ).length, 1, "Element Selector with underscore" );
-	assert.equal( jQuery.find( ".component", xml ).length, 1, "Class selector" );
-	assert.equal( jQuery.find( "[class*=component]", xml ).length, 1, "Attribute selector for class" );
-	assert.equal( jQuery.find( "property[name=prop2]", xml ).length, 1, "Attribute selector with name" );
-	assert.equal( jQuery.find( "[name=prop2]", xml ).length, 1, "Attribute selector with name" );
-	assert.equal( jQuery.find( "#seite1", xml ).length, 1, "Attribute selector with ID" );
-	assert.equal( jQuery.find( "component#seite1", xml ).length, 1, "Attribute selector with ID" );
+	assert.equal( jQuery( "foo_bar", xml ).length, 1, "Element Selector with underscore" );
+	assert.equal( jQuery( ".component", xml ).length, 1, "Class selector" );
+	assert.equal( jQuery( "[class*=component]", xml ).length, 1, "Attribute selector for class" );
+	assert.equal( jQuery( "property[name=prop2]", xml ).length, 1, "Attribute selector with name" );
+	assert.equal( jQuery( "[name=prop2]", xml ).length, 1, "Attribute selector with name" );
+	assert.equal( jQuery( "#seite1", xml ).length, 1, "Attribute selector with ID" );
+	assert.equal( jQuery( "component#seite1", xml ).length, 1, "Attribute selector with ID" );
 	assert.equal( jQuery( "component", xml ).filter( "#seite1" ).length, 1,
 		"Attribute selector filter with ID" );
-	assert.equal( jQuery.find( "meta property thing", xml ).length, 2,
+	assert.equal( jQuery( "meta property thing", xml ).length, 2,
 		"Descendent selector and dir caching" );
 	if ( QUnit.jQuerySelectors ) {
 		assert.ok( jQuery( xml.lastChild ).is( "soap\\:Envelope" ), "Check for namespaced element" );
 
 		xml = jQuery.parseXML( "<?xml version='1.0' encoding='UTF-8'?><root><elem id='1'/></root>" );
 
-		assert.equal( jQuery.find( "elem:not(:has(*))", xml ).length, 1,
+		assert.equal( jQuery( "elem:not(:has(*))", xml ).length, 1,
 			"Non-qSA path correctly handles numeric ids (jQuery #14142)" );
 	} else {
 		assert.ok( "skip", "namespaced elements not matching correctly in selector-native" );
@@ -183,7 +183,7 @@ QUnit.test( "broken selectors throw", function( assert ) {
 
 	function broken( name, selector ) {
 		assert.throws( function() {
-			jQuery.find( selector );
+			jQuery( selector );
 		}, name + ": " + selector );
 	}
 
@@ -260,7 +260,7 @@ QUnit.test( "id", function( assert ) {
 		.appendTo( "#qunit-fixture" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery.find( "> span", jQuery( "#fiddle\\\\Foo" )[ 0 ] ),
+		assert.deepEqual( jQuery( "> span", jQuery( "#fiddle\\\\Foo" )[ 0 ] ).get(),
 			q( [ "fiddleSpan" ] ), "Escaped ID as context" );
 	} else {
 		assert.ok( "skip", "leading > not supported in selector-native" );
@@ -291,7 +291,7 @@ QUnit.test( "id", function( assert ) {
 
 	assert.t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug #986
 
-	assert.deepEqual( jQuery.find( "div#form", document.body ), [],
+	assert.deepEqual( jQuery( "div#form", document.body ).get(), [],
 		"ID selector within the context of another element" );
 
 	assert.t( "Underscore ID", "#types_all", [ "types_all" ] );
@@ -334,7 +334,7 @@ QUnit.test( "class", function( assert ) {
 
 	var div = document.createElement( "div" );
 	div.innerHTML = "<div class='test e'></div><div class='test'></div>";
-	assert.deepEqual( jQuery.find( ".e", div ), [ div.firstChild ], "Finding a second class." );
+	assert.deepEqual( jQuery( ".e", div ).get(), [ div.firstChild ], "Finding a second class." );
 
 	div.lastChild.className = "e";
 
@@ -350,18 +350,18 @@ QUnit.test( "class", function( assert ) {
 		"testing class on document doesn't error" );
 	assert.ok( !jQuery( window ).is( ".foo" ), "testing class on window doesn't error" );
 
-	assert.deepEqual( jQuery.find( ".e", div ), [ div.firstChild, div.lastChild ],
+	assert.deepEqual( jQuery( ".e", div ).get(), [ div.firstChild, div.lastChild ],
 		"Finding a modified class." );
 
 	div.lastChild.className += " hasOwnProperty toString";
-	assert.deepEqual( jQuery.find( ".e.hasOwnProperty.toString", div ), [ div.lastChild ],
+	assert.deepEqual( jQuery( ".e.hasOwnProperty.toString", div ).get(), [ div.lastChild ],
 		"Classes match Object.prototype properties" );
 
 	div = jQuery( "<div><svg width='200' height='250' version='1.1'" +
 		" xmlns='http://www.w3.org/2000/svg'><rect x='10' y='10' width='30' height='30'" +
 		"class='foo'></rect></svg></div>" )[ 0 ];
-	assert.equal( jQuery.find( ".foo", div ).length, 1, "Class selector against SVG container" );
-	assert.equal( jQuery.find( ".foo", div.firstChild ).length, 1,
+	assert.equal( jQuery( ".foo", div ).length, 1, "Class selector against SVG container" );
+	assert.equal( jQuery( ".foo", div.firstChild ).length, 1,
 		"Class selector directly against SVG" );
 } );
 
@@ -381,13 +381,13 @@ QUnit.test( "name", function( assert ) {
 	assert.t( "Name selector for grouped input", "input[name='types[]']", [ "types_all", "types_anime", "types_movie" ] );
 
 	form = document.getElementById( "form" );
-	assert.deepEqual( jQuery.find( "input[name=action]", form ), q( "text1" ),
+	assert.deepEqual( jQuery( "input[name=action]", form ).get(), q( "text1" ),
 		"Name selector within the context of another element" );
-	assert.deepEqual( jQuery.find( "input[name='foo[bar]']", form ), q( "hidden2" ),
+	assert.deepEqual( jQuery( "input[name='foo[bar]']", form ).get(), q( "hidden2" ),
 		"Name selector for grouped form element within the context of another element" );
 
 	form = jQuery( "<form><input name='id'/></form>" ).appendTo( "body" );
-	assert.equal( jQuery.find( "input", form[ 0 ] ).length, 1,
+	assert.equal( jQuery( "input", form[ 0 ] ).length, 1,
 		"Make sure that rooted queries on forms (with possible expandos) work." );
 
 	form.remove();
@@ -450,9 +450,9 @@ QUnit.test( "child and adjacent", function( assert ) {
 	siblingFirst = document.getElementById( "siblingfirst" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery.find( "+ em", siblingFirst ), q( "siblingnext" ),
+		assert.deepEqual( jQuery( "+ em", siblingFirst ).get(), q( "siblingnext" ),
 			"Element Directly Preceded By with a context." );
-		assert.deepEqual( jQuery.find( "~ em", siblingFirst ), q( "siblingnext", "siblingthird" ),
+		assert.deepEqual( jQuery( "~ em", siblingFirst ).get(), q( "siblingnext", "siblingthird" ),
 			"Element Preceded By with a context." );
 	} else {
 		assert.ok( "skip", "leading + not supported in selector-native" );
@@ -460,7 +460,7 @@ QUnit.test( "child and adjacent", function( assert ) {
 	}
 
 	if ( QUnit.jQuerySelectorsPos ) {
-		assert.deepEqual( jQuery.find( "~ em:first", siblingFirst ), q( "siblingnext" ),
+		assert.deepEqual( jQuery( "~ em:first", siblingFirst ).get(), q( "siblingnext" ),
 			"Element Preceded By positional with a context." );
 	} else {
 		assert.ok( "skip", "Positional selectors are not supported" );
@@ -468,9 +468,9 @@ QUnit.test( "child and adjacent", function( assert ) {
 
 	if ( QUnit.jQuerySelectors ) {
 		en = document.getElementById( "en" );
-		assert.deepEqual( jQuery.find( "+ p, a", en ), q( "yahoo", "sap" ),
+		assert.deepEqual( jQuery( "+ p, a", en ).get(), q( "yahoo", "sap" ),
 			"Compound selector with context, beginning with sibling test." );
-		assert.deepEqual( jQuery.find( "a, + p", en ), q( "yahoo", "sap" ),
+		assert.deepEqual( jQuery( "a, + p", en ).get(), q( "yahoo", "sap" ),
 			"Compound selector with context, containing sibling test." );
 	} else {
 		assert.ok( "skip", "leading + not supported in selector-native" );
@@ -489,11 +489,11 @@ QUnit.test( "child and adjacent", function( assert ) {
 		assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (#8310)" );
 
 		nothiddendiv = document.getElementById( "nothiddendiv" );
-		assert.deepEqual( jQuery.find( "> :first", nothiddendiv ), q( "nothiddendivchild" ),
+		assert.deepEqual( jQuery( "> :first", nothiddendiv ).get(), q( "nothiddendivchild" ),
 			"Verify child context positional selector" );
-		assert.deepEqual( jQuery.find( "> :eq(0)", nothiddendiv ), q( "nothiddendivchild" ),
+		assert.deepEqual( jQuery( "> :eq(0)", nothiddendiv ).get(), q( "nothiddendivchild" ),
 			"Verify child context positional selector" );
-		assert.deepEqual( jQuery.find( "> *:first", nothiddendiv ), q( "nothiddendivchild" ),
+		assert.deepEqual( jQuery( "> *:first", nothiddendiv ).get(), q( "nothiddendivchild" ),
 			"Verify child context positional selector" );
 	} else {
 		assert.ok( "skip", "Positional selectors are not supported" );
@@ -564,19 +564,19 @@ QUnit.test( "attributes - equals", function( assert ) {
 	assert.t( "Value", "input[value=Test]", [ "text1", "text2" ] );
 
 	assert.deepEqual(
-		jQuery.find( "input[data-comma='0,1']" ),
+		jQuery( "input[data-comma='0,1']" ).get(),
 		q( "el12087" ),
 		"Without context, single-quoted attribute containing ','" );
 	assert.deepEqual(
-		jQuery.find( "input[data-comma=\"0,1\"]" ),
+		jQuery( "input[data-comma=\"0,1\"]" ).get(),
 		q( "el12087" ),
 		"Without context, double-quoted attribute containing ','" );
 	assert.deepEqual(
-		jQuery.find( "input[data-comma='0,1']", document.getElementById( "t12087" ) ),
+		jQuery( "input[data-comma='0,1']", document.getElementById( "t12087" ) ).get(),
 		q( "el12087" ),
 		"With context, single-quoted attribute containing ','" );
 	assert.deepEqual(
-		jQuery.find( "input[data-comma=\"0,1\"]", document.getElementById( "t12087" ) ),
+		jQuery( "input[data-comma=\"0,1\"]", document.getElementById( "t12087" ) ).get(),
 		q( "el12087" ),
 		"With context, double-quoted attribute containing ','" );
 } );
@@ -645,7 +645,7 @@ QUnit.test( "attributes - special characters", function( assert ) {
 
 	// trac-3279
 	div.innerHTML = "<div id='foo' xml:test='something'></div>";
-	assert.deepEqual( jQuery.find( "[xml\\:test]", div ),
+	assert.deepEqual( jQuery( "[xml\\:test]", div ).get(),
 		[ div.firstChild ],
 		"attribute name containing colon" );
 
@@ -666,54 +666,54 @@ QUnit.test( "attributes - special characters", function( assert ) {
 	).appendTo( "#qunit-fixture" ).get();
 
 
-	assert.deepEqual( jQuery.find( "input[name=foo\\ bar]", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[name=foo\\ bar]" ).get(),
 		q( "attrbad_space" ),
 		"identifier containing space" );
-	assert.deepEqual( jQuery.find( "input[name=foo\\.baz]", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[name=foo\\.baz]" ).get(),
 		q( "attrbad_dot" ),
 		"identifier containing dot" );
-	assert.deepEqual( jQuery.find( "input[name=foo\\[baz\\]]", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[name=foo\\[baz\\]]" ).get(),
 		q( "attrbad_brackets" ),
 		"identifier containing brackets" );
-	assert.deepEqual( jQuery.find( "input[data-attr='foo_baz\\']']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='foo_baz\\']']" ).get(),
 		q( "attrbad_injection" ),
 		"string containing quote and right bracket" );
 
-	assert.deepEqual( jQuery.find( "input[value=\\30 \\30\\37 ]", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[value=\\30 \\30\\37 ]" ).get(),
 		q( "attrbad_leading_digits" ),
 		"identifier containing escaped leading digits with whitespace termination" );
-	assert.deepEqual( jQuery.find( "input[value=\\00003007]", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[value=\\00003007]" ).get(),
 		q( "attrbad_leading_digits" ),
 		"identifier containing escaped leading digits without whitespace termination" );
 
-	assert.deepEqual( jQuery.find( "input[data-attr='\\'']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\'']" ).get(),
 		q( "attrbad_quote" ),
 		"string containing quote" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\\\']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\\\']" ).get(),
 		q( "attrbad_backslash" ),
 		"string containing backslash" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\\\\\'']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\\\\\'']" ).get(),
 		q( "attrbad_backslash_quote" ),
 		"string containing backslash and quote" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\\\\\\\']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\\\\\\\']" ).get(),
 		q( "attrbad_backslash_backslash" ),
 		"string containing adjacent backslashes" );
 
-	assert.deepEqual( jQuery.find( "input[data-attr='\\5C\\\\']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\5C\\\\']" ).get(),
 		q( "attrbad_backslash_backslash" ),
 		"string containing numeric-escape backslash and backslash" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\5C \\\\']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\5C \\\\']" ).get(),
 		q( "attrbad_backslash_backslash" ),
 		"string containing numeric-escape-with-trailing-space backslash and backslash" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\5C\t\\\\']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\5C\t\\\\']" ).get(),
 		q( "attrbad_backslash_backslash" ),
 		"string containing numeric-escape-with-trailing-tab backslash and backslash" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\04e00']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\04e00']" ).get(),
 		q( "attrbad_unicode" ),
 		"Long numeric escape (BMP)" );
 
 	document.getElementById( "attrbad_unicode" ).setAttribute( "data-attr", "\uD834\uDF06A" );
-	assert.deepEqual( jQuery.find( "input[data-attr='\\01D306A']", null, null, attrbad ),
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\01D306A']" ).get(),
 		q( "attrbad_unicode" ),
 		"Long numeric escape (non-BMP)" );
 } );
@@ -826,8 +826,9 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 
 	if ( QUnit.jQuerySelectors || this.safari ) {
 		assert.deepEqual(
-			jQuery.find( ":nth-child(n)", null, null,
-				[ document.createElement( "a" ) ].concat( q( "ap" ) ) ),
+			jQuery( [ document.createElement( "a" ) ].concat( q( "ap" ) ) )
+				.filter( ":nth-child(n)" )
+				.get(),
 			q( "ap" ),
 			"Seeded nth-child"
 		);
@@ -878,12 +879,9 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 
 	if ( QUnit.jQuerySelectors || this.safari ) {
 		assert.deepEqual(
-			jQuery.find(
-				":nth-last-child(n)",
-				null,
-				null,
-				[ document.createElement( "a" ) ].concat( q( "ap" ) )
-			),
+			jQuery( [ document.createElement( "a" ) ].concat( q( "ap" ) ) )
+				.filter( ":nth-last-child(n)" )
+				.get(),
 			q( "ap" ),
 			"Seeded nth-last-child"
 		);
@@ -939,7 +937,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - contains", function(
 	gh335.id = "gh-335";
 	gh335.appendChild( document.createTextNode( "raw line 1\nline 2" ) );
 
-	assert.ok( jQuery.find( "a:contains('')" ).length, "empty string" );
+	assert.ok( jQuery( "a:contains('')" ).length, "empty string" );
 	assert.t( "unquoted argument", "a:contains(Google)", [ "google", "groups" ] );
 	assert.t( "unquoted argument with whitespace", "a:contains(Google Groups)", [ "groups" ] );
 	assert.t( "quoted argument with whitespace and parentheses",
@@ -976,7 +974,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 			"#form select:has(option:first-child:contains('o'))",
 			[ "select1", "select2", "select3", "select4" ]
 		);
-		assert.ok( jQuery.find( "#qunit-fixture :not(:has(:has(*)))" ).length, "All not grandparents" );
+		assert.ok( jQuery( "#qunit-fixture :not(:has(:has(*)))" ).length, "All not grandparents" );
 
 		select = document.getElementById( "select1" );
 		assert.ok( jQuery( select ).is( ":has(option)" ), "Has Option Matches" );
@@ -1064,7 +1062,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 
 
 	assert.deepEqual(
-		jQuery.find( "[id='select1'] *:not(:last-child), [id='select2'] *:not(:last-child)", q( "qunit-fixture" )[ 0 ] ),
+		jQuery( "[id='select1'] *:not(:last-child), [id='select2'] *:not(:last-child)", q( "qunit-fixture" )[ 0 ] ).get(),
 		q( "option1a", "option1b", "option1c", "option2a", "option2b", "option2c" ),
 		"caching system tolerates recursive selection"
 	);
@@ -1270,12 +1268,14 @@ QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "pseudo - position", functi
 
 	assert.t( "Isolated position", "#qunit-fixture :last", [ "last" ] );
 
-	assert.deepEqual( jQuery.find( "*:lt(2) + *", null, [], jQuery.find( "#qunit-fixture > p" ) ), q( "ap" ),
+	assert.deepEqual(
+		jQuery( "#qunit-fixture > p" ).filter( "*:lt(2) + *" ).get(),
+		q( "ap" ),
 		"Seeded pos with trailing relative" );
 
 	// jQuery #12526
 	var context = jQuery( "#qunit-fixture" ).append( "<div id='jquery12526'></div>" )[ 0 ];
-	assert.deepEqual( jQuery.find( ":last", context ), q( "jquery12526" ),
+	assert.deepEqual( jQuery( ":last", context ).get(), q( "jquery12526" ),
 		"Post-manipulation positional" );
 } );
 
@@ -1451,7 +1451,7 @@ QUnit.test( "pseudo - :target and :root", function( assert ) {
 	window.location.hash = oldHash;
 
 	// Root
-	assert.equal( jQuery.find( ":root" )[ 0 ], document.documentElement, ":root selector" );
+	assert.equal( jQuery( ":root" )[ 0 ], document.documentElement, ":root selector" );
 } );
 
 QUnit.test( "pseudo - :lang", function( assert ) {
@@ -1522,16 +1522,16 @@ QUnit.test( "pseudo - :lang", function( assert ) {
 	anchor.parentNode.parentNode.lang = "arab";
 	anchor.parentNode.lang = anchor.parentNode.id = "ara-sa";
 	anchor.lang = "ara";
-	assert.deepEqual( jQuery.find( ":lang(ara)", foo ), [ anchor.parentNode, anchor ], "Find by :lang" );
+	assert.deepEqual( jQuery( ":lang(ara)", foo ).get(), [ anchor.parentNode, anchor ], "Find by :lang" );
 
 	// Selector validity
 	anchor.parentNode.lang = "ara";
 	anchor.lang = "ara\\b";
-	assert.deepEqual( jQuery.find( ":lang(ara\\b)", foo ), [], ":lang respects backslashes" );
-	assert.deepEqual( jQuery.find( ":lang(ara\\\\b)", foo ), [ anchor ],
+	assert.deepEqual( jQuery( ":lang(ara\\b)", foo ).get(), [], ":lang respects backslashes" );
+	assert.deepEqual( jQuery( ":lang(ara\\\\b)", foo ).get(), [ anchor ],
 		":lang respects escaped backslashes" );
 	assert.throws( function() {
-		jQuery.find( "#qunit-fixture:lang(c++)" );
+		jQuery( "#qunit-fixture:lang(c++)" );
 	}, ":lang value must be a valid identifier" );
 
 	if ( QUnit.jQuerySelectors ) {
@@ -1567,44 +1567,44 @@ QUnit.test( "context", function( assert ) {
 		iframe = document.getElementById( "iframe" ),
 		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-	assert.deepEqual( jQuery.find( selector, document ), expected, "explicit document context" );
-	assert.deepEqual( jQuery.find( selector ), expected, "unspecified context becomes document" );
-	assert.deepEqual( jQuery.find( selector, undefined ), expected,
+	assert.deepEqual( jQuery( selector, document ).get(), expected, "explicit document context" );
+	assert.deepEqual( jQuery( selector ).get(), expected, "unspecified context becomes document" );
+	assert.deepEqual( jQuery( selector, undefined ).get(), expected,
 		"undefined context becomes document" );
-	assert.deepEqual( jQuery.find( selector, null ), expected, "null context becomes document" );
+	assert.deepEqual( jQuery( selector, null ).get(), expected, "null context becomes document" );
 
 	iframeDoc.open();
 	iframeDoc.write( "<body><p id='foo'>bar</p></body>" );
 	iframeDoc.close();
 	expected = [ iframeDoc.getElementById( "foo" ) ];
-	assert.deepEqual( jQuery.find( "p", iframeDoc ), expected, "Other document context (simple)" );
+	assert.deepEqual( jQuery( "p", iframeDoc ).get(), expected, "Other document context (simple)" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery.find( "p:contains(ar)", iframeDoc ), expected,
+		assert.deepEqual( jQuery( "p:contains(ar)", iframeDoc ).get(), expected,
 			"Other document context (complex)" );
 	} else {
 		assert.ok( "skip", ":contains not supported in selector-native" );
 	}
 
-	assert.deepEqual( jQuery.find( "span", iframeDoc ), [],
+	assert.deepEqual( jQuery( "span", iframeDoc ).get(), [],
 		"Other document context (simple, no results)" );
-	assert.deepEqual( jQuery.find( "* span", iframeDoc ), [],
+	assert.deepEqual( jQuery( "* span", iframeDoc ).get(), [],
 		"Other document context (complex, no results)" );
 
 	context = document.getElementById( "nothiddendiv" );
-	assert.deepEqual( jQuery.find( "*", context ), q( "nothiddendivchild" ), "<div> context" );
+	assert.deepEqual( jQuery( "*", context ).get(), q( "nothiddendivchild" ), "<div> context" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery.find( "* > *", context ), [], "<div> context (no results)" );
+		assert.deepEqual( jQuery( "* > *", context ).get(), [], "<div> context (no results)" );
 	} else {
 		assert.ok( "skip", "The whole selector not required to be under context in selector-native" );
 	}
 
 	context.removeAttribute( "id" );
-	assert.deepEqual( jQuery.find( "*", context ), q( "nothiddendivchild" ), "no-id element context" );
+	assert.deepEqual( jQuery( "*", context ).get(), q( "nothiddendivchild" ), "no-id element context" );
 
 	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery.find( "* > *", context ), [], "no-id element context (no results)" );
+		assert.deepEqual( jQuery( "* > *", context ).get(), [], "no-id element context (no results)" );
 	} else {
 		assert.ok( "skip", ":contains not supported in selector-native" );
 	}
@@ -1612,13 +1612,13 @@ QUnit.test( "context", function( assert ) {
 	assert.strictEqual( context.getAttribute( "id" ) || "", "", "id not added by no-id selection" );
 
 	context = document.getElementById( "lengthtest" );
-	assert.deepEqual( jQuery.find( "input", context ), q( "length", "idTest" ), "<form> context" );
-	assert.deepEqual( jQuery.find( "select", context ), [], "<form> context (no results)" );
+	assert.deepEqual( jQuery( "input", context ).get(), q( "length", "idTest" ), "<form> context" );
+	assert.deepEqual( jQuery( "select", context ).get(), [], "<form> context (no results)" );
 
 	context = document.getElementById( "台北Táiběi" );
 	expected = q( "台北Táiběi-child" );
-	assert.deepEqual( jQuery.find( "span[id]", context ), expected, "context with non-ASCII id" );
-	assert.deepEqual( jQuery.find( "#台北Táiběi span[id]", context.parentNode ), expected,
+	assert.deepEqual( jQuery( "span[id]", context ).get(), expected, "context with non-ASCII id" );
+	assert.deepEqual( jQuery( "#台北Táiběi span[id]", context.parentNode ).get(), expected,
 		"context with non-ASCII id selector prefix" );
 
 	context = document.createDocumentFragment();
@@ -1629,13 +1629,13 @@ QUnit.test( "context", function( assert ) {
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.deepEqual(
-			jQuery.find( "em:nth-child(2)", context ),
+			jQuery( "em:nth-child(2)", context ).get(),
 			expected.slice( 0, 1 ),
 			"DocumentFragment context"
 		);
-		assert.deepEqual( jQuery.find( "span", context ), expected.slice( 1 ),
+		assert.deepEqual( jQuery( "span", context ).get(), expected.slice( 1 ),
 			"DocumentFragment context by tag name" );
-		assert.deepEqual( jQuery.find( "p", context ), [], "DocumentFragment context (no results)" );
+		assert.deepEqual( jQuery( "p", context ).get(), [], "DocumentFragment context (no results)" );
 	} else {
 		assert.ok( "skip", "selection on document fragments not supported in selector-native" );
 		assert.ok( "skip", "selection on document fragments not supported in selector-native" );
@@ -1644,7 +1644,7 @@ QUnit.test( "context", function( assert ) {
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.deepEqual(
-			jQuery.find( "em + :not(:has(*)):not(:empty), foo", context.firstChild ),
+			jQuery( "em + :not(:has(*)):not(:empty), foo", context.firstChild ).get(),
 			expected.slice( 0, 1 ),
 			"Non-qSA path correctly sets detached context for sibling selectors (jQuery #14351)"
 		);
@@ -1693,9 +1693,9 @@ QUnit.test( "caching does not introduce bugs", function( assert ) {
 
 	var sap = document.getElementById( "sap" );
 
-	jQuery.find( ":not(code)", document.getElementById( "ap" ) );
+	jQuery( ":not(code)", document.getElementById( "ap" ) );
 	assert.deepEqual(
-		jQuery.find( ":not(code)", document.getElementById( "foo" ) ),
+		jQuery( ":not(code)", document.getElementById( "foo" ) ).get(),
 		q( "sndp", "en", "yahoo", "sap", "anchor2", "simon" ),
 		"Reusing selector with new context"
 	);
@@ -1709,10 +1709,10 @@ QUnit.test( "caching does not introduce bugs", function( assert ) {
 	}
 
 	sap.className = "original";
-	jQuery.find( "#qunit-fixture .original" );
+	jQuery( "#qunit-fixture .original" );
 	document.getElementById( "nothiddendiv" ).appendChild(
 		sap.cloneNode( true ) ).className = "clone";
-	assert.equal( jQuery.find( "#qunit-fixture .clone [href*='2']" ).length, 1,
+	assert.equal( jQuery( "#qunit-fixture .clone [href*='2']" ).length, 1,
 		"Cloning does not poison caches" );
 } );
 
