@@ -9,11 +9,10 @@ env:
 matrix:
   include:
     # Run browser tests only on one Node.js version to save time.
-    - node_js: "10"
+    - node_js: "12"
       env:
         - NPM_SCRIPT="test:browser"
-        # The Chrome sandbox doesn't work on Travis.
-        - BROWSERS="ChromeHeadlessNoSandbox,FirefoxHeadless"
+        - BROWSERS="ChromeHeadless,FirefoxHeadless"
       addons:
         chrome: stable
         firefox: latest
