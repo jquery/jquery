@@ -14,7 +14,6 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS,
 		oldNode = /^v6\./.test( process.version );
 
 	// Support: Node.js <8
@@ -223,9 +222,7 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-
-				// The Chrome sandbox doesn't work on Travis.
-				browsers: [ isTravis ? "ChromeHeadlessNoSandbox" : "ChromeHeadless" ]
+				browsers: [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
 
 			jsdom: {
