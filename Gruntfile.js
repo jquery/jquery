@@ -13,15 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-		oldNode = /^v6\./.test( process.version );
-
-	// Support: Node.js <8
-	// Skip running tasks that dropped support for Node.js 6
-	// in those Node versions.
-	function runIfNewNode( task ) {
-		return oldNode ? "print_old_node_message:" + task : task;
-	}
+		gzip = require( "gzip-js" );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -317,13 +309,6 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	// Support: Node.js <8
-	// Print a message on Node.js <8 notifying the task is skipped there.
-	grunt.registerTask( "print_old_node_message", function() {
-		var task = [].slice.call( arguments ).join( ":" );
-		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
-	} );
-
 	grunt.registerTask( "lint", [
 		"jsonlint",
 
@@ -346,10 +331,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test:fast", "node_smoke_tests" );
 	grunt.registerTask( "test:slow", [
 		"promises_aplus_tests",
-
-		// Support: Node.js <8
-		// Karma no longer supports Node.js <8 as it relies on async-await internally.
-		runIfNewNode( "karma:jsdom" )
+		"karma:jsdom"
 	] );
 
 	grunt.registerTask( "test", [
