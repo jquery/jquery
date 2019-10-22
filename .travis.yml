@@ -17,5 +17,12 @@ matrix:
       addons:
         chrome: stable
         firefox: latest
+    # Run tests on Firefox ESR as well.
+    - node_js: "12"
+      env:
+        - NPM_SCRIPT="test:browser"
+        - BROWSERS="FirefoxHeadless"
+      addons:
+        firefox: latest-esr
 script:
   - npm run $NPM_SCRIPT
