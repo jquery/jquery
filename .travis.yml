@@ -4,6 +4,7 @@ node_js:
 - "8"
 - "10"
 - "12"
+- "13"
 env:
   - NPM_SCRIPT=test:browserless
 matrix:
