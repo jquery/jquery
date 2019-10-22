@@ -13,7 +13,9 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" );
+		gzip = require( "gzip-js" ),
+		isTravis = process.env.TRAVIS,
+		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -214,7 +216,7 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-				browsers: [ "ChromeHeadless", "FirefoxHeadless" ]
+				browsers: isTravis && travisBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
 
 			jsdom: {
