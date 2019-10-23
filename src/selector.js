@@ -1,22 +1,17 @@
-define( [
-	"./core",
-	"./core/nodeName",
-	"./var/document",
-	"./var/documentElement",
-	"./var/indexOf",
-	"./var/pop",
-	"./var/push",
-	"./selector/rbuggyQSA",
-	"./selector/support",
+import jQuery from "./core";
+import nodeName from "./core/nodeName";
+import document from "./var/document";
+import documentElement from "./var/documentElement";
+import indexOf from "./var/indexOf";
+import pop from "./var/pop";
+import push from "./var/push";
+import rbuggyQSA from "./selector/rbuggyQSA";
+import support from "./selector/support";
 
-	// The following utils are attached directly to the jQuery object.
-	"./selector/contains",
-	"./selector/escapeSelector",
-	"./selector/uniqueSort"
-], function( jQuery, nodeName, document, documentElement, indexOf, pop, push,
-	rbuggyQSA, support ) {
-
-"use strict";
+// The following utils are attached directly to the jQuery object.
+import "./selector/contains";
+import "./selector/escapeSelector";
+import "./selector/uniqueSort";
 
 var preferredDoc = document,
 	matches = documentElement.matches || documentElement.msMatchesSelector;
@@ -1642,5 +1637,3 @@ setDocument();
 jQuery.find = find;
 
 } )();
-
-} );

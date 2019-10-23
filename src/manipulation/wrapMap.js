@@ -1,7 +1,3 @@
-define( function() {
-
-"use strict";
-
 // We have to close these tags to support XHTML (#13200)
 var wrapMap = {
 
@@ -21,5 +17,4 @@ var wrapMap = {
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-return wrapMap;
-} );
+export default wrapMap;

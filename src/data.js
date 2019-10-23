@@ -1,12 +1,8 @@
-define( [
-	"./core",
-	"./core/access",
-	"./core/camelCase",
-	"./data/var/dataPriv",
-	"./data/var/dataUser"
-], function( jQuery, access, camelCase, dataPriv, dataUser ) {
-
-"use strict";
+import jQuery from "./core";
+import access from "./core/access";
+import camelCase from "./core/camelCase";
+import dataPriv from "./data/var/dataPriv";
+import dataUser from "./data/var/dataUser";
 
 //	Implementation Summary
 //
@@ -176,5 +172,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

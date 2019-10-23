@@ -1,10 +1,6 @@
-define( [
-	"./core",
-	"./core/toType",
-	"./var/rnothtmlwhite"
-], function( jQuery, toType, rnothtmlwhite ) {
-
-"use strict";
+import jQuery from "./core";
+import toType from "./core/toType";
+import rnothtmlwhite from "./var/rnothtmlwhite";
 
 // Convert String-formatted options into Object-formatted ones
 function createOptions( options ) {
@@ -231,5 +227,4 @@ jQuery.Callbacks = function( options ) {
 	return self;
 };
 
-return jQuery;
-} );
+export default jQuery;

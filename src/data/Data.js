@@ -1,11 +1,7 @@
-define( [
-	"../core",
-	"../core/camelCase",
-	"../var/rnothtmlwhite",
-	"./var/acceptData"
-], function( jQuery, camelCase, rnothtmlwhite, acceptData ) {
-
-"use strict";
+import jQuery from "../core";
+import camelCase from "../core/camelCase";
+import rnothtmlwhite from "../var/rnothtmlwhite";
+import acceptData from "./var/acceptData";
 
 function Data() {
 	this.expando = jQuery.expando + Data.uid++;
@@ -158,5 +154,4 @@ Data.prototype = {
 	}
 };
 
-return Data;
-} );
+export default Data;

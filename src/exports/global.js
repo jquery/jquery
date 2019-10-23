@@ -1,8 +1,4 @@
-define( [
-	"../core"
-], function( jQuery, noGlobal ) {
-
-"use strict";
+import jQuery from "../core";
 
 var
 
@@ -30,5 +26,3 @@ jQuery.noConflict = function( deep ) {
 if ( !noGlobal ) {
 	window.jQuery = window.$ = jQuery;
 }
-
-} );

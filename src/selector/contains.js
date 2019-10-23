@@ -1,8 +1,4 @@
-define( [
-	"../core"
-], function( jQuery ) {
-
-"use strict";
+import jQuery from "../core";
 
 // Note: an element does not contain itself
 jQuery.contains = function( a, b ) {
@@ -18,5 +14,3 @@ jQuery.contains = function( a, b ) {
 			a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
 	) );
 };
-
-} );

@@ -1,26 +1,21 @@
-define( [
-	"./core",
-	"./var/document",
-	"./var/rcssNum",
-	"./var/rnothtmlwhite",
-	"./css/var/cssExpand",
-	"./css/var/isHiddenWithinTree",
-	"./css/adjustCSS",
-	"./css/cssCamelCase",
-	"./data/var/dataPriv",
-	"./css/showHide",
+import jQuery from "./core";
+import document from "./var/document";
+import rcssNum from "./var/rcssNum";
+import rnothtmlwhite from "./var/rnothtmlwhite";
+import cssExpand from "./css/var/cssExpand";
+import isHiddenWithinTree from "./css/var/isHiddenWithinTree";
+import adjustCSS from "./css/adjustCSS";
+import cssCamelCase from "./css/cssCamelCase";
+import dataPriv from "./data/var/dataPriv";
+import showHide from "./css/showHide";
 
-	"./core/init",
-	"./queue",
-	"./deferred",
-	"./traversing",
-	"./manipulation",
-	"./css",
-	"./effects/Tween"
-], function( jQuery, document, rcssNum, rnothtmlwhite, cssExpand,
-	isHiddenWithinTree, adjustCSS, cssCamelCase, dataPriv, showHide ) {
-
-"use strict";
+import "./core/init";
+import "./queue";
+import "./deferred";
+import "./traversing";
+import "./manipulation";
+import "./css";
+import "./effects/Tween";
 
 var
 	fxNow, inProgress,
@@ -693,5 +688,4 @@ jQuery.fx.speeds = {
 	_default: 400
 };
 
-return jQuery;
-} );
+export default jQuery;

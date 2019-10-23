@@ -1,14 +1,11 @@
-define( [
-	"../core",
-	"../var/document",
-	"../data/var/dataPriv",
-	"../data/var/acceptData",
-	"../var/hasOwn",
-	"../var/isWindow",
-	"../event"
-], function( jQuery, document, dataPriv, acceptData, hasOwn, isWindow ) {
+import jQuery from "../core";
+import document from "../var/document";
+import dataPriv from "../data/var/dataPriv";
+import acceptData from "../data/var/acceptData";
+import hasOwn from "../var/hasOwn";
+import isWindow from "../var/isWindow";
 
-"use strict";
+import "../event";
 
 var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	stopPropagationCallback = function( e ) {
@@ -194,5 +191,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

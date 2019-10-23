@@ -1,10 +1,7 @@
-define( [
-	"../core",
-	"../var/document",
-	"../ajax"
-], function( jQuery, document ) {
+import jQuery from "../core";
+import document from "../var/document";
 
-"use strict";
+import "../ajax";
 
 // Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
 jQuery.ajaxPrefilter( function( s ) {
@@ -69,6 +66,4 @@ jQuery.ajaxTransport( "script", function( s ) {
 			}
 		};
 	}
-} );
-
 } );

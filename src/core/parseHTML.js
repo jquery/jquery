@@ -1,11 +1,7 @@
-define( [
-	"../core",
-	"../var/document",
-	"./var/rsingleTag",
-	"../manipulation/buildFragment"
-], function( jQuery, document, rsingleTag, buildFragment ) {
-
-"use strict";
+import jQuery from "../core";
+import document from "../var/document";
+import rsingleTag from "./var/rsingleTag";
+import buildFragment from "../manipulation/buildFragment";
 
 // Argument "data" should be string of html
 // context (optional): If specified, the fragment will be created in this context,
@@ -53,6 +49,4 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 	return jQuery.merge( [], parsed.childNodes );
 };
 
-return jQuery.parseHTML;
-
-} );
+export default jQuery.parseHTML;

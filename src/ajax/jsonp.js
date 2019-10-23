@@ -1,11 +1,8 @@
-define( [
-	"../core",
-	"./var/nonce",
-	"./var/rquery",
-	"../ajax"
-], function( jQuery, nonce, rquery ) {
+import jQuery from "../core";
+import nonce from "./var/nonce";
+import rquery from "./var/rquery";
 
-"use strict";
+import "../ajax";
 
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
@@ -97,6 +94,4 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		// Delegate to script
 		return "script";
 	}
-} );
-
 } );

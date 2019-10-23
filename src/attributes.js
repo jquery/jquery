@@ -1,13 +1,9 @@
-define( [
-	"./core",
-	"./attributes/attr",
-	"./attributes/prop",
-	"./attributes/classes",
-	"./attributes/val"
-], function( jQuery ) {
+import jQuery from "./core";
 
-"use strict";
+import "./attributes/attr";
+import "./attributes/prop";
+import "./attributes/classes";
+import "./attributes/val";
 
 // Return jQuery for attributes-only inclusion
-return jQuery;
-} );
+export default jQuery;

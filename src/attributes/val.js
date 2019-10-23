@@ -1,12 +1,8 @@
-define( [
-	"../core",
-	"../core/stripAndCollapse",
-	"../core/nodeName",
+import jQuery from "../core";
+import stripAndCollapse from "../core/stripAndCollapse";
+import nodeName from "../core/nodeName";
 
-	"../core/init"
-], function( jQuery, stripAndCollapse, nodeName ) {
-
-"use strict";
+import "../core/init";
 
 var rreturn = /\r/g;
 
@@ -177,6 +173,4 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-} );
-
 } );

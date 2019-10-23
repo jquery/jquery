@@ -1,6 +1,2 @@
-define( function() {
-	"use strict";
-
-	// All support tests are defined in their respective modules.
-	return {};
-} );
+// All support tests are defined in their respective modules.
+export default {};

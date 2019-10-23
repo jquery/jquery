@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return [ "Top", "Right", "Bottom", "Left" ];
-} );
+export default [ "Top", "Right", "Bottom", "Left" ];

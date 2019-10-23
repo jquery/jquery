@@ -1,9 +1,5 @@
-define( [
-	"../var/document",
-	"../var/isIE"
-], function( document, isIE ) {
-
-"use strict";
+import document from "../var/document";
+import isIE from "../var/isIE";
 
 var rbuggyQSA = [],
 	testEl = document.createElement( "div" );
@@ -25,6 +21,4 @@ if ( isIE ) {
 
 rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
 
-return rbuggyQSA;
-
-} );
+export default rbuggyQSA;

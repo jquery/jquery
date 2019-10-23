@@ -1,10 +1,6 @@
-define( [
-	"../var/document",
-	"../var/documentElement",
-	"../var/support"
-], function( document, documentElement, support ) {
-
-"use strict";
+import document from "../var/document";
+import documentElement from "../var/documentElement";
+import support from "../var/support";
 
 var reliableTrDimensionsVal;
 
@@ -35,6 +31,4 @@ support.reliableTrDimensions = function() {
 	return reliableTrDimensionsVal;
 };
 
-return support;
-
-} );
+export default support;

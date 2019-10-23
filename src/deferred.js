@@ -1,10 +1,7 @@
-define( [
-	"./core",
-	"./var/slice",
-	"./callbacks"
-], function( jQuery, slice ) {
+import jQuery from "./core";
+import slice from "./var/slice";
 
-"use strict";
+import "./callbacks";
 
 function Identity( v ) {
 	return v;
@@ -392,5 +389,4 @@ jQuery.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

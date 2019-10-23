@@ -1,14 +1,11 @@
-define( [
-	"../core",
-	"../core/stripAndCollapse",
-	"../core/parseHTML",
-	"../ajax",
-	"../traversing",
-	"../manipulation",
-	"../selector"
-], function( jQuery, stripAndCollapse ) {
+import jQuery from "../core";
+import stripAndCollapse from "../core/stripAndCollapse";
 
-"use strict";
+import "../core/parseHTML";
+import "../ajax";
+import "../traversing";
+import "../manipulation";
+import "../selector";
 
 /**
  * Load a url into a page
@@ -72,5 +69,3 @@ jQuery.fn.load = function( url, params, callback ) {
 
 	return this;
 };
-
-} );

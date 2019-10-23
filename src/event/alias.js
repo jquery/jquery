@@ -1,11 +1,7 @@
-define( [
-	"../core",
+import jQuery from "../core";
 
-	"../event",
-	"./trigger"
-], function( jQuery ) {
-
-"use strict";
+import "../event";
+import "./trigger";
 
 jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
@@ -24,6 +20,4 @@ jQuery.fn.extend( {
 	hover: function( fnOver, fnOut ) {
 		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
 	}
-} );
-
 } );

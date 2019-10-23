@@ -1,13 +1,10 @@
-define( [
-	"./core",
-	"./core/toType",
-	"./var/rcheckableType",
-	"./core/init",
-	"./traversing", // filter
-	"./attributes/prop"
-], function( jQuery, toType, rcheckableType ) {
+import jQuery from "./core";
+import toType from "./core/toType";
+import rcheckableType from "./var/rcheckableType";
 
-"use strict";
+import "./core/init";
+import "./traversing"; // filter
+import "./attributes/prop";
 
 var
 	rbracket = /\[\]$/,
@@ -131,5 +128,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

@@ -3,11 +3,25 @@
 
 	"extends": "../.eslintrc-browser.json",
 
+	"parserOptions": {
+		"sourceType": "module"
+	},
+
 	"overrides": [
 		{
 			"files": "wrapper.js",
+			"parserOptions": {
+				"sourceType": "script"
+			},
 			"globals": {
 				"jQuery": false
+			}
+		},
+
+		{
+			"files": "global.js",
+			"globals": {
+				"noGlobal": false
 			}
 		}
 	]

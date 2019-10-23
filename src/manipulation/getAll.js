@@ -1,9 +1,5 @@
-define( [
-	"../core",
-	"../core/nodeName"
-], function( jQuery, nodeName ) {
-
-"use strict";
+import jQuery from "../core";
+import nodeName from "../core/nodeName";
 
 function getAll( context, tag ) {
 
@@ -28,5 +24,4 @@ function getAll( context, tag ) {
 	return ret;
 }
 
-return getAll;
-} );
+export default getAll;

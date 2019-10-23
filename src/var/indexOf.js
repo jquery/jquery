@@ -1,7 +1,3 @@
-define( [
-	"./arr"
-], function( arr ) {
-	"use strict";
+import arr from "./arr";
 
-	return arr.indexOf;
-} );
+export default arr.indexOf;

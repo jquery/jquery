@@ -1,7 +1,1 @@
-define( function() {
-
-"use strict";
-
-return ( /HTML$/i );
-
-} );
+export default ( /HTML$/i );

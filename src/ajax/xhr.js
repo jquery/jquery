@@ -1,9 +1,6 @@
-define( [
-	"../core",
-	"../ajax"
-], function( jQuery ) {
+import jQuery from "../core";
 
-"use strict";
+import "../ajax";
 
 jQuery.ajaxSettings.xhr = function() {
 	return new window.XMLHttpRequest();
@@ -115,6 +112,4 @@ jQuery.ajaxTransport( function( options ) {
 			}
 		}
 	};
-} );
-
 } );

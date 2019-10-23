@@ -1,19 +1,15 @@
-define( [
-	"./core",
-	"./var/document",
-	"./var/rnothtmlwhite",
-	"./ajax/var/location",
-	"./ajax/var/nonce",
-	"./ajax/var/rquery",
+import jQuery from "./core";
+import document from "./var/document";
+import rnothtmlwhite from "./var/rnothtmlwhite";
+import location from "./ajax/var/location";
+import nonce from "./ajax/var/nonce";
+import rquery from "./ajax/var/rquery";
 
-	"./core/init",
-	"./ajax/parseXML",
-	"./event/trigger",
-	"./deferred",
-	"./serialize" // jQuery.param
-], function( jQuery, document, rnothtmlwhite, location, nonce, rquery ) {
-
-"use strict";
+import "./core/init";
+import "./ajax/parseXML";
+import "./event/trigger";
+import "./deferred";
+import "./serialize"; // jQuery.param
 
 var
 	r20 = /%20/g,
@@ -864,5 +860,4 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 	};
 } );
 
-return jQuery;
-} );
+export default jQuery;

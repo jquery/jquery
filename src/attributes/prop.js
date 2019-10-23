@@ -1,11 +1,8 @@
-define( [
-	"../core",
-	"../core/access",
-	"../var/isIE",
-	"../selector"
-], function( jQuery, access, isIE ) {
+import jQuery from "../core";
+import access from "../core/access";
+import isIE from "../var/isIE";
 
-"use strict";
+import "../selector";
 
 var rfocusable = /^(?:input|select|textarea|button)$/i,
 	rclickable = /^(?:a|area)$/i;
@@ -135,6 +132,4 @@ jQuery.each( [
 	"contentEditable"
 ], function() {
 	jQuery.propFix[ this.toLowerCase() ] = this;
-} );
-
 } );

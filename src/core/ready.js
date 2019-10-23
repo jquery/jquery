@@ -1,11 +1,8 @@
-define( [
-	"../core",
-	"../var/document",
-	"../core/readyException",
-	"../deferred"
-], function( jQuery, document ) {
+import jQuery from "../core";
+import document from "../var/document";
 
-"use strict";
+import "../core/readyException";
+import "../deferred";
 
 // The deferred used on DOM ready
 var readyList = jQuery.Deferred();
@@ -79,5 +76,3 @@ if ( document.readyState !== "loading" ) {
 	// A fallback to window.onload, that will always work
 	window.addEventListener( "load", completed );
 }
-
-} );

@@ -1,32 +1,25 @@
-define( [
-	"./core",
-	"./core/isAttached",
-	"./var/flat",
-	"./var/isIE",
-	"./var/push",
-	"./core/access",
-	"./manipulation/var/rtagName",
-	"./manipulation/var/rscriptType",
-	"./manipulation/wrapMap",
-	"./manipulation/getAll",
-	"./manipulation/setGlobalEval",
-	"./manipulation/buildFragment",
+import jQuery from "./core";
+import isAttached from "./core/isAttached";
+import flat from "./var/flat";
+import isIE from "./var/isIE";
+import push from "./var/push";
+import access from "./core/access";
+import rtagName from "./manipulation/var/rtagName";
+import rscriptType from "./manipulation/var/rscriptType";
+import wrapMap from "./manipulation/wrapMap";
+import getAll from "./manipulation/getAll";
+import setGlobalEval from "./manipulation/setGlobalEval";
+import buildFragment from "./manipulation/buildFragment";
+import dataPriv from "./data/var/dataPriv";
+import dataUser from "./data/var/dataUser";
+import acceptData from "./data/var/acceptData";
+import DOMEval from "./core/DOMEval";
+import nodeName from "./core/nodeName";
 
-	"./data/var/dataPriv",
-	"./data/var/dataUser",
-	"./data/var/acceptData",
-	"./core/DOMEval",
-	"./core/nodeName",
-
-	"./core/init",
-	"./traversing",
-	"./selector",
-	"./event"
-], function( jQuery, isAttached, flat, isIE, push, access, rtagName,
-	rscriptType, wrapMap, getAll, setGlobalEval, buildFragment,
-	dataPriv, dataUser, acceptData, DOMEval, nodeName ) {
-
-"use strict";
+import "./core/init";
+import "./traversing";
+import "./selector";
+import "./event";
 
 var
 
@@ -458,5 +451,4 @@ jQuery.each( {
 	};
 } );
 
-return jQuery;
-} );
+export default jQuery;

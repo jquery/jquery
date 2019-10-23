@@ -1,7 +1,3 @@
-define( [
-	"./fnToString"
-], function( fnToString ) {
-	"use strict";
+import fnToString from "./fnToString";
 
-	return fnToString.call( Object );
-} );
+export default fnToString.call( Object );

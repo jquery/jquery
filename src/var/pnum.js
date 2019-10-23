@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return ( /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/ ).source;
-} );
+export default ( /[+-]?(?:\d*\.|)\d+(?:[eE][+-]?\d+|)/ ).source;

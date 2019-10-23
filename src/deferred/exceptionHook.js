@@ -1,9 +1,6 @@
-define( [
-	"../core",
-	"../deferred"
-], function( jQuery ) {
+import jQuery from "../core";
 
-"use strict";
+import "../deferred";
 
 // These usually indicate a programmer mistake during development,
 // warn about them ASAP rather than swallowing them by default.
@@ -19,5 +16,3 @@ jQuery.Deferred.exceptionHook = function( error, stack ) {
 		);
 	}
 };
-
-} );

@@ -1,18 +1,14 @@
-define( [
-	"./core",
-	"./var/getProto",
-	"./var/indexOf",
-	"./traversing/var/dir",
-	"./traversing/var/siblings",
-	"./traversing/var/rneedsContext",
-	"./core/nodeName",
+import jQuery from "./core";
+import getProto from "./var/getProto";
+import indexOf from "./var/indexOf";
+import dir from "./traversing/var/dir";
+import siblings from "./traversing/var/siblings";
+import rneedsContext from "./traversing/var/rneedsContext";
+import nodeName from "./core/nodeName";
 
-	"./core/init",
-	"./traversing/findFilter",
-	"./selector"
-], function( jQuery, getProto, indexOf, dir, siblings, rneedsContext, nodeName ) {
-
-"use strict";
+import "./core/init";
+import "./traversing/findFilter";
+import "./selector";
 
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 
@@ -194,5 +190,4 @@ jQuery.each( {
 	};
 } );
 
-return jQuery;
-} );
+export default jQuery;
