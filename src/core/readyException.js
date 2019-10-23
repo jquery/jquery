@@ -1,4 +1,4 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
 jQuery.readyException = function( error ) {
 	window.setTimeout( function() {

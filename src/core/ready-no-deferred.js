@@ -1,5 +1,5 @@
-import jQuery from "../core";
-import document from "../var/document";
+import jQuery from "../core.js";
+import document from "../var/document.js";
 
 var readyCallbacks = [],
 	whenReady = function( fn ) {

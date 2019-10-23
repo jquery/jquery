@@ -1,7 +1,7 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../queue";
-import "../effects"; // Delay is optional because of this dependency
+import "../queue.js";
+import "../effects.js"; // Delay is optional because of this dependency
 
 // Based off of the plugin by Clint Helfers, with permission.
 // https://web.archive.org/web/20100324014747/http://blindsignals.com/index.php/2009/07/jquery-delay/

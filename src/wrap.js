@@ -1,8 +1,8 @@
-import jQuery from "./core";
+import jQuery from "./core.js";
 
-import "./core/init";
-import "./manipulation"; // clone
-import "./traversing"; // parent, contents
+import "./core/init.js";
+import "./manipulation.js"; // clone
+import "./traversing.js"; // parent, contents
 
 jQuery.fn.extend( {
 	wrapAll: function( html ) {

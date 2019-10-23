@@ -1,8 +1,8 @@
-import jQuery from "../core";
-import isAutoPx from "../css/isAutoPx";
-import finalPropName from "../css/finalPropName";
+import jQuery from "../core.js";
+import isAutoPx from "../css/isAutoPx.js";
+import finalPropName from "../css/finalPropName.js";
 
-import "../css";
+import "../css.js";
 
 function Tween( elem, options, prop, end, easing ) {
 	return new Tween.prototype.init( elem, options, prop, end, easing );

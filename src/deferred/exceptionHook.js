@@ -1,6 +1,6 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../deferred";
+import "../deferred.js";
 
 // These usually indicate a programmer mistake during development,
 // warn about them ASAP rather than swallowing them by default.

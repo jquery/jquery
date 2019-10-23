@@ -1,7 +1,7 @@
-import jQuery from "../core";
-import camelCase from "../core/camelCase";
-import rnothtmlwhite from "../var/rnothtmlwhite";
-import acceptData from "./var/acceptData";
+import jQuery from "../core.js";
+import camelCase from "../core/camelCase.js";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import acceptData from "./var/acceptData.js";
 
 function Data() {
 	this.expando = jQuery.expando + Data.uid++;

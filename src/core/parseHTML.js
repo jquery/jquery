@@ -1,7 +1,7 @@
-import jQuery from "../core";
-import document from "../var/document";
-import rsingleTag from "./var/rsingleTag";
-import buildFragment from "../manipulation/buildFragment";
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import rsingleTag from "./var/rsingleTag.js";
+import buildFragment from "../manipulation/buildFragment.js";
 
 // Argument "data" should be string of html
 // context (optional): If specified, the fragment will be created in this context,

@@ -1,5 +1,5 @@
-import jQuery from "../core";
-import toType from "../core/toType";
+import jQuery from "../core.js";
+import toType from "../core/toType.js";
 
 // Multifunctional method to get and set values of a collection
 // The value/s can optionally be executed if it's a function

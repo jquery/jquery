@@ -1,11 +1,11 @@
-import jQuery from "./core";
-import access from "./core/access";
-import documentElement from "./var/documentElement";
-import isWindow from "./var/isWindow";
+import jQuery from "./core.js";
+import access from "./core/access.js";
+import documentElement from "./var/documentElement.js";
+import isWindow from "./var/isWindow.js";
 
-import "./core/init";
-import "./css";
-import "./selector"; // contains
+import "./core/init.js";
+import "./css.js";
+import "./selector.js"; // contains
 
 jQuery.offset = {
 	setOffset: function( elem, options, i ) {

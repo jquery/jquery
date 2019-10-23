@@ -1,8 +1,8 @@
-import jQuery from "./core";
-import slice from "./var/slice";
-import trim from "./var/trim";
+import jQuery from "./core.js";
+import slice from "./var/slice.js";
+import trim from "./var/trim.js";
 
-import "./event/alias";
+import "./event/alias.js";
 
 jQuery.fn.extend( {
 

@@ -1,4 +1,4 @@
-import jQuery from "../../core";
+import jQuery from "../../core.js";
 
 // isHiddenWithinTree reports if an element has a non-"none" display style (inline and/or
 // through the CSS cascade), which is useful in deciding whether or not to make it visible.

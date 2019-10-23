@@ -1,6 +1,6 @@
-import jQuery from "../core";
-import document from "../var/document";
-import sort from "../var/sort";
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import sort from "../var/sort.js";
 
 var hasDuplicate;
 

@@ -1,21 +1,21 @@
-import jQuery from "./core";
-import document from "./var/document";
-import rcssNum from "./var/rcssNum";
-import rnothtmlwhite from "./var/rnothtmlwhite";
-import cssExpand from "./css/var/cssExpand";
-import isHiddenWithinTree from "./css/var/isHiddenWithinTree";
-import adjustCSS from "./css/adjustCSS";
-import cssCamelCase from "./css/cssCamelCase";
-import dataPriv from "./data/var/dataPriv";
-import showHide from "./css/showHide";
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import rcssNum from "./var/rcssNum.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import cssExpand from "./css/var/cssExpand.js";
+import isHiddenWithinTree from "./css/var/isHiddenWithinTree.js";
+import adjustCSS from "./css/adjustCSS.js";
+import cssCamelCase from "./css/cssCamelCase.js";
+import dataPriv from "./data/var/dataPriv.js";
+import showHide from "./css/showHide.js";
 
-import "./core/init";
-import "./queue";
-import "./deferred";
-import "./traversing";
-import "./manipulation";
-import "./css";
-import "./effects/Tween";
+import "./core/init.js";
+import "./queue.js";
+import "./deferred.js";
+import "./traversing.js";
+import "./manipulation.js";
+import "./css.js";
+import "./effects/Tween.js";
 
 var
 	fxNow, inProgress,

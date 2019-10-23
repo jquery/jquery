@@ -1,5 +1,5 @@
-import jQuery from "../core";
-import nodeName from "../core/nodeName";
+import jQuery from "../core.js";
+import nodeName from "../core/nodeName.js";
 
 function getAll( context, tag ) {
 

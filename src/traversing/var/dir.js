@@ -1,4 +1,4 @@
-import jQuery from "../../core";
+import jQuery from "../../core.js";
 
 export default function( elem, dir, until ) {
 	var matched = [],

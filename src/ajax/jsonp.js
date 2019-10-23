@@ -1,8 +1,8 @@
-import jQuery from "../core";
-import nonce from "./var/nonce";
-import rquery from "./var/rquery";
+import jQuery from "../core.js";
+import nonce from "./var/nonce.js";
+import rquery from "./var/rquery.js";
 
-import "../ajax";
+import "../ajax.js";
 
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;

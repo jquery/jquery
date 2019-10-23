@@ -1,6 +1,6 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../ajax";
+import "../ajax.js";
 
 jQuery.ajaxSettings.xhr = function() {
 	return new window.XMLHttpRequest();

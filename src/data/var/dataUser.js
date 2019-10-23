@@ -1,3 +1,3 @@
-import Data from "../Data";
+import Data from "../Data.js";
 
 export default new Data();

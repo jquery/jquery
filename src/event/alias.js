@@ -1,7 +1,7 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../event";
-import "./trigger";
+import "../event.js";
+import "./trigger.js";
 
 jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
 	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +

@@ -1,10 +1,10 @@
-import jQuery from "../core";
-import access from "../core/access";
-import nodeName from "../core/nodeName";
-import rnothtmlwhite from "../var/rnothtmlwhite";
-import isIE from "../var/isIE";
+import jQuery from "../core.js";
+import access from "../core/access.js";
+import nodeName from "../core/nodeName.js";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import isIE from "../var/isIE.js";
 
-import "../selector";
+import "../selector.js";
 
 jQuery.fn.extend( {
 	attr: function( name, value ) {

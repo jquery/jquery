@@ -1,25 +1,25 @@
-import jQuery from "./core";
-import isAttached from "./core/isAttached";
-import flat from "./var/flat";
-import isIE from "./var/isIE";
-import push from "./var/push";
-import access from "./core/access";
-import rtagName from "./manipulation/var/rtagName";
-import rscriptType from "./manipulation/var/rscriptType";
-import wrapMap from "./manipulation/wrapMap";
-import getAll from "./manipulation/getAll";
-import setGlobalEval from "./manipulation/setGlobalEval";
-import buildFragment from "./manipulation/buildFragment";
-import dataPriv from "./data/var/dataPriv";
-import dataUser from "./data/var/dataUser";
-import acceptData from "./data/var/acceptData";
-import DOMEval from "./core/DOMEval";
-import nodeName from "./core/nodeName";
+import jQuery from "./core.js";
+import isAttached from "./core/isAttached.js";
+import flat from "./var/flat.js";
+import isIE from "./var/isIE.js";
+import push from "./var/push.js";
+import access from "./core/access.js";
+import rtagName from "./manipulation/var/rtagName.js";
+import rscriptType from "./manipulation/var/rscriptType.js";
+import wrapMap from "./manipulation/wrapMap.js";
+import getAll from "./manipulation/getAll.js";
+import setGlobalEval from "./manipulation/setGlobalEval.js";
+import buildFragment from "./manipulation/buildFragment.js";
+import dataPriv from "./data/var/dataPriv.js";
+import dataUser from "./data/var/dataUser.js";
+import acceptData from "./data/var/acceptData.js";
+import DOMEval from "./core/DOMEval.js";
+import nodeName from "./core/nodeName.js";
 
-import "./core/init";
-import "./traversing";
-import "./selector";
-import "./event";
+import "./core/init.js";
+import "./traversing.js";
+import "./selector.js";
+import "./event.js";
 
 var
 

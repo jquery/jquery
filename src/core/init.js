@@ -1,9 +1,9 @@
 // Initialize a jQuery object
-import jQuery from "../core";
-import document from "../var/document";
-import rsingleTag from "./var/rsingleTag";
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import rsingleTag from "./var/rsingleTag.js";
 
-import "../traversing/findFilter";
+import "../traversing/findFilter.js";
 
 // A central reference to the root jQuery(document)
 var rootjQuery,

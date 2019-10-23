@@ -1,6 +1,6 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../event";
+import "../event.js";
 
 // Attach a bunch of functions for handling common AJAX events
 jQuery.each( [

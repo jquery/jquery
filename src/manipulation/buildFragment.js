@@ -1,11 +1,11 @@
-import jQuery from "../core";
-import toType from "../core/toType";
-import isAttached from "../core/isAttached";
-import rtagName from "./var/rtagName";
-import rscriptType from "./var/rscriptType";
-import wrapMap from "./wrapMap";
-import getAll from "./getAll";
-import setGlobalEval from "./setGlobalEval";
+import jQuery from "../core.js";
+import toType from "../core/toType.js";
+import isAttached from "../core/isAttached.js";
+import rtagName from "./var/rtagName.js";
+import rscriptType from "./var/rscriptType.js";
+import wrapMap from "./wrapMap.js";
+import getAll from "./getAll.js";
+import setGlobalEval from "./setGlobalEval.js";
 
 var rhtml = /<|&#?\w+;/;
 

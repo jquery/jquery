@@ -1,8 +1,8 @@
-import jQuery from "../core";
-import indexOf from "../var/indexOf";
-import rneedsContext from "./var/rneedsContext";
+import jQuery from "../core.js";
+import indexOf from "../var/indexOf.js";
+import rneedsContext from "./var/rneedsContext.js";
 
-import "../selector";
+import "../selector.js";
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {

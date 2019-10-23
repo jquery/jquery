@@ -1,6 +1,6 @@
-import jQuery from "../core";
-import dataPriv from "../data/var/dataPriv";
-import isHiddenWithinTree from "../css/var/isHiddenWithinTree";
+import jQuery from "../core.js";
+import dataPriv from "../data/var/dataPriv.js";
+import isHiddenWithinTree from "../css/var/isHiddenWithinTree.js";
 
 var defaultDisplayMap = {};
 

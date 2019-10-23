@@ -1,4 +1,4 @@
-import camelCase from "../core/camelCase";
+import camelCase from "../core/camelCase.js";
 
 // Matches dashed string for camelizing
 var rmsPrefix = /^-ms-/;

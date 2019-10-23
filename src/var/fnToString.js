@@ -1,3 +1,3 @@
-import hasOwn from "./hasOwn";
+import hasOwn from "./hasOwn.js";
 
 export default hasOwn.toString;

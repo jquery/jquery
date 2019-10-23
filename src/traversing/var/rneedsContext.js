@@ -1,5 +1,5 @@
-import jQuery from "../../core";
+import jQuery from "../../core.js";
 
-import "../../selector";
+import "../../selector.js";
 
 export default jQuery.expr.match.needsContext;

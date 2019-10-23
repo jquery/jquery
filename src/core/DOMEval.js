@@ -1,4 +1,4 @@
-import document from "../var/document";
+import document from "../var/document.js";
 
 var preservedScriptAttributes = {
 	type: true,

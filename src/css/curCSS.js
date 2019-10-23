@@ -1,6 +1,6 @@
-import jQuery from "../core";
-import isAttached from "../core/isAttached";
-import getStyles from "./var/getStyles";
+import jQuery from "../core.js";
+import isAttached from "../core/isAttached.js";
+import getStyles from "./var/getStyles.js";
 
 function curCSS( elem, name, computed ) {
 	var ret;

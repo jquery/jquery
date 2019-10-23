@@ -1,8 +1,8 @@
-import jQuery from "../core";
-import stripAndCollapse from "../core/stripAndCollapse";
-import nodeName from "../core/nodeName";
+import jQuery from "../core.js";
+import stripAndCollapse from "../core/stripAndCollapse.js";
+import nodeName from "../core/nodeName.js";
 
-import "../core/init";
+import "../core/init.js";
 
 var rreturn = /\r/g;
 

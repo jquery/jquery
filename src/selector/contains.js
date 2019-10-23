@@ -1,4 +1,4 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
 // Note: an element does not contain itself
 jQuery.contains = function( a, b ) {

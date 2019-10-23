@@ -1,7 +1,7 @@
-import jQuery from "../core";
-import document from "../var/document";
+import jQuery from "../core.js";
+import document from "../var/document.js";
 
-import "../ajax";
+import "../ajax.js";
 
 // Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
 jQuery.ajaxPrefilter( function( s ) {

@@ -1,10 +1,10 @@
-import jQuery from "./core";
-import toType from "./core/toType";
-import rcheckableType from "./var/rcheckableType";
+import jQuery from "./core.js";
+import toType from "./core/toType.js";
+import rcheckableType from "./var/rcheckableType.js";
 
-import "./core/init";
-import "./traversing"; // filter
-import "./attributes/prop";
+import "./core/init.js";
+import "./traversing.js"; // filter
+import "./attributes/prop.js";
 
 var
 	rbracket = /\[\]$/,

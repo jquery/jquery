@@ -1,4 +1,4 @@
-import document from "../var/document";
+import document from "../var/document.js";
 
 var cssPrefixes = [ "Webkit", "Moz", "ms" ],
 	emptyStyle = document.createElement( "div" ).style,

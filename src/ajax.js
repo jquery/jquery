@@ -1,14 +1,14 @@
-import jQuery from "./core";
-import document from "./var/document";
-import rnothtmlwhite from "./var/rnothtmlwhite";
-import location from "./ajax/var/location";
-import nonce from "./ajax/var/nonce";
-import rquery from "./ajax/var/rquery";
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import location from "./ajax/var/location.js";
+import nonce from "./ajax/var/nonce.js";
+import rquery from "./ajax/var/rquery.js";
 
-import "./core/init";
-import "./ajax/parseXML";
-import "./event/trigger";
-import "./deferred";
+import "./core/init.js";
+import "./ajax/parseXML.js";
+import "./event/trigger.js";
+import "./deferred.js";
 import "./serialize"; // jQuery.param
 
 var

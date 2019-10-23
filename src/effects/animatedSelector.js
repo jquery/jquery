@@ -1,7 +1,7 @@
-import jQuery from "../core";
+import jQuery from "../core.js";
 
-import "../selector";
-import "../effects";
+import "../selector.js";
+import "../effects.js";
 
 jQuery.expr.pseudos.animated = function( elem ) {
 	return jQuery.grep( jQuery.timers, function( fn ) {

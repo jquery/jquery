@@ -1,7 +1,7 @@
-import jQuery from "./core";
-import slice from "./var/slice";
+import jQuery from "./core.js";
+import slice from "./var/slice.js";
 
-import "./callbacks";
+import "./callbacks.js";
 
 function Identity( v ) {
 	return v;

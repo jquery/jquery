@@ -1,11 +1,11 @@
-import jQuery from "../core";
-import document from "../var/document";
-import dataPriv from "../data/var/dataPriv";
-import acceptData from "../data/var/acceptData";
-import hasOwn from "../var/hasOwn";
-import isWindow from "../var/isWindow";
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import dataPriv from "../data/var/dataPriv.js";
+import acceptData from "../data/var/acceptData.js";
+import hasOwn from "../var/hasOwn.js";
+import isWindow from "../var/isWindow.js";
 
-import "../event";
+import "../event.js";
 
 var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
 	stopPropagationCallback = function( e ) {

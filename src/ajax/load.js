@@ -1,11 +1,11 @@
-import jQuery from "../core";
-import stripAndCollapse from "../core/stripAndCollapse";
+import jQuery from "../core.js";
+import stripAndCollapse from "../core/stripAndCollapse.js";
 
-import "../core/parseHTML";
-import "../ajax";
-import "../traversing";
-import "../manipulation";
-import "../selector";
+import "../core/parseHTML.js";
+import "../ajax.js";
+import "../traversing.js";
+import "../manipulation.js";
+import "../selector.js";
 
 /**
  * Load a url into a page

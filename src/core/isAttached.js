@@ -1,7 +1,7 @@
-import jQuery from "../core";
-import documentElement from "../var/documentElement";
+import jQuery from "../core.js";
+import documentElement from "../var/documentElement.js";
 
-import "../selector/contains"; // jQuery.contains
+import "../selector/contains.js"; // jQuery.contains
 
 var isAttached = function( elem ) {
 		return jQuery.contains( elem.ownerDocument, elem );

@@ -1,4 +1,4 @@
-import arr from "./arr";
+import arr from "./arr.js";
 
 // Support: IE 11+, Edge 18+
 // Provide fallback for browsers without Array#flat.

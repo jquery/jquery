@@ -1,9 +1,9 @@
-import jQuery from "../core";
-import stripAndCollapse from "../core/stripAndCollapse";
-import rnothtmlwhite from "../var/rnothtmlwhite";
-import dataPriv from "../data/var/dataPriv";
+import jQuery from "../core.js";
+import stripAndCollapse from "../core/stripAndCollapse.js";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import dataPriv from "../data/var/dataPriv.js";
 
-import "../core/init";
+import "../core/init.js";
 
 function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";

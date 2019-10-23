@@ -1,4 +1,4 @@
-import dataPriv from "../data/var/dataPriv";
+import dataPriv from "../data/var/dataPriv.js";
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {

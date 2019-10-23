@@ -1,14 +1,14 @@
-import jQuery from "./core";
-import document from "./var/document";
-import documentElement from "./var/documentElement";
-import rnothtmlwhite from "./var/rnothtmlwhite";
-import rcheckableType from "./var/rcheckableType";
-import slice from "./var/slice";
-import dataPriv from "./data/var/dataPriv";
-import nodeName from "./core/nodeName";
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import documentElement from "./var/documentElement.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import rcheckableType from "./var/rcheckableType.js";
+import slice from "./var/slice.js";
+import dataPriv from "./data/var/dataPriv.js";
+import nodeName from "./core/nodeName.js";
 
-import "./core/init";
-import "./selector";
+import "./core/init.js";
+import "./selector.js";
 
 var
 	rkeyEvent = /^key/,

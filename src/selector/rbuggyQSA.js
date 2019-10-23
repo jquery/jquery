@@ -1,5 +1,5 @@
-import document from "../var/document";
-import isIE from "../var/isIE";
+import document from "../var/document.js";
+import isIE from "../var/isIE.js";
 
 var rbuggyQSA = [],
 	testEl = document.createElement( "div" );

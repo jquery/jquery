@@ -1,17 +1,17 @@
-import jQuery from "./core";
-import nodeName from "./core/nodeName";
-import document from "./var/document";
-import documentElement from "./var/documentElement";
-import indexOf from "./var/indexOf";
-import pop from "./var/pop";
-import push from "./var/push";
-import rbuggyQSA from "./selector/rbuggyQSA";
-import support from "./selector/support";
+import jQuery from "./core.js";
+import nodeName from "./core/nodeName.js";
+import document from "./var/document.js";
+import documentElement from "./var/documentElement.js";
+import indexOf from "./var/indexOf.js";
+import pop from "./var/pop.js";
+import push from "./var/push.js";
+import rbuggyQSA from "./selector/rbuggyQSA.js";
+import support from "./selector/support.js";
 
 // The following utils are attached directly to the jQuery object.
-import "./selector/contains";
-import "./selector/escapeSelector";
-import "./selector/uniqueSort";
+import "./selector/contains.js";
+import "./selector/escapeSelector.js";
+import "./selector/uniqueSort.js";
 
 var preferredDoc = document,
 	matches = documentElement.matches || documentElement.msMatchesSelector;

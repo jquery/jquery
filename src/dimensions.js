@@ -1,8 +1,8 @@
-import jQuery from "./core";
-import access from "./core/access";
-import isWindow from "./var/isWindow";
+import jQuery from "./core.js";
+import access from "./core/access.js";
+import isWindow from "./var/isWindow.js";
 
-import "./css";
+import "./css.js";
 
 // Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
 jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {

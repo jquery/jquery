@@ -1,8 +1,8 @@
-import jQuery from "../core";
-import document from "../var/document";
+import jQuery from "../core.js";
+import document from "../var/document.js";
 
-import "../core/readyException";
-import "../deferred";
+import "../core/readyException.js";
+import "../deferred.js";
 
 // The deferred used on DOM ready
 var readyList = jQuery.Deferred();

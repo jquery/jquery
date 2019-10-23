@@ -2,21 +2,21 @@
 // Defining this global in .eslintrc.json would create a danger of using the global
 // unguarded in another place, it seems safer to define global only for this module
 
-import arr from "./var/arr";
-import getProto from "./var/getProto";
-import slice from "./var/slice";
-import flat from "./var/flat";
-import push from "./var/push";
-import indexOf from "./var/indexOf";
-import class2type from "./var/class2type";
-import toString from "./var/toString";
-import hasOwn from "./var/hasOwn";
-import fnToString from "./var/fnToString";
-import ObjectFunctionString from "./var/ObjectFunctionString";
-import support from "./var/support";
-import isWindow from "./var/isWindow";
-import DOMEval from "./core/DOMEval";
-import toType from "./core/toType";
+import arr from "./var/arr.js";
+import getProto from "./var/getProto.js";
+import slice from "./var/slice.js";
+import flat from "./var/flat.js";
+import push from "./var/push.js";
+import indexOf from "./var/indexOf.js";
+import class2type from "./var/class2type.js";
+import toString from "./var/toString.js";
+import hasOwn from "./var/hasOwn.js";
+import fnToString from "./var/fnToString.js";
+import ObjectFunctionString from "./var/ObjectFunctionString.js";
+import support from "./var/support.js";
+import isWindow from "./var/isWindow.js";
+import DOMEval from "./core/DOMEval.js";
+import toType from "./core/toType.js";
 
 var version = "@VERSION",
 

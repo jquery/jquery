@@ -1,5 +1,5 @@
-import class2type from "../var/class2type";
-import toString from "../var/toString";
+import class2type from "../var/class2type.js";
+import toString from "../var/toString.js";
 
 function toType( obj ) {
 	if ( obj == null ) {

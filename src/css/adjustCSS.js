@@ -1,6 +1,6 @@
-import jQuery from "../core";
-import isAutoPx from "./isAutoPx";
-import rcssNum from "../var/rcssNum";
+import jQuery from "../core.js";
+import isAutoPx from "./isAutoPx.js";
+import rcssNum from "../var/rcssNum.js";
 
 function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted, scale,

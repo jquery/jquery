@@ -1,8 +1,8 @@
-import jQuery from "./core";
-import dataPriv from "./data/var/dataPriv";
+import jQuery from "./core.js";
+import dataPriv from "./data/var/dataPriv.js";
 
-import "./deferred";
-import "./callbacks";
+import "./deferred.js";
+import "./callbacks.js";
 
 jQuery.extend( {
 	queue: function( elem, type, data ) {
