@@ -3,6 +3,11 @@
 
 	"extends": "../.eslintrc-browser.json",
 
+	"parserOptions": {
+		"ecmaVersion": 5,
+		"sourceType": "script"
+	},
+
 	"rules": {
 		// That is okay for the built version
 		"no-multiple-empty-lines": "off"
