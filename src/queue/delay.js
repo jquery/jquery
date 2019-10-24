@@ -16,5 +16,3 @@ jQuery.fn.delay = function( time, type ) {
 		};
 	} );
 };
-
-export default jQuery.fn.delay;
