@@ -21,7 +21,7 @@
 		{
 			"files": "global.js",
 			"globals": {
-				"noGlobal": false
+				"globalJQuery": false
 			}
 		}
 	]
