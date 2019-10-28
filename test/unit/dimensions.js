@@ -627,7 +627,14 @@ QUnit.test( "width/height on an inline element with percentage dimensions (gh-36
 	}
 );
 
-QUnit.test( "width/height on a table row with phantom borders (gh-3698)", function( assert ) {
+// Support: Firefox 70+
+// Firefox 70 & newer fail this test but the issue there is more profound - Firefox doesn't
+// subtract borders from table row computed widths.
+// See https://github.com/jquery/jquery/issues/4529
+// See https://bugzilla.mozilla.org/show_bug.cgi?id=1590837
+// See https://github.com/w3c/csswg-drafts/issues/4444
+QUnit[ /firefox/i.test( navigator.userAgent ) ? "skip" : "test" ](
+	"width/height on a table row with phantom borders (gh-3698)", function( assert ) {
 	assert.expect( 4 );
 
 	jQuery( "<table id='gh3698' style='border-collapse: separate; border-spacing: 0;'><tbody>" +
