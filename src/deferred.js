@@ -43,6 +43,9 @@ function adoptValue( value, resolve, reject, noValue ) {
 	}
 }
 
+var processQueue = [];
+var processQueueTimeout;
+
 jQuery.extend( {
 
 	Deferred: function( func ) {
@@ -182,8 +185,13 @@ jQuery.extend( {
 								},
 
 								// Only normal processors (resolve) catch and reject exceptions
+								// Exceptions in other cases should not effect the promise result
 								process = special ?
-									mightThrow :
+									function() {
+										try {
+											mightThrow();
+										} catch ( e ) {}
+									} :
 									function() {
 										try {
 											mightThrow();
@@ -211,12 +219,14 @@ jQuery.extend( {
 										}
 									};
 
+							processQueue.push( process );
+
 							// Support: Promises/A+ section 2.3.3.3.1
 							// https://promisesaplus.com/#point-57
 							// Re-resolve promises immediately to dodge false rejection from
 							// subsequent errors
 							if ( depth ) {
-								process();
+								deferredTick();
 							} else {
 
 								// Call an optional hook to record the stack, in case of exception
@@ -224,7 +234,11 @@ jQuery.extend( {
 								if ( jQuery.Deferred.getStackHook ) {
 									process.stackTrace = jQuery.Deferred.getStackHook();
 								}
-								window.setTimeout( process );
+
+								// Ensure processing has been scheduled
+								if ( !processQueueTimeout ) {
+									processQueueTimeout = window.setTimeout( deferredTick );
+								}
 							}
 						};
 					}
@@ -391,6 +405,13 @@ jQuery.extend( {
 		return master.promise();
 	}
 } );
+
+function deferredTick() {
+	processQueueTimeout = undefined;
+	jQuery.each( processQueue.splice( 0, processQueue.length ), function( _, process ) {
+		process();
+	} );
+}
 
 return jQuery;
 } );

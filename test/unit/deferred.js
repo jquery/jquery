@@ -372,6 +372,28 @@ QUnit.test( "jQuery.Deferred.then - deferred (progress)", function( assert ) {
 	} );
 } );
 
+QUnit.test( "jQuery.Deferred.then - deferred (progress) exceptions", function( assert ) {
+
+	assert.expect( 1 );
+
+	var piped1, piped2,
+		defer = jQuery.Deferred(),
+		done = assert.async();
+
+	piped1 = defer.then( null, null, function() {
+		throw new Error( "You cant see me" );
+	} );
+
+	piped2 = defer.then( null, null, function( n ) {
+		assert.strictEqual( n, 42, "Errors in previous notifiers don't stop other notify callbacks" );
+	} );
+
+	piped2.then( done );
+
+	defer.notify( 42 );
+	defer.resolve();
+} );
+
 QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - deferred (progress)", function( assert ) {
 
 	assert.expect( 3 );
