@@ -8,16 +8,18 @@
 
 module.exports = function( grunt ) {
 	const fs = require( "fs" );
+	const path = require( "path" );
 	const rollup = require( "rollup" );
 	const rollupHypothetical = require( "rollup-plugin-hypothetical" );
 	const Insight = require( "insight" );
 	const pkg = require( "../../package.json" );
-	const srcFolder = `${ __dirname }/../../src/`;
+	const srcFolder = path.resolve( `${ __dirname }/../../src` );
 	const read = function( fileName ) {
-		return grunt.file.read( `${ srcFolder }${ fileName }` );
+		return grunt.file.read( `${ srcFolder }/${ fileName }` );
 	};
+	const inputFileName = "jquery.js";
 	const inputRollupOptions = {
-		input: `${ srcFolder }jquery.js`
+		input: `${ srcFolder }/${ inputFileName }`
 	};
 	const outputRollupOptions = {
 
@@ -66,13 +68,13 @@ module.exports = function( grunt ) {
 			 */
 			const excludeList = ( list, prepend ) => {
 				if ( list ) {
-					prepend = prepend ? prepend + "/" : "";
+					prepend = prepend ? `${ prepend }/` : "";
 					list.forEach( function( module ) {
 
 						// Exclude var modules as well
 						if ( module === "var" ) {
 							excludeList(
-								fs.readdirSync( `${ srcFolder }${ prepend }${ module }` ),
+								fs.readdirSync( `${ srcFolder }/${ prepend }${ module }` ),
 								prepend + module
 							);
 							return;
@@ -124,7 +126,7 @@ module.exports = function( grunt ) {
 							// It's fine if the directory is not there
 							try {
 								excludeList(
-									fs.readdirSync( `${ srcFolder }${ module }` ),
+									fs.readdirSync( `${ srcFolder }/${ module }` ),
 									module
 								);
 							} catch ( e ) {
@@ -182,7 +184,7 @@ module.exports = function( grunt ) {
 
 			// Replace exports/global with a noop noConflict
 			if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
-				rollupHypotheticalOptions[ `${ srcFolder }exports/global.js` ] =
+				rollupHypotheticalOptions.files[ `${ srcFolder }/exports/global.js` ] =
 					"import jQuery from \"../core.js\";\n\n" +
 					"jQuery.noConflict = function() {};";
 				excluded.splice( index, 1 );
@@ -198,7 +200,7 @@ module.exports = function( grunt ) {
 				}
 
 				// Remove the comma for anonymous defines
-				rollupHypotheticalOptions[ `${ srcFolder }exports/amd.js` ] =
+				rollupHypotheticalOptions.files[ `${ srcFolder }/exports/amd.js` ] =
 					read( "exports/amd.js" )
 						.replace( /(\s*)"jquery"(\,\s*)/, amdName ? "$1\"" + amdName + "\"$2" : "" );
 			}
