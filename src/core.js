@@ -18,6 +18,7 @@ import isWindow from "./var/isWindow.js";
 import DOMEval from "./core/DOMEval.js";
 import toType from "./core/toType.js";
 
+// When custom compilation is used, the version string can get large.
 // eslint-disable-next-line max-len
 var version = "@VERSION",
 

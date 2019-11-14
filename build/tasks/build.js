@@ -231,7 +231,7 @@ module.exports = function( grunt ) {
 
 			}
 
-			// Add the explicitly included modules.
+			// Import the explicitly included modules.
 			if ( included.length ) {
 				rollupHypotheticalOptions.files[ inputRollupOptions.input ] = `${
 					rollupHypotheticalOptions.files[ inputRollupOptions.input ] ||

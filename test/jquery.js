@@ -42,10 +42,10 @@
 	// Honor AMD loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( urlParams.jsmodules && window.QUnit ) {
+
 		// Support: IE 11+, Edge 12 - 18+
 		// IE/Edge don't support the dynamic import syntax so they'd crash
 		// with a SyntaxError here.
-
 		dynamicImportSource = "" +
 			"import( `${ parentUrl }src/jquery.js` ).then( ( { default: jQuery } ) => {\n" +
 			"	window.jQuery = jQuery;\n" +
