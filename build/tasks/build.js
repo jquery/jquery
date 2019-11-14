@@ -216,13 +216,30 @@ module.exports = function( grunt ) {
 				grunt.config.set( "pkg.version", version );
 				grunt.verbose.writeln( "Version changed to " + version );
 
-				// Have to use shallow or core will get excluded since it is a dependency
-				// TODO(mgol): add support for exclusions
-//				config.excludeShallow = excluded;
+				// Replace excluded modules with empty sources.
+				for ( const module of excluded ) {
+					rollupHypotheticalOptions.files[ `${ srcFolder }/${ module }.js` ] = "";
+				}
 			}
 
-			// TODO(mgol): add support for inclusions
-//			config.include = included;
+			// Turn off opt-in if necessary
+			if ( !optIn ) {
+
+				// Remove the default inclusions, they will be overwritten with the explicitly
+				// included ones.
+				rollupHypotheticalOptions.files[ inputRollupOptions.input ] = "";
+
+			}
+
+			// Add the explicitly included modules.
+			if ( included.length ) {
+				rollupHypotheticalOptions.files[ inputRollupOptions.input ] = `${
+					rollupHypotheticalOptions.files[ inputRollupOptions.input ] ||
+						read( inputFileName )
+				}\n${
+					included.map( module => `import "./${module}.js";` ).join( "\n" )
+				}`;
+			}
 
 			const bundle = await rollup.rollup( {
 				...inputRollupOptions,
@@ -248,28 +265,8 @@ module.exports = function( grunt ) {
 				);
 
 			grunt.file.write( name, compiledContents );
-
+			grunt.log.ok( "File '" + name + "' created." );
 			done();
-
-			// Turn off opt-in if necessary
-			if ( !optIn ) {
-
-				// TODO(mgol): port the following code
-//				// Overwrite the default inclusions with the explicit ones provided
-//				config.rawText.jquery = "define([" +
-//					( included.length ? included.join( "," ) : "" ) +
-//				"]);";
-			}
-
-			// TODO(mgol): port the following code
-//			// Trace dependencies and concatenate files
-//			requirejs.optimize( config, function( response ) {
-//				grunt.verbose.writeln( response );
-//				grunt.log.ok( "File '" + name + "' created." );
-//				done();
-//			}, function( err ) {
-//				done( err );
-//			} );
 		} catch ( err ) {
 			done( err );
 		}
