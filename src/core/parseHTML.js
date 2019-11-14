@@ -48,5 +48,3 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 
 	return jQuery.merge( [], parsed.childNodes );
 };
-
-export default jQuery.parseHTML;

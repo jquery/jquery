@@ -5,6 +5,7 @@ import "./traversing.js";
 import "./callbacks.js";
 import "./deferred.js";
 import "./deferred/exceptionHook.js";
+import "./core/parseHTML.js";
 import "./core/ready.js";
 import "./data.js";
 import "./queue.js";
