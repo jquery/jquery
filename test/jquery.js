@@ -26,7 +26,7 @@
 		// test loading in Karma.
 		if ( !window.__karma__ ) {
 			QUnit.config.urlConfig.push( {
-				id: "jsmodules",
+				id: "esmodules",
 				label: "Load as modules",
 				tooltip: "Load a relevant jQuery module file (and its dependencies)"
 			} );
@@ -41,7 +41,7 @@
 
 	// Honor AMD loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
-	if ( urlParams.jsmodules && window.QUnit ) {
+	if ( urlParams.esmodules && window.QUnit ) {
 
 		// Support: IE 11+, Edge 12 - 18+
 		// IE/Edge don't support the dynamic import syntax so they'd crash
