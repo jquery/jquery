@@ -17,6 +17,12 @@ module.exports = function( grunt ) {
 	const read = function( fileName ) {
 		return grunt.file.read( `${ srcFolder }/${ fileName }` );
 	};
+
+	// Catch `// @CODE` and subsequent comment lines event if they don't start
+	// in the first column.
+	const wrapper = read( "wrapper.js" )
+		.split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
+
 	const inputFileName = "jquery.js";
 	const inputRollupOptions = {
 		input: `${ srcFolder }/${ inputFileName }`
@@ -24,23 +30,20 @@ module.exports = function( grunt ) {
 	const outputRollupOptions = {
 
 		// The ESM format is not actually used as we strip it during
-		// the build; it's just that it's easier to cut out one export
-		// than to unwrap an AMD define call.
-		format: "esm"
+		// the build; it's just that it doesn't generate any extra
+		// wrappers so there's nothing for us to remove.
+		format: "esm",
+
+		intro: wrapper[ 0 ]
+			.replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" )
+			.replace( /\n*$/, "" ),
+		outro: wrapper[ 1 ]
+			.replace( /^\n*/, "" )
 	};
 	const rollupHypotheticalOptions = {
 		allowFallthrough: true,
 		files: {}
 	};
-
-	// Catch `// @CODE` and subsequent comment lines event if they don't start
-	// in the first column.
-	const wrapper = read( "wrapper.js" )
-		.split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
-
-	const wrapStart = wrapper[ 0 ]
-		.replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" );
-	const wrapEnd = wrapper[ 1 ];
 
 	grunt.registerMultiTask(
 		"build",
@@ -156,7 +159,7 @@ module.exports = function( grunt ) {
 			// Filename can be passed to the command line using
 			// command line options
 			// e.g. grunt build --filename=jquery-custom.js
-			name = name ? ( "dist/" + name ) : this.data.dest;
+			name = name ? `dist/${ name }` : this.data.dest;
 
 			// append commit id to version
 			if ( process.env.COMMIT ) {
@@ -181,6 +184,11 @@ module.exports = function( grunt ) {
 			for ( flag in flags ) {
 				excluder( flag );
 			}
+
+			// Remove the jQuery export from the entry file, we'll use our own
+			// custom wrapper.
+			rollupHypotheticalOptions.files[ inputRollupOptions.input ] = read( inputFileName )
+				.replace( /\n*export default jQuery;\n*/, "\n" );
 
 			// Replace exports/global with a noop noConflict
 			if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
@@ -233,12 +241,9 @@ module.exports = function( grunt ) {
 
 			// Import the explicitly included modules.
 			if ( included.length ) {
-				rollupHypotheticalOptions.files[ inputRollupOptions.input ] = `${
-					rollupHypotheticalOptions.files[ inputRollupOptions.input ] ||
-						read( inputFileName )
-				}\n${
-					included.map( module => `import "./${module}.js";` ).join( "\n" )
-				}`;
+				rollupHypotheticalOptions.files[ inputRollupOptions.input ] += included
+					.map( module => `import "./${module}.js";` )
+					.join( "\n" );
 			}
 
 			const bundle = await rollup.rollup( {
@@ -248,10 +253,7 @@ module.exports = function( grunt ) {
 
 			const { output: [ { code } ] } = await bundle.generate( outputRollupOptions );
 
-			const compiledContents = `${ wrapStart }${ code }${ wrapEnd }`
-
-				// Remove the ES module export
-				.replace( /\nexport default jQuery;\n/, "" )
+			const compiledContents = code
 
 				// Embed Version
 				.replace( /@VERSION/g, version )
