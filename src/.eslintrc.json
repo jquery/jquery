@@ -15,6 +15,9 @@
 				"ecmaVersion": 5,
 				"sourceType": "script"
 			},
+			"rules": {
+				"no-unused-vars": "off"
+			},
 			"globals": {
 				"jQuery": false
 			}
@@ -23,7 +26,18 @@
 		{
 			"files": "global.js",
 			"globals": {
-				"globalJQuery": false
+				"noGlobal": false
+			}
+		},
+
+		{
+			"files": "core.js",
+			"globals": {
+
+				// Defining Symbol globally would create a danger of using
+				// it unguarded in another place, it seems safer to define
+				// it only for this module.
+				"Symbol": false
 			}
 		}
 	]

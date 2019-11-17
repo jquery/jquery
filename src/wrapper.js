@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars*/
 /*!
  * jQuery JavaScript Library v@VERSION
  * https://jquery.com/
@@ -23,19 +22,19 @@
 		// e.g. var jQuery = require("jquery")(window);
 		// See ticket #14549 for more info.
 		module.exports = global.document ?
-			factory( global ) :
+			factory( global, true ) :
 			function( w ) {
 				if ( !w.document ) {
 					throw new Error( "jQuery requires a window with a document" );
 				}
-				return factory( w, true );
+				return factory( w );
 			};
 	} else {
-		factory( global, true );
+		factory( global );
 	}
 
 // Pass this if window is not defined yet
-} )( typeof window !== "undefined" ? window : this, function( window, globalJQuery ) {
+} )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
 "use strict";
 

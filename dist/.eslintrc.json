@@ -11,5 +11,9 @@
 	"rules": {
 		// That is okay for the built version
 		"no-multiple-empty-lines": "off"
+	},
+
+	"globals": {
+		"Symbol": false
 	}
 }

@@ -35,7 +35,6 @@ module.exports = function( grunt ) {
 		format: "esm",
 
 		intro: wrapper[ 0 ]
-			.replace( /\/\*\s*eslint(?: |-).*\s*\*\/\n/, "" )
 			.replace( /\n*$/, "" ),
 		outro: wrapper[ 1 ]
 			.replace( /^\n*/, "" )

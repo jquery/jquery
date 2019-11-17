@@ -1,7 +1,3 @@
-/* global Symbol */
-// Defining this global in .eslintrc.json would create a danger of using the global
-// unguarded in another place, it seems safer to define global only for this module
-
 import arr from "./var/arr.js";
 import getProto from "./var/getProto.js";
 import slice from "./var/slice.js";
