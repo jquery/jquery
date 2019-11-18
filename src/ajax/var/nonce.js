@@ -1,1 +1,1 @@
-export default { nonce: Date.now() };
+export default { guid: Date.now() };
