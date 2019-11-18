@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return window.location;
-} );
+export default window.location;

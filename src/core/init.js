@@ -1,13 +1,9 @@
 // Initialize a jQuery object
-define( [
-	"../core",
-	"../var/document",
-	"./var/rsingleTag",
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import rsingleTag from "./var/rsingleTag.js";
 
-	"../traversing/findFilter"
-], function( jQuery, document, rsingleTag ) {
-
-"use strict";
+import "../traversing/findFilter.js";
 
 // A central reference to the root jQuery(document)
 var rootjQuery,
@@ -123,6 +119,4 @@ init.prototype = jQuery.fn;
 // Initialize central reference
 rootjQuery = jQuery( document );
 
-return init;
-
-} );
+export default init;

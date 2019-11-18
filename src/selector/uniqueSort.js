@@ -1,10 +1,6 @@
-define( [
-	"../core",
-	"../var/document",
-	"../var/sort"
-], function( jQuery, document, sort ) {
-
-"use strict";
+import jQuery from "../core.js";
+import document from "../var/document.js";
+import sort from "../var/sort.js";
 
 var hasDuplicate;
 
@@ -90,5 +86,3 @@ jQuery.uniqueSort = function( results ) {
 
 	return results;
 };
-
-} );

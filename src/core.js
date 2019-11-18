@@ -1,29 +1,21 @@
-/* global Symbol */
-// Defining this global in .eslintrc.json would create a danger of using the global
-// unguarded in another place, it seems safer to define global only for this module
+import arr from "./var/arr.js";
+import getProto from "./var/getProto.js";
+import slice from "./var/slice.js";
+import flat from "./var/flat.js";
+import push from "./var/push.js";
+import indexOf from "./var/indexOf.js";
+import class2type from "./var/class2type.js";
+import toString from "./var/toString.js";
+import hasOwn from "./var/hasOwn.js";
+import fnToString from "./var/fnToString.js";
+import ObjectFunctionString from "./var/ObjectFunctionString.js";
+import support from "./var/support.js";
+import isWindow from "./var/isWindow.js";
+import DOMEval from "./core/DOMEval.js";
+import toType from "./core/toType.js";
 
-define( [
-	"./var/arr",
-	"./var/getProto",
-	"./var/slice",
-	"./var/flat",
-	"./var/push",
-	"./var/indexOf",
-	"./var/class2type",
-	"./var/toString",
-	"./var/hasOwn",
-	"./var/fnToString",
-	"./var/ObjectFunctionString",
-	"./var/support",
-	"./var/isWindow",
-	"./core/DOMEval",
-	"./core/toType"
-], function( arr, getProto, slice, flat, push, indexOf,
-	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, isWindow, DOMEval, toType ) {
-
-"use strict";
-
+// When custom compilation is used, the version string can get large.
+// eslint-disable-next-line max-len
 var version = "@VERSION",
 
 	rhtmlSuffix = /HTML$/i,
@@ -431,5 +423,4 @@ function isArrayLike( obj ) {
 		typeof length === "number" && length > 0 && ( length - 1 ) in obj;
 }
 
-return jQuery;
-} );
+export default jQuery;

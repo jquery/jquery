@@ -1,12 +1,9 @@
-define( [
-	"../core",
-	"../core/stripAndCollapse",
-	"../var/rnothtmlwhite",
-	"../data/var/dataPriv",
-	"../core/init"
-], function( jQuery, stripAndCollapse, rnothtmlwhite, dataPriv ) {
+import jQuery from "../core.js";
+import stripAndCollapse from "../core/stripAndCollapse.js";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import dataPriv from "../data/var/dataPriv.js";
 
-"use strict";
+import "../core/init.js";
 
 function getClass( elem ) {
 	return elem.getAttribute && elem.getAttribute( "class" ) || "";
@@ -180,6 +177,4 @@ jQuery.fn.extend( {
 
 		return false;
 	}
-} );
-
 } );

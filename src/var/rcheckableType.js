@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return ( /^(?:checkbox|radio)$/i );
-} );
+export default ( /^(?:checkbox|radio)$/i );

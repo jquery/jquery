@@ -1,11 +1,8 @@
-define( [
-	"./core",
-	"./core/init",
-	"./manipulation", // clone
-	"./traversing" // parent, contents
-], function( jQuery ) {
+import jQuery from "./core.js";
 
-"use strict";
+import "./core/init.js";
+import "./manipulation.js"; // clone
+import "./traversing.js"; // parent, contents
 
 jQuery.fn.extend( {
 	wrapAll: function( html ) {
@@ -73,5 +70,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

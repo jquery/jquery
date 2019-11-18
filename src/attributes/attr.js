@@ -1,13 +1,10 @@
-define( [
-	"../core",
-	"../core/access",
-	"../core/nodeName",
-	"../var/rnothtmlwhite",
-	"../var/isIE",
-	"../selector"
-], function( jQuery, access, nodeName, rnothtmlwhite, isIE ) {
+import jQuery from "../core.js";
+import access from "../core/access.js";
+import nodeName from "../core/nodeName.js";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import isIE from "../var/isIE.js";
 
-"use strict";
+import "../selector.js";
 
 jQuery.fn.extend( {
 	attr: function( name, value ) {
@@ -127,6 +124,4 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name )
 			return name;
 		}
 	};
-} );
-
 } );

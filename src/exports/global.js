@@ -1,8 +1,4 @@
-define( [
-	"../core"
-], function( jQuery, noGlobal ) {
-
-"use strict";
+import jQuery from "../core.js";
 
 var
 
@@ -27,8 +23,6 @@ jQuery.noConflict = function( deep ) {
 // Expose jQuery and $ identifiers, even in AMD
 // (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 // and CommonJS for browser emulators (#13566)
-if ( !noGlobal ) {
+if ( typeof noGlobal === "undefined" ) {
 	window.jQuery = window.$ = jQuery;
 }
-
-} );

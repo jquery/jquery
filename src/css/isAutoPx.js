@@ -1,7 +1,3 @@
-define( function() {
-
-"use strict";
-
 var ralphaStart = /^[a-z]/,
 
 	// The regex visualized:
@@ -36,6 +32,4 @@ function isAutoPx( prop ) {
 		rautoPx.test( prop[ 0 ].toUpperCase() + prop.slice( 1 ) );
 };
 
-return isAutoPx;
-
-} );
+export default isAutoPx;

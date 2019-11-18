@@ -300,7 +300,7 @@ QUnit.testUnlessIE = QUnit.isIE ? QUnit.skip : QUnit.test;
 this.loadTests = function() {
 
 	// Directly load tests that need synchronous evaluation
-	if ( !QUnit.urlParams.amd || document.readyState === "loading" ) {
+	if ( !QUnit.urlParams.esmodules || document.readyState === "loading" ) {
 		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {

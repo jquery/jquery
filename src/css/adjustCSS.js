@@ -1,10 +1,6 @@
-define( [
-	"../core",
-	"./isAutoPx",
-	"../var/rcssNum"
-], function( jQuery, isAutoPx, rcssNum ) {
-
-"use strict";
+import jQuery from "../core.js";
+import isAutoPx from "./isAutoPx.js";
+import rcssNum from "../var/rcssNum.js";
 
 function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted, scale,
@@ -71,5 +67,4 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 	return adjusted;
 }
 
-return adjustCSS;
-} );
+export default adjustCSS;

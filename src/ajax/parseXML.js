@@ -1,8 +1,4 @@
-define( [
-	"../core"
-], function( jQuery ) {
-
-"use strict";
+import jQuery from "../core.js";
 
 // Cross-browser xml parsing
 jQuery.parseXML = function( data ) {
@@ -25,6 +21,4 @@ jQuery.parseXML = function( data ) {
 	return xml;
 };
 
-return jQuery.parseXML;
-
-} );
+export default jQuery.parseXML;

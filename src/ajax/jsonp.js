@@ -1,11 +1,8 @@
-define( [
-	"../core",
-	"./var/nonce",
-	"./var/rquery",
-	"../ajax"
-], function( jQuery, nonce, rquery ) {
+import jQuery from "../core.js";
+import nonce from "./var/nonce.js";
+import rquery from "./var/rquery.js";
 
-"use strict";
+import "../ajax.js";
 
 var oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
@@ -14,7 +11,7 @@ var oldCallbacks = [],
 jQuery.ajaxSetup( {
 	jsonp: "callback",
 	jsonpCallback: function() {
-		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce++ ) );
+		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce.guid++ ) );
 		this[ callback ] = true;
 		return callback;
 	}
@@ -97,6 +94,4 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		// Delegate to script
 		return "script";
 	}
-} );
-
 } );

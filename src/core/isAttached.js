@@ -1,23 +1,20 @@
-define( [
-	"../core",
-	"../var/documentElement",
-	"../selector/contains" // jQuery.contains
-], function( jQuery, documentElement ) {
-	"use strict";
+import jQuery from "../core.js";
+import documentElement from "../var/documentElement.js";
 
-	var isAttached = function( elem ) {
-			return jQuery.contains( elem.ownerDocument, elem );
-		},
-		composed = { composed: true };
+import "../selector/contains.js"; // jQuery.contains
 
-	// Support: IE 9 - 11+, Edge 12 - 18+
-	// Check attachment across shadow DOM boundaries when possible (gh-3504)
-	if ( documentElement.getRootNode ) {
-		isAttached = function( elem ) {
-			return jQuery.contains( elem.ownerDocument, elem ) ||
-				elem.getRootNode( composed ) === elem.ownerDocument;
-		};
-	}
+var isAttached = function( elem ) {
+		return jQuery.contains( elem.ownerDocument, elem );
+	},
+	composed = { composed: true };
 
-	return isAttached;
-} );
+// Support: IE 9 - 11+, Edge 12 - 18+
+// Check attachment across shadow DOM boundaries when possible (gh-3504)
+if ( documentElement.getRootNode ) {
+	isAttached = function( elem ) {
+		return jQuery.contains( elem.ownerDocument, elem ) ||
+			elem.getRootNode( composed ) === elem.ownerDocument;
+	};
+}
+
+export default isAttached;

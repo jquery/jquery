@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return Date.now();
-} );
+export default { guid: Date.now() };

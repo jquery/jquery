@@ -1,8 +1,4 @@
-define( [
-	"../var/document"
-], function( document ) {
-
-"use strict";
+import document from "../var/document.js";
 
 var cssPrefixes = [ "Webkit", "Moz", "ms" ],
 	emptyStyle = document.createElement( "div" ).style,
@@ -36,6 +32,4 @@ function finalPropName( name ) {
 	return vendorProps[ name ] = vendorPropName( name ) || name;
 }
 
-return finalPropName;
-
-} );
+export default finalPropName;

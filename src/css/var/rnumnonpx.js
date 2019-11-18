@@ -1,7 +1,3 @@
-define( [
-	"../../var/pnum"
-], function( pnum ) {
-	"use strict";
+import pnum from "../../var/pnum.js";
 
-	return new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
-} );
+export default new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );

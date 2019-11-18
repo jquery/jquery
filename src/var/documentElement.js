@@ -1,7 +1,3 @@
-define( [
-	"./document"
-], function( document ) {
-	"use strict";
+import document from "./document.js";
 
-	return document.documentElement;
-} );
+export default document.documentElement;

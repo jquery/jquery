@@ -1,7 +1,3 @@
-define( [], function() {
-
-"use strict";
-
 // Matches dashed string for camelizing
 var rdashAlpha = /-([a-z])/g;
 
@@ -15,6 +11,4 @@ function camelCase( string ) {
 	return string.replace( rdashAlpha, fcamelCase );
 }
 
-return camelCase;
-
-} );
+export default camelCase;

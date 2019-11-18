@@ -1,11 +1,8 @@
-define( [
-	"../core",
-	"../var/indexOf",
-	"./var/rneedsContext",
-	"../selector"
-], function( jQuery, indexOf, rneedsContext ) {
+import jQuery from "../core.js";
+import indexOf from "../var/indexOf.js";
+import rneedsContext from "./var/rneedsContext.js";
 
-"use strict";
+import "../selector.js";
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
@@ -91,6 +88,4 @@ jQuery.fn.extend( {
 			false
 		).length;
 	}
-} );
-
 } );

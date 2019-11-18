@@ -1,7 +1,3 @@
-define( [
-	"./hasOwn"
-], function( hasOwn ) {
-	"use strict";
+import hasOwn from "./hasOwn.js";
 
-	return hasOwn.toString;
-} );
+export default hasOwn.toString;

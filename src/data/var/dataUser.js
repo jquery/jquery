@@ -1,7 +1,3 @@
-define( [
-	"../Data"
-], function( Data ) {
-	"use strict";
+import Data from "../Data.js";
 
-	return new Data();
-} );
+export default new Data();

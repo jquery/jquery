@@ -1,5 +1,1 @@
-define( function() {
-	"use strict";
-
-	return window.document;
-} );
+export default window.document;

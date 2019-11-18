@@ -1,14 +1,11 @@
-define( [
-	"./core",
-	"./core/access",
-	"./var/documentElement",
-	"./var/isWindow",
-	"./core/init",
-	"./css",
-	"./selector" // contains
-], function( jQuery, access, documentElement, isWindow ) {
+import jQuery from "./core.js";
+import access from "./core/access.js";
+import documentElement from "./var/documentElement.js";
+import isWindow from "./var/isWindow.js";
 
-"use strict";
+import "./core/init.js";
+import "./css.js";
+import "./selector.js"; // contains
 
 jQuery.offset = {
 	setOffset: function( elem, options, i ) {
@@ -201,5 +198,4 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 	};
 } );
 
-return jQuery;
-} );
+export default jQuery;

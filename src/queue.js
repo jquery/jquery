@@ -1,11 +1,8 @@
-define( [
-	"./core",
-	"./data/var/dataPriv",
-	"./deferred",
-	"./callbacks"
-], function( jQuery, dataPriv ) {
+import jQuery from "./core.js";
+import dataPriv from "./data/var/dataPriv.js";
 
-"use strict";
+import "./deferred.js";
+import "./callbacks.js";
 
 jQuery.extend( {
 	queue: function( elem, type, data ) {
@@ -141,5 +138,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

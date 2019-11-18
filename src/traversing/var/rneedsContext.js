@@ -1,8 +1,5 @@
-define( [
-	"../../core",
-	"../../selector"
-], function( jQuery ) {
-	"use strict";
+import jQuery from "../../core.js";
 
-	return jQuery.expr.match.needsContext;
-} );
+import "../../selector.js";
+
+export default jQuery.expr.match.needsContext;

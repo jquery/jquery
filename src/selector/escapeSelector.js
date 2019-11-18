@@ -1,8 +1,4 @@
-define( [
-	"../core"
-], function( jQuery ) {
-
-"use strict";
+import jQuery from "../core.js";
 
 // CSS string/identifier serialization
 // https://drafts.csswg.org/cssom/#common-serializing-idioms
@@ -27,5 +23,3 @@ function fcssescape( ch, asCodePoint ) {
 jQuery.escapeSelector = function( sel ) {
 	return ( sel + "" ).replace( rcssescape, fcssescape );
 };
-
-} );

@@ -1,39 +1,35 @@
-define( [
-	"./core",
-	"./selector",
-	"./traversing",
-	"./callbacks",
-	"./deferred",
-	"./deferred/exceptionHook",
-	"./core/ready",
-	"./data",
-	"./queue",
-	"./queue/delay",
-	"./attributes",
-	"./event",
-	"./manipulation",
-	"./manipulation/_evalUrl",
-	"./wrap",
-	"./css",
-	"./css/hiddenVisibleSelectors",
-	"./serialize",
-	"./ajax",
-	"./ajax/xhr",
-	"./ajax/script",
-	"./ajax/jsonp",
-	"./ajax/load",
-	"./event/ajax",
-	"./effects",
-	"./effects/animatedSelector",
-	"./offset",
-	"./dimensions",
-	"./deprecated",
-	"./exports/amd",
-	"./exports/global"
-], function( jQuery ) {
+import jQuery from "./core.js";
 
-"use strict";
+import "./selector.js";
+import "./traversing.js";
+import "./callbacks.js";
+import "./deferred.js";
+import "./deferred/exceptionHook.js";
+import "./core/ready.js";
+import "./data.js";
+import "./queue.js";
+import "./queue/delay.js";
+import "./attributes.js";
+import "./event.js";
+import "./manipulation.js";
+import "./manipulation/_evalUrl.js";
+import "./wrap.js";
+import "./css.js";
+import "./css/hiddenVisibleSelectors.js";
+import "./serialize.js";
+import "./ajax.js";
+import "./ajax/xhr.js";
+import "./ajax/script.js";
+import "./ajax/jsonp.js";
+import "./core/parseHTML.js";
+import "./ajax/load.js";
+import "./event/ajax.js";
+import "./effects.js";
+import "./effects/animatedSelector.js";
+import "./offset.js";
+import "./dimensions.js";
+import "./deprecated.js";
+import "./exports/amd.js";
+import "./exports/global.js";
 
-return jQuery;
-
-} );
+export default jQuery;

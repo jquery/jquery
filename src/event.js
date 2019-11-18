@@ -1,19 +1,14 @@
-define( [
-	"./core",
-	"./var/document",
-	"./var/documentElement",
-	"./var/rnothtmlwhite",
-	"./var/rcheckableType",
-	"./var/slice",
-	"./data/var/dataPriv",
-	"./core/nodeName",
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import documentElement from "./var/documentElement.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import rcheckableType from "./var/rcheckableType.js";
+import slice from "./var/slice.js";
+import dataPriv from "./data/var/dataPriv.js";
+import nodeName from "./core/nodeName.js";
 
-	"./core/init",
-	"./selector"
-], function( jQuery, document, documentElement, rnothtmlwhite,
-	rcheckableType, slice, dataPriv, nodeName ) {
-
-"use strict";
+import "./core/init.js";
+import "./selector.js";
 
 var
 	rkeyEvent = /^key/,
@@ -857,5 +852,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return jQuery;
-} );
+export default jQuery;

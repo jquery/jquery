@@ -1,9 +1,5 @@
-define( [
-	"../core",
-	"../var/document"
-], function( jQuery, document ) {
-
-"use strict";
+import jQuery from "../core.js";
+import document from "../var/document.js";
 
 var readyCallbacks = [],
 	whenReady = function( fn ) {
@@ -89,5 +85,3 @@ if ( document.readyState !== "loading" ) {
 	// A fallback to window.onload, that will always work
 	window.addEventListener( "load", completed );
 }
-
-} );

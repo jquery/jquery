@@ -1,15 +1,11 @@
-define( [
-	"../core",
-	"../core/toType",
-	"../core/isAttached",
-	"./var/rtagName",
-	"./var/rscriptType",
-	"./wrapMap",
-	"./getAll",
-	"./setGlobalEval"
-], function( jQuery, toType, isAttached, rtagName, rscriptType, wrapMap, getAll, setGlobalEval ) {
-
-"use strict";
+import jQuery from "../core.js";
+import toType from "../core/toType.js";
+import isAttached from "../core/isAttached.js";
+import rtagName from "./var/rtagName.js";
+import rscriptType from "./var/rscriptType.js";
+import wrapMap from "./wrapMap.js";
+import getAll from "./getAll.js";
+import setGlobalEval from "./setGlobalEval.js";
 
 var rhtml = /<|&#?\w+;/;
 
@@ -97,5 +93,4 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 	return fragment;
 }
 
-return buildFragment;
-} );
+export default buildFragment;

@@ -1,10 +1,6 @@
-define( [
-	"../core",
-	"../data/var/dataPriv",
-	"../css/var/isHiddenWithinTree"
-], function( jQuery, dataPriv, isHiddenWithinTree ) {
-
-"use strict";
+import jQuery from "../core.js";
+import dataPriv from "../data/var/dataPriv.js";
+import isHiddenWithinTree from "../css/var/isHiddenWithinTree.js";
 
 var defaultDisplayMap = {};
 
@@ -101,5 +97,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-return showHide;
-} );
+export default showHide;

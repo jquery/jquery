@@ -15,9 +15,7 @@
 	"env": {},
 
 	"globals": {
-		"window": true,
-		"define": true,
-		"module": true
+		"window": true
 	},
 
 	"rules": {

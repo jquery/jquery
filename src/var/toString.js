@@ -1,7 +1,3 @@
-define( [
-	"./class2type"
-], function( class2type ) {
-	"use strict";
+import class2type from "./class2type.js";
 
-	return class2type.toString;
-} );
+export default class2type.toString;

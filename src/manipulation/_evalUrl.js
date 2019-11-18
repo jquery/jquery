@@ -1,8 +1,4 @@
-define( [
-	"../ajax"
-], function( jQuery ) {
-
-"use strict";
+import jQuery from "../ajax.js";
 
 jQuery._evalUrl = function( url, options ) {
 	return jQuery.ajax( {
@@ -27,6 +23,4 @@ jQuery._evalUrl = function( url, options ) {
 	} );
 };
 
-return jQuery._evalUrl;
-
-} );
+export default jQuery._evalUrl;

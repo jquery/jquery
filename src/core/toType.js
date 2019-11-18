@@ -1,9 +1,5 @@
-define( [
-	"../var/class2type",
-	"../var/toString"
-], function( class2type, toString ) {
-
-"use strict";
+import class2type from "../var/class2type.js";
+import toString from "../var/toString.js";
 
 function toType( obj ) {
 	if ( obj == null ) {
@@ -15,5 +11,4 @@ function toType( obj ) {
 		typeof obj;
 }
 
-return toType;
-} );
+export default toType;

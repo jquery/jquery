@@ -1,19 +1,15 @@
-define( [
-	"./core",
-	"./var/document",
-	"./var/rnothtmlwhite",
-	"./ajax/var/location",
-	"./ajax/var/nonce",
-	"./ajax/var/rquery",
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import location from "./ajax/var/location.js";
+import nonce from "./ajax/var/nonce.js";
+import rquery from "./ajax/var/rquery.js";
 
-	"./core/init",
-	"./ajax/parseXML",
-	"./event/trigger",
-	"./deferred",
-	"./serialize" // jQuery.param
-], function( jQuery, document, rnothtmlwhite, location, nonce, rquery ) {
-
-"use strict";
+import "./core/init.js";
+import "./ajax/parseXML.js";
+import "./event/trigger.js";
+import "./deferred.js";
+import "./serialize"; // jQuery.param
 
 var
 	r20 = /%20/g,
@@ -615,7 +611,8 @@ jQuery.extend( {
 			// Add or update anti-cache param if needed
 			if ( s.cache === false ) {
 				cacheURL = cacheURL.replace( rantiCache, "$1" );
-				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" + ( nonce++ ) + uncached;
+				uncached = ( rquery.test( cacheURL ) ? "&" : "?" ) + "_=" +
+					( nonce.guid++ ) + uncached;
 			}
 
 			// Put hash and anti-cache on the URL that will be requested (gh-1732)
@@ -864,5 +861,4 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 	};
 } );
 
-return jQuery;
-} );
+export default jQuery;

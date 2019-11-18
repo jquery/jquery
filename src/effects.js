@@ -1,26 +1,21 @@
-define( [
-	"./core",
-	"./var/document",
-	"./var/rcssNum",
-	"./var/rnothtmlwhite",
-	"./css/var/cssExpand",
-	"./css/var/isHiddenWithinTree",
-	"./css/adjustCSS",
-	"./css/cssCamelCase",
-	"./data/var/dataPriv",
-	"./css/showHide",
+import jQuery from "./core.js";
+import document from "./var/document.js";
+import rcssNum from "./var/rcssNum.js";
+import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import cssExpand from "./css/var/cssExpand.js";
+import isHiddenWithinTree from "./css/var/isHiddenWithinTree.js";
+import adjustCSS from "./css/adjustCSS.js";
+import cssCamelCase from "./css/cssCamelCase.js";
+import dataPriv from "./data/var/dataPriv.js";
+import showHide from "./css/showHide.js";
 
-	"./core/init",
-	"./queue",
-	"./deferred",
-	"./traversing",
-	"./manipulation",
-	"./css",
-	"./effects/Tween"
-], function( jQuery, document, rcssNum, rnothtmlwhite, cssExpand,
-	isHiddenWithinTree, adjustCSS, cssCamelCase, dataPriv, showHide ) {
-
-"use strict";
+import "./core/init.js";
+import "./queue.js";
+import "./deferred.js";
+import "./traversing.js";
+import "./manipulation.js";
+import "./css.js";
+import "./effects/Tween.js";
 
 var
 	fxNow, inProgress,
@@ -225,11 +220,8 @@ function defaultPrefilter( elem, props, opts ) {
 				showHide( [ elem ], true );
 			}
 
-			/* eslint-disable no-loop-func */
-
+			// eslint-disable-next-line no-loop-func
 			anim.done( function() {
-
-			/* eslint-enable no-loop-func */
 
 				// The final step of a "hide" animation is actually hiding the element
 				if ( !hidden ) {
@@ -693,5 +685,4 @@ jQuery.fx.speeds = {
 	_default: 400
 };
 
-return jQuery;
-} );
+export default jQuery;

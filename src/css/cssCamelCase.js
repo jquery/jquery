@@ -1,8 +1,4 @@
-define( [
-	"../core/camelCase"
-], function( camelCase ) {
-
-"use strict";
+import camelCase from "../core/camelCase.js";
 
 // Matches dashed string for camelizing
 var rmsPrefix = /^-ms-/;
@@ -15,6 +11,4 @@ function cssCamelCase( string ) {
 	return camelCase( string.replace( rmsPrefix, "ms-" ) );
 }
 
-return cssCamelCase;
-
-} );
+export default cssCamelCase;

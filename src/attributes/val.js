@@ -1,12 +1,8 @@
-define( [
-	"../core",
-	"../core/stripAndCollapse",
-	"../core/nodeName",
+import jQuery from "../core.js";
+import stripAndCollapse from "../core/stripAndCollapse.js";
+import nodeName from "../core/nodeName.js";
 
-	"../core/init"
-], function( jQuery, stripAndCollapse, nodeName ) {
-
-"use strict";
+import "../core/init.js";
 
 var rreturn = /\r/g;
 
@@ -147,15 +143,11 @@ jQuery.extend( {
 				while ( i-- ) {
 					option = options[ i ];
 
-					/* eslint-disable no-cond-assign */
-
-					if ( option.selected =
+					if ( ( option.selected =
 						jQuery.inArray( jQuery.valHooks.option.get( option ), values ) > -1
-					) {
+					) ) {
 						optionSet = true;
 					}
-
-					/* eslint-enable no-cond-assign */
 				}
 
 				// Force browsers to behave consistently when non-matching value is set
@@ -177,6 +169,4 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-} );
-
 } );

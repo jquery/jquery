@@ -1,12 +1,8 @@
-define( [
-	"../core",
-	"../css/isAutoPx",
-	"../css/finalPropName",
+import jQuery from "../core.js";
+import isAutoPx from "../css/isAutoPx.js";
+import finalPropName from "../css/finalPropName.js";
 
-	"../css"
-], function( jQuery, isAutoPx, finalPropName ) {
-
-"use strict";
+import "../css.js";
 
 function Tween( elem, options, prop, end, easing ) {
 	return new Tween.prototype.init( elem, options, prop, end, easing );
@@ -112,5 +108,3 @@ jQuery.fx = Tween.prototype.init;
 
 // Back compat <1.8 extension point
 jQuery.fx.step = {};
-
-} );

@@ -1,14 +1,10 @@
-define( [
-	"../var/rnothtmlwhite"
-], function( rnothtmlwhite ) {
-	"use strict";
+import rnothtmlwhite from "../var/rnothtmlwhite.js";
 
-	// Strip and collapse whitespace according to HTML spec
-	// https://infra.spec.whatwg.org/#strip-and-collapse-ascii-whitespace
-	function stripAndCollapse( value ) {
-		var tokens = value.match( rnothtmlwhite ) || [];
-		return tokens.join( " " );
-	}
+// Strip and collapse whitespace according to HTML spec
+// https://infra.spec.whatwg.org/#strip-and-collapse-ascii-whitespace
+function stripAndCollapse( value ) {
+	var tokens = value.match( rnothtmlwhite ) || [];
+	return tokens.join( " " );
+}
 
-	return stripAndCollapse;
-} );
+export default stripAndCollapse;

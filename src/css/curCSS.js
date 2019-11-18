@@ -1,10 +1,6 @@
-define( [
-	"../core",
-	"../core/isAttached",
-	"./var/getStyles"
-], function( jQuery, isAttached, getStyles ) {
-
-"use strict";
+import jQuery from "../core.js";
+import isAttached from "../core/isAttached.js";
+import getStyles from "./var/getStyles.js";
 
 function curCSS( elem, name, computed ) {
 	var ret;
@@ -28,5 +24,4 @@ function curCSS( elem, name, computed ) {
 		ret;
 }
 
-return curCSS;
-} );
+export default curCSS;

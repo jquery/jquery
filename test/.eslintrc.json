@@ -63,6 +63,16 @@
 			"parserOptions": {
 				"ecmaVersion": 2015
 			}
+		},
+
+		{
+			"files": [
+				"jquery.js",
+				"data/testinit.js"
+			],
+			"parserOptions": {
+				"ecmaVersion": 2020
+			}
 		}
 	]
 }

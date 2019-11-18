@@ -1,11 +1,8 @@
-define( [
-	"./core",
-	"./var/slice",
-	"./var/trim",
-	"./event/alias"
-], function( jQuery, slice, trim ) {
+import jQuery from "./core.js";
+import slice from "./var/slice.js";
+import trim from "./var/trim.js";
 
-"use strict";
+import "./event/alias.js";
 
 jQuery.fn.extend( {
 
@@ -70,4 +67,3 @@ jQuery.holdReady = function( hold ) {
 jQuery.trim = function( text ) {
 	return text == null ? "" : trim.call( text );
 };
-} );
