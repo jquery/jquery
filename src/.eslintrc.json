@@ -19,14 +19,15 @@
 				"no-unused-vars": "off"
 			},
 			"globals": {
-				"jQuery": false
+				"jQuery": false,
+				"module": true
 			}
 		},
 
 		{
-			"files": "global.js",
+			"files": "exports/amd.js",
 			"globals": {
-				"noGlobal": false
+				"define": false
 			}
 		},
 
