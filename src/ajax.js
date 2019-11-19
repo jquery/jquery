@@ -9,7 +9,7 @@ import "./core/init.js";
 import "./ajax/parseXML.js";
 import "./event/trigger.js";
 import "./deferred.js";
-import "./serialize"; // jQuery.param
+import "./serialize.js"; // jQuery.param
 
 var
 	r20 = /%20/g,
