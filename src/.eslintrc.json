@@ -11,7 +11,8 @@
 	"plugins": [ "import" ],
 
 	"rules": {
-		"import/extensions": [ "error", "always" ]
+		"import/extensions": [ "error", "always" ],
+		"import/no-cycle": "error"
 	},
 
 	"overrides": [
