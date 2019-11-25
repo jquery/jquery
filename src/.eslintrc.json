@@ -8,6 +8,13 @@
 		"sourceType": "module"
 	},
 
+	"plugins": [ "import" ],
+
+	"rules": {
+		"import/extensions": [ "error", "always" ],
+		"import/no-cycle": "error"
+	},
+
 	"overrides": [
 		{
 			"files": "wrapper.js",
