@@ -1,4 +1,4 @@
-external
+amd
 node_modules
 *.min.js
 dist/**

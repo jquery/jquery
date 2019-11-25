@@ -28,7 +28,12 @@
 			QUnit.config.urlConfig.push( {
 				id: "esmodules",
 				label: "Load as modules",
-				tooltip: "Load a relevant jQuery module file (and its dependencies)"
+				tooltip: "Load the jQuery module file (and its dependencies)"
+			} );
+			QUnit.config.urlConfig.push( {
+				id: "amd",
+				label: "Load with AMD",
+				tooltip: "Load the AMD jQuery file (and its dependencies)"
 			} );
 		}
 
@@ -39,7 +44,7 @@
 		} );
 	}
 
-	// Honor AMD loading on the main window (detected by seeing QUnit on it).
+	// Honor ES modules loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( urlParams.esmodules && window.QUnit ) {
 
@@ -56,6 +61,20 @@
 			"} );";
 
 		eval( dynamicImportSource );
+
+	// Apply similar treatment for AMD modules
+	} else if ( urlParams.amd && window.QUnit ) {
+		require.config( {
+			baseUrl: parentUrl
+		} );
+		src = "amd/jquery";
+
+		// Include tests if specified
+		if ( typeof loadTests !== "undefined" ) {
+			require( [ src ], loadTests );
+		} else {
+			require( [ src ] );
+		}
 
 	// Otherwise, load synchronously
 	} else {

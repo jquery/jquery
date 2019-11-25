@@ -13,6 +13,7 @@ module.exports = function( Release, files, complete ) {
 
 		// These files are included with the distribution
 		extras = [
+			"amd",
 			"src",
 			"LICENSE.txt",
 			"AUTHORS.txt",

@@ -22,18 +22,23 @@ module.exports = function( Release ) {
 
 		npmTags = Release.npmTags;
 
+	function setSrcVersion( filepath ) {
+		var contents = fs.readFileSync( filepath, "utf8" );
+		contents = contents.replace( /@VERSION/g, Release.newVersion );
+		fs.writeFileSync( filepath, contents, "utf8" );
+	}
+
 	Release.define( {
 		npmPublish: true,
 		issueTracker: "github",
 
 		/**
-		 * Set the version in the src folder for distributing AMD
+		 * Set the version in the src folder for distributing ES modules
+		 * and in the amd folder for AMD.
 		 */
 		_setSrcVersion: function() {
-			var corePath = __dirname + "/../src/core.js",
-				contents = fs.readFileSync( corePath, "utf8" );
-			contents = contents.replace( /@VERSION/g, Release.newVersion );
-			fs.writeFileSync( corePath, contents, "utf8" );
+			setSrcVersion( `${ __dirname }/../src/core.js` );
+			setSrcVersion( `${ __dirname }/../amd/core.js` );
 		},
 
 		/**

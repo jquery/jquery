@@ -299,14 +299,16 @@ QUnit.testUnlessIE = QUnit.isIE ? QUnit.skip : QUnit.test;
 
 this.loadTests = function() {
 
-	// Directly load tests that need synchronous evaluation
-	if ( !QUnit.urlParams.esmodules || document.readyState === "loading" ) {
+	// QUnit.config is populated from QUnit.urlParams but only at the beginning
+	// of the test run. We need to read both.
+	var amd = QUnit.config.amd || QUnit.urlParams.amd;
+
+	// Directly load tests that need evaluation before DOMContentLoaded.
+	if ( !amd || document.readyState === "loading" ) {
 		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {
-			QUnit.test( "jQuery ready", function( assert ) {
-				assert.ok( false, "Test should be initialized before DOM ready" );
-			} );
+			QUnit.skip( "jQuery ready tests skipped in async mode", function() {} );
 		} );
 	}
 
