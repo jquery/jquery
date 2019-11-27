@@ -28,18 +28,12 @@
 
   <script src="/base/test/data/qunit-fixture.js"></script>
   <script>
-    // Workaround: Remove call to window.__karma__.loaded()
-    // in favour of calling window.__karma__.start() at window.onload
-    // because tests such as unit/ready.js should run after document ready
-    window.addEventListener('load', function() {
-      window.__karma__.start();
-
-      // Workaround: https://github.com/karma-runner/karma-qunit/issues/92
-      QUnit.testStart(function () {
-        // Restore content
-        document.getElementById("qunit-fixture").innerHTML = QUnit.config.fixture;
-      });
-    });
+      // Workaround: Remove call to `window.__karma__.loaded()`
+      // in favour of calling `window.__karma__.start()` from `loadTests()`
+      // because tests such as unit/ready.js should run after document ready.
+      if ( !QUnit.config.esmodules ) {
+          loadTests();
+      }
   </script>
 </body>
 </html>

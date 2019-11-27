@@ -141,6 +141,14 @@ module.exports = function( grunt ) {
 						]
 					}
 				],
+				client: {
+					qunit: {
+
+						// We're running `QUnit.start()` ourselves via `loadTests()`
+						// in test/jquery.js
+						autostart: false
+					}
+				},
 				files: [
 					"test/data/jquery-1.9.1.js",
 					"node_modules/sinon/pkg/sinon.js",
@@ -149,32 +157,6 @@ module.exports = function( grunt ) {
 					"test/data/testinit.js",
 
 					"test/jquery.js",
-
-					// Replacement for testinit.js#loadTests()
-					"test/data/testrunner.js",
-					"test/unit/basic.js",
-					"test/unit/core.js",
-					"test/unit/callbacks.js",
-					"test/unit/deferred.js",
-					"test/unit/deprecated.js",
-					"test/unit/support.js",
-					"test/unit/data.js",
-					"test/unit/queue.js",
-					"test/unit/attributes.js",
-					"test/unit/event.js",
-					"test/unit/selector.js",
-					"test/unit/traversing.js",
-					"test/unit/manipulation.js",
-					"test/unit/wrap.js",
-					"test/unit/css.js",
-					"test/unit/serialize.js",
-					"test/unit/ajax.js",
-					"test/unit/effects.js",
-					"test/unit/offset.js",
-					"test/unit/dimensions.js",
-					"test/unit/animation.js",
-					"test/unit/tween.js",
-					"test/unit/ready.js",
 
 					{ pattern: "dist/jquery.*", included: false, served: true },
 					{ pattern: "src/**", type: "module", included: false, served: true },
@@ -195,6 +177,21 @@ module.exports = function( grunt ) {
 			main: {
 				browsers: isTravis && travisBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
+			esmodules: {
+				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				options: {
+					client: {
+						qunit: {
+
+							// We're running `QUnit.start()` ourselves via `loadTests()`
+							// in test/jquery.js
+							autostart: false,
+
+							esmodules: true
+						}
+					}
+				}
+			},
 
 			jsdom: {
 				options: {
@@ -206,7 +203,7 @@ module.exports = function( grunt ) {
 						// choosing a version etc. for jsdom.
 						"dist/jquery.js",
 
-						// Replacement for testinit.js#loadTests()
+						// A partial replacement for testinit.js#loadTests()
 						"test/data/testrunner.js",
 
 						// jsdom only runs basic tests

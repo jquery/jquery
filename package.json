@@ -72,7 +72,8 @@
     "start": "grunt watch",
     "test:browserless": "grunt && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
-    "test": "grunt && grunt test:slow && grunt karma:main",
+    "test:esmodules": "grunt && grunt karma:esmodules",
+    "test": "grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {

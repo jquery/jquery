@@ -41,3 +41,17 @@ function url( value ) {
 	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +
 		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
 }
+
+// The file-loading part of testinit.js#loadTests is handled by
+// jsdom Karma config; here we just need to trigger relevant APIs.
+this.loadTests = function() {
+
+	// Delay the initialization until after all the files are loaded
+	// as in the JSDOM case we load them via Karma (see Gruntfile.js)
+	// instead of directly in testinit.js.
+	window.addEventListener( "load", function() {
+		window.__karma__.start();
+		jQuery.noConflict();
+		QUnit.start();
+	} );
+};
