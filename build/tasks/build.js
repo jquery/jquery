@@ -10,7 +10,7 @@ module.exports = function( grunt ) {
 	const fs = require( "fs" );
 	const path = require( "path" );
 	const rollup = require( "rollup" );
-	const rollupHypothetical = require( "rollup-plugin-hypothetical" );
+	const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
 	const Insight = require( "insight" );
 	const pkg = require( "../../package.json" );
 	const srcFolder = path.resolve( `${ __dirname }/../../src` );
@@ -39,10 +39,18 @@ module.exports = function( grunt ) {
 		outro: wrapper[ 1 ]
 			.replace( /^\n*/, "" )
 	};
-	const rollupHypotheticalOptions = {
-		allowFallthrough: true,
-		files: {}
-	};
+	const fileOverrides = new Map();
+
+	function getOverride( filePath ) {
+		return fileOverrides.get( path.resolve( filePath ) );
+	}
+
+	function setOverride( filePath, source ) {
+
+		// We want normalized paths in overrides as they will be matched
+		// against normalized paths in the file overrides Rollup plugin.
+		fileOverrides.set( path.resolve( filePath ), source );
+	}
 
 	grunt.registerMultiTask(
 		"build",
@@ -186,14 +194,14 @@ module.exports = function( grunt ) {
 
 			// Remove the jQuery export from the entry file, we'll use our own
 			// custom wrapper.
-			rollupHypotheticalOptions.files[ inputRollupOptions.input ] = read( inputFileName )
-				.replace( /\n*export default jQuery;\n*/, "\n" );
+			setOverride( inputRollupOptions.input,
+				read( inputFileName ).replace( /\n*export default jQuery;\n*/, "\n" ) );
 
 			// Replace exports/global with a noop noConflict
 			if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
-				rollupHypotheticalOptions.files[ `${ srcFolder }/exports/global.js` ] =
+				setOverride( `${ srcFolder }/exports/global.js`,
 					"import jQuery from \"../core.js\";\n\n" +
-					"jQuery.noConflict = function() {};";
+						"jQuery.noConflict = function() {};" );
 				excluded.splice( index, 1 );
 			}
 
@@ -207,9 +215,10 @@ module.exports = function( grunt ) {
 				}
 
 				// Remove the comma for anonymous defines
-				rollupHypotheticalOptions.files[ `${ srcFolder }/exports/amd.js` ] =
+				setOverride( `${ srcFolder }/exports/amd.js`,
 					read( "exports/amd.js" )
-						.replace( /(\s*)"jquery"(\,\s*)/, amdName ? "$1\"" + amdName + "\"$2" : "" );
+						.replace( /(\s*)"jquery"(\,\s*)/,
+							amdName ? "$1\"" + amdName + "\"$2" : "" ) );
 			}
 
 			grunt.verbose.writeflags( excluded, "Excluded" );
@@ -225,7 +234,7 @@ module.exports = function( grunt ) {
 
 				// Replace excluded modules with empty sources.
 				for ( const module of excluded ) {
-					rollupHypotheticalOptions.files[ `${ srcFolder }/${ module }.js` ] = "";
+					setOverride( `${ srcFolder }/${ module }.js`, "" );
 				}
 			}
 
@@ -234,20 +243,21 @@ module.exports = function( grunt ) {
 
 				// Remove the default inclusions, they will be overwritten with the explicitly
 				// included ones.
-				rollupHypotheticalOptions.files[ inputRollupOptions.input ] = "";
+				setOverride( inputRollupOptions.input, "" );
 
 			}
 
 			// Import the explicitly included modules.
 			if ( included.length ) {
-				rollupHypotheticalOptions.files[ inputRollupOptions.input ] += included
-					.map( module => `import "./${module}.js";` )
-					.join( "\n" );
+				setOverride( inputRollupOptions.input,
+					getOverride( inputRollupOptions.input ) + included
+						.map( module => `import "./${module}.js";` )
+						.join( "\n" ) );
 			}
 
 			const bundle = await rollup.rollup( {
 				...inputRollupOptions,
-				plugins: [ rollupHypothetical( rollupHypotheticalOptions ) ]
+				plugins: [ rollupFileOverrides( fileOverrides ) ]
 			} );
 
 			const { output: [ { code } ] } = await bundle.generate( outputRollupOptions );
