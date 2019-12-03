@@ -4,6 +4,7 @@ import documentElement from "./var/documentElement.js";
 import rnothtmlwhite from "./var/rnothtmlwhite.js";
 import rcheckableType from "./var/rcheckableType.js";
 import slice from "./var/slice.js";
+import acceptData from "./data/var/acceptData.js";
 import dataPriv from "./data/var/dataPriv.js";
 import nodeName from "./core/nodeName.js";
 
@@ -109,8 +110,8 @@ jQuery.event = {
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
 
-		// Don't attach events to noData or text/comment nodes (but allow plain objects)
-		if ( !elemData ) {
+		// Only attach events to objects that accept data
+		if ( !acceptData( elem ) ) {
 			return;
 		}
 

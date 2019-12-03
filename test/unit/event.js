@@ -2811,6 +2811,15 @@ QUnit.test( "preventDefault() on focusin does not throw exception", function( as
 	}, QUnit.config.testTimeout / 4 || 1000 );
 } );
 
+QUnit.test( ".on('focus', fn) on a text node doesn't throw", function( assert ) {
+	assert.expect( 1 );
+
+	jQuery( document.createTextNode( "text" ) )
+		.on( "focus", function() {} );
+
+	assert.ok( true, "No crash" );
+} );
+
 QUnit.test( "Donor event interference", function( assert ) {
 	assert.expect( 8 );
 
