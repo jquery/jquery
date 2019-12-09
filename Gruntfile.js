@@ -192,6 +192,21 @@ module.exports = function( grunt ) {
 					}
 				}
 			},
+			amd: {
+				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				options: {
+					client: {
+						qunit: {
+
+							// We're running `QUnit.start()` ourselves via `loadTests()`
+							// in test/jquery.js
+							autostart: false,
+
+							amd: true
+						}
+					}
+				}
+			},
 
 			jsdom: {
 				options: {

@@ -301,11 +301,11 @@ this.loadTests = function() {
 
 	// QUnit.config is populated from QUnit.urlParams but only at the beginning
 	// of the test run. We need to read both.
-	var amd = QUnit.config.amd || QUnit.urlParams.amd,
-		esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
+	var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules,
+		amd = QUnit.config.amd || QUnit.urlParams.amd;
 
 	// Directly load tests that need evaluation before DOMContentLoaded.
-	if ( ( !amd && !esmodules ) || document.readyState === "loading" ) {
+	if ( ( !esmodules && !amd ) || document.readyState === "loading" ) {
 		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {

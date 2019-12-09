@@ -8,12 +8,19 @@
 		parentUrl = activeScript && activeScript.src ?
 			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 			"../",
-		QUnit = window.QUnit || parent.QUnit,
-		require = window.require || parent.require,
+		QUnit = window.QUnit,
+		require = window.require,
 
 		// Default to unminified jQuery for directly-opened iframes
 		config = QUnit ?
-			QUnit.config :
+
+			// QUnit.config is populated from QUnit.urlParams but only at the beginning
+			// of the test run. We need to read both.
+			{
+				esmodules: !!( QUnit.config.esmodules || QUnit.urlParams.esmodules ),
+				amd: !!( QUnit.config.amd || QUnit.urlParams.amd )
+			} :
+
 			{ dev: true },
 		src = config.dev ?
 			"dist/jquery.js" :
@@ -38,7 +45,7 @@
 
 	// Honor ES modules loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
-	if ( config.esmodules && window.QUnit ) {
+	if ( config.esmodules && QUnit ) {
 
 		// Support: IE 11+, Edge 12 - 18+
 		// IE/Edge don't support the dynamic import syntax so they'd crash
@@ -60,7 +67,7 @@
 		eval( dynamicImportSource );
 
 	// Apply similar treatment for AMD modules
-	} else if ( config.amd && window.QUnit ) {
+	} else if ( config.amd && QUnit ) {
 		require.config( {
 			baseUrl: parentUrl
 		} );
