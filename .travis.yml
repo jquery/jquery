@@ -24,6 +24,13 @@ matrix:
         - BROWSERS="ChromeHeadless"
       addons:
         chrome: stable
+    # Run AMD tests.
+    - node_js: "12"
+      env:
+        - NPM_SCRIPT="test:amd"
+        - BROWSERS="ChromeHeadless"
+      addons:
+        chrome: stable
     # Run tests on Firefox ESR as well.
     - node_js: "12"
       env:
