@@ -178,6 +178,7 @@ module.exports = function( grunt ) {
 
 					{ pattern: "dist/jquery.*", included: false, served: true },
 					{ pattern: "src/**", type: "module", included: false, served: true },
+					{ pattern: "amd/**", included: false, served: true },
 					{ pattern: "node_modules/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
@@ -319,6 +320,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "default", [
 		"eslint:dev",
 		"build:*:*",
+		"amd",
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
