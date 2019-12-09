@@ -6,13 +6,14 @@ define( [
 	"./var/rnothtmlwhite",
 	"./var/rcheckableType",
 	"./var/slice",
+	"./data/var/acceptData",
 	"./data/var/dataPriv",
 	"./core/nodeName",
 
 	"./core/init",
 	"./selector"
 ], function( jQuery, document, documentElement, isFunction, rnothtmlwhite,
-	rcheckableType, slice, dataPriv, nodeName ) {
+	rcheckableType, slice, acceptData, dataPriv, nodeName ) {
 
 "use strict";
 
@@ -124,8 +125,8 @@ jQuery.event = {
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
 
-		// Don't attach events to noData or text/comment nodes (but allow plain objects)
-		if ( !elemData ) {
+		// Only attach events to objects that accept data
+		if ( !acceptData( elem ) ) {
 			return;
 		}
 
