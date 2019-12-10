@@ -252,6 +252,15 @@ var mocks = {
 		} else {
 			resp.end( "QUnit.assert.ok( false, \"Mock return erroneously executed\" );" );
 		}
+	},
+	cors: function( req, resp ) {
+		if ( typeof req.headers[ "origin" ] != "undefined" ) {
+			resp.setHeader( "Access-Control-Allow-Methods", "GET" );
+			resp.setHeader( "Access-Control-Allow-Origin", req.headers[ "origin" ] );
+			resp.end( "corsCallback(true)" );
+		} else {
+			resp.end( "corsCallback(false)" );
+		}
 	}
 };
 var handlers = {

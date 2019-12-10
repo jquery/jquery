@@ -63,6 +63,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 		return {
 			send: function( _, complete ) {
 				script = jQuery( "<script>" )
+					.attr( "crossOrigin", s.crossOrigin || null )
 					.attr( s.scriptAttrs || {} )
 					.prop( { charset: s.scriptCharset, src: s.url } )
 					.on( "load error", callback = function( evt ) {

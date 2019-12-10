@@ -235,6 +235,17 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 	}
 
+	protected function cors($req) {
+		if (isset($req->headers['ORIGIN'])) {
+			$origin = $req->headers['ORIGIN'];
+			header("Access-Control-Allow-Methods: GET");
+			header("Access-Control-Allow-Origin: " . $origin);
+			corsCallback(true);
+		} else {
+			corsCallback(false);
+		}
+	}
+
 	public function __construct() {
 		$this->cspFile = __DIR__ . '/support/csp.log';
 	}

@@ -157,7 +157,10 @@ function domManip( collection, args, callback, ignored ) {
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
-									nonce: node.nonce || node.getAttribute( "nonce" )
+									nonce: node.nonce || node.getAttribute( "nonce" ),
+									crossOrigin: node.crossOrigin || node.getAttribute(
+										"crossOrigin"
+									)
 								}, doc );
 							}
 						} else {
