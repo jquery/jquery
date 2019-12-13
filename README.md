@@ -39,8 +39,13 @@ if you swing that way. Easy-peasy.
 How to build your own jQuery
 ----------------------------
 
-Clone a copy of the main jQuery git repo by running:
+Clone a copy of the main jQuery git repo by cloning:
 
+Using HTTPS connection
+```bash
+git clone https://github.com/jquery/jquery.git
+```
+Or using the SSH connection
 ```bash
 git clone git://github.com/jquery/jquery.git
 ```
