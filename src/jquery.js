@@ -24,7 +24,6 @@ import "./ajax/jsonp.js";
 import "./ajax/load.js";
 import "./core/parseXML.js";
 import "./core/parseHTML.js";
-import "./event/ajax.js";
 import "./effects.js";
 import "./effects/animatedSelector.js";
 import "./offset.js";
