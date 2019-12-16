@@ -8,36 +8,35 @@
 		parentUrl = activeScript && activeScript.src ?
 			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 			"../",
-		QUnit = window.QUnit || parent.QUnit,
-		require = window.require || parent.require,
+		QUnit = window.QUnit,
+		require = window.require,
 
 		// Default to unminified jQuery for directly-opened iframes
-		urlParams = QUnit ?
-			QUnit.urlParams :
+		config = QUnit ?
+
+			// QUnit.config is populated from QUnit.urlParams but only at the beginning
+			// of the test run. We need to read both.
+			{
+				esmodules: !!( QUnit.config.esmodules || QUnit.urlParams.esmodules ),
+				amd: !!( QUnit.config.amd || QUnit.urlParams.amd )
+			} :
+
 			{ dev: true },
-		src = urlParams.dev ?
+		src = config.dev ?
 			"dist/jquery.js" :
 			"dist/jquery.min.js";
 
 	// Define configuration parameters controlling how jQuery is loaded
 	if ( QUnit ) {
-
-		// ES modules loading is asynchronous and incompatible with synchronous
-		// test loading in Karma.
-		if ( !window.__karma__ ) {
-			QUnit.config.urlConfig.push( {
-				id: "esmodules",
-				label: "Load as modules",
-				tooltip: "Load the jQuery module file (and its dependencies)"
-			} );
-			QUnit.config.urlConfig.push( {
-				id: "amd",
-				label: "Load with AMD",
-				tooltip: "Load the AMD jQuery file (and its dependencies)"
-			} );
-		}
-
 		QUnit.config.urlConfig.push( {
+			id: "esmodules",
+			label: "Load as modules",
+			tooltip: "Load the jQuery module file (and its dependencies)"
+		}, {
+			id: "amd",
+			label: "Load with AMD",
+			tooltip: "Load the AMD jQuery file (and its dependencies)"
+		}, {
 			id: "dev",
 			label: "Load unminified",
 			tooltip: "Load the development (unminified) jQuery file"
@@ -46,24 +45,29 @@
 
 	// Honor ES modules loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
-	if ( urlParams.esmodules && window.QUnit ) {
+	if ( config.esmodules && QUnit ) {
 
 		// Support: IE 11+, Edge 12 - 18+
 		// IE/Edge don't support the dynamic import syntax so they'd crash
 		// with a SyntaxError here.
 		dynamicImportSource = "" +
-			"import( `${ parentUrl }src/jquery.js` ).then( ( { default: jQuery } ) => {\n" +
-			"	window.jQuery = jQuery;\n" +
-			"	if ( typeof loadTests === \"function\" ) {\n" +
-			"		// Include tests if specified\n" +
-			"		loadTests();\n" +
-			"	}\n" +
-			"} );";
+			"import( `${ parentUrl }src/jquery.js` )\n" +
+			"	.then( ( { default: jQuery } ) => {\n" +
+			"		window.jQuery = jQuery;\n" +
+			"		if ( typeof loadTests === \"function\" ) {\n" +
+			"			// Include tests if specified\n" +
+			"			loadTests();\n" +
+			"		}\n" +
+			"	} )\n" +
+			"	.catch( error => {\n" +
+			"		console.error( error );\n" +
+			"		QUnit.done();\n" +
+			"	} );";
 
 		eval( dynamicImportSource );
 
 	// Apply similar treatment for AMD modules
-	} else if ( urlParams.amd && window.QUnit ) {
+	} else if ( config.amd && QUnit ) {
 		require.config( {
 			baseUrl: parentUrl
 		} );
