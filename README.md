@@ -39,13 +39,9 @@ if you swing that way. Easy-peasy.
 How to build your own jQuery
 ----------------------------
 
-Clone a copy of the main jQuery git repo by running:
+First, [clone the jQuery git repo](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
-```bash
-git clone git://github.com/jquery/jquery.git
-```
-
-Enter the jquery directory and run the build script:
+Then, enter the jquery directory and run the build script:
 ```bash
 cd jquery && npm run build
 ```
