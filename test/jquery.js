@@ -2,44 +2,57 @@
 ( function() {
 	/* global loadTests: false */
 
-	var FILEPATH = "/test/jquery.js",
+	var config, src,
+		FILEPATH = "/test/jquery.js",
 		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
 		parentUrl = activeScript && activeScript.src ?
 			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 			"../",
-		QUnit = window.QUnit || parent.QUnit,
-		require = window.require || parent.require,
+		QUnit = window.QUnit,
+		require = window.require;
+
+	function getQUnitConfig() {
+		var config = Object.create( null );
 
 		// Default to unminified jQuery for directly-opened iframes
-		urlParams = QUnit ?
-			QUnit.urlParams :
-			{ dev: true },
-		src = urlParams.dev ?
-			"dist/jquery.js" :
-			"dist/jquery.min.js";
+		if ( !QUnit ) {
+			config.dev = true;
+		} else {
 
-	// Define configuration parameters controlling how jQuery is loaded
-	if ( QUnit ) {
-
-		// AMD loading is asynchronous and incompatible with synchronous test loading in Karma
-		if ( !window.__karma__ ) {
-			QUnit.config.urlConfig.push( {
-				id: "amd",
-				label: "Load with AMD",
-				tooltip: "Load the AMD jQuery file (and its dependencies)"
+			// QUnit.config is populated from QUnit.urlParams but only at the beginning
+			// of the test run. We need to read both.
+			QUnit.config.urlConfig.forEach( function( entry ) {
+				config[ entry.id ] = QUnit.config[ entry.id ] != null ?
+					QUnit.config[ entry.id ] :
+					QUnit.urlParams[ entry.id ];
 			} );
 		}
 
+		return config;
+	}
+
+	// Define configuration parameters controlling how jQuery is loaded
+	if ( QUnit ) {
 		QUnit.config.urlConfig.push( {
+			id: "amd",
+			label: "Load with AMD",
+			tooltip: "Load the AMD jQuery file (and its dependencies)"
+		}, {
 			id: "dev",
 			label: "Load unminified",
 			tooltip: "Load the development (unminified) jQuery file"
 		} );
 	}
 
+	config = getQUnitConfig();
+
+	src = config.dev ?
+		"dist/jquery.js" :
+		"dist/jquery.min.js";
+
 	// Honor AMD loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
-	if ( urlParams.amd && window.QUnit ) {
+	if ( config.amd && QUnit ) {
 		require.config( {
 			baseUrl: parentUrl
 		} );
