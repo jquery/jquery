@@ -18,15 +18,15 @@
 		<script src="../../jquery.js"></script>
 		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery(function($) {
-				$(".absolute").click(function() {
-					$("#marker").css( $(this).offset() );
-					var pos = $(this).position();
-					$(this).css({ top: pos.top, left: pos.left });
+			jQuery( function( $ ) {
+				$( ".absolute" ).on( "click", function() {
+					$( "#marker" ).css( $( this ).offset() );
+					var pos = $( this ).position();
+					$( this ).css( { top: pos.top, left: pos.left } );
 					return false;
-				});
+				} );
 				startIframeTest();
-			});
+			} );
 		</script>
 	</head>
 	<body>

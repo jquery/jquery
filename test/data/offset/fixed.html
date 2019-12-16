@@ -15,10 +15,10 @@
 		<script src="../../jquery.js"></script>
 		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery(function($) {
-				window.scrollTo(1000,1000);
-				$(".fixed").click(function() {
-					$("#marker").css( $(this).offset() );
+			jQuery( function( $ ) {
+				window.scrollTo( 1000, 1000 );
+				$( ".fixed" ).on( "click", function() {
+					$( "#marker" ).css( $( this ).offset() );
 					return false;
 				});
 				startIframeTest();

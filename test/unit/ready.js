@@ -149,15 +149,18 @@ QUnit.module( "ready" );
 		} );
 	} );
 
-	testIframe(
-		"holdReady test needs to be a standalone test since it deals with DOM ready",
-		"readywait.html",
-		function( assert, jQuery, window, document, releaseCalled ) {
-			assert.expect( 2 );
-			var now = new Date();
-			assert.ok( now - start >= 300, "Needs to have waited at least half a second" );
-			assert.ok( releaseCalled, "The release function was called, which resulted in ready" );
-		}
-	);
+	// jQuery.holdReady is deprecated, skip the test if it was excluded.
+	if ( jQuery.holdReady ) {
+		testIframe(
+			"holdReady test needs to be a standalone test since it deals with DOM ready",
+			"readywait.html",
+			function( assert, jQuery, window, document, releaseCalled ) {
+				assert.expect( 2 );
+				var now = new Date();
+				assert.ok( now - start >= 300, "Needs to have waited at least half a second" );
+				assert.ok( releaseCalled, "The release function was called, which resulted in ready" );
+			}
+		);
+	}
 
 } )();

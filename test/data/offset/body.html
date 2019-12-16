@@ -12,13 +12,13 @@
 		<script src="../../jquery.js"></script>
 		<script src="../iframeTest.js"></script>
 		<script type="text/javascript" charset="utf-8">
-			jQuery(function($) {
-				$("body").click(function() {
-					$("marker").css( $(this).offset() );
+			jQuery( function( $ ) {
+				$( "body" ).on( "click", function() {
+					$( "#marker" ).css( $( this ).offset() );
 					return false;
-				});
+				} );
 				startIframeTest();
-			});
+			} );
 		</script>
 	</head>
 	<body>
