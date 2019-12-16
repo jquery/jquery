@@ -2,29 +2,34 @@
 ( function() {
 	/* global loadTests: false */
 
-	var dynamicImportSource,
+	var dynamicImportSource, config, src,
 		FILEPATH = "/test/jquery.js",
 		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
 		parentUrl = activeScript && activeScript.src ?
 			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
 			"../",
 		QUnit = window.QUnit,
-		require = window.require,
+		require = window.require;
+
+	function getQUnitConfig() {
+		var config = Object.create( null );
 
 		// Default to unminified jQuery for directly-opened iframes
-		config = QUnit ?
+		if ( !QUnit ) {
+			config.dev = true;
+		} else {
 
 			// QUnit.config is populated from QUnit.urlParams but only at the beginning
 			// of the test run. We need to read both.
-			{
-				esmodules: !!( QUnit.config.esmodules || QUnit.urlParams.esmodules ),
-				amd: !!( QUnit.config.amd || QUnit.urlParams.amd )
-			} :
+			QUnit.config.urlConfig.forEach( function( entry ) {
+				config[ entry.id ] = QUnit.config[ entry.id ] != null ?
+					QUnit.config[ entry.id ] :
+					QUnit.urlParams[ entry.id ];
+			} );
+		}
 
-			{ dev: true },
-		src = config.dev ?
-			"dist/jquery.js" :
-			"dist/jquery.min.js";
+		return config;
+	}
 
 	// Define configuration parameters controlling how jQuery is loaded
 	if ( QUnit ) {
@@ -42,6 +47,12 @@
 			tooltip: "Load the development (unminified) jQuery file"
 		} );
 	}
+
+	config = getQUnitConfig();
+
+	src = config.dev ?
+		"dist/jquery.js" :
+		"dist/jquery.min.js";
 
 	// Honor ES modules loading on the main window (detected by seeing QUnit on it).
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.

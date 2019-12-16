@@ -158,14 +158,31 @@ module.exports = function( grunt ) {
 
 					"test/jquery.js",
 
-					{ pattern: "dist/jquery.*", included: false, served: true },
-					{ pattern: "src/**", type: "module", included: false, served: true },
-					{ pattern: "amd/**", included: false, served: true },
+					{
+						pattern: "dist/jquery.*",
+						included: false,
+						served: true,
+						nocache: true
+					},
+					{
+						pattern: "src/**",
+						type: "module",
+						included: false,
+						served: true,
+						nocache: true
+					},
+					{
+						pattern: "amd/**",
+						included: false,
+						served: true,
+						nocache: true
+					},
 					{ pattern: "node_modules/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
-						served: true
+						served: true,
+						nocache: true
 					}
 				],
 				reporters: [ "dots" ],
