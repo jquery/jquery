@@ -2,8 +2,6 @@ QUnit.module( "selector", {
 	beforeEach: function() {
 		this.safari = /\bsafari\b/i.test( navigator.userAgent ) &&
 			!/\bchrome\b/i.test( navigator.userAgent );
-		this.chrome = /\bchrome\b/i.test( navigator.userAgent ) &&
-			!/\bedge\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown
 } );
@@ -1379,9 +1377,7 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 			"disabled-select", "disabled-optgroup", "disabled-option" ]
 	);
 
-	if ( QUnit.jQuerySelectors || !this.chrome ) {
-		// Support: Chrome 75+
-		// Chrome recognizes anchor elements as enabled.
+	if ( QUnit.jQuerySelectors ) {
 		assert.t(
 			"Enabled elements",
 			"#enabled-fieldset :enabled",
