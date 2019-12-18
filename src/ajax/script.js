@@ -52,7 +52,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 						script.remove();
 						callback = null;
 						if ( evt ) {
-							complete( evt.type === "error" ? 404 : 200, evt.type, "" );
+							complete( evt.type === "error" ? 404 : 200, evt.type );
 						}
 					} );
 

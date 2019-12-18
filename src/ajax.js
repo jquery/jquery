@@ -447,8 +447,6 @@ jQuery.extend( {
 			jqXHR = {
 				readyState: 0,
 
-				responseURL: "",
-
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
 					var match;
@@ -713,7 +711,7 @@ jQuery.extend( {
 		}
 
 		// Callback for when everything is done
-		function done( status, nativeStatusText, responseURL, responses, headers ) {
+		function done( status, nativeStatusText, responses, headers, responseURL ) {
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
 

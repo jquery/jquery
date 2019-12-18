@@ -1530,22 +1530,17 @@ QUnit.module( "ajax", {
 		// Example:
 		// Input: http://localhost:9876/base/test/data/testinit.js/../../../test/data/mock.php?action=responseURL&155821644568982930
 		// Output: http://localhost:9876/base/test/data/mock.php?action=responseURL&155821644568982930
-		function removeRelativePathComponents( url ) {
-			var reg = RegExp( "(\\.\\.\\/)+" ), match;
-			match = reg.exec( url );
-			var count = ( match[ 0 ].match( /\.\.\//g ) || [] ).length, cleaned;
-			var splits = url.substring( 0, match.index ).split( "/" );
-			cleaned = splits.slice( 0, splits.length - count - 1 ).join( "/" );
-			url = cleaned + url.substring( match.index + match[ 0 ].length - 1 );
-			if ( ( url.match( /\.\.\//g ) || [] ).length !== 0 ) {
-				url = removeRelativePathComponents( url );
+		function normalizeUrl( url ) {
+			var finalUrl = url;
+			while ( finalUrl.indexOf( "/../" ) > -1 ) {
+				finalUrl = finalUrl.replace( /\/[^/]+\/\.\.\//g, "/" );
 			}
-			return url;
+			return finalUrl;
 		}
 
-		var successURL = removeRelativePathComponents( url( "mock.php?action=responseURL" ) ),
+		var successURL = url( "mock.php?action=responseURL" ),
 			errorURL = "http://example.invalid",
-			redirectAndSuccessURL = url( "mock.php?action=responseURL" ) + "&url=" + encodeURIComponent( successURL ),
+			redirectAndSuccessURL = url( "mock.php?action=responseURL&url=" + encodeURIComponent( successURL ) ),
 			redirectAndErrorURL = url( "mock.php?action=responseURL&url=" + encodeURIComponent( errorURL ) ),
 			jsonpURL = baseURL + "mock.php?action=jsonp&callback=?",
 			scriptURL = url( "mock.php?action=testbar" );
@@ -1554,37 +1549,37 @@ QUnit.module( "ajax", {
 			{
 				url: successURL,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, successURL, "jqXHR responseURL ok for success" );
+					assert.strictEqual( jqXHR.responseURL, normalizeUrl( successURL ), "jqXHR responseURL ok for success" );
 				}
 			},
 			{
 				url: errorURL,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				fail: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for error" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for error" );
 				}
 			},
 			{
 				url: redirectAndSuccessURL,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, successURL, "jqXHR responseURL ok for redirect success" );
+					assert.strictEqual( jqXHR.responseURL, normalizeUrl( successURL ), "jqXHR responseURL ok for redirect success" );
 				}
 			},
 			{
 				url: redirectAndErrorURL,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				fail: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for redirect error" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for redirect error" );
 				}
 			},
 			{
@@ -1592,10 +1587,10 @@ QUnit.module( "ajax", {
 				dataType: "jsonp",
 				crossDomain: true,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for JSONP" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for JSONP" );
 				}
 			},
 			{
@@ -1606,10 +1601,10 @@ QUnit.module( "ajax", {
 				dataType: "script",
 				crossDomain: true,
 				beforeSend: function( jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok before sending request" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
 				},
 				success: function( _, __, jqXHR ) {
-					assert.strictEqual( jqXHR.responseURL, "", "jqXHR responseURL ok for script" );
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for script" );
 				}
 			}
 		];
