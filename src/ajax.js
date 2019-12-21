@@ -6,7 +6,7 @@ import nonce from "./ajax/var/nonce.js";
 import rquery from "./ajax/var/rquery.js";
 
 import "./core/init.js";
-import "./ajax/parseXML.js";
+import "./core/parseXML.js";
 import "./event/trigger.js";
 import "./deferred.js";
 import "./serialize.js"; // jQuery.param
