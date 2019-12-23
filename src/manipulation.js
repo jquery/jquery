@@ -158,8 +158,7 @@ function domManip( collection, args, callback, ignored ) {
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
 									nonce: node.nonce || node.getAttribute( "nonce" ),
-									crossOrigin: node.crossOrigin ||
-										node.getAttribute( "crossOrigin" )
+									crossOrigin: node.crossOrigin
 								}, doc );
 							}
 						} else {
