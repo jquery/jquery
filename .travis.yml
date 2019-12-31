@@ -17,6 +17,13 @@ matrix:
       addons:
         chrome: stable
         firefox: latest
+    # Run tests against the slim build.
+    - node_js: "12"
+      env:
+        - NPM_SCRIPT="test:slim"
+        - BROWSERS="ChromeHeadless"
+      addons:
+        chrome: stable
     # Run ES module tests.
     - node_js: "12"
       env:
