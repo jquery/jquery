@@ -146,6 +146,11 @@ Exclude a bunch of modules:
 grunt custom:-ajax,-css,-deprecated,-dimensions,-effects,-event/alias,-offset,-wrap
 ```
 
+There is also a special alias to generate a build with the same configuration as the official jQuery Slim build is generated:
+```bash
+grunt custom:slim
+```
+
 For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.
 
 Running the Unit Tests
