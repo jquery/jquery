@@ -74,8 +74,9 @@
     "test:browser": "grunt && grunt karma:main",
     "test:esmodules": "grunt && grunt karma:esmodules",
     "test:amd": "grunt && grunt karma:amd",
+    "test:no-deprecated": "grunt custom:-deprecated && grunt karma:main",
     "test:slim": "grunt custom:-ajax,-effects && grunt karma:main",
-    "test": "npm run test:slim && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules && grunt karma:amd",
+    "test": "npm run test:slim && npm run test:no-deprecated && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules && grunt karma:amd",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {
