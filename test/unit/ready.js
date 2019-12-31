@@ -2,7 +2,7 @@ QUnit.module( "ready" );
 
 ( function() {
 	var notYetReady, noEarlyExecution,
-		whenified = jQuery.when( jQuery.ready ),
+		whenified = jQuery.when && jQuery.when( jQuery.ready ),
 		promisified = Promise.resolve( jQuery.ready ),
 		start = new Date(),
 		order = [],
@@ -105,7 +105,7 @@ QUnit.module( "ready" );
 		} );
 	} );
 
-	QUnit.test( "jQuery.when(jQuery.ready)", function( assert ) {
+	QUnit[ jQuery.when ? "test" : "skip" ]( "jQuery.when(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
 		var done = jQuery.map( new Array( 2 ), function() { return assert.async(); } );
 

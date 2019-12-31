@@ -2548,7 +2548,8 @@ testIframe(
 	function( assert, jQuery, window, document, isOk ) {
 		assert.expect( 1 );
 		assert.ok( isOk, "$.when( $.ready ) works" );
-	}
+	},
+	jQuery.when ? QUnit.test : QUnit.skip
 );
 
 // need PHP here to make the incepted IFRAME hang

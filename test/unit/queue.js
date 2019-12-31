@@ -1,5 +1,11 @@
 QUnit.module( "queue", { afterEach: moduleTeardown } );
 
+( function() {
+
+if ( !jQuery.fn.queue ) {
+	return;
+}
+
 QUnit.test( "queue() with other types", function( assert ) {
 	var done = assert.async( 2 );
 	assert.expect( 14 );
@@ -329,3 +335,5 @@ QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "queue stop hooks", function( assert 
 
 	foo.stop( false, true );
 } );
+
+} )();

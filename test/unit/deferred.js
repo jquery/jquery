@@ -2,6 +2,12 @@ QUnit.module( "deferred", {
 	afterEach: moduleTeardown
 } );
 
+( function() {
+
+if ( !jQuery.Deferred ) {
+	return;
+}
+
 jQuery.each( [ "", " - new operator" ], function( _, withNew ) {
 
 	function createDeferred( fn ) {
@@ -1111,3 +1117,5 @@ QUnit.test( "jQuery.when(...) - opportunistically synchronous", function( assert
 
 	when = "after";
 } );
+
+} )();
