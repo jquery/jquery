@@ -41,7 +41,7 @@ module.exports = function( grunt ) {
 				retainLines: true,
 				plugins: [ "@babel/transform-for-of" ]
 			},
-			nodeSmokeTests: {
+			tests: {
 				files: {
 					"test/data/core/jquery-iterability-transpiled.js":
 						"test/data/core/jquery-iterability-transpiled-es6.js"
@@ -314,7 +314,13 @@ module.exports = function( grunt ) {
 		"karma:jsdom"
 	] );
 
+	grunt.registerTask( "test:prepare", [
+		"qunit_fixture",
+		"babel:tests"
+	] );
+
 	grunt.registerTask( "test", [
+		"test:prepare",
 		"test:fast",
 		"test:slow"
 	] );
@@ -336,7 +342,7 @@ module.exports = function( grunt ) {
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
-		"qunit_fixture",
+		"test:prepare",
 		"eslint:dist",
 		"test:fast",
 		"compare_size"
