@@ -255,7 +255,7 @@ QUnit.module( "ajax", {
 	ajaxTest( "jQuery.ajax() - headers", 8, function( assert ) {
 		return {
 			setup: function() {
-				jQuery( document ).ajaxSend( function( evt, xhr ) {
+				jQuery( document ).on( "ajaxSend", function( evt, xhr ) {
 					xhr.setRequestHeader( "ajax-send", "test" );
 				} );
 			},
@@ -580,10 +580,10 @@ QUnit.module( "ajax", {
 		return {
 			setup: function() {
 				jQuery( context ).appendTo( "#foo" )
-					.ajaxSend( event )
-					.ajaxComplete( event )
-					.ajaxError( event )
-					.ajaxSuccess( event );
+					.on( "ajaxSend", event )
+					.on( "ajaxComplete", event )
+					.on( "ajaxError", event )
+					.on( "ajaxSuccess", event );
 			},
 			requests: [ {
 				url: url( "name.html" ),
@@ -2539,7 +2539,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		var done = assert.async();
 
 		addGlobalEvents( "ajaxStart ajaxStop ajaxSend ajaxComplete ajaxError", assert )();
-		jQuery( document ).ajaxStop( done );
+		jQuery( document ).on( "ajaxStop", done );
 		jQuery( "<div/>" ).load( baseURL + "404.txt", function() {
 			assert.ok( true, "complete" );
 		} );
@@ -2727,7 +2727,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		jQuery.ajaxSetup( {
 			dataType: "json"
 		} );
-		jQuery( document ).ajaxComplete( function( e, xml, s ) {
+		jQuery( document ).on( "ajaxComplete", function( e, xml, s ) {
 			assert.strictEqual( s.dataType, "html", "Verify the load() dataType was html" );
 			jQuery( document ).off( "ajaxComplete" );
 			done();
@@ -2748,7 +2748,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 			}
 		} );
 		jQuery( "#foo" ).load( baseURL + "mock.php?action=echoQuery", data );
-		jQuery( document ).ajaxComplete( function( event, jqXHR, options ) {
+		jQuery( document ).on( "ajaxComplete", function( event, jqXHR, options ) {
 			assert.ok( ~options.data.indexOf( "foo=bar" ), "Data from ajaxSettings was used" );
 			done();
 		} );

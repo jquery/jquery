@@ -2400,7 +2400,6 @@ QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
 			assert.ok( true, "Exception ignored" );
 		} else {
 			assert.ok( true, "No jQuery.ajax" );
-			assert.ok( true, "No jQuery.ajax" );
 		}
 	};
 
@@ -2490,7 +2489,7 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 	}
 } );
 
-QUnit.test( "jQuery._evalUrl (#12838)", function( assert ) {
+QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery._evalUrl (#12838)", function( assert ) {
 
 	assert.expect( 5 );
 
@@ -2788,7 +2787,8 @@ QUnit.test( "Make sure tags with single-character names are found (gh-4124)", fu
 	assert.strictEqual( htmlOut, htmlIn );
 } );
 
-QUnit.test( "Insert script with data-URI (gh-1887)", function( assert ) {
+// The AJAX module is needed for jQuery._evalUrl.
+QUnit[ jQuery.ajax ? "test" : "skip" ]( "Insert script with data-URI (gh-1887)", function( assert ) {
 	assert.expect( 1 );
 
 	Globals.register( "testFoo" );
@@ -2869,10 +2869,11 @@ testIframe(
 		} );
 	},
 
+	// The AJAX module is needed for jQuery._evalUrl.
 	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
 	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
+	QUnit[ jQuery.ajax && !/\bedge\//i.test( navigator.userAgent ) ? "test" : "skip" ]
 );
 
 testIframe(
