@@ -54,7 +54,7 @@ module.exports = function( Release ) {
 		generateArtifacts: function( callback ) {
 			Release.exec( "grunt", "Grunt command failed" );
 			Release.exec(
-				"grunt custom:-ajax,-effects --filename=jquery.slim.js && " +
+				"grunt custom:slim --filename=jquery.slim.js && " +
 					"grunt remove_map_comment --filename=jquery.slim.js",
 				"Grunt custom failed"
 			);

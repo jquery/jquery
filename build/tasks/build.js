@@ -333,9 +333,27 @@ module.exports = function( grunt ) {
 	// Becomes:
 	//
 	//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
+	//
+	// There's also a special "slim" alias that resolves to the jQuery Slim build
+	// configuration:
+	//
+	//   grunt custom:slim
 	grunt.registerTask( "custom", function() {
 		var args = this.args,
-			modules = args.length ? args[ 0 ].replace( /,/g, ":" ) : "",
+			modules = args.length ?
+				args[ 0 ]
+					.split( "," )
+
+					// Replace "slim" with respective exclusions meant for
+					// the official slim build
+					.reduce( ( acc, elem ) => acc.concat(
+						elem === "slim" ?
+							[ "-ajax", "-effects" ] :
+							[ elem ]
+					), [] )
+
+					.join( ":" ) :
+				"",
 			done = this.async(),
 			insight = new Insight( {
 				trackingCode: "UA-1076265-4",
