@@ -2851,7 +2851,7 @@ testIframe(
 
 	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
-	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
 	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
 
@@ -2871,7 +2871,7 @@ testIframe(
 
 	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
-	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
 	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
 
@@ -2891,6 +2891,6 @@ testIframe(
 
 	// Support: Edge <=18+
 	// Edge doesn't support nonce in non-inline scripts.
-	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
 	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
