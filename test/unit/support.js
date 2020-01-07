@@ -307,7 +307,7 @@ testIframe(
 		expected = expectedMap.chrome;
 	} else if ( /\b(?:9|10)\.\d+(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
-	} else if ( /firefox\/(?:52|60)/i.test( userAgent ) ) {
+	} else if ( /firefox\/(?:4\d|5\d|60)/i.test( userAgent ) ) {
 		expected = expectedMap.firefox_60;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
