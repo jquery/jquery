@@ -1196,6 +1196,57 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 	} );
 } );
 
+QUnit.test( "radio.val(space characters)", function( assert ) {
+	assert.expect( 42 );
+
+	var radio = jQuery( "<input type='radio'/>" ).appendTo( "#qunit-fixture" ),
+		spaces = {
+			"\\t": {
+				html: "&#09;",
+				val: "\t"
+			},
+			"\\n": {
+				html: "&#10;",
+				val: "\n"
+			},
+			"\\r": {
+				html: "&#13;",
+				val: "\r"
+			},
+			"\\f": "\f",
+			"space": " ",
+			"\\u00a0": "\u00a0",
+			"\\u1680": "\u1680"
+		};
+
+	jQuery.each( spaces, function( key, obj ) {
+		var val = obj.val || obj;
+
+		radio.val( "attr" + val );
+		assert.equal( radio.val(), "attr" + val, "Value ending with space character (" + key + ") returned (set via val())" );
+
+		radio.val( "at" + val + "tr" );
+		assert.equal( radio.val(), "at" + val + "tr", "Value with space character (" + key + ") in the middle returned (set via val())" );
+
+		radio.val( val + "attr" );
+		assert.equal( radio.val(), val + "attr", "Value starting with space character (" + key + ") returned (set via val())" );
+	} );
+
+	jQuery.each( spaces, function( key, obj ) {
+		var val = obj.val || obj,
+			htmlVal = obj.html || obj;
+
+		radio = jQuery( "<input type='radio' value='attr" + htmlVal + "'/>" ).appendTo( "#qunit-fixture" );
+		assert.equal( radio.val(), "attr" + val, "Value ending with space character (" + key + ") returned (set via HTML)" );
+
+		radio = jQuery( "<input type='radio' value='at" + htmlVal + "tr'/>" ).appendTo( "#qunit-fixture" );
+		assert.equal( radio.val(), "at" + val + "tr", "Value with space character (" + key + ") in the middle returned (set via HTML)" );
+
+		radio = jQuery( "<input type='radio' value='" + htmlVal + "attr'/>" ).appendTo( "#qunit-fixture" );
+		assert.equal( radio.val(), val + "attr", "Value starting with space character (" + key + ") returned (set via HTML)" );
+	} );
+} );
+
 var testAddClass = function( valueObj, assert ) {
 	assert.expect( 9 );
 
