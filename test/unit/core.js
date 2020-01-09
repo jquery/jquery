@@ -228,7 +228,7 @@ QUnit.test( "jQuery.append with crossOrigin attribute", function( assert ) {
 
 	var src = baseURL + "mock.php?action=cors";
 	src = src.replace( "localhost", "127.0.0.1" );
-	var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossOrigin=\"anonymous\"><\/script>";
+	var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
 
 	jQuery( document.body ).append( html );
 	timeout = window.setTimeout( function() {
