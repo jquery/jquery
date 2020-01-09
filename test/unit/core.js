@@ -218,15 +218,13 @@ QUnit.test( "jQuery.append with crossOrigin attribute", function( assert ) {
 	Globals.register( "corsCallback" );
 	window.corsCallback = function( response ) {
 		assert.ok( response === true, "Cors" );
-
-		if ( timeout != null ) {
-			window.clearTimeout( timeout );
-		}
-
+		window.clearTimeout( timeout );
 		done();
 	};
 
 	var src = baseURL + "mock.php?action=cors";
+
+	// To simulate a cross-origin request
 	src = src.replace( "localhost", "127.0.0.1" );
 	var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
 
