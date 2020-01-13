@@ -132,11 +132,6 @@ QUnit.test( "jQuery.data(div)", function( assert ) {
 	var div = document.createElement( "div" );
 
 	dataTests( div, assert );
-
-	// We stored one key in the private data
-	// assert that nothing else was put in there, and that that
-	// one stayed there.
-	assert.expectJqData( this, div, "foo" );
 } );
 
 QUnit.test( "jQuery.data({})", function( assert ) {
@@ -159,8 +154,6 @@ QUnit.test( "jQuery.data(document)", function( assert ) {
 	assert.expect( 25 );
 
 	dataTests( document, assert );
-
-	assert.expectJqData( this, document, "foo" );
 } );
 
 QUnit.test( "jQuery.data(<embed>)", function( assert ) {
