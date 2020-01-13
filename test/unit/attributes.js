@@ -1430,10 +1430,6 @@ var testToggleClass = function( valueObj, assert ) {
 	e.toggleClass( false );
 	e.toggleClass();
 	assert.ok( e.is( ".testD.testE" ), "Assert class present (restored from data)" );
-
-	// Cleanup
-	e.removeClass( "testD" );
-	assert.expectJqData( this, e[ 0 ], "__className__" );
 };
 
 QUnit.test( "toggleClass(String|boolean|undefined[, boolean])", function( assert ) {
