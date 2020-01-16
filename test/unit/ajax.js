@@ -3035,6 +3035,32 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	QUnit.test( "jQuery.append with crossOrigin attribute", function( assert ) {
+		var done = assert.async();
+		assert.expect( 1 );
+
+		var timeout = null;
+
+		Globals.register( "corsCallback" );
+		window.corsCallback = function( response ) {
+			assert.ok( response === true, "Cors" );
+			window.clearTimeout( timeout );
+			done();
+		};
+
+		var src = baseURL + "mock.php?action=cors";
+
+		// To simulate a cross-origin request
+		src = src.replace( "localhost", "127.0.0.1" );
+		var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
+
+		jQuery( document.body ).append( html );
+		timeout = window.setTimeout( function() {
+			assert.ok( false, "Cors" );
+			done();
+		}, 2000 );
+	} );
+
 //----------- jQuery.active
 
 	QUnit.test( "jQuery.active", function( assert ) {
