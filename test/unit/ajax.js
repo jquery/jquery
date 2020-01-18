@@ -3035,7 +3035,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
-	QUnit.test( "jQuery.append with crossOrigin attribute", function( assert ) {
+	QUnit.test( "jQuery.append with crossorigin attribute", function( assert ) {
 		var done = assert.async();
 		assert.expect( 1 );
 
@@ -3043,20 +3043,20 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
-			assert.ok( response === true, "Cors" );
+			assert.ok( response === true, "Callback fired" );
 			window.clearTimeout( timeout );
 			done();
 		};
 
 		var src = baseURL + "mock.php?action=cors";
 
-		// To simulate a cross-origin request
+		// Simulate a cross-origin request
 		src = src.replace( "localhost", "127.0.0.1" );
 		var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
 
 		jQuery( document.body ).append( html );
 		timeout = window.setTimeout( function() {
-			assert.ok( false, "Cors" );
+			assert.ok( false, "Callback should have fired" );
 			done();
 		}, 2000 );
 	} );

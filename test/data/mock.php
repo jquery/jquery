@@ -235,14 +235,14 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 	}
 
-	protected function cors($req) {
-		if (isset($req->headers['ORIGIN'])) {
+	protected function cors( $req ) {
+		if ( isset( $req->headers['ORIGIN'] ) ) {
 			$origin = $req->headers['ORIGIN'];
-			header("Access-Control-Allow-Methods: GET");
-			header("Access-Control-Allow-Origin: " . $origin);
-			corsCallback(true);
+			header( "Access-Control-Allow-Methods: GET" );
+			header( "Access-Control-Allow-Origin: " . $origin );
+			echo 'corsCallback( true )';
 		} else {
-			corsCallback(false);
+			echo 'corsCallback( false )';
 		}
 	}
 

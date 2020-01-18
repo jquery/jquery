@@ -257,9 +257,9 @@ var mocks = {
 		if ( typeof req.headers[ "origin" ] != "undefined" ) {
 			resp.setHeader( "Access-Control-Allow-Methods", "GET" );
 			resp.setHeader( "Access-Control-Allow-Origin", req.headers[ "origin" ] );
-			resp.end( "corsCallback(true)" );
+			resp.end( "corsCallback( true )" );
 		} else {
-			resp.end( "corsCallback(false)" );
+			resp.end( "corsCallback( false )" );
 		}
 	}
 };
