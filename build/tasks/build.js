@@ -306,7 +306,7 @@ module.exports = function( grunt ) {
 				// the official slim build
 				.reduce( ( acc, elem ) => acc.concat(
 					elem === "slim" ?
-						[ "-ajax", "-effects" ] :
+						[ "-ajax", "-callbacks", "-deferred", "-effects" ] :
 						[ elem ]
 				), [] )
 
