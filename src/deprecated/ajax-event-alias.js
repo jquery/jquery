@@ -1,8 +1,8 @@
 import jQuery from "../core.js";
 
+import "../ajax.js";
 import "../event.js";
 
-// Attach a bunch of functions for handling common AJAX events
 jQuery.each( [
 	"ajaxStart",
 	"ajaxStop",

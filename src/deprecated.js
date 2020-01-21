@@ -2,28 +2,8 @@ import jQuery from "./core.js";
 import slice from "./var/slice.js";
 import trim from "./var/trim.js";
 
-import "./event/alias.js";
-
-jQuery.fn.extend( {
-
-	bind: function( types, data, fn ) {
-		return this.on( types, null, data, fn );
-	},
-	unbind: function( types, fn ) {
-		return this.off( types, null, fn );
-	},
-
-	delegate: function( selector, types, data, fn ) {
-		return this.on( types, selector, data, fn );
-	},
-	undelegate: function( selector, types, fn ) {
-
-		// ( namespace ) or ( selector, types [, fn] )
-		return arguments.length === 1 ?
-			this.off( selector, "**" ) :
-			this.off( types, selector || "**", fn );
-	}
-} );
+import "./deprecated/ajax-event-alias.js";
+import "./deprecated/event.js";
 
 // Bind a function to a context, optionally partially applying any
 // arguments.

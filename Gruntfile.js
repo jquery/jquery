@@ -58,14 +58,15 @@ module.exports = function( grunt ) {
 
 				// Exclude specified modules if the module matching the key is removed
 				removeWith: {
-					ajax: [ "manipulation/_evalUrl", "event/ajax" ],
+					ajax: [ "manipulation/_evalUrl", "deprecated/ajax-event-alias" ],
 					callbacks: [ "deferred" ],
 					css: [ "effects", "dimensions", "offset" ],
 					"css/showHide": [ "effects" ],
 					deferred: {
 						remove: [ "ajax", "effects", "queue", "core/ready" ],
 						include: [ "core/ready-no-deferred" ]
-					}
+					},
+					event: [ "deprecated/ajax-event-alias", "deprecated/event" ]
 				}
 			}
 		},
