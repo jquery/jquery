@@ -87,7 +87,7 @@ Some example modules that can be excluded are:
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
 - **event**: The `.on()` and `.off()` methods and all event functionality.
-- **event/trigger**: The `.trigger()` and `.triggerHandler()` methods. Used by the **alias** module.
+- **event/trigger**: The `.trigger()` and `.triggerHandler()` methods.
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
 - **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks bound with `jQuery()` will simply be called immediately. However, `jQuery(document).ready()` will not be a function and `.on("ready", ...)` or similar will not be triggered.
