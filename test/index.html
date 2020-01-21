@@ -29,7 +29,14 @@
 		// Load tests if they have not been loaded
 		// This is in a different script tag to ensure that
 		// jQuery is on the page when the testrunner executes
-		if ( !QUnit.urlParams.amd ) {
+		// QUnit.config is populated from QUnit.urlParams but only at the beginning
+		// of the test run. We need to read both.
+		var amd = QUnit.config.amd || QUnit.urlParams.amd;
+
+		// Workaround: Remove call to `window.__karma__.loaded()`
+		// in favour of calling `window.__karma__.start()` from `loadTests()`
+		// because tests such as unit/ready.js should run after document ready.
+		if ( !amd ) {
 			loadTests();
 		}
 	</script>
