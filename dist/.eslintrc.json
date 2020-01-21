@@ -1,23 +1,33 @@
 {
 	"root": true,
 
-	"extends": "../.eslintrc-browser.json",
+	"parserOptions": {
+		"ecmaVersion": 5,
+		"sourceType": "script"
+	},
 
-	"rules": {
-		// That is okay for the built version
-		"no-multiple-empty-lines": "off",
+	"overrides": [
+		{
+			"files": "jquery.js",
+			"extends": "../.eslintrc-browser.json",
 
-		// Sizzle is not compatible with jQuery code style
-		"no-nested-ternary": "off",
-		"no-unused-expressions": "off",
-		"no-unused-vars": "off",
-		"lines-around-comment": "off",
-		"space-in-parens": "off",
-		"camelcase": "off",
-		"computed-property-spacing": "off",
-		"max-len": "off",
-		"dot-notation": "off",
-		"semi-spacing": "off",
-		"brace-style": "off"
-	}
+			"rules": {
+				// That is okay for the built version
+				"no-multiple-empty-lines": "off",
+
+				// Sizzle is not compatible with jQuery code style
+				"no-nested-ternary": "off",
+				"no-unused-expressions": "off",
+				"no-unused-vars": "off",
+				"lines-around-comment": "off",
+				"space-in-parens": "off",
+				"camelcase": "off",
+				"computed-property-spacing": "off",
+				"max-len": "off",
+				"dot-notation": "off",
+				"semi-spacing": "off",
+				"brace-style": "off"
+			}
+		}
+	]
 }
