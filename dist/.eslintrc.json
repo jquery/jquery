@@ -1,21 +1,26 @@
 {
 	"root": true,
 
-	"extends": "../.eslintrc-browser.json",
-
 	"parserOptions": {
 		"ecmaVersion": 5,
 		"sourceType": "script"
-	},
-
-	"rules": {
-		// That is okay for the built version
-		"no-multiple-empty-lines": "off"
 	},
 
 	"globals": {
 		"define": false,
 		"module": true,
 		"Symbol": false
-	}
+	},
+
+	"overrides": [
+		{
+			"files": "jquery.js",
+			"extends": "../.eslintrc-browser.json",
+
+			"rules": {
+				// That is okay for the built version
+				"no-multiple-empty-lines": "off"
+			}
+		}
+	]
 }
