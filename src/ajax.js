@@ -8,7 +8,7 @@ define( [
 	"./ajax/var/rquery",
 
 	"./core/init",
-	"./ajax/parseXML",
+	"./core/parseXML",
 	"./event/trigger",
 	"./deferred",
 	"./serialize" // jQuery.param

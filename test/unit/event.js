@@ -1317,7 +1317,7 @@ QUnit.test( "Delegated events with malformed selectors (gh-3071)", function( ass
 		jQuery( "#foo" ).on( "click", "nonexistent:not", function() {} );
 	}, "short-circuitable malformed selector throws on attach" );
 
-	jQuery( "#foo > :first-child" ).click();
+	jQuery( "#foo > :first-child" ).trigger( "click" );
 	assert.ok( true, "malformed selector does not throw on event" );
 } );
 
@@ -2490,7 +2490,7 @@ QUnit.test( "drag/drop events copy mouse-related event properties (gh-1925, gh-2
 
 	fireNative( $fixture[ 0 ], "drop" );
 
-	$fixture.unbind( "dragmove drop" ).remove();
+	$fixture.off( "dragmove drop" ).remove();
 } );
 
 QUnit.test( "focusin using non-element targets", function( assert ) {
@@ -2543,7 +2543,8 @@ testIframe(
 	function( assert, jQuery, window, document, isOk ) {
 		assert.expect( 1 );
 		assert.ok( isOk, "$.when( $.ready ) works" );
-	}
+	},
+	jQuery.when ? QUnit.test : QUnit.skip
 );
 
 // need PHP here to make the incepted IFRAME hang

@@ -55,7 +55,7 @@ testIframe(
 );
 
 ( function() {
-	var expected,
+	var browserKey, expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			edge: {
@@ -293,6 +293,14 @@ testIframe(
 				"scrollboxSize": true
 			}
 		};
+
+	// Make the slim build pass tests.
+	for ( browserKey in expectedMap ) {
+		if ( !jQuery.ajax ) {
+			delete expectedMap[ browserKey ].ajax;
+			delete expectedMap[ browserKey ].cors;
+		}
+	}
 
 	if ( /edge\//i.test( userAgent ) ) {
 		expected = expectedMap.edge;

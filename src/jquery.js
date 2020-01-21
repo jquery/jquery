@@ -23,6 +23,8 @@ define( [
 	"./ajax/script",
 	"./ajax/jsonp",
 	"./ajax/load",
+	"./core/parseXML",
+	"./core/parseHTML",
 	"./effects",
 	"./effects/animatedSelector",
 	"./offset",

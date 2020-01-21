@@ -72,7 +72,9 @@
     "test:browserless": "grunt && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
     "test:amd": "grunt && grunt karma:amd",
-    "test": "grunt && grunt test:slow && grunt karma:main && grunt karma:amd",
+    "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
+    "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
+    "test": "npm run test:slim && npm run test:no-deprecated && grunt && grunt test:slow && grunt karma:main && grunt karma:amd",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {
