@@ -3039,7 +3039,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		assert.expect( 1 );
 
 		var done = assert.async(),
-				timeout;
+			timeout;
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
