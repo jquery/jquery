@@ -3035,11 +3035,12 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
-	QUnit.test( "jQuery.append with crossorigin attribute", function( assert ) {
+	QUnit[ ( !QUnit.isSwarm || location.hostname === "localhost" ) ? "test" : "skip" ](
+		"jQuery.append with crossorigin attribute", function( assert ) {
 		assert.expect( 1 );
 
 		var done = assert.async(),
-			timeout;
+				timeout;
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
@@ -3052,8 +3053,8 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		// Simulate a cross-origin request.
 		// Full cross-origin verification is only done when tests run from localhost,
-		// e.g. when run via Karma (as we can depend on localhost resolving to 127.0.0.1)
-		// and that in other cases we only do a more limited check that the Origin header is sent.
+		// e.g. when run via Karma (as we can depend on localhost resolving to 127.0.0.1).
+		// In other cases we only do a more limited check: that the Origin header is sent.
 		src = src.replace( "localhost", "127.0.0.1" );
 		var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
 
