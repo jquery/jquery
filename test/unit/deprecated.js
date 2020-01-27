@@ -1,7 +1,7 @@
 QUnit.module( "deprecated", { afterEach: moduleTeardown } );
 
 
-QUnit.test( "bind/unbind", function( assert ) {
+QUnit[ jQuery.fn.bind ? "test" : "skip" ]( "bind/unbind", function( assert ) {
 	assert.expect( 4 );
 
 	var markup = jQuery(
@@ -22,7 +22,7 @@ QUnit.test( "bind/unbind", function( assert ) {
 		.remove();
 } );
 
-QUnit.test( "delegate/undelegate", function( assert ) {
+QUnit[ jQuery.fn.delegate ? "test" : "skip" ]( "delegate/undelegate", function( assert ) {
 	assert.expect( 2 );
 
 	var markup = jQuery(
@@ -41,28 +41,25 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 		.remove();
 } );
 
-if ( jQuery.fn.hover ) {
-	QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
-		assert.expect( 1 );
+QUnit[ jQuery.fn.hover ? "test" : "skip" ]( "hover() mouseenter mouseleave", function( assert ) {
+	assert.expect( 1 );
 
-		var times = 0,
-			handler1 = function() { ++times; },
-			handler2 = function() { ++times; };
+	var times = 0,
+		handler1 = function() { ++times; },
+		handler2 = function() { ++times; };
 
-		jQuery( "#firstp" )
-			.hover( handler1, handler2 )
-			.mouseenter().mouseleave()
-			.off( "mouseenter", handler1 )
-			.off( "mouseleave", handler2 )
-			.hover( handler1 )
-			.mouseenter().mouseleave()
-			.off( "mouseenter mouseleave", handler1 )
-			.mouseenter().mouseleave();
+	jQuery( "#firstp" )
+		.hover( handler1, handler2 )
+		.mouseenter().mouseleave()
+		.off( "mouseenter", handler1 )
+		.off( "mouseleave", handler2 )
+		.hover( handler1 )
+		.mouseenter().mouseleave()
+		.off( "mouseenter mouseleave", handler1 )
+		.mouseenter().mouseleave();
 
-		assert.equal( times, 4, "hover handlers fired" );
-
-	} );
-}
+	assert.equal( times, 4, "hover handlers fired" );
+} );
 
 
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( assert ) {
@@ -99,6 +96,45 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( ass
 	assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 } );
 
+if ( jQuery.ajax && jQuery.fn.ajaxSend ) {
+	ajaxTest( "jQuery.ajax() - events with context", 12, function( assert ) {
+		var context = document.createElement( "div" );
+
+		function event( e ) {
+			assert.equal( this, context, e.type );
+		}
+
+		function callback( msg ) {
+			return function() {
+				assert.equal( this, context, "context is preserved on callback " + msg );
+			};
+		}
+
+		return {
+			setup: function() {
+				jQuery( context ).appendTo( "#foo" )
+					.ajaxSend( event )
+					.ajaxComplete( event )
+					.ajaxError( event )
+					.ajaxSuccess( event );
+			},
+			requests: [ {
+				url: url( "name.html" ),
+				context: context,
+				beforeSend: callback( "beforeSend" ),
+				success: callback( "success" ),
+				complete: callback( "complete" )
+			}, {
+				url: url( "404.txt" ),
+				context: context,
+				beforeSend: callback( "beforeSend" ),
+				error: callback( "error" ),
+				complete: callback( "complete" )
+			} ]
+		};
+	} );
+}
+
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
 
 	// Explicitly skipping focus/blur events due to their flakiness
@@ -117,7 +153,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) 
 	} );
 } );
 
-QUnit.test( "jQuery.parseJSON", function( assert ) {
+QUnit[ jQuery.parseJSON ? "test" : "skip" ]( "jQuery.parseJSON", function( assert ) {
 	assert.expect( 20 );
 
 	assert.strictEqual( jQuery.parseJSON( null ), null, "primitive null" );
@@ -187,13 +223,13 @@ QUnit.test( "jQuery.parseJSON", function( assert ) {
 	assert.strictEqual( jQuery.parseJSON( [ 0 ] ), 0, "Input cast to string" );
 } );
 
-QUnit.test( "jQuery.isArray", function( assert ) {
+QUnit[ jQuery.isArray ? "test" : "skip" ]( "jQuery.isArray", function( assert ) {
 	assert.expect( 1 );
 
 	assert.strictEqual( jQuery.isArray, Array.isArray, "Array.isArray equals jQuery.isArray" );
 } );
 
-QUnit.test( "jQuery.nodeName", function( assert ) {
+QUnit[ jQuery.nodeName ? "test" : "skip" ]( "jQuery.nodeName", function( assert ) {
 	assert.expect( 8 );
 
 	assert.strictEqual( typeof jQuery.nodeName, "function", "jQuery.nodeName is a function" );
@@ -242,7 +278,7 @@ QUnit.test( "jQuery.nodeName", function( assert ) {
 } );
 
 
-QUnit.test( "type", function( assert ) {
+QUnit[ jQuery.type ? "test" : "skip" ]( "type", function( assert ) {
 	assert.expect( 28 );
 
 	assert.equal( jQuery.type( null ), "null", "null" );
@@ -281,14 +317,15 @@ QUnit.test( "type", function( assert ) {
 	assert.equal( jQuery.type( new MyObject() ), "object", "Object" );
 } );
 
-QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "type for `Symbol`", function( assert ) {
+QUnit[ jQuery.type && typeof Symbol === "function" ? "test" : "skip" ](
+	"type for `Symbol`", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal( jQuery.type( Symbol() ), "symbol", "Symbol" );
 	assert.equal( jQuery.type( Object( Symbol() ) ), "symbol", "Symbol" );
 } );
 
-QUnit.test( "isFunction", function( assert ) {
+QUnit[ jQuery.isFunction ? "test" : "skip" ]( "isFunction", function( assert ) {
 	assert.expect( 20 );
 
 	var mystr, myarr, myfunction, fn, obj, nodes, first, input, a;
@@ -376,7 +413,7 @@ QUnit.test( "isFunction", function( assert ) {
 	} );
 } );
 
-QUnit.test( "isFunction(cross-realm function)", function( assert ) {
+QUnit[ jQuery.isFunction ? "test" : "skip" ]( "isFunction(cross-realm function)", function( assert ) {
 	assert.expect( 1 );
 
 	var iframe, doc,
@@ -409,7 +446,7 @@ supportjQuery.each(
 			fn = Function( "return " + source )();
 		} catch ( e ) {}
 
-		QUnit[ fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
+		QUnit[ jQuery.isFunction && fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
 			function( assert ) {
 				assert.expect( 1 );
 
@@ -419,7 +456,7 @@ supportjQuery.each(
 	}
 );
 
-QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
+QUnit[ jQuery.isFunction && typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
 	"isFunction(custom @@toStringTag)",
 	function( assert ) {
 		assert.expect( 2 );
@@ -434,7 +471,7 @@ QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](
 	}
 );
 
-QUnit.test( "jQuery.isWindow", function( assert ) {
+QUnit[ jQuery.isWindow ? "test" : "skip" ]( "jQuery.isWindow", function( assert ) {
 	assert.expect( 14 );
 
 	assert.ok( jQuery.isWindow( window ), "window" );
@@ -453,7 +490,7 @@ QUnit.test( "jQuery.isWindow", function( assert ) {
 	assert.ok( !jQuery.isWindow( function() {} ), "function" );
 } );
 
-QUnit.test( "jQuery.camelCase()", function( assert ) {
+QUnit[ jQuery.camelCase ? "test" : "skip" ]( "jQuery.camelCase()", function( assert ) {
 
 	var tests = {
 		"foo-bar": "fooBar",
@@ -472,13 +509,13 @@ QUnit.test( "jQuery.camelCase()", function( assert ) {
 	} );
 } );
 
-QUnit.test( "jQuery.now", function( assert ) {
+QUnit[ jQuery.now ? "test" : "skip" ]( "jQuery.now", function( assert ) {
 	assert.expect( 1 );
 
 	assert.ok( typeof jQuery.now() === "number", "jQuery.now is a function" );
 } );
 
-QUnit.test( "jQuery.proxy", function( assert ) {
+QUnit[ jQuery.proxy ? "test" : "skip" ]( "jQuery.proxy", function( assert ) {
 	assert.expect( 9 );
 
 	var test2, test3, test4, fn, cb,
@@ -526,7 +563,7 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	cb.call( thisObject, "arg3" );
 } );
 
-QUnit.test( "isNumeric", function( assert ) {
+QUnit[ jQuery.isNumeric ? "test" : "skip" ]( "isNumeric", function( assert ) {
 	assert.expect( 43 );
 
 	var t = jQuery.isNumeric,
@@ -594,14 +631,15 @@ QUnit.test( "isNumeric", function( assert ) {
 	assert.equal( t( new Date() ), false, "Instance of a Date" );
 } );
 
-QUnit[ typeof Symbol === "function" ? "test" : "skip" ]( "isNumeric(Symbol)", function( assert ) {
+QUnit[ jQuery.isNumeric && typeof Symbol === "function" ? "test" : "skip" ](
+	"isNumeric(Symbol)", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal( jQuery.isNumeric( Symbol() ), false, "Symbol" );
 	assert.equal( jQuery.isNumeric( Object( Symbol() ) ), false, "Symbol inside an object" );
 } );
 
-QUnit.test( "trim", function( assert ) {
+QUnit[ jQuery.trim ? "test" : "skip" ]( "trim", function( assert ) {
 	assert.expect( 13 );
 
 	var nbsp = String.fromCharCode( 160 );

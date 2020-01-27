@@ -737,6 +737,7 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 
 QUnit.test( ".data supports interoperable removal of hyphenated/camelCase properties", function( assert ) {
 	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
+		rdashAlpha = /-([a-z])/g,
 		datas = {
 			"non-empty": "a string",
 			"empty-string": "",
@@ -755,11 +756,19 @@ QUnit.test( ".data supports interoperable removal of hyphenated/camelCase proper
 
 	assert.expect( 27 );
 
+	function fcamelCase( all, letter ) {
+		return letter.toUpperCase();
+	}
+
 	jQuery.each( datas, function( key, val ) {
 		div.data( key, val );
 
 		assert.deepEqual( div.data( key ), val, "get: " + key );
-		assert.deepEqual( div.data( jQuery.camelCase( key ) ), val, "get: " + jQuery.camelCase( key ) );
+		assert.deepEqual(
+			div.data( key.replace( rdashAlpha, fcamelCase ) ),
+			val,
+			"get: " + key.replace( rdashAlpha, fcamelCase )
+		);
 
 		div.removeData( key );
 

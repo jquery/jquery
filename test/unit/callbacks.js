@@ -4,6 +4,12 @@ QUnit.module( "callbacks", {
 
 ( function() {
 
+if ( !jQuery.Callbacks ) {
+	return;
+}
+
+( function() {
+
 var output,
 	addToOutput = function( string ) {
 		return function() {
@@ -387,3 +393,5 @@ QUnit.test( "jQuery.Callbacks() - list with memory stays locked (gh-3469)", func
 	cb.fire();
 	assert.equal( fired, 11, "Post-lock() fire ignored" );
 } );
+
+} )();
