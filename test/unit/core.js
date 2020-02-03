@@ -197,6 +197,19 @@ QUnit.test( "globalEval execution after script injection (#7862)", function( ass
 	assert.ok( window.strictEvalTest - now < 500, "Code executed synchronously" );
 } );
 
+testIframe(
+	"globalEval with custom document context",
+	"core/globaleval-context.html",
+	function( assert, framejQuery, frameWindow, frameDocument ) {
+		assert.expect( 2 );
+
+		jQuery.globalEval( "window.scriptTest = true;", {}, frameDocument );
+		assert.ok( !window.scriptTest, "script executed in iframe context" );
+		assert.ok( frameWindow.scriptTest, "script executed in iframe context" );
+	}
+);
+
+
 QUnit.test( "noConflict", function( assert ) {
 	assert.expect( 7 );
 

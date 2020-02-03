@@ -254,12 +254,24 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 			args.unshift( assert );
 
 			setTimeout( function() {
+				var result;
+
 				this.iframeCallback = undefined;
 
-				func.apply( this, args );
-				func = function() {};
-				$iframe.remove();
-				done();
+				result = func.apply( this, args );
+
+				function finish() {
+					func = function() {};
+					$iframe.remove();
+					done();
+				}
+
+				// Wait for promises returned by `func`.
+				if ( result && result.then ) {
+					result.then( finish );
+				} else {
+					finish();
+				}
 			} );
 		};
 
