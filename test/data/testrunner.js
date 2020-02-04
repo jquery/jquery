@@ -80,7 +80,6 @@ QUnit.testDone( function() {
 	supportjQuery( "#qunit-fixture-iframe" ).remove();
 
 	// Reset internal jQuery state
-	jQuery.event.global = {};
 	if ( ajaxSettings ) {
 		jQuery.ajaxSettings = jQuery.extend( true, {}, ajaxSettings );
 	} else {

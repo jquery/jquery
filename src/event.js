@@ -101,8 +101,6 @@ function on( elem, types, selector, data, fn, one ) {
  */
 jQuery.event = {
 
-	global: {},
-
 	add: function( elem, types, handler, data, selector ) {
 
 		var handleObjIn, eventHandle, tmp,
@@ -210,9 +208,6 @@ jQuery.event = {
 			} else {
 				handlers.push( handleObj );
 			}
-
-			// Keep track of which events have ever been used, for event optimization
-			jQuery.event.global[ type ] = true;
 		}
 
 	},
