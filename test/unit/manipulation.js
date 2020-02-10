@@ -2315,6 +2315,27 @@ testIframe(
 	}
 );
 
+testIframe(
+	"domManip executes external scripts in iframes in the iframes' context",
+	"manipulation/scripts-context.html",
+	function( assert, framejQuery, frameWindow, frameDocument ) {
+		assert.expect( 2 );
+
+		Globals.register( "finishTest" );
+
+		return new Promise( function( resolve ) {
+			window.finishTest = resolve;
+			jQuery( frameDocument.body ).append(
+				"<script src='" + url( "manipulation/set-global-scripttest.js" ) + "'></script>" );
+			assert.ok( !window.scriptTest, "script executed in iframe context" );
+			assert.ok( frameWindow.scriptTest, "script executed in iframe context" );
+		} );
+	},
+
+	// The AJAX module is needed for jQuery._evalUrl.
+	QUnit[ jQuery.ajax ? "test" : "skip" ]
+);
+
 QUnit.test( "jQuery.clone - no exceptions for object elements #9587", function( assert ) {
 
 	assert.expect( 1 );
