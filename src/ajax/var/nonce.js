@@ -1,5 +1,5 @@
 define( function() {
 	"use strict";
 
-	return Date.now();
+	return { guid: Date.now() };
 } );
