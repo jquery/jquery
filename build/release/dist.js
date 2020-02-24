@@ -55,10 +55,12 @@ module.exports = function( Release, files, complete ) {
 	/**
 	 * Replace the version in the README
 	 * @param {string} readme
+	 * @param {string} blogPostLink
 	 */
-	function editReadme( readme ) {
-		var rprev = new RegExp( Release.prevVersion, "g" );
-		return readme.replace( rprev, Release.newVersion );
+	function editReadme( readme, blogPostLink ) {
+		return readme
+			.replace( /@VERSION/g, Release.newVersion )
+			.replace( /@BLOG_POST_LINK/g, blogPostLink );
 	}
 
 	/**
@@ -69,18 +71,19 @@ module.exports = function( Release, files, complete ) {
 		// Copy dist files
 		const distFolder = `${ Release.dir.dist }/dist`;
 		const readme = await fs.readFile(
-			`${ Release.dir.dist }/README.md`, "utf8" );
-		const rmIgnore =
-			[
-				...files,
-				"README.md",
-				"node_modules"
-			]
+			`${ Release.dir.repo }/build/fixtures/README.md`, "utf8" );
+		const rmIgnore = [ ...files, "node_modules" ]
 			.map( file => `${ Release.dir.dist }/${ file }` );
 
 		shell.config.globOptions = {
 			ignore: rmIgnore
 		};
+
+		const { blogPostLink } = await inquirer.prompt( [ {
+			type: "input",
+			name: "blogPostLink",
+			message: "Enter URL of the blog post announcing the jQuery release...\n"
+		} ] );
 
 		// Remove extraneous files before copy
 		shell.rm( "-rf", `${ Release.dir.dist }/**/*` );
@@ -95,8 +98,9 @@ module.exports = function( Release, files, complete ) {
 			shell.cp( "-rf", `${ Release.dir.repo }/${ file }`, Release.dir.dist );
 		} );
 
-		// Remove the wrapper from the dist repo
+		// Remove the wrapper & the ESLint config from the dist repo
 		shell.rm( "-f", `${ Release.dir.dist }/src/wrapper.js` );
+		shell.rm( "-f", `${ Release.dir.dist }/src/.eslintrc.json` );
 
 		// Write generated bower file
 		await fs.writeFile( `${ Release.dir.dist }/bower.json`, generateBower() );
@@ -105,7 +109,6 @@ module.exports = function( Release, files, complete ) {
 			editReadme( readme, blogPostLink ) );
 
 		console.log( "Files ready to add." );
-		console.log( "Edit the dist README.md to include the latest blog post link." );
 	}
 
 	/**
