@@ -19,6 +19,7 @@
 	},
 
 	"rules": {
+		"one-var": ["error", {"var": "always"}],
 		"strict": ["error", "function"]
 	}
 }
