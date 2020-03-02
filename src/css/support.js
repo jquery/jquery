@@ -103,7 +103,7 @@ define( [
 		// Behavior in IE 9 is more subtle than in newer versions & it passes
 		// some versions of this test; make sure not to make it pass there!
 		reliableTrDimensions: function() {
-			var table, tr, trChild;
+			var table, tr, trChild, trStyle;
 			if ( reliableTrDimensionsVal == null ) {
 				table = document.createElement( "table" );
 				tr = document.createElement( "tr" );
@@ -118,7 +118,7 @@ define( [
 					.appendChild( tr )
 					.appendChild( trChild );
 
-				var trStyle = window.getComputedStyle( tr );
+				trStyle = window.getComputedStyle( tr );
 				reliableTrDimensionsVal = parseInt( trStyle.height ) > 3;
 
 				documentElement.removeChild( table );

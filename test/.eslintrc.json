@@ -46,6 +46,7 @@
 		"brace-style": "off",
 		"key-spacing": "off",
 		"camelcase": "off",
+		"one-var": "off",
 		"strict": "off",
 
 		// Not really too many - waiting for autofix features for these rules

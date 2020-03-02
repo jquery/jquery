@@ -14,6 +14,7 @@
 			"rules": {
 				// That is okay for the built version
 				"no-multiple-empty-lines": "off",
+				"one-var": "off",
 
 				// Sizzle is not compatible with jQuery code style
 				"no-nested-ternary": "off",
