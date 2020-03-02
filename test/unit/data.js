@@ -989,3 +989,18 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 		}
 	}
 } );
+
+QUnit.test( "keys matching Object.prototype properties  (gh-3256)", function( assert ) {
+	assert.expect( 2 );
+
+	var div = jQuery( "<div/>" );
+
+	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
+		"hasOwnProperty not matched (before forced data creation)" );
+
+	// Force the creation of a data object for this element.
+	div.data( { foo: "bar" } );
+
+	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
+		"hasOwnProperty not matched (after forced data creation)" );
+} );

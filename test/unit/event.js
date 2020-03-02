@@ -1796,6 +1796,49 @@ QUnit.test( "jQuery.off using dispatched jQuery.Event", function( assert ) {
 		.remove();
 } );
 
+QUnit.test( "events with type matching an Object.prototype property (gh-3256)", function( assert ) {
+	assert.expect( 1 );
+
+	var elem = jQuery( "<div/>" ),
+		eventFired = false;
+
+	elem.appendTo( "#qunit-fixture" );
+
+	try {
+		elem
+			.one( "hasOwnProperty", function() {
+				eventFired = true;
+			} )
+			.trigger( "hasOwnProperty" );
+	} finally {
+		assert.strictEqual( eventFired, true, "trigger fired without crashing" );
+	}
+} );
+
+QUnit.test( "events with type matching an Object.prototype property, cloned element (gh-3256)",
+	function( assert ) {
+	assert.expect( 1 );
+
+	var elem = jQuery( "<div/>" ),
+		eventFired = false;
+
+	elem.appendTo( "#qunit-fixture" );
+
+	try {
+		// Make sure the original element has some event data.
+		elem.on( "click", function() {} );
+
+		elem
+			.clone( true )
+			.one( "hasOwnProperty", function() {
+				eventFired = true;
+			} )
+			.trigger( "hasOwnProperty" );
+	} finally {
+		assert.strictEqual( eventFired, true, "trigger fired without crashing" );
+	}
+} );
+
 // selector-native does not support scope-fixing in delegation
 QUnit[ jQuery.find.compile ? "test" : "skip" ]( "delegated event with delegateTarget-relative selector", function( assert ) {
 	assert.expect( 3 );

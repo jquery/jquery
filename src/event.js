@@ -150,7 +150,7 @@ jQuery.event = {
 
 		// Init the element's event structure and main handler, if this is the first
 		if ( !( events = elemData.events ) ) {
-			events = elemData.events = {};
+			events = elemData.events = Object.create( null );
 		}
 		if ( !( eventHandle = elemData.handle ) ) {
 			eventHandle = elemData.handle = function( e ) {
@@ -314,7 +314,9 @@ jQuery.event = {
 			// Make a writable jQuery.Event from the native event object
 			event = jQuery.event.fix( nativeEvent ),
 
-			handlers = ( dataPriv.get( this, "events" ) || {} )[ event.type ] || [],
+			handlers = (
+					dataPriv.get( this, "events" ) || Object.create( null )
+				)[ event.type ] || [],
 			special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
