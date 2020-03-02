@@ -4,23 +4,22 @@ var fs = require( "fs" );
 
 module.exports = function( Release ) {
 
-	var
-		distFiles = [
-			"dist/jquery.js",
-			"dist/jquery.min.js",
-			"dist/jquery.min.map",
-			"dist/jquery.slim.js",
-			"dist/jquery.slim.min.js",
-			"dist/jquery.slim.min.map"
-		],
-		filesToCommit = [
-			...distFiles,
-			"src/core.js"
-		],
-		cdn = require( "./release/cdn" ),
-		dist = require( "./release/dist" ),
+	const distFiles = [
+		"dist/jquery.js",
+		"dist/jquery.min.js",
+		"dist/jquery.min.map",
+		"dist/jquery.slim.js",
+		"dist/jquery.slim.min.js",
+		"dist/jquery.slim.min.map"
+	];
+	const filesToCommit = [
+		...distFiles,
+		"src/core.js"
+	];
+	const cdn = require( "./release/cdn" );
+	const dist = require( "./release/dist" );
 
-		npmTags = Release.npmTags;
+	const npmTags = Release.npmTags;
 
 	function setSrcVersion( filepath ) {
 		var contents = fs.readFileSync( filepath, "utf8" );
@@ -86,6 +85,7 @@ module.exports = function( Release ) {
 module.exports.dependencies = [
 	"archiver@1.3.0",
 	"shelljs@0.7.7",
+	"inquirer@7.0.4",
 	"npm@4.4.1",
 	"chalk@1.1.3"
 ];
