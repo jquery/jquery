@@ -107,31 +107,31 @@ QUnit.module( "ready" );
 
 	QUnit[ jQuery.when ? "test" : "skip" ]( "jQuery.when(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
-		var done = jQuery.map( new Array( 2 ), function() { return assert.async(); } );
+		var done = assert.async( 2 );
 
 		whenified.then( function() {
 			assert.ok( jQuery.isReady, "jQuery.when Deferred resolved" );
-			done.pop()();
+			done();
 		} );
 
 		jQuery.when( jQuery.ready ).then( function() {
 			assert.ok( jQuery.isReady, "jQuery.when Deferred resolved" );
-			done.pop()();
+			done();
 		} );
 	} );
 
 	QUnit.test( "Promise.resolve(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
-		var done = jQuery.map( new Array( 2 ), function() { return assert.async(); } );
+		var done = assert.async( 2 );
 
 		promisified.then( function() {
 			assert.ok( jQuery.isReady, "Native promised resolved" );
-			done.pop()();
+			done();
 		} );
 
 		Promise.resolve( jQuery.ready ).then( function() {
 			assert.ok( jQuery.isReady, "Native promised resolved" );
-			done.pop()();
+			done();
 		} );
 	} );
 

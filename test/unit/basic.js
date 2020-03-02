@@ -4,14 +4,14 @@ if ( jQuery.ajax ) {
 QUnit.test( "ajax", function( assert ) {
 	assert.expect( 4 );
 
-	var done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+	var done = assert.async( 3 );
 
 	jQuery.ajax( {
 		type: "GET",
 		url: url( "mock.php?action=name&name=foo" ),
 		success: function( msg ) {
 			assert.strictEqual( msg, "bar", "Check for GET" );
-			done.pop()();
+			done();
 		}
 	} );
 
@@ -21,14 +21,14 @@ QUnit.test( "ajax", function( assert ) {
 		data: "name=peter",
 		success: function( msg ) {
 			assert.strictEqual( msg, "pan", "Check for POST" );
-			done.pop()();
+			done();
 		}
 	} );
 
 	jQuery( "#first" ).load( url( "name.html" ), function() {
 		assert.ok( /^ERROR/.test( jQuery( "#first" ).text() ),
 			"Check if content was injected into the DOM" );
-		done.pop()();
+		done();
 	} );
 } );
 }
