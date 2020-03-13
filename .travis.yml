@@ -1,5 +1,5 @@
 language: node_js
-sudo: false
+os: linux
 node_js:
 - "8"
 - "10"
@@ -7,7 +7,7 @@ node_js:
 - "13"
 env:
   - NPM_SCRIPT=test:browserless
-matrix:
+jobs:
   include:
     - name: "Browser tests: full build, Chrome & Firefox stable"
       node_js: "12"
