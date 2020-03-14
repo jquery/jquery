@@ -420,7 +420,7 @@ QUnit.test( ".data(Object)", function( assert ) {
 	assert.expect( 4 );
 
 	var obj, jqobj,
-		div = jQuery( "<div/>" );
+		div = jQuery( "<div></div>" );
 
 	div.data( { "test": "in", "test2": "in2" } );
 	assert.equal( div.data( "test" ), "in", "Verify setting an object in data" );
@@ -547,7 +547,7 @@ QUnit.test( ".data should not miss preset data-* w/ hyphenated property names", 
 
 	assert.expect( 2 );
 
-	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
+	var div = jQuery( "<div></div>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		test = {
 			"camelBar": "camelBar",
 			"hyphen-foo": "hyphen-foo"
@@ -564,7 +564,7 @@ QUnit.test( "jQuery.data should not miss data-* w/ hyphenated property names #14
 
 	assert.expect( 1 );
 
-	var div = jQuery( "<div/>" );
+	var div = jQuery( "<div></div>" );
 
 	div.data( "foo-bar", "baz" );
 
@@ -576,14 +576,14 @@ QUnit.test( ".data should not miss attr() set data-* with hyphenated property na
 
 	var a, b;
 
-	a = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+	a = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	a.attr( "data-long-param", "test" );
 	a.data( "long-param", { a: 2 } );
 
 	assert.deepEqual( a.data( "long-param" ), { a: 2 }, "data with property long-param was found, 1" );
 
-	b = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+	b = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	b.attr( "data-long-param", "test" );
 	b.data( "long-param" );
@@ -659,7 +659,7 @@ QUnit.test( ".data should not strip more than one hyphen when camelCasing (gh-20
 
 QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of properties with arbitrary non-null|NaN|undefined values", function( assert ) {
 
-	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
+	var div = jQuery( "<div></div>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": {
 				key: "nonEmpty",
@@ -745,7 +745,7 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 } );
 
 QUnit.test( ".data supports interoperable removal of hyphenated/camelCase properties", function( assert ) {
-	var div = jQuery( "<div/>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
+	var div = jQuery( "<div></div>", { id: "hyphened" } ).appendTo( "#qunit-fixture" ),
 		rdashAlpha = /-([a-z])/g,
 		datas = {
 			"non-empty": "a string",
@@ -952,7 +952,7 @@ QUnit.test( "Check that the expando is removed when there's no more data", funct
 	assert.expect( 2 );
 
 	var key,
-		div = jQuery( "<div/>" );
+		div = jQuery( "<div></div>" );
 	div.data( "some", "data" );
 	assert.equal( div.data( "some" ), "data", "Data is added" );
 	div.removeData( "some" );
@@ -986,7 +986,7 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 	assert.expect( 1 );
 
 	var key,
-		div = jQuery( "<div/>" );
+		div = jQuery( "<div></div>" );
 
 	div.data( "foo" );
 	assert.equal( jQuery.hasData( div[ 0 ] ), false, "No data exists after access" );
@@ -1002,7 +1002,7 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 QUnit.test( "keys matching Object.prototype properties  (gh-3256)", function( assert ) {
 	assert.expect( 2 );
 
-	var div = jQuery( "<div/>" );
+	var div = jQuery( "<div></div>" );
 
 	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
 		"hasOwnProperty not matched (before forced data creation)" );

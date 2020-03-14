@@ -13,7 +13,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	assert.notEqual( $child.css( "width" ), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
 	assert.notEqual( $child.css( "height" ), "20px", "Retrieving a height percentage on the child of a hidden div returns percentage" );
 
-	div = jQuery( "<div/>" );
+	div = jQuery( "<div></div>" );
 
 	// These should be "auto" (or some better value)
 	// temporarily provide "0px" for backwards compat
@@ -25,7 +25,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	assert.equal( div.css( "width" ), "4px", "Width on disconnected node." );
 	assert.equal( div.css( "height" ), "4px", "Height on disconnected node." );
 
-	div2 = jQuery( "<div style='display:none;'><input type='text' style='height:20px;'/><textarea style='height:20px;'/><div style='height:20px;'></div></div>" ).appendTo( "body" );
+	div2 = jQuery( "<div style='display:none;'><input type='text' style='height:20px;'/><textarea style='height:20px;'></textarea><div style='height:20px;'></div></div>" ).appendTo( "body" );
 
 	assert.equal( div2.find( "input" ).css( "height" ), "20px", "Height on hidden input." );
 	assert.equal( div2.find( "textarea" ).css( "height" ), "20px", "Height on hidden textarea." );
@@ -42,7 +42,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) ), 0, "Test negative width set to 0" );
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) ), 0, "Test negative height set to 0" );
 
-	assert.equal( jQuery( "<div style='display: none;'/>" ).css( "display" ), "none", "Styles on disconnected nodes" );
+	assert.equal( jQuery( "<div style='display: none;'></div>" ).css( "display" ), "none", "Styles on disconnected nodes" );
 
 	jQuery( "#floatTest" ).css( { "float": "right" } );
 	assert.equal( jQuery( "#floatTest" ).css( "float" ), "right", "Modified CSS float using \"float\": Assert float is right" );
@@ -111,7 +111,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 
 	assert.strictEqual( child.css( "x-fake" ), undefined, "Make sure undefined is returned from css(nonexistent)." );
 
-	div = jQuery( "<div/>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
+	div = jQuery( "<div></div>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
 	assert.strictEqual( div.css( "z-index" ), "1000",
 		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
 } );
@@ -275,10 +275,10 @@ QUnit.test( "css() mismatched relative values with bounded styles (gh-2144)", fu
 	assert.expect( 1 );
 
 	var right,
-		$container = jQuery( "<div/>" )
+		$container = jQuery( "<div></div>" )
 			.css( { position: "absolute", width: "400px", fontSize: "4px" } )
 			.appendTo( "#qunit-fixture" ),
-		$el = jQuery( "<div/>" )
+		$el = jQuery( "<div></div>" )
 			.css( { position: "absolute", left: "50%", right: "50%" } )
 			.appendTo( $container );
 
@@ -574,7 +574,7 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	assert.equal( div.css( "display" ), "none",
 		"A shown-while-detached div inside a visible div can be hidden by the CSS cascade" );
 
-	span = jQuery( "<span class='hidden'/>" );
+	span = jQuery( "<span class='hidden'></span>" );
 	span.show().appendTo( "#qunit-fixture" );
 	assert.equal( span.css( "display" ), "none",
 		"A shown-while-detached span can be hidden by the CSS cascade" );
@@ -588,7 +588,7 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 		"A shown-while-detached cascade-hidden div is hidden after attachment" );
 	div.remove();
 
-	span = jQuery( "<span class='hidden'/>" );
+	span = jQuery( "<span class='hidden'></span>" );
 	span.appendTo( "#qunit-fixture" ).detach().show().appendTo( "#qunit-fixture" );
 	assert.equal( span.css( "display" ), "none",
 		"A shown-while-detached cascade-hidden span is hidden after attachment" );
@@ -615,7 +615,7 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 		"A shown-while-detached inline-hidden div inside a visible div has default display " +
 		"after attachment" );
 
-	span = jQuery( "<span style='display: none'/>" );
+	span = jQuery( "<span style='display: none'></span>" );
 	span.show();
 	assert.equal( span[ 0 ].style.display, "",
 		"show() updates inline style of a detached inline-hidden span" );
@@ -623,20 +623,20 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	assert.equal( span.css( "display" ), "inline",
 		"A shown-while-detached inline-hidden span has default display after attachment" );
 
-	div = jQuery( "<div style='display: inline'/>" );
+	div = jQuery( "<div style='display: inline'></div>" );
 	div.show().appendTo( "#qunit-fixture" );
 	assert.equal( div.css( "display" ), "inline",
 		"show() does not update inline style of a detached inline-visible div" );
 	div.remove();
 
-	tr = jQuery( "<tr/>" );
+	tr = jQuery( "<tr></tr>" );
 	jQuery( "#table" ).append( tr );
 	tr.detach().hide().show();
 
 	assert.ok( !tr[ 0 ].style.display, "Not-hidden detached tr elements have no inline style" );
 	tr.remove();
 
-	span = jQuery( "<span/>" ).hide().show();
+	span = jQuery( "<span></span>" ).hide().show();
 	assert.ok( !span[ 0 ].style.display, "Not-hidden detached span elements have no inline style" );
 	span.remove();
 } );
@@ -718,7 +718,7 @@ QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
 QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
 	assert.expect( 1 );
 
-	var div = jQuery( "<div />" ),
+	var div = jQuery( "<div></div>" ),
 		fixture = jQuery( "#qunit-fixture" );
 
 	fixture.append( div );
@@ -732,11 +732,11 @@ QUnit.test( "show/hide 3.0, default display", function( assert ) {
 	assert.expect( 36 );
 
 	var i,
-		$elems = jQuery( "<div/>" )
+		$elems = jQuery( "<div></div>" )
 			.appendTo( "#qunit-fixture" )
-			.html( "<div data-expected-display='block'/>" +
-				"<span data-expected-display='inline'/>" +
-				"<ul><li data-expected-display='list-item'/></ul>" )
+			.html( "<div data-expected-display='block'></div>" +
+				"<span data-expected-display='inline'></span>" +
+				"<ul><li data-expected-display='list-item'></li></ul>" )
 			.find( "[data-expected-display]" );
 
 	$elems.each( function() {
@@ -790,9 +790,9 @@ QUnit.test( "show/hide 3.0, cascade display", function( assert ) {
 	assert.expect( 36 );
 
 	var i,
-		$elems = jQuery( "<div/>" )
+		$elems = jQuery( "<div></div>" )
 			.appendTo( "#qunit-fixture" )
-			.html( "<span class='block'/><div class='inline'/><div class='list-item'/>" )
+			.html( "<span class='block'></span><div class='inline'></div><div class='list-item'></div>" )
 			.children();
 
 	$elems.each( function() {
@@ -829,17 +829,17 @@ QUnit.test( "show/hide 3.0, inline display", function( assert ) {
 	assert.expect( 96 );
 
 	var i,
-		$elems = jQuery( "<div/>" )
+		$elems = jQuery( "<div></div>" )
 			.appendTo( "#qunit-fixture" )
-			.html( "<span data-expected-display='block' style='display:block'/>" +
-				"<span class='list-item' data-expected-display='block' style='display:block'/>" +
-				"<div data-expected-display='inline' style='display:inline'/>" +
-				"<div class='list-item' data-expected-display='inline' style='display:inline'/>" +
+			.html( "<span data-expected-display='block' style='display:block'></span>" +
+				"<span class='list-item' data-expected-display='block' style='display:block'></span>" +
+				"<div data-expected-display='inline' style='display:inline'></div>" +
+				"<div class='list-item' data-expected-display='inline' style='display:inline'></div>" +
 				"<ul>" +
-					"<li data-expected-display='block' style='display:block'/>" +
-					"<li class='inline' data-expected-display='block' style='display:block'/>" +
-					"<li data-expected-display='inline' style='display:inline'/>" +
-					"<li class='block' data-expected-display='inline' style='display:inline'/>" +
+					"<li data-expected-display='block' style='display:block'></li>" +
+					"<li class='inline' data-expected-display='block' style='display:block'></li>" +
+					"<li data-expected-display='inline' style='display:inline'></li>" +
+					"<li class='block' data-expected-display='inline' style='display:inline'></li>" +
 				"</ul>" )
 			.find( "[data-expected-display]" );
 
@@ -878,15 +878,15 @@ QUnit.test( "show/hide 3.0, cascade hidden", function( assert ) {
 	assert.expect( 72 );
 
 	var i,
-		$elems = jQuery( "<div/>" )
+		$elems = jQuery( "<div></div>" )
 			.appendTo( "#qunit-fixture" )
-			.html( "<div class='hidden' data-expected-display='block'/>" +
-				"<div class='hidden' data-expected-display='block' style='display:none'/>" +
-				"<span class='hidden' data-expected-display='inline'/>" +
-				"<span class='hidden' data-expected-display='inline' style='display:none'/>" +
+			.html( "<div class='hidden' data-expected-display='block'></div>" +
+				"<div class='hidden' data-expected-display='block' style='display:none'></div>" +
+				"<span class='hidden' data-expected-display='inline'></span>" +
+				"<span class='hidden' data-expected-display='inline' style='display:none'></span>" +
 				"<ul>" +
-					"<li class='hidden' data-expected-display='list-item'/>" +
-					"<li class='hidden' data-expected-display='list-item' style='display:none'/>" +
+					"<li class='hidden' data-expected-display='list-item'></li>" +
+					"<li class='hidden' data-expected-display='list-item' style='display:none'></li>" +
 				"</ul>" )
 			.find( "[data-expected-display]" );
 
@@ -925,16 +925,16 @@ QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
 	assert.expect( 84 );
 
 	var i,
-		$elems = jQuery( "<div/>" )
+		$elems = jQuery( "<div></div>" )
 			.appendTo( "#qunit-fixture" )
-			.html( "<span data-expected-display='inline' style='display:none'/>" +
-				"<span class='list-item' data-expected-display='list-item' style='display:none'/>" +
-				"<div data-expected-display='block' style='display:none'/>" +
-				"<div class='list-item' data-expected-display='list-item' style='display:none'/>" +
+			.html( "<span data-expected-display='inline' style='display:none'></span>" +
+				"<span class='list-item' data-expected-display='list-item' style='display:none'></span>" +
+				"<div data-expected-display='block' style='display:none'></div>" +
+				"<div class='list-item' data-expected-display='list-item' style='display:none'></div>" +
 				"<ul>" +
-					"<li data-expected-display='list-item' style='display:none'/>" +
-					"<li class='block' data-expected-display='block' style='display:none'/>" +
-					"<li class='inline' data-expected-display='inline' style='display:none'/>" +
+					"<li data-expected-display='list-item' style='display:none'></li>" +
+					"<li class='block' data-expected-display='block' style='display:none'></li>" +
+					"<li class='inline' data-expected-display='inline' style='display:none'></li>" +
 				"</ul>" )
 			.find( "[data-expected-display]" );
 
@@ -1005,9 +1005,9 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()"
 
 QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "detached toggle()", function( assert ) {
 	assert.expect( 6 );
-	var detached = jQuery( "<p><a/><p>" ).find( "*" ).addBack(),
-		hiddenDetached = jQuery( "<p><a/></p>" ).find( "*" ).addBack().css( "display", "none" ),
-		cascadeHiddenDetached = jQuery( "<p><a/></p>" ).find( "*" ).addBack().addClass( "hidden" );
+	var detached = jQuery( "<p><a></a><p>" ).find( "*" ).addBack(),
+		hiddenDetached = jQuery( "<p><a></a></p>" ).find( "*" ).addBack().css( "display", "none" ),
+		cascadeHiddenDetached = jQuery( "<p><a></a></p>" ).find( "*" ).addBack().addClass( "hidden" );
 
 	detached.toggle();
 	detached.appendTo( "#qunit-fixture" );
@@ -1107,9 +1107,9 @@ QUnit.test( "computed margins (trac-3333; gh-2237)", function( assert ) {
 QUnit.test( "box model properties incorrectly returning % instead of px, see #10639 and #12088", function( assert ) {
 	assert.expect( 2 );
 
-	var container = jQuery( "<div/>" ).width( 400 ).appendTo( "#qunit-fixture" ),
-		el = jQuery( "<div/>" ).css( { "width": "50%", "marginRight": "50%" } ).appendTo( container ),
-		el2 = jQuery( "<div/>" ).css( { "width": "50%", "minWidth": "300px", "marginLeft": "25%" } ).appendTo( container );
+	var container = jQuery( "<div></div>" ).width( 400 ).appendTo( "#qunit-fixture" ),
+		el = jQuery( "<div></div>" ).css( { "width": "50%", "marginRight": "50%" } ).appendTo( container ),
+		el2 = jQuery( "<div></div>" ).css( { "width": "50%", "minWidth": "300px", "marginLeft": "25%" } ).appendTo( container );
 
 	assert.equal( el.css( "marginRight" ), "200px", "css('marginRight') returning % instead of px, see #10639" );
 	assert.equal( el2.css( "marginLeft" ), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
@@ -1136,10 +1136,10 @@ QUnit.test( "can't get css for disconnected in IE<9, see #10254 and #8388", func
 	assert.expect( 2 );
 	var span, div;
 
-	span = jQuery( "<span/>" ).css( "background-image", "url(" + baseURL + "1x1.jpg)" );
+	span = jQuery( "<span></span>" ).css( "background-image", "url(" + baseURL + "1x1.jpg)" );
 	assert.notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see #10254" );
 
-	div = jQuery( "<div/>" ).css( "top", 10 );
+	div = jQuery( "<div></div>" ).css( "top", 10 );
 	assert.equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
 } );
 
@@ -1154,7 +1154,7 @@ QUnit.test( "Ensure styles are retrieving from parsed html on document fragments
 } );
 
 QUnit.test( "can't get background-position in IE<9, see #10796", function( assert ) {
-	var div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" ),
+	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
 		units = [
 			"0 0",
 			"12px 12px",
@@ -1246,7 +1246,7 @@ QUnit.testUnlessIE( "Do not append px to CSS Grid-related properties (gh-4007)",
 		};
 
 	for ( prop in gridProps ) {
-		$div = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+		$div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 		$div.css( prop, 2 );
 
 		value = gridProps[ prop ];
@@ -1644,7 +1644,7 @@ QUnit.test(
 QUnit.test( "Don't append px to CSS \"order\" value (#14049)", function( assert ) {
 	assert.expect( 1 );
 
-	var $elem = jQuery( "<div/>" );
+	var $elem = jQuery( "<div></div>" );
 
 	$elem.css( "order", 2 );
 	assert.equal( $elem.css( "order" ), "2", "2 on order" );
@@ -1711,7 +1711,7 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 
 		assert.expect( !!appearanceName + !!transformName + 1 );
 
-		elem = jQuery( "<div/>" )
+		elem = jQuery( "<div></div>" )
 			.css( {
 				msAppearance: "none",
 				appearance: "none",
@@ -1735,7 +1735,7 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 	QUnit.test( "Don't detect fake set properties on a node when caching the prefixed version", function( assert ) {
 		assert.expect( 1 );
 
-		var elem = jQuery( "<div/>" ),
+		var elem = jQuery( "<div></div>" ),
 			style = elem[ 0 ].style;
 		style.MozFakeProperty = "old value";
 		elem.css( "fakeProperty", "new value" );

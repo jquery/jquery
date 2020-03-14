@@ -49,7 +49,7 @@
 	<script>
 		var logUL = jQuery( "#log" );
 		function doLog( message, args ) {
-			jQuery( "<li />").appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
+			jQuery( "<li></li>" ).appendTo( logUL ).text( message + ': "' + Array.prototype.join.call( args, '" - "' ) + '"' );
 		}
 		jQuery.ajax( "./data/badjson.js" , {
 			context: jQuery( "#success" ),
