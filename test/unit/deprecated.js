@@ -137,7 +137,7 @@ if ( jQuery.ajax && jQuery.fn.ajaxSend ) {
 QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
 
 	// Explicitly skipping focus/blur events due to their flakiness
-	var	$elem = jQuery( "<div />" ).appendTo( "#qunit-fixture" ),
+	var	$elem = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
 		aliases = ( "resize scroll click dblclick mousedown mouseup " +
 			"mousemove mouseover mouseout mouseenter mouseleave change " +
 			"select submit keydown keypress keyup contextmenu" ).split( " " );

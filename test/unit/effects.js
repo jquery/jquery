@@ -597,7 +597,7 @@ QUnit.test( "animate duration 0", function( assert ) {
 	} );
 	this.clock.tick( 200 );
 
-	$elem = jQuery( "<div />" );
+	$elem = jQuery( "<div></div>" );
 	$elem.show( 0, function() {
 		assert.ok( true, "Show callback with no duration" );
 	} );
@@ -1282,7 +1282,7 @@ QUnit.test( "animate with CSS shorthand properties", function( assert ) {
 QUnit.test( "hide hidden elements, with animation (bug #7141)", function( assert ) {
 	assert.expect( 4 );
 
-	var div = jQuery( "<div id='bug7141' style='display:none'/>" ).appendTo( "#qunit-fixture" );
+	var div = jQuery( "<div id='bug7141' style='display:none'></div>" ).appendTo( "#qunit-fixture" );
 	assert.equal( div.css( "display" ), "none", "Element is initially hidden" );
 	div.hide( 10, function() {
 		assert.equal( div.css( "display" ), "none", "Element is hidden in .hide() callback" );
@@ -1583,10 +1583,10 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 			toggle: [ 1 ],
 			slideToggle: []
 		},
-		$divEmpty = jQuery( "<div/>" ),
+		$divEmpty = jQuery( "<div></div>" ),
 		$divTest = jQuery( "<div>test</div>" ),
-		$divNone = jQuery( "<div style='display: none;'/>" ),
-		$divInline = jQuery( "<div style='display: inline;'/>" ),
+		$divNone = jQuery( "<div style='display: none;'></div>" ),
+		$divInline = jQuery( "<div style='display: inline;'></div>" ),
 		nullParentDisplay = $divEmpty.css( "display" ),
 		underFragmentDisplay = $divTest.css( "display" ),
 		clock = this.clock;
@@ -1604,7 +1604,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 		"show() should not change display if it already set" );
 
 	jQuery.each( showMethods, function( name, opt ) {
-		jQuery.fn[ name ].apply( jQuery( "<div/>" ), opt.concat( [ function() {
+		jQuery.fn[ name ].apply( jQuery( "<div></div>" ), opt.concat( [ function() {
 			assert.strictEqual( jQuery( this ).css( "display" ), nullParentDisplay,
 				"." + name + " block with null parentNode" );
 		} ] ) );
@@ -1615,7 +1615,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 		} ] ) );
 	} );
 	jQuery.each( toggleMethods, function( name, opt ) {
-		jQuery.fn[ name ].apply( jQuery( "<div/>" ), opt.concat( [ function() {
+		jQuery.fn[ name ].apply( jQuery( "<div></div>" ), opt.concat( [ function() {
 			assert.strictEqual( jQuery( this ).css( "display" ), "none",
 				"." + name + " block with null parentNode" );
 		} ] ) );
@@ -2340,8 +2340,8 @@ QUnit.test( "Respect display value on inline elements (#14824)", function( asser
 	assert.expect( 2 );
 
 	var clock = this.clock,
-		fromStyleSheet = jQuery( "<span id='span-14824' />" ),
-		fromStyleAttr = jQuery( "<span style='display: block;' />" );
+		fromStyleSheet = jQuery( "<span id='span-14824'></span>" ),
+		fromStyleAttr = jQuery( "<span style='display: block;'></span>" );
 
 	jQuery( "#qunit-fixture" ).append( fromStyleSheet, fromStyleAttr );
 
@@ -2441,7 +2441,7 @@ QUnit.test( "jQuery.easing._default in Tween (gh-2218)", function( assert ) {
 QUnit.test( "Display value is correct for disconnected nodes (trac-13310)", function( assert ) {
 	assert.expect( 3 );
 
-	var div = jQuery( "<div/>" );
+	var div = jQuery( "<div></div>" );
 
 	assert.equal( div.css( "display", "inline" ).hide().show().appendTo( "body" ).css( "display" ), "inline", "Initialized display value has returned" );
 	div.remove();
@@ -2462,7 +2462,7 @@ QUnit.test( "Show/hide/toggle and display: inline", function( assert ) {
 
 	var clock = this.clock;
 
-	jQuery( "<span/><div style='display:inline' title='inline div'/>" ).each( function() {
+	jQuery( "<span></span><div style='display:inline' title='inline div'></div>" ).each( function() {
 		var completed, interrupted,
 			N = 100,
 			fixture = jQuery( "#qunit-fixture" ),
