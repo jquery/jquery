@@ -5,7 +5,7 @@ if ( !jQuery.fn.offset ) {
 }
 
 var supportsFixedPosition, supportsScroll, alwaysScrollable,
-	forceScroll = supportjQuery( "<div/>" ).css( { width: 2000, height: 2000 } ),
+	forceScroll = supportjQuery( "<div></div>" ).css( { width: 2000, height: 2000 } ),
 	checkSupport = function( assert ) {
 
 		// Only run once
@@ -81,7 +81,7 @@ QUnit.test( "disconnected element", function( assert ) {
 QUnit.test( "hidden (display: none) element", function( assert ) {
 	assert.expect( 4 );
 
-	var node = jQuery( "<div style='display: none' />" ).appendTo( "#qunit-fixture" ),
+	var node = jQuery( "<div style='display: none'></div>" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
 
 	node.remove();
@@ -98,7 +98,7 @@ QUnit.test( "hidden (display: none) element", function( assert ) {
 QUnit.test( "0 sized element", function( assert ) {
 	assert.expect( 4 );
 
-	var node = jQuery( "<div style='margin: 5px; width: 0; height: 0' />" ).appendTo( "#qunit-fixture" ),
+	var node = jQuery( "<div style='margin: 5px; width: 0; height: 0'></div>" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
 
 	node.remove();
@@ -112,7 +112,7 @@ QUnit.test( "0 sized element", function( assert ) {
 QUnit.test( "hidden (visibility: hidden) element", function( assert ) {
 	assert.expect( 4 );
 
-	var node = jQuery( "<div style='margin: 5px; visibility: hidden' />" ).appendTo( "#qunit-fixture" ),
+	var node = jQuery( "<div style='margin: 5px; visibility: hidden'></div>" ).appendTo( "#qunit-fixture" ),
 		result = node.offset();
 
 	node.remove();
@@ -785,7 +785,7 @@ QUnit.test( "offsetParent", function( assert ) {
 QUnit.test( "fractions (see #7730 and #7885)", function( assert ) {
 	assert.expect( 2 );
 
-	jQuery( "body" ).append( "<div id='fractions'/>" );
+	jQuery( "body" ).append( "<div id='fractions'></div>" );
 
 	var result,
 		expected = { "top": 1000, "left": 1000 },

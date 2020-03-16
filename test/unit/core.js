@@ -23,9 +23,9 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	var elem, i,
 		obj = jQuery( "div" ),
-		code = jQuery( "<code/>" ),
+		code = jQuery( "<code></code>" ),
 		img = jQuery( "<img/>" ),
-		div = jQuery( "<div/><hr/><code/><b/>" ),
+		div = jQuery( "<div></div><hr/><code></code><b/>" ),
 		exec = false,
 		expected = 23,
 		attrObj = {
@@ -113,7 +113,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	elem = jQuery( "\n\n<em>world</em>" )[ 0 ];
 	assert.equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery( "<div/>", attrObj );
+	elem = jQuery( "<div></div>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		assert.equal( elem[ 0 ].style.width, "10px", "jQuery() quick setter width" );
@@ -458,7 +458,7 @@ QUnit.test( "jQuery('html')", function( assert ) {
 
 	assert.ok( jQuery( "<link rel='stylesheet'/>" )[ 0 ], "Creating a link" );
 
-	assert.ok( !jQuery( "<script/>" )[ 0 ].parentNode, "Create a script" );
+	assert.ok( !jQuery( "<script></script>" )[ 0 ].parentNode, "Create a script" );
 
 	assert.ok( jQuery( "<input/>" ).attr( "type", "hidden" ), "Create an input and set the type." );
 
@@ -526,8 +526,8 @@ QUnit.test( "jQuery('massive html #7990')", function( assert ) {
 QUnit.test( "jQuery('html', context)", function( assert ) {
 	assert.expect( 1 );
 
-	var $div = jQuery( "<div/>" )[ 0 ],
-		$span = jQuery( "<span/>", $div );
+	var $div = jQuery( "<div></div>" )[ 0 ],
+		$span = jQuery( "<span></span>", $div );
 	assert.equal( $span.length, 1, "verify a span created with a div context works, #1763" );
 } );
 
@@ -1356,7 +1356,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 	assert.equal( jQuery.parseHTML( "text" )[ 0 ].nodeType, 3, "Parsing text returns a text node" );
 	assert.equal( jQuery.parseHTML( "\t<div></div>" )[ 0 ].nodeValue, "\t", "Preserve leading whitespace" );
 
-	assert.equal( jQuery.parseHTML( " <div/> " )[ 0 ].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
+	assert.equal( jQuery.parseHTML( " <div></div> " )[ 0 ].nodeType, 3, "Leading spaces are treated as text nodes (#11290)" );
 
 	html = jQuery.parseHTML( "<div>test div</div>" );
 

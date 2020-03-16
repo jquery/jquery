@@ -342,7 +342,7 @@ QUnit.test( "getting dimensions shouldn't modify runtimeStyle see #9233", functi
 QUnit.test( "table dimensions", function( assert ) {
 	assert.expect( 2 );
 
-	var table = jQuery( "<table><colgroup><col/><col/></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>" ).appendTo( "#qunit-fixture" ),
+	var table = jQuery( "<table><colgroup><col></col><col></col></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>" ).appendTo( "#qunit-fixture" ),
 		tdElem = table.find( "td" ).first(),
 		colElem = table.find( "col" ).first().width( 300 );
 
@@ -536,7 +536,7 @@ QUnit.test( "allow modification of coordinates argument (gh-1848)", function( as
 	assert.expect( 1 );
 
 	var offsetTop,
-		element = jQuery( "<div/>" ).appendTo( "#qunit-fixture" );
+		element = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	element.offset( function( index, coords ) {
 		coords.top = 100;
@@ -583,7 +583,7 @@ QUnit.test( "width/height on element with transform (gh-3193)", function( assert
 
 	assert.expect( 2 );
 
-	var $elem = jQuery( "<div style='width: 200px; height: 200px; transform: scale(2);' />" )
+	var $elem = jQuery( "<div style='width: 200px; height: 200px; transform: scale(2);'></div>" )
 		.appendTo( "#qunit-fixture" );
 
 	assert.equal( $elem.width(), 200, "Width ignores transforms" );
@@ -663,7 +663,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 				return old + adjustment;
 			};
 		},
-		parent = jQuery( "<div/>" )
+		parent = jQuery( "<div></div>" )
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
 		fraction = jQuery.support.boxSizingReliable() ?
@@ -672,7 +672,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
-		plainBox = jQuery( "<div />" )
+		plainBox = jQuery( "<div></div>" )
 			.css( {
 				"box-sizing": "content-box",
 				position: "absolute",
@@ -759,11 +759,11 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 
 QUnit.test( "outerWidth/Height for table cells and textarea with border-box in IE 11 (gh-4102)", function( assert ) {
 	assert.expect( 5 );
-	var $table = jQuery( "<table class='border-box' style='border-collapse: separate' />" ).appendTo( "#qunit-fixture" ),
-		$thead = jQuery( "<thead />" ).appendTo( $table ),
-		$firstTh = jQuery( "<th style='width: 200px;padding: 5px' />" ),
-		$secondTh = jQuery( "<th style='width: 190px;padding: 5px' />" ),
-		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px' />" ),
+	var $table = jQuery( "<table class='border-box' style='border-collapse: separate'></table>" ).appendTo( "#qunit-fixture" ),
+		$thead = jQuery( "<thead></thead>" ).appendTo( $table ),
+		$firstTh = jQuery( "<th style='width: 200px;padding: 5px'></th>" ),
+		$secondTh = jQuery( "<th style='width: 190px;padding: 5px'></th>" ),
+		$thirdTh = jQuery( "<th style='width: 180px;padding: 5px'></th>" ),
 
 		// Support: Firefox 63, Edge 16-17, Android 8, iOS 7-11
 		// These browsers completely ignore the border-box and height settings
@@ -771,12 +771,12 @@ QUnit.test( "outerWidth/Height for table cells and textarea with border-box in I
 		// Either way, what we're doing in css.js is correct
 		$td = jQuery( "<td style='height: 20px;padding: 5px;border: 1px solid;line-height:18px'>text</td>" ),
 
-		$tbody = jQuery( "<tbody />" ).appendTo( $table ),
-		$textarea = jQuery( "<textarea style='height: 0;padding: 2px;border: 1px solid;box-sizing: border-box' />" ).appendTo( "#qunit-fixture" );
+		$tbody = jQuery( "<tbody></tbody>" ).appendTo( $table ),
+		$textarea = jQuery( "<textarea style='height: 0;padding: 2px;border: 1px solid;box-sizing: border-box'></textarea>" ).appendTo( "#qunit-fixture" );
 
-	jQuery( "<tr />" ).appendTo( $thead ).append( $firstTh );
-	jQuery( "<tr />" ).appendTo( $thead ).append( $secondTh );
-	jQuery( "<tr />" ).appendTo( $thead ).append( $thirdTh );
+	jQuery( "<tr></tr>" ).appendTo( $thead ).append( $firstTh );
+	jQuery( "<tr></tr>" ).appendTo( $thead ).append( $secondTh );
+	jQuery( "<tr></tr>" ).appendTo( $thead ).append( $thirdTh );
 	jQuery( "<tr><td></td></tr>" ).appendTo( $tbody ).append( $td );
 
 	assert.strictEqual( $firstTh.outerWidth(), 200, "First th has outerWidth 200." );

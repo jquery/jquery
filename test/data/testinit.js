@@ -251,7 +251,7 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 	}
 	wrapper.call( QUnit, title, function( assert ) {
 		var done = assert.async(),
-			$iframe = supportjQuery( "<iframe/>" )
+			$iframe = supportjQuery( "<iframe></iframe>" )
 				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
 				.attr( { id: "qunit-fixture-iframe", src: url( fileName ) } );
 
