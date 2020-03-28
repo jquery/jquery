@@ -11,6 +11,7 @@ import "./queue.js";
 import "./queue/delay.js";
 import "./attributes.js";
 import "./event.js";
+import "./event/trigger.js";
 import "./manipulation.js";
 import "./manipulation/_evalUrl.js";
 import "./wrap.js";

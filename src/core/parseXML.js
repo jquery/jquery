@@ -20,5 +20,3 @@ jQuery.parseXML = function( data ) {
 	}
 	return xml;
 };
-
-export default jQuery.parseXML;

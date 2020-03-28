@@ -13,6 +13,10 @@
 	"rules": {
 		"import/extensions": [ "error", "always" ],
 		"import/no-cycle": "error",
+		"import/no-unused-modules": [ "error", {
+			"unusedExports": true,
+			"ignoreExports": [ "src/*.js" ]
+		} ],
 		"indent": [ "error", "tab", {
 			"outerIIFEBody": 0
 		} ]
