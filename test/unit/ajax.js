@@ -1410,7 +1410,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - don't escape %20 in contentType (gh-4119)", 1, function( assert ) {
+	ajaxTest( "jQuery.ajax() - don't escape %20 with contentType override (gh-4119)", 1, function( assert ) {
 		return {
 			url: "bogus.html",
 			contentType: "application/x-www-form-urlencoded",
@@ -1420,6 +1420,22 @@ QUnit.module( "ajax", {
 			data: "{\"val\":\"%20\"}",
 			beforeSend: function( _, s ) {
 				assert.strictEqual( s.data, "{\"val\":\"%20\"}", "data is not %20-encoded" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - escape %20 with contentType override (gh-4119)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			contentType: "application/json",
+			headers: { "content-type": "application/x-www-form-urlencoded" },
+			method: "post",
+			dataType: "json",
+			data: "{\"val\":\"%20\"}",
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.data, "{\"val\":\"+\"}", "data is %20-encoded" );
 				return false;
 			},
 			error: true

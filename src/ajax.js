@@ -862,11 +862,9 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 } );
 
 jQuery.ajaxPrefilter( function( s ) {
-	if ( s.data && s.processData ) {
-		for ( var i in s.headers ) {
-			if ( i.toLowerCase() === "content-type" ) {
-				s.contentType = s.headers[ i ] || "";
-			}
+	for ( var i in s.headers ) {
+		if ( i.toLowerCase() === "content-type" ) {
+			s.contentType = s.headers[ i ] || "";
 		}
 	}
 } );
