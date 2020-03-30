@@ -1442,6 +1442,19 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - override contentType with header (gh-4119)", 1, function( assert ) {
+		return {
+			url: "bogus.html",
+			contentType: "application/json",
+			headers: { "content-type": "application/x-www-form-urlencoded" },
+			beforeSend: function( _, s ) {
+				assert.strictEqual( s.contentType, "application/x-www-form-urlencoded", "contentType is overwritten" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
 	ajaxTest( "jQuery.ajax() - data - no processing POST", 1, function( assert ) {
 		return {
 			url: "bogus.html",
