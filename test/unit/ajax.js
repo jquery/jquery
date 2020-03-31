@@ -1448,7 +1448,8 @@ QUnit.module( "ajax", {
 			contentType: "application/json",
 			headers: { "content-type": "application/x-www-form-urlencoded" },
 			beforeSend: function( _, s ) {
-				assert.strictEqual( s.contentType, "application/x-www-form-urlencoded", "contentType is overwritten" );
+				assert.strictEqual( s.contentType, "application/x-www-form-urlencoded",
+					"contentType is overwritten" );
 				return false;
 			},
 			error: true
