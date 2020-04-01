@@ -12,6 +12,7 @@ jQuery.offset = {
 		var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition,
 			position = jQuery.css( elem, "position" ),
 			curElem = jQuery( elem ),
+			numberProps = {},
 			props = {};
 
 		// Set position first, in-case top/left are set even on static elem
@@ -44,14 +45,16 @@ jQuery.offset = {
 		}
 
 		if ( options.top != null ) {
-			props.top = ( options.top - curOffset.top ) + curTop;
+			numberProps.top = ( options.top - curOffset.top ) + curTop;
+			props.top = numberProps.top + "px";
 		}
 		if ( options.left != null ) {
-			props.left = ( options.left - curOffset.left ) + curLeft;
+			numberProps.left = ( options.left - curOffset.left ) + curLeft;
+			props.left = numberProps.left + "px";
 		}
 
 		if ( "using" in options ) {
-			options.using.call( elem, props );
+			options.using.call( elem, numberProps );
 
 		} else {
 			curElem.css( props );
