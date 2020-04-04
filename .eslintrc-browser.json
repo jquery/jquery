@@ -3,6 +3,8 @@
 
 	"extends": "jquery",
 
+	"reportUnusedDisableDirectives": true,
+
 	"parserOptions": {
 		"ecmaVersion": 5
 	},

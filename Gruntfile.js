@@ -79,8 +79,7 @@ module.exports = function( grunt ) {
 			options: {
 
 				// See https://github.com/sindresorhus/grunt-eslint/issues/119
-				quiet: true,
-				reportUnusedDisableDirectives: true
+				quiet: true
 			},
 
 			// We have to explicitly declare "src" property otherwise "newer"
