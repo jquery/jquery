@@ -1,3 +1,4 @@
+// 改点东西
 import jQuery from "./core.js";
 import document from "./var/document.js";
 import rnothtmlwhite from "./var/rnothtmlwhite.js";
