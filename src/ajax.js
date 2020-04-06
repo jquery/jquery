@@ -855,5 +855,14 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 	};
 } );
 
+jQuery.ajaxPrefilter( function( s ) {
+	var i;
+	for ( i in s.headers ) {
+		if ( i.toLowerCase() === "content-type" ) {
+			s.contentType = s.headers[ i ] || "";
+		}
+	}
+} );
+
 return jQuery;
 } );
