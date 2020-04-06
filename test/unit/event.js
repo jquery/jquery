@@ -2561,7 +2561,14 @@ testIframe(
 
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
 		jQuery( "body" ).on( "focusin.iframeTest", function() {
-			assert.ok( false, "fired a focusin event in the parent document" );
+
+			// Support: IE 9 - 11+
+			// IE does propagate the event to the parent document. In this test
+			// we mainly care about the inner element so we'll just skip this one
+			// assertion in IE.
+			if ( !document.documentMode ) {
+				assert.ok( false, "fired a focusin event in the parent document" );
+			}
 		} );
 
 		input.on( "focusin", function() {
