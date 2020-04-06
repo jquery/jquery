@@ -2560,30 +2560,72 @@ testIframe(
 	function( assert, framejQuery, frameWin, frameDoc ) {
 		assert.expect( 1 );
 
-		var input = jQuery( frameDoc ).find( "#frame-input" );
+		var done = assert.async(),
+			focus = false,
+			input = jQuery( frameDoc ).find( "#frame-input" );
 
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
 		jQuery( "body" ).on( "focusin.iframeTest", function() {
-			assert.ok( false, "fired a focusin event in the parent document" );
+
+			// Support: IE 9 - 11+
+			// IE does propagate the event to the parent document. In this test
+			// we mainly care about the inner element so we'll just skip this one
+			// assertion in IE.
+			if ( !document.documentMode ) {
+				assert.ok( false, "fired a focusin event in the parent document" );
+			}
 		} );
 
 		input.on( "focusin", function() {
+			focus = true;
 			assert.ok( true, "fired a focusin event in the iframe" );
 		} );
 
 		// Avoid a native event; Chrome can't force focus to another frame
-		input.trigger( "focusin" );
-
-		// Must manually remove handler to avoid leaks in our data store
-		input.remove();
-
-		// Be sure it was removed; nothing should happen
-		input.trigger( "focusin" );
+		input[ 0 ].focus();
 
 		// Remove body handler manually since it's outside the fixture
 		jQuery( "body" ).off( "focusin.iframeTest" );
+
+		setTimeout( function() {
+
+			// DOM focus is unreliable in TestSwarm
+			if ( QUnit.isSwarm && !focus ) {
+				assert.ok( true, "GAP: Could not observe focus change" );
+			}
+
+			done();
+		}, 50 );
 	}
 );
+
+QUnit.test( "focusin on document & window", function( assert ) {
+	assert.expect( 1 );
+
+	var counter = 0,
+		input = jQuery( "<input />" );
+
+	input.appendTo( "#qunit-fixture" );
+
+	input[ 0 ].focus();
+
+	jQuery( window ).on( "focusout", function() {
+		counter++;
+	} );
+	jQuery( document ).on( "focusout", function() {
+		counter++;
+	} );
+
+	input[ 0 ].blur();
+
+	// DOM focus is unreliable in TestSwarm
+	if ( QUnit.isSwarm && counter === 0 ) {
+		assert.ok( true, "GAP: Could not observe focus change" );
+	}
+
+	assert.strictEqual( counter, 2,
+		"focusout handlers on document/window fired once only" );
+} );
 
 testIframe(
 	"jQuery.ready promise",
