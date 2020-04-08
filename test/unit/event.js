@@ -2605,16 +2605,16 @@ QUnit.test( "focusin on document & window", function( assert ) {
 	var counter = 0,
 		input = jQuery( "<input />" );
 
+	function increment() {
+		counter++;
+	}
+
 	input.appendTo( "#qunit-fixture" );
 
 	input[ 0 ].focus();
 
-	jQuery( window ).on( "focusout", function() {
-		counter++;
-	} );
-	jQuery( document ).on( "focusout", function() {
-		counter++;
-	} );
+	jQuery( window ).on( "focusout", increment );
+	jQuery( document ).on( "focusout", increment );
 
 	input[ 0 ].blur();
 
@@ -2625,6 +2625,9 @@ QUnit.test( "focusin on document & window", function( assert ) {
 
 	assert.strictEqual( counter, 2,
 		"focusout handlers on document/window fired once only" );
+
+	jQuery( window ).off( "focusout", increment );
+	jQuery( document ).off( "focusout", increment );
 } );
 
 testIframe(
