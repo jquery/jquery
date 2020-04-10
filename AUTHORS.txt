@@ -323,3 +323,5 @@ Pat O'Callaghan <patocallaghan@gmail.com>
 Ahmed.S.ElAfifi <ahmed.s.elafifi@gmail.com>
 Wonseop Kim <wonseop.kim@samsung.com>
 Christian Oliff <christianoliff@pm.me>
+Christian Wenz <christian@wenz.org>
+Sean Robinson <sean.robinson@scottsdalecc.edu>
