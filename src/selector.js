@@ -8,6 +8,7 @@ import push from "./var/push.js";
 import whitespace from "./selector/var/whitespace.js";
 import rbuggyQSA from "./selector/rbuggyQSA.js";
 import support from "./selector/support.js";
+import trim from "./var/trim.js";
 
 // The following utils are attached directly to the jQuery object.
 import "./selector/contains.js";
@@ -268,7 +269,7 @@ function find( selector, context, results, seed ) {
 	}
 
 	// All others
-	return select( selector.replace( rtrim, "$1" ), context, results, seed );
+	return select( trim.call( selector ), context, results, seed );
 }
 
 /**
@@ -825,7 +826,7 @@ Expr = jQuery.expr = {
 			// spaces as combinators
 			var input = [],
 				results = [],
-				matcher = compile( selector.replace( rtrim, "$1" ) );
+				matcher = compile( trim.call( selector ) );
 
 			return matcher[ expando ] ?
 				markFunction( function( seed, matches, _context, xml ) {
