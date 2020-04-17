@@ -2,7 +2,7 @@
 
 > jQuery is a fast, small, and feature-rich JavaScript library.
 
-For information on how to get started and how to use jQuery, please see [jQuery's documentation](http://api.jquery.com/).
+For information on how to get started and how to use jQuery, please see [jQuery's documentation](https://api.jquery.com/).
 For source files and issues, please visit the [jQuery repo](https://github.com/jquery/jquery).
 
 If upgrading, please see the [blog post for @VERSION](@BLOG_POST_LINK). This includes notable differences from the previous version and a more readable changelog.
@@ -21,7 +21,7 @@ Below are some of the most common ways to include jQuery.
 
 #### Babel
 
-[Babel](http://babeljs.io/) is a next generation JavaScript compiler. One of the features is the ability to use ES6/ES2015 modules now, even though browsers do not yet support this feature natively.
+[Babel](https://babeljs.io/) is a next generation JavaScript compiler. One of the features is the ability to use ES6/ES2015 modules now, even though browsers do not yet support this feature natively.
 
 ```js
 import $ from "jquery";
@@ -37,7 +37,7 @@ var $ = require( "jquery" );
 
 #### AMD (Asynchronous Module Definition)
 
-AMD is a module format built for the browser. For more information, we recommend [require.js' documentation](http://requirejs.org/docs/whyamd.html).
+AMD is a module format built for the browser. For more information, we recommend [require.js' documentation](https://requirejs.org/docs/whyamd.html).
 
 ```js
 define( [ "jquery" ], function( $ ) {
@@ -47,7 +47,7 @@ define( [ "jquery" ], function( $ ) {
 
 ### Node
 
-To include jQuery in [Node](nodejs.org), first install with npm.
+To include jQuery in [Node](https://nodejs.org/), first install with npm.
 
 ```sh
 npm install jquery
