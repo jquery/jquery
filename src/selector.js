@@ -602,9 +602,11 @@ Expr = jQuery.expr = {
 		TAG: function( nodeNameSelector ) {
 			var expectedNodeName = nodeNameSelector.replace( runescape, funescape ).toLowerCase();
 			return nodeNameSelector === "*" ?
+
 				function() {
- return true;
-} :
+					return true;
+				} :
+
 				function( elem ) {
 					return nodeName( elem, expectedNodeName );
 				};
