@@ -990,17 +990,20 @@ QUnit.test( ".data(prop) does not create expando", function( assert ) {
 	}
 } );
 
-QUnit.test( "keys matching Object.prototype properties  (gh-3256)", function( assert ) {
-	assert.expect( 2 );
+QUnit.test( ".data() returns a regular object (jQuery <4 only, gh-4665)", function( assert ) {
+	assert.expect( 4 );
 
-	var div = jQuery( "<div></div>" );
+	function verifyRegularObject( assert, object ) {
+		assert.strictEqual( object.hasOwnProperty, Object.prototype.hasOwnProperty,
+			"Data object has the hasOwnProperty method" );
+		assert.strictEqual( object + "", "[object Object]",
+			"Data object can be stringified" );
+	}
 
-	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
-		"hasOwnProperty not matched (before forced data creation)" );
+	var elem = jQuery( "<div></div>" );
 
-	// Force the creation of a data object for this element.
-	div.data( { foo: "bar" } );
+	verifyRegularObject( assert, elem.data() );
 
-	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
-		"hasOwnProperty not matched (after forced data creation)" );
+	elem.data( "foo", "bar" );
+	verifyRegularObject( assert, elem.data() );
 } );
