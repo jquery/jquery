@@ -1,10 +1,9 @@
 language: node_js
 os: linux
 node_js:
-- "8"
 - "10"
 - "12"
-- "13"
+- "14"
 env:
   - NPM_SCRIPT=test:browserless
 jobs:
