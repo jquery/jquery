@@ -15,7 +15,8 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
 		isTravis = process.env.TRAVIS,
-		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
+		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
+		CLIEngine = require( "eslint" ).CLIEngine;
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -77,9 +78,7 @@ module.exports = function( grunt ) {
 		},
 		eslint: {
 			options: {
-
-				// See https://github.com/sindresorhus/grunt-eslint/issues/119
-				quiet: true
+				maxWarnings: 0
 			},
 
 			// We have to explicitly declare "src" property otherwise "newer"
@@ -88,7 +87,18 @@ module.exports = function( grunt ) {
 				src: [ "dist/jquery.js", "dist/jquery.min.js" ]
 			},
 			dev: {
-				src: [ "src/**/*.js", "Gruntfile.js", "test/**/*.js", "build/**/*.js" ]
+				src: [
+					"src/**/*.js",
+					"Gruntfile.js",
+					"test/**/*.js",
+					"build/**/*.js",
+
+					// Ignore files from .eslintignore
+					// See https://github.com/sindresorhus/grunt-eslint/issues/119
+					...new CLIEngine()
+						.getConfigForFile( "Gruntfile.js" )
+						.ignorePatterns.map( ( p ) => `!${ p }` )
+				]
 			}
 		},
 		testswarm: {
