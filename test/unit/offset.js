@@ -513,6 +513,33 @@ testIframe( "body", "offset/body.html", function( assert, $ ) {
 	assert.equal( $( "#firstElement" ).position().top, 5, "$('#firstElement').position().top" );
 } );
 
+testIframe( "tablePosition", "offset/tablePosition.html", function( assert, $ ) {
+	assert.expect( 10 );
+
+    assert.equal( $( "#test" ).position().left, 10.60 );
+    assert.equal( $( "#test" ).position().top, 112.40 );
+
+    $( "div:eq(1)" ).css( "margin-left", "25px" );
+
+    assert.equal( $( "#test" ).position().left, 35.60 );
+    assert.equal( $( "#test" ).position().top, 112.40 );
+
+    $( "div:eq(0)" ).css( "margin-top", "150px" );
+
+    assert.equal( $( "#test" ).position().left, 35.60 );
+    assert.equal( $( "#test" ).position().top, 254.40 );
+
+    $( "div:eq(1)" ).css( "margin", "50px" );
+
+    assert.equal( $( "#test" ).position().left, 60.60 );
+    assert.equal( $( "#test" ).position().top, 304.39 );
+
+    $( "div:eq(0)" ).remove();
+
+    assert.equal( $( "#test" ).position().left, 60.60 );
+    assert.equal( $( "#test" ).position().top, 52.40 );
+} );
+
 QUnit.test( "chaining", function( assert ) {
 	assert.expect( 3 );
 

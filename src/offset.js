@@ -114,19 +114,20 @@ jQuery.fn.extend( {
 			// Assume position:fixed implies availability of getBoundingClientRect
 			offset = elem.getBoundingClientRect();
 
+
 		} else {
+
 			offset = this.offset();
+
 
 			// Account for the *real* offset parent, which can be the document or its root element
 			// when a statically positioned element is identified
 			doc = elem.ownerDocument;
 			offsetParent = elem.offsetParent || doc.documentElement;
-			while ( offsetParent &&
-				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
-				jQuery.css( offsetParent, "position" ) === "static" ) {
 
-				offsetParent = offsetParent.parentNode;
-			}
+			offsetParent = jQuery( this[ 0 ] ).offsetParent();
+
+
 			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
 
 				// Incorporate borders into its offset, since they are outside its content origin
