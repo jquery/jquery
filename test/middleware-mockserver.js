@@ -93,7 +93,9 @@ var mocks = {
 	},
 	jsonp: function( req, resp, next ) {
 		var callback;
-		if ( req.query.callback ) {
+		if ( Array.isArray( req.query.callback ) ) {
+			callback = Promise.resolve( req.query.callback[ req.query.callback.length - 1 ] );
+		} else if ( req.query.callback ) {
 			callback = Promise.resolve( req.query.callback );
 		} else if ( req.method === "GET" ) {
 			callback = Promise.resolve( req.url.match( /^.+\/([^\/?.]+)\?.+$/ )[ 1 ] );
