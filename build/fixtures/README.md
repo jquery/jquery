@@ -53,7 +53,7 @@ To include jQuery in [Node](https://nodejs.org/), first install with npm.
 npm install jquery
 ```
 
-For jQuery to work in Node, a window with a document is required. Since no such window exists natively in Node, one can be mocked by tools such as [jsdom](https://github.com/tmpvar/jsdom). This can be useful for testing purposes.
+For jQuery to work in Node, a window with a document is required. Since no such window exists natively in Node, one can be mocked by tools such as [jsdom](https://github.com/jsdom/jsdom). This can be useful for testing purposes.
 
 ```js
 const { JSDOM } = require( "jsdom" );
