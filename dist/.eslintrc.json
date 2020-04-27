@@ -20,7 +20,8 @@
 			"rules": {
 				// That is okay for the built version
 				"no-multiple-empty-lines": "off",
-				// Version number substituion may trigger max-len
+				// When custom compilation is used, the version string
+				// can get large. Accept that in the built version.
 				"max-len": "off",
 				"one-var": "off"
 			}
