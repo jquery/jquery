@@ -60,7 +60,7 @@ module.exports = function( grunt ) {
 		const done = this.async();
 
 		try {
-			let flag, index;
+			const slimFlags = [ "-ajax", "-callbacks", "-deferred", "-effects" ];
 			const flags = this.flags;
 			const optIn = flags[ "*" ];
 			let name = grunt.option( "filename" );
@@ -69,6 +69,21 @@ module.exports = function( grunt ) {
 			const excluded = [];
 			const included = [];
 			let version = grunt.config( "pkg.version" );
+
+			// We'll skip printing the whole big exclusions for a bare `build:*:*:slim` which
+			// usually comes from `custom:slim`.
+			const isPureSlim = !!( flags.slim && flags[ "*" ] &&
+				Object.keys( flags ).length === 2 );
+
+			delete flags[ "*" ];
+
+			if ( flags.slim ) {
+				delete flags.slim;
+				for ( const flag of slimFlags ) {
+					flags[ flag ] = true;
+				}
+			}
+
 
 			/**
 			 * Recursively calls the excluder to remove on all modules in the list
@@ -187,8 +202,7 @@ module.exports = function( grunt ) {
 			//                     trumped by explicit exclude of dependency)
 			//  *:+effects         none except effects and its dependencies
 			//                     (explicit include trumps implicit exclude of dependency)
-			delete flags[ "*" ];
-			for ( flag in flags ) {
+			for ( const flag in flags ) {
 				excluder( flag );
 			}
 
@@ -198,7 +212,8 @@ module.exports = function( grunt ) {
 				read( inputFileName ).replace( /\n*export default jQuery;\n*/, "\n" ) );
 
 			// Replace exports/global with a noop noConflict
-			if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
+			if ( excluded.includes( "exports/global" ) ) {
+				const index = excluded.indexOf( "exports/global" );
 				setOverride( `${ srcFolder }/exports/global.js`,
 					"import jQuery from \"../core.js\";\n\n" +
 						"jQuery.noConflict = function() {};" );
@@ -224,13 +239,24 @@ module.exports = function( grunt ) {
 			grunt.verbose.writeflags( excluded, "Excluded" );
 			grunt.verbose.writeflags( included, "Included" );
 
-			// append excluded modules to version
-			if ( excluded.length ) {
-				version += " -" + excluded.join( ",-" );
+			// Indicate a Slim build without listing all of the exclusions
+			// to save space.
+			if ( isPureSlim ) {
+				version += " slim";
 
-				// set pkg.version to version with excludes, so minified file picks it up
-				grunt.config.set( "pkg.version", version );
-				grunt.verbose.writeln( "Version changed to " + version );
+			// Append excluded modules to version.
+			} else if ( excluded.length ) {
+				version += " -" + excluded.join( ",-" );
+			}
+
+			if ( excluded.length ) {
+
+				// Set pkg.version to version with excludes or with the "slim" marker,
+				// so minified file picks it up but skip the commit hash the same way
+				// it's done for the full build.
+				const commitlessVersion = version.replace( " " + process.env.COMMIT, "" );
+				grunt.config.set( "pkg.version", commitlessVersion );
+				grunt.verbose.writeln( "Version changed to " + commitlessVersion );
 
 				// Replace excluded modules with empty sources.
 				for ( const module of excluded ) {
@@ -299,18 +325,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "custom", function() {
 		const args = this.args;
 		const modules = args.length ?
-			args[ 0 ]
-				.split( "," )
-
-				// Replace "slim" with respective exclusions meant for
-				// the official slim build
-				.reduce( ( acc, elem ) => acc.concat(
-					elem === "slim" ?
-						[ "-ajax", "-callbacks", "-deferred", "-effects" ] :
-						[ elem ]
-				), [] )
-
-				.join( ":" ) :
+			args[ 0 ].split( "," ).join( ":" ) :
 			"";
 		const done = this.async();
 		const insight = new Insight( {
