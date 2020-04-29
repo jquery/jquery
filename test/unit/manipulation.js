@@ -2917,7 +2917,8 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 
 	var container,
 		counter = 0,
-		assertCount = 13,
+		oldIos = /iphone os (?:8|9|10|11|12)_/i.test( navigator.userAgent ),
+		assertCount = oldIos ? 12 : 13,
 		done = assert.async( assertCount );
 
 	assert.expect( assertCount );
@@ -2954,10 +2955,17 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 	test( "<title><title /><img src=url404 onerror=xss(4)>" );
 	test( "<iframe><iframe/><img src=url404 onerror=xss(5)>" );
 	test( "<noframes><noframes/><img src=url404 onerror=xss(6)>" );
-	test( "<noembed><noembed/><img src=url404 onerror=xss(7)>" );
-	test( "<noscript><noscript/><img src=url404 onerror=xss(8)>" );
-	test( "<foo\" alt=\"\" title=\"/><img src=url404 onerror=xss(9)>\">" );
-	test( "<img alt=\"<x\" title=\"\" src=\"/><img src=url404 onerror=xss(10)>\">" );
-	test( "<noscript/><img src=url404 onerror=xss(11)>" );
-	test( "<option><style></option></select><img src=url404 onerror=xss(12)></style>" );
+	test( "<noscript><noscript/><img src=url404 onerror=xss(7)>" );
+	test( "<foo\" alt=\"\" title=\"/><img src=url404 onerror=xss(8)>\">" );
+	test( "<img alt=\"<x\" title=\"\" src=\"/><img src=url404 onerror=xss(9)>\">" );
+	test( "<noscript/><img src=url404 onerror=xss(10)>" );
+
+	test( "<option><style></option></select><img src=url404 onerror=xss(11)></style>" );
+
+	// Support: iOS 8 - 12 only.
+	// Old iOS parses `<noembed>` tags differently, executing this code. This is no
+	// different to native behavior on that OS, though, so just accept it.
+	if ( !oldIos ) {
+		test( "<noembed><noembed/><img src=url404 onerror=xss(12)>" );
+	}
 } );
