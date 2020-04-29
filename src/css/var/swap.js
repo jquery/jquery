@@ -17,4 +17,4 @@ export default function( elem, options, callback ) {
 	}
 
 	return ret;
-};
+}

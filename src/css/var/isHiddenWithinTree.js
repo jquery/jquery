@@ -17,4 +17,4 @@ export default function( elem, el ) {
 	return elem.style.display === "none" ||
 		elem.style.display === "" &&
 		jQuery.css( elem, "display" ) === "none";
-};
+}

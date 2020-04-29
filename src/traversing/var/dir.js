@@ -13,4 +13,4 @@ export default function( elem, dir, until ) {
 		}
 	}
 	return matched;
-};
+}
