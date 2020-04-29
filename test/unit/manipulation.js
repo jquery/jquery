@@ -2957,3 +2957,52 @@ testIframe(
 	// script-src restrictions completely.
 	QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
 );
+
+QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
+
+	var container,
+		counter = 0,
+		assertCount = 13,
+		done = assert.async( assertCount );
+
+	assert.expect( assertCount );
+
+	Globals.register( "xss" );
+	window.xss = sinon.spy();
+
+	container = jQuery( "<div></div>" );
+	container.appendTo( "#qunit-fixture" );
+
+	function test( htmlString ) {
+		var currCounter = counter,
+			div = jQuery( "<div></div>" );
+
+		counter++;
+
+		div.appendTo( container );
+		div.html( htmlString );
+
+		setTimeout( function() {
+			assert.ok( window.xss.withArgs( currCounter ).notCalled,
+				"Insecure code wasn't executed, input: " + htmlString );
+			done();
+		}, 1000 );
+	}
+
+	// Note: below test cases need to invoke the xss function with consecutive
+	// decimal parameters for the assertion messages to be correct.
+	// Thanks to Masato Kinugawa from Cure53 for providing the following test cases.
+	test( "<img alt=\"<x\" title=\"/><img src=url404 onerror=xss(0)>\">" );
+	test( "<img alt=\"\n<x\" title=\"/>\n<img src=url404 onerror=xss(1)>\">" );
+	test( "<style><style/><img src=url404 onerror=xss(2)>" );
+	test( "<xmp><xmp/><img src=url404 onerror=xss(3)>" );
+	test( "<title><title /><img src=url404 onerror=xss(4)>" );
+	test( "<iframe><iframe/><img src=url404 onerror=xss(5)>" );
+	test( "<noframes><noframes/><img src=url404 onerror=xss(6)>" );
+	test( "<noembed><noembed/><img src=url404 onerror=xss(7)>" );
+	test( "<noscript><noscript/><img src=url404 onerror=xss(8)>" );
+	test( "<foo\" alt=\"\" title=\"/><img src=url404 onerror=xss(9)>\">" );
+	test( "<img alt=\"<x\" title=\"\" src=\"/><img src=url404 onerror=xss(10)>\">" );
+	test( "<noscript/><img src=url404 onerror=xss(11)>" );
+	test( "<option><style></option></select><img src=url404 onerror=xss(12)></style>" );
+} );
