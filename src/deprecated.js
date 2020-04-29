@@ -1,6 +1,5 @@
 import jQuery from "./core.js";
 import slice from "./var/slice.js";
-import trim from "./var/trim.js";
 
 import "./deprecated/ajax-event-alias.js";
 import "./deprecated/event.js";
@@ -42,8 +41,4 @@ jQuery.holdReady = function( hold ) {
 	} else {
 		jQuery.ready( true );
 	}
-};
-
-jQuery.trim = function( text ) {
-	return text == null ? "" : trim.call( text );
 };
