@@ -214,12 +214,12 @@ function testAppend( valueObj, assert ) {
 
 	jQuery( "#qunit-fixture form" ).append( valueObj( "<input name='radiotest2' type='radio' checked    =   'checked' />" ) );
 	jQuery( "#qunit-fixture form input[name=radiotest2]" ).each( function() {
-		assert.ok( jQuery( this ).is( ":checked" ), "Append alternately formated checked radio" );
+		assert.ok( jQuery( this ).is( ":checked" ), "Append alternately formatted checked radio" );
 	} ).remove();
 
 	jQuery( "#qunit-fixture form" ).append( valueObj( "<input name='radiotest3' type='radio' checked />" ) );
 	jQuery( "#qunit-fixture form input[name=radiotest3]" ).each( function() {
-		assert.ok( jQuery( this ).is( ":checked" ), "Append HTML5-formated checked radio" );
+		assert.ok( jQuery( this ).is( ":checked" ), "Append HTML5-formatted checked radio" );
 	} ).remove();
 
 	jQuery( "#qunit-fixture form" ).append( valueObj( "<input type='radio' checked='checked' name='radiotest4' />" ) );
