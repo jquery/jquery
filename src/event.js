@@ -22,7 +22,7 @@ var
 // Passive Listener Check
 // We check if the web browser manage passive listeners
 try {
-	options = Object.defineProperty({}, "passive", { get: function() {
+	options = Object.defineProperty( {}, "passive", { get: function() {
 			passiveSupported = true;
 
 			// If web browser manage passive listeners, then we pass in array with all events to put in passive listener
