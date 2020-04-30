@@ -15,25 +15,27 @@ var
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)/,
-    	passiveSupported = false,
-    	passiveListeners = [],
-    	options = null;
+	passiveSupported = false,
+	passiveListeners = [],
+	options = null;
 
 // Passive Listener Check
 // We check if the web browser manage passive listeners
 try {
-	options = Object.defineProperty({}, "passive", {
-		get: function() {
+	options = Object.defineProperty({}, "passive", { get: function() {
 			passiveSupported = true;
+			
 			// If web browser manage passive listeners, then we pass in array with all events to put in passive listener
-			passiveListeners = ["wheel", "mousewheel", "touchmove", "touchstart", "touchend"];
+			passiveListeners = [ "wheel", "mousewheel", "touchmove", "touchstart", "touchend" ];
 		}
-	});
+	} );
+	
 	window.addEventListener( "test", options, options );
 	window.removeEventListener( "test", options, options );
 } catch ( err ) {
 	passiveSupported = false;
 }
+
 // END Passive Listener Check
 
 function returnTrue() {
@@ -209,13 +211,15 @@ jQuery.event = {
 					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 
 					if ( elem.addEventListener ) {
-						// Passive Listener
-						// If web browser manage passive listeners
+						
+						// Passive Listener, If web browser manage passive listeners
 						if ( passiveSupported === true ) {
+							
 							// If current listener (type) is in passive listener list
 							if ( passiveListeners.indexOf(type) >= 0 ) {
+								
 								// We declare it to passive listener {passive: true}
-								elem.addEventListener( type, eventHandle , {passive: true} );
+								elem.addEventListener( type, eventHandle, { passive: true } );
 							} else {
 								elem.addEventListener( type, eventHandle );
 							}
