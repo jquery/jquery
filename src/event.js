@@ -16,6 +16,24 @@ var
 	rmouseEvent = /^(?:mouse|pointer|contextmenu|drag|drop)|click/,
 	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
+/* Passive Listener Check */
+/* We check if the web browser manage passive listeners */
+var passiveSupported = false;
+
+try {
+  var options = Object.defineProperty({}, "passive", {
+    get: function() {
+      passiveSupported = true;
+    }
+  });
+
+  window.addEventListener("test", options, options);
+  window.removeEventListener("test", options, options);
+} catch(err) {
+  passiveSupported = false;
+}
+/* END Passive Listener Check */
+
 function returnTrue() {
 	return true;
 }
@@ -107,6 +125,13 @@ jQuery.event = {
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
+		
+		/* Passive Listener */
+                /* If web browser manage passive listeners, then we pass in array with all events to put in passive listener */
+                if (passiveSupported === true) {
+                  var passiveListeners = ['wheel', 'mousewheel', 'touchmove', 'touchstart', 'touchend'];
+                }
+                /* END Passive Listener */
 
 		// Only attach events to objects that accept data
 		if ( !acceptData( elem ) ) {
@@ -189,7 +214,20 @@ jQuery.event = {
 					special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 
 					if ( elem.addEventListener ) {
-						elem.addEventListener( type, eventHandle );
+					  /* Passive Listener */
+					  /* If web browser manage passive listeners */
+					  if (passiveSupported === true) {
+						/* If current listener (type) is in passive listener list */
+						if (passiveListeners.indexOf(type) >= 0) {
+						  /* We declare it to passive listener {passive: true} */
+						  elem.addEventListener( type, eventHandle , {passive: true});                                                                                                                       
+						} else {                                                                                                                                                                                
+						  elem.addEventListener( type, eventHandle);
+						}
+					  } else {                                                                                                                                                                               
+						elem.addEventListener( type, eventHandle);
+					  }
+					  /* END Passive Listener */
 					}
 				}
 			}
