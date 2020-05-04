@@ -24,7 +24,7 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
-		"compare_size": {
+		compare_size: {
 			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
 			options: {
 				compress: {
@@ -232,7 +232,7 @@ module.exports = function( grunt ) {
 						"test/data/jquery-1.9.1.js",
 						"test/data/testinit-jsdom.js",
 
-						// We don't support various loading methods like AMD,
+						// We don't support various loading methods like esmodules,
 						// choosing a version etc. for jsdom.
 						"dist/jquery.js",
 
