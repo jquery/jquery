@@ -1,5 +1,3 @@
-Authors ordered by first contribution.
-
 John Resig <jeresig@gmail.com>
 Gilles van den Hoven <gilles0181@gmail.com>
 Michael Geary <mike@geary.com>
@@ -325,3 +323,5 @@ Wonseop Kim <wonseop.kim@samsung.com>
 Christian Oliff <christianoliff@pm.me>
 Christian Wenz <christian@wenz.org>
 Sean Robinson <sean.robinson@scottsdalecc.edu>
+Jonathan <vanillajonathan@users.noreply.github.com>
+Pierre Grimaud <grimaud.pierre@gmail.com>
