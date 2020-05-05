@@ -34,7 +34,7 @@
 					// Code Style. This makes that indentation check is not
 					// performed for 1 depth of outer FunctionExpressions
 					"ignoredNodes": [
-						"Program > ExpressionStatement > CallExpression > FunctionExpression > *"
+						"Program > ExpressionStatement > CallExpression > :last-child > *"
 					]
 				} ]
 			},
