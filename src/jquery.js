@@ -16,6 +16,7 @@ import "./manipulation/_evalUrl.js";
 import "./wrap.js";
 import "./css.js";
 import "./css/hiddenVisibleSelectors.js";
+import "./css/showHide.js";
 import "./serialize.js";
 import "./ajax.js";
 import "./ajax/xhr.js";

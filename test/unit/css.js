@@ -487,9 +487,6 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 	jQuery( "#cssFunctionTest" ).remove();
 } );
 
-// .show(), .hide(), can be excluded from the build
-if ( jQuery.fn.show && jQuery.fn.hide ) {
-
 QUnit.test( "show()", function( assert ) {
 
 	assert.expect( 18 );
@@ -967,8 +964,6 @@ QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
 		}
 	} );
 } );
-
-}
 
 QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
