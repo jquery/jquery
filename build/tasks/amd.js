@@ -19,7 +19,8 @@ module.exports = function( grunt ) {
 
 	const outputRollupOptions = {
 		format: "amd",
-		dir: "amd"
+		dir: "amd",
+		indent: false
 	};
 
 	grunt.registerTask(

@@ -1,14 +1,5 @@
 {
 	"root": true,
 
-	"extends": "./.eslintrc-node.json",
-
-	"overrides": [
-		{
-			"files": "rollup.config.js",
-			"parserOptions": {
-				"sourceType": "module"
-			}
-		}
-	]
+	"extends": "./.eslintrc-node.json"
 }

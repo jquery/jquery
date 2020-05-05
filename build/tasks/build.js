@@ -54,7 +54,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerMultiTask(
 		"build",
-		"Concatenate source, remove sub AMD definitions, " +
+		"Build jQuery ECMAScript modules, " +
 			"(include/exclude modules with +/- flags), embed date/version",
 	async function() {
 		const done = this.async();
@@ -302,7 +302,7 @@ module.exports = function( grunt ) {
 				);
 
 			grunt.file.write( name, compiledContents );
-			grunt.log.ok( "File '" + name + "' created." );
+			grunt.log.ok( `File '${ name }' created.` );
 			done();
 		} catch ( err ) {
 			done( err );
