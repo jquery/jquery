@@ -1,7 +1,7 @@
 QUnit.module( "serialize", { afterEach: moduleTeardown } );
 
 QUnit.test( "jQuery.param()", function( assert ) {
-	assert.expect( 24 );
+	assert.expect( 25 );
 
 	var params;
 
@@ -75,6 +75,9 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	params = undefined;
 	assert.equal( jQuery.param( params ), "", "jQuery.param( undefined ) === empty string" );
+
+	params = { "param1": null };
+	assert.equal( jQuery.param( params, false, true ), "param1", "Allow null params to be abbreviated" );
 } );
 
 QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {

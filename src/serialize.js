@@ -52,7 +52,7 @@ function buildParams( prefix, obj, traditional, add ) {
 
 // Serialize an array of form elements or a set of
 // key/values into a query string
-jQuery.param = function( a, traditional ) {
+jQuery.param = function( a, traditional, standaloneKeys ) {
 	var prefix,
 		s = [],
 		add = function( key, valueOrFunction ) {
@@ -62,7 +62,8 @@ jQuery.param = function( a, traditional ) {
 				valueOrFunction() :
 				valueOrFunction;
 
-			s[ s.length ] = encodeURIComponent( key ) + "=" +
+			s[ s.length ] = encodeURIComponent( key ) +
+				( standaloneKeys && value == null ? "" : "=" ) +
 				encodeURIComponent( value == null ? "" : value );
 		};
 
