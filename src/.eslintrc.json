@@ -12,7 +12,10 @@
 
 	"rules": {
 		"import/extensions": [ "error", "always" ],
-		"import/no-cycle": "error"
+		"import/no-cycle": "error",
+		"indent": [ "error", "tab", {
+			"outerIIFEBody": 0
+		} ]
 	},
 
 	"overrides": [
@@ -23,7 +26,17 @@
 				"sourceType": "script"
 			},
 			"rules": {
-				"no-unused-vars": "off"
+				"no-unused-vars": "off",
+				"indent": [ "error", "tab", {
+
+					// Unlike other codes, "wrapper.js" is implemented in UMD.
+					// So it required a specific exception for jQuery's UMD
+					// Code Style. This makes that indentation check is not
+					// performed for 1 depth of outer FunctionExpressions
+					"ignoredNodes": [
+						"Program > ExpressionStatement > CallExpression > FunctionExpression > *"
+					]
+				} ]
 			},
 			"globals": {
 				"jQuery": false,
