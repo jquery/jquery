@@ -1,7 +1,7 @@
 QUnit.module( "serialize", { afterEach: moduleTeardown } );
 
 QUnit.test( "jQuery.param()", function( assert ) {
-	assert.expect( 25 );
+	assert.expect( 26 );
 
 	var params;
 
@@ -78,6 +78,9 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	params = { "param1": null };
 	assert.equal( jQuery.param( params, false, true ), "param1", "Allow null params to be abbreviated" );
+
+	params = { "foo": 1, "bar": [ 2, null ], "baz": { "qux": null, "quux": 3 } };
+	assert.equal( decodeURIComponent( jQuery.param( params, false, true ) ), "foo=1&bar[]=2&bar[]&baz[qux]&baz[quux]=3", "Allow null params to be abbreviated in nested objects" );
 } );
 
 QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {
