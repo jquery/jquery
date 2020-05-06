@@ -81,6 +81,21 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	params = { "foo": 1, "bar": [ 2, null ], "baz": { "qux": null, "quux": 3 } };
 	assert.equal( decodeURIComponent( jQuery.param( params, false, true ) ), "foo=1&bar[]=2&bar[]&baz[qux]&baz[quux]=3", "Allow null params to be abbreviated in nested objects" );
+
+} );
+
+QUnit.test( "jQuery.param() serialization collisions", function( assert ) {
+	assert.expect( 2 );
+
+	var left, right;
+
+    left = { a: 1, b: null };
+    right = { a: 1, b: "" };
+	assert.equal( jQuery.param( left ), jQuery.param( right ), "Serialization collision with standaloneKeys disabled" );
+
+    left = { a: 1, b: null };
+    right = { a: 1, b: "" };
+	assert.notEqual( jQuery.param( left, false, true ), jQuery.param( right, false, true ), "Distinct serialization with standaloneKeys enabled" );
 } );
 
 QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {
