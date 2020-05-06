@@ -89,12 +89,12 @@ QUnit.test( "jQuery.param() serialization collisions", function( assert ) {
 
 	var left, right;
 
-    left = { a: 1, b: null };
-    right = { a: 1, b: "" };
+	left = { a: 1, b: null };
+	right = { a: 1, b: "" };
 	assert.equal( jQuery.param( left ), jQuery.param( right ), "Serialization collision with standaloneKeys disabled" );
 
-    left = { a: 1, b: null };
-    right = { a: 1, b: "" };
+	left = { a: 1, b: null };
+	right = { a: 1, b: "" };
 	assert.notEqual( jQuery.param( left, false, true ), jQuery.param( right, false, true ), "Distinct serialization with standaloneKeys enabled" );
 } );
 
