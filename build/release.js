@@ -86,6 +86,5 @@ module.exports.dependencies = [
 	"archiver@1.3.0",
 	"shelljs@0.7.7",
 	"inquirer@7.0.4",
-	"npm@4.4.1",
-	"chalk@1.1.3"
+	"npm@4.4.1"
 ];
