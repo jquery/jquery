@@ -1,11 +1,11 @@
 ( function() {
 
-// Store the old counts so that we only assert on tests that have actually leaked,
-// instead of asserting every time a test has leaked sometime in the past
-var oldCacheLength = 0,
-	oldActive = 0,
+"use strict";
 
-	expectedDataKeys = {},
+// Store the old count so that we only assert on tests that have actually leaked,
+// instead of asserting every time a test has leaked sometime in the past
+var oldActive = 0,
+
 	splice = [].splice,
 	ajaxSettings = jQuery.ajaxSettings;
 
@@ -24,11 +24,6 @@ QUnit.config.requireExpects = true;
  * teardown function on all modules' lifecycle object.
  */
 window.moduleTeardown = function( assert ) {
-	var i, expectedKeys, actualKeys,
-		cacheLength = 0;
-
-	// Reset data register
-	expectedDataKeys = {};
 
 	// Check for (and clean up, if possible) incomplete animations/requests/etc.
 	if ( jQuery.timers && jQuery.timers.length !== 0 ) {
@@ -45,19 +40,6 @@ window.moduleTeardown = function( assert ) {
 	}
 
 	Globals.cleanup();
-
-	for ( i in jQuery.cache ) {
-		++cacheLength;
-	}
-
-	// Because QUnit doesn't have a mechanism for retrieving
-	// the number of expected assertions for a test,
-	// if we unconditionally assert any of these,
-	// the test will fail with too many assertions :|
-	if ( cacheLength !== oldCacheLength ) {
-		assert.equal( cacheLength, oldCacheLength, "No unit tests leak memory in jQuery.cache" );
-		oldCacheLength = cacheLength;
-	}
 };
 
 QUnit.done( function() {
