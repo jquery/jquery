@@ -12,4 +12,4 @@ export default function( elem ) {
 	}
 
 	return view.getComputedStyle( elem );
-};
+}

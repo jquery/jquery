@@ -106,7 +106,7 @@ module.exports = function( Release, files, complete ) {
 		await fs.writeFile( `${ Release.dir.dist }/bower.json`, generateBower() );
 
 		await fs.writeFile( `${ Release.dir.dist }/README.md`,
-			editReadme( readme, blogPostLink ) );
+			editReadme( readme, blogPostLink ) );
 
 		console.log( "Files ready to add." );
 	}

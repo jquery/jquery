@@ -30,6 +30,6 @@ function isAutoPx( prop ) {
 	// 2. The prop is not empty.
 	return ralphaStart.test( prop ) &&
 		rautoPx.test( prop[ 0 ].toUpperCase() + prop.slice( 1 ) );
-};
+}
 
 export default isAutoPx;

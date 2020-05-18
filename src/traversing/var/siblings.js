@@ -8,4 +8,4 @@ export default function( n, elem ) {
 	}
 
 	return matched;
-};
+}
