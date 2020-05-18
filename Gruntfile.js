@@ -305,7 +305,7 @@ module.exports = function( grunt ) {
 						"ie8": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) JS Foundation and other contributors | jquery.org/license */",
+						"(c) OpenJS Foundation and other contributors | jquery.org/license */",
 					compress: {
 						"hoist_funs": false,
 						loops: false,
