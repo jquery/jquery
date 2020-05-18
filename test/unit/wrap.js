@@ -21,7 +21,7 @@ function manipulationFunctionReturningObj( value ) {
 
 function testWrap( val, assert ) {
 
-	assert.expect( 19 );
+	assert.expect( 18 );
 
 	var defaultText, result, j, i, cacheLength;
 
@@ -68,25 +68,12 @@ function testWrap( val, assert ) {
 		"Check node,textnode,comment wraps doesn't hurt text"
 	);
 
-	// Try wrapping a disconnected node
-	cacheLength = 0;
-	for ( i in jQuery.cache ) {
-		cacheLength++;
-	}
-
 	j = jQuery( "<label></label>" ).wrap( val( "<li></li>" ) );
 	assert.equal(
 		j[ 0 ] .nodeName.toUpperCase(), "LABEL", "Element is a label"
 	);
 	assert.equal(
 		j[ 0 ].parentNode.nodeName.toUpperCase(), "LI", "Element has been wrapped"
-	);
-
-	for ( i in jQuery.cache ) {
-		cacheLength--;
-	}
-	assert.equal(
-		cacheLength, 0, "No memory leak in jQuery.cache (bug #7165)"
 	);
 
 	// Wrap an element containing a text node
