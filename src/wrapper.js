@@ -2,7 +2,7 @@
  * jQuery JavaScript Library v@VERSION
  * https://jquery.com/
  *
- * Copyright JS Foundation and other contributors
+ * Copyright OpenJS Foundation and other contributors
  * Released under the MIT license
  * https://jquery.org/license
  *
