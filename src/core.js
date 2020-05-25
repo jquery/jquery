@@ -10,9 +10,8 @@ import hasOwn from "./var/hasOwn.js";
 import fnToString from "./var/fnToString.js";
 import ObjectFunctionString from "./var/ObjectFunctionString.js";
 import support from "./var/support.js";
-import isWindow from "./var/isWindow.js";
+import isArrayLike from "./core/isArrayLike.js";
 import DOMEval from "./core/DOMEval.js";
-import toType from "./core/toType.js";
 
 var version = "@VERSION",
 
@@ -397,18 +396,5 @@ jQuery.each( "Boolean Number String Function Array Date RegExp Object Error Symb
 	function( _i, name ) {
 		class2type[ "[object " + name + "]" ] = name.toLowerCase();
 	} );
-
-function isArrayLike( obj ) {
-
-	var length = !!obj && obj.length,
-		type = toType( obj );
-
-	if ( typeof obj === "function" || isWindow( obj ) ) {
-		return false;
-	}
-
-	return type === "array" || length === 0 ||
-		typeof length === "number" && length > 0 && ( length - 1 ) in obj;
-}
 
 export default jQuery;

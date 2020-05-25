@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>body</title>
+</head>
+<body>
+<div id="qunit-fixture"></div>
+<script src="../../dist/jquery.min.js"></script>
+<script src="iframeTest.js"></script>
+<script>
+	if ( typeof trustedTypes === "undefined" ) {
+		startIframeTest( [ {
+			actual: "",
+			expected: "trustedTypes support",
+			message: "trustedTypes supported"
+		} ] );
+		throw new Error( "No trustedTypes support; this test should be skipped" );
+	}
+
+	var i, input, elem, tags,
+		results = [],
+		policy = trustedTypes.createPolicy( "jquery-test-policy", {
+			createHTML: function( html ) {
+				return html;
+			}
+		} ),
+		inputs = [
+			[ "<div></div>", "<div class='test'></div>", [ "div" ] ],
+			[ "<div></div>", "<div class='test'></div><span class='test'></span>",
+				[ "div", "span" ] ],
+			[ "<table></table>", "<td class='test'></td>", [ "td" ] ],
+			[ "<select></select>", "<option class='test'></option>", [ "option" ] ]
+		];
+
+	for ( i = 0; i < inputs.length; i++ ) {
+		input = inputs[ i ];
+		elem = jQuery( policy.createHTML( input[ 0 ] ) );
+		elem.append( policy.createHTML( input[ 1 ] ) );
+		tags = elem.find( ".test" ).toArray().map( function( node ) {
+			return node.nodeName.toLowerCase();
+		} );
+		results.push( {
+			actual: tags,
+			expected: input[ 2 ],
+			message: input[ 2 ].join( ", " )
+		} );
+	}
+
+	elem = jQuery( policy.createHTML( "<div></div>" ) );
+	elem.append( policy.createHTML( "text content" ) );
+	results.push( {
+		actual: elem.html(),
+		expected: "text content",
+		message: "Text content properly appended"
+	} );
+
+	startIframeTest( results );
+</script>
+</body>
+</html>

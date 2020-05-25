@@ -215,7 +215,7 @@ QUnit.assert.ok( true, "mock executed");';
 	}
 
 	protected function cspFrame( $req ) {
-		header( "Content-Security-Policy: default-src 'self'; report-uri ./mock.php?action=cspLog" );
+		header( "Content-Security-Policy: default-src 'self'; require-trusted-types-for 'script'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
 		echo file_get_contents( __DIR__ . '/csp.include.html' );
 	}
@@ -228,7 +228,7 @@ QUnit.assert.ok( true, "mock executed");';
 	}
 
 	protected function cspAjaxScript( $req ) {
-		header( "Content-Security-Policy: script-src 'self'; report-uri /base/test/data/mock.php?action=cspLog" );
+		header( "Content-Security-Policy: script-src 'self'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
 		echo file_get_contents( __DIR__ . '/csp-ajax-script.html' );
 	}
@@ -239,6 +239,12 @@ QUnit.assert.ok( true, "mock executed");';
 
 	protected function cspClean( $req ) {
 		file_put_contents( $this->cspFile, '' );
+	}
+
+	protected function trustedHtml( $req ) {
+		header( "Content-Security-Policy: require-trusted-types-for 'script'; report-uri ./mock.php?action=cspLog" );
+		header( 'Content-type: text/html' );
+		echo file_get_contents( __DIR__ . '/trusted-html.html' );
 	}
 
 	protected function errorWithScript( $req ) {

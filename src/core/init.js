@@ -2,6 +2,7 @@
 import jQuery from "../core.js";
 import document from "../var/document.js";
 import rsingleTag from "./var/rsingleTag.js";
+import isObviousHtml from "./isObviousHtml.js";
 
 import "../traversing/findFilter.js";
 
@@ -26,20 +27,41 @@ var rootjQuery,
 		// so migrate can support jQuery.sub (gh-2101)
 		root = root || rootjQuery;
 
-		// Handle HTML strings
-		if ( typeof selector === "string" ) {
-			if ( selector[ 0 ] === "<" &&
-				selector[ selector.length - 1 ] === ">" &&
-				selector.length >= 3 ) {
+		// HANDLE: $(DOMElement)
+		if ( selector.nodeType ) {
+			this[ 0 ] = selector;
+			this.length = 1;
+			return this;
 
-				// Assume that strings that start and end with <> are HTML and skip the regex check
+		// HANDLE: $(function)
+		// Shortcut for document ready
+		} else if ( typeof selector === "function" ) {
+			return root.ready !== undefined ?
+				root.ready( selector ) :
+
+				// Execute immediately if ready is not present
+				selector( jQuery );
+
+		} else {
+
+			// Handle obvious HTML strings
+			match = selector + "";
+			if ( isObviousHtml( match ) ) {
+
+				// Assume that strings that start and end with <> are HTML and skip
+				// the regex check. This also handles browser-supported HTML wrappers
+				// like TrustedHTML.
 				match = [ null, selector, null ];
 
-			} else {
+			// Handle HTML strings or selectors
+			} else if ( typeof selector === "string" ) {
 				match = rquickExpr.exec( selector );
+			} else {
+				return jQuery.makeArray( selector, this );
 			}
 
 			// Match html or make sure no context is specified for #id
+			// Note: match[1] may be a string or a TrustedHTML wrapper
 			if ( match && ( match[ 1 ] || !context ) ) {
 
 				// HANDLE: $(html) -> $(array)
@@ -84,7 +106,7 @@ var rootjQuery,
 					return this;
 				}
 
-			// HANDLE: $(expr, $(...))
+			// HANDLE: $(expr) & $(expr, $(...))
 			} else if ( !context || context.jquery ) {
 				return ( context || root ).find( selector );
 
@@ -93,24 +115,8 @@ var rootjQuery,
 			} else {
 				return this.constructor( context ).find( selector );
 			}
-
-		// HANDLE: $(DOMElement)
-		} else if ( selector.nodeType ) {
-			this[ 0 ] = selector;
-			this.length = 1;
-			return this;
-
-		// HANDLE: $(function)
-		// Shortcut for document ready
-		} else if ( typeof selector === "function" ) {
-			return root.ready !== undefined ?
-				root.ready( selector ) :
-
-				// Execute immediately if ready is not present
-				selector( jQuery );
 		}
 
-		return jQuery.makeArray( selector, this );
 	};
 
 // Give the init function the jQuery prototype for later instantiation

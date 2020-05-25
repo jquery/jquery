@@ -3008,3 +3008,17 @@ QUnit.test( "Works with invalid attempts to close the table wrapper", function( 
 	assert.strictEqual( elem[ 0 ].nodeName.toLowerCase(), "td", "First element is td" );
 	assert.strictEqual( elem[ 1 ].nodeName.toLowerCase(), "td", "Second element is td" );
 } );
+
+// Test trustedTypes support in browsers where they're supported (currently Chrome 83+).
+testIframe(
+	"Basic TrustedHTML support (gh-4409)",
+	"mock.php?action=trustedHtml",
+	function( assert, jQuery, window, document, test ) {
+		assert.expect( 5 );
+
+		test.forEach( function( result ) {
+			assert.deepEqual( result.actual, result.expected, result.message );
+		} );
+	},
+	typeof trustedTypes === "undefined" ? QUnit.skip : QUnit.test
+);
