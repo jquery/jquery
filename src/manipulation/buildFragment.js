@@ -1,6 +1,8 @@
 import jQuery from "../core.js";
 import toType from "../core/toType.js";
 import isAttached from "../core/isAttached.js";
+import arr from "../var/arr.js";
+import document from "../var/document.js";
 import rtagName from "./var/rtagName.js";
 import rscriptType from "./var/rscriptType.js";
 import wrapMap from "./wrapMap.js";
@@ -35,14 +37,16 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 				// Deserialize a standard representation
 				tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
-				wrap = wrapMap[ tag ] || wrapMap._default;
-				tmp.innerHTML = wrap[ 1 ] + jQuery.htmlPrefilter( elem ) + wrap[ 2 ];
+				wrap = wrapMap[ tag ] || arr;
 
-				// Descend through wrappers to the right content
-				j = wrap[ 0 ];
-				while ( j-- ) {
-					tmp = tmp.lastChild;
+				// Create wrappers & descend into them.
+				j = wrap.length;
+				while ( --j > -1 ) {
+					tmp.appendChild( document.createElement( wrap[ j ] ) );
+					tmp = tmp.firstChild;
 				}
+
+				tmp.innerHTML = jQuery.htmlPrefilter( elem );
 
 				jQuery.merge( nodes, tmp.childNodes );
 
