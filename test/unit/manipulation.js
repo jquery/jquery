@@ -2969,3 +2969,14 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 		test( "<noembed><noembed/><img src=url404 onerror=xss(12)>" );
 	}
 } );
+
+QUnit.test( "Works with invalid attempts to close the table wrapper", function( assert ) {
+	assert.expect( 3 );
+
+	// This test case attempts to close the tags which wrap input
+	// based on matching done in wrapMap which should be ignored.
+	var elem = jQuery( "<td></td></tr></tbody></table><td></td>" );
+	assert.strictEqual( elem.length, 2, "Two elements created" );
+	assert.strictEqual( elem[ 0 ].nodeName.toLowerCase(), "td", "First element is td" );
+	assert.strictEqual( elem[ 1 ].nodeName.toLowerCase(), "td", "Second element is td" );
+} );
