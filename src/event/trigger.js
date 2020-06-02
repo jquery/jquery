@@ -190,5 +190,3 @@ jQuery.fn.extend( {
 		}
 	}
 } );
-
-export default jQuery;

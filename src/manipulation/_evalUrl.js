@@ -22,5 +22,3 @@ jQuery._evalUrl = function( url, options, doc ) {
 		}
 	} );
 };
-
-export default jQuery._evalUrl;
