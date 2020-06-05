@@ -14,7 +14,7 @@ Bug Reports:
   We prefer test cases on JS Bin (https://jsbin.com/qawicop/edit?html,css,js,output) or CodePen (https://codepen.io/mgol/pen/wNWJbZ)
 
 Frequently Reported Issues:
-  * Selectors with '#' break: See https://github.com/jquery/jquery/issues/2824
+  * Self-closing tags broken in jQuery 3.5.0 or newer: please read the [jQuery 3.5.0 blog post](https://blog.jquery.com/2020/04/10/jquery-3-5-0-released/) & the [upgrade guide](https://jquery.com/upgrade-guide/3.5/); see also issue #4681.
 -->
 
 ### Description ###
