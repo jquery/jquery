@@ -2,7 +2,6 @@ import jQuery from "../core.js";
 import toType from "../core/toType.js";
 import isAttached from "../core/isAttached.js";
 import arr from "../var/arr.js";
-import document from "../var/document.js";
 import rtagName from "./var/rtagName.js";
 import rscriptType from "./var/rscriptType.js";
 import wrapMap from "./wrapMap.js";
