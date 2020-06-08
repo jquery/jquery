@@ -42,8 +42,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 				// Create wrappers & descend into them.
 				j = wrap.length;
 				while ( --j > -1 ) {
-					tmp.appendChild( document.createElement( wrap[ j ] ) );
-					tmp = tmp.firstChild;
+					tmp = tmp.appendChild( context.createElement( wrap[ j ] ) );
 				}
 
 				tmp.innerHTML = jQuery.htmlPrefilter( elem );
