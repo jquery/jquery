@@ -77,7 +77,8 @@
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
     "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
     "test": "npm run test:slim && npm run test:no-deprecated && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules && grunt karma:amd",
-    "jenkins": "npm run test:browserless"
+    "jenkins": "npm run test:browserless",
+    "commitmsg": "commitplease .git/COMMIT_EDITMSG"
   },
   "commitplease": {
     "nohook": true,
@@ -111,7 +112,6 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "node node_modules/commitplease",
       "pre-commit": "grunt lint:newer qunit_fixture"
     }
   }
