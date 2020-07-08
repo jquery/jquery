@@ -151,6 +151,10 @@ QUnit.test( "jQuery()", function( assert ) {
 	elem = jQuery( "<input type='hidden'>", {} );
 	assert.strictEqual( elem[ 0 ].ownerDocument, document,
 		"Empty attributes object is not interpreted as a document (trac-8950)" );
+
+	elem = jQuery( "<div><h3><i /></h3>\n<span>test</span></div>" );
+	assert.strictEqual( elem.html(), "<h3><i></i>\n<span>test</span></h3>",
+		"Self-closing tags should be parsed correctly when the html code contains line breaks" );
 } );
 
 QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
