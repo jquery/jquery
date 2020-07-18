@@ -308,7 +308,7 @@ Martijn W. van der Lee <martijn@vanderlee.com>
 Devin Wilson <dwilson6.github@gmail.com>
 Damian Senn <jquery@topaxi.codes>
 Zack Hall <zackhall@outlook.com>
-Vitality Terziev <vitaliyterziev@gmail.com>
+Vitaliy Terziev <vitaliyterziev@gmail.com>
 Todor Prikumov <tono_pr@abv.bg>
 Bernhard M. Wiedemann <jquerybmw@lsmod.de>
 Jha Naman <createnaman@gmail.com>
