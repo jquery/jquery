@@ -1239,6 +1239,121 @@ QUnit.module( "ajax", {
 			];
 		} );
 
+		ajaxTest( "jQuery.ajax() - no JSONP auto-promotion" + label, 4, function( assert ) {
+			return [
+				{
+					url: baseURL + "mock.php?action=jsonp",
+					dataType: "json",
+					crossDomain: crossDomain,
+					success: function() {
+						assert.ok( false, "JSON parsing should have failed (no callback)" );
+					},
+					fail: function() {
+						assert.ok( true, "JSON parsing failed, JSONP not used (no callback)" );
+					}
+				},
+				{
+					url: baseURL + "mock.php?action=jsonp&callback=?",
+					dataType: "json",
+					crossDomain: crossDomain,
+					success: function() {
+						assert.ok( false, "JSON parsing should have failed (ULR callback)" );
+					},
+					fail: function() {
+						assert.ok( true, "JSON parsing failed, JSONP not used (URL callback)" );
+					}
+				},
+				{
+					url: baseURL + "mock.php?action=jsonp",
+					dataType: "json",
+					crossDomain: crossDomain,
+					data: "callback=?",
+					success: function() {
+						assert.ok( false, "JSON parsing should have failed (data callback=?)" );
+					},
+					fail: function() {
+						assert.ok( true, "JSON parsing failed, JSONP not used (data callback=?)" );
+					}
+				},
+				{
+					url: baseURL + "mock.php?action=jsonp",
+					dataType: "json",
+					crossDomain: crossDomain,
+					data: "callback=??",
+					success: function() {
+						assert.ok( false, "JSON parsing should have failed (data callback=??)" );
+					},
+					fail: function() {
+						assert.ok( true, "JSON parsing failed, JSONP not used (data callback=??)" );
+					}
+				}
+			];
+		} );
+
+		ajaxTest( "jQuery.ajax() - JSON - no ? replacement" + label, 9, function( assert ) {
+			return [
+				{
+					url: baseURL + "mock.php?action=json&callback=?",
+					dataType: "json",
+					crossDomain: crossDomain,
+					beforeSend: function( _jqXhr, settings ) {
+						var queryString = settings.url.replace( /^[^?]*\?/, "" );
+						assert.ok(
+							queryString.indexOf( "jQuery" ) === -1,
+							"jQuery callback not inserted into the URL (URL callback)"
+						);
+						assert.ok(
+							queryString.indexOf( "callback=?" ) > -1,
+							"\"callback=?\" present in the URL unchanged (URL callback)"
+						);
+					},
+					success: function( data ) {
+						assert.ok( data.data, "JSON results returned (URL callback)" );
+					}
+				},
+				{
+					url: baseURL + "mock.php?action=json",
+					dataType: "json",
+					crossDomain: crossDomain,
+					data: "callback=?",
+					beforeSend: function( _jqXhr, settings ) {
+						var queryString = settings.url.replace( /^[^?]*\?/, "" );
+						assert.ok(
+							queryString.indexOf( "jQuery" ) === -1,
+							"jQuery callback not inserted into the URL (data callback=?)"
+						);
+						assert.ok(
+							queryString.indexOf( "callback=?" ) > -1,
+							"\"callback=?\" present in the URL unchanged (data callback=?)"
+						);
+					},
+					success: function( data ) {
+						assert.ok( data.data, "JSON results returned (data callback=?)" );
+					}
+				},
+				{
+					url: baseURL + "mock.php?action=json",
+					dataType: "json",
+					crossDomain: crossDomain,
+					data: "callback=??",
+					beforeSend: function( _jqXhr, settings ) {
+						var queryString = settings.url.replace( /^[^?]*\?/, "" );
+						assert.ok(
+							queryString.indexOf( "jQuery" ) === -1,
+							"jQuery callback not inserted into the URL (data callback=??)"
+						);
+						assert.ok(
+							queryString.indexOf( "callback=??" ) > -1,
+							"\"callback=?\" present in the URL unchanged (data callback=??)"
+						);
+					},
+					success: function( data ) {
+						assert.ok( data.data, "JSON results returned (data callback=??)" );
+					}
+				}
+			];
+		} );
+
 	} );
 
 	ajaxTest( "jQuery.ajax() - script, Remote", 2, function( assert ) {

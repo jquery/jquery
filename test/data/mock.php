@@ -70,6 +70,10 @@ QUnit.assert.ok( true, "mock executed");';
 			header( 'Content-type: application/json' );
 		}
 
+		if ( isset( $req->query['cors'] ) ) {
+			header( 'Access-Control-Allow-Origin: *' );
+		}
+
 		if ( isset( $req->query['array'] ) ) {
 			echo '[ {"name": "John", "age": 21}, {"name": "Peter", "age": 25 } ]';
 		} else {
