@@ -2125,7 +2125,7 @@ QUnit.test( "jQuery.escapeSelector", function( assert ) {
 	assert.equal( jQuery.escapeSelector( "\x20\x21\x78\x79" ), "\\ \\!xy",
 		"Escapes non-word ASCII characters" );
 
-	// Astral symbol (U+1D306 TETRAGRAM FOR CENTER)
+	// Astral symbol (U+1D306 TETRAGRAM FOR CENTRE)
 	assert.equal( jQuery.escapeSelector( "\uD834\uDF06" ), "\uD834\uDF06",
 		"Doesn't escape astral characters" );
 
