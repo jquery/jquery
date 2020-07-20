@@ -111,7 +111,7 @@
   },
   "husky": {
     "hooks": {
-      "commit-msg": "node node_modules/commitplease",
+      "commit-msg": "commitplease .git/COMMIT_EDITMSG",
       "pre-commit": "grunt lint:newer qunit_fixture"
     }
   }
