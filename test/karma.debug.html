@@ -36,7 +36,7 @@
 			amd = QUnit.config.amd || QUnit.urlParams.amd;
 
 		// Workaround: Remove call to `window.__karma__.loaded()`
-		// in favour of calling `window.__karma__.start()` from `loadTests()`
+		// in favor of calling `window.__karma__.start()` from `loadTests()`
 		// because tests such as unit/ready.js should run after document ready.
 		if ( !esmodules && !amd ) {
 			loadTests();
