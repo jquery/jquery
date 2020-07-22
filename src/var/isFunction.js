@@ -1,6 +1,6 @@
 define( [
 	"./toString"
-], function() {
+], function( toString ) {
 	"use strict";
 
 	return function isFunction( obj ) {
