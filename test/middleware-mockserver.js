@@ -81,6 +81,9 @@ var mocks = {
 		if ( req.query.header ) {
 			resp.writeHead( 200, { "content-type": "application/json" } );
 		}
+		if ( req.query.cors ) {
+			resp.writeHead( 200, { "access-control-allow-origin": "*" } );
+		}
 		if ( req.query.array ) {
 			resp.end( JSON.stringify(
 				[ { name: "John", age: 21 }, { name: "Peter", age: 25 } ]
