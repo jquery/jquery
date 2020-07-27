@@ -13,8 +13,7 @@ define( [
 		// Plus for old WebKit, typeof returns "function" for HTML collections
 		// (e.g., `typeof document.getElementsByTagName("div") === "function"`). (gh-4756)
 		return typeof obj === "function" && typeof obj.nodeType !== "number" &&
-			[ "[object HTMLCollection]", "[object NodeList]" ]
-				.indexOf( toString.call( obj ) ) === -1;
+			typeof obj.item !== "function";
 	};
 
 } );
