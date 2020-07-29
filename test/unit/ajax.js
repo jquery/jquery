@@ -89,16 +89,20 @@ QUnit.module( "ajax", {
 		}
 	);
 
-	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 4,
+	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 5,
 		function( assert ) {
 			return {
 				create: function( options ) {
 					var xhr;
+					options.method = "POST";
 					options.dataType = "script";
 					options.scriptAttrs = { id: "jquery-ajax-test", async: "async" };
 					xhr = jQuery.ajax( url( "mock.php?action=script" ), options );
 					assert.equal( jQuery( "#jquery-ajax-test" ).attr( "async" ), "async", "attr value" );
 					return xhr;
+				},
+				beforeSend: function( _jqXhr, settings ) {
+					assert.strictEqual( settings.type, "GET", "Type changed to GET" );
 				},
 				success: function() {
 					assert.ok( true, "success" );
@@ -1356,6 +1360,17 @@ QUnit.module( "ajax", {
 
 	} );
 
+	testIframe(
+		"jQuery.ajax() - script, CSP script-src compat (gh-3969)",
+		"mock.php?action=cspAjaxScript",
+		function( assert, jQuery, window, document, type, downloadedScriptCalled ) {
+			assert.expect( 2 );
+
+			assert.strictEqual( type, "GET", "Type changed to GET" );
+			assert.strictEqual( downloadedScriptCalled, true, "External script called" );
+		}
+	);
+
 	ajaxTest( "jQuery.ajax() - script, Remote", 2, function( assert ) {
 		return {
 			setup: function() {
@@ -1369,12 +1384,15 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - script, Remote with POST", 3, function( assert ) {
+	ajaxTest( "jQuery.ajax() - script, Remote with POST", 4, function( assert ) {
 		return {
 			setup: function() {
 				Globals.register( "testBar" );
 			},
 			url: url( "mock.php?action=testbar" ),
+			beforeSend: function( _jqXhr, settings ) {
+				assert.strictEqual( settings.type, "GET", "Type changed to GET" );
+			},
 			type: "POST",
 			dataType: "script",
 			success: function( data, status ) {
