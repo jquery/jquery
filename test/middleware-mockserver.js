@@ -101,7 +101,7 @@ var mocks = {
 		} else if ( req.query.callback ) {
 			callback = Promise.resolve( req.query.callback );
 		} else if ( req.method === "GET" ) {
-			callback = Promise.resolve( req.url.match( /^.+\/([^\/?.]+)\?.+$/ )[ 1 ] );
+			callback = Promise.resolve( req.url.match( /^.+\/([^\/?]+)\?.+$/ )[ 1 ] );
 		} else {
 			callback = getBody( req ).then( function( body ) {
 				return body.trim().replace( "callback=", "" );
