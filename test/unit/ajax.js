@@ -3035,6 +3035,8 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	// We need to simulate cross-domain requests with the feature that both 127.0.0.1 and localhost point to the mock http server
+	// So skip the the test if we are not in localhost.
 	QUnit[ ( !QUnit.isSwarm || location.hostname === "localhost" ) ? "test" : "skip" ](
 		"jQuery.append with crossorigin attribute", function( assert ) {
 		assert.expect( 1 );
