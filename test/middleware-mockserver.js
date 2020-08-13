@@ -277,8 +277,7 @@ function MockserverMiddlewareFactory() {
 	 * @param {Function} next Continue request handling
 	 */
 	return function( req, resp, next ) {
-		var method = req.method,
-			parsed = url.parse( req.url, /* parseQuery */ true ),
+		var parsed = url.parse( req.url, /* parseQuery */ true ),
 			path = parsed.pathname.replace( /^\/base\//, "" ),
 			query = parsed.query,
 			subReq = Object.assign( Object.create( req ), {
