@@ -806,7 +806,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - do execute scripts if JSONP from unsuccessful responses", 1, function( assert) {
+	ajaxTest( "jQuery.ajax() - do execute scripts if JSONP from unsuccessful responses", 1, function( assert ) {
 		var globalEval = jQuery.globalEval;
 
 		var failConverters = {
@@ -828,7 +828,7 @@ QUnit.module( "ajax", {
 				},
 				// error is the significant assertion
 				error: function( xhr ) {
-					assert.strictEqual( xhr.responseBody, {id: 1}, testMsg );
+					assert.strictEqual( xhr.responseBody, { id: 1 }, testMsg );
 				},
 				success: function() {
 					assert.ok( false, "Unanticipated success" );
@@ -840,10 +840,10 @@ QUnit.module( "ajax", {
 				"JSONP reply with dataType",
 				{
 					dataType: "jsonp",
-					url: url( "mock.php?action=errorWithJSONPAndResponseBodyScript" ),
+					url: url( "mock.php?action=errorWithJSONPAndResponseBodyScript" )
 				}
 			)
-		]
+		];
 	} );
 
 	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
