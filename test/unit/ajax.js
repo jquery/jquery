@@ -814,7 +814,7 @@ QUnit.module( "ajax", {
 			// error is the significant assertion
 			error: function( xhr ) {
 				var expected = { "status": 404, "msg": "Not Found" };
-				assert.strictEqual( xhr.responseJSON, expected, testMsg );
+				assert.equal( xhr.responseJSON, expected, testMsg );
 			}
 		};
 	} );
