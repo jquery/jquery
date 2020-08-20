@@ -811,11 +811,6 @@ QUnit.module( "ajax", {
 		return {
 			dataType: "jsonp",
 			url: url( "mock.php?action=errorWithScript" ),
-			beforeSend: function() {
-				jQuery.globalEval = function() {
-					assert.ok( false, "Should not eval" );
-				};
-			},
 			// error is the significant assertion
 			error: function( xhr ) {
 				var expected = { "status": 404, "msg": "Not Found" };
