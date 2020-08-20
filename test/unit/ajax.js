@@ -807,11 +807,11 @@ QUnit.module( "ajax", {
 	} );
 
 	ajaxTest( "jQuery.ajax() - do execute scripts if JSONP from unsuccessful responses", 1, function( assert ) {
-		var testMsg = "Unsuccessful JSONP requests should have a JSON body"
+		var testMsg = "Unsuccessful JSONP requests should have a JSON body";
 		return {
 			dataType: "jsonp",
 			url: url( "mock.php?action=errorWithScript" ),
-			failure: function(xhr) {
+			failure: function( xhr ) {
 				var expected = { "status": 404, "msg": "Not Found" };
 				assert.strictEqual( xhr.responseJSON, expected, testMsg );
 			}
