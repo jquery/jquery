@@ -806,6 +806,46 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - do execute scripts if JSONP from unsuccessful responses", 1, function( assert) {
+		var globalEval = jQuery.globalEval;
+
+		var failConverters = {
+			"text script json": function() {
+				assert.ok( true, "Converter for unsuccessful response" );
+			}
+		};
+
+		function request( title, options ) {
+			var testMsg = title + ": expected JSON response body";
+			return jQuery.extend( {
+				beforeSend: function() {
+					jQuery.globalEval = function() {
+						assert.ok( true, "Should eval" );
+					};
+				},
+				complete: function() {
+					jQuery.globalEval = globalEval;
+				},
+				// error is the significant assertion
+				error: function( xhr ) {
+					assert.strictEqual( xhr.responseBody, {id: 1}, testMsg );
+				},
+				success: function() {
+					assert.ok( false, "Unanticipated success" );
+				}
+			}, options );
+		}
+		return [
+			request(
+				"JSONP reply with dataType",
+				{
+					dataType: "jsonp",
+					url: url( "mock.php?action=errorWithJSONPAndResponseBodyScript" ),
+				}
+			)
+		]
+	} );
+
 	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
 		var globalEval = jQuery.globalEval;
 

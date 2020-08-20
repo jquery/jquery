@@ -233,6 +233,19 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 	}
 
+	protected function errorWithJSONPAndResponseBodyScript( $req ) {
+		header( 'HTTP/1.0 404 Not Found' );
+		if ( isset( $req->query['withScriptContentType'] ) ) {
+			header( 'Content-Type: application/javascript' );
+		}
+		if ( isset( $req->query['callback'] ) ) {
+			$callback = $req->query['callback'];
+			echo $callback . '( {"status": 404, "msg": "Not Found"} )';
+		} else {
+			echo 'QUnit.assert.ok( false, "Mock return erroneously executed" );';
+		}
+	}
+
 	public function __construct() {
 		$this->cspFile = __DIR__ . '/support/csp.log';
 	}
