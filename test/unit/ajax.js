@@ -812,7 +812,7 @@ QUnit.module( "ajax", {
 			dataType: "jsonp",
 			url: url( "mock.php?action=errorWithScript" ),
 			failure: function(xhr) {
-				const expected = { "status": 404, "msg": "Not Found" };
+				var expected = { "status": 404, "msg": "Not Found" };
 				assert.strictEqual( xhr.responseJSON, expected, testMsg );
 			}
 		};
