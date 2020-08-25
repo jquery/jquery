@@ -222,6 +222,15 @@ var mocks = {
 			__dirname + "/data/csp-nonce" + testParam + ".html" ).toString();
 		resp.end( body );
 	},
+	cspAjaxScript: function( req, resp ) {
+		resp.writeHead( 200, {
+			"Content-Type": "text/html",
+			"Content-Security-Policy": "script-src 'self'; report-uri /base/test/data/mock.php?action=cspLog"
+		} );
+		var body = fs.readFileSync(
+			__dirname + "/data/csp-ajax-script.html" ).toString();
+		resp.end( body );
+	},
 	cspLog: function( req, resp ) {
 		cspLog = "error";
 		resp.writeHead( 200 );

@@ -32,7 +32,10 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
-	if ( s.crossDomain ) {
+
+	// These types of requests are handled via a script tag
+	// so force their methods to GET.
+	if ( s.crossDomain || s.async || s.scriptAttrs ) {
 		s.type = "GET";
 	}
 } );
@@ -40,8 +43,9 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function( s ) {
 
-	// This transport only deals with cross domain or forced-by-attrs requests
-	if ( s.crossDomain || s.scriptAttrs ) {
+	// This transport only deals with async, cross domain or forced-by-attrs requests.
+	// Sync requests remain handled differently to preserve strict script ordering.
+	if ( s.crossDomain || s.async || s.scriptAttrs ) {
 		var script, callback;
 		return {
 			send: function( _, complete ) {
