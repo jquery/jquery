@@ -837,6 +837,19 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - do execute scripts if JSONP from unsuccessful responses", 1, function( assert ) {
+		var testMsg = "Unsuccessful JSONP requests should have a JSON body";
+		return {
+			dataType: "jsonp",
+			url: url( "mock.php?action=errorWithScript" ),
+			// error is the significant assertion
+			error: function( xhr ) {
+				var expected = { "status": 404, "msg": "Not Found" };
+				assert.deepEqual( xhr.responseJSON, expected, testMsg );
+			}
+		};
+	} );
+
 	ajaxTest( "jQuery.ajax() - do not execute scripts from unsuccessful responses (gh-4250)", 11, function( assert ) {
 		var globalEval = jQuery.globalEval;
 
