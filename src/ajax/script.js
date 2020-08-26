@@ -3,6 +3,22 @@ import document from "../var/document.js";
 
 import "../ajax.js";
 
+function canUseScriptTag( s ) {
+
+	// A script tag can only be used for async, cross domain or forced-by-attrs requests.
+	// Sync requests remain handled differently to preserve strict script ordering.
+	return s.crossDomain || s.scriptAttrs ||
+
+		// When dealing with JSONP (`s.dataTypes` include "json" then)
+		// don't use a script tag so that error responses still may have
+		// `responseJSON` set. Continue using a script tag for JSONP requests that:
+		//   * are cross-domain as AJAX requests won't work without a CORS setup
+		//   * have `scriptAttrs` set as that's a script-only functionality
+		// Note that this means JSONP requests violate strict CSP script-src settings.
+		// A proper solution is to migrate from using JSONP to a CORS setup.
+		( s.async && jQuery.inArray( "json", s.dataTypes ) < 0 );
+}
+
 // Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
 jQuery.ajaxPrefilter( function( s ) {
 	if ( s.crossDomain ) {
@@ -35,17 +51,14 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 
 	// These types of requests are handled via a script tag
 	// so force their methods to GET.
-	if ( s.crossDomain || s.async || s.scriptAttrs ) {
+	if ( canUseScriptTag( s ) ) {
 		s.type = "GET";
 	}
 } );
 
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function( s ) {
-
-	// This transport only deals with async, cross domain or forced-by-attrs requests.
-	// Sync requests remain handled differently to preserve strict script ordering.
-	if ( s.crossDomain || s.async || s.scriptAttrs ) {
+	if ( canUseScriptTag( s ) ) {
 		var script, callback;
 		return {
 			send: function( _, complete ) {
