@@ -35,6 +35,8 @@ and `brew install node` to install Node.js.
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
 if you swing that way. Easy-peasy.
 
+Code Integration of jQuery:
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
 
 How to build your own jQuery
 ----------------------------
