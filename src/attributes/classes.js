@@ -1,7 +1,6 @@
 import jQuery from "../core.js";
 import stripAndCollapse from "../core/stripAndCollapse.js";
 import rnothtmlwhite from "../var/rnothtmlwhite.js";
-import dataPriv from "../data/var/dataPriv.js";
 
 import "../core/init.js";
 
@@ -103,13 +102,6 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var type = typeof value,
-			isValidValue = type === "string" || Array.isArray( value );
-
-		if ( typeof stateVal === "boolean" && isValidValue ) {
-			return stateVal ? this.addClass( value ) : this.removeClass( value );
-		}
-
 		if ( typeof value === "function" ) {
 			return this.each( function( i ) {
 				jQuery( this ).toggleClass(
@@ -119,45 +111,25 @@ jQuery.fn.extend( {
 			} );
 		}
 
+		if ( typeof stateVal === "boolean" ) {
+			return stateVal ? this.addClass( value ) : this.removeClass( value );
+		}
+
 		return this.each( function() {
 			var className, i, self, classNames;
 
-			if ( isValidValue ) {
+			// Toggle individual class names
+			i = 0;
+			self = jQuery( this );
+			classNames = classesToArray( value );
 
-				// Toggle individual class names
-				i = 0;
-				self = jQuery( this );
-				classNames = classesToArray( value );
+			while ( ( className = classNames[ i++ ] ) ) {
 
-				while ( ( className = classNames[ i++ ] ) ) {
-
-					// Check each className given, space separated list
-					if ( self.hasClass( className ) ) {
-						self.removeClass( className );
-					} else {
-						self.addClass( className );
-					}
-				}
-
-			// Toggle whole class name
-			} else if ( value === undefined || type === "boolean" ) {
-				className = getClass( this );
-				if ( className ) {
-
-					// Store className if set
-					dataPriv.set( this, "__className__", className );
-				}
-
-				// If the element has a class name or if we're passed `false`,
-				// then remove the whole classname (if there was one, the above saved it).
-				// Otherwise bring back whatever was previously saved (if anything),
-				// falling back to the empty string if nothing was stored.
-				if ( this.setAttribute ) {
-					this.setAttribute( "class",
-						className || value === false ?
-							"" :
-							dataPriv.get( this, "__className__" ) || ""
-					);
+				// Check each className given, space separated list
+				if ( self.hasClass( className ) ) {
+					self.removeClass( className );
+				} else {
+					self.addClass( className );
 				}
 			}
 		} );
