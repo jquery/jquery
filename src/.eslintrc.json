@@ -15,7 +15,16 @@
 		"import/no-cycle": "error",
 		"import/no-unused-modules": [ "error", {
 			"unusedExports": true,
-			"ignoreExports": [ "src/*.js" ]
+
+			// When run via WebStorm, the root path against which these paths
+			// are resolved is the path where this ESLint config file lies,
+			// i.e. `src`. When run via the command line, it's usually the root
+			// folder of the jQuery repository. This pattern intends to catch both.
+			// Note that we cannot specify two patterns here:
+			//     [ "src/*.js", "*.js" ]
+			// as they're analyzed individually and the rule crashes if a pattern
+			// cannot be matched.
+			"ignoreExports": [ "{src/,}*.js" ]
 		} ],
 		"indent": [ "error", "tab", {
 			"outerIIFEBody": 0
