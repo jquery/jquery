@@ -3037,8 +3037,8 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 	// We need to simulate cross-domain requests with the feature that
 	// both 127.0.0.1 and localhost point to the mock http server.
- 	// Skip the the test if we are not in localhost but make sure we run
- 	// it in Karma.
+	// Skip the the test if we are not in localhost but make sure we run
+	// it in Karma.
 	QUnit[ ( !QUnit.isSwarm || location.hostname === "localhost" ) ? "test" : "skip" ](
 		"jQuery.append with crossorigin attribute", function( assert ) {
 		assert.expect( 1 );
@@ -3048,7 +3048,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
-			assert.ok( response === true, "Origin header sent" );
+			assert.ok( typeof response.header === true, "Origin header sent" );
 			window.clearTimeout( timeout );
 			done();
 		};
@@ -3064,7 +3064,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		jQuery( document.body ).append( html );
 		timeout = window.setTimeout( function() {
-			assert.ok( false, "Origin header should have been sent );
+			assert.ok( false, "Origin header should have been sent" );
 			done();
 		}, 2000 );
 	} );
