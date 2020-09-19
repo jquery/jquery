@@ -3039,7 +3039,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	// both 127.0.0.1 and localhost point to the mock http server.
 	// Skip the the test if we are not in localhost but make sure we run
 	// it in Karma.
-	QUnit[ ( !QUnit.isSwarm || location.hostname === "localhost" ) ? "test" : "skip" ](
+	QUnit[ ( window.__karma__ || location.hostname === "localhost" ) ? "test" : "skip" ](
 		"jQuery.append with crossorigin attribute", function( assert ) {
 		assert.expect( 1 );
 
