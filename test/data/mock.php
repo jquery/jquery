@@ -65,7 +65,7 @@ class MockServer {
 				array_values( $req->headers )
 			);
 
-			echo "{$req->query['callback']}(" . json_encode( $req->headers ) . ")";
+			echo "{$req->query['callback']}(" . json_encode( [ 'headers' => $req->headers ] ) . ")";
 		} else {
 			echo 'QUnit.assert.ok( true, "mock executed" );';
 		}
