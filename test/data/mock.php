@@ -61,11 +61,11 @@ class MockServer {
 
 		if ( !empty( $req->query['callback'] ) ) {
 			$headers = array_combine(
-				array_map( 'strtolower', array_keys( $req->headers ) ), 
+				array_map( 'strtolower', array_keys( $req->headers ) ),
 				array_values( $req->headers )
 			);
 
-			echo "{$req->query['callback']}(" . json_encode( $req->headers ) . ")";	
+			echo "{$req->query['callback']}(" . json_encode( $req->headers ) . ")";
 		} else {
 			echo 'QUnit.assert.ok( true, "mock executed" );';
 		}
@@ -246,17 +246,6 @@ QUnit.assert.ok( true, "mock executed");';
 			echo $callback . '( {"status": 404, "msg": "Not Found"} )';
 		} else {
 			echo 'QUnit.assert.ok( false, "Mock return erroneously executed" );';
-		}
-	}
-
-	protected function cors( $req ) {
-		if ( isset( $req->headers['ORIGIN'] ) ) {
-			$origin = $req->headers['ORIGIN'];
-			header( "Access-Control-Allow-Methods: GET" );
-			header( "Access-Control-Allow-Origin: " . $origin );
-			echo 'corsCallback( true )';
-		} else {
-			echo 'corsCallback( false )';
 		}
 	}
 
