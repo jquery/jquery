@@ -67,7 +67,18 @@ var mocks = {
 		} else {
 			resp.writeHead( 200, { "content-type": "text/html" } );
 		}
-		resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
+
+		if ( req.query.cors ) {
+			resp.writeHead( 200, { "access-control-allow-origin": "*" } );
+		}
+
+		if ( req.query.callback ) {
+			resp.end( req.query.callback + "(" + JSON.stringify( {
+				headers: req.headers
+			} ) + ")" );
+		} else {
+			resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
+		}
 	},
 	testbar: function( req, resp ) {
 		resp.writeHead( 200 );
@@ -251,15 +262,6 @@ var mocks = {
 			resp.end( req.query.callback + "( {\"status\": 404, \"msg\": \"Not Found\"} )" );
 		} else {
 			resp.end( "QUnit.assert.ok( false, \"Mock return erroneously executed\" );" );
-		}
-	},
-	cors: function( req, resp ) {
-		if ( typeof req.headers[ "origin" ] != "undefined" ) {
-			resp.setHeader( "Access-Control-Allow-Methods", "GET" );
-			resp.setHeader( "Access-Control-Allow-Origin", req.headers[ "origin" ] );
-			resp.end( "corsCallback( true )" );
-		} else {
-			resp.end( "corsCallback( false )" );
 		}
 	}
 };

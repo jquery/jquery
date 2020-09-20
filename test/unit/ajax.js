@@ -3048,17 +3048,16 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
-			assert.ok( typeof response.header === true, "Origin header sent" );
+
+			console.log( response );
+			console.log( response.headers );
+
+			assert.ok( typeof response.headers.origin === "string", "Origin header sent" );
 			window.clearTimeout( timeout );
 			done();
 		};
 
-		var src = baseURL + "mock.php?action=cors";
-
-		// Simulate a cross-origin request.
-		// Full cross-origin verification is only done when tests run from localhost,
-		// e.g. when run via Karma (as we can depend on localhost resolving to 127.0.0.1).
-		// In other cases we only do a more limited check: that the Origin header is sent.
+		var src = baseURL + "mock.php?action=script&cors=1&callback=corsCallback";
 		src = src.replace( "localhost", "127.0.0.1" );
 		var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
 
