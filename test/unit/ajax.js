@@ -3048,10 +3048,6 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		Globals.register( "corsCallback" );
 		window.corsCallback = function( response ) {
-
-			console.log( response );
-			console.log( response.headers );
-
 			assert.ok( typeof response.headers.origin === "string", "Origin header sent" );
 			window.clearTimeout( timeout );
 			done();
