@@ -60,7 +60,7 @@ module.exports = function( grunt ) {
 		const done = this.async();
 
 		try {
-			const slimFlags = [ "-ajax", "-callbacks", "-deferred", "-effects" ];
+			const slimFlags = [ "-ajax", "-callbacks", "-deferred", "-effects", "-queue" ];
 			const flags = this.flags;
 			const optIn = flags[ "*" ];
 			let name = grunt.option( "filename" );
