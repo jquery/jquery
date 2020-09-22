@@ -271,7 +271,7 @@ QUnit.module( "ajax", {
 				"Nullable": null,
 				"undefined": undefined
 
-				// Support: IE 9 - 11+, Edge 12 - 14 only
+				// Support: IE 9 - 11+
 				// IE can receive empty headers but not send them.
 			}, QUnit.isIE ? {} : {
 				"Empty": ""
@@ -2281,9 +2281,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	// beforeunload, unload, pagehide, and visibilitychange event handlers.
 	// See https://bugs.chromium.org/p/chromium/issues/detail?id=952452
 	// Safari 13 did similar changes. The below check will catch them both.
-	// Edge Legacy fakes Chrome which fakes Safari in their user agents so we need
-	// to exclude Edge specifically here so that the test continues to run there.
-	if ( !/safari/i.test( navigator.userAgent ) || /edge\//i.test( navigator.userAgent ) ) {
+	if ( !/safari/i.test( navigator.userAgent ) ) {
 		testIframe(
 			"#14379 - jQuery.ajax() on unload",
 			"ajax/onunload.html",

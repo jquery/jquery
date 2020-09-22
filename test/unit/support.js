@@ -58,39 +58,18 @@ testIframe(
 	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
-			edge: {
-				reliableTrDimensions: false,
-				scope: undefined
-			},
-			ie_11: {
-				reliableTrDimensions: false,
-				scope: undefined
-			},
-			chrome: {
-				reliableTrDimensions: true,
-				scope: true
-			},
-			safari: {
-				reliableTrDimensions: true,
-				scope: true
-			},
-			firefox: {
-				reliableTrDimensions: true,
-				scope: true
-			},
-			ios: {
-				reliableTrDimensions: true,
-				scope: true
-			}
+			ie_11: {},
+			chrome: {},
+			safari: {},
+			firefox: {},
+			ios: {}
 		};
 
-	if ( /edge\//i.test( userAgent ) ) {
-		expected = expectedMap.edge;
-	} else if ( document.documentMode ) {
+	if ( document.documentMode ) {
 		expected = expectedMap.ie_11;
 	} else if ( /chrome/i.test( userAgent ) ) {
 
-		// Catches Chrome on Android & Opera as well.
+		// Catches Edge, Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
 	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;

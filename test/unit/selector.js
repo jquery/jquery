@@ -1661,14 +1661,10 @@ QUnit.test( "context", function( assert ) {
 	}
 } );
 
-// Support: IE 11+, Edge 12 - 18+
-// IE/Edge don't support the :scope pseudo-class so they will trigger MutationObservers.
+// Support: IE 11+
+// IE doesn't support the :scope pseudo-class so it will trigger MutationObservers.
 // The test is skipped there.
-QUnit[
-	( QUnit.isIE || /edge\//i.test( navigator.userAgent ) ) ?
-		"skip" :
-		"test"
-	]( "selectors maintaining context don't trigger mutation observers", function( assert ) {
+QUnit.testUnlessIE( "selectors maintaining context don't trigger mutation observers", function( assert ) {
 	assert.expect( 1 );
 
 	var timeout,
@@ -1742,10 +1738,10 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "disconnected nodes", function
 	assert.equal( $opt.is( ":selected" ), true, "selected option" );
 } );
 
-// Support: IE 11+, Edge 12 - 18+
-// IE/Edge don't support Shadow DOM.
+// Support: IE 11+
+// IE doesn't support Shadow DOM.
 // selector-native doesn't support querying inside of Shadow DOM.
-QUnit[ QUnit.jQuerySelectors && document.body.getRootNode ? "test" : "skip" ](
+QUnit[ QUnit.jQuerySelectors && !QUnit.isIE ? "test" : "skip" ](
 	"Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 

@@ -801,15 +801,15 @@ QUnit.test( "jQuery.map", function( assert ) {
 	assert.equal( result.length, 3, "Array flatten only one level down" );
 	assert.ok( Array.isArray( result[ 0 ] ), "Array flatten only one level down" );
 
-	// Support: IE 11+, Edge 18+
-	// Skip the test in browsers without Array#flat.
-	if ( Array.prototype.flat ) {
+	// Support: IE 11+
+	// IE doesn't have Array#flat so it'd fail the test.
+	if ( !QUnit.isIE ) {
 		result = jQuery.map( Array( 300000 ), function( v, k ) {
 			return k;
 		} );
 		assert.equal( result.length, 300000, "Able to map 300000 records without any problems (#4320)" );
 	} else {
-		assert.ok( "skip", "Array#flat doesn't supported on all browsers" );
+		assert.ok( "skip", "Array#flat isn't supported in IE" );
 	}
 } );
 

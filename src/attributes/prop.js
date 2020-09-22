@@ -69,8 +69,10 @@ jQuery.extend( {
 
 				if (
 					rfocusable.test( elem.nodeName ) ||
-					rclickable.test( elem.nodeName ) &&
-					elem.href
+
+					// href-less anchor's `tabIndex` property value is `0` and
+					// the `tabindex` attribute value: `null`. We want `-1`.
+					rclickable.test( elem.nodeName ) && elem.href
 				) {
 					return 0;
 				}

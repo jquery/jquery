@@ -1762,13 +1762,9 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-QUnit[
-	// Support: Edge 16 - 18+
-	// Edge sometimes doesn't execute module scripts so skip the test there.
-	( QUnit.isIE || /edge\//i.test( navigator.userAgent ) ) ?
-		"skip" :
-		"test"
-]( "html(script type module)", function( assert ) {
+// Support: IE 9 - 11+
+// IE doesn't support modules.
+QUnit.testUnlessIE( "html(script type module)", function( assert ) {
 	assert.expect( 4 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
@@ -2897,12 +2893,7 @@ testIframe(
 			assert.equal( data, "", "No log request should be sent" );
 			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
 		} );
-	},
-
-	// Support: Edge <=18+
-	// Edge doesn't support nonce in non-inline scripts.
-	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
+	}
 );
 
 testIframe(
@@ -2920,10 +2911,7 @@ testIframe(
 	},
 
 	// The AJAX module is needed for jQuery._evalUrl.
-	// Support: Edge <=18+
-	// Edge doesn't support nonce in non-inline scripts.
-	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	QUnit[ jQuery.ajax && !/\bedge\//i.test( navigator.userAgent ) ? "test" : "skip" ]
+	QUnit[ jQuery.ajax ? "test" : "skip" ]
 );
 
 testIframe(
@@ -2938,12 +2926,7 @@ testIframe(
 			assert.equal( data, "", "No log request should be sent" );
 			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
 		} );
-	},
-
-	// Support: Edge <=18+
-	// Edge doesn't support nonce in non-inline scripts.
-	// See https://web.archive.org/web/20171203124125/https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
-	QUnit[ /\bedge\//i.test( navigator.userAgent ) ? "skip" : "test" ]
+	}
 );
 
 QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {

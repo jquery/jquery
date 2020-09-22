@@ -629,10 +629,6 @@ QUnit.test( ".data always sets data with the camelCased key (gh-2257)", function
 				key: "boolFalse",
 				value: false
 			},
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
 			"some-json": {
 				key: "someJson",
 				value: "{ \"foo\": \"bar\" }"
@@ -693,10 +689,6 @@ QUnit.test( ".data supports interoperable hyphenated/camelCase get/set of proper
 				key: "boolFalse",
 				value: false
 			},
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
 			"some-json": {
 				key: "someJson",
 				value: "{ \"foo\": \"bar\" }"
@@ -756,10 +748,6 @@ QUnit.test( ".data supports interoperable removal of hyphenated/camelCase proper
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
 			"some-json": "{ \"foo\": \"bar\" }"
 		};
 
@@ -797,10 +785,6 @@ QUnit.test( ".data supports interoperable removal of properties SET TWICE #13850
 			"an-object": {},
 			"bool-true": true,
 			"bool-false": false,
-
-			// JSHint enforces double quotes,
-			// but JSON strings need double quotes to parse
-			// so we need escaped double quotes here
 			"some-json": "{ \"foo\": \"bar\" }"
 		};
 
