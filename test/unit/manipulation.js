@@ -2295,6 +2295,39 @@ testIframe(
 	QUnit[ jQuery.ajax ? "test" : "skip" ]
 );
 
+
+// We need to simulate cross-domain requests with the feature that
+// both 127.0.0.1 and localhost point to the mock http server.
+// Skip the the test if we are not in localhost but make sure we run
+// it in Karma.
+QUnit[
+	jQuery.ajax && ( window.__karma__ || location.hostname === "localhost" ) ?
+		"test" :
+		"skip"
+]( "jQuery.append with crossorigin attribute", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		timeout;
+
+	Globals.register( "corsCallback" );
+	window.corsCallback = function( response ) {
+		assert.ok( typeof response.headers.origin === "string", "Origin header sent" );
+		window.clearTimeout( timeout );
+		done();
+	};
+
+	var src = baseURL + "mock.php?action=script&cors=1&callback=corsCallback";
+	src = src.replace( "localhost", "127.0.0.1" );
+	var html = "<script type=\"text/javascript\" src=\"" + src + "\" crossorigin=\"anonymous\"><\/script>";
+
+	jQuery( document.body ).append( html );
+	timeout = window.setTimeout( function() {
+		assert.ok( false, "Origin header should have been sent" );
+		done();
+	}, 2000 );
+} );
+
 QUnit.test( "jQuery.clone - no exceptions for object elements #9587", function( assert ) {
 
 	assert.expect( 1 );
