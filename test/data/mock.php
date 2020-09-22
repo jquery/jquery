@@ -54,7 +54,21 @@ class MockServer {
 		} else {
 			header( 'Content-type: text/html' );
 		}
-		echo 'QUnit.assert.ok( true, "mock executed" );';
+
+		if ( !empty( $req->query['cors'] ) ) {
+			header( "Access-Control-Allow-Origin: *" );
+		}
+
+		if ( !empty( $req->query['callback'] ) ) {
+			$headers = array_combine(
+				array_map( 'strtolower', array_keys( $req->headers ) ),
+				array_values( $req->headers )
+			);
+
+			echo $req->query['callback'] . "(" . json_encode( [ 'headers' => $headers ] ) . ")";
+		} else {
+			echo 'QUnit.assert.ok( true, "mock executed" );';
+		}
 	}
 
 	// Used to be in test.js, but was renamed to testbar.php

@@ -67,7 +67,18 @@ var mocks = {
 		} else {
 			resp.writeHead( 200, { "content-type": "text/html" } );
 		}
-		resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
+
+		if ( req.query.cors ) {
+			resp.writeHead( 200, { "access-control-allow-origin": "*" } );
+		}
+
+		if ( req.query.callback ) {
+			resp.end( req.query.callback + "(" + JSON.stringify( {
+				headers: req.headers
+			} ) + ")" );
+		} else {
+			resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
+		}
 	},
 	testbar: function( req, resp ) {
 		resp.writeHead( 200 );
