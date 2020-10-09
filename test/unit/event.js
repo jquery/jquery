@@ -2630,6 +2630,33 @@ QUnit.test( "focusin on document & window", function( assert ) {
 	jQuery( document ).off( "focusout", increment );
 } );
 
+QUnit.test( "element removed during focusout (gh-4417)", function( assert ) {
+	assert.expect( 1 );
+
+	var button = jQuery( "<button>Click me</button>" );
+
+	button.appendTo( "#qunit-fixture" );
+
+	button.on( "click", function() {
+		button.trigger( "blur" );
+		assert.ok( true, "Removing the element didn't crash" );
+	} );
+
+	// Support: Chrome 86+
+	// In Chrome, if an element having a focusout handler is blurred by
+	// clicking outside of it, it invokes the handler synchronously. However,
+	// if the click happens programmatically, the invocation is asynchronous.
+	// As we have no way to simulate real user input in unit tests, simulate
+	// this behavior by calling `jQuery.cleanData` & removing the element using
+	// native APIs.
+	button[ 0 ].blur = function() {
+		jQuery.cleanData( [ this ] );
+		this.parentNode.removeChild( this );
+	};
+
+	button[ 0 ].click();
+} );
+
 testIframe(
 	"jQuery.ready promise",
 	"event/promiseReady.html",
