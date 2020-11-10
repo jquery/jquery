@@ -58,11 +58,21 @@ testIframe(
 	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
-			ie_11: {},
-			chrome: {},
-			safari: {},
-			firefox: {},
-			ios: {}
+			ie_11: {
+				"reliableTrDimensions": false
+			},
+			chrome: {
+				"reliableTrDimensions": true
+			},
+			safari: {
+				"reliableTrDimensions": true
+			},
+			firefox: {
+				"reliableTrDimensions": false
+			},
+			ios: {
+				"reliableTrDimensions": true
+			}
 		};
 
 	if ( document.documentMode ) {
