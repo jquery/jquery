@@ -4,12 +4,13 @@ node_js:
 - "10"
 - "12"
 - "14"
+- "15"
 env:
   - NPM_SCRIPT=test:browserless
 jobs:
   include:
     - name: "Browser tests: full build, Chrome & Firefox stable"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:browser"
         - BROWSERS="ChromeHeadless,FirefoxHeadless"
@@ -17,35 +18,35 @@ jobs:
         chrome: stable
         firefox: latest
     - name: "Browser tests: slim build, Chrome stable"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:slim"
         - BROWSERS="ChromeHeadless"
       addons:
         chrome: stable
     - name: "Browser tests: no-deprecated build, Chrome stable"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:no-deprecated"
         - BROWSERS="ChromeHeadless"
       addons:
         chrome: stable
     - name: "Browser tests: no-Sizzle build, Chrome stable"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:no-sizzle"
         - BROWSERS="ChromeHeadless"
       addons:
         chrome: stable
     - name: "Browser tests: AMD build, Chrome stable"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:amd"
         - BROWSERS="ChromeHeadless"
       addons:
         chrome: stable
     - name: "Browser tests: full build, Firefox ESR"
-      node_js: "12"
+      node_js: "14"
       env:
         - NPM_SCRIPT="test:browser"
         - BROWSERS="FirefoxHeadless"
