@@ -3291,6 +3291,29 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 	}, 50 );
 } );
 
+QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		select = jQuery( "<select><option selected='selected'>A</option></select>" ),
+		button = jQuery( "<button>Focus target</button>" );
+
+	jQuery( "#qunit-fixture" )
+		.append( select )
+		.append( button );
+
+	select.on( "focus", function() {
+		button.trigger( "focus" );
+	} );
+
+	select.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.strictEqual( document.activeElement, button[ 0 ], "Focus redirect worked" );
+		done();
+	} );
+} );
+
 // TODO replace with an adaptation of
 // https://github.com/jquery/jquery/pull/1367/files#diff-a215316abbaabdf71857809e8673ea28R2464
 ( function() {

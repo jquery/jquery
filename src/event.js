@@ -11,7 +11,9 @@ import nodeName from "./core/nodeName.js";
 import "./core/init.js";
 import "./selector.js";
 
-var rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+var currentFocusTarget,
+	focusTriggersInProgress = 0,
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
 function returnTrue() {
 	return true;
@@ -581,6 +583,13 @@ function leverageNative( el, type, expectSync ) {
 			// Fire an inner synthetic event with the original arguments
 			} else if ( saved.length ) {
 
+				// Track the number of focus triggers in progress to know when
+				// `currentFocusTarget` can be cleared to save memory.
+				if ( type === "focus" ) {
+					focusTriggersInProgress++;
+					currentFocusTarget = this;
+				}
+
 				// ...and capture the result
 				dataPriv.set( this, type, {
 					value: jQuery.event.trigger(
@@ -595,6 +604,15 @@ function leverageNative( el, type, expectSync ) {
 
 				// Abort handling of the native event
 				event.stopImmediatePropagation();
+
+				if ( type === "focus" ) {
+					focusTriggersInProgress--;
+
+					// Don't hold onto the last focused element when it's no longer needed.
+					if ( !focusTriggersInProgress ) {
+						currentFocusTarget = undefined;
+					}
+				}
 			}
 		}
 	} );
@@ -744,6 +762,14 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 
 			// Return non-false to allow normal event-path propagation
 			return true;
+		},
+
+		// Suppress native `.focus()` if another element has received focus since.
+		// This prevents focus from erroneously going back to the first element
+		// which may happen as the leverageNative hack changes the order of triggered
+		// events.
+		_default: function() {
+			return type === "focus" && this !== currentFocusTarget;
 		},
 
 		delegateType: delegateType
