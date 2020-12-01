@@ -1393,7 +1393,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 } );
 
 QUnit.test( "jQuery.parseXML", function( assert ) {
-	assert.expect( 8 );
+	assert.expect( 7 );
 
 	var xml, tmp;
 	try {
@@ -1406,12 +1406,7 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	} catch ( e ) {
 		assert.strictEqual( e, undefined, "unexpected error" );
 	}
-	try {
-		xml = jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
-		assert.ok( false, "invalid xml not detected" );
-	} catch ( e ) {
-		assert.strictEqual( e.message, "Invalid XML: <p>Not a <<b>well-formed</b> xml string</p>", "invalid xml detected" );
-	}
+
 	try {
 		xml = jQuery.parseXML( "" );
 		assert.strictEqual( xml, null, "empty string => null document" );
@@ -1424,6 +1419,29 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	} catch ( e ) {
 		assert.ok( false, "empty input throws exception" );
 	}
+} );
+
+// Support: IE 11+
+// IE throws an error when parsing invalid XML instead of reporting the error
+// in a `parsererror` element, skip the test there.
+QUnit.testUnlessIE( "jQuery.parseXML - error reporting", function( assert ) {
+	assert.expect( 2 );
+
+	var errorArg, lineMatch, line, columnMatch, column;
+
+	sinon.stub( jQuery, "error" );
+
+	jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
+	errorArg = jQuery.error.firstCall.lastArg.toLowerCase();
+	console.log( "errorArg", errorArg );
+
+	lineMatch = errorArg.match( /line\s*(?:number)?\s*(\d+)/ );
+	line = lineMatch && lineMatch[ 1 ];
+	columnMatch = errorArg.match( /column\s*(\d+)/ );
+	column = columnMatch && columnMatch[ 1 ];
+
+	assert.strictEqual( line, "1", "reports error line" );
+	assert.strictEqual( column, "11", "reports error column" );
 } );
 
 testIframe(
