@@ -3292,7 +3292,7 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 } );
 
 QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) {
-	assert.expect( 1 );
+	assert.expect( 2 );
 
 	var done = assert.async(),
 		select = jQuery( "<select><option selected='selected'>A</option></select>" ),
@@ -3306,10 +3306,21 @@ QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) 
 		button.trigger( "focus" );
 	} );
 
+	jQuery( document ).on( "focusin.focusTests", function( ev ) {
+		// Support: IE 11+
+		// In IE focus is async so focusin on document is fired multiple times,
+		// for each of the elements. In other browsers it's fired just once, for
+		// the last one.
+		if ( ev.target === button[ 0 ] ) {
+			assert.ok( true, "focusin propagated to document from the button" );
+		}
+	} );
+
 	select.trigger( "focus" );
 
 	setTimeout( function() {
 		assert.strictEqual( document.activeElement, button[ 0 ], "Focus redirect worked" );
+		jQuery( document ).off( ".focusTests" );
 		done();
 	} );
 } );
