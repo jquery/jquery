@@ -13,13 +13,15 @@ jQuery.parseXML = function( data ) {
 		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
 	} catch ( e ) {}
 
-	parserErrorElem = xml.getElementsByTagName( "parsererror" )[ 0 ];
+	parserErrorElem = xml && xml.getElementsByTagName( "parsererror" )[ 0 ];
 	if ( !xml || parserErrorElem ) {
-		jQuery.error( parserErrorElem &&
-			jQuery.map( parserErrorElem.childNodes, function( el ) {
-				return el.textContent;
-			} ).join( "\n" )
-		);
+		jQuery.error( "Invalid XML: " + (
+			parserErrorElem ?
+				jQuery.map( parserErrorElem.childNodes, function( el ) {
+					return el.textContent;
+				} ).join( "\n" ) :
+				data
+		) );
 	}
 	return xml;
 };

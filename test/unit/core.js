@@ -1393,7 +1393,7 @@ QUnit.test( "jQuery.parseHTML", function( assert ) {
 } );
 
 QUnit.test( "jQuery.parseXML", function( assert ) {
-	assert.expect( 7 );
+	assert.expect( 8 );
 
 	var xml, tmp;
 	try {
@@ -1406,7 +1406,12 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	} catch ( e ) {
 		assert.strictEqual( e, undefined, "unexpected error" );
 	}
-
+	try {
+		xml = jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
+		assert.ok( false, "invalid XML not detected" );
+	} catch ( e ) {
+		assert.ok( e.message.indexOf( "Invalid XML:" ) === 0, "invalid XML detected" );
+	}
 	try {
 		xml = jQuery.parseXML( "" );
 		assert.strictEqual( xml, null, "empty string => null document" );
