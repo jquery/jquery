@@ -1432,7 +1432,9 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 // Support: IE 11+
 // IE throws an error when parsing invalid XML instead of reporting the error
 // in a `parsererror` element, skip the test there.
-QUnit.testUnlessIE( "jQuery.parseXML - error reporting", function( assert ) {
+QUnit[
+	document.documentMode ? "skip" : "test"
+]( "jQuery.parseXML - error reporting", function( assert ) {
 	assert.expect( 2 );
 
 	var errorArg, lineMatch, line, columnMatch, column;
@@ -1440,7 +1442,7 @@ QUnit.testUnlessIE( "jQuery.parseXML - error reporting", function( assert ) {
 	sinon.stub( jQuery, "error" );
 
 	jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
-	errorArg = jQuery.error.firstCall.lastArg.toLowerCase();
+	errorArg = jQuery.error.firstCall.args[ 0 ].toLowerCase();
 	console.log( "errorArg", errorArg );
 
 	lineMatch = errorArg.match( /line\s*(?:number)?\s*(\d+)/ );
