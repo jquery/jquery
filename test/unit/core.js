@@ -1429,11 +1429,14 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 	}
 } );
 
-// Support: IE 11+
+// Support: IE 11+, Edge 12 - 18 only
 // IE throws an error when parsing invalid XML instead of reporting the error
-// in a `parsererror` element, skip the test there.
+// in a `parsererror` element, IE & Legacy Edge don't report errors in a parsererror
+// element; skip the test there.
 QUnit[
-	document.documentMode ? "skip" : "test"
+	document.documentMode || /edge\//i.test( navigator.userAgent ) ?
+		"skip" :
+		"test"
 ]( "jQuery.parseXML - error reporting", function( assert ) {
 	assert.expect( 2 );
 
