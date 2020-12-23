@@ -56,7 +56,13 @@ jobs:
       node_js: "12"
       env:
         - NPM_SCRIPT="test:browserstack"
+      # Use travis to generate encryption-keys('secure') containing BROWSER_STACK_USERNAME and BROWSER_STACK_ACCESS_KEY.
+      # https://docs.travis-ci.com/user/encryption-keys/#usage  
         - secure: FDsRNGhP4TtUHLhOLUxYWHnIb30BH8ML8L6I/wfP3jDuOEntxEhxgRZu0XItkeBeqeQouExHup+aWa5RTv5rB0aQL/ZPAiEa4xxbjnsXk9RMg3jNNuv5JZjQB22SfTyNwZlGiKxtz/wDcr4PltPXoEl/4J93JLLp2GHZoXu1BKGkvpxKoXoBc53R036dKzojvJDnBTagyGgreoB+fILeyv6O64Ca69quCRRrTuQxK7vyK8Kkjqst9GcUrjzkta8TVwjhbPRVbE/bH8sQTNYKjFl6aK6tdpJ7sGS5SIGJ3Zlf0WwX5DldMBPzDsdY8j8cNxYL6fIhLaeShCgRaFx4OaZOyslb6SowAUYzo+4iGmyhV1UmJq35AyTBSTrAAGQhFn5qgdWjR1IwjkSQk0hwjpiGIpPdAHR4xAJYs72UudxkqetFazXWxf59VD25cf5gRFXGYfLDkWYoIOiInhBBc+RJT2DX75/rdP2voUdbfi9JrRpqZnY7T293cPJggNnO/H4Y2OcgAwTeKMaofrQlzQHGtAVEjndPnkA5yt2+tMZNHZOoCKf6I+dpLkd4JV0tsXwmPqyddHYdt5czW418rNo2SzTVBTeew4j2vfKbBxOsQiP7QTnums3WM++ykjl36EpaSVHIht9KYBUYtdbz1OkY7kUB2R5XFVMbpXzWbDc=
         - secure: j026Kam6Ak00B3Fa/CEIpYcRD/KeVWjnkt6iX89mPx8mvnPv5lKUume9lhKdhSJCSKrZYc06MXxlgaL/WbSUsX6pqMv2GsJ0lpS42kLbkFWdz1IvXGKb/8ISO80XbEnrA1LaXG9YNeJDQQvkLx/r5rPl9m/Y0dsQEFZJIJG4M8XFdA0RfqxkqGHGbJwKwU2GX++86afN/3G92n6fHJxwKSuJEJR2zOtf7i9zs/0QD7ss1PvwkI9UuDi6d4LIwXrJJFXpXQSxE0Mi6ipSM6bHFFmOITw9o7/GOBAwF/VS7jqJ1WcBIn9qUCTNxg/FAEmdLn9UY+oz7r9Ut7he4fI+5rAOPip0zBSzS2RonsuAol0TEMrpTq570Ulvir8xg0usT9SwcABs0dnANVgFb6Nh5rloKmdDfSgcArNTRE3GQCNPwBzcZhkNtoU2EKd5EZMiTIT+lBw+bCbfdDGS0NTvc+OknqeQHavXFBx+hksE5EYPpXcG3CJ+Xfh4g7RezQ3OAxtYmcIv/miBXBYnkf3OQk5UW6vAm8MBZlHqNGUrUxmP2KLhzX2d3FWlEudwFDrrsGHfRJqT/PU1TI/lD147Yw2SZ5oqkX7l8gcgXhbaoG2JG5SMqXirpNNFzU5n5fnD6IfJO375r2DgCXQ9zVSDOqTbpAtrn7YHWr6uo7z544Q=
+      # if the browserstack environment variable is not successfully configured, run the latest FirefoxHeadless and ChromeHeadless.
+      addons:
+        chrome: stable
+        firefox: latest
 script:
   - npm run $NPM_SCRIPT
