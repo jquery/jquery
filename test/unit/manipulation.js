@@ -2292,6 +2292,19 @@ testIframe(
 );
 
 
+QUnit.test( "Test append scripts to multiple elements gh-4818", function( assert ) {
+
+	assert.expect( 2 );
+	var done = assert.async();
+
+	jQuery( "<div class='testclass'></div><div class='testclass'></div>" ).appendTo( "#moretests" );
+	jQuery( ".testclass" ).append( "<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: inner text/javascript' );</script>" );
+
+	setTimeout( function() {
+		done();
+	}, 500 );
+} );
+
 // We need to simulate cross-domain requests with the feature that
 // both 127.0.0.1 and localhost point to the mock http server.
 // Skip the the test if we are not in localhost but make sure we run
