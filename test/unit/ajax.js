@@ -118,7 +118,7 @@ QUnit.module( "ajax", {
 		return {
 			create: function( options ) {
 				options.crossDomain = true;
-				return jQuery.ajax( url( "mock.php?action=script" ), options );
+				return jQuery.ajax( url( "mock.php?action=script&header" ), options );
 			},
 			success: function() {
 				assert.ok( true, "success" );
