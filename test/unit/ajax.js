@@ -71,24 +71,6 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - execute js for crossOrigin when dataType option is provided", 3,
-		function( assert ) {
-			return {
-				create: function( options ) {
-					options.crossDomain = true;
-					options.dataType = "script";
-					return jQuery.ajax( url( "mock.php?action=script&header=ecma" ), options );
-				},
-				success: function() {
-					assert.ok( true, "success" );
-				},
-				complete: function() {
-					assert.ok( true, "complete" );
-				}
-			};
-		}
-	);
-
 	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 5,
 		function( assert ) {
 			return {
@@ -114,22 +96,34 @@ QUnit.module( "ajax", {
 		}
 	);
 
-	ajaxTest( "jQuery.ajax() - do not execute js (crossOrigin)", 2, function( assert ) {
-		return {
-			create: function( options ) {
-				options.crossDomain = true;
-				return jQuery.ajax( url( "mock.php?action=script&header" ), options );
-			},
-			success: function() {
-				assert.ok( true, "success" );
-			},
-			fail: function() {
-				assert.ok( false, "fail" );
-			},
-			complete: function() {
-				assert.ok( true, "complete" );
-			}
-		};
+	ajaxTest( "jQuery.ajax() - execute JS when dataType option is provided", 3,
+		function( assert ) {
+			return {
+				create: function( options ) {
+					options.crossDomain = true;
+					options.dataType = "script";
+					return jQuery.ajax( url( "mock.php?action=script&header=ecma" ), options );
+				},
+				success: function() {
+					assert.ok( true, "success" );
+				},
+				complete: function() {
+					assert.ok( true, "complete" );
+				}
+			};
+		}
+	);
+
+	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
+		ajaxTest( "jQuery.ajax() - do not execute JS (gh-2432, gh-4822) " + label, 1, function( assert ) {
+			return {
+				url: url( "mock.php?action=script&header" ),
+				crossDomain: crossDomain,
+				success: function() {
+					assert.ok( true, "success" );
+				}
+			};
+		} );
 	} );
 
 	ajaxTest( "jQuery.ajax() - success callbacks (late binding)", 8, function( assert ) {
@@ -1437,25 +1431,6 @@ QUnit.module( "ajax", {
 				assert.ok( /(invalid|error|exception)/i.test( detailedMsg ), "Detailed parsererror message provided" );
 			}
 		};
-	} );
-
-	ajaxTest( "jQuery.ajax() - script by content-type", 2, function() {
-		return [
-			{
-				url: baseURL + "mock.php?action=script",
-				data: {
-					"header": "script"
-				},
-				success: true
-			},
-			{
-				url: baseURL + "mock.php?action=script",
-				data: {
-					"header": "ecma"
-				},
-				success: true
-			}
-		];
 	} );
 
 	ajaxTest( "jQuery.ajax() - JSON by content-type", 5, function( assert ) {
