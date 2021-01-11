@@ -188,7 +188,7 @@ testIframe(
 				"pixelPosition": true,
 				"radioValue": true,
 				"reliableMarginLeft": true,
-				"reliableTrDimensions": true,
+				"reliableTrDimensions": false,
 				"scrollboxSize": true
 			},
 			firefox_60: {
