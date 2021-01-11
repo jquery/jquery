@@ -62,7 +62,7 @@ var mocks = {
 	script: function( req, resp ) {
 		if ( req.query.header === "ecma" ) {
 			resp.writeHead( 200, { "content-type": "application/ecmascript" } );
-		} else if ( req.query.header ) {
+		} else if ( "header" in req.query ) {
 			resp.writeHead( 200, { "content-type": "text/javascript" } );
 		} else {
 			resp.writeHead( 200, { "content-type": "text/html" } );
