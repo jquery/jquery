@@ -19,21 +19,12 @@ function canUseScriptTag( s ) {
 		( s.async && jQuery.inArray( "json", s.dataTypes ) < 0 );
 }
 
-// Prevent auto-execution of scripts when no explicit dataType was provided (See gh-2432)
-jQuery.ajaxPrefilter( function( s ) {
-	if ( s.crossDomain ) {
-		s.contents.script = false;
-	}
-} );
-
-// Install script dataType
+// Install script dataType. Don't specify `content.script` so that an explicit
+// `dataType: "script"` is required (see gh-2432, gh-4822)
 jQuery.ajaxSetup( {
 	accepts: {
 		script: "text/javascript, application/javascript, " +
 			"application/ecmascript, application/x-ecmascript"
-	},
-	contents: {
-		script: /\b(?:java|ecma)script\b/
 	},
 	converters: {
 		"text script": function( text ) {
