@@ -1,12 +1,10 @@
-[jQuery](https://jquery.com/) — New Wave JavaScript
-==================================================
+# [jQuery](https://jquery.com/) — New Wave JavaScript
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjquery%2Fjquery.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjquery%2Fjquery?ref=badge_shield)
 
 [![Gitter](https://badges.gitter.im/jquery/jquery.svg)](https://gitter.im/jquery/jquery?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Contribution Guides
---------------------------------------
+## How to help out
 
 In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
@@ -14,16 +12,12 @@ In the spirit of open source software development, jQuery always encourages comm
 2. [Core Style Guide](https://contribute.jquery.org/style-guide/js/)
 3. [Writing Code for jQuery Foundation Projects](https://contribute.jquery.org/code/)
 
-
-Environments in which to use jQuery
---------------------------------------
+## Environments in which to use jQuery
 
 - [Browser support](https://jquery.com/browser-support/)
 - jQuery also supports Node, browser extensions, and other non-browser environments.
 
-
-What you need to build your own jQuery
---------------------------------------
+## What you need to build your own jQuery
 
 To build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
@@ -35,16 +29,16 @@ and `brew install node` to install Node.js.
 Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
 if you swing that way. Easy-peasy.
 
-
-How to build your own jQuery
-----------------------------
+## How to build your own jQuery
 
 First, [clone the jQuery git repo](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
 Then, enter the jquery directory and run the build script:
+
 ```bash
 cd jquery && npm run build
 ```
+
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
 If you want to create custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
@@ -52,17 +46,21 @@ If you want to create custom build or help with jQuery development, it would be 
 ```
 npm install -g grunt-cli
 ```
+
 Make sure you have `grunt` installed by testing:
+
 ```
 grunt -V
 ```
 
 Now by running the `grunt` command, in the jquery directory, you can build a full version of jQuery, just like with an `npm run build` command:
+
 ```
 grunt
 ```
 
 There are many other tasks available for jQuery Core:
+
 ```
 grunt -help
 ```
@@ -82,7 +80,7 @@ Some example modules that can be excluded are:
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
 - **css**: The `.css()` method. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
-- **css/showHide**:  Non-animated `.show()`, `.hide()` and `.toggle()`; can be excluded if you use classes or explicit `.css()` calls to set the `display` property. Also removes the **effects** module.
+- **css/showHide**: Non-animated `.show()`, `.hide()` and `.toggle()`; can be excluded if you use classes or explicit `.css()` calls to set the `display` property. Also removes the **effects** module.
 - **deprecated**: Methods documented as deprecated but not yet removed.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
@@ -91,7 +89,7 @@ Some example modules that can be excluded are:
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
 - **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks bound with `jQuery()` will simply be called immediately. However, `jQuery(document).ready()` will not be a function and `.on("ready", ...)` or similar will not be triggered.
-- **deferred**: Exclude jQuery.Deferred. This also removes jQuery.Callbacks. *Note* that modules that depend on jQuery.Deferred(AJAX, effects, core/ready) will not be removed and will still expect jQuery.Deferred to be there. Include your own jQuery.Deferred implementation or exclude those modules as well (`grunt custom:-deferred,-ajax,-effects,-core/ready`).
+- **deferred**: Exclude jQuery.Deferred. This also removes jQuery.Callbacks. _Note_ that modules that depend on jQuery.Deferred(AJAX, effects, core/ready) will not be removed and will still expect jQuery.Deferred to be there. Include your own jQuery.Deferred implementation or exclude those modules as well (`grunt custom:-deferred,-ajax,-effects,-core/ready`).
 - **exports/global**: Exclude the attachment of global jQuery variables ($ and jQuery) to the window.
 - **exports/amd**: Exclude the AMD definition.
 
@@ -146,14 +144,14 @@ grunt custom:-ajax/jsonp,-css,-deprecated,-dimensions,-effects,-offset,-wrap
 ```
 
 There is also a special alias to generate a build with the same configuration as the official jQuery Slim build is generated:
+
 ```bash
 grunt custom:slim
 ```
 
 For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.
 
-Running the Unit Tests
---------------------------------------
+## Running the Unit Tests
 
 Make sure you have the necessary dependencies:
 
@@ -167,7 +165,6 @@ Start `grunt watch` or `npm start` to auto-build jQuery as you work:
 grunt watch
 ```
 
-
 Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
@@ -175,17 +172,14 @@ Run the unit tests with a local server that supports PHP. Ensure that you run th
 - Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
-
-
-
-Building to a different directory
----------------------------------
+## Building to a different directory
 
 To copy the built jQuery files from `/dist` to another directory:
 
 ```bash
 grunt && grunt dist:/path/to/special/location/
 ```
+
 With this example, the output files would be:
 
 ```bash
@@ -196,22 +190,18 @@ With this example, the output files would be:
 To add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
 
 ```json
-
 {
-  "/Absolute/path/to/other/destination": true
+	"/Absolute/path/to/other/destination": true
 }
 ```
 
 Additionally, both methods can be combined.
 
-
-
-Essential Git
--------------
+## Essential Git
 
 As the source code is handled by the Git version control system, it's useful to know some features used.
 
-### Cleaning ###
+### Cleaning
 
 If you want to purge your working directory back to the status of upstream, the following commands can be used (remember everything you've worked on is gone after these):
 
@@ -220,64 +210,60 @@ git reset --hard upstream/master
 git clean -fdx
 ```
 
-### Rebasing ###
+### Rebasing
 
 For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run the following to automate this:
 
 ```bash
 git config branch.autosetuprebase local
 ```
+
 (see `man git-config` for more information)
 
-### Handling merge conflicts ###
+### Handling merge conflicts
 
 If you're getting merge conflicts when merging, instead of editing the conflicted files manually, you can use the feature
 `git mergetool`. Even though the default tool `xxdiff` looks awful/old, it's rather useful.
 
 The following are some commands that can be used there:
 
-* `Ctrl + Alt + M` - automerge as much as possible
-* `b` - jump to next merge conflict
-* `s` - change the order of the conflicted lines
-* `u` - undo a merge
-* `left mouse button` - mark a block to be the winner
-* `middle mouse button` - mark a line to be the winner
-* `Ctrl + S` - save
-* `Ctrl + Q` - quit
+- `Ctrl + Alt + M` - automerge as much as possible
+- `b` - jump to next merge conflict
+- `s` - change the order of the conflicted lines
+- `u` - undo a merge
+- `left mouse button` - mark a block to be the winner
+- `middle mouse button` - mark a line to be the winner
+- `Ctrl + S` - save
+- `Ctrl + Q` - quit
 
-[QUnit](https://api.qunitjs.com) Reference
------------------
+## [QUnit](https://api.qunitjs.com) Reference
 
-### Test methods ###
+### Test methods
 
 ```js
-expect( numAssertions );
+expect(numAssertions);
 stop();
 start();
 ```
 
+_Note_: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters.
 
-*Note*: QUnit's eventual addition of an argument to stop/start is ignored in this test suite so that start and stop can be passed as callbacks without worrying about their parameters.
-
-### Test assertions ###
-
+### Test assertions
 
 ```js
-ok( value, [message] );
-equal( actual, expected, [message] );
-notEqual( actual, expected, [message] );
-deepEqual( actual, expected, [message] );
-notDeepEqual( actual, expected, [message] );
-strictEqual( actual, expected, [message] );
-notStrictEqual( actual, expected, [message] );
-throws( block, [expected], [message] );
+ok(value, [message]);
+equal(actual, expected, [message]);
+notEqual(actual, expected, [message]);
+deepEqual(actual, expected, [message]);
+notDeepEqual(actual, expected, [message]);
+strictEqual(actual, expected, [message]);
+notStrictEqual(actual, expected, [message]);
+throws(block, [expected], [message]);
 ```
 
+## Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
 
-Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
-------------------------------
-
-### Returns an array of elements with the given IDs ###
+### Returns an array of elements with the given IDs
 
 ```js
 q( ... );
@@ -291,10 +277,10 @@ q("main", "foo", "bar");
 => [ div#main, span#foo, input#bar ]
 ```
 
-### Asserts that a selection matches the given IDs ###
+### Asserts that a selection matches the given IDs
 
 ```js
-t( testName, selector, [ "array", "of", "ids" ] );
+t(testName, selector, ["array", "of", "ids"]);
 ```
 
 Example:
@@ -303,24 +289,22 @@ Example:
 t("Check for something", "//[a]", ["foo", "bar"]);
 ```
 
-
-
-### Fires a native DOM event without going through jQuery ###
+### Fires a native DOM event without going through jQuery
 
 ```js
-fireNative( node, eventType )
+fireNative(node, eventType);
 ```
 
 Example:
 
 ```js
-fireNative( jQuery("#elem")[0], "click" );
+fireNative(jQuery("#elem")[0], "click");
 ```
 
-### Add random number to url to stop caching ###
+### Add random number to url to stop caching
 
 ```js
-url( "some/url" );
+url("some/url");
 ```
 
 Example:
@@ -336,8 +320,7 @@ url("mock.php?foo=bar");
 => "data/mock.php?foo=bar&10538358345554"
 ```
 
-
-### Run tests in an iframe ###
+### Run tests in an iframe
 
 Some tests may require a document other than the standard test fixture, and
 these can be run in a separate iframe. The actual test code and assertions
@@ -364,9 +347,7 @@ for this test, followed by the global `jQuery`, `window`, and `document` from
 the iframe. If the iframe code passes any arguments to `startIframeTest`,
 they follow the `document` argument.
 
-
-Questions?
-----------
+## Questions?
 
 If you have any questions, please feel free to ask on the
 [Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
