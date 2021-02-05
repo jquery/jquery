@@ -85,16 +85,16 @@ Change directory to the newly created dir jquery/
 $ cd jquery
 ```
 
-Add the jQuery master as a remote. I label mine "upstream"
+Add the jQuery main as a remote. I label mine "upstream"
 
 ```bash
 $ git remote add upstream git://github.com/jquery/jquery.git
 ```
 
-Get in the habit of pulling in the "upstream" master to stay up to date as jQuery receives new commits
+Get in the habit of pulling in the "upstream" main to stay up to date as jQuery receives new commits
 
 ```bash
-$ git pull upstream master
+$ git pull upstream main
 ```
 
 Run the build script

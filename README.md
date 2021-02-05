@@ -102,7 +102,7 @@ Some example modules that can be excluded are:
 
 As a special case, you may also replace Sizzle by using a special flag `grunt custom:-sizzle`.
 
-- **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/master/src/selector-native.js) file for details.
+- **sizzle**: The Sizzle selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/main/src/selector-native.js) file for details.
 
 *Note*: Excluding Sizzle will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
 
@@ -227,7 +227,7 @@ As the source code is handled by the Git version control system, it's useful to 
 If you want to purge your working directory back to the status of upstream, the following commands can be used (remember everything you've worked on is gone after these):
 
 ```bash
-git reset --hard upstream/master
+git reset --hard upstream/main
 git clean -fdx
 ```
 
@@ -285,7 +285,7 @@ throws( block, [expected], [message] );
 ```
 
 
-Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
+Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/main/test/data/testinit.js))
 ------------------------------
 
 ### Returns an array of elements with the given IDs ###
