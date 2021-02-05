@@ -216,7 +216,7 @@ As the source code is handled by the Git version control system, it's useful to 
 If you want to purge your working directory back to the status of upstream, the following commands can be used (remember everything you've worked on is gone after these):
 
 ```bash
-git reset --hard upstream/master
+git reset --hard upstream/main
 git clean -fdx
 ```
 
@@ -274,7 +274,7 @@ throws( block, [expected], [message] );
 ```
 
 
-Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/master/test/data/testinit.js))
+Test Suite Convenience Methods Reference (See [test/data/testinit.js](https://github.com/jquery/jquery/blob/main/test/data/testinit.js))
 ------------------------------
 
 ### Returns an array of elements with the given IDs ###
