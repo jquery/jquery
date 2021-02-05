@@ -7,7 +7,7 @@
   "homepage": "https://jquery.com",
   "author": {
     "name": "OpenJS Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/master/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/main/AUTHORS.txt"
   },
   "repository": {
     "type": "git",

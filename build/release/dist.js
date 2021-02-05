@@ -31,9 +31,9 @@ module.exports = function( Release, files, complete ) {
 		Release.exec( `git clone ${ distRemote } ${ Release.dir.dist }`,
 			"Error cloning repo." );
 
-		// Distribution always works on master
+		// Distribution always works on main
 		Release.chdir( Release.dir.dist );
-		Release.exec( "git checkout master", "Error checking out branch." );
+		Release.exec( "git checkout main", "Error checking out branch." );
 		console.log();
 	}
 
@@ -140,8 +140,8 @@ module.exports = function( Release, files, complete ) {
 		Release.exec(
 			`git push ${
 				Release.isTest ? " --dry-run" : ""
-			} ${ distRemote } master --tags`,
-			"Error pushing master and tags to git repo."
+			} ${ distRemote } main --tags`,
+			"Error pushing main and tags to git repo."
 		);
 
 		// Set repo for npm publish
