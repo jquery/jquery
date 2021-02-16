@@ -33,6 +33,14 @@ support.reliableTrDimensions = function() {
 		tr.style.height = "1px";
 		div.style.height = "9px";
 
+		// Support: Android 8 Chrome 86+
+		// In our bodyBackground.html iframe,
+		// display for all div elements is set to "inline",
+		// which causes a problem only in Android 8 Chrome 86.
+		// Ensuring the div is display: block
+		// gets around this issue.
+		div.style.display = "block";
+
 		documentElement
 			.appendChild( table )
 			.appendChild( tr )
