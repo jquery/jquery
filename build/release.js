@@ -51,10 +51,10 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			Release.exec( "grunt", "Grunt command failed" );
+			Release.exec( "npx grunt", "Grunt command failed" );
 			Release.exec(
-				"grunt custom:slim --filename=jquery.slim.js && " +
-					"grunt remove_map_comment --filename=jquery.slim.js",
+				"npx grunt custom:slim --filename=jquery.slim.js && " +
+					"npx grunt remove_map_comment --filename=jquery.slim.js",
 				"Grunt custom failed"
 			);
 			cdn.makeReleaseCopies( Release );
