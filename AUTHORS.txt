@@ -325,3 +325,7 @@ Christian Wenz <christian@wenz.org>
 Sean Robinson <sean.robinson@scottsdalecc.edu>
 Jonathan <vanillajonathan@users.noreply.github.com>
 Pierre Grimaud <grimaud.pierre@gmail.com>
+Beatriz Rezener <beatrizrezener@users.noreply.github.com>
+Natalia Sroka <37873210+natipo@users.noreply.github.com>
+Wonhyoung Park <wh05.park@samsung.com>
+Dallas Fraser <dallas.fraser.waterloo@gmail.com>
