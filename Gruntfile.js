@@ -14,16 +14,56 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS,
-		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
+		isCi = process.env.TRAVIS || process.env.GITHUB_ACTION,
+		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
+		isBrowserStack = !!( process.env.BROWSER_STACK_USERNAME &&
+			process.env.BROWSER_STACK_ACCESS_KEY ),
+		browsers = {
+			headless: [ "FirefoxHeadless", "ChromeHeadless" ],
+			firefox: [],
+			chrome: [],
+			edge: [],
+			ie: [],
+			opera: [],
+			safari: []
+		},
 		CLIEngine = require( "eslint" ).CLIEngine;
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
 	}
 
+	// if Browserstack is set up, assume we can use it
+	if ( isBrowserStack ) {
+
+		browsers.firefox = [
+			"bs_firefox-78", "bs_firefox-82", "bs_firefox-83"
+		];
+
+		browsers.chrome = [
+			"bs_chrome-86", "bs_chrome-87"
+		];
+
+		browsers.edge = [
+			"bs_edge-86", "bs_edge-87"
+		];
+
+		browsers.ie = [
+			"bs_ie-11"
+		];
+
+		browsers.opera = [
+			"bs_opera-72", "bs_opera-73"
+		];
+
+		browsers.safari = [
+			"bs_safari-13.1", "bs_safari-14"
+		];
+	}
+
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
+		dateString: new Date().toISOString().replace( /\..*Z/, "" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
 		compare_size: {
 			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
@@ -133,80 +173,14 @@ module.exports = function( grunt ) {
 		},
 		karma: {
 			options: {
-				customContextFile: "test/karma.context.html",
-				customDebugFile: "test/karma.debug.html",
-				customLaunchers: {
-					ChromeHeadlessNoSandbox: {
-						base: "ChromeHeadless",
-						flags: [ "--no-sandbox" ]
-					}
-				},
-				frameworks: [ "qunit" ],
-				middleware: [ "mockserver" ],
-				plugins: [
-					"karma-*",
-					{
-						"middleware:mockserver": [
-							"factory",
-							require( "./test/middleware-mockserver.js" )
-						]
-					}
-				],
-				client: {
-					qunit: {
-
-						// We're running `QUnit.start()` ourselves via `loadTests()`
-						// in test/jquery.js
-						autostart: false
-					}
-				},
-				files: [
-					"test/data/jquery-1.9.1.js",
-					"node_modules/sinon/pkg/sinon.js",
-					"node_modules/native-promise-only/lib/npo.src.js",
-					"node_modules/requirejs/require.js",
-					"test/data/testinit.js",
-
-					"test/jquery.js",
-
-					{
-						pattern: "dist/jquery.*",
-						included: false,
-						served: true,
-						nocache: true
-					},
-					{
-						pattern: "src/**",
-						type: "module",
-						included: false,
-						served: true,
-						nocache: true
-					},
-					{
-						pattern: "amd/**",
-						included: false,
-						served: true,
-						nocache: true
-					},
-					{ pattern: "node_modules/**", included: false, served: true },
-					{
-						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
-						included: false,
-						served: true,
-						nocache: true
-					}
-				],
-				reporters: [ "dots" ],
-				autoWatch: false,
-				concurrency: 3,
-				captureTimeout: 20 * 1000,
+				configFile: "test/karma/karma.conf.js",
 				singleRun: true
 			},
 			main: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
+				browsers: isCi && ciBrowsers || browsers.headless
 			},
 			esmodules: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
@@ -221,7 +195,7 @@ module.exports = function( grunt ) {
 				}
 			},
 			amd: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
@@ -235,7 +209,34 @@ module.exports = function( grunt ) {
 					}
 				}
 			},
-
+			firefox: {
+					browsers: browsers.firefox
+				},
+			chrome: {
+					browsers: browsers.chrome
+				},
+			edge: {
+					browsers: browsers.edge
+				},
+			ie: {
+					browsers: browsers.ie
+				},
+			opera: {
+					browsers: browsers.opera
+			},
+			safari: {
+					browsers: browsers.safari
+			},
+			all: {
+					browsers: browsers.headless.concat(
+						browsers.firefox,
+						browsers.chrome,
+						browsers.edge,
+						browsers.ie,
+						browsers.opera,
+						browsers.safari
+					)
+				},
 			jsdom: {
 				options: {
 					files: [
@@ -340,6 +341,11 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "test:slow", [
 		"promises_aplus_tests",
 		"karma:jsdom"
+	] );
+
+	grunt.registerTask( "karma:tests", [
+		"test:prepare",
+		`karma-tests:${ isBrowserStack ? "browserstack" : "" }`
 	] );
 
 	grunt.registerTask( "test:prepare", [

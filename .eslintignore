@@ -13,3 +13,4 @@ test/data/readywaitloader.js
 test/data/support/csp.js
 test/data/support/getComputedSupport.js
 test/data/core/jquery-iterability-transpiled.js
+test/karma/**

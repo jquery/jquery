@@ -72,6 +72,7 @@
     "start": "grunt watch",
     "test:browserless": "grunt && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
+    "test:browserstack": "grunt && grunt karma:tests",
     "test:esmodules": "grunt && grunt karma:esmodules",
     "test:amd": "grunt && grunt karma:amd",
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
