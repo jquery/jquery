@@ -122,12 +122,14 @@ jQuery.fn.extend( {
 			doc = elem.ownerDocument;
 			offsetParent = elem.offsetParent || doc.documentElement;
 			while ( offsetParent &&
-				( offsetParent === doc.body || offsetParent === doc.documentElement ) &&
+				offsetParent !== doc.documentElement &&
 				jQuery.css( offsetParent, "position" ) === "static" ) {
 
-				offsetParent = offsetParent.parentNode;
+				offsetParent = offsetParent.offsetParent;
 			}
-			if ( offsetParent && offsetParent !== elem && offsetParent.nodeType === 1 ) {
+			if ( offsetParent &&
+				offsetParent !== doc.documentElement && offsetParent !== elem &&
+				offsetParent.nodeType === 1 ) {
 
 				// Incorporate borders into its offset, since they are outside its content origin
 				parentOffset = jQuery( offsetParent ).offset();
