@@ -1137,14 +1137,14 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( ":not() failing interior", "#qunit-fixture p:not(.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	assert.t( ":not() failing interior", "#qunit-fixture p:not(#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 
-	if ( QUnit.jQuerySelectors || this.safari ) {
+	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(div.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(p.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(div#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(p#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	} else {
-		// Support: Chrome 75+, Firefox 67+
-		// Chrome/Firefox don't support `:not(complex selector)`.
+		// Support: IE 11+
+		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1156,15 +1156,15 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( ":not Multiple", "#qunit-fixture p:not( p )", [] );
 	assert.t( ":not Multiple", "p:not(p)", [] );
 
-	if ( QUnit.jQuerySelectors || this.safari ) {
+	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
 		assert.t( ":not Multiple", "#qunit-fixture p:not(a, b)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not Multiple", "#qunit-fixture p:not(a, b, div)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not Multiple", "p:not(a,p)", [] );
 		assert.t( ":not Multiple", "p:not(p,a)", [] );
 		assert.t( ":not Multiple", "p:not(a,p,b)", [] );
 	} else {
-		// Support: Chrome 75+, Firefox 67+
-		// Chrome/Firefox don't support `:not(complex selector)`.
+		// Support: IE 11+
+		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1189,11 +1189,11 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( ":not() Multiple Class", "#foo a:not(.blog)", [ "yahoo", "anchor2" ] );
 	assert.t( ":not() Multiple Class", "#foo a:not(.link)", [ "yahoo", "anchor2" ] );
 
-	if ( QUnit.jQuerySelectors || this.safari ) {
+	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
 		assert.t( ":not() Multiple Class", "#foo a:not(.blog.link)", [ "yahoo", "anchor2" ] );
 	} else {
-		// Support: Chrome 75+, Firefox 67+
-		// Chrome/Firefox don't support `:not(complex selector)`.
+		// Support: IE 11+
+		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
 	}
 
