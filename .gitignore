@@ -17,7 +17,7 @@ npm-debug.log*
 !/dist/.eslintrc.json
 
 /amd
-
+/external
 /node_modules
 
 /test/data/core/jquery-iterability-transpiled.js

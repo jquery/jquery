@@ -71,6 +71,25 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
+		npmcopy: {
+			all: {
+				options: {
+					destPrefix: "external"
+				},
+				files: {
+					"npo/npo.js": "native-promise-only/lib/npo.src.js",
+
+					"qunit/qunit.js": "qunit/qunit/qunit.js",
+					"qunit/qunit.css": "qunit/qunit/qunit.css",
+					"qunit/LICENSE.txt": "qunit/LICENSE.txt",
+
+					"requirejs/require.js": "requirejs/require.js",
+
+					"sinon/sinon.js": "sinon/pkg/sinon.js",
+					"sinon/LICENSE.txt": "sinon/LICENSE"
+				}
+			}
+		},
 		jsonlint: {
 			pkg: {
 				src: [ "package.json" ]
@@ -162,9 +181,9 @@ module.exports = function( grunt ) {
 				},
 				files: [
 					"test/data/jquery-1.9.1.js",
-					"node_modules/sinon/pkg/sinon.js",
-					"node_modules/native-promise-only/lib/npo.src.js",
-					"node_modules/requirejs/require.js",
+					"external/sinon/sinon.js",
+					"external/npo/npo.js",
+					"external/requirejs/require.js",
 					"test/data/testinit.js",
 
 					"test/jquery.js",
@@ -188,7 +207,7 @@ module.exports = function( grunt ) {
 						served: true,
 						nocache: true
 					},
-					{ pattern: "node_modules/**", included: false, served: true },
+					{ pattern: "external/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
@@ -343,6 +362,7 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "test:prepare", [
+		"npmcopy",
 		"qunit_fixture",
 		"babel:tests"
 	] );

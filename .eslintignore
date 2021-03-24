@@ -1,4 +1,5 @@
 amd
+external
 node_modules
 *.min.js
 dist/**
