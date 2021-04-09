@@ -1,7 +1,12 @@
 <?php
+
 /**
  * Keep in sync with /test/middleware-mockserver.js
  */
+function cleanCallback( $callback ) {
+	return preg_replace( '/[^a-z0-9_]/i', '', $callback );
+}
+
 class MockServer {
 	protected function contentType( $req ) {
 		$type = $req->query['contentType'];
@@ -65,7 +70,8 @@ class MockServer {
 				array_values( $req->headers )
 			);
 
-			echo $req->query['callback'] . "(" . json_encode( [ 'headers' => $headers ] ) . ")";
+			echo cleanCallback( $req->query['callback'] ) .
+				"(" . json_encode( [ 'headers' => $headers ] ) . ")";
 		} else {
 			echo 'QUnit.assert.ok( true, "mock executed" );';
 		}
@@ -105,17 +111,17 @@ QUnit.assert.ok( true, "mock executed");';
 		} else {
 			$callback = $_POST['callback'];
 		}
-		if ( isset( $req->query['array'] ) ) {
-			echo $callback . '([ {"name": "John", "age": 21}, {"name": "Peter", "age": 25 } ])';
-		} else {
-			echo $callback . '({ "data": {"lang": "en", "length": 25} })';
-		}
+		$json = isset( $req->query['array'] ) ?
+			'[ { "name": "John", "age": 21 }, { "name": "Peter", "age": 25 } ]' :
+			'{ "data": { "lang": "en", "length": 25 } }';
+		echo cleanCallback( $callback ) . '(' . $json . ')';
 	}
 
 	protected function xmlOverJsonp( $req ) {
 		$callback = $_REQUEST['callback'];
+		$cleanCallback = cleanCallback( $callback );
 		$text = json_encode( file_get_contents( __DIR__ . '/with_fries.xml' ) );
-		echo "$callback($text)\n";
+		echo "$cleanCallback($text)\n";
 	}
 
 	protected function error( $req ) {
@@ -243,7 +249,7 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 		if ( isset( $req->query['callback'] ) ) {
 			$callback = $req->query['callback'];
-			echo $callback . '( {"status": 404, "msg": "Not Found"} )';
+			echo cleanCallback( $callback ) . '( {"status": 404, "msg": "Not Found"} )';
 		} else {
 			echo 'QUnit.assert.ok( false, "Mock return erroneously executed" );';
 		}
