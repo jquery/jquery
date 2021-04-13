@@ -80,6 +80,9 @@ module.exports = function( grunt ) {
 					"sizzle/dist": "sizzle/dist",
 					"sizzle/LICENSE.txt": "sizzle/LICENSE.txt",
 
+					"core-js/core-js.js": "core-js/client/core.min.js",
+					"core-js/LICENSE.txt": "core-js/LICENSE",
+
 					"npo/npo.js": "native-promise-only/lib/npo.src.js",
 
 					"qunit/qunit.js": "qunit/qunit/qunit.js",
