@@ -223,6 +223,7 @@ testIframeWithCallback(
 			"reliableMarginRight": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"boxSizingReliable": true,
@@ -237,7 +238,7 @@ testIframeWithCallback(
 			"pixelMarginRight": true,
 			"pixelPosition": true,
 			"radioValue": true,
-			"reliableMarginLeft": false,
+			"reliableMarginLeft": version >= 61,
 			"reliableMarginRight": true
 		};
 	} else if ( /iphone os 9_/i.test( userAgent ) ) {
