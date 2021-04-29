@@ -1519,14 +1519,20 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	testIframeWithCallback(
-		"#14379 - jQuery.ajax() on unload",
-		"ajax/onunload.html",
-		function( status, assert ) {
-			assert.expect( 1 );
-			assert.strictEqual( status, "success", "Request completed" );
-		}
-	);
+	// Chrome 78 dropped support for synchronous XHR requests inside of
+	// beforeunload, unload, pagehide, and visibilitychange event handlers.
+	// See https://bugs.chromium.org/p/chromium/issues/detail?id=952452
+	// Safari 13 did similar changes. The below check will catch them both.
+	if ( !/safari/i.test( navigator.userAgent ) ) {
+		testIframeWithCallback(
+			"#14379 - jQuery.ajax() on unload",
+			"ajax/onunload.html",
+			function( status, assert ) {
+				assert.expect( 1 );
+				assert.strictEqual( status, "success", "Request completed" );
+			}
+		);
+	}
 
 	// BrowserStack PATCH support sometimes breaks so on TestSwarm run the test in IE only.
 	// Unfortunately, all IE versions gets special treatment in request object creation

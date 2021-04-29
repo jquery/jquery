@@ -577,6 +577,7 @@ testIframeWithCallback(
 			"tbody": true
 		};
 	} else if ( /firefox/i.test( userAgent ) ) {
+		version = userAgent.match( /firefox\/(\d+)/i )[ 1 ];
 		expected = {
 			"ajax": true,
 			"appendChecked": true,
@@ -610,7 +611,7 @@ testIframeWithCallback(
 			"radioValue": true,
 			"reliableHiddenOffsets": true,
 			"reliableMarginRight": true,
-			"reliableMarginLeft": false,
+			"reliableMarginLeft": version >= 61,
 			"shrinkWrapBlocks": false,
 			"style": true,
 			"submit": true,
