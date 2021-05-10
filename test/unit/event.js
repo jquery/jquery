@@ -3325,6 +3325,22 @@ QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) 
 	} );
 } );
 
+QUnit.test( "trigger(focus) works after .on(focus).off(focus) (gh-4867)", function( assert ) {
+	assert.expect( 1 );
+
+	var input = jQuery( "<input />" );
+
+	input.appendTo( "#qunit-fixture" );
+
+	input
+		.on( "focus", function() {} )
+		.off( "focus" );
+
+	input.trigger( "focus" );
+
+	assert.equal( document.activeElement, input[ 0 ], "input has focus" );
+} );
+
 // TODO replace with an adaptation of
 // https://github.com/jquery/jquery/pull/1367/files#diff-a215316abbaabdf71857809e8673ea28R2464
 ( function() {
