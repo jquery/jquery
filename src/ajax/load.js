@@ -7,6 +7,7 @@ import "../traversing.js";
 import "../manipulation.js";
 import "../selector.js";
 
+console.log('testing')
 /**
  * Load a url into a page
  */
