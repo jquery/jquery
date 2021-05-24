@@ -1536,40 +1536,32 @@ QUnit.test(
 		var done = assert.async();
 		var styles = [ {
 				name: "backgroundAttachment",
-				value: [ "fixed" ],
-				expected: [ "scroll" ]
+				value: [ "fixed" ]
 			}, {
 				name: "backgroundColor",
-				value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ],
-				expected: [ "transparent" ]
+				value: [ "rgb(255, 0, 0)", "rgb(255,0,0)", "#ff0000" ]
 			}, {
 
 				// Firefox returns auto's value
 				name: "backgroundImage",
-				value: [ "url('test.png')", "url(" + baseURL + "test.png)", "url(\"" + baseURL + "test.png\")" ],
-				expected: [ "none", "url(\"http://static.jquery.com/files/rocker/images/logo_jquery_215x53.gif\")" ]
+				value: [ "url('test.png')", "url(" + baseURL + "test.png)", "url(\"" + baseURL + "test.png\")" ]
 			}, {
 				name: "backgroundPosition",
-				value: [ "5% 5%" ],
-				expected: [ "0% 0%", "-1000px 0px", "-1000px 0%" ]
+				value: [ "5% 5%" ]
 			}, {
 
 				// Firefox returns no-repeat
 				name: "backgroundRepeat",
-				value: [ "repeat-y" ],
-				expected: [ "repeat", "no-repeat" ]
+				value: [ "repeat-y" ]
 			}, {
 				name: "backgroundClip",
-				value: [ "padding-box" ],
-				expected: [ "border-box" ]
+				value: [ "padding-box" ]
 			}, {
 				name: "backgroundOrigin",
-				value: [ "content-box" ],
-				expected: [ "padding-box" ]
+				value: [ "content-box" ]
 			}, {
 				name: "backgroundSize",
-				value: [ "80px 60px" ],
-				expected: [ "auto auto" ]
+				value: [ "80px 60px" ]
 		} ];
 
 		jQuery.each( styles, function( index, style ) {
@@ -1577,8 +1569,6 @@ QUnit.test(
 				$source = jQuery( "#firstp" ),
 				source = $source[ 0 ],
 				$children = $source.children();
-
-			style.expected = style.expected.concat( [ "", "auto" ] );
 
 			if ( source.style[ style.name ] === undefined ) {
 				assert.ok( true, style.name +  ": style isn't supported and therefore not an issue" );
