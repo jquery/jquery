@@ -11,7 +11,10 @@ import nodeName from "./core/nodeName.js";
 import "./core/init.js";
 import "./selector.js";
 
-var rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+var activeNativeEvent,
+	nativeEventQueue = [],
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+
 
 function returnTrue() {
 	return true;
@@ -513,49 +516,42 @@ jQuery.event = {
 // already occurred before other listeners are invoked.
 function leverageNative( el, type, expectSync ) {
 
+	var result = {};
+
 	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
 	if ( !expectSync ) {
-		if ( dataPriv.get( el, type ) === undefined ) {
+		if ( !dataPriv.get( el, type ) ) {
 			jQuery.event.add( el, type, returnTrue );
 		}
 		return;
 	}
 
 	// Register the controller as a special universal handler for all event namespaces
-	dataPriv.set( el, type, false );
+	dataPriv.set( el, type, true );
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var notAsync, result,
-				saved = dataPriv.get( this, type );
+			var forceSync,
+				i = 0,
+				length = nativeEventQueue.length,
+				oldResult = result;
 
 			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
 				// Interrupt processing of the outer synthetic .trigger()ed event
-				// Saved data should be false in such cases, but might be a leftover capture object
-				// from an async native handler (gh-4350)
-				if ( !saved.length ) {
+				if ( !event.isInner ) {
 
 					// Store arguments for use when handling the inner native event
-					// There will always be at least one argument (an event object), so this array
-					// will not be confused with a leftover capture object.
-					saved = slice.call( arguments );
-					dataPriv.set( this, type, saved );
+					nativeEventQueue.push( [ this ].concat( slice.call( arguments ) ) );
 
 					// Trigger the native event and capture its result
+					// If we get a result synchronously or expect one asynchronously,
+					// abort this outer synthetic event
 					// Support: IE <=9 - 11+
 					// focus() and blur() are asynchronous
-					notAsync = expectSync( this, type );
+					forceSync = expectSync( this, type );
 					this[ type ]();
-					result = dataPriv.get( this, type );
-					if ( saved !== result || notAsync ) {
-						dataPriv.set( this, type, false );
-					} else {
-						result = {};
-					}
-					if ( saved !== result ) {
-
-						// Cancel the outer synthetic event
+					if ( result !== oldResult || !forceSync ) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
 
@@ -577,24 +573,64 @@ function leverageNative( el, type, expectSync ) {
 					event.stopPropagation();
 				}
 
-			// If this is a native event triggered above, everything is now in order
-			// Fire an inner synthetic event with the original arguments
-			} else if ( saved.length ) {
-
-				// ...and capture the result
-				dataPriv.set( this, type, {
-					value: jQuery.event.trigger(
-
-						// Support: IE <=9 - 11+
-						// Extend with the prototype to reset the above stopImmediatePropagation()
-						jQuery.extend( saved[ 0 ], jQuery.Event.prototype ),
-						saved.slice( 1 ),
-						this
-					)
-				} );
+			// Avoid reentrancy issues while working through the native event queue
+			} else if ( activeNativeEvent ) {
 
 				// Abort handling of the native event
 				event.stopImmediatePropagation();
+
+			// If this is a native event triggered above, everything is now in order
+			// Fire an inner synthetic event with the original arguments
+			// for each queued event, and capture the last result
+			} else if ( length ) {
+
+				// Abort handling of the native event
+				event.stopImmediatePropagation();
+				event = null;
+
+				// Work through the queue, avoiding lockup after an error
+				try {
+					for ( ; i < length; i++ ) {
+						activeNativeEvent = nativeEventQueue.shift();
+
+						// Keep track of the last focus/blur event
+						if ( ( jQuery.event.special[ activeNativeEvent[ 1 ].type ] || {} )
+							.delegateType ) {
+
+							event = activeNativeEvent;
+						}
+
+						result = {
+							value: jQuery.event.trigger(
+								jQuery.extend(
+									activeNativeEvent[ 1 ],
+
+									// Support: IE <=9 - 11+
+									// Reset the above synthetic-event stopImmediatePropagation()
+									jQuery.Event.prototype,
+
+									{ isInner: true }
+								),
+								activeNativeEvent.slice( 2 ),
+								activeNativeEvent[ 0 ]
+							)
+						};
+					}
+				} catch ( e ) {
+
+					// Clear events still pending after an error
+					nativeEventQueue = [];
+					throw e;
+				} finally {
+
+					// Support: IE <=9 - 11+
+					// Manually set final focus/blur state.
+					if ( event ) {
+						event[ 0 ][ event[ 1 ].type ]();
+					}
+
+					activeNativeEvent = null;
+				}
 			}
 		}
 	} );
