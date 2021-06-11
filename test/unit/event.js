@@ -3237,6 +3237,45 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 	} );
 } );
 
+// Support: IE <=9 - 11+
+// focus and blur events are asynchronous.
+// The browser window must be topmost for this to work properly!!
+QUnit.test( "async focus queues properly (gh-4859)", function( assert ) {
+	assert.expect( 1 );
+
+	var $text = jQuery( "#text1" ),
+		$radio = jQuery( "#radio1" ),
+		done = assert.async();
+
+	$text.trigger( "focus" );
+	$radio.trigger( "focus" );
+	$text.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.equal( document.activeElement, $text[ 0 ], "focus follows the last trigger" );
+		done();
+	}, 500 );
+} );
+
+// Support: IE <=9 - 11+
+// focus and blur events are asynchronous.
+// The browser window must be topmost for this to work properly!!
+QUnit.test( "async focus queues properly with blur (gh-4856)", function( assert ) {
+	assert.expect( 1 );
+
+	var $text = jQuery( "#text1" ),
+		done = assert.async();
+
+	$text.trigger( "focus" );
+	$text.trigger( "blur" );
+	$text.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.equal( document.activeElement, $text[ 0 ], "focus-after-blur is respected" );
+		done();
+	}, 500 );
+} );
+
 QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", function( assert ) {
 	assert.expect( 17 );
 
