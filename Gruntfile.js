@@ -14,8 +14,8 @@ module.exports = function( grunt ) {
 
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
-		isTravis = process.env.TRAVIS,
-		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
+		isCi = process.env.TRAVIS || process.env.GITHUB_ACTION,
+		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
 		CLIEngine = require( "eslint" ).CLIEngine;
 
 	if ( !grunt.option( "filename" ) ) {
@@ -225,10 +225,10 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
+				browsers: isCi && ciBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
 			esmodules: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
@@ -243,7 +243,7 @@ module.exports = function( grunt ) {
 				}
 			},
 			amd: {
-				browsers: isTravis && travisBrowsers || [ "ChromeHeadless" ],
+				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
