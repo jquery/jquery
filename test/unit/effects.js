@@ -5,29 +5,42 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame,
-	hideOptions = {
-		inline: function() { jQuery.style( this, "display", "none" ); },
-		cascade: function() { this.className = "hidden"; }
-	};
+var hideOptions = {
+	inline: function() { jQuery.style( this, "display", "none" ); },
+	cascade: function() { this.className = "hidden"; }
+};
 
 QUnit.module( "effects", {
 	beforeEach: function() {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
+
 		this._oldInterval = jQuery.fx.interval;
-		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
+
+		// Simulate rAF using the mocked setTimeout as otherwise we couldn't test
+		// the rAF + performance.now code path.
+		this.sandbox
+			.stub( window, "requestAnimationFrame" )
+			.callsFake( function( callback ) {
+				return window.setTimeout( callback, jQuery.fx.interval,
+					Date.now() - 99989.6394 );
+			} );
+
+		// Fake performance.now() returning lower values than Date.now()
+		// and that its values are fractional.
+		this.sandbox.stub( window.performance, "now" ).callsFake( function() {
+			return Date.now() - 99999.6394;
+		} );
 	},
 	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
-} );
+}, function() {
 
 QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "sanity check", function( assert ) {
 	assert.expect( 1 );
@@ -2611,4 +2624,21 @@ QUnit.test( "jQuery.speed() - durations", function( assert ) {
 	jQuery.fx.off = false;
 } );
 
+} );
+
+QUnit.module( "effects-nostubs", function() {
+
+testIframe(
+	"matching timestamp",
+	"effects/matchingTimestamps.html",
+	function( assert, framejQuery, frameWin, frameDoc, success, failureReason ) {
+		assert.expect( 1 );
+
+		assert.ok( success, failureReason );
+	}
+);
+
+} );
+
 } )();
+

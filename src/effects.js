@@ -22,16 +22,23 @@ var
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rrun = /queueHooks$/;
 
-function schedule() {
+function schedule( timestamp ) {
 	if ( inProgress ) {
-		if ( document.hidden === false && window.requestAnimationFrame ) {
+		if ( document.hidden === false ) {
 			window.requestAnimationFrame( schedule );
 		} else {
 			window.setTimeout( schedule, jQuery.fx.interval );
 		}
 
-		jQuery.fx.tick();
+		jQuery.fx.tick( timestamp );
 	}
+}
+
+// We need to be using Date.now() or performance.now() consistently as they return different
+// values: performance.now() counter starts on page load.
+// Support: IE <10, Safari <8.0, iOS <9, Android <4.4, Node with jsdom 9.4
+function getTimestamp() {
+	return window.performance.now();
 }
 
 // Animations created synchronously will run synchronously
@@ -39,7 +46,7 @@ function createFxNow() {
 	window.setTimeout( function() {
 		fxNow = undefined;
 	} );
-	return ( fxNow = Date.now() );
+	return ( fxNow = getTimestamp() );
 }
 
 // Generate parameters to create a standard animation
@@ -636,12 +643,12 @@ jQuery.each( {
 } );
 
 jQuery.timers = [];
-jQuery.fx.tick = function() {
+jQuery.fx.tick = function( timestamp ) {
 	var timer,
 		i = 0,
 		timers = jQuery.timers;
 
-	fxNow = Date.now();
+	fxNow = timestamp || getTimestamp();
 
 	for ( ; i < timers.length; i++ ) {
 		timer = timers[ i ];
