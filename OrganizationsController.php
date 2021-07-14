@@ -62,6 +62,27 @@ class OrganizationsController extends Controller
         }
     }
 
+    public function actionIndex2()
+    {
+        if(Yii::$app->user->can('admin')) {
+            $searchModel = new OrganizationSearch();
+            $search = Yii::$app->request->queryParams;
+
+            $sub = array('' => 'Все ...');
+            $sub_bd = ArrayHelper::map(TypeOrganization::find()->orderBy(['name'=> SORT_ASC])->all(), 'id', 'name');
+            $sub = ArrayHelper::merge($sub,$sub_bd);
+
+            $dataProvider = $searchModel->search($search);
+            return $this->render('index', [
+                'dataProvider' => $dataProvider,
+                'searchModel' => $searchModel,
+                'sub' => $sub,
+            ]);
+        }
+        else{
+            return $this->goHome();
+        }
+    }
 
     public function actionLogin($id){
 
