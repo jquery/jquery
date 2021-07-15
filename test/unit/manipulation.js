@@ -2268,7 +2268,7 @@ QUnit.test( "domManip plain-text caching (trac-6779)", function( assert ) {
 
 QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9221)", function( assert ) {
 
-	assert.expect( 3 );
+	assert.expect( 4 );
 
 	jQuery( [
 		"<script type='text/javascript'>",
@@ -2291,6 +2291,17 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 		"<!--//--><![CDATA[//><!--",
 		"QUnit.assert.ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
 		"//--><!]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	// ES2015 in Annex B requires HTML-style comment delimiters (`<!--` & `-->`) to act as
+	// single-line comment delimiters; i.e. they should be treated as `//`.
+	// See gh-4904
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!-- Same-line HTML comment",
+		"QUnit.assert.ok( true, '<!-- Same-line HTML comment' );",
+		"-->",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 } );
