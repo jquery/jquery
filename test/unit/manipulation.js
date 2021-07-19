@@ -2233,19 +2233,31 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 
-	jQuery( [
-		"<script type='text/javascript'>",
-		"<![CDATA[",
-		"QUnit.assert.ok( true, '<![CDATA[ handled' );",
-		"//]]>",
-		"</script>"
-	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+	// This test requires XHTML mode as CDATA is not recognized in HTML.
+	// jQuery( [
+	// 	"<script type='text/javascript'>",
+	// 	"<![CDATA[",
+	// 	"QUnit.assert.ok( true, '<![CDATA[ handled' );",
+	// 	"//]]>",
+	// 	"</script>"
+	// ].join( "\n" ) ).appendTo( "#qunit-fixture" );
 
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<!--//--><![CDATA[//><!--",
 		"QUnit.assert.ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
 		"//--><!]]>",
+		"</script>"
+	].join( "\n" ) ).appendTo( "#qunit-fixture" );
+
+	// ES2015 in Annex B requires HTML-style comment delimiters (`<!--` & `-->`) to act as
+	// single-line comment delimiters; i.e. they should be treated as `//`.
+	// See gh-4904
+	jQuery( [
+		"<script type='text/javascript'>",
+		"<!-- Same-line HTML comment",
+		"QUnit.assert.ok( true, '<!-- Same-line HTML comment' );",
+		"-->",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
 } );
