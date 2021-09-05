@@ -172,7 +172,7 @@ Run the unit tests with a local server that supports PHP. Ensure that you run th
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
 - Mac: [MAMP download](https://www.mamp.info/en/downloads/)
-- Linux: [Setting up LAMP](https://www.linux.com/learn/tutorials/288158-easy-lamp-server-installation)
+- Linux: [Setting up LAMP](https://www.linux.com/training-tutorials/easy-lamp-server-installation/)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
 
 
@@ -369,4 +369,4 @@ Questions?
 ----------
 
 If you have any questions, please feel free to ask on the
-[Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on irc.freenode.net.
+[Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on [libera](https://web.libera.chat/).
