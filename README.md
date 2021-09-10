@@ -1,4 +1,4 @@
-[jQuery](https://jquery.com/) — New Wave JavaScript
+[jQuery](https://jquery.com/) — The New Wave JavaScript
 ==================================================
 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjquery%2Fjquery.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjquery%2Fjquery?ref=badge_shield)
@@ -15,17 +15,17 @@ In the spirit of open source software development, jQuery always encourages comm
 3. [Writing Code for jQuery Foundation Projects](https://contribute.jquery.org/code/)
 
 
-Environments in which to use jQuery
+Environments which support jQuery
 --------------------------------------
 
 - [Browser support](https://jquery.com/browser-support/)
-- jQuery also supports Node, browser extensions, and other non-browser environments.
+- jQuery is also supported by Node.js, browser extensions, and other non-browser environments.
 
 
 What you need to build your own jQuery
 --------------------------------------
 
-To build jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
+To build your own jQuery, you need to have the latest Node.js/npm and git 1.7 or later. Earlier versions might work, but are not supported.
 
 For Windows, you have to download and install [git](https://git-scm.com/downloads) and [Node.js](https://nodejs.org/en/download/).
 
@@ -40,6 +40,9 @@ How to build your own jQuery
 ----------------------------
 
 First, [clone the jQuery git repo](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
+```bash 
+git clone https://github.com/jquery/jquery.git
+```
 
 Then, enter the jquery directory and run the build script:
 ```bash
@@ -73,7 +76,7 @@ Special builds can be created that exclude subsets of jQuery functionality.
 This allows for smaller custom builds when the builder is certain that those parts of jQuery are not being used.
 For example, an app that only used JSONP for `$.ajax()` and did not need to calculate offsets or positions of elements could exclude the offset and ajax/xhr modules.
 
-Any module may be excluded except for `core`, and `selector`. To exclude a module, pass its path relative to the `src` folder (without the `.js` extension).
+Any module may be excluded except for the `core`, and `selector` modules. To exclude a module, pass its path relative to the `src` folder (without the `.js` extension).
 
 Some example modules that can be excluded are:
 
@@ -113,7 +116,7 @@ grunt custom --amd=""
 
 #### Custom Build Examples
 
-To create a custom build, first check out the version:
+To create a custom build, first check out the build version:
 
 ```bash
 git pull; git checkout VERSION
