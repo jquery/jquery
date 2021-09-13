@@ -1739,8 +1739,9 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		"        --prop1:val1;\n" +
 		"        --prop2: val2;\n" +
 		"        --prop3:val3 ;\n" +
-		"        --prop4:\"val4\";\n" +
-		"        --prop5:'val5';\n" +
+		"        --prop4: val4 ;\n" +
+		"        --prop5:\"val5\";\n" +
+		"        --prop6:'val6';\n" +
 		"    }\n" +
 		"</style>"
 	);
@@ -1749,7 +1750,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" ),
 		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ),
-		expected = 10;
+		expected = 11;
 
 	if ( webkitOrBlink ) {
 		expected -= 2;
@@ -1777,15 +1778,16 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 
 	assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
 
-	assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
-	assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
+	assert.equal( $elem.css( "--prop2" ), "val2", "Preceding whitespace trimmed" );
+	assert.equal( $elem.css( "--prop3" ), "val3", "Following whitespace trimmed" );
+	assert.equal( $elem.css( "--prop4" ), "val4", "Preceding and Following whitespace trimmed" );
 
 	// Support: Chrome <=49 - 73+, Safari <=9.1 - 12.1+
 	// Chrome treats single quotes as double ones.
 	// Safari treats double quotes as single ones.
 	if ( !webkitOrBlink ) {
-		assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
-		assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
+		assert.equal( $elem.css( "--prop5" ), "\"val5\"", "Works with double quotes" );
+		assert.equal( $elem.css( "--prop6" ), "'val6'", "Works with single quotes" );
 	}
 } );
 

@@ -9,7 +9,10 @@ function curCSS( elem, name, computed ) {
 
 	// getPropertyValue is needed for `.css('--customProperty')` (gh-3144)
 	if ( computed ) {
-		ret = computed.getPropertyValue( name ) || computed[ name ];
+		ret = computed.getPropertyValue( name );
+
+		// trim whitespace (issue #4926)
+		ret = ( ret && ret.trim() ) || computed[ name ];
 
 		if ( ret === "" && !isAttached( elem ) ) {
 			ret = jQuery.style( elem, name );
