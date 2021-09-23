@@ -14,7 +14,7 @@ function curCSS( elem, name, computed ) {
 	if ( computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
-		// trim whitespace for custom property (issue #4926)
+		// trim whitespace for custom property (issue gh-4926)
 		if ( isCustomProp ) {
 			ret = ret.replace( rtrim, "$1" );
 		}
