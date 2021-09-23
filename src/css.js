@@ -4,6 +4,7 @@ import nodeName from "./core/nodeName.js";
 import rcssNum from "./var/rcssNum.js";
 import isIE from "./var/isIE.js";
 import rnumnonpx from "./css/var/rnumnonpx.js";
+import rcustomProp from "./css/var/rcustomProp.js";
 import cssExpand from "./css/var/cssExpand.js";
 import isAutoPx from "./css/isAutoPx.js";
 import cssCamelCase from "./css/cssCamelCase.js";
@@ -24,7 +25,6 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-	rcustomProp = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",

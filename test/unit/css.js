@@ -1738,9 +1738,16 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		"    .test__customProperties {\n" +
 		"        --prop1:val1;\n" +
 		"        --prop2: val2;\n" +
-		"        --prop3:val3 ;\n" +
-		"        --prop4:\"val4\";\n" +
-		"        --prop5:'val5';\n" +
+		"        --prop3:   val3;\n" +
+		"        --prop4:val4 ;\n" +
+		"        --prop5:val5   ;\n" +
+		"        --prop6: val6 ;\n" +
+		"        --prop7:   val7   ;\n" +
+		"        --prop8:\"val8\";\n" +
+		"        --prop9:'val9';\n" +
+		"        --prop10:\f\r\n\t val10 \f\r\n\t;\n" +
+		"        --prop11:\u000C\u000D\u000A\u0009\u0020val11\u0020\u0009\u000A\u000D\u000C;\n" +
+		"        --prop12:\u000Bval12\u000B;\n" +
 		"    }\n" +
 		"</style>"
 	);
@@ -1749,7 +1756,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" ),
 		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ),
-		expected = 10;
+		expected = 17;
 
 	if ( webkitOrBlink ) {
 		expected -= 2;
@@ -1777,16 +1784,24 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 
 	assert.equal( $elem.css( "--prop1" ), "val1", "Basic CSS custom property" );
 
-	assert.equal( $elem.css( "--prop2" ), " val2", "Preceding whitespace maintained" );
-	assert.equal( $elem.css( "--prop3" ), "val3 ", "Following whitespace maintained" );
+	assert.equal( $elem.css( "--prop2" ), "val2", "Preceding whitespace trimmed" );
+	assert.equal( $elem.css( "--prop3" ), "val3", "Multiple preceding whitespace trimmed" );
+	assert.equal( $elem.css( "--prop4" ), "val4", "Following whitespace trimmed" );
+	assert.equal( $elem.css( "--prop5" ), "val5", "Multiple Following whitespace trimmed" );
+	assert.equal( $elem.css( "--prop6" ), "val6", "Preceding and Following whitespace trimmed" );
+	assert.equal( $elem.css( "--prop7" ), "val7", "Multiple preceding and following whitespace trimmed" );
 
 	// Support: Chrome <=49 - 73+, Safari <=9.1 - 12.1+
 	// Chrome treats single quotes as double ones.
 	// Safari treats double quotes as single ones.
 	if ( !webkitOrBlink ) {
-		assert.equal( $elem.css( "--prop4" ), "\"val4\"", "Works with double quotes" );
-		assert.equal( $elem.css( "--prop5" ), "'val5'", "Works with single quotes" );
+		assert.equal( $elem.css( "--prop8" ), "\"val8\"", "Works with double quotes" );
+		assert.equal( $elem.css( "--prop9" ), "'val9'", "Works with single quotes" );
 	}
+
+	assert.equal( $elem.css( "--prop10" ), "val10", "Multiple preceding and following escaped unicode whitespace trimmed" );
+	assert.equal( $elem.css( "--prop11" ), "val11", "Multiple preceding and following unicode whitespace trimmed" );
+	assert.equal( $elem.css( "--prop12" ), "\u000Bval12\u000B", "Multiple preceding and following non-CSS whitespace reserved" );
 } );
 
 // IE doesn't support CSS variables.

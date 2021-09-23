@@ -1,5 +1,5 @@
 import isIE from "../var/isIE.js";
-import whitespace from "./var/whitespace.js";
+import whitespace from "../var/whitespace.js";
 
 var rbuggyQSA = isIE && new RegExp(
 
