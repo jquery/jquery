@@ -1748,6 +1748,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		"        --prop10:\f\r\n\t val10 \f\r\n\t;\n" +
 		"        --prop11:\u000C\u000D\u000A\u0009\u0020val11\u0020\u0009\u000A\u000D\u000C;\n" +
 		"        --prop12:\u000Bval12\u000B;\n" +
+		"        --prop13: \\ ;\n" +
 		"    }\n" +
 		"</style>"
 	);
@@ -1756,7 +1757,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" ),
 		webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ),
-		expected = 17;
+		expected = 18;
 
 	if ( webkitOrBlink ) {
 		expected -= 2;
@@ -1802,6 +1803,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 	assert.equal( $elem.css( "--prop10" ), "val10", "Multiple preceding and following escaped unicode whitespace trimmed" );
 	assert.equal( $elem.css( "--prop11" ), "val11", "Multiple preceding and following unicode whitespace trimmed" );
 	assert.equal( $elem.css( "--prop12" ), "\u000Bval12\u000B", "Multiple preceding and following non-CSS whitespace reserved" );
+	assert.equal( $elem.css( "--prop13" ), "\\", "Whitespace surrounding a backslash" );
 } );
 
 // IE doesn't support CSS variables.

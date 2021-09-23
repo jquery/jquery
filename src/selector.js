@@ -7,7 +7,6 @@ import pop from "./var/pop.js";
 import push from "./var/push.js";
 import whitespace from "./var/whitespace.js";
 import rbuggyQSA from "./selector/rbuggyQSA.js";
-import rtrim from "./var/rtrim.js";
 import isIE from "./var/isIE.js";
 
 // The following utils are attached directly to the jQuery object.
@@ -72,6 +71,7 @@ var i,
 
 	// Leading and non-escaped trailing whitespace, capturing some non-whitespace characters preceding the latter
 	rwhitespace = new RegExp( whitespace + "+", "g" ),
+	rtrim = new RegExp( "^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$", "g" ),
 
 	rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" ),
 	rcombinators = new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" +
