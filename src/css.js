@@ -5,6 +5,7 @@ define( [
 	"./core/nodeName",
 	"./var/rcssNum",
 	"./css/var/rnumnonpx",
+	"./css/var/rcustomProp",
 	"./css/var/cssExpand",
 	"./css/var/getStyles",
 	"./css/var/swap",
@@ -17,8 +18,9 @@ define( [
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
-], function( jQuery, access, camelCase, nodeName, rcssNum, rnumnonpx, cssExpand,
-	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
+], function( jQuery, access, camelCase, nodeName, rcssNum, rnumnonpx,
+	rcustomProp, cssExpand, getStyles, swap, curCSS, adjustCSS, addGetHookIf,
+	support, finalPropName ) {
 
 "use strict";
 
@@ -28,7 +30,6 @@ var
 	// except "table", "table-cell", or "table-caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-	rcustomProp = /^--/,
 	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",

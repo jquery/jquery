@@ -4,13 +4,17 @@ define( [
 	"./var/rboxStyle",
 	"./var/rnumnonpx",
 	"./var/getStyles",
+	"./var/rcustomProp",
+	"../var/rtrimCSS.js",
 	"./support"
-], function( jQuery, isAttached, rboxStyle, rnumnonpx, getStyles, support ) {
+], function( jQuery, isAttached, rboxStyle, rnumnonpx, getStyles,
+	rcustomProp, rtrimCSS, support ) {
 
 "use strict";
 
 function curCSS( elem, name, computed ) {
 	var width, minWidth, maxWidth, ret,
+		isCustomProp = rcustomProp.test( name ),
 
 		// Support: Firefox 51+
 		// Retrieving style before computed somehow
@@ -25,6 +29,11 @@ function curCSS( elem, name, computed ) {
 	//   .css('--customProperty) (#3144)
 	if ( computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
+
+		// trim whitespace for custom property (issue gh-4926)
+		if ( isCustomProp ) {
+			ret = ret.replace( rtrimCSS, "$1" );
+		}
 
 		if ( ret === "" && !isAttached( elem ) ) {
 			ret = jQuery.style( elem, name );
