@@ -2,6 +2,7 @@ import jQuery from "../core.js";
 import isAttached from "../core/isAttached.js";
 import getStyles from "./var/getStyles.js";
 import rcustomProp from "./var/rcustomProp.js";
+import rtrim from "../var/rtrim.js";
 
 function curCSS( elem, name, computed ) {
 	var ret,
@@ -15,7 +16,7 @@ function curCSS( elem, name, computed ) {
 
 		// trim whitespace for custom property (issue #4926)
 		if ( isCustomProp ) {
-			ret = ret.trim();
+			ret = ret.replace( rtrim, "$1" );
 		}
 
 		if ( ret === "" && !isAttached( elem ) ) {
