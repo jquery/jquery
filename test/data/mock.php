@@ -239,7 +239,6 @@ QUnit.assert.ok( true, "mock executed");';
 
 	protected function cspClean( $req ) {
 		file_put_contents( $this->cspFile, '' );
-		unlink( $this->cspFile );
 	}
 
 	protected function errorWithScript( $req ) {
