@@ -387,7 +387,7 @@ this.loadTests = function() {
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( QUnit.isSwarm ) {
-					require( [ "http://swarm.jquery.org/js/inject.js?" + ( new Date() ).getTime() ],
+					require( [ "https://swarm.jquery.org/js/inject.js?" + ( new Date() ).getTime() ],
 					function() {
 						QUnit.start();
 					} );
