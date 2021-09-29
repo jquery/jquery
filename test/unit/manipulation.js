@@ -3010,15 +3010,17 @@ QUnit.test( "Works with invalid attempts to close the table wrapper", function( 
 } );
 
 // Test trustedTypes support in browsers where they're supported (currently Chrome 83+).
+// Browsers with no TrustedHTML support still run tests on object wrappers with
+// a proper `toString` function.
 testIframe(
 	"Basic TrustedHTML support (gh-4409)",
 	"mock.php?action=trustedHtml",
 	function( assert, jQuery, window, document, test ) {
+
 		assert.expect( 5 );
 
 		test.forEach( function( result ) {
 			assert.deepEqual( result.actual, result.expected, result.message );
 		} );
-	},
-	typeof trustedTypes === "undefined" ? QUnit.skip : QUnit.test
+	}
 );
