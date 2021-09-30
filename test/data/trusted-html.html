@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>body</title>
+</head>
+<body>
+<div id="qunit-fixture"></div>
+<script src="../../dist/jquery.min.js"></script>
+<script src="iframeTest.js"></script>
+<script>
+	var i, input, elem, tags, policy,
+		results = [],
+		inputs = [
+			[ "<div></div>", "<div class='test'></div>", [ "div" ] ],
+			[ "<div></div>", "<div class='test'></div><span class='test'></span>",
+				[ "div", "span" ] ],
+			[ "<table></table>", "<td class='test'></td>", [ "td" ] ],
+			[ "<select></select>", "<option class='test'></option>", [ "option" ] ]
+		];
+
+	function runTests( messagePrefix, getHtmlWrapper ) {
+		for ( i = 0; i < inputs.length; i++ ) {
+			input = inputs[ i ];
+			elem = jQuery( getHtmlWrapper( input[ 0 ] ) );
+			elem.append( getHtmlWrapper( input[ 1 ] ) );
+			tags = elem.find( ".test" ).toArray().map( function( node ) {
+				return node.nodeName.toLowerCase();
+			} );
+			results.push( {
+				actual: tags,
+				expected: input[ 2 ],
+				message: messagePrefix + ": " + input[ 2 ].join( ", " )
+			} );
+		}
+
+		elem = jQuery( getHtmlWrapper( "<div></div>" ) );
+		elem.append( getHtmlWrapper( "text content" ) );
+		results.push( {
+			actual: elem.html(),
+			expected: "text content",
+			message: messagePrefix + ": text content properly appended"
+		} );
+	}
+
+	if ( typeof trustedTypes !== "undefined" ) {
+		policy = trustedTypes.createPolicy( "jquery-test-policy", {
+			createHTML: function( html ) {
+				return html;
+			}
+		} );
+
+		runTests( "TrustedHTML", function wrapInTrustedHtml( input ) {
+			return policy.createHTML( input );
+		} );
+	} else {
+
+		// No TrustedHTML support so let's at least run tests with object wrappers
+		// with a proper `toString` function. This also shows that jQuery support
+		// of TrustedHTML is generic and would work with similar APIs out of the box
+		// as well. Ideally, we'd run these tests in browsers with TrustedHTML support
+		// as well but due to the CSP TrustedHTML enforcement these tests would fail.
+		runTests( "Object wrapper", function( input ) {
+			return {
+				toString: function toString() {
+					return input;
+				}
+			};
+		} );
+	}
+
+	startIframeTest( results );
+</script>
+</body>
+</html>

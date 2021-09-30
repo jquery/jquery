@@ -222,7 +222,7 @@ var mocks = {
 	cspFrame: function( req, resp ) {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "default-src 'self'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "default-src 'self'; require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
 		} );
 		var body = fs.readFileSync( __dirname + "/data/csp.include.html" ).toString();
 		resp.end( body );
@@ -255,6 +255,14 @@ var mocks = {
 		cspLog = "";
 		resp.writeHead( 200 );
 		resp.end();
+	},
+	trustedHtml: function( req, resp ) {
+		resp.writeHead( 200, {
+			"Content-Type": "text/html",
+			"Content-Security-Policy": "require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
+		} );
+		var body = fs.readFileSync( __dirname + "/data/trusted-html.html" ).toString();
+		resp.end( body );
 	},
 	errorWithScript: function( req, resp ) {
 		if ( req.query.withScriptContentType ) {

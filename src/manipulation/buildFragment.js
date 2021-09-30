@@ -7,6 +7,7 @@ import rscriptType from "./var/rscriptType.js";
 import wrapMap from "./wrapMap.js";
 import getAll from "./getAll.js";
 import setGlobalEval from "./setGlobalEval.js";
+import isArrayLike from "../core/isArrayLike.js";
 
 var rhtml = /<|&#?\w+;/;
 
@@ -23,7 +24,7 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 		if ( elem || elem === 0 ) {
 
 			// Add nodes directly
-			if ( toType( elem ) === "object" ) {
+			if ( toType( elem ) === "object" && ( elem.nodeType || isArrayLike( elem ) ) ) {
 				jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 			// Convert non-html into a text node
