@@ -247,6 +247,12 @@ QUnit.assert.ok( true, "mock executed");';
 		echo file_get_contents( __DIR__ . '/trusted-html.html' );
 	}
 
+	protected function trustedTypesAttributes( $req ) {
+		header( "Content-Security-Policy: require-trusted-types-for 'script'; report-uri ./mock.php?action=cspLog" );
+		header( 'Content-type: text/html' );
+		echo file_get_contents( __DIR__ . '/trusted-types-attributes.html' );
+	}
+
 	protected function errorWithScript( $req ) {
 		header( 'HTTP/1.0 404 Not Found' );
 		if ( isset( $req->query['withScriptContentType'] ) ) {

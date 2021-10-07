@@ -1764,3 +1764,23 @@ QUnit.test( "non-lowercase boolean attribute getters should not crash", function
 		}
 	} );
 } );
+
+
+// Test trustedTypes support in browsers where they're supported (currently Chrome 83+).
+// Browsers with no TrustedScriptURL support still run tests on object wrappers with
+// a proper `toString` function.
+testIframe(
+	"Basic TrustedScriptURL support (gh-4948)",
+	"mock.php?action=trustedTypesAttributes",
+	function( assert, jQuery, window, document, test ) {
+		var done = assert.async();
+
+		assert.expect( 1 );
+
+		test.forEach( function( result ) {
+			assert.deepEqual( result.actual, result.expected, result.message );
+		} );
+
+		supportjQuery.get( baseURL + "mock.php?action=cspClean" ).then( done );
+	}
+);

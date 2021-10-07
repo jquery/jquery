@@ -264,6 +264,14 @@ var mocks = {
 		var body = fs.readFileSync( __dirname + "/data/trusted-html.html" ).toString();
 		resp.end( body );
 	},
+	trustedTypesAttributes: function( req, resp ) {
+		resp.writeHead( 200, {
+			"Content-Type": "text/html",
+			"Content-Security-Policy": "require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
+		} );
+		var body = fs.readFileSync( __dirname + "/data/trusted-types-attributes.html" ).toString();
+		resp.end( body );
+	},
 	errorWithScript: function( req, resp ) {
 		if ( req.query.withScriptContentType ) {
 			resp.writeHead( 404, { "Content-Type": "application/javascript" } );
