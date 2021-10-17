@@ -113,7 +113,7 @@ jQuery.fn = jQuery.prototype = {
 };
 
 jQuery.extend = jQuery.fn.extend = function() {
-	var options, name, src, copy, copyIsArray, clone,
+	var options, name, src, copy, copyIsArray, clone, markArr,
 		target = arguments[ 0 ] || {},
 		i = 1,
 		length = arguments.length,
@@ -127,7 +127,21 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = arguments[ i ] || {};
 		i++;
 	}
-
+	
+	// Handle markArr
+	markArr = arguments[length-1]
+	if(Array.isArray(markArr) && markArr.mark === true){	
+		
+        	// Exclude markArr
+        	length--;
+    	}else{
+		
+        	// Not recursive yet,Initialize markArr
+        	markArr = [];
+        	markArr.mark = true;
+   	}
+	
+	
 	// Handle case when target is a string or something (possible in deep copy)
 	if ( typeof target !== "object" && typeof target !== "function" ) {
 		target = {};
@@ -144,6 +158,13 @@ jQuery.extend = jQuery.fn.extend = function() {
 		// Only deal with non-null/undefined values
 		if ( ( options = arguments[ i ] ) != null ) {
 
+            		// Discover infinite recursion, Return directly to options
+            		if( markArr.indexOf(options) >= 0 ){
+                		return options;
+            		}
+			// Add options to the processed list(markArr)
+            		markArr.push(options)
+			
 			// Extend the base object
 			for ( name in options ) {
 				copy = options[ name ];
@@ -169,8 +190,8 @@ jQuery.extend = jQuery.fn.extend = function() {
 					}
 					copyIsArray = false;
 
-					// Never move original objects, clone them
-					target[ name ] = jQuery.extend( deep, clone, copy );
+					// Never move original objects, clone them. Pass the processed list( markArr ) to the recursive function
+					target[ name ] = jQuery.extend( deep, clone, copy, markArr );
 
 				// Don't bring in undefined values
 				} else if ( copy !== undefined ) {
