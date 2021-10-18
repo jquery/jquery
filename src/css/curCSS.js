@@ -5,7 +5,7 @@ define( [
 	"./var/rnumnonpx",
 	"./var/getStyles",
 	"./var/rcustomProp",
-	"../var/rtrimCSS.js",
+	"../var/rtrimCSS",
 	"./support"
 ], function( jQuery, isAttached, rboxStyle, rnumnonpx, getStyles,
 	rcustomProp, rtrimCSS, support ) {
