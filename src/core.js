@@ -158,45 +158,52 @@ jQuery.extend = jQuery.fn.extend = function() {
 		// Only deal with non-null/undefined values
 		if ( ( options = arguments[ i ] ) != null ) {
 
-            		// Discover infinite recursion, Return directly to options
-            		if( markArr.indexOf(options) >= 0 ){
-                		return options;
-            		}
+        	// Discover infinite recursion, Return directly to options
+            if( markArr.indexOf(options) >= 0 ){
+            	return options;
+            }
+
 			// Add options to the processed list(markArr)
-            		markArr.push(options)
+            markArr.push(options)
 			
 			// Extend the base object
 			for ( name in options ) {
-				copy = options[ name ];
+				~function(){
+					// Use closures to ensure that markArr will not affect other sibling properties during recursion
+					var selfMark = markArr.slice();
+						selfMark['mark'] = true;
 
-				// Prevent Object.prototype pollution
-				// Prevent never-ending loop
-				if ( name === "__proto__" || target === copy ) {
-					continue;
-				}
+					copy = options[ name ];
 
-				// Recurse if we're merging plain objects or arrays
-				if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
-					( copyIsArray = Array.isArray( copy ) ) ) ) {
-					src = target[ name ];
-
-					// Ensure proper type for the source value
-					if ( copyIsArray && !Array.isArray( src ) ) {
-						clone = [];
-					} else if ( !copyIsArray && !jQuery.isPlainObject( src ) ) {
-						clone = {};
-					} else {
-						clone = src;
+					// Prevent Object.prototype pollution
+					// Prevent never-ending loop
+					if ( name === "__proto__" || target === copy ) {
+						return;
 					}
-					copyIsArray = false;
 
-					// Never move original objects, clone them. Pass the processed list( markArr ) to the recursive function
-					target[ name ] = jQuery.extend( deep, clone, copy, markArr );
+					// Recurse if we're merging plain objects or arrays
+					if ( deep && copy && ( jQuery.isPlainObject( copy ) ||
+						( copyIsArray = Array.isArray( copy ) ) ) ) {
+						src = target[ name ];
 
-				// Don't bring in undefined values
-				} else if ( copy !== undefined ) {
-					target[ name ] = copy;
-				}
+						// Ensure proper type for the source value
+						if ( copyIsArray && !Array.isArray( src ) ) {
+							clone = [];
+						} else if ( !copyIsArray && !jQuery.isPlainObject( src ) ) {
+							clone = {};
+						} else {
+							clone = src;
+						}
+						copyIsArray = false;
+
+						// Never move original objects, clone them. Pass the processed list( markArr ) to the recursive function
+						target[ name ] = jQuery.extend( deep, clone, copy, selfMark );
+
+					// Don't bring in undefined values
+					} else if ( copy !== undefined ) {
+						target[ name ] = copy;
+					}
+				}()	
 			}
 		}
 	}
