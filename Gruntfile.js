@@ -12,11 +12,18 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
+	// Support: Node.js <12
+	// Skip running tasks that dropped support for Node.js 10
+	// in this Node version.
+	function runIfNewNode( task ) {
+		return oldNode ? "print_old_node_message:" + task : task;
+	}
+
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
+		oldNode = /^v10\./.test( process.version ),
 		isTravis = process.env.TRAVIS,
-		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," ),
-		CLIEngine = require( "eslint" ).CLIEngine;
+		travisBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -117,9 +124,14 @@ module.exports = function( grunt ) {
 
 					// Ignore files from .eslintignore
 					// See https://github.com/sindresorhus/grunt-eslint/issues/119
-					...new CLIEngine()
-						.getConfigForFile( "Gruntfile.js" )
-						.ignorePatterns.map( ( p ) => `!${ p }` )
+					...fs
+						.readFileSync( `${ __dirname }/.eslintignore`, "utf-8" )
+						.split( "\n" )
+						.filter( filePath => filePath )
+						.map( filePath => filePath[ 0 ] === "!" ?
+							filePath.slice( 1 ) :
+							`!${ filePath }`
+						)
 				]
 			}
 		},
@@ -334,10 +346,17 @@ module.exports = function( grunt ) {
 	} );
 
 	// Load grunt tasks from NPM packages
-	require( "load-grunt-tasks" )( grunt );
+	require( "load-grunt-tasks" )( grunt, {
+		pattern: oldNode ? [ "grunt-*", "!grunt-eslint" ] : [ "grunt-*" ]
+	} );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
+
+	grunt.registerTask( "print_old_node_message", ( ...args ) => {
+		var task = args.join( ":" );
+		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
+	} );
 
 	grunt.registerTask( "lint", [
 		"jsonlint",
@@ -346,16 +365,16 @@ module.exports = function( grunt ) {
 		// would run the dist target first which would point to errors in the built
 		// file, making it harder to fix them. We want to check the built file only
 		// if we already know the source files pass the linter.
-		"eslint:dev",
-		"eslint:dist"
+		runIfNewNode( "eslint:dev" ),
+		runIfNewNode( "eslint:dist" )
 	] );
 
 	grunt.registerTask( "lint:newer", [
 		"newer:jsonlint",
 
 		// Don't replace it with just the task; see the above comment.
-		"newer:eslint:dev",
-		"newer:eslint:dist"
+		runIfNewNode( "newer:eslint:dev" ),
+		runIfNewNode( "newer:eslint:dist" )
 	] );
 
 	grunt.registerTask( "test:fast", "node_smoke_tests" );
@@ -378,7 +397,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "dev", [
 		"build:*:*",
-		"newer:eslint:dev",
+		runIfNewNode( "newer:eslint:dev" ),
 		"newer:uglify",
 		"remove_map_comment",
 		"dist:*",
@@ -387,14 +406,14 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "default", [
-		"eslint:dev",
+		runIfNewNode( "eslint:dev" ),
 		"build:*:*",
 		"amd",
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
 		"test:prepare",
-		"eslint:dist",
+		runIfNewNode( "eslint:dist" ),
 		"test:fast",
 		"compare_size"
 	] );
