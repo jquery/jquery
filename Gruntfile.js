@@ -232,6 +232,10 @@ module.exports = function( grunt ) {
 				],
 				reporters: [ "dots" ],
 				autoWatch: false,
+
+				// 2 minutes; has to be longer than QUnit.config.testTimeout
+				browserNoActivityTimeout: 120e3,
+
 				concurrency: 3,
 				captureTimeout: 20 * 1000,
 				singleRun: true
