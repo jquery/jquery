@@ -1,0 +1,1 @@
+window.testMessage = "script run";

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=utf-8 />
+	<title>Trusted HTML attribute tests</title>
+</head>
+<body>
+<div id="qunit-fixture"></div>
+<script src="../../dist/jquery.js"></script>
+<script src="iframeTest.js"></script>
+<script>
+	var i, input, elem, policy,
+		results = [];
+
+	function runTests( messagePrefix, getTrustedScriptUrlWrapper ) {
+		try {
+			elem = jQuery( "<script><\/script>" )
+				.attr( "src", getTrustedScriptUrlWrapper( "trusted-types-attributes.js" ) );
+			elem.appendTo( document.body );
+
+			results.push( {
+				actual: elem.attr( "src" ),
+				expected: "trusted-types-attributes.js",
+				message: messagePrefix + ": script URL properly set"
+			} );
+		} catch ( e ) {
+			results.push( {
+				actual: "error thrown",
+				expected: "",
+				message: messagePrefix + ": error has been thrown"
+			} );
+		}
+	}
+
+	if ( typeof trustedTypes !== "undefined" ) {
+		policy = trustedTypes.createPolicy( "jquery-test-policy", {
+			createScriptURL: function( html ) {
+				return html;
+			}
+		} );
+
+		runTests( "TrustedScriptURL", function wrapInTrustedScriptUrl( input ) {
+			return policy.createScriptURL( input );
+		} );
+	} else {
+
+		// No TrustedScriptURL support so let's at least run tests with object wrappers
+		// with a proper `toString` function. See trusted-html.html for more context.
+		runTests( "Object wrapper", function( input ) {
+			return {
+				toString: function toString() {
+					return input;
+				}
+			};
+		} );
+	}
+
+	startIframeTest( results );
+</script>
+</body>
+</html>

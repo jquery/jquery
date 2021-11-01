@@ -50,7 +50,7 @@ jQuery.extend( {
 				return ret;
 			}
 
-			elem.setAttribute( name, value + "" );
+			elem.setAttribute( name, value );
 			return value;
 		}
 
