@@ -1732,6 +1732,8 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 
 ( function() {
 	var supportsCssVars,
+		oldSafari = /iphone os 9_/i.test( navigator.userAgent ) ||
+			/\b9\.\d+(\.\d+)* safari/i.test( navigator.userAgent ),
 		elem = jQuery( "<div>" ).appendTo( document.body ),
 		div = elem[ 0 ];
 
@@ -1739,7 +1741,15 @@ QUnit.test( "Do not throw on frame elements from css method (#15098)", function(
 	supportsCssVars = !!getComputedStyle( div ).getPropertyValue( "--prop" );
 	elem.remove();
 
-	QUnit[ supportsCssVars ? "test" : "skip" ]( "css(--customProperty)", function( assert ) {
+	QUnit[
+
+		// Support: iOS 9.3 only, Safari 9.1 only
+		// Safari 9.1 & iOS 9.3 support CSS custom properties but that support
+		// is buggy which crashes our tests.
+		supportsCssVars && !oldSafari ?
+			"test" :
+			"skip"
+	]( "css(--customProperty)", function( assert ) {
 		jQuery( "#qunit-fixture" ).append(
 			"<style>\n" +
 			"    .test__customProperties {\n" +
