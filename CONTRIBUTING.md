@@ -48,7 +48,7 @@ Make sure you have reproduced the bug with all browser extensions and add-ons di
 
 ### Try the latest version of jQuery
 
-Bugs in old versions of jQuery may have already been fixed. In order to avoid reporting known issues, make sure you are always testing against the [latest build](https://code.jquery.com/jquery.js). We cannot fix bugs in older released files, if a bug has been fixed in a subsequent version of jQuery the site should upgrade.
+Bugs in old versions of jQuery may have already been fixed. In order to avoid reporting known issues, make sure you are always testing against the [latest build](https://releases.jquery.com/git/jquery-git.js). We cannot fix bugs in older released files, if a bug has been fixed in a subsequent version of jQuery the site should upgrade.
 
 ### Simplify the test case
 
