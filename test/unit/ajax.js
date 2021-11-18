@@ -1704,7 +1704,8 @@ QUnit.module( "ajax", {
 		var done = assert.async();
 		jQuery.ajax( url( "mock.php?action=status&code=200&text=Hello" ) ).done( function( _, statusText, jqXHR ) {
 			assert.strictEqual( statusText, "success", "callback status text ok for success" );
-			assert.ok( jqXHR.statusText === "Hello" || jqXHR.statusText === "OK", "jqXHR status text ok for success (" + jqXHR.statusText + ")" );
+			assert.ok( [ "Hello", "OK", "success" ].indexOf( jqXHR.statusText ) > -1,
+				"jqXHR status text ok for success (" + jqXHR.statusText + ")" );
 			jQuery.ajax( url( "mock.php?action=status&code=404&text=World" ) ).fail( function( jqXHR, statusText ) {
 				assert.strictEqual( statusText, "error", "callback status text ok for error" );
 				done();
