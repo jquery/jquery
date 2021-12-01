@@ -1634,12 +1634,25 @@ QUnit.module( "ajax", {
 		function( label, cache ) {
 			jQuery.each(
 				{
-					"If-Modified-Since": "mock.php?action=ims",
-					"Etag": "mock.php?action=etag"
+					"If-Modified-Since": {
+						url: "mock.php?action=ims",
+						qunitMethod: "test"
+					},
+					"Etag": {
+						url: "mock.php?action=etag",
+
+						// Support: TestSwarm
+						// TestSwarm is now proxied via Cloudflare which cuts out
+						// headers relevant for ETag tests, failing them. We're still
+						// running those tests in Karma on Chrome & Firefox (including
+						// Firefox ESR).
+						qunitMethod: QUnit.isSwarm ? "skip" : "test"
+					}
 				},
-				function( type, url ) {
-					url = baseURL + url + "&ts=" + ifModifiedNow++;
-					QUnit.test( "jQuery.ajax() - " + type + " support" + label, function( assert ) {
+				function( type, data ) {
+					var url = baseURL + data.url + "&ts=" + ifModifiedNow++;
+					QUnit[ data.qunitMethod ]( "jQuery.ajax() - " + type +
+							" support" + label, function( assert ) {
 						assert.expect( 4 );
 						var done = assert.async();
 						jQuery.ajax( {
