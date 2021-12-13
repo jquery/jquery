@@ -22,7 +22,7 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
 		oldNode = /^v10\./.test( process.version ),
-		isCi = process.env.TRAVIS || process.env.GITHUB_ACTION,
+		isCi = process.env.GITHUB_ACTION,
 		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
 	if ( !grunt.option( "filename" ) ) {
