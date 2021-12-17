@@ -80,7 +80,7 @@ jQuery.uniqueSort = function( results ) {
 			}
 		}
 		while ( j-- ) {
-			results.splice( duplicates[ j ], 1 );
+			Array.prototype.splice.call( results, duplicates[ j ] , 1 );
 		}
 	}
 
