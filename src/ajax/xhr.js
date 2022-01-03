@@ -66,7 +66,7 @@ jQuery.ajaxTransport( function( options ) {
 						} else if ( type === "error" ) {
 							complete(
 
-								// File: protocol always yields status 0; see #8605, #14207
+								// File: protocol always yields status 0; see trac-8605, trac-14207
 								xhr.status,
 								xhr.statusText
 							);
@@ -99,7 +99,7 @@ jQuery.ajaxTransport( function( options ) {
 				xhr.send( options.hasContent && options.data || null );
 			} catch ( e ) {
 
-				// #14683: Only rethrow if this hasn't been notified as an error yet
+				// trac-14683: Only rethrow if this hasn't been notified as an error yet
 				if ( callback ) {
 					throw e;
 				}

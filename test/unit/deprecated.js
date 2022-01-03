@@ -77,7 +77,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( ass
 	elem.remove();
 
 	jQuery( "#check1" ).click( function() {
-		assert.ok( true, "click event handler for checkbox gets fired twice, see #815" );
+		assert.ok( true, "click event handler for checkbox gets fired twice, see trac-815" );
 	} ).click();
 
 	counter = 0;

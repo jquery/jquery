@@ -54,8 +54,8 @@ QUnit.module( "offset", { beforeEach: function( assert ) {
 
 QUnit.test( "empty set", function( assert ) {
 	assert.expect( 2 );
-	assert.strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (#11962)" );
-	assert.strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (#11962)" );
+	assert.strictEqual( jQuery().offset(), undefined, "offset() returns undefined for empty set (trac-11962)" );
+	assert.strictEqual( jQuery().position(), undefined, "position() returns undefined for empty set (trac-11962)" );
 } );
 
 QUnit.test( "disconnected element", function( assert ) {
@@ -187,7 +187,7 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 		assert.equal( $( this.id ).position().left, this.left, "jQuery('" + this.id + "').position().left" );
 	} );
 
-	// test #5781
+	// test trac-5781
 	offset = $( "#positionTest" ).offset( { "top": 10, "left": 10 } ).offset();
 	assert.equal( offset.top,  10, "Setting offset on element with position absolute but 'auto' values." );
 	assert.equal( offset.left, 10, "Setting offset on element with position absolute but 'auto' values." );
@@ -468,8 +468,8 @@ testIframe( "scroll", "offset/scroll.html", function( assert, $, win ) {
 	assert.equal( $( "#scroll-1-1" ).scrollLeft(), 0, "jQuery('#scroll-1-1').scrollLeft()" );
 
 	// scroll method chaining
-	assert.equal( $( "#scroll-1" ).scrollTop( undefined ).scrollTop(), 5, ".scrollTop(undefined) is chainable (#5571)" );
-	assert.equal( $( "#scroll-1" ).scrollLeft( undefined ).scrollLeft(), 5, ".scrollLeft(undefined) is chainable (#5571)" );
+	assert.equal( $( "#scroll-1" ).scrollTop( undefined ).scrollTop(), 5, ".scrollTop(undefined) is chainable (trac-5571)" );
+	assert.equal( $( "#scroll-1" ).scrollLeft( undefined ).scrollLeft(), 5, ".scrollLeft(undefined) is chainable (trac-5571)" );
 
 	win.name = "test";
 
@@ -519,7 +519,7 @@ QUnit.test( "chaining", function( assert ) {
 	var coords = { "top":  1, "left":  1 };
 	assert.equal( jQuery( "#absolute-1" ).offset( coords ).jquery, jQuery.fn.jquery, "offset(coords) returns jQuery object" );
 	assert.equal( jQuery( "#non-existent" ).offset( coords ).jquery, jQuery.fn.jquery, "offset(coords) with empty jQuery set returns jQuery object" );
-	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (#5571)" );
+	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (trac-5571)" );
 } );
 
 // Test complex content under a variety of <html>/<body> positioning styles
@@ -729,11 +729,11 @@ QUnit.test( "offsetParent", function( assert ) {
 	area.remove();
 
 	div = jQuery( "<div>" ).css( { "position": "absolute" } ).appendTo( "body" );
-	assert.equal( div.offsetParent()[ 0 ], document.documentElement, "Absolutely positioned div returns html as offset parent, see #12139" );
+	assert.equal( div.offsetParent()[ 0 ], document.documentElement, "Absolutely positioned div returns html as offset parent, see trac-12139" );
 	div.remove();
 } );
 
-QUnit.test( "fractions (see #7730 and #7885)", function( assert ) {
+QUnit.test( "fractions (see trac-7730 and trac-7885)", function( assert ) {
 	assert.expect( 2 );
 
 	jQuery( "body" ).append( "<div id='fractions'></div>" );

@@ -34,7 +34,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 
 	assert.equal( decodeURIComponent( jQuery.param( { "a": [ 1, 2, 3 ], "b[]": [ 4, 5, 6 ], "c[d]": [ 7, 8, 9 ], "e": { "f": [ 10 ], "g": [ 11, 12 ], "h": 13 } } ) ), "a[]=1&a[]=2&a[]=3&b[]=4&b[]=5&b[]=6&c[d][]=7&c[d][]=8&c[d][]=9&e[f][]=10&e[g][]=11&e[g][]=12&e[h]=13", "Make sure params are not double-encoded." );
 
-	// #7945
+	// trac-7945
 	assert.equal( jQuery.param( { "jquery": "1.4.2" } ), "jquery=1.4.2", "Check that object with a jQuery property get serialized correctly" );
 
 	params = { "foo":"bar", "baz":42, "quux":"All your base are belong to us" };

@@ -38,7 +38,7 @@ function testWidth( val, assert ) {
 	$div.css( "display", "none" );
 	assert.equal( $div.width(), 30, "Test hidden div" );
 	$div.css( "display", "" );
-	$div.width( val( -1 ) ); // handle negative numbers by setting to 0 #11604
+	$div.width( val( -1 ) ); // handle negative numbers by setting to 0 trac-11604
 	assert.equal( $div.width(), 0, "Test negative width normalized to 0" );
 	$div.css( "padding", "20px" );
 	assert.equal( $div.width(), 0, "Test padding specified with pixels" );
@@ -89,7 +89,7 @@ function testHeight( val, assert ) {
 	$div.css( "display", "none" );
 	assert.equal( $div.height(), 30, "Test hidden div" );
 	$div.css( "display", "" );
-	$div.height( val( -1 ) ); // handle negative numbers by setting to 0 #11604
+	$div.height( val( -1 ) ); // handle negative numbers by setting to 0 trac-11604
 	assert.equal( $div.height(), 0, "Test negative height normalized to 0" );
 	$div.css( "padding", "20px" );
 	assert.equal( $div.height(), 0, "Test padding specified with pixels" );
@@ -279,7 +279,7 @@ QUnit.test( "outerHeight()", function( assert ) {
 	div.remove();
 } );
 
-QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #9441 #9300", function( assert ) {
+QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see trac-9441 trac-9300", function( assert ) {
 	assert.expect( 16 );
 
 	// setup html
@@ -290,33 +290,33 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	$divNormal.appendTo( "body" );
 
 	// tests that child div of a hidden div works the same as a normal div
-	assert.equal( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see #9441" );
-	assert.equal( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see #9441" );
-	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #9441" );
-	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #9300" );
+	assert.equal( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see trac-9441" );
+	assert.equal( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see trac-9441" );
+	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see trac-9441" );
+	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see trac-9300" );
 
-	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #9441" );
-	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #9441" );
-	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #9441" );
-	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #9300" );
+	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see trac-9441" );
+	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see trac-9441" );
+	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see trac-9441" );
+	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see trac-9300" );
 
 	// tests that child div of an unconnected div works the same as a normal div
-	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #9441" );
-	assert.equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #9300" );
+	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see trac-9300" );
 
-	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #9441" );
-	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #9441" );
-	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #9300" );
+	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see trac-9441" );
+	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see trac-9300" );
 
 	// teardown html
 	$divHiddenParent.remove();
 	$divNormal.remove();
 } );
 
-QUnit.test( "getting dimensions shouldn't modify runtimeStyle see #9233", function( assert ) {
+QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", function( assert ) {
 	assert.expect( 1 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
@@ -331,9 +331,9 @@ QUnit.test( "getting dimensions shouldn't modify runtimeStyle see #9233", functi
 	$div.outerWidth( true );
 
 	if ( runtimeStyle ) {
-		assert.equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see #9233" );
+		assert.equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see trac-9233" );
 	} else {
-		assert.ok( true, "this browser doesn't support runtimeStyle, see #9233" );
+		assert.ok( true, "this browser doesn't support runtimeStyle, see trac-9233" );
 	}
 
 	$div.remove();
@@ -348,8 +348,8 @@ QUnit.test( "table dimensions", function( assert ) {
 
 	table.find( "td" ).css( { "margin": 0, "padding": 0 } );
 
-	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see #11293" );
-	assert.equal( colElem.width(), 300, "col elements have width(), see #12243" );
+	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see trac-11293" );
+	assert.equal( colElem.width(), 300, "col elements have width(), see trac-12243" );
 } );
 
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
@@ -412,7 +412,7 @@ QUnit.test( "SVG dimensions (border-box)", function( assert ) {
 	svg.remove();
 } );
 
-QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see #10413", function( assert ) {
+QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) has accurate inner/outer/Width()/Height()  see trac-10413", function( assert ) {
 	assert.expect( 16 );
 
 	// setup html
@@ -423,38 +423,38 @@ QUnit.test( "box-sizing:border-box child of a hidden elem (or unconnected node) 
 	$divNormal.appendTo( "body" );
 
 	// tests that child div of a hidden div works the same as a normal div
-	assert.equal( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see #10413" );
-	assert.equal( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see #10413" );
-	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see #10413" );
-	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see #10413" );
+	assert.equal( $divChild.width(), $divNormal.width(), "child of a hidden element width() is wrong see trac-10413" );
+	assert.equal( $divChild.innerWidth(), $divNormal.innerWidth(), "child of a hidden element innerWidth() is wrong see trac-10413" );
+	assert.equal( $divChild.outerWidth(), $divNormal.outerWidth(), "child of a hidden element outerWidth() is wrong see trac-10413" );
+	assert.equal( $divChild.outerWidth( true ), $divNormal.outerWidth( true ), "child of a hidden element outerWidth( true ) is wrong see trac-10413" );
 
-	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see #10413" );
-	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see #10413" );
-	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see #10413" );
-	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see #10413" );
+	assert.equal( $divChild.height(), $divNormal.height(), "child of a hidden element height() is wrong see trac-10413" );
+	assert.equal( $divChild.innerHeight(), $divNormal.innerHeight(), "child of a hidden element innerHeight() is wrong see trac-10413" );
+	assert.equal( $divChild.outerHeight(), $divNormal.outerHeight(), "child of a hidden element outerHeight() is wrong see trac-10413" );
+	assert.equal( $divChild.outerHeight( true ), $divNormal.outerHeight( true ), "child of a hidden element outerHeight( true ) is wrong see trac-10413" );
 
 	// tests that child div of an unconnected div works the same as a normal div
-	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see #10413" );
-	assert.equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see #10413" );
+	assert.equal( $divUnconnected.width(), $divNormal.width(), "unconnected element width() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.innerWidth(), $divNormal.innerWidth(), "unconnected element innerWidth() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.outerWidth(), $divNormal.outerWidth(), "unconnected element outerWidth() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.outerWidth( true ), $divNormal.outerWidth( true ), "unconnected element outerWidth( true ) is wrong see trac-10413" );
 
-	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see #10413" );
-	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see #10413" );
-	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see #10413" );
+	assert.equal( $divUnconnected.height(), $divNormal.height(), "unconnected element height() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.innerHeight(), $divNormal.innerHeight(), "unconnected element innerHeight() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.outerHeight(), $divNormal.outerHeight(), "unconnected element outerHeight() is wrong see trac-10413" );
+	assert.equal( $divUnconnected.outerHeight( true ), $divNormal.outerHeight( true ), "unconnected element outerHeight( true ) is wrong see trac-10413" );
 
 	// teardown html
 	$divHiddenParent.remove();
 	$divNormal.remove();
 } );
 
-QUnit.test( "passing undefined is a setter #5571", function( assert ) {
+QUnit.test( "passing undefined is a setter trac-5571", function( assert ) {
 	assert.expect( 4 );
-	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).height( undefined ).height(), 30, ".height(undefined) is chainable (#5571)" );
-	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).innerHeight( undefined ).height(), 30, ".innerHeight(undefined) is chainable (#5571)" );
-	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).outerHeight( undefined ).height(), 30, ".outerHeight(undefined) is chainable (#5571)" );
-	assert.equal( jQuery( "#nothiddendiv" ).width( 30 ).width( undefined ).width(), 30, ".width(undefined) is chainable (#5571)" );
+	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).height( undefined ).height(), 30, ".height(undefined) is chainable (trac-5571)" );
+	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).innerHeight( undefined ).height(), 30, ".innerHeight(undefined) is chainable (trac-5571)" );
+	assert.equal( jQuery( "#nothiddendiv" ).height( 30 ).outerHeight( undefined ).height(), 30, ".outerHeight(undefined) is chainable (trac-5571)" );
+	assert.equal( jQuery( "#nothiddendiv" ).width( 30 ).width( undefined ).width(), 30, ".width(undefined) is chainable (trac-5571)" );
 } );
 
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
