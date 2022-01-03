@@ -32,6 +32,12 @@ function curCSS( elem, name, computed ) {
 
 		// trim whitespace for custom property (issue gh-4926)
 		if ( isCustomProp ) {
+
+			// rtrim treats U+000D CARRIAGE RETURN and U+000C FORM FEED
+			// as whitespace while CSS does not, but this is not a problem
+			// because CSS preprocessing replaces them with U+000A LINE FEED
+			// (which *is* CSS whitespace)
+			// https://www.w3.org/TR/css-syntax-3/#input-preprocessing
 			ret = ret.replace( rtrimCSS, "$1" );
 		}
 
