@@ -41,7 +41,7 @@ QUnit.test( "queue() with other types", function( assert ) {
 
 	assert.equal( $div.queue( "foo" ).length, 4, "Testing queue length" );
 
-	assert.equal( $div.queue( "foo", undefined ).queue( "foo" ).length, 4, ".queue('name',undefined) does nothing but is chainable (#5571)" );
+	assert.equal( $div.queue( "foo", undefined ).queue( "foo" ).length, 4, ".queue('name',undefined) does nothing but is chainable (trac-5571)" );
 
 	$div.dequeue( "foo" );
 

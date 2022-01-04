@@ -149,7 +149,7 @@ if ( isIE ) {
 				val :
 
 				// Support: IE <=10 - 11+
-				// option.text throws exceptions (#14686, #14858)
+				// option.text throws exceptions (trac-14686, trac-14858)
 				// Strip and collapse whitespace
 				// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
 				stripAndCollapse( jQuery.text( elem ) );

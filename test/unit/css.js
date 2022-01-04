@@ -33,7 +33,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 
 	div2.remove();
 
-	// handle negative numbers by setting to zero #11604
+	// handle negative numbers by setting to zero trac-11604
 	jQuery( "#nothiddendiv" ).css( { "width": 1, "height": 1 } );
 
 	width = parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) );
@@ -113,7 +113,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 
 	div = jQuery( "<div></div>" ).css( { position: "absolute", "z-index": 1000 } ).appendTo( "#qunit-fixture" );
 	assert.strictEqual( div.css( "z-index" ), "1000",
-		"Make sure that a string z-index is returned from css('z-index') (#14432)." );
+		"Make sure that a string z-index is returned from css('z-index') (trac-14432)." );
 } );
 
 QUnit.test( "css() explicit and relative values", function( assert ) {
@@ -325,11 +325,11 @@ QUnit.test( "css(String, Object)", function( assert ) {
 	catch ( e ) {
 		success = false;
 	}
-	assert.ok( success, "Setting RGBA values does not throw Error (#5509)" );
+	assert.ok( success, "Setting RGBA values does not throw Error (trac-5509)" );
 
 	jQuery( "#foo" ).css( "font", "7px/21px sans-serif" );
 	assert.strictEqual( jQuery( "#foo" ).css( "line-height" ), "21px",
-		"Set font shorthand property (#14759)" );
+		"Set font shorthand property (trac-14759)" );
 } );
 
 QUnit.test( "css(String, Object) with negative values", function( assert ) {
@@ -699,7 +699,7 @@ QUnit.testUnlessIE(
 	} );
 } );
 
-QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
+QUnit.test( "hide hidden elements (bug trac-7141)", function( assert ) {
 	assert.expect( 3 );
 
 	var div = jQuery( "<div style='display:none'></div>" ).appendTo( "#qunit-fixture" );
@@ -712,7 +712,7 @@ QUnit.test( "hide hidden elements (bug #7141)", function( assert ) {
 	div.remove();
 } );
 
-QUnit.test( "show() after hide() should always set display to initial value (#14750)", function( assert ) {
+QUnit.test( "show() after hide() should always set display to initial value (trac-14750)", function( assert ) {
 	assert.expect( 1 );
 
 	var div = jQuery( "<div></div>" ),
@@ -988,7 +988,7 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()"
 	assert.strictEqual( x.toggle().css( "display" ), "none", "is hidden" );
 	assert.strictEqual( x.toggle().css( "display" ), "block", "is visible" );
 
-	// Ensure hide() is called when toggled (#12148)
+	// Ensure hide() is called when toggled (trac-12148)
 	oldHide = jQuery.fn.hide;
 	jQuery.fn.hide = function() {
 		assert.ok( true, name + " method called on toggle" );
@@ -1048,7 +1048,7 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle && !QUnit.isIE ? "test" : "skip
 	assert.strictEqual( $shadowChild.css( "display" ), "block", "is visible" );
 } );
 
-QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)", function( assert ) {
+QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug trac-1095)", function( assert ) {
 	assert.expect( 4 );
 
 	var $checkedtest = jQuery( "#checkedtest" );
@@ -1060,7 +1060,7 @@ QUnit.test( "jQuery.css(elem, 'height') doesn't clear radio buttons (bug #1095)"
 	assert.ok( !jQuery( "input[type='checkbox']", $checkedtest ).last().attr( "checked" ), "Check last checkbox still NOT checked." );
 } );
 
-QUnit.test( "internal ref to elem.runtimeStyle (bug #7608)", function( assert ) {
+QUnit.test( "internal ref to elem.runtimeStyle (bug trac-7608)", function( assert ) {
 	assert.expect( 1 );
 	var result = true;
 
@@ -1099,18 +1099,18 @@ QUnit.test( "computed margins (trac-3333; gh-2237)", function( assert ) {
 	assert.equal( $child.css( "marginLeft" ), "25px", "auto margins are computed to pixels" );
 } );
 
-QUnit.test( "box model properties incorrectly returning % instead of px, see #10639 and #12088", function( assert ) {
+QUnit.test( "box model properties incorrectly returning % instead of px, see trac-10639 and trac-12088", function( assert ) {
 	assert.expect( 2 );
 
 	var container = jQuery( "<div></div>" ).width( 400 ).appendTo( "#qunit-fixture" ),
 		el = jQuery( "<div></div>" ).css( { "width": "50%", "marginRight": "50%" } ).appendTo( container ),
 		el2 = jQuery( "<div></div>" ).css( { "width": "50%", "minWidth": "300px", "marginLeft": "25%" } ).appendTo( container );
 
-	assert.equal( el.css( "marginRight" ), "200px", "css('marginRight') returning % instead of px, see #10639" );
-	assert.equal( el2.css( "marginLeft" ), "100px", "css('marginLeft') returning incorrect pixel value, see #12088" );
+	assert.equal( el.css( "marginRight" ), "200px", "css('marginRight') returning % instead of px, see trac-10639" );
+	assert.equal( el2.css( "marginLeft" ), "100px", "css('marginLeft') returning incorrect pixel value, see trac-12088" );
 } );
 
-QUnit.test( "widows & orphans #8936", function( assert ) {
+QUnit.test( "widows & orphans trac-8936", function( assert ) {
 
 	var $p = jQuery( "<p>" ).appendTo( "#qunit-fixture" );
 
@@ -1127,15 +1127,15 @@ QUnit.test( "widows & orphans #8936", function( assert ) {
 	$p.remove();
 } );
 
-QUnit.test( "can't get css for disconnected in IE<9, see #10254 and #8388", function( assert ) {
+QUnit.test( "can't get css for disconnected in IE<9, see trac-10254 and trac-8388", function( assert ) {
 	assert.expect( 2 );
 	var span, div;
 
 	span = jQuery( "<span></span>" ).css( "background-image", "url(" + baseURL + "1x1.jpg)" );
-	assert.notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see #10254" );
+	assert.notEqual( span.css( "background-image" ), null, "can't get background-image in IE<9, see trac-10254" );
 
 	div = jQuery( "<div></div>" ).css( "top", 10 );
-	assert.equal( div.css( "top" ), "10px", "can't get top in IE<9, see #8388" );
+	assert.equal( div.css( "top" ), "10px", "can't get top in IE<9, see trac-8388" );
 } );
 
 QUnit.test( "Ensure styles are retrieving from parsed html on document fragments", function( assert ) {
@@ -1148,7 +1148,7 @@ QUnit.test( "Ensure styles are retrieving from parsed html on document fragments
 	assert.equal( $span.css( "font-size" ), "14px", "Font-size retrievable on parsed HTML node" );
 } );
 
-QUnit.test( "can't get background-position in IE<9, see #10796", function( assert ) {
+QUnit.test( "can't get background-position in IE<9, see trac-10796", function( assert ) {
 	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
 		units = [
 			"0 0",
@@ -1167,22 +1167,22 @@ QUnit.test( "can't get background-position in IE<9, see #10796", function( asser
 
 	for ( ; i < l; i++ ) {
 		div.css( "background-position", units [ i ] );
-		assert.ok( div.css( "background-position" ), "can't get background-position in IE<9, see #10796" );
+		assert.ok( div.css( "background-position" ), "can't get background-position in IE<9, see trac-10796" );
 	}
 } );
 
 if ( jQuery.fn.offset ) {
-	QUnit.test( "percentage properties for left and top should be transformed to pixels, see #9505", function( assert ) {
+	QUnit.test( "percentage properties for left and top should be transformed to pixels, see trac-9505", function( assert ) {
 		assert.expect( 2 );
 		var parent = jQuery( "<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>" ).appendTo( "#qunit-fixture" ),
 			div = jQuery( "<div style='position: absolute; width: 20px; height: 20px; top:50%; left:50%'></div>" ).appendTo( parent );
 
-		assert.equal( div.css( "top" ), "100px", "position properties not transformed to pixels, see #9505" );
-		assert.equal( div.css( "left" ), "100px", "position properties not transformed to pixels, see #9505" );
+		assert.equal( div.css( "top" ), "100px", "position properties not transformed to pixels, see trac-9505" );
+		assert.equal( div.css( "left" ), "100px", "position properties not transformed to pixels, see trac-9505" );
 	} );
 }
 
-QUnit.test( "Do not append px (#9548, #12990, #2792)", function( assert ) {
+QUnit.test( "Do not append px (trac-9548, trac-12990, trac-2792)", function( assert ) {
 	assert.expect( 4 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
@@ -1335,16 +1335,16 @@ QUnit.test( "Append px to whitelisted properties", function( assert ) {
 	}
 } );
 
-QUnit.test( "css('width') and css('height') should respect box-sizing, see #11004", function( assert ) {
+QUnit.test( "css('width') and css('height') should respect box-sizing, see trac-11004", function( assert ) {
 	assert.expect( 4 );
 
 	var el_dis = jQuery( "<div style='width:300px;height:300px;margin:2px;padding:2px;box-sizing:border-box;'>test</div>" ),
 		el = el_dis.clone().appendTo( "#qunit-fixture" );
 
-	assert.equal( el.css( "width" ), el.css( "width", el.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing, see #11004" );
-	assert.equal( el_dis.css( "width" ), el_dis.css( "width", el_dis.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing for disconnected element, see #11004" );
-	assert.equal( el.css( "height" ), el.css( "height", el.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing, see #11004" );
-	assert.equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see #11004" );
+	assert.equal( el.css( "width" ), el.css( "width", el.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing, see trac-11004" );
+	assert.equal( el_dis.css( "width" ), el_dis.css( "width", el_dis.css( "width" ) ).css( "width" ), "css('width') is not respecting box-sizing for disconnected element, see trac-11004" );
+	assert.equal( el.css( "height" ), el.css( "height", el.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing, see trac-11004" );
+	assert.equal( el_dis.css( "height" ), el_dis.css( "height", el_dis.css( "height" ) ).css( "height" ), "css('height') is not respecting box-sizing for disconnected element, see trac-11004" );
 } );
 
 QUnit.test( "table rows width/height should be unaffected by inline styles", function( assert ) {
@@ -1368,7 +1368,7 @@ QUnit.test( "table rows width/height should be unaffected by inline styles", fun
 } );
 
 testIframe(
-	"css('width') should work correctly before document ready (#14084)",
+	"css('width') should work correctly before document ready (trac-14084)",
 	"css/cssWidthBeforeDocReady.html",
 	function( assert, jQuery, window, document, cssWidthBeforeDocReady ) {
 		assert.expect( 1 );
@@ -1409,13 +1409,13 @@ QUnit.testUnlessIE( "css('width') and css('height') should return fractional val
 		"css('height') should return fractional values" );
 } );
 
-QUnit.test( "certain css values of 'normal' should be convertable to a number, see #8627", function( assert ) {
+QUnit.test( "certain css values of 'normal' should be convertable to a number, see trac-8627", function( assert ) {
 	assert.expect( 3 );
 
 	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
-	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see #8627" );
-	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see #8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see trac-8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see trac-8627" );
 	assert.equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 } );
 
@@ -1459,7 +1459,7 @@ QUnit.test( "cssHooks - expand", function( assert ) {
 
 } );
 
-QUnit.test( "css opacity consistency across browsers (#12685)", function( assert ) {
+QUnit.test( "css opacity consistency across browsers (trac-12685)", function( assert ) {
 	assert.expect( 3 );
 
 	var el,
@@ -1487,8 +1487,8 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( ":visible/:hidden selectors", 
 	assert.ok( !jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is hidden" );
 	jQuery( "#nothiddendiv" ).css( { "display": "block" } );
 	assert.ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modified CSS display: Assert element is visible" );
-	assert.ok( !jQuery( window ).is( ":visible" ), "Calling is(':visible') on window does not throw an exception (#10267)." );
-	assert.ok( !jQuery( document ).is( ":visible" ), "Calling is(':visible') on document does not throw an exception (#10267)." );
+	assert.ok( !jQuery( window ).is( ":visible" ), "Calling is(':visible') on window does not throw an exception (trac-10267)." );
+	assert.ok( !jQuery( document ).is( ":visible" ), "Calling is(':visible') on document does not throw an exception (trac-10267)." );
 
 	assert.ok( jQuery( "#nothiddendiv" ).is( ":visible" ), "Modifying CSS display: Assert element is visible" );
 	jQuery( "#nothiddendiv" ).css( "display", "none" );
@@ -1507,9 +1507,9 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( ":visible/:hidden selectors", 
 
 	$table = jQuery( "#table" );
 	$table.html( "<tr><td style='display:none'>cell</td><td>cell</td></tr>" );
-	assert.equal( jQuery( "#table td:visible" ).length, 1, "hidden cell is not perceived as visible (#4512). Works on table elements" );
+	assert.equal( jQuery( "#table td:visible" ).length, 1, "hidden cell is not perceived as visible (trac-4512). Works on table elements" );
 	$table.css( "display", "none" ).html( "<tr><td>cell</td><td>cell</td></tr>" );
-	assert.equal( jQuery( "#table td:visible" ).length, 0, "hidden cell children not perceived as visible (#4512)" );
+	assert.equal( jQuery( "#table td:visible" ).length, 0, "hidden cell children not perceived as visible (trac-4512)" );
 
 	if ( QUnit.jQuerySelectorsPos ) {
 		assert.t( "Is Visible", "#qunit-fixture div:visible:lt(2)", [ "foo", "nothiddendiv" ] );
@@ -1524,7 +1524,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( ":visible/:hidden selectors", 
 	assert.ok( $a.is( ":visible" ), "Anchor tag with flow content is visible (gh-2227)" );
 } );
 
-QUnit.test( "Keep the last style if the new one isn't recognized by the browser (#14836)", function( assert ) {
+QUnit.test( "Keep the last style if the new one isn't recognized by the browser (trac-14836)", function( assert ) {
 	assert.expect( 1 );
 
 	var el = jQuery( "<div></div>" ).css( "position", "absolute" ).css( "position", "fake value" );
@@ -1551,7 +1551,7 @@ QUnit.test( "Reset the style if set to an empty string", function( assert ) {
 } );
 
 QUnit.test(
-	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (#8908)",
+	"Clearing a Cloned Element's Style Shouldn't Clear the Original Element's Style (trac-8908)",
 	function( assert ) {
 		assert.expect( 24 );
 		var done = assert.async();
@@ -1626,7 +1626,7 @@ QUnit.test(
 	}
 );
 
-QUnit.test( "Don't append px to CSS \"order\" value (#14049)", function( assert ) {
+QUnit.test( "Don't append px to CSS \"order\" value (trac-14049)", function( assert ) {
 	assert.expect( 1 );
 
 	var $elem = jQuery( "<div></div>" );
@@ -1635,7 +1635,7 @@ QUnit.test( "Don't append px to CSS \"order\" value (#14049)", function( assert 
 	assert.equal( $elem.css( "order" ), "2", "2 on order" );
 } );
 
-QUnit.test( "Do not throw on frame elements from css method (#15098)", function( assert ) {
+QUnit.test( "Do not throw on frame elements from css method (trac-15098)", function( assert ) {
 	assert.expect( 1 );
 
 	var frameWin, frameDoc,

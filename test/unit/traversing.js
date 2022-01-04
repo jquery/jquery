@@ -47,7 +47,7 @@ QUnit.test( "find(node|jQuery object)", function( assert ) {
 	assert.equal( $two.find( $first ).length, 0, "first is in the collection and not within two" );
 	assert.equal( $two.find( $first ).length, 0, "first is in the collection and not within two(node)" );
 
-	assert.equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see #12009" );
+	assert.equal( $two.find( $foo[ 0 ] ).addBack().length, 2, "find preserves the pushStack, see trac-12009" );
 } );
 
 QUnit.test( "is(falsy|invalid)", function( assert ) {
@@ -135,7 +135,7 @@ QUnit.test( "is(String)", function( assert ) {
 	assert.ok( !jQuery( disconnected ).is( "* > *" ), "child combinator fails in fragment" );
 } );
 
-QUnit.test( "is() against non-elements (#10178)", function( assert ) {
+QUnit.test( "is() against non-elements (trac-10178)", function( assert ) {
 	assert.expect( 14 );
 
 	var label, i, test,
@@ -241,10 +241,10 @@ QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "is() with positional selec
 	isit( "#posp em", "#posp a em:last", true );
 	isit( "#posp em", "#posp a em:eq(2)", false );
 
-	assert.ok( jQuery( "#option1b" ).is( "#select1 option:not(:first)" ), "POS inside of :not() (#10970)" );
+	assert.ok( jQuery( "#option1b" ).is( "#select1 option:not(:first)" ), "POS inside of :not() (trac-10970)" );
 
-	assert.ok( jQuery( posp[ 0 ] ).is( "p:last" ), "context constructed from a single node (#13797)" );
-	assert.ok( !jQuery( posp[ 0 ] ).find( "#firsta" ).is( "a:first" ), "context derived from a single node (#13797)" );
+	assert.ok( jQuery( posp[ 0 ] ).is( "p:last" ), "context constructed from a single node (trac-13797)" );
+	assert.ok( !jQuery( posp[ 0 ] ).find( "#firsta" ).is( "a:first" ), "context derived from a single node (trac-13797)" );
 } );
 
 QUnit.test( "index()", function( assert ) {
@@ -405,14 +405,14 @@ QUnit.test( "closest()", function( assert ) {
 		"Non-string match target"
 	);
 
-	// Bug #7369
+	// Bug trac-7369
 	assert.equal( jQuery( "<div foo='bar'></div>" ).closest( "[foo]" ).length, 1, "Disconnected nodes with attribute selector" );
 	assert.equal( jQuery( "<div>text</div>" ).closest( "[lang]" ).length, 0, "Disconnected nodes with text and non-existent attribute selector" );
 
 	assert.ok( !jQuery( document ).closest( "#foo" ).length, "Calling closest on a document fails silently" );
 
 	jq = jQuery( "<div>text</div>" );
-	assert.deepEqual( jq.contents().closest( "*" ).get(), jq.get(), "Text node input (#13332)" );
+	assert.deepEqual( jq.contents().closest( "*" ).get(), jq.get(), "Text node input (trac-13332)" );
 } );
 
 QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "closest() with positional selectors", function( assert ) {
@@ -624,8 +624,8 @@ QUnit.test( "siblings([String])", function( assert ) {
 
 	var set = q( "sndp", "en", "sap" );
 	assert.deepEqual( jQuery( "#en, #sndp" ).siblings().get(), set, "Check for unique results from siblings" );
-	assert.deepEqual( jQuery( "#option5a" ).siblings( "option[data-attr]" ).get(), q( "option5c" ), "Has attribute selector in siblings (#9261)" );
-	assert.equal( jQuery( "<a></a>" ).siblings().length, 0, "Detached elements have no siblings (#11370)" );
+	assert.deepEqual( jQuery( "#option5a" ).siblings( "option[data-attr]" ).get(), q( "option5c" ), "Has attribute selector in siblings (trac-9261)" );
+	assert.equal( jQuery( "<a></a>" ).siblings().length, 0, "Detached elements have no siblings (trac-11370)" );
 } );
 
 QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "siblings([String])", function( assert ) {
@@ -657,7 +657,7 @@ QUnit.test( "parent([String])", function( assert ) {
 	assert.deepEqual( jQuery( "#en, #sndp" ).parent().get(), q( "foo" ), "Check for unique results from parent" );
 
 	$el = jQuery( "<div>text</div>" );
-	assert.deepEqual( $el.contents().parent().get(), $el.get(), "Check for parent of text node (#13265)" );
+	assert.deepEqual( $el.contents().parent().get(), $el.get(), "Check for parent of text node (trac-13265)" );
 } );
 
 QUnit.test( "parents([String])", function( assert ) {
@@ -1067,7 +1067,7 @@ QUnit.test( "add(String, Context)", function( assert ) {
 	assert.deepEqual( jQuery( document.getElementById( "firstp" ) ).add( "#ap", document.getElementsByTagName( "body" )[ 0 ] ).get(), q( "firstp", "ap" ), "Add gEBId to selector, in context" );
 } );
 
-QUnit.test( "eq('-1') #10616", function( assert ) {
+QUnit.test( "eq('-1') trac-10616", function( assert ) {
 	assert.expect( 3 );
 	var $divs = jQuery( "div" );
 
@@ -1076,7 +1076,7 @@ QUnit.test( "eq('-1') #10616", function( assert ) {
 	assert.deepEqual( $divs.eq( "-1" ), $divs.eq( -1 ), "String and number -1 match" );
 } );
 
-QUnit.test( "index(no arg) #10977", function( assert ) {
+QUnit.test( "index(no arg) trac-10977", function( assert ) {
 	assert.expect( 2 );
 	var $list, fragment, div;
 
@@ -1091,7 +1091,7 @@ QUnit.test( "index(no arg) #10977", function( assert ) {
 	assert.equal( jQuery( div ).index(), 0, "If jQuery#index called on element whose parent is fragment, it still should work correctly" );
 } );
 
-QUnit.test( "traversing non-elements with attribute filters (#12523)", function( assert ) {
+QUnit.test( "traversing non-elements with attribute filters (trac-12523)", function( assert ) {
 	assert.expect( 5 );
 
 	var nonnodes = jQuery( "#nonnodes" ).contents();
