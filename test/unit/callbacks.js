@@ -100,7 +100,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					assert.strictEqual( cblist.disabled(), true, ".disabled() becomes true" );
 					assert.strictEqual( cblist.locked(), true, "disabling locks" );
 
-					// Emptying while firing (#13517)
+					// Emptying while firing (trac-13517)
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.empty );
 					cblist.add( function() {

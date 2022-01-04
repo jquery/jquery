@@ -78,7 +78,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( ass
 	elem.remove();
 
 	jQuery( "#check1" ).click( function() {
-		assert.ok( true, "click event handler for checkbox gets fired twice, see #815" );
+		assert.ok( true, "click event handler for checkbox gets fired twice, see trac-815" );
 	} ).click();
 
 	counter = 0;
@@ -366,7 +366,7 @@ QUnit[ jQuery.isFunction ? "test" : "skip" ]( "isFunction", function( assert ) {
 	// Some versions of Firefox and Chrome say this is a function
 	assert.ok( !jQuery.isFunction( obj ), "Object Element" );
 
-	// Since 1.3, this isn't supported (#2968)
+	// Since 1.3, this isn't supported (trac-2968)
 	//assert.ok( jQuery.isFunction(obj.getAttribute), "getAttribute Function" );
 
 	nodes = document.body.childNodes;
@@ -383,7 +383,7 @@ QUnit[ jQuery.isFunction ? "test" : "skip" ]( "isFunction", function( assert ) {
 	input.type = "text";
 	document.body.appendChild( input );
 
-	// Since 1.3, this isn't supported (#2968)
+	// Since 1.3, this isn't supported (trac-2968)
 	//assert.ok( jQuery.isFunction(input.focus), "A default function property" );
 
 	document.body.removeChild( input );

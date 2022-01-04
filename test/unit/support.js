@@ -19,7 +19,7 @@ function getComputedSupport( support ) {
 
 if ( jQuery.css ) {
 	testIframe(
-		"body background is not lost if set prior to loading jQuery (#9239)",
+		"body background is not lost if set prior to loading jQuery (trac-9239)",
 		"support/bodyBackground.html",
 		function( assert, jQuery, window, document, color, support ) {
 			assert.expect( 2 );

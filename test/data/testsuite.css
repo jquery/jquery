@@ -112,16 +112,16 @@ div#fx-tests div.noback {
 #nothiddendivchild.em { font-size: 2em; }
 #nothiddendivchild.prct { font-size: 150%; }
 
-/* #9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
+/* trac-9239 Attach a background to the body( avoid crashes in removing the test element in support ) */
 body, div { background: url(1x1.jpg) no-repeat -1000px 0; }
 
-/* #10501 */
+/* trac-10501 */
 section { background:#f0f; display:block; }
 
-/* #11971 */
+/* trac-11971 */
 #foo { background: url(1x1.jpg) right bottom no-repeat; }
 
-/* #14824 */
+/* trac-14824 */
 #span-14824 { display: block; }
 
 #display { display: list-item !important; }

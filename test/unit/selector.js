@@ -14,10 +14,10 @@ QUnit.test( "element", function( assert ) {
 	assert.deepEqual( jQuery( "p", jQuery( "#qunit-fixture" ) ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a jQuery object context." );
 	assert.deepEqual( jQuery( "#qunit-fixture" ).find( "p" ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a context via .find()." );
 
-	assert.ok( jQuery( "#length" ).length, "<input name=\"length\"> cannot be found under IE, see #945" );
-	assert.ok( jQuery( "#lengthtest input" ).length, "<input name=\"length\"> cannot be found under IE, see #945" );
+	assert.ok( jQuery( "#length" ).length, "<input name=\"length\"> cannot be found under IE, see trac-945" );
+	assert.ok( jQuery( "#lengthtest input" ).length, "<input name=\"length\"> cannot be found under IE, see trac-945" );
 
-	// #7533
+	// trac-7533
 	assert.equal( jQuery( "<div id=\"A'B~C.D[E]\"><p>foo</p></div>" ).find( "p" ).length, 1, "Find where context root is a node and has an ID with CSS3 meta characters" );
 } );
 
@@ -43,7 +43,7 @@ QUnit.test( "id", function( assert ) {
 	assert.t( "Child escaped ID", "form > #foo\\:bar", [ "foo:bar" ] );
 	assert.t( "Child escaped ID", "form > #test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
 
-	assert.t( "ID Selector, child ID present", "#form > #radio1", [ "radio1" ] ); // bug #267
+	assert.t( "ID Selector, child ID present", "#form > #radio1", [ "radio1" ] ); // bug trac-267
 	assert.t( "ID Selector, not an ancestor ID", "#form #first", [] );
 	assert.t( "ID Selector, not a child ID", "#form > #option1a", [] );
 
@@ -55,7 +55,7 @@ QUnit.test( "id", function( assert ) {
 
 	assert.t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", [ "lengthtest" ] );
 
-	assert.t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug #986
+	assert.t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug trac-986
 
 	assert.t( "Underscore ID", "#types_all", [ "types_all" ] );
 	assert.t( "Dash ID", "#qunit-fixture", [ "qunit-fixture" ] );
@@ -122,7 +122,7 @@ QUnit.test( "child and adjacent", function( assert ) {
 	if ( jQuery.find.compile ) {
 		assert.t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", [ "siblingfirst" ] );
 		assert.t( "Combinators are not skipped when mixing general and specific", "#siblingTest > em:contains('x') + em ~ span", [] );
-		assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (#8310)" );
+		assert.equal( jQuery( "#listWithTabIndex li:eq(2) ~ li" ).length, 1, "Find by general sibling combinator (trac-8310)" );
 	} else {
 		assert.ok( "skip", ":contains not supported in selector-native" );
 		assert.ok( "skip", ":contains not supported in selector-native" );
@@ -133,9 +133,9 @@ QUnit.test( "child and adjacent", function( assert ) {
 	assert.t( "Multiple combinators selects all levels", "#siblingTest > em *", [ "siblingchild", "siblinggrandchild", "siblinggreatgrandchild" ] );
 	assert.t( "Multiple sibling combinators doesn't miss general siblings", "#siblingTest > em:first-child + em ~ span", [ "siblingspan" ] );
 
-	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for next test is found via ID (#8310)" );
-	assert.equal( jQuery( "#__sizzle__" ).length, 0, "Make sure the temporary id assigned by sizzle is cleared out (#8310)" );
-	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for previous test is still found via ID (#8310)" );
+	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for next test is found via ID (trac-8310)" );
+	assert.equal( jQuery( "#__sizzle__" ).length, 0, "Make sure the temporary id assigned by sizzle is cleared out (trac-8310)" );
+	assert.equal( jQuery( "#listWithTabIndex" ).length, 1, "Parent div for previous test is still found via ID (trac-8310)" );
 
 	assert.t( "Verify deep class selector", "div.blah > p > a", [] );
 	assert.t( "No element deep selector", "div.foo > span > a", [] );
@@ -212,7 +212,7 @@ QUnit.test( "attributes", function( assert ) {
 
 	assert.t( "Grouped Form Elements", "input[name='foo[bar]']", [ "hidden2" ] );
 
-	// Make sure attribute value quoting works correctly. See jQuery #6093; #6428; #13894
+	// Make sure attribute value quoting works correctly. See jQuery trac-6093; trac-6428; trac-13894
 	// Use seeded results to bypass querySelectorAll optimizations
 	attrbad = jQuery(
 		"<input type='hidden' id='attrbad_space' name='foo bar'/>" +
@@ -232,7 +232,7 @@ QUnit.test( "attributes", function( assert ) {
 	assert.t( "input[type=search]", "#form input[type=search]", [ "search" ] );
 
 	withScript = supportjQuery( "<div><span><script src=''/></span></div>" );
-	assert.ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery #13777)" );
+	assert.ok( withScript.find( "#moretests script[src]" ).has( "script" ), "script[src] (jQuery trac-13777)" );
 
 	div = document.getElementById( "foo" );
 	assert.t( "Object.prototype property \"constructor\" (negative)", "[constructor]", [] );
@@ -246,7 +246,7 @@ QUnit.test( "attributes", function( assert ) {
 
 	if ( jQuery.find.compile ) {
 
-		// #12600
+		// trac-12600
 		assert.ok(
 			jQuery( "<select value='12600'><option value='option' selected='selected'></option><option value=''></option></select>" )
 			.prop( "value", "option" )
@@ -263,7 +263,7 @@ QUnit.test( "attributes", function( assert ) {
 	}
 
 
-	// #11115
+	// trac-11115
 	assert.ok( jQuery( "<input type='checkbox' checked='checked'/>" ).prop( "checked", false ).is( "[checked]" ),
 		"[checked] selects by attribute (positive)"
 	);
@@ -376,9 +376,9 @@ testIframe(
 		} );
 		t( "Enumerated attribute", "[spellcheck]", [ "span1" ] );
 
-		t( "tabindex selector does not retrieve all elements in IE6/7 (#8473)",
+		t( "tabindex selector does not retrieve all elements in IE6/7 (trac-8473)",
 			"form, [tabindex]", [ "form1", "text1" ] );
-		t( "Improperly named form elements do not interfere with form selections (#9570)", "form[name='formName']", [ "form1" ] );
+		t( "Improperly named form elements do not interfere with form selections (trac-9570)", "form[name='formName']", [ "form1" ] );
 	}
 );
 
@@ -503,7 +503,7 @@ testIframe(
 	}
 );
 
-QUnit.test( "Iframe dispatch should not affect jQuery (#13936)", function( assert ) {
+QUnit.test( "Iframe dispatch should not affect jQuery (trac-13936)", function( assert ) {
 	assert.expect( 1 );
 	var loaded = false,
 		thrown = false,

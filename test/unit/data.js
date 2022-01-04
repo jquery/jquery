@@ -143,7 +143,7 @@ QUnit.test( "jQuery.data({})", function( assert ) {
 QUnit.test( "jQuery.data(window)", function( assert ) {
 	assert.expect( 25 );
 
-	// remove bound handlers from window object to stop potential false positives caused by fix for #5280 in
+	// remove bound handlers from window object to stop potential false positives caused by fix for trac-5280 in
 	// transports/xhr.js
 	jQuery( window ).off( "unload" );
 
@@ -172,7 +172,7 @@ QUnit.test( "jQuery.data(object/flash)", function( assert ) {
 } );
 
 // attempting to access the data of an undefined jQuery element should be undefined
-QUnit.test( "jQuery().data() === undefined (#14101)", function( assert ) {
+QUnit.test( "jQuery().data() === undefined (trac-14101)", function( assert ) {
 	assert.expect( 2 );
 
 	assert.strictEqual( jQuery().data(), undefined );
@@ -201,7 +201,7 @@ QUnit.test( ".data()", function( assert ) {
 
 	dataObj = jQuery.extend( true, {}, jQuery( obj ).data() );
 
-	assert.deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (#7524)" );
+	assert.deepEqual( dataObj, { "foo": "baz" }, "Retrieve data object from a wrapped JS object (trac-7524)" );
 } );
 
 function testDataTypes( $obj, assert ) {
@@ -232,7 +232,7 @@ QUnit.test( "jQuery(Element).data(String, Object).data(String)", function( asser
 	assert.strictEqual( div.data( "test" ), undefined, "No data exists initially" );
 	assert.strictEqual( div.data( "test", "success" ).data( "test" ), "success", "Data added" );
 	assert.strictEqual( div.data( "test", "overwritten" ).data( "test" ), "overwritten", "Data overwritten" );
-	assert.strictEqual( div.data( "test", undefined ).data( "test" ), "overwritten", ".data(key,undefined) does nothing but is chainable (#5571)" );
+	assert.strictEqual( div.data( "test", undefined ).data( "test" ), "overwritten", ".data(key,undefined) does nothing but is chainable (trac-5571)" );
 	assert.strictEqual( div.data( "notexist" ), undefined, "No data exists for unset key" );
 	testDataTypes( div, assert );
 
@@ -242,7 +242,7 @@ QUnit.test( "jQuery(Element).data(String, Object).data(String)", function( asser
 QUnit.test( "jQuery(plain Object).data(String, Object).data(String)", function( assert ) {
 	assert.expect( 16 );
 
-	// #3748
+	// trac-3748
 	var $obj = jQuery( { exists: true } );
 	assert.strictEqual( $obj.data( "nothing" ), undefined, "Non-existent data returns undefined" );
 	assert.strictEqual( $obj.data( "exists" ), undefined, "Object properties are not returned as data" );
@@ -253,7 +253,7 @@ QUnit.test( "jQuery(plain Object).data(String, Object).data(String)", function( 
 	assert.deepEqual( $obj[ 0 ], { exists: true }, "removeData does not clear the object" );
 } );
 
-QUnit.test( ".data(object) does not retain references. #13815", function( assert ) {
+QUnit.test( ".data(object) does not retain references. trac-13815", function( assert ) {
 	assert.expect( 2 );
 
 	var $divs = jQuery( "<div></div><div></div>" ).appendTo( "#qunit-fixture" );
@@ -290,7 +290,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	child.appendTo( "#qunit-fixture" );
 	assert.equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
-	assert.equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (#1751)" );
+	assert.equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (gh-1751)" );
 
 	child.data( "myobj", "replaced" );
 	assert.equal( child.data( "myobj" ), "replaced", "Original data overwritten" );
@@ -507,7 +507,7 @@ QUnit.test( ".removeData()", function( assert ) {
 } );
 
 if ( window.JSON && window.JSON.stringify ) {
-	QUnit.test( "JSON serialization (#8108)", function( assert ) {
+	QUnit.test( "JSON serialization (trac-8108)", function( assert ) {
 		assert.expect( 1 );
 
 		var obj = { "foo": "bar" };
@@ -562,7 +562,7 @@ QUnit.test( ".data should not miss preset data-* w/ hyphenated property names", 
 	} );
 } );
 
-QUnit.test( "jQuery.data should not miss data-* w/ hyphenated property names #14047", function( assert ) {
+QUnit.test( "jQuery.data should not miss data-* w/ hyphenated property names trac-14047", function( assert ) {
 
 	assert.expect( 1 );
 
@@ -770,7 +770,7 @@ QUnit.test( ".data supports interoperable removal of hyphenated/camelCase proper
 	} );
 } );
 
-QUnit.test( ".data supports interoperable removal of properties SET TWICE #13850", function( assert ) {
+QUnit.test( ".data supports interoperable removal of properties SET TWICE trac-13850", function( assert ) {
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		datas = {
 			"non-empty": "a string",
@@ -800,7 +800,7 @@ QUnit.test( ".data supports interoperable removal of properties SET TWICE #13850
 	} );
 } );
 
-QUnit.test( ".removeData supports removal of hyphenated properties via array (#12786, gh-2257)", function( assert ) {
+QUnit.test( ".removeData supports removal of hyphenated properties via array (trac-12786, gh-2257)", function( assert ) {
 	assert.expect( 4 );
 
 	var div, plain, compare;
@@ -833,7 +833,7 @@ QUnit.test( ".removeData supports removal of hyphenated properties via array (#1
 } );
 
 // Test originally by Moschel
-QUnit.test( ".removeData should not throw exceptions. (#10080)", function( assert ) {
+QUnit.test( ".removeData should not throw exceptions. (trac-10080)", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );
 	var frame = jQuery( "#loadediframe" );
@@ -846,7 +846,7 @@ QUnit.test( ".removeData should not throw exceptions. (#10080)", function( asser
 	frame.attr( "src", baseURL + "iframe.html?param=true" );
 } );
 
-QUnit.test( ".data only checks element attributes once. #8909", function( assert ) {
+QUnit.test( ".data only checks element attributes once. trac-8909", function( assert ) {
 	assert.expect( 2 );
 	var testing = {
 			"test": "testing",
@@ -874,7 +874,7 @@ QUnit.test( "data-* with JSON value can have newlines", function( assert ) {
 	x.remove();
 } );
 
-QUnit.test( ".data doesn't throw when calling selection is empty. #13551", function( assert ) {
+QUnit.test( ".data doesn't throw when calling selection is empty. trac-13551", function( assert ) {
 	assert.expect( 1 );
 
 	try {
@@ -911,7 +911,7 @@ QUnit.test( "acceptData", function( assert ) {
 	assert.equal( jQuery( form ) .data( "test", 42 ).data( "test" ), 42, "form with aliased DOM properties" );
 } );
 
-QUnit.test( "Check proper data removal of non-element descendants nodes (#8335)", function( assert ) {
+QUnit.test( "Check proper data removal of non-element descendants nodes (trac-8335)", function( assert ) {
 	assert.expect( 1 );
 
 	var div = jQuery( "<div>text</div>" ),
@@ -924,7 +924,7 @@ QUnit.test( "Check proper data removal of non-element descendants nodes (#8335)"
 } );
 
 testIframe(
-	"enumerate data attrs on body (#14894)",
+	"enumerate data attrs on body (trac-14894)",
 	"data/dataAttrs.html",
 	function( assert, jQuery, window, document, result ) {
 		assert.expect( 1 );
