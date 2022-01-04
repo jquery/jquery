@@ -2770,8 +2770,8 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	} );
 
 	// Selector should be trimmed to avoid leading spaces (trac-14773)
-	// Selector should include any valid non-HTML whitespace (trac-3003)
-	QUnit.test( "jQuery.fn.load( URL_SELECTOR with non-HTML whitespace(trac-3003) )", function( assert ) {
+	// Selector should include any valid non-HTML whitespace (gh-3003)
+	QUnit.test( "jQuery.fn.load( URL_SELECTOR with non-HTML whitespace(gh-3003) )", function( assert ) {
 		assert.expect( 1 );
 		var done = assert.async();
 		jQuery( "#first" ).load( baseURL + "test3.html   #whitespace\\\\xA0 ", function() {

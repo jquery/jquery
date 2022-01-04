@@ -290,7 +290,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	child.appendTo( "#qunit-fixture" );
 	assert.equal( child.data( "myobj" ), "old data", "Value accessed from data-* attribute" );
-	assert.equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (trac-1751)" );
+	assert.equal( child.data( "foo-42" ), "boosh", "camelCasing does not affect numbers (gh-1751)" );
 
 	child.data( "myobj", "replaced" );
 	assert.equal( child.data( "myobj" ), "replaced", "Original data overwritten" );

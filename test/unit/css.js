@@ -1182,7 +1182,7 @@ if ( jQuery.fn.offset ) {
 	} );
 }
 
-QUnit.test( "Do not append px (trac-9548, trac-12990, trac-2792)", function( assert ) {
+QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792)", function( assert ) {
 	assert.expect( 4 );
 
 	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
