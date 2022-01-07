@@ -2051,7 +2051,6 @@ jQuery.fn.extend( {
 	},
 
 	// Based off of the plugin by Clint Helfers, with permission.
-	// http://blindsignals.com/index.php/2009/07/jquery-delay/
 	delay: function( time, type ) {
 		time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
 		type = type || "fx";
@@ -2559,7 +2558,6 @@ jQuery.extend( {
 			get: function( elem ) {
 
 				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
-				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
 				var attributeNode = elem.getAttributeNode( "tabindex" );
 
 				return attributeNode && attributeNode.specified ?
