@@ -465,7 +465,7 @@ QUnit.test( "html(String) with HTML5 (Bug trac-6485)", function( assert ) {
 	assert.equal( jQuery( "#qunit-fixture" ).children().children().children().length, 1, "Make sure nested HTML5 elements can hold children." );
 } );
 
-QUnit.test( "html(String) tag-hyphenated elements (Bug trac-1987)", function( assert ) {
+QUnit.test( "html(String) tag-hyphenated elements (Bug gh-1987)", function( assert ) {
 
 	assert.expect( 27 );
 

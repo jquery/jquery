@@ -817,7 +817,7 @@ QUnit.test( "jQuery.map", function( assert ) {
 		result = jQuery.map( Array( 300000 ), function( v, k ) {
 			return k;
 		} );
-		assert.equal( result.length, 300000, "Able to map 300000 records without any problems (trac-4320)" );
+		assert.equal( result.length, 300000, "Able to map 300000 records without any problems (gh-4320)" );
 	} else {
 		assert.ok( "skip", "Array#flat isn't supported in IE" );
 	}

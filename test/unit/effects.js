@@ -1949,7 +1949,7 @@ QUnit.test( "Animation callbacks (trac-11797)", function( assert ) {
 	this.clock.tick( 10 );
 } );
 
-QUnit.test( "Animation callbacks in order (trac-2292)", function( assert ) {
+QUnit.test( "Animation callbacks in order (gh-2283)", function( assert ) {
 	assert.expect( 9 );
 
 	var done = assert.async(),

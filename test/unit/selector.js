@@ -643,7 +643,7 @@ QUnit.test( "attributes - special characters", function( assert ) {
 	var attrbad;
 	var div = document.createElement( "div" );
 
-	// trac-3279
+	// trac-3729
 	div.innerHTML = "<div id='foo' xml:test='something'></div>";
 	assert.deepEqual( jQuery( "[xml\\:test]", div ).get(),
 		[ div.firstChild ],
