@@ -230,7 +230,7 @@ jQuery.extend( jQuery.find, {
 	attr: function( elem, name ) {
 		var fn = jQuery.expr.attrHandle[ name.toLowerCase() ],
 
-			// Don't get fooled by Object.prototype properties (jQuery #13807)
+			// Don't get fooled by Object.prototype properties (jQuery trac-13807)
 			value = fn && hasOwn.call( jQuery.expr.attrHandle, name.toLowerCase() ) ?
 				fn( elem, name, jQuery.isXMLDoc( elem ) ) :
 				undefined;

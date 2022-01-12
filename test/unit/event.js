@@ -8,7 +8,7 @@ QUnit.module( "event", {
 QUnit.test( "null or undefined handler", function( assert ) {
 	assert.expect( 4 );
 
-	// Supports Fixes bug #7229
+	// Supports Fixes bug trac-7229
 	try {
 		jQuery( "#firstp" ).on( "click", null );
 		assert.ok( true, "Passing a null handler will not throw an exception" );
@@ -484,7 +484,7 @@ QUnit.test( "trigger() works with events that were previously stopped", function
 QUnit.test( "on(), iframes", function( assert ) {
 	assert.expect( 1 );
 
-	// events don't work with iframes, see #939 - this test fails in IE because of contentDocument
+	// events don't work with iframes, see trac-939 - this test fails in IE because of contentDocument
 	var doc = jQuery( "#loadediframe" ).contents();
 
 	jQuery( "div", doc ).on( "click", function() {
@@ -552,7 +552,7 @@ QUnit.test( "on(), namespaced events, cloned events", function( assert ) {
 		assert.equal( this.nodeType, 1, "Check node,textnode,comment on just does real nodes" );
 	} ).trigger( "tester" );
 
-	// Make sure events stick with appendTo'd elements (which are cloned) #2027
+	// Make sure events stick with appendTo'd elements (which are cloned) trac-2027
 	jQuery( "<a href='#fail' class='test'>test</a>" ).on( "click", function() { return false; } ).appendTo( "#qunit-fixture" );
 	assert.ok( jQuery( "a.test" ).eq( 0 ).triggerHandler( "click" ) === false, "Handler is bound to appendTo'd elements" );
 } );
@@ -589,7 +589,7 @@ QUnit.test( "on(), multi-namespaced events", function( assert ) {
 		check( "click.test.abc", "Namespaced click triggered" );
 	} );
 
-	// Those would not trigger/off (#5303)
+	// Those would not trigger/off (trac-5303)
 	jQuery( "#firstp" ).trigger( "click.a.test" );
 	jQuery( "#firstp" ).off( "click.a.test" );
 
@@ -812,7 +812,7 @@ QUnit.test( "off(type)", function( assert ) {
 		.off( "error1 error2", error )
 		.trigger( "error1" ).triggerHandler( "error2" );
 
-	message = "unbind many"; // #3538
+	message = "unbind many"; // trac-3538
 	$elem.on( "error1 error2", error )
 		.off( "error1 error2" )
 		.trigger( "error1" ).triggerHandler( "error2" );
@@ -1041,7 +1041,7 @@ QUnit.test( "trigger(type, [data], [fn])", function( assert ) {
 	} catch ( e ) {
 		pass = false;
 	}
-	assert.ok( pass, "Trigger on a table with a colon in the even type, see #3533" );
+	assert.ok( pass, "Trigger on a table with a colon in the even type, see trac-3533" );
 
 	form = jQuery( "<form action=''></form>" ).appendTo( "body" );
 
@@ -1069,7 +1069,7 @@ QUnit.test( "trigger(type, [data], [fn])", function( assert ) {
 	form.remove();
 } );
 
-QUnit.test( "submit event bubbles on copied forms (#11649)", function( assert ) {
+QUnit.test( "submit event bubbles on copied forms (trac-11649)", function( assert ) {
 	assert.expect( 3 );
 
 	var $formByClone, $formByHTML,
@@ -1105,7 +1105,7 @@ QUnit.test( "submit event bubbles on copied forms (#11649)", function( assert ) 
 	$testForm.off( "submit", noSubmit );
 } );
 
-QUnit.test( "change event bubbles on copied forms (#11796)", function( assert ) {
+QUnit.test( "change event bubbles on copied forms (trac-11796)", function( assert ) {
 	assert.expect( 3 );
 
 	var $formByClone, $formByHTML,
@@ -1227,7 +1227,7 @@ QUnit.test( "trigger(eventObject, [data], [fn])", function( assert ) {
 	assert.equal( event.isDefaultPrevented(), false, "default not prevented" );
 } );
 
-QUnit.test( ".trigger() bubbling on disconnected elements (#10489)", function( assert ) {
+QUnit.test( ".trigger() bubbling on disconnected elements (trac-10489)", function( assert ) {
 	assert.expect( 2 );
 
 	jQuery( window ).on( "click", function() {
@@ -1251,7 +1251,7 @@ QUnit.test( ".trigger() bubbling on disconnected elements (#10489)", function( a
 	jQuery( window ).off( "click" );
 } );
 
-QUnit.test( ".trigger() doesn't bubble load event (#10717)", function( assert ) {
+QUnit.test( ".trigger() doesn't bubble load event (trac-10717)", function( assert ) {
 	assert.expect( 1 );
 
 	jQuery( window ).on( "load", function() {
@@ -1269,7 +1269,7 @@ QUnit.test( ".trigger() doesn't bubble load event (#10717)", function( assert ) 
 	jQuery( window ).off( "load" );
 } );
 
-QUnit.test( "Delegated events in SVG (#10791; #13180)", function( assert ) {
+QUnit.test( "Delegated events in SVG (trac-10791; trac-13180)", function( assert ) {
 	assert.expect( 2 );
 
 	var useElem, e,
@@ -1295,7 +1295,7 @@ QUnit.test( "Delegated events in SVG (#10791; #13180)", function( assert ) {
 		.end();
 
 	// Fire a native click on an SVGElementInstance (the instance tree of an SVG <use>)
-	// to confirm that it doesn't break our event delegation handling (#13180)
+	// to confirm that it doesn't break our event delegation handling (trac-13180)
 	useElem = svg.find( "#use" )[ 0 ];
 	if ( document.createEvent && useElem && useElem.instanceRoot ) {
 		e = document.createEvent( "MouseEvents" );
@@ -1321,7 +1321,7 @@ QUnit.test( "Delegated events with malformed selectors (gh-3071)", function( ass
 	assert.ok( true, "malformed selector does not throw on event" );
 } );
 
-QUnit.test( "Delegated events in forms (#10844; #11145; #8165; #11382, #11764)", function( assert ) {
+QUnit.test( "Delegated events in forms (trac-10844; trac-11145; trac-8165; trac-11382, trac-11764)", function( assert ) {
 	assert.expect( 5 );
 
 	// Alias names like "id" cause havoc
@@ -1376,7 +1376,7 @@ QUnit.test( "Delegated events in forms (#10844; #11145; #8165; #11382, #11764)",
 	form.remove();
 } );
 
-QUnit.test( "Submit event can be stopped (#11049)", function( assert ) {
+QUnit.test( "Submit event can be stopped (trac-11049)", function( assert ) {
 	assert.expect( 1 );
 
 	// Since we manually bubble in IE, make sure inner handlers get a chance to cancel
@@ -1450,7 +1450,7 @@ QUnit.test( "jQuery.Event( type, props )", function( assert ) {
 	assert.equal( event.type, "keydown", "Verify type" );
 
 	// ensure "type" in props won't clobber the one set by constructor
-	assert.equal( jQuery.inArray( "type", jQuery.event.props ), -1, "'type' property not in props (#10375)" );
+	assert.equal( jQuery.inArray( "type", jQuery.event.props ), -1, "'type' property not in props (trac-10375)" );
 
 	assert.ok( "keyCode" in event, "Special 'keyCode' property exists" );
 
@@ -1844,7 +1844,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "delegated event with delegateTa
 	assert.expect( 3 );
 	var markup = jQuery( "<div><ul><li><a id=\"a0\"></a><ul id=\"ul0\"><li class=test><a id=\"a0_0\"></a></li><li><a id=\"a0_1\"></a></li></ul></li></ul></div>" ).appendTo( "#qunit-fixture" );
 
-	// Non-positional selector (#12383)
+	// Non-positional selector (trac-12383)
 	markup.find( "#ul0" )
 		.on( "click", "div li a", function() {
 			assert.ok( false, "div is ABOVE the delegation point!" );
@@ -1858,7 +1858,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "delegated event with delegateTa
 		.find( "#a0_0" ).trigger( "click" ).end()
 		.off( "click" );
 
-	// Positional selector (#11315)
+	// Positional selector (trac-11315)
 	markup.find( "ul" ).eq( 0 )
 		.on( "click", ">li>a", function() {
 			assert.ok( this.id === "a0", "child li was clicked" );
@@ -1874,7 +1874,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "delegated event with delegateTa
 	markup.remove();
 } );
 
-QUnit.test( "delegated event with selector matching Object.prototype property (#13203)", function( assert ) {
+QUnit.test( "delegated event with selector matching Object.prototype property (trac-13203)", function( assert ) {
 	assert.expect( 1 );
 
 	var matched = 0;
@@ -1888,7 +1888,7 @@ QUnit.test( "delegated event with selector matching Object.prototype property (#
 	assert.equal( matched, 0, "Nothing matched 'toString'" );
 } );
 
-QUnit.test( "delegated event with intermediate DOM manipulation (#13208)", function( assert ) {
+QUnit.test( "delegated event with intermediate DOM manipulation (trac-13208)", function( assert ) {
 	assert.expect( 1 );
 
 	jQuery( "#foo" ).on( "click", "[id=sap]", function() {} );
@@ -2182,7 +2182,7 @@ QUnit.test( "focusin bubbles", function( assert ) {
 	jQuery( "body" ).off( "focusin.focusinBubblesTest" );
 } );
 
-QUnit.test( "custom events with colons (#3533, #8272)", function( assert ) {
+QUnit.test( "custom events with colons (trac-3533, trac-8272)", function( assert ) {
 	assert.expect( 1 );
 
 	var tab = jQuery( "<table><tr><td>trigger</td></tr></table>" ).appendTo( "body" );
@@ -2365,7 +2365,7 @@ QUnit.test( "special on name mapping", function( assert ) {
 	delete jQuery.event.special[ "gutfeeling" ];
 } );
 
-QUnit.test( ".on and .off, selective mixed removal (#10705)", function( assert ) {
+QUnit.test( ".on and .off, selective mixed removal (trac-10705)", function( assert ) {
 	assert.expect( 7 );
 
 	var timingx = function( e ) {
@@ -2387,7 +2387,7 @@ QUnit.test( ".on and .off, selective mixed removal (#10705)", function( assert )
 		.trigger( "click" );	// 0
 } );
 
-QUnit.test( ".on( event-map, null-selector, data ) #11130", function( assert ) {
+QUnit.test( ".on( event-map, null-selector, data ) trac-11130", function( assert ) {
 
 	assert.expect( 1 );
 
@@ -2403,7 +2403,7 @@ QUnit.test( ".on( event-map, null-selector, data ) #11130", function( assert ) {
 	$p.on( map, null, data ).trigger( "foo" );
 } );
 
-QUnit.test( "clone() delegated events (#11076)", function( assert ) {
+QUnit.test( "clone() delegated events (trac-11076)", function( assert ) {
 	assert.expect( 3 );
 
 	var counter = { "center": 0, "fold": 0, "centerfold": 0 },
@@ -2740,7 +2740,7 @@ QUnit.test( "trigger click on checkbox, fires change event", function( assert ) 
 	} ).trigger( "click" );
 } );
 
-QUnit.test( "Namespace preserved when passed an Event (#12739)", function( assert ) {
+QUnit.test( "Namespace preserved when passed an Event (trac-12739)", function( assert ) {
 	assert.expect( 4 );
 
 	var markup = jQuery(
@@ -2828,7 +2828,7 @@ QUnit.test( "make sure events cloned correctly", function( assert ) {
 	clone.find( "#check1" ).trigger( "change" ); // 0 events should fire
 } );
 
-QUnit.test( "String.prototype.namespace does not cause trigger() to throw (#13360)", function( assert ) {
+QUnit.test( "String.prototype.namespace does not cause trigger() to throw (trac-13360)", function( assert ) {
 	assert.expect( 1 );
 	var errored = false;
 
@@ -2843,7 +2843,7 @@ QUnit.test( "String.prototype.namespace does not cause trigger() to throw (#1336
 	delete String.prototype.namespace;
 } );
 
-QUnit.test( "Inline event result is returned (#13993)", function( assert ) {
+QUnit.test( "Inline event result is returned (trac-13993)", function( assert ) {
 	assert.expect( 1 );
 
 	var result = jQuery( "<p onclick='return 42'>hello</p>" ).triggerHandler( "click" );
@@ -3109,7 +3109,7 @@ QUnit.test( "Check order of focusin/focusout events", function( assert ) {
 	}
 } );
 
-QUnit.test( "focus-blur order (#12868)", function( assert ) {
+QUnit.test( "focus-blur order (trac-12868)", function( assert ) {
 	assert.expect( 5 );
 
 	var order,

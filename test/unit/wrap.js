@@ -47,11 +47,11 @@ function testWrap( val, assert ) {
 		var checkbox = this;
 
 		assert.ok(
-		checkbox.checked, "Checkbox's state is erased after wrap() action, see #769"
+		checkbox.checked, "Checkbox's state is erased after wrap() action, see trac-769"
 	);
 		jQuery( checkbox ).wrap( val( "<div id='c1' style='display:none;'></div>" ) );
 		assert.ok(
-		checkbox.checked, "Checkbox's state is erased after wrap() action, see #769"
+		checkbox.checked, "Checkbox's state is erased after wrap() action, see trac-769"
 	);
 	} ).prop( "checked", false )[ 0 ].click();
 
@@ -131,7 +131,7 @@ QUnit.test( "wrap(Function)", function( assert ) {
 	testWrap( manipulationFunctionReturningObj, assert );
 } );
 
-QUnit.test( "wrap(Function) with index (#10177)", function( assert ) {
+QUnit.test( "wrap(Function) with index (trac-10177)", function( assert ) {
 	var expectedIndex = 0,
 		targets = jQuery( "#qunit-fixture p" );
 
@@ -147,7 +147,7 @@ QUnit.test( "wrap(Function) with index (#10177)", function( assert ) {
 	} );
 } );
 
-QUnit.test( "wrap(String) consecutive elements (#10177)", function( assert ) {
+QUnit.test( "wrap(String) consecutive elements (trac-10177)", function( assert ) {
 	var targets = jQuery( "#qunit-fixture p" );
 
 	assert.expect( targets.length * 2 );
@@ -484,7 +484,7 @@ QUnit.test( "unwrap( selector )", function( assert ) {
 	jQuery( "body > span.unwrap" ).remove();
 } );
 
-QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", function( assert ) {
+QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (trac-10667)", function( assert ) {
 
 	assert.expect( 2 );
 
@@ -503,7 +503,7 @@ QUnit.test( "jQuery(<tag>) & wrap[Inner/All]() handle unknown elems (#10667)", f
 	);
 } );
 
-QUnit.test( "wrapping scripts (#10470)", function( assert ) {
+QUnit.test( "wrapping scripts (trac-10470)", function( assert ) {
 
 	assert.expect( 2 );
 
