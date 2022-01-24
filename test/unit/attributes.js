@@ -1631,6 +1631,44 @@ QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-H
 	testMatches();
 } );
 
+( function() {
+	var rnothtmlwhite = /[^\x20\t\r\n\f]+/g;
+
+	function expectClasses( assert, elem, classes ) {
+		var actualClassesSorted = ( elem.attr( "class" ).match( rnothtmlwhite ) || [] )
+			.sort().join( " " );
+		var classesSorted = classes.slice()
+			.sort().join( " " );
+		assert.equal( actualClassesSorted, classesSorted, "Expected classes present" );
+	}
+
+	QUnit.test( "addClass on arrays with falsy elements (gh-4998)", function( assert ) {
+		assert.expect( 3 );
+
+		var elem = jQuery( "<div class='a'></div>" );
+
+		elem.addClass( [ "b", "", "c" ] );
+		expectClasses( assert, elem, [ "a", "b", "c" ] );
+		elem.addClass( [ "", "d" ] );
+		expectClasses( assert, elem, [ "a", "b", "c", "d" ] );
+		elem.addClass( [ "e", "" ] );
+		expectClasses( assert, elem, [ "a", "b", "c", "d", "e" ] );
+	} );
+
+	QUnit.test( "removeClass on arrays with falsy elements (gh-4998)", function( assert ) {
+		assert.expect( 3 );
+
+		var elem = jQuery( "<div class='a b c d e'></div>" );
+
+		elem.removeClass( [ "e", "" ] );
+		expectClasses( assert, elem, [ "a", "b", "c", "d" ] );
+		elem.removeClass( [ "", "d" ] );
+		expectClasses( assert, elem, [ "a", "b", "c" ] );
+		elem.removeClass( [ "b", "", "c" ] );
+		expectClasses( assert, elem, [ "a" ] );
+	} );
+} )();
+
 QUnit.test( "contents().hasClass() returns correct values", function( assert ) {
 	assert.expect( 2 );
 
