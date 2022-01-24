@@ -1895,9 +1895,7 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		}
 	}
 	Arrayish.prototype = {
-		slice: [].slice,
-		sort: [].sort,
-		splice: [].splice
+		sliceForTestOnly: [].slice
 	};
 
 	var i, tests,
@@ -1959,8 +1957,12 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		assert.deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		// We duplicate `test.input` because otherwise it is modified by `uniqueSort`
+		// and the second test becomes worthless.
+		assert.deepEqual( jQuery.uniqueSort( test.input.slice( 0 ) ).slice( 0, length ),
+			test.expected, label + " (array)" );
+		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).sliceForTestOnly( 0, length ),
+			test.expected, label + " (quasi-array)" );
 	} );
 } );
 
