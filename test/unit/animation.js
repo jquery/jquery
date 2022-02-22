@@ -5,7 +5,7 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var fxInterval = 10,
+var fxInterval = 13,
 	oldRaf = window.requestAnimationFrame,
 	defaultPrefilter = jQuery.Animation.prefilters[ 0 ],
 	defaultTweener = jQuery.Animation.tweeners[ "*" ][ 0 ],
@@ -16,17 +16,14 @@ QUnit.module( "animation", {
 	beforeEach: function() {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( startTime );
-		this._oldInterval = jQuery.fx.interval;
 		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
-		jQuery.fx.interval = fxInterval;
 		jQuery.Animation.prefilters = [ defaultPrefilter ];
 		jQuery.Animation.tweeners = { "*": [ defaultTweener ] };
 	},
 	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
-		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}

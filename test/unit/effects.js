@@ -5,7 +5,7 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var fxInterval = 10,
+var fxInterval = 13,
 	oldRaf = window.requestAnimationFrame,
 	hideOptions = {
 		inline: function() { jQuery.style( this, "display", "none" ); },
@@ -16,15 +16,12 @@ QUnit.module( "effects", {
 	beforeEach: function() {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
-		this._oldInterval = jQuery.fx.interval;
 		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
-		jQuery.fx.interval = fxInterval;
 	},
 	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
-		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}

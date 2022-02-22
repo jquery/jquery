@@ -27,7 +27,7 @@ function schedule() {
 		if ( document.hidden === false && window.requestAnimationFrame ) {
 			window.requestAnimationFrame( schedule );
 		} else {
-			window.setTimeout( schedule, jQuery.fx.interval );
+			window.setTimeout( schedule, 13 );
 		}
 
 		jQuery.fx.tick();
@@ -663,7 +663,6 @@ jQuery.fx.timer = function( timer ) {
 	jQuery.fx.start();
 };
 
-jQuery.fx.interval = 13;
 jQuery.fx.start = function() {
 	if ( inProgress ) {
 		return;
