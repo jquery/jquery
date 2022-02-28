@@ -1454,7 +1454,13 @@ QUnit[
 	column = columnMatch && columnMatch[ 1 ];
 
 	assert.strictEqual( line, "1", "reports error line" );
-	assert.strictEqual( column, "11", "reports error column" );
+
+	// Support: Firefox 96-97+
+	// Newer Firefox may report the column number smaller by 2 than it should.
+	// Accept both values until the issue is fixed.
+	// See https://bugzilla.mozilla.org/show_bug.cgi?id=1751796
+	assert.ok( [ "9", "11" ].indexOf( column ) > -1, "reports error column" );
+	// assert.strictEqual( column, "11", "reports error column" );
 } );
 
 testIframe(
