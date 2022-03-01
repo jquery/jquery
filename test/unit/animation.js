@@ -5,7 +5,8 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame,
+var fxInterval = 13,
+	oldRaf = window.requestAnimationFrame,
 	defaultPrefilter = jQuery.Animation.prefilters[ 0 ],
 	defaultTweener = jQuery.Animation.tweeners[ "*" ][ 0 ],
 	startTime = 505877050;
@@ -15,17 +16,14 @@ QUnit.module( "animation", {
 	beforeEach: function() {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( startTime );
-		this._oldInterval = jQuery.fx.interval;
 		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
-		jQuery.fx.interval = 10;
 		jQuery.Animation.prefilters = [ defaultPrefilter ];
 		jQuery.Animation.tweeners = { "*": [ defaultTweener ] };
 	},
 	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
-		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
@@ -36,7 +34,7 @@ QUnit.test( "Animation( subject, props, opts ) - shape", function( assert ) {
 
 	var subject = { test: 0 },
 		props = { test: 1 },
-		opts = { queue: "fx", duration: 100 },
+		opts = { queue: "fx", duration: fxInterval * 10 },
 		animation = jQuery.Animation( subject, props, opts );
 
 	assert.equal(
@@ -59,14 +57,14 @@ QUnit.test( "Animation( subject, props, opts ) - shape", function( assert ) {
 	assert.deepEqual( animation.props, props, ".props is a copy of the original" );
 
 	assert.deepEqual( animation.opts, {
-		duration: 100,
+		duration: fxInterval * 10,
 		queue: "fx",
 		specialEasing: { test: undefined },
 		easing: jQuery.easing._default
 	}, ".options is filled with default easing and specialEasing" );
 
 	assert.equal( animation.startTime, startTime, "startTime was set" );
-	assert.equal( animation.duration, 100, ".duration is set" );
+	assert.equal( animation.duration, fxInterval * 10, ".duration is set" );
 
 	assert.equal( animation.tweens.length, 1, ".tweens has one Tween" );
 	assert.equal( typeof animation.tweens[ 0 ].run, "function", "which has a .run function" );
@@ -85,7 +83,7 @@ QUnit.test( "Animation( subject, props, opts ) - shape", function( assert ) {
 	assert.equal( jQuery.timers[ 0 ].queue, opts.queue, "...with .queue" );
 
 	// Cleanup after ourselves by ticking to the end
-	this.clock.tick( 100 );
+	this.clock.tick( fxInterval * 10 );
 } );
 
 QUnit.test( "Animation.prefilter( fn ) - calls prefilter after defaultPrefilter",

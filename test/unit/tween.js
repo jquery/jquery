@@ -11,15 +11,12 @@ QUnit.module( "tween", {
 	beforeEach: function() {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
-		this._oldInterval = jQuery.fx.interval;
 		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
-		jQuery.fx.interval = 10;
 	},
 	afterEach: function() {
 		this.sandbox.restore();
 		jQuery.fx.stop();
-		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
