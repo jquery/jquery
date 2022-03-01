@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr" id="html">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Effects: matching timestamps</title>
+</head>
+<body>
+	<script src="../../jquery.js"></script>
+	<script src="../iframeTest.js"></script>
+	<div id="test-div" style="height: 1000px;"></div>
+	<script>
+		//<![CDATA[
+		setTimeout( function () {
+
+			// Handle a timeout.
+		    startIframeTest( false, "The test timed out" );
+		}, 5000 );
+
+		var maxNow = 0;
+
+		jQuery( "#test-div" ).animate( {
+			height: '2000px',
+		}, {
+			duration: 300,
+			step: function( now ) {
+				if ( maxNow - now > 100 ) {
+					startIframeTest( false, "Animation is stepping back from " + maxNow + " to " + now );
+				}
+				maxNow = Math.max( now, maxNow );
+			},
+			complete: function() {
+				startIframeTest( true );
+			}
+		} );
+		//]]>
+	</script>
+</body>
+</html>

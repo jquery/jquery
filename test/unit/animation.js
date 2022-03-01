@@ -5,10 +5,9 @@ if ( !jQuery.fx ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame,
-	defaultPrefilter = jQuery.Animation.prefilters[ 0 ],
-	defaultTweener = jQuery.Animation.tweeners[ "*" ][ 0 ],
-	startTime = 505877050;
+var defaultPrefilter = jQuery.Animation.prefilters[ 0 ];
+var defaultTweener = jQuery.Animation.tweeners[ "*" ][ 0 ];
+var startTime = 505877050;
 
 // This module tests jQuery.Animation and the corresponding 1.8+ effects APIs
 QUnit.module( "animation", {
@@ -26,7 +25,6 @@ QUnit.module( "animation", {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
-		window.requestAnimationFrame = oldRaf;
 		return moduleTeardown.apply( this, arguments );
 	}
 } );
