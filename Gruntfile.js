@@ -12,8 +12,17 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
+	// Support: Node.js <12
+	// Skip running tasks that dropped support for Node.js 10
+	// in this Node version.
+	function runIfNewNode( task ) {
+		return oldNode ? "print_old_node_message:" + task : task;
+	}
+
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
+		oldNode = /^v10\./.test( process.version ),
+		nodeV17OrNewer = !/^v1[0246]\./.test( process.version ),
 		isCi = process.env.GITHUB_ACTION,
 		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
@@ -333,6 +342,15 @@ module.exports = function( grunt ) {
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
+	grunt.registerTask( "print_old_node_message", ( ...args ) => {
+		var task = args.join( ":" );
+		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
+	} );
+
+	grunt.registerTask( "print_jsdom_message", () => {
+		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
+	} );
+
 	grunt.registerTask( "lint", [
 		"jsonlint",
 
@@ -340,22 +358,26 @@ module.exports = function( grunt ) {
 		// would run the dist target first which would point to errors in the built
 		// file, making it harder to fix them. We want to check the built file only
 		// if we already know the source files pass the linter.
-		"eslint:dev",
-		"eslint:dist"
+		runIfNewNode( "eslint:dev" ),
+		runIfNewNode( "eslint:dist" )
 	] );
 
 	grunt.registerTask( "lint:newer", [
 		"newer:jsonlint",
 
 		// Don't replace it with just the task; see the above comment.
-		"newer:eslint:dev",
-		"newer:eslint:dist"
+		runIfNewNode( "newer:eslint:dev" ),
+		runIfNewNode( "newer:eslint:dist" )
 	] );
 
-	grunt.registerTask( "test:fast", "node_smoke_tests" );
+	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
 	grunt.registerTask( "test:slow", [
-		"promises_aplus_tests",
-		"karma:jsdom"
+		runIfNewNode( "promises_aplus_tests" ),
+
+		// Support: Node.js 17+
+		// jsdom fails to connect to the Karma server in Node 17+.
+		// Until we figure out a fix, skip jsdom tests there.
+		nodeV17OrNewer ? "print_jsdom_message" : runIfNewNode( "karma:jsdom" )
 	] );
 
 	grunt.registerTask( "test:prepare", [
@@ -371,7 +393,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "dev", [
 		"build:*:*",
-		"newer:eslint:dev",
+		runIfNewNode( "newer:eslint:dev" ),
 		"newer:uglify",
 		"remove_map_comment",
 		"dist:*",
@@ -380,13 +402,13 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "default", [
-		"eslint:dev",
+		runIfNewNode( "eslint:dev" ),
 		"build:*:*",
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
 		"test:prepare",
-		"eslint:dist",
+		runIfNewNode( "eslint:dist" ),
 		"test:fast",
 		"compare_size"
 	] );
