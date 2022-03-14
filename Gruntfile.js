@@ -391,8 +391,8 @@ module.exports = function( grunt ) {
 		runIfNewNode( "promises_aplus_tests" ),
 
 		// Support: Node.js 17+
-		// jsdom fails to connect in Node 17. Until we figure out a fix, skip
-		// jsdom tests there.
+		// jsdom fails to connect to the Karma server in Node 17+.
+		// Until we figure out a fix, skip jsdom tests there.
 		nodeV17OrNewer ? "print_jsdom_message" : runIfNewNode( "karma:jsdom" )
 	] );
 
