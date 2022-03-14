@@ -22,6 +22,7 @@ module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		gzip = require( "gzip-js" ),
 		oldNode = /^v10\./.test( process.version ),
+		nodeV17OrNewer = !/^v1[0246]\./.test( process.version ),
 		isCi = process.env.GITHUB_ACTION,
 		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
@@ -362,6 +363,10 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
 	} );
 
+	grunt.registerTask( "print_jsdom_message", () => {
+		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
+	} );
+
 	grunt.registerTask( "lint", [
 		"jsonlint",
 
@@ -381,10 +386,14 @@ module.exports = function( grunt ) {
 		runIfNewNode( "newer:eslint:dist" )
 	] );
 
-	grunt.registerTask( "test:fast", "node_smoke_tests" );
+	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
 	grunt.registerTask( "test:slow", [
-		"promises_aplus_tests",
-		"karma:jsdom"
+		runIfNewNode( "promises_aplus_tests" ),
+
+		// Support: Node.js 17+
+		// jsdom fails to connect to the Karma server in Node 17+.
+		// Until we figure out a fix, skip jsdom tests there.
+		nodeV17OrNewer ? "print_jsdom_message" : runIfNewNode( "karma:jsdom" )
 	] );
 
 	grunt.registerTask( "test:prepare", [
