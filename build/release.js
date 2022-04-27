@@ -32,7 +32,7 @@ module.exports = function( Release ) {
 		issueTracker: "github",
 
 		/**
-		 * Set the version in the src folder for distributing ES modules
+		 * Set the new version in the src folder for distributing ES modules
 		 * and in the amd folder for AMD.
 		 */
 		_setSrcVersion: function() {
