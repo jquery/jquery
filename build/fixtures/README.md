@@ -29,7 +29,7 @@ import $ from "jquery";
 
 #### Browserify/Webpack
 
-There are several ways to use [Browserify](http://browserify.org/) and [Webpack](https://webpack.github.io/). For more information on using these tools, please refer to the corresponding project's documentation. In the script, including jQuery will usually look like this...
+There are several ways to use [Browserify](http://browserify.org/) and [Webpack](https://webpack.js.org/). For more information on using these tools, please refer to the corresponding project's documentation. In the script, including jQuery will usually look like this...
 
 ```js
 var $ = require( "jquery" );
