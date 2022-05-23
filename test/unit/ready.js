@@ -105,7 +105,7 @@ QUnit.module( "ready" );
 		} );
 	} );
 
-	QUnit[ jQuery.when ? "test" : "skip" ]( "jQuery.when(jQuery.ready)", function( assert ) {
+	QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.when(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
 		var done = assert.async( 2 );
 
@@ -150,7 +150,7 @@ QUnit.module( "ready" );
 	} );
 
 	// jQuery.holdReady is deprecated, skip the test if it was excluded.
-	if ( jQuery.holdReady ) {
+	if ( includesModule( "deprecated" ) ) {
 		testIframe(
 			"holdReady test needs to be a standalone test since it deals with DOM ready",
 			"readywait.html",

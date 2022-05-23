@@ -17,7 +17,7 @@ function getComputedSupport( support ) {
 	return result;
 }
 
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 	testIframe(
 		"body background is not lost if set prior to loading jQuery (trac-9239)",
 		"support/bodyBackground.html",

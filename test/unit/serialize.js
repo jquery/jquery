@@ -77,7 +77,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 	assert.equal( jQuery.param( params ), "", "jQuery.param( undefined ) === empty string" );
 } );
 
-QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {
+QUnit[ includesModule( "ajax" ) ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {
 	assert.expect( 1 );
 
 	var oldTraditional = jQuery.ajaxSettings.traditional;

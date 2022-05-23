@@ -36,23 +36,23 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	// The $(html, props) signature can stealth-call any $.fn method, check for a
 	// few here but beware of modular builds where these methods may be excluded.
-	if ( jQuery.fn.click ) {
+	if ( includesModule( "deprecated" ) ) {
 		expected++;
 		attrObj[ "click" ] = function() { assert.ok( exec, "Click executed." ); };
 	}
-	if ( jQuery.fn.width ) {
+	if ( includesModule( "dimensions" ) ) {
 		expected++;
 		attrObj[ "width" ] = 10;
 	}
-	if ( jQuery.fn.offset ) {
+	if ( includesModule( "offset" ) ) {
 		expected++;
 		attrObj[ "offset" ] = { "top": 1, "left": 1 };
 	}
-	if ( jQuery.fn.css ) {
+	if ( includesModule( "css" ) ) {
 		expected += 2;
 		attrObj[ "css" ] = { "paddingLeft": 1, "paddingRight": 1 };
 	}
-	if ( jQuery.fn.attr ) {
+	if ( includesModule( "attributes" ) ) {
 		expected++;
 		attrObj.attr = { "desired": "very" };
 	}
@@ -115,20 +115,20 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	elem = jQuery( "<div></div>", attrObj );
 
-	if ( jQuery.fn.width ) {
+	if ( includesModule( "dimensions" ) ) {
 		assert.equal( elem[ 0 ].style.width, "10px", "jQuery() quick setter width" );
 	}
 
-	if ( jQuery.fn.offset ) {
+	if ( includesModule( "offset" ) ) {
 		assert.equal( elem[ 0 ].style.top, "1px", "jQuery() quick setter offset" );
 	}
 
-	if ( jQuery.fn.css ) {
+	if ( includesModule( "css" ) ) {
 		assert.equal( elem[ 0 ].style.paddingLeft, "1px", "jQuery quick setter css" );
 		assert.equal( elem[ 0 ].style.paddingRight, "1px", "jQuery quick setter css" );
 	}
 
-	if ( jQuery.fn.attr ) {
+	if ( includesModule( "attributes" ) ) {
 		assert.equal( elem[ 0 ].getAttribute( "desired" ), "very", "jQuery quick setter attr" );
 	}
 
@@ -1522,7 +1522,7 @@ testIframe(
 	}
 );
 
-QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
+QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
 	assert.expect( 1 );
 
 	var message;
@@ -1545,7 +1545,7 @@ QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (original)", 
 	);
 } );
 
-QUnit[ jQuery.Deferred ? "test" : "skip" ]( "jQuery.readyException (custom)", function( assert ) {
+QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.readyException (custom)", function( assert ) {
 	assert.expect( 1 );
 
 	var done = assert.async();

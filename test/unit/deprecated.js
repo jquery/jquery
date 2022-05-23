@@ -1,7 +1,8 @@
 QUnit.module( "deprecated", { afterEach: moduleTeardown } );
 
+if ( includesModule( "deprecated" ) ) {
 
-QUnit[ jQuery.fn.bind ? "test" : "skip" ]( "bind/unbind", function( assert ) {
+QUnit.test( "bind/unbind", function( assert ) {
 	assert.expect( 4 );
 
 	var markup = jQuery(
@@ -22,7 +23,7 @@ QUnit[ jQuery.fn.bind ? "test" : "skip" ]( "bind/unbind", function( assert ) {
 		.remove();
 } );
 
-QUnit[ jQuery.fn.delegate ? "test" : "skip" ]( "delegate/undelegate", function( assert ) {
+QUnit.test( "delegate/undelegate", function( assert ) {
 	assert.expect( 2 );
 
 	var markup = jQuery(
@@ -41,7 +42,7 @@ QUnit[ jQuery.fn.delegate ? "test" : "skip" ]( "delegate/undelegate", function( 
 		.remove();
 } );
 
-QUnit[ jQuery.fn.hover ? "test" : "skip" ]( "hover() mouseenter mouseleave", function( assert ) {
+QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
 	assert.expect( 1 );
 
 	var times = 0,
@@ -61,7 +62,7 @@ QUnit[ jQuery.fn.hover ? "test" : "skip" ]( "hover() mouseenter mouseleave", fun
 	assert.equal( times, 4, "hover handlers fired" );
 } );
 
-QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( assert ) {
+QUnit.test( "trigger() shortcuts", function( assert ) {
 	assert.expect( 5 );
 
 	var counter, clickCounter,
@@ -95,7 +96,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "trigger() shortcuts", function( ass
 	assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 } );
 
-if ( jQuery.ajax && jQuery.fn.ajaxSend ) {
+if ( includesModule( "ajax" ) ) {
 	ajaxTest( "jQuery.ajax() - events with context", 12, function( assert ) {
 		var context = document.createElement( "div" );
 
@@ -112,10 +113,10 @@ if ( jQuery.ajax && jQuery.fn.ajaxSend ) {
 		return {
 			setup: function() {
 				jQuery( context ).appendTo( "#foo" )
-					.ajaxSend( event )
-					.ajaxComplete( event )
-					.ajaxError( event )
-					.ajaxSuccess( event );
+					.on( "ajaxSend", event )
+					.on( "ajaxComplete", event )
+					.on( "ajaxError", event )
+					.on( "ajaxSuccess", event );
 			},
 			requests: [ {
 				url: url( "name.html" ),
@@ -134,7 +135,7 @@ if ( jQuery.ajax && jQuery.fn.ajaxSend ) {
 	} );
 }
 
-QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) {
+QUnit.test( "Event aliases", function( assert ) {
 
 	// Explicitly skipping focus/blur events due to their flakiness
 	var	$elem = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" ),
@@ -152,7 +153,7 @@ QUnit[ jQuery.fn.click ? "test" : "skip" ]( "Event aliases", function( assert ) 
 	} );
 } );
 
-QUnit[ jQuery.proxy ? "test" : "skip" ]( "jQuery.proxy", function( assert ) {
+QUnit.test( "jQuery.proxy", function( assert ) {
 	assert.expect( 9 );
 
 	var test2, test3, test4, fn, cb,
@@ -199,3 +200,5 @@ QUnit[ jQuery.proxy ? "test" : "skip" ]( "jQuery.proxy", function( assert ) {
 	cb = jQuery.proxy( fn, null, "arg1", "arg2" );
 	cb.call( thisObject, "arg3" );
 } );
+
+}

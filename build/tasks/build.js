@@ -10,6 +10,7 @@ module.exports = function( grunt ) {
 	const fs = require( "fs" );
 	const path = require( "path" );
 	const rollup = require( "rollup" );
+	const slimBuildFlags = require( "./lib/slim-build-flags" );
 	const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
 	const Insight = require( "insight" );
 	const pkg = require( "../../package.json" );
@@ -60,7 +61,6 @@ module.exports = function( grunt ) {
 		const done = this.async();
 
 		try {
-			const slimFlags = [ "-ajax", "-callbacks", "-deferred", "-effects", "-queue" ];
 			const flags = this.flags;
 			const optIn = flags[ "*" ];
 			let name = grunt.option( "filename" );
@@ -79,7 +79,7 @@ module.exports = function( grunt ) {
 
 			if ( flags.slim ) {
 				delete flags.slim;
-				for ( const flag of slimFlags ) {
+				for ( const flag of slimBuildFlags ) {
 					flags[ flag ] = true;
 				}
 			}
