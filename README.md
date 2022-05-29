@@ -8,7 +8,7 @@
 Contribution Guides
 --------------------------------------
 
-In the spirit of open source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
+In the spirit of open-source software development, jQuery always encourages community code contribution. To help you get started and before you jump into writing code, be sure to read these important contribution guidelines thoroughly:
 
 1. [Getting Involved](https://contribute.jquery.org/)
 2. [Core Style Guide](https://contribute.jquery.org/style-guide/js/)
@@ -18,7 +18,7 @@ In the spirit of open source software development, jQuery always encourages comm
 
 GitHub issues/PRs are usually referenced via `gh-NUMBER`, where `NUMBER` is the numerical ID of the issue/PR. You can find such an issue/PR under `https://github.com/jquery/jquery/issues/NUMBER`.
 
-jQuery has used a different bug tracker - based on Trac - in the past, available under [bugs.jquery.com](https://bugs.jquery.com/). It is being kept in read only mode so that referring to past discussions is possible. When jQuery source references one of those issues, it uses the pattern `trac-NUMBER`, where `NUMBER` is the numerical ID of the issue. You can find such an issue under `https://bugs.jquery.com/ticket/NUMBER`.
+jQuery has used a different bug tracker - based on Trac - in the past, available under [bugs.jquery.com](https://bugs.jquery.com/). It is being kept in read-only mode so that referring to past discussions is possible. When jQuery source references one of those issues, it uses the pattern `trac-NUMBER`, where `NUMBER` is the numerical ID of the issue. You can find such an issue under `https://bugs.jquery.com/ticket/NUMBER`.
 
 
 Environments in which to use jQuery
@@ -38,7 +38,7 @@ For Windows, you have to download and install [git](https://git-scm.com/download
 macOS users should install [Homebrew](https://brew.sh/). Once Homebrew is installed, run `brew install git` to install git,
 and `brew install node` to install Node.js.
 
-Linux/BSD users should use their appropriate package managers to install git and Node.js, or build from source
+Linux/BSD users should use their appropriate package managers to install git and Node.js or build from source
 if you swing that way. Easy-peasy.
 
 
@@ -53,7 +53,7 @@ cd jquery && npm run build
 ```
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
-If you want to create custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
+If you want to create a custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
 
 ```
 npm install -g grunt-cli
@@ -87,8 +87,8 @@ Some example modules that can be excluded are:
 - **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
-- **css**: The `.css()` method. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
-- **css/showHide**:  Non-animated `.show()`, `.hide()` and `.toggle()`; can be excluded if you use classes or explicit `.css()` calls to set the `display` property. Also removes the **effects** module.
+- **CSS**: The `.css()` method. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
+- **CSS/showHide**:  Non-animated `.show()`, `.hide()` and `.toggle()`; can be excluded if you use classes or explicit `.css()` calls to set the `display` property. Also removes the **effects** module.
 - **deprecated**: Methods documented as deprecated but not yet removed.
 - **dimensions**: The `.width()` and `.height()` methods, including `inner-` and `outer-` variations.
 - **effects**: The `.animate()` method and its shorthands such as `.slideUp()` or `.hide("slow")`.
@@ -139,7 +139,7 @@ Exclude all **ajax** functionality:
 grunt custom:-ajax
 ```
 
-Excluding **css** removes modules depending on CSS: **effects**, **offset**, **dimensions**.
+Excluding **CSS** removes modules depending on CSS: **effects**, **offset**, **dimensions**.
 
 ```bash
 grunt custom:-css
@@ -174,7 +174,7 @@ grunt watch
 ```
 
 
-Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
+Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured PHP local servers are available for Windows and Mac. Here are some options:
 
 - Windows: [WAMP download](http://www.wampserver.com/en/)
 - Mac: [MAMP download](https://www.mamp.info/en/downloads/)
@@ -228,7 +228,7 @@ git clean -fdx
 
 ### Rebasing ###
 
-For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a github pull request" branches, run the following to automate this:
+For feature/topic branches, you should always use the `--rebase` flag to `git pull`, or if you are usually handling many temporary "to be in a GitHub pull request" branches, run the following to automate this:
 
 ```bash
 git config branch.autosetuprebase local
@@ -242,9 +242,9 @@ If you're getting merge conflicts when merging, instead of editing the conflicte
 
 The following are some commands that can be used there:
 
-* `Ctrl + Alt + M` - automerge as much as possible
-* `b` - jump to next merge conflict
-* `s` - change the order of the conflicted lines
+* `Ctrl + Alt + M` - auto-merge as much as possible
+* `b` - jump to the next merge conflict
+* `s` - change the order of the conflicting lines
 * `u` - undo a merge
 * `left mouse button` - mark a block to be the winner
 * `middle mouse button` - mark a line to be the winner
@@ -323,7 +323,7 @@ Example:
 fireNative( jQuery("#elem")[0], "click" );
 ```
 
-### Add random number to url to stop caching ###
+### Add a random number to URL to stop caching ###
 
 ```js
 url( "some/url" );
@@ -359,11 +359,11 @@ testIframe( testName, fileName,
   } );
 ```
 
-This loads a page, constructing a url with fileName `"./data/" + fileName`.
+This loads a page, constructing a URL with fileName `"./data/" + fileName`.
 The iframed page determines when the callback occurs in the test by
 including the "/test/data/iframeTest.js" script and calling
 `startIframeTest( [ additional args ] )` when appropriate. Often this
-will be after either document ready or `window.onload` fires.
+will be after either the document is ready or `window.onload` fires.
 
 The `testCallback` receives the QUnit `assert` object created by `testIframe`
 for this test, followed by the global `jQuery`, `window`, and `document` from
