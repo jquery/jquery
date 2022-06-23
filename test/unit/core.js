@@ -1457,8 +1457,8 @@ QUnit.testUnlessIE( "jQuery.parseXML - error reporting", function( assert ) {
 
 	assert.strictEqual( line, "1", "reports error line" );
 
-	// Support: Firefox 96-97+
-	// Newer Firefox may report the column number smaller by 2 than it should.
+	// Support: Firefox 96-100
+	// Firefox may report the column number smaller by 2 than it should.
 	// Accept both values until the issue is fixed.
 	// See https://bugzilla.mozilla.org/show_bug.cgi?id=1751796
 	assert.ok( [ "9", "11" ].indexOf( column ) > -1, "reports error column" );
