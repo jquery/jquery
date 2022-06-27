@@ -37,7 +37,7 @@ jobs:
       uses: github/codeql-action/autobuild@v1
 
     # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+    # 📚 https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
 
     # ✏️ If the Autobuild fails above, remove it and uncomment the following three lines
     #    and modify them (or add more) to build your code if your project
