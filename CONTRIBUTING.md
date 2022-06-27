@@ -20,6 +20,8 @@ More information on how to contribute to this and other jQuery organization proj
 
 When opening a pull request, you'll be asked to sign our Contributor License Agreement. Both the Corporate and Individual agreements can be [previewed on GitHub](https://github.com/openjs-foundation/easycla).
 
+If you're looking for some good issues to start with, [here are some issues labeled "help wanted" or "patch welcome"](https://github.com/jquery/jquery/issues?q=is%3Aissue+label%3A%22help+wanted%22%2C%22Patch+Welcome%22).
+
 ## Questions and Discussion
 
 ### Forum and IRC
