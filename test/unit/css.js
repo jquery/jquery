@@ -1,4 +1,4 @@
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 
 QUnit.module( "css", { afterEach: moduleTeardown } );
 
@@ -965,7 +965,7 @@ QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
 	} );
 } );
 
-QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
 		x = jQuery( "#foo" );
@@ -998,7 +998,7 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()"
 	jQuery.fn.hide = oldHide;
 } );
 
-QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "detached toggle()", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "detached toggle()", function( assert ) {
 	assert.expect( 6 );
 	var detached = jQuery( "<p><a></a><p>" ).find( "*" ).addBack(),
 		hiddenDetached = jQuery( "<p><a></a></p>" ).find( "*" ).addBack().css( "display", "none" ),
@@ -1022,7 +1022,7 @@ QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle ? "test" : "skip" ]( "detached 
 		"cascade-hidden element in detached tree" );
 } );
 
-QUnit[ QUnit.jQuerySelectors && jQuery.fn.toggle && !QUnit.isIE ? "test" : "skip" ](
+QUnit[ QUnit.jQuerySelectors && !QUnit.isIE ? "test" : "skip" ](
 	"shadow toggle()", function( assert ) {
 
 	assert.expect( 4 );
@@ -1171,7 +1171,7 @@ QUnit.test( "can't get background-position in IE<9, see trac-10796", function( a
 	}
 } );
 
-if ( jQuery.fn.offset ) {
+if ( includesModule( "offset" ) ) {
 	QUnit.test( "percentage properties for left and top should be transformed to pixels, see trac-9505", function( assert ) {
 		assert.expect( 2 );
 		var parent = jQuery( "<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>" ).appendTo( "#qunit-fixture" ),

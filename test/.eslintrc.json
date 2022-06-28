@@ -21,6 +21,7 @@
 		"createDashboardXML": false,
 		"createWithFriesXML": false,
 		"createXMLFragment": false,
+		"includesModule": false,
 		"moduleTeardown": false,
 		"url": false,
 		"q": false,

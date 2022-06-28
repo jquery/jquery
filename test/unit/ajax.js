@@ -13,7 +13,7 @@ QUnit.module( "ajax", {
 		assert.ok( !isLocal, "Unit tests are not ran from file:// (especially in Chrome. If you must test from file:// with Chrome, run it with the --allow-file-access-from-files flag!)" );
 	} );
 
-	if ( !jQuery.ajax || ( isLocal && !hasPHP ) ) {
+	if ( !includesModule( "ajax" ) || ( isLocal && !hasPHP ) ) {
 		return;
 	}
 

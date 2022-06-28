@@ -1,6 +1,6 @@
 ( function() {
 
-if ( !jQuery.fn.width ) {
+if ( !includesModule( "dimensions" ) ) {
 	return;
 }
 

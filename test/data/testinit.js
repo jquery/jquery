@@ -17,7 +17,16 @@ var FILEPATH = "/test/data/testinit.js",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
-	externalHost = "example.com";
+	externalHost = "example.com",
+
+	// NOTE: keep it in sync with build/tasks/lib/slim-build-flags.js
+	slimBuildFlags = [
+		"-ajax",
+		"-callbacks",
+		"-deferred",
+		"-effects",
+		"-queue"
+	];
 
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
@@ -308,6 +317,58 @@ QUnit.jQuerySelectors = true;
 // testing integrations with newer Web features not supported by it.
 QUnit.isIE = !!window.document.documentMode;
 QUnit.testUnlessIE = QUnit.isIE ? QUnit.skip : QUnit.test;
+
+// Returns whether a particular module like "ajax" or "deprecated"
+// is included in the current jQuery build; it handles the slim build
+// as well. The util was created so that we don't treat presence of
+// particular APIs to decide whether to run a test as then if we
+// accidentally remove an API, the tests would still not fail.
+this.includesModule = function( moduleName ) {
+
+	var excludedModulesPart, excludedModules;
+
+	// A short-cut for the slim build, e.g. "4.0.0-pre slim"
+	if ( jQuery.fn.jquery.indexOf( " slim" ) > -1 ) {
+
+		// The module is included if it does NOT exist on the list
+		// of modules excluded in the slim build
+		return slimBuildFlags.indexOf( "-" + moduleName ) === -1;
+	}
+
+	// example version for `grunt custom:-deprecated`:
+	// "4.0.0-pre -deprecated,-deprecated/ajax-event-alias,-deprecated/event"
+	excludedModulesPart = jQuery.fn.jquery
+
+		// Take the flags out of the version string.
+		// Example: "-deprecated,-deprecated/ajax-event-alias,-deprecated/event"
+		.split( " " )[ 1 ];
+
+	if ( !excludedModulesPart ) {
+
+		// No build part => the full build where everything is included.
+		return true;
+	}
+
+	excludedModules = excludedModulesPart
+
+		// Turn to an array.
+		// Example: [ "-deprecated", "-deprecated/ajax-event-alias", "-deprecated/event" ]
+		.split( "," )
+
+		// Remove the leading "-".
+		// Example: [ "deprecated", "deprecated/ajax-event-alias", "deprecated/event" ]
+		.map( function( moduleName ) {
+			return moduleName.slice( 1 );
+		} )
+
+		// Filter out deep names - ones that contain a slash.
+		// Example: [ "deprecated" ]
+		.filter( function( moduleName ) {
+			return moduleName.indexOf( "/" ) === -1;
+		} );
+
+	return excludedModules.indexOf( moduleName ) === -1;
+};
 
 this.loadTests = function() {
 
