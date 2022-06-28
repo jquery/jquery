@@ -19,6 +19,7 @@
 		"testIframe": false,
 		"createDashboardXML": false,
 		"createXMLFragment": false,
+		"includesModule": false,
 		"moduleTeardown": false,
 		"url": false,
 		"q": false,

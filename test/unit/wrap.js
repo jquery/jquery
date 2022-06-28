@@ -1,6 +1,6 @@
 ( function() {
 
-if ( !jQuery.fn.wrap ) { // no wrap module
+if ( !includesModule( "wrap" ) ) {
 	return;
 }
 

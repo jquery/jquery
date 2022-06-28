@@ -9,6 +9,7 @@
 module.exports = function( grunt ) {
 	var fs = require( "fs" ),
 		requirejs = require( "requirejs" ),
+		slimBuildFlags = require( "./lib/slim-build-flags" ),
 		Insight = require( "insight" ),
 		pkg = require( "../../package.json" ),
 		srcFolder = __dirname + "/../../src/",
@@ -348,7 +349,7 @@ module.exports = function( grunt ) {
 					// the official slim build
 					.reduce( ( acc, elem ) => acc.concat(
 						elem === "slim" ?
-							[ "-ajax", "-effects" ] :
+							slimBuildFlags :
 							[ elem ]
 					), [] )
 

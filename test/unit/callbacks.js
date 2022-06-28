@@ -4,7 +4,7 @@ QUnit.module( "callbacks", {
 
 ( function() {
 
-if ( !jQuery.Callbacks ) {
+if ( !includesModule( "callbacks" ) ) {
 	return;
 }
 

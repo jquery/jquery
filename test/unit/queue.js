@@ -2,7 +2,7 @@ QUnit.module( "queue", { afterEach: moduleTeardown } );
 
 ( function() {
 
-if ( !jQuery.fn.queue ) {
+if ( !includesModule( "queue" ) ) {
 	return;
 }
 
@@ -241,7 +241,7 @@ QUnit.test( "fn.promise( \"queue\" ) - called whenever last queue function is de
 	foo.dequeue( "queue" );
 } );
 
-if ( jQuery.fn.animate ) {
+if ( includesModule( "effects" ) ) {
 
 QUnit.test( "fn.promise( \"queue\" ) - waits for animation to complete before resolving", function( assert ) {
 	assert.expect( 2 );
@@ -277,7 +277,7 @@ QUnit.test( ".promise(obj)", function( assert ) {
 	assert.strictEqual( promise, obj, ".promise(type, obj) returns obj" );
 } );
 
-QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "delay() can be stopped", function( assert ) {
+QUnit[ includesModule( "effects" ) ? "test" : "skip" ]( "delay() can be stopped", function( assert ) {
 	var done = assert.async();
 	assert.expect( 3 );
 	var storage = {};
@@ -314,7 +314,7 @@ QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "delay() can be stopped", function( a
 	}, 1500 );
 } );
 
-QUnit[ jQuery.fn.stop ? "test" : "skip" ]( "queue stop hooks", function( assert ) {
+QUnit[ includesModule( "effects" ) ? "test" : "skip" ]( "queue stop hooks", function( assert ) {
 	assert.expect( 2 );
 	var done = assert.async();
 	var foo = jQuery( "#foo" );

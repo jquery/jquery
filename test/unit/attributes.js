@@ -944,7 +944,7 @@ QUnit.test( "val()", function( assert ) {
 		"Select-one with only option disabled (trac-12584)"
 	);
 
-	if ( jQuery.fn.serialize ) {
+	if ( includesModule( "serialize" ) ) {
 		checks = jQuery( "<input type='checkbox' name='test' value='1'/><input type='checkbox' name='test' value='2'/><input type='checkbox' name='test' value=''/><input type='checkbox' name='test'/>" ).appendTo( "#form" );
 
 		assert.deepEqual( checks.serialize(), "", "Get unchecked values." );

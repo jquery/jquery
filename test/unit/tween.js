@@ -1,7 +1,7 @@
 ( function() {
 
 // Can't test what ain't there
-if ( !jQuery.fx ) {
+if ( !includesModule( "effects" ) ) {
 	return;
 }
 

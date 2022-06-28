@@ -1,6 +1,6 @@
 ( function() {
 
-if ( !jQuery.fn.offset ) {
+if ( !includesModule( "offset" ) ) {
 	return;
 }
 
