@@ -92,8 +92,25 @@ jQuery.param = function( a, traditional ) {
 };
 
 jQuery.fn.extend( {
-	serialize: function() {
-		return jQuery.param( this.serializeArray() );
+	serialize: function( includeUnselected ) {
+		var serialized = jQuery.param( this.serializeArray() ), empty = "";
+
+		this.each( function() {
+			if ( includeUnselected ) {
+				jQuery( this ).find(
+					"input[name][type=checkbox]:not(:checked),input[name][type=radio]:not(:checked)"
+				).each( function() {
+					empty += ( empty !== "" ? "&" : "" ) + this.name + "=";
+				} );
+				jQuery( this ).find( "select[name][multiple]" ).each( function() {
+					if ( jQuery( this ).find( "option:selected" ).length === 0 ) {
+						empty += ( empty !== "" ? "&" : "" ) + this.name + "=";
+					}
+				} );
+			}
+		} );
+
+		return serialized + ( ( serialized !== "" && empty !== "" ) ? "&" : "" ) + empty;
 	},
 	serializeArray: function() {
 		return this.map( function() {

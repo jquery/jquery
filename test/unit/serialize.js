@@ -116,7 +116,7 @@ QUnit.test( "jQuery.param() Constructed prop values", function( assert ) {
 } );
 
 QUnit.test( "serialize()", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 12 );
 
 	// Add html5 elements only for serialize because selector can't yet find them on non-html5 browsers
 	jQuery( "#search" ).after(
@@ -129,25 +129,49 @@ QUnit.test( "serialize()", function( assert ) {
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		"Check form serialization as query string" );
 
+	assert.equal( jQuery( "#form" ).serialize( true ),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&radio1=&check3=&select6=",
+		"Check form serialization (including unselected values) as query string" );
+
 	assert.equal( jQuery( "input,select,textarea,button", "#form" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		"Check input serialization as query string" );
+
+	assert.equal( jQuery( "input,select,textarea,button", "#form" ).serialize( true ),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
+		"Check input serialization (including unselected values) as query string" );
 
 	assert.equal( jQuery( "#testForm" ).serialize(),
 		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Check form serialization as query string" );
 
+	assert.equal( jQuery( "#testForm" ).serialize( true ),
+		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=&C1=&C2=&R1=&R1=&S2=&S5=",
+		"Check form serialization (including unselected values) as query string" );
+
 	assert.equal( jQuery( "input,select,textarea,button", "#testForm" ).serialize(),
 		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Check input serialization as query string" );
+
+	assert.equal( jQuery( "input,select,textarea,button", "#testForm" ).serialize( true ),
+		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
+		"Check input serialization (including unselected values) as query string" );
 
 	assert.equal( jQuery( "#form, #testForm" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Multiple form serialization as query string" );
 
+	assert.equal( jQuery( "#form, #testForm" ).serialize( true ),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=&radio1=&check3=&select6=&C1=&C2=&R1=&R1=&S2=&S5=",
+		"Multiple form serialization (including unselected values) as query string" );
+
 	assert.equal( jQuery( "#form, #testForm input, #testForm select, #testForm textarea, #testForm button" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Mixed form/input serialization as query string" );
+
+	assert.equal( jQuery( "#form, #testForm input, #testForm select, #testForm textarea, #testForm button" ).serialize( true ),
+		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=&radio1=&check3=&select6=",
+		"Mixed form/input serialization (including unselected values) as query string" );
 
 	jQuery( "#html5email, #html5number" ).remove();
 } );

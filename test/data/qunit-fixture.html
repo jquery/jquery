@@ -21,16 +21,17 @@
 <ol id="empty"></ol>
 <form id="form" action="formaction">
 	<label for="action" id="label-for">Action:</label>
-	<input type="text" name="action" value="Test" id="text1" maxlength="30"/>
-	<input type="text" name="text2" value="Test" id="text2" disabled="disabled"/>
-	<input type="radio" name="radio1" id="radio1" value="on"/>
+	<input type="text" name="action" value="Test" id="text1" maxlength="30" />
+	<input type="text" name="text2" value="Test" id="text2" disabled="disabled" />
+	<input type="radio" name="radio1" id="radio1" value="on" />
 
-	<input type="radio" name="radio2" id="radio2" checked="checked"/>
-	<input type="checkbox" name="check" id="check1" checked="checked"/>
-	<input type="checkbox" id="check2" value="on"/>
+	<input type="radio" name="radio2" id="radio2" checked="checked" />
+	<input type="checkbox" name="check" id="check1" checked="checked" />
+	<input type="checkbox" id="check2" value="on" />
+	<input type="checkbox" name="check3" id="check3" value="on" />
 
-	<input type="hidden" name="hidden" id="hidden1"/>
-	<input type="text" style="display:none;" name="foo[bar]" id="hidden2"/>
+	<input type="hidden" name="hidden" id="hidden1" />
+	<input type="text" style="display:none;" name="foo[bar]" id="hidden2" />
 
 	<input type="text" id="name" name="name" value="name" />
 	<input type="search" id="search" name="search" value="search" />
@@ -71,6 +72,11 @@
 		<option id="option5a" value="3">1</option>
 		<option id="option5b" value="2">2</option>
 		<option id="option5c" value="1" data-attr="">3</option>
+	</select>
+	<select name="select6" id="select6" multiple="multiple">
+		<option id="option6a" value="3">1</option>
+		<option id="option6b" value="2">2</option>
+		<option id="option6c" value="1" data-attr="">3</option>
 	</select>
 
 	<object id="object1" codebase="stupid">
@@ -136,6 +142,9 @@ Z</textarea>
 	</select>
 	<select name="S4">
 		<option value="" selected="selected">NO</option>
+	</select>
+	<select name="S5" multiple="multiple">
+		<option value="abc">ABC</option>
 	</select>
 	<input type="submit" name="sub1" value="NO" />
 	<input type="submit" name="sub2" value="NO" />
