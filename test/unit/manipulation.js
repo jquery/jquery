@@ -445,7 +445,7 @@ QUnit.test( "append HTML5 sectioning elements (Bug trac-6485)", function( assert
 	assert.equal( aside.length, 1, "HTML5 elements do not collapse their children" );
 } );
 
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 	QUnit.test( "HTML5 Elements inherit styles from style rules (Bug trac-10501)", function( assert ) {
 
 		assert.expect( 1 );
@@ -2344,7 +2344,7 @@ testIframe(
 	},
 
 	// The AJAX module is needed for jQuery._evalUrl.
-	QUnit[ jQuery.ajax ? "test" : "skip" ]
+	QUnit[ includesModule( "ajax" ) ? "test" : "skip" ]
 );
 
 QUnit.test( "jQuery.clone - no exceptions for object elements trac-9587", function( assert ) {
@@ -2464,7 +2464,7 @@ QUnit.test( "html() - script exceptions bubble (trac-11743)", function( assert )
 	window.onerror = function() {
 		assert.ok( true, "Exception thrown" );
 
-		if ( jQuery.ajax ) {
+		if ( includesModule( "ajax" ) ) {
 			window.onerror = function() {
 				assert.ok( true, "Exception thrown in remote script" );
 			};
@@ -2552,7 +2552,7 @@ QUnit.test( "script evaluation (trac-11795)", function( assert ) {
 	assert.deepEqual( fixture.children( "script" ).get(), scriptsOut.get(), "Scripts detached without reevaluation" );
 	objGlobal.ok = isOk;
 
-	if ( jQuery.ajax ) {
+	if ( includesModule( "ajax" ) ) {
 		Globals.register( "testBar" );
 		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "mock.php?action=testbar" ) + "'></script>" );
 		assert.strictEqual( window.testBar, "bar", "Global script evaluation" );
@@ -2562,7 +2562,7 @@ QUnit.test( "script evaluation (trac-11795)", function( assert ) {
 	}
 } );
 
-QUnit[ jQuery.ajax ? "test" : "skip" ]( "jQuery._evalUrl (trac-12838)", function( assert ) {
+QUnit[ includesModule( "ajax" ) ? "test" : "skip" ]( "jQuery._evalUrl (trac-12838)", function( assert ) {
 
 	assert.expect( 5 );
 
@@ -2853,7 +2853,7 @@ QUnit.test( "Make sure tags with single-character names are found (gh-4124)", fu
 } );
 
 // The AJAX module is needed for jQuery._evalUrl.
-QUnit[ jQuery.ajax ? "test" : "skip" ]( "Insert script with data-URI (gh-1887)", function( assert ) {
+QUnit[ includesModule( "ajax" ) ? "test" : "skip" ]( "Insert script with data-URI (gh-1887)", function( assert ) {
 	assert.expect( 1 );
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
@@ -2943,7 +2943,7 @@ testIframe(
 	// Old iOS & Android Browser versions support script-src but not nonce, making this test
 	// impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
 	// script-src restrictions completely.
-	QUnit[ jQuery.ajax && !/\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "test" : "skip" ]
+	QUnit[ includesModule( "ajax" ) && !/\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "test" : "skip" ]
 );
 
 testIframe(

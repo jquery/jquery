@@ -1,6 +1,6 @@
 QUnit.module( "basic", { afterEach: moduleTeardown } );
 
-if ( jQuery.ajax ) {
+if ( includesModule( "ajax" ) ) {
 QUnit.test( "ajax", function( assert ) {
 	assert.expect( 4 );
 
@@ -33,6 +33,7 @@ QUnit.test( "ajax", function( assert ) {
 } );
 }
 
+if ( includesModule( "attributes" ) ) {
 QUnit.test( "attributes", function( assert ) {
 	assert.expect( 6 );
 
@@ -51,8 +52,9 @@ QUnit.test( "attributes", function( assert ) {
 
 	assert.strictEqual( input.val( "xyz" ).val(), "xyz", ".val getter/setter" );
 } );
+}
 
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 QUnit.test( "css", function( assert ) {
 	assert.expect( 1 );
 
@@ -62,7 +64,7 @@ QUnit.test( "css", function( assert ) {
 } );
 }
 
-if ( jQuery.fn.show && jQuery.fn.hide ) {
+if ( includesModule( "css" ) ) {
 QUnit.test( "show/hide", function( assert ) {
 	assert.expect( 2 );
 
@@ -123,6 +125,7 @@ QUnit.test( "core", function( assert ) {
 		2, "jQuery.parseHTML" );
 } );
 
+if ( includesModule( "data" ) ) {
 QUnit.test( "data", function( assert ) {
 	assert.expect( 4 );
 
@@ -133,7 +136,9 @@ QUnit.test( "data", function( assert ) {
 	assert.strictEqual( elem.data( "c" ), "d", ".data from data-* attributes" );
 	assert.ok( jQuery.hasData( elem[ 0 ] ), "jQuery.hasData - true" );
 } );
+}
 
+if ( includesModule( "dimensions" ) ) {
 QUnit.test( "dimensions", function( assert ) {
 	assert.expect( 3 );
 
@@ -145,7 +150,9 @@ QUnit.test( "dimensions", function( assert ) {
 	assert.strictEqual( elem.innerWidth(), 64, ".innerWidth getter" );
 	assert.strictEqual( elem.outerWidth(), 68, ".outerWidth getter" );
 } );
+}
 
+if ( includesModule( "event" ) ) {
 QUnit.test( "event", function( assert ) {
 	assert.expect( 1 );
 
@@ -162,7 +169,9 @@ QUnit.test( "event", function( assert ) {
 		} )
 		.trigger( "click" );
 } );
+}
 
+if ( includesModule( "manipulation" ) ) {
 QUnit.test( "manipulation", function( assert ) {
 	assert.expect( 5 );
 
@@ -191,6 +200,9 @@ QUnit.test( "manipulation", function( assert ) {
 		".after/.before"
 	);
 } );
+}
+
+if ( includesModule( "offset" ) ) {
 
 // Support: jsdom 13.2+
 // jsdom returns 0 for offset-related properties
@@ -204,6 +216,7 @@ QUnit[ /jsdom\//.test( navigator.userAgent ) ? "skip" : "test" ]( "offset", func
 	assert.strictEqual( elem.position().top, 5, ".position getter" );
 	assert.strictEqual( elem.offsetParent()[ 0 ], parent[ 0 ], ".offsetParent" );
 } );
+}
 
 QUnit.test( "selector", function( assert ) {
 	assert.expect( 2 );
@@ -215,6 +228,7 @@ QUnit.test( "selector", function( assert ) {
 	assert.strictEqual( elem.find( "span.b a" )[ 0 ].nodeName, "A", ".find - one result" );
 } );
 
+if ( includesModule( "serialize" ) ) {
 QUnit.test( "serialize", function( assert ) {
 	assert.expect( 2 );
 
@@ -228,6 +242,7 @@ QUnit.test( "serialize", function( assert ) {
 		"&select1=&select2=3&select3=1&select3=2&select5=3",
 		"form serialization as query string" );
 } );
+}
 
 QUnit.test( "traversing", function( assert ) {
 	assert.expect( 12 );
@@ -249,6 +264,7 @@ QUnit.test( "traversing", function( assert ) {
 	assert.strictEqual( elem.contents()[ 3 ].nodeType, 3, ".contents" );
 } );
 
+if ( includesModule( "wrap" ) ) {
 QUnit.test( "wrap", function( assert ) {
 	assert.expect( 3 );
 
@@ -279,3 +295,4 @@ QUnit.test( "wrap", function( assert ) {
 	);
 
 } );
+}

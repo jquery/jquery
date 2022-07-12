@@ -4,7 +4,7 @@ QUnit.module( "deferred", {
 
 ( function() {
 
-if ( !jQuery.Deferred ) {
+if ( !includesModule( "deferred" ) ) {
 	return;
 }
 

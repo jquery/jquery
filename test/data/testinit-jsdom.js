@@ -39,6 +39,12 @@ function url( value ) {
 		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
 }
 
+// We only run basic tests in jsdom so we don't need to repeat the logic
+// from the regular testinit.js
+this.includesModule = function() {
+	return true;
+};
+
 // The file-loading part of testinit.js#loadTests is handled by
 // jsdom Karma config; here we just need to trigger relevant APIs.
 this.loadTests = function() {

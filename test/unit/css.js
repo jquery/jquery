@@ -1,4 +1,4 @@
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 
 QUnit.module( "css", { afterEach: moduleTeardown } );
 
@@ -487,9 +487,6 @@ QUnit.test( "css(Object) where values are Functions with incoming values", funct
 	jQuery( "#cssFunctionTest" ).remove();
 } );
 
-// .show(), .hide(), can be excluded from the build
-if ( jQuery.fn.show && jQuery.fn.hide ) {
-
 QUnit.test( "show()", function( assert ) {
 
 	assert.expect( 18 );
@@ -968,8 +965,6 @@ QUnit.test( "show/hide 3.0, inline hidden", function( assert ) {
 	} );
 } );
 
-}
-
 QUnit[ jQuery.find.compile && jQuery.fn.toggle ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 9 );
 	var div, oldHide,
@@ -1194,7 +1189,7 @@ QUnit.test( "can't get background-position in IE<9, see trac-10796", function( a
 	}
 } );
 
-if ( jQuery.fn.offset ) {
+if ( includesModule( "offset" ) ) {
 	QUnit.test( "percentage properties for left and top should be transformed to pixels, see trac-9505", function( assert ) {
 		assert.expect( 2 );
 		var parent = jQuery( "<div style='position:relative;width:200px;height:200px;margin:0;padding:0;border-width:0'></div>" ).appendTo( "#qunit-fixture" ),

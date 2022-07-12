@@ -17,7 +17,7 @@ function getComputedSupport( support ) {
 	return result;
 }
 
-if ( jQuery.css ) {
+if ( includesModule( "css" ) ) {
 	testIframe(
 		"body background is not lost if set prior to loading jQuery (trac-9239)",
 		"support/bodyBackground.html",
@@ -362,7 +362,7 @@ testIframe(
 		assert.expect( j );
 
 		for ( i in expected ) {
-			if ( jQuery.ajax || i !== "ajax" && i !== "cors" ) {
+			if ( includesModule( "ajax" ) || i !== "ajax" && i !== "cors" ) {
 				assert.equal( computedSupport[ i ], expected[ i ],
 					"jQuery.support['" + i + "']: " + computedSupport[ i ] +
 						", expected['" + i + "']: " + expected[ i ] );
