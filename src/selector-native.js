@@ -9,7 +9,6 @@
  * * Type selectors (:input; :checkbox; :button; etc.)
  * * State-based selectors (:animated; :visible; :hidden; etc.)
  * * :has(selector) in browsers without native support
- * * :not(complex selector) in IE
  * * custom selectors via jQuery extensions
  * * Reliable functionality on XML fragments
  * * Matching against non-elements
@@ -24,7 +23,6 @@
 import { jQuery } from "./core.js";
 import { document } from "./var/document.js";
 import { whitespace } from "./var/whitespace.js";
-import { isIE } from "./var/isIE.js";
 import { rleadingCombinator } from "./selector/var/rleadingCombinator.js";
 import { rdescend } from "./selector/var/rdescend.js";
 import { rsibling } from "./selector/var/rsibling.js";
@@ -91,9 +89,8 @@ jQuery.extend( {
 					testContext( context.parentNode ) ||
 					context;
 
-				// Outside of IE, if we're not changing the context we can
-				// use :scope instead of an ID.
-				if ( newContext !== context || isIE ) {
+				// If we're not changing the context, we can use :scope instead of an ID.
+				if ( newContext !== context ) {
 
 					// Capture the context ID, setting it first if necessary
 					if ( ( nid = context.getAttribute( "id" ) ) ) {
