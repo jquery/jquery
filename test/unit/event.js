@@ -45,6 +45,45 @@ QUnit.test( "on() with non-null,defined data", function( assert ) {
 
 } );
 
+QUnit[ document.body.attachShadow && document.body.getRootNode ?
+	"test" :
+	"skip"
+]( "on(), shadow dom", function( assert ) {
+
+	assert.expect( 1 );
+
+	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+	var shadowHost = document.querySelector( "#shadowHost" );
+	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+
+	var handler = function( event, data ) {
+		assert.equal( data, 0, "defined data (zero) is correctly passed" );
+	};
+
+	jQuery( shadowRoot ).on( "click", handler );
+	jQuery( shadowRoot ).trigger( "click", 0 );
+
+} );
+
+QUnit.test( "on(), template dom", function( assert ) {
+
+	assert.expect( 2 );
+
+	jQuery( "<template id='template'><p>Smile!</p></template>" ).appendTo( "#qunit-fixture" );
+	var contents = jQuery( "#template" ).contents();
+	assert.equal( contents.length, 1, "Check template element contents" );
+
+	var template = document.querySelector( "#template" );
+
+	var handler = function( event, data ) {
+		assert.equal( data, 0, "defined data (zero) is correctly passed" );
+	};
+
+	jQuery( template ).on( "click", handler );
+	jQuery( template ).trigger( "click", 0 );
+
+} );
+
 QUnit.test( "Handler changes and .trigger() order", function( assert ) {
 	assert.expect( 1 );
 

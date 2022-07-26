@@ -29,6 +29,55 @@ QUnit.test( "jQuery.data & removeData, expected returns", function( assert ) {
 
 } );
 
+QUnit[ document.body.attachShadow && document.body.getRootNode ?
+	"test" :
+	"skip"
+]( "jQuery.data & removeData, expected returns, shadow dom", function( assert ) {
+
+	assert.expect( 4 );
+
+	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
+	var shadowHost = document.querySelector( "#shadowHost" );
+	var shadowRoot$ = jQuery( shadowHost.attachShadow( { mode: "open" } ) );
+
+	shadowRoot$.data( "hello", "world" );
+	assert.equal( shadowRoot$.data( "hello" ), "world", "shadowRoot$.data( key, value ) success" );
+
+	shadowRoot$.data( { baz: [ 1, 2, 3 ] } );
+	assert.deepEqual( shadowRoot$.data(), { hello: "world", baz: [ 1, 2, 3 ] }, "shadowRoot$.data( object ) success" );
+
+	shadowRoot$.removeData( "hello" );
+	assert.deepEqual( shadowRoot$.data(), { baz: [ 1, 2, 3 ] }, "shadowRoot$.removeData( key ) success" );
+
+	shadowRoot$.removeData();
+	assert.deepEqual( shadowRoot$.data(), {}, "shadowRoot$.removeData() success" );
+} );
+
+QUnit.test( "jQuery.data & removeData, expected returns, template dom", function( assert ) {
+
+	assert.expect( 5 );
+
+	jQuery( "<template id='template'><p>Smile!</p></template>" ).appendTo( "#qunit-fixture" );
+	var contents = jQuery( "#template" ).contents();
+	assert.equal( contents.length, 1, "Check template element contents" );
+
+	var template$ = jQuery( document.querySelector( "#template" ) );
+
+	template$.data( "hello", "world" );
+	assert.equal( template$.data( "hello" ), "world", "template$.data( key, value ) success" );
+
+	template$.data( { baz: [ 1, 2, 3 ] } );
+	assert.deepEqual( template$.data(), { hello: "world", baz: [ 1, 2, 3 ] }, "template$.data( object ) success" );
+
+	template$.removeData( "hello" );
+
+	assert.deepEqual( template$.data(), { baz: [ 1, 2, 3 ] }, "template$.removeData( key ) success" );
+
+	template$.removeData();
+
+	assert.deepEqual( template$.data(), {}, "template$.removeData() success" );
+} );
+
 QUnit.test( "jQuery._data & _removeData, expected returns", function( assert ) {
 	assert.expect( 4 );
 	var elem = document.body;

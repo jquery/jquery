@@ -7,7 +7,9 @@ export default function( owner ) {
 	//  - Node
 	//    - Node.ELEMENT_NODE
 	//    - Node.DOCUMENT_NODE
+	//    - Node.SHADOWROOT_NODE
 	//  - Object
 	//    - Any
-	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
+	return owner.nodeType === 1 || owner.nodeType === 9 ||
+		( owner.nodeType === 11 && owner.host ) || !( +owner.nodeType );
 }
