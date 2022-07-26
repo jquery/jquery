@@ -2,7 +2,6 @@ const browserMap = {
 	chrome: "Chrome",
 	edge: "Edge",
 	firefox: "Firefox",
-	ie: "IE",
 	jsdom: "JSDOM",
 	opera: "Opera",
 	safari: "Safari"

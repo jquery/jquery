@@ -1,8 +1,6 @@
 import { jQuery } from "../core.js";
 import { access } from "../core/access.js";
-import { nodeName } from "../core/nodeName.js";
 import { rnothtmlwhite } from "../var/rnothtmlwhite.js";
-import { isIE } from "../var/isIE.js";
 
 jQuery.fn.extend( {
 	attr: function( name, value ) {
@@ -86,20 +84,3 @@ jQuery.extend( {
 		}
 	}
 } );
-
-// Support: IE <=11+
-// An input loses its value after becoming a radio
-if ( isIE ) {
-	jQuery.attrHooks.type = {
-		set: function( elem, value ) {
-			if ( value === "radio" && nodeName( elem, "input" ) ) {
-				var val = elem.value;
-				elem.setAttribute( "type", value );
-				if ( val ) {
-					elem.value = val;
-				}
-				return value;
-			}
-		}
-	};
-}

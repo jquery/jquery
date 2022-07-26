@@ -5,13 +5,11 @@ import { getBrowsers } from "../browserstack/api.js";
 
 export const browsers = [
 	"chrome",
-	"ie",
 	"firefox",
 	"edge",
 	"safari",
 	"opera",
 	"yandex",
-	"IE Mobile",
 	"Android Browser",
 	"Mobile Safari",
 	"jsdom"
