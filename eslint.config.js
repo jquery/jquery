@@ -269,6 +269,15 @@ export default [
 
 	{
 		files: [
+			"test/jquery.js"
+		],
+		languageOptions: {
+			ecmaVersion: 2020
+		}
+	},
+
+	{
+		files: [
 			"test/unit/deferred.js"
 		],
 		rules: {

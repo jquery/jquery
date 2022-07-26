@@ -35,8 +35,6 @@ if ( includesModule( "css" ) ) {
 	);
 }
 
-// This test checks CSP only for browsers with "Content-Security-Policy" header support
-// i.e. no IE
 testIframe(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"mock.php?action=cspFrame",
@@ -80,10 +78,6 @@ testIframe(
 	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
-			ie_11: {
-				reliableColDimensions: 11,
-				reliableTrDimensions: false
-			},
 			chrome: {
 				reliableColDimensions: true,
 				reliableTrDimensions: true
@@ -102,9 +96,7 @@ testIframe(
 			}
 		};
 
-	if ( QUnit.isIE ) {
-		expected = expectedMap.ie_11;
-	} else if ( /\b(?:headless)?chrome\//i.test( userAgent ) ) {
+	if ( /\b(?:headless)?chrome\//i.test( userAgent ) ) {
 
 		// Catches Edge, Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;

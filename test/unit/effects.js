@@ -218,9 +218,7 @@ supportjQuery.each( hideOptions, function( type, setup ) {
 		clock.tick( fxInterval * 30 );
 	} );
 
-	// Support: IE 11+
-	// IE doesn't support Shadow DOM.
-	QUnit.testUnlessIE(
+	QUnit.test(
 		"Persist correct display value - " + type + " hidden, shadow child", function( assert ) {
 		assert.expect( 3 );
 

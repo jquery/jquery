@@ -1,6 +1,8 @@
 // Use the right jQuery source on the test page (and iframes)
 ( function() {
-	var dynamicImportSource, config, src,
+	/* global loadTests: false */
+
+	var config, src,
 		parentUrl = window.location.protocol + "//" + window.location.host,
 		QUnit = window.QUnit;
 
@@ -47,24 +49,19 @@
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( config.esmodules && QUnit ) {
 
-		// Support: IE 11+
-		// IE doesn't support the dynamic import syntax so it would crash
-		// with a SyntaxError here.
-		dynamicImportSource = "" +
-			"import( `${ parentUrl }/src/jquery.js` )\n" +
-			"	.then( ( { jQuery } ) => {\n" +
-			"		window.jQuery = jQuery;\n" +
-			"		if ( typeof loadTests === \"function\" ) {\n" +
-			"			// Include tests if specified\n" +
-			"			loadTests();\n" +
-			"		}\n" +
-			"	} )\n" +
-			"	.catch( error => {\n" +
-			"		console.error( error );\n" +
-			"		QUnit.done();\n" +
-			"	} );";
+		import( `${ parentUrl }/src/jquery.js` )
+			.then( ( { jQuery } ) => {
+				window.jQuery = jQuery;
 
-		eval( dynamicImportSource );
+				// Include tests if specified
+				if ( typeof loadTests === "function" ) {
+					loadTests();
+				}
+			} )
+			.catch( error => {
+				console.error( error );
+				QUnit.done();
+			} );
 
 	// Otherwise, load synchronously
 	} else {

@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         BROWSER:
-          - 'IE_11'
           - 'Safari_latest'
           # JTR doesn't take into account the jump from Safari 18 to 26,
           # so we need to specify versions explicitly.

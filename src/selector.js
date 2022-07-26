@@ -7,7 +7,6 @@ import { push } from "./var/push.js";
 import { whitespace } from "./var/whitespace.js";
 import { rbuggyQSA } from "./selector/rbuggyQSA.js";
 import { rtrimCSS } from "./var/rtrimCSS.js";
-import { isIE } from "./var/isIE.js";
 import { identifier } from "./selector/var/identifier.js";
 import { rleadingCombinator } from "./selector/var/rleadingCombinator.js";
 import { rdescend } from "./selector/var/rdescend.js";
@@ -63,14 +62,6 @@ var i,
 
 	// Easily-parseable/retrievable ID or TAG or CLASS selectors
 	rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,
-
-	// Used for iframes; see `setDocument`.
-	// Support: IE 9 - 11+
-	// Removing the function wrapper causes a "Permission Denied"
-	// error in IE.
-	unloadHandler = function() {
-		setDocument();
-	},
 
 	inDisabledFieldset = addCombinator(
 		function( elem ) {
@@ -160,13 +151,8 @@ function find( selector, context, results, seed ) {
 						testContext( context.parentNode ) ||
 						context;
 
-					// Outside of IE, if we're not changing the context we can
-					// use :scope instead of an ID.
-					// Support: IE 11+
-					// IE sometimes throws a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if ( newContext != context || isIE ) {
+					// If we're not changing the context we can use :scope instead of an ID.
+					if ( newContext !== context ) {
 
 						// Capture the context ID, setting it first if necessary
 						if ( ( nid = context.getAttribute( "id" ) ) ) {
@@ -268,13 +254,7 @@ function createDisabledPseudo( disabled ) {
 					}
 				}
 
-				// Support: IE 6 - 11+
-				// Use the isDisabled shortcut property to check for disabled fieldset ancestors
-				return elem.isDisabled === disabled ||
-
-					// Where there is no isDisabled, check manually
-					elem.isDisabled !== !disabled &&
-						inDisabledFieldset( elem ) === disabled;
+				return inDisabledFieldset( elem ) === disabled;
 			}
 
 			return elem.disabled === disabled;
@@ -318,15 +298,10 @@ function createPositionalPseudo( fn ) {
  * @param {Element|Object} [node] An element or document object to use to set the document
  */
 function setDocument( node ) {
-	var subWindow,
-		doc = node ? node.ownerDocument || node : preferredDoc;
+	var doc = node ? node.ownerDocument || node : preferredDoc;
 
 	// Return early if doc is invalid or already selected
-	// Support: IE 11+
-	// IE sometimes throws a "Permission denied" error when strict-comparing
-	// two documents; shallow comparisons work.
-	// eslint-disable-next-line eqeqeq
-	if ( doc == document || doc.nodeType !== 9 ) {
+	if ( doc === document || doc.nodeType !== 9 ) {
 		return;
 	}
 
@@ -334,17 +309,6 @@ function setDocument( node ) {
 	document = doc;
 	documentElement = document.documentElement;
 	documentIsHTML = !jQuery.isXMLDoc( document );
-
-	// Support: IE 9 - 11+
-	// Accessing iframe documents after unload throws "permission denied" errors (see trac-13936)
-	// Support: IE 11+
-	// IE sometimes throws a "Permission denied" error when strict-comparing
-	// two documents; shallow comparisons work.
-	// eslint-disable-next-line eqeqeq
-	if ( isIE && preferredDoc != document &&
-		( subWindow = document.defaultView ) && subWindow.top !== subWindow ) {
-		subWindow.addEventListener( "unload", unloadHandler );
-	}
 }
 
 find.matches = function( expr, elements ) {
@@ -728,16 +692,6 @@ jQuery.expr = {
 		},
 
 		selected: function( elem ) {
-
-			// Support: IE <=11+
-			// Accessing the selectedIndex property
-			// forces the browser to treat the default option as
-			// selected when in an optgroup.
-			if ( isIE && elem.parentNode ) {
-				// eslint-disable-next-line no-unused-expressions
-				elem.parentNode.selectedIndex;
-			}
-
 			return elem.selected === true;
 		},
 
@@ -1070,14 +1024,13 @@ function matcherFromTokens( tokens ) {
 		}, implicitRelative, true ),
 		matchers = [ function( elem, context, xml ) {
 
-			// Support: IE 11+
-			// IE sometimes throws a "Permission denied" error when strict-comparing
-			// two documents; shallow comparisons work.
-			// eslint-disable-next-line eqeqeq
-			var ret = ( !leadingRelative && ( xml || context != outermostContext ) ) || (
+			var ret = ( !leadingRelative &&
+				( xml || context !== outermostContext )
+			) || (
 				( checkContext = context ).nodeType ?
 					matchContext( elem, context, xml ) :
-					matchAnyContext( elem, context, xml ) );
+					matchAnyContext( elem, context, xml )
+			);
 
 			// Avoid hanging onto element
 			// (see https://github.com/jquery/sizzle/issues/299)
@@ -1140,12 +1093,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				dirrunsUnique = ( dirruns += contextBackup == null ? 1 : Math.random() || 0.1 );
 
 			if ( outermost ) {
-
-				// Support: IE 11+
-				// IE sometimes throws a "Permission denied" error when strict-comparing
-				// two documents; shallow comparisons work.
-				// eslint-disable-next-line eqeqeq
-				outermostContext = context == document || context || outermost;
+				outermostContext = context === document || context || outermost;
 			}
 
 			// Add elements passing elementMatchers directly to results
@@ -1153,11 +1101,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 				if ( byElement && elem ) {
 					j = 0;
 
-					// Support: IE 11+
-					// IE sometimes throws a "Permission denied" error when strict-comparing
-					// two documents; shallow comparisons work.
-					// eslint-disable-next-line eqeqeq
-					if ( !context && elem.ownerDocument != document ) {
+					if ( !context && elem.ownerDocument !== document ) {
 						setDocument( elem );
 						xml = !documentIsHTML;
 					}

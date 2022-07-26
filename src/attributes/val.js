@@ -1,6 +1,4 @@
 import { jQuery } from "../core.js";
-import { isIE } from "../var/isIE.js";
-import { stripAndCollapse } from "../core/stripAndCollapse.js";
 import { nodeName } from "../core/nodeName.js";
 
 import "../core/init.js";
@@ -139,23 +137,6 @@ jQuery.extend( {
 		}
 	}
 } );
-
-if ( isIE ) {
-	jQuery.valHooks.option = {
-		get: function( elem ) {
-
-			var val = elem.getAttribute( "value" );
-			return val != null ?
-				val :
-
-				// Support: IE <=10 - 11+
-				// option.text throws exceptions (trac-14686, trac-14858)
-				// Strip and collapse whitespace
-				// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
-				stripAndCollapse( jQuery.text( elem ) );
-		}
-	};
-}
 
 // Radios and checkboxes getter/setter
 jQuery.each( [ "radio", "checkbox" ], function() {

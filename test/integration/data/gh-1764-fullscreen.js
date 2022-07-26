@@ -10,52 +10,13 @@ function bootstrapFrom( mainSelector, mode ) {
 		return;
 	}
 
-	var fullscreenSupported = document.exitFullscreen ||
-		document.exitFullscreen ||
-		document.msExitFullscreen ||
-		document.mozCancelFullScreen ||
-		document.webkitExitFullscreen;
-
 	function isFullscreen() {
-		return !!( document.fullscreenElement ||
-		document.mozFullScreenElement ||
-		document.webkitFullscreenElement ||
-		document.msFullscreenElement );
-	}
-
-	function requestFullscreen( element ) {
-		if ( !isFullscreen() ) {
-			if ( element.requestFullscreen ) {
-				element.requestFullscreen();
-			} else if ( element.msRequestFullscreen ) {
-				element.msRequestFullscreen();
-			} else if ( element.mozRequestFullScreen ) {
-				element.mozRequestFullScreen();
-			} else if ( element.webkitRequestFullscreen ) {
-				element.webkitRequestFullscreen();
-			}
-		}
-	}
-
-	function exitFullscreen() {
-		if ( document.exitFullscreen ) {
-			document.exitFullscreen();
-		} else if ( document.msExitFullscreen ) {
-			document.msExitFullscreen();
-		} else if ( document.mozCancelFullScreen ) {
-			document.mozCancelFullScreen();
-		} else if ( document.webkitExitFullscreen ) {
-			document.webkitExitFullscreen();
-		}
+		return !!( document.fullscreenElement );
 	}
 
 	function runTest() {
 		var dimensions;
-		if ( !fullscreenSupported ) {
-			jQuery( mainSelector + " .result" )
-				.attr( "class", "result success" )
-				.text( "Fullscreen mode is not supported in this browser. Test not run." );
-		} else if ( !isFullscreen() ) {
+		if ( !isFullscreen() ) {
 			jQuery( mainSelector + " .result" )
 				.attr( "class", "result warn" )
 				.text( "Enable fullscreen mode to fire the test." );
@@ -80,20 +41,15 @@ function bootstrapFrom( mainSelector, mode ) {
 
 	function toggleFullscreen() {
 		if ( isFullscreen() ) {
-			exitFullscreen();
+			document.exitFullscreen();
 		} else {
-			requestFullscreen( jQuery( mainSelector + " .container" )[ 0 ] );
+			jQuery( mainSelector + " .container" )[ 0 ].requestFullscreen();
 		}
 	}
 
 	$( mainSelector + " .toggle-fullscreen" ).on( "click", toggleFullscreen );
 
-	$( document ).on( [
-		"webkitfullscreenchange",
-		"mozfullscreenchange",
-		"fullscreenchange",
-		"MSFullscreenChange"
-	].join( " " ), runTest );
+	$( document ).on( "fullscreenchange", runTest );
 
 	runTest();
 }

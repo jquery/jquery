@@ -87,7 +87,7 @@ th, td {
 <tbody>
 </tbody>
 </table>
-<p>NOTE: Only IE supports propertychange, beforeactivate, beforedeactivate; buttons do not support change events.</p>
+<p>NOTE: Buttons do not support change events.</p>
 
 <h2>Submit Tests</h2>
 <table>
@@ -110,7 +110,7 @@ th, td {
 				<input type='submit' value="Click Me To Submit" />
 			</form>
 		</td>
-		<td>$(document).bind('submit')</td>
+		<td>$( document ).on( "submit" )</td>
 	</tr>
 	<tr>
 		<td>Results:</td>
@@ -143,7 +143,7 @@ $( function() {
 } );
 
 // Events we want to track in row-order
-var events = "bind-change live-change onX-change bind-propertychange live-beforeactivate live-focusin bind-focus live-beforedeactivate live-focusout bind-blur live-click live-keydown".split( " " ),
+var events = "bind-change delegated-change onX-change delegated-focusin bind-focus delegated-focusout bind-blur delegated-click delegated-keydown".split( " " ),
 	counter = 0;
 blinker = function( event ) {
 	if ( !counter ) {
@@ -170,18 +170,20 @@ for ( var i = 0; i < events.length; i++ ) {
 		$row = $( "<tr><th>" + type + " " + api + "</th></tr>" );
 
 	$( "#changes thead td" ).each( function() {
-		var id = "#" + this.id,
+		var id = "#"  + this.id,
 			$cell = $( "<td></td>" );
-		if ( api == "onX" ) {
+		if ( api === "onX" ) {
 			$( this ).find( "input, button, select, textarea" ).each( function() {
-				this[ "on" + type ] = function( e ) {
- e = $.event.fix( e || event ); e.data = $cell; blinker.call( this, e );
-};
+				this[ "on" + type ] = function( e ){
+					e = $.event.fix( e || event );
+					e.data = $cell;
+					blinker.call( this, e );
+				};
 			} );
-		} else if ( api == "bind" ) {
-			$( this ).find( "input, button, select, textarea" ).bind( type, $cell, blinker );
+		} else if ( api === "bind" ) {
+			$( this ).find( "input, button, select, textarea" ).on( type, $cell, blinker );
 		} else {
-			$( id + " input," + id + " button," + id + " select," + id + " textarea" ).live( type, $cell, blinker );
+			$( document ).on( type, id + " input," + id + " button," + id + " select," + id + " textarea", $cell, blinker );
 		}
 		$row.append( $cell );
 	} );
@@ -198,8 +200,8 @@ jQuery.fn.blink = function() {
 		} );
 };
 
-jQuery.fn.addSubmitTest = function( id, prevent ) {
-	return this.live( "submit", function( e ) {
+function addSubmitTest( selector, id, prevent ) {
+	return $( document ).on( "submit", selector, function( e ) {
 		if ( prevent ) {
 			e.preventDefault();
 		}
@@ -207,11 +209,11 @@ jQuery.fn.addSubmitTest = function( id, prevent ) {
 	} );
 };
 
-$( "#text_submit" ).addSubmitTest( "#textSubmit", true );
-$( "#password_submit" ).addSubmitTest( "#passwordSubmit", true );
-$( "#submit_submit" ).addSubmitTest( "#submitSubmit", true );
-$( "#prog_submit" ).addSubmitTest( "#submitSubmit", true );
-$( document ).bind( "submit", function() {
+addSubmitTest( "#text_submit", "#textSubmit", true );
+addSubmitTest( "#password_submit", "#passwordSubmit", true );
+addSubmitTest( "#submit_submit", "#submitSubmit", true );
+addSubmitTest( "#prog_submit", "#submitSubmit", true );
+$( document ).on( "submit", function() {
 	jQuery( "#boundSubmit" ).blink();
 } );
 
