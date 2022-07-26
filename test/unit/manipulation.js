@@ -1859,9 +1859,7 @@ QUnit.test( "html(Function)", function( assert ) {
 		}, timeout );
 	}
 
-	// Support: IE 9 - 11+
-	// IE doesn't support modules.
-	QUnit.testUnlessIE( "html(script type module)", function( assert ) {
+	QUnit.test( "html(script type module)", function( assert ) {
 		assert.expect( 8 );
 		var done = assert.async(),
 			$fixture = jQuery( "#qunit-fixture" );
@@ -1885,17 +1883,15 @@ QUnit.test( "html(Function)", function( assert ) {
 	} );
 
 	QUnit.test( "html(script nomodule)", function( assert ) {
-
-		// `nomodule` scripts should be executed by legacy browsers only.
-		assert.expect( QUnit.isIE ? 8 : 4 );
+		assert.expect( 4 );
 		var done = assert.async(),
 			$fixture = jQuery( "#qunit-fixture" );
 
 		setup( {
 			assert: assert,
 			done: done,
-			timeout: QUnit.isIE ? 5000 : 1000,
-			expectedCount: QUnit.isIE ? 1 : 0
+			timeout: 1000,
+			expectedCount: 0
 		} );
 
 		$fixture.html(
@@ -1918,23 +1914,15 @@ QUnit.test( "html(self-removing script) (gh-5377)", function( assert ) {
 
 	$fixture.html(
 		[
-			"<script id='gh5377-1'>",
-				"(function removeScript() {",
-					"var id = 'gh5377-1';",
-					"var script = document.currentScript || document.getElementById(id);",
-					"script.parentNode.removeChild( script );",
-					"QUnit.assert.ok( true, 'removed document.currentScript' );",
-				"})();",
+			"<script>",
+			"	document.currentScript.parentNode.removeChild( document.currentScript );",
+			"	QUnit.assert.ok( true, 'removed document.currentScript' );",
 			"</script>",
 			"<div>",
-				"<script id='gh5377-2'>",
-					"(function removeInnerScript() {",
-						"var id = 'gh5377-2';",
-						"var innerScript = document.currentScript || document.getElementById(id);",
-						"innerScript.parentNode.removeChild( innerScript );",
-						"QUnit.assert.ok( true, 'removed inner document.currentScript' );",
-					"})();",
-				"</script>",
+			"	<script>",
+			"		document.currentScript.parentNode.removeChild( document.currentScript );",
+			"		QUnit.assert.ok( true, 'removed inner document.currentScript' );",
+			"	</script>",
 			"</div>"
 		].join( "\n" )
 	);
@@ -2281,11 +2269,11 @@ QUnit.test( "jQuery.cleanData", function( assert ) {
 			assert.ok( false, type + " " + pos + " Focus event fired." );
 		} ).end().appendTo( "body" );
 
-		div[ 0 ].detachEvent = div[ 0 ].removeEventListener = function( t ) {
+		div[ 0 ].removeEventListener = function( t ) {
 			assert.ok( true, type + " Outer " + t + " event unbound" );
 		};
 
-		div[ 0 ].firstChild.detachEvent = div[ 0 ].firstChild.removeEventListener = function( t ) {
+		div[ 0 ].firstChild.removeEventListener = function( t ) {
 			assert.ok( true, type + " Inner " + t + " event unbound" );
 		};
 
@@ -2957,7 +2945,7 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 } );
 
 [ true, false ].forEach( function( adoptedCase ) {
-	QUnit.testUnlessIE(
+	QUnit.test(
 		"Manip within <template /> content moved back & forth doesn't throw - " + (
 			adoptedCase ? "explicitly adopted" : "not explicitly adopted"
 		) + " (gh-5147)",
