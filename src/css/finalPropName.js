@@ -1,6 +1,6 @@
 import { createElement } from "../var/createElement.js";
 
-var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+var cssPrefixes = [ "Webkit", "Moz" ],
 	emptyStyle = createElement( "div" ).style;
 
 // Return a vendor-prefixed property or undefined

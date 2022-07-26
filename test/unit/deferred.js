@@ -561,7 +561,7 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 	} catch ( _ ) {}
 } );
 
-QUnit.testUnlessIE( "jQuery.Deferred.then - IsCallable determination (gh-3596)",
+QUnit.test( "jQuery.Deferred.then - IsCallable determination (gh-3596)",
 	function( assert ) {
 
 	assert.expect( 1 );

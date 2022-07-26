@@ -24,7 +24,6 @@ jobs:
       fail-fast: false
       matrix:
         BROWSER:
-          - 'IE_11'
           # BrowserStack makes Safari on beta macOS versions available without marking
           # either the OS or the browser as beta, so we have no way to resolve "latest"
           # to the lastest stable version. Given that major Safari version updates

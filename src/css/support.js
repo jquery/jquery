@@ -2,7 +2,6 @@ import { jQuery } from "../core.js";
 import { createElement } from "../var/createElement.js";
 import { documentElement } from "../var/documentElement.js";
 import { support } from "../var/support.js";
-import { isIE } from "../var/isIE.js";
 
 var reliableTrDimensionsVal, reliableColDimensionsVal,
 	table = createElement( "table" );
@@ -55,18 +54,10 @@ function computeTableStyleTests() {
 	// Support: Safari 18.3+
 	// In Safari, computed width for columns is always 0.
 	// In both these browsers, using `offsetWidth` solves the issue.
-	// Support: IE 11+
-	// In IE, `<col>` computed width is `"auto"` unless `width` is set
-	// explicitly via CSS so measurements there remain incorrect. Because of
-	// the lack of a proper workaround, we accept this limitation, treating
-	// IE as passing the test.
-	reliableColDimensionsVal = isIE || Math.round( parseFloat(
+	reliableColDimensionsVal = Math.round( parseFloat(
 		window.getComputedStyle( col ).width )
 	) === 18;
 
-	// Support: IE 10 - 11+
-	// IE misreports `getComputedStyle` of table rows with width/height
-	// set in CSS while `offset*` properties report correct values.
 	// Support: Firefox 70 - 135+
 	// Only Firefox includes border widths
 	// in computed dimensions for table rows. (gh-4529)

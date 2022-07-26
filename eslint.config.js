@@ -153,7 +153,7 @@ export default [
 			"test/data/core/jquery-iterability-transpiled.js"
 		],
 		languageOptions: {
-			ecmaVersion: 5,
+			ecmaVersion: "latest",
 			sourceType: "script",
 			globals: {
 				...globals.browser,
@@ -222,7 +222,7 @@ export default [
 			"test/data/core/jquery-iterability-transpiled-es6.js"
 		],
 		languageOptions: {
-			ecmaVersion: 2015,
+			ecmaVersion: "latest",
 			sourceType: "script",
 			globals: {
 				...globals.browser
@@ -240,6 +240,15 @@ export default [
 		],
 		rules: {
 			strict: [ "error", "global" ]
+		}
+	},
+
+	{
+		files: [
+			"test/jquery.js"
+		],
+		languageOptions: {
+			ecmaVersion: "latest"
 		}
 	},
 
