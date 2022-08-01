@@ -4326,7 +4326,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		assert( function( div ) {
 
 			// Select is set to empty string on purpose
-			// This is to test IE's treatment of not explictly
+			// This is to test IE's treatment of not explicitly
 			// setting a boolean content attribute,
 			// since its presence should be enough
 			// http://bugs.jquery.com/ticket/12359
