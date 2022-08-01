@@ -50,7 +50,7 @@ jobs:
           ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
     - name: Use Node.js ${{ matrix.NODE_VERSION }}
-      uses: actions/setup-node@v3.3.0
+      uses: actions/setup-node@v3.4.1
       with:
         node-version: ${{ matrix.NODE_VERSION }}
 
