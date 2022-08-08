@@ -1,7 +1,7 @@
 QUnit.module( "selector", {
 	beforeEach: function() {
 		this.safari = /\bsafari\b/i.test( navigator.userAgent ) &&
-			!/\bchrome\b/i.test( navigator.userAgent );
+			!/\b(?:headless)?chrome\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown
 } );
@@ -1935,7 +1935,9 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		}
 	}
 	Arrayish.prototype = {
-		sliceForTestOnly: [].slice
+		slice: [].slice,
+		sort: [].sort,
+		splice: [].splice
 	};
 
 	var i, tests,
@@ -2001,7 +2003,7 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		// and the second test becomes worthless.
 		assert.deepEqual( jQuery.uniqueSort( test.input.slice( 0 ) ).slice( 0, length ),
 			test.expected, label + " (array)" );
-		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).sliceForTestOnly( 0, length ),
+		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).slice( 0, length ),
 			test.expected, label + " (quasi-array)" );
 	} );
 } );

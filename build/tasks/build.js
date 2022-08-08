@@ -171,13 +171,18 @@ module.exports = function( grunt ) {
 			 * Adds the specified module to the excluded or included list, depending on the flag
 			 * @param {String} flag A module path relative to
 			 *  the src directory starting with + or - to indicate
-			 *  whether it should included or excluded
+			 *  whether it should be included or excluded
 			 */
 			excluder = function( flag ) {
 				var additional,
-					m = /^(\+|\-|)([\w\/-]+)$/.exec( flag ),
+					m = /^(\+|-|)([\w\/-]+)$/.exec( flag ),
 					exclude = m[ 1 ] === "-",
 					module = m[ 2 ];
+
+				// Recognize the legacy `sizzle` alias
+				if ( module === "sizzle" ) {
+					module = "selector-full";
+				}
 
 				if ( exclude ) {
 
@@ -255,12 +260,8 @@ module.exports = function( grunt ) {
 
 		// Handle full selector module exclusion.
 		// Replace with selector-native.
-		// Recognize the legacy `sizzle` alias
-		if ( ( index = excluded.indexOf( "selector-full" ) ) > -1 ||
-			( index = excluded.indexOf( "sizzle" ) ) > -1
-		) {
+		if ( ( index = excluded.indexOf( "selector-full" ) ) > -1 ) {
 			config.rawText.selector = "define(['./selector-native']);";
-			excluded.splice( index, 1 );
 		}
 
 		// Replace exports/global with a noop noConflict

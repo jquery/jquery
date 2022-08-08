@@ -387,9 +387,21 @@ testIframe(
 
 	// Make the slim build pass tests.
 	for ( browserKey in expectedMap ) {
-		if ( !jQuery.ajax ) {
+		if ( !includesModule( "ajax" ) ) {
 			delete expectedMap[ browserKey ].ajax;
 			delete expectedMap[ browserKey ].cors;
+		}
+	}
+
+	// Make the selector-native build pass tests.
+	for ( browserKey in expectedMap ) {
+		if ( !includesModule( "selector-full" ) ) {
+			delete expectedMap[ browserKey ].cssSupportsSelector;
+			delete expectedMap[ browserKey ].disconnectedMatch;
+			delete expectedMap[ browserKey ].getById;
+			delete expectedMap[ browserKey ].scope;
+			delete expectedMap[ browserKey ].sortDetached;
+			delete expectedMap[ browserKey ].sortStable;
 		}
 	}
 
