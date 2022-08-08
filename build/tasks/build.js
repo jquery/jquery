@@ -128,11 +128,11 @@ module.exports = function( grunt ) {
 			 * Adds the specified module to the excluded or included list, depending on the flag
 			 * @param {String} flag A module path relative to
 			 *  the src directory starting with + or - to indicate
-			 *  whether it should included or excluded
+			 *  whether it should be included or excluded
 			 */
 			const excluder = flag => {
 				let additional;
-				const m = /^(\+|\-|)([\w\/-]+)$/.exec( flag );
+				const m = /^(\+|-|)([\w\/-]+)$/.exec( flag );
 				const exclude = m[ 1 ] === "-";
 				const module = m[ 2 ];
 
@@ -206,6 +206,13 @@ module.exports = function( grunt ) {
 				excluder( flag );
 			}
 
+			// Handle full selector module exclusion.
+			// Replace with selector-native.
+			if ( excluded.includes( "selector-full" ) ) {
+				setOverride( `${ srcFolder }/selector.js`,
+					read( "selector-native.js" ) );
+			}
+
 			// Remove the jQuery export from the entry file, we'll use our own
 			// custom wrapper.
 			setOverride( inputRollupOptions.input,
@@ -232,14 +239,14 @@ module.exports = function( grunt ) {
 				// Remove the comma for anonymous defines
 				setOverride( `${ srcFolder }/exports/amd.js`,
 					read( "exports/amd.js" )
-						.replace( /(\s*)"jquery"(\,\s*)/,
+						.replace( /(\s*)"jquery"(,\s*)/,
 							amdName ? "$1\"" + amdName + "\"$2" : "" ) );
 			}
 
 			grunt.verbose.writeflags( excluded, "Excluded" );
 			grunt.verbose.writeflags( included, "Included" );
 
-			// Indicate a Slim build without listing all of the exclusions
+			// Indicate a Slim build without listing all the exclusions
 			// to save space.
 			if ( isPureSlim ) {
 				version += " slim";

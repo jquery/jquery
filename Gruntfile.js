@@ -75,7 +75,8 @@ module.exports = function( grunt ) {
 						remove: [ "ajax", "effects", "queue", "core/ready" ],
 						include: [ "core/ready-no-deferred" ]
 					},
-					event: [ "deprecated/ajax-event-alias", "deprecated/event" ]
+					event: [ "deprecated/ajax-event-alias", "deprecated/event" ],
+					"selector-full": [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
 		},
