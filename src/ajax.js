@@ -11,7 +11,7 @@ import "./event/trigger.js";
 import "./deferred.js";
 import "./serialize.js"; // jQuery.param
 
-var
+let
 	r20 = /%20/g,
 	rhash = /#.*$/,
 	rantiCache = /([?&])_=[^&]*/,
