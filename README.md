@@ -103,6 +103,8 @@ As a special case, you may also replace the full jQuery `selector` module by usi
 
 - **selector-full**: The full jQuery selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/main/src/selector-native.js) file for details.
 
+*Note*: Excluding the full `selector` module will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
+
 The build process shows a message for each dependent module it excludes or includes.
 
 ##### AMD name
