@@ -171,6 +171,12 @@ module.exports = function( grunt ) {
 						}
 					} else {
 						grunt.log.error( "Module \"" + module + "\" is a minimum requirement." );
+						if ( module === "selector" ) {
+							grunt.log.error(
+								"If you meant to replace the full selector module, " +
+								"use `-selector-full` instead."
+							);
+						}
 					}
 				} else {
 					grunt.log.writeln( flag );
