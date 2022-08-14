@@ -1,7 +1,7 @@
 QUnit.module( "selector", {
 	beforeEach: function() {
 		this.safari = /\bsafari\b/i.test( navigator.userAgent ) &&
-			!/\bchrome\b/i.test( navigator.userAgent );
+			!/\b(?:headless)?chrome\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown
 } );
