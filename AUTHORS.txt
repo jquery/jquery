@@ -329,3 +329,7 @@ Beatriz Rezener <beatrizrezener@users.noreply.github.com>
 Natalia Sroka <37873210+natipo@users.noreply.github.com>
 Wonhyoung Park <wh05.park@samsung.com>
 Dallas Fraser <dallas.fraser.waterloo@gmail.com>
+fecore1 <89127124+fecore1@users.noreply.github.com>
+ygj6 <7699524+ygj6@users.noreply.github.com>
+Simon Legner <Simon.Legner@gmail.com>
+Vladimir Sitnikov <sitnikov.vladimir@gmail.com>
