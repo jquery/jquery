@@ -2,12 +2,12 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "3.6.1-pre",
+  "version": "3.6.1",
   "main": "dist/jquery.js",
   "homepage": "https://jquery.com",
   "author": {
     "name": "OpenJS Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/main/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/3.6.1/AUTHORS.txt"
   },
   "repository": {
     "type": "git",
