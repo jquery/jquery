@@ -15,17 +15,13 @@ var rootjQuery,
 	// Shortcut simple #id case for speed
 	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
-	init = jQuery.fn.init = function( selector, context, root ) {
+	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
 			return this;
 		}
-
-		// Method init() accepts an alternate rootjQuery
-		// so migrate can support jQuery.sub (gh-2101)
-		root = root || rootjQuery;
 
 		// HANDLE: $(DOMElement)
 		if ( selector.nodeType ) {
@@ -36,8 +32,8 @@ var rootjQuery,
 		// HANDLE: $(function)
 		// Shortcut for document ready
 		} else if ( typeof selector === "function" ) {
-			return root.ready !== undefined ?
-				root.ready( selector ) :
+			return rootjQuery.ready !== undefined ?
+				rootjQuery.ready( selector ) :
 
 				// Execute immediately if ready is not present
 				selector( jQuery );
@@ -108,7 +104,7 @@ var rootjQuery,
 
 			// HANDLE: $(expr) & $(expr, $(...))
 			} else if ( !context || context.jquery ) {
-				return ( context || root ).find( selector );
+				return ( context || rootjQuery ).find( selector );
 
 			// HANDLE: $(expr, context)
 			// (which is just equivalent to: $(context).find(expr)
