@@ -199,7 +199,7 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Post-comma invalid selector", "*,:x" );
 	broken( "Identifier with bad escape", "foo\\\fbaz" );
 	broken( "Broken Selector", "[id=012345678901234567890123456789" );
-	broken( "Doesn't exist", ":visble" );
+	broken( "Doesn't exist", ":visible" );
 	broken( "Nth-child", ":nth-child" );
 	broken( "Nth-child", ":nth-child(-)" );
 	broken( "Nth-child", ":nth-child(asdf)", [] );
