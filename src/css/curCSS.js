@@ -15,7 +15,7 @@ function curCSS( elem, name, computed ) {
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
 		// trim whitespace for custom property (issue gh-4926)
-		if ( isCustomProp ) {
+		if ( isCustomProp && ret !== undefined ) {
 
 			// rtrim treats U+000D CARRIAGE RETURN and U+000C FORM FEED
 			// as whitespace while CSS does not, but this is not a problem
