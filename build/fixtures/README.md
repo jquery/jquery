@@ -19,17 +19,15 @@ Below are some of the most common ways to include jQuery.
 <script src="https://code.jquery.com/jquery-@VERSION.min.js"></script>
 ```
 
-#### Babel
+#### Webpack / Browserify / Babel
 
-[Babel](https://babeljs.io/) is a next generation JavaScript compiler. One of the features is the ability to use ES6/ES2015 modules now, even though browsers do not yet support this feature natively.
+There are several ways to use [Webpack](https://webpack.js.org/), [Browserify](http://browserify.org/) or [Babel](https://babeljs.io/). For more information on using these tools, please refer to the corresponding project's documentation. In the script, including jQuery will usually look like this:
 
 ```js
 import $ from "jquery";
 ```
 
-#### Browserify/Webpack
-
-There are several ways to use [Browserify](http://browserify.org/) and [Webpack](https://webpack.js.org/). For more information on using these tools, please refer to the corresponding project's documentation. In the script, including jQuery will usually look like this...
+If you need to use jQuery in a file that's not an ECMAScript module, you can use the CommonJS syntax:
 
 ```js
 var $ = require( "jquery" );
