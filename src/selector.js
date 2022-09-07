@@ -17,12 +17,14 @@ var preferredDoc = document;
 
 ( function() {
 
-/* eslint-disable indent, one-var */
+/* eslint-disable indent */
 
 var i,
 	Expr,
 	outermostContext,
 	hasDuplicate,
+	testEl,
+	input,
 
 	// Local document vars
 	document,
@@ -528,14 +530,14 @@ function setDocument( node ) {
 
 	rbuggyQSA = [];
 
-	var testEl = document.createElement( "fieldset" );
+	testEl = document.createElement( "fieldset" );
 
 	testEl.innerHTML = "<a href='' disabled='disabled'></a>" +
 		"<select disabled='disabled'><option/></select>";
 
 	// Support: Windows 8 Native Apps
 	// The type and name attributes are restricted during .innerHTML assignment
-	var input = document.createElement( "input" );
+	input = document.createElement( "input" );
 	input.setAttribute( "type", "hidden" );
 	testEl.appendChild( input ).setAttribute( "name", "D" );
 
