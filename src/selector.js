@@ -555,7 +555,9 @@ function setDocument( node ) {
 
 	docElem.removeChild( testEl );
 
-	matches = docElem.matches || docElem.msMatchesSelector;
+	matches = docElem.matches ||
+		docElem.webkitMatchesSelector ||
+		docElem.msMatchesSelector;
 
 	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
 
