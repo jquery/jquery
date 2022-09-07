@@ -5,7 +5,9 @@ define( [
 	"./var/hasOwn",
 	"./var/indexOf",
 
-	"./selector/contains" // jQuery.contains
+	// The following utils are attached directly to the jQuery object.
+	"./selector/contains",
+	"./selector/escapeSelector"
 ], function( jQuery, document, documentElement, hasOwn, indexOf ) {
 
 "use strict";
@@ -39,28 +41,7 @@ var hasDuplicate, sortInput,
 	sortStable = jQuery.expando.split( "" ).sort( sortOrder ).join( "" ) === jQuery.expando,
 	matches = documentElement.matches ||
 		documentElement.webkitMatchesSelector ||
-		documentElement.mozMatchesSelector ||
-		documentElement.oMatchesSelector ||
-		documentElement.msMatchesSelector,
-
-	// CSS string/identifier serialization
-	// https://drafts.csswg.org/cssom/#common-serializing-idioms
-	rcssescape = /([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g,
-	fcssescape = function( ch, asCodePoint ) {
-		if ( asCodePoint ) {
-
-			// U+0000 NULL becomes U+FFFD REPLACEMENT CHARACTER
-			if ( ch === "\0" ) {
-				return "\uFFFD";
-			}
-
-			// Control characters and (dependent upon position) numbers get escaped as code points
-			return ch.slice( 0, -1 ) + "\\" + ch.charCodeAt( ch.length - 1 ).toString( 16 ) + " ";
-		}
-
-		// Other potentially-special ASCII characters get backslash-escaped
-		return "\\" + ch;
-	};
+		documentElement.msMatchesSelector;
 
 function sortOrder( a, b ) {
 
@@ -133,14 +114,16 @@ function uniqueSort( results ) {
 	return results;
 }
 
-function escape( sel ) {
-	return ( sel + "" ).replace( rcssescape, fcssescape );
-}
-
 jQuery.extend( {
+
+	// This method cannot be shared with the main selector module
+	// as it does in 4.x because of an edge case quirk of putting
+	// disconnected elements in the preferred document before other
+	// elements in the full selector module. This will be a minor
+	// breaking change in 4.0.0.
 	uniqueSort: uniqueSort,
 	unique: uniqueSort,
-	escapeSelector: escape,
+
 	find: function( selector, context, results, seed ) {
 		var elem, nodeType,
 			i = 0;
