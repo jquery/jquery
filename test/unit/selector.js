@@ -179,11 +179,11 @@ QUnit.test( "XML Document Selectors", function( assert ) {
 } );
 
 QUnit.test( "broken selectors throw", function( assert ) {
-	assert.expect( 31 );
+	assert.expect( 33 );
 
 	function broken( name, selector ) {
 		assert.throws( function() {
-			jQuery.find( selector );
+			jQuery( selector );
 		}, name + ": " + selector );
 	}
 
@@ -197,6 +197,8 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Broken Selector", "," );
 	broken( "Broken Selector", ",a" );
 	broken( "Broken Selector", "a," );
+	broken( "Post-comma invalid selector", "*,:x" );
+	broken( "Identifier with bad escape", "foo\\\fbaz" );
 	broken( "Broken Selector", "[id=012345678901234567890123456789" );
 	broken( "Doesn't exist", ":visble" );
 	broken( "Nth-child", ":nth-child" );
@@ -214,14 +216,14 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Last-last-child", ":last-last-child" );
 	broken( "Only-last-child", ":only-last-child" );
 
-	// Make sure attribute value quoting works correctly. See: #6093
+	// Make sure attribute value quoting works correctly. See: trac-6093
 	jQuery( "<input type='hidden' value='2' name='foo.baz' id='attrbad1'/>" +
 		"<input type='hidden' value='2' name='foo[baz]' id='attrbad2'/>" )
 		.appendTo( "#qunit-fixture" );
 
 	broken( "Attribute equals non-value", "input[name=]" );
-	broken( "Attribute equals unquoted non-identifer", "input[name=foo.baz]" );
-	broken( "Attribute equals unquoted non-identifer", "input[name=foo[baz]]" );
+	broken( "Attribute equals unquoted non-identifier", "input[name=foo.baz]" );
+	broken( "Attribute equals unquoted non-identifier", "input[name=foo[baz]]" );
 	broken( "Attribute equals bad string", "input[name=''double-quoted'']" );
 	broken( "Attribute equals bad string", "input[name='apostrophe'd']" );
 } );
@@ -637,14 +639,14 @@ QUnit.test( "attributes - hyphen-prefix matches", function( assert ) {
 } );
 
 QUnit.test( "attributes - special characters", function( assert ) {
-	assert.expect( 14 );
+	assert.expect( 16 );
 
 	var attrbad;
 	var div = document.createElement( "div" );
 
-	// trac-3279
+	// trac-3729
 	div.innerHTML = "<div id='foo' xml:test='something'></div>";
-	assert.deepEqual( jQuery.find( "[xml\\:test]", div ),
+	assert.deepEqual( jQuery( "[xml\\:test]", div ).get(),
 		[ div.firstChild ],
 		"attribute name containing colon" );
 
@@ -655,6 +657,7 @@ QUnit.test( "attributes - special characters", function( assert ) {
 		"<input type='hidden' id='attrbad_space' name='foo bar'/>" +
 		"<input type='hidden' id='attrbad_dot' value='2' name='foo.baz'/>" +
 		"<input type='hidden' id='attrbad_brackets' value='2' name='foo[baz]'/>" +
+		"<input type='hidden' id='attrbad_leading_digits' name='agent' value='007'/>" +
 		"<input type='hidden' id='attrbad_injection' data-attr='foo_baz&#39;]'/>" +
 		"<input type='hidden' id='attrbad_quote' data-attr='&#39;'/>" +
 		"<input type='hidden' id='attrbad_backslash' data-attr='&#92;'/>" +
@@ -676,6 +679,13 @@ QUnit.test( "attributes - special characters", function( assert ) {
 	assert.deepEqual( jQuery.find( "input[data-attr='foo_baz\\']']", null, null, attrbad ),
 		q( "attrbad_injection" ),
 		"string containing quote and right bracket" );
+
+	assert.deepEqual( jQuery.find( "input[value=\\30 \\30\\37 ]", null, null, attrbad ),
+		q( "attrbad_leading_digits" ),
+		"identifier containing escaped leading digits with whitespace termination" );
+	assert.deepEqual( jQuery.find( "input[value=\\00003007]", null, null, attrbad ),
+		q( "attrbad_leading_digits" ),
+		"identifier containing escaped leading digits without whitespace termination" );
 
 	assert.deepEqual( jQuery.find( "input[data-attr='\\'']", null, null, attrbad ),
 		q( "attrbad_quote" ),
