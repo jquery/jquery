@@ -407,7 +407,6 @@ function createDisabledPseudo( disabled ) {
 				return elem.isDisabled === disabled ||
 
 					// Where there is no isDisabled, check manually
-					/* jshint -W018 */
 					elem.isDisabled !== !disabled &&
 						inDisabledFieldset( elem ) === disabled;
 			}
@@ -901,8 +900,8 @@ Expr = jQuery.expr = {
 			var expectedNodeName = nodeNameSelector.replace( runescape, funescape ).toLowerCase();
 			return nodeNameSelector === "*" ?
 				function() {
- return true;
-} :
+					return true;
+				} :
 				function( elem ) {
 					return nodeName( elem, expectedNodeName );
 				};
