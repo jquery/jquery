@@ -720,7 +720,7 @@ QUnit.test( "attributes - special characters", function( assert ) {
 } );
 
 QUnit.test( "attributes - others", function( assert ) {
-	assert.expect( 10 );
+	assert.expect( 14 );
 
 	var div = document.getElementById( "foo" );
 
@@ -750,6 +750,17 @@ QUnit.test( "attributes - others", function( assert ) {
 	assert.ok( !jQuery( "<input type='checkbox'/>" ).prop( "checked", true ).is( "[checked]" ),
 		"[checked] selects by attribute (negative)"
 	);
+
+	assert.t( "empty name", "[name='']", [ "name-empty" ] );
+	assert.t( "prefixed empty name", "#empty-name-parent [name='']", [ "name-empty" ] );
+
+	var emptyNameContainer = jQuery( ".empty-name-container" );
+	assert.deepEqual( emptyNameContainer.find( "[name='']" ).get(),
+		q( "name-empty" ),
+		"empty name with context" );
+	assert.deepEqual( emptyNameContainer.find( "#empty-name-parent [name='']" ).get(),
+		q( "name-empty" ),
+		"prefixed empty name with context" );
 } );
 
 QUnit.test( "pseudo - (parent|empty)", function( assert ) {
@@ -1259,7 +1270,7 @@ QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "pseudo - position", functi
 
 	assert.t( "Check element position", "#qunit-fixture div div:eq(0)", [ "nothiddendivchild" ] );
 	assert.t( "Check element position", "#select1 option:eq(3)", [ "option1d" ] );
-	assert.t( "Check element position", "#qunit-fixture div div:eq(10)", [ "names-group" ] );
+	assert.t( "Check element position", "#qunit-fixture div div:eq(10)", [ "no-clone-exception" ] );
 	assert.t( "Check element position", "#qunit-fixture div div:first", [ "nothiddendivchild" ] );
 	assert.t( "Check element position", "#qunit-fixture div > div:first", [ "nothiddendivchild" ] );
 	assert.t( "Check element position", "#qunit-fixture div:first a:first", [ "yahoo" ] );

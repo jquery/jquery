@@ -7,12 +7,14 @@ define( [
 	"./var/pop",
 	"./var/push",
 	"./var/sort",
+	"./var/whitespace",
 	"./var/support",
 
 	// The following utils are attached directly to the jQuery object.
 	"./selector/contains",
 	"./selector/escapeSelector"
-], function( jQuery, nodeName, document, indexOf, hasOwn, pop, push, sort, support ) {
+], function( jQuery, nodeName, document, indexOf, hasOwn, pop, push, sort,
+	whitespace, support ) {
 
 "use strict";
 
@@ -26,8 +28,6 @@ var i,
 	Expr,
 	outermostContext,
 	hasDuplicate,
-	testEl,
-	input,
 
 	// Local document vars
 	document,
@@ -55,9 +55,6 @@ var i,
 		"loop|multiple|open|readonly|required|scoped",
 
 	// Regular expressions
-
-	// https://www.w3.org/TR/css3-selectors/#whitespace
-	whitespace = "[\\x20\\t\\r\\n\\f]",
 
 	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
 	identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace +
@@ -483,6 +480,12 @@ function setDocument( node ) {
 	documentElement = document.documentElement;
 	documentIsHTML = !jQuery.isXMLDoc( document );
 
+	// Support: iOS 7 only, IE 9 - 11+
+	// Older browsers didn't support unprefixed `matches`.
+	matches = documentElement.matches ||
+		documentElement.webkitMatchesSelector ||
+		documentElement.msMatchesSelector;
+
 	// Support: IE 9 - 11+, Edge 12 - 18+
 	// Accessing iframe documents after unload throws "permission denied" errors (jQuery #13936)
 	// Support: IE 11+, Edge 17 - 18+
@@ -599,37 +602,47 @@ function setDocument( node ) {
 
 	rbuggyQSA = [];
 
-	testEl = document.createElement( "fieldset" );
+	// Build QSA regex
+	// Regex strategy adopted from Diego Perini
+	assert( function( el ) {
 
-	testEl.innerHTML = "<a href='' disabled='disabled'></a>" +
-		"<select disabled='disabled'><option/></select>";
+		var input;
 
-	// Support: Windows 8 Native Apps
-	// The type and name attributes are restricted during .innerHTML assignment
-	input = document.createElement( "input" );
-	input.setAttribute( "type", "hidden" );
-	testEl.appendChild( input ).setAttribute( "name", "D" );
+		el.innerHTML = "<a href='' disabled='disabled'></a>" +
+			"<select disabled='disabled'><option/></select>";
 
-	// Support: Chrome 74+
-	// :enabled/:disabled and hidden elements (hidden elements are still enabled)
-	if ( testEl.querySelectorAll( ":enabled" ).length !== 2 ) {
-		rbuggyQSA.push( ":enabled", ":disabled" );
-	}
+		// Support: Windows 8 Native Apps
+		// The type and name attributes are restricted during .innerHTML assignment
+		input = document.createElement( "input" );
+		input.setAttribute( "type", "hidden" );
+		el.appendChild( input ).setAttribute( "name", "D" );
 
-	// Support: IE 9 - 11+
-	// IE's :disabled selector does not pick up the children of disabled fieldsets
-	documentElement.appendChild( testEl ).disabled = true;
-	if ( testEl.querySelectorAll( ":disabled" ).length !== 2 ) {
-		rbuggyQSA.push( ":enabled", ":disabled" );
-	}
+		// Support: Chrome 74+
+		// :enabled/:disabled and hidden elements (hidden elements are still enabled)
+		if ( el.querySelectorAll( ":enabled" ).length !== 2 ) {
+			rbuggyQSA.push( ":enabled", ":disabled" );
+		}
 
-	documentElement.removeChild( testEl );
+		// Support: IE 9 - 11+
+		// IE's :disabled selector does not pick up the children of disabled fieldsets
+		documentElement.appendChild( el ).disabled = true;
+		if ( el.querySelectorAll( ":disabled" ).length !== 2 ) {
+			rbuggyQSA.push( ":enabled", ":disabled" );
+		}
 
-	// Support: iOS 7 only, IE 9 - 11+
-	// Older browsers didn't support unprefixed `matches`.
-	matches = documentElement.matches ||
-		documentElement.webkitMatchesSelector ||
-		documentElement.msMatchesSelector;
+		// Support: IE 11+, Edge 15 - 18+
+		// IE 11/Edge don't find elements on a `[name='']` query in some cases.
+		// Adding a temporary attribute to the document before the selection works
+		// around the issue.
+		// Interestingly, IE 10 & older don't seem to have the issue.
+		input = document.createElement( "input" );
+		input.setAttribute( "name", "" );
+		el.appendChild( input );
+		if ( !el.querySelectorAll( "[name='']" ).length ) {
+			rbuggyQSA.push( "\\[" + whitespace + "*name" + whitespace + "*=" +
+				whitespace + "*(?:''|\"\")" );
+		}
+	} );
 
 	rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
 

@@ -1270,7 +1270,7 @@ QUnit.test( "addClass(Array)", function( assert ) {
 } );
 
 QUnit.test( "addClass(Function) with incoming value", function( assert ) {
-	assert.expect( 57 );
+	assert.expect( 59 );
 	var pass, i,
 		div = jQuery( "#qunit-fixture div" ),
 		old = div.map( function() {
@@ -1345,7 +1345,7 @@ QUnit.test( "removeClass(Array) - simple", function( assert ) {
 } );
 
 QUnit.test( "removeClass(Function) with incoming value", function( assert ) {
-	assert.expect( 57 );
+	assert.expect( 59 );
 
 	var $divs = jQuery( "#qunit-fixture div" ).addClass( "test" ), old = $divs.map( function() {
 		return jQuery( this ).attr( "class" );
