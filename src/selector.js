@@ -5,12 +5,13 @@ define( [
 	"./var/hasOwn",
 	"./var/pop",
 	"./var/push",
+	"./var/sort",
 	"./var/support",
 
 	// The following utils are attached directly to the jQuery object.
 	"./selector/contains",
 	"./selector/escapeSelector"
-], function( jQuery, document, indexOf, hasOwn, pop, push, support ) {
+], function( jQuery, document, indexOf, hasOwn, pop, push, sort, support ) {
 
 "use strict";
 
@@ -200,7 +201,7 @@ function find( selector, context, results, seed ) {
 							// Support: IE 9 only
 							// getElementById can match elements by name instead of ID
 							if ( elem.id === m ) {
-								results.push( elem );
+								push.call( results, elem );
 								return results;
 							}
 						}
@@ -215,7 +216,7 @@ function find( selector, context, results, seed ) {
 							jQuery.contains( context, elem ) &&
 							elem.id === m ) {
 
-							results.push( elem );
+							push.call( results, elem );
 							return results;
 						}
 					}
@@ -737,7 +738,7 @@ jQuery.uniqueSort = function( results ) {
 		j = 0,
 		i = 0;
 
-	results.sort( sortOrder );
+	sort.call( results, sortOrder );
 
 	if ( hasDuplicate ) {
 		while ( ( elem = results[ i++ ] ) ) {
@@ -1683,7 +1684,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 					}
 					while ( ( matcher = elementMatchers[ j++ ] ) ) {
 						if ( matcher( elem, context || document, xml ) ) {
-							results.push( elem );
+							push.call( results, elem );
 							break;
 						}
 					}
