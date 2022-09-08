@@ -417,6 +417,16 @@ QUnit.test( "isXMLDoc - XML", function( assert ) {
 	assert.ok( jQuery.isXMLDoc( jQuery( "desc", svg )[ 0 ] ), "XML desc Element" );
 } );
 
+QUnit.test( "isXMLDoc - falsy", function( assert ) {
+	assert.expect( 5 );
+
+	assert.strictEqual( jQuery.isXMLDoc( undefined ), false, "undefined" );
+	assert.strictEqual( jQuery.isXMLDoc( null ), false, "null" );
+	assert.strictEqual( jQuery.isXMLDoc( false ), false, "false" );
+	assert.strictEqual( jQuery.isXMLDoc( 0 ), false, "0" );
+	assert.strictEqual( jQuery.isXMLDoc( "" ), false, "\"\"" );
+} );
+
 QUnit.test( "XSS via location.hash", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );

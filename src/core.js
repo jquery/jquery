@@ -323,8 +323,8 @@ jQuery.extend( {
 	},
 
 	isXMLDoc: function( elem ) {
-		var namespace = elem.namespaceURI,
-			docElem = ( elem.ownerDocument || elem ).documentElement;
+		var namespace = elem && elem.namespaceURI,
+			docElem = elem && ( elem.ownerDocument || elem ).documentElement;
 
 		// Assume HTML when documentElement doesn't yet exist, such as inside
 		// document fragments.
