@@ -1887,7 +1887,7 @@ QUnit.test( "jQuery.contains in SVG (jQuery trac-10832)", function( assert ) {
 } );
 
 QUnit.test( "jQuery.uniqueSort", function( assert ) {
-	assert.expect( 15 );
+	assert.expect( 14 );
 
 	function Arrayish( arr ) {
 		var i = this.length = arr.length;
@@ -1896,9 +1896,7 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		}
 	}
 	Arrayish.prototype = {
-		slice: [].slice,
-		sort: [].sort,
-		splice: [].splice
+		sliceForTestOnly: [].slice
 	};
 
 	var i, tests,
@@ -1960,11 +1958,13 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
-		assert.deepEqual( jQuery.uniqueSort( test.input ).slice( 0, length ), test.expected, label + " (array)" );
-		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).slice( 0, length ), test.expected, label + " (quasi-array)" );
+		// We duplicate `test.input` because otherwise it is modified by `uniqueSort`
+		// and the second test becomes worthless.
+		assert.deepEqual( jQuery.uniqueSort( test.input.slice( 0 ) ).slice( 0, length ),
+			test.expected, label + " (array)" );
+		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).sliceForTestOnly( 0, length ),
+			test.expected, label + " (quasi-array)" );
 	} );
-
-	assert.strictEqual( jQuery.unique, jQuery.uniqueSort, "jQuery.unique() is an alias for jQuery.uniqueSort()" );
 } );
 
 testIframe(

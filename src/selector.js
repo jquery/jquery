@@ -7,6 +7,7 @@ define( [
 	"./var/pop",
 	"./var/push",
 	"./var/sort",
+	"./var/splice",
 	"./var/whitespace",
 	"./var/rtrimCSS",
 	"./var/support",
@@ -15,7 +16,7 @@ define( [
 	"./selector/contains",
 	"./selector/escapeSelector"
 ], function( jQuery, nodeName, document, indexOf, hasOwn, pop, push, sort,
-	whitespace, rtrimCSS, support ) {
+	splice, whitespace, rtrimCSS, support ) {
 
 "use strict";
 
@@ -785,7 +786,7 @@ jQuery.uniqueSort = function( results ) {
 			}
 		}
 		while ( j-- ) {
-			results.splice( duplicates[ j ], 1 );
+			splice.call( results, duplicates[ j ], 1 );
 		}
 	}
 
