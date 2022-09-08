@@ -852,7 +852,7 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 QUnit.test( "pseudo - nth-last-child", function( assert ) {
 	assert.expect( 30 );
 
-	jQuery( "#qunit-fixture" ).append( "<form id='nth-last-child-form'/><i/><i/><i/><i/>" );
+	jQuery( "#qunit-fixture" ).append( "<form id='nth-last-child-form'></form><i></i><i></i><i></i><i></i>" );
 	assert.t( "Nth-last-child", "form:nth-last-child(5)", [ "nth-last-child-form" ] );
 	assert.t( "Nth-last-child (with whitespace)", "form:nth-last-child( 5 )", [ "nth-last-child-form" ] );
 
