@@ -2,8 +2,6 @@ QUnit.module( "selector", {
 	beforeEach: function() {
 		this.safari = /\bsafari\b/i.test( navigator.userAgent ) &&
 			!/\bchrome\b/i.test( navigator.userAgent );
-		this.chrome = /\bchrome\b/i.test( navigator.userAgent ) &&
-			!/\bedge\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown
 } );
@@ -1379,18 +1377,14 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 			"disabled-select", "disabled-optgroup", "disabled-option" ]
 	);
 
-	if ( QUnit.jQuerySelectors || !this.chrome ) {
-		// Support: Chrome 75+
-		// Chrome recognizes anchor elements as enabled.
-		assert.t(
-			"Enabled elements",
-			"#enabled-fieldset :enabled",
-			[ "enabled-input", "enabled-textarea", "enabled-button",
-				"enabled-select", "enabled-optgroup", "enabled-option" ]
-		);
-	} else {
-		assert.ok( "skip", ":enabled broken in Chrome in selector-native" );
-	}
+	// Support: Chrome 75+
+	// Chrome recognizes anchor elements as enabled.
+	assert.t(
+		"Enabled elements",
+		"#enabled-fieldset :enabled",
+		[ "enabled-input", "enabled-textarea", "enabled-button",
+			"enabled-select", "enabled-optgroup", "enabled-option" ]
+	);
 } );
 
 QUnit.test( "pseudo - :(dis|en)abled, optgroup and option", function( assert ) {
