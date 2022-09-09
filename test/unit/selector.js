@@ -1672,7 +1672,7 @@ QUnit.test( "context", function( assert ) {
 // IE/Edge don't support the :scope pseudo-class so they will trigger MutationObservers.
 // The test is skipped there.
 QUnit[
-	( QUnit.isIE || /edge\//i.test( navigator.userAgent ) ) ?
+	( document.documentMode || /edge\//i.test( navigator.userAgent ) ) ?
 		"skip" :
 		"test"
 	]( "selectors maintaining context don't trigger mutation observers", function( assert ) {
@@ -1964,6 +1964,10 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 			length: 3
 		}
 	};
+
+	// Trigger a dummy query to reset the document to the default one as in 3.x
+	// that matters for the sorting order.
+	jQuery( "#qunit-fixture" );
 
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
