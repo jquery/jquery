@@ -200,8 +200,9 @@ function find( selector, context, results, seed ) {
 								push.call( results, elem );
 								return results;
 							}
+						} else {
+							return results;
 						}
-						return results;
 
 					// Element context
 					} else {
