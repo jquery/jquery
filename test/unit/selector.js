@@ -1420,7 +1420,11 @@ QUnit.test( "pseudo - fieldset:(dis|en)abled", function( assert ) {
 	assert.t( "Enabled fieldset", "fieldset:enabled", [ "enabled-fieldset" ] );
 } );
 
-QUnit.test( "pseudo - :disabled by ancestry", function( assert ) {
+// Support: Android 4.0-4.2+
+// This test has never worked in old WebKit.
+QUnit[
+	/android 4\.[0-3]/i.test( navigator.userAgent ) ? "skip" : "test"
+]( "pseudo - :disabled by ancestry", function( assert ) {
 	assert.expect( 1 );
 
 	assert.t(
@@ -1668,11 +1672,14 @@ QUnit.test( "context", function( assert ) {
 	}
 } );
 
-// Support: IE 11+, Edge 12 - 18+
-// IE/Edge don't support the :scope pseudo-class so they will trigger MutationObservers.
+// Support: IE 11+, Edge 12 - 18+, Android <=4.0-4.2+
+// Browsers that don't support the :scope pseudo-class will trigger MutationObservers.
 // The test is skipped there.
 QUnit[
-	( document.documentMode || /edge\//i.test( navigator.userAgent ) ) ?
+	( document.documentMode ||
+		/edge\//i.test( navigator.userAgent ) ||
+		/android 4\.[0-3]/i.test( navigator.userAgent )
+	) ?
 		"skip" :
 		"test"
 	]( "selectors maintaining context don't trigger mutation observers", function( assert ) {

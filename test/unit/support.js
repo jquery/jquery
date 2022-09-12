@@ -78,7 +78,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
 				scope: false,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ie_10_11: {
 				ajax: true,
@@ -100,7 +102,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
 				scope: false,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ie_9: {
 				ajax: true,
@@ -122,7 +126,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
 				scope: false,
-				scrollboxSize: false
+				scrollboxSize: false,
+				sortDetached: true,
+				sortStable: true
 			},
 			chrome: {
 				ajax: true,
@@ -144,7 +150,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			safari: {
 				ajax: true,
@@ -166,7 +174,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			safari_9_10: {
 				ajax: true,
@@ -188,7 +198,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			firefox: {
 				ajax: true,
@@ -210,7 +222,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: false,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			firefox_60: {
 				ajax: true,
@@ -232,7 +246,9 @@ testIframe(
 				reliableMarginLeft: false,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ios: {
 				ajax: true,
@@ -254,7 +270,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ios_9_10: {
 				ajax: true,
@@ -276,7 +294,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ios_8: {
 				ajax: true,
@@ -298,7 +318,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			ios_7: {
 				ajax: true,
@@ -320,7 +342,9 @@ testIframe(
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
 				scope: true,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
 			},
 			android: {
 				ajax: true,
@@ -342,7 +366,9 @@ testIframe(
 				reliableMarginLeft: false,
 				reliableTrDimensions: true,
 				scope: false,
-				scrollboxSize: true
+				scrollboxSize: true,
+				sortDetached: false,
+				sortStable: false
 			}
 		};
 

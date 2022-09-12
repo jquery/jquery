@@ -1,11 +1,13 @@
 define( [
 	"./core",
 	"./core/nodeName",
+	"./var/arr",
 	"./var/document",
 	"./var/indexOf",
 	"./var/hasOwn",
 	"./var/pop",
 	"./var/push",
+	"./var/slice",
 	"./var/sort",
 	"./var/splice",
 	"./var/whitespace",
@@ -15,12 +17,13 @@ define( [
 	// The following utils are attached directly to the jQuery object.
 	"./selector/contains",
 	"./selector/escapeSelector"
-], function( jQuery, nodeName, document, indexOf, hasOwn, pop, push, sort,
-	splice, whitespace, rtrimCSS, support ) {
+], function( jQuery, nodeName, arr, document, indexOf, hasOwn, pop, push,
+	slice, sort, splice, whitespace, rtrimCSS, support ) {
 
 "use strict";
 
-var preferredDoc = document;
+var preferredDoc = document,
+	pushNative = push;
 
 ( function() {
 
@@ -29,7 +32,9 @@ var preferredDoc = document;
 var i,
 	Expr,
 	outermostContext,
+	sortInput,
 	hasDuplicate,
+	push = pushNative,
 
 	// Local document vars
 	document,
@@ -160,6 +165,28 @@ var i,
 		{ dir: "parentNode", next: "legend" }
 	);
 
+// Optimize for push.apply( _, NodeList )
+try {
+	push.apply(
+		( arr = slice.call( preferredDoc.childNodes ) ),
+		preferredDoc.childNodes
+	);
+
+	// Support: Android <=4.0
+	// Detect silently failing push.apply
+	// eslint-disable-next-line no-unused-expressions
+	arr[ preferredDoc.childNodes.length ].nodeType;
+} catch ( e ) {
+	push = {
+		apply: function( target, els ) {
+			pushNative.apply( target, slice.call( els ) );
+		},
+		call: function( target ) {
+			pushNative.apply( target, slice.call( arguments, 1 ) );
+		}
+	};
+}
+
 function find( selector, context, results, seed ) {
 	var m, i, elem, nid, match, groups, newSelector,
 		newContext = context && context.ownerDocument,
@@ -210,7 +237,7 @@ function find( selector, context, results, seed ) {
 						// Support: IE 9 only
 						// getElementById can match elements by name instead of ID
 						if ( newContext && ( elem = newContext.getElementById( m ) ) &&
-							jQuery.contains( context, elem ) &&
+							find.contains( context, elem ) &&
 							elem.id === m ) {
 
 							push.call( results, elem );
@@ -704,7 +731,8 @@ function setDocument( node ) {
 			1;
 
 		// Disconnected nodes
-		if ( compare & 1 ) {
+		if ( compare & 1 ||
+			( !support.sortDetached && b.compareDocumentPosition( a ) === compare ) ) {
 
 			// Choose the first element that is related to our preferred document
 			// Support: IE 11+, Edge 17 - 18+
@@ -712,7 +740,7 @@ function setDocument( node ) {
 			// two documents; shallow comparisons work.
 			// eslint-disable-next-line eqeqeq
 			if ( a === document || a.ownerDocument == preferredDoc &&
-				jQuery.contains( preferredDoc, a ) ) {
+				find.contains( preferredDoc, a ) ) {
 				return -1;
 			}
 
@@ -721,12 +749,14 @@ function setDocument( node ) {
 			// two documents; shallow comparisons work.
 			// eslint-disable-next-line eqeqeq
 			if ( b === document || b.ownerDocument == preferredDoc &&
-				jQuery.contains( preferredDoc, b ) ) {
+				find.contains( preferredDoc, b ) ) {
 				return 1;
 			}
 
 			// Maintain original order
-			return 0;
+			return sortInput ?
+				( indexOf.call( sortInput, a ) - indexOf.call( sortInput, b ) ) :
+				0;
 		}
 
 		return compare & 4 ? -1 : 1;
@@ -764,6 +794,20 @@ find.matchesSelector = function( elem, expr ) {
 
 	return find( expr, document, null, [ elem ] ).length > 0;
 };
+
+find.contains = function( context, elem ) {
+
+	// Set document vars if needed
+	// Support: IE 11+, Edge 17 - 18+
+	// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( ( context.ownerDocument || context ) != document ) {
+		setDocument( context );
+	}
+	return jQuery.contains( context, elem );
+};
+
 
 find.attr = function( elem, name ) {
 
@@ -804,6 +848,13 @@ jQuery.uniqueSort = function( results ) {
 		j = 0,
 		i = 0;
 
+	// Unless we *know* we can detect duplicates, assume their presence
+	//
+	// Support: Android <=4.0+
+	// Testing for detecting duplicates is unpredictable so instead assume we can't
+	// depend on duplicate detection in all browsers without a stable sort.
+	hasDuplicate = !support.sortStable;
+	sortInput = !support.sortStable && slice.call( results, 0 );
 	sort.call( results, sortOrder );
 
 	if ( hasDuplicate ) {
@@ -816,6 +867,10 @@ jQuery.uniqueSort = function( results ) {
 			splice.call( results, duplicates[ j ], 1 );
 		}
 	}
+
+	// Clear input after sorting to release objects
+	// See https://github.com/jquery/sizzle/pull/225
+	sortInput = null;
 
 	return results;
 };
@@ -1973,8 +2028,22 @@ function select( selector, context, results, seed ) {
 	return results;
 }
 
+// One-time assignments
+
+// Support: Android <=4.0 - 4.1+
+// Sort stability
+support.sortStable = expando.split( "" ).sort( sortOrder ).join( "" ) === expando;
+
 // Initialize against the default document
 setDocument();
+
+// Support: Android <=4.0 - 4.1+
+// Detached nodes confoundingly follow *each other*
+support.sortDetached = assert( function( el ) {
+
+	// Should return 1, but returns 4 (following)
+	return el.compareDocumentPosition( document.createElement( "fieldset" ) ) & 1;
+} );
 
 jQuery.find = find;
 
@@ -1989,7 +2058,6 @@ find.compile = compile;
 find.select = select;
 find.setDocument = setDocument;
 
-find.contains = jQuery.contains;
 find.escape = jQuery.escapeSelector;
 find.getText = jQuery.text;
 find.isXML = jQuery.isXMLDoc;
