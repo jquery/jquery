@@ -1756,10 +1756,16 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "disconnected nodes", function
 	assert.equal( $opt.is( ":selected" ), true, "selected option" );
 } );
 
-// Support: IE 11+, Edge 12 - 18+
+// Support: IE 11+, Edge 12 - 18+, Firefox <63 only, iOS <11 only
 // IE/Edge don't support Shadow DOM.
+// Old Firefox doesn't support `attachShadow` but Safari implemented it
+// before `getRootNode` so we need to check both.
 // selector-native doesn't support querying inside of Shadow DOM.
-QUnit[ QUnit.jQuerySelectors && document.body.getRootNode ? "test" : "skip" ](
+QUnit[
+	QUnit.jQuerySelectors && document.body.attachShadow && document.body.getRootNode ?
+	"test" :
+	"skip"
+](
 	"Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 
