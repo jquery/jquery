@@ -40,6 +40,8 @@ function adoptValue( value, resolve, reject, noValue ) {
 	}
 }
 
+var asap = window.queueMicrotask || window.setTimeout;
+
 jQuery.extend( {
 
 	Deferred: function( func ) {
@@ -221,7 +223,7 @@ jQuery.extend( {
 								if ( jQuery.Deferred.getStackHook ) {
 									process.stackTrace = jQuery.Deferred.getStackHook();
 								}
-								window.setTimeout( process );
+								asap( process );
 							}
 						};
 					}
