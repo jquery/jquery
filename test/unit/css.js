@@ -1760,6 +1760,7 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 			"        --prop10:\f\r\n\t val10 \f\r\n\t;\n" +
 			"        --prop11:\u000C\u000D\u000A\u0009\u0020val11\u0020\u0009\u000A\u000D\u000C;\n" +
 			"        --prop12:\u000Bval12\u000B;\n" +
+			"        --empty:;\n" +
 			"    }\n" +
 			"</style>"
 		);
@@ -1768,7 +1769,7 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 			$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 				.appendTo( "#qunit-fixture" ),
 			webkitOrBlink = /\bsafari\b/i.test( navigator.userAgent ),
-			expected = 17;
+			expected = 19;
 
 		if ( webkitOrBlink ) {
 			expected -= 2;
@@ -1814,6 +1815,8 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 		assert.equal( $elem.css( "--prop10" ), "val10", "Multiple preceding and following escaped unicode whitespace trimmed" );
 		assert.equal( $elem.css( "--prop11" ), "val11", "Multiple preceding and following unicode whitespace trimmed" );
 		assert.equal( $elem.css( "--prop12" ), "\u000Bval12\u000B", "Multiple preceding and following non-CSS whitespace reserved" );
+		assert.equal( $elem.css( "--empty" ), undefined );
+		assert.equal( $elem.css( "--nonexistent" ), undefined );
 	} );
 
 	QUnit[ supportsCssVars ? "test" : "skip" ]( "Don't append px to CSS vars", function( assert ) {
