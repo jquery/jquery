@@ -1985,10 +1985,6 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		}
 	};
 
-	// Trigger a dummy query to reset the document to the default one as in 3.x
-	// that matters for the sorting order.
-	jQuery( "#qunit-fixture" );
-
 	jQuery.each( tests, function( label, test ) {
 		var length = test.length || test.input.length;
 		// We duplicate `test.input` because otherwise it is modified by `uniqueSort`
