@@ -27,8 +27,6 @@ var preferredDoc = document,
 
 ( function() {
 
-/* eslint-disable indent */
-
 var i,
 	Expr,
 	outermostContext,
