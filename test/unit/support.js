@@ -59,19 +59,24 @@ testIframe(
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			ie_11: {
-				"reliableTrDimensions": false
+				cssSupportsSelector: false,
+				reliableTrDimensions: false
 			},
 			chrome: {
-				"reliableTrDimensions": true
+				cssSupportsSelector: false,
+				reliableTrDimensions: true
 			},
 			safari: {
-				"reliableTrDimensions": true
+				cssSupportsSelector: false,
+				reliableTrDimensions: true
 			},
 			firefox: {
-				"reliableTrDimensions": false
+				cssSupportsSelector: false,
+				reliableTrDimensions: false
 			},
 			ios: {
-				"reliableTrDimensions": true
+				cssSupportsSelector: false,
+				reliableTrDimensions: true
 			}
 		};
 
