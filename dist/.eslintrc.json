@@ -14,7 +14,7 @@
 
 	"overrides": [
 		{
-			"files": "jquery.js",
+			"files": "jquery{,.slim}.{,m}js",
 			"extends": "../.eslintrc-browser.json",
 
 			"rules": {
@@ -24,6 +24,17 @@
 				// can get large. Accept that in the built version.
 				"max-len": "off",
 				"one-var": "off"
+			}
+		},
+
+		// Treat all `*.mjs` files as modules. ECMAScript 2015 or higher is
+		// then required by ESLint so also set that.
+		{
+			"files": "*.mjs",
+
+			"parserOptions": {
+				"ecmaVersion": 2015,
+				"sourceType": "module"
 			}
 		}
 	]

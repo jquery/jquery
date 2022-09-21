@@ -114,7 +114,10 @@ module.exports = function( grunt ) {
 			// We have to explicitly declare "src" property otherwise "newer"
 			// task wouldn't work properly :/
 			dist: {
-				src: [ "dist/jquery.js", "dist/jquery.min.js" ]
+				src: [
+					"dist/jquery{,.slim}{,.min}.{,m}js",
+					"dist/jquery-node-wrapper{,.slim}.mjs"
+				]
 			},
 			dev: {
 				src: [
