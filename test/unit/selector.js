@@ -1118,7 +1118,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 		assert.t( "Multi-pseudo", "#ap:has(*), #ap:has(*)", [ "ap" ] );
 		assert.t( "Multi-pseudo with leading nonexistent id", "#nonexistent:has(*), #ap:has(*)", [ "ap" ] );
 
-		assert.t( "Tokenization stressor", "a[class*=blog]:not(:has(*, :contains(!)), :contains(!)), br:contains(]), p:contains(]), :not(:empty):not(:parent)", [ "ap", "mark", "yahoo", "simon" ] );
+		assert.t( "Tokenization stressor", "a[class*=blog]:not(:has(*, :contains(!)), :contains(!)), br:contains(]), p:contains(]):not(.qunit-source), :not(:empty):not(:parent):not(.qunit-source)", [ "ap", "mark", "yahoo", "simon" ] );
 	} else {
 		assert.ok( "skip", ":has not supported in selector-native" );
 		assert.ok( "skip", ":has not supported in selector-native" );
