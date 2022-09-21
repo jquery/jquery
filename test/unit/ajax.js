@@ -1640,8 +1640,14 @@ QUnit.module( "ajax", {
 		var done = assert.async();
 		jQuery.ajax( url( "mock.php?action=status&code=200&text=Hello" ) ).done( function( _, statusText, jqXHR ) {
 			assert.strictEqual( statusText, "success", "callback status text ok for success" );
-			assert.ok( [ "Hello", "OK", "success" ].indexOf( jqXHR.statusText ) > -1,
+
+			// Support: iOS 9 only
+			// Some versions of iOS 9 return the "HTTP/2.0 200" status text
+			// in this case; accept it.
+			assert.ok(
+				[ "Hello", "OK", "success", "HTTP/2.0 200" ].indexOf( jqXHR.statusText ) > -1,
 				"jqXHR status text ok for success (" + jqXHR.statusText + ")" );
+
 			jQuery.ajax( url( "mock.php?action=status&code=404&text=World" ) ).fail( function( jqXHR, statusText ) {
 				assert.strictEqual( statusText, "error", "callback status text ok for error" );
 				done();
