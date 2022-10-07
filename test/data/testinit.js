@@ -377,6 +377,18 @@ this.loadTests = function() {
 
 	// Get testSubproject from testrunner first
 	require( [ parentUrl + "test/data/testrunner.js" ], function() {
+
+		// Says whether jQuery positional selector extensions are supported.
+		// A full selector engine is required to support them as they need to
+		// be evaluated left-to-right. Remove that property when support for
+		// positional selectors is dropped.
+		QUnit.jQuerySelectorsPos = includesModule( "selector-full" );
+
+		// Says whether jQuery selector extensions are supported. Change that
+		// to `false` if your custom jQuery versions relies more on native qSA.
+		// This doesn't include support for positional selectors (see above).
+		QUnit.jQuerySelectors = includesModule( "selector-full" );
+
 		var i = 0,
 			tests = [
 				// A special module with basic tests, meant for not fully
@@ -433,17 +445,6 @@ this.loadTests = function() {
 				 * Run in noConflict mode
 				 */
 				jQuery.noConflict();
-
-				// Says whether jQuery positional selector extensions are supported.
-				// A full selector engine is required to support them as they need to
-				// be evaluated left-to-right. Remove that property when support for
-				// positional selectors is dropped.
-				QUnit.jQuerySelectorsPos = includesModule( "selector-full" );
-
-				// Says whether jQuery selector extensions are supported. Change that
-				// to `false` if your custom jQuery versions relies more on native qSA.
-				// This doesn't include support for positional selectors (see above).
-				QUnit.jQuerySelectors = includesModule( "selector-full" );
 
 				// Load the TestSwarm listener if swarmURL is in the address.
 				if ( QUnit.isSwarm ) {
