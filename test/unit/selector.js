@@ -2219,3 +2219,130 @@ QUnit.test( "jQuery.find.attr (HTML)", function( assert ) {
 QUnit.test( "jQuery.find.attr (XML)", function( assert ) {
 	testAttr( jQuery.parseXML( "<root/>" ), assert );
 } );
+
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( assert ) {
+	assert.expect( 6 );
+
+	try {
+		jQuery.expr.filters.foundation = jQuery.expr.filters.root;
+		assert.deepEqual( jQuery.find( ":foundation" ), [ document.documentElement ], "Copy element filter with new name" );
+	} finally {
+		delete jQuery.expr.filters.foundation;
+	}
+
+	try {
+		jQuery.expr.setFilters.primary = jQuery.expr.setFilters.first;
+		assert.t( "Copy set filter with new name", "div#qunit-fixture :primary", [ "firstp" ] );
+	} finally {
+		delete jQuery.expr.setFilters.primary;
+	}
+
+	try {
+		jQuery.expr.filters.aristotlean = jQuery.expr.createPseudo( function() {
+			return function( elem ) {
+				return !!elem.id;
+			};
+		} );
+		assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "simon" ] );
+	} finally {
+		delete jQuery.expr.filters.aristotlean;
+	}
+
+	try {
+		jQuery.expr.filters.endswith = jQuery.expr.createPseudo( function( text ) {
+			return function( elem ) {
+				return jQuery.text( elem ).slice( -text.length ) === text;
+			};
+		} );
+		assert.t( "Custom element filter with argument", "a:endswith(ogle)", [ "google" ] );
+	} finally {
+		delete jQuery.expr.filters.endswith;
+	}
+
+	try {
+		jQuery.expr.setFilters.second = jQuery.expr.createPseudo( function() {
+			return jQuery.expr.createPseudo( function( seed, matches ) {
+				if ( seed[ 1 ] ) {
+					matches[ 1 ] = seed[ 1 ];
+					seed[ 1 ] = false;
+				}
+			} );
+		} );
+		assert.t( "Custom set filter", "#qunit-fixture p:second", [ "ap" ] );
+	} finally {
+		delete jQuery.expr.filters.second;
+	}
+
+	try {
+		jQuery.expr.setFilters.slice = jQuery.expr.createPseudo( function( argument ) {
+			var bounds = argument.split( ":" );
+			return jQuery.expr.createPseudo( function( seed, matches ) {
+				var i = bounds[ 1 ];
+
+				// Match elements found at the specified indexes
+				while ( --i >= bounds[ 0 ] ) {
+					if ( seed[ i ] ) {
+						matches[ i ] = seed[ i ];
+						seed[ i ] = false;
+					}
+				}
+			} );
+		} );
+		assert.t( "Custom set filter with argument", "#qunit-fixture p:slice(1:3)", [ "ap", "sndp" ] );
+	} finally {
+		delete jQuery.expr.filters.slice;
+	}
+} );
+
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "backwards-compatible custom pseudos", function( assert ) {
+	assert.expect( 3 );
+
+	try {
+		jQuery.expr.filters.icontains = function( elem, i, match ) {
+			return jQuery.text( elem ).toLowerCase().indexOf( ( match[ 3 ] || "" ).toLowerCase() ) > -1;
+		};
+		assert.t( "Custom element filter with argument", "a:icontains(THIS BLOG ENTRY)", [ "simon1" ] );
+	} finally {
+		delete jQuery.expr.filters.icontains;
+	}
+
+	try {
+		jQuery.expr.setFilters.podium = function( elements, argument ) {
+			var count = argument == null || argument === "" ? 3 : +argument;
+			return elements.slice( 0, count );
+		};
+		// Using TAG as the first token here forces this setMatcher into a fail state
+		// Where the descendent combinator was lost
+		assert.t( "Custom setFilter", "form#form :PODIUM", [ "label-for", "text1", "text2" ] );
+		assert.t( "Custom setFilter with argument", "#form input:Podium(1)", [ "text1" ] );
+	} finally {
+		delete jQuery.expr.setFilters.podium;
+	}
+} );
+
+// The jQuery.expr.attrHandle API is only maintained for backwards compatibility
+// on the `3.x-stable` branch.
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom attribute getters", function( assert ) {
+	assert.expect( 2 );
+
+	var original = jQuery.expr.attrHandle.hreflang,
+		selector = "a:contains('mark')[hreflang='http://diveintomark.org/en']";
+
+	try {
+		jQuery.expr.attrHandle.hreflang = function( elem, name ) {
+			var href = elem.getAttribute( "href" ),
+				lang = elem.getAttribute( name );
+			return lang && ( href + lang );
+		};
+
+		assert.deepEqual( jQuery.find( selector, createWithFriesXML() ), [], "Custom attrHandle (preferred document)" );
+		assert.t( "Custom attrHandle (preferred document)", selector, [ "mark" ] );
+	} finally {
+		jQuery.expr.attrHandle.hreflang = original;
+	}
+} );
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "Ensure no 'undefined' handler is added", function( assert ) {
+	assert.expect( 1 );
+	assert.ok( !jQuery.expr.attrHandle.hasOwnProperty( "undefined" ),
+		"Extra attr handlers are not added to Expr.attrHandle (https://github.com/jquery/sizzle/issues/353)" );
+} );
