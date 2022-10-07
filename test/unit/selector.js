@@ -2174,3 +2174,48 @@ QUnit.test( "jQuery.escapeSelector", function( assert ) {
 	assert.equal( jQuery.escapeSelector( "\uDF06" ), "\uDF06", "Doesn't escape lone low surrogate" );
 	assert.equal( jQuery.escapeSelector( "\uD834" ), "\uD834", "Doesn't escape lone high surrogate" );
 } );
+
+function testAttr( doc, assert ) {
+	assert.expect( 9 );
+
+	var el;
+	if ( doc ) {
+		// XML
+		el = doc.createElement( "input" );
+		el.setAttribute( "type", "checkbox" );
+	} else {
+		// Set checked on creation by creating with a fragment
+		// See https://jsfiddle.net/8sVgA/1/show/light in oldIE
+		el = jQuery( "<input type='checkbox' checked='checked' />" )[ 0 ];
+	}
+
+	// Set it again for good measure
+	el.setAttribute( "checked", "checked" );
+	el.setAttribute( "id", "id" );
+	el.setAttribute( "value", "on" );
+
+	assert.strictEqual( jQuery.find.attr( el, "nonexistent" ), null, "nonexistent" );
+	assert.strictEqual( jQuery.find.attr( el, "id" ), "id", "existent" );
+	assert.strictEqual( jQuery.find.attr( el, "value" ), "on", "value" );
+	assert.strictEqual( jQuery.find.attr( el, "checked" ), "checked", "boolean" );
+	assert.strictEqual( jQuery.find.attr( el, "href" ), null, "interpolation risk" );
+	assert.strictEqual( jQuery.find.attr( el, "constructor" ), null,
+		"Object.prototype property \"constructor\" (negative)" );
+	assert.strictEqual( jQuery.find.attr( el, "watch" ), null,
+		"Gecko Object.prototype property \"watch\" (negative)" );
+	el.setAttribute( "constructor", "foo" );
+	el.setAttribute( "watch", "bar" );
+	assert.strictEqual( jQuery.find.attr( el, "constructor" ), "foo",
+		"Object.prototype property \"constructor\"" );
+	assert.strictEqual( jQuery.find.attr( el, "watch" ), "bar",
+		"Gecko Object.prototype property \"watch\"" );
+}
+
+// jQuery.find.attr is a private API but we're testing it on `3.x-stable` to
+// make sure backwards compatibility with Sizzle is maintained on that branch.
+QUnit.test( "jQuery.find.attr (HTML)", function( assert ) {
+	testAttr( null, assert );
+} );
+QUnit.test( "jQuery.find.attr (XML)", function( assert ) {
+	testAttr( jQuery.parseXML( "<root/>" ), assert );
+} );
