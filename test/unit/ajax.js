@@ -2502,9 +2502,9 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
-//----------- jQuery.domManip()
+//----------- domManip()
 
-	QUnit.test( "trac-11264 - jQuery.domManip() - no side effect because of ajaxSetup or global events", function( assert ) {
+	QUnit.test( "trac-11264 - domManip() - no side effect because of ajaxSetup or global events", function( assert ) {
 		assert.expect( 1 );
 
 		jQuery.ajaxSetup( {
@@ -2558,7 +2558,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	);
 
 	QUnit.test(
-		"trac-11402 - jQuery.domManip() - script in comments are properly evaluated",
+		"trac-11402 - domManip() - script in comments are properly evaluated",
 		function( assert ) {
 			assert.expect( 2 );
 			jQuery( "#qunit-fixture" ).load( baseURL + "cleanScript.html", assert.async() );
