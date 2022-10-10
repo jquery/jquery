@@ -2146,55 +2146,73 @@ QUnit.test( "jQuery.escapeSelector", function( assert ) {
 QUnit.test( "custom pseudos", function( assert ) {
 	assert.expect( 6 );
 
-	jQuery.expr.filters.foundation = jQuery.expr.filters.root;
-	assert.deepEqual( jQuery.find( ":foundation" ), [ document.documentElement ], "Copy element filter with new name" );
-	delete jQuery.expr.filters.foundation;
+	try {
+		jQuery.expr.filters.foundation = jQuery.expr.filters.root;
+		assert.deepEqual( jQuery.find( ":foundation" ), [ document.documentElement ], "Copy element filter with new name" );
+	} finally {
+		delete jQuery.expr.filters.foundation;
+	}
 
-	jQuery.expr.setFilters.primary = jQuery.expr.setFilters.first;
-	assert.t( "Copy set filter with new name", "div#qunit-fixture :primary", [ "firstp" ] );
-	delete jQuery.expr.setFilters.primary;
+	try {
+		jQuery.expr.setFilters.primary = jQuery.expr.setFilters.first;
+		assert.t( "Copy set filter with new name", "div#qunit-fixture :primary", [ "firstp" ] );
+	} finally {
+		delete jQuery.expr.setFilters.primary;
+	}
 
-	jQuery.expr.filters.aristotlean = jQuery.expr.createPseudo( function() {
-		return function( elem ) {
-			return !!elem.id;
-		};
-	} );
-	assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "simon" ] );
-	delete jQuery.expr.filters.aristotlean;
-
-	jQuery.expr.filters.endswith = jQuery.expr.createPseudo( function( text ) {
-		return function( elem ) {
-			return jQuery.text( elem ).slice( -text.length ) === text;
-		};
-	} );
-	assert.t( "Custom element filter with argument", "a:endswith(ogle)", [ "google" ] );
-	delete jQuery.expr.filters.endswith;
-
-	jQuery.expr.setFilters.second = jQuery.expr.createPseudo( function() {
-		return jQuery.expr.createPseudo( function( seed, matches ) {
-			if ( seed[ 1 ] ) {
-				matches[ 1 ] = seed[ 1 ];
-				seed[ 1 ] = false;
-			}
+	try {
+		jQuery.expr.filters.aristotlean = jQuery.expr.createPseudo( function() {
+			return function( elem ) {
+				return !!elem.id;
+			};
 		} );
-	} );
-	assert.t( "Custom set filter", "#qunit-fixture p:second", [ "ap" ] );
-	delete jQuery.expr.filters.second;
+		assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "simon" ] );
+	} finally {
+		delete jQuery.expr.filters.aristotlean;
+	}
 
-	jQuery.expr.setFilters.slice = jQuery.expr.createPseudo( function( argument ) {
-		var bounds = argument.split( ":" );
-		return jQuery.expr.createPseudo( function( seed, matches ) {
-			var i = bounds[ 1 ];
+	try {
+		jQuery.expr.filters.endswith = jQuery.expr.createPseudo( function( text ) {
+			return function( elem ) {
+				return jQuery.text( elem ).slice( -text.length ) === text;
+			};
+		} );
+		assert.t( "Custom element filter with argument", "a:endswith(ogle)", [ "google" ] );
+	} finally {
+		delete jQuery.expr.filters.endswith;
+	}
 
-			// Match elements found at the specified indexes
-			while ( --i >= bounds[ 0 ] ) {
-				if ( seed[ i ] ) {
-					matches[ i ] = seed[ i ];
-					seed[ i ] = false;
+	try {
+		jQuery.expr.setFilters.second = jQuery.expr.createPseudo( function() {
+			return jQuery.expr.createPseudo( function( seed, matches ) {
+				if ( seed[ 1 ] ) {
+					matches[ 1 ] = seed[ 1 ];
+					seed[ 1 ] = false;
 				}
-			}
+			} );
 		} );
-	} );
-	assert.t( "Custom set filter with argument", "#qunit-fixture p:slice(1:3)", [ "ap", "sndp" ] );
-	delete jQuery.expr.filters.slice;
+		assert.t( "Custom set filter", "#qunit-fixture p:second", [ "ap" ] );
+	} finally {
+		delete jQuery.expr.filters.second;
+	}
+
+	try {
+		jQuery.expr.setFilters.slice = jQuery.expr.createPseudo( function( argument ) {
+			var bounds = argument.split( ":" );
+			return jQuery.expr.createPseudo( function( seed, matches ) {
+				var i = bounds[ 1 ];
+
+				// Match elements found at the specified indexes
+				while ( --i >= bounds[ 0 ] ) {
+					if ( seed[ i ] ) {
+						matches[ i ] = seed[ i ];
+						seed[ i ] = false;
+					}
+				}
+			} );
+		} );
+		assert.t( "Custom set filter with argument", "#qunit-fixture p:slice(1:3)", [ "ap", "sndp" ] );
+	} finally {
+		delete jQuery.expr.filters.slice;
+	}
 } );
