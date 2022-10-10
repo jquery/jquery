@@ -77,7 +77,7 @@
     "test:esmodules": "grunt && grunt karma:esmodules",
     "test:amd": "grunt && grunt karma:amd",
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
-    "test:selector-native": "grunt test:prepare && grunt custom:-selector-full && grunt karma:main",
+    "test:selector-native": "grunt test:prepare && grunt custom:-selector && grunt karma:main",
     "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
     "test": "npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules && grunt karma:amd",
     "jenkins": "npm run test:browserless"

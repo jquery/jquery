@@ -61,8 +61,7 @@ module.exports = function( grunt ) {
 			all: {
 				dest: "dist/jquery.js",
 				minimum: [
-					"core",
-					"selector"
+					"core"
 				],
 
 				// Exclude specified modules if the module matching the key is removed
@@ -76,7 +75,7 @@ module.exports = function( grunt ) {
 						include: [ "core/ready-no-deferred" ]
 					},
 					event: [ "deprecated/ajax-event-alias", "deprecated/event" ],
-					"selector-full": [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
+					selector: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
 				}
 			}
 		},

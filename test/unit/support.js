@@ -82,7 +82,7 @@ testIframe(
 
 	// Make the selector-native build pass tests.
 	for ( browserKey in expectedMap ) {
-		if ( !includesModule( "selector-full" ) ) {
+		if ( !includesModule( "selector" ) ) {
 			delete expectedMap[ browserKey ].cssSupportsSelector;
 		}
 	}
