@@ -415,12 +415,12 @@ this.loadTests = function() {
 		// A full selector engine is required to support them as they need to
 		// be evaluated left-to-right. Remove that property when support for
 		// positional selectors is dropped.
-		QUnit.jQuerySelectorsPos = includesModule( "selector-full" );
+		QUnit.jQuerySelectorsPos = includesModule( "selector" );
 
 		// Says whether jQuery selector extensions are supported. Change that
 		// to `false` if your custom jQuery versions relies more on native qSA.
 		// This doesn't include support for positional selectors (see above).
-		QUnit.jQuerySelectors = includesModule( "selector-full" );
+		QUnit.jQuerySelectors = includesModule( "selector" );
 
 		var i = 0,
 			tests = [

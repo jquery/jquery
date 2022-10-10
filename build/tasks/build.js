@@ -181,7 +181,7 @@ module.exports = function( grunt ) {
 
 				// Recognize the legacy `sizzle` alias
 				if ( module === "sizzle" ) {
-					module = "selector-full";
+					module = "selector";
 				}
 
 				if ( exclude ) {
@@ -198,7 +198,16 @@ module.exports = function( grunt ) {
 							// These are the removable dependencies
 							// It's fine if the directory is not there
 							try {
-								excludeList( fs.readdirSync( srcFolder + module ), module );
+
+								// `selector` is a special case as we don't just remove
+								// the module, but we replace it with `selector-native`
+								// which re-uses parts of the `src/selector` folder.
+								if ( module !== "selector" ) {
+									excludeList(
+										fs.readdirSync( `${ srcFolder }/${ module }` ),
+										module
+									);
+								}
 							} catch ( e ) {
 								grunt.verbose.writeln( e );
 							}
@@ -216,12 +225,6 @@ module.exports = function( grunt ) {
 						}
 					} else {
 						grunt.log.error( "Module \"" + module + "\" is a minimum requirement." );
-						if ( module === "selector" ) {
-							grunt.log.error(
-								"If you meant to replace the full selector module, " +
-								"use `-selector-full` instead."
-							);
-						}
 					}
 				} else {
 					grunt.log.writeln( flag );
@@ -260,14 +263,14 @@ module.exports = function( grunt ) {
 
 		// Handle full selector module exclusion.
 		// Replace with selector-native.
-		if ( ( index = excluded.indexOf( "selector-full" ) ) > -1 ) {
-			config.rawText.selector = "define(['./selector-native']);";
+		if ( excluded.indexOf( "selector" ) > -1 ) {
+			config.rawText.selector = "define([ \"./selector-native\" ]);";
 		}
 
 		// Replace exports/global with a noop noConflict
 		if ( ( index = excluded.indexOf( "exports/global" ) ) > -1 ) {
-			config.rawText[ "exports/global" ] = "define(['../core']," +
-				"function( jQuery ) {\njQuery.noConflict = function() {};\n});";
+			config.rawText[ "exports/global" ] = "define( [\n\t\"../core\"\n], " +
+				"function( jQuery ) {\n\tjQuery.noConflict = function() {};\n} );";
 			excluded.splice( index, 1 );
 		}
 
