@@ -2593,6 +2593,26 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	QUnit.test( "jQuery.get( String, null-ish, String ) - dataType with null callback (gh-4989)",
+			function( assert ) {
+		assert.expect( 2 );
+		var done = assert.async( 2 );
+
+		jQuery.get( url( "mock.php?action=json&header" ), null, "json" )
+			.then( function( json ) {
+				assert.deepEqual( json, { data: { lang: "en", length: 25 } },
+					"`dataType: \"json\"` applied with a `null` callback" );
+				done();
+			} );
+
+		jQuery.get( url( "mock.php?action=json&header" ), null, "text" )
+			.then( function( text ) {
+				assert.strictEqual( text, "{\"data\":{\"lang\":\"en\",\"length\":25}}",
+					"`dataType: \"text\"` applied with a `null` callback" );
+				done();
+			} );
+	} );
+
 //----------- jQuery.getJSON()
 
 	QUnit.test( "jQuery.getJSON( String, Hash, Function ) - JSON array", function( assert ) {

@@ -846,8 +846,9 @@ jQuery.extend( {
 jQuery.each( [ "get", "post" ], function( _i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
 
-		// Shift arguments if data argument was omitted
-		if ( typeof data === "function" ) {
+		// Shift arguments if data argument was omitted.
+		// Handle the null callback placeholder.
+		if ( typeof data === "function" || data === null ) {
 			type = type || callback;
 			callback = data;
 			data = undefined;

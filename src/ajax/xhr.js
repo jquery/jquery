@@ -15,7 +15,6 @@ var xhrSuccessStatus = {
 jQuery.ajaxTransport( function( options ) {
 	var callback;
 
-	// Cross domain only allowed if supported through XMLHttpRequest
 	return {
 		send: function( headers, complete ) {
 			var i,
