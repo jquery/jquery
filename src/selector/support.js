@@ -3,7 +3,7 @@ import support from "../var/support.js";
 try {
 	/* eslint-disable no-undef */
 
-	// Support: Chrome 105+, Firefox 104+, Safari 15.4+
+	// Support: Chrome 105+, Firefox <106, Safari 15.4+
 	// Make sure forgiving mode is not used in `CSS.supports( "selector(...)" )`.
 	//
 	// `:is()` uses a forgiving selector list as an argument and is widely
