@@ -71,6 +71,10 @@ jQuery.fn = jQuery.prototype = {
 		return jQuery.each( this, callback );
 	},
 
+	entries: function( callback ) {
+		return jQuery.entries( this, callback );
+	},
+
 	map: function( callback ) {
 		return this.pushStack( jQuery.map( this, function( elem, i ) {
 			return callback.call( elem, i, elem );
@@ -247,6 +251,23 @@ jQuery.extend( {
 		} else {
 			for ( i in obj ) {
 				if ( callback.call( obj[ i ], i, obj[ i ] ) === false ) {
+					break;
+				}
+			}
+		}
+
+		return obj;
+	},
+
+	entries: function( obj, callback ) {
+		var length = obj.length, i = 0, propertyNames = [], b = 0;
+
+		for ( ; i < length; i++ ) {
+			propertyNames = Object.getOwnPropertyNames( obj[ i ] );
+
+			for ( ; b < propertyNames.length; b++ ) {
+				if ( callback.call( obj[ i ], propertyNames[ b ],
+					obj[ i ][ propertyNames[ b ] ] ) ) {
 					break;
 				}
 			}
