@@ -265,9 +265,15 @@ jQuery.extend( {
 		for ( ; i < length; i++ ) {
 			propertyNames = Object.getOwnPropertyNames( obj[ i ] );
 
-			for ( ; b < propertyNames.length; b++ ) {
-				if ( callback.call( obj[ i ], propertyNames[ b ],
-					obj[ i ][ propertyNames[ b ] ] ) ) {
+			if ( propertyNames.length > 0 ) {
+				for ( ; b < propertyNames.length; b++ ) {
+					if ( callback.call( obj[ i ], propertyNames[ b ],
+						obj[ i ][ propertyNames[ b ] ] ) ) {
+						break;
+					}
+				}
+			} else {
+				if ( callback.call( obj[ i ], i, obj[ i ] ) ) {
 					break;
 				}
 			}

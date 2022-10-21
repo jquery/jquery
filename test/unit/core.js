@@ -644,6 +644,21 @@ QUnit.test( "each(Function)", function( assert ) {
 	assert.ok( pass, "Execute a function, Relative" );
 } );
 
+QUnit.test( "entries(Function)", function( assert ) {
+	assert.expect( 1 );
+	var object, pass, i;
+
+	object = jQuery( { name: "john" } );
+	object.entries( function( field, value ) {this.foo = field; this.bar = value; } );
+	pass = true;
+	for ( i = 0; i < object.length; i++ ) {
+		if ( object.get( i ).foo !== "name" || object.get( i ).bar !== "john" ) {
+			pass = false;
+		}
+	}
+	assert.ok( pass, "Execute a function, Relative" );
+} );
+
 QUnit.test( "slice()", function( assert ) {
 	assert.expect( 7 );
 
