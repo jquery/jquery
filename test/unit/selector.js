@@ -1925,6 +1925,25 @@ QUnit.test( "jQuery.contains in SVG (jQuery trac-10832)", function( assert ) {
 		"parent (negative)" );
 } );
 
+// Support: IE 9 - 11+
+// Run this test only in browsers supporting `HTMLTemplateElement`.
+QUnit[
+	typeof HTMLTemplateElement === "function" ?
+		"test" :
+		"skip"
+]( "jQuery.contains within <template/> doesn't throw (gh-5147)", function( assert ) {
+	assert.expect( 1 );
+
+	var template = jQuery( "<template><div><div class='a'></div></div></template>" ),
+		a = jQuery( template[ 0 ].content ).find( ".a" );
+
+	template.appendTo( "#qunit-fixture" );
+
+	jQuery.contains( a[ 0 ].ownerDocument, a[ 0 ] );
+
+	assert.ok( true, "Didn't throw" );
+} );
+
 QUnit.test( "jQuery.uniqueSort", function( assert ) {
 	assert.expect( 14 );
 
