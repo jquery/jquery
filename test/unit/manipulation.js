@@ -2837,6 +2837,49 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 	assert.strictEqual( htmlOut, htmlExpected );
 } );
 
+[ true, false ].forEach( function( adoptedCase ) {
+	QUnit[
+		typeof HTMLTemplateElement === "function" ?
+			"test" :
+			"skip"
+	]( "Manip within <template /> content moved back & forth doesn't throw - " + (
+			adoptedCase ? "explicitly adopted" : "not explicitly adopted"
+		) + " (gh-5147)",
+		function( assert ) {
+			assert.expect( 1 );
+
+			var fragment, diva, divb,
+				div = jQuery( "" +
+					"<div>\n" +
+					"	<div><div class='a'></div></div>\n" +
+					"	<div><div class='b'></div></div>\n" +
+					"</div>" +
+					"" ),
+				template = jQuery( "<template></template>" );
+
+			jQuery( "#qunit-fixture" )
+				.append( div )
+				.append( template );
+
+			fragment = template[ 0 ].content;
+			diva = div.find( ".a" );
+			divb = div.find( ".b" );
+
+			if ( adoptedCase ) {
+				document.adoptNode( fragment );
+			}
+
+			fragment.appendChild( div.children()[ 0 ] );
+			fragment.appendChild( div.children()[ 0 ] );
+
+			diva.insertBefore( divb );
+
+			assert.strictEqual( diva.siblings( ".b" ).length, 1,
+				"Insertion worked" );
+		}
+	);
+} );
+
 QUnit.test( "Make sure tags with single-character names are found (gh-4124)", function( assert ) {
 	assert.expect( 1 );
 
