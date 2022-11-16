@@ -61,7 +61,7 @@
     "raw-body": "2.3.3",
     "requirejs": "2.3.6",
     "sinon": "2.3.7",
-    "sizzle": "2.3.7",
+    "sizzle": "2.3.8",
     "strip-json-comments": "2.0.1",
     "testswarm": "1.1.2",
     "uglify-js": "3.4.7"
