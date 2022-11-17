@@ -94,7 +94,7 @@ module.exports = function( grunt ) {
 
 			// Remove empty definitions
 			contents = contents
-				.replace( /define\(\[[^\]]*\]\)[\W\n]+$/, "" );
+				.replace( /define\(\s*\[[^\]]*\]\s*\)[\W\n]+$/, "" );
 		}
 
 		// AMD Name
@@ -312,9 +312,11 @@ module.exports = function( grunt ) {
 		if ( !optIn ) {
 
 			// Overwrite the default inclusions with the explicit ones provided
-			config.rawText.jquery = "define([" +
-				( included.length ? included.join( "," ) : "" ) +
-			"]);";
+			config.rawText.jquery = "define( [\n" +
+				( included.length ?
+					included.map( module => "\t\"./" + module + "\"" ).join( ",\n" ) :
+					"" ) +
+			"\n] );";
 		}
 
 		// Trace dependencies and concatenate files
