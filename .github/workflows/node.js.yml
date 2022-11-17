@@ -10,7 +10,7 @@ jobs:
       matrix:
         # Node.js 10 is required by jQuery infra
         # Do not remove 16.x until jsdom tests are re-enabled on newer Node.js versions.
-        NODE_VERSION: [10.x, 12.x, 14.x, 16.x, 17.x]
+        NODE_VERSION: [10.x, 14.x, 16.x, 18.x, 19.x]
         NPM_SCRIPT: ["test:browserless"]
         include:
           - NAME: "Browser tests: full build, Chrome & Firefox stable"
