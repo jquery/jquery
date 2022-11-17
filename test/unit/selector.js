@@ -1944,6 +1944,21 @@ QUnit[
 	assert.ok( true, "Didn't throw" );
 } );
 
+QUnit.test( "find in document fragments", function( assert ) {
+	assert.expect( 1 );
+
+	var elem,
+		nonnodes = jQuery( "#nonnodes" ).contents(),
+		fragment = document.createDocumentFragment();
+
+	nonnodes.each( function() {
+		fragment.appendChild( this );
+	} );
+
+	elem = jQuery( fragment ).find( "#nonnodesElement" );
+	assert.strictEqual( elem.length, 1, "Selection works" );
+} );
+
 QUnit.test( "jQuery.uniqueSort", function( assert ) {
 	assert.expect( 14 );
 

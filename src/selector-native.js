@@ -136,8 +136,8 @@ jQuery.extend( {
 			return results;
 		}
 
-		// Early return if context is not an element or document
-		if ( ( nodeType = context.nodeType ) !== 1 && nodeType !== 9 ) {
+		// Early return if context is not an element, document or document fragment
+		if ( ( nodeType = context.nodeType ) !== 1 && nodeType !== 9 && nodeType !== 11 ) {
 			return [];
 		}
 
