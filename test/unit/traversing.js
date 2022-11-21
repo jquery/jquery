@@ -13,7 +13,7 @@ QUnit.test( "find(String) under non-elements", function( assert ) {
 	assert.equal( j.find( "div" ).addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "find(leading combinator)", function( assert ) {
+QUnit.test( "find(leading combinator)", function( assert ) {
 	assert.expect( 4 );
 
 	assert.deepEqual( jQuery( "#qunit-fixture" ).find( "> div" ).get(), q( "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ), "find child elements" );
@@ -445,7 +445,9 @@ QUnit.test( "closest(jQuery)", function( assert ) {
 	assert.ok( $child.closest( $body.add( $parent ) ).is( "#nothiddendiv" ), "Closest ancestor retrieved." );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "not(Selector)", function( assert ) {
+// Support: IE 11+
+// IE doesn't support complex selectors inside `:not()`.
+QUnit.testUnlessIE( "not(Selector)", function( assert ) {
 	assert.expect( 7 );
 	assert.equal( jQuery( "#qunit-fixture > p#ap > a" ).not( "#google" ).length, 2, "not('selector')" );
 
@@ -478,11 +480,15 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "not(Selector)", function( ass
 	assert.deepEqual( jQuery( "#ap *" ).not( "code, #mark" ).get(), q( "google", "groups", "anchor1" ), "not('tag, ID selector')" );
 	assert.deepEqual( jQuery( "#ap *" ).not( "#mark, code" ).get(), q( "google", "groups", "anchor1" ), "not('ID, tag selector')" );
 
-	assert.deepEqual(
-		jQuery( "#form option" ).not( "option.emptyopt:contains('Nothing'),optgroup *,[value='1']" ).get(),
-		q( "option1c", "option1d", "option2c", "option2d", "option3c", "option3d", "option3e", "option4d", "option4e", "option5a", "option5b" ),
-		"not('complex selector')"
-	);
+	if ( QUnit.jQuerySelectors ) {
+		assert.deepEqual(
+			jQuery( "#form option" ).not( "option.emptyopt:contains('Nothing'),optgroup *,[value='1']" ).get(),
+			q( "option1c", "option1d", "option2c", "option2d", "option3c", "option3d", "option3e", "option4d", "option4e", "option5a", "option5b" ),
+			"not('complex selector')"
+		);
+	} else {
+		assert.ok( "skip", ":contains not supported in selector-native" );
+	}
 } );
 
 QUnit.test( "not(undefined)", function( assert ) {
@@ -525,7 +531,9 @@ QUnit.test( "not(jQuery)", function( assert ) {
 	);
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
+// Support: IE 11+
+// IE doesn't support complex selectors inside `:not()`.
+QUnit.testUnlessIE( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
 	assert.expect( 3 );
 
 	var mixedContents = jQuery( "#nonnodes" ).contents(),

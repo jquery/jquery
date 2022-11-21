@@ -153,7 +153,7 @@ QUnit.test( "jQuery()", function( assert ) {
 		"Empty attributes object is not interpreted as a document (trac-8950)" );
 } );
 
-QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
+QUnit.test( "jQuery(selector, context)", function( assert ) {
 	assert.expect( 3 );
 	assert.deepEqual( jQuery( "div p", "#qunit-fixture" ).get(), q( "sndp", "en", "sap" ), "Basic selector with string as context" );
 	assert.deepEqual( jQuery( "div p", q( "qunit-fixture" )[ 0 ] ).get(), q( "sndp", "en", "sap" ), "Basic selector with element as context" );

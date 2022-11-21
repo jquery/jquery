@@ -121,19 +121,13 @@ QUnit.test( "element", function( assert ) {
 	assert.deepEqual( jQuery( "input[id='idTest']", lengthtest ).get(), q( "idTest" ),
 		"Finding elements with id of ID." );
 
-	if ( QUnit.jQuerySelectors ) {
-		siblingTest = document.getElementById( "siblingTest" );
-		assert.deepEqual( jQuery( "div em", siblingTest ).get(), [],
-			"Element-rooted QSA does not select based on document context" );
-		assert.deepEqual( jQuery( "div em, div em, div em:not(div em)", siblingTest ).get(), [],
-			"Element-rooted QSA does not select based on document context" );
-		assert.deepEqual( jQuery( "div em, em\\,", siblingTest ).get(), [],
-			"Escaped commas do not get treated with an id in element-rooted QSA" );
-	} else {
-		assert.ok( "skip", "Element-rooted QSA behavior different in selector-native" );
-		assert.ok( "skip", "Element-rooted QSA behavior different in selector-native" );
-		assert.ok( "skip", "Element-rooted QSA behavior different in selector-native" );
-	}
+	siblingTest = document.getElementById( "siblingTest" );
+	assert.deepEqual( jQuery( "div em", siblingTest ).get(), [],
+		"Element-rooted QSA does not select based on document context" );
+	assert.deepEqual( jQuery( "div em, div em, div em:not(div em)", siblingTest ).get(), [],
+		"Element-rooted QSA does not select based on document context" );
+	assert.deepEqual( jQuery( "div em, em\\,", siblingTest ).get(), [],
+		"Escaped commas do not get treated with an id in element-rooted QSA" );
 
 	html = "";
 	for ( i = 0; i < 100; i++ ) {
@@ -263,12 +257,8 @@ QUnit.test( "id", function( assert ) {
 	fiddle = jQuery( "<div id='fiddle\\Foo'><span id='fiddleSpan'></span></div>" )
 		.appendTo( "#qunit-fixture" );
 
-	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery( "> span", jQuery( "#fiddle\\\\Foo" )[ 0 ] ).get(),
-			q( [ "fiddleSpan" ] ), "Escaped ID as context" );
-	} else {
-		assert.ok( "skip", "leading > not supported in selector-native" );
-	}
+	assert.deepEqual( jQuery( "> span", jQuery( "#fiddle\\\\Foo" )[ 0 ] ).get(),
+		q( [ "fiddleSpan" ] ), "Escaped ID as context" );
 
 	fiddle.remove();
 
@@ -473,15 +463,10 @@ QUnit.test( "child and adjacent", function( assert ) {
 
 	siblingFirst = document.getElementById( "siblingfirst" );
 
-	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery( "+ em", siblingFirst ).get(), q( "siblingnext" ),
-			"Element Directly Preceded By with a context." );
-		assert.deepEqual( jQuery( "~ em", siblingFirst ).get(), q( "siblingnext", "siblingthird" ),
-			"Element Preceded By with a context." );
-	} else {
-		assert.ok( "skip", "leading + not supported in selector-native" );
-		assert.ok( "skip", "leading ~ not supported in selector-native" );
-	}
+	assert.deepEqual( jQuery( "+ em", siblingFirst ).get(), q( "siblingnext" ),
+		"Element Directly Preceded By with a context." );
+	assert.deepEqual( jQuery( "~ em", siblingFirst ).get(), q( "siblingnext", "siblingthird" ),
+		"Element Preceded By with a context." );
 
 	if ( QUnit.jQuerySelectorsPos ) {
 		assert.deepEqual( jQuery( "~ em:first", siblingFirst ).get(), q( "siblingnext" ),
@@ -490,16 +475,11 @@ QUnit.test( "child and adjacent", function( assert ) {
 		assert.ok( "skip", "Positional selectors are not supported" );
 	}
 
-	if ( QUnit.jQuerySelectors ) {
-		en = document.getElementById( "en" );
-		assert.deepEqual( jQuery( "+ p, a", en ).get(), q( "yahoo", "sap" ),
-			"Compound selector with context, beginning with sibling test." );
-		assert.deepEqual( jQuery( "a, + p", en ).get(), q( "yahoo", "sap" ),
-			"Compound selector with context, containing sibling test." );
-	} else {
-		assert.ok( "skip", "leading + not supported in selector-native" );
-		assert.ok( "skip", "leading + not supported in selector-native" );
-	}
+	en = document.getElementById( "en" );
+	assert.deepEqual( jQuery( "+ p, a", en ).get(), q( "yahoo", "sap" ),
+		"Compound selector with context, beginning with sibling test." );
+	assert.deepEqual( jQuery( "a, + p", en ).get(), q( "yahoo", "sap" ),
+		"Compound selector with context, containing sibling test." );
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.t( "Element Preceded By, Containing", "#liveHandlerOrder ~ div em:contains('1')", [ "siblingfirst" ] );
@@ -1412,16 +1392,12 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 			"disabled-select", "disabled-optgroup", "disabled-option" ]
 	);
 
-	if ( QUnit.jQuerySelectors ) {
-		assert.t(
-			"Enabled elements",
-			"#enabled-fieldset :enabled",
-			[ "enabled-input", "enabled-textarea", "enabled-button",
-				"enabled-select", "enabled-optgroup", "enabled-option" ]
-		);
-	} else {
-		assert.ok( "skip", ":enabled broken in Chrome in selector-native" );
-	}
+	assert.t(
+		"Enabled elements",
+		"#enabled-fieldset :enabled",
+		[ "enabled-input", "enabled-textarea", "enabled-button",
+			"enabled-select", "enabled-optgroup", "enabled-option" ]
+	);
 } );
 
 QUnit.test( "pseudo - :(dis|en)abled, optgroup and option", function( assert ) {
@@ -1637,11 +1613,7 @@ QUnit.test( "context", function( assert ) {
 	context = document.getElementById( "nothiddendiv" );
 	assert.deepEqual( jQuery( "*", context ).get(), q( "nothiddendivchild" ), "<div> context" );
 
-	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual( jQuery( "* > *", context ).get(), [], "<div> context (no results)" );
-	} else {
-		assert.ok( "skip", "The whole selector not required to be under context in selector-native" );
-	}
+	assert.deepEqual( jQuery( "* > *", context ).get(), [], "<div> context (no results)" );
 
 	context.removeAttribute( "id" );
 	assert.deepEqual( jQuery( "*", context ).get(), q( "nothiddendivchild" ), "no-id element context" );
@@ -1670,20 +1642,14 @@ QUnit.test( "context", function( assert ) {
 	expected = q( "siblingnext", "siblingspan" );
 	context.appendChild( document.getElementById( "siblingTest" ) );
 
-	if ( QUnit.jQuerySelectors ) {
-		assert.deepEqual(
-			jQuery( "em:nth-child(2)", context ).get(),
-			expected.slice( 0, 1 ),
-			"DocumentFragment context"
-		);
-		assert.deepEqual( jQuery( "span", context ).get(), expected.slice( 1 ),
-			"DocumentFragment context by tag name" );
-		assert.deepEqual( jQuery( "p", context ).get(), [], "DocumentFragment context (no results)" );
-	} else {
-		assert.ok( "skip", "selection on document fragments not supported in selector-native" );
-		assert.ok( "skip", "selection on document fragments not supported in selector-native" );
-		assert.ok( "skip", "selection on document fragments not supported in selector-native" );
-	}
+	assert.deepEqual(
+		jQuery( "em:nth-child(2)", context ).get(),
+		expected.slice( 0, 1 ),
+		"DocumentFragment context"
+	);
+	assert.deepEqual( jQuery( "span", context ).get(), expected.slice( 1 ),
+		"DocumentFragment context by tag name" );
+	assert.deepEqual( jQuery( "p", context ).get(), [], "DocumentFragment context (no results)" );
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.deepEqual(
@@ -1775,9 +1741,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "disconnected nodes", function
 
 // Support: IE 11+
 // IE doesn't support Shadow DOM.
-// selector-native doesn't support querying inside of Shadow DOM.
-QUnit[ QUnit.jQuerySelectors && !QUnit.isIE ? "test" : "skip" ](
-	"Shadow DOM nodes supported as root", function( assert ) {
+QUnit.testUnlessIE( "Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 
 	var shadowHost = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" )[ 0 ];
