@@ -1,7 +1,7 @@
 QUnit.module( "selector", {
 	beforeEach: function() {
 		this.safari = /\bsafari\b/i.test( navigator.userAgent ) &&
-			!/\bchrome\b/i.test( navigator.userAgent );
+			!/\b(?:headless)?chrome\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown
 } );
@@ -1908,6 +1908,21 @@ QUnit.testUnlessIE( "jQuery.contains within <template/> doesn't throw (gh-5147)"
 	assert.ok( true, "Didn't throw" );
 } );
 
+QUnit.test( "find in document fragments", function( assert ) {
+	assert.expect( 1 );
+
+	var elem,
+		nonnodes = jQuery( "#nonnodes" ).contents(),
+		fragment = document.createDocumentFragment();
+
+	nonnodes.each( function() {
+		fragment.appendChild( this );
+	} );
+
+	elem = jQuery( fragment ).find( "#nonnodesElement" );
+	assert.strictEqual( elem.length, 1, "Selection works" );
+} );
+
 QUnit.test( "jQuery.uniqueSort", function( assert ) {
 	assert.expect( 14 );
 
@@ -2156,7 +2171,7 @@ QUnit.test( "jQuery.escapeSelector", function( assert ) {
 	assert.equal( jQuery.escapeSelector( "\uD834" ), "\uD834", "Doesn't escape lone high surrogate" );
 } );
 
-QUnit.test( "custom pseudos", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( assert ) {
 	assert.expect( 6 );
 
 	try {

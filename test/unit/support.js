@@ -55,7 +55,7 @@ testIframe(
 );
 
 ( function() {
-	var expected,
+	var expected, browserKey,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			ie_11: {
@@ -79,6 +79,13 @@ testIframe(
 				reliableTrDimensions: true
 			}
 		};
+
+	// Make the selector-native build pass tests.
+	for ( browserKey in expectedMap ) {
+		if ( !includesModule( "selector" ) ) {
+			delete expectedMap[ browserKey ].cssSupportsSelector;
+		}
+	}
 
 	if ( document.documentMode ) {
 		expected = expectedMap.ie_11;
