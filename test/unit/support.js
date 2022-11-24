@@ -70,8 +70,12 @@ testIframe(
 				cssSupportsSelector: false,
 				reliableTrDimensions: true
 			},
-			firefox: {
+			firefox_102: {
 				cssSupportsSelector: false,
+				reliableTrDimensions: false
+			},
+			firefox: {
+				cssSupportsSelector: true,
 				reliableTrDimensions: false
 			},
 			ios: {
@@ -95,6 +99,8 @@ testIframe(
 		expected = expectedMap.chrome;
 	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
+	} else if ( /firefox\/102\./i.test( userAgent ) ) {
+		expected = expectedMap.firefox_102;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
