@@ -12,7 +12,6 @@ import isIE from "./var/isIE.js";
 import support from "./selector/support.js";
 
 // The following utils are attached directly to the jQuery object.
-import "./selector/contains.js";
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
