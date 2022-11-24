@@ -2,6 +2,7 @@ import jQuery from "../core.js";
 import document from "../var/document.js";
 import sort from "../var/sort.js";
 import splice from "../var/splice.js";
+import slice from "../var/slice.js";
 
 var hasDuplicate;
 
@@ -86,4 +87,8 @@ jQuery.uniqueSort = function( results ) {
 	}
 
 	return results;
+};
+
+jQuery.fn.uniqueSort = function() {
+	return this.pushStack( jQuery.uniqueSort( slice.apply( this ) ) );
 };
