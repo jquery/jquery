@@ -190,8 +190,8 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "is() with :has() selectors", 
 
 	assert.ok( jQuery( "#foo" ).is( ":has(p)" ), "Check for child: Expected a child 'p' element" );
 	assert.ok( !jQuery( "#foo" ).is( ":has(ul)" ), "Check for child: Did not expect 'ul' element" );
-	assert.ok( jQuery( "#foo" ).is( ":has(p):has(a):has(code)" ), "Check for childs: Expected 'p', 'a' and 'code' child elements" );
-	assert.ok( !jQuery( "#foo" ).is( ":has(p):has(a):has(code):has(ol)" ), "Check for childs: Expected 'p', 'a' and 'code' child elements, but no 'ol'" );
+	assert.ok( jQuery( "#foo" ).is( ":has(p):has(a):has(code)" ), "Check for children: Expected 'p', 'a' and 'code' child elements" );
+	assert.ok( !jQuery( "#foo" ).is( ":has(p):has(a):has(code):has(ol)" ), "Check for children: Expected 'p', 'a' and 'code' child elements, but no 'ol'" );
 
 	assert.ok( jQuery( "#foo" ).is( jQuery( "div:has(p)" ) ), "Check for child: Expected a child 'p' element" );
 	assert.ok( !jQuery( "#foo" ).is( jQuery( "div:has(ul)" ) ), "Check for child: Did not expect 'ul' element" );
