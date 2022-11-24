@@ -214,6 +214,31 @@ testIframe(
 				checkClone: true,
 				checkOn: true,
 				clearCloneStyle: true,
+				cssSupportsSelector: true,
+				cors: true,
+				createHTMLDocument: true,
+				disconnectedMatch: true,
+				focusin: false,
+				getById: true,
+				noCloneChecked: true,
+				option: true,
+				optSelected: true,
+				pixelBoxStyles: true,
+				pixelPosition: true,
+				radioValue: true,
+				reliableMarginLeft: true,
+				reliableTrDimensions: false,
+				scope: true,
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
+			},
+			firefox_102: {
+				ajax: true,
+				boxSizingReliable: true,
+				checkClone: true,
+				checkOn: true,
+				clearCloneStyle: true,
 				cssSupportsSelector: false,
 				cors: true,
 				createHTMLDocument: true,
@@ -418,8 +443,10 @@ testIframe(
 		expected = expectedMap.chrome;
 	} else if ( /\b(?:9|10)\.\d+(\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_9_10;
-	} else if ( /firefox\/(?:4\d|5\d|60)/i.test( userAgent ) ) {
+	} else if ( /firefox\/[456]\d\b/i.test( userAgent ) ) {
 		expected = expectedMap.firefox_60;
+	} else if ( /firefox\/(?:[789]\d|102)\b/i.test( userAgent ) ) {
+		expected = expectedMap.firefox_102;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
