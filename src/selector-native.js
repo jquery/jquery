@@ -4,11 +4,12 @@ define( [
 	"./var/documentElement",
 	"./var/hasOwn",
 	"./var/indexOf",
+	"./var/slice",
 
 	// The following utils are attached directly to the jQuery object.
 	"./selector/contains",
 	"./selector/escapeSelector"
-], function( jQuery, document, documentElement, hasOwn, indexOf ) {
+], function( jQuery, document, documentElement, hasOwn, indexOf, slice ) {
 
 "use strict";
 
@@ -163,6 +164,10 @@ jQuery.extend( {
 		}
 	}
 } );
+
+jQuery.fn.uniqueSort = function() {
+	return this.pushStack( jQuery.uniqueSort( slice.apply( this ) ) );
+};
 
 jQuery.extend( jQuery.find, {
 	matches: function( expr, elements ) {

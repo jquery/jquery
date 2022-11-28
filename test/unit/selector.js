@@ -1959,22 +1959,8 @@ QUnit.test( "find in document fragments", function( assert ) {
 	assert.strictEqual( elem.length, 1, "Selection works" );
 } );
 
-QUnit.test( "jQuery.uniqueSort", function( assert ) {
-	assert.expect( 14 );
-
-	function Arrayish( arr ) {
-		var i = this.length = arr.length;
-		while ( i-- ) {
-			this[ i ] = arr[ i ];
-		}
-	}
-	Arrayish.prototype = {
-		slice: [].slice,
-		sort: [].sort,
-		splice: [].splice
-	};
-
-	var i, tests,
+function getUniqueSortFixtures() {
+	var i,
 		detached = [],
 		body = document.body,
 		fixture = document.getElementById( "qunit-fixture" ),
@@ -1989,7 +1975,7 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 		detached2.appendChild( document.createElement( "li" ) ).id = "detachedChild" + i;
 	}
 
-	tests = {
+	return {
 		"Empty": {
 			input: [],
 			expected: []
@@ -2030,15 +2016,63 @@ QUnit.test( "jQuery.uniqueSort", function( assert ) {
 			length: 3
 		}
 	};
+}
 
-	jQuery.each( tests, function( label, test ) {
-		var length = test.length || test.input.length;
-		// We duplicate `test.input` because otherwise it is modified by `uniqueSort`
+QUnit.test( "jQuery.uniqueSort", function( assert ) {
+	assert.expect( 14 );
+
+	var fixtures = getUniqueSortFixtures();
+
+	function Arrayish( arr ) {
+		var i = this.length = arr.length;
+		while ( i-- ) {
+			this[ i ] = arr[ i ];
+		}
+	}
+	Arrayish.prototype = {
+		slice: [].slice,
+		sort: [].sort,
+		splice: [].splice
+	};
+
+	jQuery.each( fixtures, function( label, fixture ) {
+		var length = fixture.length || fixture.input.length;
+
+		// We duplicate `fixture.input` because otherwise it is modified by `uniqueSort`
 		// and the second test becomes worthless.
-		assert.deepEqual( jQuery.uniqueSort( test.input.slice( 0 ) ).slice( 0, length ),
-			test.expected, label + " (array)" );
-		assert.deepEqual( jQuery.uniqueSort( new Arrayish( test.input ) ).slice( 0, length ),
-			test.expected, label + " (quasi-array)" );
+		assert.deepEqual(
+			jQuery.uniqueSort( fixture.input.slice( 0 ) )
+				.slice( 0, length ),
+			fixture.expected,
+			label + " (array)"
+		);
+
+		assert.deepEqual(
+			jQuery.uniqueSort( new Arrayish( fixture.input ) )
+				.slice( 0, length ),
+			fixture.expected,
+			label + " (quasi-array)"
+		);
+	} );
+} );
+
+QUnit.test( "uniqueSort()", function( assert ) {
+	assert.expect( 28 );
+
+	var fixtures = getUniqueSortFixtures();
+
+	jQuery.each( fixtures, function( label, fixture ) {
+		var length = fixture.length || fixture.input.length,
+			fixtureInputCopy = fixture.input.slice( 0 ),
+			sortedElem = jQuery( fixture.input ).uniqueSort();
+
+		assert.deepEqual( fixture.input, fixtureInputCopy, "Fixture not modified (" + label + ")" );
+
+		assert.deepEqual( sortedElem.slice( 0, length ).toArray(), fixture.expected, label );
+
+		// Chaining
+		assert.ok( sortedElem instanceof jQuery, "chaining" );
+		assert.deepEqual( sortedElem.end().toArray(), fixture.input, label );
 	} );
 } );
 

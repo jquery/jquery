@@ -931,6 +931,10 @@ jQuery.uniqueSort = function( results ) {
 	return results;
 };
 
+jQuery.fn.uniqueSort = function() {
+	return this.pushStack( jQuery.uniqueSort( slice.apply( this ) ) );
+};
+
 Expr = jQuery.expr = {
 
 	// Can be adjusted by the user
