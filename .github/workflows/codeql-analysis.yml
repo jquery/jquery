@@ -6,8 +6,15 @@ on:
   schedule:
     - cron: '0 4 * * 6'
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   CodeQL-Build:
+
+    permissions:
+      contents: read # to fetch code (actions/checkout)
+      security-events: write # (github/codeql-action/autobuild)
 
     runs-on: ubuntu-latest
 
