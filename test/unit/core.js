@@ -1557,3 +1557,59 @@ QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.readyException 
 		throw new Error( "Error in jQuery ready" );
 	} );
 } );
+
+QUnit.test( "jQuery.contains", function( assert ) {
+	assert.expect( 16 );
+
+	var container = document.getElementById( "nonnodes" ),
+		element = container.firstChild,
+		text = element.nextSibling,
+		nonContained = container.nextSibling,
+		detached = document.createElement( "a" );
+	assert.ok( element && element.nodeType === 1, "preliminary: found element" );
+	assert.ok( text && text.nodeType === 3, "preliminary: found text" );
+	assert.ok( nonContained, "preliminary: found non-descendant" );
+	assert.ok( jQuery.contains( container, element ), "child" );
+	assert.ok( jQuery.contains( container.parentNode, element ), "grandchild" );
+	assert.ok( jQuery.contains( container, text ), "text child" );
+	assert.ok( jQuery.contains( container.parentNode, text ), "text grandchild" );
+	assert.ok( !jQuery.contains( container, container ), "self" );
+	assert.ok( !jQuery.contains( element, container ), "parent" );
+	assert.ok( !jQuery.contains( container, nonContained ), "non-descendant" );
+	assert.ok( !jQuery.contains( container, document ), "document" );
+	assert.ok( !jQuery.contains( container, document.documentElement ), "documentElement (negative)" );
+	assert.ok( !jQuery.contains( container, null ), "Passing null does not throw an error" );
+	assert.ok( jQuery.contains( document, document.documentElement ), "documentElement (positive)" );
+	assert.ok( jQuery.contains( document, element ), "document container (positive)" );
+	assert.ok( !jQuery.contains( document, detached ), "document container (negative)" );
+} );
+
+QUnit.test( "jQuery.contains in SVG (jQuery trac-10832)", function( assert ) {
+	assert.expect( 4 );
+
+	var svg = jQuery(
+		"<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='1' width='1'>" +
+		"<g><circle cx='1' cy='1' r='1' /></g>" +
+		"</svg>"
+	).appendTo( "#qunit-fixture" )[ 0 ];
+
+	assert.ok( jQuery.contains( svg, svg.firstChild ), "root child" );
+	assert.ok( jQuery.contains( svg.firstChild, svg.firstChild.firstChild ), "element child" );
+	assert.ok( jQuery.contains( svg, svg.firstChild.firstChild ), "root granchild" );
+	assert.ok( !jQuery.contains( svg.firstChild.firstChild, svg.firstChild ),
+		"parent (negative)" );
+} );
+
+QUnit.testUnlessIE( "jQuery.contains within <template/> doesn't throw (gh-5147)", function( assert ) {
+	assert.expect( 1 );
+
+	var template = jQuery( "<template><div><div class='a'></div></div></template>" ),
+		a = jQuery( template[ 0 ].content ).find( ".a" );
+
+	template.appendTo( "#qunit-fixture" );
+
+	jQuery.contains( a[ 0 ].ownerDocument, a[ 0 ] );
+
+	assert.ok( true, "Didn't throw" );
+} );
+

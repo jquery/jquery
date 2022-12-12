@@ -30,7 +30,6 @@ import documentElement from "./var/documentElement.js";
 import whitespace from "./var/whitespace.js";
 
 // The following utils are attached directly to the jQuery object.
-import "./selector/contains.js";
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
