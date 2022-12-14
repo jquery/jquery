@@ -1,5 +1,7 @@
 /* eslint no-multi-str: "off" */
 
+"use strict";
+
 var FILEPATH = "/test/data/testinit.js",
 	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
 	parentUrl = activeScript && activeScript.src ?
@@ -49,28 +51,22 @@ this.q = function() {
 /**
  * Asserts that a select matches the given IDs
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @param {(String|Node)=document} context - Selector context
  * @example match("Check for something", "p", ["foo", "bar"]);
  */
 function match( message, selector, expectedIds, context, assert ) {
-	var f = jQuery( selector, context ).get(),
-		s = "",
-		i = 0;
+	var elems = jQuery( selector, context ).get();
 
-	for ( ; i < f.length; i++ ) {
-		s += ( s && "," ) + "\"" + f[ i ].id + "\"";
-	}
-
-	assert.deepEqual( f, q.apply( q, expectedIds ), message + " (" + selector + ")" );
+	assert.deepEqual( elems, q.apply( q, expectedIds ), message + " (" + selector + ")" );
 }
 
 /**
  * Asserts that a select matches the given IDs.
  * The select is not bound by a context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example t("Check for something", "p", ["foo", "bar"]);
  */
@@ -82,7 +78,7 @@ QUnit.assert.t = function( message, selector, expectedIds ) {
  * Asserts that a select matches the given IDs.
  * The select is performed within the `#qunit-fixture` context.
  * @param {String} message - Assertion name
- * @param {String} selector - Sizzle selector
+ * @param {String} selector - jQuery selector
  * @param {String} expectedIds - Array of ids to construct what is expected
  * @example selectInFixture("Check for something", "p", ["foo", "bar"]);
  */
@@ -102,6 +98,36 @@ this.createDashboardXML = function() {
 			</location> \
 		</locations> \
 	</dashboard>";
+
+	return jQuery.parseXML( string );
+};
+
+this.createWithFriesXML = function() {
+	var string = "<?xml version='1.0' encoding='UTF-8'?> \
+	<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' \
+		xmlns:xsd='http://www.w3.org/2001/XMLSchema' \
+		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> \
+		<soap:Body> \
+			<jsconf xmlns='http://www.example.com/ns1'> \
+				<response xmlns:ab='http://www.example.com/ns2'> \
+					<meta> \
+						<component id='seite1' class='component'> \
+							<properties xmlns:cd='http://www.example.com/ns3'> \
+								<property name='prop1'> \
+									<thing /> \
+									<value>1</value> \
+								</property> \
+								<property name='prop2'> \
+									<thing att='something' /> \
+								</property> \
+								<foo_bar>foo</foo_bar> \
+							</properties> \
+						</component> \
+					</meta> \
+				</response> \
+			</jsconf> \
+		</soap:Body> \
+	</soap:Envelope>";
 
 	return jQuery.parseXML( string );
 };
@@ -384,6 +410,18 @@ this.loadTests = function() {
 
 	// Get testSubproject from testrunner first
 	require( [ parentUrl + "test/data/testrunner.js" ], function() {
+
+		// Says whether jQuery positional selector extensions are supported.
+		// A full selector engine is required to support them as they need to
+		// be evaluated left-to-right. Remove that property when support for
+		// positional selectors is dropped.
+		QUnit.jQuerySelectorsPos = includesModule( "selector" );
+
+		// Says whether jQuery selector extensions are supported. Change that
+		// to `false` if your custom jQuery versions relies more on native qSA.
+		// This doesn't include support for positional selectors (see above).
+		QUnit.jQuerySelectors = includesModule( "selector" );
+
 		var i = 0,
 			tests = [
 				// A special module with basic tests, meant for

@@ -33,6 +33,13 @@
 			"globals": {
 				"jQuery": false
 			}
+		},
+
+		{
+			"files": "selector.js",
+			"rules": {
+				"indent": "off"
+			}
 		}
 	]
 }

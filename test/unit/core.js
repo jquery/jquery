@@ -66,7 +66,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	assert.equal( jQuery( "" ).length, 0, "jQuery('') === jQuery([])" );
 	assert.deepEqual( jQuery( obj ).get(), obj.get(), "jQuery(jQueryObj) == jQueryObj" );
 
-	// Invalid #id goes to Sizzle which will throw an error (gh-1682)
+	// Invalid #id will throw an error (gh-1682)
 	try {
 		jQuery( "#" );
 	} catch ( e ) {
@@ -153,7 +153,7 @@ QUnit.test( "jQuery()", function( assert ) {
 		"Empty attributes object is not interpreted as a document (trac-8950)" );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery(selector, context)", function( assert ) {
 	assert.expect( 3 );
 	assert.deepEqual( jQuery( "div p", "#qunit-fixture" ).get(), q( "sndp", "en", "sap" ), "Basic selector with string as context" );
 	assert.deepEqual( jQuery( "div p", q( "qunit-fixture" )[ 0 ] ).get(), q( "sndp", "en", "sap" ), "Basic selector with element as context" );
@@ -417,6 +417,16 @@ QUnit.test( "isXMLDoc - XML", function( assert ) {
 	assert.ok( jQuery.isXMLDoc( jQuery( "desc", svg )[ 0 ] ), "XML desc Element" );
 } );
 
+QUnit.test( "isXMLDoc - falsy", function( assert ) {
+	assert.expect( 5 );
+
+	assert.strictEqual( jQuery.isXMLDoc( undefined ), false, "undefined" );
+	assert.strictEqual( jQuery.isXMLDoc( null ), false, "null" );
+	assert.strictEqual( jQuery.isXMLDoc( false ), false, "false" );
+	assert.strictEqual( jQuery.isXMLDoc( 0 ), false, "0" );
+	assert.strictEqual( jQuery.isXMLDoc( "" ), false, "\"\"" );
+} );
+
 QUnit.test( "XSS via location.hash", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );
@@ -475,7 +485,7 @@ QUnit.test( "jQuery('html')", function( assert ) {
 
 	//equal( jQuery( "element[attribute=<div></div>]" ).length, 0,
 	//	"When html is within brackets, do not recognize as html." );
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( jQuery( "element:not(<div></div>)" ).length, 0,
 			"When html is within parens, do not recognize as html." );
 	} else {

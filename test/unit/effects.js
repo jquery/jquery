@@ -29,7 +29,7 @@ QUnit.module( "effects", {
 	}
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "sanity check", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "sanity check", function( assert ) {
 	assert.expect( 1 );
 	assert.equal( jQuery( "#qunit-fixture:visible, #foo:visible" ).length, 2, "QUnit state is correct for testing effects" );
 } );
@@ -812,7 +812,7 @@ QUnit.test( "stop( queue, ..., ... ) - Stop single queues", function( assert ) {
         this.clock.tick( 500 );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "toggle()", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "toggle()", function( assert ) {
 	assert.expect( 6 );
 	var x = jQuery( "#foo" );
 	assert.ok( x.is( ":visible" ), "is visible" );
@@ -1638,7 +1638,7 @@ QUnit.test( "animate should set display for disconnected nodes", function( asser
 	clock.tick( 400 );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "Animation callback should not show animated element as :animated (trac-7157)", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "Animation callback should not show animated element as :animated (trac-7157)", function( assert ) {
 	assert.expect( 1 );
 
 	var foo = jQuery( "#foo" );
@@ -1651,7 +1651,7 @@ QUnit[ jQuery.find.compile ? "test" : "skip" ]( "Animation callback should not s
 	this.clock.tick( 100 );
 } );
 
-QUnit[ jQuery.find.compile ? "test" : "skip" ]( "Initial step callback should show element as :animated (trac-14623)", function( assert ) {
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "Initial step callback should show element as :animated (trac-14623)", function( assert ) {
 	assert.expect( 1 );
 
 	var foo = jQuery( "#foo" );
@@ -2167,7 +2167,7 @@ QUnit.test( ".finish() completes all queued animations", function( assert ) {
 	} );
 	assert.equal( div.queue().length, 0, "empty queue when done" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
 		assert.ok( "skip", ":animated selector not supported with selector-native" );
@@ -2207,7 +2207,7 @@ QUnit.test( ".finish( false ) - unqueued animations", function( assert ) {
 		assert.equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	} );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
 		assert.ok( "skip", ":animated selector not supported with selector-native" );
@@ -2246,7 +2246,7 @@ QUnit.test( ".finish( \"custom\" ) - custom queue animations", function( assert 
 	// start the first animation
 	div.dequeue( "custom" );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( div.is( ":animated" ), true, ":animated matches" );
 	} else {
 		assert.ok( "skip", ":animated selector not supported with selector-native" );
@@ -2257,7 +2257,7 @@ QUnit.test( ".finish( \"custom\" ) - custom queue animations", function( assert 
 		assert.equal( parseFloat( div.css( prop ) ), value, prop + " finished at correct value" );
 	} );
 
-	if ( jQuery.find.compile ) {
+	if ( QUnit.jQuerySelectors ) {
 		assert.equal( div.is( ":animated" ), false, ":animated doesn't match" );
 	} else {
 		assert.ok( "skip", ":animated selector not supported with selector-native" );

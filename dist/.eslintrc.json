@@ -14,20 +14,7 @@
 			"rules": {
 				// That is okay for the built version
 				"no-multiple-empty-lines": "off",
-				"one-var": "off",
-
-				// Sizzle is not compatible with jQuery code style
-				"no-nested-ternary": "off",
-				"no-unused-expressions": "off",
-				"no-unused-vars": "off",
-				"lines-around-comment": "off",
-				"space-in-parens": "off",
-				"camelcase": "off",
-				"computed-property-spacing": "off",
-				"max-len": "off",
-				"dot-notation": "off",
-				"semi-spacing": "off",
-				"brace-style": "off"
+				"one-var": "off"
 			}
 		}
 	]

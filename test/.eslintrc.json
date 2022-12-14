@@ -18,6 +18,7 @@
 		"ajaxTest": false,
 		"testIframe": false,
 		"createDashboardXML": false,
+		"createWithFriesXML": false,
 		"createXMLFragment": false,
 		"includesModule": false,
 		"moduleTeardown": false,

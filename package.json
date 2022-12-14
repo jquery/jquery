@@ -61,7 +61,6 @@
     "raw-body": "2.3.3",
     "requirejs": "2.3.6",
     "sinon": "2.3.7",
-    "sizzle": "2.3.8",
     "strip-json-comments": "2.0.1",
     "testswarm": "1.1.2",
     "uglify-js": "3.4.7"
@@ -73,9 +72,9 @@
     "test:browser": "grunt && grunt karma:main",
     "test:amd": "grunt && grunt karma:amd",
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
-    "test:no-sizzle": "grunt test:prepare && grunt custom:-sizzle && grunt karma:main",
+    "test:selector-native": "grunt test:prepare && grunt custom:-selector && grunt karma:main",
     "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
-    "test": "npm run test:slim && npm run test:no-deprecated && npm run test:no-sizzle && grunt && grunt test:slow && grunt karma:main && grunt karma:amd",
+    "test": "npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:amd",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {
