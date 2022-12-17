@@ -1,5 +1,8 @@
 import support from "../var/support.js";
 
+// Support: IE 11+
+// IE doesn't support `CSS.supports( "selector(...)" )`; it will throw
+// in this support test.
 try {
 	/* eslint-disable no-undef */
 
