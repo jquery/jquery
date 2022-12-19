@@ -415,7 +415,7 @@ QUnit.test( "name", function( assert ) {
 } );
 
 QUnit.test( "comma-separated", function( assert ) {
-	assert.expect( 4 );
+	assert.expect( 10 );
 
 	var fixture = jQuery( "<div><h2><span></span></h2><div><p><span></span></p><p></p></div></div>" );
 
@@ -423,6 +423,26 @@ QUnit.test( "comma-separated", function( assert ) {
 	assert.equal( fixture.find( "h2, div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 	assert.equal( fixture.find( "h2 , div p" ).filter( "p" ).length, 2, "has to find two <p>" );
 	assert.equal( fixture.find( "h2 , div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	assert.equal( fixture.find( "h2 ,div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	assert.equal( fixture.find( "h2 ,div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	assert.equal( fixture.find( "h2,div p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	assert.equal( fixture.find( "h2,div p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+	assert.equal( fixture.find( "h2\t,\rdiv p" ).filter( "p" ).length, 2, "has to find two <p>" );
+	assert.equal( fixture.find( "h2\t,\rdiv p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
+} );
+
+QUnit.test( "comma-separated, only supported natively (gh-5177)", function( assert ) {
+	assert.expect( 5 );
+
+	var fixture = jQuery( "<div><input/><span></span></div>" );
+
+	fixture.appendTo( "#qunit-fixture" );
+
+	assert.equal( fixture.find( "input:valid, span" ).length, 2, "has to find two elements" );
+	assert.equal( fixture.find( "input:valid , span" ).length, 2, "has to find two elements" );
+	assert.equal( fixture.find( "input:valid ,span" ).length, 2, "has to find two elements" );
+	assert.equal( fixture.find( "input:valid,span" ).length, 2, "has to find two elements" );
+	assert.equal( fixture.find( "input:valid\t,\rspan" ).length, 2, "has to find two elements" );
 } );
 
 QUnit.test( "child and adjacent", function( assert ) {
