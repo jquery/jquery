@@ -431,7 +431,11 @@ QUnit.test( "comma-separated", function( assert ) {
 	assert.equal( fixture.find( "h2\t,\rdiv p" ).filter( "h2" ).length, 1, "has to find one <h2>" );
 } );
 
-QUnit.test( "comma-separated, only supported natively (gh-5177)", function( assert ) {
+// Support: IE 9 only
+// IE 9 doesn't support the `:valid` pseudo natively; skip the test there.
+QUnit[
+	/msie 9\.0/i.test( window.navigator.userAgent ) ? "skip" : "test"
+]( "comma-separated, only supported natively (gh-5177)", function( assert ) {
 	assert.expect( 5 );
 
 	var fixture = jQuery( "<div><input/><span></span></div>" );
