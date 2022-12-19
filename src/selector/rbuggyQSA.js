@@ -27,9 +27,8 @@ if ( !support.cssSupportsSelector ) {
 	// `:has()` uses a forgiving selector list as an argument so our regular
 	// `try-catch` mechanism fails to catch `:has()` with arguments not supported
 	// natively like `:has(:contains("Foo"))`. Where supported & spec-compliant,
-	// we now use `CSS.supports("selector(:is(SELECTOR_TO_BE_TESTED))")` but,
-	// outside that, let's mark `:has` as buggy to always use jQuery traversal
-	// for `:has()`.
+		// we now use `CSS.supports("selector(:is(SELECTOR_TO_BE_TESTED))")`, but
+		// outside that we mark `:has` as buggy.
 	rbuggyQSA.push( ":has" );
 }
 
