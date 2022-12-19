@@ -1,12 +1,12 @@
 /*!
- * Sizzle CSS Selector Engine v2.3.8
+ * Sizzle CSS Selector Engine v2.3.9
  * https://sizzlejs.com/
  *
  * Copyright JS Foundation and other contributors
  * Released under the MIT license
  * https://js.foundation/
  *
- * Date: 2022-11-16
+ * Date: 2022-12-19
  */
 ( function( window ) {
 var i,
@@ -367,7 +367,7 @@ function Sizzle( selector, context, results, seed ) {
 					if ( support.cssSupportsSelector &&
 
 						// eslint-disable-next-line no-undef
-						!CSS.supports( "selector(" + newSelector + ")" ) ) {
+						!CSS.supports( "selector(:is(" + newSelector + "))" ) ) {
 
 						// Support: IE 11+
 						// Throw to get to the same code path as an error directly in qSA.
@@ -969,9 +969,8 @@ setDocument = Sizzle.setDocument = function( node ) {
 		// `:has()` uses a forgiving selector list as an argument so our regular
 		// `try-catch` mechanism fails to catch `:has()` with arguments not supported
 		// natively like `:has(:contains("Foo"))`. Where supported & spec-compliant,
-		// we now use `CSS.supports("selector(SELECTOR_TO_BE_TESTED)")` but outside
-		// that, let's mark `:has` as buggy to always use jQuery traversal for
-		// `:has()`.
+		// we now use `CSS.supports("selector(:is(SELECTOR_TO_BE_TESTED))")`, but
+		// outside that we mark `:has` as buggy.
 		rbuggyQSA.push( ":has" );
 	}
 
