@@ -255,15 +255,20 @@ function find( selector, context, results, seed ) {
 
 					// `qSA` may not throw for unrecognized parts using forgiving parsing:
 					// https://drafts.csswg.org/selectors/#forgiving-selector
-					// like the `:has()` pseudo-class:
-					// https://drafts.csswg.org/selectors/#relational
+					// like the `:is()` pseudo-class:
+					// https://drafts.csswg.org/selectors/#matches
 					// `CSS.supports` is still expected to return `false` then:
 					// https://drafts.csswg.org/css-conditional-4/#typedef-supports-selector-fn
 					// https://drafts.csswg.org/css-conditional-4/#dfn-support-selector
 					if ( support.cssSupportsSelector &&
 
+						// `CSS.supports( "selector(...)" )` requires the argument to the
+						// `selector` function to be a `<complex-selector>`, not
+						// a `<complex-selector-list>` which our selector may be. Wrapping with
+						// `:is` works around the issue and is supported by all browsers
+						// we support except for IE which will fail the support test anyway.
 						// eslint-disable-next-line no-undef
-						!CSS.supports( "selector(" + newSelector + ")" ) ) {
+						!CSS.supports( "selector(:is(" + newSelector + "))" ) ) {
 
 						// Support: IE 11+
 						// Throw to get to the same code path as an error directly in qSA.
