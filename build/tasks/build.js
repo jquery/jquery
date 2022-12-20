@@ -12,8 +12,6 @@ module.exports = function( grunt ) {
 	const rollup = require( "rollup" );
 	const slimBuildFlags = require( "./lib/slim-build-flags" );
 	const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
-	const Insight = require( "insight" );
-	const pkg = require( "../../package.json" );
 	const srcFolder = path.resolve( `${ __dirname }/../../src` );
 	const read = function( fileName ) {
 		return grunt.file.read( `${ srcFolder }/${ fileName }` );
@@ -339,46 +337,8 @@ module.exports = function( grunt ) {
 		const modules = args.length ?
 			args[ 0 ].split( "," ).join( ":" ) :
 			"";
-		const done = this.async();
-		const insight = new Insight( {
-			trackingCode: "UA-1076265-4",
-			pkg: pkg
-		} );
-
-		function exec( trackingAllowed ) {
-			let tracks = args.length ? args[ 0 ].split( "," ) : [];
-			const defaultPath = [ "build", "custom" ];
-
-			tracks = tracks.map( function( track ) {
-				return track.replace( /\//g, "+" );
-			} );
-
-			if ( trackingAllowed ) {
-
-				// Track individuals
-				tracks.forEach( function( module ) {
-					const path = defaultPath.concat( [ "individual" ], module );
-
-					insight.track.apply( insight, path );
-				} );
-
-				// Track full command
-				insight.track.apply( insight, defaultPath.concat( [ "full" ], tracks ) );
-			}
-
-			grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "uglify", "dist" ] );
-			done();
-		}
 
 		grunt.log.writeln( "Creating custom build...\n" );
-
-		// Ask for permission the first time
-		if ( insight.optOut === undefined ) {
-			insight.askPermission( null, function( _error, result ) {
-				exec( result );
-			} );
-		} else {
-			exec( !insight.optOut );
-		}
+		grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "uglify", "dist" ] );
 	} );
 };
