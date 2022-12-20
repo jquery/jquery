@@ -46,7 +46,6 @@
     "grunt-npmcopy": "0.2.0",
     "gzip-js": "0.3.2",
     "husky": "4.2.5",
-    "insight": "0.10.3",
     "jsdom": "19.0.0",
     "karma": "^6.3.17",
     "karma-browserstack-launcher": "1.6.0",
