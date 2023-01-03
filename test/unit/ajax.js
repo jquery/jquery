@@ -2270,7 +2270,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	// beforeunload, unload, pagehide, and visibilitychange event handlers.
 	// See https://bugs.chromium.org/p/chromium/issues/detail?id=952452
 	// Safari 13 did similar changes. The below check will catch them both.
-	if ( !/safari/i.test( navigator.userAgent ) ) {
+	if ( !/webkit/i.test( navigator.userAgent ) ) {
 		testIframe(
 			"trac-14379 - jQuery.ajax() on unload",
 			"ajax/onunload.html",

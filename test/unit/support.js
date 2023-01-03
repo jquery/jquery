@@ -70,6 +70,10 @@ testIframe(
 				cssSupportsSelector: false,
 				reliableTrDimensions: true
 			},
+			webkit: {
+				cssSupportsSelector: true,
+				reliableTrDimensions: true
+			},
 			firefox_102: {
 				cssSupportsSelector: false,
 				reliableTrDimensions: false
@@ -97,14 +101,28 @@ testIframe(
 
 		// Catches Edge, Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
-	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari;
 	} else if ( /firefox\/102\./i.test( userAgent ) ) {
 		expected = expectedMap.firefox_102;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
+	} else if (
+
+		// Playwright WebKit on macOS doesn't expose `Safari` in its user agent string.
+		// However, this particular version of WebKit is only present in modern
+		// WebKit UAs (Safari 13+) as Chromium is locked to an older version.
+		( /\bapplewebkit\/605\.1\.15\b/i.test( userAgent ) &&
+			!/\bsafari\//i.test( userAgent ) ) ||
+
+		// The Linux version of Playwright WebKit does include the `Safari` token,
+		// though. Since there's no WebKit-based real browser that we officially
+		// support outside of macOS and GitHub Actions run on Linux, use it to
+		// detect Playwright WebKit.
+		/\blinux [^)]+\) applewebkit\/605\.1\.15\b/i.test( userAgent ) ) {
+		expected = expectedMap.webkit;
+	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
+		expected = expectedMap.safari;
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
@@ -134,7 +152,8 @@ testIframe(
 		for ( i in expected ) {
 			assert.equal( computedSupport[ i ], expected[ i ],
 				"jQuery.support['" + i + "']: " + computedSupport[ i ] +
-					", expected['" + i + "']: " + expected[ i ] );
+					", expected['" + i + "']: " + expected[ i ] +
+					";\nUser Agent: " + navigator.userAgent );
 		}
 	} );
 
