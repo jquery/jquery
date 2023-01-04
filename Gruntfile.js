@@ -16,8 +16,7 @@ module.exports = function( grunt ) {
 	const gzip = require( "gzip-js" );
 	const nodeV14OrNewer = !/^v1[02]\./.test( process.version );
 	const nodeV17OrNewer = !/^v1[0246]\./.test( process.version );
-	const isCi = process.env.GITHUB_ACTION;
-	const ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
+	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
 	// Support: Node.js <14
 	// Skip running tasks that dropped support for Node.js 10 or 12
@@ -247,16 +246,20 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-				browsers: isCi && ciBrowsers || (
 
-					// Playwright requires Node 14 or newer
-					nodeV14OrNewer ?
-						[ "ChromeHeadless", "FirefoxHeadless", "WebkitHeadless" ] :
-						[ "ChromeHeadless", "FirefoxHeadless" ]
-				)
+				// Ideally, we'd add WebkitHeadless here. However, `karma-webkit-launcher`
+				// has a bug where it leaves orphaned WebKit processes around:
+				// https://github.com/google/karma-webkit-launcher/issues/1
+				// and this is not the best default experience. Instead, we allow
+				// to pass custom browsers when one needs it; e.g., to run the tests
+				// in all three engines on Linux/macOS, run:
+				// ```
+				// grunt && BROWSERS=ChromeHeadless,FirefoxHeadless,WebkitHeadless grunt karma:main
+				// ```
+				browsers: customBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
 			},
 			esmodules: {
-				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
+				browsers: customBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
@@ -271,7 +274,7 @@ module.exports = function( grunt ) {
 				}
 			},
 			amd: {
-				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
+				browsers: customBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
