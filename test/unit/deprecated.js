@@ -97,7 +97,7 @@ QUnit.test( "trigger() shortcuts", function( assert ) {
 } );
 
 if ( includesModule( "ajax" ) ) {
-	ajaxTest( "jQuery.ajax() - events with context", 12, function( assert ) {
+	ajaxTest( "Ajax events aliases (with context)", 12, function( assert ) {
 		var context = document.createElement( "div" );
 
 		function event( e ) {
@@ -113,10 +113,10 @@ if ( includesModule( "ajax" ) ) {
 		return {
 			setup: function() {
 				jQuery( context ).appendTo( "#foo" )
-					.on( "ajaxSend", event )
-					.on( "ajaxComplete", event )
-					.on( "ajaxError", event )
-					.on( "ajaxSuccess", event );
+					.ajaxSend( event )
+					.ajaxComplete( event )
+					.ajaxError( event )
+					.ajaxSuccess( event );
 			},
 			requests: [ {
 				url: url( "name.html" ),
