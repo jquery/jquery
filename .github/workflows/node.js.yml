@@ -72,7 +72,7 @@ jobs:
         npm install
 
     - name: Install Playwright dependencies
-      run: npx playwright install-deps
+      run: npx playwright-webkit install-deps
       if: "matrix.NPM_SCRIPT == 'test:browser'"
 
     - name: Run tests
