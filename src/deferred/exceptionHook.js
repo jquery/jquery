@@ -10,8 +10,8 @@ jQuery.Deferred.exceptionHook = function( error, stack ) {
 
 	if ( error && rerrorNames.test( error.name ) ) {
 		window.console.warn(
-			"jQuery.Deferred exception: " + error.message,
-			error.stack,
+			"jQuery.Deferred exception",
+			error,
 			stack
 		);
 	}
