@@ -23,6 +23,7 @@ import "./ajax.js";
 import "./ajax/xhr.js";
 import "./ajax/script.js";
 import "./ajax/jsonp.js";
+import "./ajax/binary.js";
 import "./ajax/load.js";
 import "./core/parseXML.js";
 import "./core/parseHTML.js";

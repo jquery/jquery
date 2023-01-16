@@ -124,6 +124,17 @@ QUnit.assert.ok( true, "mock executed");';
 		echo "$cleanCallback($text)\n";
 	}
 
+	protected function formData( $req ) {
+		$prefix = 'multipart/form-data; boundary=--';
+		$contentTypeValue = $req->headers[ 'CONTENT-TYPE' ];
+		if ( substr( $contentTypeValue, 0, strlen( $prefix ) ) === $prefix ) {
+			echo 'key1 -> ' . $_POST[ 'key1' ] . ', key2 -> ' . $_POST[ 'key2' ];
+		} else {
+			echo 'Incorrect Content-Type: ' . $contentTypeValue .
+				"\nExpected prefix: " . $prefix;
+		}
+	}
+
 	protected function error( $req ) {
 		header( 'HTTP/1.0 400 Bad Request' );
 		if ( isset( $req->query['json'] ) ) {

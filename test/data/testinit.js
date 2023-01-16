@@ -174,8 +174,11 @@ function url( value ) {
 }
 
 // Ajax testing helper
-this.ajaxTest = function( title, expect, options ) {
-	QUnit.test( title, function( assert ) {
+this.ajaxTest = function( title, expect, options, wrapper ) {
+	if ( !wrapper ) {
+		wrapper = QUnit.test;
+	}
+	wrapper.call( QUnit, title, function( assert ) {
 		assert.expect( expect );
 		var requestOptions;
 

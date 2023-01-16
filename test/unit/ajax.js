@@ -3049,4 +3049,47 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		assert.ok( jQuery.active === 0, "ajax active counter should be zero: " + jQuery.active );
 	} );
 
+	ajaxTest( "jQuery.ajax() - FormData", 1, function( assert ) {
+		var formData = new FormData();
+		formData.append( "key1", "value1" );
+		formData.append( "key2", "value2" );
+
+		return {
+			url: url( "mock.php?action=formData" ),
+			method: "post",
+			data: formData,
+			success: function( data ) {
+				assert.strictEqual( data, "key1 -> value1, key2 -> value2",
+					"FormData sent correctly" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - URLSearchParams", 1, function( assert ) {
+		var urlSearchParams = new URLSearchParams();
+		urlSearchParams.append( "name", "peter" );
+
+		return {
+			url: url( "mock.php?action=name" ),
+			method: "post",
+			data: urlSearchParams,
+			success: function( data ) {
+				assert.strictEqual( data, "pan", "URLSearchParams sent correctly" );
+			}
+		};
+	}, QUnit.testUnlessIE );
+
+	ajaxTest( "jQuery.ajax() - Blob", 1, function( assert ) {
+		var blob = new Blob( [ "name=peter" ], { type: "text/plain" } );
+
+		return {
+			url: url( "mock.php?action=name" ),
+			method: "post",
+			data: blob,
+			success: function( data ) {
+				assert.strictEqual( data, "pan", "Blob sent correctly" );
+			}
+		};
+	} );
+
 } )();
