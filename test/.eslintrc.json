@@ -60,6 +60,14 @@
 	"overrides": [
 		{
 			"files": [
+				"middleware-mockserver.js"
+			],
+
+			"extends": "../.eslintrc-node.json"
+		},
+
+		{
+			"files": [
 				"data/core/jquery-iterability-transpiled-es6.js",
 				"data/testinit-jsdom.js"
 			],
