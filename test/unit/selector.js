@@ -1,9 +1,10 @@
 QUnit.module( "selector", {
 	beforeEach: function() {
 
-		// Playwright WebKit on macOS doesn't expose `Safari` in its user agent string.
-		// However, this particular version of WebKit is only present in modern
-		// WebKit UAs (Safari 13+) as Chromium is locked to an older version.
+		// Playwright WebKit on macOS doesn't expose `Safari` in its user agent
+		// string; use the "AppleWebKit" token. This token is also present
+		// in the Chromium UA, but it is locked to an older version there.
+		// Modern WebKit (Safari 13+) locks it to `605.1.15`.
 		this.safari = /\bapplewebkit\/605\.1\.15\b/i.test( navigator.userAgent );
 	},
 	afterEach: moduleTeardown

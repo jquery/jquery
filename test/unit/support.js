@@ -107,19 +107,17 @@ testIframe(
 		expected = expectedMap.firefox;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
-	} else if (
+	} else if ( typeof URLSearchParams !== "undefined" &&
 
-		// Playwright WebKit on macOS doesn't expose `Safari` in its user agent string.
-		// However, this particular version of WebKit is only present in modern
-		// WebKit UAs (Safari 13+) as Chromium is locked to an older version.
-		( /\bapplewebkit\/605\.1\.15\b/i.test( userAgent ) &&
-			!/\bsafari\//i.test( userAgent ) ) ||
-
-		// The Linux version of Playwright WebKit does include the `Safari` token,
-		// though. Since there's no WebKit-based real browser that we officially
-		// support outside of macOS and GitHub Actions run on Linux, use it to
-		// detect Playwright WebKit.
-		/\blinux [^)]+\) applewebkit\/605\.1\.15\b/i.test( userAgent ) ) {
+		// `karma-webkit-launcher` adds `test_browser=Playwright` to the query string.
+		// The normal way of using user agent to detect the browser won't help
+		// as on macOS Playwright doesn't specify the `Safari` token but on Linux
+		// it does.
+		// See https://github.com/google/karma-webkit-launcher#detected-if-safari-or-playwright-is-used
+		new URLSearchParams( document.referrer || window.location.search ).get(
+			"test_browser"
+		) === "Playwright"
+	) {
 		expected = expectedMap.webkit;
 	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
