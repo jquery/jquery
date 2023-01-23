@@ -1,9 +1,11 @@
-/* eslint-env node */
-var url = require( "url" );
-var fs = require( "fs" );
-var getRawBody = require( "raw-body" );
+"use strict";
 
-var cspLog = "";
+const url = require( "url" );
+const fs = require( "fs" );
+const getRawBody = require( "raw-body" );
+
+let cspLog = "";
+
 /**
  * Keep in sync with /test/mock.php
  */
@@ -11,7 +13,7 @@ function cleanCallback( callback ) {
 	return callback.replace( /[^a-z0-9_]/gi, "" );
 }
 
-var mocks = {
+const mocks = {
 	contentType: function( req, resp ) {
 		resp.writeHead( 200, {
 			"content-type": req.query.contentType
@@ -19,7 +21,7 @@ var mocks = {
 		resp.end( req.query.response );
 	},
 	wait: function( req, resp ) {
-		var wait = Number( req.query.wait ) * 1000;
+		const wait = Number( req.query.wait ) * 1000;
 		setTimeout( function() {
 			if ( req.query.script ) {
 				resp.writeHead( 200, { "content-type": "text/javascript" } );
@@ -44,7 +46,7 @@ var mocks = {
 		}, next );
 	},
 	xml: function( req, resp, next ) {
-		var content = "<math><calculation>5-2</calculation><result>3</result></math>";
+		const content = "<math><calculation>5-2</calculation><result>3</result></math>";
 		resp.writeHead( 200, { "content-type": "text/xml" } );
 
 		if ( req.query.cal === "5-2" ) {
@@ -59,7 +61,7 @@ var mocks = {
 			}
 		}, next );
 	},
-	atom: function( req, resp, next ) {
+	atom: function( _req, resp ) {
 		resp.writeHead( 200, { "content-type": "atom+xml" } );
 		resp.end( "<root><element /></root>" );
 	},
@@ -77,14 +79,14 @@ var mocks = {
 		}
 
 		if ( req.query.callback ) {
-			resp.end( cleanCallback( req.query.callback ) + "(" + JSON.stringify( {
+			resp.end( `${ cleanCallback( req.query.callback ) }(${ JSON.stringify( {
 				headers: req.headers
-			} ) + ")" );
+			} ) })` );
 		} else {
 			resp.end( "QUnit.assert.ok( true, \"mock executed\" );" );
 		}
 	},
-	testbar: function( req, resp ) {
+	testbar: function( _req, resp ) {
 		resp.writeHead( 200 );
 		resp.end(
 			"this.testBar = 'bar'; " +
@@ -110,7 +112,7 @@ var mocks = {
 		}
 	},
 	jsonp: function( req, resp, next ) {
-		var callback;
+		let callback;
 		if ( Array.isArray( req.query.callback ) ) {
 			callback = Promise.resolve( req.query.callback[ req.query.callback.length - 1 ] );
 		} else if ( req.query.callback ) {
@@ -122,7 +124,7 @@ var mocks = {
 				return body.trim().replace( "callback=", "" );
 			} );
 		}
-		var json = req.query.array ?
+		const json = req.query.array ?
 			JSON.stringify(
 				[ { name: "John", age: 21 }, { name: "Peter", age: 25 } ]
 			) :
@@ -130,14 +132,14 @@ var mocks = {
 				{ data: { lang: "en", length: 25 } }
 			);
 		callback.then( function( cb ) {
-			resp.end( cleanCallback( cb ) + "(" + json + ")" );
+			resp.end( `${ cleanCallback( cb ) }(${ json })` );
 		}, next );
 	},
 	xmlOverJsonp: function( req, resp ) {
-		var callback = req.query.callback;
-		var body = fs.readFileSync( __dirname + "/data/with_fries.xml" ).toString();
+		const callback = req.query.callback;
+		const body = fs.readFileSync( `${ __dirname }/data/with_fries.xml` ).toString();
 		resp.writeHead( 200 );
-		resp.end( cleanCallback( callback ) + "(" + JSON.stringify( body ) + ")\n" );
+		resp.end( `${ cleanCallback( callback ) }(${ JSON.stringify( body ) })\n` );
 	},
 	error: function( req, resp ) {
 		if ( req.query.json ) {
@@ -159,7 +161,7 @@ var mocks = {
 		} );
 		req.query.keys.split( "|" ).forEach( function( key ) {
 			if ( key.toLowerCase() in req.headers ) {
-				resp.write( key + ": " + req.headers[ key.toLowerCase() ] + "\n" );
+				resp.write( `${ key }: ${ req.headers[ key.toLowerCase() ] }\n` );
 			}
 		} );
 		resp.end();
@@ -177,16 +179,16 @@ var mocks = {
 	},
 	echoHtml: function( req, resp, next ) {
 		resp.writeHead( 200, { "Content-Type": "text/html" } );
-		resp.write( "<div id='method'>" + req.method + "</div>" );
-		resp.write( "<div id='query'>" + req.parsed.search.slice( 1 ) + "</div>" );
+		resp.write( `<div id='method'>${ req.method }</div>` );
+		resp.write( `<div id='query'>${ req.parsed.search.slice( 1 ) }</div>` );
 		getBody( req ).then( function( body ) {
-			resp.write( "<div id='data'>" + body + "</div>" );
+			resp.write( `<div id='data'>${ body }</div>` );
 			resp.end( body );
 		}, next );
 	},
 	etag: function( req, resp ) {
-		var hash = Number( req.query.ts ).toString( 36 );
-		var etag = "W/\"" + hash + "\"";
+		const hash = Number( req.query.ts ).toString( 36 );
+		const etag = `W/"${ hash }"`;
 		if ( req.headers[ "if-none-match" ] === etag ) {
 			resp.writeHead( 304 );
 			resp.end();
@@ -197,8 +199,8 @@ var mocks = {
 		} );
 		resp.end();
 	},
-	ims: function( req, resp, next ) {
-		var ts = req.query.ts;
+	ims: function( req, resp ) {
+		const ts = req.query.ts;
 		if ( req.headers[ "if-modified-since" ] === ts ) {
 			resp.writeHead( 304 );
 			resp.end();
@@ -209,67 +211,75 @@ var mocks = {
 		} );
 		resp.end();
 	},
-	status: function( req, resp, next ) {
+	status: function( req, resp ) {
 		resp.writeHead( Number( req.query.code ) );
 		resp.end();
 	},
 	testHTML: function( req, resp ) {
 		resp.writeHead( 200, { "Content-Type": "text/html" } );
-		var body = fs.readFileSync( __dirname + "/data/test.include.html" ).toString();
-		body = body.replace( /{{baseURL}}/g, req.query.baseURL );
+		const body = fs
+			.readFileSync( `${ __dirname }/data/test.include.html` )
+			.toString()
+			.replace( /{{baseURL}}/g, req.query.baseURL );
 		resp.end( body );
 	},
-	cspFrame: function( req, resp ) {
+	cspFrame: function( _req, resp ) {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "default-src 'self'; require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "default-src 'self'; require-trusted-types-for 'script'; " +
+				"report-uri /base/test/data/mock.php?action=cspLog"
 		} );
-		var body = fs.readFileSync( __dirname + "/data/csp.include.html" ).toString();
+		const body = fs.readFileSync( `${ __dirname }/data/csp.include.html` ).toString();
 		resp.end( body );
 	},
 	cspNonce: function( req, resp ) {
-		var testParam = req.query.test ? "-" + req.query.test : "";
+		const testParam = req.query.test ? `-${ req.query.test }` : "";
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "script-src 'nonce-jquery+hardcoded+nonce'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "script-src 'nonce-jquery+hardcoded+nonce'; " +
+				"report-uri /base/test/data/mock.php?action=cspLog"
 		} );
-		var body = fs.readFileSync(
-			__dirname + "/data/csp-nonce" + testParam + ".html" ).toString();
+		const body = fs.readFileSync(
+			`${ __dirname }/data/csp-nonce${ testParam }.html` ).toString();
 		resp.end( body );
 	},
-	cspAjaxScript: function( req, resp ) {
+	cspAjaxScript: function( _req, resp ) {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "script-src 'self'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "script-src 'self'; " +
+				"report-uri /base/test/data/mock.php?action=cspLog"
 		} );
-		var body = fs.readFileSync(
-			__dirname + "/data/csp-ajax-script.html" ).toString();
+		const body = fs.readFileSync(
+			`${ __dirname }/data/csp-ajax-script.html` ).toString();
 		resp.end( body );
 	},
-	cspLog: function( req, resp ) {
+	cspLog: function( _req, resp ) {
 		cspLog = "error";
 		resp.writeHead( 200 );
 		resp.end();
 	},
-	cspClean: function( req, resp ) {
+	cspClean: function( _req, resp ) {
 		cspLog = "";
 		resp.writeHead( 200 );
 		resp.end();
 	},
-	trustedHtml: function( req, resp ) {
+	trustedHtml: function( _req, resp ) {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "require-trusted-types-for 'script'; " +
+				"report-uri /base/test/data/mock.php?action=cspLog"
 		} );
-		var body = fs.readFileSync( __dirname + "/data/trusted-html.html" ).toString();
+		const body = fs.readFileSync( `${ __dirname }/data/trusted-html.html` ).toString();
 		resp.end( body );
 	},
-	trustedTypesAttributes: function( req, resp ) {
+	trustedTypesAttributes: function( _req, resp ) {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
-			"Content-Security-Policy": "require-trusted-types-for 'script'; report-uri /base/test/data/mock.php?action=cspLog"
+			"Content-Security-Policy": "require-trusted-types-for 'script'; " +
+				"report-uri /base/test/data/mock.php?action=cspLog"
 		} );
-		var body = fs.readFileSync( __dirname + "/data/trusted-types-attributes.html" ).toString();
+		const body = fs.readFileSync(
+			`${ __dirname }/data/trusted-types-attributes.html` ).toString();
 		resp.end( body );
 	},
 	errorWithScript: function( req, resp ) {
@@ -279,14 +289,14 @@ var mocks = {
 			resp.writeHead( 404, { "Content-Type": "text/html; charset=UTF-8" } );
 		}
 		if ( req.query.callback ) {
-			resp.end( cleanCallback( req.query.callback ) +
-				"( {\"status\": 404, \"msg\": \"Not Found\"} )" );
+			resp.end( `${ cleanCallback( req.query.callback )
+				}( {"status": 404, "msg": "Not Found"} )` );
 		} else {
 			resp.end( "QUnit.assert.ok( false, \"Mock return erroneously executed\" );" );
 		}
 	}
 };
-var handlers = {
+const handlers = {
 	"test/data/mock.php": function( req, resp, next ) {
 		if ( !mocks[ req.query.action ] ) {
 			resp.writeHead( 400 );
@@ -296,11 +306,11 @@ var handlers = {
 		}
 		mocks[ req.query.action ]( req, resp, next );
 	},
-	"test/data/support/csp.log": function( req, resp ) {
+	"test/data/support/csp.log": function( _req, resp ) {
 		resp.writeHead( 200 );
 		resp.end( cspLog );
 	},
-	"test/data/404.txt": function( req, resp ) {
+	"test/data/404.txt": function( _req, resp ) {
 		resp.writeHead( 404 );
 		resp.end( "" );
 	}
@@ -315,21 +325,23 @@ var handlers = {
  * Express versions of these (e.g. no req.path, req.query, resp.set).
  */
 function MockserverMiddlewareFactory() {
+
 	/**
 	 * @param {http.IncomingMessage} req
 	 * @param {http.ServerResponse} resp
 	 * @param {Function} next Continue request handling
 	 */
 	return function( req, resp, next ) {
-		var parsed = url.parse( req.url, /* parseQuery */ true ),
-			path = parsed.pathname.replace( /^\/base\//, "" ),
-			query = parsed.query,
-			subReq = Object.assign( Object.create( req ), {
-				query: query,
-				parsed: parsed
-			} );
+		const parsed = url.parse( req.url, /* parseQuery */ true );
+		let path = parsed.pathname.replace( /^\/base\//, "" );
+		const query = parsed.query;
+		const subReq = Object.assign( Object.create( req ), {
+			query: query,
+			parsed: parsed
+		} );
 
 		if ( /^test\/data\/mock.php\//.test( path ) ) {
+
 			// Support REST-like Apache PathInfo
 			path = "test\/data\/mock.php";
 		}
