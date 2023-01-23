@@ -16,32 +16,32 @@ jobs:
         NODE_VERSION: [10.x, 14.x, 16.x, 18.x, 19.x]
         NPM_SCRIPT: ["test:browserless"]
         include:
-          - NAME: "Browser tests: full build, Chrome & Firefox stable"
-            NODE_VERSION: "16.x"
+          - NAME: "Browser tests: full build, Chrome, Firefox & WebKit"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:browser"
-            BROWSERS: "ChromeHeadless,FirefoxHeadless"
-          - NAME: "Browser tests: slim build, Chrome stable"
-            NODE_VERSION: "16.x"
+            BROWSERS: "ChromeHeadless,FirefoxHeadless,WebkitHeadless"
+          - NAME: "Browser tests: slim build, Chrome"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:slim"
             BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: no-deprecated build, Chrome stable"
-            NODE_VERSION: "16.x"
+          - NAME: "Browser tests: no-deprecated build, Chrome"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:no-deprecated"
             BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: selector-native build, Chrome stable"
-            NODE_VERSION: "16.x"
+          - NAME: "Browser tests: selector-native build, Chrome"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:selector-native"
             BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: ES modules build, Chrome stable"
-            NODE_VERSION: "16.x"
+          - NAME: "Browser tests: ES modules build, Chrome"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:esmodules"
             BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: AMD build, Chrome stable"
-            NODE_VERSION: "16.x"
+          - NAME: "Browser tests: AMD build, Chrome"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:amd"
             BROWSERS: "ChromeHeadless"
           - NAME: "Browser tests: full build, Firefox ESR"
-            NODE_VERSION: "16.x"
+            NODE_VERSION: "18.x"
             NPM_SCRIPT: "test:browser"
             BROWSERS: "FirefoxHeadless"
     steps:
@@ -70,6 +70,10 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
+
+    - name: Install Playwright dependencies
+      run: npx playwright-webkit install-deps
+      if: "matrix.NPM_SCRIPT == 'test:browser'"
 
     - name: Run tests
       env:
