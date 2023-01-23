@@ -2,8 +2,8 @@
 
 module.exports = function( grunt ) {
 	function readOptionalJSON( filepath ) {
-		var stripJSONComments = require( "strip-json-comments" ),
-			data = {};
+		const stripJSONComments = require( "strip-json-comments" );
+		let data = {};
 		try {
 			data = JSON.parse( stripJSONComments(
 				fs.readFileSync( filepath, { encoding: "utf8" } )
@@ -12,19 +12,23 @@ module.exports = function( grunt ) {
 		return data;
 	}
 
-	// Support: Node.js <12
-	// Skip running tasks that dropped support for Node.js 10
+	const fs = require( "fs" );
+	const gzip = require( "gzip-js" );
+	const nodeV14OrNewer = !/^v1[0-3]\./.test( process.version );
+	const nodeV17OrNewer = !/^v1[0-6]\./.test( process.version );
+	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
+
+	// Support: Node.js <14
+	// Skip running tasks that dropped support for Node.js 10 or 12
 	// in this Node version.
 	function runIfNewNode( task ) {
-		return oldNode ? "print_old_node_message:" + task : task;
+		return nodeV14OrNewer ? task : "print_old_node_message:" + task;
 	}
 
-	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-		oldNode = /^v10\./.test( process.version ),
-		nodeV17OrNewer = !/^v1[0246]\./.test( process.version ),
-		isCi = process.env.GITHUB_ACTION,
-		ciBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
+	if ( nodeV14OrNewer ) {
+		const playwright = require( "playwright-webkit" );
+		process.env.WEBKIT_HEADLESS_BIN = playwright.webkit.executablePath();
+	}
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -228,10 +232,11 @@ module.exports = function( grunt ) {
 				singleRun: true
 			},
 			main: {
-				browsers: isCi && ciBrowsers || [ "ChromeHeadless", "FirefoxHeadless" ]
+				browsers: customBrowsers ||
+					[ "ChromeHeadless", "FirefoxHeadless", "WebkitHeadless" ]
 			},
 			amd: {
-				browsers: isCi && ciBrowsers || [ "ChromeHeadless" ],
+				browsers: customBrowsers || [ "ChromeHeadless" ],
 				options: {
 					client: {
 						qunit: {
@@ -333,7 +338,9 @@ module.exports = function( grunt ) {
 	} );
 
 	// Load grunt tasks from NPM packages
-	require( "load-grunt-tasks" )( grunt );
+	require( "load-grunt-tasks" )( grunt, {
+		pattern: nodeV14OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
+	} );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );

@@ -2201,7 +2201,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	// Safari 13 did similar changes. The below check will catch them both.
 	// Edge Legacy fakes Chrome which fakes Safari in their user agents so we need
 	// to exclude Edge specifically here so that the test continues to run there.
-	if ( !/safari/i.test( navigator.userAgent ) || /edge\//i.test( navigator.userAgent ) ) {
+	if ( !/webkit/i.test( navigator.userAgent ) || /edge\//i.test( navigator.userAgent ) ) {
 		testIframe(
 			"trac-14379 - jQuery.ajax() on unload",
 			"ajax/onunload.html",
