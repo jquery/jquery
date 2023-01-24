@@ -6,9 +6,12 @@ QUnit.module( "selector", {
 		// in the Chromium UA, but it is locked to an older version there.
 		// Modern WebKit (Safari 13+) locks it to `605.1.15`.
 		// Since the `3.x` branch is also tested on older WebKit UAs, we
-		// need the `Safari` check as well.
-		this.safari = /\bapplewebkit\/605\.1\.15\b/i.test( navigator.userAgent ) ||
-			/\bsafari\b/i.test( navigator.userAgent );
+		// need the `Safari` check as well. Chrome also includes the `Safari`
+		// token, though, so we need to explicitly exclude it.
+		this.safari = /\bapplewebkit\/605\.1\.15\b/i.test( navigator.userAgent ) || (
+			/\bsafari\b/i.test( navigator.userAgent ) &&
+				!/\b(?:headless)?chrome\b/i.test( navigator.userAgent )
+		);
 	},
 	afterEach: moduleTeardown
 } );

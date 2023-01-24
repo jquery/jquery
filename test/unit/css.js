@@ -1773,11 +1773,12 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 			"</style>"
 		);
 
-	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
-			.appendTo( "#qunit-fixture" ),
-		webkitOrBlink = /\webkit\b/i.test( navigator.userAgent ) && !/edge\//i.test( navigator.userAgent ),
-		expected = 20;
+		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+			$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
+				.appendTo( "#qunit-fixture" ),
+			webkitOrBlink = /\webkit\b/i.test( navigator.userAgent ) &&
+				!/edge\//i.test( navigator.userAgent ),
+			expected = 20;
 
 		if ( webkitOrBlink ) {
 			expected -= 2;
