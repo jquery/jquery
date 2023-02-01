@@ -575,9 +575,9 @@ QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
 		defer = jQuery.Deferred(),
 		oldWarn = window.console.warn;
 
-	window.console.warn = function() {
-		var msg = Array.prototype.join.call( arguments, " " );
-		assert.ok( /barf/.test( msg ), "Message: " + msg );
+	window.console.warn = function( _intro, error ) {
+		assert.ok( /barf/.test( error.message + "\n" + error.stack ),
+			"Error mentions the method: " + error.message + "\n" + error.stack );
 	};
 
 	jQuery.when(
