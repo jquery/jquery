@@ -6,20 +6,28 @@ import "../ajax.js";
 function canUseScriptTag( s ) {
 
 	// A script tag can only be used for async, cross domain or forced-by-attrs requests.
+	// Requests with headers cannot use a script tag. However, when both `scriptAttrs` &
+	// `headers` options are specified, both are impossible to satisfy together; we
+	// prefer `scriptAttrs` then.
 	// Sync requests remain handled differently to preserve strict script ordering.
-	return s.crossDomain || s.scriptAttrs ||
+	return s.scriptAttrs || (
+		!s.headers &&
+		(
+			s.crossDomain ||
 
-		// When dealing with JSONP (`s.dataTypes` include "json" then)
-		// don't use a script tag so that error responses still may have
-		// `responseJSON` set. Continue using a script tag for JSONP requests that:
-		//   * are cross-domain as AJAX requests won't work without a CORS setup
-		//   * have `scriptAttrs` set as that's a script-only functionality
-		// Note that this means JSONP requests violate strict CSP script-src settings.
-		// A proper solution is to migrate from using JSONP to a CORS setup.
-		( s.async && jQuery.inArray( "json", s.dataTypes ) < 0 );
+			// When dealing with JSONP (`s.dataTypes` include "json" then)
+			// don't use a script tag so that error responses still may have
+			// `responseJSON` set. Continue using a script tag for JSONP requests that:
+			//   * are cross-domain as AJAX requests won't work without a CORS setup
+			//   * have `scriptAttrs` set as that's a script-only functionality
+			// Note that this means JSONP requests violate strict CSP script-src settings.
+			// A proper solution is to migrate from using JSONP to a CORS setup.
+			( s.async && jQuery.inArray( "json", s.dataTypes ) < 0 )
+		)
+	);
 }
 
-// Install script dataType. Don't specify `content.script` so that an explicit
+// Install script dataType. Don't specify `contents.script` so that an explicit
 // `dataType: "script"` is required (see gh-2432, gh-4822)
 jQuery.ajaxSetup( {
 	accepts: {

@@ -71,35 +71,91 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - custom attributes for script tag", 5,
-		function( assert ) {
-			return {
-				create: function( options ) {
-					var xhr;
-					options.method = "POST";
-					options.dataType = "script";
-					options.scriptAttrs = { id: "jquery-ajax-test", async: "async" };
-					xhr = jQuery.ajax( url( "mock.php?action=script" ), options );
-					assert.equal( jQuery( "#jquery-ajax-test" ).attr( "async" ), "async", "attr value" );
-					return xhr;
-				},
-				beforeSend: function( _jqXhr, settings ) {
-					assert.strictEqual( settings.type, "GET", "Type changed to GET" );
-				},
-				success: function() {
-					assert.ok( true, "success" );
-				},
-				complete: function() {
-					assert.ok( true, "complete" );
-				}
-			};
-		}
-	);
+	jQuery.each( [ " - Same Domain", " - Cross Domain" ], function( crossDomain, label ) {
+		ajaxTest( "jQuery.ajax() - custom attributes for script tag" + label, 5,
+			function( assert ) {
+				return {
+					create: function( options ) {
+						var xhr;
+						options.crossDomain = crossDomain;
+						options.method = "POST";
+						options.dataType = "script";
+						options.scriptAttrs = { id: "jquery-ajax-test", async: "async" };
+						xhr = jQuery.ajax( url( "mock.php?action=script" ), options );
+						assert.equal( jQuery( "#jquery-ajax-test" ).attr( "async" ), "async", "attr value" );
+						return xhr;
+					},
+					beforeSend: function( _jqXhr, settings ) {
+						assert.strictEqual( settings.type, "GET", "Type changed to GET" );
+					},
+					success: function() {
+						assert.ok( true, "success" );
+					},
+					complete: function() {
+						assert.ok( true, "complete" );
+					}
+				};
+			}
+		);
+
+		ajaxTest( "jQuery.ajax() - headers for script transport" + label, 3,
+			function( assert ) {
+				return {
+					create: function( options ) {
+						Globals.register( "corsCallback" );
+						window.corsCallback = function( response ) {
+							assert.strictEqual( response.headers[ "x-custom-test-header" ],
+								"test value", "Custom header sent" );
+						};
+						options.crossDomain = crossDomain;
+						options.dataType = "script";
+						options.headers = { "x-custom-test-header": "test value" };
+						return jQuery.ajax( url( "mock.php?action=script&callback=corsCallback" ), options );
+					},
+					success: function() {
+						assert.ok( true, "success" );
+					},
+					complete: function() {
+						assert.ok( true, "complete" );
+					}
+				};
+			}
+		);
+
+		ajaxTest( "jQuery.ajax() - scriptAttrs winning over headers" + label, 4,
+			function( assert ) {
+				return {
+					create: function( options ) {
+						var xhr;
+						Globals.register( "corsCallback" );
+						window.corsCallback = function( response ) {
+							assert.ok( !response.headers[ "x-custom-test-header" ],
+								"headers losing with scriptAttrs" );
+						};
+						options.crossDomain = crossDomain;
+						options.dataType = "script";
+						options.scriptAttrs = { id: "jquery-ajax-test", async: "async" };
+						options.headers = { "x-custom-test-header": "test value" };
+						xhr = jQuery.ajax( url( "mock.php?action=script&callback=corsCallback" ), options );
+						assert.equal( jQuery( "#jquery-ajax-test" ).attr( "async" ), "async", "attr value" );
+						return xhr;
+					},
+					success: function() {
+						assert.ok( true, "success" );
+					},
+					complete: function() {
+						assert.ok( true, "complete" );
+					}
+				};
+			}
+		);
+	} );
 
 	ajaxTest( "jQuery.ajax() - execute JS when dataType option is provided", 3,
 		function( assert ) {
 			return {
 				create: function( options ) {
+					Globals.register( "corsCallback" );
 					options.crossDomain = true;
 					options.dataType = "script";
 					return jQuery.ajax( url( "mock.php?action=script&header=ecma" ), options );
