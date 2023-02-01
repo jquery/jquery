@@ -3,6 +3,7 @@
 const url = require( "url" );
 const fs = require( "fs" );
 const getRawBody = require( "raw-body" );
+const multiparty = require( "multiparty" );
 
 let cspLog = "";
 
@@ -140,6 +141,19 @@ const mocks = {
 		const body = fs.readFileSync( `${ __dirname }/data/with_fries.xml` ).toString();
 		resp.writeHead( 200 );
 		resp.end( `${ cleanCallback( callback ) }(${ JSON.stringify( body ) })\n` );
+	},
+	formData: function( req, resp, next ) {
+		const prefix = "multipart/form-data; boundary=--";
+		const contentTypeValue = req.headers[ "content-type" ];
+		resp.writeHead( 200 );
+		if ( ( prefix || "" ).startsWith( prefix ) ) {
+			getMultiPartContent( req ).then( function( { fields = {} } ) {
+				resp.end( `key1 -> ${ fields.key1 }, key2 -> ${ fields.key2 }` );
+			}, next );
+		} else {
+			resp.end( `Incorrect Content-Type: ${ contentTypeValue
+				}\nExpected prefix: ${ prefix }` );
+		}
 	},
 	error: function( req, resp ) {
 		if ( req.query.json ) {
@@ -361,6 +375,20 @@ function getBody( req ) {
 		getRawBody( req, {
 			encoding: true
 		} );
+}
+
+function getMultiPartContent( req ) {
+	return new Promise( function( resolve ) {
+		if ( req.method !== "POST" ) {
+			resolve( "" );
+			return;
+		}
+
+		const form = new multiparty.Form();
+		form.parse( req, function( _err, fields, files ) {
+			resolve( { fields, files } );
+		} );
+	} );
 }
 
 module.exports = MockserverMiddlewareFactory;
