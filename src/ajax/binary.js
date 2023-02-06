@@ -6,6 +6,7 @@ jQuery.ajaxPrefilter( function( s, origOptions ) {
 
 	// Binary data needs to be passed to XHR as-is without stringification.
 	if ( typeof s.data !== "string" && !jQuery.isPlainObject( s.data ) &&
+			!Array.isArray( s.data ) &&
 
 			// Don't disable data processing if explicitly set by the user.
 			!( "processData" in origOptions ) ) {

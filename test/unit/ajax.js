@@ -397,7 +397,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - URL fragment component preservation", 4, function( assert ) {
+	ajaxTest( "jQuery.ajax() - URL fragment component preservation", 5, function( assert ) {
 		return [
 			{
 				url: baseURL + "name.html#foo",
@@ -425,6 +425,25 @@ QUnit.module( "ajax", {
 				beforeSend: function( xhr, settings ) {
 					assert.equal( settings.url, baseURL + "name.html?abc&test=123#foo",
 						"hash preserved for request with query component and data." );
+					return false;
+				},
+				error: true
+			},
+			{
+				url: baseURL + "name.html?abc#foo",
+				data: [
+					{
+						name: "test",
+						value: 123
+					},
+					{
+						name: "devo",
+						value: "hat"
+					}
+				],
+				beforeSend: function( xhr, settings ) {
+					assert.equal( settings.url, baseURL + "name.html?abc&test=123&devo=hat#foo",
+						"hash preserved for request with query component and array data." );
 					return false;
 				},
 				error: true
@@ -1489,43 +1508,92 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - JSON by content-type", 5, function( assert ) {
-		return {
-			url: baseURL + "mock.php?action=json",
-			data: {
-				"header": "json",
-				"array": "1"
+	ajaxTest( "jQuery.ajax() - JSON by content-type", 10, function( assert ) {
+		return [
+			{
+				url: baseURL + "mock.php?action=json",
+				data: {
+					"header": "json",
+					"array": "1"
+				},
+				success: function( json ) {
+					assert.ok( json.length >= 2, "Check length" );
+					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+				}
 			},
-			success: function( json ) {
-				assert.ok( json.length >= 2, "Check length" );
-				assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-				assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-				assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-				assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+			{
+				url: baseURL + "mock.php?action=json",
+				data: [
+					{
+						name: "header",
+						value: "json"
+					},
+					{
+						name: "array",
+						value: "1"
+					}
+				],
+				success: function( json ) {
+					assert.ok( json.length >= 2, "Check length" );
+					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+				}
 			}
-		};
+		];
 	} );
 
-	ajaxTest( "jQuery.ajax() - JSON by content-type disabled with options", 6, function( assert ) {
-		return {
-			url: url( "mock.php?action=json" ),
-			data: {
-				"header": "json",
-				"array": "1"
+	ajaxTest( "jQuery.ajax() - JSON by content-type disabled with options", 12, function( assert ) {
+		return [
+			{
+				url: url( "mock.php?action=json" ),
+				data: {
+					"header": "json",
+					"array": "1"
+				},
+				contents: {
+					"json": false
+				},
+				success: function( text ) {
+					assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
+					var json = JSON.parse( text );
+					assert.ok( json.length >= 2, "Check length" );
+					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+				}
 			},
-			contents: {
-				"json": false
-			},
-			success: function( text ) {
-				assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
-				var json = JSON.parse( text );
-				assert.ok( json.length >= 2, "Check length" );
-				assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-				assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-				assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-				assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+			{
+				url: url( "mock.php?action=json" ),
+				data: [
+					{
+						name: "header",
+						value: "json"
+					},
+					{
+						name: "array",
+						value: "1"
+					}
+				],
+				contents: {
+					"json": false
+				},
+				success: function( text ) {
+					assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
+					var json = JSON.parse( text );
+					assert.ok( json.length >= 2, "Check length" );
+					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+				}
 			}
-		};
+		];
 	} );
 
 	ajaxTest( "jQuery.ajax() - simple get", 1, function( assert ) {
@@ -1573,18 +1641,36 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - data - text/plain (gh-2658)", 1, function( assert ) {
-		return {
-			url: "bogus.html",
-			data: { devo: "A Beautiful World" },
-			type: "post",
-			contentType: "text/plain",
-			beforeSend: function( _, s ) {
-				assert.strictEqual( s.data, "devo=A%20Beautiful%20World", "data is %20-encoded" );
-				return false;
+	ajaxTest( "jQuery.ajax() - data - text/plain (gh-2658)", 2, function( assert ) {
+		return [
+			{
+				url: "bogus.html",
+				data: { devo: "A Beautiful World" },
+				type: "post",
+				contentType: "text/plain",
+				beforeSend: function( _, s ) {
+					assert.strictEqual( s.data, "devo=A%20Beautiful%20World", "data is %20-encoded" );
+					return false;
+				},
+				error: true
 			},
-			error: true
-		};
+			{
+				url: "bogus.html",
+				data: [
+					{
+						name: "devo",
+						value: "A Beautiful World"
+					}
+				],
+				type: "post",
+				contentType: "text/plain",
+				beforeSend: function( _, s ) {
+					assert.strictEqual( s.data, "devo=A%20Beautiful%20World", "data is %20-encoded" );
+					return false;
+				},
+				error: true
+			}
+		];
 	} );
 
 	ajaxTest( "jQuery.ajax() - don't escape %20 with contentType override (gh-4119)", 1, function( assert ) {
@@ -1633,34 +1719,82 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajax() - data - no processing POST", 1, function( assert ) {
-		return {
-			url: "bogus.html",
-			data: { devo: "A Beautiful World" },
-			type: "post",
-			contentType: "x-special-sauce",
-			processData: false,
-			beforeSend: function( _, s ) {
-				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
-				return false;
+	ajaxTest( "jQuery.ajax() - data - no processing POST", 2, function( assert ) {
+		return [
+			{
+				url: "bogus.html",
+				data: { devo: "A Beautiful World" },
+				type: "post",
+				contentType: "x-special-sauce",
+				processData: false,
+				beforeSend: function( _, s ) {
+					assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+					return false;
+				},
+				error: true
 			},
-			error: true
-		};
+			{
+				url: "bogus.html",
+				data: [
+					{
+						name: "devo",
+						value: "A Beautiful World"
+					}
+				],
+				type: "post",
+				contentType: "x-special-sauce",
+				processData: false,
+				beforeSend: function( _, s ) {
+					assert.deepEqual( s.data, [
+						{
+							name: "devo",
+							value: "A Beautiful World"
+						}
+					], "data is not processed" );
+					return false;
+				},
+				error: true
+			}
+		];
 	} );
 
-	ajaxTest( "jQuery.ajax() - data - no processing GET", 1, function( assert ) {
-		return {
-			url: "bogus.html",
-			data: { devo: "A Beautiful World" },
-			type: "get",
-			contentType: "x-something-else",
-			processData: false,
-			beforeSend: function( _, s ) {
-				assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
-				return false;
+	ajaxTest( "jQuery.ajax() - data - no processing GET", 2, function( assert ) {
+		return [
+			{
+				url: "bogus.html",
+				data: { devo: "A Beautiful World" },
+				type: "get",
+				contentType: "x-something-else",
+				processData: false,
+				beforeSend: function( _, s ) {
+					assert.deepEqual( s.data, { devo: "A Beautiful World" }, "data is not processed" );
+					return false;
+				},
+				error: true
 			},
-			error: true
-		};
+			{
+				url: "bogus.html",
+				data: [
+					{
+						name: "devo",
+						value: "A Beautiful World"
+					}
+				],
+				type: "get",
+				contentType: "x-something-else",
+				processData: false,
+				beforeSend: function( _, s ) {
+					assert.deepEqual( s.data, [
+						{
+							name: "devo",
+							value: "A Beautiful World"
+						}
+					], "data is not processed" );
+					return false;
+				},
+				error: true
+			}
+		];
 	} );
 
 		ajaxTest( "jQuery.ajax() - data - process string with GET", 2, function( assert ) {
