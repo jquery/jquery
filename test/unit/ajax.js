@@ -3148,4 +3148,27 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - non-plain object", 1, function( assert ) {
+		return {
+			url: url( "mock.php?action=name" ),
+			method: "post",
+			data: Object.create( { name: "peter" } ),
+			success: function( data ) {
+				assert.strictEqual( data, "ERROR", "Data correctly not sent" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajax() - non-plain object with processData: true", 1, function( assert ) {
+		return {
+			url: url( "mock.php?action=name" ),
+			method: "post",
+			processData: true,
+			data: Object.create( { name: "peter" } ),
+			success: function( data ) {
+				assert.strictEqual( data, "pan", "Data sent correctly" );
+			}
+		};
+	} );
+
 } )();
