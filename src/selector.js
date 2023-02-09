@@ -22,7 +22,6 @@ import selectorError from "./selector/selectorError.js";
 import unescapeSelector from "./selector/unescapeSelector.js";
 import tokenize from "./selector/tokenize.js";
 import toSelector from "./selector/toSelector.js";
-import support from "./selector/support.js";
 
 // The following utils are attached directly to the jQuery object.
 import "./selector/escapeSelector.js";
@@ -189,32 +188,6 @@ function find( selector, context, results, seed ) {
 				}
 
 				try {
-
-					// `qSA` may not throw for unrecognized parts using forgiving parsing:
-					// https://drafts.csswg.org/selectors/#forgiving-selector
-					// like the `:is()` pseudo-class:
-					// https://drafts.csswg.org/selectors/#matches
-					// `CSS.supports` is still expected to return `false` then:
-					// https://drafts.csswg.org/css-conditional-4/#typedef-supports-selector-fn
-					// https://drafts.csswg.org/css-conditional-4/#dfn-support-selector
-					if ( support.cssSupportsSelector &&
-
-						// `CSS.supports( "selector(...)" )` requires the argument to the
-						// `selector` function to be a `<complex-selector>`, not
-						// a `<complex-selector-list>` which our selector may be. Wrapping with
-						// `:is` works around the issue and is supported by all browsers
-						// we support except for IE which will fail the support test anyway.
-						// eslint-disable-next-line no-undef
-						!CSS.supports( "selector(:is(" + newSelector + "))" ) ) {
-
-						// Support: IE 11+
-						// Throw to get to the same code path as an error directly in qSA.
-						// Note: once we only support browser supporting
-						// `CSS.supports('selector(...)')`, we can most likely drop
-						// the `try-catch`. IE doesn't implement the API.
-						throw new Error();
-					}
-
 					push.apply( results,
 						newContext.querySelectorAll( newSelector )
 					);

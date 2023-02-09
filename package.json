@@ -57,7 +57,7 @@
     "load-grunt-tasks": "5.1.0",
     "multiparty": "4.2.3",
     "native-promise-only": "0.8.1",
-    "playwright-webkit": "1.29.2",
+    "playwright-webkit": "1.30.0",
     "promises-aplus-tests": "2.1.2",
     "q": "1.5.1",
     "qunit": "2.10.1",

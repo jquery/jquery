@@ -59,31 +59,31 @@ testIframe(
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			ie_11: {
-				cssSupportsSelector: false,
+				cssHas: true,
 				reliableTrDimensions: false
 			},
 			chrome: {
-				cssSupportsSelector: false,
+				cssHas: false,
 				reliableTrDimensions: true
 			},
 			safari: {
-				cssSupportsSelector: false,
+				cssHas: false,
 				reliableTrDimensions: true
 			},
 			webkit: {
-				cssSupportsSelector: true,
+				cssHas: true,
 				reliableTrDimensions: true
 			},
 			firefox_102: {
-				cssSupportsSelector: false,
+				cssHas: true,
 				reliableTrDimensions: false
 			},
 			firefox: {
-				cssSupportsSelector: true,
+				cssHas: true,
 				reliableTrDimensions: false
 			},
 			ios: {
-				cssSupportsSelector: false,
+				cssHas: false,
 				reliableTrDimensions: true
 			}
 		};
@@ -91,7 +91,7 @@ testIframe(
 	// Make the selector-native build pass tests.
 	for ( browserKey in expectedMap ) {
 		if ( !includesModule( "selector" ) ) {
-			delete expectedMap[ browserKey ].cssSupportsSelector;
+			delete expectedMap[ browserKey ].cssHas;
 		}
 	}
 

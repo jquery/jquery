@@ -21,14 +21,13 @@ if ( isIE ) {
 	);
 }
 
-if ( !support.cssSupportsSelector ) {
+if ( !support.cssHas ) {
 
-	// Support: Chrome 105+, Safari 15.4+
-	// `:has()` uses a forgiving selector list as an argument so our regular
-	// `try-catch` mechanism fails to catch `:has()` with arguments not supported
-	// natively like `:has(:contains("Foo"))`. Where supported & spec-compliant,
-	// we now use `CSS.supports("selector(:is(SELECTOR_TO_BE_TESTED))")`, but
-	// outside that we mark `:has` as buggy.
+	// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
+	// In some browsers, `:has()` uses a forgiving selector list as an argument,
+	// so our regular `try-catch` mechanism fails to catch `:has()` with arguments
+	// not supported natively, like `:has(:contains("Foo"))`. The spec now requires
+	// `:has()` parsing to be non-forgiving but browsers have not adjusted yet.
 	rbuggyQSA.push( ":has" );
 }
 
