@@ -115,7 +115,13 @@ jQuery.extend( {
 				newSelector = groups.join( "," );
 			}
 
-			jQuery.merge( results, newContext.querySelectorAll( newSelector ) );
+			try {
+				jQuery.merge( results, newContext.querySelectorAll( newSelector ) );
+			} finally {
+				if ( nid === jQuery.expando ) {
+					context.removeAttribute( "id" );
+				}
+			}
 		}
 
 		return results;
