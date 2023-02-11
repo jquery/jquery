@@ -30,7 +30,7 @@ import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 import isIE from "./var/isIE.js";
 import booleans from "./selector/var/booleans.js";
-import rcombinators from "./selector/var/rcombinators.js";
+import rleadingCombinator from "./selector/var/rleadingCombinator.js";
 import rdescend from "./selector/var/rdescend.js";
 import rsibling from "./selector/var/rsibling.js";
 import matches from "./selector/var/matches.js";
@@ -86,7 +86,7 @@ jQuery.extend( {
 			// as such selectors are not recognized by querySelectorAll.
 			// Thanks to Andrew Dupont for this technique.
 			if ( nodeType === 1 &&
-				( rdescend.test( selector ) || rcombinators.test( selector ) ) ) {
+				( rdescend.test( selector ) || rleadingCombinator.test( selector ) ) ) {
 
 				// Expand context for sibling selectors
 				newContext = rsibling.test( selector ) &&

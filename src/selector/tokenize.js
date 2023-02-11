@@ -1,6 +1,6 @@
 import jQuery from "../core.js";
 import rcomma from "./var/rcomma.js";
-import rcombinators from "./var/rcombinators.js";
+import rleadingCombinator from "./var/rleadingCombinator.js";
 import rtrim from "../var/rtrim.js";
 import createCache from "./createCache.js";
 import selectorError from "./selectorError.js";
@@ -36,7 +36,7 @@ function tokenize( selector, parseOnly ) {
 		matched = false;
 
 		// Combinators
-		if ( ( match = rcombinators.exec( soFar ) ) ) {
+		if ( ( match = rleadingCombinator.exec( soFar ) ) ) {
 			matched = match.shift();
 			tokens.push( {
 				value: matched,
