@@ -82,6 +82,10 @@ testIframe(
 				cssHas: true,
 				reliableTrDimensions: false
 			},
+			ios_14_15_3: {
+				cssHas: true,
+				reliableTrDimensions: true
+			},
 			ios: {
 				cssHas: false,
 				reliableTrDimensions: true
@@ -105,6 +109,8 @@ testIframe(
 		expected = expectedMap.firefox_102;
 	} else if ( /firefox/i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
+	} else if ( /iphone os (?:14_|15_[0123])/i.test( userAgent ) ) {
+		expected = expectedMap.ios_14_15_3;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	} else if ( typeof URLSearchParams !== "undefined" &&
