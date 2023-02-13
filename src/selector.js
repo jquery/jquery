@@ -550,14 +550,14 @@ function setDocument( node ) {
 	} );
 
 	// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
-	// Make sure forgiving mode is not used in `:has()`.
-	// `*` is needed as Safari & newer Chrome implemented something in between
-	// for `:has()` - it throws in `qSA` if it only contains an unsupported
-	// argument but multiple ones, one of which is supported, are fine.
-	// We want to play safe in case `:is()` gets the same treatment.
-	//
-	// Note that we don't need to detect the complete lack of support for `:has()`
-	// as then the `qSA` path will throw and fall back to jQuery traversal anyway.
+	// Make sure the the `:has()` argument is parsed unforgivingly.
+	// We include `*` in the test to detect buggy implementations that are
+	// _selectively_ forgiving (specifically when the list includes at least
+	// one valid selector).
+	// Note that we treat complete lack of support for `:has()` as if it were
+	// spec-compliant support, which is fine because use of `:has()` in such
+	// environments will fail in the qSA path and fall back to jQuery traversal
+	// anyway.
 	support.cssHas = assert( function() {
 		try {
 			document.querySelector( ":has(*,:jqfake)" );
@@ -718,10 +718,11 @@ function setDocument( node ) {
 	if ( !support.cssHas ) {
 
 		// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
-		// In some browsers, `:has()` uses a forgiving selector list as an argument,
-		// so our regular `try-catch` mechanism fails to catch `:has()` with arguments
-		// not supported natively, like `:has(:contains("Foo"))`. The spec now requires
-		// `:has()` parsing to be non-forgiving but browsers have not adjusted yet.
+		// Our regular `try-catch` mechanism fails to detect natively-unsupported
+		// pseudo-classes inside `:has()` (such as `:has(:contains("Foo"))`)
+		// in browsers that parse the `:has()` argument as a forgiving selector list.
+		// https://drafts.csswg.org/selectors/#relational now requires the argument
+		// to be parsed unforgivingly, but browsers have not yet fully adjusted.
 		rbuggyQSA.push( ":has" );
 	}
 
