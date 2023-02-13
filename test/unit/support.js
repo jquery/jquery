@@ -83,31 +83,6 @@ testIframe(
 				sortDetached: true,
 				sortStable: true
 			},
-			ie_10_11: {
-				ajax: true,
-				boxSizingReliable: false,
-				checkClone: true,
-				checkOn: true,
-				clearCloneStyle: false,
-				cssHas: true,
-				cors: true,
-				createHTMLDocument: true,
-				disconnectedMatch: true,
-				focusin: true,
-				getById: true,
-				noCloneChecked: false,
-				option: true,
-				optSelected: false,
-				pixelBoxStyles: true,
-				pixelPosition: true,
-				radioValue: false,
-				reliableMarginLeft: true,
-				reliableTrDimensions: false,
-				scope: false,
-				scrollboxSize: true,
-				sortDetached: true,
-				sortStable: true
-			},
 			ie_9: {
 				ajax: true,
 				boxSizingReliable: false,
@@ -133,7 +108,57 @@ testIframe(
 				sortDetached: true,
 				sortStable: true
 			},
+			ie_10_11: {
+				ajax: true,
+				boxSizingReliable: false,
+				checkClone: true,
+				checkOn: true,
+				clearCloneStyle: false,
+				cssHas: true,
+				cors: true,
+				createHTMLDocument: true,
+				disconnectedMatch: true,
+				focusin: true,
+				getById: true,
+				noCloneChecked: false,
+				option: true,
+				optSelected: false,
+				pixelBoxStyles: true,
+				pixelPosition: true,
+				radioValue: false,
+				reliableMarginLeft: true,
+				reliableTrDimensions: false,
+				scope: false,
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
+			},
 			chrome: {
+				ajax: true,
+				boxSizingReliable: true,
+				checkClone: true,
+				checkOn: true,
+				clearCloneStyle: true,
+				cssHas: false,
+				cors: true,
+				createHTMLDocument: true,
+				disconnectedMatch: true,
+				focusin: false,
+				getById: true,
+				noCloneChecked: true,
+				option: true,
+				optSelected: true,
+				pixelBoxStyles: true,
+				pixelPosition: true,
+				radioValue: true,
+				reliableMarginLeft: true,
+				reliableTrDimensions: true,
+				scope: true,
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
+			},
+			safari: {
 				ajax: true,
 				boxSizingReliable: true,
 				checkClone: true,
@@ -183,32 +208,7 @@ testIframe(
 				sortDetached: true,
 				sortStable: true
 			},
-			safari: {
-				ajax: true,
-				boxSizingReliable: true,
-				checkClone: true,
-				checkOn: true,
-				clearCloneStyle: true,
-				cssHas: false,
-				cors: true,
-				createHTMLDocument: true,
-				disconnectedMatch: true,
-				focusin: false,
-				getById: true,
-				noCloneChecked: true,
-				option: true,
-				optSelected: true,
-				pixelBoxStyles: true,
-				pixelPosition: true,
-				radioValue: true,
-				reliableMarginLeft: true,
-				reliableTrDimensions: true,
-				scope: true,
-				scrollboxSize: true,
-				sortDetached: true,
-				sortStable: true
-			},
-			firefox: {
+			firefox_60: {
 				ajax: true,
 				boxSizingReliable: true,
 				checkClone: true,
@@ -226,8 +226,8 @@ testIframe(
 				pixelBoxStyles: true,
 				pixelPosition: true,
 				radioValue: true,
-				reliableMarginLeft: true,
-				reliableTrDimensions: false,
+				reliableMarginLeft: false,
+				reliableTrDimensions: true,
 				scope: true,
 				scrollboxSize: true,
 				sortDetached: true,
@@ -258,57 +258,7 @@ testIframe(
 				sortDetached: true,
 				sortStable: true
 			},
-			firefox_60: {
-				ajax: true,
-				boxSizingReliable: true,
-				checkClone: true,
-				checkOn: true,
-				clearCloneStyle: true,
-				cssHas: true,
-				cors: true,
-				createHTMLDocument: true,
-				disconnectedMatch: true,
-				focusin: false,
-				getById: true,
-				noCloneChecked: true,
-				option: true,
-				optSelected: true,
-				pixelBoxStyles: true,
-				pixelPosition: true,
-				radioValue: true,
-				reliableMarginLeft: false,
-				reliableTrDimensions: true,
-				scope: true,
-				scrollboxSize: true,
-				sortDetached: true,
-				sortStable: true
-			},
-			ios: {
-				ajax: true,
-				boxSizingReliable: true,
-				checkClone: true,
-				checkOn: true,
-				clearCloneStyle: true,
-				cssHas: false,
-				cors: true,
-				createHTMLDocument: true,
-				disconnectedMatch: true,
-				focusin: false,
-				getById: true,
-				noCloneChecked: true,
-				option: true,
-				optSelected: true,
-				pixelBoxStyles: true,
-				pixelPosition: true,
-				radioValue: true,
-				reliableMarginLeft: true,
-				reliableTrDimensions: true,
-				scope: true,
-				scrollboxSize: true,
-				sortDetached: true,
-				sortStable: true
-			},
-			ios_11_14: {
+			firefox: {
 				ajax: true,
 				boxSizingReliable: true,
 				checkClone: true,
@@ -327,13 +277,13 @@ testIframe(
 				pixelPosition: true,
 				radioValue: true,
 				reliableMarginLeft: true,
-				reliableTrDimensions: true,
+				reliableTrDimensions: false,
 				scope: true,
 				scrollboxSize: true,
 				sortDetached: true,
 				sortStable: true
 			},
-			ios_9_10: {
+			ios_7: {
 				ajax: true,
 				boxSizingReliable: true,
 				checkClone: true,
@@ -383,7 +333,7 @@ testIframe(
 				sortDetached: true,
 				sortStable: true
 			},
-			ios_7: {
+			ios_9_10: {
 				ajax: true,
 				boxSizingReliable: true,
 				checkClone: true,
@@ -400,6 +350,56 @@ testIframe(
 				optSelected: true,
 				pixelBoxStyles: false,
 				pixelPosition: false,
+				radioValue: true,
+				reliableMarginLeft: true,
+				reliableTrDimensions: true,
+				scope: true,
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
+			},
+			ios_11_15_3: {
+				ajax: true,
+				boxSizingReliable: true,
+				checkClone: true,
+				checkOn: true,
+				clearCloneStyle: true,
+				cssHas: true,
+				cors: true,
+				createHTMLDocument: true,
+				disconnectedMatch: true,
+				focusin: false,
+				getById: true,
+				noCloneChecked: true,
+				option: true,
+				optSelected: true,
+				pixelBoxStyles: true,
+				pixelPosition: true,
+				radioValue: true,
+				reliableMarginLeft: true,
+				reliableTrDimensions: true,
+				scope: true,
+				scrollboxSize: true,
+				sortDetached: true,
+				sortStable: true
+			},
+			ios: {
+				ajax: true,
+				boxSizingReliable: true,
+				checkClone: true,
+				checkOn: true,
+				clearCloneStyle: true,
+				cssHas: false,
+				cors: true,
+				createHTMLDocument: true,
+				disconnectedMatch: true,
+				focusin: false,
+				getById: true,
+				noCloneChecked: true,
+				option: true,
+				optSelected: true,
+				pixelBoxStyles: true,
+				pixelPosition: true,
 				radioValue: true,
 				reliableMarginLeft: true,
 				reliableTrDimensions: true,
@@ -457,10 +457,10 @@ testIframe(
 
 	if ( /edge\//i.test( userAgent ) ) {
 		expected = expectedMap.edge;
-	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
-		expected = expectedMap.ie_10_11;
 	} else if ( /msie 9\.0/i.test( userAgent ) ) {
 		expected = expectedMap.ie_9;
+	} else if ( /(msie 10\.0|trident\/7\.0)/i.test( userAgent ) ) {
+		expected = expectedMap.ie_10_11;
 	} else if ( /chrome/i.test( userAgent ) ) {
 
 		// Catches Chrome on Android as well (i.e. the default
@@ -476,14 +476,14 @@ testIframe(
 		expected = expectedMap.firefox;
 	} else if ( /android 4\.[0-3]/i.test( userAgent ) ) {
 		expected = expectedMap.android;
-	} else if ( /iphone os (?:1[1234])_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_11_14;
-	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_9_10;
-	} else if ( /iphone os 8_/i.test( userAgent ) ) {
-		expected = expectedMap.ios_8;
 	} else if ( /iphone os 7_/i.test( userAgent ) ) {
 		expected = expectedMap.ios_7;
+	} else if ( /iphone os 8_/i.test( userAgent ) ) {
+		expected = expectedMap.ios_8;
+	} else if ( /iphone os (?:9|10)_/i.test( userAgent ) ) {
+		expected = expectedMap.ios_9_10;
+	} else if ( /iphone os (?:1[1234]_|15_[0123])/i.test( userAgent ) ) {
+		expected = expectedMap.ios_11_15_3;
 	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	} else if ( typeof URLSearchParams !== "undefined" &&
