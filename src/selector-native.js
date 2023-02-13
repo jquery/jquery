@@ -8,13 +8,10 @@
  * * Positional selectors (:first; :eq(n); :odd; etc.)
  * * Type selectors (:input; :checkbox; :button; etc.)
  * * State-based selectors (:animated; :visible; :hidden; etc.)
- * * :has(selector)
- * * :not(complex selector)
+ * * :has(selector) in browsers without native support
+ * * :not(complex selector) in IE
  * * custom selectors via jQuery extensions
- * * Leading combinators (e.g., $collection.find("> *"))
  * * Reliable functionality on XML fragments
- * * Requiring all parts of a selector to match elements under context
- *     (e.g., $div.find("div > *") now matches children of $div)
  * * Matching against non-elements
  * * Reliable sorting of disconnected nodes
  * * querySelectorAll bug fixes (e.g., unreliable :focus on WebKit)
@@ -26,20 +23,35 @@
 
 import jQuery from "./core.js";
 import document from "./var/document.js";
-import documentElement from "./var/documentElement.js";
 import whitespace from "./var/whitespace.js";
 
 // The following utils are attached directly to the jQuery object.
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
+import isIE from "./var/isIE.js";
+import booleans from "./selector/var/booleans.js";
+import rleadingCombinator from "./selector/var/rleadingCombinator.js";
+import rdescend from "./selector/var/rdescend.js";
+import rsibling from "./selector/var/rsibling.js";
+import matches from "./selector/var/matches.js";
+import testContext from "./selector/testContext.js";
+import filterMatchExpr from "./selector/filterMatchExpr.js";
+import preFilter from "./selector/preFilter.js";
+import tokenize from "./selector/tokenize.js";
+import toSelector from "./selector/toSelector.js";
 
-// Support: IE 9 - 11+
-// IE requires a prefix.
-var matches = documentElement.matches || documentElement.msMatchesSelector;
+var matchExpr = jQuery.extend( {
+	bool: new RegExp( "^(?:" + booleans + ")$", "i" ),
+	needsContext: new RegExp( "^" + whitespace + "*[>+~]" )
+}, filterMatchExpr );
 
 jQuery.extend( {
 	find: function( selector, context, results, seed ) {
-		var elem, nodeType,
+		var elem, nid, groups, newSelector,
+			newContext = context && context.ownerDocument,
+
+			// nodeType defaults to 9, since context defaults to document
+			nodeType = context ? context.nodeType : 9,
 			i = 0;
 
 		results = results || [];
@@ -51,7 +63,7 @@ jQuery.extend( {
 		}
 
 		// Early return if context is not an element, document or document fragment
-		if ( ( nodeType = context.nodeType ) !== 1 && nodeType !== 9 && nodeType !== 11 ) {
+		if ( nodeType !== 1 && nodeType !== 9 && nodeType !== 11 ) {
 			return [];
 		}
 
@@ -62,18 +74,65 @@ jQuery.extend( {
 				}
 			}
 		} else {
-			jQuery.merge( results, context.querySelectorAll( selector ) );
+
+			newSelector = selector;
+			newContext = context;
+
+			// qSA considers elements outside a scoping root when evaluating child or
+			// descendant combinators, which is not what we want.
+			// In such cases, we work around the behavior by prefixing every selector in the
+			// list with an ID selector referencing the scope context.
+			// The technique has to be used as well when a leading combinator is used
+			// as such selectors are not recognized by querySelectorAll.
+			// Thanks to Andrew Dupont for this technique.
+			if ( nodeType === 1 &&
+				( rdescend.test( selector ) || rleadingCombinator.test( selector ) ) ) {
+
+				// Expand context for sibling selectors
+				newContext = rsibling.test( selector ) &&
+					testContext( context.parentNode ) ||
+					context;
+
+				// Outside of IE, if we're not changing the context we can
+				// use :scope instead of an ID.
+				if ( newContext !== context || isIE ) {
+
+					// Capture the context ID, setting it first if necessary
+					if ( ( nid = context.getAttribute( "id" ) ) ) {
+						nid = jQuery.escapeSelector( nid );
+					} else {
+						context.setAttribute( "id", ( nid = jQuery.expando ) );
+					}
+				}
+
+				// Prefix every selector in the list
+				groups = tokenize( selector );
+				i = groups.length;
+				while ( i-- ) {
+					groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
+						toSelector( groups[ i ] );
+				}
+				newSelector = groups.join( "," );
+			}
+
+			try {
+				jQuery.merge( results, newContext.querySelectorAll( newSelector ) );
+			} finally {
+				if ( nid === jQuery.expando ) {
+					context.removeAttribute( "id" );
+				}
+			}
 		}
 
 		return results;
 	},
 	expr: {
-		attrHandle: {},
-		match: {
-			bool: new RegExp( "^(?:checked|selected|async|autofocus|autoplay|controls|defer" +
-				"|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped)$", "i" ),
-			needsContext: new RegExp( "^" + whitespace + "*[>+~]" )
-		}
+
+		// Can be adjusted by the user
+		cacheLength: 50,
+
+		match: matchExpr,
+		preFilter: preFilter
 	}
 } );
 
