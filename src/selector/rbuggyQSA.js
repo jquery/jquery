@@ -24,10 +24,11 @@ if ( isIE ) {
 if ( !support.cssHas ) {
 
 	// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
-	// In some browsers, `:has()` uses a forgiving selector list as an argument,
-	// so our regular `try-catch` mechanism fails to catch `:has()` with arguments
-	// not supported natively, like `:has(:contains("Foo"))`. The spec now requires
-	// `:has()` parsing to be non-forgiving but browsers have not adjusted yet.
+	// Our regular `try-catch` mechanism fails to detect natively-unsupported
+	// pseudo-classes inside `:has()` (such as `:has(:contains("Foo"))`)
+	// in browsers that parse the `:has()` argument as a forgiving selector list.
+	// https://drafts.csswg.org/selectors/#relational now requires the argument
+	// to be parsed unforgivingly, but browsers have not yet fully adjusted.
 	rbuggyQSA.push( ":has" );
 }
 
