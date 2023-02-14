@@ -1,27 +1,20 @@
+import document from "../var/document.js";
 import support from "../var/support.js";
 
-// Support: IE 11+
-// IE doesn't support `CSS.supports( "selector(...)" )`; it will throw
-// in this support test.
+// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
+// Make sure the the `:has()` argument is parsed unforgivingly.
+// We include `*` in the test to detect buggy implementations that are
+// _selectively_ forgiving (specifically when the list includes at least
+// one valid selector).
+// Note that we treat complete lack of support for `:has()` as if it were
+// spec-compliant support, which is fine because use of `:has()` in such
+// environments will fail in the qSA path and fall back to jQuery traversal
+// anyway.
 try {
-	/* eslint-disable no-undef */
-
-	// Support: Chrome 105+, Firefox <106, Safari 15.4+
-	// Make sure forgiving mode is not used in `CSS.supports( "selector(...)" )`.
-	//
-	// `:is()` uses a forgiving selector list as an argument and is widely
-	// implemented, so it's a good one to test against.
-	support.cssSupportsSelector = CSS.supports( "selector(*)" ) &&
-
-		// `*` is needed as Safari & newer Chrome implemented something in between
-		// for `:has()` - it throws in `qSA` if it only contains an unsupported
-		// argument but multiple ones, one of which is supported, are fine.
-		// We want to play safe in case `:is()` gets the same treatment.
-		!CSS.supports( "selector(:is(*,:jqfake))" );
-
-	/* eslint-enable */
+	document.querySelector( ":has(*,:jqfake)" );
+	support.cssHas = false;
 } catch ( e ) {
-	support.cssSupportsSelector = false;
+	support.cssHas = true;
 }
 
 export default support;
