@@ -661,4 +661,40 @@ QUnit.test( "trim", function( assert ) {
 	assert.equal( jQuery.trim( "\uFEFF \xA0! | \uFEFF" ), "! |", "leading/trailing should be trimmed" );
 } );
 
+if ( includesModule( "deferred" ) ) {
+	QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
+
+		assert.expect( 2 );
+
+		var done = assert.async(),
+			defer = jQuery.Deferred(),
+			oldWarn = window.console.warn;
+
+		jQuery.Deferred.getStackHook = function() {
+
+			// Default exceptionHook assumes the stack is in a form console.warn can log,
+			// but a custom getStackHook+exceptionHook pair could save a raw form and
+			// format it to a string only when an exception actually occurs.
+			// For the unit test we just ensure the plumbing works.
+			return "NO STACK FOR YOU";
+		};
+
+		window.console.warn = function() {
+			var msg = Array.prototype.join.call( arguments, " " );
+			assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
+			assert.ok( /NO STACK FOR YOU/.test( msg ), "Stack trace included: " + msg );
+		};
+
+		defer.then( function() {
+			jQuery.cough_up_hairball();
+		} ).then( null, function() {
+			window.console.warn = oldWarn;
+			delete jQuery.Deferred.getStackHook;
+			done();
+		} );
+
+		defer.resolve();
+	} );
+}
+
 }
