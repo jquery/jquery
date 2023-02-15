@@ -602,7 +602,7 @@ QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
 	defer.resolve();
 } );
 
-QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
+QUnit.test( "jQuery.Deferred.exceptionHook with error hooks", function( assert ) {
 
 	assert.expect( 2 );
 
@@ -610,26 +610,26 @@ QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks", function( assert )
 		defer = jQuery.Deferred(),
 		oldWarn = window.console.warn;
 
-	jQuery.Deferred.getStackHook = function() {
+	jQuery.Deferred.getErrorHook = function() {
 
 		// Default exceptionHook assumes the stack is in a form console.warn can log,
-		// but a custom getStackHook+exceptionHook pair could save a raw form and
+		// but a custom getErrorHook+exceptionHook pair could save a raw form and
 		// format it to a string only when an exception actually occurs.
 		// For the unit test we just ensure the plumbing works.
-		return "NO STACK FOR YOU";
+		return "NO ERROR FOR YOU";
 	};
 
 	window.console.warn = function() {
 		var msg = Array.prototype.join.call( arguments, " " );
 		assert.ok( /cough_up_hairball/.test( msg ), "Function mentioned: " + msg );
-		assert.ok( /NO STACK FOR YOU/.test( msg ), "Stack trace included: " + msg );
+		assert.ok( /NO ERROR FOR YOU/.test( msg ), "Error included: " + msg );
 	};
 
 	defer.then( function() {
 		jQuery.cough_up_hairball();
 	} ).then( null, function( ) {
 		window.console.warn = oldWarn;
-		delete jQuery.Deferred.getStackHook;
+		delete jQuery.Deferred.getErrorHook;
 		done();
 	} );
 
