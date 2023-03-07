@@ -69,9 +69,7 @@ function makeArchives( Release, callback ) {
 
 		console.log( "Creating production archive for " + cdn );
 
-		var i,
-			sum,
-			result,
+		var i, sum, result,
 			archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream(
