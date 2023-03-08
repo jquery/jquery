@@ -4,6 +4,7 @@ var
 	fs = require( "fs" ),
 	shell = require( "shelljs" ),
 	path = require( "path" ),
+	os = require( "os" ),
 
 	cdnFolder = "dist/cdn",
 
@@ -68,12 +69,13 @@ function makeArchives( Release, callback ) {
 
 		console.log( "Creating production archive for " + cdn );
 
-		var sum,
+		var i, sum, result,
 			archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream(
 				cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
 			),
+			rmd5 = /[a-f0-9]{32}/,
 			rver = /VER/;
 
 		output.on( "close", callback );
@@ -89,7 +91,18 @@ function makeArchives( Release, callback ) {
 				item.replace( rver, Release.newVersion );
 		} );
 
-		sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
+		if ( os.platform() === "win32" ) {
+			sum = [];
+			for ( i = 0; i < files.length; i++ ) {
+				result = Release.exec(
+					"certutil -hashfile " + files[ i ] + " MD5", "Error retrieving md5sum"
+				);
+				sum.push( rmd5.exec( result )[ 0 ] + " " + files[ i ] );
+			}
+			sum = sum.join( "\n" );
+		} else {
+			sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
+		}
 		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
