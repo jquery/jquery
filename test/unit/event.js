@@ -2172,12 +2172,12 @@ QUnit.test( "focusin bubbles", function( assert ) {
 
 // Removed since DOM focus is unreliable on test swarm
 	// DOM focus method
-//	input[0].focus();
+//	input[ 0 ].focus();
 
 	// To make the next focus test work, we need to take focus off the input.
 	// This will fire another focusin event, so set order to reflect that.
 //	order = 1;
-//	jQuery("#text1")[0].focus();
+//	jQuery( "#text1" )[ 0 ].focus();
 
 	// jQuery trigger, which calls DOM focus
 	order = 0;
@@ -2185,6 +2185,42 @@ QUnit.test( "focusin bubbles", function( assert ) {
 
 	input.remove();
 	jQuery( "body" ).off( "focusin.focusinBubblesTest" );
+} );
+
+QUnit.test( "focus does not bubble", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		input = jQuery( "<input type='text' />" ).prependTo( "body" );
+
+	// focus the element so DOM focus won't fire
+	input[ 0 ].focus();
+
+	jQuery( "body" ).on( "focus.focusDoesNotBubbleTest", function() {
+		assert.ok( false, "focus doesn't fire on body" );
+	} );
+
+	input.on( "focus.focusDoesNotBubbleTest", function() {
+		assert.ok( true, "focus on the element" );
+	} );
+
+// Removed since DOM focus is unreliable on test swarm
+	// DOM focus method
+//	input[ 0 ].focus();
+
+	// To make the next focus test work, we need to take focus off the input.
+	// This will fire another focusin event, so set order to reflect that.
+//	jQuery( "#text1" )[ 0 ].focus();
+
+	// jQuery trigger, which calls DOM focus
+	input.trigger( "focus" );
+
+	input.remove();
+	jQuery( "body" ).off( "focus.focusDoesNotBubbleTest" );
+
+	setTimeout( function() {
+		done();
+	}, 50 );
 } );
 
 QUnit.test( "custom events with colons (trac-3533, trac-8272)", function( assert ) {
@@ -2652,6 +2688,10 @@ QUnit.test( "element removed during focusout (gh-4417)", function( assert ) {
 	button[ 0 ].blur = function() {
 		jQuery.cleanData( [ this ] );
 		this.parentNode.removeChild( this );
+
+		// Redefine `blur` to avoid a hard crash in Karma tests that stop
+		// the test runner in case this test fails.
+		this.blur = jQuery.noop;
 	};
 
 	button[ 0 ].click();
@@ -3212,6 +3252,17 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 			if ( remaining > 0 ) {
 				input.trigger( "blur" );
 			} else {
+
+				if ( QUnit.isIE ) {
+
+					// Support: <=IE 11+
+					// In IE, one of the blurs sometimes triggers a focus on body
+					// which in turn restores focus to the input, leading to 4 assertions
+					// firing instead of three. This only happens if other tests are
+					// running on the same test page. Avoid this issue in tests by removing
+					// the handler early.
+					input.off( "focus" );
+				}
 				done();
 			}
 		} )
@@ -3235,6 +3286,45 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 			} );
 		}
 	} );
+} );
+
+// Support: IE <=9 - 11+
+// focus and blur events are asynchronous.
+// The browser window must be topmost for this to work properly!!
+QUnit.test( "async focus queues properly (gh-4859)", function( assert ) {
+	assert.expect( 1 );
+
+	var $text = jQuery( "#text1" ),
+		$radio = jQuery( "#radio1" ),
+		done = assert.async();
+
+	$text.trigger( "focus" );
+	$radio.trigger( "focus" );
+	$text.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.equal( document.activeElement, $text[ 0 ], "focus follows the last trigger" );
+		done();
+	}, 500 );
+} );
+
+// Support: IE <=9 - 11+
+// focus and blur events are asynchronous.
+// The browser window must be topmost for this to work properly!!
+QUnit.test( "async focus queues properly with blur (gh-4856)", function( assert ) {
+	assert.expect( 1 );
+
+	var $text = jQuery( "#text1" ),
+		done = assert.async();
+
+	$text.trigger( "focus" );
+	$text.trigger( "blur" );
+	$text.trigger( "focus" );
+
+	setTimeout( function() {
+		assert.equal( document.activeElement, $text[ 0 ], "focus-after-blur is respected" );
+		done();
+	}, 500 );
 } );
 
 QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", function( assert ) {
@@ -3277,6 +3367,17 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 		var type = event.type;
 		assert.deepEqual( slice.call( arguments, 1 ), data,
 			type + " handler received correct data" );
+
+		if ( QUnit.isIE && type === "focus" ) {
+
+			// Support: <=IE 11+
+			// In IE, one of the blurs sometimes triggers a focus on body
+			// which in turn restores focus to the input, leading to 4 assertions
+			// firing instead of three. This only happens if other tests are
+			// running on the same test page. Avoid this issue in tests by removing
+			// the handler early.
+			checkbox.off( "focus" );
+		}
 	} );
 	checkbox.trigger( "focus", data );
 	setTimeout( function() {
