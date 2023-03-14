@@ -3159,56 +3159,45 @@ QUnit.test( "focus-blur order (trac-12868)", function( assert ) {
 
 	var order,
 		$text = jQuery( "#text1" ),
-		$radio = jQuery( "#radio1" ),
-
-		// Support: IE <=9 - 11+
-		// focus and blur events are asynchronous; this is the resulting mess.
-		// The browser window must be topmost for this to work properly!!
-		done = assert.async();
+		$radio = jQuery( "#radio1" );
 
 	$radio[ 0 ].focus();
 
-	setTimeout( function() {
+	$text
+		.on( "focus", function() {
+			assert.equal( order++, 1, "text focus" );
+		} )
+		.on( "blur", function() {
+			assert.equal( order++, 0, "text blur" );
+		} );
+	$radio
+		.on( "focus", function() {
+			assert.equal( order++, 1, "radio focus" );
+		} )
+		.on( "blur", function() {
+			assert.equal( order++, 0, "radio blur" );
+		} );
 
-		$text
-			.on( "focus", function() {
-				assert.equal( order++, 1, "text focus" );
-			} )
-			.on( "blur", function() {
-				assert.equal( order++, 0, "text blur" );
-			} );
-		$radio
-			.on( "focus", function() {
-				assert.equal( order++, 1, "radio focus" );
-			} )
-			.on( "blur", function() {
-				assert.equal( order++, 0, "radio blur" );
-			} );
+	// Enabled input getting focus
+	order = 0;
+	assert.equal( document.activeElement, $radio[ 0 ], "radio has focus" );
+	$text.trigger( "focus" );
 
-		// Enabled input getting focus
-		order = 0;
-		assert.equal( document.activeElement, $radio[ 0 ], "radio has focus" );
-		$text.trigger( "focus" );
-		setTimeout( function() {
+	// DOM focus is unreliable in TestSwarm
+	if ( order === 0 ) {
+		assert.ok( true, "GAP: Could not observe focus change" );
+		assert.ok( true, "GAP: Could not observe focus change" );
+	}
 
-			// DOM focus is unreliable in TestSwarm
-			if ( order === 0 ) {
-				assert.ok( true, "GAP: Could not observe focus change" );
-				assert.ok( true, "GAP: Could not observe focus change" );
-			}
+	assert.equal( document.activeElement, $text[ 0 ], "text has focus" );
 
-			assert.equal( document.activeElement, $text[ 0 ], "text has focus" );
+	// Run handlers without native method on an input
+	order = 1;
+	$radio.triggerHandler( "focus" );
 
-			// Run handlers without native method on an input
-			order = 1;
-			$radio.triggerHandler( "focus" );
-
-			// Clean up
-			$text.off();
-			$radio.off();
-			done();
-		}, 50 );
-	}, 50 );
+	// Clean up
+	$text.off();
+	$radio.off();
 } );
 
 QUnit.test( "Event handling works with multiple async focus events (gh-4350)", function( assert ) {
@@ -3216,10 +3205,6 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 
 	var remaining = 3,
 		input = jQuery( "#name" ),
-
-		// Support: IE <=9 - 11+
-		// focus and blur events are asynchronous; this is the resulting mess.
-		// The browser window must be topmost for this to work properly!!
 		done = assert.async();
 
 	input
@@ -3313,12 +3298,7 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 		targets = jQuery( parent[ 0 ].childNodes ),
 		checkbox = jQuery( targets[ 0 ] ),
 		data = [ "arg1", "arg2" ],
-		slice = data.slice,
-
-		// Support: IE <=9 - 11+
-		// focus and blur events are asynchronous; this is the resulting mess.
-		// The browser window must be topmost for this to work properly!!
-		done = assert.async();
+		slice = data.slice;
 
 	// click (gh-4139)
 	assert.strictEqual( targets[ 0 ].checked, false, "checkbox unchecked before click" );
@@ -3357,16 +3337,13 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 		}
 	} );
 	checkbox.trigger( "focus", data );
-	setTimeout( function() {
-		assert.strictEqual( document.activeElement, checkbox[ 0 ],
-			"element focused after focus event (default action)" );
-		checkbox.trigger( "blur", data );
-		setTimeout( function() {
-			assert.notEqual( document.activeElement, checkbox[ 0 ],
-				"element not focused after blur event (default action)" );
-			done();
-		}, 50 );
-	}, 50 );
+
+	assert.strictEqual( document.activeElement, checkbox[ 0 ],
+		"element focused after focus event (default action)" );
+	checkbox.trigger( "blur", data );
+
+	assert.notEqual( document.activeElement, checkbox[ 0 ],
+		"element not focused after blur event (default action)" );
 } );
 
 QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) {
