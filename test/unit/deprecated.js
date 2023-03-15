@@ -662,7 +662,10 @@ QUnit.test( "trim", function( assert ) {
 } );
 
 if ( includesModule( "deferred" ) ) {
-	QUnit.test( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
+
+	// Support: IE 9 only
+	// Test fails in IE9 but is skipped there because console is not active
+	QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
 
 		assert.expect( 2 );
 

@@ -619,6 +619,7 @@ QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook", func
 	defer.resolve();
 } );
 
+// Support: IE 9 only
 // Test fails in IE9 but is skipped there because console is not active
 QUnit[ window.console ? "test" : "skip" ]( "jQuery.Deferred.exceptionHook with stack hooks", function( assert ) {
 
