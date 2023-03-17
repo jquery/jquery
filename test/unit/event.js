@@ -3407,6 +3407,22 @@ QUnit.test( "trigger(focus) works after .on(focus).off(focus) (gh-4867)", functi
 	assert.equal( document.activeElement, input[ 0 ], "input has focus" );
 } );
 
+QUnit.test( "trigger(focus) works after focusing when hidden (gh-4950)", function( assert ) {
+	assert.expect( 1 );
+
+	var input = jQuery( "<input />" );
+
+	input.appendTo( "#qunit-fixture" );
+
+	input
+		.css( "display", "none" )
+		.trigger( "focus" )
+		.css( "display", "" )
+		.trigger( "focus" );
+
+	assert.equal( document.activeElement, input[ 0 ], "input has focus" );
+} );
+
 // TODO replace with an adaptation of
 // https://github.com/jquery/jquery/pull/1367/files#diff-a215316abbaabdf71857809e8673ea28R2464
 ( function() {
