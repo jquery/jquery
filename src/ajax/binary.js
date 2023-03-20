@@ -2,10 +2,13 @@ import jQuery from "../core.js";
 
 import "../ajax.js";
 
-jQuery.ajaxPrefilter( function( s ) {
+jQuery.ajaxPrefilter( function( s, origOptions ) {
 
 	// Binary data needs to be passed to XHR as-is without stringification.
-	if ( typeof s.data !== "string" && !jQuery.isPlainObject( s.data ) ) {
+	if ( typeof s.data !== "string" && !jQuery.isPlainObject( s.data ) &&
+
+			// Don't disable data processing if explicitly set by the user.
+			!( "processData" in origOptions ) ) {
 		s.processData = false;
 	}
 
