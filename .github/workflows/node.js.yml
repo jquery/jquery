@@ -69,7 +69,7 @@ jobs:
 
     - name: Install Playwright dependencies
       run: npx playwright-webkit install-deps
-      if: "matrix.NPM_SCRIPT == 'test:browser'"
+      if: "matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')"
 
     - name: Run tests
       env:
