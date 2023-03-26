@@ -163,6 +163,15 @@ var i,
 		{ dir: "parentNode", next: "legend" }
 	);
 
+// Support: IE <=9 only
+// Accessing document.activeElement can throw unexpectedly
+// https://bugs.jquery.com/ticket/13393
+function safeActiveElement() {
+	try {
+		return document.activeElement;
+	} catch ( err ) { }
+}
+
 // Optimize for push.apply( _, NodeList )
 try {
 	push.apply(
@@ -1316,7 +1325,7 @@ Expr = jQuery.expr = {
 		},
 
 		focus: function( elem ) {
-			return elem === document.activeElement &&
+			return elem === safeActiveElement() &&
 				document.hasFocus() &&
 				!!( elem.type || elem.href || ~elem.tabIndex );
 		},
