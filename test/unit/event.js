@@ -3412,6 +3412,36 @@ QUnit.test( "trigger(focus) works after focusing when hidden (gh-4950)", functio
 	assert.equal( document.activeElement, input[ 0 ], "input has focus" );
 } );
 
+QUnit.test( "trigger(focus) fires native & jQuery handlers (gh-5015)", function( assert ) {
+	assert.expect( 3 );
+
+	var input = jQuery( "<input />" ),
+
+		// Support: IE 9 - 11+
+		// focus is async in IE; we now emulate it via sync focusin in jQuery
+		// but this test also attaches native handlers.
+		done = assert.async( 3 );
+
+	input.appendTo( "#qunit-fixture" );
+
+	input[ 0 ].addEventListener( "focus", function() {
+		assert.ok( true, "1st native handler fired" );
+		done();
+	} );
+
+	input.on( "focus", function() {
+		assert.ok( true, "jQuery handler fired" );
+		done();
+	} );
+
+	input[ 0 ].addEventListener( "focus", function() {
+		assert.ok( true, "2nd native handler fired" );
+		done();
+	} );
+
+	input.trigger( "focus" );
+} );
+
 // TODO replace with an adaptation of
 // https://github.com/jquery/jquery/pull/1367/files#diff-a215316abbaabdf71857809e8673ea28R2464
 ( function() {
@@ -3420,10 +3450,13 @@ QUnit.test( "trigger(focus) works after focusing when hidden (gh-4950)", functio
 			checkbox: "<input type='checkbox'>",
 			radio: "<input type='radio'>"
 		},
-		makeTestFor3751
+		function( type, html ) {
+			makeTestForGh3751( type, html );
+			makeTestForGh5015( type, html );
+		}
 	);
 
-	function makeTestFor3751( type, html ) {
+	function makeTestForGh3751( type, html ) {
 		var testName = "native-backed namespaced clicks are handled correctly (gh-3751) - " + type;
 		QUnit.test( testName, function( assert ) {
 			assert.expect( 2 );
@@ -3448,6 +3481,32 @@ QUnit.test( "trigger(focus) works after focusing when hidden (gh-4950)", functio
 				} );
 
 			target.trigger( "click.fired" );
+		} );
+	}
+
+	function makeTestForGh5015( type, html ) {
+		var testName = "trigger(click) fires native & jQuery handlers (gh-5015) - " + type;
+		QUnit.test( testName, function( assert ) {
+			assert.expect( 3 );
+
+			var parent = supportjQuery( "<div class='parent'>" + html + "</div>" ),
+				input = jQuery( parent[ 0 ].firstChild );
+
+			parent.appendTo( "#qunit-fixture" );
+
+			input[ 0 ].addEventListener( "click", function() {
+				assert.ok( true, "1st native handler fired" );
+			} );
+
+			input.on( "click", function() {
+				assert.ok( true, "jQuery handler fired" );
+			} );
+
+			input[ 0 ].addEventListener( "click", function() {
+				assert.ok( true, "2nd native handler fired" );
+			} );
+
+			input.trigger( "click" );
 		} );
 	}
 } )();
