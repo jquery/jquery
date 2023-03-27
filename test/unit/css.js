@@ -1234,8 +1234,6 @@ QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792, gh-5179)", functi
 	// 'WebkitAspectRatio' which interferes with this test.
 	if ( $div.css( "-webkit-aspect-ratio" ) !== "auto" ) {
 		$div.css( "aspect-ratio", 2 );
-		console.log( "getComputedStyle( $div[ 0 ] ).aspectRatio",
-			getComputedStyle( $div[ 0 ] ).aspectRatio );
 		window.div = $div[ 0 ];
 		if ( $div.css( "aspect-ratio" ) !== undefined ) {
 			assert.equal( $div.css( "aspect-ratio" ), "2 / 1",
@@ -1248,11 +1246,15 @@ QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792, gh-5179)", functi
 	}
 
 	$div.css( "border-image-slice", 2 );
-	if ( $div.css( "border-image-slice" ) !== undefined ) {
+	if ( $div.css( "border-image-slice" ) !== undefined &&
+
+			// Support: Firefox <=48-54 only
+			// Older Firefox serializes 'border-image-slice' differently.
+			!/firefox\/48\./i.test( navigator.userAgent ) ) {
 		assert.equal( $div.css( "border-image-slice" ), "2",
 			"Does not append px to 'border-image-slice'" );
 	} else {
-		assert.ok( true, "No support for 'border-image-slice' CSS property" );
+		assert.ok( true, "No or broken support for 'border-image-slice' CSS property" );
 	}
 
 	$div.css( "column-count", 1 );
