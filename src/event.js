@@ -1,9 +1,9 @@
 import jQuery from "./core.js";
-import document from "./var/document.js";
 import documentElement from "./var/documentElement.js";
 import rnothtmlwhite from "./var/rnothtmlwhite.js";
 import rcheckableType from "./var/rcheckableType.js";
 import slice from "./var/slice.js";
+import isIE from "./var/isIE.js";
 import acceptData from "./data/var/acceptData.js";
 import dataPriv from "./data/var/dataPriv.js";
 import nodeName from "./core/nodeName.js";
@@ -19,16 +19,6 @@ function returnTrue() {
 
 function returnFalse() {
 	return false;
-}
-
-// Support: IE <=9 - 11+
-// focus() and blur() are asynchronous, except when they are no-op.
-// So expect focus to be synchronous when the element is already active,
-// and blur to be synchronous when the element is not already active.
-// (focus and blur are always synchronous in other supported browsers,
-// this just defines when we can count on it).
-function expectSync( elem, type ) {
-	return ( elem === document.activeElement ) === ( type === "focus" );
 }
 
 function on( elem, types, selector, data, fn, one ) {
@@ -459,7 +449,7 @@ jQuery.event = {
 					el.click && nodeName( el, "input" ) ) {
 
 					// dataPriv.set( el, "click", ... )
-					leverageNative( el, "click", returnTrue );
+					leverageNative( el, "click", true );
 				}
 
 				// Return false to allow normal processing in the caller
@@ -511,10 +501,10 @@ jQuery.event = {
 // synthetic events by interrupting progress until reinvoked in response to
 // *native* events that it fires directly, ensuring that state changes have
 // already occurred before other listeners are invoked.
-function leverageNative( el, type, expectSync ) {
+function leverageNative( el, type, isSetup ) {
 
-	// Missing expectSync indicates a trigger call, which must force setup through jQuery.event.add
-	if ( !expectSync ) {
+	// Missing `isSetup` indicates a trigger call, which must force setup through jQuery.event.add
+	if ( !isSetup ) {
 		if ( dataPriv.get( el, type ) === undefined ) {
 			jQuery.event.add( el, type, returnTrue );
 		}
@@ -526,15 +516,13 @@ function leverageNative( el, type, expectSync ) {
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var notAsync, result,
+			var result,
 				saved = dataPriv.get( this, type );
 
 			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
 				// Interrupt processing of the outer synthetic .trigger()ed event
-				// Saved data should be false in such cases, but might be a leftover capture object
-				// from an async native handler (gh-4350)
-				if ( !saved.length ) {
+				if ( !saved ) {
 
 					// Store arguments for use when handling the inner native event
 					// There will always be at least one argument (an event object), so this array
@@ -543,28 +531,17 @@ function leverageNative( el, type, expectSync ) {
 					dataPriv.set( this, type, saved );
 
 					// Trigger the native event and capture its result
-					// Support: IE <=9 - 11+
-					// focus() and blur() are asynchronous
-					notAsync = expectSync( this, type );
 					this[ type ]();
 					result = dataPriv.get( this, type );
-					if ( saved !== result || notAsync ) {
-						dataPriv.set( this, type, false );
-					} else {
-						result = {};
-					}
+					dataPriv.set( this, type, false );
+
 					if ( saved !== result ) {
 
 						// Cancel the outer synthetic event
 						event.stopImmediatePropagation();
 						event.preventDefault();
 
-						// Support: Chrome 86+
-						// In Chrome, if an element having a focusout handler is blurred by
-						// clicking outside of it, it invokes the handler synchronously. If
-						// that handler calls `.remove()` on the element, the data is cleared,
-						// leaving `result` undefined. We need to guard against this.
-						return result && result.value;
+						return result;
 					}
 
 				// If this is an inner synthetic event for an event with a bubbling surrogate
@@ -582,16 +559,11 @@ function leverageNative( el, type, expectSync ) {
 			} else if ( saved.length ) {
 
 				// ...and capture the result
-				dataPriv.set( this, type, {
-					value: jQuery.event.trigger(
-
-						// Support: IE <=9 - 11+
-						// Extend with the prototype to reset the above stopImmediatePropagation()
-						jQuery.extend( saved[ 0 ], jQuery.Event.prototype ),
-						saved.slice( 1 ),
-						this
-					)
-				} );
+				dataPriv.set( this, type, jQuery.event.trigger(
+					saved[ 0 ],
+					saved.slice( 1 ),
+					this
+				) );
 
 				// Abort handling of the native event
 				event.stopImmediatePropagation();
@@ -724,6 +696,29 @@ jQuery.each( {
 }, jQuery.event.addProp );
 
 jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
+
+	// Support: IE 11+
+	// Attach a single focusin/focusout handler on the document while someone wants focus/blur.
+	// This is because the former are synchronous in IE while the latter are async. In other
+	// browsers, all those handlers are invoked synchronously.
+	function focusMappedHandler( nativeEvent ) {
+
+		// `eventHandle` would already wrap the event, but we need to change the `type` here.
+		var event = jQuery.event.fix( nativeEvent );
+		event.type = nativeEvent.type === "focusin" ? "focus" : "blur";
+		event.isSimulated = true;
+
+		// focus/blur don't bubble while focusin/focusout do; simulate the former by only
+		// invoking the handler at the lower level.
+		if ( event.target === event.currentTarget ) {
+
+			// The setup part calls `leverageNative`, which, in turn, calls
+			// `jQuery.event.add`, so event handle will already have been set
+			// by this point.
+			dataPriv.get( this, "handle" )( event );
+		}
+	}
+
 	jQuery.event.special[ type ] = {
 
 		// Utilize native event if possible so blur/focus sequence is correct
@@ -732,10 +727,15 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 			// Claim the first handler
 			// dataPriv.set( this, "focus", ... )
 			// dataPriv.set( this, "blur", ... )
-			leverageNative( this, type, expectSync );
+			leverageNative( this, type, true );
 
-			// Return false to allow normal processing in the caller
-			return false;
+			if ( isIE ) {
+				this.addEventListener( delegateType, focusMappedHandler );
+			} else {
+
+				// Return false to allow normal processing in the caller
+				return false;
+			}
 		},
 		trigger: function() {
 
@@ -744,6 +744,16 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 
 			// Return non-false to allow normal event-path propagation
 			return true;
+		},
+
+		teardown: function() {
+			if ( isIE ) {
+				this.removeEventListener( delegateType, focusMappedHandler );
+			} else {
+
+				// Return false to indicate standard teardown should be applied
+				return false;
+			}
 		},
 
 		// Suppress native focus or blur if we're currently inside
