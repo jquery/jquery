@@ -1202,30 +1202,100 @@ if ( includesModule( "offset" ) ) {
 	} );
 }
 
-QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792)", function( assert ) {
-	assert.expect( 3 );
+QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792, gh-5179)", function( assert ) {
+	assert.expect( 10 );
 
-	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
+	var $div = jQuery( "<div>" ),
+		$svg = jQuery(
+			"<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'>" +
+			"	<path d=\" M 2,2 h 2\"></path>" +
+			"</svg>"
+		),
+		$svgPath = $svg.find( "path" );
 
-	$div.css( "fill-opacity", 1 );
+	jQuery( "#qunit-fixture" )
+		.append( $div )
+		.append( $svg );
 
-	assert.equal( $div.css( "fill-opacity" ), 1, "Do not append px to 'fill-opacity'" );
-
-	$div.css( "column-count", 1 );
-	if ( $div.css( "column-count" ) !== undefined ) {
-		assert.equal( $div.css( "column-count" ), 1, "Do not append px to 'column-count'" );
-	} else {
-		assert.ok( true, "No support for column-count CSS property" );
-	}
+	// HTML
 
 	$div.css( "animation-iteration-count", 2 );
 	if ( $div.css( "animation-iteration-count" ) !== undefined ) {
-		// if $div.css( "animation-iteration-count" ) return "1",
-		// it actually return the default value of animation-iteration-count
-		assert.equal( $div.css( "animation-iteration-count" ), 2, "Do not append px to 'animation-iteration-count'" );
+		// if $div.css( "animation-iteration-count" ) returns "1",
+		// it actually returns the default value of animation-iteration-count
+		assert.equal( $div.css( "animation-iteration-count" ), "2",
+			"Does not append px to 'animation-iteration-count'" );
 	} else {
-		assert.ok( true, "No support for animation-iteration-count CSS property" );
+		assert.ok( true, "No support for 'animation-iteration-count' CSS property" );
 	}
+
+	// Support: Safari <15 only, iOS <15 only
+	// Older Safari doesn't support 'aspect-ratio' but it supports a non-standard
+	// 'WebkitAspectRatio' which interferes with this test.
+	if ( $div.css( "-webkit-aspect-ratio" ) !== "auto" ) {
+		$div.css( "aspect-ratio", 2 );
+		console.log( "getComputedStyle( $div[ 0 ] ).aspectRatio",
+			getComputedStyle( $div[ 0 ] ).aspectRatio );
+		window.div = $div[ 0 ];
+		if ( $div.css( "aspect-ratio" ) !== undefined ) {
+			assert.equal( $div.css( "aspect-ratio" ), "2 / 1",
+				"Does not append px to 'aspect-ratio'" );
+		} else {
+			assert.ok( true, "No support for 'aspect-ratio' CSS property" );
+		}
+	} else {
+		assert.ok( true, "No support for 'aspect-ratio' CSS property (WebKit)" );
+	}
+
+	$div.css( "border-image-slice", 2 );
+	if ( $div.css( "border-image-slice" ) !== undefined ) {
+		assert.equal( $div.css( "border-image-slice" ), "2",
+			"Does not append px to 'border-image-slice'" );
+	} else {
+		assert.ok( true, "No support for 'border-image-slice' CSS property" );
+	}
+
+	$div.css( "column-count", 1 );
+	if ( $div.css( "column-count" ) !== undefined ) {
+		assert.equal( $div.css( "column-count" ), "1",
+			"Does not append px to 'column-count'" );
+	} else {
+		assert.ok( true, "No support for 'column-count' CSS property" );
+	}
+
+	$div.css( "scale", 2 );
+	if ( $div.css( "scale" ) !== undefined ) {
+		assert.equal( $div.css( "scale" ), "2", "Does not append px to 'scale'" );
+	} else {
+		assert.ok( true, "No support for 'scale' CSS property" );
+	}
+
+	// SVG
+
+	$svgPath.css( "fill-opacity", 0.5 );
+	assert.equal( $svgPath.css( "fill-opacity" ), "0.5",
+		"Does not append px to 'fill-opacity'" );
+
+	$svgPath.css( "flood-opacity", 0.5 );
+	if ( $svgPath.css( "flood-opacity" ) !== undefined ) {
+		assert.equal( $svgPath.css( "flood-opacity" ), "0.5",
+			"Does not append px to 'flood-opacity'" );
+	} else {
+		assert.ok( true, "No support for 'flood-opacity' CSS property" );
+	}
+
+	$svgPath.css( "stop-opacity", 0.5 );
+	assert.equal( $svgPath.css( "stop-opacity" ), "0.5",
+		"Does not append px to 'stop-opacity'" );
+
+	$svgPath.css( "stroke-miterlimit", 1.5 );
+	assert.equal( $svgPath.css( "stroke-miterlimit" ), "1.5",
+		"Does not append px to 'stroke-miterlimit'" );
+
+	$svgPath.css( "stroke-opacity", 0.5 );
+	assert.equal( $svgPath.css( "stroke-opacity" ), "0.5",
+		"Does not append px to 'stroke-opacity'" );
+
 } );
 
 
