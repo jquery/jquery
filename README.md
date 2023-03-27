@@ -49,6 +49,12 @@ Then, enter the jquery directory and run the build script:
 ```bash
 cd jquery && npm run build
 ```
+if you have windows then run:
+```shell
+cd jquery
+npm run build
+```
+
 The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
 
 If you want to create custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
