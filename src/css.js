@@ -212,8 +212,9 @@ jQuery.extend( {
 	// Don't automatically add "px" to these possibly-unitless properties
 	cssNumber: {
 		animationIterationCount: true,
+		aspectRatio: true,
+		borderImageSlice: true,
 		columnCount: true,
-		fillOpacity: true,
 		flexGrow: true,
 		flexShrink: true,
 		fontWeight: true,
@@ -228,9 +229,17 @@ jQuery.extend( {
 		opacity: true,
 		order: true,
 		orphans: true,
+		scale: true,
 		widows: true,
 		zIndex: true,
-		zoom: true
+		zoom: true,
+
+		// SVG-related
+		fillOpacity: true,
+		floodOpacity: true,
+		stopOpacity: true,
+		strokeMiterlimit: true,
+		strokeOpacity: true
 	},
 
 	// Add in properties whose names you wish to fix before
