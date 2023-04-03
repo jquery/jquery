@@ -2428,6 +2428,26 @@ QUnit.test( ".on and .off, selective mixed removal (trac-10705)", function( asse
 		.trigger( "click" );	// 0
 } );
 
+QUnit.test( "special interference with Object.prototype", function( assert ) {
+	assert.expect( 1 );
+
+	var triggered = false;
+
+	Object.prototype.jqfake = {
+		trigger: function() {
+			triggered = true;
+		}
+	};
+
+	jQuery( "<div></div>" )
+		.appendTo( "#qunit-fixture" )
+		.trigger( "jqfake" );
+
+	delete Object.prototype.jqfake;
+
+	assert.ok( !triggered, "Object.prototype.jqfake.trigger not called" );
+} );
+
 QUnit.test( ".on( event-map, null-selector, data ) trac-11130", function( assert ) {
 
 	assert.expect( 1 );
