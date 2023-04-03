@@ -166,8 +166,6 @@ var i,
 // Support: IE <=9 only
 // Accessing document.activeElement can throw unexpectedly
 // https://bugs.jquery.com/ticket/13393
-// An identical function exists in `src/event.js` but they use different
-// `documents` so it cannot be easily extracted.
 function safeActiveElement() {
 	try {
 		return document.activeElement;
