@@ -1,8 +1,8 @@
 import document from "../var/document.js";
 import support from "../var/support.js";
 
-// Support: Chrome 105 - 110+, Safari 15.4 - 16.3+
-// Make sure the the `:has()` argument is parsed unforgivingly.
+// Support: Chrome 105 - 111 only, Safari 15.4 - 16.3 only
+// Make sure the `:has()` argument is parsed unforgivingly.
 // We include `*` in the test to detect buggy implementations that are
 // _selectively_ forgiving (specifically when the list includes at least
 // one valid selector).

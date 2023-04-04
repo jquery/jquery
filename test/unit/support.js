@@ -62,21 +62,25 @@ testIframe(
 				cssHas: true,
 				reliableTrDimensions: false
 			},
+			chrome_111: {
+				cssHas: false,
+				reliableTrDimensions: true
+			},
 			chrome: {
+				cssHas: true,
+				reliableTrDimensions: true
+			},
+			safari_16_3: {
 				cssHas: false,
 				reliableTrDimensions: true
 			},
 			safari: {
-				cssHas: false,
+				cssHas: true,
 				reliableTrDimensions: true
 			},
 			webkit: {
 				cssHas: true,
 				reliableTrDimensions: true
-			},
-			firefox_102: {
-				cssHas: true,
-				reliableTrDimensions: false
 			},
 			firefox: {
 				cssHas: true,
@@ -86,8 +90,12 @@ testIframe(
 				cssHas: true,
 				reliableTrDimensions: true
 			},
-			ios: {
+			ios_15_4_16_3: {
 				cssHas: false,
+				reliableTrDimensions: true
+			},
+			ios: {
+				cssHas: true,
 				reliableTrDimensions: true
 			}
 		};
@@ -101,17 +109,19 @@ testIframe(
 
 	if ( document.documentMode ) {
 		expected = expectedMap.ie_11;
-	} else if ( /chrome/i.test( userAgent ) ) {
+	} else if ( /\b(?:headless)?chrome\/(?:10\d|11[01])\b/i.test( userAgent ) ) {
+		expected = expectedMap.chrome_111;
+	} else if ( /\b(?:headless)?chrome\//i.test( userAgent ) ) {
 
 		// Catches Edge, Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
-	} else if ( /firefox\/102\./i.test( userAgent ) ) {
-		expected = expectedMap.firefox_102;
-	} else if ( /firefox/i.test( userAgent ) ) {
+	} else if ( /\bfirefox\//i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /iphone os (?:14_|15_[0123])/i.test( userAgent ) ) {
+	} else if ( /\biphone os (?:14_|15_[0123])/i.test( userAgent ) ) {
 		expected = expectedMap.ios_14_15_3;
-	} else if ( /(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
+	} else if ( /\biphone os (?:15_|16_[0123])/i.test( userAgent ) ) {
+		expected = expectedMap.ios_15_4_16_3;
+	} else if ( /\b(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	} else if ( typeof URLSearchParams !== "undefined" &&
 
@@ -125,7 +135,9 @@ testIframe(
 		) === "Playwright"
 	) {
 		expected = expectedMap.webkit;
-	} else if ( /\b\d+(\.\d+)+ safari/i.test( userAgent ) ) {
+	} else if ( /\bversion\/(?:15|16\.[0123])(?:\.\d+)* safari/i.test( userAgent ) ) {
+		expected = expectedMap.safari_16_3;
+	} else if ( /\bversion\/\d+(?:\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
 	}
 
