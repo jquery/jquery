@@ -25,7 +25,7 @@ define( [
 
 "use strict";
 
-var version = "@VERSION",
+var version = "3.7.0",
 
 	rhtmlSuffix = /HTML$/i,
 
