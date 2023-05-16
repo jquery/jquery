@@ -136,7 +136,11 @@ module.exports = function( grunt ) {
 						.map( filePath => filePath[ 0 ] === "!" ?
 							filePath.slice( 1 ) :
 							`!${ filePath }`
-						)
+						),
+
+					// Explicitly ignore `dist/` as it could be unignored by
+					// the above `.eslintignore` parsing.
+					"!dist/**/*.js"
 				]
 			}
 		},
