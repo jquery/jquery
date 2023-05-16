@@ -5,7 +5,7 @@ module.exports = function( grunt ) {
 		filename = grunt.option( "filename" ),
 		distpaths = [
 			"dist/" + filename,
-			"dist/" + filename.replace( ".js", ".min.map" ),
+			"dist/" + filename.replace( ".js", ".min.js.map" ),
 			"dist/" + filename.replace( ".js", ".min.js" )
 		];
 

@@ -11,20 +11,20 @@ var
 	releaseFiles = {
 		"jquery-VER.js": "dist/jquery.js",
 		"jquery-VER.min.js": "dist/jquery.min.js",
-		"jquery-VER.min.map": "dist/jquery.min.map",
+		"jquery-VER.min.js.map": "dist/jquery.min.js.map",
 		"jquery-VER.slim.js": "dist/jquery.slim.js",
 		"jquery-VER.slim.min.js": "dist/jquery.slim.min.js",
-		"jquery-VER.slim.min.map": "dist/jquery.slim.min.map"
+		"jquery-VER.slim.min.js.map": "dist/jquery.slim.min.js.map"
 	},
 
 	googleFilesCDN = [
-		"jquery.js", "jquery.min.js", "jquery.min.map",
-		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.map"
+		"jquery.js", "jquery.min.js", "jquery.min.js.map",
+		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.js.map"
 	],
 
 	msFilesCDN = [
-		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map",
-		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.map"
+		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.js.map",
+		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.js.map"
 	];
 
 /**

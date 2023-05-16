@@ -319,12 +319,13 @@ module.exports = function( grunt ) {
 		minify: {
 			all: {
 				files: {
-					"dist/<%= grunt.option('filename').replace('.js', '.min.js') %>":
+					"dist/<%= grunt.option('filename').replace(/\\.js$/, '.min.js') %>":
 						"dist/<%= grunt.option('filename') %>"
 				},
 				options: {
 					sourceMap: {
-						filename: "dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
+						filename: "dist/<%= grunt.option('filename')" +
+							".replace(/\\.js$/, '.min.map') %>",
 
 						// The map's `files` & `sources` property are set incorrectly, fix
 						// them via overrides from the task config.

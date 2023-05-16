@@ -7,10 +7,10 @@ module.exports = function( Release ) {
 	const distFiles = [
 		"dist/jquery.js",
 		"dist/jquery.min.js",
-		"dist/jquery.min.map",
+		"dist/jquery.min.js.map",
 		"dist/jquery.slim.js",
 		"dist/jquery.slim.min.js",
-		"dist/jquery.slim.min.map"
+		"dist/jquery.slim.min.js.map"
 	];
 	const filesToCommit = [
 		...distFiles,
