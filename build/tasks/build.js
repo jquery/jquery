@@ -17,27 +17,33 @@ module.exports = function( grunt ) {
 		return grunt.file.read( `${ srcFolder }/${ fileName }` );
 	};
 
-	// Catch `// @CODE` and subsequent comment lines event if they don't start
-	// in the first column.
-	const wrapper = read( "wrapper.js" )
-		.split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
-
 	const inputFileName = "jquery.js";
 	const inputRollupOptions = {
 		input: `${ srcFolder }/${ inputFileName }`
 	};
-	const outputRollupOptions = {
 
-		// The ESM format is not actually used as we strip it during
-		// the build; it's just that it doesn't generate any extra
-		// wrappers so there's nothing for us to remove.
-		format: "esm",
+	function getOutputRollupOptions( {
+		esm = false
+	} = {} ) {
+		const wrapperFileName = `wrapper${ esm ? "-esm" : "" }.js`;
 
-		intro: wrapper[ 0 ]
-			.replace( /\n*$/, "" ),
-		outro: wrapper[ 1 ]
-			.replace( /^\n*/, "" )
-	};
+		// Catch `// @CODE` and subsequent comment lines event if they don't start
+		// in the first column.
+		const wrapper = read( wrapperFileName )
+			.split( /[\x20\t]*\/\/ @CODE\n(?:[\x20\t]*\/\/[^\n]+\n)*/ );
+
+		return {
+
+			// The ESM format is not actually used as we strip it during the
+			// build, inserting our own wrappers; it's just that it doesn't
+			// generate any extra wrappers so there's nothing for us to remove.
+			format: "esm",
+
+			intro: `${ wrapper[ 0 ].replace( /\n*$/, "" ) }`,
+			outro: wrapper[ 1 ].replace( /^\n*/, "" )
+		};
+	}
+
 	const fileOverrides = new Map();
 
 	function getOverride( filePath ) {
@@ -62,6 +68,7 @@ module.exports = function( grunt ) {
 			const flags = this.flags;
 			const optIn = flags[ "*" ];
 			let name = grunt.option( "filename" );
+			const esm = !!grunt.option( "esm" );
 			const minimum = this.data.minimum;
 			const removeWith = this.data.removeWith;
 			const excluded = [];
@@ -296,6 +303,9 @@ module.exports = function( grunt ) {
 				plugins: [ rollupFileOverrides( fileOverrides ) ]
 			} );
 
+			const outputRollupOptions =
+				getOutputRollupOptions( { esm } );
+
 			const { output: [ { code } ] } = await bundle.generate( outputRollupOptions );
 
 			const compiledContents = code
@@ -337,6 +347,7 @@ module.exports = function( grunt ) {
 		const modules = args.length ?
 			args[ 0 ].split( "," ).join( ":" ) :
 			"";
+		const esm = !!grunt.option( "esm" );
 
 		grunt.log.writeln( "Creating custom build...\n" );
 		grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "minify", "dist" ] );

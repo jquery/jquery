@@ -58,6 +58,30 @@
 		},
 
 		{
+			"files": "wrapper-esm.js",
+			"parserOptions": {
+				"ecmaVersion": 2015,
+				"sourceType": "module"
+			},
+			"globals": {
+				"jQuery": false
+			},
+			"rules": {
+				"no-unused-vars": "off",
+				"indent": [ "error", "tab", {
+					// Unlike other codes, "wrapper.js" is implemented in UMD.
+					// So it required a specific exception for jQuery's UMD
+					// Code Style. This makes that indentation check is not
+					// performed for 1 depth of outer FunctionExpressions
+					"ignoredNodes": [
+						"Program > FunctionDeclaration > *"
+					]
+				} ],
+				"import/no-unused-modules": "off"
+			}
+		},
+
+		{
 			"files": "exports/amd.js",
 			"globals": {
 				"define": false

@@ -45,12 +45,30 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			Release.exec( "npx grunt", "Grunt command failed" );
-			Release.exec(
-				"npx grunt custom:slim --filename=jquery.slim.js && " +
-					"npx grunt remove_map_comment --filename=jquery.slim.js",
-				"Grunt custom failed"
-			);
+			Release.exec( "npx grunt" );
+
+			for ( const slim of [ false, true ] ) {
+				for ( const esm of [ false, true ] ) {
+					if ( !slim && !esm ) {
+
+						// Special case already covered by the above `npx grunt`;
+						// skip it
+						continue;
+					}
+
+					const filename = `jquery${
+						slim ? ".slim" : ""
+					}.${ esm ? "m" : "" }js`;
+
+					Release.exec(
+						`npx grunt custom${ slim ? ":slim" : "" } ${
+							esm ? "--esm" : ""
+						} --filename=${ filename } && ` +
+							`npx grunt remove_map_comment --filename=${ filename }`
+					);
+				}
+			}
+
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
 			callback( filesToCommit );

@@ -4,7 +4,7 @@ const { JSDOM } = require( "jsdom" );
 
 const { window } = new JSDOM( "" );
 
-// Pretend the window is a global.
+// Set the window global.
 global.window = window;
 
 const ensureJQuery = require( "./lib/ensure_jquery" );
