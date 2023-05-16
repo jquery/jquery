@@ -3,7 +3,31 @@
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
   "version": "4.0.0-pre",
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "node": {
+        "module": "./dist/jquery.mjs",
+        "import": "./dist/jquery-node-wrapper.mjs",
+        "default": "./dist/jquery.js"
+      },
+      "require": "./dist/jquery.js",
+      "default": "./dist/jquery.mjs"
+    },
+    "./slim": {
+      "node": {
+        "module": "./dist/jquery.slim.mjs",
+        "import": "./dist/jquery-node-wrapper.slim.mjs",
+        "default": "./dist/jquery.slim.js"
+      },
+      "require": "./dist/jquery.slim.js",
+      "default": "./dist/jquery.slim.mjs"
+    },
+    "./src/*.js": "./src/*.js",
+    "./amd/*.js": "./amd/*.js"
+  },
   "main": "dist/jquery.js",
+  "module": "dist/jquery.mjs",
   "homepage": "https://jquery.com",
   "author": {
     "name": "OpenJS Foundation and other contributors",
