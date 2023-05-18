@@ -1,8 +1,8 @@
 "use strict";
 
 const assert = require( "assert" );
-const ensureGlobalNotCreated = require( "./lib/ensure_global_not_created" );
-const jQueryFactory = require( "../../dist/jquery.js" );
+const ensureGlobalNotCreated = require( "./lib/ensure_global_not_created.js" );
+const jQueryFactory = require( "../../../dist/jquery.js" );
 
 assert.throws( () => {
 	jQueryFactory( {} );

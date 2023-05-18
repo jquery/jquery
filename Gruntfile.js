@@ -394,7 +394,7 @@ module.exports = function( grunt ) {
 		runIfNewNode( "newer:eslint:dist" )
 	] );
 
-	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
+	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests:commonjs" ) );
 	grunt.registerTask( "test:slow", [
 		runIfNewNode( "promises_aplus_tests" ),
 

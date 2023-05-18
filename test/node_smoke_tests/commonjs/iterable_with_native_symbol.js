@@ -5,4 +5,4 @@ if ( typeof Symbol === "undefined" ) {
 	process.exit();
 }
 
-require( "./lib/ensure_iterability_es6" )();
+require( "./lib/ensure_iterability_es6.js" )();

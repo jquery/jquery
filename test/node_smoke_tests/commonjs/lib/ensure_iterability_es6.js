@@ -8,8 +8,8 @@ const ensureIterability = () => {
 	const { window } = new JSDOM( "" );
 
 	let i;
-	const ensureJQuery = require( "./ensure_jquery" );
-	const jQuery = require( "../../../dist/jquery.js" )( window );
+	const ensureJQuery = require( "./ensure_jquery.js" );
+	const jQuery = require( "../../../../dist/jquery.js" )( window );
 	const elem = jQuery( "<div></div><span></span><a></a>" );
 	let result = "";
 
