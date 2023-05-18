@@ -103,7 +103,12 @@
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
     "test:selector-native": "grunt test:prepare && grunt custom:-selector && grunt karma:main",
     "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
-    "test": "npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules",
+    "test:node_smoke_tests:slim": "grunt custom:slim && grunt node_smoke_tests:commonjs",
+    "test:node_smoke_tests:full": "grunt custom && grunt node_smoke_tests:commonjs",
+    "test:node_smoke_tests:module-slim": "grunt custom:slim --esm --filename=jquery.mjs && grunt node_smoke_tests:module",
+    "test:node_smoke_tests:module-full": "grunt custom --esm --filename=jquery.mjs && grunt node_smoke_tests:module",
+    "test:node_smoke_tests": "npm run test:node_smoke_tests:module-slim && npm run test:node_smoke_tests:module-full && npm run test:node_smoke_tests:slim && npm run test:node_smoke_tests:full",
+    "test": "npm run test:node_smoke_tests && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {
