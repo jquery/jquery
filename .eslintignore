@@ -4,6 +4,12 @@ node_modules
 dist/**
 !dist/jquery.js
 !dist/jquery.min.js
+!dist/jquery.slim.js
+!dist/jquery.slim.min.js
+!dist/jquery.mjs
+!dist/jquery.min.mjs
+!dist/jquery.slim.mjs
+!dist/jquery.slim.min.mjs
 test/data/jquery-1.9.1.js
 test/data/badcall.js
 test/data/badjson.js
