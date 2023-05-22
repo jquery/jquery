@@ -3,6 +3,7 @@
 module.exports = ( grunt ) => {
 	const fs = require( "fs" );
 	const spawnTest = require( "./lib/spawn_test.js" );
+	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
 
 	grunt.registerTask( "node_smoke_tests", function( mode, jQueryModuleSpecifier ) {
 		if (
@@ -12,6 +13,12 @@ module.exports = ( grunt ) => {
 			grunt.fatal( "Use `node_smoke_tests:commonjs:JQUERY` " +
 				"or `node_smoke_tests:module:JQUERY.\n" +
 				"JQUERY can be `jquery`, `jquery/slim` or a path to any of them." );
+		}
+
+		if ( !nodeV16OrNewer ) {
+			grunt.log.writeln( "Old Node.js detected, running the task " +
+				`"node_smoke_tests:${ mode }:${ jQueryModuleSpecifier }" skipped...` );
+			return;
 		}
 
 		const testsDir = `./test/node_smoke_tests/${ mode }`;

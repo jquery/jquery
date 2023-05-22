@@ -89,7 +89,7 @@
     "build": "npm install && npm run build-all-variants",
     "build-all-variants": "grunt custom:slim --esm --filename=jquery.slim.mjs && grunt custom --esm --filename=jquery.mjs && grunt custom:slim --filename=jquery.slim.js && grunt",
     "start": "grunt watch",
-    "test:browserless": "grunt && grunt test:slow",
+    "test:browserless": "grunt && npm run test:node_smoke_tests && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
     "test:esmodules": "grunt && grunt karma:esmodules",
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
