@@ -14,7 +14,7 @@ module.exports = function( grunt ) {
 
 	const fs = require( "fs" );
 	const gzip = require( "gzip-js" );
-	const nodeV14OrNewer = !/^v1[0-3]\./.test( process.version );
+	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
 	const nodeV17OrNewer = !/^v1[0-6]\./.test( process.version );
 	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
@@ -22,10 +22,10 @@ module.exports = function( grunt ) {
 	// Skip running tasks that dropped support for Node.js 10 or 12
 	// in this Node version.
 	function runIfNewNode( task ) {
-		return nodeV14OrNewer ? task : "print_old_node_message:" + task;
+		return nodeV16OrNewer ? task : "print_old_node_message:" + task;
 	}
 
-	if ( nodeV14OrNewer ) {
+	if ( nodeV16OrNewer ) {
 		const playwright = require( "playwright-webkit" );
 		process.env.WEBKIT_HEADLESS_BIN = playwright.webkit.executablePath();
 	}
@@ -360,7 +360,7 @@ module.exports = function( grunt ) {
 
 	// Load grunt tasks from NPM packages
 	require( "load-grunt-tasks" )( grunt, {
-		pattern: nodeV14OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
+		pattern: nodeV16OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
 	} );
 
 	// Integrate jQuery specific tasks
@@ -394,7 +394,7 @@ module.exports = function( grunt ) {
 		runIfNewNode( "newer:eslint:dist" )
 	] );
 
-	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests:commonjs:jquery" ) );
+	grunt.registerTask( "test:fast", [ "node_smoke_tests:commonjs:jquery" ] );
 	grunt.registerTask( "test:slow", [
 		runIfNewNode( "promises_aplus_tests" ),
 
