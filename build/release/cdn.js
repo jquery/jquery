@@ -14,17 +14,21 @@ var
 		"jquery-VER.min.js.map": "dist/jquery.min.js.map",
 		"jquery-VER.slim.js": "dist/jquery.slim.js",
 		"jquery-VER.slim.min.js": "dist/jquery.slim.min.js",
-		"jquery-VER.slim.min.js.map": "dist/jquery.slim.min.js.map"
+		"jquery-VER.slim.min.js.map": "dist/jquery.slim.min.js.map",
+		"jquery-VER.mjs": "dist/jquery.mjs",
+		"jquery-VER.slim.mjs": "dist/jquery.slim.mjs"
 	},
 
 	googleFilesCDN = [
 		"jquery.js", "jquery.min.js", "jquery.min.js.map",
-		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.js.map"
+		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.js.map",
+		"jquery.mjs", "jquery.slim.mjs"
 	],
 
 	msFilesCDN = [
 		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.js.map",
-		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.js.map"
+		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.js.map",
+		"jquery-VER.mjs", "jquery-VER.slim.mjs"
 	];
 
 /**
