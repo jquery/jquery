@@ -1,14 +1,12 @@
-"use strict";
+import assert from "node:assert";
+const { JSDOM } = await import( "jsdom" );
 
-const assert = require( "node:assert" );
-const { JSDOM } = require( "jsdom" );
+const { ensureJQuery } = await import( "./ensure_jquery.mjs" );
 
-const { ensureJQuery } = require( "./ensure_jquery.js" );
-
-const ensureIterability = ( jQueryModuleSpecifier ) => {
+export const ensureIterability = async( jQueryModuleSpecifier ) => {
 	const { window } = new JSDOM( "" );
 
-	const jQueryFactory = require( jQueryModuleSpecifier );
+	const { default: jQueryFactory } = await import( jQueryModuleSpecifier );
 	const jQuery = jQueryFactory( window );
 	const elem = jQuery( "<div></div><span></span><a></a>" );
 
@@ -21,5 +19,3 @@ const ensureIterability = ( jQueryModuleSpecifier ) => {
 
 	assert.strictEqual( result, "DIVSPANA", "for-of works on jQuery objects" );
 };
-
-module.exports = { ensureIterability };

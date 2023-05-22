@@ -4,9 +4,14 @@ module.exports = ( grunt ) => {
 	const fs = require( "fs" );
 	const spawnTest = require( "./lib/spawn_test.js" );
 
-	grunt.registerTask( "node_smoke_tests", function( mode ) {
-		if ( mode !== "commonjs" && mode !== "module" ) {
-			grunt.fatal( "Use `node_smoke_tests:commonjs` or `node_smoke_tests:module`" );
+	grunt.registerTask( "node_smoke_tests", function( mode, jQueryModuleSpecifier ) {
+		if (
+			( mode !== "commonjs" && mode !== "module" ) ||
+			!jQueryModuleSpecifier
+		) {
+			grunt.fatal( "Use `node_smoke_tests:commonjs:JQUERY` " +
+				"or `node_smoke_tests:module:JQUERY.\n" +
+				"JQUERY can be `jquery`, `jquery/slim` or a path to any of them." );
 		}
 
 		const testsDir = `./test/node_smoke_tests/${ mode }`;
@@ -21,13 +26,14 @@ module.exports = ( grunt ) => {
 		fs.readdirSync( testsDir )
 			.filter( ( testFilePath ) =>
 				fs.statSync( `${ testsDir }/${ testFilePath }` ).isFile() &&
-					/\.js$/.test( testFilePath )
+					/\.m?js$/.test( testFilePath )
 			)
 			.forEach( ( testFilePath ) => {
-				const taskName = `node_${ testFilePath.replace( /\.js$/, "" ) }:${ mode }`;
+				const taskName = `node_${ testFilePath.replace( /\.m?js$/, "" ) }:${ mode }:${ jQueryModuleSpecifier }`;
 
 				grunt.registerTask( taskName, function() {
-					spawnTest( this.async(), `node "${ testsDir }/${ testFilePath }"` );
+					spawnTest( this.async(), `node "${ testsDir }/${
+						testFilePath }" ${ jQueryModuleSpecifier }` );
 				} );
 
 				nodeSmokeTests.push( taskName );
