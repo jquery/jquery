@@ -11,7 +11,7 @@ const jQueryModuleSpecifier = getJQueryModuleSpecifier();
 const { window } = new JSDOM( "" );
 
 // Set the window global.
-global.window = window;
+globalThis.window = window;
 
 const jQuery = require( jQueryModuleSpecifier );
 

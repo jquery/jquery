@@ -9,7 +9,7 @@ const jQueryModuleSpecifier = getJQueryModuleSpecifier();
 const { window } = new JSDOM( "" );
 
 // Set the window global.
-global.window = window;
+globalThis.window = window;
 
 const { default: jQuery } = await import( jQueryModuleSpecifier );
 
