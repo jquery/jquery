@@ -329,25 +329,26 @@ module.exports = function( grunt ) {
 			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
 		},
-		uglify: {
+		terser: {
 			all: {
 				files: {
 					"dist/<%= grunt.option('filename').replace('.js', '.min.js') %>":
 						"dist/<%= grunt.option('filename') %>"
 				},
 				options: {
-					preserveComments: false,
-					sourceMap: true,
-					sourceMapName:
-						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
-					report: "min",
-					output: {
-						"ascii_only": true
+					ecma: 5,
+					sourceMap: {
+						filename: "dist/<%= grunt.option('filename').replace('.js', '.min.map') %>"
 					},
-					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) OpenJS Foundation and other contributors | jquery.org/license */",
+					format: {
+						ascii_only: true,
+						comments: false,
+						preamble: "/*! jQuery v<%= pkg.version %> | " +
+							"(c) OpenJS Foundation and other contributors | " +
+							"jquery.org/license */"
+					},
 					compress: {
-						"hoist_funs": false,
+						hoist_funs: false,
 						loops: false
 					}
 				}
@@ -416,7 +417,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "dev", [
 		"build:*:*",
 		runIfNewNode( "newer:eslint:dev" ),
-		"newer:uglify",
+		"newer:terser",
 		"remove_map_comment",
 		"dist:*",
 		"qunit_fixture",
@@ -427,7 +428,7 @@ module.exports = function( grunt ) {
 		runIfNewNode( "eslint:dev" ),
 		"build:*:*",
 		"amd",
-		"uglify",
+		"terser",
 		"remove_map_comment",
 		"dist:*",
 		"test:prepare",
