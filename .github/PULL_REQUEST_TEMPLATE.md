@@ -11,7 +11,6 @@ Mark an `[x]` for completed items, if you're not sure leave them unchecked and w
 -->
 
 * [ ] New tests have been added to show the fix or feature works
-* [ ] Grunt build and unit tests pass locally with these changes
 * [ ] If needed, a docs issue/PR was created at https://github.com/jquery/api.jquery.com
 
 <!--
