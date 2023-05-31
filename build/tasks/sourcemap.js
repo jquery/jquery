@@ -3,7 +3,7 @@
 var fs = require( "fs" );
 
 module.exports = function( grunt ) {
-	var config = grunt.config( "terser.all.files" );
+	var config = grunt.config( "minify.all.files" );
 	grunt.registerTask( "remove_map_comment", function() {
 		var minLoc = grunt.config.process( Object.keys( config )[ 0 ] );
 
