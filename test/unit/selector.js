@@ -2211,3 +2211,232 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 		delete jQuery.expr.filters.slice;
 	}
 } );
+
+QUnit.test( "jQuery.find.matchesSelector", function( assert ) {
+	assert.expect( 15 );
+
+	var link = document.getElementById( "simon1" ),
+		input = document.getElementById( "text1" ),
+		option = document.getElementById( "option1a" ),
+		disconnected = document.createElement( "div" );
+
+	link.title = "Don't click me";
+	assert.ok( jQuery.find.matchesSelector( link, "[rel='bookmark']" ), "attribute-equals string" );
+	assert.ok( jQuery.find.matchesSelector( link, "[rel=bookmark]" ), "attribute-equals identifier" );
+	assert.ok( jQuery.find.matchesSelector( link, "[\nrel = bookmark\t]" ),
+		"attribute-equals identifier (whitespace ignored)" );
+	assert.ok( jQuery.find.matchesSelector( link, "a[title=\"Don't click me\"]" ),
+		"attribute-equals string containing single quote" );
+
+	// trac-12303
+	input.setAttribute( "data-pos", ":first" );
+	assert.ok( jQuery.find.matchesSelector( input, "input[data-pos=\\:first]" ),
+		"attribute-equals POS in identifier" );
+	assert.ok( jQuery.find.matchesSelector( input, "input[data-pos=':first']" ),
+		"attribute-equals POS in string" );
+	if ( QUnit.jQuerySelectors ) {
+		assert.ok( jQuery.find.matchesSelector( input, ":input[data-pos=':first']" ),
+			"attribute-equals POS in string after pseudo" );
+	} else {
+		assert.ok( "skip", ":input not supported in selector-native" );
+	}
+
+	option.setAttribute( "test", "" );
+	assert.ok( jQuery.find.matchesSelector( option, "[id=option1a]" ),
+		"id attribute-equals identifier" );
+	if ( QUnit.jQuerySelectors ) {
+		assert.ok( jQuery.find.matchesSelector( option, "[id*=option1][type!=checkbox]" ),
+			"attribute-not-equals identifier" );
+	} else {
+		assert.ok( "skip", "[key!=value] not supported in selector-native" );
+	}
+	assert.ok( jQuery.find.matchesSelector( option, "[id*=option1]" ), "attribute-contains identifier" );
+	assert.ok( !jQuery.find.matchesSelector( option, "[test^='']" ),
+		"attribute-starts-with empty string (negative)" );
+
+	option.className = "=]";
+	assert.ok( jQuery.find.matchesSelector( option, ".\\=\\]" ),
+		"class selector with attribute-equals confusable" );
+
+	assert.ok( jQuery.find.matchesSelector( disconnected, "div" ), "disconnected element" );
+	assert.ok( jQuery.find.matchesSelector( link, "* > *" ), "child combinator matches in document" );
+	assert.ok( !jQuery.find.matchesSelector( disconnected, "* > *" ), "child combinator fails in fragment" );
+} );
+
+QUnit.test( "jQuery.find.matches", function( assert ) {
+	assert.expect( 4 );
+
+	var iframeChild,
+		input = document.getElementById( "text1" ),
+		div = document.createElement( "div" ),
+		iframe = document.getElementById( "iframe" ),
+		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+	assert.deepEqual( jQuery.find.matches( "input", [ input ] ), [ input ],
+		"jQuery.find.matches with seed of input element" );
+	assert.deepEqual( jQuery.find.matches( "div", [ div ] ), [ div ],
+		"jQuery.find.matches with disconnected element" );
+
+	iframeDoc.open();
+	iframeDoc.write( "<body><div id='foo'><div id='bar'></div></div></body>" );
+	iframeDoc.close();
+
+	iframeChild = iframeDoc.getElementById( "bar" );
+
+	assert.deepEqual(
+		jQuery.find.matches( ":root > body > #foo > #bar", [ iframeChild ] ),
+		[ iframeChild ],
+		"jQuery.find.matches infers context from element"
+	);
+
+	assert.deepEqual(
+		jQuery.find.matches( ":root *", [ div, iframeChild, input ] ),
+		[ iframeChild, input ],
+		"jQuery.find.matches infers context from each seed element"
+	);
+} );
+
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery.find.select with pre-compiled function", function( assert ) {
+	assert.expect( 6 );
+
+	supportjQuery.each( [
+		"#qunit-fixture #first",
+		"ol#listWithTabIndex > li[tabindex]",
+		"#liveSpan1"
+	], function( i, selector ) {
+		var compiled = jQuery.find.compile( selector );
+		assert.equal( jQuery.find.select( compiled, document ).length,
+			1, "Should match using a compiled selector function" );
+		assert.equal(
+			jQuery.find.select( compiled, jQuery( "#first" )[ 0 ] ).length,
+			0, "Should not match with different context" );
+	} );
+} );
+
+// Internal, but we test it for backwards compatibility for edge cases
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery.find.tokenize", function( assert ) {
+	assert.expect( 1 );
+
+	var selector = "#id .class > div[prop=\"value\"] + input:nth-child(1):button, span:contains(\"Text\") ~ div:has(div:has(span)):not(.not-this.not-that > div)",
+		tokens = [
+			[
+				{
+					"value": "#id",
+					"type": "ID",
+					"matches": [
+						"id"
+					]
+				},
+				{
+					"value": " ",
+					"type": " "
+				},
+				{
+					"value": ".class",
+					"type": "CLASS",
+					"matches": [
+						"class"
+					]
+				},
+				{
+					"value": " > ",
+					"type": ">"
+				},
+				{
+					"value": "div",
+					"type": "TAG",
+					"matches": [
+						"div"
+					]
+				},
+				{
+					"value": "[prop=\"value\"]",
+					"type": "ATTR",
+					"matches": [
+						"prop",
+						"=",
+						"value"
+					]
+				},
+				{
+					"value": " + ",
+					"type": "+"
+				},
+				{
+					"value": "input",
+					"type": "TAG",
+					"matches": [
+						"input"
+					]
+				},
+				{
+					"value": ":nth-child(1)",
+					"type": "CHILD",
+					"matches": [
+						"nth",
+						"child",
+						"1",
+						0,
+						1,
+						undefined,
+						"",
+						"1"
+					]
+				},
+				{
+					"value": ":button",
+					"type": "PSEUDO",
+					"matches": [
+						"button",
+						undefined
+					]
+				}
+			],
+			[
+				{
+					"value": "span",
+					"type": "TAG",
+					"matches": [
+						"span"
+					]
+				},
+				{
+					"value": ":contains(\"Text\")",
+					"type": "PSEUDO",
+					"matches": [
+						"contains",
+						"Text"
+					]
+				},
+				{
+					"value": " ~ ",
+					"type": "~"
+				},
+				{
+					"value": "div",
+					"type": "TAG",
+					"matches": [
+						"div"
+					]
+				},
+				{
+					"value": ":has(div:has(span))",
+					"type": "PSEUDO",
+					"matches": [
+						"has",
+						"div:has(span)"
+					]
+				},
+				{
+					"value": ":not(.not-this.not-that > div)",
+					"type": "PSEUDO",
+					"matches": [
+						"not",
+						".not-this.not-that > div"
+					]
+				}
+			]
+		];
+
+	assert.deepEqual( jQuery.find.tokenize( selector ), tokens, "Tokenization successful" );
+} );
