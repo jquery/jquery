@@ -24,10 +24,6 @@
 import jQuery from "./core.js";
 import document from "./var/document.js";
 import whitespace from "./var/whitespace.js";
-
-// The following utils are attached directly to the jQuery object.
-import "./selector/escapeSelector.js";
-import "./selector/uniqueSort.js";
 import isIE from "./var/isIE.js";
 import booleans from "./selector/var/booleans.js";
 import rleadingCombinator from "./selector/var/rleadingCombinator.js";
@@ -39,6 +35,10 @@ import filterMatchExpr from "./selector/filterMatchExpr.js";
 import preFilter from "./selector/preFilter.js";
 import tokenize from "./selector/tokenize.js";
 import toSelector from "./selector/toSelector.js";
+
+// The following utils are attached directly to the jQuery object.
+import "./selector/escapeSelector.js";
+import "./selector/uniqueSort.js";
 
 var matchExpr = jQuery.extend( {
 	bool: new RegExp( "^(?:" + booleans + ")$", "i" ),
@@ -142,5 +142,6 @@ jQuery.extend( jQuery.find, {
 	},
 	matchesSelector: function( elem, expr ) {
 		return matches.call( elem, expr );
-	}
+	},
+	tokenize: tokenize
 } );
