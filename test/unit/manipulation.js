@@ -53,8 +53,12 @@ QUnit.test( "text()", function( assert ) {
 
 	$newLineTest.remove();
 
-	doc = new DOMParser().parseFromString( "<span>example</span>", "text/html" );
-	assert.equal( jQuery( doc ).text(), "example", "text() on HTMLDocument (gh-5264)" );
+	if ( !document.documentMode || document.documentMode > 9 ) {
+		doc = new DOMParser().parseFromString( "<span>example</span>", "text/html" );
+		assert.equal( jQuery( doc ).text(), "example", "text() on HTMLDocument (gh-5264)" );
+	} else {
+		assert.ok( true, "IE 9 doesn't support DOMParser's parseFromString with text/html" );
+	}
 } );
 
 QUnit.test( "text(undefined)", function( assert ) {
