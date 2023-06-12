@@ -30,9 +30,9 @@ function manipulationFunctionReturningObj( value ) {
 
 QUnit.test( "text()", function( assert ) {
 
-	assert.expect( 5 );
+	assert.expect( 6 );
 
-	var expected, frag, $newLineTest;
+	var expected, frag, $newLineTest, doc;
 
 	expected = "This link has class=\"blog\": Simon Willison's Weblog";
 	assert.equal( jQuery( "#sap" ).text(), expected, "Check for merged text of more then one element." );
@@ -52,6 +52,9 @@ QUnit.test( "text()", function( assert ) {
 	assert.equal( $newLineTest.text(), "test\ntesty", "text() does not remove new lines (trac-11153)" );
 
 	$newLineTest.remove();
+
+	doc = new DOMParser().parseFromString( "<span>example</span>", "text/html" );
+	assert.equal( jQuery( doc ).text(), "example", "text() on HTMLDocument (gh-5264)" );
 } );
 
 QUnit.test( "text(undefined)", function( assert ) {
