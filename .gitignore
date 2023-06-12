@@ -12,9 +12,17 @@ package-lock.json
 
 npm-debug.log*
 
-# Ignore everything in dist folder except for eslint config
+# Ignore everything in `dist` folder except for the ESLint config
 /dist/*
 !/dist/.eslintrc.json
+
+# Ignore everything in the `dist-module` folder except for the ESLint config,
+# package.json & Node module wrapper files
+/dist-module/*
+!/dist-module/.eslintrc.json
+!/dist-module/package.json
+!/dist-module/jquery.node-module-wrapper.js
+!/dist-module/jquery.node-module-wrapper.slim.js
 
 /external
 /node_modules

@@ -69,6 +69,7 @@ module.exports = function( grunt ) {
 			const optIn = flags[ "*" ];
 			let name = grunt.option( "filename" );
 			const esm = !!grunt.option( "esm" );
+			const distFolder = grunt.option( "dist-folder" );
 			const minimum = this.data.minimum;
 			const removeWith = this.data.removeWith;
 			const excluded = [];
@@ -192,7 +193,7 @@ module.exports = function( grunt ) {
 			// Filename can be passed to the command line using
 			// command line options
 			// e.g. grunt build --filename=jquery-custom.js
-			name = name ? `dist/${ name }` : this.data.dest;
+			name = name ? `${ distFolder }/${ name }` : this.data.dest;
 
 			// append commit id to version
 			if ( process.env.COMMIT ) {
@@ -347,7 +348,6 @@ module.exports = function( grunt ) {
 		const modules = args.length ?
 			args[ 0 ].split( "," ).join( ":" ) :
 			"";
-		const esm = !!grunt.option( "esm" );
 
 		grunt.log.writeln( "Creating custom build...\n" );
 		grunt.task.run( [ "build:*:*" + ( modules ? ":" + modules : "" ), "minify", "dist" ] );

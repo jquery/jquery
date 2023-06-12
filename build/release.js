@@ -4,15 +4,20 @@ var fs = require( "fs" );
 
 module.exports = function( Release ) {
 
+	// TODO add `amd/**/*` here?
 	const distFiles = [
 		"dist/jquery.js",
 		"dist/jquery.min.js",
-		"dist/jquery.min.js.map",
+		"dist/jquery.min.map",
 		"dist/jquery.slim.js",
 		"dist/jquery.slim.min.js",
-		"dist/jquery.slim.min.js.map",
-		"dist/jquery.mjs",
-		"dist/jquery.slim.mjs"
+		"dist/jquery.slim.min.map",
+		"dist-module/jquery.module.js",
+		"dist-module/jquery.module.min.js",
+		"dist-module/jquery.module.min.map",
+		"dist-module/jquery.module.slim.js",
+		"dist-module/jquery.module.slim.min.js",
+		"dist-module/jquery.module.slim.min.map"
 	];
 	const filesToCommit = [
 		...distFiles,
@@ -66,7 +71,9 @@ module.exports = function( Release ) {
 						`npx grunt custom${ slim ? ":slim" : "" } ${
 							esm ? "--esm" : ""
 						} --filename=${ filename } && ` +
-							`npx grunt remove_map_comment --filename=${ filename }`
+							`npx grunt remove_map_comment ${
+								esm ? "--esm" : ""
+							} --filename=${ filename }`
 					);
 				}
 			}
@@ -92,10 +99,9 @@ module.exports = function( Release ) {
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
 		 */
-		dist: function( callback ) {
-			cdn.makeArchives( Release, function() {
-				dist( Release, distFiles, callback );
-			} );
+		dist: async callback => {
+			await cdn.makeArchives( Release );
+			dist( Release, distFiles, callback );
 		}
 	} );
 };
