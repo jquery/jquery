@@ -30,6 +30,7 @@ function jQueryFactory( window, noGlobal ) {
 // build.js inserts compiled jQuery here
 
 return jQuery;
+
 }
 
 export default jQueryOrJQueryFactory;
