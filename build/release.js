@@ -54,30 +54,6 @@ module.exports = function( Release ) {
 		generateArtifacts: function( callback ) {
 			Release.exec( "npx grunt" );
 
-			for ( const slim of [ false, true ] ) {
-				for ( const esm of [ false, true ] ) {
-					if ( !slim && !esm ) {
-
-						// Special case already covered by the above `npx grunt`;
-						// skip it
-						continue;
-					}
-
-					const filename = `jquery${
-						slim ? ".slim" : ""
-					}.${ esm ? "m" : "" }js`;
-
-					Release.exec(
-						`npx grunt custom${ slim ? ":slim" : "" } ${
-							esm ? "--esm" : ""
-						} --filename=${ filename } && ` +
-							`npx grunt remove_map_comment ${
-								esm ? "--esm" : ""
-							} --filename=${ filename }`
-					);
-				}
-			}
-
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
 			callback( filesToCommit );
