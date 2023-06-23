@@ -453,7 +453,6 @@ module.exports = function( grunt ) {
 		"build:*:*",
 		runIfNewNode( "newer:eslint:dev" ),
 		"newer:minify",
-		"remove_map_comment",
 		"dist:*",
 		"qunit_fixture",
 		"compare_size"
@@ -463,7 +462,6 @@ module.exports = function( grunt ) {
 		runIfNewNode( "eslint:dev" ),
 		"build-all-variants",
 		"minify",
-		"remove_map_comment",
 		"dist:*",
 		"test:prepare",
 		runIfNewNode( "eslint:dist" ),
