@@ -99,7 +99,7 @@ import $ from "jquery";
 If you need to use jQuery in a file that's not an ECMAScript module, you can use the CommonJS syntax:
 
 ```js
-var $ = require( "jquery" );
+const $ = require( "jquery" );
 ```
 
 #### Individual modules
@@ -159,15 +159,7 @@ For jQuery to work in Node, a window with a document is required. Since no such 
 
 jQuery checks for a `window` global with a `document` property and - if one is not present, as is the default in Node.js - it returns a factory accepting a `window` as a parameter instead.
 
-To `require` jQuery using this factory, use the following:
-
-```js
-const { JSDOM } = require( "jsdom" );
-const { window } = new JSDOM( "" );
-const $ = require( "jquery" )( window );
-```
-
-or, if you use ECMAScript modules:
+To `import` jQuery using this factory, use the following:
 
 ```js
 import { JSDOM } from "jsdom";
@@ -176,22 +168,30 @@ import jQueryFactory from "jquery";
 const $ = jQueryFactory( window );
 ```
 
-If the `window` global is present at the moment of the `require( "jquery" )` call, it will return a jQuery instance, as in the browser. You can set such a global manually to simulate the behavior:
+or, if you use `require`:
 
 ```js
 const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "" );
-globalThis.window = window;
-const $ = require( "jquery" );
+const $ = require( "jquery" )( window );
 ```
 
-or, if you use ECMAScript modules with Node.js:
+If the `window` global is present at the moment of the `import` or `require` of `"jquery"`, it will resolve to a jQuery instance, as in the browser. You can set such a global manually to simulate the behavior; with `import`:
 
 ```js
 import { JSDOM } from "jsdom";
 const { window } = new JSDOM( "" );
 globalThis.window = window;
 const { default: $ } = await import( "jquery" );
+```
+
+or with `require`:
+
+```js
+const { JSDOM } = require( "jsdom" );
+const { window } = new JSDOM( "" );
+globalThis.window = window;
+const $ = require( "jquery" );
 ```
 
 #### Slim build in Node.js
