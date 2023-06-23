@@ -3,7 +3,7 @@
 const assert = require( "node:assert" );
 const { JSDOM } = require( "jsdom" );
 
-const { ensureJQuery } = require( "./ensure_jquery.js" );
+const { ensureJQuery } = require( "./ensure_jquery.cjs" );
 
 const ensureIterability = ( jQueryModuleSpecifier ) => {
 	const { window } = new JSDOM( "" );

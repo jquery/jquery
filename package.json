@@ -3,7 +3,7 @@
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
   "version": "4.0.0-pre",
-  "type": "commonjs",
+  "type": "module",
   "exports": {
     ".": {
       "node": {

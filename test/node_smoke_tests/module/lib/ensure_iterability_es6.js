@@ -1,7 +1,7 @@
 import assert from "node:assert";
 const { JSDOM } = await import( "jsdom" );
 
-const { ensureJQuery } = await import( "./ensure_jquery.mjs" );
+const { ensureJQuery } = await import( "./ensure_jquery.js" );
 
 export const ensureIterability = async( jQueryModuleSpecifier ) => {
 	const { window } = new JSDOM( "" );

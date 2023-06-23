@@ -213,7 +213,7 @@ module.exports = function( grunt ) {
 					{
 						"middleware:mockserver": [
 							"factory",
-							require( "./test/middleware-mockserver.js" )
+							require( "./test/middleware-mockserver.cjs" )
 						]
 					}
 				],
