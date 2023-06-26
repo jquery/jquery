@@ -26,6 +26,7 @@
   "devDependencies": {
     "@babel/core": "7.3.3",
     "@babel/plugin-transform-for-of": "7.2.0",
+    "bootstrap": "5.3.0",
     "colors": "1.4.0",
     "commitplease": "3.2.0",
     "core-js": "2.6.5",

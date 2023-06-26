@@ -89,6 +89,10 @@ module.exports = function( grunt ) {
 					destPrefix: "external"
 				},
 				files: {
+					"bootstrap/bootstrap.css": "bootstrap/dist/css/bootstrap.css",
+					"bootstrap/bootstrap.min.css": "bootstrap/dist/css/bootstrap.min.css",
+					"bootstrap/bootstrap.min.css.map": "bootstrap/dist/css/bootstrap.min.css.map",
+
 					"core-js/core-js.js": "core-js/client/core.min.js",
 					"core-js/LICENSE.txt": "core-js/LICENSE",
 
