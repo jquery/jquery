@@ -10,7 +10,7 @@ module.exports = grunt => {
 	grunt.registerTask( "promises_aplus_tests:deferred", function() {
 		spawnTest( this.async(),
 			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
-				" test/promises_aplus_adapters/deferred.js" +
+				" test/promises_aplus_adapters/deferred.cjs" +
 				" --reporter dot" +
 				" --timeout " + timeout
 		);
@@ -19,7 +19,7 @@ module.exports = grunt => {
 	grunt.registerTask( "promises_aplus_tests:when", function() {
 		spawnTest( this.async(),
 			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
-				" test/promises_aplus_adapters/when.js" +
+				" test/promises_aplus_adapters/when.cjs" +
 				" --reporter dot" +
 				" --timeout " + timeout
 		);

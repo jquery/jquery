@@ -15,6 +15,7 @@ npm-debug.log*
 # Ignore everything in `dist` folder except for the ESLint config
 /dist/*
 !/dist/.eslintrc.json
+!/dist/package.json
 
 # Ignore everything in the `dist-module` folder except for the ESLint config,
 # package.json & Node module wrapper files
