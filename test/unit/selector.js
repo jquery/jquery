@@ -1474,7 +1474,7 @@ QUnit.test( "pseudo - :target and :root", function( assert ) {
 } );
 
 QUnit.test( "pseudo - :lang", function( assert ) {
-	assert.expect( QUnit.jQuerySelectors ? 105 : 55 );
+	assert.expect( QUnit.jQuerySelectors ? 104 : 54 );
 
 	var docElem = document.documentElement,
 		docXmlLang = docElem.getAttribute( "xml:lang" ),
@@ -1547,8 +1547,18 @@ QUnit.test( "pseudo - :lang", function( assert ) {
 	anchor.parentNode.lang = "ara";
 	anchor.lang = "ara\\b";
 	assert.deepEqual( jQuery( ":lang(ara\\b)", foo ).get(), [], ":lang respects backslashes" );
-	assert.deepEqual( jQuery( ":lang(ara\\\\b)", foo ).get(), [ anchor ],
-		":lang respects escaped backslashes" );
+
+	// Support: Firefox 114+
+	// Firefox 114+ no longer match on backslashes in `:lang()`, even when escaped.
+	// It is an intentional change as `:lang()` parameters are supposed to be valid
+	// BCP 47 strings. Therefore, we won't attempt to patch it.
+	// We'll keep this test here until other browsers match the behavior.
+	// See https://bugzilla.mozilla.org/show_bug.cgi?id=1839747#c1
+	// See https://github.com/w3c/csswg-drafts/issues/8720#issuecomment-1509242961
+	//
+	// assert.deepEqual( jQuery( ":lang(ara\\\\b)", foo ).get(), [ anchor ],
+	// 	":lang respects escaped backslashes" );
+
 	assert.throws( function() {
 		jQuery( "#qunit-fixture:lang(c++)" );
 	}, ":lang value must be a valid identifier" );
