@@ -19,9 +19,8 @@ module.exports = function( grunt ) {
 	const nodeV17OrNewer = !/^v1[0-6]\./.test( process.version );
 	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
-	// Support: Node.js <14
-	// Skip running tasks that dropped support for Node.js 10 or 12
-	// in this Node version.
+	// Support: Node.js <16
+	// Skip running tasks that dropped support for old Node.js in these Node versions.
 	function runIfNewNode( task ) {
 		return nodeV16OrNewer ? task : "print_old_node_message:" + task;
 	}
