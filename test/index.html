@@ -19,9 +19,9 @@
 	<!-- See testinit for the list of tests -->
 	<script src="data/testinit.js"></script>
 
-	<!-- A script that includes jQuery min, dev, ES modules or AMD modules -->
+	<!-- A script that includes jQuery min, dev or ES modules -->
 	<!-- Adds "basic" URL option, even to iframes -->
-	<!-- iframes will not load AMD as loading needs to be synchronous for some tests -->
+	<!-- iframes will not load ESM as loading needs to be synchronous for some tests -->
 	<!-- Also executes the function above to load tests -->
 	<script src="jquery.js"></script>
 
@@ -31,13 +31,12 @@
 		// jQuery is on the page when the testrunner executes
 		// QUnit.config is populated from QUnit.urlParams but only at the beginning
 		// of the test run. We need to read both.
-		var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules,
-			amd = QUnit.config.amd || QUnit.urlParams.amd;
+		var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
 
 		// Workaround: Remove call to `window.__karma__.loaded()`
 		// in favor of calling `window.__karma__.start()` from `loadTests()`
 		// because tests such as unit/ready.js should run after document ready.
-		if ( !esmodules && !amd ) {
+		if ( !esmodules ) {
 			loadTests();
 		}
 	</script>

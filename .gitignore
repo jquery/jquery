@@ -16,7 +16,6 @@ npm-debug.log*
 /dist/*
 !/dist/.eslintrc.json
 
-/amd
 /external
 /node_modules
 

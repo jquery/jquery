@@ -38,10 +38,6 @@
 			label: "Load as modules",
 			tooltip: "Load the jQuery module file (and its dependencies)"
 		}, {
-			id: "amd",
-			label: "Load with AMD",
-			tooltip: "Load the AMD jQuery file (and its dependencies)"
-		}, {
 			id: "dev",
 			label: "Load unminified",
 			tooltip: "Load the development (unminified) jQuery file"
@@ -76,20 +72,6 @@
 			"	} );";
 
 		eval( dynamicImportSource );
-
-	// Apply similar treatment for AMD modules
-	} else if ( config.amd && QUnit ) {
-		require.config( {
-			baseUrl: parentUrl
-		} );
-		src = "amd/jquery";
-
-		// Include tests if specified
-		if ( typeof loadTests !== "undefined" ) {
-			require( [ src ], loadTests );
-		} else {
-			require( [ src ] );
-		}
 
 	// Otherwise, load synchronously
 	} else {
