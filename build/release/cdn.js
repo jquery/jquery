@@ -49,11 +49,11 @@ function makeReleaseCopies( Release ) {
 	].forEach( ( { filesMap, cdnFolder } ) => {
 		shell.mkdir( "-p", cdnFolder );
 
-		Object.keys( filesMap ).forEach( function( key ) {
-			var text,
-				builtFile = filesMap[ key ],
-				unpathedFile = key.replace( /@VER/g, Release.newVersion ),
-				releaseFile = cdnFolder + "/" + unpathedFile;
+		Object.keys( filesMap ).forEach( key => {
+			let text;
+			const builtFile = filesMap[ key ];
+			const unpathedFile = key.replace( /@VER/g, Release.newVersion );
+			const releaseFile = cdnFolder + "/" + unpathedFile;
 
 			if ( /\.map$/.test( releaseFile ) ) {
 
@@ -82,6 +82,7 @@ async function makeArchives( Release ) {
 		return new Promise( ( resolve, reject ) => {
 			if ( Release.preRelease ) {
 				console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
+				resolve();
 				return;
 			}
 
@@ -109,11 +110,11 @@ async function makeArchives( Release ) {
 				finalFilesMap[ releaseFile.replace( rver, Release.newVersion ) ] = builtFile;
 			}
 
-			const files = Object.keys( filesMap ).map( function( item ) {
-				return `${ cdnFolder }/${
+			const files = Object
+				.keys( filesMap )
+				.map( item => `${ cdnFolder }/${
 					item.replace( rver, Release.newVersion )
-				}`;
-			} );
+				}` );
 
 			if ( os.platform() === "win32" ) {
 				sum = [];
@@ -130,7 +131,7 @@ async function makeArchives( Release ) {
 			fs.writeFileSync( md5file, sum );
 			files.push( md5file );
 
-			files.forEach( function( file ) {
+			files.forEach( file => {
 				archiver.append( fs.createReadStream( file ),
 					{ name: path.basename( file ) } );
 			} );
