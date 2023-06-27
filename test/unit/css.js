@@ -1409,13 +1409,13 @@ QUnit.testUnlessIE( "css('width') and css('height') should return fractional val
 		"css('height') should return fractional values" );
 } );
 
-QUnit.test( "certain css values of 'normal' should be convertable to a number, see trac-8627", function( assert ) {
+QUnit.test( "certain css values of 'normal' should be convertible to a number, see trac-8627", function( assert ) {
 	assert.expect( 3 );
 
 	var el = jQuery( "<div style='letter-spacing:normal;font-weight:normal;'>test</div>" ).appendTo( "#qunit-fixture" );
 
-	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertable to number, see trac-8627" );
-	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertable to number, see trac-8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "letterSpacing" ) ) ), "css('letterSpacing') not convertible to number, see trac-8627" );
+	assert.ok( !isNaN( parseFloat( el.css( "fontWeight" ) ) ), "css('fontWeight') not convertible to number, see trac-8627" );
 	assert.equal( typeof el.css( "fontWeight" ), "string", ".css() returns a string" );
 } );
 
