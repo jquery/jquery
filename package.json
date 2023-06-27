@@ -27,8 +27,7 @@
       "script": "./dist/jquery.slim.min.js",
       "default": "./dist-module/jquery.module.slim.min.js"
     },
-    "./src/*.js": "./src/*.js",
-    "./amd/*.js": "./amd/*.js"
+    "./src/*.js": "./src/*.js"
   },
   "main": "dist/jquery.js",
   "homepage": "https://jquery.com",

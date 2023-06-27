@@ -132,26 +132,7 @@ define( [ "jquery" ], function( $ ) {
 } );
 ```
 
-Node.js doesn't understand AMD natively so this method is mostly use in a browser setup.
-
-#### Individual AMD modules
-
-All ECMAScript modules from `src/` - described in the [Individual modules](#individual-modules) section - have their AMD equivalents in the `amd/` folder.
-
-Similarly to `src/`, this is considered an advanced & low-level interface that may not be stable even between minor or patch releases.
-
-Example usage:
-
-```js
-define( [
-	"jquery/src/css", // adds the `.css()` method
-	"jquery/src/event" // adds the `.on()` method; pulls "selector" as a dependency
-], function( $ ) {
-	$( ".toggle" ).on( "click", function() {
-		$( this ).css( "color", "red" );
-	} );
-} );
-```
+Node.js doesn't understand AMD natively so this method is mostly used in a browser setup.
 
 ### Node.js pre-requisites
 

@@ -4,7 +4,6 @@ var fs = require( "fs" );
 
 module.exports = function( Release ) {
 
-	// TODO add `amd/**/*` here?
 	const distFiles = [
 		"dist/jquery.js",
 		"dist/jquery.min.js",
