@@ -2586,7 +2586,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 	} );
 
 	QUnit.test(
-		"jQuery#load() - always use GET method even if it overrided through ajaxSetup (trac-11264)",
+		"jQuery#load() - always use GET method even if overridden through ajaxSetup (trac-11264)",
 		function( assert ) {
 			assert.expect( 1 );
 			var done = assert.async();
