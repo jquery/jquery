@@ -225,12 +225,6 @@ module.exports = function( grunt ) {
 						served: true,
 						nocache: true
 					},
-					{
-						pattern: "amd/**",
-						included: false,
-						served: true,
-						nocache: true
-					},
 					{ pattern: "external/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
@@ -264,21 +258,6 @@ module.exports = function( grunt ) {
 							autostart: false,
 
 							esmodules: true
-						}
-					}
-				}
-			},
-			amd: {
-				browsers: customBrowsers || [ "ChromeHeadless" ],
-				options: {
-					client: {
-						qunit: {
-
-							// We're running `QUnit.start()` ourselves via `loadTests()`
-							// in test/jquery.js
-							autostart: false,
-
-							amd: true
 						}
 					}
 				}
@@ -431,7 +410,6 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "default", [
 		runIfNewNode( "eslint:dev" ),
 		"build:*:*",
-		"amd",
 		"terser",
 		"remove_map_comment",
 		"dist:*",

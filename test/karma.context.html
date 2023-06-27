@@ -30,13 +30,12 @@
 	<script>
 		// QUnit.config is populated from QUnit.urlParams but only at the beginning
 		// of the test run. We need to read both.
-		var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules,
-			amd = QUnit.config.amd || QUnit.urlParams.amd;
+		var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
 
 		// Workaround: Remove call to `window.__karma__.loaded()`
 		// in favor of calling `window.__karma__.start()` from `loadTests()`
 		// because tests such as unit/ready.js should run after document ready.
-		if ( !esmodules && !amd ) {
+		if ( !esmodules ) {
 			loadTests();
 		}
 	</script>
