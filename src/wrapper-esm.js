@@ -33,4 +33,9 @@ return jQuery;
 
 }
 
+export {
+	jQueryOrJQueryFactory as jQuery,
+	jQueryOrJQueryFactory as $
+};
+
 export default jQueryOrJQueryFactory;
