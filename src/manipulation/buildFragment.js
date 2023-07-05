@@ -1,17 +1,17 @@
-import jQuery from "../core.js";
-import toType from "../core/toType.js";
-import isAttached from "../core/isAttached.js";
-import arr from "../var/arr.js";
-import rtagName from "./var/rtagName.js";
-import rscriptType from "./var/rscriptType.js";
-import wrapMap from "./wrapMap.js";
-import getAll from "./getAll.js";
-import setGlobalEval from "./setGlobalEval.js";
-import isArrayLike from "../core/isArrayLike.js";
+import { jQuery } from "../core.js";
+import { toType } from "../core/toType.js";
+import { isAttached } from "../core/isAttached.js";
+import { arr } from "../var/arr.js";
+import { rtagName } from "./var/rtagName.js";
+import { rscriptType } from "./var/rscriptType.js";
+import { wrapMap } from "./wrapMap.js";
+import { getAll } from "./getAll.js";
+import { setGlobalEval } from "./setGlobalEval.js";
+import { isArrayLike } from "../core/isArrayLike.js";
 
 var rhtml = /<|&#?\w+;/;
 
-function buildFragment( elems, context, scripts, selection, ignored ) {
+export function buildFragment( elems, context, scripts, selection, ignored ) {
 	var elem, tmp, tag, wrap, attached, j,
 		fragment = context.createDocumentFragment(),
 		nodes = [],
@@ -95,5 +95,3 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 	return fragment;
 }
-
-export default buildFragment;

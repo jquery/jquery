@@ -1,6 +1,6 @@
-import jQuery from "../core.js";
-import indexOf from "../var/indexOf.js";
-import rneedsContext from "./var/rneedsContext.js";
+import { jQuery } from "../core.js";
+import { indexOf } from "../var/indexOf.js";
+import { rneedsContext } from "./var/rneedsContext.js";
 
 import "../selector.js";
 

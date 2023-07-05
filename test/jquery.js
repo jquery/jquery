@@ -59,7 +59,7 @@
 		// with a SyntaxError here.
 		dynamicImportSource = "" +
 			"import( `${ parentUrl }src/jquery.js` )\n" +
-			"	.then( ( { default: jQuery } ) => {\n" +
+			"	.then( ( { jQuery } ) => {\n" +
 			"		window.jQuery = jQuery;\n" +
 			"		if ( typeof loadTests === \"function\" ) {\n" +
 			"			// Include tests if specified\n" +

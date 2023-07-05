@@ -1,4 +1,4 @@
-import jQuery from "../core.js";
+import { jQuery } from "../core.js";
 
 import "../deferred.js";
 

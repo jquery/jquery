@@ -1,4 +1,4 @@
-import jQuery from "../../core.js";
+import { jQuery } from "../../core.js";
 
 // isHiddenWithinTree reports if an element has a non-"none" display style (inline and/or
 // through the CSS cascade), which is useful in deciding whether or not to make it visible.
@@ -7,7 +7,7 @@ import jQuery from "../../core.js";
 // * Being disconnected from the document does not force an element to be classified as hidden.
 // These differences improve the behavior of .toggle() et al. when applied to elements that are
 // detached or contained within hidden ancestors (gh-2404, gh-2863).
-export default function( elem, el ) {
+export function isHiddenWithinTree( elem, el ) {
 
 	// isHiddenWithinTree might be called from jQuery#filter function;
 	// in that case, element will be second argument

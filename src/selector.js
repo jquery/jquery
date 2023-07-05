@@ -1,27 +1,27 @@
-import jQuery from "./core.js";
-import nodeName from "./core/nodeName.js";
-import document from "./var/document.js";
-import indexOf from "./var/indexOf.js";
-import pop from "./var/pop.js";
-import push from "./var/push.js";
-import whitespace from "./var/whitespace.js";
-import rbuggyQSA from "./selector/rbuggyQSA.js";
-import rtrim from "./var/rtrim.js";
-import isIE from "./var/isIE.js";
-import identifier from "./selector/var/identifier.js";
-import booleans from "./selector/var/booleans.js";
-import rleadingCombinator from "./selector/var/rleadingCombinator.js";
-import rdescend from "./selector/var/rdescend.js";
-import rsibling from "./selector/var/rsibling.js";
-import matches from "./selector/var/matches.js";
-import createCache from "./selector/createCache.js";
-import testContext from "./selector/testContext.js";
-import filterMatchExpr from "./selector/filterMatchExpr.js";
-import preFilter from "./selector/preFilter.js";
-import selectorError from "./selector/selectorError.js";
-import unescapeSelector from "./selector/unescapeSelector.js";
-import tokenize from "./selector/tokenize.js";
-import toSelector from "./selector/toSelector.js";
+import { jQuery } from "./core.js";
+import { nodeName } from "./core/nodeName.js";
+import { document } from "./var/document.js";
+import { indexOf } from "./var/indexOf.js";
+import { pop } from "./var/pop.js";
+import { push } from "./var/push.js";
+import { whitespace } from "./var/whitespace.js";
+import { rbuggyQSA } from "./selector/rbuggyQSA.js";
+import { rtrim } from "./var/rtrim.js";
+import { isIE } from "./var/isIE.js";
+import { identifier } from "./selector/var/identifier.js";
+import { booleans } from "./selector/var/booleans.js";
+import { rleadingCombinator } from "./selector/var/rleadingCombinator.js";
+import { rdescend } from "./selector/var/rdescend.js";
+import { rsibling } from "./selector/var/rsibling.js";
+import { matches } from "./selector/var/matches.js";
+import { createCache } from "./selector/createCache.js";
+import { testContext } from "./selector/testContext.js";
+import { filterMatchExpr } from "./selector/filterMatchExpr.js";
+import { preFilter } from "./selector/preFilter.js";
+import { selectorError } from "./selector/selectorError.js";
+import { unescapeSelector } from "./selector/unescapeSelector.js";
+import { tokenize } from "./selector/tokenize.js";
+import { toSelector } from "./selector/toSelector.js";
 
 // The following utils are attached directly to the jQuery object.
 import "./selector/escapeSelector.js";
@@ -1370,3 +1370,5 @@ find.setDocument = setDocument;
 find.tokenize = tokenize;
 
 } )();
+
+export { jQuery, jQuery as $ };

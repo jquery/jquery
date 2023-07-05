@@ -1,6 +1,6 @@
-import jQuery from "../core.js";
-import nonce from "./var/nonce.js";
-import rquery from "./var/rquery.js";
+import { jQuery } from "../core.js";
+import { nonce } from "./var/nonce.js";
+import { rquery } from "./var/rquery.js";
 
 import "../ajax.js";
 

@@ -1,4 +1,4 @@
-var wrapMap = {
+export var wrapMap = {
 
 	// Table parts need to be wrapped with `<table>` or they're
 	// stripped to their contents when put in a div.
@@ -13,5 +13,3 @@ var wrapMap = {
 
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
-
-export default wrapMap;

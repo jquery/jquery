@@ -1,4 +1,4 @@
-import jQuery from "../core.js";
+import { jQuery } from "../core.js";
 
 import "../queue.js";
 import "../effects.js"; // Delay is optional because of this dependency

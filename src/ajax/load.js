@@ -1,5 +1,5 @@
-import jQuery from "../core.js";
-import stripAndCollapse from "../core/stripAndCollapse.js";
+import { jQuery } from "../core.js";
+import { stripAndCollapse } from "../core/stripAndCollapse.js";
 
 import "../core/parseHTML.js";
 import "../ajax.js";

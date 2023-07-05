@@ -1,5 +1,5 @@
-import jQuery from "./core.js";
-import dataPriv from "./data/var/dataPriv.js";
+import { jQuery } from "./core.js";
+import { dataPriv } from "./data/var/dataPriv.js";
 
 import "./deferred.js";
 import "./callbacks.js";
@@ -138,4 +138,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

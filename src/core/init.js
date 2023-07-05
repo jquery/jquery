@@ -1,8 +1,8 @@
 // Initialize a jQuery object
-import jQuery from "../core.js";
-import document from "../var/document.js";
-import rsingleTag from "./var/rsingleTag.js";
-import isObviousHtml from "./isObviousHtml.js";
+import { jQuery } from "../core.js";
+import { document } from "../var/document.js";
+import { rsingleTag } from "./var/rsingleTag.js";
+import { isObviousHtml } from "./isObviousHtml.js";
 
 import "../traversing/findFilter.js";
 

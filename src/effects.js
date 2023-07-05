@@ -1,13 +1,13 @@
-import jQuery from "./core.js";
-import document from "./var/document.js";
-import rcssNum from "./var/rcssNum.js";
-import rnothtmlwhite from "./var/rnothtmlwhite.js";
-import cssExpand from "./css/var/cssExpand.js";
-import isHiddenWithinTree from "./css/var/isHiddenWithinTree.js";
-import adjustCSS from "./css/adjustCSS.js";
-import cssCamelCase from "./css/cssCamelCase.js";
-import dataPriv from "./data/var/dataPriv.js";
-import showHide from "./css/showHide.js";
+import { jQuery } from "./core.js";
+import { document } from "./var/document.js";
+import { rcssNum } from "./var/rcssNum.js";
+import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
+import { cssExpand } from "./css/var/cssExpand.js";
+import { isHiddenWithinTree } from "./css/var/isHiddenWithinTree.js";
+import { adjustCSS } from "./css/adjustCSS.js";
+import { cssCamelCase } from "./css/cssCamelCase.js";
+import { dataPriv } from "./data/var/dataPriv.js";
+import { showHide } from "./css/showHide.js";
 
 import "./core/init.js";
 import "./queue.js";
@@ -684,4 +684,4 @@ jQuery.fx.speeds = {
 	_default: 400
 };
 
-export default jQuery;
+export { jQuery, jQuery as $ };

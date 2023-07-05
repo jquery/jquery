@@ -1,4 +1,4 @@
-import camelCase from "../core/camelCase.js";
+import { camelCase } from "../core/camelCase.js";
 
 // Matches dashed string for camelizing
 var rmsPrefix = /^-ms-/;
@@ -7,8 +7,6 @@ var rmsPrefix = /^-ms-/;
 // Used by the css & effects modules.
 // Support: IE <=9 - 11+
 // Microsoft forgot to hump their vendor prefix (trac-9572)
-function cssCamelCase( string ) {
+export function cssCamelCase( string ) {
 	return camelCase( string.replace( rmsPrefix, "ms-" ) );
 }
-
-export default cssCamelCase;

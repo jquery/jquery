@@ -1,6 +1,6 @@
-import whitespace from "./whitespace.js";
+import { whitespace } from "./whitespace.js";
 
-export default new RegExp(
+export var rtrim = new RegExp(
 	"^" + whitespace + "+|((?:^|[^\\\\])(?:\\\\.)*)" + whitespace + "+$",
 	"g"
 );

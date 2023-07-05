@@ -1,1 +1,1 @@
-export default window.document;
+export var document = window.document;

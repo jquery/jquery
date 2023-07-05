@@ -1,4 +1,4 @@
-import jQuery from "../core.js";
+import { jQuery } from "../core.js";
 
 /**
  * Create key-value caches of limited size
@@ -6,7 +6,7 @@ import jQuery from "../core.js";
  *	property name the (space-suffixed) string and (if the cache is larger than Expr.cacheLength)
  *	deleting the oldest entry
  */
-function createCache() {
+export function createCache() {
 	var keys = [];
 
 	function cache( key, value ) {
@@ -22,5 +22,3 @@ function createCache() {
 	}
 	return cache;
 }
-
-export default createCache;

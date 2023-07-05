@@ -1,2 +1,2 @@
 // [[Class]] -> type pairs
-export default {};
+export var class2type = {};

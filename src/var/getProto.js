@@ -1,1 +1,1 @@
-export default Object.getPrototypeOf;
+export var getProto = Object.getPrototypeOf;

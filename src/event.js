@@ -1,12 +1,12 @@
-import jQuery from "./core.js";
-import documentElement from "./var/documentElement.js";
-import rnothtmlwhite from "./var/rnothtmlwhite.js";
-import rcheckableType from "./var/rcheckableType.js";
-import slice from "./var/slice.js";
-import isIE from "./var/isIE.js";
-import acceptData from "./data/var/acceptData.js";
-import dataPriv from "./data/var/dataPriv.js";
-import nodeName from "./core/nodeName.js";
+import { jQuery } from "./core.js";
+import { documentElement } from "./var/documentElement.js";
+import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
+import { rcheckableType } from "./var/rcheckableType.js";
+import { slice } from "./var/slice.js";
+import { isIE } from "./var/isIE.js";
+import { acceptData } from "./data/var/acceptData.js";
+import { dataPriv } from "./data/var/dataPriv.js";
+import { nodeName } from "./core/nodeName.js";
 
 import "./core/init.js";
 import "./selector.js";
@@ -851,4 +851,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

@@ -1,7 +1,7 @@
-import jQuery from "./core.js";
-import access from "./core/access.js";
-import documentElement from "./var/documentElement.js";
-import isWindow from "./var/isWindow.js";
+import { jQuery } from "./core.js";
+import { access } from "./core/access.js";
+import { documentElement } from "./var/documentElement.js";
+import { isWindow } from "./var/isWindow.js";
 
 import "./core/init.js";
 import "./css.js";
@@ -198,4 +198,4 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 	};
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

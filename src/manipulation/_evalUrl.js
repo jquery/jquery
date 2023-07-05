@@ -1,4 +1,4 @@
-import jQuery from "../ajax.js";
+import { jQuery } from "../ajax.js";
 
 jQuery._evalUrl = function( url, options, doc ) {
 	return jQuery.ajax( {

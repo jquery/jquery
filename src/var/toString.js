@@ -1,3 +1,3 @@
-import class2type from "./class2type.js";
+import { class2type } from "./class2type.js";
 
-export default class2type.toString;
+export var toString = class2type.toString;

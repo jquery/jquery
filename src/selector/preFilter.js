@@ -1,10 +1,10 @@
-import rpseudo from "./var/rpseudo.js";
-import filterMatchExpr from "./filterMatchExpr.js";
-import unescapeSelector from "./unescapeSelector.js";
-import selectorError from "./selectorError.js";
-import tokenize from "./tokenize.js";
+import { rpseudo } from "./var/rpseudo.js";
+import { filterMatchExpr } from "./filterMatchExpr.js";
+import { unescapeSelector } from "./unescapeSelector.js";
+import { selectorError } from "./selectorError.js";
+import { tokenize } from "./tokenize.js";
 
-var preFilter = {
+export var preFilter = {
 	ATTR: function( match ) {
 		match[ 1 ] = unescapeSelector( match[ 1 ] );
 
@@ -86,5 +86,3 @@ var preFilter = {
 		return match.slice( 0, 3 );
 	}
 };
-
-export default preFilter;

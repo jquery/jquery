@@ -1,7 +1,7 @@
-import jQuery from "../core.js";
-import nodeName from "../core/nodeName.js";
+import { jQuery } from "../core.js";
+import { nodeName } from "../core/nodeName.js";
 
-function getAll( context, tag ) {
+export function getAll( context, tag ) {
 
 	// Support: IE <=9 - 11+
 	// Use typeof to avoid zero-argument method invocation on host objects (trac-15151)
@@ -23,5 +23,3 @@ function getAll( context, tag ) {
 
 	return ret;
 }
-
-export default getAll;

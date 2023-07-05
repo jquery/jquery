@@ -1,6 +1,6 @@
-import jQuery from "../core.js";
-import stripAndCollapse from "../core/stripAndCollapse.js";
-import rnothtmlwhite from "../var/rnothtmlwhite.js";
+import { jQuery } from "../core.js";
+import { stripAndCollapse } from "../core/stripAndCollapse.js";
+import { rnothtmlwhite } from "../var/rnothtmlwhite.js";
 
 import "../core/init.js";
 

@@ -1,6 +1,6 @@
-import jQuery from "../core.js";
-import access from "../core/access.js";
-import isIE from "../var/isIE.js";
+import { jQuery } from "../core.js";
+import { access } from "../core/access.js";
+import { isIE } from "../var/isIE.js";
 
 import "../selector.js";
 

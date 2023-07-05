@@ -1,4 +1,4 @@
-import jQuery from "../core.js";
+import { jQuery } from "../core.js";
 
 // Cross-browser xml parsing
 jQuery.parseXML = function( data ) {

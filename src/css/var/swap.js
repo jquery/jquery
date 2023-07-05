@@ -1,5 +1,5 @@
 // A method for quickly swapping in/out CSS properties to get correct calculations.
-export default function( elem, options, callback ) {
+export function swap( elem, options, callback ) {
 	var ret, name,
 		old = {};
 

@@ -1,3 +1,3 @@
-import arr from "./arr.js";
+import { arr } from "./arr.js";
 
-export default arr.push;
+export var push = arr.push;

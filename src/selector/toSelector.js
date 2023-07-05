@@ -1,4 +1,4 @@
-function toSelector( tokens ) {
+export function toSelector( tokens ) {
 	var i = 0,
 		len = tokens.length,
 		selector = "";
@@ -7,5 +7,3 @@ function toSelector( tokens ) {
 	}
 	return selector;
 }
-
-export default toSelector;

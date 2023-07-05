@@ -1,10 +1,10 @@
-import jQuery from "../core.js";
-import isAttached from "../core/isAttached.js";
-import getStyles from "./var/getStyles.js";
-import rcustomProp from "./var/rcustomProp.js";
-import rtrim from "../var/rtrim.js";
+import { jQuery } from "../core.js";
+import { isAttached } from "../core/isAttached.js";
+import { getStyles } from "./var/getStyles.js";
+import { rcustomProp } from "./var/rcustomProp.js";
+import { rtrim } from "../var/rtrim.js";
 
-function curCSS( elem, name, computed ) {
+export function curCSS( elem, name, computed ) {
 	var ret,
 		isCustomProp = rcustomProp.test( name );
 
@@ -57,5 +57,3 @@ function curCSS( elem, name, computed ) {
 		ret + "" :
 		ret;
 }
-
-export default curCSS;

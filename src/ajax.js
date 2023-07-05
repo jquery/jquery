@@ -1,9 +1,9 @@
-import jQuery from "./core.js";
-import document from "./var/document.js";
-import rnothtmlwhite from "./var/rnothtmlwhite.js";
-import location from "./ajax/var/location.js";
-import nonce from "./ajax/var/nonce.js";
-import rquery from "./ajax/var/rquery.js";
+import { jQuery } from "./core.js";
+import { document } from "./var/document.js";
+import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
+import { location } from "./ajax/var/location.js";
+import { nonce } from "./ajax/var/nonce.js";
+import { rquery } from "./ajax/var/rquery.js";
 
 import "./core/init.js";
 import "./core/parseXML.js";
@@ -874,4 +874,4 @@ jQuery.ajaxPrefilter( function( s ) {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

@@ -1,8 +1,8 @@
-import whitespace from "../../var/whitespace.js";
-import identifier from "./identifier.js";
+import { whitespace } from "../../var/whitespace.js";
+import { identifier } from "./identifier.js";
 
 // Attribute selectors: https://www.w3.org/TR/selectors/#attribute-selectors
-export default "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
+export var attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
 
 	// Operator (capture 2)
 	"*([*^$|!~]?=)" + whitespace +

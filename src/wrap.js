@@ -1,4 +1,4 @@
-import jQuery from "./core.js";
+import { jQuery } from "./core.js";
 
 import "./core/init.js";
 import "./manipulation.js"; // clone
@@ -70,4 +70,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

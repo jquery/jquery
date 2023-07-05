@@ -1,5 +1,5 @@
-import jQuery from "../core.js";
-import document from "../var/document.js";
+import { jQuery } from "../core.js";
+import { document } from "../var/document.js";
 
 import "../ajax.js";
 

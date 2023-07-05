@@ -1,6 +1,6 @@
 // CSS escapes
 // https://www.w3.org/TR/CSS21/syndata.html#escaped-characters
-import whitespace from "../var/whitespace.js";
+import { whitespace } from "../var/whitespace.js";
 
 var runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace +
 	"?|\\\\([^\\r\\n\\f])", "g" ),
@@ -22,8 +22,6 @@ var runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace +
 			String.fromCharCode( high >> 10 | 0xD800, high & 0x3FF | 0xDC00 );
 	};
 
-function unescapeSelector( sel ) {
+export function unescapeSelector( sel ) {
 	return sel.replace( runescape, funescape );
 }
-
-export default unescapeSelector;

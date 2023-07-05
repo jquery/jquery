@@ -1,1 +1,1 @@
-export default window.location;
+export var location = window.location;
