@@ -67,16 +67,25 @@ const mocks = {
 		resp.end( "<root><element /></root>" );
 	},
 	script: function( req, resp ) {
+		const headers = {};
 		if ( req.query.header === "ecma" ) {
-			resp.writeHead( 200, { "content-type": "application/ecmascript" } );
+			headers[ "content-type" ] = "application/ecmascript";
 		} else if ( "header" in req.query ) {
-			resp.writeHead( 200, { "content-type": "text/javascript" } );
+			headers[ "content-type" ] = "text/javascript";
 		} else {
-			resp.writeHead( 200, { "content-type": "text/html" } );
+			headers[ "content-type" ] = "text/html";
 		}
 
 		if ( req.query.cors ) {
-			resp.writeHead( 200, { "access-control-allow-origin": "*" } );
+			headers[ "access-control-allow-origin" ] = "*";
+		}
+
+		if ( resp.set ) {
+			resp.set( headers );
+		} else {
+			for ( const key in headers ) {
+				resp.writeHead( 200, { [ key ]: headers[ key ] } );
+			}
 		}
 
 		if ( req.query.callback ) {
@@ -165,14 +174,25 @@ const mocks = {
 		}
 	},
 	headers: function( req, resp ) {
-		resp.writeHead( 200, {
+		const headers = {
 			"Sample-Header": "Hello World",
 			"Empty-Header": "",
 			"Sample-Header2": "Hello World 2",
 			"List-Header": "Item 1",
 			"list-header": "Item 2",
 			"constructor": "prototype collision (constructor)"
-		} );
+		};
+
+		// Use resp.append in express to
+		// avoid overwriting List-Header
+		if ( resp.append ) {
+
+			for ( const key in headers ) {
+				resp.append( key, headers[ key ] );
+			}
+		} else {
+			resp.writeHead( 200, headers );
+		}
 		req.query.keys.split( "|" ).forEach( function( key ) {
 			if ( key.toLowerCase() in req.headers ) {
 				resp.write( `${ key }: ${ req.headers[ key.toLowerCase() ] }\n` );
@@ -354,7 +374,7 @@ function MockserverMiddlewareFactory() {
 			parsed: parsed
 		} );
 
-		if ( /^test\/data\/mock.php\//.test( path ) ) {
+		if ( /^\/?test\/data\/mock.php\/?/.test( path ) ) {
 
 			// Support REST-like Apache PathInfo
 			path = "test\/data\/mock.php";
@@ -365,6 +385,7 @@ function MockserverMiddlewareFactory() {
 			return;
 		}
 
+		// console.log( "Mock handling", req.method, parsed.href );
 		handlers[ path ]( subReq, resp, next );
 	};
 }

@@ -89,6 +89,7 @@
     "eslint": "8.44.0",
     "eslint-config-jquery": "3.0.1",
     "eslint-plugin-import": "2.27.5",
+    "express": "4.18.2",
     "globals": "13.20.0",
     "grunt": "1.5.3",
     "grunt-cli": "1.4.3",
