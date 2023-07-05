@@ -99,32 +99,6 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		npmcopy: {
-			all: {
-				options: {
-					destPrefix: "external"
-				},
-				files: {
-					"bootstrap/bootstrap.css": "bootstrap/dist/css/bootstrap.css",
-					"bootstrap/bootstrap.min.css": "bootstrap/dist/css/bootstrap.min.css",
-					"bootstrap/bootstrap.min.css.map": "bootstrap/dist/css/bootstrap.min.css.map",
-
-					"core-js-bundle/core-js-bundle.js": "core-js-bundle/minified.js",
-					"core-js-bundle/LICENSE": "core-js-bundle/LICENSE",
-
-					"npo/npo.js": "native-promise-only/lib/npo.src.js",
-
-					"qunit/qunit.js": "qunit/qunit/qunit.js",
-					"qunit/qunit.css": "qunit/qunit/qunit.css",
-					"qunit/LICENSE.txt": "qunit/LICENSE.txt",
-
-					"requirejs/require.js": "requirejs/require.js",
-
-					"sinon/sinon.js": "sinon/pkg/sinon.js",
-					"sinon/LICENSE.txt": "sinon/LICENSE"
-				}
-			}
-		},
 		testswarm: {
 			tests: [
 
@@ -194,6 +168,12 @@ module.exports = function( grunt ) {
 					"test/jquery.js",
 
 					{
+						pattern: "external/**",
+						included: false,
+						served: true,
+						nocache: true
+					},
+					{
 						pattern: "dist/jquery.*",
 						included: false,
 						served: true,
@@ -206,7 +186,6 @@ module.exports = function( grunt ) {
 						served: true,
 						nocache: true
 					},
-					{ pattern: "external/**", included: false, served: true },
 					{
 						pattern: "test/**/*.@(js|css|jpg|html|xml|svg)",
 						included: false,
@@ -379,7 +358,6 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "test:prepare", [
-		"npmcopy",
 		"qunit_fixture",
 		"babel:tests"
 	] );

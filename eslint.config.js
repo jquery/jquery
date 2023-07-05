@@ -9,6 +9,7 @@ export default [
 		// and avoid JS parsing errors
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
+			"external",
 			"test/data/json_obj.js"
 		]
 	},

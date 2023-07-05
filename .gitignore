@@ -8,7 +8,6 @@
 .bower.json
 .sizecache.json
 yarn.lock
-package-lock.json
 .eslintcache
 
 npm-debug.log*
