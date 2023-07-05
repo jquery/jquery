@@ -4,7 +4,8 @@ const { JSDOM } = require( "jsdom" );
 
 const { window } = new JSDOM( "" );
 
-const jQuery = require( "../../" )( window );
+const { jQueryFactory } = require( "jquery/factory" );
+const jQuery = jQueryFactory( window );
 
 module.exports.deferred = () => {
 	let adopted, promised;

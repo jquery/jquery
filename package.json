@@ -27,6 +27,14 @@
       "script": "./dist/jquery.slim.min.js",
       "default": "./dist-module/jquery.slim.module.min.js"
     },
+    "./factory": {
+      "node": "./dist/jquery.factory.js",
+      "default": "./dist-module/jquery.factory.module.js"
+    },
+    "./factory-slim": {
+      "node": "./dist/jquery.factory.slim.js",
+      "default": "./dist-module/jquery.factory.slim.module.js"
+    },
     "./src/*.js": "./src/*.js"
   },
   "main": "dist/jquery.js",

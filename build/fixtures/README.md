@@ -136,16 +136,16 @@ Node.js doesn't understand AMD natively so this method is mostly used in a brows
 
 ### Node.js pre-requisites
 
-For jQuery to work in Node, a window with a document is required. Since no such window exists natively in Node, one can be mocked by tools such as [jsdom](https://github.com/jsdom/jsdom). This can be useful for testing purposes.
+For jQuery to work in Node, a `window` with a `document` is required. Since no such window exists natively in Node, one can be mocked by tools such as [jsdom](https://github.com/jsdom/jsdom). This can be useful for testing purposes.
 
-jQuery checks for a `window` global with a `document` property and - if one is not present, as is the default in Node.js - it returns a factory accepting a `window` as a parameter instead.
+For Node-based environments that don't have a global `window`, jQuery exposes a dedicated `jquery/factory` entry point.
 
 To `import` jQuery using this factory, use the following:
 
 ```js
 import { JSDOM } from "jsdom";
 const { window } = new JSDOM( "" );
-import jQueryFactory from "jquery";
+import { jQueryFactory } from "jquery/factory";
 const $ = jQueryFactory( window );
 ```
 
@@ -154,27 +154,10 @@ or, if you use `require`:
 ```js
 const { JSDOM } = require( "jsdom" );
 const { window } = new JSDOM( "" );
-const $ = require( "jquery" )( window );
-```
-
-If the `window` global is present at the moment of the `import` or `require` of `"jquery"`, it will resolve to a jQuery instance, as in the browser. You can set such a global manually to simulate the behavior; with `import`:
-
-```js
-import { JSDOM } from "jsdom";
-const { window } = new JSDOM( "" );
-globalThis.window = window;
-const { default: $ } = await import( "jquery" );
-```
-
-or with `require`:
-
-```js
-const { JSDOM } = require( "jsdom" );
-const { window } = new JSDOM( "" );
-globalThis.window = window;
-const $ = require( "jquery" );
+const { jQueryFactory } = require( "jquery/factory" );
+const $ = jQueryFactory( window );
 ```
 
 #### Slim build in Node.js
 
-To use the slim build of jQuery in Node.js, use `"jquery/slim"` instead of `"jquery"` in both `require` or `import` calls above.
+To use the slim build of jQuery in Node.js, use `"jquery/slim"` instead of `"jquery"` in both `require` or `import` calls above. To use the slim build in Node.js with factory mode, use `jquery/factory-slim` instead of `jquery/factory`.

@@ -15,6 +15,7 @@ const excludedFromSlim = require( "./lib/slim-exclude" );
 const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
 const pkg = require( "../../package.json" );
 const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
+const processForDist = require( "./dist" );
 const minify = require( "./minify" );
 const getTimestamp = require( "./lib/getTimestamp" );
 const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
@@ -71,8 +72,16 @@ async function readdirRecursive( dir, all = [] ) {
 	return all;
 }
 
-async function getOutputRollupOptions( { esm = false } = {} ) {
-	const wrapperFileName = `wrapper${esm ? "-esm" : ""}.js`;
+async function getOutputRollupOptions( {
+	esm = false,
+	factory = false
+} = {} ) {
+	const wrapperFileName = `wrapper${
+		factory ? "-factory" : ""
+	}${
+		esm ? "-esm" : ""
+	}.js`;
+
 	const wrapperSource = await read( wrapperFileName );
 
 	// Catch `// @CODE` and subsequent comment lines event if they don't start
@@ -163,6 +172,7 @@ async function build( {
 	filename = "jquery.js",
 	include = [],
 	esm = false,
+	factory = false,
 	slim = false,
 	version,
 	watch = false
@@ -275,7 +285,7 @@ async function build( {
 		plugins: [ rollupFileOverrides( fileOverrides ) ]
 	} );
 
-	const outputOptions = await getOutputRollupOptions( { esm } );
+	const outputOptions = await getOutputRollupOptions( { esm, factory } );
 
 	if ( watch ) {
 		const watcher = rollup.watch( {
@@ -305,7 +315,11 @@ async function build( {
 						version
 					} );
 
-					await minify( { dir, filename, esm } );
+					// Don't minify factory files; they are not meant
+					// for the browser anyway.
+					if ( !factory ) {
+						await minify( { dir, filename, esm } );
+					}
 					break;
 			}
 		} );
@@ -317,7 +331,22 @@ async function build( {
 		} = await bundle.generate( outputOptions );
 
 		await writeCompiled( { code, dir, filename, version } );
-		await minify( { dir, filename, esm } );
+
+		// Don't minify factory files; they are not meant
+		// for the browser anyway.
+		if ( !factory ) {
+			await minify( { dir, filename, esm } );
+		} else {
+
+			// We normally process for dist during minification to save
+			// file reads. However, some files are not minified and then
+			// we need to do it separately.
+			const contents = await fs.promises.readFile(
+				path.join( dir, filename ),
+				"utf8"
+			);
+			processForDist( contents, filename );
+		}
 	}
 }
 
@@ -337,6 +366,37 @@ async function buildDefaultFiles( { version, watch } = {} ) {
 			filename: "jquery.slim.module.js",
 			esm: true,
 			slim: true,
+			version,
+			watch
+		} ),
+
+		build( {
+			filename: "jquery.factory.js",
+			factory: true,
+			version,
+			watch
+		} ),
+		build( {
+			filename: "jquery.factory.slim.js",
+			slim: true,
+			factory: true,
+			version,
+			watch
+		} ),
+		build( {
+			dir: "dist-module",
+			filename: "jquery.factory.module.js",
+			esm: true,
+			factory: true,
+			version,
+			watch
+		} ),
+		build( {
+			dir: "dist-module",
+			filename: "jquery.factory.slim.module.js",
+			esm: true,
+			slim: true,
+			factory: true,
 			version,
 			watch
 		} )

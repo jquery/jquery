@@ -137,6 +137,56 @@ export default [
 	},
 
 	{
+		files: [ "src/wrapper-factory.js" ],
+		languageOptions: {
+			sourceType: "script",
+			globals: {
+				jQuery: false,
+				module: true
+			}
+		},
+		rules: {
+			"no-unused-vars": "off",
+			indent: [
+				"error",
+				"tab",
+				{
+
+					// This makes it so code within the wrapper is not indented.
+					ignoredNodes: [
+						"Program > FunctionDeclaration > *"
+					]
+				}
+			]
+		}
+	},
+
+	{
+		files: [ "src/wrapper-factory-esm.js" ],
+		languageOptions: {
+			globals: {
+				jQuery: false
+			}
+		},
+		rules: {
+			"no-unused-vars": "off",
+			indent: [
+				"error",
+				"tab",
+				{
+
+					// This makes it so code within the wrapper is not indented.
+					ignoredNodes: [
+						"Program > FunctionDeclaration > *"
+					]
+				}
+			],
+			"import/no-unused-modules": "off"
+		}
+	},
+
+
+	{
 		files: [ "src/exports/amd.js" ],
 		languageOptions: {
 			globals: {
