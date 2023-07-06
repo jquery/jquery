@@ -460,8 +460,6 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "default", [
 		runIfNewNode( "eslint:dev" ),
 		"build-all-variants",
-		"minify",
-		"dist:*",
 		"test:prepare",
 		runIfNewNode( "eslint:dist" ),
 		"test:fast",
