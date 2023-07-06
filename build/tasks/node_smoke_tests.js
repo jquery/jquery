@@ -5,9 +5,9 @@ module.exports = ( grunt ) => {
 	const spawnTest = require( "./lib/spawn_test.js" );
 	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
 
-	grunt.registerTask( "node_smoke_tests", function( mode, jQueryModuleSpecifier ) {
+	grunt.registerTask( "node_smoke_tests", function( moduleType, jQueryModuleSpecifier ) {
 		if (
-			( mode !== "commonjs" && mode !== "module" ) ||
+			( moduleType !== "commonjs" && moduleType !== "module" ) ||
 			!jQueryModuleSpecifier
 		) {
 			grunt.fatal( "Use `node_smoke_tests:commonjs:JQUERY` " +
@@ -17,11 +17,11 @@ module.exports = ( grunt ) => {
 
 		if ( !nodeV16OrNewer ) {
 			grunt.log.writeln( "Old Node.js detected, running the task " +
-				`"node_smoke_tests:${ mode }:${ jQueryModuleSpecifier }" skipped...` );
+				`"node_smoke_tests:${ moduleType }:${ jQueryModuleSpecifier }" skipped...` );
 			return;
 		}
 
-		const testsDir = `./test/node_smoke_tests/${ mode }`;
+		const testsDir = `./test/node_smoke_tests/${ moduleType }`;
 		const nodeSmokeTests = [];
 
 		// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
@@ -36,7 +36,7 @@ module.exports = ( grunt ) => {
 					/\.m?js$/.test( testFilePath )
 			)
 			.forEach( ( testFilePath ) => {
-				const taskName = `node_${ testFilePath.replace( /\.m?js$/, "" ) }:${ mode }:${ jQueryModuleSpecifier }`;
+				const taskName = `node_${ testFilePath.replace( /\.m?js$/, "" ) }:${ moduleType }:${ jQueryModuleSpecifier }`;
 
 				grunt.registerTask( taskName, function() {
 					spawnTest( this.async(), `node "${ testsDir }/${
