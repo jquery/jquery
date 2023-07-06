@@ -1,12 +1,12 @@
-{
-	"root": true,
+module.exports = {
+	root: true,
 
-	"extends": "jquery",
+	extends: "jquery",
 
-	"reportUnusedDisableDirectives": true,
+	reportUnusedDisableDirectives: true,
 
-	"parserOptions": {
-		"ecmaVersion": 5
+	parserOptions: {
+		ecmaVersion: 5
 	},
 
 	// The browser env is not enabled on purpose so that code takes
@@ -14,14 +14,14 @@
 	// they're available as globals. This makes it possible to use
 	// jQuery with tools like jsdom which provide a custom window
 	// implementation.
-	"env": {},
+	env: {},
 
-	"globals": {
-		"window": true
+	globals: {
+		window: true
 	},
 
-	"rules": {
-		"one-var": ["error", {"var": "always"}],
-		"strict": ["error", "function"]
+	rules: {
+		"one-var": [ "error", { var: "always" } ],
+		strict: [ "error", "function" ]
 	}
-}
+};

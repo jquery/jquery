@@ -1,0 +1,96 @@
+"use strict";
+
+module.exports = {
+	root: true,
+
+	extends: "../.eslintrc-browser.cjs",
+
+	env: {
+
+		// In source the browser env is not enabled but unit tests rely on them
+		// too much and we don't run them in non-browser environments anyway.
+		browser: true
+	},
+
+	globals: {
+		require: false,
+		Promise: false,
+		Symbol: false,
+		trustedTypes: false,
+		QUnit: false,
+		ajaxTest: false,
+		testIframe: false,
+		createDashboardXML: false,
+		createWithFriesXML: false,
+		createXMLFragment: false,
+		includesModule: false,
+		moduleTeardown: false,
+		url: false,
+		q: false,
+		jQuery: true,
+		sinon: true,
+		amdDefined: true,
+		fireNative: true,
+		Globals: true,
+		hasPHP: true,
+		isLocal: true,
+		supportjQuery: true,
+		originaljQuery: true,
+		"$": true,
+		"original$": true,
+		baseURL: true,
+		externalHost: true
+	},
+
+	rules: {
+
+		// See https://github.com/eslint/eslint/issues/2342
+		"no-unused-vars": "off",
+
+		// Too many errors
+		"max-len": "off",
+		"brace-style": "off",
+		"key-spacing": "off",
+		camelcase: "off",
+		"one-var": "off",
+		strict: "off",
+
+		// Not really too many - waiting for autofix features for these rules
+		"lines-around-comment": "off",
+		"dot-notation": "off"
+	},
+
+	overrides: [
+		{
+			files: [
+				".eslintrc.cjs",
+				"node_smoke_tests/.eslintrc.cjs",
+				"promises_aplus_tests/.eslintrc.cjs",
+				"middleware-mockserver.js",
+				"server.js"
+			],
+
+			extends: "../.eslintrc-node.cjs"
+		},
+
+		{
+			files: [
+				"data/core/jquery-iterability-transpiled-es6.js",
+				"data/testinit-jsdom.js"
+			],
+			parserOptions: {
+				ecmaVersion: 2015
+			}
+		},
+
+		{
+			files: [
+				"jquery.js",
+				"data/testinit.js"
+			],
+			parserOptions: {
+				ecmaVersion: 2020
+			}
+		}
+	]
+};
