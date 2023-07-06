@@ -1,20 +1,20 @@
-{
-	"root": true,
+module.exports = {
+	root: true,
 
-	"extends": "../.eslintrc-browser.json",
+	extends: "../.eslintrc-browser.cjs",
 
-	"parserOptions": {
-		"ecmaVersion": 2015,
-		"sourceType": "module"
+	parserOptions: {
+		ecmaVersion: 2015,
+		sourceType: "module"
 	},
 
-	"plugins": [ "import" ],
+	plugins: [ "import" ],
 
-	"rules": {
+	rules: {
 		"import/extensions": [ "error", "always" ],
 		"import/no-cycle": "error",
 		"import/no-unused-modules": [ "error", {
-			"unusedExports": true,
+			unusedExports: true,
 
 			// When run via WebStorm, the root path against which these paths
 			// are resolved is the path where this ESLint config file lies,
@@ -24,56 +24,57 @@
 			//     [ "src/*.js", "*.js" ]
 			// as they're analyzed individually and the rule crashes if a pattern
 			// cannot be matched.
-			"ignoreExports": [ "{src/,}*.js" ]
+			ignoreExports: [ "{src/,}*.js" ]
 		} ],
-		"indent": [ "error", "tab", {
-			"outerIIFEBody": 0
+		indent: [ "error", "tab", {
+			outerIIFEBody: 0
 		} ]
 	},
 
-	"overrides": [
+	overrides: [
 		{
-			"files": "wrapper.js",
-			"parserOptions": {
-				"ecmaVersion": 5,
-				"sourceType": "script"
+			files: "wrapper.js",
+			parserOptions: {
+				ecmaVersion: 5,
+				sourceType: "script"
 			},
-			"rules": {
+			rules: {
 				"no-unused-vars": "off",
-				"indent": [ "error", "tab", {
+				indent: [ "error", "tab", {
 
 					// Unlike other codes, "wrapper.js" is implemented in UMD.
 					// So it required a specific exception for jQuery's UMD
 					// Code Style. This makes that indentation check is not
 					// performed for 1 depth of outer FunctionExpressions
-					"ignoredNodes": [
+					ignoredNodes: [
 						"Program > ExpressionStatement > CallExpression > :last-child > *"
 					]
 				} ]
 			},
-			"globals": {
-				"jQuery": false,
-				"module": true
+			globals: {
+				jQuery: false,
+				module: true
 			}
 		},
 
 		{
-			"files": "wrapper-esm.js",
-			"parserOptions": {
-				"ecmaVersion": 2015,
-				"sourceType": "module"
+			files: "wrapper-esm.js",
+			parserOptions: {
+				ecmaVersion: 2015,
+				sourceType: "module"
 			},
-			"globals": {
-				"jQuery": false
+			globals: {
+				jQuery: false
 			},
-			"rules": {
+			rules: {
 				"no-unused-vars": "off",
-				"indent": [ "error", "tab", {
+				indent: [ "error", "tab", {
+
 					// Unlike other codes, "wrapper.js" is implemented in UMD.
 					// So it required a specific exception for jQuery's UMD
 					// Code Style. This makes that indentation check is not
 					// performed for 1 depth of outer FunctionExpressions
-					"ignoredNodes": [
+					ignoredNodes: [
 						"Program > FunctionDeclaration > *"
 					]
 				} ],
@@ -82,21 +83,26 @@
 		},
 
 		{
-			"files": "exports/amd.js",
-			"globals": {
-				"define": false
+			files: "exports/amd.js",
+			globals: {
+				define: false
 			}
 		},
 
 		{
-			"files": "core.js",
-			"globals": {
+			files: "core.js",
+			globals: {
 
 				// Defining Symbol globally would create a danger of using
 				// it unguarded in another place, it seems safer to define
 				// it only for this module.
-				"Symbol": false
+				Symbol: false
 			}
+		},
+
+		{
+			files: ".eslintrc.cjs",
+			extends: "../.eslintrc-node.cjs"
 		}
 	]
-}
+};

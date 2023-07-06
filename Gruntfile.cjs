@@ -125,46 +125,6 @@ module.exports = function( grunt ) {
 				}
 			}
 		},
-		jsonlint: {
-			pkg: {
-				src: [ "package.json" ]
-			}
-		},
-		eslint: {
-			options: {
-				maxWarnings: 0
-			},
-
-			// We have to explicitly declare "src" property otherwise "newer"
-			// task wouldn't work properly :/
-			dist: {
-				src: builtJsFiles
-			},
-			dev: {
-				src: [
-					"src/**/*.js",
-					"Gruntfile.js",
-					"test/**/*.js",
-					"build/**/*.js",
-
-					// Ignore files from .eslintignore
-					// See https://github.com/sindresorhus/grunt-eslint/issues/119
-					...fs
-						.readFileSync( `${ __dirname }/.eslintignore`, "utf-8" )
-						.split( "\n" )
-						.filter( filePath => filePath )
-						.map( filePath => filePath[ 0 ] === "!" ?
-							filePath.slice( 1 ) :
-							`!${ filePath }`
-						),
-
-					// Explicitly ignore `dist/` & `dist-module/` as it could be unignored
-					// by the above `.eslintignore` parsing.
-					"!dist/**/*.js",
-					"!dist-module/**/*.js"
-				]
-			}
-		},
 		testswarm: {
 			tests: [
 
@@ -330,7 +290,7 @@ module.exports = function( grunt ) {
 			}
 		},
 		watch: {
-			files: [ "<%= eslint.dev.src %>" ],
+			files: [ "src/**/*.js" ],
 			tasks: [ "dev" ]
 		},
 		minify: {
@@ -379,7 +339,7 @@ module.exports = function( grunt ) {
 
 	// Load grunt tasks from NPM packages
 	require( "load-grunt-tasks" )( grunt, {
-		pattern: nodeV16OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
+		pattern: [ "grunt-*" ]
 	} );
 
 	// Integrate jQuery specific tasks
@@ -408,25 +368,6 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
 	} );
 
-	grunt.registerTask( "lint", [
-		"jsonlint",
-
-		// Running the full eslint task without breaking it down to targets
-		// would run the dist target first which would point to errors in the built
-		// file, making it harder to fix them. We want to check the built file only
-		// if we already know the source files pass the linter.
-		runIfNewNode( "eslint:dev" ),
-		runIfNewNode( "eslint:dist" )
-	] );
-
-	grunt.registerTask( "lint:newer", [
-		"newer:jsonlint",
-
-		// Don't replace it with just the task; see the above comment.
-		runIfNewNode( "newer:eslint:dev" ),
-		runIfNewNode( "newer:eslint:dist" )
-	] );
-
 	grunt.registerTask( "test:fast", [ "node_smoke_tests:commonjs:jquery" ] );
 	grunt.registerTask( "test:slow", [
 		runIfNewNode( "promises_aplus_tests" ),
@@ -451,7 +392,6 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "dev", [
 		"build:*:*",
-		runIfNewNode( "newer:eslint:dev" ),
 		"newer:minify",
 		"dist:*",
 		"qunit_fixture",
@@ -459,10 +399,8 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "default", [
-		runIfNewNode( "eslint:dev" ),
 		"build-all-variants",
 		"test:prepare",
-		runIfNewNode( "eslint:dist" ),
 		"test:fast",
 		"compare_size"
 	] );

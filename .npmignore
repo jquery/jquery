@@ -1,5 +1,7 @@
 .eslintignore
-.eslintrc.json
+.eslintrc.cjs
+.eslintrc-node.cjs
+.eslintrc-browser.cjs
 
 /.editorconfig
 /.gitattributes
