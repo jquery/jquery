@@ -43,8 +43,8 @@ module.exports = function( grunt ) {
 		"dist/jquery.slim.min.js",
 		"dist-module/jquery.module.js",
 		"dist-module/jquery.module.min.js",
-		"dist-module/jquery.module.slim.js",
-		"dist-module/jquery.module.slim.min.js"
+		"dist-module/jquery.slim.module.js",
+		"dist-module/jquery.slim.module.min.js"
 	];
 
 	const builtJsMinFiles = builtJsFiles

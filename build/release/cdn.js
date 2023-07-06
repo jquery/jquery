@@ -19,9 +19,9 @@ const versionedReleaseFiles = {
 	"jquery-@VER.module.js": "dist-module/jquery.module.js",
 	"jquery-@VER.module.min.js": "dist-module/jquery.module.min.js",
 	"jquery-@VER.module.min.map": "dist-module/jquery.module.min.map",
-	"jquery-@VER.module.slim.js": "dist-module/jquery.module.slim.js",
-	"jquery-@VER.module.slim.min.js": "dist-module/jquery.module.slim.min.js",
-	"jquery-@VER.module.slim.min.map": "dist-module/jquery.module.slim.min.map"
+	"jquery-@VER.slim.module.js": "dist-module/jquery.slim.module.js",
+	"jquery-@VER.slim.module.min.js": "dist-module/jquery.slim.module.min.js",
+	"jquery-@VER.slim.module.min.map": "dist-module/jquery.slim.module.min.map"
 };
 
 const unversionedReleaseFiles = {
@@ -34,9 +34,9 @@ const unversionedReleaseFiles = {
 	"jquery.module.js": "dist-module/jquery.module.js",
 	"jquery.module.min.js": "dist-module/jquery.module.min.js",
 	"jquery.module.min.map": "dist-module/jquery.module.min.map",
-	"jquery.module.slim.js": "dist-module/jquery.module.slim.js",
-	"jquery.module.slim.min.js": "dist-module/jquery.module.slim.min.js",
-	"jquery.module.slim.min.map": "dist-module/jquery.module.slim.min.map"
+	"jquery.slim.module.js": "dist-module/jquery.slim.module.js",
+	"jquery.slim.module.min.js": "dist-module/jquery.slim.module.min.js",
+	"jquery.slim.module.min.map": "dist-module/jquery.slim.module.min.map"
 };
 
 /**

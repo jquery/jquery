@@ -9,8 +9,8 @@ dist/**
 dist-module/**
 !dist-module/jquery.module.js
 !dist-module/jquery.module.min.js
-!dist-module/jquery.module.slim.js
-!dist-module/jquery.module.slim.min.js
+!dist-module/jquery.slim.module.js
+!dist-module/jquery.slim.module.min.js
 test/data/jquery-1.9.1.js
 test/data/badcall.js
 test/data/badjson.js
