@@ -13,7 +13,7 @@
 
 	"overrides": [
 		{
-			"files": "jquery.module{,.slim}.min.js",
+			"files": "jquery{,.slim}.module.min.js",
 
 			"parserOptions": {
 				"ecmaVersion": 2015,
@@ -22,7 +22,7 @@
 		},
 
 		{
-			"files": "jquery.module{,.slim}.js",
+			"files": "jquery{,.slim}.module.js",
 			"extends": "../.eslintrc-browser.json",
 
 			"parserOptions": {
