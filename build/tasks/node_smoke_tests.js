@@ -33,10 +33,10 @@ module.exports = ( grunt ) => {
 		fs.readdirSync( testsDir )
 			.filter( ( testFilePath ) =>
 				fs.statSync( `${ testsDir }/${ testFilePath }` ).isFile() &&
-					/\.m?js$/.test( testFilePath )
+					/\.[cm]?js$/.test( testFilePath )
 			)
 			.forEach( ( testFilePath ) => {
-				const taskName = `node_${ testFilePath.replace( /\.m?js$/, "" ) }:${ moduleType }:${ jQueryModuleSpecifier }`;
+				const taskName = `node_${ testFilePath.replace( /\.[cm]?js$/, "" ) }:${ moduleType }:${ jQueryModuleSpecifier }`;
 
 				grunt.registerTask( taskName, function() {
 					spawnTest( this.async(), `node "${ testsDir }/${
