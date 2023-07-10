@@ -6,11 +6,14 @@ const { ensureJQuery } = require( "./lib/ensure_jquery" );
 const { ensureGlobalNotCreated } = require( "./lib/ensure_global_not_created" );
 const { getJQueryModuleSpecifier } = require( "./lib/jquery-module-specifier" );
 
+const jQueryModuleSpecifier = getJQueryModuleSpecifier();
+
 const { window } = new JSDOM( "" );
 
-const jQueryModuleSpecifier = getJQueryModuleSpecifier();
-const jQueryFactory = require( jQueryModuleSpecifier );
-const jQuery = jQueryFactory( window );
+// Set the window global.
+global.window = window;
+
+const jQuery = require( jQueryModuleSpecifier );
 
 ensureJQuery( jQuery );
-ensureGlobalNotCreated( module.exports );
+ensureGlobalNotCreated( module.exports, window );
