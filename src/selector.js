@@ -1,12 +1,12 @@
 import { jQuery } from "./core.js";
 import { nodeName } from "./core/nodeName.js";
-import { document } from "./var/document.js";
+import { document as preferredDoc } from "./var/document.js";
 import { indexOf } from "./var/indexOf.js";
 import { pop } from "./var/pop.js";
 import { push } from "./var/push.js";
 import { whitespace } from "./var/whitespace.js";
 import { rbuggyQSA } from "./selector/rbuggyQSA.js";
-import { rtrim } from "./var/rtrim.js";
+import { rtrimCSS } from "./var/rtrimCSS.js";
 import { isIE } from "./var/isIE.js";
 import { identifier } from "./selector/var/identifier.js";
 import { booleans } from "./selector/var/booleans.js";
@@ -26,10 +26,6 @@ import { toSelector } from "./selector/toSelector.js";
 // The following utils are attached directly to the jQuery object.
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
-
-var preferredDoc = document;
-
-( function() {
 
 var i,
 	outermostContext,
@@ -167,7 +163,11 @@ function find( selector, context, results, seed ) {
 
 					// Outside of IE, if we're not changing the context we can
 					// use :scope instead of an ID.
-					if ( newContext !== context || isIE ) {
+					// Support: IE 11+
+					// IE sometimes throws a "Permission denied" error when strict-comparing
+					// two documents; shallow comparisons work.
+					// eslint-disable-next-line eqeqeq
+					if ( newContext != context || isIE ) {
 
 						// Capture the context ID, setting it first if necessary
 						if ( ( nid = context.getAttribute( "id" ) ) ) {
@@ -204,7 +204,7 @@ function find( selector, context, results, seed ) {
 	}
 
 	// All others
-	return select( selector.replace( rtrim, "$1" ), context, results, seed );
+	return select( selector.replace( rtrimCSS, "$1" ), context, results, seed );
 }
 
 /**
@@ -632,7 +632,7 @@ jQuery.expr = {
 			// spaces as combinators
 			var input = [],
 				results = [],
-				matcher = compile( selector.replace( rtrim, "$1" ) );
+				matcher = compile( selector.replace( rtrimCSS, "$1" ) );
 
 			return matcher[ jQuery.expando ] ?
 				markFunction( function( seed, matches, _context, xml ) {
@@ -1070,7 +1070,12 @@ function matcherFromTokens( tokens ) {
 			return indexOf.call( checkContext, elem ) > -1;
 		}, implicitRelative, true ),
 		matchers = [ function( elem, context, xml ) {
-			var ret = ( !leadingRelative && ( xml || context !== outermostContext ) ) || (
+
+			// Support: IE 11+
+			// IE sometimes throws a "Permission denied" error when strict-comparing
+			// two documents; shallow comparisons work.
+			// eslint-disable-next-line eqeqeq
+			var ret = ( !leadingRelative && ( xml || context != outermostContext ) ) || (
 				( checkContext = context ).nodeType ?
 					matchContext( elem, context, xml ) :
 					matchAnyContext( elem, context, xml ) );
@@ -1104,7 +1109,7 @@ function matcherFromTokens( tokens ) {
 						// If the preceding token was a descendant combinator, insert an implicit any-element `*`
 						tokens.slice( 0, i - 1 )
 							.concat( { value: tokens[ i - 2 ].type === " " ? "*" : "" } )
-					).replace( rtrim, "$1" ),
+					).replace( rtrimCSS, "$1" ),
 					matcher,
 					i < j && matcherFromTokens( tokens.slice( i, j ) ),
 					j < len && matcherFromTokens( ( tokens = tokens.slice( j ) ) ),
@@ -1368,7 +1373,5 @@ find.compile = compile;
 find.select = select;
 find.setDocument = setDocument;
 find.tokenize = tokenize;
-
-} )();
 
 export { jQuery, jQuery as $ };
