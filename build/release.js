@@ -42,12 +42,8 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			Release.exec( "npx grunt", "Grunt command failed" );
-			Release.exec(
-				"npx grunt custom:slim --filename=jquery.slim.js && " +
-					"npx grunt remove_map_comment --filename=jquery.slim.js",
-				"Grunt custom failed"
-			);
+			Release.exec( "npx grunt" );
+
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
 			callback( filesToCommit );
@@ -69,10 +65,9 @@ module.exports = function( Release ) {
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
 		 */
-		dist: function( callback ) {
-			cdn.makeArchives( Release, function() {
-				dist( Release, distFiles, callback );
-			} );
+		dist: async callback => {
+			await cdn.makeArchives( Release );
+			dist( Release, distFiles, callback );
 		}
 	} );
 };

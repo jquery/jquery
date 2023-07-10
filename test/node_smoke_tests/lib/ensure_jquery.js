@@ -1,6 +1,6 @@
 "use strict";
 
-const assert = require( "assert" );
+const assert = require( "node:assert" );
 
 // Check if the object we got is the jQuery object by invoking a basic API.
 const ensureJQuery = ( jQuery ) => {
@@ -8,4 +8,4 @@ const ensureJQuery = ( jQuery ) => {
 		"jQuery.expando was not detected, the jQuery bootstrap process has failed" );
 };
 
-module.exports = ensureJQuery;
+module.exports = { ensureJQuery };

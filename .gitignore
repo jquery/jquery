@@ -12,7 +12,7 @@ package-lock.json
 
 npm-debug.log*
 
-# Ignore everything in dist folder except for eslint config
+# Ignore everything in `dist` folder except for the ESLint config
 /dist/*
 !/dist/.eslintrc.json
 

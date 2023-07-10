@@ -117,7 +117,7 @@ The build process shows a message for each dependent module it excludes or inclu
 
 ##### AMD name
 
-As an option, you can set the module name for jQuery's AMD definition. By default, it is set to "jquery", which plays nicely with plugins and third-party libraries, but there may be cases where you'd like to change this. Simply set the `"amd"` option:
+As an option, you can set the module name for jQuery's AMD definition. By default, it is set to "jquery", which plays nicely with plugins and third-party libraries, but there may be cases where you'd like to change this. Simply pass it to the `--amd` parameter:
 
 ```bash
 grunt custom --amd="custom-name"
@@ -128,6 +128,16 @@ Or, to define anonymously, set the name to an empty string.
 ```bash
 grunt custom --amd=""
 ```
+
+##### File name
+
+The default name for the built jQuery file is `jquery.js`; it is placed under the `dist/` directory. It's possible to change the file name using the `--filename` parameter:
+
+```bash
+grunt custom:slim --filename="jquery.slim.js"
+```
+
+This would create a slim version of jQuery and place it under `dist/jquery.slim.js`. In fact, this is exactly the command we use to generate the slim jQuery during the release process.
 
 #### Custom Build Examples
 
