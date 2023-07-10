@@ -2,29 +2,33 @@
 	"root": true,
 
 	"parserOptions": {
-		"ecmaVersion": 5,
-		"sourceType": "script"
+		"ecmaVersion": 2015,
+		"sourceType": "module"
 	},
 
 	"globals": {
 		"define": false,
-		"module": true,
 		"Symbol": false
 	},
 
 	"overrides": [
 		{
-			"files": "jquery{,.slim}.min.js",
+			"files": "jquery{,.slim}.module.min.js",
 
 			"parserOptions": {
-				"ecmaVersion": 5,
-				"sourceType": "script"
+				"ecmaVersion": 2015,
+				"sourceType": "module"
 			}
 		},
 
 		{
-			"files": "jquery{,.slim}.js",
+			"files": "jquery{,.slim}.module.js",
 			"extends": "../.eslintrc-browser.json",
+
+			"parserOptions": {
+				"ecmaVersion": 2015,
+				"sourceType": "module"
+			},
 
 			"rules": {
 

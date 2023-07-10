@@ -3,6 +3,32 @@
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
   "version": "4.0.0-pre",
+  "type": "module",
+  "exports": {
+    ".": {
+      "node": {
+        "module": "./dist-module/jquery.module.js",
+        "import": "./dist-module/jquery.node-module-wrapper.js",
+        "require": "./dist/jquery.js"
+      },
+      "production": "./dist-module/jquery.module.min.js",
+      "development": "./dist-module/jquery.module.js",
+      "script": "./dist/jquery.min.js",
+      "default": "./dist-module/jquery.module.min.js"
+    },
+    "./slim": {
+      "node": {
+        "module": "./dist-module/jquery.slim.module.js",
+        "import": "./dist-module/jquery.node-module-wrapper.slim.js",
+        "require": "./dist/jquery.slim.js"
+      },
+      "production": "./dist-module/jquery.slim.module.min.js",
+      "development": "./dist-module/jquery.slim.module.js",
+      "script": "./dist/jquery.slim.min.js",
+      "default": "./dist-module/jquery.slim.module.min.js"
+    },
+    "./src/*.js": "./src/*.js"
+  },
   "main": "dist/jquery.js",
   "homepage": "https://jquery.com",
   "author": {
@@ -71,15 +97,21 @@
     "testswarm": "1.1.2"
   },
   "scripts": {
-    "build": "npm install && grunt",
+    "build": "npm install && npm run build-all-variants",
+    "build-all-variants": "grunt custom:slim --esm --filename=jquery.slim.module.js && grunt custom --esm --filename=jquery.module.js && grunt custom:slim --filename=jquery.slim.js && grunt custom",
     "start": "grunt watch",
-    "test:browserless": "grunt && grunt test:slow",
+    "test:browserless": "grunt && npm run test:node_smoke_tests && grunt test:slow",
     "test:browser": "grunt && grunt karma:main",
     "test:esmodules": "grunt && grunt karma:esmodules",
     "test:no-deprecated": "grunt test:prepare && grunt custom:-deprecated && grunt karma:main",
     "test:selector-native": "grunt test:prepare && grunt custom:-selector && grunt karma:main",
     "test:slim": "grunt test:prepare && grunt custom:slim && grunt karma:main",
-    "test": "npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules",
+    "test:node_smoke_tests:full-module": "grunt node_smoke_tests:module:./dist-module/jquery.module.js && grunt node_smoke_tests:module:jquery",
+    "test:node_smoke_tests:full-commonjs": "grunt node_smoke_tests:commonjs:./dist/jquery.js && grunt node_smoke_tests:commonjs:jquery",
+    "test:node_smoke_tests:slim-module": "grunt node_smoke_tests:module:./dist-module/jquery.slim.module.js && grunt node_smoke_tests:module:jquery/slim",
+    "test:node_smoke_tests:slim-commonjs": "grunt node_smoke_tests:commonjs:./dist/jquery.slim.js && grunt node_smoke_tests:commonjs:jquery/slim",
+    "test:node_smoke_tests": "npm run test:node_smoke_tests:full-module && npm run test:node_smoke_tests:slim-module && npm run test:node_smoke_tests:full-commonjs && npm run test:node_smoke_tests:slim-commonjs",
+    "test": "npm run test:browserless && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native && grunt && grunt test:slow && grunt karma:main && grunt karma:esmodules",
     "jenkins": "npm run test:browserless"
   },
   "commitplease": {

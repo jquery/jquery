@@ -1,6 +1,6 @@
 "use strict";
 
-const assert = require( "assert" );
+const assert = require( "node:assert" );
 
 // Ensure the jQuery property on global/window/module.exports/etc. was not
 // created in a CommonJS environment.
@@ -12,4 +12,4 @@ const ensureGlobalNotCreated = ( ...args ) => {
 	} );
 };
 
-module.exports = ensureGlobalNotCreated;
+module.exports = { ensureGlobalNotCreated };

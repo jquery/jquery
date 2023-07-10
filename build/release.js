@@ -10,7 +10,13 @@ module.exports = function( Release ) {
 		"dist/jquery.min.map",
 		"dist/jquery.slim.js",
 		"dist/jquery.slim.min.js",
-		"dist/jquery.slim.min.map"
+		"dist/jquery.slim.min.map",
+		"dist-module/jquery.module.js",
+		"dist-module/jquery.module.min.js",
+		"dist-module/jquery.module.min.map",
+		"dist-module/jquery.slim.module.js",
+		"dist-module/jquery.slim.module.min.js",
+		"dist-module/jquery.slim.module.min.map"
 	];
 	const filesToCommit = [
 		...distFiles,
@@ -45,12 +51,8 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			Release.exec( "npx grunt", "Grunt command failed" );
-			Release.exec(
-				"npx grunt custom:slim --filename=jquery.slim.js && " +
-					"npx grunt remove_map_comment --filename=jquery.slim.js",
-				"Grunt custom failed"
-			);
+			Release.exec( "npx grunt" );
+
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
 			callback( filesToCommit );
@@ -72,10 +74,9 @@ module.exports = function( Release ) {
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
 		 */
-		dist: function( callback ) {
-			cdn.makeArchives( Release, function() {
-				dist( Release, distFiles, callback );
-			} );
+		dist: async callback => {
+			await cdn.makeArchives( Release );
+			dist( Release, distFiles, callback );
 		}
 	} );
 };

@@ -13,19 +13,19 @@ module.exports = function( grunt ) {
 	}
 
 	const fs = require( "fs" );
+	const { spawn } = require( "child_process" );
 	const gzip = require( "gzip-js" );
-	const nodeV14OrNewer = !/^v1[0-3]\./.test( process.version );
+	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
 	const nodeV17OrNewer = !/^v1[0-6]\./.test( process.version );
 	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
 
-	// Support: Node.js <14
-	// Skip running tasks that dropped support for Node.js 10 or 12
-	// in this Node version.
+	// Support: Node.js <16
+	// Skip running tasks that dropped support for old Node.js in these Node versions.
 	function runIfNewNode( task ) {
-		return nodeV14OrNewer ? task : "print_old_node_message:" + task;
+		return nodeV16OrNewer ? task : "print_old_node_message:" + task;
 	}
 
-	if ( nodeV14OrNewer ) {
+	if ( nodeV16OrNewer ) {
 		const playwright = require( "playwright-webkit" );
 		process.env.WEBKIT_HEADLESS_BIN = playwright.webkit.executablePath();
 	}
@@ -34,11 +34,27 @@ module.exports = function( grunt ) {
 		grunt.option( "filename", "jquery.js" );
 	}
 
+	grunt.option( "dist-folder", grunt.option( "esm" ) ? "dist-module" : "dist" );
+
+	const builtJsFiles = [
+		"dist/jquery.js",
+		"dist/jquery.min.js",
+		"dist/jquery.slim.js",
+		"dist/jquery.slim.min.js",
+		"dist-module/jquery.module.js",
+		"dist-module/jquery.module.min.js",
+		"dist-module/jquery.slim.module.js",
+		"dist-module/jquery.slim.module.min.js"
+	];
+
+	const builtJsMinFiles = builtJsFiles
+		.filter( filepath => filepath.endsWith( ".min.js" ) );
+
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
 		dst: readOptionalJSON( "dist/.destination.json" ),
 		compare_size: {
-			files: [ "dist/jquery.js", "dist/jquery.min.js" ],
+			files: builtJsMinFiles,
 			options: {
 				compress: {
 					gz: function( contents ) {
@@ -122,7 +138,7 @@ module.exports = function( grunt ) {
 			// We have to explicitly declare "src" property otherwise "newer"
 			// task wouldn't work properly :/
 			dist: {
-				src: [ "dist/jquery.js", "dist/jquery.min.js" ]
+				src: builtJsFiles
 			},
 			dev: {
 				src: [
@@ -142,9 +158,10 @@ module.exports = function( grunt ) {
 							`!${ filePath }`
 						),
 
-					// Explicitly ignore `dist/` as it could be unignored by
-					// the above `.eslintignore` parsing.
-					"!dist/**/*.js"
+					// Explicitly ignore `dist/` & `dist-module/` as it could be unignored
+					// by the above `.eslintignore` parsing.
+					"!dist/**/*.js",
+					"!dist-module/**/*.js"
 				]
 			}
 		},
@@ -195,7 +212,7 @@ module.exports = function( grunt ) {
 					{
 						"middleware:mockserver": [
 							"factory",
-							require( "./test/middleware-mockserver.js" )
+							require( "./test/middleware-mockserver.cjs" )
 						]
 					}
 				],
@@ -319,12 +336,15 @@ module.exports = function( grunt ) {
 		minify: {
 			all: {
 				files: {
-					"dist/<%= grunt.option('filename').replace('.js', '.min.js') %>":
-						"dist/<%= grunt.option('filename') %>"
+					[ "<%= grunt.option('dist-folder') %>/" +
+						"<%= grunt.option('filename').replace(/\\.js$/, '.min.js') %>" ]:
+						"<%= grunt.option('dist-folder') %>/<%= grunt.option('filename') %>"
 				},
 				options: {
 					sourceMap: {
-						filename: "dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
+						filename: "<%= grunt.option('dist-folder') %>/" +
+							"<%= grunt.option('filename')" +
+							".replace(/\\.js$/, '.min.map') %>",
 
 						// The map's `files` & `sources` property are set incorrectly, fix
 						// them via overrides from the task config.
@@ -338,7 +358,7 @@ module.exports = function( grunt ) {
 					},
 					swc: {
 						format: {
-							ecma: 5,
+							ecma: grunt.option( "esm" ) ? 2015 : 5,
 							asciiOnly: true,
 							comments: false,
 							preamble: "/*! jQuery v4.0.0-pre | " +
@@ -346,7 +366,7 @@ module.exports = function( grunt ) {
 								"jquery.org/license */\n"
 						},
 						compress: {
-							ecma: 5,
+							ecma: grunt.option( "esm" ) ? 2015 : 5,
 							hoist_funs: false,
 							loops: false
 						},
@@ -359,7 +379,7 @@ module.exports = function( grunt ) {
 
 	// Load grunt tasks from NPM packages
 	require( "load-grunt-tasks" )( grunt, {
-		pattern: nodeV14OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
+		pattern: nodeV16OrNewer ? [ "grunt-*" ] : [ "grunt-*", "!grunt-eslint" ]
 	} );
 
 	// Integrate jQuery specific tasks
@@ -369,6 +389,20 @@ module.exports = function( grunt ) {
 		var task = args.join( ":" );
 		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
 	} );
+
+	grunt.registerTask( "build-all-variants",
+		"Build all variants of the full/slim build & a script/ESM one",
+		function() {
+			const done = this.async();
+
+			spawn( "npm run build-all-variants", {
+				stdio: "inherit",
+				shell: true
+			} )
+				.on( "close", code => {
+					done( code === 0 );
+				} );
+		} );
 
 	grunt.registerTask( "print_jsdom_message", () => {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
@@ -393,7 +427,7 @@ module.exports = function( grunt ) {
 		runIfNewNode( "newer:eslint:dist" )
 	] );
 
-	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
+	grunt.registerTask( "test:fast", [ "node_smoke_tests:commonjs:jquery" ] );
 	grunt.registerTask( "test:slow", [
 		runIfNewNode( "promises_aplus_tests" ),
 
@@ -419,7 +453,6 @@ module.exports = function( grunt ) {
 		"build:*:*",
 		runIfNewNode( "newer:eslint:dev" ),
 		"newer:minify",
-		"remove_map_comment",
 		"dist:*",
 		"qunit_fixture",
 		"compare_size"
@@ -427,10 +460,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "default", [
 		runIfNewNode( "eslint:dev" ),
-		"build:*:*",
-		"minify",
-		"remove_map_comment",
-		"dist:*",
+		"build-all-variants",
 		"test:prepare",
 		runIfNewNode( "eslint:dist" ),
 		"test:fast",

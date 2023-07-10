@@ -42,4 +42,5 @@
 // build.js inserts compiled jQuery here
 
 return jQuery;
+
 } );
