@@ -312,27 +312,41 @@ module.exports = function( grunt ) {
 			files: [ "<%= eslint.dev.src %>" ],
 			tasks: [ "dev" ]
 		},
-		terser: {
+		minify: {
 			all: {
 				files: {
 					"dist/<%= grunt.option('filename').replace('.js', '.min.js') %>":
 						"dist/<%= grunt.option('filename') %>"
 				},
 				options: {
-					ecma: 5,
 					sourceMap: {
-						filename: "dist/<%= grunt.option('filename').replace('.js', '.min.map') %>"
+						filename: "dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
+
+						// The map's `files` & `sources` property are set incorrectly, fix
+						// them via overrides from the task config.
+						// See https://github.com/swc-project/swc/issues/7588#issuecomment-1624345254
+						overrides: {
+							file: "jquery.min.js",
+							sources: [
+								"jquery.js"
+							]
+						}
 					},
-					format: {
-						ascii_only: true,
-						comments: false,
-						preamble: "/*! jQuery v<%= pkg.version %> | " +
-							"(c) OpenJS Foundation and other contributors | " +
-							"jquery.org/license */"
-					},
-					compress: {
-						hoist_funs: false,
-						loops: false
+					swc: {
+						format: {
+							ecma: 5,
+							asciiOnly: true,
+							comments: false,
+							preamble: "/*! jQuery v4.0.0-pre | " +
+								"(c) OpenJS Foundation and other contributors | " +
+								"jquery.org/license */\n"
+						},
+						compress: {
+							ecma: 5,
+							hoist_funs: false,
+							loops: false
+						},
+						mangle: true
 					}
 				}
 			}
@@ -400,7 +414,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "dev", [
 		"build:*:*",
 		runIfNewNode( "newer:eslint:dev" ),
-		"newer:terser",
+		"newer:minify",
 		"remove_map_comment",
 		"dist:*",
 		"qunit_fixture",
@@ -410,7 +424,7 @@ module.exports = function( grunt ) {
 	grunt.registerTask( "default", [
 		runIfNewNode( "eslint:dev" ),
 		"build:*:*",
-		"terser",
+		"minify",
 		"remove_map_comment",
 		"dist:*",
 		"test:prepare",
