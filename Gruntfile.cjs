@@ -342,7 +342,8 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					sourceMap: {
-						filename: "dist/<%= grunt.option('filename')" +
+						filename: "<%= grunt.option('dist-folder') %>/" +
+							"<%= grunt.option('filename')" +
 							".replace(/\\.js$/, '.min.map') %>",
 
 						// The map's `files` & `sources` property are set incorrectly, fix
