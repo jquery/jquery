@@ -712,7 +712,7 @@ jQuery.extend( {
 		}
 
 		// Callback for when everything is done
-		function done( status, nativeStatusText, responses, headers ) {
+		function done( status, nativeStatusText, responses, headers, responseURL ) {
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
 
@@ -801,6 +801,7 @@ jQuery.extend( {
 			// Set data for the fake xhr object
 			jqXHR.status = status;
 			jqXHR.statusText = ( nativeStatusText || statusText ) + "";
+			jqXHR.responseURL = responseURL;
 
 			// Success/Error
 			if ( isSuccess ) {

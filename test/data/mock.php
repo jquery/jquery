@@ -263,6 +263,14 @@ QUnit.assert.ok( true, "mock executed");';
 		header( 'Content-type: text/html' );
 		echo file_get_contents( __DIR__ . '/trusted-types-attributes.html' );
 	}
+	
+	public function responseURL($req) {
+		if ( isset($req->query["url"]) ) {
+			header( "Location: $req->query[url]" );
+			exit;
+		}
+		echo "OK";
+	}
 
 	protected function errorWithScript( $req ) {
 		header( 'HTTP/1.0 404 Not Found' );

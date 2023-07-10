@@ -1893,6 +1893,93 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - responseURL", 13, function( assert ) {
+
+		// This function generates complete
+		// absolute URL without any relative path components
+		// Example:
+		// Input: http://localhost:9876/base/test/data/testinit.js/../../../test/data/mock.php?action=responseURL&155821644568982930
+		// Output: http://localhost:9876/base/test/data/mock.php?action=responseURL&155821644568982930
+		function normalizeUrl( url ) {
+			var finalUrl = url;
+			while ( finalUrl.indexOf( "/../" ) > -1 ) {
+				finalUrl = finalUrl.replace( /\/[^/]+\/\.\.\//g, "/" );
+			}
+			return finalUrl;
+		}
+
+		var successURL = url( "mock.php?action=responseURL" ),
+			errorURL = "http://example.invalid",
+			redirectAndSuccessURL = url( "mock.php?action=responseURL&url=" + encodeURIComponent( successURL ) ),
+			redirectAndErrorURL = url( "mock.php?action=responseURL&url=" + encodeURIComponent( errorURL ) ),
+			jsonpURL = baseURL + "mock.php?action=jsonp&callback=?",
+			scriptURL = url( "mock.php?action=testbar" );
+
+		return [
+			{
+				url: successURL,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, normalizeUrl( successURL ), "jqXHR responseURL ok for success" );
+				}
+			},
+			{
+				url: errorURL,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for error" );
+				}
+			},
+			{
+				url: redirectAndSuccessURL,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, normalizeUrl( successURL ), "jqXHR responseURL ok for redirect success" );
+				}
+			},
+			{
+				url: redirectAndErrorURL,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				fail: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for redirect error" );
+				}
+			},
+			{
+				url: jsonpURL,
+				dataType: "jsonp",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for JSONP" );
+				}
+			},
+			{
+				setup: function() {
+					Globals.register( "testBar" );
+				},
+				url: scriptURL,
+				dataType: "script",
+				crossDomain: true,
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok before sending request" );
+				},
+				success: function( _, __, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined, "jqXHR responseURL ok for script" );
+				}
+			}
+		];
+	} );
+
 	ajaxTest( "jQuery.ajax() - atom+xml", 1, function( assert ) {
 		return {
 			url: url( "mock.php?action=atom" ),

@@ -72,13 +72,12 @@ jQuery.ajaxTransport( function( options ) {
 						} else {
 							complete(
 								xhrSuccessStatus[ xhr.status ] || xhr.status,
-								xhr.statusText,
-
-								// For XHR2 non-text, let the caller handle it (gh-2498)
+								xhr.statusText, // For XHR2 non-text, let the caller handle it (gh-2498)
 								( xhr.responseType || "text" ) === "text" ?
 									{ text: xhr.responseText } :
 									{ binary: xhr.response },
-								xhr.getAllResponseHeaders()
+								xhr.getAllResponseHeaders(),
+								xhr.responseURL
 							);
 						}
 					}

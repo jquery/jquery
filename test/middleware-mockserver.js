@@ -308,6 +308,13 @@ const mocks = {
 		} else {
 			resp.end( "QUnit.assert.ok( false, \"Mock return erroneously executed\" );" );
 		}
+	},
+	responseURL: function( req, resp ) {
+		if ( req.query.url ) {
+			resp.writeHead( 302, { "Location": req.query.url } );
+		}
+		resp.write( "OK" );
+		resp.end();
 	}
 };
 const handlers = {
