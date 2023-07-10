@@ -54,6 +54,18 @@ testIframe(
 	}
 );
 
+testIframe(
+	"Verify correctness of support tests with bootstrap CSS on the page",
+	"support/bootstrap.html",
+	function( assert, jQuery, window, document, bodyStyle, support ) {
+		assert.expect( 2 );
+		assert.strictEqual( bodyStyle.boxSizing, "border-box",
+			"border-box applied on body by Bootstrap" );
+		assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+			"Same support properties" );
+	}
+);
+
 ( function() {
 	var browserKey, expected,
 		userAgent = window.navigator.userAgent,
