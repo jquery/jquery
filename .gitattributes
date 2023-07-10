@@ -2,4 +2,7 @@
 * text=auto
 
 # JS files must always use LF for tools to work
+# JS files may have mjs or cjs extensions now as well
 *.js eol=lf
+*.cjs eol=lf
+*.mjs eol=lf
