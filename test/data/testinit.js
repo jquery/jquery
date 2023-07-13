@@ -1,5 +1,4 @@
 /* eslint no-multi-str: "off" */
-
 "use strict";
 
 var FILEPATH = "/test/data/testinit.js",
@@ -16,9 +15,6 @@ var FILEPATH = "/test/data/testinit.js",
 	baseURL = parentUrl + "test/data/",
 	supportjQuery = this.jQuery,
 
-	// see RFC 2606
-	externalHost = "example.com",
-
 	// NOTE: keep it in sync with build/tasks/lib/slim-build-flags.js
 	slimBuildFlags = [
 		"-ajax",
@@ -28,6 +24,8 @@ var FILEPATH = "/test/data/testinit.js",
 		"-queue"
 	];
 
+// see RFC 2606
+this.externalHost = "example.com";
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
 
@@ -241,7 +239,7 @@ this.ajaxTest = function( title, expect, options, wrapper ) {
 				completed = true;
 				delete ajaxTest.abort;
 				assert.ok( false, "aborted " + reason );
-				jQuery.each( requests, function( i, request ) {
+				jQuery.each( requests, function( _i, request ) {
 					request.abort();
 				} );
 			}
@@ -319,16 +317,16 @@ this.includesModule = function( moduleName ) {
 
 	var excludedModulesPart, excludedModules;
 
-	// A short-cut for the slim build, e.g. "4.0.0-pre slim"
-	if ( jQuery.fn.jquery.indexOf( " slim" ) > -1 ) {
+	// A short-cut for the slim build, e.g. "4.0.0-pre+slim"
+	if ( jQuery.fn.jquery.indexOf( "+slim" ) > -1 ) {
 
 		// The module is included if it does NOT exist on the list
 		// of modules excluded in the slim build
 		return slimBuildFlags.indexOf( "-" + moduleName ) === -1;
 	}
 
-	// example version for `grunt custom:-deprecated`:
-	// "4.0.0-pre -deprecated,-deprecated/ajax-event-alias,-deprecated/event"
+	// example version for `npm run build -- -e deprecated`:
+	// "v4.0.0-pre+14dc9347 -deprecated,-deprecated/ajax-event-alias,-deprecated/event"
 	excludedModulesPart = jQuery.fn.jquery
 
 		// Take the flags out of the version string.
@@ -393,6 +391,7 @@ this.loadTests = function() {
 
 		var i = 0,
 			tests = [
+
 				// A special module with basic tests, meant for not fully
 				// supported environments like jsdom. We run it everywhere,
 				// though, to make sure tests are not broken.

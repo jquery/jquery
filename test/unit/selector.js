@@ -35,8 +35,8 @@ QUnit.test( "empty", function( assert ) {
 QUnit.test( "star", function( assert ) {
 	assert.expect( 2 );
 
-	var good, i;
-	var all = jQuery( "*" );
+	var good, i,
+		all = jQuery( "*" );
 
 	assert.ok( all.length >= 30, "Select all" );
 	good = true;
@@ -51,8 +51,8 @@ QUnit.test( "star", function( assert ) {
 QUnit.test( "element", function( assert ) {
 	assert.expect( 37 );
 
-	var i, lengthtest, siblingTest, html;
-	var fixture = document.getElementById( "qunit-fixture" );
+	var i, lengthtest, siblingTest, html,
+		fixture = document.getElementById( "qunit-fixture" );
 
 	assert.deepEqual( jQuery( "p", fixture ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a Node context." );
 	assert.deepEqual( jQuery( "p", "#qunit-fixture" ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a selector context." );
@@ -848,6 +848,7 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 			"Seeded nth-child"
 		);
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Some browsers mark disconnected elements as matching `:nth-child(n)`
 		// so let's skip the test.
@@ -901,6 +902,7 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 			"Seeded nth-last-child"
 		);
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Some browsers mark disconnected elements as matching `:nth-last-child(n)`
 		// so let's skip the test.
@@ -1037,6 +1039,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	tmp = document.createElement( "div" );
 	tmp.id = "tmp_input";
 	tmp.innerHTML = "<span>Hello I am focusable.</span>";
+
 	// Setting tabIndex should make the element focusable
 	// https://html.spec.whatwg.org/#the-tabindex-attribute
 	document.body.appendChild( tmp );
@@ -1093,6 +1096,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	);
 
 	if ( QUnit.jQuerySelectors ) {
+
 		// Tokenization edge cases
 		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code)", [ "ap" ] );
 		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code):contains(This link)", [ "ap" ] );
@@ -1158,6 +1162,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(div#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(p#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	} else {
+
 		// Support: IE 11+
 		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1178,6 +1183,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.t( ":not Multiple", "p:not(p,a)", [] );
 		assert.t( ":not Multiple", "p:not(a,p,b)", [] );
 	} else {
+
 		// Support: IE 11+
 		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1207,6 +1213,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
 		assert.t( ":not() Multiple Class", "#foo a:not(.blog.link)", [ "yahoo", "anchor2" ] );
 	} else {
+
 		// Support: IE 11+
 		// IE doesn't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1439,8 +1446,7 @@ QUnit.test( "pseudo - a:(dis|en)abled", function( assert ) {
 	assert.expect( 2 );
 
 	var enabled, disabled,
-		container = jQuery( "<div></div>" ),
-		anchor = jQuery( "<a href='#'>Link</a>" );
+		container = jQuery( "<div></div>" );
 
 	container.appendTo( "#qunit-fixture" );
 
@@ -1754,8 +1760,8 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "disconnected nodes", function
 QUnit.testUnlessIE( "Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 
-	var shadowHost = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" )[ 0 ];
-	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+	var shadowHost = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" )[ 0 ],
+		shadowRoot = shadowHost.attachShadow( { mode: "open" } );
 
 	shadowRoot.innerHTML = "<div class='vagabond'><p></p></div>";
 	assert.equal( jQuery( shadowRoot ).find( ".vagabond" ).length, 1,
@@ -1767,7 +1773,7 @@ QUnit.testUnlessIE( "Shadow DOM nodes supported as root", function( assert ) {
 testIframe(
 	"attributes - jQuery.attr",
 	"selector/html5_selector.html",
-	function( assert, jQuery, window, document ) {
+	function( assert, jQuery, _window, document ) {
 		assert.expect( 38 );
 
 		/**
@@ -1840,7 +1846,7 @@ testIframe(
 
 		// Enumerated attributes (these are not boolean content attributes)
 		jQuery.expandedEach = jQuery.each;
-		jQuery.expandedEach( [ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
+		jQuery.expandedEach( [ "draggable", "contenteditable", "aria-disabled" ], function( _i, val ) {
 			t( "Enumerated attribute", "[" + val + "]", [ "div1" ] );
 		} );
 		t( "Enumerated attribute", "[spellcheck]", [ "span1" ] );
@@ -1984,7 +1990,7 @@ QUnit.test( "uniqueSort()", function( assert ) {
 testIframe(
 	"jQuery.uniqueSort works cross-window (trac-14381)",
 	"selector/mixed_sort.html",
-	function( assert, jQuery, window, document, actual, expected ) {
+	function( assert, _jQuery, _window, _document, actual, expected ) {
 		assert.expect( 1 );
 
 		assert.deepEqual( actual, expected, "Mixed array was sorted correctly" );
@@ -2313,7 +2319,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery.find.select with pre-c
 		"#qunit-fixture #first",
 		"ol#listWithTabIndex > li[tabindex]",
 		"#liveSpan1"
-	], function( i, selector ) {
+	], function( _i, selector ) {
 		var compiled = jQuery.find.compile( selector );
 		assert.equal( jQuery.find.select( compiled, document ).length,
 			1, "Should match using a compiled selector function" );

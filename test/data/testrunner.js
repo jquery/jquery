@@ -1,5 +1,4 @@
 ( function() {
-
 "use strict";
 
 // Store the old count so that we only assert on tests that have actually leaked,

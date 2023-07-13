@@ -88,7 +88,9 @@ QUnit.test( "queue() passes in the next item in the queue as a parameter to fx q
 
 	div.queue( function( next ) {
 		assert.equal( ++counter, 1, "Dequeueing" );
-		setTimeout( function() { next(); }, 500 );
+		setTimeout( function() {
+			next();
+		}, 500 );
 	} ).queue( function( next ) {
 		assert.equal( ++counter, 2, "Next was called" );
 		next();
@@ -187,7 +189,9 @@ QUnit.test( "clearQueue() clears the fx queue", function( assert ) {
 	div.queue( function( next ) {
 		counter++;
 		var self = this;
-		setTimeout( function() { jQuery( self ).clearQueue(); next(); }, 50 );
+		setTimeout( function() {
+			jQuery( self ).clearQueue(); next();
+		}, 50 );
 	} ).queue( function() {
 		counter++;
 	} );
