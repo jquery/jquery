@@ -1,22 +1,14 @@
-"use strict";
-
-const { spawn } = require( "node:child_process" );
-const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
-const path = require( "node:path" );
-const os = require( "node:os" );
-
-if ( !verifyNodeVersion() ) {
-	return;
-}
+import path from "node:path";
+import os from "node:os";
+import { spawn } from "node:child_process";
 
 const command = path.resolve(
-	__dirname,
-	`../../node_modules/.bin/promises-aplus-tests${ os.platform() === "win32" ? ".cmd" : "" }`
+	`node_modules/.bin/promises-aplus-tests${ os.platform() === "win32" ? ".cmd" : "" }`
 );
 const args = [ "--reporter", "dot", "--timeout", "2000" ];
 const tests = [
-	"test/promises_aplus_adapters/deferred.js",
-	"test/promises_aplus_adapters/when.js"
+	"test/promises_aplus_adapters/deferred.cjs",
+	"test/promises_aplus_adapters/when.cjs"
 ];
 
 async function runTests() {

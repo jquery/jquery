@@ -4,20 +4,20 @@
  * and includes/excludes specified modules
  */
 
-"use strict";
+import { exec as nodeExec } from "node:child_process";
+import { writeFileSync } from "node:fs";
+import fs from "node:fs/promises";
+import path from "node:path";
+import util from "node:util";
+import requirejs from "requirejs";
+import { compareSize } from "./lib/compareSize.js";
+import getTimestamp from "./lib/getTimestamp.js";
+import isCleanWorkingDir from "./lib/isCleanWorkingDir.js";
+import excludedFromSlim from "./lib/slim-exclude.js";
+import minify from "./minify.js";
 
-const fs = require( "node:fs/promises" );
-const path = require( "node:path" );
-const util = require( "node:util" );
-const exec = util.promisify( require( "node:child_process" ).exec );
-const requirejs = require( "requirejs" );
-const excludedFromSlim = require( "./lib/slim-exclude" );
-const pkg = require( "../../package.json" );
-const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
-const minify = require( "./minify" );
-const getTimestamp = require( "./lib/getTimestamp" );
-const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
-const srcFolder = path.resolve( __dirname, "../../src" );
+const exec = util.promisify( nodeExec );
+const pkg = JSON.parse( await fs.readFile( "./package.json", "utf8" ) );
 
 const rdefineEnd = /\}\s*?\);[^}\w]*$/;
 
@@ -38,14 +38,14 @@ const removeWith = {
 };
 
 async function read( filename ) {
-	return fs.readFile( path.join( srcFolder, filename ), "utf8" );
+	return fs.readFile( path.join( "./src", filename ), "utf8" );
 }
 
 // Remove the src folder and file extension
 // and ensure unix-style path separators
 function moduleName( filename ) {
 	return filename
-		.replace( `${ srcFolder }${ path.sep }`, "" )
+		.replace( new RegExp( `.*\\${ path.sep }src\\${ path.sep }` ), "" )
 		.replace( /\.js$/, "" )
 		.split( path.sep )
 		.join( path.posix.sep );
@@ -54,7 +54,7 @@ function moduleName( filename ) {
 async function readdirRecursive( dir, all = [] ) {
 	let files;
 	try {
-		files = await fs.readdir( path.join( srcFolder, dir ), {
+		files = await fs.readdir( path.join( "./src", dir ), {
 			withFileTypes: true
 		} );
 	} catch ( _ ) {
@@ -212,7 +212,12 @@ async function checkExclude( exclude, include ) {
 	return [ unique( excluded ), unique( included ) ];
 }
 
-async function build( {
+async function getLastModifiedDate() {
+	const { stdout } = await exec( "git log -1 --format=\"%at\"" );
+	return new Date( parseInt( stdout, 10 ) * 1000 );
+}
+
+export async function build( {
 	amd,
 	dir = "dist",
 	exclude = [],
@@ -241,6 +246,11 @@ async function build( {
 		include
 	);
 	const config = await getRequireConfig( { amd } );
+
+	// Use the last modified date so builds are reproducible
+	const date = process.env.RELEASE_DATE ?
+		new Date( process.env.RELEASE_DATE ) :
+		await getLastModifiedDate();
 
 	// Replace exports/global with a noop noConflict
 	if ( excluded.includes( "exports/global" ) ) {
@@ -286,7 +296,7 @@ async function build( {
 	 * Handle Final output from the optimizer
 	 * @param {String} compiled
 	 */
-	config.out = async function( compiled ) {
+	config.out = function( compiled ) {
 		const compiledContents = compiled
 
 			// Embed Version
@@ -294,10 +304,11 @@ async function build( {
 
 			// Embed Date
 			// yyyy-mm-ddThh:mmZ
-			.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+			.replace( /@DATE/g, date.toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 		// Write concatenated source to file
-		await fs.writeFile(
+		// Cannot use async in config.out
+		writeFileSync(
 			path.join( dir, filename ),
 			compiledContents
 		);
@@ -320,7 +331,7 @@ async function build( {
 	await minify( { filename, dir } );
 }
 
-async function buildDefaultFiles( {
+export async function buildDefaultFiles( {
 	version = process.env.VERSION
 } = {} ) {
 	await Promise.all( [
@@ -328,12 +339,6 @@ async function buildDefaultFiles( {
 		build( { filename: "jquery.slim.js", slim: true, version } )
 	] );
 
-	// Earlier Node.js versions do not support the ESM format.
-	if ( !verifyNodeVersion() ) {
-		return;
-	}
-
-	const { compareSize } = await import( "./compare_size.mjs" );
 	return compareSize( {
 		files: [
 			"dist/jquery.min.js",
@@ -341,5 +346,3 @@ async function buildDefaultFiles( {
 		]
 	} );
 }
-
-module.exports = { build, buildDefaultFiles };

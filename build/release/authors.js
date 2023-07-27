@@ -1,8 +1,11 @@
-"use strict";
 
-const fs = require( "node:fs/promises" );
-const util = require( "node:util" );
-const exec = util.promisify( require( "node:child_process" ).exec );
+
+import fs from "node:fs/promises";
+import util from "node:util";
+import { exec as nodeExec } from "node:child_process";
+
+const exec = util.promisify( nodeExec );
+
 const rnewline = /\r?\n/;
 const rdate = /^\[(\d+)\] /;
 
@@ -47,7 +50,7 @@ async function getLastAuthor() {
 async function logAuthors( preCommand ) {
 	let command = "git log --pretty=format:\"[%at] %aN <%aE>\"";
 	if ( preCommand ) {
-		command = preCommand + " && " + command;
+		command = `${ preCommand } && ${ command }`;
 	}
 	const { stdout } = await exec( command );
 	return uniq( stdout.trim().split( rnewline ).reverse() );
@@ -63,21 +66,21 @@ async function getSizzleAuthors() {
 function sortAuthors( a, b ) {
 	const [ , aDate ] = rdate.exec( a );
 	const [ , bDate ] = rdate.exec( b );
-	return parseInt( aDate ) - parseInt( bDate );
+	return Number( aDate ) - Number( bDate );
 }
 
 function formatAuthor( author ) {
 	return author.replace( rdate, "" );
 }
 
-async function getAuthors() {
+export async function getAuthors() {
 	console.log( "Getting authors..." );
 	const authors = await logAuthors();
 	const sizzleAuthors = await getSizzleAuthors();
 	return uniq( authors.concat( sizzleAuthors ) ).sort( sortAuthors ).map( formatAuthor );
 }
 
-async function checkAuthors() {
+export async function checkAuthors() {
 	const authors = await getAuthors();
 	const lastAuthor = await getLastAuthor();
 
@@ -89,7 +92,7 @@ async function checkAuthors() {
 	console.log( "AUTHORS.txt is up to date" );
 }
 
-async function updateAuthors() {
+export async function updateAuthors() {
 	const authors = await getAuthors();
 
 	const authorsTxt = "Authors ordered by first contribution.\n\n" + authors.join( "\n" ) + "\n";
@@ -97,9 +100,3 @@ async function updateAuthors() {
 
 	console.log( "AUTHORS.txt updated" );
 }
-
-module.exports = {
-	checkAuthors,
-	getAuthors,
-	updateAuthors
-};

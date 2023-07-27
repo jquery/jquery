@@ -1,9 +1,7 @@
-"use strict";
+import fs from "node:fs/promises";
+import path from "node:path";
 
-const fs = require( "node:fs/promises" );
-const path = require( "node:path" );
-
-const projectDir = path.resolve( __dirname, "..", ".." );
+const projectDir = path.resolve( "." );
 
 const files = {
 	"bootstrap/bootstrap.css": "bootstrap/dist/css/bootstrap.css",
