@@ -4,8 +4,13 @@
 /.editorconfig
 /.gitattributes
 /.mailmap
+/.dist
+/.cdn
+/.husky
+/changelog.html
 
 /build
+/cdn
 /external
 /speed
 /test

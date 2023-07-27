@@ -1,0 +1,28 @@
+{
+  "hooks": {
+    "before:init": [
+      "npm run release:verify ${version} process.env.BLOG_URL",
+      "npm ci",
+      "npm run authors:check",
+      "npm test",
+      "rimraf .dist .cdn",
+      "git clone https://github.com/jquery/jquery-dist .dist",
+      "git clone https://github.com/jquery/codeorigin.jquery.com .cdn"
+    ],
+    "before:git:release": "git add -f dist/",
+    "after:version:bump": "sed -i 's/3.x-stable\/AUTHORS.txt/${version}\/AUTHORS.txt/' package.json",
+    "after:release": "./build/release/post-release.sh ${version} process.env.BLOG_URL"
+  },
+  "git": {
+    "changelog": "npm run changelog -- ${from} ${to}",
+    "commitMessage": "Release: ${version}",
+    "getLatestTagFromAllRefs": true,
+    "requireBranch": "3.x-stable"
+  },
+  "github": {
+    "release": true
+  },
+  "npm": {
+    "publish": true
+  }
+}

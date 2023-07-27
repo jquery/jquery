@@ -1,133 +1,164 @@
 "use strict";
 
-var
-	fs = require( "fs" ),
-	shell = require( "shelljs" ),
-	path = require( "path" ),
-	os = require( "os" ),
+const util = require( "util" );
+const exec = util.promisify( require( "child_process" ).exec );
+const fs = require( "fs" );
+const path = require( "path" );
+const os = require( "os" );
+const { argv } = require( "process" );
+const version = argv[ 2 ];
 
-	cdnFolder = "dist/cdn",
-
-	releaseFiles = {
-		"jquery-VER.js": "dist/jquery.js",
-		"jquery-VER.min.js": "dist/jquery.min.js",
-		"jquery-VER.min.map": "dist/jquery.min.map",
-		"jquery-VER.slim.js": "dist/jquery.slim.js",
-		"jquery-VER.slim.min.js": "dist/jquery.slim.min.js",
-		"jquery-VER.slim.min.map": "dist/jquery.slim.min.map"
-	},
-
-	googleFilesCDN = [
-		"jquery.js", "jquery.min.js", "jquery.min.map",
-		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.map"
-	],
-
-	msFilesCDN = [
-		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map",
-		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.map"
-	];
-
-/**
- * Generates copies for the CDNs
- */
-function makeReleaseCopies( Release ) {
-	shell.mkdir( "-p", cdnFolder );
-
-	Object.keys( releaseFiles ).forEach( function( key ) {
-		var text,
-			builtFile = releaseFiles[ key ],
-			unpathedFile = key.replace( /VER/g, Release.newVersion ),
-			releaseFile = cdnFolder + "/" + unpathedFile;
-
-		if ( /\.map$/.test( releaseFile ) ) {
-
-			// Map files need to reference the new uncompressed name;
-			// assume that all files reside in the same directory.
-			// "file":"jquery.min.js" ... "sources":["jquery.js"]
-			text = fs.readFileSync( builtFile, "utf8" )
-				.replace( /"file":"([^"]+)"/,
-					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js\"" ) )
-				.replace( /"sources":\["([^"]+)"\]/,
-					"\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
-			fs.writeFileSync( releaseFile, text );
-		} else if ( builtFile !== releaseFile ) {
-			shell.cp( "-f", builtFile, releaseFile );
-		}
-	} );
+if ( !version ) {
+	throw new Error( "No version specified" );
 }
 
-function makeArchives( Release, callback ) {
+// The cdn repo is cloned during release
+const cdnFolder = "./.cdn/cdn";
 
-	Release.chdir( Release.dir.repo );
+// .min.js and .min.map files are expected
+// in the same directory as the uncompressed files.
+const sources = [
+	"dist/jquery.js",
+	"dist/jquery.slim.js"
+];
 
-	function makeArchive( cdn, files, callback ) {
-		if ( Release.preRelease ) {
-			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
-			callback();
-			return;
+// Map files need to reference the new uncompressed name;
+// assume that all files reside in the same directory.
+// "file":"jquery.min.js" ... "sources":["jquery.js"]
+// This is only necessary for the versioned files.
+async function makeVersionedMap( file, folder ) {
+	const mapFile = file.replace( ".js", ".min.map" );
+	const filename = path.basename( mapFile ).replace( "jquery", "jquery-" + version );
+	let content = await fs.promises.readFile( mapFile, "utf8" );
+
+	content = content
+		.replace(
+			/"file":"([^"]+)"/,
+			"\"file\":\"" + filename.replace( /\.min\.map/, ".min.js\"" )
+		)
+		.replace(
+			/"sources":\["([^"]+)"\]/,
+			"\"sources\":[\"" + filename.replace( /\.min\.map/, ".js" ) + "\"]"
+		);
+
+	return fs.promises.writeFile(
+		path.join( folder, filename ),
+		content
+	);
+}
+
+async function makeUnversionedCopies() {
+	const folder = "cdn/unversioned";
+	await fs.promises.mkdir( folder, { recursive: true } );
+
+	return Promise.all(
+		sources.map( async( file ) => {
+			const filename = path.basename( file );
+			const minFilename = filename.replace( ".js", ".min.js" );
+			const mapFilename = filename.replace( ".js", ".min.map" );
+
+			await exec( `cp -f ${file} ${folder}/${filename}` );
+			await exec(
+				`cp -f ${file.replace( ".js", ".min.js" )} ${folder}/${minFilename}`
+			);
+			await exec(
+				`cp -f ${file.replace( ".js", ".min.map" )} ${folder}/${mapFilename}`
+			);
+		} )
+	);
+}
+
+async function makeVersionedCopies() {
+	const folder = "cdn/versioned";
+	await fs.promises.mkdir( folder, { recursive: true } );
+
+	return Promise.all(
+		sources.map( async( file ) => {
+			const filename = path
+				.basename( file )
+				.replace( "jquery", "jquery-" + version );
+			const minFilename = filename.replace( ".js", ".min.js" );
+
+			await exec( `cp -f ${file} ${folder}/${filename}` );
+			await exec(
+				`cp -f ${file.replace( ".js", ".min.js" )} ${folder}/${minFilename}`
+			);
+			await makeVersionedMap( file, folder );
+		} )
+	);
+}
+
+async function md5sum( files, folder ) {
+	if ( os.platform() === "win32" ) {
+		const rmd5 = /[a-f0-9]{32}/;
+		const sum = [];
+
+		for ( let i = 0; i < files.length; i++ ) {
+			const { stdout } = await exec(
+				"certutil -hashfile " + files[ i ] + " MD5",
+				{ cwd: folder }
+			);
+			sum.push( rmd5.exec( stdout )[ 0 ] + " " + files[ i ] );
 		}
 
-		console.log( "Creating production archive for " + cdn );
+		return sum.join( "\n" );
+	}
 
-		var i, sum, result,
-			archiver = require( "archiver" )( "zip" ),
-			md5file = cdnFolder + "/" + cdn + "-md5.txt",
-			output = fs.createWriteStream(
-				cdnFolder + "/" + cdn + "-jquery-" + Release.newVersion + ".zip"
-			),
-			rmd5 = /[a-f0-9]{32}/,
-			rver = /VER/;
+	const { stdout } = exec( "md5 -r " + files.join( " " ), { cwd: folder } );
+	return stdout;
+}
 
-		output.on( "close", callback );
+function makeArchive( { cdn, folder } ) {
+	return new Promise( async( resolve, reject ) => {
+		console.log( `Creating production archive for ${cdn}...` );
 
-		output.on( "error", function( err ) {
-			throw err;
-		} );
+		const archiver = require( "archiver" )( "zip" );
+		const md5file = cdn + "-md5.txt";
+		const output = fs.createWriteStream(
+			path.join( folder, cdn + "-jquery-" + version + ".zip" )
+		);
+
+		output.on( "close", resolve );
+		output.on( "error", reject );
 
 		archiver.pipe( output );
 
-		files = files.map( function( item ) {
-			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
-				item.replace( rver, Release.newVersion );
-		} );
-
-		if ( os.platform() === "win32" ) {
-			sum = [];
-			for ( i = 0; i < files.length; i++ ) {
-				result = Release.exec(
-					"certutil -hashfile " + files[ i ] + " MD5", "Error retrieving md5sum"
-				);
-				sum.push( rmd5.exec( result )[ 0 ] + " " + files[ i ] );
-			}
-			sum = sum.join( "\n" );
-		} else {
-			sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
-		}
-		fs.writeFileSync( md5file, sum );
+		const files = await fs.promises.readdir( folder );
+		const sum = await md5sum( files, folder );
+		await fs.promises.writeFile( path.join( folder, md5file ), sum );
 		files.push( md5file );
 
-		files.forEach( function( file ) {
-			archiver.append( fs.createReadStream( file ),
-				{ name: path.basename( file ) } );
+		files.forEach( ( file ) => {
+			const stream = fs.createReadStream( path.join( folder, file ) );
+			archiver.append( stream, {
+				name: path.basename( file )
+			} );
 		} );
 
 		archiver.finalize();
-	}
-
-	function buildGoogleCDN( callback ) {
-		makeArchive( "googlecdn", googleFilesCDN, callback );
-	}
-
-	function buildMicrosoftCDN( callback ) {
-		makeArchive( "mscdn", msFilesCDN, callback );
-	}
-
-	buildGoogleCDN( function() {
-		buildMicrosoftCDN( callback );
 	} );
 }
 
-module.exports = {
-	makeReleaseCopies: makeReleaseCopies,
-	makeArchives: makeArchives
-};
+async function copyToRepo( folder ) {
+	return exec( `cp -f ${folder}/* ${cdnFolder}` );
+}
+
+
+/**
+ * Expects the cdn folder to not exist yet.
+ * Remove it first.
+ */
+async function cdn() {
+	await Promise.all( [ makeUnversionedCopies(), makeVersionedCopies() ] );
+
+	await copyToRepo( "cdn/versioned" );
+
+	await Promise.all( [
+		makeArchive( { cdn: "googlecdn", folder: "cdn/unversioned" } ),
+		makeArchive( { cdn: "mscdn", folder: "cdn/versioned" } )
+	] );
+
+	console.log( "Files ready for CDNs." );
+}
+
+cdn();
