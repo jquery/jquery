@@ -2,29 +2,29 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "4.0.0-pre",
+  "version": "4.0.0-beta.1",
   "type": "module",
   "exports": {
     ".": {
       "node": {
-        "import": "./dist-module/jquery.node-module-wrapper.js",
+        "import": "./dist-module/wrappers/jquery.node-module-wrapper.js",
         "default": "./dist/jquery.js"
       },
       "module": {
         "import": "./dist-module/jquery.module.js",
-        "default": "./dist/jquery.bundler-require-wrapper.js"
+        "default": "./dist/wrappers/jquery.bundler-require-wrapper.js"
       },
       "import": "./dist-module/jquery.module.js",
       "default": "./dist/jquery.js"
     },
     "./slim": {
       "node": {
-        "import": "./dist-module/jquery.node-module-wrapper.slim.js",
+        "import": "./dist-module/wrappers/jquery.node-module-wrapper.slim.js",
         "default": "./dist/jquery.slim.js"
       },
       "module": {
         "import": "./dist-module/jquery.slim.module.js",
-        "default": "./dist/jquery.bundler-require-wrapper.slim.js"
+        "default": "./dist/wrappers/jquery.bundler-require-wrapper.slim.js"
       },
       "import": "./dist-module/jquery.slim.module.js",
       "default": "./dist/jquery.slim.js"
@@ -45,12 +45,13 @@
   },
   "main": "dist/jquery.js",
   "scripts": {
-    "authors:check": "node -e \"require('./build/release/authors.js').checkAuthors()\"",
-    "authors:update": "node -e \"require('./build/release/authors.js').updateAuthors()\"",
+    "authors:check": "node -e \"(async () => { const { checkAuthors } = await import('./build/release/authors.js'); checkAuthors() })()\"",
+    "authors:update": "node -e \"(async () => { const { updateAuthors } = await import('./build/release/authors.js'); updateAuthors() })()\"",
     "babel:tests": "babel test/data/core/jquery-iterability-transpiled-es6.js --out-file test/data/core/jquery-iterability-transpiled.js",
     "build": "node ./build/command.js",
-    "build:all": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\"",
-    "build:main": "node -e \"require('./build/tasks/build.js').build()\"",
+    "build:all": "node -e \"(async () => { const { buildDefaultFiles } = await import('./build/tasks/build.js'); buildDefaultFiles() })()\"",
+    "build:clean": "rimraf dist/*.{js,map} dist-module/*.{js,map}",
+    "build:main": "node -e \"(async () => { const { build } = await import('./build/tasks/build.js'); build() })()\"",
     "lint:dev": "eslint --cache .",
     "lint:json": "jsonlint --quiet package.json",
     "lint": "concurrently -r \"npm:lint:dev\" \"npm:lint:json\"",
@@ -58,7 +59,13 @@
     "prepare": "husky",
     "pretest": "npm run qunit-fixture && npm run babel:tests && npm run npmcopy",
     "qunit-fixture": "node build/tasks/qunit-fixture.js",
-    "start": "node -e \"require('./build/tasks/build.js').buildDefaultFiles({ watch: true })\"",
+    "release": "release-it --preReleaseBase=1",
+    "release:cdn": "node build/release/cdn.js",
+    "release:changelog": "node build/release/changelog.js",
+    "release:clean": "rimraf tmp --glob changelog.{md,html} contributors.html",
+    "release:dist": "node build/release/dist.js",
+    "release:verify": "node -e \"(async () => { const { verifyRelease } = await import('./build/release/verify.js'); verifyRelease() })()\"",
+    "start": "node -e \"(async () => { const { buildDefaultFiles } = await import('./build/tasks/build.js'); buildDefaultFiles({ watch: true }) })()\"",
     "test:bundlers": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js",
     "test:browser": "npm run pretest && npm run build:main && npm run test:unit -- -b chrome -b firefox -h",
     "test:browserless": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js && node build/tasks/node_smoke_tests.js && node build/tasks/promises_aplus_tests.js && npm run test:unit -- -b jsdom -m basic",
@@ -101,8 +108,9 @@
     "@prantlf/jsonlint": "14.0.3",
     "@rollup/plugin-commonjs": "26.0.1",
     "@rollup/plugin-node-resolve": "15.2.3",
-    "@swc/core": "1.5.28",
-    "@types/selenium-webdriver": "4.1.23",
+    "@swc/core": "1.6.13",
+    "@types/selenium-webdriver": "4.1.24",
+    "archiver": "7.0.1",
     "body-parser": "1.20.2",
     "bootstrap": "5.3.3",
     "browserstack-local": "1.5.5",
@@ -118,20 +126,23 @@
     "exit-hook": "4.0.0",
     "express": "4.19.2",
     "express-body-parser-error-handler": "1.0.7",
-    "globals": "15.4.0",
+    "globals": "15.8.0",
     "husky": "9.0.11",
     "jsdom": "24.1.0",
+    "marked": "13.0.2",
     "multiparty": "4.2.3",
     "native-promise-only": "0.8.1",
     "promises-aplus-tests": "2.1.2",
     "q": "1.5.1",
     "qunit": "2.21.0",
     "raw-body": "2.5.2",
+    "release-it": "17.5.0",
     "requirejs": "2.3.6",
-    "rollup": "4.18.0",
-    "selenium-webdriver": "4.21.0",
+    "rimraf": "6.0.0",
+    "rollup": "4.18.1",
+    "selenium-webdriver": "4.22.0",
     "sinon": "9.2.4",
-    "webpack": "5.92.0",
+    "webpack": "5.92.1",
     "yargs": "17.7.2"
   },
   "commitplease": {

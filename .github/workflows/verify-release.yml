@@ -1,0 +1,33 @@
+name: Reproducible Builds
+on:
+  # On tags
+  push:
+    tags:
+      - '*'
+  # Or manually
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to verify (>= 4.0.0-beta.2)'
+        required: false
+
+jobs:
+  run:
+    name: Verify release
+    runs-on: ubuntu-latest
+    # skip on forks
+    if: ${{ github.repository == 'jquery/jquery' }}
+    env:
+      NODE_VERSION: 20.x
+    steps:
+      - name: Checkout
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: npm run release:verify
+        env:
+          VERSION: ${{ github.event.inputs.version || github.ref_name }}
