@@ -11,6 +11,7 @@ module.exports = [
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
 			"external",
+			"tmp",
 			"test/data/json_obj.js",
 			"test/data/jquery-*.js",
 
@@ -264,8 +265,9 @@ module.exports = [
 
 	{
 		files: [
-			"build/**",
 			"eslint.config.js",
+			".release-it.js",
+			"build/**",
 			"test/node_smoke_tests/**",
 			"test/bundler_smoke_tests/**/*",
 			"test/promises_aplus_adapters/**",
@@ -292,6 +294,7 @@ module.exports = [
 
 	{
 		files: [
+			"build/**/*.js",
 			"**/*.mjs"
 		],
 		languageOptions: {

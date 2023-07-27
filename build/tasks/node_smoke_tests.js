@@ -1,13 +1,8 @@
-"use strict";
+import fs from "node:fs/promises";
+import util from "node:util";
+import { exec as nodeExec } from "node:child_process";
 
-const fs = require( "node:fs/promises" );
-const util = require( "node:util" );
-const exec = util.promisify( require( "node:child_process" ).exec );
-const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
-
-if ( !verifyNodeVersion() ) {
-	return;
-}
+const exec = util.promisify( nodeExec );
 
 // Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
 // All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code

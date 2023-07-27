@@ -1,7 +1,5 @@
-"use strict";
-
 // Process files for distribution.
-module.exports = function processForDist( text, filename ) {
+export default function processForDist( text, filename ) {
 	if ( !text ) {
 		throw new Error( "text required for processForDist" );
 	}
@@ -28,4 +26,4 @@ module.exports = function processForDist( text, filename ) {
 		}
 		throw new Error( message );
 	}
-};
+}

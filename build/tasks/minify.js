@@ -1,14 +1,12 @@
-"use strict";
-
-const UglifyJS = require( "uglify-js" );
-const fs = require( "node:fs/promises" );
-const path = require( "node:path" );
-const processForDist = require( "./dist" );
-const getTimestamp = require( "./lib/getTimestamp" );
+import fs from "node:fs/promises";
+import path from "node:path";
+import UglifyJS from "uglify-js";
+import processForDist from "./dist.js";
+import getTimestamp from "./lib/getTimestamp.js";
 
 const rjs = /\.js$/;
 
-module.exports = async function minify( { dir, filename } ) {
+export default async function minify( { dir, filename } ) {
 	const filepath = path.join( dir, filename );
 	const contents = await fs.readFile( filepath, "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
@@ -82,4 +80,4 @@ module.exports = async function minify( { dir, filename } ) {
 	console.log( `[${ getTimestamp() }] ${ minFilename } ${ version } with ${
 		mapFilename
 	} created.` );
-};
+}

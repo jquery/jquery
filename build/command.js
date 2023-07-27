@@ -1,8 +1,6 @@
-"use strict";
-
-const { build } = require( "./tasks/build" );
-const yargs = require( "yargs/yargs" );
-const slimExclude = require( "./tasks/lib/slim-exclude" );
+import yargs from "yargs/yargs";
+import { build } from "./tasks/build.js";
+import slimExclude from "./tasks/lib/slim-exclude.js";
 
 const argv = yargs( process.argv.slice( 2 ) )
 	.version( false )

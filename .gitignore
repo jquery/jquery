@@ -3,12 +3,12 @@
 *~
 *.diff
 *.patch
-/*.html
 .DS_Store
 .bower.json
 .sizecache.json
 yarn.lock
 .eslintcache
+tmp
 
 npm-debug.log*
 
@@ -23,6 +23,10 @@ npm-debug.log*
 /test/data/core/jquery-iterability-transpiled.js
 /test/data/qunit-fixture.js
 
-# Ignore BrowserStack files
+# Release artifacts
+changelog.html
+contributors.html
+
+# Ignore BrowserStack testing files
 local.log
 browserstack.err
