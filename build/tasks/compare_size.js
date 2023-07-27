@@ -1,8 +1,8 @@
-import chalk from "chalk";
 import fs from "node:fs/promises";
 import { promisify } from "node:util";
 import zlib from "node:zlib";
 import { exec as nodeExec } from "node:child_process";
+import chalk from "chalk";
 import isCleanWorkingDir from "./lib/isCleanWorkingDir.js";
 
 const VERSION = 1;

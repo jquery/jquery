@@ -1,6 +1,4 @@
-"use strict";
-
-const fs = require( "node:fs/promises" );
+import fs from "node:fs/promises";
 
 async function generateFixture() {
 	const fixture = await fs.readFile( "./test/data/qunit-fixture.html", "utf8" );
