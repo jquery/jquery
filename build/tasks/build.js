@@ -4,22 +4,21 @@
  * and includes/excludes specified modules
  */
 
-"use strict";
+import fs from  "node:fs/promises";
+import path from  "node:path";
+import util from  "node:util";
+import { exec as nodeExec } from "node:child_process";
+import * as rollup from  "rollup";
+import excludedFromSlim from  "./lib/slim-exclude.js";
+import rollupFileOverrides from  "./lib/rollupFileOverridesPlugin.js";
+import isCleanWorkingDir from  "./lib/isCleanWorkingDir.js";
+import processForDist from  "./dist.js";
+import minify from  "./minify.js";
+import getTimestamp from  "./lib/getTimestamp.js";
+import { compareSize } from "./lib/compareSize.js";
 
-const fs = require( "node:fs/promises" );
-const path = require( "node:path" );
-const util = require( "node:util" );
-const exec = util.promisify( require( "node:child_process" ).exec );
-const rollup = require( "rollup" );
-const excludedFromSlim = require( "./lib/slim-exclude" );
-const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
-const pkg = require( "../../package.json" );
-const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
-const processForDist = require( "./dist" );
-const minify = require( "./minify" );
-const getTimestamp = require( "./lib/getTimestamp" );
-const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
-const srcFolder = path.resolve( __dirname, "../../src" );
+const exec = util.promisify( nodeExec );
+const pkg = JSON.parse( await fs.readFile( "./package.json", "utf8" ) );
 
 const minimum = [ "core" ];
 
@@ -38,14 +37,14 @@ const removeWith = {
 };
 
 async function read( filename ) {
-	return fs.readFile( path.join( srcFolder, filename ), "utf8" );
+	return fs.readFile( path.join( "./src", filename ), "utf8" );
 }
 
 // Remove the src folder and file extension
 // and ensure unix-style path separators
 function moduleName( filename ) {
 	return filename
-		.replace( `${ srcFolder }${ path.sep }`, "" )
+		.replace( new RegExp( `.*\\${ path.sep }src\\${ path.sep }` ), "" )
 		.replace( /\.js$/, "" )
 		.split( path.sep )
 		.join( path.posix.sep );
@@ -54,7 +53,7 @@ function moduleName( filename ) {
 async function readdirRecursive( dir, all = [] ) {
 	let files;
 	try {
-		files = await fs.readdir( path.join( srcFolder, dir ), {
+		files = await fs.readdir( path.join( "./src", dir ), {
 			withFileTypes: true
 		} );
 	} catch ( e ) {
@@ -141,7 +140,15 @@ async function checkExclude( exclude, include ) {
 	return [ unique( excluded ), unique( included ) ];
 }
 
+async function getLastModifiedDate() {
+	const { stdout } = await exec( "git log -1 --format=\"%at\"" );
+	return new Date( parseInt( stdout, 10 ) * 1000 );
+}
+
 async function writeCompiled( { code, dir, filename, version } ) {
+
+	// Use the last modified date so builds are reproducible
+	const date = await getLastModifiedDate();
 	const compiledContents = code
 
 		// Embed Version
@@ -149,14 +156,14 @@ async function writeCompiled( { code, dir, filename, version } ) {
 
 		// Embed Date
 		// yyyy-mm-ddThh:mmZ
-		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+		.replace( /@DATE/g, date.toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 	await fs.writeFile( path.join( dir, filename ), compiledContents );
 	console.log( `[${ getTimestamp() }] ${ filename } v${ version } created.` );
 }
 
 // Build jQuery ECMAScript modules
-async function build( {
+export async function build( {
 	amd,
 	dir = "dist",
 	exclude = [],
@@ -206,7 +213,7 @@ async function build( {
 	if ( excluded.includes( "exports/global" ) ) {
 		const index = excluded.indexOf( "exports/global" );
 		setOverride(
-			`${ srcFolder }/exports/global.js`,
+			"./src/exports/global.js",
 			"import { jQuery } from \"../core.js\";\n\n" +
 				"jQuery.noConflict = function() {};"
 		);
@@ -225,7 +232,7 @@ async function build( {
 		// No name means an anonymous define
 		const amdExportContents = await read( "exports/amd.js" );
 		setOverride(
-			`${ srcFolder }/exports/amd.js`,
+			"./src/exports/amd.js",
 			amdExportContents.replace(
 
 				// Remove the comma for anonymous defines
@@ -248,7 +255,7 @@ async function build( {
 	}
 
 	const inputOptions = {
-		input: `${ srcFolder }/jquery.js`
+		input: "./src/jquery.js"
 	};
 
 	const includedImports = included
@@ -274,7 +281,7 @@ async function build( {
 	// Replace excluded modules with empty sources.
 	for ( const module of excluded ) {
 		setOverride(
-			`${ srcFolder }/${ module }.js`,
+			`./src/${ module }.js`,
 
 			// The `selector` module is not removed, but replaced
 			// with `selector-native`.
@@ -290,7 +297,7 @@ async function build( {
 			output: [ outputOptions ],
 			plugins: [ rollupFileOverrides( fileOverrides ) ],
 			watch: {
-				include: `${ srcFolder }/**`,
+				include: "./src/**",
 				skipWrite: true
 			}
 		} );
@@ -352,7 +359,7 @@ async function build( {
 	}
 }
 
-async function buildDefaultFiles( {
+export async function buildDefaultFiles( {
 	version = process.env.VERSION,
 	watch
 } = {} ) {
@@ -407,20 +414,16 @@ async function buildDefaultFiles( {
 		} )
 	] );
 
-	// Earlier Node.js versions do not support the ESM format.
-	if ( !verifyNodeVersion() ) {
-		return;
+	if ( watch ) {
+		console.log( "Watching files..." );
+	} else {
+		return compareSize( {
+			files: [
+				"dist/jquery.min.js",
+				"dist/jquery.slim.min.js",
+				"dist-module/jquery.module.min.js",
+				"dist-module/jquery.slim.module.min.js"
+			]
+		} );
 	}
-
-	const { compareSize } = await import( "./compare_size.mjs" );
-	return compareSize( {
-		files: [
-			"dist/jquery.min.js",
-			"dist/jquery.slim.min.js",
-			"dist-module/jquery.module.min.js",
-			"dist-module/jquery.slim.module.min.js"
-		]
-	} );
 }
-
-module.exports = { build, buildDefaultFiles };

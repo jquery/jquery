@@ -1,14 +1,12 @@
-"use strict";
-
-const swc = require( "@swc/core" );
-const fs = require( "node:fs/promises" );
-const path = require( "node:path" );
-const processForDist = require( "./dist" );
-const getTimestamp = require( "./lib/getTimestamp" );
+import fs from "node:fs/promises";
+import path from "node:path";
+import swc from "@swc/core";
+import processForDist from "./dist.js";
+import getTimestamp from "./lib/getTimestamp.js";
 
 const rjs = /\.js$/;
 
-module.exports = async function minify( { filename, dir, esm } ) {
+export default async function minify( { filename, dir, esm } ) {
 	const contents = await fs.readFile( path.join( dir, filename ), "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
 
@@ -67,4 +65,4 @@ module.exports = async function minify( { filename, dir, esm } ) {
 	console.log( `[${ getTimestamp() }] ${ minFilename } ${ version } with ${
 		mapFilename
 	} created.` );
-};
+}
