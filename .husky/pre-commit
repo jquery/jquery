@@ -2,4 +2,4 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 npm run lint
-npx grunt qunit_fixture
+npm run qunit-fixture

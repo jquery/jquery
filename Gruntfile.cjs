@@ -64,19 +64,6 @@ module.exports = function( grunt ) {
 				cache: "build/.sizecache.json"
 			}
 		},
-		babel: {
-			options: {
-				sourceMap: "inline",
-				retainLines: true,
-				plugins: [ "@babel/transform-for-of" ]
-			},
-			tests: {
-				files: {
-					"test/data/core/jquery-iterability-transpiled.js":
-						"test/data/core/jquery-iterability-transpiled-es6.js"
-				}
-			}
-		},
 		build: {
 			all: {
 				dest: "dist/jquery.js",
@@ -164,7 +151,6 @@ module.exports = function( grunt ) {
 					"external/npo/npo.js",
 					"external/requirejs/require.js",
 					"test/data/testinit.js",
-
 					"test/jquery.js",
 
 					{
@@ -322,7 +308,7 @@ module.exports = function( grunt ) {
 	} );
 
 	// Integrate jQuery specific tasks
-	grunt.loadTasks( "build/tasks" );
+	grunt.loadTasks( "build/grunt-tasks" );
 
 	grunt.registerTask( "print_old_node_message", ( ...args ) => {
 		var task = args.join( ":" );
@@ -357,13 +343,7 @@ module.exports = function( grunt ) {
 		nodeV17OrNewer ? "print_jsdom_message" : runIfNewNode( "karma:jsdom" )
 	] );
 
-	grunt.registerTask( "test:prepare", [
-		"qunit_fixture",
-		"babel:tests"
-	] );
-
 	grunt.registerTask( "test", [
-		"test:prepare",
 		"test:fast",
 		"test:slow"
 	] );
@@ -372,13 +352,11 @@ module.exports = function( grunt ) {
 		"build:*:*",
 		"newer:minify",
 		"dist:*",
-		"qunit_fixture",
 		"compare_size"
 	] );
 
 	grunt.registerTask( "default", [
 		"build-all-variants",
-		"test:prepare",
 		"test:fast",
 		"compare_size"
 	] );
