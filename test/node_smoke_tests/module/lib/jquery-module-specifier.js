@@ -5,6 +5,11 @@ const dirname = path.dirname( fileURLToPath( import.meta.url ) );
 
 const ROOT_DIR = path.resolve( dirname, "..", "..", "..", ".." );
 
+// import does not work with Windows-style paths
+function ensureUnixPath( path ) {
+	return path.replace( /^[a-z]:/i, "" ).replace( /\\+/g, "/" );
+}
+
 // If `jQueryModuleSpecifier` is a real relative path, make it absolute
 // to make sure it resolves to the same file inside utils from
 // a subdirectory. Otherwise, leave it as-is as we may be testing `exports`
@@ -16,6 +21,6 @@ export const getJQueryModuleSpecifier = () => {
 	}
 
 	return jQueryModuleInputSpecifier.startsWith( "." ) ?
-		path.resolve( ROOT_DIR, jQueryModuleInputSpecifier ) :
+		ensureUnixPath( path.resolve( ROOT_DIR, jQueryModuleInputSpecifier ) ) :
 		jQueryModuleInputSpecifier;
 };

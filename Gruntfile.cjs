@@ -333,7 +333,6 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
 	} );
 
-	grunt.registerTask( "test:fast", [ "node_smoke_tests:commonjs:jquery" ] );
 	grunt.registerTask( "test:slow", [
 		runIfNewNode( "promises_aplus_tests" ),
 
@@ -344,7 +343,6 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "test", [
-		"test:fast",
 		"test:slow"
 	] );
 
@@ -357,7 +355,6 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "default", [
 		"build-all-variants",
-		"test:fast",
 		"compare_size"
 	] );
 };
