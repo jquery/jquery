@@ -333,8 +333,7 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
 	} );
 
-	grunt.registerTask( "test:slow", [
-		runIfNewNode( "promises_aplus_tests" ),
+	grunt.registerTask( "test:jsdom", [
 
 		// Support: Node.js 17+
 		// jsdom fails to connect to the Karma server in Node 17+.
@@ -343,7 +342,7 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "test", [
-		"test:slow"
+		"test:jsdom"
 	] );
 
 	grunt.registerTask( "dev", [
