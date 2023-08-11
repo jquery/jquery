@@ -34,7 +34,8 @@ module.exports = ( grunt ) => {
 					}
 				);
 
-				grunt.file.write( dest, code );
+				// Can't seem to get SWC to not use CRLF on Windows, so replace them with LF.
+				grunt.file.write( dest, code.replace( /\r\n/g, "\n" ) );
 
 				if ( sourceMapFilename ) {
 
