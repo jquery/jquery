@@ -1,0 +1,54 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    branches: [3.x-stable]
+    inputs:
+      args:
+        description: "Arguments for npm run release"
+        required: false
+        default: ""
+      blog_url:
+        description: "Blog URL for the dist repo"
+        required: false
+        default: ""
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: git config
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+      - run: npm install -g npm
+      - run: npm run release -- {{ github.event.inputs.args }}
+        env:
+          BLOG_URL: ${{ github.events.inputs.blog_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: changelog
+          path: |
+            changelog.md
+            changelog.html
+      - uses: actions/upload-artifact@v3
+        with:
+          name: google-cdn
+          path: cdn/unversioned/googlecdn-jquery-*.zip
+      - uses: actions/upload-artifact@v3
+        with:
+          name: microsoft-cdn
+          path: cdn/versioned/mscdn-jquery-*.zip

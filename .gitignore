@@ -9,6 +9,10 @@
 .sizecache.json
 yarn.lock
 package-lock.json
+changelog.*
+/.dist
+/.cdn
+/cdn
 
 npm-debug.log*
 
