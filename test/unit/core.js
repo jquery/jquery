@@ -15,9 +15,9 @@ QUnit.test( "jQuery()", function( assert ) {
 
 	var elem, i,
 		obj = jQuery( "div" ),
-		code = jQuery( "<code/>" ),
+		code = jQuery( "<code></code>" ),
 		img = jQuery( "<img/>" ),
-		div = jQuery( "<div/><hr/><code/><b/>" ),
+		div = jQuery( "<div></div><hr/><code></code><b/>" ),
 		exec = false,
 		expected = 23,
 		attrObj = {
@@ -104,7 +104,7 @@ QUnit.test( "jQuery()", function( assert ) {
 	elem = jQuery( "\n\n<em>world</em>" )[ 0 ];
 	assert.equal( elem.nodeName.toLowerCase(), "em", "leading newlines" );
 
-	elem = jQuery( "<div/>", attrObj );
+	elem = jQuery( "<div></div>", attrObj );
 
 	if ( jQuery.fn.width ) {
 		assert.equal( elem[ 0 ].style.width, "10px", "jQuery() quick setter width" );
