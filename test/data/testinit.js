@@ -16,12 +16,12 @@ var FILEPATH = "/test/data/testinit.js",
 	supportjQuery = this.jQuery,
 
 	// NOTE: keep it in sync with build/tasks/lib/slim-build-flags.js
-	slimBuildFlags = [
-		"-ajax",
-		"-callbacks",
-		"-deferred",
-		"-effects",
-		"-queue"
+	excludedFromSlim = [
+		"ajax",
+		"callbacks",
+		"deferred",
+		"effects",
+		"queue"
 	];
 
 // see RFC 2606
@@ -322,7 +322,7 @@ this.includesModule = function( moduleName ) {
 
 		// The module is included if it does NOT exist on the list
 		// of modules excluded in the slim build
-		return slimBuildFlags.indexOf( "-" + moduleName ) === -1;
+		return excludedFromSlim.indexOf( moduleName ) === -1;
 	}
 
 	// example version for `npm run build -- -e deprecated`:

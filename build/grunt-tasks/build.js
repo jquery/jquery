@@ -10,8 +10,8 @@ module.exports = function( grunt ) {
 	const fs = require( "fs" );
 	const path = require( "path" );
 	const rollup = require( "rollup" );
-	const slimBuildFlags = require( "./lib/slim-build-flags" );
-	const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
+	const slimBuildFlags = require( "../tasks/lib/slim-exclude" ).map( ( flag ) => `-${flag}` );
+	const rollupFileOverrides = require( "../tasks/lib/rollup-plugin-file-overrides" );
 	const srcFolder = path.resolve( `${ __dirname }/../../src` );
 	const read = function( fileName ) {
 		return grunt.file.read( `${ srcFolder }/${ fileName }` );

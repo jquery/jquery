@@ -32,8 +32,8 @@
   "main": "dist/jquery.js",
   "scripts": {
     "babel:tests": "babel test/data/core/jquery-iterability-transpiled-es6.js --out-file test/data/core/jquery-iterability-transpiled.js",
-    "build": "npm install && npm run build-all-variants",
-    "build-all-variants": "grunt custom:slim --esm --filename=jquery.slim.module.js && grunt custom --esm --filename=jquery.module.js && grunt custom:slim --filename=jquery.slim.js && grunt custom",
+    "build": "node ./build/command.js",
+    "build-all-variants": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\"",
     "jenkins": "npm run test:browserless",
     "lint:dev": "eslint --cache .",
     "lint:json": "jsonlint --quiet package.json",
@@ -122,7 +122,8 @@
     "rollup": "2.21.0",
     "sinon": "7.3.1",
     "strip-json-comments": "3.1.1",
-    "testswarm": "1.1.2"
+    "testswarm": "1.1.2",
+    "yargs": "17.7.2"
   },
   "commitplease": {
     "nohook": true,
