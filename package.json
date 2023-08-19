@@ -33,7 +33,8 @@
   "scripts": {
     "babel:tests": "babel test/data/core/jquery-iterability-transpiled-es6.js --out-file test/data/core/jquery-iterability-transpiled.js",
     "build": "node ./build/command.js",
-    "build-all-variants": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\" && npm run minify",
+    "build-all-variants": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\" && npm run minify && npm run dist",
+    "dist": "node ./build/tasks/dist.js",
     "jenkins": "npm run test:browserless",
     "lint:dev": "eslint --cache .",
     "lint:json": "jsonlint --quiet package.json",
