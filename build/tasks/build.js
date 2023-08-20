@@ -15,6 +15,9 @@ const excludedFromSlim = require( "./lib/slim-exclude" );
 const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
 const pkg = require( "../../package.json" );
 const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
+const { minify } = require( "./minify" );
+const dist = require( "./dist" );
+const getTimestamp = require( "./lib/getTimestamp" );
 const srcFolder = path.resolve( __dirname, "../../src" );
 
 const minimum = [ "core" ];
@@ -37,10 +40,10 @@ async function read( filename ) {
 	return fs.promises.readFile( path.join( srcFolder, filename ), "utf8" );
 }
 
-async function readdirRecursive( folder, all = [] ) {
+async function readdirRecursive( dir, all = [] ) {
 	let files;
 	try {
-		files = await fs.promises.readdir( path.join( srcFolder, folder ), {
+		files = await fs.promises.readdir( path.join( srcFolder, dir ), {
 			withFileTypes: true
 		} );
 	} catch ( e ) {
@@ -48,7 +51,7 @@ async function readdirRecursive( folder, all = [] ) {
 	}
 	for ( const file of files ) {
 		if ( file.isDirectory() ) {
-			all = all.concat( await readdirRecursive( path.join( folder, file.name ) ) );
+			all = all.concat( await readdirRecursive( path.join( dir, file.name ) ) );
 		} else {
 			all.push(
 				path
@@ -101,12 +104,12 @@ async function checkExclude( exclude, include ) {
 			throw new Error( `Module \"${module}\" is a minimum requirement.` );
 		}
 
-		// Exclude all files in the folder of the same name
+		// Exclude all files in the dir of the same name
 		// These are the removable dependencies
 		// It's fine if the directory is not there
 		// `selector` is a special case as we don't just remove
 		// the module, but we replace it with `selector-native`
-		// which re-uses parts of the `src/selector` folder.
+		// which re-uses parts of the `src/selector` dir.
 		if ( module !== "selector" ) {
 			const files = await readdirRecursive( module );
 			excluded.push( ...files );
@@ -127,16 +130,36 @@ async function checkExclude( exclude, include ) {
 	return [ excluded, included ];
 }
 
+async function writeCompiled( { code, dir, filename, version } ) {
+	const compiledContents = code
+
+		// Embed Version
+		.replace( /@VERSION/g, version )
+
+		// Embed Date
+		// yyyy-mm-ddThh:mmZ
+		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+
+	await fs.promises.writeFile(
+		path.join( dir, filename ),
+		compiledContents
+	);
+	console.log(
+		`[${getTimestamp()}] ${filename} v${version} created.`
+	);
+}
+
 // Build jQuery ECMAScript modules
 async function build( {
 	amdName,
-	distFolder = "dist",
+	dir = "dist",
 	exclude = [],
 	filename = "jquery.js",
 	include = [],
 	esm = false,
 	slim = false,
-	version
+	version,
+	watch = false
 } = {} ) {
 	const pureSlim = slim && !exclude.length && !include.length;
 
@@ -153,14 +176,13 @@ async function build( {
 		version += "+slim";
 	}
 
-	await fs.promises.mkdir( distFolder, { recursive: true } );
+	await fs.promises.mkdir( dir, { recursive: true } );
 
 	// Exclude slim modules when slim is true
 	const [ excluded, included ] = await checkExclude(
 		slim ? exclude.concat( excludedFromSlim ) : exclude,
 		include
 	);
-	const rollupOptions = {};
 
 	// Replace exports/global with a noop noConflict
 	if ( excluded.includes( "exports/global" ) ) {
@@ -207,7 +229,9 @@ async function build( {
 		version += " +" + included.join( ",+" );
 	}
 
-	rollupOptions.input = `${srcFolder}/jquery.js`;
+	const inputOptions = {
+		input: `${srcFolder}/jquery.js`
+	};
 
 	const includedImports = included
 		.map( ( module ) => `import "./${module}.js";` )
@@ -217,13 +241,13 @@ async function build( {
 	if ( include.length ) {
 
 		// If include is specified, only add those modules.
-		setOverride( rollupOptions.input, includedImports );
+		setOverride( inputOptions.input, includedImports );
 	} else {
 
 		// Remove the jQuery export from the entry file, we'll use our own
 		// custom wrapper.
 		setOverride(
-			rollupOptions.input,
+			inputOptions.input,
 			jQueryFileContents.replace( /\n*export \{ jQuery, jQuery as \$ };\n*/, "\n" ) +
 				includedImports
 		);
@@ -241,48 +265,76 @@ async function build( {
 	}
 
 	const bundle = await rollup.rollup( {
-		...rollupOptions,
+		...inputOptions,
 		plugins: [ rollupFileOverrides( fileOverrides ) ]
 	} );
 
-	const outputRollupOptions = await getOutputRollupOptions( { esm } );
+	const outputOptions = await getOutputRollupOptions( { esm } );
 
-	const {
-		output: [ { code } ]
-	} = await bundle.generate( outputRollupOptions );
+	// Minify and run dist and running watch task.
+	// Otherwise, just run the build.
+	if ( watch ) {
+		const watcher = rollup.watch( {
+			...inputOptions,
+			output: [ outputOptions ],
+			plugins: [ rollupFileOverrides( fileOverrides ) ],
+			watch: {
+				include: `${srcFolder}/**`,
+				skipWrite: true
+			}
+		} );
 
-	const compiledContents = code
+		watcher.on( "event", async( event ) => {
+			switch ( event.code ) {
+				case "ERROR":
+					console.error( event.error );
+					break;
+				case "BUNDLE_END":
+					const {
+						output: [ { code } ]
+					} = await event.result.generate( outputOptions );
 
-		// Embed Version
-		.replace( /@VERSION/g, version )
+					await writeCompiled( {
+						code,
+						dir,
+						filename,
+						version
+					} );
 
-		// Embed Date
-		// yyyy-mm-ddThh:mmZ
-		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+					await minify( { dir, filename, esm } );
+					await dist( { dir, filename } );
+					break;
+			}
+		} );
 
-	await fs.promises.writeFile(
-		path.join( distFolder, filename ),
-		compiledContents
-	);
-	console.log( `${filename} v${version} created.` );
+		return watcher;
+	} else {
+		const {
+			output: [ { code } ]
+		} = await bundle.generate( outputOptions );
+
+		return writeCompiled( { code, dir, filename, version } );
+	}
 }
 
-function buildDefaultFiles( version ) {
+function buildDefaultFiles( { version, watch } = {} ) {
 	return Promise.all( [
-		build( { version } ),
-		build( { filename: "jquery.slim.js", slim: true, version } ),
+		build( { version, watch } ),
+		build( { filename: "jquery.slim.js", slim: true, version, watch } ),
 		build( {
-			distFolder: "dist-module",
+			dir: "dist-module",
 			filename: "jquery.module.js",
 			esm: true,
-			version
+			version,
+			watch
 		} ),
 		build( {
-			distFolder: "dist-module",
+			dir: "dist-module",
 			filename: "jquery.slim.module.js",
 			esm: true,
 			slim: true,
-			version
+			version,
+			watch
 		} )
 	] );
 }

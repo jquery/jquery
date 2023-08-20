@@ -5,12 +5,12 @@ const fs = require( "fs" );
 // Process files for distribution.
 module.exports = async function dist( {
 	filename = "jquery.js",
-	folder = "dist"
+	dir = "dist"
 } = {} ) {
 	const distPaths = [
-		`${folder}/${filename}`,
-		`${folder}/${filename.replace( ".js", ".min.js" )}`,
-		`${folder}/${filename.replace( ".js", ".min.map" )}`
+		`${dir}/${filename}`,
+		`${dir}/${filename.replace( ".js", ".min.js" )}`,
+		`${dir}/${filename.replace( ".js", ".min.map" )}`
 	];
 
 	// Ensure the dist files are pure ASCII

@@ -16,11 +16,11 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description:
 			"Set the filename of the built file. Defaults to jquery.js."
 	} )
-	.option( "dist-folder", {
+	.option( "dir", {
 		alias: "d",
 		type: "string",
 		description:
-			"Set the folder to output the built file to. Defaults to /dist."
+			"Set the dir to which to output the built file. Defaults to /dist."
 	} )
 	.option( "version", {
 		alias: "v",
@@ -29,6 +29,12 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Set the version to include in the built file. " +
 			"Defaults to the version in package.json plus the " +
 			"short commit SHA and any excluded modules."
+	} )
+	.option( "watch", {
+		alias: "w",
+		type: "boolean",
+		description:
+			"Watch the source files and rebuild when they change."
 	} )
 	.option( "exclude", {
 		alias: "e",

@@ -4,11 +4,12 @@ const swc = require( "@swc/core" );
 const fs = require( "fs" );
 const path = require( "path" );
 const dist = require( "./dist" );
+const getTimestamp = require( "./lib/getTimestamp" );
 
 const rjs = /\.js$/;
 
-async function minify( { filename, folder, esm } ) {
-	const contents = await fs.promises.readFile( path.join( folder, filename ), "utf8" );
+async function minify( { filename, dir, esm } ) {
+	const contents = await fs.promises.readFile( path.join( dir, filename ), "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
 
 	const { code, map: incompleteMap } = await swc.minify(
@@ -47,33 +48,32 @@ async function minify( { filename, folder, esm } ) {
 
 	await Promise.all( [
 		fs.promises.writeFile(
-			path.join( folder, minFilename ),
+			path.join( dir, minFilename ),
 			code
 		),
 		fs.promises.writeFile(
-			path.join( folder, mapFilename ),
+			path.join( dir, mapFilename ),
 			map
 		)
 	] );
 
-
-	console.log( `${minFilename} ${version} with ${mapFilename} created.` );
+	console.log( `[${getTimestamp()}] ${minFilename} ${version} with ${mapFilename} created.` );
 }
 
 async function minifyDefaultFiles() {
 
 	await Promise.all( [
-		minify( { filename: "jquery.js", folder: "dist" } ),
-		minify( { filename: "jquery.slim.js", folder: "dist" } ),
-		minify( { filename: "jquery.module.js", folder: "dist-module", esm: true } ),
-		minify( { filename: "jquery.slim.module.js", folder: "dist-module", esm: true } )
+		minify( { filename: "jquery.js", dir: "dist" } ),
+		minify( { filename: "jquery.slim.js", dir: "dist" } ),
+		minify( { filename: "jquery.module.js", dir: "dist-module", esm: true } ),
+		minify( { filename: "jquery.slim.module.js", dir: "dist-module", esm: true } )
 	] );
 
 	await Promise.all( [
-		dist( { filename: "jquery.js", folder: "dist" } ),
-		dist( { filename: "jquery.slim.js", folder: "dist" } ),
-		dist( { filename: "jquery.module.js", folder: "dist-module" } ),
-		dist( { filename: "jquery.slim.module.js", folder: "dist-module" } )
+		dist( { filename: "jquery.js", dir: "dist" } ),
+		dist( { filename: "jquery.slim.js", dir: "dist" } ),
+		dist( { filename: "jquery.module.js", dir: "dist-module" } ),
+		dist( { filename: "jquery.slim.module.js", dir: "dist-module" } )
 	] );
 
 	const { compareSize } = await import( "./compare_size.mjs" );

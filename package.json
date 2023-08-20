@@ -43,7 +43,7 @@
     "prepare": "husky install",
     "pretest": "npm run qunit-fixture && npm run babel:tests && npm run npmcopy",
     "qunit-fixture": "node build/tasks/qunit-fixture.js",
-    "start": "grunt watch",
+    "start": "node -e \"require('./build/tasks/build.js').buildDefaultFiles({ watch: true })\"",
     "test:browserless": "npm run test:node_smoke_tests && npm run test:promises_aplus && grunt test:jsdom",
     "test:browser": "grunt karma:main",
     "test:esmodules": "grunt karma:esmodules",
