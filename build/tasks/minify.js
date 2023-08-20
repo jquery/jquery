@@ -3,6 +3,7 @@
 const swc = require( "@swc/core" );
 const fs = require( "fs" );
 const path = require( "path" );
+const dist = require( "./dist" );
 
 const rjs = /\.js$/;
 
@@ -44,7 +45,7 @@ async function minify( { filename, folder, esm } ) {
 		sources: [ filename ]
 	} );
 
-	return Promise.all( [
+	await Promise.all( [
 		fs.promises.writeFile(
 			path.join( folder, minFilename ),
 			code
@@ -54,15 +55,36 @@ async function minify( { filename, folder, esm } ) {
 			map
 		)
 	] );
+
+
+	console.log( `${minFilename} ${version} with ${mapFilename} created.` );
 }
 
-function minifyDefaultFiles() {
-	return Promise.all( [
+async function minifyDefaultFiles() {
+
+	await Promise.all( [
 		minify( { filename: "jquery.js", folder: "dist" } ),
 		minify( { filename: "jquery.slim.js", folder: "dist" } ),
 		minify( { filename: "jquery.module.js", folder: "dist-module", esm: true } ),
 		minify( { filename: "jquery.slim.module.js", folder: "dist-module", esm: true } )
 	] );
+
+	await Promise.all( [
+		dist( { filename: "jquery.js", folder: "dist" } ),
+		dist( { filename: "jquery.slim.js", folder: "dist" } ),
+		dist( { filename: "jquery.module.js", folder: "dist-module" } ),
+		dist( { filename: "jquery.slim.module.js", folder: "dist-module" } )
+	] );
+
+	const { compareSize } = await import( "./compare_size.mjs" );
+	return compareSize( {
+		files: [
+			"dist/jquery.min.js",
+			"dist/jquery.slim.min.js",
+			"dist-module/jquery.module.min.js",
+			"dist-module/jquery.slim.module.min.js"
+		]
+	} );
 }
 
-minifyDefaultFiles();
+module.exports = { minify, minifyDefaultFiles };

@@ -37,7 +37,7 @@ function compareSizes( existing, current, padLength ) {
 	return chalk.green( `${delta}`.padStart( padLength ) );
 }
 
-async function compareSize( { cache = ".sizecache.json", files } = {} ) {
+export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	if ( !files || !files.length ) {
 		throw new Error( "No files specified" );
 	}
@@ -49,7 +49,13 @@ async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	let gzPadLength = 0;
 	const results = await Promise.all(
 		files.map( async function( filename ) {
-			const contents = await fs.promises.readFile( filename, "utf8" );
+
+			let contents = await fs.promises.readFile( filename, "utf8" );
+
+			// Remove the banner for size comparisons.
+			// The version string can vary widely by short SHA.
+			contents = contents.replace( /\/\*\! jQuery[^\n]+/, "" );
+
 			const size = Buffer.byteLength( contents, "utf8" );
 			const gzippedSize = ( await gzip( contents ) ).length;
 
@@ -120,12 +126,3 @@ async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 	return results;
 }
-
-compareSize( {
-	files: [
-		"dist/jquery.min.js",
-		"dist/jquery.slim.min.js",
-		"dist-module/jquery.module.min.js",
-		"dist-module/jquery.slim.module.min.js"
-	]
-} );

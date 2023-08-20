@@ -39,7 +39,7 @@
     "lint:json": "jsonlint --quiet package.json",
     "lint": "concurrently -r \"npm:lint:dev\" \"npm:lint:json\"",
     "npmcopy": "node build/tasks/npmcopy.js",
-    "minify": "node build/tasks/minify.js && node ./build/tasks/dist.js && node build/tasks/compare_size.mjs",
+    "minify": "node -e \"require('./build/tasks/minify.js').minifyDefaultFiles()\"",
     "prepare": "husky install",
     "pretest": "npm run qunit-fixture && npm run babel:tests && npm run npmcopy",
     "qunit-fixture": "node build/tasks/qunit-fixture.js",

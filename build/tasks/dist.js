@@ -3,14 +3,14 @@
 const fs = require( "fs" );
 
 // Process files for distribution.
-async function dist( {
+module.exports = async function dist( {
 	filename = "jquery.js",
-	distFolder = "dist"
+	folder = "dist"
 } = {} ) {
 	const distPaths = [
-		`${distFolder}/${filename}`,
-		`${distFolder}/${filename.replace( ".js", ".min.js" )}`,
-		`${distFolder}/${filename.replace( ".js", ".min.map" )}`
+		`${folder}/${filename}`,
+		`${folder}/${filename.replace( ".js", ".min.js" )}`,
+		`${folder}/${filename.replace( ".js", ".min.map" )}`
 	];
 
 	// Ensure the dist files are pure ASCII
@@ -38,15 +38,4 @@ async function dist( {
 	} );
 
 	return Promise.all( promises );
-}
-
-function prepareDefaultFiles() {
-	return Promise.all( [
-		dist(),
-		dist( { filename: "jquery.slim.js" } ),
-		dist( { filename: "jquery.module.js", distFolder: "dist-module" } ),
-		dist( { filename: "jquery.slim.module.js", distFolder: "dist-module" } )
-	] );
-}
-
-prepareDefaultFiles();
+};
