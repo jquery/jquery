@@ -15,8 +15,7 @@ const excludedFromSlim = require( "./lib/slim-exclude" );
 const rollupFileOverrides = require( "./lib/rollup-plugin-file-overrides" );
 const pkg = require( "../../package.json" );
 const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
-const { minify } = require( "./minify" );
-const dist = require( "./dist" );
+const minify = require( "./minify" );
 const getTimestamp = require( "./lib/getTimestamp" );
 const srcFolder = path.resolve( __dirname, "../../src" );
 
@@ -40,6 +39,16 @@ async function read( filename ) {
 	return fs.promises.readFile( path.join( srcFolder, filename ), "utf8" );
 }
 
+// Remove the src folder and file extension
+// and ensure unix-style path separators
+function moduleName( filename ) {
+	return filename
+		.replace( `${srcFolder}${path.sep}`, "" )
+		.replace( /\.js$/, "" )
+		.split( path.sep )
+		.join( path.posix.sep );
+}
+
 async function readdirRecursive( dir, all = [] ) {
 	let files;
 	try {
@@ -50,15 +59,12 @@ async function readdirRecursive( dir, all = [] ) {
 		return all;
 	}
 	for ( const file of files ) {
+		const filepath = path.join( dir, file.name );
+
 		if ( file.isDirectory() ) {
-			all = all.concat( await readdirRecursive( path.join( dir, file.name ) ) );
+			all.push( ...( await readdirRecursive( filepath ) ) );
 		} else {
-			all.push(
-				path
-					.join( file.path, file.name )
-					.replace( `${srcFolder}/`, "" )
-					.replace( /\.js$/, "" )
-			);
+			all.push( moduleName( filepath ) );
 		}
 	}
 	return all;
@@ -95,6 +101,10 @@ function setOverride( filePath, source ) {
 	fileOverrides.set( path.resolve( filePath ), source );
 }
 
+function unique( array ) {
+	return [ ...new Set( array ) ];
+}
+
 async function checkExclude( exclude, include ) {
 	const included = [ ...include ];
 	const excluded = [ ...exclude ];
@@ -118,16 +128,16 @@ async function checkExclude( exclude, include ) {
 		// Check removeWith list
 		const additional = removeWith[ module ];
 		if ( additional ) {
-			const toRemove = additional.remove || additional;
-			const files = await readdirRecursive( toRemove );
-			excluded.push( ...files, ...toRemove );
-			if ( additional.include ) {
-				included.push( ...additional.include );
-			}
+			const [ additionalExcluded, additionalIncluded ] = await checkExclude(
+				additional.remove || additional,
+				additional.include || []
+			);
+			excluded.push( ...additionalExcluded );
+			included.push( ...additionalIncluded );
 		}
 	}
 
-	return [ excluded, included ];
+	return [ unique( excluded ), unique( included ) ];
 }
 
 async function writeCompiled( { code, dir, filename, version } ) {
@@ -140,18 +150,13 @@ async function writeCompiled( { code, dir, filename, version } ) {
 		// yyyy-mm-ddThh:mmZ
 		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
-	await fs.promises.writeFile(
-		path.join( dir, filename ),
-		compiledContents
-	);
-	console.log(
-		`[${getTimestamp()}] ${filename} v${version} created.`
-	);
+	await fs.promises.writeFile( path.join( dir, filename ), compiledContents );
+	console.log( `[${getTimestamp()}] ${filename} v${version} created.` );
 }
 
 // Build jQuery ECMAScript modules
 async function build( {
-	amdName,
+	amd,
 	dir = "dist",
 	exclude = [],
 	filename = "jquery.js",
@@ -196,9 +201,9 @@ async function build( {
 	}
 
 	// Set a desired AMD name.
-	if ( amdName != null ) {
-		if ( amdName ) {
-			console.log( "Naming jQuery with AMD name: " + amdName );
+	if ( amd != null ) {
+		if ( amd ) {
+			console.log( "Naming jQuery with AMD name: " + amd );
 		} else {
 			console.log( "AMD name now anonymous" );
 		}
@@ -212,7 +217,7 @@ async function build( {
 
 				// Remove the comma for anonymous defines
 				/(\s*)"jquery"(,\s*)/,
-				amdName ? `$1\"${amdName}\"$2` : " "
+				amd ? `$1\"${amd}\"$2` : " "
 			)
 		);
 	}
@@ -224,7 +229,7 @@ async function build( {
 		version += " -" + excluded.join( ",-" );
 	}
 
-	// Do the same for included modules.
+	// Append extra included modules to version.
 	if ( !pureSlim && included.length ) {
 		version += " +" + included.join( ",+" );
 	}
@@ -271,8 +276,6 @@ async function build( {
 
 	const outputOptions = await getOutputRollupOptions( { esm } );
 
-	// Minify and run dist and running watch task.
-	// Otherwise, just run the build.
 	if ( watch ) {
 		const watcher = rollup.watch( {
 			...inputOptions,
@@ -302,7 +305,6 @@ async function build( {
 					} );
 
 					await minify( { dir, filename, esm } );
-					await dist( { dir, filename } );
 					break;
 			}
 		} );
@@ -313,12 +315,13 @@ async function build( {
 			output: [ { code } ]
 		} = await bundle.generate( outputOptions );
 
-		return writeCompiled( { code, dir, filename, version } );
+		await writeCompiled( { code, dir, filename, version } );
+		await minify( { dir, filename, esm } );
 	}
 }
 
-function buildDefaultFiles( { version, watch } = {} ) {
-	return Promise.all( [
+async function buildDefaultFiles( { version, watch } = {} ) {
+	await Promise.all( [
 		build( { version, watch } ),
 		build( { filename: "jquery.slim.js", slim: true, version, watch } ),
 		build( {
@@ -337,6 +340,16 @@ function buildDefaultFiles( { version, watch } = {} ) {
 			watch
 		} )
 	] );
+
+	const { compareSize } = await import( "./compare_size.mjs" );
+	return compareSize( {
+		files: [
+			"dist/jquery.min.js",
+			"dist/jquery.slim.min.js",
+			"dist-module/jquery.module.min.js",
+			"dist-module/jquery.slim.module.min.js"
+		]
+	} );
 }
 
 module.exports = { build, buildDefaultFiles };

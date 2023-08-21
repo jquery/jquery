@@ -3,12 +3,12 @@
 const swc = require( "@swc/core" );
 const fs = require( "fs" );
 const path = require( "path" );
-const dist = require( "./dist" );
+const processForDist = require( "./dist" );
 const getTimestamp = require( "./lib/getTimestamp" );
 
 const rjs = /\.js$/;
 
-async function minify( { filename, dir, esm } ) {
+module.exports = async function minify( { filename, dir, esm } ) {
 	const contents = await fs.promises.readFile( path.join( dir, filename ), "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
 
@@ -57,34 +57,11 @@ async function minify( { filename, dir, esm } ) {
 		)
 	] );
 
+	// Always process files for dist
+	// Doing it here avoids extra file reads
+	processForDist( contents, filename );
+	processForDist( code, minFilename );
+	processForDist( map, mapFilename );
+
 	console.log( `[${getTimestamp()}] ${minFilename} ${version} with ${mapFilename} created.` );
-}
-
-async function minifyDefaultFiles() {
-
-	await Promise.all( [
-		minify( { filename: "jquery.js", dir: "dist" } ),
-		minify( { filename: "jquery.slim.js", dir: "dist" } ),
-		minify( { filename: "jquery.module.js", dir: "dist-module", esm: true } ),
-		minify( { filename: "jquery.slim.module.js", dir: "dist-module", esm: true } )
-	] );
-
-	await Promise.all( [
-		dist( { filename: "jquery.js", dir: "dist" } ),
-		dist( { filename: "jquery.slim.js", dir: "dist" } ),
-		dist( { filename: "jquery.module.js", dir: "dist-module" } ),
-		dist( { filename: "jquery.slim.module.js", dir: "dist-module" } )
-	] );
-
-	const { compareSize } = await import( "./compare_size.mjs" );
-	return compareSize( {
-		files: [
-			"dist/jquery.min.js",
-			"dist/jquery.slim.min.js",
-			"dist-module/jquery.module.min.js",
-			"dist-module/jquery.slim.module.min.js"
-		]
-	} );
-}
-
-module.exports = { minify, minifyDefaultFiles };
+};

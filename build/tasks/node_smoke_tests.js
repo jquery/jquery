@@ -27,14 +27,12 @@ async function runTests() {
 				`Usage: \`node_smoke_tests [${allowedModules.join( "|" )}]:JQUERY\``
 			);
 		}
-		const files = await fs.promises.readdir(
-			`./test/node_smoke_tests/${moduleType}`,
-			{ withFileTypes: true }
-		);
+		const dir = `./test/node_smoke_tests/${moduleType}`;
+		const files = await fs.promises.readdir( dir, { withFileTypes: true } );
 		const testFiles = files.filter( ( testFilePath ) => testFilePath.isFile() );
 		return Promise.all(
 			testFiles.map( ( testFile ) =>
-				exec( `node "${testFile.path}/${testFile.name}" "${module}"` )
+				exec( `node "${dir}/${testFile.name}" "${module}"` )
 			)
 		);
 	} );

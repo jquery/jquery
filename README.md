@@ -47,41 +47,47 @@ How to build your own jQuery
 
 First, [clone the jQuery git repo](https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository).
 
-Then, enter the jquery directory and run the build script:
+Then, enter the jquery directory, install dependencies, and run the build script:
+
 ```bash
-cd jquery && npm run build
-```
-The built version of jQuery will be put in the `dist/` subdirectory, along with the minified copy and associated map file.
-
-If you want to create custom build or help with jQuery development, it would be better to install [grunt command line interface](https://github.com/gruntjs/grunt-cli) as a global package:
-
-```
-npm install -g grunt-cli
-```
-Make sure you have `grunt` installed by testing:
-```
-grunt -V
+cd jquery
+npm install
+npm run build
 ```
 
-Now by running the `grunt` command, in the jquery directory, you can build a full version of jQuery, just like with an `npm run build` command:
-```
-grunt
+The built version of jQuery will be placed in the `dist/` directory, along with a minified copy and associated map file.
+
+## Build all jQuery release files
+
+To build all variants of jQuery, run the following command:
+
+```bash
+npm run build-all-variants
 ```
 
-There are many other tasks available for jQuery Core:
-```
-grunt -help
+This will create all of the variants that jQuery includes in a release, including `jquery.js`, `jquery.slim.js`, `jquery.module.js`, and `jquery.slim.module.js` along their associated minified files and sourcemaps.
+
+`jquery.module.js` and `jquery.slim.module.js` are [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) that export `jQuery` and `$` as named exports are placed in the `dist-module/` directory rather than the `dist/` directory.
+
+## Building a Custom jQuery
+
+The build script can be used to create a custom version of jQuery that includes only the modules you need.
+
+Any module may be excluded except for `core`. When excluding `selector`, it is not removed but replaced with a small wrapper around native `querySelectorAll` (see below for more information).
+
+### Build Script Help
+
+To see the full list of available options for the build script, run the following:
+
+```bash
+npm run build -- --help
 ```
 
 ### Modules
 
-Special builds can be created that exclude subsets of jQuery functionality.
-This allows for smaller custom builds when the builder is certain that those parts of jQuery are not being used.
-For example, an app that only used JSONP for `$.ajax()` and did not need to calculate offsets or positions of elements could exclude the offset and ajax/xhr modules.
+To exclude a module, pass its path relative to the `src` folder (without the `.js` extension) to the `--exclude` option. When using the `--include` option, the default includes are dropped and a build is created with only those modules.
 
-Any module may be excluded except for `core`, and `selector`. To exclude a module, pass its path relative to the `src` folder (without the `.js` extension).
-
-Some example modules that can be excluded are:
+Some example modules that can be excluded or included are:
 
 - **ajax**: All AJAX functionality: `$.ajax()`, `$.get()`, `$.post()`, `$.ajaxSetup()`, `.load()`, transports, and ajax event shorthands such as `.ajaxStart()`.
 - **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
@@ -97,96 +103,81 @@ Some example modules that can be excluded are:
 - **offset**: The `.offset()`, `.position()`, `.offsetParent()`, `.scrollLeft()`, and `.scrollTop()` methods.
 - **wrap**: The `.wrap()`, `.wrapAll()`, `.wrapInner()`, and `.unwrap()` methods.
 - **core/ready**: Exclude the ready module if you place your scripts at the end of the body. Any ready callbacks bound with `jQuery()` will simply be called immediately. However, `jQuery(document).ready()` will not be a function and `.on("ready", ...)` or similar will not be triggered.
-- **deferred**: Exclude jQuery.Deferred. This also removes jQuery.Callbacks. *Note* that modules that depend on jQuery.Deferred(AJAX, effects, core/ready) will not be removed and will still expect jQuery.Deferred to be there. Include your own jQuery.Deferred implementation or exclude those modules as well (`grunt custom:-deferred,-ajax,-effects,-core/ready`).
+- **deferred**: Exclude jQuery.Deferred. This also excludes all modules that rely on Deferred, including **ajax**, **effects**, and **queue**, but replaces **core/ready** with **core/ready-no-deferred**.
 - **exports/global**: Exclude the attachment of global jQuery variables ($ and jQuery) to the window.
 - **exports/amd**: Exclude the AMD definition.
 
-As a special case, you may also replace the full jQuery `selector` module by using a special flag `grunt custom:-selector`.
-
-- **selector**: The full jQuery selector engine. When this module is excluded, it is replaced by a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/main/src/selector-native.js) file for details.
+- **selector**: The full jQuery selector engine. When this module is excluded, it is replaced with a rudimentary selector engine based on the browser's `querySelectorAll` method that does not support jQuery selector extensions or enhanced semantics. See the [selector-native.js](https://github.com/jquery/jquery/blob/main/src/selector-native.js) file for details.
 
 *Note*: Excluding the full `selector` module will also exclude all jQuery selector extensions (such as `effects/animatedSelector` and `css/hiddenVisibleSelectors`).
 
-The build process shows a message for each dependent module it excludes or includes.
-
 ##### AMD name
 
-As an option, you can set the module name for jQuery's AMD definition. By default, it is set to "jquery", which plays nicely with plugins and third-party libraries, but there may be cases where you'd like to change this. Simply pass it to the `--amd` parameter:
+You can set the module name for jQuery's AMD definition. By default, it is set to "jquery", which plays nicely with plugins and third-party libraries, but there may be cases where you'd like to change this. Pass it to the `--amd` parameter:
 
 ```bash
-grunt custom --amd="custom-name"
+npm run build -- --amd="custom-name"
 ```
 
-Or, to define anonymously, set the name to an empty string.
+Or, to define anonymously, leave the name blank.
 
 ```bash
-grunt custom --amd=""
+npm run build -- --amd
 ```
 
-##### File name
+##### File name and directory
 
-The default name for the built jQuery file is `jquery.js`; it is placed under the `dist/` directory. It's possible to change the file name using the `--filename` parameter:
+The default name for the built jQuery file is `jquery.js`; it is placed under the `dist/` directory. It's possible to change the file name using `--filename` and the directory using `--dir`. `--dir` is relative to the project root.
 
 ```bash
-grunt custom:slim --filename="jquery.slim.js"
+npm run build -- --slim --filename="jquery.slim.js" --dir="/tmp"
 ```
 
-This would create a slim version of jQuery and place it under `dist/jquery.slim.js`. In fact, this is exactly the command we use to generate the slim jQuery during the release process.
+This would create a slim version of jQuery and place it under `tmp/jquery.slim.js`.
 
 ##### ECMAScript Module (ESM) mode
 
 By default, jQuery generates a regular script JavaScript file. You can also generate an ECMAScript module exporting `jQuery` as the default export using the `--esm` parameter:
 
 ```bash
-grunt custom --esm
-```
-
-The default is `script` but you can also pass it explicitly via `--no-esm`:
-
-```bash
-grunt custom --no-esm
+npm run build -- --filename=jquery.module.js --esm
 ```
 
 #### Custom Build Examples
 
-To create a custom build, first check out the version:
-
-```bash
-git pull; git checkout VERSION
-```
-
-Where VERSION is the version you want to customize. Then, make sure all Node dependencies are installed:
-
-```bash
-npm install
-```
-
-Create the custom build using the `grunt custom` option, listing the modules to be excluded.
+Create a custom build using `npm run build`, listing the modules to be excluded. Excluding a top-level module also excludes its corresponding directory of modules.
 
 Exclude all **ajax** functionality:
 
 ```bash
-grunt custom:-ajax
+npm run build -- --exclude=ajax
 ```
 
 Excluding **css** removes modules depending on CSS: **effects**, **offset**, **dimensions**.
 
 ```bash
-grunt custom:-css
+npm run build -- --exclude=css
 ```
 
-Exclude a bunch of modules:
+Exclude a bunch of modules (`-e` is an alias for `--exclude`):
 
 ```bash
-grunt custom:-ajax/jsonp,-css,-deprecated,-dimensions,-effects,-offset,-wrap
+npm run build -- -e ajax/jsonp -e css -e deprecated -e dimensions -e effects -e offset -e wrap
 ```
 
-There is also a special alias to generate a build with the same configuration as the official jQuery Slim build is generated:
+There is a special alias to generate a build with the same configuration as the official jQuery Slim build:
+
 ```bash
-grunt custom:slim
+npm run build -- --filename=jquery.slim.js --slim
 ```
 
-For questions or requests regarding custom builds, please start a thread on the [Developing jQuery Core](https://forum.jquery.com/developing-jquery-core) section of the forum. Due to the combinatorics and custom nature of these builds, they are not regularly tested in jQuery's unit test process.
+Or, to create the slim build as an esm module:
+
+```bash
+npm run build -- --filename=jquery.slim.module.js --slim --esm
+```
+
+*Non-official custom builds are not regularly tested. Use them at your own risk.*
 
 Running the Unit Tests
 --------------------------------------
@@ -197,10 +188,10 @@ Make sure you have the necessary dependencies:
 npm install
 ```
 
-Start `grunt watch` or `npm start` to auto-build jQuery as you work:
+Start `npm start` to auto-build jQuery as you work:
 
 ```bash
-grunt watch
+npm start
 ```
 
 
@@ -210,35 +201,6 @@ Run the unit tests with a local server that supports PHP. Ensure that you run th
 - Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/training-tutorials/easy-lamp-server-installation/)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
-
-
-
-
-Building to a different directory
----------------------------------
-
-To copy the built jQuery files from `/dist` to another directory:
-
-```bash
-grunt && grunt dist:/path/to/special/location/
-```
-With this example, the output files would be:
-
-```bash
-/path/to/special/location/jquery.js
-/path/to/special/location/jquery.min.js
-```
-
-To add a permanent copy destination, create a file in `dist/` called ".destination.json". Inside the file, paste and customize the following:
-
-```json
-
-{
-  "/Absolute/path/to/other/destination": true
-}
-```
-
-Additionally, both methods can be combined.
 
 
 

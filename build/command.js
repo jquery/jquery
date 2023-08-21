@@ -59,11 +59,12 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"By default, a UMD bundle is built."
 	} )
 	.option( "slim", {
+		alias: "s",
 		type: "boolean",
 		description: "Build a slim bundle, which excludes " +
 			slimExclude.join( ", " )
 	} )
-	.option( "amd-name", {
+	.option( "amd", {
 		type: "string",
 		description:
 			"Set the name of the AMD module. Leave blank to make an anonymous module."
