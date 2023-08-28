@@ -65,9 +65,10 @@ module.exports = function( Release ) {
 		 * Publish to distribution repo and npm
 		 * @param {Function} callback
 		 */
-		dist: async callback => {
-			await cdn.makeArchives( Release );
-			dist( Release, distFiles, callback );
+		dist: function( callback ) {
+			cdn.makeArchives( Release, function() {
+				dist( Release, distFiles, callback );
+			} );
 		}
 	} );
 };
