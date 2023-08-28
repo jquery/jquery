@@ -366,3 +366,6 @@ Simon Legner <Simon.Legner@gmail.com>
 Vladimir Sitnikov <sitnikov.vladimir@gmail.com>
 Anders Kaseorg <andersk@mit.edu>
 Alex <aleksandrosansan@gmail.com>
+Timo Tijhof <krinkle@fastmail.com>
+Gabriela Gutierrez <gabigutierrez@google.com>
+Dimitri Papadopoulos Orfanos <3234522+DimitriPapadopoulos@users.noreply.github.com>
