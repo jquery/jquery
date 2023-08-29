@@ -38,7 +38,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 
 	width = parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) );
 	height = parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) );
-	jQuery( "#nothiddendiv" ).css( { "overflow":"hidden", "width": -1, "height": -1 } );
+	jQuery( "#nothiddendiv" ).css( { "overflow": "hidden", "width": -1, "height": -1 } );
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) ), 0, "Test negative width set to 0" );
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) ), 0, "Test negative height set to 0" );
 
@@ -321,8 +321,7 @@ QUnit.test( "css(String, Object)", function( assert ) {
 	success = true;
 	try {
 		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
-	}
-	catch ( e ) {
+	} catch ( e ) {
 		success = false;
 	}
 	assert.ok( success, "Setting RGBA values does not throw Error (trac-5509)" );
@@ -1221,6 +1220,7 @@ QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792, gh-5179)", functi
 
 	$div.css( "animation-iteration-count", 2 );
 	if ( $div.css( "animation-iteration-count" ) !== undefined ) {
+
 		// if $div.css( "animation-iteration-count" ) returns "1",
 		// it actually returns the default value of animation-iteration-count
 		assert.equal( $div.css( "animation-iteration-count" ), "2",
@@ -1788,7 +1788,7 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 		if ( transformName ) {
 			assert.equal( elemStyle[ transformName ], transformVal, "setting properly-prefixed transform" );
 		}
-		assert.equal( elemStyle[ "undefined" ], undefined, "Nothing writes to node.style.undefined" );
+		assert.equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
 	} );
 
 	QUnit.test( "Don't detect fake set properties on a node when caching the prefixed version", function( assert ) {

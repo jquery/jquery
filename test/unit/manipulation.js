@@ -518,6 +518,7 @@ QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function
 	}
 
 	function assertSpecialCharsSupport( method, characters ) {
+
 		// Support: Android 4.4 only
 		// Chromium < 35 incorrectly upper-cases µ; Android 4.4 uses such a version by default
 		// (and its WebView, being un-updatable, will use it for eternity) so we need to blacklist
@@ -1364,9 +1365,13 @@ QUnit.test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function( ass
 	jQuery.each( tests, function( label, input ) {
 		$el.html( "<a></a>" ).children().replaceWith( input );
 		assert.strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
-		$el.html( "<b></b>" ).children().replaceWith( function() { return input; } );
+		$el.html( "<b></b>" ).children().replaceWith( function() {
+			return input;
+		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
-		$el.html( "<i></i>" ).children().replaceWith( function( i ) { return input; } );
+		$el.html( "<i></i>" ).children().replaceWith( function( i ) {
+			return input;
+		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
 		$el.html( "<p></p>" ).children().replaceWith( function( i ) {
 			return i ?
@@ -1606,7 +1611,9 @@ QUnit.test( "clone(form element) (Bug trac-3879, trac-6655)", function( assert )
 
 	element = jQuery( "<select><option>Foo</option><option value='selected' selected>Bar</option></select>" );
 
-	assert.equal( element.clone().find( "option" ).filter( function() { return this.selected; } ).val(), "selected", "Selected option cloned correctly" );
+	assert.equal( element.clone().find( "option" ).filter( function() {
+		return this.selected;
+	} ).val(), "selected", "Selected option cloned correctly" );
 
 	element = jQuery( "<input type='checkbox' value='foo'>" ).attr( "checked", "checked" );
 	clone = element.clone();
@@ -1805,6 +1812,7 @@ QUnit.test( "html(Function)", function( assert ) {
 } );
 
 QUnit[
+
 	// Support: Edge 16-18+
 	// Edge sometimes doesn't execute module scripts so skip the test there.
 	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
@@ -1833,6 +1841,7 @@ QUnit[
 } );
 
 QUnit[
+
 	// Support: IE 9-11 only, Android 4.0-4.4 only, iOS 7-10 only
 	// `nomodule` scripts should be executed by legacy browsers only.
 	// iOS 10 supports `<script type="module">` but doesn't support the nomodule attribute
@@ -2266,8 +2275,7 @@ QUnit.test( "domManip plain-text caching (trac-6779)", function( assert ) {
 	for ( i = 0; i < bad.length; i++ ) {
 		try {
 			$f.append( bad[ i ] );
-		}
-		catch ( e ) {}
+		} catch ( e ) {}
 	}
 	assert.equal( $f.text(), bad.join( "" ), "Cached strings that match Object properties" );
 	$f.remove();

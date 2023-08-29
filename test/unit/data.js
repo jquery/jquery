@@ -74,14 +74,14 @@ function dataTests( elem, assert ) {
 
 	assert.strictEqual( jQuery.hasData( elem ), false, "jQuery.hasData agrees no data exists even when an empty data obj exists" );
 
-	dataObj[ "foo" ] = "bar";
+	dataObj.foo = "bar";
 	assert.equal( jQuery.data( elem, "foo" ), "bar", "Data is readable by jQuery.data when set directly on a returned data object" );
 
 	assert.strictEqual( jQuery.hasData( elem ), true, "jQuery.hasData agrees data exists when data exists" );
 
 	jQuery.data( elem, "foo", "baz" );
 	assert.equal( jQuery.data( elem, "foo" ), "baz", "Data can be changed by jQuery.data" );
-	assert.equal( dataObj[ "foo" ], "baz", "Changes made through jQuery.data propagate to referenced data object" );
+	assert.equal( dataObj.foo, "baz", "Changes made through jQuery.data propagate to referenced data object" );
 
 	jQuery.data( elem, "foo", undefined );
 	assert.equal( jQuery.data( elem, "foo" ), "baz", "Data is not unset by passing undefined to jQuery.data" );
@@ -398,7 +398,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 			break;
 		case 2:
 			assert.equal( jQuery( elem ).data( "zoooo" ), "bar", "Check zoooo property" );
-			assert.deepEqual( jQuery( elem ).data( "bar" ), { "test":"baz" }, "Check bar property" );
+			assert.deepEqual( jQuery( elem ).data( "bar" ), { "test": "baz" }, "Check bar property" );
 			break;
 		case 3:
 			assert.equal( jQuery( elem ).data( "number" ), true, "Check number property" );
@@ -426,13 +426,13 @@ QUnit.test( ".data(Object)", function( assert ) {
 	assert.equal( div.data( "test" ), "in", "Verify setting an object in data" );
 	assert.equal( div.data( "test2" ), "in2", "Verify setting an object in data" );
 
-	obj = { test:"unset" };
+	obj = { test: "unset" };
 	jqobj = jQuery( obj );
 
 	jqobj.data( "test", "unset" );
 	jqobj.data( { "test": "in", "test2": "in2" } );
-	assert.equal( jQuery.data( obj )[ "test" ], "in", "Verify setting an object on an object extends the data object" );
-	assert.equal( obj[ "test2" ], undefined, "Verify setting an object on an object does not extend the object" );
+	assert.equal( jQuery.data( obj ).test, "in", "Verify setting an object on an object extends the data object" );
+	assert.equal( obj.test2, undefined, "Verify setting an object on an object does not extend the object" );
 
 	// manually clean up detached elements
 	div.remove();
@@ -523,12 +523,12 @@ QUnit.test( ".data should follow html5 specification regarding camel casing", fu
 	var div = jQuery( "<div id='myObject' data-w-t-f='ftw' data-big-a-little-a='bouncing-b' data-foo='a' data-foo-bar='b' data-foo-bar-baz='c'></div>" )
 		.prependTo( "body" );
 
-	assert.equal( div.data()[ "wTF" ], "ftw", "Verify single letter data-* key" );
-	assert.equal( div.data()[ "bigALittleA" ], "bouncing-b", "Verify single letter mixed data-* key" );
+	assert.equal( div.data().wTF, "ftw", "Verify single letter data-* key" );
+	assert.equal( div.data().bigALittleA, "bouncing-b", "Verify single letter mixed data-* key" );
 
-	assert.equal( div.data()[ "foo" ], "a", "Verify single word data-* key" );
-	assert.equal( div.data()[ "fooBar" ], "b", "Verify multiple word data-* key" );
-	assert.equal( div.data()[ "fooBarBaz" ], "c", "Verify multiple word data-* key" );
+	assert.equal( div.data().foo, "a", "Verify single word data-* key" );
+	assert.equal( div.data().fooBar, "b", "Verify multiple word data-* key" );
+	assert.equal( div.data().fooBarBaz, "c", "Verify multiple word data-* key" );
 
 	assert.equal( div.data( "foo" ), "a", "Verify single word data-* key" );
 	assert.equal( div.data( "fooBar" ), "b", "Verify multiple word data-* key" );
