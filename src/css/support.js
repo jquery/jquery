@@ -17,6 +17,10 @@ define( [
 		if ( !div ) {
 			return;
 		}
+		// Don't run until window is visible (gh-2176)
+		if ( documentElement.offsetHeight === 0 ) {
+			return;
+		}
 
 		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
 			"margin-top:1px;padding:0;border:0";
