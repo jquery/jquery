@@ -17,7 +17,7 @@ define( [
 		if ( !div ) {
 			return;
 		}
-		// Don't run until window is visible (gh-2176)
+		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
 		if ( documentElement.offsetHeight === 0 ) {
 			return;
 		}
