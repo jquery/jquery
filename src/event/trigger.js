@@ -1,9 +1,9 @@
-import jQuery from "../core.js";
-import document from "../var/document.js";
-import dataPriv from "../data/var/dataPriv.js";
-import acceptData from "../data/var/acceptData.js";
-import hasOwn from "../var/hasOwn.js";
-import isWindow from "../var/isWindow.js";
+import { jQuery } from "../core.js";
+import { document } from "../var/document.js";
+import { dataPriv } from "../data/var/dataPriv.js";
+import { acceptData } from "../data/var/acceptData.js";
+import { hasOwn } from "../var/hasOwn.js";
+import { isWindow } from "../var/isWindow.js";
 
 import "../event.js";
 

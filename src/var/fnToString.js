@@ -1,3 +1,3 @@
-import hasOwn from "./hasOwn.js";
+import { hasOwn } from "./hasOwn.js";
 
-export default hasOwn.toString;
+export var fnToString = hasOwn.toString;

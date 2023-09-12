@@ -1,1 +1,1 @@
-export default { guid: Date.now() };
+export var nonce = { guid: Date.now() };

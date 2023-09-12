@@ -1,9 +1,9 @@
-import whitespace from "../var/whitespace.js";
-import identifier from "./var/identifier.js";
-import attributes from "./var/attributes.js";
-import pseudos from "./var/pseudos.js";
+import { whitespace } from "../var/whitespace.js";
+import { identifier } from "./var/identifier.js";
+import { attributes } from "./var/attributes.js";
+import { pseudos } from "./var/pseudos.js";
 
-var filterMatchExpr = {
+export var filterMatchExpr = {
 	ID: new RegExp( "^#(" + identifier + ")" ),
 	CLASS: new RegExp( "^\\.(" + identifier + ")" ),
 	TAG: new RegExp( "^(" + identifier + "|[*])" ),
@@ -14,5 +14,3 @@ var filterMatchExpr = {
 		whitespace + "*(even|odd|(([+-]|)(\\d*)n|)" + whitespace + "*(?:([+-]|)" +
 		whitespace + "*(\\d+)|))" + whitespace + "*\\)|)", "i" )
 };
-
-export default filterMatchExpr;

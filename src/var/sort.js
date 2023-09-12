@@ -1,3 +1,3 @@
-import arr from "./arr.js";
+import { arr } from "./arr.js";
 
-export default arr.sort;
+export var sort = arr.sort;

@@ -1,3 +1,3 @@
-import fnToString from "./fnToString.js";
+import { fnToString } from "./fnToString.js";
 
-export default fnToString.call( Object );
+export var ObjectFunctionString = fnToString.call( Object );

@@ -1,9 +1,9 @@
-import jQuery from "../core.js";
-import camelCase from "../core/camelCase.js";
-import rnothtmlwhite from "../var/rnothtmlwhite.js";
-import acceptData from "./var/acceptData.js";
+import { jQuery } from "../core.js";
+import { camelCase } from "../core/camelCase.js";
+import { rnothtmlwhite } from "../var/rnothtmlwhite.js";
+import { acceptData } from "./var/acceptData.js";
 
-function Data() {
+export function Data() {
 	this.expando = jQuery.expando + Data.uid++;
 }
 
@@ -153,5 +153,3 @@ Data.prototype = {
 		return cache !== undefined && !jQuery.isEmptyObject( cache );
 	}
 };
-
-export default Data;

@@ -1,6 +1,6 @@
-import jQuery from "./core.js";
-import toType from "./core/toType.js";
-import rcheckableType from "./var/rcheckableType.js";
+import { jQuery } from "./core.js";
+import { toType } from "./core/toType.js";
+import { rcheckableType } from "./var/rcheckableType.js";
 
 import "./core/init.js";
 import "./traversing.js"; // filter
@@ -126,4 +126,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

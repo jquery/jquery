@@ -221,7 +221,7 @@ module.exports = function( grunt ) {
 			// Remove the jQuery export from the entry file, we'll use our own
 			// custom wrapper.
 			setOverride( inputRollupOptions.input,
-				read( inputFileName ).replace( /\n*export default jQuery;\n*/, "\n" ) );
+				read( inputFileName ).replace( /\n*export \{ jQuery, jQuery as \$ };\n*/, "\n" ) );
 
 			// Replace exports/global with a noop noConflict
 			if ( excluded.includes( "exports/global" ) ) {

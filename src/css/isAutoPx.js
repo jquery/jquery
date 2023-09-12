@@ -23,7 +23,7 @@ var ralphaStart = /^[a-z]/,
 	//                           \ Max /       \ Height /
 	rautoPx = /^(?:Border(?:Top|Right|Bottom|Left)?(?:Width|)|(?:Margin|Padding)?(?:Top|Right|Bottom|Left)?|(?:Min|Max)?(?:Width|Height))$/;
 
-function isAutoPx( prop ) {
+export function isAutoPx( prop ) {
 
 	// The first test is used to ensure that:
 	// 1. The prop starts with a lowercase letter (as we uppercase it for the second regex).
@@ -31,5 +31,3 @@ function isAutoPx( prop ) {
 	return ralphaStart.test( prop ) &&
 		rautoPx.test( prop[ 0 ].toUpperCase() + prop.slice( 1 ) );
 }
-
-export default isAutoPx;

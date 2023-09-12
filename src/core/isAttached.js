@@ -1,5 +1,5 @@
-import jQuery from "../core.js";
-import documentElement from "../var/documentElement.js";
+import { jQuery } from "../core.js";
+import { documentElement } from "../var/documentElement.js";
 
 var isAttached = function( elem ) {
 		return jQuery.contains( elem.ownerDocument, elem ) ||
@@ -16,4 +16,4 @@ if ( !documentElement.getRootNode ) {
 	};
 }
 
-export default isAttached;
+export { isAttached };

@@ -1,4 +1,4 @@
-import document from "../var/document.js";
+import { document } from "../var/document.js";
 
 var preservedScriptAttributes = {
 	type: true,
@@ -7,7 +7,7 @@ var preservedScriptAttributes = {
 	noModule: true
 };
 
-function DOMEval( code, node, doc ) {
+export function DOMEval( code, node, doc ) {
 	doc = doc || document;
 
 	var i,
@@ -23,5 +23,3 @@ function DOMEval( code, node, doc ) {
 	}
 	doc.head.appendChild( script ).parentNode.removeChild( script );
 }
-
-export default DOMEval;

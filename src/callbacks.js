@@ -1,6 +1,6 @@
-import jQuery from "./core.js";
-import toType from "./core/toType.js";
-import rnothtmlwhite from "./var/rnothtmlwhite.js";
+import { jQuery } from "./core.js";
+import { toType } from "./core/toType.js";
+import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 
 // Convert String-formatted options into Object-formatted ones
 function createOptions( options ) {
@@ -227,4 +227,4 @@ jQuery.Callbacks = function( options ) {
 	return self;
 };
 
-export default jQuery;
+export { jQuery, jQuery as $ };

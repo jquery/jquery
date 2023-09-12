@@ -1,4 +1,4 @@
-import document from "../var/document.js";
+import { document } from "../var/document.js";
 
 var cssPrefixes = [ "Webkit", "Moz", "ms" ],
 	emptyStyle = document.createElement( "div" ).style,
@@ -20,7 +20,7 @@ function vendorPropName( name ) {
 }
 
 // Return a potentially-mapped vendor prefixed property
-function finalPropName( name ) {
+export function finalPropName( name ) {
 	var final = vendorProps[ name ];
 
 	if ( final ) {
@@ -31,5 +31,3 @@ function finalPropName( name ) {
 	}
 	return vendorProps[ name ] = vendorPropName( name ) || name;
 }
-
-export default finalPropName;

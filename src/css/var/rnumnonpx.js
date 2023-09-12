@@ -1,3 +1,3 @@
-import pnum from "../../var/pnum.js";
+import { pnum } from "../../var/pnum.js";
 
-export default new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
+export var rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );

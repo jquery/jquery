@@ -1,8 +1,8 @@
-import jQuery from "../core.js";
-import document from "../var/document.js";
-import sort from "../var/sort.js";
-import splice from "../var/splice.js";
-import slice from "../var/slice.js";
+import { jQuery } from "../core.js";
+import { document } from "../var/document.js";
+import { sort } from "../var/sort.js";
+import { splice } from "../var/splice.js";
+import { slice } from "../var/slice.js";
 
 var hasDuplicate;
 

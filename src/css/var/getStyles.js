@@ -1,4 +1,4 @@
-export default function( elem ) {
+export function getStyles( elem ) {
 
 	// Support: IE <=11+ (trac-14150)
 	// In IE popup's `window` is the opener window which makes `window.getComputedStyle( elem )`

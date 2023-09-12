@@ -7,8 +7,6 @@ function fcamelCase( _all, letter ) {
 }
 
 // Convert dashed to camelCase
-function camelCase( string ) {
+export function camelCase( string ) {
 	return string.replace( rdashAlpha, fcamelCase );
 }
-
-export default camelCase;

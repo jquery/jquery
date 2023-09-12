@@ -1,19 +1,19 @@
-import jQuery from "./core.js";
-import access from "./core/access.js";
-import nodeName from "./core/nodeName.js";
-import rcssNum from "./var/rcssNum.js";
-import isIE from "./var/isIE.js";
-import rnumnonpx from "./css/var/rnumnonpx.js";
-import rcustomProp from "./css/var/rcustomProp.js";
-import cssExpand from "./css/var/cssExpand.js";
-import isAutoPx from "./css/isAutoPx.js";
-import cssCamelCase from "./css/cssCamelCase.js";
-import getStyles from "./css/var/getStyles.js";
-import swap from "./css/var/swap.js";
-import curCSS from "./css/curCSS.js";
-import adjustCSS from "./css/adjustCSS.js";
-import finalPropName from "./css/finalPropName.js";
-import support from "./css/support.js";
+import { jQuery } from "./core.js";
+import { access } from "./core/access.js";
+import { nodeName } from "./core/nodeName.js";
+import { rcssNum } from "./var/rcssNum.js";
+import { isIE } from "./var/isIE.js";
+import { rnumnonpx } from "./css/var/rnumnonpx.js";
+import { rcustomProp } from "./css/var/rcustomProp.js";
+import { cssExpand } from "./css/var/cssExpand.js";
+import { isAutoPx } from "./css/isAutoPx.js";
+import { cssCamelCase } from "./css/cssCamelCase.js";
+import { getStyles } from "./css/var/getStyles.js";
+import { swap } from "./css/var/swap.js";
+import { curCSS } from "./css/curCSS.js";
+import { adjustCSS } from "./css/adjustCSS.js";
+import { finalPropName } from "./css/finalPropName.js";
+import { support } from "./css/support.js";
 
 import "./core/init.js";
 import "./core/ready.js";
@@ -418,4 +418,4 @@ jQuery.fn.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

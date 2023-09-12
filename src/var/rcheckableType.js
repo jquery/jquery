@@ -1,1 +1,1 @@
-export default ( /^(?:checkbox|radio)$/i );
+export var rcheckableType = /^(?:checkbox|radio)$/i;

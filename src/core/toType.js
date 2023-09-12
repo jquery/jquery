@@ -1,7 +1,7 @@
-import class2type from "../var/class2type.js";
-import toString from "../var/toString.js";
+import { class2type } from "../var/class2type.js";
+import { toString } from "../var/toString.js";
 
-function toType( obj ) {
+export function toType( obj ) {
 	if ( obj == null ) {
 		return obj + "";
 	}
@@ -10,5 +10,3 @@ function toType( obj ) {
 		class2type[ toString.call( obj ) ] || "object" :
 		typeof obj;
 }
-
-export default toType;

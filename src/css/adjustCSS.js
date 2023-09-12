@@ -1,8 +1,8 @@
-import jQuery from "../core.js";
-import isAutoPx from "./isAutoPx.js";
-import rcssNum from "../var/rcssNum.js";
+import { jQuery } from "../core.js";
+import { isAutoPx } from "./isAutoPx.js";
+import { rcssNum } from "../var/rcssNum.js";
 
-function adjustCSS( elem, prop, valueParts, tween ) {
+export function adjustCSS( elem, prop, valueParts, tween ) {
 	var adjusted, scale,
 		maxIterations = 20,
 		currentValue = tween ?
@@ -66,5 +66,3 @@ function adjustCSS( elem, prop, valueParts, tween ) {
 	}
 	return adjusted;
 }
-
-export default adjustCSS;

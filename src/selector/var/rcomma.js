@@ -1,3 +1,3 @@
-import whitespace from "../../var/whitespace.js";
+import { whitespace } from "../../var/whitespace.js";
 
-export default new RegExp( "^" + whitespace + "*," + whitespace + "*" );
+export var rcomma = new RegExp( "^" + whitespace + "*," + whitespace + "*" );

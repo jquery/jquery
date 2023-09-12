@@ -1,4 +1,4 @@
-import jQuery from "../core.js";
+import { jQuery } from "../core.js";
 
 // Register as a named AMD module, since jQuery can be concatenated with other
 // files that may use define, but not via a proper concatenation script that

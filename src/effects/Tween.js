@@ -1,6 +1,6 @@
-import jQuery from "../core.js";
-import isAutoPx from "../css/isAutoPx.js";
-import finalPropName from "../css/finalPropName.js";
+import { jQuery } from "../core.js";
+import { isAutoPx } from "../css/isAutoPx.js";
+import { finalPropName } from "../css/finalPropName.js";
 
 import "../css.js";
 

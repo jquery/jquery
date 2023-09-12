@@ -1,14 +1,14 @@
-import jQuery from "../core.js";
-import rcomma from "./var/rcomma.js";
-import rleadingCombinator from "./var/rleadingCombinator.js";
-import rtrim from "../var/rtrim.js";
-import createCache from "./createCache.js";
-import selectorError from "./selectorError.js";
-import filterMatchExpr from "./filterMatchExpr.js";
+import { jQuery } from "../core.js";
+import { rcomma } from "./var/rcomma.js";
+import { rleadingCombinator } from "./var/rleadingCombinator.js";
+import { rtrim } from "../var/rtrim.js";
+import { createCache } from "./createCache.js";
+import { selectorError } from "./selectorError.js";
+import { filterMatchExpr } from "./filterMatchExpr.js";
 
 var tokenCache = createCache();
 
-function tokenize( selector, parseOnly ) {
+export function tokenize( selector, parseOnly ) {
 	var matched, match, tokens, type,
 		soFar, groups, preFilters,
 		cached = tokenCache[ selector + " " ];
@@ -79,5 +79,3 @@ function tokenize( selector, parseOnly ) {
 		// Cache the tokens
 		tokenCache( selector, groups ).slice( 0 );
 }
-
-export default tokenize;

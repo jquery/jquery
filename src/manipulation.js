@@ -1,17 +1,17 @@
-import jQuery from "./core.js";
-import isAttached from "./core/isAttached.js";
-import isIE from "./var/isIE.js";
-import push from "./var/push.js";
-import access from "./core/access.js";
-import rtagName from "./manipulation/var/rtagName.js";
-import wrapMap from "./manipulation/wrapMap.js";
-import getAll from "./manipulation/getAll.js";
-import domManip from "./manipulation/domManip.js";
-import setGlobalEval from "./manipulation/setGlobalEval.js";
-import dataPriv from "./data/var/dataPriv.js";
-import dataUser from "./data/var/dataUser.js";
-import acceptData from "./data/var/acceptData.js";
-import nodeName from "./core/nodeName.js";
+import { jQuery } from "./core.js";
+import { isAttached } from "./core/isAttached.js";
+import { isIE } from "./var/isIE.js";
+import { push } from "./var/push.js";
+import { access } from "./core/access.js";
+import { rtagName } from "./manipulation/var/rtagName.js";
+import { wrapMap } from "./manipulation/wrapMap.js";
+import { getAll } from "./manipulation/getAll.js";
+import { domManip } from "./manipulation/domManip.js";
+import { setGlobalEval } from "./manipulation/setGlobalEval.js";
+import { dataPriv } from "./data/var/dataPriv.js";
+import { dataUser } from "./data/var/dataUser.js";
+import { acceptData } from "./data/var/acceptData.js";
+import { nodeName } from "./core/nodeName.js";
 
 import "./core/init.js";
 import "./traversing.js";
@@ -341,4 +341,4 @@ jQuery.each( {
 	};
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

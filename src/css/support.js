@@ -1,6 +1,6 @@
-import document from "../var/document.js";
-import documentElement from "../var/documentElement.js";
-import support from "../var/support.js";
+import { document } from "../var/document.js";
+import { documentElement } from "../var/documentElement.js";
+import { support } from "../var/support.js";
 
 ( function() {
 
@@ -58,4 +58,4 @@ support.reliableTrDimensions = function() {
 };
 } )();
 
-export default support;
+export { support };

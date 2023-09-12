@@ -1,3 +1,3 @@
-import document from "./document.js";
+import { document } from "./document.js";
 
-export default document.documentElement;
+export var documentElement = document.documentElement;

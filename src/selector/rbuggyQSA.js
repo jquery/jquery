@@ -1,8 +1,8 @@
-import isIE from "../var/isIE.js";
-import whitespace from "../var/whitespace.js";
-import support from "./support.js";
+import { isIE } from "../var/isIE.js";
+import { whitespace } from "../var/whitespace.js";
+import { support } from "./support.js";
 
-var rbuggyQSA = [];
+export var rbuggyQSA = [];
 
 if ( isIE ) {
 	rbuggyQSA.push(
@@ -33,5 +33,3 @@ if ( !support.cssHas ) {
 }
 
 rbuggyQSA = rbuggyQSA.length && new RegExp( rbuggyQSA.join( "|" ) );
-
-export default rbuggyQSA;

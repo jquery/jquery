@@ -1,6 +1,6 @@
-import jQuery from "./core.js";
-import access from "./core/access.js";
-import isWindow from "./var/isWindow.js";
+import { jQuery } from "./core.js";
+import { access } from "./core/access.js";
+import { isWindow } from "./var/isWindow.js";
 
 import "./css.js";
 
@@ -53,4 +53,4 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	} );
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

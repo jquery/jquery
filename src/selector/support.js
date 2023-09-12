@@ -1,5 +1,5 @@
-import document from "../var/document.js";
-import support from "../var/support.js";
+import { document } from "../var/document.js";
+import { support } from "../var/support.js";
 
 // Support: Chrome 105 - 111 only, Safari 15.4 - 16.3 only
 // Make sure the `:has()` argument is parsed unforgivingly.
@@ -17,4 +17,4 @@ try {
 	support.cssHas = true;
 }
 
-export default support;
+export { support };

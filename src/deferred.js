@@ -1,5 +1,5 @@
-import jQuery from "./core.js";
-import slice from "./var/slice.js";
+import { jQuery } from "./core.js";
+import { slice } from "./var/slice.js";
 
 import "./callbacks.js";
 
@@ -389,4 +389,4 @@ jQuery.extend( {
 	}
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

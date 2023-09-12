@@ -1,4 +1,4 @@
-import whitespace from "../../var/whitespace.js";
+import { whitespace } from "../../var/whitespace.js";
 
-export default new RegExp( "^" + whitespace + "*([>+~]|" + whitespace + ")" +
-	whitespace + "*" );
+export var rleadingCombinator = new RegExp( "^" + whitespace + "*([>+~]|" +
+	whitespace + ")" + whitespace + "*" );

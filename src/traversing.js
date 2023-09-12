@@ -1,10 +1,10 @@
-import jQuery from "./core.js";
-import getProto from "./var/getProto.js";
-import indexOf from "./var/indexOf.js";
-import dir from "./traversing/var/dir.js";
-import siblings from "./traversing/var/siblings.js";
-import rneedsContext from "./traversing/var/rneedsContext.js";
-import nodeName from "./core/nodeName.js";
+import { jQuery } from "./core.js";
+import { getProto } from "./var/getProto.js";
+import { indexOf } from "./var/indexOf.js";
+import { dir } from "./traversing/var/dir.js";
+import { siblings } from "./traversing/var/siblings.js";
+import { rneedsContext } from "./traversing/var/rneedsContext.js";
+import { nodeName } from "./core/nodeName.js";
 
 import "./core/init.js";
 import "./traversing/findFilter.js";
@@ -190,4 +190,4 @@ jQuery.each( {
 	};
 } );
 
-export default jQuery;
+export { jQuery, jQuery as $ };

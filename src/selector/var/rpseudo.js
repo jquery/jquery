@@ -1,3 +1,3 @@
-import pseudos from "./pseudos.js";
+import { pseudos } from "./pseudos.js";
 
-export default new RegExp( pseudos );
+export var rpseudo = new RegExp( pseudos );

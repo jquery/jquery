@@ -3,8 +3,6 @@
  * @param {Element|Object=} context
  * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
  */
-function testContext( context ) {
+export function testContext( context ) {
 	return context && typeof context.getElementsByTagName !== "undefined" && context;
 }
-
-export default testContext;

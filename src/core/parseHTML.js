@@ -1,8 +1,8 @@
-import jQuery from "../core.js";
-import document from "../var/document.js";
-import rsingleTag from "./var/rsingleTag.js";
-import buildFragment from "../manipulation/buildFragment.js";
-import isObviousHtml from "./isObviousHtml.js";
+import { jQuery } from "../core.js";
+import { document } from "../var/document.js";
+import { rsingleTag } from "./var/rsingleTag.js";
+import { buildFragment } from "../manipulation/buildFragment.js";
+import { isObviousHtml } from "./isObviousHtml.js";
 
 // Argument "data" should be string of html or a TrustedHTML wrapper of obvious HTML
 // context (optional): If specified, the fragment will be created in this context,

@@ -1,10 +1,10 @@
-import jQuery from "../core.js";
-import flat from "../var/flat.js";
-import rscriptType from "./var/rscriptType.js";
-import getAll from "./getAll.js";
-import buildFragment from "./buildFragment.js";
-import dataPriv from "../data/var/dataPriv.js";
-import DOMEval from "../core/DOMEval.js";
+import { jQuery } from "../core.js";
+import { flat } from "../var/flat.js";
+import { rscriptType } from "./var/rscriptType.js";
+import { getAll } from "./getAll.js";
+import { buildFragment } from "./buildFragment.js";
+import { dataPriv } from "../data/var/dataPriv.js";
+import { DOMEval } from "../core/DOMEval.js";
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {
@@ -21,7 +21,7 @@ function restoreScript( elem ) {
 	return elem;
 }
 
-function domManip( collection, args, callback, ignored ) {
+export function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
 	args = flat( args );
@@ -105,5 +105,3 @@ function domManip( collection, args, callback, ignored ) {
 
 	return collection;
 }
-
-export default domManip;
