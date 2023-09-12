@@ -1,20 +1,6 @@
 "use strict";
 
 module.exports = function( grunt ) {
-	function readOptionalJSON( filepath ) {
-		const stripJSONComments = require( "strip-json-comments" );
-		let data = {};
-		try {
-			data = JSON.parse( stripJSONComments(
-				fs.readFileSync( filepath, { encoding: "utf8" } )
-			) );
-		} catch ( e ) {}
-		return data;
-	}
-
-	const fs = require( "fs" );
-	const { spawn } = require( "child_process" );
-	const gzip = require( "gzip-js" );
 	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
 	const nodeV17OrNewer = !/^v1[0-6]\./.test( process.version );
 	const customBrowsers = process.env.BROWSERS && process.env.BROWSERS.split( "," );
@@ -34,58 +20,8 @@ module.exports = function( grunt ) {
 		grunt.option( "filename", "jquery.js" );
 	}
 
-	grunt.option( "dist-folder", grunt.option( "esm" ) ? "dist-module" : "dist" );
-
-	const builtJsFiles = [
-		"dist/jquery.js",
-		"dist/jquery.min.js",
-		"dist/jquery.slim.js",
-		"dist/jquery.slim.min.js",
-		"dist-module/jquery.module.js",
-		"dist-module/jquery.module.min.js",
-		"dist-module/jquery.slim.module.js",
-		"dist-module/jquery.slim.module.min.js"
-	];
-
-	const builtJsMinFiles = builtJsFiles
-		.filter( filepath => filepath.endsWith( ".min.js" ) );
-
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON( "package.json" ),
-		dst: readOptionalJSON( "dist/.destination.json" ),
-		compare_size: {
-			files: builtJsMinFiles,
-			options: {
-				compress: {
-					gz: function( contents ) {
-						return gzip.zip( contents, {} ).length;
-					}
-				},
-				cache: "build/.sizecache.json"
-			}
-		},
-		build: {
-			all: {
-				dest: "dist/jquery.js",
-				minimum: [
-					"core"
-				],
-
-				// Exclude specified modules if the module matching the key is removed
-				removeWith: {
-					ajax: [ "manipulation/_evalUrl", "deprecated/ajax-event-alias" ],
-					callbacks: [ "deferred" ],
-					css: [ "effects", "dimensions", "offset" ],
-					"css/showHide": [ "effects" ],
-					deferred: {
-						remove: [ "ajax", "effects", "queue", "core/ready" ],
-						include: [ "core/ready-no-deferred" ]
-					},
-					event: [ "deprecated/ajax-event-alias", "deprecated/event" ],
-					selector: [ "css/hiddenVisibleSelectors", "effects/animatedSelector" ]
-				}
-			}
-		},
 		testswarm: {
 			tests: [
 
@@ -253,52 +189,6 @@ module.exports = function( grunt ) {
 				browsers: [ "IE" ],
 				singleRun: false
 			}
-		},
-		watch: {
-			files: [ "src/**/*.js" ],
-			tasks: [ "dev" ]
-		},
-		minify: {
-			all: {
-				files: {
-					[ "<%= grunt.option('dist-folder') %>/" +
-						"<%= grunt.option('filename').replace(/\\.js$/, '.min.js') %>" ]:
-						"<%= grunt.option('dist-folder') %>/<%= grunt.option('filename') %>"
-				},
-				options: {
-					sourceMap: {
-						filename: "<%= grunt.option('dist-folder') %>/" +
-							"<%= grunt.option('filename')" +
-							".replace(/\\.js$/, '.min.map') %>",
-
-						// The map's `files` & `sources` property are set incorrectly, fix
-						// them via overrides from the task config.
-						// See https://github.com/swc-project/swc/issues/7588#issuecomment-1624345254
-						overrides: {
-							file: "jquery.min.js",
-							sources: [
-								"jquery.js"
-							]
-						}
-					},
-					swc: {
-						format: {
-							ecma: grunt.option( "esm" ) ? 2015 : 5,
-							asciiOnly: true,
-							comments: false,
-							preamble: "/*! jQuery v4.0.0-pre | " +
-								"(c) OpenJS Foundation and other contributors | " +
-								"jquery.org/license */\n"
-						},
-						compress: {
-							ecma: grunt.option( "esm" ) ? 2015 : 5,
-							hoist_funs: false,
-							loops: false
-						},
-						mangle: true
-					}
-				}
-			}
 		}
 	} );
 
@@ -314,20 +204,6 @@ module.exports = function( grunt ) {
 		var task = args.join( ":" );
 		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
 	} );
-
-	grunt.registerTask( "build-all-variants",
-		"Build all variants of the full/slim build & a script/ESM one",
-		function() {
-			const done = this.async();
-
-			spawn( "npm run build-all-variants", {
-				stdio: "inherit",
-				shell: true
-			} )
-				.on( "close", code => {
-					done( code === 0 );
-				} );
-		} );
 
 	grunt.registerTask( "print_jsdom_message", () => {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
@@ -345,15 +221,7 @@ module.exports = function( grunt ) {
 		"test:jsdom"
 	] );
 
-	grunt.registerTask( "dev", [
-		"build:*:*",
-		"newer:minify",
-		"dist:*",
-		"compare_size"
-	] );
-
 	grunt.registerTask( "default", [
-		"build-all-variants",
-		"compare_size"
+		"test"
 	] );
 };

@@ -17,6 +17,7 @@ const pkg = require( "../../package.json" );
 const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
 const minify = require( "./minify" );
 const getTimestamp = require( "./lib/getTimestamp" );
+const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 const srcFolder = path.resolve( __dirname, "../../src" );
 
 const minimum = [ "core" ];
@@ -340,6 +341,11 @@ async function buildDefaultFiles( { version, watch } = {} ) {
 			watch
 		} )
 	] );
+
+	// Earlier Node.js versions do not support the ESM format.
+	if ( !verifyNodeVersion() ) {
+		return;
+	}
 
 	const { compareSize } = await import( "./compare_size.mjs" );
 	return compareSize( {
