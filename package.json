@@ -51,9 +51,7 @@
     "test:no-deprecated": "npm run build -- -e deprecated && grunt karma:main",
     "test:selector-native": "npm run build -- -e selector && grunt karma:main",
     "test:slim": "npm run build -- --slim && grunt karma:main",
-    "test:node_smoke_tests:commonjs": "node build/tasks/node_smoke_tests.js commonjs:./dist/jquery.js commonjs:jquery commonjs:./dist/jquery.slim.js commonjs:jquery/slim",
-    "test:node_smoke_tests:module": "node build/tasks/node_smoke_tests.js module:./dist-module/jquery.module.js module:jquery module:./dist-module/jquery.slim.module.js module:jquery/slim",
-    "test:node_smoke_tests": "npm run build-all-variants && npm run test:node_smoke_tests:commonjs && npm run test:node_smoke_tests:module",
+    "test:node_smoke_tests": "npm run build-all-variants && node build/tasks/node_smoke_tests.js",
     "test:promises_aplus": "npm run build:main && node build/tasks/promises_aplus_tests.js",
     "test": "npm run build-all-variants && npm run lint && npm run test:browserless && npm run test:browser && npm run test:esmodules && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native"
   },
