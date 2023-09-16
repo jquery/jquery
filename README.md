@@ -62,7 +62,7 @@ The built version of jQuery will be placed in the `dist/` directory, along with 
 To build all variants of jQuery, run the following command:
 
 ```bash
-npm run build-all-variants
+npm run build:all
 ```
 
 This will create all of the variants that jQuery includes in a release, including `jquery.js`, `jquery.slim.js`, `jquery.module.js`, and `jquery.slim.module.js` along their associated minified files and sourcemaps.

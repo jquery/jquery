@@ -71,7 +71,7 @@ jobs:
       if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
 
     - name: Build jQuery for Lint
-      run: npm run build-all-variants
+      run: npm run build:all
       if: matrix.NPM_SCRIPT == 'test:browserless'
 
     - name: Lint code
