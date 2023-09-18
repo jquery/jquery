@@ -1,72 +1,31 @@
 "use strict";
 
-module.exports = function( grunt ) {
-	const fs = require( "fs" );
-	const filename = grunt.option( "filename" );
-	const distFolder = grunt.option( "dist-folder" );
-	const distPaths = [
-		`${ distFolder }/${ filename }`,
-		`${ distFolder }/${ filename.replace( ".js", ".min.js" ) }`,
-		`${ distFolder }/${ filename.replace( ".js", ".min.map" ) }`
-	];
+// Process files for distribution.
+module.exports = async function processForDist( text, filename ) {
+	if ( !text ) {
+		throw new Error( "text required for processForDist" );
+	}
 
-	// Process files for distribution
-	grunt.registerTask( "dist", function() {
-		let stored, flags, paths, nonascii;
+	if ( !filename ) {
+		throw new Error( "filename required for processForDist" );
+	}
 
-		// Check for stored destination paths
-		// ( set in dist/.destination.json )
-		stored = Object.keys( grunt.config( "dst" ) );
+	// Ensure files use only \n for line endings, not \r\n
+	if ( /\x0d\x0a/.test( text ) ) {
+		throw new Error( filename + ": Incorrect line endings (\\r\\n)" );
+	}
 
-		// Allow command line input as well
-		flags = Object.keys( this.flags );
-
-		// Combine all output target paths
-		paths = [].concat( stored, flags ).filter( function( path ) {
-			return path !== "*";
-		} );
-
-		// Ensure the dist files are pure ASCII
-		nonascii = false;
-
-		distPaths.forEach( function( filename ) {
-			let i, c;
-			const text = fs.readFileSync( filename, "utf8" );
-
-			// Ensure files use only \n for line endings, not \r\n
-			if ( /\x0d\x0a/.test( text ) ) {
-				grunt.log.writeln( filename + ": Incorrect line endings (\\r\\n)" );
-				nonascii = true;
+	// Ensure only ASCII chars so script tags don't need a charset attribute
+	if ( text.length !== Buffer.byteLength( text, "utf8" ) ) {
+		let message = filename + ": Non-ASCII characters detected:\n";
+		for ( let i = 0; i < text.length; i++ ) {
+			const c = text.charCodeAt( i );
+			if ( c > 127 ) {
+				message += "- position " + i + ": " + c + "\n";
+				message += "==> " + text.substring( i - 20, i + 20 );
+				break;
 			}
-
-			// Ensure only ASCII chars so script tags don't need a charset attribute
-			if ( text.length !== Buffer.byteLength( text, "utf8" ) ) {
-				grunt.log.writeln( filename + ": Non-ASCII characters detected:" );
-				for ( i = 0; i < text.length; i++ ) {
-					c = text.charCodeAt( i );
-					if ( c > 127 ) {
-						grunt.log.writeln( "- position " + i + ": " + c );
-						grunt.log.writeln( "-- " + text.substring( i - 20, i + 20 ) );
-						break;
-					}
-				}
-				nonascii = true;
-			}
-
-			// Optionally copy dist files to other locations
-			paths.forEach( function( path ) {
-				let created;
-
-				if ( !/\/$/.test( path ) ) {
-					path += "/";
-				}
-
-				created = path + filename.replace( "dist/", "" );
-				grunt.file.write( created, text );
-				grunt.log.writeln( "File '" + created + "' created." );
-			} );
-		} );
-
-		return !nonascii;
-	} );
+		}
+		throw new Error( message );
+	}
 };

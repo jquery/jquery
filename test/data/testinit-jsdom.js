@@ -37,10 +37,10 @@ window.original$ = this.$ = "replaced";
  * @example url("mock.php?foo=bar")
  * @result "data/mock.php?foo=bar&10538358345554"
  */
-function url( value ) {
+this.url = function( value ) {
 	return baseURL + value + ( /\?/.test( value ) ? "&" : "?" ) +
 		new Date().getTime() + "" + parseInt( Math.random() * 100000, 10 );
-}
+};
 
 // We only run basic tests in jsdom so we don't need to repeat the logic
 // from the regular testinit.js

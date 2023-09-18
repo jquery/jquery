@@ -1,27 +1,32 @@
 "use strict";
 
-module.exports = grunt => {
-	const timeout = 2000;
-	const spawnTest = require( "./lib/spawn_test.js" );
+const { spawn } = require( "child_process" );
+const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
+const path = require( "path" );
+const os = require( "os" );
 
-	grunt.registerTask( "promises_aplus_tests",
-		[ "promises_aplus_tests:deferred", "promises_aplus_tests:when" ] );
+if ( !verifyNodeVersion() ) {
+	return;
+}
 
-	grunt.registerTask( "promises_aplus_tests:deferred", function() {
-		spawnTest( this.async(),
-			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
-				" test/promises_aplus_adapters/deferred.cjs" +
-				" --reporter dot" +
-				" --timeout " + timeout
+const command = path.resolve(
+	__dirname,
+	`../../node_modules/.bin/promises-aplus-tests${os.platform() === "win32" ? ".cmd" : ""}`
+);
+const args = [ "--reporter", "dot", "--timeout", "2000" ];
+const tests = [
+	"test/promises_aplus_adapters/deferred.cjs",
+	"test/promises_aplus_adapters/when.cjs"
+];
+
+async function runTests() {
+	tests.forEach( ( test ) => {
+		spawn(
+			command,
+			[ test ].concat( args ),
+			{ stdio: "inherit" }
 		);
 	} );
+}
 
-	grunt.registerTask( "promises_aplus_tests:when", function() {
-		spawnTest( this.async(),
-			"\"" + __dirname + "/../../node_modules/.bin/promises-aplus-tests\"" +
-				" test/promises_aplus_adapters/when.cjs" +
-				" --reporter dot" +
-				" --timeout " + timeout
-		);
-	} );
-};
+runTests();

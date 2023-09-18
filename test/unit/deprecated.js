@@ -46,8 +46,12 @@ QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
 	assert.expect( 1 );
 
 	var times = 0,
-		handler1 = function() { ++times; },
-		handler2 = function() { ++times; };
+		handler1 = function() {
+ ++times;
+},
+		handler2 = function() {
+ ++times;
+};
 
 	jQuery( "#firstp" )
 		.hover( handler1, handler2 )

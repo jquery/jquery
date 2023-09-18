@@ -1,0 +1,5 @@
+{
+	"plugins": ["@babel/transform-for-of"],
+	"retainLines": true,
+	"sourceMaps": "inline"
+}

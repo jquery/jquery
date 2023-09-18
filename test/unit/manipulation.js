@@ -1325,9 +1325,13 @@ QUnit.test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function( ass
 	jQuery.each( tests, function( label, input ) {
 		$el.html( "<a></a>" ).children().replaceWith( input );
 		assert.strictEqual( $el.html(), "", "replaceWith(" + label + ")" );
-		$el.html( "<b></b>" ).children().replaceWith( function() { return input; } );
+		$el.html( "<b></b>" ).children().replaceWith( function() {
+			return input;
+		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
-		$el.html( "<i></i>" ).children().replaceWith( function( i ) { return input; } );
+		$el.html( "<i></i>" ).children().replaceWith( function( i ) {
+			return input;
+		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
 		$el.html( "<p></p>" ).children().replaceWith( function( i ) {
 			return i ?
@@ -1567,7 +1571,9 @@ QUnit.test( "clone(form element) (Bug trac-3879, trac-6655)", function( assert )
 
 	element = jQuery( "<select><option>Foo</option><option value='selected' selected>Bar</option></select>" );
 
-	assert.equal( element.clone().find( "option" ).filter( function() { return this.selected; } ).val(), "selected", "Selected option cloned correctly" );
+	assert.equal( element.clone().find( "option" ).filter( function() {
+		return this.selected;
+	} ).val(), "selected", "Selected option cloned correctly" );
 
 	element = jQuery( "<input type='checkbox' value='foo'>" ).attr( "checked", "checked" );
 	clone = element.clone();
@@ -2217,8 +2223,7 @@ QUnit.test( "domManip plain-text caching (trac-6779)", function( assert ) {
 	for ( i = 0; i < bad.length; i++ ) {
 		try {
 			$f.append( bad[ i ] );
-		}
-		catch ( e ) {}
+		} catch ( e ) {}
 	}
 	assert.equal( $f.text(), bad.join( "" ), "Cached strings that match Object properties" );
 	$f.remove();

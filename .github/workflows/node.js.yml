@@ -61,15 +61,25 @@ jobs:
       run: |
         export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest&lang=en-US&os=linux64'
         wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
-      if: "contains(matrix.NAME, 'Firefox ESR')"
+      if: contains(matrix.NAME, 'Firefox ESR')
 
     - name: Install dependencies
-      run: |
-        npm install
+      run: npm install
 
     - name: Install Playwright dependencies
       run: npx playwright-webkit install-deps
-      if: "matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')"
+      if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
+
+    - name: Build jQuery for Lint
+      run: npm run build:all
+      if: matrix.NPM_SCRIPT == 'test:browserless'
+
+    - name: Lint code
+      run: npm run lint
+      if: matrix.NODE_VERSION == '18.x'
+
+    - name: Prepare tests
+      run: npm run pretest
 
     - name: Run tests
       env:

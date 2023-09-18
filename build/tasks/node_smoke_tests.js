@@ -1,51 +1,50 @@
 "use strict";
 
-module.exports = ( grunt ) => {
-	const fs = require( "fs" );
-	const spawnTest = require( "./lib/spawn_test.js" );
-	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
+const fs = require( "fs" );
+const util = require( "util" );
+const exec = util.promisify( require( "child_process" ).exec );
+const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 
-	grunt.registerTask( "node_smoke_tests", function( moduleType, jQueryModuleSpecifier ) {
-		if (
-			( moduleType !== "commonjs" && moduleType !== "module" ) ||
-			!jQueryModuleSpecifier
-		) {
-			grunt.fatal( "Use `node_smoke_tests:commonjs:JQUERY` " +
-				"or `node_smoke_tests:module:JQUERY.\n" +
-				"JQUERY can be `jquery`, `jquery/slim` or a path to any of them." );
-		}
+const allowedModules = [ "commonjs", "module" ];
 
-		if ( !nodeV16OrNewer ) {
-			grunt.log.writeln( "Old Node.js detected, running the task " +
-				`"node_smoke_tests:${ moduleType }:${ jQueryModuleSpecifier }" skipped...` );
-			return;
-		}
+if ( !verifyNodeVersion() ) {
+	return;
+}
 
-		const testsDir = `./test/node_smoke_tests/${ moduleType }`;
-		const nodeSmokeTests = [];
+// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
+// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
+// on success or another one on failure. Spawning in sub-processes is
+// important so that the tests & the main process don't interfere with
+// each other, e.g. so that they don't share the `require` cache.
 
-		// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
-		// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
-		// on success or another one on failure. Spawning in sub-processes is
-		// important so that the tests & the main process don't interfere with
-		// each other, e.g. so that they don't share the `require` cache.
+async function runTests( sourceType, module ) {
+	if ( !allowedModules.includes( sourceType ) ) {
+		throw new Error(
+			`Usage: \`node_smoke_tests [${allowedModules.join( "|" )}]:JQUERY\``
+		);
+	}
+	const dir = `./test/node_smoke_tests/${sourceType}`;
+	const files = await fs.promises.readdir( dir, { withFileTypes: true } );
+	const testFiles = files.filter( ( testFilePath ) => testFilePath.isFile() );
+	await Promise.all(
+		testFiles.map( ( testFile ) =>
+			exec( `node "${dir}/${testFile.name}" "${module}"` )
+		)
+	);
+	console.log( `Node smoke tests passed for ${sourceType} "${module}".` );
+}
 
-		fs.readdirSync( testsDir )
-			.filter( ( testFilePath ) =>
-				fs.statSync( `${ testsDir }/${ testFilePath }` ).isFile() &&
-					/\.[cm]?js$/.test( testFilePath )
-			)
-			.forEach( ( testFilePath ) => {
-				const taskName = `node_${ testFilePath.replace( /\.[cm]?js$/, "" ) }:${ moduleType }:${ jQueryModuleSpecifier }`;
+async function runDefaultTests() {
+	await Promise.all( [
+		runTests( "commonjs", "jquery" ),
+		runTests( "commonjs", "jquery/slim" ),
+		runTests( "commonjs", "./dist/jquery.js" ),
+		runTests( "commonjs", "./dist/jquery.slim.js" ),
+		runTests( "module", "jquery" ),
+		runTests( "module", "jquery/slim" ),
+		runTests( "module", "./dist-module/jquery.module.js" ),
+		runTests( "module", "./dist-module/jquery.slim.module.js" )
+	] );
+}
 
-				grunt.registerTask( taskName, function() {
-					spawnTest( this.async(), `node "${ testsDir }/${
-						testFilePath }" ${ jQueryModuleSpecifier }` );
-				} );
-
-				nodeSmokeTests.push( taskName );
-			} );
-
-		grunt.task.run( nodeSmokeTests );
-	} );
-};
+runDefaultTests();

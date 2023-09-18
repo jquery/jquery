@@ -455,6 +455,7 @@ QUnit.module( "ajax", {
 				},
 				cache: false,
 				beforeSend: function( xhr, settings ) {
+
 					// Clear the cache-buster param value
 					var url = settings.url.replace( /_=[^&#]+/, "_=" );
 					assert.equal( url, baseURL + "name.html?abc&devo=hat&_=#brownies",
@@ -684,7 +685,7 @@ QUnit.module( "ajax", {
 			url: url( "404.txt" ),
 			beforeSend: nocallback( "beforeSend" ),
 			error: nocallback( "error" ),
-			complete:  nocallback( "complete" )
+			complete: nocallback( "complete" )
 		};
 	} );
 
@@ -873,8 +874,8 @@ QUnit.module( "ajax", {
 			success: function( data ) {
 				assert.ok( data.match( /^html text/ ), "Check content for datatype html" );
 				jQuery( "#ap" ).html( data );
-				assert.strictEqual( window[ "testFoo" ], "foo", "Check if script was evaluated for datatype html" );
-				assert.strictEqual( window[ "testBar" ], "bar", "Check if script src was evaluated for datatype html" );
+				assert.strictEqual( window.testFoo, "foo", "Check if script was evaluated for datatype html" );
+				assert.strictEqual( window.testBar, "bar", "Check if script src was evaluated for datatype html" );
 			}
 		};
 	} );
@@ -884,6 +885,7 @@ QUnit.module( "ajax", {
 		return {
 			dataType: "jsonp",
 			url: url( "mock.php?action=errorWithScript" ),
+
 			// error is the significant assertion
 			error: function( xhr ) {
 				var expected = { "status": 404, "msg": "Not Found" };
@@ -912,6 +914,7 @@ QUnit.module( "ajax", {
 				complete: function() {
 					jQuery.globalEval = globalEval;
 				},
+
 				// error is the significant assertion
 				error: function( xhr ) {
 					assert.strictEqual( xhr.status, 404, testMsg );
@@ -1171,8 +1174,8 @@ QUnit.module( "ajax", {
 					Globals.register( "functionToCleanUp" );
 					Globals.register( "XXX" );
 					Globals.register( "jsonpResults" );
-					window[ "jsonpResults" ] = function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (GET, custom callback function)" );
+					window.jsonpResults = function( data ) {
+						assert.ok( data.data, "JSON results returned (GET, custom callback function)" );
 					};
 				},
 				requests: [ {
@@ -1181,7 +1184,7 @@ QUnit.module( "ajax", {
 					crossDomain: crossDomain,
 					jsonp: "callback",
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (GET, data obj callback)" );
+						assert.ok( data.data, "JSON results returned (GET, data obj callback)" );
 					}
 				}, {
 					url: baseURL + "mock.php?action=jsonp",
@@ -1190,7 +1193,7 @@ QUnit.module( "ajax", {
 					jsonpCallback: "jsonpResults",
 					success: function( data ) {
 						assert.strictEqual(
-							typeof window[ "jsonpResults" ],
+							typeof window.jsonpResults,
 							"function",
 							"should not rewrite original function"
 						);
@@ -1202,8 +1205,8 @@ QUnit.module( "ajax", {
 					crossDomain: crossDomain,
 					jsonpCallback: "functionToCleanUp",
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (GET, custom callback name to be cleaned up)" );
-						assert.strictEqual( window[ "functionToCleanUp" ], true, "Callback was removed (GET, custom callback name to be cleaned up)" );
+						assert.ok( data.data, "JSON results returned (GET, custom callback name to be cleaned up)" );
+						assert.strictEqual( window.functionToCleanUp, true, "Callback was removed (GET, custom callback name to be cleaned up)" );
 						var xhr;
 						jQuery.ajax( {
 							url: baseURL + "mock.php?action=jsonp",
@@ -1217,7 +1220,7 @@ QUnit.module( "ajax", {
 						} );
 						xhr.fail( function() {
 							assert.ok( true, "Ajax error JSON (GET, custom callback name to be cleaned up)" );
-							assert.strictEqual( window[ "functionToCleanUp" ], true, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
+							assert.strictEqual( window.functionToCleanUp, true, "Callback was removed after early abort (GET, custom callback name to be cleaned up)" );
 						} );
 					}
 				}, {
@@ -1230,7 +1233,7 @@ QUnit.module( "ajax", {
 						assert.ok( /action=jsonp&callback=XXX&_=\d+$/.test( this.url ), "The URL wasn't messed with (GET, custom callback name with no url manipulation)" );
 					},
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (GET, custom callback name with no url manipulation)" );
+						assert.ok( data.data, "JSON results returned (GET, custom callback name with no url manipulation)" );
 					}
 				} ]
 			};
@@ -1267,7 +1270,7 @@ QUnit.module( "ajax", {
 					dataType: "jsonp",
 					crossDomain: crossDomain,
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (POST, no callback)" );
+						assert.ok( data.data, "JSON results returned (POST, no callback)" );
 					}
 				},
 				{
@@ -1277,7 +1280,7 @@ QUnit.module( "ajax", {
 					dataType: "jsonp",
 					crossDomain: crossDomain,
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (POST, data callback)" );
+						assert.ok( data.data, "JSON results returned (POST, data callback)" );
 					}
 				},
 				{
@@ -1287,7 +1290,7 @@ QUnit.module( "ajax", {
 					dataType: "jsonp",
 					crossDomain: crossDomain,
 					success: function( data ) {
-						assert.ok( data[ "data" ], "JSON results returned (POST, data obj callback)" );
+						assert.ok( data.data, "JSON results returned (POST, data obj callback)" );
 					}
 				}
 			];
@@ -1461,7 +1464,7 @@ QUnit.module( "ajax", {
 			url: url( "mock.php?action=testbar" ),
 			dataType: "script",
 			success: function() {
-				assert.strictEqual( window[ "testBar" ], "bar", "Script results returned (GET, no callback)" );
+				assert.strictEqual( window.testBar, "bar", "Script results returned (GET, no callback)" );
 			}
 		};
 	} );
@@ -1478,7 +1481,7 @@ QUnit.module( "ajax", {
 			type: "POST",
 			dataType: "script",
 			success: function( data, status ) {
-				assert.strictEqual( window[ "testBar" ], "bar", "Script results returned (POST, no callback)" );
+				assert.strictEqual( window.testBar, "bar", "Script results returned (POST, no callback)" );
 				assert.strictEqual( status, "success", "Script results returned (POST, no callback)" );
 			}
 		};
@@ -1492,7 +1495,7 @@ QUnit.module( "ajax", {
 			url: url( "mock.php?action=testbar" ),
 			dataType: "script",
 			success: function() {
-				assert.strictEqual( window[ "testBar" ], "bar", "Script results returned (GET, no callback)" );
+				assert.strictEqual( window.testBar, "bar", "Script results returned (GET, no callback)" );
 			}
 		};
 	} );
@@ -1518,10 +1521,10 @@ QUnit.module( "ajax", {
 				},
 				success: function( json ) {
 					assert.ok( json.length >= 2, "Check length" );
-					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+					assert.strictEqual( json[ 0 ].name, "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ].age, 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ].name, "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ].age, 25, "Check JSON: second, age" );
 				}
 			},
 			{
@@ -1538,10 +1541,10 @@ QUnit.module( "ajax", {
 				],
 				success: function( json ) {
 					assert.ok( json.length >= 2, "Check length" );
-					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+					assert.strictEqual( json[ 0 ].name, "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ].age, 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ].name, "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ].age, 25, "Check JSON: second, age" );
 				}
 			}
 		];
@@ -1562,10 +1565,10 @@ QUnit.module( "ajax", {
 					assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
 					var json = JSON.parse( text );
 					assert.ok( json.length >= 2, "Check length" );
-					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+					assert.strictEqual( json[ 0 ].name, "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ].age, 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ].name, "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ].age, 25, "Check JSON: second, age" );
 				}
 			},
 			{
@@ -1587,10 +1590,10 @@ QUnit.module( "ajax", {
 					assert.strictEqual( typeof text, "string", "json wasn't auto-determined" );
 					var json = JSON.parse( text );
 					assert.ok( json.length >= 2, "Check length" );
-					assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-					assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-					assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-					assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+					assert.strictEqual( json[ 0 ].name, "John", "Check JSON: first, name" );
+					assert.strictEqual( json[ 0 ].age, 21, "Check JSON: first, age" );
+					assert.strictEqual( json[ 1 ].name, "Peter", "Check JSON: second, name" );
+					assert.strictEqual( json[ 1 ].age, 25, "Check JSON: second, age" );
 				}
 			}
 		];
@@ -1816,6 +1819,7 @@ QUnit.module( "ajax", {
 	var ifModifiedNow = new Date();
 
 	jQuery.each(
+
 		/* jQuery.each arguments start */
 		{
 			" (cache)": true,
@@ -1870,6 +1874,7 @@ QUnit.module( "ajax", {
 				}
 			);
 		}
+
 		/* jQuery.each arguments end */
 	);
 
@@ -1940,6 +1945,7 @@ QUnit.module( "ajax", {
 		}
 
 		jQuery.each(
+
 			/* jQuery.each arguments start */
 			{
 				"name.html": true,
@@ -2014,6 +2020,7 @@ QUnit.module( "ajax", {
 				} );
 
 			}
+
 			/* jQuery.each arguments end*/
 		);
 	} );
@@ -2815,10 +2822,10 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 			},
 			function( json ) {
 				assert.ok( json.length >= 2, "Check length" );
-				assert.strictEqual( json[ 0 ][ "name" ], "John", "Check JSON: first, name" );
-				assert.strictEqual( json[ 0 ][ "age" ], 21, "Check JSON: first, age" );
-				assert.strictEqual( json[ 1 ][ "name" ], "Peter", "Check JSON: second, name" );
-				assert.strictEqual( json[ 1 ][ "age" ], 25, "Check JSON: second, age" );
+				assert.strictEqual( json[ 0 ].name, "John", "Check JSON: first, name" );
+				assert.strictEqual( json[ 0 ].age, 21, "Check JSON: first, age" );
+				assert.strictEqual( json[ 1 ].name, "Peter", "Check JSON: second, name" );
+				assert.strictEqual( json[ 1 ].age, 25, "Check JSON: second, age" );
 				done();
 			}
 		);
@@ -2828,9 +2835,9 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		assert.expect( 2 );
 		var done = assert.async();
 		jQuery.getJSON( url( "mock.php?action=json" ), function( json ) {
-			if ( json && json[ "data" ] ) {
-				assert.strictEqual( json[ "data" ][ "lang" ], "en", "Check JSON: lang" );
-				assert.strictEqual( json[ "data" ].length, 25, "Check JSON: length" );
+			if ( json && json.data ) {
+				assert.strictEqual( json.data.lang, "en", "Check JSON: lang" );
+				assert.strictEqual( json.data.length, 25, "Check JSON: length" );
 				done();
 			}
 		} );
@@ -2870,7 +2877,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 			Globals.register( "testBar" );
 			jQuery.getScript( url( "mock.php?action=testbar" ), function() {
-				assert.strictEqual( window[ "testBar" ], "bar", "Check if script was evaluated" );
+				assert.strictEqual( window.testBar, "bar", "Check if script was evaluated" );
 				done();
 			} );
 		}
@@ -2901,7 +2908,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		jQuery.getScript( {
 			url: url( "mock.php?action=testbar" ),
 			success: function() {
-				assert.strictEqual( window[ "testBar" ], "bar", "Check if script was evaluated" );
+				assert.strictEqual( window.testBar, "bar", "Check if script was evaluated" );
 				done();
 			}
 		} );
@@ -3003,7 +3010,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		assert.expect( 7 );
 		var done = assert.async();
 		var verifyEvaluation = function() {
-			assert.strictEqual( window[ "testBar" ], "bar", "Check if script src was evaluated after load" );
+			assert.strictEqual( window.testBar, "bar", "Check if script src was evaluated after load" );
 			assert.strictEqual( jQuery( "#ap" ).html(), "bar", "Check if script evaluation has modified DOM" );
 			done();
 		};
@@ -3014,7 +3021,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		jQuery( "#first" ).load( url( "mock.php?action=testHTML&baseURL=" + baseURL ), function() {
 			assert.ok( jQuery( "#first" ).html().match( /^html text/ ), "Check content after loading html" );
 			assert.strictEqual( jQuery( "#foo" ).html(), "foo", "Check if script evaluation has modified DOM" );
-			assert.strictEqual( window[ "testFoo" ], "foo", "Check if script was evaluated after load" );
+			assert.strictEqual( window.testFoo, "foo", "Check if script was evaluated after load" );
 			setTimeout( verifyEvaluation, 600 );
 		} );
 	} );
@@ -3026,7 +3033,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 		jQuery( "#first" ).load( url( "test2.html" ), function() {
 			assert.strictEqual( jQuery( "#foo" ).html(), "foo", "Check if script evaluation has modified DOM" );
-			assert.strictEqual( window[ "testFoo" ], "foo", "Check if script was evaluated after load" );
+			assert.strictEqual( window.testFoo, "foo", "Check if script was evaluated after load" );
 			done();
 		} );
 	} );
