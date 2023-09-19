@@ -148,13 +148,13 @@ npm run build -- --filename=jquery.module.js --esm
 By default, jQuery depends on a global `window`. For environments that don't have one, you can generate a factory build that exposes a function accepting `window` as a parameter that you can provide externally (see [`README` of the published package](build/fixtures/README.md) for usage instructions). You can generate such a factory using the `--factory` parameter:
 
 ```bash
-grunt custom --factory
+npm run build -- --filename=jquery.factory.js --factory
 ```
 
-The default mode doesn't generate a factory, but you can also pass it explicitly via `--no-factory`:
+This option can be mixed with others like `--esm` or `--slim`:
 
 ```bash
-grunt custom --no-factory
+npm run build -- --filename=jquery.factory.slim.module.js --factory --esm --slim --dir="/dist-module"
 ```
 
 #### Custom Build Examples

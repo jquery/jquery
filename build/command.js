@@ -58,6 +58,12 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Build an ES module (ESM) bundle. " +
 			"By default, a UMD bundle is built."
 	} )
+	.option( "factory", {
+		type: "boolean",
+		description:
+			"Build the factory bundle. " +
+			"By default, a UMD bundle is built."
+	} )
 	.option( "slim", {
 		alias: "s",
 		type: "boolean",
