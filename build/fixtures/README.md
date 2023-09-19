@@ -23,9 +23,27 @@ or, to use the jQuery ECMAScript module:
 
 ```html
 <script type="module">
+	import { $ } from "https://code.jquery.com/jquery-@VERSION.min.js";
+</script>
+```
+
+or:
+
+```html
+<script type="module">
+	import { jQuery } from "https://code.jquery.com/jquery-@VERSION.min.js";
+</script>
+```
+
+All jQuery modules export named `$` & `jQuery` tokens; the further examples will just show `$`. The default import also works:
+
+```html
+<script type="module">
 	import $ from "https://code.jquery.com/jquery-@VERSION.min.js";
 </script>
 ```
+
+However, named imports provide better interoperability across tooling and are therefore recommended.
 
 Sometimes you don’t need AJAX, or you prefer to use one of the many standalone libraries that focus on AJAX requests. And often it is simpler to use a combination of CSS, class manipulation or the Web Animations API. Similarly, many projects opt into relying on native browser promises instead of jQuery Deferreds. Along with the regular version of jQuery that includes the `ajax`, `callbacks`, `deferred`, `effects` & `queue` modules, we’ve released a “slim” version that excludes these modules. You can load it as a regular script:
 
@@ -37,7 +55,7 @@ or as a module:
 
 ```html
 <script type="module">
-	import $ from "https://code.jquery.com/jquery-@VERSION.slim.min.js";
+	import { $ } from "https://code.jquery.com/jquery-@VERSION.slim.min.js";
 </script>
 ```
 
@@ -60,7 +78,7 @@ Now, the following will work to get the full version:
 
 ```html
 <script type="module">
-	import $ from "jquery";
+	import { $ } from "jquery";
 	// Use $ here
 </script>
 ```
@@ -69,7 +87,7 @@ and the following to get the slim one:
 
 ```html
 <script type="module">
-	import $ from "jquery/slim";
+	import { $ } from "jquery/slim";
 	// Use $ here
 </script>
 ```
@@ -93,7 +111,7 @@ npm install jquery
 In the script, including jQuery will usually look like this:
 
 ```js
-import $ from "jquery";
+import { $ } from "jquery";
 ```
 
 If you need to use jQuery in a file that's not an ECMAScript module, you can use the CommonJS syntax:
@@ -115,7 +133,7 @@ Remember that some modules have other dependencies (e.g. the `event` module depe
 Example usage:
 
 ```js
-import $ from "jquery/src/css.js"; // adds the `.css()` method
+import { $ } from "jquery/src/css.js"; // adds the `.css()` method
 import "jquery/src/event.js"; // adds the `.on()` method; pulls "selector" as a dependency
 $( ".toggle" ).on( "click", function() {
 	$( this ).css( "color", "red" );
