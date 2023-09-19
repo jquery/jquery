@@ -1403,7 +1403,7 @@ QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
 	assert.ok( /\/example\.html$/.test( href ), "href is not lost after parsing anchor" );
 } );
 
-QUnit.test( "jQuery.parseHTML", function( assert ) {
+QUnit.test( "jQuery.parseHTML error handling", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );
 

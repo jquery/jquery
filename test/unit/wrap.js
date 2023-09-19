@@ -23,7 +23,7 @@ function testWrap( val, assert ) {
 
 	assert.expect( 18 );
 
-	var defaultText, result, j, i, cacheLength;
+	var defaultText, result, j;
 
 	defaultText = "Try them out:";
 	result = jQuery( "#first" ).wrap( val( "<div class='red'><span></span></div>" ) ).text();

@@ -1757,7 +1757,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" ),
-		webkitOrBlink = /\webkit\b/i.test( navigator.userAgent ),
+		webkitOrBlink = /webkit\b/i.test( navigator.userAgent ),
 		expected = 20;
 
 	if ( webkitOrBlink ) {
