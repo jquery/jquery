@@ -459,7 +459,7 @@ jQuery.Animation = jQuery.extend( Animation, {
 
 jQuery.speed = function( speed, easing, fn ) {
 	var opt = speed && typeof speed === "object" ? jQuery.extend( {}, speed ) : {
-		complete: fn || !fn && easing ||
+		complete: fn || easing ||
 			isFunction( speed ) && speed,
 		duration: speed,
 		easing: fn && easing || easing && !isFunction( easing ) && easing

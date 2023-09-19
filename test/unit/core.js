@@ -1389,7 +1389,7 @@ QUnit.test( "jQuery.parseHTML(<a href>) - gh-2965", function( assert ) {
 } );
 
 if ( jQuery.support.createHTMLDocument ) {
-	QUnit.test( "jQuery.parseHTML", function( assert ) {
+	QUnit.test( "jQuery.parseHTML error handling", function( assert ) {
 		var done = assert.async();
 		assert.expect( 1 );
 

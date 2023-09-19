@@ -177,16 +177,12 @@ this.createXMLFragment = function() {
 	return frag;
 };
 
-window.fireNative = document.createEvent ?
-	function( node, type ) {
-		var event = document.createEvent( "HTMLEvents" );
+window.fireNative = function( node, type ) {
+	var event = document.createEvent( "HTMLEvents" );
 
-		event.initEvent( type, true, true );
-		node.dispatchEvent( event );
-	} :
-	function( node, type ) {
-		node.fireEvent( "on" + type, document.createEventObject() );
-	};
+	event.initEvent( type, true, true );
+	node.dispatchEvent( event );
+};
 
 /**
  * Add random number to url to stop caching

@@ -12,7 +12,7 @@ In the spirit of open source software development, jQuery always encourages comm
 
 1. [Getting Involved](https://contribute.jquery.org/)
 2. [Core Style Guide](https://contribute.jquery.org/style-guide/js/)
-3. [Writing Code for jQuery Foundation Projects](https://contribute.jquery.org/code/)
+3. [Writing Code for jQuery Projects](https://contribute.jquery.org/code/)
 
 ### References to issues/PRs
 
