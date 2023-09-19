@@ -143,6 +143,20 @@ By default, jQuery generates a regular script JavaScript file. You can also gene
 npm run build -- --filename=jquery.module.js --esm
 ```
 
+##### Factory mode
+
+By default, jQuery depends on a global `window`. For environments that don't have one, you can generate a factory build that exposes a function accepting `window` as a parameter that you can provide externally (see [`README` of the published package](build/fixtures/README.md) for usage instructions). You can generate such a factory using the `--factory` parameter:
+
+```bash
+npm run build -- --filename=jquery.factory.js --factory
+```
+
+This option can be mixed with others like `--esm` or `--slim`:
+
+```bash
+npm run build -- --filename=jquery.factory.slim.module.js --factory --esm --slim --dir="/dist-module"
+```
+
 #### Custom Build Examples
 
 Create a custom build using `npm run build`, listing the modules to be excluded. Excluding a top-level module also excludes its corresponding directory of modules.

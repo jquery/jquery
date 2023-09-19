@@ -1,7 +1,7 @@
 "use strict";
 
 // Process files for distribution.
-module.exports = async function processForDist( text, filename ) {
+module.exports = function processForDist( text, filename ) {
 	if ( !text ) {
 		throw new Error( "text required for processForDist" );
 	}

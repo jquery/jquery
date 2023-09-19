@@ -6,7 +6,7 @@ const { ensureJQuery } = await import( "./ensure_jquery.js" );
 export const ensureIterability = async( jQueryModuleSpecifier ) => {
 	const { window } = new JSDOM( "" );
 
-	const { default: jQueryFactory } = await import( jQueryModuleSpecifier );
+	const { jQueryFactory } = await import( jQueryModuleSpecifier );
 	const jQuery = jQueryFactory( window );
 	const elem = jQuery( "<div></div><span></span><a></a>" );
 

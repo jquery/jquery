@@ -8,7 +8,7 @@ const { ensureJQuery } = require( "./ensure_jquery.cjs" );
 const ensureIterability = ( jQueryModuleSpecifier ) => {
 	const { window } = new JSDOM( "" );
 
-	const jQueryFactory = require( jQueryModuleSpecifier );
+	const { jQueryFactory } = require( jQueryModuleSpecifier );
 	const jQuery = jQueryFactory( window );
 	const elem = jQuery( "<div></div><span></span><a></a>" );
 

@@ -2,11 +2,11 @@
 
 const assert = require( "node:assert" );
 
-const { ensureGlobalNotCreated } = require( "./lib/ensure_global_not_created.cjs" );
-const { getJQueryModuleSpecifier } = require( "./lib/jquery-module-specifier.cjs" );
+const { ensureGlobalNotCreated } = require( "../lib/ensure_global_not_created.cjs" );
+const { getJQueryModuleSpecifier } = require( "../lib/jquery-module-specifier.cjs" );
 
 const jQueryModuleSpecifier = getJQueryModuleSpecifier();
-const jQueryFactory = require( jQueryModuleSpecifier );
+const { jQueryFactory } = require( jQueryModuleSpecifier );
 
 assert.throws( () => {
 	jQueryFactory( {} );

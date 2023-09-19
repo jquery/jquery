@@ -10,21 +10,11 @@
  */
 // For ECMAScript module environments where a proper `window`
 // is present, execute the factory and get jQuery.
-// For environments that do not have a `window` with a `document`
-// (such as Node.js), expose a factory as module.exports.
-// This accentuates the need for the creation of a real `window`.
-// e.g. var jQuery = require("jquery")(window);
-// See ticket trac-14549 for more info.
-var jQueryOrJQueryFactory = typeof window !== "undefined" && window.document ?
-	jQueryFactory( window, true ) :
-	function( w ) {
-		if ( !w.document ) {
-			throw new Error( "jQuery requires a window with a document" );
-		}
-		return jQueryFactory( w );
-	};
-
 function jQueryFactory( window, noGlobal ) {
+
+if ( typeof window === "undefined" || !window.document ) {
+	throw new Error( "jQuery requires a window with a document" );
+}
 
 // @CODE
 // build.js inserts compiled jQuery here
@@ -33,9 +23,8 @@ return jQuery;
 
 }
 
-export {
-	jQueryOrJQueryFactory as jQuery,
-	jQueryOrJQueryFactory as $
-};
+var jQuery = jQueryFactory( window, true );
 
-export default jQueryOrJQueryFactory;
+export { jQuery, jQuery as $ };
+
+export default jQuery;

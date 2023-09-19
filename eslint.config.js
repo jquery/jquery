@@ -89,32 +89,12 @@ export default [
 	},
 
 	{
-		files: [ "src/wrapper.js" ],
-		languageOptions: {
-			sourceType: "script",
-			globals: {
-				jQuery: false,
-				module: true
-			}
-		},
-		rules: {
-			"no-unused-vars": "off",
-			indent: [
-				"error",
-				"tab",
-				{
-
-					// This makes it so code within the wrapper is not indented.
-					ignoredNodes: [
-						"Program > ExpressionStatement > CallExpression > :last-child > *"
-					]
-				}
-			]
-		}
-	},
-
-	{
-		files: [ "src/wrapper-esm.js" ],
+		files: [
+			"src/wrapper.js",
+			"src/wrapper-esm.js",
+			"src/wrapper-factory.js",
+			"src/wrapper-factory-esm.js"
+		],
 		languageOptions: {
 			globals: {
 				jQuery: false
@@ -130,6 +110,36 @@ export default [
 					// This makes it so code within the wrapper is not indented.
 					ignoredNodes: [
 						"Program > FunctionDeclaration > *"
+					]
+				}
+			]
+		}
+	},
+
+	{
+		files: [
+			"src/wrapper.js",
+			"src/wrapper-factory.js"
+		],
+		languageOptions: {
+			sourceType: "script",
+			globals: {
+				module: false
+			}
+		}
+	},
+
+	{
+		files: [ "src/wrapper.js" ],
+		rules: {
+			indent: [
+				"error",
+				"tab",
+				{
+
+					// This makes it so code within the wrapper is not indented.
+					ignoredNodes: [
+						"Program > ExpressionStatement > CallExpression > :last-child > *"
 					]
 				}
 			]

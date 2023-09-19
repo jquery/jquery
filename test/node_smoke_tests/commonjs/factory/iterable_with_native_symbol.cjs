@@ -7,8 +7,8 @@ if ( typeof Symbol === "undefined" ) {
 	process.exit();
 }
 
-const { ensureIterability } = require( "./lib/ensure_iterability_es6.cjs" );
-const { getJQueryModuleSpecifier } = require( "./lib/jquery-module-specifier.cjs" );
+const { ensureIterability } = require( "../lib/ensure_iterability_es6.cjs" );
+const { getJQueryModuleSpecifier } = require( "../lib/jquery-module-specifier.cjs" );
 
 const jQueryModuleSpecifier = getJQueryModuleSpecifier();
 ensureIterability( jQueryModuleSpecifier );
