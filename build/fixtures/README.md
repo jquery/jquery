@@ -43,7 +43,7 @@ All jQuery modules export named `$` & `jQuery` tokens; the further examples will
 </script>
 ```
 
-However, named imports provide better interoperability across tooling and are thus recommended.
+However, named imports provide better interoperability across tooling and are therefore recommended.
 
 Sometimes you don’t need AJAX, or you prefer to use one of the many standalone libraries that focus on AJAX requests. And often it is simpler to use a combination of CSS, class manipulation or the Web Animations API. Similarly, many projects opt into relying on native browser promises instead of jQuery Deferreds. Along with the regular version of jQuery that includes the `ajax`, `callbacks`, `deferred`, `effects` & `queue` modules, we’ve released a “slim” version that excludes these modules. You can load it as a regular script:
 
