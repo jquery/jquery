@@ -89,16 +89,49 @@ export default [
 	},
 
 	{
-		files: [ "src/wrapper.js" ],
+		files: [
+			"src/wrapper.js",
+			"src/wrapper-esm.js",
+			"src/wrapper-factory.js",
+			"src/wrapper-factory-esm.js"
+		],
 		languageOptions: {
-			sourceType: "script",
 			globals: {
-				jQuery: false,
-				module: true
+				jQuery: false
 			}
 		},
 		rules: {
 			"no-unused-vars": "off",
+			indent: [
+				"error",
+				"tab",
+				{
+
+					// This makes it so code within the wrapper is not indented.
+					ignoredNodes: [
+						"Program > FunctionDeclaration > *"
+					]
+				}
+			]
+		}
+	},
+
+	{
+		files: [
+			"src/wrapper.js",
+			"src/wrapper-factory.js"
+		],
+		languageOptions: {
+			sourceType: "script",
+			globals: {
+				module: false
+			}
+		}
+	},
+
+	{
+		files: [ "src/wrapper.js" ],
+		rules: {
 			indent: [
 				"error",
 				"tab",
@@ -112,79 +145,6 @@ export default [
 			]
 		}
 	},
-
-	{
-		files: [ "src/wrapper-esm.js" ],
-		languageOptions: {
-			globals: {
-				jQuery: false
-			}
-		},
-		rules: {
-			"no-unused-vars": "off",
-			indent: [
-				"error",
-				"tab",
-				{
-
-					// This makes it so code within the wrapper is not indented.
-					ignoredNodes: [
-						"Program > FunctionDeclaration > *"
-					]
-				}
-			]
-		}
-	},
-
-	{
-		files: [ "src/wrapper-factory.js" ],
-		languageOptions: {
-			sourceType: "script",
-			globals: {
-				jQuery: false,
-				module: true
-			}
-		},
-		rules: {
-			"no-unused-vars": "off",
-			indent: [
-				"error",
-				"tab",
-				{
-
-					// This makes it so code within the wrapper is not indented.
-					ignoredNodes: [
-						"Program > FunctionDeclaration > *"
-					]
-				}
-			]
-		}
-	},
-
-	{
-		files: [ "src/wrapper-factory-esm.js" ],
-		languageOptions: {
-			globals: {
-				jQuery: false
-			}
-		},
-		rules: {
-			"no-unused-vars": "off",
-			indent: [
-				"error",
-				"tab",
-				{
-
-					// This makes it so code within the wrapper is not indented.
-					ignoredNodes: [
-						"Program > FunctionDeclaration > *"
-					]
-				}
-			],
-			"import/no-unused-modules": "off"
-		}
-	},
-
 
 	{
 		files: [ "src/exports/amd.js" ],
