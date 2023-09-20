@@ -61,7 +61,6 @@
     "core-js-bundle": "3.32.1",
     "eslint": "8.48.0",
     "eslint-config-jquery": "3.0.1",
-    "eslint-plugin-import": "2.27.5",
     "express": "4.18.2",
     "globals": "13.20.0",
     "grunt": "1.5.3",

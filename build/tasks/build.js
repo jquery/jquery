@@ -11,11 +11,11 @@ const path = require( "path" );
 const util = require( "util" );
 const exec = util.promisify( require( "child_process" ).exec );
 const requirejs = require( "requirejs" );
-const excludedFromSlim = require( "./lib/slimExclude" );
+const excludedFromSlim = require( "./lib/slim-exclude" );
 const pkg = require( "../../package.json" );
+const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
 const minify = require( "./minify" );
 const getTimestamp = require( "./lib/getTimestamp" );
-const isCleanWorkingDir = require( "./lib/isCleanWorkingDir" );
 const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 const srcFolder = path.resolve( __dirname, "../../src" );
 
@@ -221,7 +221,6 @@ async function build( {
 	slim = false,
 	version
 } = {} ) {
-	const pureSlim = slim && !exclude.length && !include.length;
 
 	// Add the short commit hash to the version string
 	// when the version is not for a release.
@@ -231,9 +230,7 @@ async function build( {
 
 		// "+[slim.]SHA" is semantically correct
 		// Add ".dirty" as well if the working dir is not clean
-		version = `${pkg.version}+${slim ? "slim." : ""}${stdout.trim()}${isClean ? "" : ".dirty"}`;
-	} else if ( slim ) {
-		version += "+slim";
+		version = `${pkg.version}+${stdout.trim()}${isClean ? "" : ".dirty"}`;
 	}
 
 	await fs.promises.mkdir( dir, { recursive: true } );
@@ -263,7 +260,7 @@ async function build( {
 		// Append excluded modules to version.
 		// Skip adding exclusions for slim builds.
 		// Don't worry about semver syntax for these.
-		if ( !pureSlim && excluded.length ) {
+		if ( excluded.length ) {
 			version += " -" + excluded.join( ",-" );
 		}
 
@@ -275,7 +272,7 @@ async function build( {
 		config.include = included;
 
 		// Append extra included modules to version.
-		if ( !pureSlim && included.length ) {
+		if ( included.length ) {
 			version += " +" + included.join( ",+" );
 		}
 

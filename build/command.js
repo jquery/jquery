@@ -2,7 +2,7 @@
 
 const { build } = require( "./tasks/build" );
 const yargs = require( "yargs/yargs" );
-const slimExclude = require( "./tasks/lib/slimExclude" );
+const slimExclude = require( "./tasks/lib/slim-exclude" );
 
 const argv = yargs( process.argv.slice( 2 ) )
 	.version( false )

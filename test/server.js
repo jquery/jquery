@@ -3,7 +3,6 @@ const mockServer = require( "./middleware-mockserver" );
 const fs = require( "fs" );
 
 const nameHTML = fs.readFileSync( "./test/data/name.html", "utf8" );
-
 const app = express();
 
 app.use( mockServer() );

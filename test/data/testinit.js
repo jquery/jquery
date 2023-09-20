@@ -17,13 +17,7 @@ var FILEPATH = "/test/data/testinit.js",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
-	externalHost = "example.com",
-
-	// NOTE: keep it in sync with build/tasks/lib/slim-build-flags.js
-	excludedFromSlim = [
-		"ajax",
-		"effects"
-	];
+	externalHost = "example.com";
 
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
@@ -346,16 +340,8 @@ this.includesModule = function( moduleName ) {
 
 	var excludedModulesPart, excludedModules;
 
-	// A short-cut for the slim build, e.g. "4.0.0-pre+slim"
-	if ( jQuery.fn.jquery.indexOf( "+slim" ) > -1 ) {
-
-		// The module is included if it does NOT exist on the list
-		// of modules excluded in the slim build
-		return excludedFromSlim.indexOf( moduleName ) === -1;
-	}
-
 	// example version for `npm run build -- -e deprecated`:
-	// "v4.0.0-pre+14dc9347 -deprecated,-deprecated/ajax-event-alias,-deprecated/event"
+	// "v3.7.2-pre+14dc9347 -deprecated,-deprecated/ajax-event-alias,-deprecated/event"
 	excludedModulesPart = jQuery.fn.jquery
 
 		// Take the flags out of the version string.

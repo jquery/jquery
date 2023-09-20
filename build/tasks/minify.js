@@ -16,6 +16,9 @@ module.exports = async function minify( { dir, filename } ) {
 		" | (c) OpenJS Foundation and other contributors" +
 		" | jquery.org/license */";
 
+	const minFilename = filename.replace( rjs, ".min.js" );
+	const mapFilename = filename.replace( rjs, ".min.map" );
+
 	const { code, error, map: incompleteMap, warning } = UglifyJS.minify(
 		contents,
 		{
@@ -38,7 +41,7 @@ module.exports = async function minify( { dir, filename } ) {
 				preamble: banner
 			},
 			sourceMap: {
-				filename
+				filename: minFilename
 			}
 		}
 	);
@@ -51,11 +54,8 @@ module.exports = async function minify( { dir, filename } ) {
 		console.warn( warning );
 	}
 
-	const minFilename = filename.replace( rjs, ".min.js" );
-	const mapFilename = filename.replace( rjs, ".min.map" );
-
-	// The map's `files` & `sources` property are set incorrectly, fix
-	// them via overrides from the task config.
+	// The map's `sources` property is set to an array index.
+	// Fix it by setting it to the correct filename.
 	const map = JSON.stringify( {
 		...JSON.parse( incompleteMap ),
 		file: minFilename,

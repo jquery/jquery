@@ -65,9 +65,7 @@ To build all variants of jQuery, run the following command:
 npm run build:all
 ```
 
-This will create all of the variants that jQuery includes in a release, including `jquery.js`, `jquery.slim.js`, `jquery.module.js`, and `jquery.slim.module.js` along their associated minified files and sourcemaps.
-
-`jquery.module.js` and `jquery.slim.module.js` are [ECMAScript modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) that export `jQuery` and `$` as named exports are placed in the `dist-module/` directory rather than the `dist/` directory.
+This will create all of the variants that jQuery includes in a release, including `jquery.js` and `jquery.slim.js` along their associated minified files and sourcemaps.
 
 ## Building a Custom jQuery
 
@@ -135,20 +133,6 @@ npm run build -- --slim --filename="jquery.slim.js" --dir="/tmp"
 
 This would create a slim version of jQuery and place it under `tmp/jquery.slim.js`.
 
-##### Factory mode
-
-By default, jQuery depends on a global `window`. For environments that don't have one, you can generate a factory build that exposes a function accepting `window` as a parameter that you can provide externally (see [`README` of the published package](build/fixtures/README.md) for usage instructions). You can generate such a factory using the `--factory` parameter:
-
-```bash
-npm run build -- --filename=jquery.factory.js --factory
-```
-
-This option can be mixed with others like `--esm` or `--slim`:
-
-```bash
-npm run build -- --filename=jquery.factory.slim.module.js --factory --esm --slim --dir="/dist-module"
-```
-
 #### Custom Build Examples
 
 Create a custom build using `npm run build`, listing the modules to be excluded. Excluding a top-level module also excludes its corresponding directory of modules.
@@ -175,12 +159,6 @@ There is a special alias to generate a build with the same configuration as the 
 
 ```bash
 npm run build -- --filename=jquery.slim.js --slim
-```
-
-Or, to create the slim build as an esm module:
-
-```bash
-npm run build -- --filename=jquery.slim.module.js --slim --esm
 ```
 
 *Non-official custom builds are not regularly tested. Use them at your own risk.*

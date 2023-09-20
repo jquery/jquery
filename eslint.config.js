@@ -1,7 +1,6 @@
 "use strict";
 
 const jqueryConfig = require( "eslint-config-jquery" );
-const importPlugin = require( "eslint-plugin-import" );
 const globals = require( "globals" );
 
 module.exports = [
@@ -39,9 +38,6 @@ module.exports = [
 	// Source
 	{
 		files: [ "src/**" ],
-		plugins: {
-			import: importPlugin
-		},
 		languageOptions: {
 
 			// The browser env is not enabled on purpose so that code takes
@@ -57,29 +53,6 @@ module.exports = [
 		},
 		rules: {
 			...jqueryConfig.rules,
-			"import/extensions": [ "error", "always" ],
-			"import/no-cycle": "error",
-
-			// TODO: Enable this rule when eslint-plugin-import supports
-			// it when using flat config.
-			// See https://github.com/import-js/eslint-plugin-import/issues/2556
-
-			// "import/no-unused-modules": [
-			// 	"error",
-			// 	{
-			// 		unusedExports: true,
-
-			// 		// When run via WebStorm, the root path against which these paths
-			// 		// are resolved is the path where this ESLint config file lies,
-			// 		// i.e. `src`. When run via the command line, it's usually the root
-			// 		// folder of the jQuery repository. This pattern intends to catch both.
-			// 		// Note that we cannot specify two patterns here:
-			// 		//     [ "src/*.js", "*.js" ]
-			// 		// as they're analyzed individually and the rule crashes if a pattern
-			// 		// cannot be matched.
-			// 		ignoreExports: [ "{src/,}*.js" ]
-			// 	}
-			// ],
 			indent: [
 				"error",
 				"tab",
