@@ -70,12 +70,8 @@ jobs:
       run: npx playwright-webkit install-deps
       if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
 
-    - name: Build jQuery for Lint
-      run: npm run build:all
-      if: matrix.NPM_SCRIPT == 'test:browserless'
-
     - name: Lint code
-      run: npm run lint
+      run: npm run build:all && npm run lint
       if: matrix.NODE_VERSION == '18.x'
 
     - name: Prepare tests
