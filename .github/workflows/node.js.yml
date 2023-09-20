@@ -72,7 +72,7 @@ jobs:
         if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
 
       - name: Lint code
-        run: npm run lint
+        run: npm run build && npm run lint
         if: matrix.NODE_VERSION == '18.x'
 
       - name: Prepare tests
