@@ -102,15 +102,6 @@ async function getOutputRollupOptions( {
 	};
 }
 
-const fileOverrides = new Map();
-
-function setOverride( filePath, source ) {
-
-	// We want normalized paths in overrides as they will be matched
-	// against normalized paths in the file overrides Rollup plugin.
-	fileOverrides.set( path.resolve( filePath ), source );
-}
-
 function unique( array ) {
 	return [ ...new Set( array ) ];
 }
@@ -178,6 +169,15 @@ async function build( {
 	watch = false
 } = {} ) {
 	const pureSlim = slim && !exclude.length && !include.length;
+
+	const fileOverrides = new Map();
+
+	function setOverride( filePath, source ) {
+
+		// We want normalized paths in overrides as they will be matched
+		// against normalized paths in the file overrides Rollup plugin.
+		fileOverrides.set( path.resolve( filePath ), source );
+	}
 
 	// Add the short commit hash to the version string
 	// when the version is not for a release.
@@ -280,11 +280,6 @@ async function build( {
 		);
 	}
 
-	const bundle = await rollup.rollup( {
-		...inputOptions,
-		plugins: [ rollupFileOverrides( fileOverrides ) ]
-	} );
-
 	const outputOptions = await getOutputRollupOptions( { esm, factory } );
 
 	if ( watch ) {
@@ -326,6 +321,11 @@ async function build( {
 
 		return watcher;
 	} else {
+		const bundle = await rollup.rollup( {
+			...inputOptions,
+			plugins: [ rollupFileOverrides( fileOverrides ) ]
+		} );
+
 		const {
 			output: [ { code } ]
 		} = await bundle.generate( outputOptions );
