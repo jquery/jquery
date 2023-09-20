@@ -5,6 +5,8 @@ import zlib from "node:zlib";
 import { exec as nodeExec } from "node:child_process";
 import isCleanWorkingDir from "./lib/isCleanWorkingDir.js";
 
+const VERSION = 1;
+
 const gzip = promisify( zlib.gzip );
 const exec = promisify( nodeExec );
 
@@ -29,12 +31,20 @@ function getBranchHeader( branch, commit ) {
 }
 
 async function getCache( loc ) {
+	let cache;
 	try {
 		const contents = await fs.promises.readFile( loc, "utf8" );
-		return JSON.parse( contents );
+		cache = JSON.parse( contents );
 	} catch ( err ) {
 		return {};
 	}
+
+	const lastRun = cache[ " last run" ];
+	if ( !lastRun || !lastRun.meta || lastRun.meta.version !== VERSION ) {
+		console.log( "Compare cache version mismatch. Rewriting..." );
+		return {};
+	}
+	return cache;
 }
 
 function cacheResults( results ) {
@@ -142,7 +152,9 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	console.log( output );
 
 	// Always save the last run
+	// Save version under last run
 	sizeCache[ " last run" ] = {
+		meta: { version: VERSION },
 		files: cacheResults( results )
 	};
 
