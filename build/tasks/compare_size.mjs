@@ -13,6 +13,11 @@ async function getBranchName() {
 	return stdout.trim();
 }
 
+async function getCommitHash() {
+	const { stdout } = await exec( "git rev-parse HEAD" );
+	return stdout.trim();
+}
+
 async function getCache( loc ) {
 	try {
 		const contents = await fs.promises.readFile( loc, "utf8" );
@@ -43,6 +48,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	}
 
 	const branch = await getBranchName();
+	const commit = await getCommitHash();
 	const sizeCache = await getCache( cache );
 
 	let rawPadLength = 0;
@@ -52,8 +58,10 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 			let contents = await fs.promises.readFile( filename, "utf8" );
 
-			// Remove the short SHA and .dirty from comparisons
-			const sha = /\/\*\! jQuery v\d+.\d+.\d+(?:-\w+)?\+(?:slim.)?(\w{8}(?:\.dirty)?)/.exec( contents )[ 1 ];
+			// Remove the short SHA and .dirty from comparisons.
+			// The short SHA so commits can be compared against each other
+			// and .dirty to compare with the existing branch during development.
+			const sha = /jQuery v\d+.\d+.\d+(?:-\w+)?\+(?:slim.)?([^ \.]+(?:\.dirty)?)/.exec( contents )[ 1 ];
 			contents = contents.replace( new RegExp( sha, "g" ), "" );
 
 			const size = Buffer.byteLength( contents, "utf8" );
@@ -78,8 +86,10 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	} );
 
 	const comparisons = Object.keys( sizeCache ).map( function( branch ) {
-		const branchSizes = Object.keys( sizeCache[ branch ] ).map( function( filename ) {
-			const branchResult = sizeCache[ branch ][ filename ];
+		const commit = sizeCache[ branch ].meta.commit;
+		const files = sizeCache[ branch ].files;
+		const branchSizes = Object.keys( files ).map( function( filename ) {
+			const branchResult = files[ filename ];
 			const compareResult = results.find( function( result ) {
 				return result.filename === filename;
 			} ) || {};
@@ -91,7 +101,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 		return [
 			"", // New line before each branch
-			chalk.bold( branch ),
+			`${chalk.bold( branch )} ${chalk.gray( `@${commit}` )}`,
 			header,
 			...branchSizes
 		].join( "\n" );
@@ -111,9 +121,10 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	// Only save cache for the current branch
 	// if the working directory is clean.
 	if ( await isCleanWorkingDir() ) {
-		sizeCache[ branch ] = {};
+		sizeCache[ branch ] = { meta: { commit }, files: {} };
+		const files = sizeCache[ branch ].files;
 		results.forEach( function( result ) {
-			sizeCache[ branch ][ result.filename ] = {
+			files[ result.filename ] = {
 				raw: result.raw,
 				gz: result.gz
 			};
