@@ -52,9 +52,9 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 			let contents = await fs.promises.readFile( filename, "utf8" );
 
-			// Remove the banner for size comparisons.
-			// The version string can vary widely by short SHA.
-			contents = contents.replace( /\/\*\! jQuery[^\n]+/, "" );
+			// Remove the short SHA and .dirty from comparisons
+			const sha = /\/\*\! jQuery v\d+.\d+.\d+(?:-\w+)?\+(?:slim.)?(\w{8}(?:\.dirty)?)/.exec( contents )[ 1 ];
+			contents = contents.replace( new RegExp( sha, "g" ), "" );
 
 			const size = Buffer.byteLength( contents, "utf8" );
 			const gzippedSize = ( await gzip( contents ) ).length;
