@@ -286,8 +286,12 @@ export default [
 		files: [
 			"dist/jquery.js",
 			"dist/jquery.slim.js",
+			"dist/jquery.factory.js",
+			"dist/jquery.factory.slim.js",
 			"dist-module/jquery.module.js",
-			"dist-module/jquery.slim.module.js"
+			"dist-module/jquery.slim.module.js",
+			"dist-module/jquery.factory.module.js",
+			"dist-module/jquery.factory.slim.module.js"
 		],
 
 		languageOptions: {
