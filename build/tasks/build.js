@@ -228,8 +228,8 @@ async function build( {
 		const { stdout } = await exec( "git rev-parse --short HEAD" );
 		const isClean = await isCleanWorkingDir();
 
-		// "+[slim.]SHA" is semantically correct
-		// Add ".dirty" as well if the working dir is not clean
+		// Add "+SHA" if the version is not set.
+		// Add ".dirty" as well if the working dir is not clean.
 		version = `${pkg.version}+${stdout.trim()}${isClean ? "" : ".dirty"}`;
 	}
 
