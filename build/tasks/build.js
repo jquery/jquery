@@ -255,7 +255,7 @@ async function build( {
 
 	// "sizzle" is legacy for selector
 	if ( excluded.indexOf( "selector" ) > -1 || excluded.indexOf( "sizzle" ) > -1 ) {
-		config.rawText.selector = "define([ \"./selector-native\" ]);";
+		config.rawText.selector = "define( [ \"./selector-native\" ] );";
 	}
 
 	if ( excluded.length ) {
