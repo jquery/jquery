@@ -310,7 +310,9 @@ QUnit.test( "filter(Function)", function( assert ) {
 		return !jQuery( "a", this ).length;
 	} ).get(), q( "sndp", "first" ), "filter(Function)" );
 
-	assert.deepEqual( jQuery( "#qunit-fixture p" ).filter( function( i, elem ) { return !jQuery( "a", elem ).length; } ).get(), q( "sndp", "first" ), "filter(Function) using arg" );
+	assert.deepEqual( jQuery( "#qunit-fixture p" ).filter( function( i, elem ) {
+		return !jQuery( "a", elem ).length;
+	} ).get(), q( "sndp", "first" ), "filter(Function) using arg" );
 } );
 
 QUnit.test( "filter(Element)", function( assert ) {
@@ -505,7 +507,9 @@ QUnit.test( "not(Element)", function( assert ) {
 QUnit.test( "not(Function)", function( assert ) {
 	assert.expect( 1 );
 
-	assert.deepEqual( jQuery( "#qunit-fixture p" ).not( function() { return jQuery( "a", this ).length; } ).get(), q( "sndp", "first" ), "not(Function)" );
+	assert.deepEqual( jQuery( "#qunit-fixture p" ).not( function() {
+		return jQuery( "a", this ).length;
+	} ).get(), q( "sndp", "first" ), "not(Function)" );
 } );
 
 QUnit.test( "not(Array)", function( assert ) {

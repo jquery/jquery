@@ -171,9 +171,9 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 
 	// get offset tests
 	tests = [
-		{ "id": "#absolute-1",     "top":  1, "left":  1 },
-		{ "id": "#absolute-1-1",   "top":  5, "left":  5 },
-		{ "id": "#absolute-1-1-1", "top":  9, "left":  9 },
+		{ "id": "#absolute-1",     "top": 1, "left": 1 },
+		{ "id": "#absolute-1-1",   "top": 5, "left": 5 },
+		{ "id": "#absolute-1-1-1", "top": 9, "left": 9 },
 		{ "id": "#absolute-2",     "top": 20, "left": 20 }
 	];
 	jQuery.each( tests, function() {
@@ -183,9 +183,9 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 
 	// get position
 	tests = [
-		{ "id": "#absolute-1",     "top":  0, "left":  0 },
-		{ "id": "#absolute-1-1",   "top":  1, "left":  1 },
-		{ "id": "#absolute-1-1-1", "top":  1, "left":  1 },
+		{ "id": "#absolute-1",     "top": 0, "left": 0 },
+		{ "id": "#absolute-1-1",   "top": 1, "left": 1 },
+		{ "id": "#absolute-1-1-1", "top": 1, "left": 1 },
 		{ "id": "#absolute-2",     "top": 19, "left": 19 }
 	];
 	jQuery.each( tests, function() {
@@ -205,17 +205,17 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 		{ "id": "#absolute-2",     "top": -1, "left": -1 },
 		{ "id": "#absolute-2",     "top": 19, "left": 19 },
 		{ "id": "#absolute-1-1-1", "top": 15, "left": 15 },
-		{ "id": "#absolute-1-1-1", "top":  5, "left":  5 },
+		{ "id": "#absolute-1-1-1", "top": 5, "left": 5 },
 		{ "id": "#absolute-1-1-1", "top": -1, "left": -1 },
-		{ "id": "#absolute-1-1-1", "top":  9, "left":  9 },
+		{ "id": "#absolute-1-1-1", "top": 9, "left": 9 },
 		{ "id": "#absolute-1-1",   "top": 10, "left": 10 },
-		{ "id": "#absolute-1-1",   "top":  0, "left":  0 },
+		{ "id": "#absolute-1-1",   "top": 0, "left": 0 },
 		{ "id": "#absolute-1-1",   "top": -1, "left": -1 },
-		{ "id": "#absolute-1-1",   "top":  5, "left":  5 },
-		{ "id": "#absolute-1",     "top":  2, "left":  2 },
-		{ "id": "#absolute-1",     "top":  0, "left":  0 },
+		{ "id": "#absolute-1-1",   "top": 5, "left": 5 },
+		{ "id": "#absolute-1",     "top": 2, "left": 2 },
+		{ "id": "#absolute-1",     "top": 0, "left": 0 },
 		{ "id": "#absolute-1",     "top": -1, "left": -1 },
-		{ "id": "#absolute-1",     "top":  1, "left":  1 }
+		{ "id": "#absolute-1",     "top": 1, "left": 1 }
 	];
 	jQuery.each( tests, function() {
 		$( this.id ).offset( { "top": this.top, "left": this.left } );
@@ -234,13 +234,13 @@ testIframe( "absolute", "offset/absolute.html", function( assert, $ ) {
 
 		$( this.id )
 			.offset( { "left": this.left + 2 } )
-			.offset( { "top":  this.top  + 2 } );
+			.offset( { "top": this.top  + 2 } );
 		assert.equal( $( this.id ).offset().top,  this.top  + 2, "Setting one property at a time." );
 		assert.equal( $( this.id ).offset().left, this.left + 2, "Setting one property at a time." );
 
 		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
-				"top":  props.top  + 1,
+				"top": props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
@@ -254,8 +254,8 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 
 	// get offset
 	var tests = [
-		{ "id": "#relative-1",   "top":   7, "left":  7 },
-		{ "id": "#relative-1-1", "top":  15, "left": 15 },
+		{ "id": "#relative-1",   "top": 7, "left": 7 },
+		{ "id": "#relative-1-1", "top": 15, "left": 15 },
 		{ "id": "#relative-2",   "top": 142, "left": 27 },
 		{ "id": "#relative-2-1",   "top": 149, "left": 52 }
 	];
@@ -266,8 +266,8 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 
 	// get position
 	tests = [
-		{ "id": "#relative-1",   "top":   6, "left":  6 },
-		{ "id": "#relative-1-1", "top":   5, "left":  5 },
+		{ "id": "#relative-1",   "top": 6, "left": 6 },
+		{ "id": "#relative-1-1", "top": 5, "left": 5 },
 		{ "id": "#relative-2",   "top": 141, "left": 26 },
 		{ "id": "#relative-2-1",   "top": 5, "left": 5 }
 	];
@@ -278,18 +278,18 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 
 	// set offset
 	tests = [
-		{ "id": "#relative-2",   "top": 200, "left":  50 },
-		{ "id": "#relative-2",   "top": 100, "left":  10 },
-		{ "id": "#relative-2",   "top":  -5, "left":  -5 },
-		{ "id": "#relative-2",   "top": 142, "left":  27 },
+		{ "id": "#relative-2",   "top": 200, "left": 50 },
+		{ "id": "#relative-2",   "top": 100, "left": 10 },
+		{ "id": "#relative-2",   "top": -5, "left": -5 },
+		{ "id": "#relative-2",   "top": 142, "left": 27 },
 		{ "id": "#relative-1-1", "top": 100, "left": 100 },
-		{ "id": "#relative-1-1", "top":   5, "left":   5 },
-		{ "id": "#relative-1-1", "top":  -1, "left":  -1 },
-		{ "id": "#relative-1-1", "top":  15, "left":  15 },
+		{ "id": "#relative-1-1", "top": 5, "left": 5 },
+		{ "id": "#relative-1-1", "top": -1, "left": -1 },
+		{ "id": "#relative-1-1", "top": 15, "left": 15 },
 		{ "id": "#relative-1",   "top": 100, "left": 100 },
-		{ "id": "#relative-1",   "top":   0, "left":   0 },
-		{ "id": "#relative-1",   "top":  -1, "left":  -1 },
-		{ "id": "#relative-1",   "top":   7, "left":   7 }
+		{ "id": "#relative-1",   "top": 0, "left": 0 },
+		{ "id": "#relative-1",   "top": -1, "left": -1 },
+		{ "id": "#relative-1",   "top": 7, "left": 7 }
 	];
 	jQuery.each( tests, function() {
 		$( this.id ).offset( { "top": this.top, "left": this.left } );
@@ -298,7 +298,7 @@ testIframe( "relative", "offset/relative.html", function( assert, $ ) {
 
 		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
-				"top":  props.top  + 1,
+				"top": props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
@@ -312,9 +312,9 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 
 	// get offset
 	var tests = [
-		{ "id": "#static-1",     "top":   7, "left":  7 },
-		{ "id": "#static-1-1",   "top":  15, "left": 15 },
-		{ "id": "#static-1-1-1", "top":  23, "left": 23 },
+		{ "id": "#static-1",     "top": 7, "left": 7 },
+		{ "id": "#static-1-1",   "top": 15, "left": 15 },
+		{ "id": "#static-1-1-1", "top": 23, "left": 23 },
 		{ "id": "#static-2",     "top": 122, left: 7 }
 	];
 	jQuery.each( tests, function() {
@@ -324,9 +324,9 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 
 	// get position
 	tests = [
-		{ "id": "#static-1",     "top":   6, "left":  6 },
-		{ "id": "#static-1-1",   "top":  14, "left": 14 },
-		{ "id": "#static-1-1-1", "top":  22, "left": 22 },
+		{ "id": "#static-1",     "top": 6, "left": 6 },
+		{ "id": "#static-1-1",   "top": 14, "left": 14 },
+		{ "id": "#static-1-1-1", "top": 22, "left": 22 },
 		{ "id": "#static-2",     "top": 121, "left": 6 }
 	];
 	jQuery.each( tests, function() {
@@ -338,20 +338,20 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 	tests = [
 		{ "id": "#static-2",     "top": 200, "left": 200 },
 		{ "id": "#static-2",     "top": 100, "left": 100 },
-		{ "id": "#static-2",     "top":  -2, "left":  -2 },
-		{ "id": "#static-2",     "top": 121, "left":   6 },
-		{ "id": "#static-1-1-1", "top":  50, "left":  50 },
-		{ "id": "#static-1-1-1", "top":  10, "left":  10 },
-		{ "id": "#static-1-1-1", "top":  -1, "left":  -1 },
-		{ "id": "#static-1-1-1", "top":  22, "left":  22 },
-		{ "id": "#static-1-1",   "top":  25, "left":  25 },
-		{ "id": "#static-1-1",   "top":  10, "left":  10 },
-		{ "id": "#static-1-1",   "top":  -3, "left":  -3 },
-		{ "id": "#static-1-1",   "top":  14, "left":  14 },
-		{ "id": "#static-1",     "top":  30, "left":  30 },
-		{ "id": "#static-1",     "top":   2, "left":   2 },
-		{ "id": "#static-1",     "top":  -2, "left":  -2 },
-		{ "id": "#static-1",     "top":   7, "left":   7 }
+		{ "id": "#static-2",     "top": -2, "left": -2 },
+		{ "id": "#static-2",     "top": 121, "left": 6 },
+		{ "id": "#static-1-1-1", "top": 50, "left": 50 },
+		{ "id": "#static-1-1-1", "top": 10, "left": 10 },
+		{ "id": "#static-1-1-1", "top": -1, "left": -1 },
+		{ "id": "#static-1-1-1", "top": 22, "left": 22 },
+		{ "id": "#static-1-1",   "top": 25, "left": 25 },
+		{ "id": "#static-1-1",   "top": 10, "left": 10 },
+		{ "id": "#static-1-1",   "top": -3, "left": -3 },
+		{ "id": "#static-1-1",   "top": 14, "left": 14 },
+		{ "id": "#static-1",     "top": 30, "left": 30 },
+		{ "id": "#static-1",     "top": 2, "left": 2 },
+		{ "id": "#static-1",     "top": -2, "left": -2 },
+		{ "id": "#static-1",     "top": 7, "left": 7 }
 	];
 	jQuery.each( tests, function() {
 		$( this.id ).offset( { "top": this.top, "left": this.left } );
@@ -360,7 +360,7 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 
 		$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 			$( this ).css( {
-				"top":  props.top  + 1,
+				"top": props.top  + 1,
 				"left": props.left + 1
 			} );
 		} } );
@@ -421,11 +421,11 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 
 	tests = [
 		{ "id": "#fixed-1", "top": 100, "left": 100 },
-		{ "id": "#fixed-1", "top":   0, "left":   0 },
-		{ "id": "#fixed-1", "top":  -4, "left":  -4 },
+		{ "id": "#fixed-1", "top": 0, "left": 0 },
+		{ "id": "#fixed-1", "top": -4, "left": -4 },
 		{ "id": "#fixed-2", "top": 200, "left": 200 },
-		{ "id": "#fixed-2", "top":   0, "left":   0 },
-		{ "id": "#fixed-2", "top":  -5, "left":  -5 }
+		{ "id": "#fixed-2", "top": 0, "left": 0 },
+		{ "id": "#fixed-2", "top": -5, "left": -5 }
 	];
 
 	jQuery.each( tests, function() {
@@ -436,7 +436,7 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 
 			$( this.id ).offset( { "top": this.top, "left": this.left, "using": function( props ) {
 				$( this ).css( {
-					"top":  props.top  + 1,
+					"top": props.top + 1,
 					"left": props.left + 1
 				} );
 			} } );
@@ -546,7 +546,7 @@ testIframe( "body", "offset/body.html", function( assert, $ ) {
 QUnit.test( "chaining", function( assert ) {
 	assert.expect( 3 );
 
-	var coords = { "top":  1, "left":  1 };
+	var coords = { "top": 1, "left": 1 };
 	assert.equal( jQuery( "#absolute-1" ).offset( coords ).jquery, jQuery.fn.jquery, "offset(coords) returns jQuery object" );
 	assert.equal( jQuery( "#non-existent" ).offset( coords ).jquery, jQuery.fn.jquery, "offset(coords) with empty jQuery set returns jQuery object" );
 	assert.equal( jQuery( "#absolute-1" ).offset( undefined ).jquery, jQuery.fn.jquery, "offset(undefined) returns jQuery object (trac-5571)" );
@@ -586,17 +586,17 @@ QUnit.test( "chaining", function( assert ) {
 
 		// Initialize data about page elements
 		var expectations = {
-				"documentElement":   htmlProps( htmlPos ),
-				"body":              bodyProps( bodyPos ),
-				"relative":          divProps( "relative", "body" ),
+				"documentElement": htmlProps( htmlPos ),
+				"body": bodyProps( bodyPos ),
+				"relative": divProps( "relative", "body" ),
 				"relative-relative": divProps( "relative", "relative" ),
 				"relative-absolute": divProps( "absolute", "relative" ),
-				"absolute":          divProps( "absolute", "body" ),
+				"absolute": divProps( "absolute", "body" ),
 				"absolute-relative": divProps( "relative", "absolute" ),
 				"absolute-absolute": divProps( "absolute", "absolute" ),
-				"fixed":             divProps( "fixed" ),
-				"fixed-relative":    divProps( "relative", "fixed" ),
-				"fixed-absolute":    divProps( "absolute", "fixed" )
+				"fixed": divProps( "fixed" ),
+				"fixed-relative": divProps( "relative", "fixed" ),
+				"fixed-absolute": divProps( "absolute", "fixed" )
 			};
 
 		// Define position and offset expectations for page elements
@@ -622,6 +622,7 @@ QUnit.test( "chaining", function( assert ) {
 			//   parent is not offsetParent); offset includes parent offset+border+padding
 			// static: same as relative
 			for ( ; parent; parent = expectations[ parent.parent ] ) {
+
 				// position:fixed
 				if ( props.style === "fixed" ) {
 					break;

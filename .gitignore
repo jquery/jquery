@@ -8,14 +8,13 @@
 .bower.json
 .sizecache.json
 yarn.lock
-package-lock.json
+.eslintcache
 
 npm-debug.log*
 
-# Ignore everything in `dist` folder except for the ESLint config
-/dist/*
-!/dist/.eslintrc.json
+/dist
 
+/external
 /node_modules
 
 /test/data/core/jquery-iterability-transpiled.js

@@ -124,10 +124,10 @@ This will only run the "css" module tests. This will significantly speed up your
 
 #### Loading changes on the test page
 
-Rather than rebuilding jQuery with `grunt` every time you make a change, you can use the included `grunt watch` task to rebuild distribution files whenever a file is saved.
+Rather than rebuilding jQuery with `npm run build` every time you make a change, you can use the included watch task to rebuild distribution files whenever a file is saved.
 
 ```bash
-$ grunt watch
+$ npm start
 ```
 
 Alternatively, you can **load tests in AMD** to avoid the need for rebuilding altogether.

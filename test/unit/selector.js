@@ -41,8 +41,8 @@ QUnit.test( "empty", function( assert ) {
 QUnit.test( "star", function( assert ) {
 	assert.expect( 2 );
 
-	var good, i;
-	var all = jQuery.find( "*" );
+	var good, i,
+		all = jQuery.find( "*" );
 
 	assert.ok( all.length >= 30, "Select all" );
 	good = true;
@@ -57,8 +57,8 @@ QUnit.test( "star", function( assert ) {
 QUnit.test( "element", function( assert ) {
 	assert.expect( 37 );
 
-	var i, lengthtest, siblingTest, html;
-	var fixture = document.getElementById( "qunit-fixture" );
+	var i, lengthtest, siblingTest, html,
+		fixture = document.getElementById( "qunit-fixture" );
 
 	assert.deepEqual( jQuery( "p", fixture ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a Node context." );
 	assert.deepEqual( jQuery( "p", "#qunit-fixture" ).get(), q( "firstp", "ap", "sndp", "en", "sap", "first" ), "Finding elements with a selector context." );
@@ -892,6 +892,7 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 			"Seeded nth-child"
 		);
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Some browsers mark disconnected elements as matching `:nth-child(n)`
 		// so let's skip the test.
@@ -948,6 +949,7 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 			"Seeded nth-last-child"
 		);
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Some browsers mark disconnected elements as matching `:nth-last-child(n)`
 		// so let's skip the test.
@@ -1084,6 +1086,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	tmp = document.createElement( "div" );
 	tmp.id = "tmp_input";
 	tmp.innerHTML = "<span>Hello I am focusable.</span>";
+
 	// Setting tabIndex should make the element focusable
 	// http://dev.w3.org/html5/spec/single-page.html#focus-management
 	document.body.appendChild( tmp );
@@ -1140,6 +1143,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	);
 
 	if ( QUnit.jQuerySelectors ) {
+
 		// Tokenization edge cases
 		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code)", [ "ap" ] );
 		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code):contains(This link)", [ "ap" ] );
@@ -1205,6 +1209,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(div#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 		assert.t( ":not() failing interior", "#qunit-fixture p:not(p#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Chrome/Firefox don't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1225,6 +1230,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 		assert.t( ":not Multiple", "p:not(p,a)", [] );
 		assert.t( ":not Multiple", "p:not(a,p,b)", [] );
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Chrome/Firefox don't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1254,6 +1260,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	if ( QUnit.jQuerySelectors || this.safari ) {
 		assert.t( ":not() Multiple Class", "#foo a:not(.blog.link)", [ "yahoo", "anchor2" ] );
 	} else {
+
 		// Support: Chrome 75+, Firefox 67+
 		// Chrome/Firefox don't support `:not(complex selector)`.
 		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
@@ -1830,8 +1837,8 @@ QUnit[
 	"Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 
-	var shadowHost = jQuery( "<div/>" ).appendTo( "#qunit-fixture" )[ 0 ];
-	var shadowRoot = shadowHost.attachShadow( { mode: "open" } );
+	var shadowHost = jQuery( "<div/>" ).appendTo( "#qunit-fixture" )[ 0 ],
+		shadowRoot = shadowHost.attachShadow( { mode: "open" } );
 
 	shadowRoot.innerHTML = "<div class='vagabond'><p></p></div>";
 	assert.equal( jQuery( shadowRoot ).find( ".vagabond" ).length, 1,
@@ -1843,7 +1850,7 @@ QUnit[
 testIframe(
 	"attributes - jQuery.attr",
 	"selector/html5_selector.html",
-	function( assert, jQuery, window, document ) {
+	function( assert, jQuery, _window, document ) {
 		assert.expect( 38 );
 
 		/**
@@ -1916,7 +1923,7 @@ testIframe(
 
 		// Enumerated attributes (these are not boolean content attributes)
 		jQuery.expandedEach = jQuery.each;
-		jQuery.expandedEach( [ "draggable", "contenteditable", "aria-disabled" ], function( i, val ) {
+		jQuery.expandedEach( [ "draggable", "contenteditable", "aria-disabled" ], function( _i, val ) {
 			t( "Enumerated attribute", "[" + val + "]", [ "div1" ] );
 		} );
 		t( "Enumerated attribute", "[spellcheck]", [ "span1" ] );
@@ -2123,7 +2130,7 @@ QUnit.test( "uniqueSort()", function( assert ) {
 testIframe(
 	"jQuery.uniqueSort works cross-window (trac-14381)",
 	"selector/mixed_sort.html",
-	function( assert, jQuery, window, document, actual, expected ) {
+	function( assert, _jQuery, _window, _document, actual, expected ) {
 		assert.expect( 1 );
 
 		assert.deepEqual( actual, expected, "Mixed array was sorted correctly" );
@@ -2292,10 +2299,12 @@ function testAttr( doc, assert ) {
 
 	var el;
 	if ( doc ) {
+
 		// XML
 		el = doc.createElement( "input" );
 		el.setAttribute( "type", "checkbox" );
 	} else {
+
 		// Set checked on creation by creating with a fragment
 		// See https://jsfiddle.net/8sVgA/1/show/light in oldIE
 		el = jQuery( "<input type='checkbox' checked='checked' />" )[ 0 ];
@@ -2423,6 +2432,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "backwards-compatible custom p
 			var count = argument == null || argument === "" ? 3 : +argument;
 			return elements.slice( 0, count );
 		};
+
 		// Using TAG as the first token here forces this setMatcher into a fail state
 		// Where the descendent combinator was lost
 		assert.t( "Custom setFilter", "form#form :PODIUM", [ "label-for", "text1", "text2" ] );
@@ -2550,7 +2560,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "jQuery.find.select with pre-c
 		"#qunit-fixture #first",
 		"ol#listWithTabIndex > li[tabindex]",
 		"#liveSpan1"
-	], function( i, selector ) {
+	], function( _i, selector ) {
 		var compiled = jQuery.find.compile( selector );
 		assert.equal( jQuery.find.select( compiled, document ).length,
 			1, "Should match using a compiled selector function" );

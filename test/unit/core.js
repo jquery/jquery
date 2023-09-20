@@ -38,19 +38,21 @@ QUnit.test( "jQuery()", function( assert ) {
 	// few here but beware of modular builds where these methods may be excluded.
 	if ( includesModule( "deprecated" ) ) {
 		expected++;
-		attrObj[ "click" ] = function() { assert.ok( exec, "Click executed." ); };
+		attrObj.click = function() {
+			assert.ok( exec, "Click executed." );
+		};
 	}
 	if ( includesModule( "dimensions" ) ) {
 		expected++;
-		attrObj[ "width" ] = 10;
+		attrObj.width = 10;
 	}
 	if ( includesModule( "offset" ) ) {
 		expected++;
-		attrObj[ "offset" ] = { "top": 1, "left": 1 };
+		attrObj.offset = { "top": 1, "left": 1 };
 	}
 	if ( includesModule( "css" ) ) {
 		expected += 2;
-		attrObj[ "css" ] = { "paddingLeft": 1, "paddingRight": 1 };
+		attrObj.css = { "paddingLeft": 1, "paddingRight": 1 };
 	}
 	if ( includesModule( "attributes" ) ) {
 		expected++;
@@ -216,17 +218,17 @@ QUnit.test( "noConflict", function( assert ) {
 	var $$ = jQuery;
 
 	assert.strictEqual( jQuery, jQuery.noConflict(), "noConflict returned the jQuery object" );
-	assert.strictEqual( window[ "jQuery" ], $$, "Make sure jQuery wasn't touched." );
-	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.strictEqual( window.jQuery, $$, "Make sure jQuery wasn't touched." );
+	assert.strictEqual( window.$, original$, "Make sure $ was reverted." );
 
 	jQuery = $ = $$;
 
 	assert.strictEqual( jQuery.noConflict( true ), $$, "noConflict returned the jQuery object" );
-	assert.strictEqual( window[ "jQuery" ], originaljQuery, "Make sure jQuery was reverted." );
-	assert.strictEqual( window[ "$" ], original$, "Make sure $ was reverted." );
+	assert.strictEqual( window.jQuery, originaljQuery, "Make sure jQuery was reverted." );
+	assert.strictEqual( window.$, original$, "Make sure $ was reverted." );
 	assert.ok( $$().pushStack( [] ), "Make sure that jQuery still works." );
 
-	window[ "jQuery" ] = jQuery = $$;
+	window.jQuery = jQuery = $$;
 } );
 
 QUnit.test( "isPlainObject", function( assert ) {
@@ -274,7 +276,7 @@ QUnit.test( "isPlainObject", function( assert ) {
 
 	// Makes the function a little more realistic
 	// (and harder to detect, incidentally)
-	fn.prototype[ "someMethod" ] = function() {};
+	fn.prototype.someMethod = function() {};
 
 	// Again, instantiated objects shouldn't be matched
 	assert.ok( !jQuery.isPlainObject( new fn() ), "new fn" );
@@ -431,10 +433,10 @@ QUnit.test( "XSS via location.hash", function( assert ) {
 	var done = assert.async();
 	assert.expect( 1 );
 
-	jQuery[ "_check9521" ] = function( x ) {
+	jQuery._check9521 = function( x ) {
 		assert.ok( x, "script called from #id-like selector with inline handler" );
 		jQuery( "#check9521" ).remove();
-		delete jQuery[ "_check9521" ];
+		delete jQuery._check9521;
 		done();
 	};
 	try {
@@ -442,7 +444,7 @@ QUnit.test( "XSS via location.hash", function( assert ) {
 		// This throws an error because it's processed like an id
 		jQuery( "#<img id='check9521' src='no-such-.gif' onerror='jQuery._check9521(false)'>" ).appendTo( "#qunit-fixture" );
 	} catch ( err ) {
-		jQuery[ "_check9521" ]( true );
+		jQuery._check9521( true );
 	}
 } );
 
@@ -451,12 +453,12 @@ QUnit.test( "jQuery('html')", function( assert ) {
 
 	var s, div, j;
 
-	jQuery[ "foo" ] = false;
+	jQuery.foo = false;
 	s = jQuery( "<script>jQuery.foo='test';</script>" )[ 0 ];
 	assert.ok( s, "Creating a script" );
-	assert.ok( !jQuery[ "foo" ], "Make sure the script wasn't executed prematurely" );
+	assert.ok( !jQuery.foo, "Make sure the script wasn't executed prematurely" );
 	jQuery( "body" ).append( "<script>jQuery.foo='test';</script>" );
-	assert.ok( jQuery[ "foo" ], "Executing a script's contents in the right context" );
+	assert.ok( jQuery.foo, "Executing a script's contents in the right context" );
 
 	// Test multi-line HTML
 	div = jQuery( "<div>\r\nsome text\n<p>some p</p>\nmore text\r\n</div>" )[ 0 ];
@@ -584,20 +586,20 @@ QUnit.test( "inArray()", function( assert ) {
 	assert.expect( 19 );
 
 	var selections = {
-		p:   q( "firstp", "sap", "ap", "first" ),
-		em:  q( "siblingnext", "siblingfirst" ),
+		p: q( "firstp", "sap", "ap", "first" ),
+		em: q( "siblingnext", "siblingfirst" ),
 		div: q( "qunit-testrunner-toolbar", "nothiddendiv", "nothiddendivchild", "foo" ),
-		a:   q( "mark", "groups", "google", "simon1" ),
+		a: q( "mark", "groups", "google", "simon1" ),
 		empty: []
 	},
 	tests = {
-		p:    { elem: jQuery( "#ap" )[ 0 ],           index: 2 },
-		em:   { elem: jQuery( "#siblingfirst" )[ 0 ], index: 1 },
-		div:  { elem: jQuery( "#nothiddendiv" )[ 0 ], index: 1 },
-		a:    { elem: jQuery( "#simon1" )[ 0 ],       index: 3 }
+		p: { elem: jQuery( "#ap" )[ 0 ], index: 2 },
+		em: { elem: jQuery( "#siblingfirst" )[ 0 ], index: 1 },
+		div: { elem: jQuery( "#nothiddendiv" )[ 0 ], index: 1 },
+		a: { elem: jQuery( "#simon1" )[ 0 ], index: 3 }
 	},
 	falseTests = {
-		p:  jQuery( "#liveSpan1" )[ 0 ],
+		p: jQuery( "#liveSpan1" )[ 0 ],
 		em: jQuery( "#nothiddendiv" )[ 0 ],
 		empty: ""
 	};
@@ -634,7 +636,9 @@ QUnit.test( "each(Function)", function( assert ) {
 	var div, pass, i;
 
 	div = jQuery( "div" );
-	div.each( function() {this.foo = "zoo";} );
+	div.each( function() {
+		this.foo = "zoo";
+	} );
 	pass = true;
 	for ( i = 0; i < div.length; i++ ) {
 		if ( div.get( i ).foo !== "zoo" ) {
@@ -740,8 +744,13 @@ QUnit.test( "jQuery.map", function( assert ) {
 
 	result = {
 		Zero: function() {},
-		One: function( a ) { a = a; },
-		Two: function( a, b ) { a = a; b = b; }
+		One: function( a ) {
+			a = a;
+		},
+		Two: function( a, b ) {
+			a = a;
+			b = b;
+		}
 	};
 	callback = function( v, k ) {
 		assert.equal( k, "foo", label + "-argument function treated like object" );
@@ -1000,25 +1009,25 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.deepEqual( options, optionsCopy, "Check if not modified: options must not be modified" );
 
 	jQuery.extend( true, deep1, deep2 );
-	assert.deepEqual( deep1[ "foo" ], deepmerged[ "foo" ], "Check if foo: settings must be extended" );
-	assert.deepEqual( deep2[ "foo" ], deep2copy[ "foo" ], "Check if not deep2: options must not be modified" );
-	assert.equal( deep1[ "foo2" ], document, "Make sure that a deep clone was not attempted on the document" );
+	assert.deepEqual( deep1.foo, deepmerged.foo, "Check if foo: settings must be extended" );
+	assert.deepEqual( deep2.foo, deep2copy.foo, "Check if not deep2: options must not be modified" );
+	assert.equal( deep1.foo2, document, "Make sure that a deep clone was not attempted on the document" );
 
-	assert.ok( jQuery.extend( true, {}, nestedarray )[ "arr" ] !== arr, "Deep extend of object must clone child array" );
+	assert.ok( jQuery.extend( true, {}, nestedarray ).arr !== arr, "Deep extend of object must clone child array" );
 
 	// trac-5991
-	assert.ok( Array.isArray( jQuery.extend( true, { "arr": {} }, nestedarray )[ "arr" ] ), "Cloned array have to be an Array" );
-	assert.ok( jQuery.isPlainObject( jQuery.extend( true, { "arr": arr }, { "arr": {} } )[ "arr" ] ), "Cloned object have to be an plain object" );
+	assert.ok( Array.isArray( jQuery.extend( true, { "arr": {} }, nestedarray ).arr ), "Cloned array have to be an Array" );
+	assert.ok( jQuery.isPlainObject( jQuery.extend( true, { "arr": arr }, { "arr": {} } ).arr ), "Cloned object have to be an plain object" );
 
 	empty = {};
 	optionsWithLength = { "foo": { "length": -1 } };
 	jQuery.extend( true, empty, optionsWithLength );
-	assert.deepEqual( empty[ "foo" ], optionsWithLength[ "foo" ], "The length property must copy correctly" );
+	assert.deepEqual( empty.foo, optionsWithLength.foo, "The length property must copy correctly" );
 
 	empty = {};
 	optionsWithDate = { "foo": { "date": new Date() } };
 	jQuery.extend( true, empty, optionsWithDate );
-	assert.deepEqual( empty[ "foo" ], optionsWithDate[ "foo" ], "Dates copy correctly" );
+	assert.deepEqual( empty.foo, optionsWithDate.foo, "Dates copy correctly" );
 
 	/** @constructor */
 	myKlass = function() {};
@@ -1026,13 +1035,13 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	optionsWithCustomObject = { "foo": { "date": customObject } };
 	empty = {};
 	jQuery.extend( true, empty, optionsWithCustomObject );
-	assert.ok( empty[ "foo" ] && empty[ "foo" ][ "date" ] === customObject, "Custom objects copy correctly (no methods)" );
+	assert.ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly (no methods)" );
 
 	// Makes the class a little more realistic
 	myKlass.prototype = { "someMethod": function() {} };
 	empty = {};
 	jQuery.extend( true, empty, optionsWithCustomObject );
-	assert.ok( empty[ "foo" ] && empty[ "foo" ][ "date" ] === customObject, "Custom objects copy correctly" );
+	assert.ok( empty.foo && empty.foo.date === customObject, "Custom objects copy correctly" );
 
 	MyNumber = Number;
 
@@ -1040,18 +1049,18 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	assert.ok( parseInt( ret.foo, 10 ) === 5, "Wrapped numbers copy correctly" );
 
 	nullUndef = jQuery.extend( {}, options, { "xnumber2": null } );
-	assert.ok( nullUndef[ "xnumber2" ] === null, "Check to make sure null values are copied" );
+	assert.ok( nullUndef.xnumber2 === null, "Check to make sure null values are copied" );
 
 	nullUndef = jQuery.extend( {}, options, { "xnumber2": undefined } );
-	assert.ok( nullUndef[ "xnumber2" ] === options[ "xnumber2" ], "Check to make sure undefined values are not copied" );
+	assert.ok( nullUndef.xnumber2 === options.xnumber2, "Check to make sure undefined values are not copied" );
 
 	nullUndef = jQuery.extend( {}, options, { "xnumber0": null } );
-	assert.ok( nullUndef[ "xnumber0" ] === null, "Check to make sure null values are inserted" );
+	assert.ok( nullUndef.xnumber0 === null, "Check to make sure null values are inserted" );
 
 	target = {};
-	recursive = { foo:target, bar:5 };
+	recursive = { foo: target, bar: 5 };
 	jQuery.extend( true, target, recursive );
-	assert.deepEqual( target, { bar:5 }, "Check to make sure a recursive obj doesn't go never-ending loop by not copying it over" );
+	assert.deepEqual( target, { bar: 5 }, "Check to make sure a recursive obj doesn't go never-ending loop by not copying it over" );
 
 	ret = jQuery.extend( true, { foo: [] }, { foo: [ 0 ] } ); // 1907
 	assert.equal( ret.foo.length, 1, "Check to make sure a value with coercion 'false' copies over when necessary to fix trac-1907" );
@@ -1059,11 +1068,11 @@ QUnit.test( "jQuery.extend(Object, Object)", function( assert ) {
 	ret = jQuery.extend( true, { foo: "1,2,3" }, { foo: [ 1, 2, 3 ] } );
 	assert.ok( typeof ret.foo !== "string", "Check to make sure values equal with coercion (but not actually equal) overwrite correctly" );
 
-	ret = jQuery.extend( true, { foo:"bar" }, { foo:null } );
+	ret = jQuery.extend( true, { foo: "bar" }, { foo: null } );
 	assert.ok( typeof ret.foo !== "undefined", "Make sure a null value doesn't crash with deep extend, for trac-1908" );
 
-	obj = { foo:null };
-	jQuery.extend( true, obj, { foo:"notnull" } );
+	obj = { foo: null };
+	jQuery.extend( true, obj, { foo: "notnull" } );
 	assert.equal( obj.foo, "notnull", "Make sure a null value can be overwritten" );
 
 	function func() {}
@@ -1089,19 +1098,19 @@ QUnit.test( "jQuery.extend(Object, Object {created with \"defineProperties\"})",
 	assert.expect( 2 );
 
 	var definedObj = Object.defineProperties( {}, {
-        "enumerableProp": {
-          get: function() {
-            return true;
-          },
-          enumerable: true
-        },
-        "nonenumerableProp": {
-          get: function() {
-            return true;
-          }
-        }
-      } ),
-      accessorObj = {};
+		"enumerableProp": {
+			get: function() {
+				return true;
+			},
+			enumerable: true
+		},
+		"nonenumerableProp": {
+			get: function() {
+				return true;
+			}
+		}
+	} ),
+		accessorObj = {};
 
 	jQuery.extend( accessorObj, definedObj );
 	assert.equal( accessorObj.enumerableProp, true, "Verify that getters are transferred" );
@@ -1173,8 +1182,13 @@ QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
 
 	seen = {
 		Zero: function() {},
-		One: function( a ) { a = a; },
-		Two: function( a, b ) { a = a; b = b; }
+		One: function( a ) {
+			a = a;
+		},
+		Two: function( a, b ) {
+			a = a;
+			b = b;
+		}
 	};
 	callback = function( k ) {
 		assert.equal( k, "foo", label + "-argument function treated like object" );
@@ -1283,7 +1297,9 @@ QUnit.test( "jQuery.makeArray", function( assert ) {
 
 	assert.equal( jQuery.makeArray( document.getElementsByName( "PWD" ) ).slice( 0, 1 )[ 0 ].name, "PWD", "Pass makeArray a nodelist" );
 
-	assert.equal( ( function() { return jQuery.makeArray( arguments ); } )( 1, 2 ).join( "" ), "12", "Pass makeArray an arguments array" );
+	assert.equal( ( function() {
+		return jQuery.makeArray( arguments );
+	} )( 1, 2 ).join( "" ), "12", "Pass makeArray an arguments array" );
 
 	assert.equal( jQuery.makeArray( [ 1, 2, 3 ] ).join( "" ), "123", "Pass makeArray a real array" );
 
@@ -1297,12 +1313,14 @@ QUnit.test( "jQuery.makeArray", function( assert ) {
 
 	assert.equal( jQuery.makeArray( document.createElement( "div" ) )[ 0 ].nodeName.toUpperCase(), "DIV", "Pass makeArray a single node" );
 
-	assert.equal( jQuery.makeArray( { length:2, 0:"a", 1:"b" } ).join( "" ), "ab", "Pass makeArray an array like map (with length)" );
+	assert.equal( jQuery.makeArray( { length: 2, 0: "a", 1: "b" } ).join( "" ), "ab", "Pass makeArray an array like map (with length)" );
 
 	assert.ok( !!jQuery.makeArray( document.documentElement.childNodes ).slice( 0, 1 )[ 0 ].nodeName, "Pass makeArray a childNodes array" );
 
 	// function, is tricky as it has length
-	assert.equal( jQuery.makeArray( function() { return 1;} )[ 0 ](), 1, "Pass makeArray a function" );
+	assert.equal( jQuery.makeArray( function() {
+		return 1;
+	} )[ 0 ](), 1, "Pass makeArray a function" );
 
 	//window, also has length
 	assert.equal( jQuery.makeArray( window )[ 0 ], window, "Pass makeArray the window" );
@@ -1328,7 +1346,7 @@ QUnit.test( "jQuery.isEmptyObject", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal( true, jQuery.isEmptyObject( {} ), "isEmptyObject on empty object literal" );
-	assert.equal( false, jQuery.isEmptyObject( { a:1 } ), "isEmptyObject on non-empty object literal" );
+	assert.equal( false, jQuery.isEmptyObject( { a: 1 } ), "isEmptyObject on non-empty object literal" );
 
 	// What about this ?
 	// equal(true, jQuery.isEmptyObject(null), "isEmptyObject on null" );

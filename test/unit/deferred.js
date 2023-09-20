@@ -108,7 +108,9 @@ QUnit.test( "jQuery.Deferred.then - filtering (done)", function( assert ) {
 		piped = defer.then( function( a, b ) {
 			return a * b;
 		} ),
-		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 3 ), function() {
+			return assert.async();
+		} );
 
 	piped.done( function( result ) {
 		value3 = result;
@@ -145,7 +147,9 @@ QUnit.test( "jQuery.Deferred.then - filtering (fail)", function( assert ) {
 		piped = defer.then( null, function( a, b ) {
 			return a * b;
 		} ),
-		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 3 ), function() {
+			return assert.async();
+		} );
 
 	piped.done( function( result ) {
 		value3 = result;
@@ -178,10 +182,12 @@ QUnit.test( "jQuery.Deferred.catch", function( assert ) {
 
 	var value1, value2, value3,
 		defer = jQuery.Deferred(),
-		piped = defer[ "catch" ]( function( a, b ) {
+		piped = defer.catch( function( a, b ) {
 			return a * b;
 		} ),
-		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 3 ), function() {
+			return assert.async();
+		} );
 
 	piped.done( function( result ) {
 		value3 = result;
@@ -192,18 +198,18 @@ QUnit.test( "jQuery.Deferred.catch", function( assert ) {
 		value2 = b;
 	} );
 
-	defer.reject( 2, 3 )[ "catch" ]( function() {
+	defer.reject( 2, 3 ).catch( function() {
 		assert.strictEqual( value1, 2, "first reject value ok" );
 		assert.strictEqual( value2, 3, "second reject value ok" );
 		assert.strictEqual( value3, 6, "result of filter ok" );
 		done.pop().call();
 	} );
 
-	jQuery.Deferred().resolve()[ "catch" ]( function() {
+	jQuery.Deferred().resolve().catch( function() {
 		assert.ok( false, "then should not be called on resolve" );
 	} ).then( done.pop() );
 
-	jQuery.Deferred().reject()[ "catch" ]( jQuery.noop ).done( function( value ) {
+	jQuery.Deferred().reject().catch( jQuery.noop ).done( function( value ) {
 		assert.strictEqual( value, undefined, "then fail callback can return undefined/null" );
 		done.pop().call();
 	} );
@@ -218,7 +224,9 @@ QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - filtering (fail)", function( ass
 		piped = defer.pipe( null, function( a, b ) {
 			return a * b;
 		} ),
-		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 3 ), function() {
+			return assert.async();
+		} );
 
 	piped.fail( function( result ) {
 		value3 = result;
@@ -416,7 +424,9 @@ QUnit.test( "jQuery.Deferred.then - context", function( assert ) {
 
 	var defer, piped, defer2, piped2,
 		context = { custom: true },
-		done = jQuery.map( new Array( 5 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 5 ), function() {
+			return assert.async();
+		} );
 
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).then( function( value ) {
 		assert.strictEqual( this, context, "custom context received by .then handler" );
@@ -475,7 +485,9 @@ QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - context", function( assert ) {
 
 	var defer, piped, defer2, piped2,
 		context = { custom: true },
-		done = jQuery.map( new Array( 5 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 5 ), function() {
+			return assert.async();
+		} );
 
 	jQuery.Deferred().resolveWith( context, [ 2 ] ).pipe( function( value ) {
 		assert.strictEqual( this, context, "custom context received by .pipe handler" );
@@ -676,7 +688,9 @@ QUnit.test( "jQuery.Deferred - 1.x/2.x compatibility", function( assert ) {
 
 	var context = { id: "callback context" },
 		thenable = jQuery.Deferred().resolve( "thenable fulfillment" ).promise(),
-		done = jQuery.map( new Array( 8 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 8 ), function() {
+			return assert.async();
+		} );
 
 	thenable.unwrapped = false;
 
@@ -727,7 +741,9 @@ QUnit.test( "jQuery.Deferred.then - progress and thenables", function( assert ) 
 
 	var trigger = jQuery.Deferred().notify(),
 		expectedProgress = [ "baz", "baz" ],
-		done = jQuery.map( new Array( 2 ), function() { return assert.async(); } ),
+		done = jQuery.map( new Array( 2 ), function() {
+			return assert.async();
+		} ),
 		failer = function( evt ) {
 			return function() {
 				assert.ok( false, "no unexpected " + evt );
@@ -752,7 +768,9 @@ QUnit.test( "jQuery.Deferred - notify and resolve", function( assert ) {
 	assert.expect( 7 );
 
 	var notifiedResolved = jQuery.Deferred().notify( "foo" )/*xxx .resolve( "bar" )*/,
-		done = jQuery.map( new Array( 3 ), function() { return assert.async(); } );
+		done = jQuery.map( new Array( 3 ), function() {
+			return assert.async();
+		} );
 
 	notifiedResolved.progress( function( v ) {
 		assert.strictEqual( v, "foo", "progress value" );
@@ -836,7 +854,9 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+		defaultContext = ( function getDefaultContext() {
+			return this;
+		} ).call(),
 
 		done = assert.async( 20 );
 
@@ -891,6 +911,7 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 	var customToStringThen = {
 		then: function( onFulfilled ) {
+
 			// Support: Android 4.0 only
 			// Strict mode functions invoked without .call/.apply get global-object context
 			onFulfilled.call();
@@ -956,7 +977,9 @@ QUnit.test( "jQuery.when(thenable) - like Promise.resolve", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+		defaultContext = ( function getDefaultContext() {
+			return this;
+		} ).call(),
 
 		done = assert.async( numCases * 2 );
 
@@ -1036,7 +1059,9 @@ QUnit.test( "jQuery.when(a, b) - like Promise.all", function( assert ) {
 
 		// Support: Android 4.0 only
 		// Strict mode functions invoked without .call/.apply get global-object context
-		defaultContext = ( function getDefaultContext() { return this; } ).call(),
+		defaultContext = ( function getDefaultContext() {
+			return this;
+		} ).call(),
 
 		done = assert.async( 98 );
 

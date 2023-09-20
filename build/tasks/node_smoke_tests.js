@@ -1,42 +1,42 @@
 "use strict";
 
-module.exports = ( grunt ) => {
-	const fs = require( "fs" );
-	const spawnTest = require( "./lib/spawn_test.js" );
-	const nodeV16OrNewer = !/^v1[0-5]\./.test( process.version );
+const fs = require( "fs" );
+const util = require( "util" );
+const exec = util.promisify( require( "child_process" ).exec );
+const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 
-	grunt.registerTask( "node_smoke_tests", function( jQueryModuleSpecifier = "./dist/jquery.js" ) {
-		if ( !nodeV16OrNewer ) {
-			grunt.log.writeln( "Old Node.js detected, running the task " +
-				`"node_smoke_tests:${ jQueryModuleSpecifier }" skipped...` );
-			return;
-		}
+if ( !verifyNodeVersion() ) {
+	return;
+}
 
-		const testsDir = "./test/node_smoke_tests";
-		const nodeSmokeTests = [];
+// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
+// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
+// on success or another one on failure. Spawning in sub-processes is
+// important so that the tests & the main process don't interfere with
+// each other, e.g. so that they don't share the `require` cache.
 
-		// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
-		// All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
-		// on success or another one on failure. Spawning in sub-processes is
-		// important so that the tests & the main process don't interfere with
-		// each other, e.g. so that they don't share the `require` cache.
+async function runTests( { module } ) {
+	const dir = "./test/node_smoke_tests";
+	const files = await fs.promises.readdir( dir, { withFileTypes: true } );
+	const testFiles = files.filter( ( testFilePath ) => testFilePath.isFile() );
 
-		fs.readdirSync( testsDir )
-			.filter( ( testFilePath ) =>
-				fs.statSync( `${ testsDir }/${ testFilePath }` ).isFile() &&
-					/\.[cm]?js$/.test( testFilePath )
-			)
-			.forEach( ( testFilePath ) => {
-				const taskName = `node_${ testFilePath.replace( /\.[cm]?js$/, "" ) }:${ jQueryModuleSpecifier }`;
+	if ( !testFiles.length ) {
+		throw new Error( `No test files found for "${module}"` );
+	}
 
-				grunt.registerTask( taskName, function() {
-					spawnTest( this.async(), `node "${ testsDir }/${
-						testFilePath }" ${ jQueryModuleSpecifier }` );
-				} );
+	await Promise.all(
+		testFiles.map( ( testFile ) =>
+			exec( `node "${dir}/${testFile.name}" ${module}` )
+		)
+	);
+	console.log( `Node smoke tests passed for "${module}".` );
+}
 
-				nodeSmokeTests.push( taskName );
-			} );
+async function runDefaultTests() {
+	await Promise.all( [
+		runTests( { module: "./dist/jquery.js" } ),
+		runTests( { module: "./dist/jquery.slim.js" } )
+	] );
+}
 
-		grunt.task.run( nodeSmokeTests );
-	} );
-};
+runDefaultTests();

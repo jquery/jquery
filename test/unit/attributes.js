@@ -239,7 +239,7 @@ QUnit.test( "attr(Hash)", function( assert ) {
 	assert.equal(
 		jQuery( "#text1" ).attr( {
 			"value": function() {
-				return this[ "id" ];
+				return this.id;
 			} } ).attr( "value" ),
 		"text1",
 		"Set attribute to computed value #1"
@@ -394,11 +394,11 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	table = jQuery( "#table" ).append( "<tr><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr><tr><td>cell</td><td>cell</td></tr>" );
 	td = table.find( "td" ).eq( 0 );
 	td.attr( "rowspan", "2" );
-	assert.equal( td[ 0 ][ "rowSpan" ], 2, "Check rowspan is correctly set" );
+	assert.equal( td[ 0 ].rowSpan, 2, "Check rowspan is correctly set" );
 	td.attr( "colspan", "2" );
-	assert.equal( td[ 0 ][ "colSpan" ], 2, "Check colspan is correctly set" );
+	assert.equal( td[ 0 ].colSpan, 2, "Check colspan is correctly set" );
 	table.attr( "cellspacing", "2" );
-	assert.equal( table[ 0 ][ "cellSpacing" ], "2", "Check cellspacing is correctly set" );
+	assert.equal( table[ 0 ].cellSpacing, "2", "Check cellspacing is correctly set" );
 
 	assert.equal( jQuery( "#area1" ).attr( "value" ), undefined, "Value attribute is distinct from value property." );
 
@@ -456,6 +456,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 
 	$radio = jQuery( "<input>", {
 		"value": "sup",
+
 		// Use uppercase here to ensure the type
 		// attrHook is still used
 		"TYPE": "radio"
@@ -724,9 +725,9 @@ QUnit.test( "prop(String, Object) on null/undefined", function( assert ) {
 		$body = jQuery( body );
 
 	assert.ok( $body.prop( "nextSibling" ) === null, "Make sure a null expando returns null" );
-	body[ "foo" ] = "bar";
+	body.foo = "bar";
 	assert.equal( $body.prop( "foo" ), "bar", "Make sure the expando is preferred over the dom attribute" );
-	body[ "foo" ] = undefined;
+	body.foo = undefined;
 	assert.ok( $body.prop( "foo" ) === undefined, "Make sure the expando is preferred over the dom attribute, even if undefined" );
 
 	select = document.createElement( "select" );
@@ -871,7 +872,7 @@ QUnit.test( "removeProp(String)", function( assert ) {
 		obj = {};
 
 	assert.strictEqual(
-		jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[ 0 ][ "nonexisting" ],
+		jQuery( "#firstp" ).prop( "nonexisting", "foo" ).removeProp( "nonexisting" )[ 0 ].nonexisting,
 		undefined,
 		"removeprop works correctly on DOM element nodes"
 	);
@@ -879,12 +880,12 @@ QUnit.test( "removeProp(String)", function( assert ) {
 	jQuery.each( [ document, obj ], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
-		assert.strictEqual( ele[ "nonexisting" ], undefined, "removeProp works correctly on non DOM element nodes (bug trac-7500)." );
+		assert.strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug trac-7500)." );
 	} );
 	jQuery.each( [ commentNode, textNode, attributeNode ], function( i, ele ) {
 		var $ele = jQuery( ele );
 		$ele.prop( "nonexisting", "foo" ).removeProp( "nonexisting" );
-		assert.strictEqual( ele[ "nonexisting" ], undefined, "removeProp works correctly on non DOM element nodes (bug trac-7500)." );
+		assert.strictEqual( ele.nonexisting, undefined, "removeProp works correctly on non DOM element nodes (bug trac-7500)." );
 	} );
 } );
 
@@ -1131,7 +1132,7 @@ QUnit.test( "val(select) after form.reset() (Bug trac-2551)", function( assert )
 
 	jQuery( "#kkk" ).val( "gf" );
 
-	document[ "kk" ].reset();
+	document.kk.reset();
 
 	assert.equal( jQuery( "#kkk" )[ 0 ].value, "cf", "Check value of select after form reset." );
 	assert.equal( jQuery( "#kkk" ).val(), "cf", "Check value of select after form reset." );
