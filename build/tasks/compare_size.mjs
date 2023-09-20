@@ -18,6 +18,16 @@ async function getCommitHash() {
 	return stdout.trim();
 }
 
+function getBranchHeader( branch, commit ) {
+	let branchHeader = branch.trim();
+	if ( commit ) {
+		branchHeader = chalk.bold( branchHeader ) + chalk.gray( ` @${commit}` );
+	} else {
+		branchHeader = chalk.italic( branchHeader );
+	}
+	return branchHeader;
+}
+
 async function getCache( loc ) {
 	try {
 		const contents = await fs.promises.readFile( loc, "utf8" );
@@ -25,6 +35,17 @@ async function getCache( loc ) {
 	} catch ( err ) {
 		return {};
 	}
+}
+
+function cacheResults( results ) {
+	const files = Object.create( null );
+	results.forEach( function( result ) {
+		files[ result.filename ] = {
+			raw: result.raw,
+			gz: result.gz
+		};
+	} );
+	return files;
 }
 
 function saveCache( loc, cache ) {
@@ -75,7 +96,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 		} )
 	);
 
-	const header = "raw".padStart( rawPadLength ) +
+	const sizeHeader = "raw".padStart( rawPadLength ) +
 		"gz".padStart( gzPadLength + 1 ) +
 		" Filename";
 
@@ -86,7 +107,9 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	} );
 
 	const comparisons = Object.keys( sizeCache ).map( function( branch ) {
-		const commit = sizeCache[ branch ].meta.commit;
+		const meta = sizeCache[ branch ].meta || {};
+		const commit = meta.commit;
+
 		const files = sizeCache[ branch ].files;
 		const branchSizes = Object.keys( files ).map( function( filename ) {
 			const branchResult = files[ filename ];
@@ -101,8 +124,8 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 		return [
 			"", // New line before each branch
-			`${chalk.bold( branch )} ${chalk.gray( `@${commit}` )}`,
-			header,
+			getBranchHeader( branch, commit ),
+			sizeHeader,
 			...branchSizes
 		].join( "\n" );
 	} );
@@ -110,7 +133,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	const output = [
 		"", // Opening new line
 		chalk.bold( "Sizes" ),
-		header,
+		sizeHeader,
 		...sizes,
 		...comparisons,
 		"" // Closing new line
@@ -118,22 +141,22 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 	console.log( output );
 
+	// Always save the last run
+	sizeCache[ " last run" ] = {
+		files: cacheResults( results )
+	};
+
 	// Only save cache for the current branch
 	// if the working directory is clean.
 	if ( await isCleanWorkingDir() ) {
-		sizeCache[ branch ] = { meta: { commit }, files: {} };
-		const files = sizeCache[ branch ].files;
-		results.forEach( function( result ) {
-			files[ result.filename ] = {
-				raw: result.raw,
-				gz: result.gz
-			};
-		} );
-
-		await saveCache( cache, sizeCache );
-
+		sizeCache[ branch ] = {
+			meta: { commit },
+			files: cacheResults( results )
+		};
 		console.log( `Saved cache for ${branch}.` );
 	}
+
+	await saveCache( cache, sizeCache );
 
 	return results;
 }
