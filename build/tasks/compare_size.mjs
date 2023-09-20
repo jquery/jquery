@@ -5,6 +5,8 @@ import zlib from "node:zlib";
 import { exec as nodeExec } from "node:child_process";
 import isCleanWorkingDir from "./lib/isCleanWorkingDir.js";
 
+const VERSION = 1;
+
 const gzip = promisify( zlib.gzip );
 const exec = promisify( nodeExec );
 
@@ -13,13 +15,47 @@ async function getBranchName() {
 	return stdout.trim();
 }
 
+async function getCommitHash() {
+	const { stdout } = await exec( "git rev-parse HEAD" );
+	return stdout.trim();
+}
+
+function getBranchHeader( branch, commit ) {
+	let branchHeader = branch.trim();
+	if ( commit ) {
+		branchHeader = chalk.bold( branchHeader ) + chalk.gray( ` @${commit}` );
+	} else {
+		branchHeader = chalk.italic( branchHeader );
+	}
+	return branchHeader;
+}
+
 async function getCache( loc ) {
+	let cache;
 	try {
 		const contents = await fs.promises.readFile( loc, "utf8" );
-		return JSON.parse( contents );
+		cache = JSON.parse( contents );
 	} catch ( err ) {
 		return {};
 	}
+
+	const lastRun = cache[ " last run" ];
+	if ( !lastRun || !lastRun.meta || lastRun.meta.version !== VERSION ) {
+		console.log( "Compare cache version mismatch. Rewriting..." );
+		return {};
+	}
+	return cache;
+}
+
+function cacheResults( results ) {
+	const files = Object.create( null );
+	results.forEach( function( result ) {
+		files[ result.filename ] = {
+			raw: result.raw,
+			gz: result.gz
+		};
+	} );
+	return files;
 }
 
 function saveCache( loc, cache ) {
@@ -43,6 +79,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	}
 
 	const branch = await getBranchName();
+	const commit = await getCommitHash();
 	const sizeCache = await getCache( cache );
 
 	let rawPadLength = 0;
@@ -52,9 +89,11 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 			let contents = await fs.promises.readFile( filename, "utf8" );
 
-			// Remove the banner for size comparisons.
-			// The version string can vary widely by short SHA.
-			contents = contents.replace( /\/\*\! jQuery[^\n]+/, "" );
+			// Remove the short SHA and .dirty from comparisons.
+			// The short SHA so commits can be compared against each other
+			// and .dirty to compare with the existing branch during development.
+			const sha = /jQuery v\d+.\d+.\d+(?:-\w+)?\+(?:slim.)?([^ \.]+(?:\.dirty)?)/.exec( contents )[ 1 ];
+			contents = contents.replace( new RegExp( sha, "g" ), "" );
 
 			const size = Buffer.byteLength( contents, "utf8" );
 			const gzippedSize = ( await gzip( contents ) ).length;
@@ -67,7 +106,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 		} )
 	);
 
-	const header = "raw".padStart( rawPadLength ) +
+	const sizeHeader = "raw".padStart( rawPadLength ) +
 		"gz".padStart( gzPadLength + 1 ) +
 		" Filename";
 
@@ -78,8 +117,12 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	} );
 
 	const comparisons = Object.keys( sizeCache ).map( function( branch ) {
-		const branchSizes = Object.keys( sizeCache[ branch ] ).map( function( filename ) {
-			const branchResult = sizeCache[ branch ][ filename ];
+		const meta = sizeCache[ branch ].meta || {};
+		const commit = meta.commit;
+
+		const files = sizeCache[ branch ].files;
+		const branchSizes = Object.keys( files ).map( function( filename ) {
+			const branchResult = files[ filename ];
 			const compareResult = results.find( function( result ) {
 				return result.filename === filename;
 			} ) || {};
@@ -91,8 +134,8 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 		return [
 			"", // New line before each branch
-			chalk.bold( branch ),
-			header,
+			getBranchHeader( branch, commit ),
+			sizeHeader,
 			...branchSizes
 		].join( "\n" );
 	} );
@@ -100,7 +143,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	const output = [
 		"", // Opening new line
 		chalk.bold( "Sizes" ),
-		header,
+		sizeHeader,
 		...sizes,
 		...comparisons,
 		"" // Closing new line
@@ -108,21 +151,24 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 	console.log( output );
 
+	// Always save the last run
+	// Save version under last run
+	sizeCache[ " last run" ] = {
+		meta: { version: VERSION },
+		files: cacheResults( results )
+	};
+
 	// Only save cache for the current branch
 	// if the working directory is clean.
 	if ( await isCleanWorkingDir() ) {
-		sizeCache[ branch ] = {};
-		results.forEach( function( result ) {
-			sizeCache[ branch ][ result.filename ] = {
-				raw: result.raw,
-				gz: result.gz
-			};
-		} );
-
-		await saveCache( cache, sizeCache );
-
+		sizeCache[ branch ] = {
+			meta: { commit },
+			files: cacheResults( results )
+		};
 		console.log( `Saved cache for ${branch}.` );
 	}
+
+	await saveCache( cache, sizeCache );
 
 	return results;
 }
