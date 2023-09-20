@@ -2,6 +2,8 @@ import { isIE } from "../var/isIE.js";
 import { whitespace } from "../var/whitespace.js";
 import { support } from "./support.js";
 
+// Build QSA regex.
+// Regex strategy adopted from Diego Perini.
 export var rbuggyQSA = [];
 
 if ( isIE ) {

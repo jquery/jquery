@@ -1460,7 +1460,7 @@ QUnit.testUnlessIE( "jQuery.parseXML - error reporting", function( assert ) {
 
 	var errorArg, lineMatch, line, columnMatch, column;
 
-	sinon.stub( jQuery, "error" );
+	this.sandbox.stub( jQuery, "error" );
 
 	jQuery.parseXML( "<p>Not a <<b>well-formed</b> xml string</p>" );
 	errorArg = jQuery.error.firstCall.lastArg.toLowerCase();

@@ -1,7 +1,7 @@
 import { jQuery } from "../core.js";
 import { rcomma } from "./var/rcomma.js";
 import { rleadingCombinator } from "./var/rleadingCombinator.js";
-import { rtrim } from "../var/rtrim.js";
+import { rtrimCSS } from "../var/rtrimCSS.js";
 import { createCache } from "./createCache.js";
 import { selectorError } from "./selectorError.js";
 import { filterMatchExpr } from "./filterMatchExpr.js";
@@ -42,7 +42,7 @@ export function tokenize( selector, parseOnly ) {
 				value: matched,
 
 				// Cast descendant combinators to space
-				type: match[ 0 ].replace( rtrim, " " )
+				type: match[ 0 ].replace( rtrimCSS, " " )
 			} );
 			soFar = soFar.slice( matched.length );
 		}

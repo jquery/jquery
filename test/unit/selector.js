@@ -226,9 +226,9 @@ QUnit.test( "broken selectors throw", function( assert ) {
 } );
 
 QUnit.test( "id", function( assert ) {
-	assert.expect( 34 );
+	assert.expect( 35 );
 
-	var fiddle, a;
+	var fiddle, a, lengthtest;
 
 	assert.t( "ID Selector", "#body", [ "body" ] );
 	assert.t( "ID Selector w/ Element", "body#body", [ "body" ] );
@@ -282,6 +282,15 @@ QUnit.test( "id", function( assert ) {
 	a.remove();
 
 	assert.t( "ID Selector on Form with an input that has a name of 'id'", "#lengthtest", [ "lengthtest" ] );
+
+	// Run the above test again but with `jQuery.find` directly to avoid the jQuery
+	// quick path that avoids running the selector engine.
+	lengthtest = jQuery.find( "#lengthtest" );
+	assert.strictEqual(
+		lengthtest && lengthtest[ 0 ],
+		document.getElementById( "lengthtest" ),
+		"ID Selector on Form with an input that has a name of 'id' - no quick path (#lengthtest)"
+	);
 
 	assert.t( "ID selector with non-existent ancestor", "#asdfasdf #foobar", [] ); // bug trac-986
 
