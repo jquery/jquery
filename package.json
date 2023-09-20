@@ -43,7 +43,7 @@
     "build": "node ./build/command.js",
     "build:all": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\"",
     "build:main": "node -e \"require('./build/tasks/build.js').build()\"",
-    "jenkins": "npm run test:browserless",
+    "jenkins": "npm run pretest && npm run test:browserless",
     "lint:dev": "eslint --cache .",
     "lint:json": "jsonlint --quiet package.json",
     "lint": "concurrently -r \"npm:lint:dev\" \"npm:lint:json\"",
