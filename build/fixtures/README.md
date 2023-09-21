@@ -23,7 +23,7 @@ or, to use the jQuery ECMAScript module:
 
 ```html
 <script type="module">
-	import { $ } from "https://code.jquery.com/jquery-@VERSION.min.js";
+	import { $ } from "https://code.jquery.com/jquery-@VERSION.module.min.js";
 </script>
 ```
 
@@ -31,7 +31,7 @@ or:
 
 ```html
 <script type="module">
-	import { jQuery } from "https://code.jquery.com/jquery-@VERSION.min.js";
+	import { jQuery } from "https://code.jquery.com/jquery-@VERSION.module.min.js";
 </script>
 ```
 
@@ -39,7 +39,7 @@ All jQuery modules export named `$` & `jQuery` tokens; the further examples will
 
 ```html
 <script type="module">
-	import $ from "https://code.jquery.com/jquery-@VERSION.min.js";
+	import $ from "https://code.jquery.com/jquery-@VERSION.module.min.js";
 </script>
 ```
 
@@ -55,7 +55,7 @@ or as a module:
 
 ```html
 <script type="module">
-	import { $ } from "https://code.jquery.com/jquery-@VERSION.slim.min.js";
+	import { $ } from "https://code.jquery.com/jquery-@VERSION.module.slim.min.js";
 </script>
 ```
 
@@ -67,8 +67,8 @@ To avoid repeating long import paths that change on each jQuery release, you can
 <script type="importmap">
 	{
 		"imports": {
-			"jquery": "https://code.jquery.com/jquery-@VERSION.min.js",
-			"jquery/slim": "https://code.jquery.com/jquery-@VERSION.slim.min.js"
+			"jquery": "https://code.jquery.com/jquery-@VERSION.module.min.js",
+			"jquery/slim": "https://code.jquery.com/jquery-@VERSION.module.slim.min.js"
 		}
 	}
 </script>
