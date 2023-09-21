@@ -6,6 +6,7 @@ import { exec as nodeExec } from "node:child_process";
 import isCleanWorkingDir from "./lib/isCleanWorkingDir.js";
 
 const VERSION = 1;
+const lastRunBranch = " last run";
 
 const gzip = promisify( zlib.gzip );
 const exec = promisify( nodeExec );
@@ -39,7 +40,7 @@ async function getCache( loc ) {
 		return {};
 	}
 
-	const lastRun = cache[ " last run" ];
+	const lastRun = cache[ lastRunBranch ];
 	if ( !lastRun || !lastRun.meta || lastRun.meta.version !== VERSION ) {
 		console.log( "Compare cache version mismatch. Rewriting..." );
 		return {};
@@ -71,6 +72,16 @@ function compareSizes( existing, current, padLength ) {
 		return chalk.red( `+${delta}`.padStart( padLength ) );
 	}
 	return chalk.green( `${delta}`.padStart( padLength ) );
+}
+
+function sortBranches( a, b ) {
+	if ( a === lastRunBranch ) {
+		return 1;
+	}
+	if ( b === lastRunBranch ) {
+		return -1;
+	}
+	return a.localeCompare( b );
 }
 
 export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
@@ -116,7 +127,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 		return `${rawSize} ${gzSize} ${result.filename}`;
 	} );
 
-	const comparisons = Object.keys( sizeCache ).map( function( branch ) {
+	const comparisons = Object.keys( sizeCache ).sort( sortBranches ).map( function( branch ) {
 		const meta = sizeCache[ branch ].meta || {};
 		const commit = meta.commit;
 
@@ -153,7 +164,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 	// Always save the last run
 	// Save version under last run
-	sizeCache[ " last run" ] = {
+	sizeCache[ lastRunBranch ] = {
 		meta: { version: VERSION },
 		files: cacheResults( results )
 	};
