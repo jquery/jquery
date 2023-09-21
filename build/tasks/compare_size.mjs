@@ -81,7 +81,13 @@ function sortBranches( a, b ) {
 	if ( b === lastRunBranch ) {
 		return -1;
 	}
-	return a.localeCompare( b );
+	if ( a < b ) {
+		return -1;
+	}
+	if ( a > b ) {
+		return 1;
+	}
+	return 0;
 }
 
 export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
