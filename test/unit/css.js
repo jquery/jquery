@@ -1401,6 +1401,20 @@ testIframe(
 	}
 );
 
+testIframe(
+	"Test computeStyleTests for hidden iframe",
+	"css/cssComputeStyleTests.html",
+	function( assert, jQuery, window, document, initialHeight ) {
+		assert.expect( 2 );
+		assert.strictEqual( initialHeight, 0, "initial height should be undefined" );
+		window.parent.jQuery( "#qunit-fixture-iframe" ).css( { "display": "block" } );
+		jQuery( "#test" ).width( 600 );
+		assert.strictEqual( jQuery( "#test" ).width(), 600, "width should be 600" );
+	},
+	undefined,
+	{ "display": "none" }
+);
+
 ( function() {
 	var supportsFractionalGBCR,
 		qunitFixture = document.getElementById( "qunit-fixture" ),

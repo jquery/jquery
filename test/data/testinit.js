@@ -267,7 +267,7 @@ this.ajaxTest = function( title, expect, options ) {
 	} );
 };
 
-this.testIframe = function( title, fileName, func, wrapper ) {
+this.testIframe = function( title, fileName, func, wrapper, iframeStyles ) {
 	if ( !wrapper ) {
 		wrapper = QUnit.test;
 	}
@@ -276,6 +276,11 @@ this.testIframe = function( title, fileName, func, wrapper ) {
 			$iframe = supportjQuery( "<iframe></iframe>" )
 				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
 				.attr( { id: "qunit-fixture-iframe", src: url( fileName ) } );
+
+		// Add other iframe styles
+		if ( iframeStyles ) {
+			$iframe.css( iframeStyles );
+		}
 
 		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
 		window.iframeCallback = function() {
