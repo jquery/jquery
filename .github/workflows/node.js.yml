@@ -75,9 +75,6 @@ jobs:
         run: npm run build && npm run lint
         if: matrix.NODE_VERSION == '18.x'
 
-      - name: Prepare tests
-        run: npm run pretest
-
       - name: Run tests
         env:
           BROWSERS: ${{ matrix.BROWSERS }}
