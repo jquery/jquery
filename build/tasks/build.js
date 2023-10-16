@@ -45,7 +45,7 @@ async function read( filename ) {
 // and ensure unix-style path separators
 function moduleName( filename ) {
 	return filename
-		.replace( `${srcFolder}${path.sep}`, "" )
+		.replace( `${ srcFolder }${ path.sep }`, "" )
 		.replace( /\.js$/, "" )
 		.split( path.sep )
 		.join( path.posix.sep );
@@ -182,7 +182,7 @@ async function checkExclude( exclude, include ) {
 
 	for ( const module of exclude ) {
 		if ( minimum.indexOf( module ) !== -1 ) {
-			throw new Error( `Module \"${module}\" is a minimum requirement.` );
+			throw new Error( `Module \"${ module }\" is a minimum requirement.` );
 		}
 
 		// Exclude all files in the dir of the same name
@@ -230,7 +230,7 @@ async function build( {
 
 		// Add "+SHA" if the version is not set.
 		// Add ".dirty" as well if the working dir is not clean.
-		version = `${pkg.version}+${stdout.trim()}${isClean ? "" : ".dirty"}`;
+		version = `${ pkg.version }+${ stdout.trim() }${ isClean ? "" : ".dirty" }`;
 	}
 
 	await fs.promises.mkdir( dir, { recursive: true } );
@@ -315,7 +315,7 @@ async function build( {
 		} );
 	} );
 
-	console.log( `[${getTimestamp()}] ${filename} v${version} created.` );
+	console.log( `[${ getTimestamp() }] ${ filename } v${ version } created.` );
 
 	await minify( { filename, dir } );
 }

@@ -12,7 +12,7 @@ module.exports = async function minify( { dir, filename } ) {
 	const filepath = path.join( dir, filename );
 	const contents = await fs.promises.readFile( filepath, "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
-	const banner = `/*! jQuery ${version}` +
+	const banner = `/*! jQuery ${ version }` +
 		" | (c) OpenJS Foundation and other contributors" +
 		" | jquery.org/license */";
 
@@ -79,5 +79,7 @@ module.exports = async function minify( { dir, filename } ) {
 	processForDist( code, minFilename );
 	processForDist( map, mapFilename );
 
-	console.log( `[${getTimestamp()}] ${minFilename} ${version} with ${mapFilename} created.` );
+	console.log( `[${ getTimestamp() }] ${ minFilename } ${ version } with ${
+		mapFilename
+	} created.` );
 };
