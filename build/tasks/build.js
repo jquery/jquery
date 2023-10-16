@@ -45,7 +45,7 @@ async function read( filename ) {
 // and ensure unix-style path separators
 function moduleName( filename ) {
 	return filename
-		.replace( `${srcFolder}${path.sep}`, "" )
+		.replace( `${ srcFolder }${ path.sep }`, "" )
 		.replace( /\.js$/, "" )
 		.split( path.sep )
 		.join( path.posix.sep );
@@ -112,7 +112,7 @@ async function checkExclude( exclude, include ) {
 
 	for ( const module of exclude ) {
 		if ( minimum.indexOf( module ) !== -1 ) {
-			throw new Error( `Module \"${module}\" is a minimum requirement.` );
+			throw new Error( `Module \"${ module }\" is a minimum requirement.` );
 		}
 
 		// Exclude all files in the dir of the same name
@@ -152,7 +152,7 @@ async function writeCompiled( { code, dir, filename, version } ) {
 		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 	await fs.promises.writeFile( path.join( dir, filename ), compiledContents );
-	console.log( `[${getTimestamp()}] ${filename} v${version} created.` );
+	console.log( `[${ getTimestamp() }] ${ filename } v${ version } created.` );
 }
 
 // Build jQuery ECMAScript modules
@@ -187,7 +187,9 @@ async function build( {
 
 		// "+[slim.]SHA" is semantically correct
 		// Add ".dirty" as well if the working dir is not clean
-		version = `${pkg.version}+${slim ? "slim." : ""}${stdout.trim()}${isClean ? "" : ".dirty"}`;
+		version = `${ pkg.version }+${ slim ? "slim." : "" }${ stdout.trim() }${
+			isClean ? "" : ".dirty"
+		}`;
 	} else if ( slim ) {
 		version += "+slim";
 	}
@@ -204,7 +206,7 @@ async function build( {
 	if ( excluded.includes( "exports/global" ) ) {
 		const index = excluded.indexOf( "exports/global" );
 		setOverride(
-			`${srcFolder}/exports/global.js`,
+			`${ srcFolder }/exports/global.js`,
 			"import { jQuery } from \"../core.js\";\n\n" +
 				"jQuery.noConflict = function() {};"
 		);
@@ -223,12 +225,12 @@ async function build( {
 		// No name means an anonymous define
 		const amdExportContents = await read( "exports/amd.js" );
 		setOverride(
-			`${srcFolder}/exports/amd.js`,
+			`${ srcFolder }/exports/amd.js`,
 			amdExportContents.replace(
 
 				// Remove the comma for anonymous defines
 				/(\s*)"jquery"(,\s*)/,
-				amd ? `$1\"${amd}\"$2` : " "
+				amd ? `$1\"${ amd }\"$2` : " "
 			)
 		);
 	}
@@ -246,11 +248,11 @@ async function build( {
 	}
 
 	const inputOptions = {
-		input: `${srcFolder}/jquery.js`
+		input: `${ srcFolder }/jquery.js`
 	};
 
 	const includedImports = included
-		.map( ( module ) => `import "./${module}.js";` )
+		.map( ( module ) => `import "./${ module }.js";` )
 		.join( "\n" );
 
 	const jQueryFileContents = await read( "jquery.js" );
@@ -272,7 +274,7 @@ async function build( {
 	// Replace excluded modules with empty sources.
 	for ( const module of excluded ) {
 		setOverride(
-			`${srcFolder}/${module}.js`,
+			`${ srcFolder }/${ module }.js`,
 
 			// The `selector` module is not removed, but replaced
 			// with `selector-native`.
@@ -288,7 +290,7 @@ async function build( {
 			output: [ outputOptions ],
 			plugins: [ rollupFileOverrides( fileOverrides ) ],
 			watch: {
-				include: `${srcFolder}/**`,
+				include: `${ srcFolder }/**`,
 				skipWrite: true
 			}
 		} );

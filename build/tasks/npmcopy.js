@@ -35,7 +35,7 @@ async function npmcopy() {
 		const toDir = path.dirname( to );
 		await fs.promises.mkdir( toDir, { recursive: true } );
 		await fs.promises.copyFile( from, to );
-		console.log( `${source} → ${dest}` );
+		console.log( `${ source } → ${ dest }` );
 	}
 }
 

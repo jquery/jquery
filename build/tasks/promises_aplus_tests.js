@@ -11,7 +11,7 @@ if ( !verifyNodeVersion() ) {
 
 const command = path.resolve(
 	__dirname,
-	`../../node_modules/.bin/promises-aplus-tests${os.platform() === "win32" ? ".cmd" : ""}`
+	`../../node_modules/.bin/promises-aplus-tests${ os.platform() === "win32" ? ".cmd" : "" }`
 );
 const args = [ "--reporter", "dot", "--timeout", "2000" ];
 const tests = [

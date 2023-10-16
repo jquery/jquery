@@ -24,7 +24,7 @@ async function getCommitHash() {
 function getBranchHeader( branch, commit ) {
 	let branchHeader = branch.trim();
 	if ( commit ) {
-		branchHeader = chalk.bold( branchHeader ) + chalk.gray( ` @${commit}` );
+		branchHeader = chalk.bold( branchHeader ) + chalk.gray( ` @${ commit }` );
 	} else {
 		branchHeader = chalk.italic( branchHeader );
 	}
@@ -65,13 +65,13 @@ function saveCache( loc, cache ) {
 
 function compareSizes( existing, current, padLength ) {
 	if ( typeof current !== "number" ) {
-		return chalk.grey( `${existing}`.padStart( padLength ) );
+		return chalk.grey( `${ existing }`.padStart( padLength ) );
 	}
 	const delta = current - existing;
 	if ( delta > 0 ) {
-		return chalk.red( `+${delta}`.padStart( padLength ) );
+		return chalk.red( `+${ delta }`.padStart( padLength ) );
 	}
-	return chalk.green( `${delta}`.padStart( padLength ) );
+	return chalk.green( `${ delta }`.padStart( padLength ) );
 }
 
 function sortBranches( a, b ) {
@@ -130,7 +130,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	const sizes = results.map( function( result ) {
 		const rawSize = result.raw.toString().padStart( rawPadLength );
 		const gzSize = result.gz.toString().padStart( gzPadLength );
-		return `${rawSize} ${gzSize} ${result.filename}`;
+		return `${ rawSize } ${ gzSize } ${ result.filename }`;
 	} );
 
 	const comparisons = Object.keys( sizeCache ).sort( sortBranches ).map( function( branch ) {
@@ -146,7 +146,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 
 			const compareRaw = compareSizes( branchResult.raw, compareResult.raw, rawPadLength );
 			const compareGz = compareSizes( branchResult.gz, compareResult.gz, gzPadLength );
-			return `${compareRaw} ${compareGz} ${filename}`;
+			return `${ compareRaw } ${ compareGz } ${ filename }`;
 		} );
 
 		return [
@@ -182,7 +182,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 			meta: { commit },
 			files: cacheResults( results )
 		};
-		console.log( `Saved cache for ${branch}.` );
+		console.log( `Saved cache for ${ branch }.` );
 	}
 
 	await saveCache( cache, sizeCache );
