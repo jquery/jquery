@@ -18,11 +18,6 @@ define( [
 			return;
 		}
 
-		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
-		if ( documentElement.offsetHeight === 0 ) {
-			return;
-		}
-
 		container.style.cssText = "position:absolute;left:-11111px;width:60px;" +
 			"margin-top:1px;padding:0;border:0";
 		div.style.cssText =
@@ -33,6 +28,11 @@ define( [
 
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
+
+		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
+		if ( div.offsetWidth === 0 ) {
+			return;
+		}
 
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
 		reliableMarginLeftVal = roundPixelMeasures( divStyle.marginLeft ) === 12;
