@@ -1,6 +1,9 @@
 name: CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches-ignore: "dependabot/**"
 
 permissions:
   contents: read # to fetch code (actions/checkout)
