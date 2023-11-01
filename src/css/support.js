@@ -31,6 +31,7 @@ define( [
 
 		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
 		if ( div.offsetWidth === 0 ) {
+			documentElement.removeChild( container );
 			return;
 		}
 
