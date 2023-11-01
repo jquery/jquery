@@ -21,15 +21,15 @@ async function runTests( { module } ) {
 	const testFiles = files.filter( ( testFilePath ) => testFilePath.isFile() );
 
 	if ( !testFiles.length ) {
-		throw new Error( `No test files found for "${module}"` );
+		throw new Error( `No test files found for "${ module }"` );
 	}
 
 	await Promise.all(
 		testFiles.map( ( testFile ) =>
-			exec( `node "${dir}/${testFile.name}" ${module}` )
+			exec( `node "${ dir }/${ testFile.name }" ${ module }` )
 		)
 	);
-	console.log( `Node smoke tests passed for "${module}".` );
+	console.log( `Node smoke tests passed for "${ module }".` );
 }
 
 async function runDefaultTests() {
