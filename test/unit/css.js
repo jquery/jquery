@@ -1406,7 +1406,8 @@ testIframe(
 	"css/cssComputeStyleTests.html",
 	function( assert, jQuery, window, document, initialHeight ) {
 		assert.expect( 2 );
-		assert.strictEqual( initialHeight, 0, "initial height should be undefined" );
+		assert.strictEqual( initialHeight === 0 ? 20 : initialHeight, 20,
+			"hidden-frame content sizes should be zero or accurate" );
 		window.parent.jQuery( "#qunit-fixture-iframe" ).css( { "display": "block" } );
 		jQuery( "#test" ).width( 600 );
 		assert.strictEqual( jQuery( "#test" ).width(), 600, "width should be 600" );
