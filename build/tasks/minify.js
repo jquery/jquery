@@ -24,7 +24,7 @@ module.exports = async function minify( { filename, dir, esm } ) {
 				ecma: esm ? 2015 : 5,
 				asciiOnly: true,
 				comments: false,
-				preamble: `/*! jQuery ${version}` +
+				preamble: `/*! jQuery ${ version }` +
 					" | (c) OpenJS Foundation and other contributors" +
 					" | jquery.org/license */\n"
 			},
@@ -63,5 +63,7 @@ module.exports = async function minify( { filename, dir, esm } ) {
 	processForDist( code, minFilename );
 	processForDist( map, mapFilename );
 
-	console.log( `[${getTimestamp()}] ${minFilename} ${version} with ${mapFilename} created.` );
+	console.log( `[${ getTimestamp() }] ${ minFilename } ${ version } with ${
+		mapFilename
+	} created.` );
 };
