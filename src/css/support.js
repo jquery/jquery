@@ -29,6 +29,12 @@ define( [
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
 
+		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
+		if ( div.offsetWidth === 0 ) {
+			documentElement.removeChild( container );
+			return;
+		}
+
 		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
 		reliableMarginLeftVal = roundPixelMeasures( divStyle.marginLeft ) === 12;
 
