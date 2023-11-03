@@ -47,6 +47,12 @@ support.reliableTrDimensions = function() {
 			.appendChild( tr )
 			.appendChild( div );
 
+		// Don't run until window is visible
+		if ( table.offsetWidth === 0 ) {
+			documentElement.removeChild( table );
+			return;
+		}
+
 		trStyle = window.getComputedStyle( tr );
 		reliableTrDimensionsVal = ( parseInt( trStyle.height, 10 ) +
 				parseInt( trStyle.borderTopWidth, 10 ) +
