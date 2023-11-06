@@ -27,7 +27,10 @@ define( [
 		documentElement.appendChild( container ).appendChild( div );
 
 		var divStyle = window.getComputedStyle( div );
-		pixelPositionVal = divStyle.top !== "1%";
+
+		// Support: Firefox <=48 - 61 only
+		// Inside hidden iframes computed style is null in old Firefox.
+		pixelPositionVal = divStyle && divStyle.top !== "1%";
 
 		// Don't run until window is visible (https://github.com/jquery/jquery-ui/issues/2176)
 		if ( div.offsetWidth === 0 ) {
@@ -140,6 +143,12 @@ define( [
 					.appendChild( table )
 					.appendChild( tr )
 					.appendChild( trChild );
+
+				// Don't run until window is visible
+				if ( table.offsetWidth === 0 ) {
+					documentElement.removeChild( table );
+					return;
+				}
 
 				trStyle = window.getComputedStyle( tr );
 				reliableTrDimensionsVal = ( parseInt( trStyle.height, 10 ) +
