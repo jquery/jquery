@@ -1386,6 +1386,47 @@ testIframe(
 	}
 );
 
+( function() {
+	var supportsFractionalTrWidth,
+		epsilon = 0.1,
+		table = jQuery( "<table><tr></tr></table>" ),
+		tr = table.find( "tr" );
+
+	table
+		.appendTo( "#qunit-fixture" )
+		.css( {
+			width: "100.7px",
+			borderSpacing: 0
+		} );
+
+	supportsFractionalTrWidth = Math.abs( tr.width() - 100.7 ) < epsilon;
+
+	testIframe(
+		"Test computeStyleTests for hidden iframe",
+		"css/cssComputeStyleTests.html",
+		function( assert, jQuery, window, document, initialHeight ) {
+			assert.expect( 3 );
+
+			assert.strictEqual( initialHeight === 0 ? 20 : initialHeight, 20,
+				"hidden-frame content sizes should be zero or accurate" );
+
+			window.parent.jQuery( "#qunit-fixture-iframe" ).css( { "display": "block" } );
+			jQuery( "#test" ).width( 600 );
+			assert.strictEqual( jQuery( "#test" ).width(), 600, "width should be 600" );
+
+			if ( supportsFractionalTrWidth ) {
+				assert.ok(
+					Math.abs( jQuery( "#test-tr" ).width() - 100.7 ) < epsilon,
+					"tr width should be fractional" );
+			} else {
+				assert.strictEqual( jQuery( "#test-tr" ).width(), 101, "tr width as expected" );
+			}
+		},
+		undefined,
+		{ "display": "none" }
+	);
+} )();
+
 QUnit.testUnlessIE( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
 	assert.expect( 2 );
 

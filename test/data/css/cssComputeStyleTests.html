@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test computeStyleTests for hidden iframe</title>
+	<meta charset="utf-8">
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+		#test {
+			position: absolute;
+			border: 10px solid black;
+			width: 400px;
+		}
+		#test-table {
+			position: absolute;
+			width: 100.7px;
+			border-spacing: 0;
+		}
+	</style>
+</head>
+<body>
+<div id="test"></div>
+<table id="test-table">
+	<tr id="test-tr"></tr>
+</table>
+<script src="../../jquery.js"></script>
+<script src="../iframeTest.js"></script>
+<script>
+	var initialHeight = $( "#test" ).outerHeight();
+	startIframeTest( initialHeight );
+</script>
+</body>
+</html>
