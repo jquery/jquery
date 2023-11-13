@@ -1402,7 +1402,7 @@ testIframe(
 );
 
 ( function() {
-	var supportsFractionalTrWidth,
+	var supportsFractionalTrWidth, trWidth,
 		epsilon = 0.1,
 		table = jQuery( "<table><tr></tr></table>" ),
 		tr = table.find( "tr" );
@@ -1429,12 +1429,16 @@ testIframe(
 			jQuery( "#test" ).width( 600 );
 			assert.strictEqual( jQuery( "#test" ).width(), 600, "width should be 600" );
 
+			trWidth = jQuery( "#test-tr" ).width();
 			if ( supportsFractionalTrWidth ) {
 				assert.ok(
-					Math.abs( jQuery( "#test-tr" ).width() - 100.7 ) < epsilon,
+					Math.abs( trWidth - 100.7 ) < epsilon,
 					"tr width should be fractional" );
 			} else {
-				assert.strictEqual( jQuery( "#test-tr" ).width(), 101, "tr width as expected" );
+
+				// Support: iOS <10
+				// Old iOS always rounds down.
+				assert.strictEqual( trWidth === 100 ? 101 : trWidth, 101, "tr width as expected" );
 			}
 		},
 		undefined,
