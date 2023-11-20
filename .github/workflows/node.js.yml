@@ -44,42 +44,42 @@ jobs:
             NPM_SCRIPT: "test:browser"
             BROWSERS: "FirefoxHeadless"
     steps:
-    - name: Checkout
-      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-    - name: Cache
-      uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
+      - name: Cache
+        uses: actions/cache@704facf57e6136b1bc63b828d79edcd491f0ee84 # v3.3.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
-    - name: Use Node.js ${{ matrix.NODE_VERSION }}
-      uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
-      with:
-        node-version: ${{ matrix.NODE_VERSION }}
+      - name: Use Node.js ${{ matrix.NODE_VERSION }}
+        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4.0.0
+        with:
+          node-version: ${{ matrix.NODE_VERSION }}
 
-    - name: Install firefox ESR
-      run: |
-        export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest&lang=en-US&os=linux64'
-        wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
-      if: contains(matrix.NAME, 'Firefox ESR')
+      - name: Install firefox ESR
+        run: |
+          export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest&lang=en-US&os=linux64'
+          wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
+        if: contains(matrix.NAME, 'Firefox ESR')
 
-    - name: Install dependencies
-      run: npm install
+      - name: Install dependencies
+        run: npm install
 
-    - name: Install Playwright dependencies
-      run: npx playwright-webkit install-deps
-      if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
+      - name: Install Playwright dependencies
+        run: npx playwright-webkit install-deps
+        if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
 
-    - name: Lint code
-      run: npm run build:all && npm run lint
-      if: matrix.NODE_VERSION == '18.x'
+      - name: Lint code
+        run: npm run build:all && npm run lint
+        if: matrix.NODE_VERSION == '18.x'
 
-    - name: Run tests
-      env:
-        BROWSERS: ${{ matrix.BROWSERS }}
-      run: |
-        export PATH=${HOME}/firefox:$PATH
-        npm run ${{ matrix.NPM_SCRIPT }}
+      - name: Run tests
+        env:
+          BROWSERS: ${{ matrix.BROWSERS }}
+        run: |
+          export PATH=${HOME}/firefox:$PATH
+          npm run ${{ matrix.NPM_SCRIPT }}
