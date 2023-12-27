@@ -21,5 +21,9 @@ export function DOMEval( code, node, doc ) {
 			}
 		}
 	}
-	doc.head.appendChild( script ).parentNode.removeChild( script );
+
+	doc.head.appendChild( script );
+	if ( script.parentNode ) {
+		script.parentNode.removeChild( script );
+	}
 }
