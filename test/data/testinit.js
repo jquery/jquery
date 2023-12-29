@@ -15,7 +15,7 @@ var FILEPATH = "/test/data/testinit.js",
 	baseURL = parentUrl + "test/data/",
 	supportjQuery = this.jQuery,
 
-	// NOTE: keep it in sync with build/tasks/lib/slim-build-flags.js
+	// NOTE: keep it in sync with build/tasks/lib/slim-exclude.js
 	excludedFromSlim = [
 		"ajax",
 		"callbacks",

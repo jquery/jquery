@@ -21,7 +21,8 @@ export default [
 			"test/node_smoke_tests/commonjs/**",
 			"test/node_smoke_tests/module/**",
 			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.cjs"
+			"test/middleware-mockserver.cjs",
+			"test/runner/**/*.js"
 		],
 		languageOptions: {
 			globals: {
