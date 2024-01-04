@@ -25,7 +25,6 @@ import { jQuery } from "./core.js";
 import { document } from "./var/document.js";
 import { whitespace } from "./var/whitespace.js";
 import { isIE } from "./var/isIE.js";
-import { booleans } from "./selector/var/booleans.js";
 import { rleadingCombinator } from "./selector/var/rleadingCombinator.js";
 import { rdescend } from "./selector/var/rdescend.js";
 import { rsibling } from "./selector/var/rsibling.js";
@@ -41,7 +40,6 @@ import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
 var matchExpr = jQuery.extend( {
-	bool: new RegExp( "^(?:" + booleans + ")$", "i" ),
 	needsContext: new RegExp( "^" + whitespace + "*[>+~]" )
 }, filterMatchExpr );
 

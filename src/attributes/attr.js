@@ -97,7 +97,10 @@ if ( isIE ) {
 	};
 }
 
-jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name ) {
+jQuery.each( (
+	"checked selected async autofocus autoplay controls defer disabled " +
+	"hidden ismap loop multiple open readonly required scoped"
+).split( " " ), function( _i, name ) {
 	jQuery.attrHooks[ name ] = {
 		get: function( elem ) {
 			var ret,
