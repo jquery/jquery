@@ -5,7 +5,6 @@ import { isWindow } from "./var/isWindow.js";
 
 import "./core/init.js";
 import "./css.js";
-import "./selector.js"; // contains
 
 jQuery.offset = {
 	setOffset: function( elem, options, i ) {

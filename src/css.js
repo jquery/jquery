@@ -17,7 +17,6 @@ import { support } from "./css/support.js";
 
 import "./core/init.js";
 import "./core/ready.js";
-import "./selector.js"; // contains
 
 var
 

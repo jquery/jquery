@@ -15,7 +15,6 @@ import { nodeName } from "./core/nodeName.js";
 
 import "./core/init.js";
 import "./traversing.js";
-import "./selector.js";
 import "./event.js";
 
 var

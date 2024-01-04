@@ -4,8 +4,6 @@ import { nodeName } from "../core/nodeName.js";
 import { rnothtmlwhite } from "../var/rnothtmlwhite.js";
 import { isIE } from "../var/isIE.js";
 
-import "../selector.js";
-
 jQuery.fn.extend( {
 	attr: function( name, value ) {
 		return access( this, jQuery.attr, name, value, arguments.length > 1 );
