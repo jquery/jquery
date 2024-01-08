@@ -14,12 +14,13 @@ export function DOMEval( code, node, doc ) {
 		script = doc.createElement( "script" );
 
 	script.text = code;
-	if ( node ) {
-		for ( i in preservedScriptAttributes ) {
-			if ( node[ i ] ) {
-				script[ i ] = node[ i ];
-			}
+	for ( i in preservedScriptAttributes ) {
+		if ( node && node[ i ] ) {
+			script[ i ] = node[ i ];
 		}
 	}
-	doc.head.appendChild( script ).parentNode.removeChild( script );
+
+	if ( doc.head.appendChild( script ).parentNode ) {
+		script.parentNode.removeChild( script );
+	}
 }
