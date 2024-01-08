@@ -1871,6 +1871,21 @@ QUnit[
 	}, 1000 );
 } );
 
+QUnit.test( "html(self-removing script) (gh-5377)", function( assert ) {
+	assert.expect( 2 );
+
+	var $fixture = jQuery( "#qunit-fixture" );
+
+	$fixture.html(
+		[
+			"<script>document.currentScript.parentNode.removeChild( document.currentScript ); QUnit.assert.ok( true, 'removed document.currentScript' );</script>",
+			"<div>",
+				"<script>document.currentScript.parentNode.removeChild( document.currentScript ); QUnit.assert.ok( true, 'removed inner document.currentScript' );</script>",
+			"</div>"
+		].join( "" )
+	);
+} );
+
 QUnit.test( "html(Function) with incoming value -- direct selection", function( assert ) {
 
 	assert.expect( 4 );

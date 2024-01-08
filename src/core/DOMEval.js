@@ -36,7 +36,9 @@ define( [
 				}
 			}
 		}
-		doc.head.appendChild( script ).parentNode.removeChild( script );
+		if ( doc.head.appendChild( script ).parentNode ) {
+			script.parentNode.removeChild( script );
+		}
 	}
 
 	return DOMEval;
