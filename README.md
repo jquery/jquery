@@ -1,4 +1,4 @@
-[jQuery](https://jquery.com/) — New Wave JavaScript
+[jQuery](https://jquery.com/) — New Wave JavaScripta
 ==================================================
 
 Meetings are currently held on the [matrix.org platform](https://matrix.to/#/#jquery_meeting:gitter.im).
