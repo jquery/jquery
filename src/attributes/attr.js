@@ -18,8 +18,7 @@ jQuery.fn.extend( {
 
 jQuery.extend( {
 	attr: function( elem, name, value ) {
-		var ret, hooks,
-			nType = elem.nodeType;
+		var ret, hooks, nType = elem.nodeType;
 
 		// Don't get/set attributes on text, comment and attribute nodes
 		if ( nType === 3 || nType === 8 || nType === 2 ) {
@@ -43,9 +42,17 @@ jQuery.extend( {
 				return;
 			}
 
-			if ( hooks && "set" in hooks &&
-				( ret = hooks.set( elem, value, name ) ) !== undefined ) {
+			if ( hooks && "set" in hooks && ( ret = hooks.set( elem, value, name ) ) !== undefined ) {
 				return ret;
+			}
+
+			if ( typeof name !== "string" || typeof name === "undefined" ) { // Optimizable
+				return;
+			}
+
+			// Better to be sanitized (Content Security Policy followed) with DOMPurify or HTML Sanitizer API (experimental technology) somewhere
+			if ( hooks instanceof Object || value instanceof Object ) { // To prevent some prototype pollution on "srcdoc" etc
+				return;
 			}
 
 			elem.setAttribute( name, value );
