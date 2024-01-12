@@ -1826,11 +1826,25 @@ QUnit.test( "html(self-removing script) (gh-5377)", function( assert ) {
 
 	$fixture.html(
 		[
-			"<script>document.currentScript.parentNode.removeChild( document.currentScript ); QUnit.assert.ok( true, 'removed document.currentScript' );</script>",
+			"<script id='gh5377-1'>",
+				"(function removeScript() {",
+					"var id = 'gh5377-1';",
+					"var script = document.currentScript || document.getElementById(id);",
+					"script.parentNode.removeChild( script );",
+					"QUnit.assert.ok( true, 'removed document.currentScript' );",
+				"})();",
+			"</script>",
 			"<div>",
-				"<script>document.currentScript.parentNode.removeChild( document.currentScript ); QUnit.assert.ok( true, 'removed inner document.currentScript' );</script>",
+				"<script id='gh5377-2'>",
+					"(function removeInnerScript() {",
+						"var id = 'gh5377-2';",
+						"var innerScript = document.currentScript || document.getElementById(id);",
+						"innerScript.parentNode.removeChild( innerScript );",
+						"QUnit.assert.ok( true, 'removed inner document.currentScript' );",
+					"})();",
+				"</script>",
 			"</div>"
-		].join( "" )
+		].join( "\n" )
 	);
 } );
 
