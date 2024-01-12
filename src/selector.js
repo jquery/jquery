@@ -9,7 +9,6 @@ import { rbuggyQSA } from "./selector/rbuggyQSA.js";
 import { rtrimCSS } from "./var/rtrimCSS.js";
 import { isIE } from "./var/isIE.js";
 import { identifier } from "./selector/var/identifier.js";
-import { booleans } from "./selector/var/booleans.js";
 import { rleadingCombinator } from "./selector/var/rleadingCombinator.js";
 import { rdescend } from "./selector/var/rdescend.js";
 import { rsibling } from "./selector/var/rsibling.js";
@@ -24,6 +23,7 @@ import { tokenize } from "./selector/tokenize.js";
 import { toSelector } from "./selector/toSelector.js";
 
 // The following utils are attached directly to the jQuery object.
+import "./attributes/attr.js"; // jQuery.attr
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
@@ -50,7 +50,6 @@ var i,
 	ridentifier = new RegExp( "^" + identifier + "$" ),
 
 	matchExpr = jQuery.extend( {
-		bool: new RegExp( "^(?:" + booleans + ")$", "i" ),
 
 		// For use in libraries implementing .is()
 		// We use this for POS matching in `select`
