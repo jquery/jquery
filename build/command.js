@@ -75,11 +75,13 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "reset-compare", {
 		type: "boolean",
 		description:
-			"Reset the size comparison cache to only include the main branch and last run."
+			"Reset the size comparison cache to only include the main branch and last run.",
+		conflicts: [ "clear-compare" ]
 	} )
 	.option( "clear-compare", {
 		type: "boolean",
-		description: "Clear the size comparison cache."
+		description: "Clear the size comparison cache.",
+		conflicts: [ "reset-compare" ]
 	} )
 	.help().argv;
 
