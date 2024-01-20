@@ -158,16 +158,29 @@ async function writeCompiled( { code, dir, filename, version } ) {
 // Build jQuery ECMAScript modules
 async function build( {
 	amd,
+	clearCompare = false,
 	dir = "dist",
+	esm = false,
 	exclude = [],
+	factory = false,
 	filename = "jquery.js",
 	include = [],
-	esm = false,
-	factory = false,
+	resetCompare = false,
 	slim = false,
 	version,
 	watch = false
 } = {} ) {
+
+	if ( resetCompare ) {
+		const { resetCache } = await import( "./compare_size.mjs" );
+		return resetCache();
+	}
+
+	if ( clearCompare ) {
+		const { clearCache } = await import( "./compare_size.mjs" );
+		return clearCache();
+	}
+
 	const pureSlim = slim && !exclude.length && !include.length;
 
 	const fileOverrides = new Map();

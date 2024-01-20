@@ -13,8 +13,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "filename", {
 		alias: "f",
 		type: "string",
-		description:
-			"Set the filename of the built file. Defaults to jquery.js."
+		description: "Set the filename of the built file. Defaults to jquery.js."
 	} )
 	.option( "dir", {
 		alias: "d",
@@ -33,8 +32,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "watch", {
 		alias: "w",
 		type: "boolean",
-		description:
-			"Watch the source files and rebuild when they change."
+		description: "Watch the source files and rebuild when they change."
 	} )
 	.option( "exclude", {
 		alias: "e",
@@ -61,21 +59,28 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "factory", {
 		type: "boolean",
 		description:
-			"Build the factory bundle. " +
-			"By default, a UMD bundle is built."
+			"Build the factory bundle. By default, a UMD bundle is built."
 	} )
 	.option( "slim", {
 		alias: "s",
 		type: "boolean",
-		description: "Build a slim bundle, which excludes " +
-			slimExclude.join( ", " )
+		description:
+			"Build a slim bundle, which excludes " + slimExclude.join( ", " )
 	} )
 	.option( "amd", {
 		type: "string",
 		description:
 			"Set the name of the AMD module. Leave blank to make an anonymous module."
 	} )
-	.help()
-	.argv;
+	.option( "reset-compare", {
+		type: "boolean",
+		description:
+			"Reset the size comparison cache to only include the main branch and last run."
+	} )
+	.option( "clear-compare", {
+		type: "boolean",
+		description: "Clear the size comparison cache."
+	} )
+	.help().argv;
 
 build( argv );

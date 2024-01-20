@@ -90,6 +90,25 @@ function sortBranches( a, b ) {
 	return 0;
 }
 
+export async function resetCache( { cache = ".sizecache.json" } = {} ) {
+	const sizeCache = await getCache( cache );
+
+	// Keep main and last run
+	Object.keys( sizeCache ).forEach( function( branch ) {
+		if ( branch !== "main" && branch !== lastRunBranch ) {
+			delete sizeCache[ branch ];
+		}
+	} );
+
+	await saveCache( cache, sizeCache );
+	console.log( "Compare cache reset." );
+}
+
+export async function clearCache( { cache = ".sizecache.json" } = {} ) {
+	await fs.promises.unlink( cache );
+	console.log( "Compare cache cleared." );
+}
+
 export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	if ( !files || !files.length ) {
 		throw new Error( "No files specified" );
