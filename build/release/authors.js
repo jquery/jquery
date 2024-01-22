@@ -63,7 +63,7 @@ async function getSizzleAuthors() {
 function sortAuthors( a, b ) {
 	const [ , aDate ] = rdate.exec( a );
 	const [ , bDate ] = rdate.exec( b );
-	return parseInt( aDate ) - parseInt( bDate );
+	return Number( aDate ) - Number( bDate );
 }
 
 function formatAuthor( author ) {
