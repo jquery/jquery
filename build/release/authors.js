@@ -47,7 +47,7 @@ async function getLastAuthor() {
 async function logAuthors( preCommand ) {
 	let command = "git log --pretty=format:\"[%at] %aN <%aE>\"";
 	if ( preCommand ) {
-		command = preCommand + " && " + command;
+		command = `${ preCommand } && ${ command }`;
 	}
 	const { stdout } = await exec( command );
 	return uniq( stdout.trim().split( rnewline ).reverse() );
