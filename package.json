@@ -5,6 +5,8 @@
   "version": "3.7.2-pre",
   "main": "dist/jquery.js",
   "scripts": {
+    "authors:check": "node -e \"require('./build/release/authors.js').checkAuthors()\"",
+    "authors:update": "node -e \"require('./build/release/authors.js').updateAuthors()\"",
     "babel:tests": "babel test/data/core/jquery-iterability-transpiled-es6.js --out-file test/data/core/jquery-iterability-transpiled.js",
     "build": "node ./build/command.js",
     "build:all": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\"",
@@ -65,7 +67,6 @@
     "globals": "13.20.0",
     "grunt": "1.5.3",
     "grunt-cli": "1.4.3",
-    "grunt-git-authors": "3.2.0",
     "grunt-karma": "4.0.2",
     "husky": "8.0.3",
     "jsdom": "19.0.0",
