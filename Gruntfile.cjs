@@ -209,6 +209,14 @@ module.exports = function( grunt ) {
 		grunt.log.writeln( "Node.js 17 or newer detected, skipping jsdom tests..." );
 	} );
 
+	grunt.registerTask( "authors", async function() {
+		const done = this.async();
+		const { getAuthors } = require( "./build/release/authors.js" );
+		const authors = await getAuthors();
+		console.log( authors.join( "\n" ) );
+		done();
+	} );
+
 	grunt.registerTask( "test:jsdom", [
 
 		// Support: Node.js 17+
