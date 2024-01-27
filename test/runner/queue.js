@@ -11,13 +11,27 @@ import { runSelenium } from "./selenium/runSelenium.js";
 const queue = [];
 const promises = [];
 
+const SELENIUM_WAIT_TIME = 100;
+const BROWSERSTACK_WAIT_TIME = 5000;
+const WORKER_WAIT_TIME = 30000;
+
+// Limit concurrency to 8 by default in selenium
+// BrowserStack defaults to the max allowed by the plan
+// More than this will log MaxListenersExceededWarning
+const MAX_CONCURRENCY = 8;
+
 export function addRun( url, browser, options ) {
 	queue.push( { url, browser, options } );
 }
 
-export async function runAll( { browserstack, concurrency } ) {
+export async function runFullQueue( {
+	browserstack,
+	concurrency: defaultConcurrency,
+	verbose
+} ) {
 	while ( queue.length ) {
-		const { url, browser, options } = queue.shift();
+		const next = queue.shift();
+		const { url, browser, options } = next;
 
 		const fullBrowser = getBrowserString( browser, options.headless );
 		console.log(
@@ -25,9 +39,36 @@ export async function runAll( { browserstack, concurrency } ) {
 				`in ${ chalk.yellow( fullBrowser ) } (${ chalk.bold( options.reportId ) })...`
 		);
 
-		// Wait a bit between starting workers
-		// This helps avoid undici connect timeout errors
-		await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
+		// Wait enough time between requests
+		// to give concurrency a chance to update.
+		// In selenium, this helps avoid undici connect timeout errors.
+		await new Promise( ( resolve ) =>
+			setTimeout(
+				resolve,
+				browserstack ? BROWSERSTACK_WAIT_TIME : SELENIUM_WAIT_TIME
+			)
+		);
+
+		const concurrency =
+			browserstack && !defaultConcurrency ?
+				await getMaxSessions() :
+				defaultConcurrency || MAX_CONCURRENCY;
+
+		if ( verbose ) {
+			console.log(
+				`\nConcurrency: ${ concurrency }. Tests remaining: ${ queue.length + 1 }.`
+			);
+		}
+
+		// If concurrency is 0, wait a bit and try again
+		if ( concurrency <= 0 ) {
+			if ( verbose ) {
+				console.log( "\nWaiting for available sessions..." );
+			}
+			queue.unshift( next );
+			await new Promise( ( resolve ) => setTimeout( resolve, WORKER_WAIT_TIME ) );
+			continue;
+		}
 
 		const promise = browserstack ?
 			runWorker( url, browser, options ) :
@@ -44,15 +85,9 @@ export async function runAll( { browserstack, concurrency } ) {
 		// Add the promise to the list
 		promises.push( promise );
 
-		// Keep checking max sessions for browserstack
-		if (
-			promises.length >=
-			( browserstack ?
-				Math.min( concurrency, await getMaxSessions() ) :
-				concurrency )
-		) {
-
-			// Wait until at least one promise resolves
+		// Wait until at least one promise resolves
+		// if we've reached the concurrency limit
+		if ( promises.length >= concurrency ) {
 			await Promise.any( promises );
 		}
 	}

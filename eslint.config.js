@@ -162,7 +162,7 @@ export default [
 			"test/**"
 		],
 		ignores: [
-			"test/data/jquery-1.9.1.js",
+			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",

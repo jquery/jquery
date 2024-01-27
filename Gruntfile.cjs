@@ -82,7 +82,7 @@ module.exports = function( grunt ) {
 					}
 				},
 				files: [
-					"test/data/jquery-1.9.1.js",
+					"test/data/jquery-3.7.1.js",
 					"external/sinon/sinon.js",
 					"external/npo/npo.js",
 					"external/requirejs/require.js",
@@ -148,7 +148,7 @@ module.exports = function( grunt ) {
 			jsdom: {
 				options: {
 					files: [
-						"test/data/jquery-1.9.1.js",
+						"test/data/jquery-3.7.1.js",
 						"test/data/testinit-jsdom.js",
 
 						// We don't support various loading methods like esmodules,

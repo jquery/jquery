@@ -5,20 +5,17 @@ import { buildBrowserFromString } from "./browserstack/buildBrowserFromString.js
 import { localTunnel } from "./browserstack/local.js";
 import { reportEnd, reportTest } from "./browserstack/reporter.js";
 import {
-	acknowledgeWorker,
 	cleanupAllWorkers,
 	cleanupWorker,
+	debugWorker,
+	retryTest,
 	touchWorker
 } from "./browserstack/workers.js";
 import { createTestServer } from "./createTestServer.js";
 import { buildTestUrl } from "./lib/buildTestUrl.js";
 import { generateHash, printModuleHashes } from "./lib/generateHash.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
-import { addRun, runAll } from "./queue.js";
-
-// Limit concurrency to 8 by default
-// More than this will log MaxListenersExceededWarning
-const MAX_CONCURRENCY = 8;
+import { addRun, runFullQueue } from "./queue.js";
 
 /**
  * Run modules in parallel in different browser instances.
@@ -31,6 +28,7 @@ export async function run( {
 	headless,
 	isolate = true,
 	modules = [],
+	retries = 3,
 	verbose
 } = {} ) {
 	if ( !browsers || !browsers.length ) {
@@ -41,15 +39,13 @@ export async function run( {
 			"Cannot run in headless mode and debug mode at the same time."
 		);
 	}
-	if ( !concurrency ) {
-		concurrency = browserstack ? await getMaxSessions() : MAX_CONCURRENCY;
-	}
 
 	if ( verbose ) {
 		console.log( browserstack ? "Running in BrowserStack." : "Running locally." );
 	}
 
-	let failedCount = 0;
+	const errorMessages = [];
+	const pendingErrors = {};
 
 	// Convert browsers to browser objects
 	browsers = browsers.map( ( b ) => ( { browser: b } ) );
@@ -67,15 +63,47 @@ export async function run( {
 		switch ( message.type ) {
 			case "testEnd":
 				touchWorker( message.id );
-				reportTest( message.data, reports[ message.id ] );
+				const errors = reportTest(
+					message.data,
+					message.id,
+					reports[ message.id ]
+				);
+				if ( errors ) {
+					pendingErrors[ message.id ] ||= {};
+					pendingErrors[ message.id ].errors = errors;
+				}
 				break;
 			case "runEnd": {
-				failedCount += reportEnd( message.data, reports[ message.id ] );
-				await cleanupWorker( message.id, verbose );
+				const failedCount = reportEnd(
+					message.data,
+					message.id,
+					reports[ message.id ]
+				);
+
+				if ( !failedCount ) {
+					if ( pendingErrors[ message.id ] ) {
+						console.warn( "Detected flaky tests:" );
+						console.warn(
+							chalk.italic( chalk.gray( pendingErrors[ message.id ].errors ) )
+						);
+						delete pendingErrors[ message.id ];
+					}
+					await cleanupWorker( message.id, verbose );
+				} else if ( debug ) {
+					debugWorker( message.id );
+				} else if ( failedCount ) {
+					if ( !retryTest( message.id, retries ) ) {
+						errorMessages.push( pendingErrors[ message.id ].errors );
+						await cleanupWorker( message.id, verbose );
+					}
+				}
 				break;
 			}
 			case "ack": {
-				acknowledgeWorker( message.id, verbose );
+				touchWorker( message.id );
+				if ( verbose ) {
+					console.log( `\nWorker for test ${ message.id } acknowledged.` );
+				}
 				break;
 			}
 			default:
@@ -147,15 +175,6 @@ export async function run( {
 			headless = false;
 		}
 
-		if ( debug ) {
-			console.warn(
-				chalk.italic(
-					"BrowserStack does not support debug mode. Running in normal mode."
-				)
-			);
-			debug = false;
-		}
-
 		// Convert browserstack to browser objects
 		if ( browserstack.length ) {
 			browsers = browserstack.map( ( b ) => {
@@ -168,21 +187,17 @@ export async function run( {
 
 		// Fill out browser defaults
 		browsers = await Promise.all(
-			browsers.map(
-				async( browser ) => {
+			browsers.map( async( browser ) => {
 
-					// Avoid undici connect timeout errors
-					await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
+				// Avoid undici connect timeout errors
+				await new Promise( ( resolve ) => setTimeout( resolve, 100 ) );
 
-						const latestMatch = await getLatestBrowser( browser );
-						if ( !latestMatch ) {
-							throw new Error(
-								`Browser not found: ${ getBrowserString( browser ) }.`
-							);
-						}
-						return latestMatch;
+				const latestMatch = await getLatestBrowser( browser );
+				if ( !latestMatch ) {
+					throw new Error( `Browser not found: ${ getBrowserString( browser ) }.` );
 				}
-			)
+				return latestMatch;
+			} )
 		);
 
 		tunnel = await localTunnel( runId );
@@ -205,6 +220,7 @@ export async function run( {
 			headless,
 			modules,
 			reportId,
+			retries,
 			runId,
 			verbose
 		} );
@@ -222,7 +238,7 @@ export async function run( {
 
 	try {
 		console.log( `Starting Run ${ runId }...` );
-		await runAll( { browserstack, concurrency } );
+		await runFullQueue( { browserstack, concurrency, verbose } );
 	} catch ( error ) {
 		if ( !debug ) {
 			throw error;
@@ -231,16 +247,23 @@ export async function run( {
 		}
 	} finally {
 		console.log();
-		if ( failedCount === 0 ) {
+		if ( errorMessages.length === 0 ) {
 			console.log( chalk.green( "All tests passed!" ) );
 
 			if ( !debug || browserstack ) {
 				gracefulExit( 0 );
 			}
 		} else {
-			console.error( chalk.red( `${ failedCount } tests failed.` ) );
+			console.error( chalk.red( `${ errorMessages.length } tests failed.` ) );
+			console.log(
+				errorMessages.map( ( error, i ) => `\n${ i + 1 }. ${ error }` ).join( "\n" )
+			);
 
-			if ( !debug || browserstack ) {
+			if ( debug ) {
+				console.log( "Leaving browsers with failures open for debugging." );
+				console.log( "View at https://automate.browserstack.com/dashboard/v2/" );
+				console.log( "Press Ctrl+C to exit." );
+			} else {
 				gracefulExit( 1 );
 			}
 		}

@@ -1,6 +1,6 @@
 import yargs from "yargs/yargs";
 import { browsers } from "./browsers.js";
-import { listBrowsers, stopWorkers } from "./browserstack/api.js";
+import { getPlan, listBrowsers, stopWorkers } from "./browserstack/api.js";
 import { buildBrowserFromString } from "./browserstack/buildBrowserFromString.js";
 import { modules } from "./modules.js";
 import { run } from "./run.js";
@@ -40,21 +40,27 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "concurrency", {
 		alias: "c",
 		type: "number",
-		description: "Run tests in parallel in multiple browsers. " +
+		description:
+			"Run tests in parallel in multiple browsers. " +
 			"Defaults to 8 in normal mode. In browserstack mode, defaults to the maximum available under your BrowserStack plan."
 	} )
 	.option( "debug", {
 		alias: "d",
 		type: "boolean",
 		description:
-			"Leave the browser open for debugging. Cannot be used with --headless or --browserstack. " +
-			"Use the browserstack app to start live browserstack sessions for debugging.",
-		conflicts: [ "headless", "browserstack" ]
+			"Leave the browser open for debugging. Cannot be used with --headless. ",
+		conflicts: [ "headless" ]
 	} )
 	.option( "verbose", {
 		alias: "v",
 		type: "boolean",
 		description: "Log additional information."
+	} )
+	.option( "retries", {
+		alias: "r",
+		type: "number",
+		description: "Number of times to retry failed tests.",
+		default: 3
 	} )
 	.option( "no-isolate", {
 		type: "boolean",
@@ -71,7 +77,8 @@ const argv = yargs( process.argv.slice( 2 ) )
 	} )
 	.option( "list-browsers", {
 		type: "string",
-		description: "List available BrowserStack browsers and exit.\n" +
+		description:
+			"List available BrowserStack browsers and exit.\n" +
 			"Leave blank to view all browsers or pass " +
 			"\"browser_[browserVersion | :device]_os_osVersion\" with each parameter " +
 			"separated by an underscore to filter the list (any can be omitted).\n" +
@@ -81,7 +88,12 @@ const argv = yargs( process.argv.slice( 2 ) )
 	} )
 	.option( "stop-workers", {
 		type: "boolean",
-		description: "Stop all BrowserStack workers that may exist and exit. This can be useful if there was a problem and there are stray workers."
+		description:
+			"Stop all BrowserStack workers that may exist and exit. This can be useful if there was a problem and there are stray workers."
+	} )
+	.option( "browserstack-plan", {
+		type: "boolean",
+		description: "Show BrowserStack plan information and exit."
 	} )
 	.help().argv;
 
@@ -89,6 +101,8 @@ if ( typeof argv.listBrowsers === "string" ) {
 	listBrowsers( buildBrowserFromString( argv.listBrowsers ) );
 } else if ( argv.stopWorkers ) {
 	stopWorkers();
+} else if ( argv.browserstackPlan ) {
+	console.log( await getPlan() );
 } else {
 	run( {
 		...argv,

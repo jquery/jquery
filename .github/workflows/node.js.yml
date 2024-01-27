@@ -3,7 +3,9 @@ name: CI
 on:
   pull_request:
   push:
-    branches-ignore: "dependabot/**"
+    branches-ignore:
+      - main
+      - "dependabot/**"
 
 permissions:
   contents: read # to fetch code (actions/checkout)

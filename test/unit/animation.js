@@ -91,7 +91,7 @@ QUnit.test( "Animation.prefilter( fn ) - calls prefilter after defaultPrefilter"
 		assert.expect( 1 );
 
 		var prefilter = this.sandbox.stub(),
-			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, 0 );
+			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, "0" );
 
 		jQuery.Animation.prefilter( prefilter );
 
@@ -105,7 +105,7 @@ QUnit.test( "Animation.prefilter( fn, true ) - calls prefilter before defaultPre
 		assert.expect( 1 );
 
 		var prefilter = this.sandbox.stub(),
-			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, 0 );
+			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, "0" );
 
 		jQuery.Animation.prefilter( prefilter, true );
 
@@ -133,7 +133,7 @@ QUnit.test( "Animation.prefilter - prefilter return hooks", function( assert ) {
 			assert.equal( arguments[ 2 ], this.opts, "third param opts" );
 			return ourAnimation;
 		} ),
-		defaultSpy = sandbox.spy( jQuery.Animation.prefilters, 0 ),
+		defaultSpy = sandbox.spy( jQuery.Animation.prefilters, "0" ),
 		queueSpy = sandbox.spy( function( next ) {
 			next();
 		} ),

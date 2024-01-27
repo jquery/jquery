@@ -4,15 +4,17 @@ import { changeUrl, createWorker, deleteWorker, getWorker } from "./api.js";
 
 const workers = {};
 
-// Acknowledge the worker within 2min
-const ACKNOWLEDGE_WORKER_TIMEOUT = 60 * 1000 * 2;
+// Acknowledge the worker within the time limit.
+// BrowserStack can take around 3min spinning up
+// some browsers, such as iOS 15 Safari.
+const ACKNOWLEDGE_WORKER_TIMEOUT = 60 * 1000 * 5;
 const ACKNOWLEDGE_WORKER_INTERVAL = 1000;
 
-// No report after 2min
+// No report after the time limit
 // should refresh the worker
 const RUN_WORKER_TIMEOUT = 60 * 1000 * 2;
-const MAX_WORKER_RETRIES = 5;
-const MAX_WORKER_REFRESHES = 2;
+const MAX_WORKER_RESTARTS = 5;
+const MAX_WORKER_REFRESHES = 1;
 const POLL_WORKER_TIMEOUT = 1000;
 
 export async function cleanupWorker( reportId, verbose ) {
@@ -27,6 +29,13 @@ export async function cleanupWorker( reportId, verbose ) {
 	}
 }
 
+export function debugWorker( reportId ) {
+	const worker = workers[ reportId ];
+	if ( worker ) {
+		worker.debug = true;
+	}
+}
+
 export function touchWorker( reportId ) {
 	const worker = workers[ reportId ];
 	if ( worker ) {
@@ -34,11 +43,15 @@ export function touchWorker( reportId ) {
 	}
 }
 
-export function acknowledgeWorker( reportId ) {
-	touchWorker( reportId );
+export function retryTest( reportId, retries ) {
 	const worker = workers[ reportId ];
 	if ( worker ) {
-		worker.ack = true;
+		worker.retries ||= 0;
+		if ( ++worker.retries <= retries ) {
+			worker.retry = true;
+			console.log( `\nRetrying test ${ reportId }...${ worker.retries }` );
+			return true;
+		}
 	}
 }
 
@@ -63,22 +76,27 @@ async function waitForAck( id, verbose ) {
 		const interval = setInterval( () => {
 			const worker = workers[ id ];
 			if ( !worker ) {
+				clearTimeout( timeout );
 				clearInterval( interval );
 				return reject( new Error( `Worker ${ id } not found.` ) );
 			}
-			if ( worker.ack ) {
+			if ( worker.lastTouch ) {
 				if ( verbose ) {
 					console.log( `\nWorker ${ id } acknowledged.` );
 				}
+				clearTimeout( timeout );
 				clearInterval( interval );
 				resolve();
 			}
 		}, ACKNOWLEDGE_WORKER_INTERVAL );
-		setTimeout( () => {
+		const timeout = setTimeout( () => {
 			clearInterval( interval );
+			const worker = workers[ id ];
 			reject(
 				new Error(
-					`Worker ${ id } not acknowledged after ${
+					`Worker ${
+						worker ? worker.id : ""
+					} for test ${ id } not acknowledged after ${
 						ACKNOWLEDGE_WORKER_TIMEOUT / 1000
 					}s.`
 				)
@@ -94,7 +112,7 @@ export async function runWorker(
 	url,
 	browser,
 	{ reportId, runId, verbose },
-	retries = 0
+	restarts = 0
 ) {
 	const worker = await createWorker( {
 		...browser,
@@ -127,14 +145,9 @@ export async function runWorker(
 	async function retryWorker() {
 		await cleanupWorker( reportId, verbose );
 		if ( verbose ) {
-			console.log(
-				`Worker ${ worker.id } not acknowledged after ${
-					ACKNOWLEDGE_WORKER_TIMEOUT / 1000
-				}s.`
-			);
-			console.log( `Retrying worker for test ${ reportId }...${ retries + 1 }` );
+			console.log( `Retrying worker for test ${ reportId }...${ restarts + 1 }` );
 		}
-		return runWorker( url, browser, { reportId, runId, verbose }, retries + 1 );
+		return runWorker( url, browser, { reportId, runId, verbose }, restarts + 1 );
 	}
 
 	// Wait for the worker to be acknowledged
@@ -147,7 +160,7 @@ export async function runWorker(
 			return;
 		}
 
-		if ( retries < MAX_WORKER_RETRIES ) {
+		if ( restarts < MAX_WORKER_RESTARTS ) {
 			return retryWorker();
 		}
 
@@ -161,17 +174,39 @@ export async function runWorker(
 	let refreshes = 0;
 	let loggedStarted = false;
 	return new Promise( ( resolve, reject ) => {
-		const interval = setInterval( async() => {
+		async function refreshWorker() {
+			try {
+				await changeUrl( worker.id, url );
+				touchWorker( reportId );
+				return tick();
+			} catch ( error ) {
+				if ( !workers[ reportId ] ) {
+
+					// The worker has already been cleaned up
+					return resolve();
+				}
+				console.error( error );
+				return retryWorker().then( resolve, reject );
+			}
+		}
+
+		async function checkWorker() {
 			const worker = workers[ reportId ];
 
-			if ( !worker ) {
-				clearInterval( interval );
+			if ( !worker || worker.debug ) {
 				return resolve();
 			}
 
-			const fetchedWorker = await getWorker( worker.id );
-			if ( !fetchedWorker || ( fetchedWorker.status !== "running" && fetchedWorker.status !== "queue" ) ) {
-				clearInterval( interval );
+			let fetchedWorker;
+			try {
+				fetchedWorker = await getWorker( worker.id );
+			} catch ( error ) {
+				return reject( error );
+			}
+			if (
+				!fetchedWorker ||
+				( fetchedWorker.status !== "running" && fetchedWorker.status !== "queue" )
+			) {
 				return resolve();
 			}
 
@@ -185,25 +220,51 @@ export async function runWorker(
 				console.log( `  View at ${ fetchedWorker.browser_url }.` );
 			}
 
-			if ( worker.lastTouch > Date.now() - RUN_WORKER_TIMEOUT ) {
-				return;
+			// Refresh the worker if a retry is triggered
+			if ( worker.retry ) {
+				worker.retry = false;
+
+				// Reset recovery refreshes
+				refreshes = 0;
+				return refreshWorker();
 			}
+
+			if ( worker.lastTouch > Date.now() - RUN_WORKER_TIMEOUT ) {
+				return tick();
+			}
+
 			if ( refreshes++ >= MAX_WORKER_REFRESHES ) {
-				clearInterval( interval );
-				if ( retries < MAX_WORKER_RETRIES ) {
-					return retryWorker();
+				if ( restarts < MAX_WORKER_RESTARTS ) {
+					if ( verbose ) {
+						console.log(
+							`Worker ${ worker.id } not acknowledged after ${
+								ACKNOWLEDGE_WORKER_TIMEOUT / 1000
+							}s.`
+						);
+					}
+					return retryWorker().then( resolve, reject );
 				}
+				await cleanupWorker( reportId, verbose );
 				return reject(
 					new Error(
-						`Worker ${ worker.id } for test ${ reportId } timed out after ${ MAX_WORKER_RETRIES } retries.`
+						`Worker ${ worker.id } for test ${ reportId } timed out after ${ MAX_WORKER_RESTARTS } restarts.`
 					)
 				);
 			}
+
 			if ( verbose ) {
-				console.log( `\nRefreshing worker ${ worker.id } for test ${ reportId }...${ refreshes }` );
+				console.log(
+					`\nRefreshing worker ${ worker.id } for test ${ reportId }...${ refreshes }`
+				);
 			}
-			touchWorker( reportId );
-			await changeUrl( worker.id, url );
-		}, POLL_WORKER_TIMEOUT );
+
+			return refreshWorker();
+		}
+
+		function tick() {
+			setTimeout( checkWorker, POLL_WORKER_TIMEOUT );
+		}
+
+		checkWorker();
 	} );
 }

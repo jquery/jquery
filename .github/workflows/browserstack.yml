@@ -1,0 +1,50 @@
+name: Browserstack
+
+on:
+  push:
+    branches:
+      - 'migrate-test'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: browserstack
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+    strategy:
+      fail-fast: false
+      matrix:
+        browser:
+          # TODO: enable when QUnit updates from 2.20.0
+          # - 'IE_11.0'
+          - 'Safari_17.0'
+          - 'Safari_16.5'
+          - 'Chrome_120.0'
+          - 'Chrome_119.0'
+          - 'Edge_120.0'
+          - 'Edge_119.0'
+          - 'Firefox_121.0'
+          - 'Firefox_120.0'
+          - 'Firefox_115.0'
+          - '__iOS_17'
+          - '__iOS_16'
+          - '__iOS_15'
+          - 'Opera_106.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build jQuery
+        run: npm run build:all
+
+      - name: Pretest script
+        run: npm run pretest
+
+      - name: Run tests
+        run: npm run test:unit -- -v --browserstack "${{ matrix.browser }}"

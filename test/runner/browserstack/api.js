@@ -37,7 +37,7 @@ async function fetchAPI( path, options = {}, versioned = true ) {
 		init
 	);
 	if ( !response.ok ) {
-		console.log( `${ init.method } ${ path }`, response.status, response.statusText );
+		console.log( `\n${ init.method } ${ path }`, response.status, response.statusText );
 		throw new Error( `Error fetching ${ path }` );
 	}
 	return response.json();
@@ -88,6 +88,14 @@ function sortBrowsers( a, b ) {
 	if ( a.browser > b.browser ) {
 		return 1;
 	}
+	const browserComparison = compareVersionNumbers( a.browser_version, b.browser_version );
+	if ( browserComparison ) {
+		return browserComparison;
+	}
+	const deviceComparison = compareVersionNumbers( a.device, b.device );
+	if ( deviceComparison ) {
+		return deviceComparison;
+	}
 	if ( a.os < b.os ) {
 		return -1;
 	}
@@ -97,14 +105,6 @@ function sortBrowsers( a, b ) {
 	const osComparison = compareVersionNumbers( a.os_version, b.os_version );
 	if ( osComparison ) {
 		return osComparison;
-	}
-	const browserComparison = compareVersionNumbers( a.browser_version, b.browser_version );
-	if ( browserComparison ) {
-		return browserComparison;
-	}
-	const deviceComparison = compareVersionNumbers( a.device, b.device );
-	if ( deviceComparison ) {
-		return deviceComparison;
 	}
 	return 0;
 }
@@ -237,7 +237,12 @@ export function changeUrl( id, url ) {
  */
 export async function stopWorkers() {
 	const workers = await getWorkers();
-	await Promise.all( workers.map( ( worker ) => deleteWorker( worker.id, true ) ) );
+
+	// Run each request on its own
+	// to avoid connect timeout errors.
+	for ( const worker of workers ) {
+		await deleteWorker( worker.id, true );
+	}
 }
 
 /**
@@ -251,10 +256,12 @@ export function getPlan() {
 }
 
 export async function getMaxSessions() {
-	const plan = await getPlan();
+	const [ plan, workers ] = await Promise.all( [
+		getPlan(),
+		getWorkers()
+	] );
 	return (
 		plan.parallel_sessions_max_allowed -
-		plan.parallel_sessions_running -
-		plan.queued_sessions
+		workers.length
 	);
 }
