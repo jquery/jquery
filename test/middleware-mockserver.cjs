@@ -83,9 +83,7 @@ const mocks = {
 		if ( resp.set ) {
 			resp.set( headers );
 		} else {
-			for ( const key in headers ) {
-				resp.writeHead( 200, { [ key ]: headers[ key ] } );
-			}
+			resp.writeHead( 200, headers );
 		}
 
 		if ( req.query.callback ) {
@@ -105,12 +103,14 @@ const mocks = {
 		);
 	},
 	json: function( req, resp ) {
+		const headers = {};
 		if ( req.query.header ) {
-			resp.writeHead( 200, { "content-type": "application/json" } );
+			headers[ "content-type" ] = "application/json";
 		}
 		if ( req.query.cors ) {
-			resp.writeHead( 200, { "access-control-allow-origin": "*" } );
+			headers[ "access-control-allow-origin" ] = "*";
 		}
+		resp.writeHead( 200, headers );
 		if ( req.query.array ) {
 			resp.end( JSON.stringify(
 				[ { name: "John", age: 21 }, { name: "Peter", age: 25 } ]
