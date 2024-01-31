@@ -51,7 +51,7 @@ module.exports = function( Release ) {
 		 * @param {Function} callback
 		 */
 		generateArtifacts: function( callback ) {
-			Release.exec( "npx grunt" );
+			Release.exec( "npm run build:all" );
 
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
