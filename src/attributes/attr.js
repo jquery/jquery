@@ -108,16 +108,9 @@ jQuery.each( (
 ).split( " " ), function( _i, name ) {
 	jQuery.attrHooks[ name ] = {
 		get: function( elem ) {
-			var ret,
-				isXML = jQuery.isXMLDoc( elem ),
-				lowercaseName = name.toLowerCase();
-
-			if ( !isXML ) {
-				ret = elem.getAttribute( name ) != null ?
-					lowercaseName :
-					null;
-			}
-			return ret;
+			return elem.getAttribute( name ) != null ?
+				name.toLowerCase() :
+				null;
 		},
 
 		set: function( elem, value, name ) {
