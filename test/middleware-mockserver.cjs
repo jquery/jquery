@@ -80,11 +80,7 @@ const mocks = {
 			headers[ "access-control-allow-origin" ] = "*";
 		}
 
-		if ( resp.set ) {
-			resp.set( headers );
-		} else {
-			resp.writeHead( 200, headers );
-		}
+		resp.writeHead( 200, headers );
 
 		if ( req.query.callback ) {
 			resp.end( `${ cleanCallback( req.query.callback ) }(${ JSON.stringify( {
