@@ -15,7 +15,11 @@ module.exports = function( Release, files, complete ) {
 	const extras = [
 		"src",
 		"LICENSE.txt",
-		"AUTHORS.txt"
+		"AUTHORS.txt",
+		"dist/package.json",
+		"dist-module/package.json",
+		"dist-module/jquery.node-module-wrapper.js",
+		"dist-module/jquery.node-module-wrapper.slim.js"
 	];
 
 	/**
@@ -65,9 +69,6 @@ module.exports = function( Release, files, complete ) {
 	 * Copy necessary files over to the dist repo
 	 */
 	async function copy() {
-
-		// Copy dist files
-		const distFolder = `${ Release.dir.dist }/dist`;
 		const readme = await fs.readFile(
 			`${ Release.dir.repo }/build/fixtures/README.md`, "utf8" );
 		const rmIgnore = [ ...files, "node_modules" ]
@@ -86,14 +87,24 @@ module.exports = function( Release, files, complete ) {
 		// Remove extraneous files before copy
 		shell.rm( "-rf", `${ Release.dir.dist }/**/*` );
 
-		shell.mkdir( "-p", distFolder );
+		// Copy dist files
+		shell.mkdir( "-p", `${ Release.dir.dist }/dist` );
+		shell.mkdir( "-p", `${ Release.dir.dist }/dist-module` );
 		files.forEach( function( file ) {
-			shell.cp( "-f", `${ Release.dir.repo }/${ file }`, distFolder );
+			shell.cp(
+				"-f",
+				`${ Release.dir.repo }/${ file }`,
+				`${ Release.dir.dist }/${ file }`
+			);
 		} );
 
 		// Copy other files
 		extras.forEach( function( file ) {
-			shell.cp( "-rf", `${ Release.dir.repo }/${ file }`, Release.dir.dist );
+			shell.cp(
+				"-rf",
+				`${ Release.dir.repo }/${ file }`,
+				`${ Release.dir.dist }/${ file }`
+			);
 		} );
 
 		// Remove the wrapper & the ESLint config from the dist repo
