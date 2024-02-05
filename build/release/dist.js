@@ -101,6 +101,8 @@ module.exports = function( Release, files, complete ) {
 		shell.rm( "-f", `${ Release.dir.dist }/src/.eslintrc.json` );
 
 		// Write package.json
+		// Remove scripts and other superfluous properties,
+		// especially the prepare script, which fails on the dist repo
 		const packageJson = Object.assign( {}, pkg );
 		delete packageJson.scripts;
 		delete packageJson.devDependencies;
