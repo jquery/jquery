@@ -37,6 +37,9 @@ module.exports = function( Release ) {
 		npmPublish: true,
 		issueTracker: "github",
 
+		// Update cdn location to versioned files
+		cdnPublish: "dist/cdn/versioned",
+
 		/**
 		 * Set the version in the src folder for distributing ES modules.
 		 */
