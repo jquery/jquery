@@ -15,8 +15,7 @@ module.exports = function( Release, files, complete ) {
 	const extras = [
 		"src",
 		"LICENSE.txt",
-		"AUTHORS.txt",
-		"package.json"
+		"AUTHORS.txt"
 	];
 
 	/**
@@ -100,6 +99,17 @@ module.exports = function( Release, files, complete ) {
 		// Remove the wrapper & the ESLint config from the dist repo
 		shell.rm( "-f", `${ Release.dir.dist }/src/wrapper.js` );
 		shell.rm( "-f", `${ Release.dir.dist }/src/.eslintrc.json` );
+
+		// Write package.json
+		const packageJson = Object.assign( {}, pkg );
+		delete packageJson.scripts;
+		delete packageJson.devDependencies;
+		delete packageJson.dependencies;
+		delete packageJson.commitplease;
+		await fs.writeFile(
+			`${ Release.dir.dist }/package.json`,
+			JSON.stringify( packageJson, null, 2 )
+		);
 
 		// Write generated bower file
 		await fs.writeFile( `${ Release.dir.dist }/bower.json`, generateBower() );
