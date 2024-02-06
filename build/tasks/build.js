@@ -320,7 +320,9 @@ async function build( {
 	await minify( { filename, dir } );
 }
 
-async function buildDefaultFiles( { version } = {} ) {
+async function buildDefaultFiles( {
+	version = process.env.VERSION
+} = {} ) {
 	await Promise.all( [
 		build( { version } ),
 		build( { filename: "jquery.slim.js", slim: true, version } )

@@ -18,6 +18,7 @@ module.exports = function( Release ) {
 	];
 	const cdn = require( "./release/cdn" );
 	const dist = require( "./release/dist" );
+	const { buildDefaultFiles } = require( "./tasks/build" );
 
 	const npmTags = Release.npmTags;
 
@@ -41,8 +42,8 @@ module.exports = function( Release ) {
 		 * committed before creating the tag.
 		 * @param {Function} callback
 		 */
-		generateArtifacts: function( callback ) {
-			Release.exec( "npm run build:all" );
+		generateArtifacts: async function( callback ) {
+			await buildDefaultFiles( { version: Release.newVersion } );
 
 			cdn.makeReleaseCopies( Release );
 			Release._setSrcVersion();
