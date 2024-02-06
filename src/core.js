@@ -13,7 +13,7 @@ import { support } from "./var/support.js";
 import { isArrayLike } from "./core/isArrayLike.js";
 import { DOMEval } from "./core/DOMEval.js";
 
-var version = "@VERSION",
+var version = "4.0.0-beta",
 
 	rhtmlSuffix = /HTML$/i,
 

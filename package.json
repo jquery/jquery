@@ -2,7 +2,7 @@
   "name": "jquery",
   "title": "jQuery",
   "description": "JavaScript library for DOM operations",
-  "version": "4.0.0-pre",
+  "version": "4.0.0-beta",
   "type": "module",
   "exports": {
     ".": {
@@ -68,7 +68,7 @@
   "homepage": "https://jquery.com",
   "author": {
     "name": "OpenJS Foundation and other contributors",
-    "url": "https://github.com/jquery/jquery/blob/main/AUTHORS.txt"
+    "url": "https://github.com/jquery/jquery/blob/4.0.0-beta/AUTHORS.txt"
   },
   "repository": {
     "type": "git",
