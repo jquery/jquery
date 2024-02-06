@@ -119,6 +119,7 @@ module.exports = function( Release, files, complete ) {
 		delete packageJson.devDependencies;
 		delete packageJson.dependencies;
 		delete packageJson.commitplease;
+		packageJson.version = Release.newVersion;
 		await fs.writeFile(
 			`${ Release.dir.dist }/package.json`,
 			JSON.stringify( packageJson, null, 2 )

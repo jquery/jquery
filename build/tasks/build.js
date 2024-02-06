@@ -352,7 +352,10 @@ async function build( {
 	}
 }
 
-async function buildDefaultFiles( { version, watch } = {} ) {
+async function buildDefaultFiles( {
+	version = process.env.VERSION,
+	watch
+} = {} ) {
 	await Promise.all( [
 		build( { version, watch } ),
 		build( { filename: "jquery.slim.js", slim: true, version, watch } ),
