@@ -9,8 +9,8 @@
       "node": {
         "module": "./dist-module/jquery.module.js",
         "import": "./dist-module/jquery.node-module-wrapper.js",
-        "require": "./dist/jquery.js"
       },
+      "require": "./dist/jquery.js"
       "production": "./dist-module/jquery.module.min.js",
       "development": "./dist-module/jquery.module.js",
       "script": "./dist/jquery.min.js",
@@ -20,8 +20,8 @@
       "node": {
         "module": "./dist-module/jquery.slim.module.js",
         "import": "./dist-module/jquery.node-module-wrapper.slim.js",
-        "require": "./dist/jquery.slim.js"
       },
+      "require": "./dist/jquery.slim.js"
       "production": "./dist-module/jquery.slim.module.min.js",
       "development": "./dist-module/jquery.slim.module.js",
       "script": "./dist/jquery.slim.min.js",
