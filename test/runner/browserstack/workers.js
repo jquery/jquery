@@ -53,6 +53,7 @@ export function retryTest( reportId, retries ) {
 			return true;
 		}
 	}
+	return false;
 }
 
 export async function cleanupAllWorkers( verbose ) {

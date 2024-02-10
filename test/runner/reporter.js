@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { getBrowserString } from "../lib/getBrowserString.js";
-import { prettyMs } from "../lib/prettyMs.js";
+import { getBrowserString } from "./lib/getBrowserString.js";
+import { prettyMs } from "./lib/prettyMs.js";
 
 export function reportTest( test, reportId, { browser, headless } ) {
 	if ( test.status === "passed" ) {
@@ -50,5 +50,5 @@ export function reportEnd( result, reportId, { browser, headless, modules } ) {
 			`${ chalk.green( result.testCounts.total ) } passed. ` +
 			`${ chalk.gray( result.testCounts.skipped ) } skipped.`
 	);
-	return result.testCounts.failed || 0;
+	return result.testCounts;
 }

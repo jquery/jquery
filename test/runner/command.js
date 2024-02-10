@@ -27,7 +27,8 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description:
 			"Run tests in a specific browser." +
 			"Pass multiple browsers by repeating the option." +
-			"If using browserstack, specify browsers using --browserstack.",
+			"If using browserstack, specify browsers using --browserstack." +
+			"Only the basic module is supported on jsdom.",
 		default: [ "chrome" ]
 	} )
 	.option( "headless", {
@@ -36,6 +37,11 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description:
 			"Run tests in headless mode. Cannot be used with --debug or --browserstack.",
 		conflicts: [ "debug", "browserstack" ]
+	} )
+	.option( "esm", {
+		alias: "esmodules",
+		type: "boolean",
+		description: "Run tests using jQuery's source, which is written with EcmaScript Modules."
 	} )
 	.option( "concurrency", {
 		alias: "c",
@@ -60,7 +66,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 		alias: "r",
 		type: "number",
 		description: "Number of times to retry failed tests.",
-		default: 3
+		default: 0
 	} )
 	.option( "no-isolate", {
 		type: "boolean",

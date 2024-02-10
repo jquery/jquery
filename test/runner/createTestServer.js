@@ -14,11 +14,21 @@ export async function createTestServer( report ) {
 		res.redirect( "/test/" );
 	} );
 
+	// Redirect to trailing slash
+	app.use( ( req, res, next ) => {
+		if ( req.path === "/test" ) {
+			const query = req.url.slice( req.path.length );
+			res.redirect( 301, `${ req.path }/${ query }` );
+		} else {
+			next();
+		}
+	} );
+
 	// Add a script tag to the index.html to load the QUnit listeners
-	app.use( /\/test(?:\/index.html)?\/?/, ( _req, res ) => {
+	app.use( /\/test(?:\/index.html)?\//, ( _req, res ) => {
 		res.send( indexHTML.replace(
 			"</head>",
-			"<script src=\"/test/runner/browserstack/listeners.js\"></script></head>"
+			"<script src=\"/test/runner/listeners.js\"></script></head>"
 		) );
 	} );
 

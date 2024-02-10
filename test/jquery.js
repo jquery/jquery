@@ -3,13 +3,8 @@
 	/* global loadTests: false */
 
 	var dynamicImportSource, config, src,
-		FILEPATH = "/test/jquery.js",
-		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
-		parentUrl = activeScript && activeScript.src ?
-			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
-			"../",
-		QUnit = window.QUnit,
-		require = window.require;
+		parentUrl = window.location.href.replace( /\/test\/.*$/, "/" ),
+		QUnit = window.QUnit;
 
 	function getQUnitConfig() {
 		var config = Object.create( null );

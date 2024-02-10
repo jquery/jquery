@@ -257,8 +257,7 @@ export default [
 	{
 		files: [
 			"build/**",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			globals: {
@@ -275,8 +274,7 @@ export default [
 	{
 		files: [
 			"build/**/*.js",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			sourceType: "commonjs"

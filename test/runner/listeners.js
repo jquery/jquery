@@ -56,16 +56,15 @@
 	}
 
 	function send( type, data ) {
+		var json = JSON.stringify( {
+			id: id,
+			type: type,
+			data: data ? decycle( data ) : undefined
+		} );
 		var request = new XMLHttpRequest();
-		request.open( "POST", "/api/report", true );
+		request.open( "POST", location.origin + "/api/report", true );
 		request.setRequestHeader( "Content-Type", "application/json" );
-		request.send(
-			JSON.stringify( {
-				id: id,
-				type: type,
-				data: data ? decycle( data ) : undefined
-			} )
-		);
+		request.send( json );
 	}
 
 	// Send acknowledgement to the server.

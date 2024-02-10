@@ -241,7 +241,13 @@ export async function stopWorkers() {
 	// Run each request on its own
 	// to avoid connect timeout errors.
 	for ( const worker of workers ) {
-		await deleteWorker( worker.id, true );
+		try {
+			await deleteWorker( worker.id, true );
+		} catch ( error ) {
+
+			// Log the error, but continue trying to remove workers.
+			console.error( error );
+		}
 	}
 }
 

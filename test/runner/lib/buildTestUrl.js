@@ -1,6 +1,6 @@
 import { generateHash } from "./generateHash.js";
 
-export function buildTestUrl( modules, { browserstack, port, reportId } ) {
+export function buildTestUrl( modules, { browserstack, esm, jsdom, port, reportId } ) {
 	if ( !port ) {
 		throw new Error( "No port specified." );
 	}
@@ -8,6 +8,14 @@ export function buildTestUrl( modules, { browserstack, port, reportId } ) {
 	const query = new URLSearchParams();
 	for ( const module of modules ) {
 		query.append( "moduleId", generateHash( module ) );
+	}
+
+	if ( esm ) {
+		query.append( "esmodules", "true" );
+	}
+
+	if ( jsdom ) {
+		query.append( "jsdom", "true" );
 	}
 
 	if ( reportId ) {

@@ -1,9 +1,9 @@
 import chalk from "chalk";
 import { asyncExitHook, gracefulExit } from "exit-hook";
-import { getLatestBrowser, getMaxSessions } from "./browserstack/api.js";
+import { getLatestBrowser } from "./browserstack/api.js";
 import { buildBrowserFromString } from "./browserstack/buildBrowserFromString.js";
 import { localTunnel } from "./browserstack/local.js";
-import { reportEnd, reportTest } from "./browserstack/reporter.js";
+import { reportEnd, reportTest } from "./reporter.js";
 import {
 	cleanupAllWorkers,
 	cleanupWorker,
@@ -16,6 +16,7 @@ import { buildTestUrl } from "./lib/buildTestUrl.js";
 import { generateHash, printModuleHashes } from "./lib/generateHash.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
 import { addRun, runFullQueue } from "./queue.js";
+import { cleanupAllJSDOM, cleanupJSDOM } from "./jsdom.js";
 
 /**
  * Run modules in parallel in different browser instances.
@@ -25,6 +26,7 @@ export async function run( {
 	browserstack,
 	concurrency,
 	debug,
+	esm,
 	headless,
 	isolate = true,
 	modules = [],
@@ -61,42 +63,46 @@ export async function run( {
 	const reports = {};
 	const app = await createTestServer( async( message ) => {
 		switch ( message.type ) {
-			case "testEnd":
-				touchWorker( message.id );
-				const errors = reportTest(
-					message.data,
-					message.id,
-					reports[ message.id ]
-				);
+			case "testEnd": {
+				const reportId = message.id;
+				touchWorker( reportId );
+				const errors = reportTest( message.data, reportId, reports[ reportId ] );
+				pendingErrors[ reportId ] ||= {};
 				if ( errors ) {
-					pendingErrors[ message.id ] ||= {};
-					pendingErrors[ message.id ].errors = errors;
+					pendingErrors[ reportId ][ message.data.name ] = errors;
+				} else {
+					delete pendingErrors[ reportId ][ message.data.name ];
 				}
 				break;
+			}
 			case "runEnd": {
-				const failedCount = reportEnd(
+				const reportId = message.id;
+				const report = reports[ reportId ];
+				const { failed, total } = reportEnd(
 					message.data,
 					message.id,
-					reports[ message.id ]
+					reports[ reportId ]
 				);
+				report.total = total;
 
-				if ( !failedCount ) {
-					if ( pendingErrors[ message.id ] ) {
-						console.warn( "Detected flaky tests:" );
-						console.warn(
-							chalk.italic( chalk.gray( pendingErrors[ message.id ].errors ) )
-						);
-						delete pendingErrors[ message.id ];
+				if ( failed ) {
+					if ( !retryTest( reportId, retries ) ) {
+						if ( debug ) {
+							debugWorker( reportId );
+						}
+						errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
 					}
-					await cleanupWorker( message.id, verbose );
-				} else if ( debug ) {
-					debugWorker( message.id );
-				} else if ( failedCount ) {
-					if ( !retryTest( message.id, retries ) ) {
-						errorMessages.push( pendingErrors[ message.id ].errors );
-						await cleanupWorker( message.id, verbose );
+				} else {
+					if ( Object.keys( pendingErrors[ reportId ] ).length ) {
+						console.warn( "Detected flaky tests:" );
+						for ( const [ , error ] in Object.entries( pendingErrors[ reportId ] ) ) {
+							console.warn( chalk.italic( chalk.gray( error ) ) );
+						}
+						delete pendingErrors[ reportId ];
 					}
 				}
+				await cleanupWorker( reportId, verbose );
+				cleanupJSDOM( reportId, verbose );
 				break;
 			}
 			case "ack": {
@@ -104,6 +110,10 @@ export async function run( {
 				if ( verbose ) {
 					console.log( `\nWorker for test ${ message.id } acknowledged.` );
 				}
+				break;
+			}
+			case "error": {
+				console.error( `Error in worker for test ${ message.id }`, message.data );
 				break;
 			}
 			default:
@@ -153,6 +163,7 @@ export async function run( {
 		}
 
 		await cleanupAllWorkers( verbose );
+		cleanupAllJSDOM( verbose );
 	}
 
 	asyncExitHook(
@@ -213,7 +224,13 @@ export async function run( {
 		const reportId = generateHash( modules.join( ":" ), fullBrowser );
 		reports[ reportId ] = { browser, headless, modules };
 
-		const url = buildTestUrl( modules, { browserstack, port, reportId } );
+		const url = buildTestUrl( modules, {
+			browserstack,
+			esm,
+			jsdom: browser.browser === "jsdom",
+			port,
+			reportId
+		} );
 
 		addRun( url, browser, {
 			debug,
@@ -240,14 +257,29 @@ export async function run( {
 		console.log( `Starting Run ${ runId }...` );
 		await runFullQueue( { browserstack, concurrency, verbose } );
 	} catch ( error ) {
+		console.error( error );
 		if ( !debug ) {
-			throw error;
-		} else {
-			console.error( error );
+			gracefulExit( 1 );
 		}
 	} finally {
 		console.log();
 		if ( errorMessages.length === 0 ) {
+			let stop = false;
+			for ( const report of Object.values( reports ) ) {
+				if ( !report.total ) {
+					stop = true;
+					console.error(
+						chalk.red(
+							`No tests were run for ${ report.modules.join(
+								", "
+							) } in ${ getBrowserString( report.browser ) }`
+						)
+					);
+				}
+			}
+			if ( stop ) {
+				return gracefulExit( 1 );
+			}
 			console.log( chalk.green( "All tests passed!" ) );
 
 			if ( !debug || browserstack ) {
@@ -260,8 +292,15 @@ export async function run( {
 			);
 
 			if ( debug ) {
-				console.log( "Leaving browsers with failures open for debugging." );
-				console.log( "View at https://automate.browserstack.com/dashboard/v2/" );
+				console.log();
+				if ( browserstack ) {
+					console.log( "Leaving browsers with failures open for debugging." );
+					console.log(
+						"View running sessions at https://automate.browserstack.com/dashboard/v2/"
+					);
+				} else {
+					console.log( "Leaving browsers open for debugging." );
+				}
 				console.log( "Press Ctrl+C to exit." );
 			} else {
 				gracefulExit( 1 );

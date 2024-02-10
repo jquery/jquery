@@ -3,7 +3,7 @@ name: Browserstack
 on:
   push:
     branches:
-      - 'migrate-test'
+      - migrate-test
 
 jobs:
   test:
@@ -12,10 +12,12 @@ jobs:
     env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      NODE_VERSION: 20.x
+    name: ${{ matrix.BROWSER }}
     strategy:
       fail-fast: false
       matrix:
-        browser:
+        BROWSER:
           # TODO: enable when QUnit updates from 2.20.0
           # - 'IE_11.0'
           - 'Safari_17.0'
@@ -32,13 +34,24 @@ jobs:
           - '__iOS_15'
           - 'Opera_106.0'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build jQuery
         run: npm run build:all
@@ -47,4 +60,4 @@ jobs:
         run: npm run pretest
 
       - name: Run tests
-        run: npm run test:unit -- -v --browserstack "${{ matrix.browser }}"
+        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --retries 3

@@ -7,6 +7,7 @@ import { getMaxSessions } from "./browserstack/api.js";
 import { runWorker } from "./browserstack/workers.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
 import { runSelenium } from "./selenium/runSelenium.js";
+import { runJSDOM } from "./jsdom.js";
 
 const queue = [];
 const promises = [];
@@ -70,9 +71,14 @@ export async function runFullQueue( {
 			continue;
 		}
 
-		const promise = browserstack ?
-			runWorker( url, browser, options ) :
-			runSelenium( url, browser, options );
+		let promise;
+		if ( browser.browser === "jsdom" ) {
+			promise = runJSDOM( url, options );
+		} else if ( browserstack ) {
+			promise = runWorker( url, browser, options );
+		} else {
+			promise = runSelenium( url, browser, options );
+		}
 
 		// Remove the promise from the list when it resolves
 		promise.then( () => {

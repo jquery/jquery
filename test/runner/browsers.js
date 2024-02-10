@@ -5,15 +5,16 @@ import { getBrowsers } from "./browserstack/api.js";
 
 export const browsers = [
 	"chrome",
-  "ie",
-  "firefox",
-  "edge",
-  "safari",
-  "opera",
-  "yandex",
-  "IE Mobile",
-  "Android Browser",
-  "Mobile Safari"
+	"ie",
+	"firefox",
+	"edge",
+	"safari",
+	"opera",
+	"yandex",
+	"IE Mobile",
+	"Android Browser",
+	"Mobile Safari",
+	"jsdom"
 ];
 
 // A function that can be used to update the above list.
@@ -25,5 +26,5 @@ export async function getAvailableBrowsers() {
 		}
 		return acc;
 	}, [] );
-	return available;
+	return available.concat( "jsdom" );
 }

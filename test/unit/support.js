@@ -90,10 +90,6 @@ testIframe(
 				cssHas: true,
 				reliableTrDimensions: true
 			},
-			webkit: {
-				cssHas: true,
-				reliableTrDimensions: true
-			},
 			firefox: {
 				cssHas: true,
 				reliableTrDimensions: false
@@ -135,18 +131,6 @@ testIframe(
 		expected = expectedMap.ios_15_4_16_3;
 	} else if ( /\b(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
-	} else if ( typeof URLSearchParams !== "undefined" &&
-
-		// `karma-webkit-launcher` adds `test_browser=Playwright` to the query string.
-		// The normal way of using user agent to detect the browser won't help
-		// as on macOS Playwright doesn't specify the `Safari` token but on Linux
-		// it does.
-		// See https://github.com/google/karma-webkit-launcher#detected-if-safari-or-playwright-is-used
-		new URLSearchParams( document.referrer || window.location.search ).get(
-			"test_browser"
-		) === "Playwright"
-	) {
-		expected = expectedMap.webkit;
 	} else if ( /\bversion\/(?:15|16\.[0123])(?:\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_16_3;
 	} else if ( /\bversion\/\d+(?:\.\d+)+ safari/i.test( userAgent ) ) {

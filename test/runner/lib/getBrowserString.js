@@ -3,9 +3,19 @@ const browserMap = {
 	edge: "Edge",
 	firefox: "Firefox",
 	ie: "IE",
+	jsdom: "JSDOM",
 	opera: "Opera",
 	safari: "Safari"
 };
+
+export function browserSupportsHeadless( browser ) {
+	browser = browser.toLowerCase();
+	return (
+		browser === "chrome" ||
+		browser === "firefox" ||
+		browser === "edge"
+	);
+}
 
 export function getBrowserString(
 	{
@@ -17,7 +27,9 @@ export function getBrowserString(
 	},
 	headless
 ) {
-	let str = browserMap[ browser.toLowerCase() ] || browser;
+	browser = browser.toLowerCase();
+	browser = browserMap[ browser ] || browser;
+	let str = browser;
 	if ( browserVersion ) {
 		str += ` ${ browserVersion }`;
 	}
@@ -30,7 +42,7 @@ export function getBrowserString(
 	if ( osVersion ) {
 		str += ` ${ osVersion }`;
 	}
-	if ( headless ) {
+	if ( headless && browserSupportsHeadless( browser ) ) {
 		str += " (headless)";
 	}
 	return str;

@@ -6,7 +6,8 @@ export async function runSelenium(
 	{ browser },
 	{
 		debug,
-		headless
+		headless,
+		verbose
 	} = {}
 ) {
 	if ( debug ) {
@@ -15,7 +16,7 @@ export async function runSelenium(
 		}
 	}
 
-	const driver = await createDriver( { browser, headless } );
+	const driver = await createDriver( { browserName: browser, headless, verbose } );
 
 	try {
 		await driver.get( url );
