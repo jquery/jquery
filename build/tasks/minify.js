@@ -28,8 +28,9 @@ module.exports = async function minify( { filename, dir, esm } ) {
 					" | (c) OpenJS Foundation and other contributors" +
 					" | jquery.org/license */\n"
 			},
-			mangle: true,
 			inlineSourcesContent: false,
+			mangle: true,
+			module: esm,
 			sourceMap: true
 		}
 	);
