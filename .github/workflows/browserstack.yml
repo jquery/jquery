@@ -18,20 +18,20 @@ jobs:
       fail-fast: false
       matrix:
         BROWSER:
-          - 'IE_11.0'
-          - 'Safari_17.0'
-          - 'Safari_16.5'
-          - 'Chrome_120.0'
-          - 'Chrome_119.0'
-          - 'Edge_120.0'
-          - 'Edge_119.0'
-          - 'Firefox_121.0'
-          - 'Firefox_120.0'
-          - 'Firefox_115.0'
+          - 'IE_11'
+          - 'Safari_17'
+          - 'Safari_16'
+          - 'Chrome_120'
+          - 'Chrome_119'
+          - 'Edge_120'
+          - 'Edge_119'
+          - 'Firefox_121'
+          - 'Firefox_120'
+          - 'Firefox_115'
           - '__iOS_17'
           - '__iOS_16'
           - '__iOS_15'
-          - 'Opera_106.0'
+          - 'Opera_106'
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1

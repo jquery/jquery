@@ -118,6 +118,14 @@ export async function getBrowsers( flat ) {
 	return browsers.sort( sortBrowsers );
 }
 
+function matchVersion( browserVersion, version ) {
+	if ( !version ) {
+		return false;
+	}
+	const regex = new RegExp( `^${ version.replace( /\./g, "\\." ) }\\b`, "i" );
+	return regex.test( browserVersion );
+}
+
 export async function filterBrowsers( filter ) {
 	const browsers = await getBrowsers( true );
 	if ( !filter ) {
@@ -132,8 +140,7 @@ export async function filterBrowsers( filter ) {
 	return browsers.filter( ( browser ) => {
 		return (
 			( !filterBrowser || filterBrowser === browser.browser.toLowerCase() ) &&
-			( !filterVersion ||
-				filterVersion === ( browser.browser_version || "" ).toLowerCase() ) &&
+			( !filterVersion || matchVersion( browser.browser_version, filterVersion ) ) &&
 			( !filterOs || filterOs === browser.os.toLowerCase() ) &&
 			( !filterOsVersion || filterOsVersion === browser.os_version.toLowerCase() ) &&
 			( !filterDevice || filterDevice === ( browser.device || "" ).toLowerCase() )
