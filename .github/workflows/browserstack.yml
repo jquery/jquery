@@ -3,7 +3,7 @@ name: Browserstack
 on:
   push:
     branches:
-      - migrate-test
+      - main
 
 jobs:
   test:
@@ -14,6 +14,8 @@ jobs:
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
       NODE_VERSION: 20.x
     name: ${{ matrix.BROWSER }}
+    concurrency:
+      group: ${{ github.workflow }}
     strategy:
       fail-fast: false
       matrix:
