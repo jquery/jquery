@@ -3,7 +3,7 @@
 	/* global loadTests: false */
 
 	var dynamicImportSource, config, src,
-		parentUrl = window.location.href.replace( /\/test\/.*$/, "/" ),
+		parentUrl = window.location.origin,
 		QUnit = window.QUnit;
 
 	function getQUnitConfig() {
@@ -53,7 +53,7 @@
 		// IE doesn't support the dynamic import syntax so it would crash
 		// with a SyntaxError here.
 		dynamicImportSource = "" +
-			"import( `${ parentUrl }src/jquery.js` )\n" +
+			"import( `${ parentUrl }/src/jquery.js` )\n" +
 			"	.then( ( { jQuery } ) => {\n" +
 			"		window.jQuery = jQuery;\n" +
 			"		if ( typeof loadTests === \"function\" ) {\n" +
@@ -70,7 +70,7 @@
 
 	// Otherwise, load synchronously
 	} else {
-		document.write( "<script id='jquery-js' nonce='jquery+hardcoded+nonce' src='" + parentUrl + src + "'><\x2Fscript>" );
+		document.write( "<script id='jquery-js' nonce='jquery+hardcoded+nonce' src='" + parentUrl + "/" + src + "'><\x2Fscript>" );
 	}
 
 } )();

@@ -37,7 +37,11 @@ async function fetchAPI( path, options = {}, versioned = true ) {
 		init
 	);
 	if ( !response.ok ) {
-		console.log( `\n${ init.method } ${ path }`, response.status, response.statusText );
+		console.log(
+			`\n${ init.method } ${ path }`,
+			response.status,
+			response.statusText
+		);
 		throw new Error( `Error fetching ${ path }` );
 	}
 	return response.json();
@@ -88,7 +92,10 @@ function sortBrowsers( a, b ) {
 	if ( a.browser > b.browser ) {
 		return 1;
 	}
-	const browserComparison = compareVersionNumbers( a.browser_version, b.browser_version );
+	const browserComparison = compareVersionNumbers(
+		a.browser_version,
+		b.browser_version
+	);
 	if ( browserComparison ) {
 		return browserComparison;
 	}
@@ -122,7 +129,10 @@ function matchVersion( browserVersion, version ) {
 	if ( !version ) {
 		return false;
 	}
-	const regex = new RegExp( `^${ version.replace( /\./g, "\\." ) }\\b`, "i" );
+	const regex = new RegExp(
+		`^${ version.replace( /\\/g, "\\\\" ).replace( /\./g, "\\." ) }\\b`,
+		"i"
+	);
 	return regex.test( browserVersion );
 }
 
@@ -140,9 +150,11 @@ export async function filterBrowsers( filter ) {
 	return browsers.filter( ( browser ) => {
 		return (
 			( !filterBrowser || filterBrowser === browser.browser.toLowerCase() ) &&
-			( !filterVersion || matchVersion( browser.browser_version, filterVersion ) ) &&
+			( !filterVersion ||
+				matchVersion( browser.browser_version, filterVersion ) ) &&
 			( !filterOs || filterOs === browser.os.toLowerCase() ) &&
-			( !filterOsVersion || filterOsVersion === browser.os_version.toLowerCase() ) &&
+			( !filterOsVersion ||
+				filterOsVersion === browser.os_version.toLowerCase() ) &&
 			( !filterDevice || filterDevice === ( browser.device || "" ).toLowerCase() )
 		);
 	} );
@@ -269,12 +281,6 @@ export function getPlan() {
 }
 
 export async function getMaxSessions() {
-	const [ plan, workers ] = await Promise.all( [
-		getPlan(),
-		getWorkers()
-	] );
-	return (
-		plan.parallel_sessions_max_allowed -
-		workers.length
-	);
+	const [ plan, workers ] = await Promise.all( [ getPlan(), getWorkers() ] );
+	return plan.parallel_sessions_max_allowed - workers.length;
 }

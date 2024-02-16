@@ -112,10 +112,6 @@ export async function run( {
 				}
 				break;
 			}
-			case "error": {
-				console.error( `Error in worker for test ${ message.id }`, message.data );
-				break;
-			}
 			default:
 				console.warn( "Received unknown message type:", message.type );
 		}
