@@ -18,8 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         BROWSER:
-          # TODO: enable when QUnit updates from 2.20.0
-          # - 'IE_11.0'
+          - 'IE_11.0'
           - 'Safari_17.0'
           - 'Safari_16.5'
           - 'Chrome_120.0'

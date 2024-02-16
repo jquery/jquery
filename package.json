@@ -116,7 +116,7 @@
     "native-promise-only": "0.8.1",
     "promises-aplus-tests": "2.1.2",
     "q": "1.5.1",
-    "qunit": "2.20.0",
+    "qunit": "2.20.1",
     "raw-body": "2.5.2",
     "requirejs": "2.3.6",
     "rollup": "4.11.0",
