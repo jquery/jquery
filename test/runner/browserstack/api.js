@@ -99,10 +99,6 @@ function sortBrowsers( a, b ) {
 	if ( browserComparison ) {
 		return browserComparison;
 	}
-	const deviceComparison = compareVersionNumbers( a.device, b.device );
-	if ( deviceComparison ) {
-		return deviceComparison;
-	}
 	if ( a.os < b.os ) {
 		return -1;
 	}
@@ -112,6 +108,10 @@ function sortBrowsers( a, b ) {
 	const osComparison = compareVersionNumbers( a.os_version, b.os_version );
 	if ( osComparison ) {
 		return osComparison;
+	}
+	const deviceComparison = compareVersionNumbers( a.device, b.device );
+	if ( deviceComparison ) {
+		return deviceComparison;
 	}
 	return 0;
 }
