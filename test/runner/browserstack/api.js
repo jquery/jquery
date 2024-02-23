@@ -14,6 +14,7 @@ const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 // iOS has null for version numbers,
 // and we do not need a similar check for OS versions.
 const rfinalVersion = /(?:^[0-9\.]+$)|(?:^null$)/;
+
 const rnonDigits = /(?:[^\d\.]+)|(?:20\d{2})/g;
 
 async function fetchAPI( path, options = {}, versioned = true ) {
