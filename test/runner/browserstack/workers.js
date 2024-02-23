@@ -2,7 +2,7 @@ import chalk from "chalk";
 import { getBrowserString } from "../lib/getBrowserString.js";
 import { changeUrl, createWorker, deleteWorker, getWorker } from "./api.js";
 
-const workers = {};
+const workers = Object.create( null );
 
 // Acknowledge the worker within the time limit.
 // BrowserStack can take around 3min spinning up
@@ -47,7 +47,8 @@ export function retryTest( reportId, retries ) {
 	const worker = workers[ reportId ];
 	if ( worker ) {
 		worker.retries ||= 0;
-		if ( ++worker.retries <= retries ) {
+		worker.retries++;
+		if ( worker.retries <= retries ) {
 			worker.retry = true;
 			console.log( `\nRetrying test ${ reportId }...${ worker.retries }` );
 			return true;
@@ -106,9 +107,6 @@ async function waitForAck( id, verbose ) {
 	} );
 }
 
-/**
- * All arguments are required or the request will fail
- */
 export async function runWorker(
 	url,
 	browser,
@@ -234,7 +232,9 @@ export async function runWorker(
 				return tick();
 			}
 
-			if ( refreshes++ >= MAX_WORKER_REFRESHES ) {
+			refreshes++;
+
+			if ( refreshes >= MAX_WORKER_REFRESHES ) {
 				if ( restarts < MAX_WORKER_RESTARTS ) {
 					if ( verbose ) {
 						console.log(

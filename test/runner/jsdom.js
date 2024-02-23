@@ -2,7 +2,7 @@ import jsdom from "jsdom";
 
 const { JSDOM } = jsdom;
 
-const windows = {};
+const windows = Object.create( null );
 
 export async function runJSDOM( url, { reportId, verbose } ) {
 	const virtualConsole = new jsdom.VirtualConsole();

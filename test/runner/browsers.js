@@ -19,12 +19,7 @@ export const browsers = [
 
 // A function that can be used to update the above list.
 export async function getAvailableBrowsers() {
-	const browsers = await getBrowsers( true );
-	const available = browsers.reduce( ( acc, browser ) => {
-		if ( !acc.includes( browser.browser ) ) {
-			acc.push( browser.browser );
-		}
-		return acc;
-	}, [] );
+	const browsers = await getBrowsers( { flat: true } );
+	const available = [ ...new Set( browsers.map( ( { browser } ) => browser ) ) ];
 	return available.concat( "jsdom" );
 }

@@ -117,7 +117,7 @@ function sortBrowsers( a, b ) {
 	return 0;
 }
 
-export async function getBrowsers( flat ) {
+export async function getBrowsers( { flat = false } = {} ) {
 	const query = new URLSearchParams();
 	if ( flat ) {
 		query.append( "flat", true );
@@ -138,15 +138,15 @@ function matchVersion( browserVersion, version ) {
 }
 
 export async function filterBrowsers( filter ) {
-	const browsers = await getBrowsers( true );
+	const browsers = await getBrowsers( { flat: true } );
 	if ( !filter ) {
 		return browsers;
 	}
-	const filterBrowser = ( filter.browser || "" ).toLowerCase();
-	const filterVersion = ( filter.browser_version || "" ).toLowerCase();
-	const filterOs = ( filter.os || "" ).toLowerCase();
-	const filterOsVersion = ( filter.os_version || "" ).toLowerCase();
-	const filterDevice = ( filter.device || "" ).toLowerCase();
+	const filterBrowser = ( filter.browser ?? "" ).toLowerCase();
+	const filterVersion = ( filter.browser_version ?? "" ).toLowerCase();
+	const filterOs = ( filter.os ?? "" ).toLowerCase();
+	const filterOsVersion = ( filter.os_version ?? "" ).toLowerCase();
+	const filterDevice = ( filter.device ?? "" ).toLowerCase();
 
 	return browsers.filter( ( browser ) => {
 		return (
@@ -179,6 +179,8 @@ export async function listBrowsers( filter ) {
 export async function getLatestBrowser( filter ) {
 	const browsers = await filterBrowsers( filter );
 
+	// The list is sorted in ascending order,
+	// so the last item is the latest.
 	return browsers.findLast( ( browser ) =>
 		rfinalVersion.test( browser.browser_version )
 	);
@@ -281,7 +283,7 @@ export function getPlan() {
 	return fetchAPI( "/automate/plan.json", {}, false );
 }
 
-export async function getMaxSessions() {
+export async function getAvailableSessions() {
 	const [ plan, workers ] = await Promise.all( [ getPlan(), getWorkers() ] );
 	return plan.parallel_sessions_max_allowed - workers.length;
 }

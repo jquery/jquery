@@ -3,7 +3,7 @@
 // and refills the queue when one promise resolves.
 
 import chalk from "chalk";
-import { getMaxSessions } from "./browserstack/api.js";
+import { getAvailableSessions } from "./browserstack/api.js";
 import { runWorker } from "./browserstack/workers.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
 import { runSelenium } from "./selenium/runSelenium.js";
@@ -52,7 +52,7 @@ export async function runFullQueue( {
 
 		const concurrency =
 			browserstack && !defaultConcurrency ?
-				await getMaxSessions() :
+				await getAvailableSessions() :
 				defaultConcurrency || MAX_CONCURRENCY;
 
 		if ( verbose ) {

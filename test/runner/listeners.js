@@ -1,5 +1,7 @@
 ( function() {
 
+	"use strict";
+
 	// Get the report ID from the URL.
 	var match = location.search.match( /reportId=([^&]+)/ );
 	if ( !match ) {

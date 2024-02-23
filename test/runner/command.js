@@ -27,7 +27,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description:
 			"Run tests in a specific browser." +
 			"Pass multiple browsers by repeating the option." +
-			"If using browserstack, specify browsers using --browserstack." +
+			"If using BrowserStack, specify browsers using --browserstack." +
 			"Only the basic module is supported on jsdom.",
 		default: [ "chrome" ]
 	} )
@@ -41,7 +41,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "esm", {
 		alias: "esmodules",
 		type: "boolean",
-		description: "Run tests using jQuery's source, which is written with EcmaScript Modules."
+		description: "Run tests using jQuery's source, which is written with ECMAScript Modules."
 	} )
 	.option( "concurrency", {
 		alias: "c",
@@ -54,7 +54,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 		alias: "d",
 		type: "boolean",
 		description:
-			"Leave the browser open for debugging. Cannot be used with --headless. ",
+			"Leave the browser open for debugging. Cannot be used with --headless.",
 		conflicts: [ "headless" ]
 	} )
 	.option( "verbose", {
@@ -77,7 +77,7 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description:
 			"Run tests in BrowserStack.\nRequires BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY environment variables.\n" +
 			"The value can be empty for the default configuration, or a string in the format of\n" +
-			"\"browser_[browserVersion | :device]_os_osVersion\".\n" +
+			"\"browser_[browserVersion | :device]_os_osVersion\" (see --list-browsers).\n" +
 			"Pass multiple browsers by repeating the option. The --browser option is ignored when --browserstack has a value.\n" +
 			"Otherwise, the --browser option will be used, with the latest version/device for that browser, on a matching OS."
 	} )

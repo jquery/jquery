@@ -35,6 +35,13 @@ export default [
 		}
 	},
 
+	{
+		files: [ "test/runner/listeners.js" ],
+		languageOptions: {
+			sourceType: "script"
+		}
+	},
+
 	// Source
 	{
 		files: [ "src/**" ],
