@@ -62,7 +62,7 @@
 			data: data ? decycle( data ) : undefined
 		} );
 		var request = new XMLHttpRequest();
-		request.open( "POST", location.origin + "/api/report", true );
+		request.open( "POST", "/api/report", true );
 		request.setRequestHeader( "Content-Type", "application/json" );
 		request.send( json );
 	}

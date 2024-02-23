@@ -1,12 +1,10 @@
 /* eslint no-multi-str: "off" */
 "use strict";
 
-var parentUrl = window.location.origin,
-
 	// baseURL is intentionally set to "data/" instead of "".
 	// This is not just for convenience (since most files are in data/)
 	// but also to ensure that urls without prefix fail.
-	baseURL = parentUrl + "/test/data/",
+	var baseURL = "/test/data/",
 	supportjQuery = this.jQuery,
 
 	// NOTE: keep it in sync with build/tasks/lib/slim-exclude.js
@@ -365,7 +363,7 @@ this.loadTests = function() {
 
 	// Directly load tests that need evaluation before DOMContentLoaded.
 	if ( !jsdom && ( !esmodules || document.readyState === "loading" ) ) {
-		document.write( "<script src='" + parentUrl + "/test/unit/ready.js'><\x2Fscript>" );
+		document.write( "<script src='/test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {
 			QUnit.skip( "jQuery ready tests skipped in async mode", function() {} );
@@ -373,7 +371,7 @@ this.loadTests = function() {
 	}
 
 	// Get testSubproject from testrunner first
-	require( [ parentUrl + "/test/data/testrunner.js" ], function() {
+	require( [ "/test/data/testrunner.js" ], function() {
 
 		// Says whether jQuery positional selector extensions are supported.
 		// A full selector engine is required to support them as they need to
@@ -423,7 +421,7 @@ this.loadTests = function() {
 
 			if ( dep ) {
 				if ( !QUnit.basicTests || i === 1 ) {
-					require( [ parentUrl + "/test/" + dep ], loadDep );
+					require( [ "/test/" + dep ], loadDep );
 
 				// When running basic tests, replace other modules with dummies to avoid overloading
 				// impaired clients.
