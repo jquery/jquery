@@ -95,7 +95,9 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "stop-workers", {
 		type: "boolean",
 		description:
-			"Stop all BrowserStack workers that may exist and exit. This can be useful if there was a problem and there are stray workers."
+			"WARNING: This will stop all BrowserStack workers that may exist and exit," +
+			"including any workers running from other projects.\n" +
+			"This can be used as a failsafe when there are too many stray workers."
 	} )
 	.option( "browserstack-plan", {
 		type: "boolean",
