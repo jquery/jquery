@@ -3,7 +3,7 @@ name: Browserstack
 on:
   push:
     branches:
-      - migrate-test
+      - main
 
 jobs:
   test:
