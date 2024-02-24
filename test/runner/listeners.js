@@ -10,7 +10,7 @@
 	var id = match[ 1 ];
 
 	// Adopted from https://github.com/douglascrockford/JSON-js
-	// Support: IE 11
+	// Support: IE 11+
 	// Using the replacer argument of JSON.stringify in IE has issues
 	// TODO: Replace this with a circular replacer + JSON.stringify + WeakSet
 	function decycle( object ) {
