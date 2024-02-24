@@ -17,7 +17,7 @@
 		var objects = [];
 
 		// The derez function recurses through the object, producing the deep copy.
-		return ( function derez( value ) {
+		function derez( value ) {
 			if (
 				typeof value === "object" &&
 				value !== null &&
@@ -54,7 +54,8 @@
 				}
 			}
 			return value;
-		} )( object );
+		}
+		return derez( object );
 	}
 
 	function send( type, data ) {
