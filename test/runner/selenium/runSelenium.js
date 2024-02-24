@@ -4,19 +4,17 @@ import createDriver from "./createDriver.js";
 export async function runSelenium(
 	url,
 	{ browser },
-	{
-		debug,
-		headless,
-		verbose
-	} = {}
+	{ debug, headless, verbose } = {}
 ) {
-	if ( debug ) {
-		if ( headless ) {
-			console.warn( chalk.italic( "Cannot debug in headless mode." ) );
-		}
+	if ( debug && headless ) {
+		throw new Error( "Cannot debug in headless mode." );
 	}
 
-	const driver = await createDriver( { browserName: browser, headless, verbose } );
+	const driver = await createDriver( {
+		browserName: browser,
+		headless,
+		verbose
+	} );
 
 	try {
 		await driver.get( url );

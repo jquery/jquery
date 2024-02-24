@@ -36,6 +36,10 @@ export function debugWorker( reportId ) {
 	}
 }
 
+/**
+ * Set the last time a request was
+ * received related to the worker.
+ */
 export function touchWorker( reportId ) {
 	const worker = workers[ reportId ];
 	if ( worker ) {

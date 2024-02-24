@@ -1829,17 +1829,15 @@ QUnit.module( "ajax", {
 			jQuery.each(
 				{
 					"If-Modified-Since": {
-						url: "mock.php?action=ims",
-						qunitMethod: "test"
+						url: "mock.php?action=ims"
 					},
 					"Etag": {
-						url: "mock.php?action=etag",
-						qunitMethod: "test"
+						url: "mock.php?action=etag"
 					}
 				},
 				function( type, data ) {
 					var url = baseURL + data.url + "&ts=" + ifModifiedNow++;
-					QUnit[ data.qunitMethod ]( "jQuery.ajax() - " + type +
+					QUnit.test( "jQuery.ajax() - " + type +
 							" support" + label, function( assert ) {
 						assert.expect( 4 );
 						var done = assert.async();

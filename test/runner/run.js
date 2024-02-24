@@ -18,11 +18,13 @@ import { getBrowserString } from "./lib/getBrowserString.js";
 import { addRun, runFullQueue } from "./queue.js";
 import { cleanupAllJSDOM, cleanupJSDOM } from "./jsdom.js";
 
+const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
+
 /**
  * Run modules in parallel in different browser instances.
  */
 export async function run( {
-	browsers,
+	browsers: browserNames,
 	browserstack,
 	concurrency,
 	debug,
@@ -33,8 +35,8 @@ export async function run( {
 	retries = 3,
 	verbose
 } = {} ) {
-	if ( !browsers || !browsers.length ) {
-		browsers = [ "chrome" ];
+	if ( !browserNames || !browserNames.length ) {
+		browserNames = [ "chrome" ];
 	}
 	if ( headless && debug ) {
 		throw new Error(
@@ -49,17 +51,17 @@ export async function run( {
 	const errorMessages = [];
 	const pendingErrors = {};
 
-	// Convert browsers to browser objects
-	browsers = browsers.map( ( b ) => ( { browser: b } ) );
+	// Convert browser names to browser objects
+	let browsers = browserNames.map( ( b ) => ( { browser: b } ) );
 
 	// A unique identifier for this run
 	const runId = generateHash(
-		`${ Date.now() }-${ modules.join( ":" ) }-${ browsers.join( ":" ) }`
+		`${ Date.now() }-${ modules.join( ":" ) }-${ browserNames.join( ":" ) }-${ browserstack.join( ":" ) }`
 	);
 
 	// Create the test app and
 	// hook it up to the reporter
-	const reports = {};
+	const reports = Object.create( null );
 	const app = await createTestServer( async( message ) => {
 		switch ( message.type ) {
 			case "testEnd": {
@@ -166,7 +168,7 @@ export async function run( {
 			await stopServer();
 			await cleanup();
 		},
-		{ wait: 60000 }
+		{ wait: EXIT_HOOK_WAIT_TIMEOUT }
 	);
 
 	// Start up BrowserStackLocal
@@ -181,7 +183,9 @@ export async function run( {
 			headless = false;
 		}
 
-		// Convert browserstack to browser objects
+		// Convert browserstack to browser objects.
+		// If browserstack is an empty array, fall back
+		// to the browsers array.
 		if ( browserstack.length ) {
 			browsers = browserstack.map( ( b ) => {
 				if ( !b ) {

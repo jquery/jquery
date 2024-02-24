@@ -4,6 +4,9 @@ import Edge from "selenium-webdriver/edge.js";
 import Firefox from "selenium-webdriver/firefox.js";
 import { browserSupportsHeadless } from "../lib/getBrowserString.js";
 
+// Set script timeout to 10min
+const DRIVER_SCRIPT_TIMEOUT = 1000 * 60 * 10;
+
 export default async function createDriver( { browserName, headless, verbose } ) {
 	const capabilities = Capabilities[ browserName ]();
 	const prefs = new logging.Preferences();
@@ -71,7 +74,7 @@ export default async function createDriver( { browserName, headless, verbose } )
 	}
 
 	// Increase script timeout to 10min
-	await driver.manage().setTimeouts( { script: 60000 * 10 } );
+	await driver.manage().setTimeouts( { script: DRIVER_SCRIPT_TIMEOUT } );
 
 	return driver;
 }
