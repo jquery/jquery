@@ -17,6 +17,7 @@ import { generateHash, printModuleHashes } from "./lib/generateHash.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
 import { addRun, runFullQueue } from "./queue.js";
 import { cleanupAllJSDOM, cleanupJSDOM } from "./jsdom.js";
+import { modules as allModules } from "./modules.js";
 
 const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
 
@@ -37,6 +38,9 @@ export async function run( {
 } = {} ) {
 	if ( !browserNames || !browserNames.length ) {
 		browserNames = [ "chrome" ];
+	}
+	if ( !modules.length ) {
+		modules = allModules;
 	}
 	if ( headless && debug ) {
 		throw new Error(

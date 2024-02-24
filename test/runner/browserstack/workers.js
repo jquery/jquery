@@ -114,7 +114,7 @@ async function waitForAck( id, verbose ) {
 export async function runWorker(
 	url,
 	browser,
-	{ reportId, runId, verbose },
+	{ modules, reportId, runId, verbose },
 	restarts = 0
 ) {
 	const worker = await createWorker( {
@@ -122,7 +122,7 @@ export async function runWorker(
 		url: encodeURI( url ),
 		project: "jquery",
 		build: `Run ${ runId }`,
-		name: `Test ${ reportId }`,
+		name: `${ modules.join( "," ) } (${ reportId })`,
 
 		// Set the max here, so that we can
 		// control the timeout

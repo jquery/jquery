@@ -115,6 +115,6 @@ if ( typeof argv.listBrowsers === "string" ) {
 	run( {
 		...argv,
 		browsers: argv.browser,
-		modules: argv.module && argv.module.length ? argv.module : modules
+		modules: argv.module
 	} );
 }
