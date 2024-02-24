@@ -5,9 +5,9 @@ import { changeUrl, createWorker, deleteWorker, getWorker } from "./api.js";
 const workers = Object.create( null );
 
 // Acknowledge the worker within the time limit.
-// BrowserStack can take around 3min spinning up
+// BrowserStack can take much longer spinning up
 // some browsers, such as iOS 15 Safari.
-const ACKNOWLEDGE_WORKER_TIMEOUT = 60 * 1000 * 5;
+const ACKNOWLEDGE_WORKER_TIMEOUT = 60 * 1000 * 8;
 const ACKNOWLEDGE_WORKER_INTERVAL = 1000;
 
 // No report after the time limit
