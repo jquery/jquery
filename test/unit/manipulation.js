@@ -2346,7 +2346,7 @@ testIframe(
 // Skip the the test if we are not in localhost but make sure we run
 // it in Karma.
 QUnit[
-	includesModule( "ajax" ) ?
+	includesModule( "ajax" ) && location.hostname === "localhost" ?
 		"test" :
 		"skip"
 ]( "jQuery.append with crossorigin attribute", function( assert ) {
