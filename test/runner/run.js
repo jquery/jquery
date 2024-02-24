@@ -54,8 +54,7 @@ export async function run( {
 
 	// A unique identifier for this run
 	const runId = generateHash(
-		`${ Date.now() }-${ modules.join( ":" ) }`,
-		browsers.join( ":" )
+		`${ Date.now() }-${ modules.join( ":" ) }-${ browsers.join( ":" ) }`
 	);
 
 	// Create the test app and
@@ -217,7 +216,7 @@ export async function run( {
 
 	function queueRun( modules, browser ) {
 		const fullBrowser = getBrowserString( browser, headless );
-		const reportId = generateHash( modules.join( ":" ), fullBrowser );
+		const reportId = generateHash( `${ modules.join( ":" ) } ${ fullBrowser }` );
 		reports[ reportId ] = { browser, headless, modules };
 
 		const url = buildTestUrl( modules, {

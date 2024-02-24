@@ -1,3 +1,14 @@
+import crypto from "node:crypto";
+
+export function generateHash( string ) {
+	const hash = crypto.createHash( "md5" );
+	hash.update( string );
+
+	// QUnit hashes are 8 characters long
+	// We use 10 characters to be more visually distinct
+	return hash.digest( "hex" ).slice( 0, 10 );
+}
+
 /**
  * A copy of the generate hash function from QUnit,
  * used to generate a hash for the module name.
@@ -7,7 +18,7 @@
  * the hash for each module before loading QUnit
  * in order to pass multiple moduleId parameters instead.
  */
-export function generateHash( module, browser ) {
+export function generateModuleId( module, browser ) {
 
 	// QUnit normally hashes the test name, but
 	// we've repurposed this function to generate
@@ -34,6 +45,6 @@ export function generateHash( module, browser ) {
 export function printModuleHashes( modules ) {
 	console.log( "Module hashes:" );
 	modules.forEach( ( module ) => {
-		console.log( `  ${ module }: ${ generateHash( module ) }` );
+		console.log( `  ${ module }: ${ generateModuleId( module ) }` );
 	} );
 }

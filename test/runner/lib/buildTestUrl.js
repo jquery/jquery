@@ -1,4 +1,4 @@
-import { generateHash } from "./generateHash.js";
+import { generateModuleId } from "./generateHash.js";
 
 export function buildTestUrl( modules, { browserstack, esm, jsdom, port, reportId } ) {
 	if ( !port ) {
@@ -7,7 +7,7 @@ export function buildTestUrl( modules, { browserstack, esm, jsdom, port, reportI
 
 	const query = new URLSearchParams();
 	for ( const module of modules ) {
-		query.append( "moduleId", generateHash( module ) );
+		query.append( "moduleId", generateModuleId( module ) );
 	}
 
 	if ( esm ) {
