@@ -1,4 +1,5 @@
+// Node.js is able to import from a CommonJS module in an ESM one.
 import jQuery from "../dist/jquery.js";
-const $ = jQuery;
-export { jQuery, $ };
+
+export { jQuery, jQuery as $ };
 export default jQuery;

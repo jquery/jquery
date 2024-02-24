@@ -5,8 +5,8 @@ const util = require( "node:util" );
 const exec = util.promisify( require( "node:child_process" ).exec );
 const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 
-const allowedLibraryTypes = [ "regular", "factory" ];
-const allowedSourceTypes = [ "commonjs", "module" ];
+const allowedLibraryTypes = new Set( [ "regular", "factory" ] );
+const allowedSourceTypes = new Set( [ "commonjs", "module", "dual" ] );
 
 if ( !verifyNodeVersion() ) {
 	return;
@@ -19,8 +19,8 @@ if ( !verifyNodeVersion() ) {
 // each other, e.g. so that they don't share the `require` cache.
 
 async function runTests( { libraryType, sourceType, module } ) {
-	if ( !allowedLibraryTypes.includes( libraryType ) ||
-			!allowedSourceTypes.includes( sourceType ) ) {
+	if ( !allowedLibraryTypes.has( libraryType ) ||
+			!allowedSourceTypes.has( sourceType ) ) {
 		throw new Error( `Incorrect libraryType or sourceType value; passed: ${
 			libraryType
 		} ${ sourceType } "${ module }"` );
@@ -127,6 +127,17 @@ async function runDefaultTests() {
 			libraryType: "factory",
 			sourceType: "module",
 			module: "./dist-module/jquery.factory.slim.module.js"
+		} ),
+
+		runTests( {
+			libraryType: "regular",
+			sourceType: "dual",
+			module: "jquery"
+		} ),
+		runTests( {
+			libraryType: "regular",
+			sourceType: "dual",
+			module: "jquery/slim"
 		} )
 	] );
 }
