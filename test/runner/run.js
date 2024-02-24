@@ -56,7 +56,9 @@ export async function run( {
 
 	// A unique identifier for this run
 	const runId = generateHash(
-		`${ Date.now() }-${ modules.join( ":" ) }-${ browserNames.join( ":" ) }-${ browserstack.join( ":" ) }`
+		`${ Date.now() }-${ modules.join( ":" ) }-${ ( browserstack || [] )
+			.concat( browserNames )
+			.join( ":" ) }`
 	);
 
 	// Create the test app and
