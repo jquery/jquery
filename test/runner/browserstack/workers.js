@@ -114,9 +114,10 @@ async function waitForAck( id, verbose ) {
 export async function runWorker(
 	url,
 	browser,
-	{ modules, reportId, runId, verbose },
+	options,
 	restarts = 0
 ) {
+	const { modules, reportId, runId, verbose } = options;
 	const worker = await createWorker( {
 		...browser,
 		url: encodeURI( url ),
@@ -150,7 +151,7 @@ export async function runWorker(
 		if ( verbose ) {
 			console.log( `Retrying worker for test ${ reportId }...${ restarts + 1 }` );
 		}
-		return runWorker( url, browser, { reportId, runId, verbose }, restarts + 1 );
+		return runWorker( url, browser, options, restarts + 1 );
 	}
 
 	// Wait for the worker to be acknowledged
