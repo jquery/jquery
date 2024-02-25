@@ -46,7 +46,7 @@
 				} else {
 
 					// If it is an object, replicate the object.
-					var nu = {};
+					var nu = Object.create( null );
 					Object.keys( value ).forEach( function( name ) {
 						nu[ name ] = derez( value[ name ] );
 					} );
