@@ -35,6 +35,28 @@ module.exports = [
 		}
 	},
 
+	{
+		files: [
+			"test/runner/**/*.js"
+		],
+		languageOptions: {
+			globals: {
+				...globals.node
+			},
+			sourceType: "module"
+		},
+		rules: {
+			...jqueryConfig.rules
+		}
+	},
+
+	{
+		files: [ "test/runner/listeners.js" ],
+		languageOptions: {
+			sourceType: "script"
+		}
+	},
+
 	// Source
 	{
 		files: [ "src/**" ],
@@ -120,7 +142,7 @@ module.exports = [
 			"test/**"
 		],
 		ignores: [
-			"test/data/jquery-1.9.1.js",
+			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",
@@ -214,8 +236,7 @@ module.exports = [
 	{
 		files: [
 			"build/**",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			globals: {
@@ -232,8 +253,7 @@ module.exports = [
 	{
 		files: [
 			"build/**/*.js",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			sourceType: "commonjs"

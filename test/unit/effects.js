@@ -690,15 +690,8 @@ QUnit.test( "stop()", function( assert ) {
 	this.clock.tick( 100 );
 } );
 
-// In IE9 inside testswarm this test doesn't work properly
 ( function() {
-	var type = "test";
-
-	if ( QUnit.isSwarm && /msie 9\.0/i.test( window.navigator.userAgent ) ) {
-		type = "skip";
-	}
-
-	QUnit[ type ]( "stop() - several in queue", function( assert ) {
+	QUnit.test( "stop() - several in queue", function( assert ) {
 		assert.expect( 5 );
 
 		var nw, $foo = jQuery( "#foo" );

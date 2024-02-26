@@ -307,16 +307,7 @@ QUnit.module( "ajax", {
 					assert.strictEqual( xhr.getResponseHeader( "List-Header" ), "Item 1, Item 2", "List header received" );
 				}
 
-				if ( isAndroid && QUnit.isSwarm ) {
-
-					// Support: Android 4.0-4.3 on BrowserStack only
-					// Android Browser versions provided by BrowserStack fail this test
-					// while locally fired emulators don't, even when they connect
-					// to TestSwarm. Just skip the test there to avoid a red build.
-					assert.ok( true, "BrowserStack's Android fails the \"prototype collision (constructor)\" test" );
-				} else {
-					assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
-				}
+				assert.strictEqual( xhr.getResponseHeader( "constructor" ), "prototype collision (constructor)", "constructor header received" );
 				assert.strictEqual( xhr.getResponseHeader( "__proto__" ), null, "Undefined __proto__ header not received" );
 			}
 		};
@@ -1698,23 +1689,15 @@ QUnit.module( "ajax", {
 			jQuery.each(
 				{
 					"If-Modified-Since": {
-						url: "mock.php?action=ims",
-						qunitMethod: "test"
+						url: "mock.php?action=ims"
 					},
 					"Etag": {
-						url: "mock.php?action=etag",
-
-						// Support: TestSwarm
-						// TestSwarm is now proxied via Cloudflare which cuts out
-						// headers relevant for ETag tests, failing them. We're still
-						// running those tests in Karma on Chrome & Firefox (including
-						// Firefox ESR).
-						qunitMethod: QUnit.isSwarm ? "skip" : "test"
+						url: "mock.php?action=etag"
 					}
 				},
 				function( type, data ) {
 					var url = baseURL + data.url + "&ts=" + ifModifiedNow++;
-					QUnit[ data.qunitMethod ]( "jQuery.ajax() - " + type +
+					QUnit.test( "jQuery.ajax() - " + type +
 							" support" + label, function( assert ) {
 						assert.expect( 4 );
 						var done = assert.async();

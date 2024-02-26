@@ -1,10 +1,10 @@
 "use strict";
 
 const { version } = require( "process" );
-const nodeV16OrNewer = !/^v1[0-5]\./.test( version );
+const nodeV18OrNewer = !/^v1[0-7]\./.test( version );
 
 module.exports = function verifyNodeVersion() {
-	if ( !nodeV16OrNewer ) {
+	if ( !nodeV18OrNewer ) {
 		console.log( "Old Node.js detected, task skipped..." );
 		return false;
 	}

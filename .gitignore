@@ -19,3 +19,7 @@ npm-debug.log*
 
 /test/data/core/jquery-iterability-transpiled.js
 /test/data/qunit-fixture.js
+
+# Ignore BrowserStack files
+local.log
+browserstack.err

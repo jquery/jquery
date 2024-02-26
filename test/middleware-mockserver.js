@@ -238,7 +238,7 @@ const mocks = {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
 			"Content-Security-Policy": "default-src 'self'; " +
-				"report-uri /base/test/data/mock.php?action=cspLog"
+				"report-uri /test/data/mock.php?action=cspLog"
 		} );
 		const body = fs.readFileSync( `${ __dirname }/data/csp.include.html` ).toString();
 		resp.end( body );
@@ -248,7 +248,7 @@ const mocks = {
 		resp.writeHead( 200, {
 			"Content-Type": "text/html",
 			"Content-Security-Policy": "script-src 'nonce-jquery+hardcoded+nonce'; " +
-				"report-uri /base/test/data/mock.php?action=cspLog"
+				"report-uri /test/data/mock.php?action=cspLog"
 		} );
 		const body = fs.readFileSync(
 			`${ __dirname }/data/csp-nonce${ testParam }.html` ).toString();
@@ -315,7 +315,7 @@ function MockserverMiddlewareFactory() {
 	 */
 	return function( req, resp, next ) {
 		const parsed = url.parse( req.url, /* parseQuery */ true );
-		let path = parsed.pathname.replace( /^\/base\//, "" );
+		let path = parsed.pathname;
 		const query = parsed.query;
 		const subReq = Object.assign( Object.create( req ), {
 			query: query,
