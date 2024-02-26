@@ -21,7 +21,8 @@ export default [
 			"test/node_smoke_tests/commonjs/**",
 			"test/node_smoke_tests/module/**",
 			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.cjs"
+			"test/middleware-mockserver.cjs",
+			"test/runner/**/*.js"
 		],
 		languageOptions: {
 			globals: {
@@ -31,6 +32,13 @@ export default [
 		rules: {
 			...jqueryConfig.rules,
 			strict: [ "error", "global" ]
+		}
+	},
+
+	{
+		files: [ "test/runner/listeners.js" ],
+		languageOptions: {
+			sourceType: "script"
 		}
 	},
 
@@ -161,7 +169,7 @@ export default [
 			"test/**"
 		],
 		ignores: [
-			"test/data/jquery-1.9.1.js",
+			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",
@@ -256,8 +264,7 @@ export default [
 	{
 		files: [
 			"build/**",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			globals: {
@@ -274,8 +281,7 @@ export default [
 	{
 		files: [
 			"build/**/*.js",
-			"test/data/testinit.js",
-			"test/data/testinit-jsdom.js"
+			"test/data/testinit.js"
 		],
 		languageOptions: {
 			sourceType: "commonjs"

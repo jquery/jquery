@@ -70,12 +70,6 @@ We *love* when people contribute back to the project by patching the bugs they f
 
 Create a fork of the jQuery repo on github at https://github.com/jquery/jquery
 
-Change directory to your web root directory, whatever that might be:
-
-```bash
-$ cd /path/to/your/www/root/
-```
-
 Clone your jQuery fork to work locally
 
 ```bash
@@ -100,16 +94,27 @@ Get in the habit of pulling in the "upstream" main to stay up to date as jQuery 
 $ git pull upstream main
 ```
 
-Run the build script
+Install the necessary dependencies
 
 ```bash
-$ npm run build
+$ npm install
 ```
 
-Now open the jQuery test suite in a browser at http://localhost/test. If there is a port, be sure to include it.
+Build all jQuery files
+
+```bash
+$ npm run build:all
+```
+
+Start a test server
+
+```bash
+$ npm run test:server
+```
+
+Now open the jQuery test suite in a browser at http://localhost:3000/test/.
 
 Success! You just built and tested jQuery!
-
 
 ### Test Suite Tips...
 
@@ -117,12 +122,19 @@ During the process of writing your patch, you will run the test suite MANY times
 
 Example:
 
-http://localhost/test/?module=css
+http://localhost:3000/test/?module=css
 
 This will only run the "css" module tests. This will significantly speed up your development and debugging.
 
 **ALWAYS RUN THE FULL SUITE BEFORE COMMITTING AND PUSHING A PATCH!**
 
+#### Change the test server port
+
+The default port for the test server is 3000. You can change the port by setting the `PORT` environment variable.
+
+```bash
+$ PORT=3001 npm run test:server
+```
 
 #### Loading changes on the test page
 
@@ -136,6 +148,29 @@ Alternatively, you can **load tests as ECMAScript modules** to avoid the need fo
 
 Click "Load as modules" after loading the test page.
 
+#### Running the test suite from the command line
+
+You can also run the test suite from the command line.
+
+First, prepare the tests:
+
+```bash
+$ npm run pretest
+```
+
+Make sure jQuery is built (`npm run build:all`) and run the tests:
+
+```bash
+$ npm run test:unit
+```
+
+This will run each module in its own browser instance and report the results in the terminal.
+
+View the full help for the test suite for more info on running the tests from the command line:
+
+```bash
+$ npm run test:unit -- --help
+```
 
 ### Repo organization
 

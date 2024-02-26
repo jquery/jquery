@@ -1,4 +1,4 @@
-name: CI
+name: Node
 
 on:
   pull_request:
@@ -9,43 +9,48 @@ permissions:
   contents: read # to fetch code (actions/checkout)
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
+    name: ${{ matrix.NPM_SCRIPT }} - ${{ matrix.NAME }} (${{ matrix.NODE_VERSION }})
     strategy:
       fail-fast: false
       matrix:
-        # Node.js 10 is required by jQuery infra
-        # Do not remove 16.x until jsdom tests are re-enabled on newer Node.js versions.
-        NODE_VERSION: [10.x, 16.x, 18.x, 20.x]
+        NAME: ["Node"]
+        NODE_VERSION: [18.x, 20.x]
         NPM_SCRIPT: ["test:browserless"]
         include:
-          - NAME: "Browser tests: full build, Chrome, Firefox & WebKit"
-            NODE_VERSION: "18.x"
+          - NAME: "Node"
+            NODE_VERSION: "20.x"
+            NPM_SCRIPT: "lint"
+          - NAME: "Chrome/Firefox"
+            NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:browser"
-            BROWSERS: "ChromeHeadless,FirefoxHeadless,WebkitHeadless"
-          - NAME: "Browser tests: slim build, Chrome"
-            NODE_VERSION: "18.x"
+          - NAME: "Chrome"
+            NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:slim"
-            BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: no-deprecated build, Chrome"
-            NODE_VERSION: "18.x"
+          - NAME: "Chrome"
+            NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:no-deprecated"
-            BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: selector-native build, Chrome"
-            NODE_VERSION: "18.x"
+          - NAME: "Chrome"
+            NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:selector-native"
-            BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: ES modules build, Chrome"
-            NODE_VERSION: "18.x"
-            NPM_SCRIPT: "test:esmodules"
-            BROWSERS: "ChromeHeadless"
-          - NAME: "Browser tests: full build, Firefox ESR"
-            NODE_VERSION: "18.x"
-            NPM_SCRIPT: "test:browser"
-            BROWSERS: "FirefoxHeadless"
+          - NAME: "Chrome"
+            NODE_VERSION: "20.x"
+            NPM_SCRIPT: "test:esm"
+          - NAME: "Firefox ESR"
+            NODE_VERSION: "20.x"
+            NPM_SCRIPT: "test:firefox"
+          - NAME: "Node 10 Build"
+            NODE_VERSION: "10.x"
+            NPM_SCRIPT: "build:main"
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Use Node.js ${{ matrix.NODE_VERSION }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{ matrix.NODE_VERSION }}
 
       - name: Cache
         uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
@@ -55,31 +60,49 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
-      - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4.0.1
-        with:
-          node-version: ${{ matrix.NODE_VERSION }}
-
       - name: Install firefox ESR
         run: |
-          export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest&lang=en-US&os=linux64'
+          export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64'
           wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
         if: contains(matrix.NAME, 'Firefox ESR')
 
       - name: Install dependencies
         run: npm install
 
-      - name: Install Playwright dependencies
-        run: npx playwright-webkit install-deps
-        if: matrix.NPM_SCRIPT == 'test:browser' && contains(matrix.BROWSERS, 'WebkitHeadless')
-
-      - name: Lint code
-        run: npm run build:all && npm run lint
-        if: matrix.NODE_VERSION == '18.x'
+      - name: Build All for Linting
+        run: npm run build:all
+        if: contains(matrix.NPM_SCRIPT, 'lint')
 
       - name: Run tests
-        env:
-          BROWSERS: ${{ matrix.BROWSERS }}
         run: |
           export PATH=${HOME}/firefox:$PATH
+          export FIREFOX_BIN=${HOME}/firefox/firefox
           npm run ${{ matrix.NPM_SCRIPT }}
+
+  safari:
+    runs-on: macos-latest
+    env:
+      NODE_VERSION: 20.x
+    name: test:safari - Safari
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm run test:safari
