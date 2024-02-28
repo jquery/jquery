@@ -98,6 +98,7 @@ export async function run( {
 							debugWorker( reportId );
 						}
 						errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
+						await cleanupWorker( reportId, verbose );
 					}
 				} else {
 					if ( Object.keys( pendingErrors[ reportId ] ).length ) {
@@ -107,8 +108,8 @@ export async function run( {
 						}
 						delete pendingErrors[ reportId ];
 					}
+					await cleanupWorker( reportId, verbose );
 				}
-				await cleanupWorker( reportId, verbose );
 				cleanupJSDOM( reportId, verbose );
 				break;
 			}

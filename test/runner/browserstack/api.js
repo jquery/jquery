@@ -14,6 +14,7 @@ const accessKey = process.env.BROWSERSTACK_ACCESS_KEY;
 // iOS has null for version numbers,
 // and we do not need a similar check for OS versions.
 const rfinalVersion = /(?:^[0-9\.]+$)|(?:^null$)/;
+const rlatest = /^latest-(\d+)$/;
 
 const rnonDigits = /(?:[^\d\.]+)|(?:20\d{2})/g;
 
@@ -137,6 +138,15 @@ function matchVersion( browserVersion, version ) {
 	return regex.test( browserVersion );
 }
 
+function findLatest( browsers ) {
+
+	// The list is sorted in ascending order,
+	// so the last item is the latest.
+	return browsers.findLast( ( browser ) =>
+		rfinalVersion.test( browser.browser_version )
+	);
+}
+
 export async function filterBrowsers( filter ) {
 	const browsers = await getBrowsers( { flat: true } );
 	if ( !filter ) {
@@ -148,16 +158,49 @@ export async function filterBrowsers( filter ) {
 	const filterOsVersion = ( filter.os_version ?? "" ).toLowerCase();
 	const filterDevice = ( filter.device ?? "" ).toLowerCase();
 
-	return browsers.filter( ( browser ) => {
+	const filteredWithoutVersion = browsers.filter( ( browser ) => {
 		return (
 			( !filterBrowser || filterBrowser === browser.browser.toLowerCase() ) &&
-			( !filterVersion ||
-				matchVersion( browser.browser_version, filterVersion ) ) &&
 			( !filterOs || filterOs === browser.os.toLowerCase() ) &&
 			( !filterOsVersion ||
 				filterOsVersion === browser.os_version.toLowerCase() ) &&
 			( !filterDevice || filterDevice === ( browser.device || "" ).toLowerCase() )
 		);
+	} );
+
+	if ( !filterVersion ) {
+		return filteredWithoutVersion;
+	}
+
+	if ( filterVersion.startsWith( "latest" ) ) {
+		const groupedByName = filteredWithoutVersion
+			.filter( ( b ) => rfinalVersion.test( b.browser_version ) )
+			.reduce( ( acc, browser ) => {
+				acc[ browser.browser ] = acc[ browser.browser ] || [];
+				acc[ browser.browser ].push( browser );
+				return acc;
+			}, {} );
+
+		const filtered = [];
+		for ( const group of Object.values( groupedByName ) ) {
+			const num = rlatest.exec( filterVersion );
+			const latest = findLatest( group );
+
+			// Get the latest version and subtract the number from the filter,
+			// ignoring any patch versions, which may differ between major versions.
+			const version = parseInt( latest.browser_version ) - ( num ? num[ 1 ] : 0 );
+			const match = group.findLast( ( browser ) => {
+				return matchVersion( browser.browser_version, version.toString() );
+			} );
+			if ( match ) {
+				filtered.push( match );
+			}
+		}
+		return filtered;
+	}
+
+	return filteredWithoutVersion.filter( ( browser ) => {
+		return matchVersion( browser.browser_version, filterVersion );
 	} );
 }
 
@@ -179,11 +222,7 @@ export async function listBrowsers( filter ) {
 export async function getLatestBrowser( filter ) {
 	const browsers = await filterBrowsers( filter );
 
-	// The list is sorted in ascending order,
-	// so the last item is the latest.
-	return browsers.findLast( ( browser ) =>
-		rfinalVersion.test( browser.browser_version )
-	);
+	return findLatest( browsers );
 }
 
 /**

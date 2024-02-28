@@ -65,8 +65,8 @@ const argv = yargs( process.argv.slice( 2 ) )
 	.option( "retries", {
 		alias: "r",
 		type: "number",
-		description: "Number of times to retry failed tests.",
-		default: 0
+		description: "Number of times to retry failed tests in BrowserStack.",
+		implies: [ "browserstack" ]
 	} )
 	.option( "no-isolate", {
 		type: "boolean",
@@ -88,8 +88,10 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Leave blank to view all browsers or pass " +
 			"\"browser_[browserVersion | :device]_os_osVersion\" with each parameter " +
 			"separated by an underscore to filter the list (any can be omitted).\n" +
+			"\"latest\" can be used in place of \"browserVersion\" to find the latest version.\n" +
+			"\"latest-n\" can be used to find the nth latest browser version.\n" +
 			"Use a colon to indicate a device.\n" +
-			"Examples: \"chrome__windows_10\", \"Mobile Safari\", \"Android Browser_:Google Pixel 8 Pro\".\n" +
+			"Examples: \"chrome__windows_10\", \"safari_latest\", \"Mobile Safari\", \"Android Browser_:Google Pixel 8 Pro\".\n" +
 			"Use quotes if spaces are necessary."
 	} )
 	.option( "stop-workers", {

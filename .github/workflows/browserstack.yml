@@ -21,19 +21,19 @@ jobs:
       matrix:
         BROWSER:
           - 'IE_11'
-          - 'Safari_17'
-          - 'Safari_16'
-          - 'Chrome_120'
-          - 'Chrome_119'
-          - 'Edge_120'
-          - 'Edge_119'
-          - 'Firefox_121'
-          - 'Firefox_120'
+          - 'Safari_latest'
+          - 'Safari_latest-1'
+          - 'Chrome_latest'
+          - 'Chrome_latest-1'
+          - 'Edge_latest'
+          - 'Edge_latest-1'
+          - 'Firefox_latest'
+          - 'Firefox_latest-1'
+          - 'Opera_latest'
           - 'Firefox_115'
           - '__iOS_17'
           - '__iOS_16'
           - '__iOS_15'
-          - 'Opera_106'
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
