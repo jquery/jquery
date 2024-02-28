@@ -98,9 +98,14 @@ const mocks = {
 		);
 	},
 	json: function( req, resp ) {
+		const headers = {};
 		if ( req.query.header ) {
-			resp.writeHead( 200, { "content-type": "application/json" } );
+			headers[ "content-type" ] = "application/json";
 		}
+		if ( req.query.cors ) {
+			headers[ "access-control-allow-origin" ] = "*";
+		}
+		resp.writeHead( 200, headers );
 		if ( req.query.array ) {
 			resp.end( JSON.stringify(
 				[ { name: "John", age: 21 }, { name: "Peter", age: 25 } ]

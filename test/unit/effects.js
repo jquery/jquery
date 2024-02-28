@@ -17,10 +17,10 @@ var oldRaf = window.requestAnimationFrame,
 
 QUnit.module( "effects", {
 	beforeEach: function() {
-		window.requestAnimationFrame = null;
-		this.sandbox = sinon.sandbox.create();
+		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
+		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
 	},

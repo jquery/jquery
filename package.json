@@ -85,7 +85,7 @@
     "raw-body": "2.5.2",
     "requirejs": "2.3.6",
     "selenium-webdriver": "4.18.1",
-    "sinon": "9.2.4",
+    "sinon": "7.5.0",
     "uglify-js": "3.4.7",
     "yargs": "17.7.2"
   },

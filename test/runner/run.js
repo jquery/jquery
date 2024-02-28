@@ -25,15 +25,15 @@ const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
  * Run modules in parallel in different browser instances.
  */
 export async function run( {
+	amd,
 	browsers: browserNames,
 	browserstack,
 	concurrency,
 	debug,
-	esm,
 	headless,
 	isolate = true,
 	modules = [],
-	retries = 3,
+	retries = 0,
 	verbose
 } = {} ) {
 	if ( !browserNames || !browserNames.length ) {
@@ -98,6 +98,7 @@ export async function run( {
 							debugWorker( reportId );
 						}
 						errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
+						await cleanupWorker( reportId, verbose );
 					}
 				} else {
 					if ( Object.keys( pendingErrors[ reportId ] ).length ) {
@@ -107,8 +108,8 @@ export async function run( {
 						}
 						delete pendingErrors[ reportId ];
 					}
+					await cleanupWorker( reportId, verbose );
 				}
-				await cleanupWorker( reportId, verbose );
 				cleanupJSDOM( reportId, verbose );
 				break;
 			}
@@ -210,7 +211,8 @@ export async function run( {
 
 				const latestMatch = await getLatestBrowser( browser );
 				if ( !latestMatch ) {
-					throw new Error( `Browser not found: ${ getBrowserString( browser ) }.` );
+					console.error( chalk.red( `Browser not found: ${ getBrowserString( browser ) }.` ) );
+					gracefulExit( 1 );
 				}
 				return latestMatch;
 			} )
@@ -230,8 +232,8 @@ export async function run( {
 		reports[ reportId ] = { browser, headless, modules };
 
 		const url = buildTestUrl( modules, {
+			amd,
 			browserstack,
-			esm,
 			jsdom: browser.browser === "jsdom",
 			port,
 			reportId
