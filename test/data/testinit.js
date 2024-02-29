@@ -384,7 +384,7 @@ this.loadTests = function() {
 
 	// Directly load tests that need evaluation before DOMContentLoaded.
 	if ( !jsdom && ( !amd || document.readyState === "loading" ) ) {
-		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
+		document.write( "<script src='" + parentUrl + "/test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {
 			QUnit.skip( "jQuery ready tests skipped in async mode", function() {} );

@@ -55,7 +55,8 @@ export default async function createDriver( { browserName, headless, verbose } )
 		edgeOptions.addArguments( "--headless=new" );
 		if ( !browserSupportsHeadless( browserName ) ) {
 			console.log(
-				`Headless mode is not supported for ${ browserName }. Running in normal mode instead.`
+				`Headless mode is not supported for ${ browserName }.` +
+					"Running in normal mode instead."
 			);
 		}
 	}

@@ -175,23 +175,31 @@ export async function filterBrowsers( filter ) {
 		const groupedByName = filteredWithoutVersion
 			.filter( ( b ) => rfinalVersion.test( b.browser_version ) )
 			.reduce( ( acc, browser ) => {
-				acc[ browser.browser ] = acc[ browser.browser ] || [];
+				acc[ browser.browser ] = acc[ browser.browser ] ?? [];
 				acc[ browser.browser ].push( browser );
 				return acc;
-			}, {} );
+			}, Object.create( null ) );
 
 		const filtered = [];
 		for ( const group of Object.values( groupedByName ) ) {
-			const num = rlatest.exec( filterVersion );
 			const latest = group[ group.length - 1 ];
 
+			// Mobile devices do not have browser version.
+			// Skip the version check for these,
+			// but include the latest in the list if it made it
+			// through filtering.
 			if ( !latest.browser_version ) {
-				filtered.push( latest );
+
+				// Do not include in the list for latest-n.
+				if ( filterVersion === "latest" ) {
+					filtered.push( latest );
+				}
 				continue;
 			}
 
 			// Get the latest version and subtract the number from the filter,
 			// ignoring any patch versions, which may differ between major versions.
+			const num = rlatest.exec( filterVersion );
 			const version = parseInt( latest.browser_version ) - ( num ? num[ 1 ] : 0 );
 			const match = group.findLast( ( browser ) => {
 				return matchVersion( browser.browser_version, version.toString() );
@@ -274,29 +282,12 @@ export function getWorker( id ) {
 	return fetchAPI( `/worker/${ id }` );
 }
 
-export async function deleteWorker( id, verbose ) {
-	await fetchAPI( `/worker/${ id }`, { method: "DELETE" } );
-	if ( verbose ) {
-		console.log( `\nWorker ${ id } stopped.` );
-	}
+export async function deleteWorker( id ) {
+	return fetchAPI( `/worker/${ id }`, { method: "DELETE" } );
 }
 
 export function getWorkers() {
 	return fetchAPI( "/workers" );
-}
-
-/**
- * Change the URL of a worker,
- * or refresh if it's the same URL.
- */
-export function changeUrl( id, url ) {
-	return fetchAPI( `/worker/${ id }/url.json`, {
-		method: "PUT",
-		body: JSON.stringify( {
-			timeout: 20,
-			url: encodeURI( url )
-		} )
-	} );
 }
 
 /**
@@ -307,15 +298,17 @@ export async function stopWorkers() {
 
 	// Run each request on its own
 	// to avoid connect timeout errors.
+	console.log( `${ workers.length } workers running...` );
 	for ( const worker of workers ) {
 		try {
-			await deleteWorker( worker.id, true );
+			await deleteWorker( worker.id );
 		} catch ( error ) {
 
 			// Log the error, but continue trying to remove workers.
 			console.error( error );
 		}
 	}
+	console.log( "All workers stopped." );
 }
 
 /**
@@ -329,6 +322,11 @@ export function getPlan() {
 }
 
 export async function getAvailableSessions() {
-	const [ plan, workers ] = await Promise.all( [ getPlan(), getWorkers() ] );
-	return plan.parallel_sessions_max_allowed - workers.length;
+	try {
+		const [ plan, workers ] = await Promise.all( [ getPlan(), getWorkers() ] );
+		return plan.parallel_sessions_max_allowed - workers.length;
+	} catch ( error ) {
+		console.error( error );
+		return 0;
+	}
 }

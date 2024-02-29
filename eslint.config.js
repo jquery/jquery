@@ -35,28 +35,6 @@ module.exports = [
 		}
 	},
 
-	{
-		files: [
-			"test/runner/**/*.js"
-		],
-		languageOptions: {
-			globals: {
-				...globals.node
-			},
-			sourceType: "module"
-		},
-		rules: {
-			...jqueryConfig.rules
-		}
-	},
-
-	{
-		files: [ "test/runner/listeners.js" ],
-		languageOptions: {
-			sourceType: "script"
-		}
-	},
-
 	// Source
 	{
 		files: [ "src/**" ],
@@ -192,6 +170,29 @@ module.exports = [
 			"max-len": "off",
 			camelcase: "off",
 			"one-var": "off"
+		}
+	},
+
+	{
+		files: [
+			"test/runner/**/*.js"
+		],
+		languageOptions: {
+			globals: {
+				...globals.node
+			},
+			sourceType: "module"
+		},
+		rules: {
+			...jqueryConfig.rules
+		}
+	},
+
+	{
+		files: [ "test/runner/listeners.js" ],
+		languageOptions: {
+			ecmaVersion: 5,
+			sourceType: "script"
 		}
 	},
 

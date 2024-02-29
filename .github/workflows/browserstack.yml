@@ -3,7 +3,7 @@ name: Browserstack
 on:
   push:
     branches:
-      - main
+      - 3.x-stable
 
 jobs:
   test:
@@ -16,24 +16,40 @@ jobs:
     name: ${{ matrix.BROWSER }}
     concurrency:
       group: ${{ github.workflow }} ${{ matrix.BROWSER }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         BROWSER:
           - 'IE_11'
+          - 'IE_10'
+          - 'IE_9'
           - 'Safari_latest'
           - 'Safari_latest-1'
           - 'Chrome_latest'
           - 'Chrome_latest-1'
+          - 'Opera_latest'
           - 'Edge_latest'
           - 'Edge_latest-1'
+          - 'Edge_18'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
-          - 'Opera_latest'
           - 'Firefox_115'
+          - 'Firefox_102'
+          - 'Firefox_91'
+          - 'Firefox_78'
+          - 'Firefox_60'
+          - 'Firefox_48'
           - '__iOS_17'
           - '__iOS_16'
           - '__iOS_15'
+          - '__iOS_14'
+          - '__iOS_13'
+          - '__iOS_12'
+          - '__iOS_11'
+          - '__iOS_10'
+          - '__iOS_9'
+          - '__iOS_8'
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -61,4 +77,4 @@ jobs:
         run: npm run pretest
 
       - name: Run tests
-        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --retries 3
+        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --run-id ${{ github.run_id }} --isolate --retries 3

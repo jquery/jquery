@@ -68,6 +68,7 @@
 		request.open( "POST", "/api/report", true );
 		request.setRequestHeader( "Content-Type", "application/json" );
 		request.send( json );
+		return request;
 	}
 
 	// Send acknowledgement to the server.
@@ -83,6 +84,16 @@
 		// childSuites is large and unused.
 		data.childSuites = undefined;
 
-		send( "runEnd", data );
+		var request = send( "runEnd", data );
+		request.onload = function() {
+			if ( request.status === 200 && request.responseText ) {
+				try {
+					var json = JSON.parse( request.responseText );
+					window.location = json.url;
+				} catch ( e ) {
+					console.error( e );
+				}
+			}
+		};
 	} );
 } )();

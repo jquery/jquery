@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import createDriver from "./createDriver.js";
 
 export async function runSelenium(

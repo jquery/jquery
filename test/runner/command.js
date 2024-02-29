@@ -48,7 +48,8 @@ const argv = yargs( process.argv.slice( 2 ) )
 		type: "number",
 		description:
 			"Run tests in parallel in multiple browsers. " +
-			"Defaults to 8 in normal mode. In browserstack mode, defaults to the maximum available under your BrowserStack plan."
+			"Defaults to 8 in normal mode. In browserstack mode, " +
+			"defaults to the maximum available under your BrowserStack plan."
 	} )
 	.option( "debug", {
 		alias: "d",
@@ -68,18 +69,25 @@ const argv = yargs( process.argv.slice( 2 ) )
 		description: "Number of times to retry failed tests in BrowserStack.",
 		implies: [ "browserstack" ]
 	} )
-	.option( "no-isolate", {
+	.option( "run-id", {
+		type: "string",
+		description: "A unique identifier for this run."
+	} )
+	.option( "isolate", {
 		type: "boolean",
-		description: "Run all modules in the same browser instance."
+		description: "Run each module by itself in the test page. This can extend testing time."
 	} )
 	.option( "browserstack", {
 		type: "array",
 		description:
-			"Run tests in BrowserStack.\nRequires BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY environment variables.\n" +
+			"Run tests in BrowserStack.\n" +
+			"Requires BROWSERSTACK_USERNAME and BROWSERSTACK_ACCESS_KEY environment variables.\n" +
 			"The value can be empty for the default configuration, or a string in the format of\n" +
 			"\"browser_[browserVersion | :device]_os_osVersion\" (see --list-browsers).\n" +
-			"Pass multiple browsers by repeating the option. The --browser option is ignored when --browserstack has a value.\n" +
-			"Otherwise, the --browser option will be used, with the latest version/device for that browser, on a matching OS."
+			"Pass multiple browsers by repeating the option.\n" +
+			"The --browser option is ignored when --browserstack has a value.\n" +
+			"Otherwise, the --browser option will be used, " +
+			"with the latest version/device for that browser, on a matching OS."
 	} )
 	.option( "list-browsers", {
 		type: "string",
@@ -91,7 +99,8 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"\"latest\" can be used in place of \"browserVersion\" to find the latest version.\n" +
 			"\"latest-n\" can be used to find the nth latest browser version.\n" +
 			"Use a colon to indicate a device.\n" +
-			"Examples: \"chrome__windows_10\", \"safari_latest\", \"Mobile Safari\", \"Android Browser_:Google Pixel 8 Pro\".\n" +
+			"Examples: \"chrome__windows_10\", \"safari_latest\", " +
+			"\"Mobile Safari\", \"Android Browser_:Google Pixel 8 Pro\".\n" +
 			"Use quotes if spaces are necessary."
 	} )
 	.option( "stop-workers", {
