@@ -1278,10 +1278,10 @@ QUnit.test( "Do not append px to most properties not accepting integer values", 
 	assert.equal( $div.css( "letter-spacing" ), "2px", "Do not append px to 'letter-spacing'" );
 } );
 
-QUnit.test( "Append px to whitelisted properties", function( assert ) {
+QUnit.test( "Append px to allowlisted properties", function( assert ) {
 	var prop,
 		$div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		whitelist = {
+		allowlist = {
 			margin: "marginTop",
 			marginTop: undefined,
 			marginRight: undefined,
@@ -1314,10 +1314,10 @@ QUnit.test( "Append px to whitelisted properties", function( assert ) {
 			borderLeftWidth: undefined
 		};
 
-	assert.expect( ( Object.keys( whitelist ).length ) * 2 );
+	assert.expect( ( Object.keys( allowlist ).length ) * 2 );
 
-	for ( prop in whitelist ) {
-		var propToCheck = whitelist[ prop ] || prop,
+	for ( prop in allowlist ) {
+		var propToCheck = allowlist[ prop ] || prop,
 			kebabProp = prop.replace( /[A-Z]/g, function( match ) {
 				return "-" + match.toLowerCase();
 			} ),
