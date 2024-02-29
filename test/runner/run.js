@@ -33,7 +33,7 @@ export async function run( {
 	headless,
 	isolate = true,
 	modules = [],
-	retries = 3,
+	retries = 0,
 	verbose
 } = {} ) {
 	if ( !browserNames || !browserNames.length ) {
