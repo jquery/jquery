@@ -85,6 +85,15 @@ function compareVersionNumbers( a, b ) {
 			return 1;
 		}
 	}
+
+	if ( rnonDigits.test( a ) && !rnonDigits.test( b ) ) {
+		return -1;
+	}
+	if ( !rnonDigits.test( a ) && rnonDigits.test( b ) ) {
+		return 1;
+	}
+
+	return 0;
 }
 
 function sortBrowsers( a, b ) {
@@ -138,15 +147,6 @@ function matchVersion( browserVersion, version ) {
 	return regex.test( browserVersion );
 }
 
-function findLatest( browsers ) {
-
-	// The list is sorted in ascending order,
-	// so the last item is the latest.
-	return browsers.findLast( ( browser ) =>
-		rfinalVersion.test( browser.browser_version )
-	);
-}
-
 export async function filterBrowsers( filter ) {
 	const browsers = await getBrowsers( { flat: true } );
 	if ( !filter ) {
@@ -162,8 +162,7 @@ export async function filterBrowsers( filter ) {
 		return (
 			( !filterBrowser || filterBrowser === browser.browser.toLowerCase() ) &&
 			( !filterOs || filterOs === browser.os.toLowerCase() ) &&
-			( !filterOsVersion ||
-				filterOsVersion === browser.os_version.toLowerCase() ) &&
+			( !filterOsVersion || matchVersion( browser.os_version, filterOsVersion ) ) &&
 			( !filterDevice || filterDevice === ( browser.device || "" ).toLowerCase() )
 		);
 	} );
@@ -184,7 +183,12 @@ export async function filterBrowsers( filter ) {
 		const filtered = [];
 		for ( const group of Object.values( groupedByName ) ) {
 			const num = rlatest.exec( filterVersion );
-			const latest = findLatest( group );
+			const latest = group[ group.length - 1 ];
+
+			if ( !latest.browser_version ) {
+				filtered.push( latest );
+				continue;
+			}
 
 			// Get the latest version and subtract the number from the filter,
 			// ignoring any patch versions, which may differ between major versions.
@@ -220,9 +224,11 @@ export async function listBrowsers( filter ) {
 }
 
 export async function getLatestBrowser( filter ) {
+	if ( !filter.browser_version ) {
+		filter.browser_version = "latest";
+	}
 	const browsers = await filterBrowsers( filter );
-
-	return findLatest( browsers );
+	return browsers[ browsers.length - 1 ];
 }
 
 /**

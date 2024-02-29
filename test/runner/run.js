@@ -211,7 +211,8 @@ export async function run( {
 
 				const latestMatch = await getLatestBrowser( browser );
 				if ( !latestMatch ) {
-					throw new Error( `Browser not found: ${ getBrowserString( browser ) }.` );
+					console.error( chalk.red( `Browser not found: ${ getBrowserString( browser ) }.` ) );
+					gracefulExit( 1 );
 				}
 				return latestMatch;
 			} )
