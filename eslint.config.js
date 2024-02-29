@@ -10,6 +10,7 @@ export default [
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
 			"external",
+			"test/data/core/tmp-bundlers",
 			"test/data/json_obj.js"
 		]
 	},
@@ -18,6 +19,7 @@ export default [
 		files: [
 			"eslint.config.js",
 			"Gruntfile.cjs",
+			"test/bundler_smoke_tests/**/*",
 			"test/node_smoke_tests/**",
 			"test/promises_aplus_adapters/**",
 			"test/middleware-mockserver.cjs"
@@ -259,6 +261,7 @@ export default [
 
 	{
 		files: [
+			"test/bundler_smoke_tests/**",
 			"test/node_smoke_tests/**",
 			"test/promises_aplus_adapters/**",
 			"test/middleware-mockserver.cjs"

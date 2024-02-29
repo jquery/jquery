@@ -27,6 +27,7 @@ npm-debug.log*
 /external
 /node_modules
 
+/test/data/core/tmp-bundlers
 /test/data/core/jquery-iterability-transpiled.js
 /test/data/qunit-fixture.js
 
