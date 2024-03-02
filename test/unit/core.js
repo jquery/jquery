@@ -1553,6 +1553,17 @@ testIframe(
 	}
 );
 
+testIframe(
+	"Bundlers tests: Weback (gh-5416)",
+	"core/bundlers-webpack.html",
+	function( assert, jQuery, window, document, $required, $imported ) {
+		assert.expect( 2 );
+
+		assert.strictEqual( $required, $imported, "Only one copy of jQuery exists" );
+		assert.ok( /^jQuery/.test( $imported.expando ), "jQuery.expando detected" );
+	}
+);
+
 QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
 	assert.expect( 1 );
 
