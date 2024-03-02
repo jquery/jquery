@@ -42,7 +42,7 @@
     "authors:check": "node -e \"require('./build/release/authors.js').checkAuthors()\"",
     "authors:update": "node -e \"require('./build/release/authors.js').updateAuthors()\"",
     "babel:tests": "babel test/data/core/jquery-iterability-transpiled-es6.js --out-file test/data/core/jquery-iterability-transpiled.js",
-    "bundlers:tests": "rollup -c test/bundler_smoke_tests/rollup-pure-esm.config.js && rollup -c test/bundler_smoke_tests/rollup-commonjs.config.js && webpack -c test/bundler_smoke_tests/webpack.config.cjs",
+    "bundlers:tests": "node -e \"require('./test/bundler_smoke_tests/utils.cjs').cleanTmpBundlersDir()\" && rollup -c test/bundler_smoke_tests/rollup-pure-esm.config.js && rollup -c test/bundler_smoke_tests/rollup-commonjs.config.js && webpack -c test/bundler_smoke_tests/webpack.config.cjs",
     "build": "node ./build/command.js",
     "build:all": "node -e \"require('./build/tasks/build.js').buildDefaultFiles()\"",
     "build:main": "node -e \"require('./build/tasks/build.js').build()\"",
