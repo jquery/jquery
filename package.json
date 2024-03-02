@@ -7,25 +7,27 @@
   "exports": {
     ".": {
       "node": {
-        "module": "./dist-module/jquery.module.js",
         "import": "./dist-module/jquery.node-module-wrapper.js",
-        "require": "./dist/jquery.js"
+        "default": "./dist/jquery.js"
       },
-      "production": "./dist-module/jquery.module.min.js",
-      "development": "./dist-module/jquery.module.js",
-      "script": "./dist/jquery.min.js",
-      "default": "./dist-module/jquery.module.min.js"
+      "module": {
+        "import": "./dist-module/jquery.module.js",
+        "default": "./dist/jquery.bundler-require-wrapper.js"
+      },
+      "import": "./dist-module/jquery.module.js",
+      "default": "./dist/jquery.js"
     },
     "./slim": {
       "node": {
-        "module": "./dist-module/jquery.slim.module.js",
         "import": "./dist-module/jquery.node-module-wrapper.slim.js",
-        "require": "./dist/jquery.slim.js"
+        "default": "./dist/jquery.slim.js"
       },
-      "production": "./dist-module/jquery.slim.module.min.js",
-      "development": "./dist-module/jquery.slim.module.js",
-      "script": "./dist/jquery.slim.min.js",
-      "default": "./dist-module/jquery.slim.module.min.js"
+      "module": {
+        "import": "./dist-module/jquery.slim.module.js",
+        "default": "./dist/jquery.bundler-require-wrapper.slim.js"
+      },
+      "import": "./dist-module/jquery.slim.module.js",
+      "default": "./dist/jquery.slim.js"
     },
     "./factory": {
       "node": "./dist/jquery.factory.js",

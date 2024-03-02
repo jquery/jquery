@@ -17,6 +17,8 @@ module.exports = function( Release, files, complete ) {
 		"LICENSE.txt",
 		"AUTHORS.txt",
 		"dist/package.json",
+		"dist/jquery.bundler-require-wrapper.js",
+		"dist/jquery.bundler-require-wrapper.slim.js",
 		"dist-module/package.json",
 		"dist-module/jquery.node-module-wrapper.js",
 		"dist-module/jquery.node-module-wrapper.slim.js"

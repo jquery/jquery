@@ -328,6 +328,8 @@ export default [
 
 	{
 		files: [
+			"dist/jquery.bundler-require-wrapper.js",
+			"dist/jquery.bundler-require-wrapper.slim.js",
 			"dist-module/jquery.node-module-wrapper.js",
 			"dist-module/jquery.node-module-wrapper.slim.js"
 		],
