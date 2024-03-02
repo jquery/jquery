@@ -24,7 +24,7 @@ export async function runJSDOM( url, { reportId, verbose } ) {
 	} );
 }
 
-export function cleanupJSDOM( reportId, verbose ) {
+export function cleanupJSDOM( reportId, { verbose } ) {
 	const window = windows[ reportId ];
 	if ( window ) {
 		if ( window.finish ) {
@@ -38,7 +38,7 @@ export function cleanupJSDOM( reportId, verbose ) {
 	}
 }
 
-export function cleanupAllJSDOM( verbose ) {
+export function cleanupAllJSDOM( { verbose } ) {
 	const windowsRemaining = Object.keys( windows ).length;
 	if ( windowsRemaining ) {
 		if ( verbose ) {
@@ -49,7 +49,7 @@ export function cleanupAllJSDOM( verbose ) {
 			);
 		}
 		for ( const id in windows ) {
-			cleanupJSDOM( id, verbose );
+			cleanupJSDOM( id, { verbose } );
 		}
 	}
 }

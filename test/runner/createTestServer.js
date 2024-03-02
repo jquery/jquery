@@ -35,7 +35,11 @@ export async function createTestServer( report ) {
 	// Bind the reporter
 	app.post( "/api/report", bodyParser.json( { limit: "50mb" } ), ( req, res ) => {
 		if ( report ) {
-			report( req.body );
+			const response = report( req.body );
+			if ( response ) {
+				res.json( response );
+				return;
+			}
 		}
 		res.sendStatus( 204 );
 	} );
