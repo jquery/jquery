@@ -58,8 +58,8 @@ async function waitForAck( worker, { fullBrowser, verbose } ) {
 			reject(
 				new Error(
 					`${ fullBrowser } not acknowledged after ${
-						ACKNOWLEDGE_TIMEOUT / 1000
-					}s.`
+						ACKNOWLEDGE_TIMEOUT / 1000 / 60
+					}min.`
 				)
 			);
 		}, ACKNOWLEDGE_TIMEOUT );
@@ -73,6 +73,7 @@ async function ensureAcknowledged( worker, restarts ) {
 		await waitForAck( worker, { fullBrowser, verbose } );
 		return worker;
 	} catch ( error ) {
+		console.error( error.message );
 		await cleanupWorker( worker, { verbose } );
 		await createBrowserWorker(
 			worker.url,
