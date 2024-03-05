@@ -35,7 +35,7 @@
 			// We need to read both.
 			var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
 
-			// `loadTests()` will call `QUnit.load()` because tests
+			// `loadTests()` will call `QUnit.start()` because tests
 			// such as unit/ready.js should run after document ready.
 			if ( !esmodules ) {
 				loadTests();

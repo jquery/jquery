@@ -21,8 +21,7 @@ export default [
 			"test/node_smoke_tests/commonjs/**",
 			"test/node_smoke_tests/module/**",
 			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.cjs",
-			"test/runner/**/*.js"
+			"test/middleware-mockserver.cjs"
 		],
 		languageOptions: {
 			globals: {
@@ -32,13 +31,6 @@ export default [
 		rules: {
 			...jqueryConfig.rules,
 			strict: [ "error", "global" ]
-		}
-	},
-
-	{
-		files: [ "test/runner/listeners.js" ],
-		languageOptions: {
-			sourceType: "script"
 		}
 	},
 
@@ -219,6 +211,29 @@ export default [
 			"max-len": "off",
 			camelcase: "off",
 			"one-var": "off"
+		}
+	},
+
+	{
+		files: [
+			"test/runner/**/*.js"
+		],
+		languageOptions: {
+			globals: {
+				...globals.node
+			},
+			sourceType: "module"
+		},
+		rules: {
+			...jqueryConfig.rules
+		}
+	},
+
+	{
+		files: [ "test/runner/listeners.js" ],
+		languageOptions: {
+			ecmaVersion: 5,
+			sourceType: "script"
 		}
 	},
 

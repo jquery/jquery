@@ -4,20 +4,20 @@ import { getLatestBrowser } from "./browserstack/api.js";
 import { buildBrowserFromString } from "./browserstack/buildBrowserFromString.js";
 import { localTunnel } from "./browserstack/local.js";
 import { reportEnd, reportTest } from "./reporter.js";
-import {
-	cleanupAllWorkers,
-	cleanupWorker,
-	debugWorker,
-	retryTest,
-	touchWorker
-} from "./browserstack/workers.js";
 import { createTestServer } from "./createTestServer.js";
 import { buildTestUrl } from "./lib/buildTestUrl.js";
 import { generateHash, printModuleHashes } from "./lib/generateHash.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
-import { addRun, runFullQueue } from "./queue.js";
 import { cleanupAllJSDOM, cleanupJSDOM } from "./jsdom.js";
 import { modules as allModules } from "./modules.js";
+import { cleanupAllBrowsers, touchBrowser } from "./browserstack/browsers.js";
+import {
+	addBrowserStackRun,
+	getNextBrowserTest,
+	retryTest,
+	runAllBrowserStack
+} from "./browserstack/queue.js";
+import { addSeleniumRun, runAllSelenium } from "./selenium/queue.js";
 
 const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
 
@@ -31,11 +31,12 @@ export async function run( {
 	debug,
 	esm,
 	headless,
-	isolate = true,
+	isolate,
 	modules = [],
-	retries = 3,
+	retries = 0,
+	runId,
 	verbose
-} = {} ) {
+} ) {
 	if ( !browserNames || !browserNames.length ) {
 		browserNames = [ "chrome" ];
 	}
@@ -57,24 +58,28 @@ export async function run( {
 
 	// Convert browser names to browser objects
 	let browsers = browserNames.map( ( b ) => ( { browser: b } ) );
-
-	// A unique identifier for this run
-	const runId = generateHash(
+	const tunnelId = generateHash(
 		`${ Date.now() }-${ modules.join( ":" ) }-${ ( browserstack || [] )
 			.concat( browserNames )
 			.join( ":" ) }`
 	);
 
+	// A unique identifier for this run
+	if ( !runId ) {
+		runId = tunnelId;
+	}
+
 	// Create the test app and
 	// hook it up to the reporter
 	const reports = Object.create( null );
-	const app = await createTestServer( async( message ) => {
+	const app = await createTestServer( ( message ) => {
 		switch ( message.type ) {
 			case "testEnd": {
 				const reportId = message.id;
-				touchWorker( reportId );
-				const errors = reportTest( message.data, reportId, reports[ reportId ] );
-				pendingErrors[ reportId ] ||= {};
+				const report = reports[ reportId ];
+				touchBrowser( report.browser );
+				const errors = reportTest( message.data, reportId, report );
+				pendingErrors[ reportId ] ??= Object.create( null );
 				if ( errors ) {
 					pendingErrors[ reportId ][ message.data.name ] = errors;
 				} else {
@@ -85,6 +90,7 @@ export async function run( {
 			case "runEnd": {
 				const reportId = message.id;
 				const report = reports[ reportId ];
+				touchBrowser( report.browser );
 				const { failed, total } = reportEnd(
 					message.data,
 					message.id,
@@ -92,31 +98,34 @@ export async function run( {
 				);
 				report.total = total;
 
+				cleanupJSDOM( reportId, { verbose } );
+
+				// Handle failure
 				if ( failed ) {
-					if ( !retryTest( reportId, retries ) ) {
-						if ( debug ) {
-							debugWorker( reportId );
-						}
-						errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
+					const retry = retryTest( reportId, retries );
+					if ( retry ) {
+						return retry;
 					}
-				} else {
-					if ( Object.keys( pendingErrors[ reportId ] ).length ) {
-						console.warn( "Detected flaky tests:" );
-						for ( const [ , error ] in Object.entries( pendingErrors[ reportId ] ) ) {
-							console.warn( chalk.italic( chalk.gray( error ) ) );
-						}
-						delete pendingErrors[ reportId ];
-					}
+					errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
+					return getNextBrowserTest( reportId );
 				}
-				await cleanupWorker( reportId, verbose );
-				cleanupJSDOM( reportId, verbose );
-				break;
+
+				// Handle success
+				if (
+					pendingErrors[ reportId ] &&
+					Object.keys( pendingErrors[ reportId ] ).length
+				) {
+					console.warn( "Detected flaky tests:" );
+					for ( const [ , error ] in Object.entries( pendingErrors[ reportId ] ) ) {
+						console.warn( chalk.italic( chalk.gray( error ) ) );
+					}
+					delete pendingErrors[ reportId ];
+				}
+				return getNextBrowserTest( reportId );
 			}
 			case "ack": {
-				touchWorker( message.id );
-				if ( verbose ) {
-					console.log( `\nWorker for test ${ message.id } acknowledged.` );
-				}
+				const report = reports[ message.id ];
+				touchBrowser( report.browser );
 				break;
 			}
 			default:
@@ -165,8 +174,8 @@ export async function run( {
 			}
 		}
 
-		await cleanupAllWorkers( verbose );
-		cleanupAllJSDOM( verbose );
+		await cleanupAllBrowsers( { verbose } );
+		cleanupAllJSDOM( { verbose } );
 	}
 
 	asyncExitHook(
@@ -210,13 +219,16 @@ export async function run( {
 
 				const latestMatch = await getLatestBrowser( browser );
 				if ( !latestMatch ) {
-					throw new Error( `Browser not found: ${ getBrowserString( browser ) }.` );
+					console.error(
+						chalk.red( `Browser not found: ${ getBrowserString( browser ) }.` )
+					);
+					gracefulExit( 1 );
 				}
 				return latestMatch;
 			} )
 		);
 
-		tunnel = await localTunnel( runId );
+		tunnel = await localTunnel( tunnelId );
 		if ( verbose ) {
 			console.log( "Started BrowserStackLocal." );
 
@@ -237,15 +249,21 @@ export async function run( {
 			reportId
 		} );
 
-		addRun( url, browser, {
+		const options = {
 			debug,
 			headless,
 			modules,
 			reportId,
-			retries,
 			runId,
+			tunnelId,
 			verbose
-		} );
+		};
+
+		if ( browserstack ) {
+			addBrowserStackRun( url, browser, options );
+		} else {
+			addSeleniumRun( url, browser, options );
+		}
 	}
 
 	for ( const browser of browsers ) {
@@ -260,7 +278,11 @@ export async function run( {
 
 	try {
 		console.log( `Starting Run ${ runId }...` );
-		await runFullQueue( { browserstack, concurrency, verbose } );
+		if ( browserstack ) {
+			await runAllBrowserStack( { verbose } );
+		} else {
+			await runAllSelenium( { concurrency, verbose } );
+		}
 	} catch ( error ) {
 		console.error( error );
 		if ( !debug ) {
