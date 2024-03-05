@@ -39,7 +39,7 @@ export function retryTest( reportId, maxRetries ) {
 			console.log(
 				`Retrying test ${ reportId } for ${ chalk.yellow(
 					test.options.modules.join( ", " )
-				) }...`
+				) }...${ test.retries }`
 			);
 			return test;
 		}
