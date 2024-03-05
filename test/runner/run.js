@@ -79,7 +79,7 @@ export async function run( {
 				const report = reports[ reportId ];
 				touchBrowser( report.browser );
 				const errors = reportTest( message.data, reportId, report );
-				pendingErrors[ reportId ] ||= {};
+				pendingErrors[ reportId ] ??= Object.create( null );
 				if ( errors ) {
 					pendingErrors[ reportId ][ message.data.name ] = errors;
 				} else {
