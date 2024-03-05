@@ -17,10 +17,10 @@ var oldRaf = window.requestAnimationFrame,
 
 QUnit.module( "effects", {
 	beforeEach: function() {
-		window.requestAnimationFrame = null;
-		this.sandbox = sinon.sandbox.create();
+		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
+		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
 	},
@@ -690,15 +690,8 @@ QUnit.test( "stop()", function( assert ) {
 	this.clock.tick( 100 );
 } );
 
-// In IE9 inside testswarm this test doesn't work properly
 ( function() {
-	var type = "test";
-
-	if ( QUnit.isSwarm && /msie 9\.0/i.test( window.navigator.userAgent ) ) {
-		type = "skip";
-	}
-
-	QUnit[ type ]( "stop() - several in queue", function( assert ) {
+	QUnit.test( "stop() - several in queue", function( assert ) {
 		assert.expect( 5 );
 
 		var nw, $foo = jQuery( "#foo" );

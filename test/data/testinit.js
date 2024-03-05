@@ -2,18 +2,12 @@
 
 "use strict";
 
-var FILEPATH = "/test/data/testinit.js",
-	activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
-	parentUrl = activeScript && activeScript.src ?
-		activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
-		"../",
+var parentUrl = window.location.protocol + "//" + window.location.host,
 
 	// baseURL is intentionally set to "data/" instead of "".
 	// This is not just for convenience (since most files are in data/)
 	// but also to ensure that urls without prefix fail.
-	// Otherwise it's easy to write tests that pass on test/index.html
-	// but fail in Karma runner (where the baseURL is different).
-	baseURL = parentUrl + "test/data/",
+	baseURL = parentUrl + "/test/data/",
 	supportjQuery = this.jQuery,
 
 	// see RFC 2606
@@ -317,14 +311,9 @@ this.testIframe = function( title, fileName, func, wrapper, iframeStyles ) {
 };
 this.iframeCallback = undefined;
 
-// Tests are always loaded async
-// except when running tests in Karma (See Gruntfile)
-if ( !window.__karma__ ) {
-	QUnit.config.autostart = false;
-}
+QUnit.config.autostart = false;
 
-// Leverage QUnit URL parsing to detect testSwarm environment and "basic" testing mode
-QUnit.isSwarm = ( QUnit.urlParams.swarmURL + "" ).indexOf( "http" ) === 0;
+// Leverage QUnit URL parsing to detect "basic" testing mode
 QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
 
 // Async test for module script type support
@@ -385,10 +374,17 @@ this.loadTests = function() {
 	// QUnit.config is populated from QUnit.urlParams but only at the beginning
 	// of the test run. We need to read both.
 	var amd = QUnit.config.amd || QUnit.urlParams.amd;
+	var jsdom = QUnit.config.jsdom || QUnit.urlParams.jsdom;
+
+	if ( jsdom ) {
+
+		// JSDOM doesn't implement scrollTo
+		QUnit.config.scrolltop = false;
+	}
 
 	// Directly load tests that need evaluation before DOMContentLoaded.
-	if ( !amd || document.readyState === "loading" ) {
-		document.write( "<script src='" + parentUrl + "test/unit/ready.js'><\x2Fscript>" );
+	if ( !jsdom && ( !amd || document.readyState === "loading" ) ) {
+		document.write( "<script src='" + parentUrl + "/test/unit/ready.js'><\x2Fscript>" );
 	} else {
 		QUnit.module( "ready", function() {
 			QUnit.skip( "jQuery ready tests skipped in async mode", function() {} );
@@ -396,7 +392,7 @@ this.loadTests = function() {
 	}
 
 	// Get testSubproject from testrunner first
-	require( [ parentUrl + "test/data/testrunner.js" ], function() {
+	require( [ parentUrl + "/test/data/testrunner.js" ], function() {
 
 		// Says whether jQuery positional selector extensions are supported.
 		// A full selector engine is required to support them as they need to
@@ -447,7 +443,7 @@ this.loadTests = function() {
 
 			if ( dep ) {
 				if ( !QUnit.basicTests || i === 1 ) {
-					require( [ parentUrl + "test/" + dep ], loadDep );
+					require( [ parentUrl + "/test/" + dep ], loadDep );
 
 				// Support: Android 2.3 only
 				// When running basic tests, replace other modules with dummies to avoid overloading
@@ -458,26 +454,13 @@ this.loadTests = function() {
 				}
 
 			} else {
-				if ( window.__karma__ && window.__karma__.start ) {
-					window.__karma__.start();
-				} else {
-					QUnit.load();
-				}
 
 				/**
 				 * Run in noConflict mode
 				 */
 				jQuery.noConflict();
 
-				// Load the TestSwarm listener if swarmURL is in the address.
-				if ( QUnit.isSwarm ) {
-					require( [ "https://swarm.jquery.org/js/inject.js?" + ( new Date() ).getTime() ],
-					function() {
-						QUnit.start();
-					} );
-				} else {
-					QUnit.start();
-				}
+				QUnit.start();
 			}
 		} )();
 	} );

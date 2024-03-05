@@ -1,0 +1,80 @@
+name: Browserstack
+
+on:
+  push:
+    branches:
+      - 3.x-stable
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    environment: browserstack
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      NODE_VERSION: 20.x
+    name: ${{ matrix.BROWSER }}
+    concurrency:
+      group: ${{ github.workflow }} ${{ matrix.BROWSER }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        BROWSER:
+          - 'IE_11'
+          - 'IE_10'
+          - 'IE_9'
+          - 'Safari_latest'
+          - 'Safari_latest-1'
+          - 'Chrome_latest'
+          - 'Chrome_latest-1'
+          - 'Opera_latest'
+          - 'Edge_latest'
+          - 'Edge_latest-1'
+          - 'Edge_18'
+          - 'Firefox_latest'
+          - 'Firefox_latest-1'
+          - 'Firefox_115'
+          - 'Firefox_102'
+          - 'Firefox_91'
+          - 'Firefox_78'
+          - 'Firefox_60'
+          - 'Firefox_48'
+          - '__iOS_17'
+          - '__iOS_16'
+          - '__iOS_15'
+          - '__iOS_14'
+          - '__iOS_13'
+          - '__iOS_12'
+          - '__iOS_11'
+          - '__iOS_10'
+          - '__iOS_9'
+          - '__iOS_8'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build jQuery
+        run: npm run build:all
+
+      - name: Pretest script
+        run: npm run pretest
+
+      - name: Run tests
+        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --run-id ${{ github.run_id }} --isolate --retries 3

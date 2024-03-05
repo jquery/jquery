@@ -573,7 +573,7 @@ QUnit.test( "attributes - existence", function( assert ) {
 	assert.t( "On any element", "#qunit-fixture *[title]", [ "google" ] );
 	assert.t( "On implicit element", "#qunit-fixture [title]", [ "google" ] );
 	assert.t( "Boolean", "#select2 option[selected]", [ "option2d" ] );
-	assert.t( "For attribute on label", "form label[for]", [ "label-for" ] );
+	assert.t( "For attribute on label", "#qunit-fixture form label[for]", [ "label-for" ] );
 } );
 
 QUnit.test( "attributes - equals", function( assert ) {
