@@ -25,11 +25,11 @@ const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
  * Run modules in parallel in different browser instances.
  */
 export async function run( {
-	amd,
 	browsers: browserNames,
 	browserstack,
 	concurrency,
 	debug,
+	esm,
 	headless,
 	isolate,
 	modules = [],
@@ -242,8 +242,8 @@ export async function run( {
 		reports[ reportId ] = { browser, headless, modules };
 
 		const url = buildTestUrl( modules, {
-			amd,
 			browserstack,
+			esm,
 			jsdom: browser.browser === "jsdom",
 			port,
 			reportId
