@@ -109,8 +109,10 @@ export async function createBrowserWorker( url, browser, options, restarts = 0 )
 		project: "jquery",
 		build: `Run ${ runId }`,
 
-		// Set the max here, so that we can
-		// control the timeout
+		// This is the maximum timeout allowed
+		// by BrowserStack. We do this because
+		// we control the timeout in the runner.
+		// See https://github.com/browserstack/api/blob/b324a6a5bc1b6052510d74e286b8e1c758c308a7/README.md#timeout300
 		timeout: 1800,
 
 		// Not documented in the API docs,
