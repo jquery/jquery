@@ -7,6 +7,7 @@ import { run } from "./run.js";
 
 const argv = yargs( process.argv.slice( 2 ) )
 	.version( false )
+	.strict()
 	.command( {
 		command: "[options]",
 		describe: "Run jQuery tests in a browser"
@@ -38,10 +39,9 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Run tests in headless mode. Cannot be used with --debug or --browserstack.",
 		conflicts: [ "debug", "browserstack" ]
 	} )
-	.option( "esm", {
-		alias: "esmodules",
+	.option( "amd", {
 		type: "boolean",
-		description: "Run tests using jQuery's source, which is written with ECMAScript Modules."
+		description: "Run tests using jQuery's source, which is written with AMD modules."
 	} )
 	.option( "concurrency", {
 		alias: "c",
