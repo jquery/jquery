@@ -24,20 +24,19 @@ const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
 /**
  * Run modules in parallel in different browser instances.
  */
-export async function run( options = {} ) {
-	let {
-		amd,
-		browsers: browserNames,
-		browserstack,
-		debug,
-		headless,
-		isolate,
-		modules = [],
-		retries = 0,
-		runId,
-		verbose
-	} = options;
-
+export async function run( {
+	amd,
+	browsers: browserNames,
+	browserstack,
+	concurrency,
+	debug,
+	headless,
+	isolate,
+	modules = [],
+	retries = 0,
+	runId,
+	verbose
+} ) {
 	if ( !browserNames || !browserNames.length ) {
 		browserNames = [ "chrome" ];
 	}
@@ -250,21 +249,20 @@ export async function run( options = {} ) {
 			reportId
 		} );
 
+		const options = {
+			debug,
+			headless,
+			modules,
+			reportId,
+			runId,
+			tunnelId,
+			verbose
+		};
+
 		if ( browserstack ) {
-			addBrowserStackRun( url, browser, {
-				...options,
-				modules,
-				reportId,
-				runId,
-				tunnelId
-			} );
+			addBrowserStackRun( url, browser, options );
 		} else {
-			addSeleniumRun( url, browser, {
-				...options,
-				modules,
-				reportId,
-				runId
-			} );
+			addSeleniumRun( url, browser, options );
 		}
 	}
 
@@ -281,9 +279,9 @@ export async function run( options = {} ) {
 	try {
 		console.log( `Starting Run ${ runId }...` );
 		if ( browserstack ) {
-			await runAllBrowserStack( { options, ...runId } );
+			await runAllBrowserStack( { verbose } );
 		} else {
-			await runAllSelenium( options );
+			await runAllSelenium( { concurrency, verbose } );
 		}
 	} catch ( error ) {
 		console.error( error );

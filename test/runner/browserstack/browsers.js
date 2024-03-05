@@ -190,7 +190,7 @@ export async function cleanupAllBrowsers( { verbose } ) {
 		);
 		if ( verbose ) {
 			console.log(
-				`Stopped ${ numRemaining } browser${ numRemaining > 1 ? "s" : "" }...`
+				`Stopped ${ numRemaining } browser${ numRemaining > 1 ? "s" : "" }.`
 			);
 		}
 	}
