@@ -454,7 +454,6 @@ this.loadTests = function() {
 				}
 
 			} else {
-				QUnit.load();
 
 				/**
 				 * Run in noConflict mode

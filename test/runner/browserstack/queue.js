@@ -11,12 +11,21 @@ export function getNextBrowserTest( reportId ) {
 	if ( index === -1 ) {
 		return;
 	}
+
+	// Remove the completed test from the queue
 	const previousTest = queue[ index ];
 	queue.splice( index, 1 );
+
+	// Find the next test for the same browser
 	for ( const test of queue.slice( index ) ) {
 		if ( test.fullBrowser === previousTest.fullBrowser ) {
+
+			// Set the URL for our tracking
 			setBrowserWorkerUrl( test.browser, test.url );
 			test.running = true;
+
+			// Return the URL for the next test.
+			// listeners.js will use this to set the browser URL.
 			return { url: test.url };
 		}
 	}
@@ -49,16 +58,16 @@ export function addBrowserStackRun( url, browser, options ) {
 	} );
 }
 
-export async function runAllBrowserStack( options ) {
+export async function runAllBrowserStack() {
 	return new Promise( async( resolve, reject )=> {
 		while ( queue.length ) {
 			try {
-				await checkLastTouches( options );
+				await checkLastTouches();
 			} catch ( error ) {
 				reject( error );
 			}
 
-			// Run one test per browser at a time
+			// Run one test URL per browser at a time
 			const browsersTaken = [];
 			for ( const test of queue ) {
 				if ( browsersTaken.indexOf( test.fullBrowser ) > -1 ) {

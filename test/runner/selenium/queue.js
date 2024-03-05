@@ -21,8 +21,6 @@ export function addSeleniumRun( url, browser, options ) {
 	queue.push( { url, browser, options } );
 }
 
-// TODO: Possibly move this to selenium-only
-// and have a queue per browser
 export async function runAllSelenium( { concurrency = MAX_CONCURRENCY, verbose } ) {
 	while ( queue.length ) {
 		const next = queue.shift();
