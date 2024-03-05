@@ -7,6 +7,7 @@ import { run } from "./run.js";
 
 const argv = yargs( process.argv.slice( 2 ) )
 	.version( false )
+	.strict()
 	.command( {
 		command: "[options]",
 		describe: "Run jQuery tests in a browser"

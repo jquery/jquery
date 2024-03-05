@@ -67,7 +67,7 @@
     "test:selector-native": "npm run pretest && npm run build -- -e selector && npm run test:unit -- -h",
     "test:slim": "npm run pretest && npm run build -- --slim && npm run test:unit -- -h",
     "test:unit": "node test/runner/command.js",
-    "test": "npm run build:all && npm run lint && npm run test:browserless && npm run test:browser && npm run test:esmodules && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native"
+    "test": "npm run build:all && npm run lint && npm run test:browserless && npm run test:browser && npm run test:esm && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native"
   },
   "homepage": "https://jquery.com",
   "author": {
