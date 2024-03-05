@@ -83,7 +83,19 @@ export async function run( {
 				if ( errors ) {
 					pendingErrors[ reportId ][ message.data.name ] = errors;
 				} else {
-					delete pendingErrors[ reportId ][ message.data.name ];
+					const existing = pendingErrors[ reportId ][ message.data.name ];
+
+					// Show a message for flakey tests
+					if ( existing ) {
+						console.log();
+						console.warn(
+							chalk.italic(
+								chalk.gray( existing.replace( "Test failed", "Test flakey" ) )
+							)
+						);
+						console.log();
+						delete pendingErrors[ reportId ][ message.data.name ];
+					}
 				}
 				break;
 			}
@@ -103,24 +115,15 @@ export async function run( {
 				// Handle failure
 				if ( failed ) {
 					const retry = retryTest( reportId, retries );
+
+					// Retry if retryTest returns a test
 					if ( retry ) {
 						return retry;
 					}
 					errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
-					return getNextBrowserTest( reportId );
 				}
 
-				// Handle success
-				if (
-					pendingErrors[ reportId ] &&
-					Object.keys( pendingErrors[ reportId ] ).length
-				) {
-					console.warn( "Detected flaky tests:" );
-					for ( const [ , error ] in Object.entries( pendingErrors[ reportId ] ) ) {
-						console.warn( chalk.italic( chalk.gray( error ) ) );
-					}
-					delete pendingErrors[ reportId ];
-				}
+				// Run the next test
 				return getNextBrowserTest( reportId );
 			}
 			case "ack": {

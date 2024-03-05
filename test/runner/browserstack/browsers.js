@@ -187,13 +187,19 @@ export async function cleanupAllBrowsers( { verbose } ) {
 	const workersRemaining = Object.values( workers );
 	const numRemaining = workersRemaining.length;
 	if ( numRemaining ) {
-		await Promise.all(
-			workersRemaining.map( ( worker ) => deleteWorker( worker.id ) )
-		);
-		if ( verbose ) {
-			console.log(
-				`Stopped ${ numRemaining } browser${ numRemaining > 1 ? "s" : "" }.`
+		try {
+			await Promise.all(
+				workersRemaining.map( ( worker ) => deleteWorker( worker.id ) )
 			);
+			if ( verbose ) {
+				console.log(
+					`Stopped ${ numRemaining } browser${ numRemaining > 1 ? "s" : "" }.`
+				);
+			}
+		} catch ( error ) {
+
+			// Log the error, but do not consider the test run failed
+			console.error( error );
 		}
 	}
 }
