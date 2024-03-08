@@ -1,7 +1,7 @@
 "use strict";
 
-const url = require( "url" );
-const fs = require( "fs" );
+const url = require( "node:url" );
+const fs = require( "node:fs" );
 const getRawBody = require( "raw-body" );
 
 let cspLog = "";

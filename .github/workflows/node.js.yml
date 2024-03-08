@@ -40,9 +40,6 @@ jobs:
           - NAME: "Firefox ESR"
             NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:firefox"
-          - NAME: "Node 10 Build"
-            NODE_VERSION: "10.x"
-            NPM_SCRIPT: "build:main"
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
