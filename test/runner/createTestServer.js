@@ -1,12 +1,12 @@
 import bodyParser from "body-parser";
 import express from "express";
 import bodyParserErrorHandler from "express-body-parser-error-handler";
-import fs from "fs";
+import { readFile } from "fs/promises";
 import mockServer from "../middleware-mockserver.cjs";
 
 export async function createTestServer( report ) {
-	const nameHTML = await fs.promises.readFile( "./test/data/name.html", "utf8" );
-	const indexHTML = await fs.promises.readFile( "./test/index.html", "utf8" );
+	const nameHTML = await readFile( "./test/data/name.html", "utf8" );
+	const indexHTML = await readFile( "./test/index.html", "utf8" );
 	const app = express();
 
 	// Redirect home to test page
