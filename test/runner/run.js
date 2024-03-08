@@ -170,21 +170,21 @@ export async function run( {
 	async function cleanup() {
 		console.log( "Cleaning up..." );
 
+		await cleanupAllBrowsers( { verbose } );
+		cleanupAllJSDOM( { verbose } );
+
 		if ( tunnel ) {
 			await tunnel.stop();
 			if ( verbose ) {
 				console.log( "Stopped BrowserStackLocal." );
 			}
 		}
-
-		await cleanupAllBrowsers( { verbose } );
-		cleanupAllJSDOM( { verbose } );
 	}
 
 	asyncExitHook(
 		async() => {
-			await stopServer();
 			await cleanup();
+			await stopServer();
 		},
 		{ wait: EXIT_HOOK_WAIT_TIMEOUT }
 	);
