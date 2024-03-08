@@ -6,10 +6,10 @@
 
 "use strict";
 
-const fs = require( "fs" );
-const path = require( "path" );
-const util = require( "util" );
-const exec = util.promisify( require( "child_process" ).exec );
+const fs = require( "node:fs/promises" );
+const path = require( "node:path" );
+const util = require( "node:util" );
+const exec = util.promisify( require( "node:child_process" ).exec );
 const requirejs = require( "requirejs" );
 const excludedFromSlim = require( "./lib/slim-exclude" );
 const pkg = require( "../../package.json" );
@@ -38,7 +38,7 @@ const removeWith = {
 };
 
 async function read( filename ) {
-	return fs.promises.readFile( path.join( srcFolder, filename ), "utf8" );
+	return fs.readFile( path.join( srcFolder, filename ), "utf8" );
 }
 
 // Remove the src folder and file extension
@@ -54,7 +54,7 @@ function moduleName( filename ) {
 async function readdirRecursive( dir, all = [] ) {
 	let files;
 	try {
-		files = await fs.promises.readdir( path.join( srcFolder, dir ), {
+		files = await fs.readdir( path.join( srcFolder, dir ), {
 			withFileTypes: true
 		} );
 	} catch ( e ) {
@@ -233,7 +233,7 @@ async function build( {
 		version = `${ pkg.version }+${ stdout.trim() }${ isClean ? "" : ".dirty" }`;
 	}
 
-	await fs.promises.mkdir( dir, { recursive: true } );
+	await fs.mkdir( dir, { recursive: true } );
 
 	// Exclude slim modules when slim is true
 	const [ excluded, included ] = await checkExclude(
@@ -297,7 +297,7 @@ async function build( {
 			.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 		// Write concatenated source to file
-		await fs.promises.writeFile(
+		await fs.writeFile(
 			path.join( dir, filename ),
 			compiledContents
 		);
