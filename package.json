@@ -31,11 +31,15 @@
     },
     "./factory": {
       "node": "./dist/jquery.factory.js",
-      "default": "./dist-module/jquery.factory.module.js"
+      "module": "./dist-module/jquery.factory.module.js",
+      "import": "./dist-module/jquery.factory.module.js",
+      "default": "./dist/jquery.factory.js"
     },
     "./factory-slim": {
       "node": "./dist/jquery.factory.slim.js",
-      "default": "./dist-module/jquery.factory.slim.module.js"
+      "module": "./dist-module/jquery.factory.slim.module.js",
+      "import": "./dist-module/jquery.factory.slim.module.js",
+      "default": "./dist/jquery.factory.slim.js"
     },
     "./src/*.js": "./src/*.js"
   },
