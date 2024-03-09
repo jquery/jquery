@@ -4,13 +4,12 @@ import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
 
 const dirname = path.dirname( fileURLToPath( import.meta.url ) );
-const TEST_DIR = path.resolve( dirname, ".." );
 
 export default {
 	input: `${ dirname }/src-esm-commonjs/main.js`,
 	output: {
-		dir: `${ TEST_DIR }/data/core/tmp-bundlers/rollup-commonjs`,
-		format: "es",
+		dir: `${ dirname }/tmp/rollup-commonjs`,
+		format: "iife",
 		sourcemap: true
 	},
 	plugins: [

@@ -1,5 +1,4 @@
-/* global startIframeTest */
-
 import { $ } from "jquery";
 
-startIframeTest( $ );
+console.assert( /^jQuery/.test( $.expando ),
+	"jQuery.expando should be detected" );

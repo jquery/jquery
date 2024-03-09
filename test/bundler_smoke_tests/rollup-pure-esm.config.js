@@ -3,13 +3,12 @@ import { fileURLToPath } from "node:url";
 import resolve from "@rollup/plugin-node-resolve";
 
 const dirname = path.dirname( fileURLToPath( import.meta.url ) );
-const TEST_DIR = path.resolve( dirname, ".." );
 
 export default {
 	input: `${ dirname }/src-pure-esm/main.js`,
 	output: {
-		dir: `${ TEST_DIR }/data/core/tmp-bundlers/rollup-pure-esm`,
-		format: "es",
+		dir: `${ dirname }/tmp/rollup-pure-esm`,
+		format: "iife",
 		sourcemap: true
 	},
 	plugins: [
