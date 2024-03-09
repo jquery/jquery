@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 import { JSDOM } from "jsdom";
 
 const { window } = new JSDOM( "" );

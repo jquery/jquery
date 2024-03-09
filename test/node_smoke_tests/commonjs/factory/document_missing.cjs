@@ -1,6 +1,6 @@
 "use strict";
 
-const assert = require( "node:assert" );
+const assert = require( "node:assert/strict" );
 
 const { ensureGlobalNotCreated } = require( "../lib/ensure_global_not_created.cjs" );
 const { getJQueryModuleSpecifier } = require( "../lib/jquery-module-specifier.cjs" );

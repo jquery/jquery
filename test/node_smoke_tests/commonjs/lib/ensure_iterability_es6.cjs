@@ -1,6 +1,6 @@
 "use strict";
 
-const assert = require( "node:assert" );
+const assert = require( "node:assert/strict" );
 const { JSDOM } = require( "jsdom" );
 
 const { ensureJQuery } = require( "./ensure_jquery.cjs" );

@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 
 import { ensureGlobalNotCreated } from "../lib/ensure_global_not_created.js";
 import { getJQueryModuleSpecifier } from "../lib/jquery-module-specifier.js";

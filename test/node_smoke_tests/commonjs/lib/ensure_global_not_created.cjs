@@ -1,6 +1,6 @@
 "use strict";
 
-const assert = require( "node:assert" );
+const assert = require( "node:assert/strict" );
 
 // Ensure the jQuery property on global/window/module.exports/etc. was not
 // created in a CommonJS environment.

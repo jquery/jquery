@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 const { JSDOM } = await import( "jsdom" );
 
 const { ensureJQuery } = await import( "./ensure_jquery.js" );
