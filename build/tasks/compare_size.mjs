@@ -109,7 +109,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 			// Remove the short SHA and .dirty from comparisons.
 			// The short SHA so commits can be compared against each other
 			// and .dirty to compare with the existing branch during development.
-			const sha = /jQuery v\d+.\d+.\d+(?:-\w+)?(?:\+|\+slim\.)?([^ \.]+(?:\.dirty)?)?/.exec( contents )[ 1 ];
+			const sha = /jQuery v\d+.\d+.\d+(?:-\w+)?(?:\+slim\.|\+)?([^ \.]+(?:\.dirty)?)?/.exec( contents )[ 1 ];
 			contents = contents.replace( new RegExp( sha, "g" ), "" );
 
 			const size = Buffer.byteLength( contents, "utf8" );
