@@ -1,7 +1,7 @@
 "use strict";
 
-const fs = require( "fs" );
-const path = require( "path" );
+const fs = require( "node:fs/promises" );
+const path = require( "node:path" );
 
 const projectDir = path.resolve( __dirname, "..", ".." );
 
@@ -26,15 +26,15 @@ const files = {
 };
 
 async function npmcopy() {
-	await fs.promises.mkdir( path.resolve( projectDir, "external" ), {
+	await fs.mkdir( path.resolve( projectDir, "external" ), {
 		recursive: true
 	} );
 	for ( const [ dest, source ] of Object.entries( files ) ) {
 		const from = path.resolve( projectDir, "node_modules", source );
 		const to = path.resolve( projectDir, "external", dest );
 		const toDir = path.dirname( to );
-		await fs.promises.mkdir( toDir, { recursive: true } );
-		await fs.promises.copyFile( from, to );
+		await fs.mkdir( toDir, { recursive: true } );
+		await fs.copyFile( from, to );
 		console.log( `${ source } → ${ dest }` );
 	}
 }

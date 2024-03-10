@@ -1,9 +1,9 @@
 "use strict";
 
-const fs = require( "fs" );
+const fs = require( "node:fs" );
 const shell = require( "shelljs" );
-const path = require( "path" );
-const os = require( "os" );
+const path = require( "node:path" );
+const os = require( "node:os" );
 
 const cdnFolderContainer = "dist/cdn";
 const cdnFolderVersioned = `${ cdnFolderContainer }/versioned`;
@@ -49,7 +49,7 @@ function makeReleaseCopies( Release ) {
 	].forEach( ( { filesMap, cdnFolder } ) => {
 		shell.mkdir( "-p", cdnFolder );
 
-		Object.keys( filesMap ).forEach( key => {
+		Object.keys( filesMap ).forEach( ( key ) => {
 			let text;
 			const builtFile = filesMap[ key ];
 			const unpathedFile = key.replace( /@VER/g, Release.newVersion );
@@ -60,28 +60,33 @@ function makeReleaseCopies( Release ) {
 				// Map files need to reference the new uncompressed name;
 				// assume that all files reside in the same directory.
 				// "file":"jquery.min.js" ... "sources":["jquery.js"]
-				text = fs.readFileSync( builtFile, "utf8" )
-					.replace( /"file":"([^"]+)"/,
-						"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js\"" ) )
-					.replace( /"sources":\["([^"]+)"\]/,
-						"\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+				text = fs
+					.readFileSync( builtFile, "utf8" )
+					.replace(
+						/"file":"([^"]+)"/,
+						`"file":"${ unpathedFile.replace( /\.min\.map/, ".min.js" ) }"`
+					)
+					.replace(
+						/"sources":\["([^"]+)"\]/,
+						`"sources":["${ unpathedFile.replace( /\.min\.map/, ".js" ) }"]`
+					);
 				fs.writeFileSync( releaseFile, text );
 			} else if ( builtFile !== releaseFile ) {
 				shell.cp( "-f", builtFile, releaseFile );
 			}
 		} );
-
 	} );
 }
 
 async function makeArchives( Release ) {
-
 	Release.chdir( Release.dir.repo );
 
 	async function makeArchive( { cdn, filesMap, cdnFolder } ) {
 		return new Promise( ( resolve, reject ) => {
 			if ( Release.preRelease ) {
-				console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
+				console.log(
+					`Skipping archive creation for ${ cdn }; this is a beta release.`
+				);
 				resolve();
 				return;
 			}
@@ -99,7 +104,7 @@ async function makeArchives( Release ) {
 
 			output.on( "close", resolve );
 
-			output.on( "error", err => {
+			output.on( "error", ( err ) => {
 				reject( err );
 			} );
 
@@ -107,33 +112,37 @@ async function makeArchives( Release ) {
 
 			let finalFilesMap = Object.create( null );
 			for ( const [ releaseFile, builtFile ] of Object.entries( filesMap ) ) {
-				finalFilesMap[ releaseFile.replace( rver, Release.newVersion ) ] = builtFile;
+				finalFilesMap[ releaseFile.replace( rver, Release.newVersion ) ] =
+					builtFile;
 			}
 
-			const files = Object
-				.keys( filesMap )
-				.map( item => `${ cdnFolder }/${
-					item.replace( rver, Release.newVersion )
-				}` );
+			const files = Object.keys( filesMap ).map(
+				( item ) => `${ cdnFolder }/${ item.replace( rver, Release.newVersion ) }`
+			);
 
 			if ( os.platform() === "win32" ) {
 				sum = [];
 				for ( i = 0; i < files.length; i++ ) {
 					result = Release.exec(
-						"certutil -hashfile " + files[ i ] + " MD5", "Error retrieving md5sum"
+						"certutil -hashfile " + files[ i ] + " MD5",
+						"Error retrieving md5sum"
 					);
 					sum.push( rmd5.exec( result )[ 0 ] + " " + files[ i ] );
 				}
 				sum = sum.join( "\n" );
 			} else {
-				sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
+				sum = Release.exec(
+					"md5 -r " + files.join( " " ),
+					"Error retrieving md5sum"
+				);
 			}
 			fs.writeFileSync( md5file, sum );
 			files.push( md5file );
 
-			files.forEach( file => {
-				archiver.append( fs.createReadStream( file ),
-					{ name: path.basename( file ) } );
+			files.forEach( ( file ) => {
+				archiver.append( fs.createReadStream( file ), {
+					name: path.basename( file )
+				} );
 			} );
 
 			archiver.finalize();
