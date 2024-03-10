@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import fs from "node:fs";
+import fs from "node:fs/promises";
 import { promisify } from "node:util";
 import zlib from "node:zlib";
 import { exec as nodeExec } from "node:child_process";
@@ -34,7 +34,7 @@ function getBranchHeader( branch, commit ) {
 async function getCache( loc ) {
 	let cache;
 	try {
-		const contents = await fs.promises.readFile( loc, "utf8" );
+		const contents = await fs.readFile( loc, "utf8" );
 		cache = JSON.parse( contents );
 	} catch ( err ) {
 		return {};
@@ -60,7 +60,7 @@ function cacheResults( results ) {
 }
 
 function saveCache( loc, cache ) {
-	return fs.promises.writeFile( loc, JSON.stringify( cache ) );
+	return fs.writeFile( loc, JSON.stringify( cache ) );
 }
 
 function compareSizes( existing, current, padLength ) {
@@ -104,7 +104,7 @@ export async function compareSize( { cache = ".sizecache.json", files } = {} ) {
 	const results = await Promise.all(
 		files.map( async function( filename ) {
 
-			let contents = await fs.promises.readFile( filename, "utf8" );
+			let contents = await fs.readFile( filename, "utf8" );
 
 			// Remove the short SHA and .dirty from comparisons.
 			// The short SHA so commits can be compared against each other

@@ -1,8 +1,8 @@
 "use strict";
 
 const UglifyJS = require( "uglify-js" );
-const fs = require( "fs" );
-const path = require( "path" );
+const fs = require( "node:fs/promises" );
+const path = require( "node:path" );
 const processForDist = require( "./dist" );
 const getTimestamp = require( "./lib/getTimestamp" );
 
@@ -10,7 +10,7 @@ const rjs = /\.js$/;
 
 module.exports = async function minify( { dir, filename } ) {
 	const filepath = path.join( dir, filename );
-	const contents = await fs.promises.readFile( filepath, "utf8" );
+	const contents = await fs.readFile( filepath, "utf8" );
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
 	const banner = `/*! jQuery ${ version }` +
 		" | (c) OpenJS Foundation and other contributors" +
@@ -63,11 +63,11 @@ module.exports = async function minify( { dir, filename } ) {
 	} );
 
 	await Promise.all( [
-		fs.promises.writeFile(
+		fs.writeFile(
 			path.join( dir, minFilename ),
 			code
 		),
-		fs.promises.writeFile(
+		fs.writeFile(
 			path.join( dir, mapFilename ),
 			map
 		)

@@ -1,13 +1,10 @@
 "use strict";
 
-var
-	fs = require( "fs" ),
+var fs = require( "node:fs" ),
 	shell = require( "shelljs" ),
-	path = require( "path" ),
-	os = require( "os" ),
-
+	path = require( "node:path" ),
+	os = require( "node:os" ),
 	cdnFolder = "dist/cdn",
-
 	releaseFiles = {
 		"jquery-VER.js": "dist/jquery.js",
 		"jquery-VER.min.js": "dist/jquery.min.js",
@@ -16,15 +13,21 @@ var
 		"jquery-VER.slim.min.js": "dist/jquery.slim.min.js",
 		"jquery-VER.slim.min.map": "dist/jquery.slim.min.map"
 	},
-
 	googleFilesCDN = [
-		"jquery.js", "jquery.min.js", "jquery.min.map",
-		"jquery.slim.js", "jquery.slim.min.js", "jquery.slim.min.map"
+		"jquery.js",
+		"jquery.min.js",
+		"jquery.min.map",
+		"jquery.slim.js",
+		"jquery.slim.min.js",
+		"jquery.slim.min.map"
 	],
-
 	msFilesCDN = [
-		"jquery-VER.js", "jquery-VER.min.js", "jquery-VER.min.map",
-		"jquery-VER.slim.js", "jquery-VER.slim.min.js", "jquery-VER.slim.min.map"
+		"jquery-VER.js",
+		"jquery-VER.min.js",
+		"jquery-VER.min.map",
+		"jquery-VER.slim.js",
+		"jquery-VER.slim.min.js",
+		"jquery-VER.slim.min.map"
 	];
 
 /**
@@ -44,11 +47,16 @@ function makeReleaseCopies( Release ) {
 			// Map files need to reference the new uncompressed name;
 			// assume that all files reside in the same directory.
 			// "file":"jquery.min.js" ... "sources":["jquery.js"]
-			text = fs.readFileSync( builtFile, "utf8" )
-				.replace( /"file":"([^"]+)"/,
-					"\"file\":\"" + unpathedFile.replace( /\.min\.map/, ".min.js\"" ) )
-				.replace( /"sources":\["([^"]+)"\]/,
-					"\"sources\":[\"" + unpathedFile.replace( /\.min\.map/, ".js" ) + "\"]" );
+			text = fs
+				.readFileSync( builtFile, "utf8" )
+				.replace(
+					/"file":"([^"]+)"/,
+					`"file":"${ unpathedFile.replace( /\.min\.map/, ".min.js" ) }"`
+				)
+				.replace(
+					/"sources":\["([^"]+)"\]/,
+					`"sources":["${ unpathedFile.replace( /\.min\.map/, ".js" ) }"]`
+				);
 			fs.writeFileSync( releaseFile, text );
 		} else if ( builtFile !== releaseFile ) {
 			shell.cp( "-f", builtFile, releaseFile );
@@ -57,19 +65,22 @@ function makeReleaseCopies( Release ) {
 }
 
 function makeArchives( Release, callback ) {
-
 	Release.chdir( Release.dir.repo );
 
 	function makeArchive( cdn, files, callback ) {
 		if ( Release.preRelease ) {
-			console.log( "Skipping archive creation for " + cdn + "; this is a beta release." );
+			console.log(
+				`Skipping archive creation for ${ cdn }; this is a beta release.`
+			);
 			callback();
 			return;
 		}
 
 		console.log( "Creating production archive for " + cdn );
 
-		var i, sum, result,
+		var i,
+			sum,
+			result,
 			archiver = require( "archiver" )( "zip" ),
 			md5file = cdnFolder + "/" + cdn + "-md5.txt",
 			output = fs.createWriteStream(
@@ -87,28 +98,35 @@ function makeArchives( Release, callback ) {
 		archiver.pipe( output );
 
 		files = files.map( function( item ) {
-			return "dist" + ( rver.test( item ) ? "/cdn" : "" ) + "/" +
-				item.replace( rver, Release.newVersion );
+			return (
+				"dist" +
+				( rver.test( item ) ? "/cdn" : "" ) +
+				"/" +
+				item.replace( rver, Release.newVersion )
+			);
 		} );
 
 		if ( os.platform() === "win32" ) {
 			sum = [];
 			for ( i = 0; i < files.length; i++ ) {
 				result = Release.exec(
-					"certutil -hashfile " + files[ i ] + " MD5", "Error retrieving md5sum"
+					"certutil -hashfile " + files[ i ] + " MD5",
+					"Error retrieving md5sum"
 				);
 				sum.push( rmd5.exec( result )[ 0 ] + " " + files[ i ] );
 			}
 			sum = sum.join( "\n" );
 		} else {
-			sum = Release.exec( "md5 -r " + files.join( " " ), "Error retrieving md5sum" );
+			sum = Release.exec(
+				"md5 -r " + files.join( " " ),
+				"Error retrieving md5sum"
+			);
 		}
 		fs.writeFileSync( md5file, sum );
 		files.push( md5file );
 
 		files.forEach( function( file ) {
-			archiver.append( fs.createReadStream( file ),
-				{ name: path.basename( file ) } );
+			archiver.append( fs.createReadStream( file ), { name: path.basename( file ) } );
 		} );
 
 		archiver.finalize();

@@ -1,8 +1,8 @@
 "use strict";
 
-const fs = require( "fs" );
-const util = require( "util" );
-const exec = util.promisify( require( "child_process" ).exec );
+const fs = require( "node:fs/promises" );
+const util = require( "node:util" );
+const exec = util.promisify( require( "node:child_process" ).exec );
 const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
 
 if ( !verifyNodeVersion() ) {
@@ -17,7 +17,7 @@ if ( !verifyNodeVersion() ) {
 
 async function runTests( { module } ) {
 	const dir = "./test/node_smoke_tests";
-	const files = await fs.promises.readdir( dir, { withFileTypes: true } );
+	const files = await fs.readdir( dir, { withFileTypes: true } );
 	const testFiles = files.filter( ( testFilePath ) => testFilePath.isFile() );
 
 	if ( !testFiles.length ) {

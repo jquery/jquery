@@ -1,9 +1,9 @@
 "use strict";
 
-const { spawn } = require( "child_process" );
+const { spawn } = require( "node:child_process" );
 const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
-const path = require( "path" );
-const os = require( "os" );
+const path = require( "node:path" );
+const os = require( "node:os" );
 
 if ( !verifyNodeVersion() ) {
 	return;

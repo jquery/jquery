@@ -1,7 +1,7 @@
 import bodyParser from "body-parser";
 import express from "express";
 import bodyParserErrorHandler from "express-body-parser-error-handler";
-import { readFile } from "fs/promises";
+import { readFile } from "node:fs/promises";
 import mockServer from "../middleware-mockserver.js";
 
 export async function createTestServer( report ) {
