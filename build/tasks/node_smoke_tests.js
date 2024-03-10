@@ -138,6 +138,17 @@ async function runDefaultTests() {
 			libraryType: "regular",
 			sourceType: "dual",
 			module: "jquery/slim"
+		} ),
+
+		runTests( {
+			libraryType: "factory",
+			sourceType: "dual",
+			module: "jquery/factory"
+		} ),
+		runTests( {
+			libraryType: "factory",
+			sourceType: "dual",
+			module: "jquery/factory-slim"
 		} )
 	] );
 }
