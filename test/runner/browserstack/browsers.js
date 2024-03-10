@@ -66,7 +66,25 @@ async function waitForAck( worker, { fullBrowser, verbose } ) {
 	} );
 }
 
-async function ensureAcknowledged( worker, restarts ) {
+async function restartWorker( worker ) {
+	await cleanupWorker( worker, worker.options );
+	await createBrowserWorker(
+		worker.url,
+		worker.browser,
+		worker.options,
+		worker.restarts + 1
+	);
+}
+
+export async function restartBrowser( browser ) {
+	const fullBrowser = getBrowserString( browser );
+	const worker = workers[ fullBrowser ];
+	if ( worker ) {
+		await restartWorker( worker );
+	}
+}
+
+async function ensureAcknowledged( worker ) {
 	const fullBrowser = getBrowserString( worker.browser );
 	const verbose = worker.options.verbose;
 	try {
@@ -74,13 +92,7 @@ async function ensureAcknowledged( worker, restarts ) {
 		return worker;
 	} catch ( error ) {
 		console.error( error.message );
-		await cleanupWorker( worker, { verbose } );
-		await createBrowserWorker(
-			worker.url,
-			worker.browser,
-			worker.options,
-			restarts + 1
-		);
+		await restartWorker( worker.browser );
 	}
 }
 
@@ -132,7 +144,7 @@ export async function createBrowserWorker( url, browser, options, restarts = 0 )
 
 	// Wait for the worker to show up in the list
 	// before returning it.
-	return ensureAcknowledged( worker, restarts );
+	return ensureAcknowledged( worker );
 }
 
 export async function setBrowserWorkerUrl( browser, url ) {
@@ -159,13 +171,7 @@ export async function checkLastTouches() {
 					}min.`
 				);
 			}
-			await cleanupWorker( worker, options );
-			await createBrowserWorker(
-				worker.url,
-				worker.browser,
-				options,
-				worker.restarts
-			);
+			await restartWorker( worker );
 		}
 	}
 }
