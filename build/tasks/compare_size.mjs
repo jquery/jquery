@@ -60,7 +60,9 @@ function cacheResults( results ) {
 }
 
 function saveCache( loc, cache ) {
-	return fs.writeFile( loc, JSON.stringify( cache ) );
+
+	// Keep cache readable for manual edits
+	return fs.writeFile( loc, JSON.stringify( cache, null, "  " ) + "\n" );
 }
 
 function compareSizes( existing, current, padLength ) {
