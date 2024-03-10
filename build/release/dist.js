@@ -2,7 +2,7 @@
 
 module.exports = function( Release, files, complete ) {
 
-	const fs = require( "fs" ).promises;
+	const fs = require( "node:fs/promises" );
 	const shell = require( "shelljs" );
 	const inquirer = require( "inquirer" );
 	const pkg = require( `${ Release.dir.repo }/package.json` );
