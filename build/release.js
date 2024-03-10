@@ -1,6 +1,6 @@
 "use strict";
 
-var fs = require( "fs" );
+const fs = require( "node:fs" );
 
 module.exports = function( Release ) {
 

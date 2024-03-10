@@ -1,6 +1,6 @@
 "use strict";
 
-const fs = require( "node:fs" );
+const fs = require( "node:fs/promises" );
 const util = require( "node:util" );
 const exec = util.promisify( require( "node:child_process" ).exec );
 const rnewline = /\r?\n/;
@@ -40,7 +40,7 @@ function cloneSizzle() {
 }
 
 async function getLastAuthor() {
-	const authorsTxt = await fs.promises.readFile( "AUTHORS.txt", "utf8" );
+	const authorsTxt = await fs.readFile( "AUTHORS.txt", "utf8" );
 	return authorsTxt.trim().split( rnewline ).pop();
 }
 
@@ -93,7 +93,7 @@ async function updateAuthors() {
 	const authors = await getAuthors();
 
 	const authorsTxt = "Authors ordered by first contribution.\n\n" + authors.join( "\n" ) + "\n";
-	await fs.promises.writeFile( "AUTHORS.txt", authorsTxt );
+	await fs.writeFile( "AUTHORS.txt", authorsTxt );
 
 	console.log( "AUTHORS.txt updated" );
 }
