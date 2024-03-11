@@ -131,7 +131,6 @@
     "selenium-webdriver": "4.18.1",
     "sinon": "9.2.4",
     "webpack": "5.90.3",
-    "webpack-cli": "5.1.4",
     "yargs": "17.7.2"
   },
   "commitplease": {
