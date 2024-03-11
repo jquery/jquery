@@ -56,7 +56,7 @@ export function retryTest( reportId, maxRetries ) {
 
 export async function hardRetryTest( reportId, maxHardRetries ) {
 	if ( !maxHardRetries ) {
-		return;
+		return false;
 	}
 	const test = queue.find( ( test ) => test.id === reportId );
 	if ( test ) {
