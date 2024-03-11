@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 
 // Check if the object we got is the jQuery object by invoking a basic API.
 export const ensureJQuery = ( jQuery ) => {

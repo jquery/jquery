@@ -120,6 +120,8 @@ If you need to use jQuery in a file that's not an ECMAScript module, you can use
 const $ = require( "jquery" );
 ```
 
+The CommonJS module _does not_ expose named `$` & `jQuery` exports.
+
 #### Individual modules
 
 jQuery is authored in ECMAScript modules; it's also possible to use them directly. They are contained in the `src/` folder; inspect the package contents to see what's there. Full file names are required, including the `.js` extension.

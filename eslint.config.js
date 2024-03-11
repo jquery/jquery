@@ -10,6 +10,7 @@ export default [
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
 			"external",
+			"**/tmp",
 			"test/data/json_obj.js"
 		]
 	},
@@ -18,8 +19,8 @@ export default [
 		files: [
 			"eslint.config.js",
 			"Gruntfile.cjs",
-			"test/node_smoke_tests/commonjs/**",
-			"test/node_smoke_tests/module/**",
+			"test/bundler_smoke_tests/**/*",
+			"test/node_smoke_tests/**",
 			"test/promises_aplus_adapters/**",
 			"test/middleware-mockserver.cjs"
 		],
@@ -260,8 +261,8 @@ export default [
 
 	{
 		files: [
-			"test/node_smoke_tests/commonjs/**",
-			"test/node_smoke_tests/module/**",
+			"test/bundler_smoke_tests/**",
+			"test/node_smoke_tests/**",
 			"test/promises_aplus_adapters/**",
 			"test/middleware-mockserver.cjs"
 		],
@@ -317,7 +318,25 @@ export default [
 
 		languageOptions: {
 			globals: {
-				...globals.browser,
+				...globals.es2021,
+				define: false,
+				module: false,
+				Symbol: false
+			}
+		}
+	},
+
+	{
+		files: [
+			"dist/jquery.bundler-require-wrapper.js",
+			"dist/jquery.bundler-require-wrapper.slim.js",
+			"dist-module/jquery.node-module-wrapper.js",
+			"dist-module/jquery.node-module-wrapper.slim.js"
+		],
+
+		languageOptions: {
+			globals: {
+				...globals.node,
 				...globals.es2021,
 				define: false,
 				module: false,

@@ -11,7 +11,7 @@ const { window } = new JSDOM( "" );
 // Set the window global.
 globalThis.window = window;
 
-const { default: jQuery } = await import( jQueryModuleSpecifier );
+const { jQuery } = await import( jQueryModuleSpecifier );
 
 ensureJQuery( jQuery );
 ensureGlobalNotCreated( window );

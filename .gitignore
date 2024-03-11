@@ -9,6 +9,7 @@
 .sizecache.json
 yarn.lock
 .eslintcache
+tmp
 
 npm-debug.log*
 
@@ -16,6 +17,8 @@ npm-debug.log*
 # the ESLint config & package.json files
 /dist/*
 !/dist/package.json
+!/dist/jquery.bundler-require-wrapper.js
+!/dist/jquery.bundler-require-wrapper.slim.js
 
 # Ignore everything in the `dist-module` folder except for the ESLint config,
 # package.json & Node module wrapper files

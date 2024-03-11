@@ -1,4 +1,4 @@
-import assert from "node:assert";
+import assert from "node:assert/strict";
 
 // Ensure the jQuery property on global/window/module "this"/etc. was not
 // created in a CommonJS environment.
