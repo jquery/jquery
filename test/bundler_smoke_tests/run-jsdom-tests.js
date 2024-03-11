@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import fs from "node:fs/promises";
 import jsdom, { JSDOM } from "jsdom";
 import path from "node:path";
