@@ -1,7 +1,5 @@
 "use strict";
 
-const path = require( "path" );
-
 module.exports = {
 	entry: `${ __dirname }/src-esm-commonjs/main.js`,
 	output: {

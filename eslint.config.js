@@ -10,7 +10,7 @@ export default [
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
 			"external",
-			"test/bundler_smoke_tests/tmp",
+			"**/tmp",
 			"test/data/json_obj.js"
 		]
 	},
