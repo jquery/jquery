@@ -63,12 +63,6 @@ const argv = yargs( process.argv.slice( 2 ) )
 		type: "boolean",
 		description: "Log additional information."
 	} )
-	.option( "retries", {
-		alias: "r",
-		type: "number",
-		description: "Number of times to retry failed tests in BrowserStack.",
-		implies: [ "browserstack" ]
-	} )
 	.option( "run-id", {
 		type: "string",
 		description: "A unique identifier for this run."
@@ -88,6 +82,20 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"The --browser option is ignored when --browserstack has a value.\n" +
 			"Otherwise, the --browser option will be used, " +
 			"with the latest version/device for that browser, on a matching OS."
+	} )
+	.option( "retries", {
+		alias: "r",
+		type: "number",
+		description: "Number of times to retry failed tests in BrowserStack.",
+		implies: [ "browserstack" ]
+	} )
+	.option( "hard-retries", {
+		type: "number",
+		description:
+			"Number of times to retry failed tests in BrowserStack " +
+			"by restarting the worker. This is in addition to the normal retries " +
+			"and are only used when the normal retries are exhausted.",
+		implies: [ "browserstack" ]
 	} )
 	.option( "list-browsers", {
 		type: "string",
