@@ -92,7 +92,7 @@ async function ensureAcknowledged( worker ) {
 		return worker;
 	} catch ( error ) {
 		console.error( error.message );
-		await restartWorker( worker.browser );
+		await restartWorker( worker );
 	}
 }
 
