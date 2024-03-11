@@ -14,6 +14,7 @@ import { cleanupAllBrowsers, touchBrowser } from "./browserstack/browsers.js";
 import {
 	addBrowserStackRun,
 	getNextBrowserTest,
+	hardRetryTest,
 	retryTest,
 	runAllBrowserStack
 } from "./browserstack/queue.js";
@@ -30,6 +31,7 @@ export async function run( {
 	concurrency,
 	debug,
 	esm,
+	hardRetries,
 	headless,
 	isolate,
 	modules = [],
@@ -72,7 +74,7 @@ export async function run( {
 	// Create the test app and
 	// hook it up to the reporter
 	const reports = Object.create( null );
-	const app = await createTestServer( ( message ) => {
+	const app = await createTestServer( async( message ) => {
 		switch ( message.type ) {
 			case "testEnd": {
 				const reportId = message.id;
@@ -119,6 +121,11 @@ export async function run( {
 					// Retry if retryTest returns a test
 					if ( retry ) {
 						return retry;
+					}
+
+					// Return early if hardRetryTest returns true
+					if ( await hardRetryTest( reportId, hardRetries ) ) {
+						return;
 					}
 					errorMessages.push( ...Object.values( pendingErrors[ reportId ] ) );
 				}

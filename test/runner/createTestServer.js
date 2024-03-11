@@ -26,23 +26,29 @@ export async function createTestServer( report ) {
 
 	// Add a script tag to the index.html to load the QUnit listeners
 	app.use( /\/test(?:\/index.html)?\//, ( _req, res ) => {
-		res.send( indexHTML.replace(
-			"</head>",
-			"<script src=\"/test/runner/listeners.js\"></script></head>"
-		) );
+		res.send(
+			indexHTML.replace(
+				"</head>",
+				"<script src=\"/test/runner/listeners.js\"></script></head>"
+			)
+		);
 	} );
 
 	// Bind the reporter
-	app.post( "/api/report", bodyParser.json( { limit: "50mb" } ), ( req, res ) => {
-		if ( report ) {
-			const response = report( req.body );
-			if ( response ) {
-				res.json( response );
-				return;
+	app.post(
+		"/api/report",
+		bodyParser.json( { limit: "50mb" } ),
+		async( req, res ) => {
+			if ( report ) {
+				const response = await report( req.body );
+				if ( response ) {
+					res.json( response );
+					return;
+				}
 			}
+			res.sendStatus( 204 );
 		}
-		res.sendStatus( 204 );
-	} );
+	);
 
 	// Handle errors from the body parser
 	app.use( bodyParserErrorHandler() );

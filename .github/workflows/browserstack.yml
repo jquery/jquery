@@ -62,4 +62,4 @@ jobs:
         run: npm run pretest
 
       - name: Run tests
-        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --run-id ${{ github.run_id }} --isolate --retries 3
+        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --run-id ${{ github.run_id }} --isolate --retries 3 --hard-retries 1
