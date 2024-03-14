@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { getBrowserString } from "./lib/getBrowserString.js";
 import { prettyMs } from "./lib/prettyMs.js";
+import * as Diff from "diff";
 
 export function reportTest( test, reportId, { browser, headless } ) {
 	if ( test.status === "passed" ) {
@@ -24,12 +25,58 @@ export function reportTest( test, reportId, { browser, headless } ) {
 			message += `\n${ chalk.gray( error.stack ) }`;
 			if ( error.expected && error.actual ) {
 				message += `\nexpected: ${ JSON.stringify( error.expected ) }`;
-				message += `\nactual: ${ chalk.red( JSON.stringify( error.actual ) ) }`;
+				message += `\nactual: ${ JSON.stringify( error.actual ) }`;
+				let diff;
+
+				if (
+					Array.isArray( error.expected ) &&
+					Array.isArray( error.actual )
+				) {
+
+					// Diff arrays
+					diff = Diff.diffArrays( error.expected, error.actual );
+				} else if (
+					typeof error.expected === "object" &&
+					typeof error.actual === "object"
+				) {
+
+					// Diff objects
+					diff = Diff.diffJson( error.expected, error.actual );
+				} else if (
+					typeof error.expected === "number" &&
+					typeof error.expected === "number"
+				) {
+
+					// Diff numbers directly
+					const value = error.actual - error.expected;
+					if ( value > 0 ) {
+						diff = [ { added: true, value: `+${ value }` } ];
+					} else {
+						diff = [ { removed: true, value: `${ value }` } ];
+					}
+				} else {
+
+					// Diff everything else as characters
+					diff = Diff.diffChars( `${ error.expected }`, `${ error.actual }` );
+				}
+
+				message += "\n";
+				message += diff
+					.map( ( part ) => {
+						if ( part.added ) {
+							return chalk.green( part.value );
+						}
+						if ( part.removed ) {
+							return chalk.red( part.value );
+						}
+						return chalk.gray( part.value );
+					} )
+					.join( "" );
 			}
 		}
 	}
 
-	console.log( "\n\n" + message );
+	console.log( `\n\n${ message }` );
 
 	// Only return failed messages
 	if ( test.status === "failed" ) {
