@@ -10,28 +10,28 @@ export function reportTest( test, reportId, { browser, headless } ) {
 		return;
 	}
 
-	let message = `Test ${ test.status } on ${ chalk.yellow(
+	let message = `${ chalk.bold( `${ test.suiteName }: ${ test.name }` ) }`;
+	message += `\nTest ${ test.status } on ${ chalk.yellow(
 		getBrowserString( browser, headless )
 	) } (${ chalk.bold( reportId ) }).`;
-	message += `\n${ chalk.bold( `${ test.suiteName }: ${ test.name }` ) }`;
 
-	// Prefer failed assertions over error messages
-	if ( test.assertions.filter( ( a ) => !!a && !a.passed ).length ) {
-		test.assertions.forEach( ( assertion, i ) => {
-			if ( !assertion.passed ) {
-				message += `\n${ i + 1 }. ${ chalk.red( assertion.message ) }`;
-				message += `\n${ chalk.gray( assertion.stack ) }`;
-			}
-		} );
-	} else if ( test.errors.length ) {
+	// test.assertions only contains passed assertions;
+	// test.errors contains all failed asssertions
+	if ( test.errors.length ) {
 		for ( const error of test.errors ) {
-			message += `\n${ chalk.red( error.message ) }`;
+			message += "\n";
+			message += `\n${ error.message }`;
 			message += `\n${ chalk.gray( error.stack ) }`;
+			if ( error.expected && error.actual ) {
+				message += `\nexpected: ${ JSON.stringify( error.expected ) }`;
+				message += `\nactual: ${ chalk.red( JSON.stringify( error.actual ) ) }`;
+			}
 		}
 	}
 
 	console.log( "\n\n" + message );
 
+	// Only return failed messages
 	if ( test.status === "failed" ) {
 		return message;
 	}
