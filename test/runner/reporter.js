@@ -21,9 +21,11 @@ export function reportTest( test, reportId, { browser, headless } ) {
 	if ( test.errors.length ) {
 		for ( const error of test.errors ) {
 			message += "\n";
-			message += `\n${ error.message }`;
+			if ( error.message ) {
+				message += `\n${ error.message }`;
+			}
 			message += `\n${ chalk.gray( error.stack ) }`;
-			if ( error.expected && error.actual ) {
+			if ( "expected" in error && "actual" in error ) {
 				message += `\nexpected: ${ JSON.stringify( error.expected ) }`;
 				message += `\nactual: ${ JSON.stringify( error.actual ) }`;
 				let diff;
@@ -54,6 +56,13 @@ export function reportTest( test, reportId, { browser, headless } ) {
 					} else {
 						diff = [ { removed: true, value: `${ value }` } ];
 					}
+				} else if (
+					typeof error.expected === "boolean" &&
+					typeof error.actual === "boolean"
+				) {
+
+					// Show the actual boolean in red
+					diff = [ { removed: true, value: `${ error.actual }` } ];
 				} else {
 
 					// Diff everything else as characters
