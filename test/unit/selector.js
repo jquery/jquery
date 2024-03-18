@@ -948,10 +948,10 @@ QUnit.test( "pseudo - nth-last-of-type", function( assert ) {
 QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - has", function( assert ) {
 	assert.expect( 4 );
 
-	assert.t( "Basic test", "p:has(a)", [ "firstp", "ap", "en", "sap" ] );
-	assert.t( "Basic test (irrelevant whitespace)", "p:has( a )", [ "firstp", "ap", "en", "sap" ] );
-	assert.t( "Nested with overlapping candidates",
-		"#qunit-fixture div:has(div:has(div:not([id])))",
+	assert.selectInFixture( "Basic test", "p:has(a)", [ "firstp", "ap", "en", "sap" ] );
+	assert.selectInFixture( "Basic test (irrelevant whitespace)", "p:has( a )", [ "firstp", "ap", "en", "sap" ] );
+	assert.selectInFixture( "Nested with overlapping candidates",
+		"div:has(div:has(div:not([id])))",
 		[ "moretests", "t2037", "fx-test-group", "fx-queue" ] );
 
 	// Support: Safari 15.4+, Chrome 105+

@@ -38,7 +38,14 @@ jQuery.extend( {
 		}
 
 		if ( value !== undefined ) {
-			if ( value === null ) {
+			if ( value === null ||
+
+				// For compat with previous handling of boolean attributes,
+				// remove when `false` passed. For ARIA attributes -
+				// many of which recognize a `"false"` value - continue to
+				// set the `"false"` value as jQuery <4 did.
+				( value === false && name.toLowerCase().indexOf( "aria-" ) !== 0 ) ) {
+
 				jQuery.removeAttr( elem, name );
 				return;
 			}
@@ -96,32 +103,3 @@ if ( isIE ) {
 		}
 	};
 }
-
-// HTML boolean attributes have special behavior:
-// we consider the lowercase name to be the only valid value, so
-// getting (if the attribute is present) normalizes to that, as does
-// setting to any non-`false` value (and setting to `false` removes the attribute).
-// See https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes
-jQuery.each( (
-	"checked selected async autofocus autoplay controls defer disabled " +
-	"hidden ismap loop multiple open readonly required scoped"
-).split( " " ), function( _i, name ) {
-	jQuery.attrHooks[ name ] = {
-		get: function( elem ) {
-			return elem.getAttribute( name ) != null ?
-				name.toLowerCase() :
-				null;
-		},
-
-		set: function( elem, value, name ) {
-			if ( value === false ) {
-
-				// Remove boolean attributes when set to false
-				jQuery.removeAttr( elem, name );
-			} else {
-				elem.setAttribute( name, name );
-			}
-			return name;
-		}
-	};
-} );
