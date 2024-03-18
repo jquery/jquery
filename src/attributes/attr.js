@@ -97,18 +97,27 @@ if ( isIE ) {
 	};
 }
 
-// HTML boolean attributes have special behavior:
-// we consider the lowercase name to be the only valid value, so
-// getting (if the attribute is present) normalizes to that, as does
-// setting to any non-`false` value (and setting to `false` removes the attribute).
+// HTML boolean attributes have special behavior - the attribute presence
+// corresponds to the `true` value and the lack of it - to `false`. The only
+// officially valid values are an empty string or the attribute name.
 // See https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes
+//
+// Because of that, jQuery used to normalize the value to the name in both
+// the getter & setter. However, the spec occasionally adds more values, making
+// the attribute non-boolean anymore.
+//
+// For backwards compatibility, jQuery keeps special logic for select more popular
+// attributes that are or were boolean attributes (this list is not meant
+// to expand):
+// 1. In the getter, an empty string is converted to the lowercase name.
+// 2. In the setter, `false` means attribute removal and `true` is converted to name.
+// For other getter/setter inputs no special logic is applied.
 jQuery.each( (
-	"checked selected async autofocus autoplay controls defer disabled " +
-	"hidden ismap loop multiple open readonly required scoped"
+	"disabled checked readonly selected required hidden open autofocus multiple"
 ).split( " " ), function( _i, name ) {
 	jQuery.attrHooks[ name ] = {
 		get: function( elem ) {
-			return elem.getAttribute( name ) != null ?
+			return elem.getAttribute( name ) === "" ?
 				name.toLowerCase() :
 				null;
 		},
@@ -118,10 +127,17 @@ jQuery.each( (
 
 				// Remove boolean attributes when set to false
 				jQuery.removeAttr( elem, name );
-			} else {
-				elem.setAttribute( name, name );
+				return name;
 			}
-			return name;
+
+			if ( value === true ) {
+
+				// Transform `true` into the attribute name for compatibility
+				// with older jQuery and the pattern of the boolean attribute
+				// setter mirroring the associated property one.
+				elem.setAttribute( name, name );
+				return name;
+			}
 		}
 	};
 } );
