@@ -304,12 +304,12 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	assert.equal( $input[ 0 ].selected, true, "Setting selected updates property (verified by native property)" );
 
 	$input = jQuery( "#check2" );
-	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", true );
+	$input.prop( "checked", true ).prop( "checked", false ).attr( "checked", "checked" );
 	assert.equal( $input.attr( "checked" ), "checked", "Set checked (verified by .attr)" );
 	$input.prop( "checked", false ).prop( "checked", true ).attr( "checked", false );
 	assert.equal( $input.attr( "checked" ), undefined, "Remove checked (verified by .attr)" );
 
-	$input = jQuery( "#text1" ).prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", true );
+	$input = jQuery( "#text1" ).prop( "readOnly", true ).prop( "readOnly", false ).attr( "readonly", "readonly" );
 	assert.equal( $input.attr( "readonly" ), "readonly", "Set readonly (verified by .attr)" );
 	$input.prop( "readOnly", false ).prop( "readOnly", true ).attr( "readonly", false );
 	assert.equal( $input.attr( "readonly" ), undefined, "Remove readonly (verified by .attr)" );
@@ -318,7 +318,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	assert.equal( $input[ 0 ].checked, true, "Set checked property (verified by native property)" );
 	assert.equal( $input.prop( "checked" ), true, "Set checked property (verified by .prop)" );
 	assert.equal( $input.attr( "checked" ), undefined, "Setting checked property doesn't affect checked attribute" );
-	$input.attr( "checked", false ).attr( "checked", true ).prop( "checked", false );
+	$input.attr( "checked", false ).attr( "checked", "checked" ).prop( "checked", false );
 	assert.equal( $input[ 0 ].checked, false, "Clear checked property (verified by native property)" );
 	assert.equal( $input.prop( "checked" ), false, "Clear checked property (verified by .prop)" );
 	assert.equal( $input.attr( "checked" ), "checked", "Clearing checked property doesn't affect checked attribute" );
@@ -345,8 +345,8 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 
 	// HTML5 boolean attributes
 	$text = jQuery( "#text1" ).attr( {
-		"autofocus": true,
-		"required": true
+		"autofocus": "autofocus",
+		"required": "required"
 	} );
 	assert.equal( $text.attr( "autofocus" ), "autofocus", "Reading autofocus attribute yields 'autofocus'" );
 	assert.equal( $text.attr( "autofocus", false ).attr( "autofocus" ), undefined, "Setting autofocus to false removes it" );
@@ -354,13 +354,13 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	assert.equal( $text.attr( "required", false ).attr( "required" ), undefined, "Setting required attribute to false removes it" );
 
 	$details = jQuery( "<details open></details>" ).appendTo( "#qunit-fixture" );
-	assert.equal( $details.attr( "open" ), "open", "open attribute presence indicates true" );
+	assert.equal( $details.attr( "open" ), "", "open attribute presence indicates true" );
 	assert.equal( $details.attr( "open", false ).attr( "open" ), undefined, "Setting open attribute to false removes it" );
 
 	$text.attr( "data-something", true );
 	assert.equal( $text.attr( "data-something" ), "true", "Set data attributes" );
 	assert.equal( $text.data( "something" ), true, "Setting data attributes are not affected by boolean settings" );
-	$text.attr( "data-another", false );
+	$text.attr( "data-another", "false" );
 	assert.equal( $text.attr( "data-another" ), "false", "Set data attributes" );
 	assert.equal( $text.data( "another" ), false, "Setting data attributes are not affected by boolean settings" );
 	assert.equal( $text.attr( "aria-disabled", false ).attr( "aria-disabled" ), "false", "Setting aria attributes are not affected by boolean settings" );
@@ -1790,20 +1790,78 @@ QUnit.test( "non-lowercase boolean attribute getters should not crash", function
 
 	var elem = jQuery( "<input checked required autofocus type='checkbox'>" );
 
-	jQuery.each( {
-		checked: "Checked",
-		required: "requiRed",
-		autofocus: "AUTOFOCUS"
-	}, function( lowercased, original ) {
+	[
+		"Checked", "requiRed", "AUTOFOCUS"
+	].forEach( function( inconsistentlyCased ) {
 		try {
-			assert.strictEqual( elem.attr( original ), lowercased,
-				"The '" + this + "' attribute getter should return the lowercased name" );
+			assert.strictEqual( elem.attr( inconsistentlyCased ), "",
+				"The '" + this + "' attribute getter should return an empty string" );
 		} catch ( e ) {
 			assert.ok( false, "The '" + this + "' attribute getter threw" );
 		}
 	} );
 } );
 
+
+QUnit.test( "false setter removes non-ARIA attrs (gh-5388)", function( assert ) {
+	assert.expect( 24 );
+
+	var elem = jQuery( "<input" +
+		"	checked required autofocus" +
+		"	type='checkbox'" +
+		"	title='Example title'" +
+		"	class='test-class'" +
+		"	style='color: brown'" +
+		"	aria-hidden='true'" +
+		"	aria-checked='true'" +
+		"	aria-label='Example ARIA label'" +
+		"	data-prop='Example data value'" +
+		"	data-title='Example data title'" +
+		"	data-true='true'" +
+		">" );
+
+	function testFalseSetter( attributes, options ) {
+		var removal = options.removal;
+
+		attributes.forEach( function( attrName ) {
+			assert.ok( elem.attr( attrName ) != null,
+				"Attribute '" + attrName + "': initial defined value" );
+			elem.attr( attrName, false );
+
+			if ( removal ) {
+				assert.strictEqual( elem.attr( attrName ), undefined,
+					"Attribute '" + attrName + "' removed" );
+			} else {
+				assert.strictEqual( elem.attr( attrName ), "false",
+					"Attribute '" + attrName + "' set to 'false'" );
+			}
+		} );
+	}
+
+	// Boolean attributes
+	testFalseSetter(
+		[ "checked", "required", "autofocus" ],
+		{ removal: true }
+	);
+
+	// Regular attributes
+	testFalseSetter(
+		[ "title", "class", "style" ],
+		{ removal: true }
+	);
+
+	// `aria-*` attributes
+	testFalseSetter(
+		[ "aria-hidden", "aria-checked", "aria-label" ],
+		{ removal: false }
+	);
+
+	// `data-*` attributes
+	testFalseSetter(
+		[ "data-prop", "data-title", "data-true" ],
+		{ removal: true }
+	);
+} );
 
 // Test trustedTypes support in browsers where they're supported (currently Chrome 83+).
 // Browsers with no TrustedScriptURL support still run tests on object wrappers with
