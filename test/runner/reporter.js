@@ -3,9 +3,11 @@ import { getBrowserString } from "./lib/getBrowserString.js";
 import { prettyMs } from "./lib/prettyMs.js";
 import * as Diff from "diff";
 
+const rdquo = /"/g;
+
 function quoteWrap( value ) {
 	if ( typeof value === "string" ) {
-		return `"${ value }"`;
+		return `"${ value.replace( rdquo, "\\\"" ) }"`;
 	}
 	return `${ value }`;
 }
@@ -57,7 +59,7 @@ export function reportTest( test, reportId, { browser, headless } ) {
 					diff = Diff.diffJson( error.expected, error.actual );
 				} else if (
 					typeof error.expected === "number" &&
-					typeof error.expected === "number"
+					typeof error.actual === "number"
 				) {
 
 					// Diff numbers directly
