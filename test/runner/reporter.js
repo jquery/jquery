@@ -3,11 +3,14 @@ import { getBrowserString } from "./lib/getBrowserString.js";
 import { prettyMs } from "./lib/prettyMs.js";
 import * as Diff from "diff";
 
-const rdquo = /"/g;
+function serializeForDiff( value ) {
 
-function quoteWrap( value ) {
+	// Use naive serialization for everything except types with confusable values
 	if ( typeof value === "string" ) {
-		return `"${ value.replace( rdquo, "\\\"" ) }"`;
+		return JSON.stringify( value );
+	}
+	if ( typeof value === "bigint" ) {
+		return `${ value }n`;
 	}
 	return `${ value }`;
 }
@@ -76,12 +79,12 @@ export function reportTest( test, reportId, { browser, headless } ) {
 
 					// Diff the characters of strings
 					diff = Diff.diffChars( error.expected, error.actual );
-				} else if ( error.expected != null && error.actual != null ) {
+				} else {
 
 					// Diff everything else as words
 					diff = Diff.diffWords(
-						quoteWrap( error.expected ),
-						quoteWrap( error.actual )
+						serializeForDiff( error.expected ),
+						serializeForDiff( error.actual )
 					);
 				}
 

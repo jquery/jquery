@@ -53,6 +53,14 @@
 					return nu;
 				}
 			}
+
+			// Serialize Symbols as string representations so they are
+			// sent over the wire after being stringified.
+			if ( typeof value === "symbol" ) {
+				var ctor = Symbol.keyFor( value ) !== undefined ? "Symbol.for" : "Symbol";
+				return ctor + "(" + JSON.stringify( value.description ) + ")";
+			}
+
 			return value;
 		}
 		return derez( object );
