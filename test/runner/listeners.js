@@ -57,6 +57,7 @@
 			// Serialize Symbols as string representations so they are
 			// sent over the wire after being stringified.
 			if ( typeof value === "symbol" ) {
+
 				// We can *describe* unique symbols, but note that their identity
 				// (e.g., `Symbol() !== Symbol()`) is lost
 				var ctor = Symbol.keyFor( value ) !== undefined ? "Symbol.for" : "Symbol";
