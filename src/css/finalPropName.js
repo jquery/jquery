@@ -1,6 +1,6 @@
 import { document } from "../var/document.js";
 
-var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+var cssPrefixes = [ "Webkit", "Moz" ],
 	emptyStyle = document.createElement( "div" ).style,
 	vendorProps = {};
 

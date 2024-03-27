@@ -1,5 +1,4 @@
 import { jQuery } from "./core.js";
-import { getProto } from "./var/getProto.js";
 import { indexOf } from "./var/indexOf.js";
 import { dir } from "./traversing/var/dir.js";
 import { siblings } from "./traversing/var/siblings.js";
@@ -142,21 +141,15 @@ jQuery.each( {
 		return siblings( elem.firstChild );
 	},
 	contents: function( elem ) {
-		if ( elem.contentDocument != null &&
 
-			// Support: IE 11+
-			// <object> elements with no `data` attribute has an object
-			// `contentDocument` with a `null` prototype.
-			getProto( elem.contentDocument ) ) {
-
+		// Most non-iframe nodes have an `undefined` `contentDocument`.
+		// `<object>` elements have a `null` one. Handle both cases. (gh-4384)
+		if ( elem.contentDocument != null ) {
 			return elem.contentDocument;
 		}
 
-		// Support: IE 9 - 11+
-		// Treat the template element as a regular one in browsers that
-		// don't support it.
 		if ( nodeName( elem, "template" ) ) {
-			elem = elem.content || elem;
+			elem = elem.content;
 		}
 
 		return jQuery.merge( [], elem.childNodes );
