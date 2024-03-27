@@ -3,6 +3,18 @@ import { getBrowserString } from "./lib/getBrowserString.js";
 import { prettyMs } from "./lib/prettyMs.js";
 import * as Diff from "diff";
 
+function serializeForDiff( value ) {
+
+	// Use naive serialization for everything except types with confusable values
+	if ( typeof value === "string" ) {
+		return JSON.stringify( value );
+	}
+	if ( typeof value === "bigint" ) {
+		return `${ value }n`;
+	}
+	return `${ value }`;
+}
+
 export function reportTest( test, reportId, { browser, headless } ) {
 	if ( test.status === "passed" ) {
 
@@ -25,15 +37,19 @@ export function reportTest( test, reportId, { browser, headless } ) {
 				message += `\n${ error.message }`;
 			}
 			message += `\n${ chalk.gray( error.stack ) }`;
-			if ( "expected" in error && "actual" in error ) {
-				message += `\nexpected: ${ JSON.stringify( error.expected ) }`;
-				message += `\nactual: ${ JSON.stringify( error.actual ) }`;
+
+			// Show expected and actual values
+			// if either is defined and non-null.
+			// error.actual is set to null for failed
+			// assert.expect() assertions, so skip those as well.
+			// This should be fine because error.expected would
+			// have to also be null for this to be skipped.
+			if ( error.expected != null || error.actual != null ) {
+				message += `\nexpected: ${ chalk.red( JSON.stringify( error.expected ) ) }`;
+				message += `\nactual: ${ chalk.green( JSON.stringify( error.actual ) ) }`;
 				let diff;
 
-				if (
-					Array.isArray( error.expected ) &&
-					Array.isArray( error.actual )
-				) {
+				if ( Array.isArray( error.expected ) && Array.isArray( error.actual ) ) {
 
 					// Diff arrays
 					diff = Diff.diffArrays( error.expected, error.actual );
@@ -46,7 +62,7 @@ export function reportTest( test, reportId, { browser, headless } ) {
 					diff = Diff.diffJson( error.expected, error.actual );
 				} else if (
 					typeof error.expected === "number" &&
-					typeof error.expected === "number"
+					typeof error.actual === "number"
 				) {
 
 					// Diff numbers directly
@@ -57,30 +73,35 @@ export function reportTest( test, reportId, { browser, headless } ) {
 						diff = [ { removed: true, value: `${ value }` } ];
 					}
 				} else if (
-					typeof error.expected === "boolean" &&
-					typeof error.actual === "boolean"
+					typeof error.expected === "string" &&
+					typeof error.actual === "string"
 				) {
 
-					// Show the actual boolean in red
-					diff = [ { removed: true, value: `${ error.actual }` } ];
+					// Diff the characters of strings
+					diff = Diff.diffChars( error.expected, error.actual );
 				} else {
 
-					// Diff everything else as characters
-					diff = Diff.diffChars( `${ error.expected }`, `${ error.actual }` );
+					// Diff everything else as words
+					diff = Diff.diffWords(
+						serializeForDiff( error.expected ),
+						serializeForDiff( error.actual )
+					);
 				}
 
-				message += "\n";
-				message += diff
-					.map( ( part ) => {
-						if ( part.added ) {
-							return chalk.green( part.value );
-						}
-						if ( part.removed ) {
-							return chalk.red( part.value );
-						}
-						return chalk.gray( part.value );
-					} )
-					.join( "" );
+				if ( diff ) {
+					message += "\n";
+					message += diff
+						.map( ( part ) => {
+							if ( part.added ) {
+								return chalk.green( part.value );
+							}
+							if ( part.removed ) {
+								return chalk.red( part.value );
+							}
+							return chalk.gray( part.value );
+						} )
+						.join( "" );
+				}
 			}
 		}
 	}
