@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { getBrowserString } from "../lib/getBrowserString.js";
+import { getBrowserString } from "./lib/getBrowserString.js";
 import {
 	checkLastTouches,
 	createBrowserWorker,
@@ -45,7 +45,7 @@ export function retryTest( reportId, maxRetries ) {
 		test.retries++;
 		if ( test.retries <= maxRetries ) {
 			console.log(
-				`Retrying test ${ reportId } for ${ chalk.yellow(
+				`\nRetrying test ${ reportId } for ${ chalk.yellow(
 					test.options.modules.join( ", " )
 				) }...${ test.retries }`
 			);
@@ -63,7 +63,7 @@ export async function hardRetryTest( reportId, maxHardRetries ) {
 		test.hardRetries++;
 		if ( test.hardRetries <= maxHardRetries ) {
 			console.log(
-				`Hard retrying test ${ reportId } for ${ chalk.yellow(
+				`\nHard retrying test ${ reportId } for ${ chalk.yellow(
 					test.options.modules.join( ", " )
 				) }...${ test.hardRetries }`
 			);
@@ -74,7 +74,7 @@ export async function hardRetryTest( reportId, maxHardRetries ) {
 	return false;
 }
 
-export function addBrowserStackRun( url, browser, options ) {
+export function addRun( url, browser, options ) {
 	queue.push( {
 		browser,
 		fullBrowser: getBrowserString( browser ),
@@ -87,7 +87,7 @@ export function addBrowserStackRun( url, browser, options ) {
 	} );
 }
 
-export async function runAllBrowserStack() {
+export async function runAll() {
 	return new Promise( async( resolve, reject ) => {
 		while ( queue.length ) {
 			try {

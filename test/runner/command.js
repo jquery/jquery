@@ -1,8 +1,8 @@
 import yargs from "yargs/yargs";
-import { browsers } from "./browsers.js";
+import { browsers } from "./flags/browsers.js";
 import { getPlan, listBrowsers, stopWorkers } from "./browserstack/api.js";
 import { buildBrowserFromString } from "./browserstack/buildBrowserFromString.js";
-import { modules } from "./modules.js";
+import { modules } from "./flags/modules.js";
 import { run } from "./run.js";
 
 const argv = yargs( process.argv.slice( 2 ) )
@@ -59,14 +59,22 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Leave the browser open for debugging. Cannot be used with --headless.",
 		conflicts: [ "headless" ]
 	} )
+	.option( "retries", {
+		alias: "r",
+		type: "number",
+		description: "Number of times to retry failed tests by refreshing the URL."
+	} )
+	.option( "hard-retries", {
+		type: "number",
+		description:
+			"Number of times to retry failed tests by restarting the worker. " +
+			"This is in addition to the normal retries " +
+			"and are only used when the normal retries are exhausted."
+	} )
 	.option( "verbose", {
 		alias: "v",
 		type: "boolean",
 		description: "Log additional information."
-	} )
-	.option( "run-id", {
-		type: "string",
-		description: "A unique identifier for this run."
 	} )
 	.option( "isolate", {
 		type: "boolean",
@@ -84,19 +92,9 @@ const argv = yargs( process.argv.slice( 2 ) )
 			"Otherwise, the --browser option will be used, " +
 			"with the latest version/device for that browser, on a matching OS."
 	} )
-	.option( "retries", {
-		alias: "r",
-		type: "number",
-		description: "Number of times to retry failed tests in BrowserStack.",
-		implies: [ "browserstack" ]
-	} )
-	.option( "hard-retries", {
-		type: "number",
-		description:
-			"Number of times to retry failed tests in BrowserStack " +
-			"by restarting the worker. This is in addition to the normal retries " +
-			"and are only used when the normal retries are exhausted.",
-		implies: [ "browserstack" ]
+	.option( "run-id", {
+		type: "string",
+		description: "A unique identifier for the run in BrowserStack."
 	} )
 	.option( "list-browsers", {
 		type: "string",
@@ -132,9 +130,5 @@ if ( typeof argv.listBrowsers === "string" ) {
 } else if ( argv.browserstackPlan ) {
 	console.log( await getPlan() );
 } else {
-	run( {
-		...argv,
-		browsers: argv.browser,
-		modules: argv.module
-	} );
+	run( argv );
 }

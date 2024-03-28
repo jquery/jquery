@@ -115,10 +115,11 @@ export function reportTest( test, reportId, { browser, headless } ) {
 }
 
 export function reportEnd( result, reportId, { browser, headless, modules } ) {
+	const fullBrowser = getBrowserString( browser, headless );
 	console.log(
-		`\n\nTests for ${ chalk.yellow( modules.join( ", " ) ) } on ${ chalk.yellow(
-			getBrowserString( browser, headless )
-		) } finished in ${ prettyMs( result.runtime ) } (${ chalk.bold( reportId ) }).`
+		`\n\nTests finished in ${ prettyMs( result.runtime ) } ` +
+			`for ${ chalk.yellow( modules.join( "," ) ) } ` +
+			`in ${ chalk.yellow( fullBrowser ) } (${ chalk.bold( reportId ) })...`
 	);
 	console.log(
 		( result.status !== "passed" ?
