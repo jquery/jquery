@@ -436,13 +436,16 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 } );
 
 testIframe( "table", "offset/table.html", function( assert, $ ) {
-	assert.expect( 4 );
+	assert.expect( 6 );
 
 	assert.equal( $( "#table-1" ).offset().top, 6, "jQuery('#table-1').offset().top" );
 	assert.equal( $( "#table-1" ).offset().left, 6, "jQuery('#table-1').offset().left" );
 
 	assert.equal( $( "#th-1" ).offset().top, 10, "jQuery('#th-1').offset().top" );
 	assert.equal( $( "#th-1" ).offset().left, 10, "jQuery('#th-1').offset().left" );
+
+	assert.equal( $( "#th-1" ).position().top, 10, "jQuery('#th-1').position().top" );
+	assert.equal( $( "#th-1" ).position().left, 10, "jQuery('#th-1').position().left" );
 } );
 
 testIframe( "scroll", "offset/scroll.html", function( assert, $, win ) {
