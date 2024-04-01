@@ -7,7 +7,7 @@ import { browserSupportsHeadless } from "../lib/getBrowserString.js";
 // Set script timeout to 10min
 const DRIVER_SCRIPT_TIMEOUT = 1000 * 60 * 10;
 
-export default async function createDriver( { browserName, headless, verbose } ) {
+export default async function createDriver( { browserName, headless, url, verbose } ) {
 	const capabilities = Capabilities[ browserName ]();
 	const prefs = new logging.Preferences();
 	prefs.setLevel( logging.Type.BROWSER, logging.Level.ALL );
@@ -76,6 +76,9 @@ export default async function createDriver( { browserName, headless, verbose } )
 
 	// Increase script timeout to 10min
 	await driver.manage().setTimeouts( { script: DRIVER_SCRIPT_TIMEOUT } );
+
+	// Set the first URL for the browser
+	await driver.get( url );
 
 	return driver;
 }

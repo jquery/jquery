@@ -8,17 +8,15 @@ import { createTestServer } from "./createTestServer.js";
 import { buildTestUrl } from "./lib/buildTestUrl.js";
 import { generateHash, printModuleHashes } from "./lib/generateHash.js";
 import { getBrowserString } from "./lib/getBrowserString.js";
-import { cleanupAllJSDOM, cleanupJSDOM } from "./jsdom.js";
-import { modules as allModules } from "./modules.js";
-import { cleanupAllBrowsers, touchBrowser } from "./browserstack/browsers.js";
+import { modules as allModules } from "./flags/modules.js";
+import { cleanupAllBrowsers, touchBrowser } from "./browsers.js";
 import {
-	addBrowserStackRun,
+	addRun,
 	getNextBrowserTest,
 	hardRetryTest,
 	retryTest,
-	runAllBrowserStack
-} from "./browserstack/queue.js";
-import { addSeleniumRun, runAllSelenium } from "./selenium/queue.js";
+	runAll
+} from "./queue.js";
 
 const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
 
@@ -26,7 +24,7 @@ const EXIT_HOOK_WAIT_TIMEOUT = 60 * 1000;
  * Run modules in parallel in different browser instances.
  */
 export async function run( {
-	browsers: browserNames,
+	browser: browserNames = [],
 	browserstack,
 	concurrency,
 	debug,
@@ -34,12 +32,12 @@ export async function run( {
 	hardRetries,
 	headless,
 	isolate,
-	modules = [],
+	module: modules = [],
 	retries = 0,
 	runId,
 	verbose
 } ) {
-	if ( !browserNames || !browserNames.length ) {
+	if ( !browserNames.length ) {
 		browserNames = [ "chrome" ];
 	}
 	if ( !modules.length ) {
@@ -112,8 +110,6 @@ export async function run( {
 				);
 				report.total = total;
 
-				cleanupJSDOM( reportId, { verbose } );
-
 				// Handle failure
 				if ( failed ) {
 					const retry = retryTest( reportId, retries );
@@ -178,7 +174,6 @@ export async function run( {
 		console.log( "Cleaning up..." );
 
 		await cleanupAllBrowsers( { verbose } );
-		cleanupAllJSDOM( { verbose } );
 
 		if ( tunnel ) {
 			await tunnel.stop();
@@ -260,6 +255,8 @@ export async function run( {
 		} );
 
 		const options = {
+			browserstack,
+			concurrency,
 			debug,
 			headless,
 			modules,
@@ -269,11 +266,7 @@ export async function run( {
 			verbose
 		};
 
-		if ( browserstack ) {
-			addBrowserStackRun( url, browser, options );
-		} else {
-			addSeleniumRun( url, browser, options );
-		}
+		addRun( url, browser, options );
 	}
 
 	for ( const browser of browsers ) {
@@ -288,11 +281,7 @@ export async function run( {
 
 	try {
 		console.log( `Starting Run ${ runId }...` );
-		if ( browserstack ) {
-			await runAllBrowserStack( { verbose } );
-		} else {
-			await runAllSelenium( { concurrency, verbose } );
-		}
+		await runAll();
 	} catch ( error ) {
 		console.error( error );
 		if ( !debug ) {
