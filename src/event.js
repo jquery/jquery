@@ -522,11 +522,12 @@ function leverageNative( el, type, isSetup ) {
 			if ( ( event.isTrigger & 1 ) && this[ type ] ) {
 
 				// Interrupt processing of the outer synthetic .trigger()ed event
-				if ( !saved ) {
+				// Detect `saved` of shape `{ value }` and `false`.
+				if ( !saved.length ) {
 
 					// Store arguments for use when handling the inner native event
-					// There will always be at least one argument (an event object), so this array
-					// will not be confused with a leftover capture object.
+					// There will always be at least one argument (an event object),
+					// so this array will not be confused with a leftover capture object.
 					saved = slice.call( arguments );
 					dataPriv.set( this, type, saved );
 
@@ -541,29 +542,36 @@ function leverageNative( el, type, isSetup ) {
 						event.stopImmediatePropagation();
 						event.preventDefault();
 
-						return result;
+						// Support: Chrome 86+
+						// In Chrome, if an element having a focusout handler is
+						// blurred by clicking outside of it, it invokes the handler
+						// synchronously. If that handler calls `.remove()` on
+						// the element, the data is cleared, leaving `result`
+						// undefined. We need to guard against this.
+						return result && result.value;
 					}
 
-				// If this is an inner synthetic event for an event with a bubbling surrogate
-				// (focus or blur), assume that the surrogate already propagated from triggering
-				// the native event and prevent that from happening again here.
-				// This technically gets the ordering wrong w.r.t. to `.trigger()` (in which the
-				// bubbling surrogate propagates *after* the non-bubbling base), but that seems
-				// less bad than duplication.
+				// If this is an inner synthetic event for an event with a bubbling
+				// surrogate (focus or blur), assume that the surrogate already
+				// propagated from triggering the native event and prevent that
+				// from happening again here.
 				} else if ( ( jQuery.event.special[ type ] || {} ).delegateType ) {
 					event.stopPropagation();
 				}
 
 			// If this is a native event triggered above, everything is now in order
 			// Fire an inner synthetic event with the original arguments
-			} else if ( saved ) {
+			// Exclude `saved` of shape `{ value }` and `false`.
+			} else if ( saved.length ) {
 
 				// ...and capture the result
-				dataPriv.set( this, type, jQuery.event.trigger(
-					saved[ 0 ],
-					saved.slice( 1 ),
-					this
-				) );
+				dataPriv.set( this, type, {
+					value: jQuery.event.trigger(
+						saved[ 0 ],
+						saved.slice( 1 ),
+						this
+					)
+				} );
 
 				// Abort handling of the native event by all jQuery handlers while allowing
 				// native handlers on the same element to run. On target, this is achieved
