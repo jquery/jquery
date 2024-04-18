@@ -48,14 +48,9 @@ jobs:
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: ${{ matrix.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
 
-      - name: Cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
       - name: Install firefox ESR
         run: |
@@ -69,34 +64,33 @@ jobs:
       - name: Build All for Linting
         run: npm run build:all
         if: contains(matrix.NPM_SCRIPT, 'lint')
+      
+      - name: Add firefox to path 
+        run: export PATH=${HOME}/firefox:$PATH
+
+      - name: Add FIREFOX_BIN to env
+        run: export FIREFOX_BIN=${HOME}/firefox/firefox
 
       - name: Run tests
-        run: |
-          export PATH=${HOME}/firefox:$PATH
-          export FIREFOX_BIN=${HOME}/firefox/firefox
-          npm run ${{ matrix.NPM_SCRIPT }}
+        run: npm run ${{ matrix.NPM_SCRIPT }}
 
   safari:
-    runs-on: macos-latest
-    env:
-      NODE_VERSION: 20.x
+    runs-on: ${{matrix.os}}
+    strategy: 
+      matrix: 
+        NODE_VERSION: [18.x, 20.x]
+        os: [macos-latest, macos-13]
     name: test:safari - Safari
     steps:
       - name: Checkout
         uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633 # v4.1.2
 
-      - name: Use Node.js ${{ env.NODE_VERSION }}
+      - name: Use Node.js ${{ matrix.NODE_VERSION }}
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
+          node-version: ${{ matrix.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
         run: npm install
