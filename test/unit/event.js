@@ -1448,13 +1448,22 @@ QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
 	var done = assert.async();
 
 	window.onmessage = function( event ) {
-		var payload = JSON.parse( event.data );
+		try {
+			var payload = JSON.parse( event.data );
 
-		assert.ok( payload.event, "beforeunload", "beforeunload event" );
+			// Ignore unrelated messages
+			if ( payload.source === "jQuery onbeforeunload iframe test" ) {
+				assert.ok( payload.event, "beforeunload", "beforeunload event" );
 
-		iframe.remove();
-		window.onmessage = null;
-		done();
+				iframe.remove();
+				window.onmessage = null;
+				done();
+			}
+		} catch ( e ) {
+
+			// Messages may come from other sources, like browser extensions;
+			// some may not be valid JSONs and thus cannot be `JSON.parse`d.
+		}
 	};
 
 	iframe.appendTo( "#qunit-fixture" );
