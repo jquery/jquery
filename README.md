@@ -211,7 +211,7 @@ npm start
 
 Run the unit tests with a local server that supports PHP. Ensure that you run the site from the root directory, not the "test" directory. No database is required. Pre-configured php local servers are available for Windows and Mac. Here are some options:
 
-- Windows: [WAMP download](http://www.wampserver.com/en/)
+- Windows: [WAMP download](https://www.wampserver.com/en/)
 - Mac: [MAMP download](https://www.mamp.info/en/downloads/)
 - Linux: [Setting up LAMP](https://www.linux.com/training-tutorials/easy-lamp-server-installation/)
 - [Mongoose (most platforms)](https://code.google.com/p/mongoose/)
