@@ -4,17 +4,18 @@
 	<script>
 		function report( event ) {
 			var payload = {
+				source: "jQuery onbeforeunload iframe test",
 				event: event.type
 			};
-			return parent.postMessage( JSON.stringify(payload), "*" );
+			return parent.postMessage( JSON.stringify( payload ), "*" );
 		}
 
 		jQuery( window ).on( "beforeunload", function( event ) {
 			report( event );
-		}).on( "load", function( event ) {
-			setTimeout(function() {
+		} ).on( "load", function( event ) {
+			setTimeout( function() {
 				window.location.reload();
-			}, 50);
-		});
+			}, 50 );
+		} );
 	</script>
 </html>
