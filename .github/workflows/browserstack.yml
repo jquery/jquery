@@ -15,7 +15,7 @@ jobs:
       NODE_VERSION: 20.x
     name: ${{ matrix.BROWSER }}
     concurrency:
-      group: ${{ github.workflow }} ${{ matrix.BROWSER }}
+      group: ${{ matrix.BROWSER }}-${{ github.ref }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
