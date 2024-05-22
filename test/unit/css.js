@@ -546,6 +546,56 @@ QUnit.test( "show()", function( assert ) {
 	jQuery( "<div>test</div> text <span>test</span>" ).hide().remove();
 } );
 
+QUnit.test( "showOnlyWhen() shows when condition is true", function( assert ) {
+
+	assert.expect( 3 );
+
+	var hiddendiv, div, pass;
+		hiddendiv = jQuery( "div.hidden" );
+
+	hiddendiv.hide();
+	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "none", "hiddendiv is display: none" );
+
+	hiddendiv.showOnlyWhen( true );
+	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "block", "hiddendiv is display: block" );
+
+	hiddendiv.css( "display", "" );
+
+	pass = true;
+	div = jQuery( "#qunit-fixture div" );
+	div.showOnlyWhen( true ).each( function() {
+		if ( this.style.display === "none" ) {
+			pass = false;
+		}
+	} );
+	assert.ok( pass, "Show" );
+} );
+
+QUnit.test( "showOnlyWhen() hides when condition is false", function( assert ) {
+
+	assert.expect( 3 );
+
+	var hiddendiv, div, pass;
+		hiddendiv = jQuery( "div.hidden" );
+
+	hiddendiv.show();
+	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "block", "hiddendiv is display: block" );
+
+	hiddendiv.showOnlyWhen( false );
+	assert.equal( jQuery.css( hiddendiv[ 0 ], "display" ), "none", "hiddendiv is display: none" );
+
+	hiddendiv.css( "display", "" );
+
+	pass = true;
+	div = jQuery( "#qunit-fixture div" );
+	div.showOnlyWhen( false ).each( function() {
+		if ( this.style.display === "block" ) {
+			pass = false;
+		}
+	} );
+	assert.ok( pass, "Hide" );
+} );
+
 QUnit.test( "show/hide detached nodes", function( assert ) {
 	assert.expect( 19 );
 
