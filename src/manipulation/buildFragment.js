@@ -45,7 +45,7 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 					tmp = tmp.appendChild( context.createElement( wrap[ j ] ) );
 				}
 
-				tmp.innerHTML = jQuery.htmlPrefilter( elem );
+				tmp.textContent = jQuery.htmlPrefilter( elem );
 
 				jQuery.merge( nodes, tmp.childNodes );
 
