@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<style>
+		html {
+			zoom: 2.1;
+		}
+	</style>
+</head>
+<body>
+	<div>
+		<script src="../../jquery.js"></script>
+		<script src="../iframeTest.js"></script>
+		<script src="getComputedSupport.js"></script>
+	</div>
+	<script>
+		startIframeTest(
+			getComputedStyle( document.documentElement ),
+			getComputedSupport( jQuery.support )
+		);
+	</script>
+</body>
+</html>

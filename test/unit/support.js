@@ -66,6 +66,16 @@ testIframe(
 	}
 );
 
+testIframe(
+	"Verify correctness of support tests with CSS zoom on the root element",
+	"support/zoom.html",
+	function( assert, jQuery, window, document, htmlStyle, support ) {
+		assert.expect( 1 );
+		assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+			"Same support properties" );
+	}
+);
+
 ( function() {
 	var expected, browserKey,
 		userAgent = window.navigator.userAgent,
