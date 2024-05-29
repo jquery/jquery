@@ -4,3 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+
+    # Group all dependabot version update PRs into one
+    groups:
+      github-actions:
+        applies-to: version-updates
+        patterns:
+          - "*"
