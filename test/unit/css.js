@@ -1396,8 +1396,20 @@ testIframe(
 	"css/cssWidthBrowserZoom.html",
 	function( assert, jQuery, window, document, widthBeforeSet, widthAfterSet ) {
 		assert.expect( 2 );
-		assert.strictEqual( widthBeforeSet, "100px", "elem.css('width') works correctly with browser zoom" );
-		assert.strictEqual( widthAfterSet, "100px", "elem.css('width', val) works correctly with browser zoom" );
+
+		// Support: Firefox 126+
+		// Newer Firefox implements CSS zoom in a way it affects
+		// those values slightly.
+		assert.ok( /^100(?:|\.0\d*)px$/.test( widthBeforeSet ), "elem.css('width') works correctly with browser zoom" );
+
+		// Support: Firefox 126 only
+		// In Firefox 126 only, CSS zoom affects `offsetWidth`. Since the issue
+		// is fixed in v127, let's just skip the test in v126.
+		if ( /\bfirefox\/126\.\d\b/i.test( navigator.userAgent ) ) {
+			assert.ok( true, "elem.css('width', val) works incorrectly with browser zoom in Firefox 126 and we accept that" );
+		} else {
+			assert.ok( /^100(?:|\.0\d*)px$/.test( widthAfterSet ), "elem.css('width', val) works correctly with browser zoom" );
+		}
 	}
 );
 
