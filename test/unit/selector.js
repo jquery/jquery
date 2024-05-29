@@ -960,8 +960,8 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - has", function( asse
 	// return no results. Make sure this is accounted for. (gh-5098)
 	// Note: Chrome 105 has this behavior only in 105.0.5195.125 or newer;
 	// initially it shipped with a fully forgiving parsing in `:has()`.
-	assert.t( "Nested with list arguments",
-		"#qunit-fixture div:has(faketag, div:has(faketag, div:not([id])))",
+	assert.selectInFixture( "Nested with list arguments",
+		"div:has(faketag, div:has(faketag, div:not([id])))",
 		[ "moretests", "t2037", "fx-test-group", "fx-queue" ] );
 } );
 
