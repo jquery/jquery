@@ -12,9 +12,6 @@ if ( !div.style ) {
 	return;
 }
 
-// Support: IE 10 - 11+
-// IE misreports `getComputedStyle` of table rows with width/height
-// set in CSS while `offset*` properties report correct values.
 // Support: Firefox 70+
 // Only Firefox includes border widths
 // in computed dimensions. (gh-4529)
@@ -25,12 +22,11 @@ support.reliableTrDimensions = function() {
 		tr = document.createElement( "tr" );
 
 		table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
-		tr.style.cssText = "box-sizing:content-box;border:1px solid";
+		tr.style.cssText = "box-sizing:content-box;border-top:1px solid";
 
 		// Support: Chrome 86+
 		// Height set through cssText does not get applied.
 		// Computed height then comes back as 0.
-		tr.style.height = "1px";
 		div.style.height = "9px";
 
 		// Support: Android Chrome 86+
@@ -54,9 +50,8 @@ support.reliableTrDimensions = function() {
 		}
 
 		trStyle = window.getComputedStyle( tr );
-		reliableTrDimensionsVal = ( parseInt( trStyle.height, 10 ) +
-				parseInt( trStyle.borderTopWidth, 10 ) +
-				parseInt( trStyle.borderBottomWidth, 10 ) ) === tr.offsetHeight;
+		reliableTrDimensionsVal = ( parseInt( trStyle.height ) +
+				parseInt( trStyle.borderTopWidth ) ) === tr.offsetHeight;
 
 		documentElement.removeChild( table );
 	}

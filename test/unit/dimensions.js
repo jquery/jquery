@@ -690,8 +690,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
 
-		// Workarounds for IE kill fractional output here.
-		fraction = document.documentMode ? 0 : 0.5,
+		fraction = 0.5,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,

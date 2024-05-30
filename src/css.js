@@ -1,13 +1,12 @@
 import { jQuery } from "./core.js";
 import { access } from "./core/access.js";
+import { camelCase } from "./core/camelCase.js";
 import { nodeName } from "./core/nodeName.js";
 import { rcssNum } from "./var/rcssNum.js";
-import { isIE } from "./var/isIE.js";
 import { rnumnonpx } from "./css/var/rnumnonpx.js";
 import { rcustomProp } from "./css/var/rcustomProp.js";
 import { cssExpand } from "./css/var/cssExpand.js";
 import { isAutoPx } from "./css/isAutoPx.js";
-import { cssCamelCase } from "./css/cssCamelCase.js";
 import { getStyles } from "./css/var/getStyles.js";
 import { swap } from "./css/var/swap.js";
 import { curCSS } from "./css/curCSS.js";
@@ -120,8 +119,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
 		// Fake content-box until we know it's needed to know the true value.
-		boxSizingNeeded = isIE || extra,
-		isBorderBox = boxSizingNeeded &&
+		isBorderBox = extra &&
 			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox,
 
@@ -143,14 +141,6 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		// This happens for inline elements with no explicit setting (gh-3571)
 		val === "auto" ||
 
-		// Support: IE 9 - 11+
-		// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-		// In those cases, the computed value can be trusted to be border-box.
-		( isIE && isBorderBox ) ||
-
-		// Support: IE 10 - 11+
-		// IE misreports `getComputedStyle` of table rows with width/height
-		// set in CSS while `offset*` properties report correct values.
 		// Support: Firefox 70+
 		// Firefox includes border widths
 		// in computed dimensions for table rows. (gh-4529)
@@ -204,7 +194,7 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
-			origName = cssCamelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
@@ -240,12 +230,6 @@ jQuery.extend( {
 				value += ret && ret[ 3 ] || ( isAutoPx( origName ) ? "px" : "" );
 			}
 
-			// Support: IE <=9 - 11+
-			// background-* props of a cloned element affect the source element (trac-8908)
-			if ( isIE && value === "" && name.indexOf( "background" ) === 0 ) {
-				style[ name ] = "inherit";
-			}
-
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
@@ -273,7 +257,7 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = cssCamelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name );
 
 		// Make sure that we're working with the right name. We don't
@@ -316,17 +300,14 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 
-				// Certain elements can have dimension info if we invisibly show them
+				// Certain elements can have dimension info if we invisibly show them,
 				// but it must have a current display style that would benefit
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
 
 					// Support: Safari <=8 - 12+, Chrome <=73+
 					// Table columns in WebKit/Blink have non-zero offsetWidth & zero
 					// getBoundingClientRect().width unless display is changed.
-					// Support: IE <=11+
-					// Running getBoundingClientRect on a disconnected node
-					// in IE throws an error.
-					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
+					!elem.getBoundingClientRect().width ?
 					swap( elem, cssShow, function() {
 						return getWidthOrHeight( elem, dimension, extra );
 					} ) :
