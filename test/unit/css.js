@@ -7,7 +7,7 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 
 	assert.equal( jQuery( "#qunit-fixture" ).css( "display" ), "block", "Check for css property \"display\"" );
 
-	var $child, div, div2, width, height, child, prctval, checkval, old;
+	var $child, div, div2, child, prctval, checkval, old;
 
 	$child = jQuery( "#nothiddendivchild" ).css( { "width": "20%", "height": "20%" } );
 	assert.notEqual( $child.css( "width" ), "20px", "Retrieving a width percentage on the child of a hidden div returns percentage" );
@@ -36,8 +36,6 @@ QUnit.test( "css(String|Hash)", function( assert ) {
 	// handle negative numbers by setting to zero trac-11604
 	jQuery( "#nothiddendiv" ).css( { "width": 1, "height": 1 } );
 
-	width = parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) );
-	height = parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) );
 	jQuery( "#nothiddendiv" ).css( { "overflow": "hidden", "width": -1, "height": -1 } );
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "width" ) ), 0, "Test negative width set to 0" );
 	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "height" ) ), 0, "Test negative height set to 0" );
@@ -274,8 +272,7 @@ QUnit.test( "css() non-px relative values (gh-1711)", function( assert ) {
 QUnit.test( "css() mismatched relative values with bounded styles (gh-2144)", function( assert ) {
 	assert.expect( 1 );
 
-	var right,
-		$container = jQuery( "<div></div>" )
+	var $container = jQuery( "<div></div>" )
 			.css( { position: "absolute", width: "400px", fontSize: "4px" } )
 			.appendTo( "#qunit-fixture" ),
 		$el = jQuery( "<div></div>" )

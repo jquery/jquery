@@ -261,7 +261,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 
 	var $input, $text, $details,
 		attributeNode, commentNode, textNode, obj,
-		table, td, j, type,
+		table, td, j,
 		check, thrown, button, $radio, $radios, $svg,
 		div = jQuery( "#qunit-fixture div" ).attr( "foo", "bar" ),
 		i = 0,
@@ -418,7 +418,6 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	j.removeAttr( "name" );
 
 	// Type
-	type = jQuery( "#check2" ).attr( "type" );
 	try {
 		jQuery( "#check2" ).attr( "type", "hidden" );
 		assert.ok( true, "No exception thrown on input type change" );

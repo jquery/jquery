@@ -1162,20 +1162,14 @@ QUnit.test( "jQuery.show('fast') doesn't clear radio buttons (bug trac-1095)", f
 QUnit.test( "interrupt toggle", function( assert ) {
 	assert.expect( 24 );
 
-	var env = this,
-		longDuration = 2000,
+	var longDuration = 2000,
 		shortDuration = 500,
-		remaining = 0,
 		$elems = jQuery( ".chain-test" ),
 		clock = this.clock,
-		finish = function() {
-		};
+		finish = function() {};
 
 	jQuery.each( { slideToggle: "height", fadeToggle: "opacity", toggle: "width" }, function( method, prop ) {
 		var $methodElems = $elems.filter( "[id^='" + method.toLowerCase() + "']" ).each( function() {
-
-			// Don't end test until we're done with this element
-			remaining++;
 
 			// Save original property value for comparison
 			jQuery.data( this, "startVal", jQuery( this ).css( prop ) );
@@ -1596,25 +1590,24 @@ QUnit.test( "User supplied callback called after show when fx off (trac-8892)", 
 QUnit.test( "animate should set display for disconnected nodes", function( assert ) {
 	assert.expect( 20 );
 
-	var env = this,
-		showMethods = {
-			fadeIn: [],
-			fadeTo: [ "fast", 0.5 ],
-			slideDown: [ "fast" ],
-			show: [ 1 ],
-			animate: [ { width: "show" } ]
-		},
-		toggleMethods = {
-			toggle: [ 1 ],
-			slideToggle: []
-		},
-		$divEmpty = jQuery( "<div></div>" ),
-		$divTest = jQuery( "<div>test</div>" ),
-		$divNone = jQuery( "<div style='display: none;'></div>" ),
-		$divInline = jQuery( "<div style='display: inline;'></div>" ),
-		nullParentDisplay = $divEmpty.css( "display" ),
-		underFragmentDisplay = $divTest.css( "display" ),
-		clock = this.clock;
+	var showMethods = {
+		fadeIn: [],
+		fadeTo: [ "fast", 0.5 ],
+		slideDown: [ "fast" ],
+		show: [ 1 ],
+		animate: [ { width: "show" } ]
+	},
+	toggleMethods = {
+		toggle: [ 1 ],
+		slideToggle: []
+	},
+	$divEmpty = jQuery( "<div></div>" ),
+	$divTest = jQuery( "<div>test</div>" ),
+	$divNone = jQuery( "<div style='display: none;'></div>" ),
+	$divInline = jQuery( "<div style='display: inline;'></div>" ),
+	nullParentDisplay = $divEmpty.css( "display" ),
+	underFragmentDisplay = $divTest.css( "display" ),
+	clock = this.clock;
 
 	assert.strictEqual( $divEmpty[ 0 ].parentNode, null, "Setup: element with null parentNode" );
 	assert.strictEqual( ( $divTest[ 0 ].parentNode || {} ).nodeType, 11, "Setup: element under fragment" );

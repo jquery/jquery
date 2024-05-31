@@ -15,30 +15,11 @@ module.exports = [
 		]
 	},
 
-	{
-		files: [
-			"eslint.config.js",
-			"Gruntfile.js",
-			"test/node_smoke_tests/**",
-			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.js"
-		],
-		languageOptions: {
-			globals: {
-				...globals.node
-			},
-			sourceType: "commonjs"
-		},
-		rules: {
-			...jqueryConfig.rules,
-			strict: [ "error", "global" ]
-		}
-	},
-
 	// Source
 	{
 		files: [ "src/**" ],
 		languageOptions: {
+			ecmaVersion: 2015,
 
 			// The browser env is not enabled on purpose so that code takes
 			// all browser-only globals from window instead of assuming
@@ -65,6 +46,7 @@ module.exports = [
 					]
 				}
 			],
+			"no-implicit-globals": "error",
 			"one-var": [ "error", { var: "always" } ],
 			strict: [ "error", "function" ]
 		}
@@ -117,7 +99,10 @@ module.exports = [
 	// Tests
 	{
 		files: [
-			"test/**"
+			"test/*",
+			"test/data/**",
+			"test/integration/**",
+			"test/unit/**"
 		],
 		ignores: [
 			"test/data/jquery-3.7.1.js",
@@ -128,11 +113,11 @@ module.exports = [
 			"test/data/core/jquery-iterability-transpiled.js"
 		],
 		languageOptions: {
+			ecmaVersion: 2015,
+			sourceType: "script",
 			globals: {
 				...globals.browser,
 				require: false,
-				Promise: false,
-				Symbol: false,
 				trustedTypes: false,
 				QUnit: false,
 				ajaxTest: false,
@@ -144,32 +129,54 @@ module.exports = [
 				moduleTeardown: false,
 				url: false,
 				q: false,
-				jQuery: true,
-				sinon: true,
-				amdDefined: true,
-				fireNative: true,
-				Globals: true,
-				hasPHP: true,
-				isLocal: true,
-				supportjQuery: true,
-				originaljQuery: true,
-				$: true,
-				original$: true,
-				baseURL: true,
-				externalHost: true
+				jQuery: false,
+				$: false,
+				sinon: false,
+				amdDefined: false,
+				fireNative: false,
+				Globals: false,
+				hasPHP: false,
+				isLocal: false,
+				supportjQuery: false,
+				originaljQuery: false,
+				original$: false,
+				baseURL: false,
+				externalHost: false
 			}
 		},
 		rules: {
 			...jqueryConfig.rules,
-			strict: [ "error", "function" ],
 
-			// See https://github.com/eslint/eslint/issues/2342
-			"no-unused-vars": "off",
+			"no-unused-vars": [
+				"error",
+				{ args: "after-used", argsIgnorePattern: "^_" }
+			],
 
 			// Too many errors
 			"max-len": "off",
-			camelcase: "off",
-			"one-var": "off"
+			camelcase: "off"
+		}
+	},
+
+	{
+		files: [
+			"test/jquery.js"
+		],
+		languageOptions: {
+			globals: {
+				loadTests: false
+			}
+		}
+	},
+
+	{
+		files: [
+			"test/unit/core.js"
+		],
+		rules: {
+
+			// Core has several cases where unused vars are expected
+			"no-unused-vars": "off"
 		}
 	},
 
@@ -178,13 +185,14 @@ module.exports = [
 			"test/runner/**/*.js"
 		],
 		languageOptions: {
+			ecmaVersion: "latest",
 			globals: {
 				...globals.node
-			},
-			sourceType: "module"
+			}
 		},
 		rules: {
-			...jqueryConfig.rules
+			...jqueryConfig.rules,
+			"no-implicit-globals": "error"
 		}
 	},
 
@@ -192,17 +200,40 @@ module.exports = [
 		files: [ "test/runner/listeners.js" ],
 		languageOptions: {
 			ecmaVersion: 5,
-			sourceType: "script"
+			sourceType: "script",
+			globals: {
+				...globals.browser,
+				QUnit: false,
+				Symbol: false
+			}
 		}
 	},
 
 	{
 		files: [
+			"test/data/testinit.js",
 			"test/data/testrunner.js",
 			"test/data/core/jquery-iterability-transpiled-es6.js"
 		],
 		languageOptions: {
-			sourceType: "script"
+			ecmaVersion: 2015,
+			sourceType: "script",
+			globals: {
+				...globals.browser
+			}
+		},
+		rules: {
+			...jqueryConfig.rules,
+			strict: [ "error", "function" ]
+		}
+	},
+
+	{
+		files: [
+			"test/data/testinit.js"
+		],
+		rules: {
+			strict: [ "error", "global" ]
 		}
 	},
 
@@ -219,45 +250,34 @@ module.exports = [
 
 	{
 		files: [
+			"build/**",
+			"eslint.config.js",
 			"test/node_smoke_tests/**",
+			"test/bundler_smoke_tests/**/*",
 			"test/promises_aplus_adapters/**",
 			"test/middleware-mockserver.js"
 		],
 		languageOptions: {
+			ecmaVersion: "latest",
+			sourceType: "commonjs",
 			globals: {
-				...globals.node,
-				...globals.es2021
-			}
-		},
-		rules: {
-			strict: [ "error", "global" ]
-		}
-	},
-
-	{
-		files: [
-			"build/**",
-			"test/data/testinit.js"
-		],
-		languageOptions: {
-			globals: {
-				...globals.node,
-				...globals.es2021
+				...globals.browser,
+				...globals.node
 			}
 		},
 		rules: {
 			...jqueryConfig.rules,
+			"no-implicit-globals": "error",
 			strict: [ "error", "global" ]
 		}
 	},
 
 	{
 		files: [
-			"build/**/*.js",
-			"test/data/testinit.js"
+			"**/*.mjs"
 		],
 		languageOptions: {
-			sourceType: "commonjs"
+			sourceType: "module"
 		}
 	},
 
@@ -266,19 +286,18 @@ module.exports = [
 			"dist/jquery.js",
 			"dist/jquery.slim.js"
 		],
-
 		languageOptions: {
 			globals: {
-				...globals.browser,
-				...globals.es2021,
 				define: false,
 				module: false,
-				Symbol: false
+				Symbol: false,
+				window: false
 			}
 		},
-
 		rules: {
 			...jqueryConfig.rules,
+
+			"no-implicit-globals": "error",
 
 			// That is okay for the built version
 			"no-multiple-empty-lines": "off",
@@ -287,6 +306,16 @@ module.exports = [
 			// can get large. Accept that in the built version.
 			"max-len": "off",
 			"one-var": "off"
+		}
+	},
+
+	{
+		files: [
+			"dist/**"
+		],
+		languageOptions: {
+			ecmaVersion: 5,
+			sourceType: "script"
 		}
 	}
 ];

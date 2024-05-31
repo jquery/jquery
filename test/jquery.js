@@ -1,7 +1,5 @@
 // Use the right jQuery source on the test page (and iframes)
 ( function() {
-	/* global loadTests: false */
-
 	var config, src,
 		parentUrl = window.location.protocol + "//" + window.location.host,
 		QUnit = window.QUnit,

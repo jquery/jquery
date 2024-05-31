@@ -4,7 +4,7 @@ if ( !includesModule( "offset" ) ) {
 	return;
 }
 
-var supportsFixedPosition, supportsScroll, alwaysScrollable,
+var alwaysScrollable,
 	forceScroll = supportjQuery( "<div></div>" ).css( { width: 2000, height: 2000 } ),
 	checkSupport = function( assert ) {
 
@@ -14,13 +14,13 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 		var checkFixed = supportjQuery( "<div/>" )
 			.css( { position: "fixed", top: "20px" } )
 			.appendTo( "#qunit-fixture" );
-		supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
+		window.supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
 		checkFixed.remove();
 
 		// Append forceScroll to the body instead of #qunit-fixture because the latter is hidden
 		forceScroll.appendTo( "body" );
 		window.scrollTo( 200, 200 );
-		supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
+		window.supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
 		forceScroll.detach();
 
 		// Support: iOS <=7
