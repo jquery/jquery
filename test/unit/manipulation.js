@@ -1329,7 +1329,7 @@ QUnit.test( "Empty replaceWith (trac-13401; trac-13596; gh-2204)", function( ass
 			return input;
 		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(function returning " + label + ")" );
-		$el.html( "<i></i>" ).children().replaceWith( function( i ) {
+		$el.html( "<i></i>" ).children().replaceWith( function() {
 			return input;
 		} );
 		assert.strictEqual( $el.html(), "", "replaceWith(other function returning " + label + ")" );
@@ -2661,8 +2661,6 @@ QUnit.test( "insertAfter, insertBefore, etc do not work when destination is orig
 
 	assert.expect( 10 );
 
-	var elems;
-
 	jQuery.each( [
 		"appendTo",
 		"prependTo",
@@ -2670,7 +2668,7 @@ QUnit.test( "insertAfter, insertBefore, etc do not work when destination is orig
 		"insertAfter",
 		"replaceAll"
 	], function( index, name ) {
-		elems = jQuery( [
+		jQuery( [
 			"<ul id='test4087-complex'><li class='test4087'><div>c1</div>h1</li><li><div>c2</div>h2</li></ul>",
 			"<div id='test4087-simple'><div class='test4087-1'>1<div class='test4087-2'>2</div><div class='test4087-3'>3</div></div></div>",
 			"<div id='test4087-multiple'><div class='test4087-multiple'>1</div><div class='test4087-multiple'>2</div></div>"
@@ -2955,7 +2953,7 @@ QUnit.test( "Ignore content from unsuccessful responses (gh-4126)", function( as
 	assert.expect( 1 );
 
 	var globalEval = jQuery.globalEval;
-	jQuery.globalEval = function( code ) {
+	jQuery.globalEval = function( _code ) {
 		assert.ok( false, "no attempt to evaluate code from an unsuccessful response" );
 	};
 
@@ -2973,7 +2971,7 @@ QUnit.test( "Ignore content from unsuccessful responses (gh-4126)", function( as
 testIframe(
 	"Check if CSP nonce is preserved",
 	"mock.php?action=cspNonce",
-	function( assert, jQuery, window, document ) {
+	function( assert ) {
 		var done = assert.async();
 
 		assert.expect( 1 );
@@ -2988,7 +2986,7 @@ testIframe(
 testIframe(
 	"Check if CSP nonce is preserved for external scripts with src attribute",
 	"mock.php?action=cspNonce&test=external",
-	function( assert, jQuery, window, document ) {
+	function( assert ) {
 		var done = assert.async();
 
 		assert.expect( 1 );
@@ -3006,7 +3004,7 @@ testIframe(
 testIframe(
 	"jQuery.globalEval supports nonce",
 	"mock.php?action=cspNonce&test=globaleval",
-	function( assert, jQuery, window, document ) {
+	function( assert ) {
 		var done = assert.async();
 
 		assert.expect( 1 );

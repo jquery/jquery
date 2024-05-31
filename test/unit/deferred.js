@@ -823,11 +823,11 @@ QUnit.test( "jQuery.when(nonThenable) - like Promise.resolve", function( assert 
 		done = assert.async( 20 );
 
 	jQuery.when()
-		.done( function( resolveValue ) {
+		.done( function() {
 			assert.strictEqual( arguments.length, 0, "Resolved .done with no arguments" );
 			assert.strictEqual( this, defaultContext, "Default .done context with no arguments" );
 		} )
-		.then( function( resolveValue ) {
+		.then( function() {
 			assert.strictEqual( arguments.length, 0, "Resolved .then with no arguments" );
 			assert.strictEqual( this, defaultContext, "Default .then context with no arguments" );
 		} );

@@ -1138,17 +1138,12 @@ QUnit.test( "interrupt toggle", function( assert ) {
 
 	var longDuration = fxInterval * 200,
 		shortDuration = fxInterval * 50,
-		remaining = 0,
 		$elems = jQuery( ".chain-test" ),
 		clock = this.clock,
-		finish = function() {
-		};
+		finish = function() {};
 
 	jQuery.each( { slideToggle: "height", fadeToggle: "opacity", toggle: "width" }, function( method, prop ) {
 		var $methodElems = $elems.filter( "[id^='" + method.toLowerCase() + "']" ).each( function() {
-
-			// Don't end test until we're done with this element
-			remaining++;
 
 			// Save original property value for comparison
 			jQuery.data( this, "startVal", jQuery( this ).css( prop ) );

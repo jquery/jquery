@@ -21,7 +21,7 @@ async function runJSDOMTest( { title, folder } ) {
 
 	const virtualConsole = new jsdom.VirtualConsole();
 	virtualConsole.sendTo( console );
-	virtualConsole.on( "assert", ( success, message ) => {
+	virtualConsole.on( "assert", ( success ) => {
 		if ( !success ) {
 			process.exitCode = 1;
 		}
