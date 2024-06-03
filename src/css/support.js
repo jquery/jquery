@@ -151,9 +151,9 @@ define( [
 				}
 
 				trStyle = window.getComputedStyle( tr );
-				reliableTrDimensionsVal = ( parseInt( trStyle.height, 10 ) +
-					parseInt( trStyle.borderTopWidth, 10 ) +
-					parseInt( trStyle.borderBottomWidth, 10 ) ) === tr.offsetHeight;
+				reliableTrDimensionsVal = ( Math.round( parseFloat( trStyle.height ) ) +
+					Math.round( parseFloat( trStyle.borderTopWidth ) ) +
+					Math.round( parseFloat( trStyle.borderBottomWidth ) ) ) === tr.offsetHeight;
 
 				documentElement.removeChild( table );
 			}

@@ -66,6 +66,26 @@ testIframe(
 	}
 );
 
+testIframe(
+	"Verify correctness of support tests with CSS zoom on the root element",
+	"support/zoom.html",
+	function( assert, jQuery, window, document, htmlStyle, support ) {
+		assert.expect( 1 );
+
+		// Support: Firefox 126 only
+		// In Firefox 126 only, CSS zoom affects `offsetWidth`, causing
+		// the `scrollboxSize` support test to fail. Accept that.
+		if ( /\bfirefox\/126\.\d\b/i.test( navigator.userAgent ) ) {
+			assert.deepEqual( jQuery.extend( {}, support ),
+				jQuery.extend( {}, computedSupport, { scrollboxSize: false } ),
+				"Same support properties except for `scrollboxSize`" );
+		} else {
+			assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
+				"Same support properties" );
+		}
+	}
+);
+
 ( function() {
 	var browserKey, expected,
 		userAgent = window.navigator.userAgent,
