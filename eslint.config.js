@@ -65,6 +65,7 @@ export default [
 					outerIIFEBody: 0
 				}
 			],
+			"no-implicit-globals": "error",
 			"one-var": [ "error", { var: "always" } ],
 			strict: [ "error", "function" ]
 		}
@@ -295,6 +296,7 @@ export default [
 		},
 		rules: {
 			...jqueryConfig.rules,
+			"no-implicit-globals": "error",
 			strict: [ "error", "global" ]
 		}
 	},
@@ -335,6 +337,8 @@ export default [
 		rules: {
 			...jqueryConfig.rules,
 
+			"no-implicit-globals": "error",
+
 			// That is okay for the built version
 			"no-multiple-empty-lines": "off",
 
@@ -342,6 +346,19 @@ export default [
 			// can get large. Accept that in the built version.
 			"max-len": "off",
 			"one-var": "off"
+		}
+	},
+
+	{
+		files: [
+			"src/wrapper.js",
+			"src/wrapper-factory.js",
+			"dist/jquery.factory.js",
+			"dist/jquery.factory.slim.js",
+			"test/middleware-mockserver.cjs"
+		],
+		rules: {
+			"no-implicit-globals": "off"
 		}
 	},
 
