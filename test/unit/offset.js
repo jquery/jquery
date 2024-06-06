@@ -4,7 +4,7 @@ if ( !includesModule( "offset" ) ) {
 	return;
 }
 
-var supportsScroll, alwaysScrollable,
+var alwaysScrollable,
 	forceScroll = supportjQuery( "<div></div>" ).css( { width: 2000, height: 2000 } ),
 	checkSupport = function( assert ) {
 
@@ -14,7 +14,7 @@ var supportsScroll, alwaysScrollable,
 		// Append forceScroll to the body instead of #qunit-fixture because the latter is hidden
 		forceScroll.appendTo( "body" );
 		window.scrollTo( 200, 200 );
-		supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
+		window.supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
 		forceScroll.detach();
 
 		// Support: iOS <=7 - 12+

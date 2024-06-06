@@ -2698,7 +2698,6 @@ testIframe(
 		assert.expect( 1 );
 
 		var done = assert.async(),
-			focus = false,
 			input = jQuery( frameDoc ).find( "#frame-input" );
 
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
@@ -3113,11 +3112,11 @@ QUnit.test(
 				spy.immediate = sinon.stub( event.originalEvent, "stopImmediatePropagation" );
 				event.stopImmediatePropagation();
 			} )
-			.on( "simulated", function( event ) {
+			.on( "simulated", function() {
 				assert.ok( false, "simulated event immediate propagation stopped" );
 			} );
 		outer
-			.on( "simulated", function( event ) {
+			.on( "simulated", function() {
 				assert.ok( false, "simulated event propagation stopped" );
 			} );
 
@@ -3180,8 +3179,7 @@ QUnit.test( "trigger('click') on radio passes extra params", function( assert ) 
 QUnit.test( "focusout/focusin support", function( assert ) {
 	assert.expect( 6 );
 
-	var focus,
-		parent = jQuery( "<div>" ),
+	var parent = jQuery( "<div>" ),
 		input = jQuery( "<input>" ),
 		inputExternal = jQuery( "<input>" );
 

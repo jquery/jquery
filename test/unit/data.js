@@ -317,6 +317,7 @@ QUnit.test( "data-* attributes", function( assert ) {
 
 	assert.equal( num, check.length, "Make sure that the right number of properties came through." );
 
+	/* eslint-disable-next-line no-unused-vars */
 	for ( prop in obj2 ) {
 		num2++;
 	}

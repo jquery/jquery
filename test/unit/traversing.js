@@ -857,7 +857,7 @@ QUnit.testUnlessIE( "contents() for <template /> remains inert", function( asser
 		"</template>"
 	);
 
-	var content = jQuery( "#template" ).contents();
+	jQuery( "#template" ).contents();
 
 	assert.strictEqual( window.testScript, true, "script in template isn't executed" );
 	assert.strictEqual( window.testImgOnload, true, "onload of image in template isn't executed" );
