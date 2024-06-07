@@ -1590,24 +1590,24 @@ QUnit.test( "User supplied callback called after show when fx off (trac-8892)", 
 QUnit.test( "animate should set display for disconnected nodes", function( assert ) {
 	assert.expect( 20 );
 
-	var showMethods = {
-		fadeIn: [],
-		fadeTo: [ "fast", 0.5 ],
-		slideDown: [ "fast" ],
-		show: [ 1 ],
-		animate: [ { width: "show" } ]
-	},
-	toggleMethods = {
-		toggle: [ 1 ],
-		slideToggle: []
-	},
-	$divEmpty = jQuery( "<div></div>" ),
-	$divTest = jQuery( "<div>test</div>" ),
-	$divNone = jQuery( "<div style='display: none;'></div>" ),
-	$divInline = jQuery( "<div style='display: inline;'></div>" ),
-	nullParentDisplay = $divEmpty.css( "display" ),
-	underFragmentDisplay = $divTest.css( "display" ),
-	clock = this.clock;
+	var clock = this.clock,
+		showMethods = {
+			fadeIn: [],
+			fadeTo: [ "fast", 0.5 ],
+			slideDown: [ "fast" ],
+			show: [ 1 ],
+			animate: [ { width: "show" } ]
+		},
+		toggleMethods = {
+			toggle: [ 1 ],
+			slideToggle: []
+		},
+		$divEmpty = jQuery( "<div></div>" ),
+		$divTest = jQuery( "<div>test</div>" ),
+		$divNone = jQuery( "<div style='display: none;'></div>" ),
+		$divInline = jQuery( "<div style='display: inline;'></div>" ),
+		nullParentDisplay = $divEmpty.css( "display" ),
+		underFragmentDisplay = $divTest.css( "display" );
 
 	assert.strictEqual( $divEmpty[ 0 ].parentNode, null, "Setup: element with null parentNode" );
 	assert.strictEqual( ( $divTest[ 0 ].parentNode || {} ).nodeType, 11, "Setup: element under fragment" );
