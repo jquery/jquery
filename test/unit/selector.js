@@ -1497,8 +1497,9 @@ QUnit.test( "pseudo - a:(dis|en)abled", function( assert ) {
 	assert.expect( 2 );
 
 	var enabled, disabled,
-		container = jQuery( "<div/>" ),
-		anchor = jQuery( "<a href='#'>Link</a>" );
+		container = jQuery( "<div/>" );
+
+	jQuery( "<a href='#'>Link</a>" ).appendTo( container );
 
 	container.appendTo( "#qunit-fixture" );
 
