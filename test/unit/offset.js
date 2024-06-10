@@ -4,7 +4,7 @@ if ( !includesModule( "offset" ) ) {
 	return;
 }
 
-var alwaysScrollable,
+var alwaysScrollable, supportsFixedPosition, supportsScroll,
 	forceScroll = supportjQuery( "<div></div>" ).css( { width: 2000, height: 2000 } ),
 	checkSupport = function( assert ) {
 
@@ -14,13 +14,14 @@ var alwaysScrollable,
 		var checkFixed = supportjQuery( "<div/>" )
 			.css( { position: "fixed", top: "20px" } )
 			.appendTo( "#qunit-fixture" );
-		window.supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
+		supportsFixedPosition = checkFixed[ 0 ].offsetTop === 20;
 		checkFixed.remove();
 
 		// Append forceScroll to the body instead of #qunit-fixture because the latter is hidden
 		forceScroll.appendTo( "body" );
 		window.scrollTo( 200, 200 );
-		window.supportsScroll = document.documentElement.scrollTop || document.body.scrollTop;
+		supportsScroll = !!document.documentElement.scrollTop;
+
 		forceScroll.detach();
 
 		// Support: iOS <=7
@@ -369,7 +370,7 @@ testIframe( "static", "offset/static.html", function( assert, $ ) {
 	} );
 } );
 
-testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
+testIframe( "fixed", "offset/fixed.html", function( assert, $ ) {
 	assert.expect( 38 );
 
 	var tests, $noTopLeft;
@@ -392,7 +393,7 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 	];
 
 	jQuery.each( tests, function() {
-		if ( !window.supportsScroll ) {
+		if ( !supportsScroll ) {
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
@@ -400,7 +401,7 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 			assert.ok( true, "Browser doesn't support scroll position." );
 			assert.ok( true, "Browser doesn't support scroll position." );
 
-		} else if ( window.supportsFixedPosition ) {
+		} else if ( supportsFixedPosition ) {
 			assert.equal( jQuery.isPlainObject( $( this.id ).offset() ), true, "jQuery('" + this.id + "').offset() is plain object" );
 			assert.equal( jQuery.isPlainObject( $( this.id ).position() ), true, "jQuery('" + this.id + "').position() is plain object" );
 			assert.equal( $( this.id ).offset().top,  this.offsetTop,  "jQuery('" + this.id + "').offset().top" );
@@ -429,7 +430,7 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 	];
 
 	jQuery.each( tests, function() {
-		if ( window.supportsFixedPosition ) {
+		if ( supportsFixedPosition ) {
 			$( this.id ).offset( { "top": this.top, "left": this.left } );
 			assert.equal( $( this.id ).offset().top,  this.top,  "jQuery('" + this.id + "').offset({ top: "  + this.top  + " })" );
 			assert.equal( $( this.id ).offset().left, this.left, "jQuery('" + this.id + "').offset({ left: " + this.left + " })" );
@@ -454,7 +455,7 @@ testIframe( "fixed", "offset/fixed.html", function( assert, $, window ) {
 
 	// Bug 8316
 	$noTopLeft = $( "#fixed-no-top-left" );
-	if ( window.supportsFixedPosition ) {
+	if ( supportsFixedPosition ) {
 		assert.equal( $noTopLeft.offset().top,  1007,  "Check offset top for fixed element with no top set" );
 		assert.equal( $noTopLeft.offset().left, 1007, "Check offset left for fixed element with no left set" );
 	} else {
@@ -503,7 +504,7 @@ testIframe( "scroll", "offset/scroll.html", function( assert, $, win ) {
 
 	win.name = "test";
 
-	if ( !window.supportsScroll ) {
+	if ( !supportsScroll ) {
 		assert.ok( true, "Browser doesn't support scroll position." );
 		assert.ok( true, "Browser doesn't support scroll position." );
 
