@@ -619,7 +619,7 @@ QUnit.test( "append(xml)", function( assert ) {
 				try {
 					elem = new window.ActiveXObject( aActiveX[ n ] );
 					return elem;
-				} catch ( _ ) {}
+				} catch ( e ) {}
 			}
 		}
 	}

@@ -558,7 +558,7 @@ QUnit.test( "jQuery.Deferred.then - spec compatibility", function( assert ) {
 
 	try {
 		defer.resolve();
-	} catch ( _ ) {}
+	} catch ( e ) {}
 } );
 
 QUnit[ typeof Symbol === "function" && Symbol.toStringTag ? "test" : "skip" ](

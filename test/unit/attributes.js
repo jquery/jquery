@@ -1711,7 +1711,7 @@ QUnit.test( "should not throw at $(option).val() (trac-14686)", function( assert
 	try {
 		jQuery( "<option></option>" ).val();
 		assert.ok( true );
-	} catch ( _ ) {
+	} catch ( e ) {
 		assert.ok( false );
 	}
 } );

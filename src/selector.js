@@ -169,7 +169,7 @@ var i,
 function safeActiveElement() {
 	try {
 		return document.activeElement;
-	} catch ( err ) { }
+	} catch ( e ) { }
 }
 
 // Optimize for push.apply( _, NodeList )
@@ -316,7 +316,7 @@ function find( selector, context, results, seed ) {
 						newContext.querySelectorAll( newSelector )
 					);
 					return results;
-				} catch ( qsaError ) {
+				} catch ( e ) {
 					nonnativeSelectorCache( selector, true );
 				} finally {
 					if ( nid === expando ) {
@@ -2110,7 +2110,6 @@ find.selectors = jQuery.expr;
 find.support = jQuery.support;
 find.uniqueSort = jQuery.uniqueSort;
 
-	/* eslint-enable */
 
 } )();
 

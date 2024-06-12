@@ -11,7 +11,8 @@ module.exports = [
 		// See https://github.com/eslint/eslint/discussions/17412
 		ignores: [
 			"external",
-			"test/data/json_obj.js"
+			"test/data/json_obj.js",
+			"test/data/jquery-3.7.1.js"
 		]
 	},
 
@@ -47,6 +48,10 @@ module.exports = [
 				}
 			],
 			"no-implicit-globals": "error",
+			"no-unused-vars": [
+				"error",
+				{ caughtErrorsIgnorePattern: "^e$" }
+			],
 			"one-var": [ "error", { var: "always" } ],
 			strict: [ "error", "function" ]
 		}
@@ -105,7 +110,6 @@ module.exports = [
 			"test/unit/**"
 		],
 		ignores: [
-			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",
@@ -149,7 +153,7 @@ module.exports = [
 
 			"no-unused-vars": [
 				"error",
-				{ args: "after-used", argsIgnorePattern: "^_" }
+				{ args: "after-used", argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^e$" }
 			],
 
 			// Too many errors
@@ -197,7 +201,9 @@ module.exports = [
 	},
 
 	{
-		files: [ "test/runner/listeners.js" ],
+		files: [
+			"test/runner/listeners.js"
+		],
 		languageOptions: {
 			ecmaVersion: 5,
 			sourceType: "script",
@@ -268,6 +274,10 @@ module.exports = [
 		rules: {
 			...jqueryConfig.rules,
 			"no-implicit-globals": "error",
+			"no-unused-vars": [
+				"error",
+				{ caughtErrorsIgnorePattern: "^e$" }
+			],
 			strict: [ "error", "global" ]
 		}
 	},
@@ -301,6 +311,11 @@ module.exports = [
 
 			// That is okay for the built version
 			"no-multiple-empty-lines": "off",
+
+			"no-unused-vars": [
+				"error",
+				{ caughtErrorsIgnorePattern: "^e$" }
+			],
 
 			// When custom compilation is used, the version string
 			// can get large. Accept that in the built version.

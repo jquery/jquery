@@ -1773,7 +1773,7 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 	try {
 		jQuery( frameDoc.body ).css( "direction" );
 		assert.ok( true, "It didn't throw" );
-	} catch ( _ ) {
+	} catch ( e ) {
 		assert.ok( false, "It did throw" );
 	}
 } );
