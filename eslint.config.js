@@ -351,6 +351,28 @@ export default [
 
 	{
 		files: [
+			"dist/jquery.slim.js",
+			"dist/jquery.factory.slim.js",
+			"dist-module/jquery.slim.module.js",
+			"dist-module/jquery.factory.slim.module.js"
+		],
+		rules: {
+
+			// Rollup is now smart enough to remove the use
+			// of parameters if the argument is not passed
+			// anywhere in the build.
+			// The removal of effects in the slim build
+			// results in some parameters not being used,
+			// which can be safely ignored.
+			"no-unused-vars": [
+				"error",
+				{ args: "none" }
+			]
+		}
+	},
+
+	{
+		files: [
 			"src/wrapper.js",
 			"src/wrapper-factory.js",
 			"dist/jquery.factory.js",
