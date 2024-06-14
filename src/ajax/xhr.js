@@ -9,7 +9,7 @@ define( [
 jQuery.ajaxSettings.xhr = function() {
 	try {
 		return new window.XMLHttpRequest();
-	} catch ( e ) {}
+	} catch ( _ ) {}
 };
 
 var xhrSuccessStatus = {

@@ -619,7 +619,7 @@ QUnit.test( "append(xml)", function( assert ) {
 				try {
 					elem = new window.ActiveXObject( aActiveX[ n ] );
 					return elem;
-				} catch ( e ) {}
+				} catch ( _ ) {}
 			}
 		}
 	}
@@ -1990,7 +1990,7 @@ QUnit.test( "clone()/html() don't expose jQuery/Sizzle expandos (trac-12858)", f
 		$content.find( ":nth-child(1):lt(4)" ).data( "test", true );
 
 	// But don't break on a non-Sizzle build
-	} catch ( e ) {
+	} catch ( _ ) {
 		$content.find( "*" ).data( "test", true );
 	}
 
@@ -2304,7 +2304,7 @@ QUnit.test( "domManip plain-text caching (trac-6779)", function( assert ) {
 	for ( i = 0; i < bad.length; i++ ) {
 		try {
 			$f.append( bad[ i ] );
-		} catch ( e ) {}
+		} catch ( _ ) {}
 	}
 	assert.equal( $f.text(), bad.join( "" ), "Cached strings that match Object properties" );
 	$f.remove();
@@ -2478,7 +2478,7 @@ QUnit.test( "Guard against exceptions when clearing safeChildNodes", function( a
 
 	try {
 		div = jQuery( "<div></div><hr/><code></code><b></b>" );
-	} catch ( e ) {}
+	} catch ( _ ) {}
 
 	assert.ok( div && div.jquery, "Created nodes safely, guarded against exceptions on safeChildNodes[ -1 ]" );
 } );

@@ -50,7 +50,7 @@ module.exports = [
 			"no-implicit-globals": "error",
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^e$" }
+				{ caughtErrorsIgnorePattern: "^_" }
 			],
 			"one-var": [ "error", { var: "always" } ],
 			strict: [ "error", "function" ]
@@ -153,7 +153,11 @@ module.exports = [
 
 			"no-unused-vars": [
 				"error",
-				{ args: "after-used", argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^e$" }
+				{
+					args: "after-used",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_"
+				}
 			],
 
 			// Too many errors
@@ -276,7 +280,7 @@ module.exports = [
 			"no-implicit-globals": "error",
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^e$" }
+				{ caughtErrorsIgnorePattern: "^_" }
 			],
 			strict: [ "error", "global" ]
 		}
@@ -314,7 +318,7 @@ module.exports = [
 
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^e$" }
+				{ caughtErrorsIgnorePattern: "^_" }
 			],
 
 			// When custom compilation is used, the version string

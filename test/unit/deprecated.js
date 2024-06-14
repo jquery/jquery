@@ -448,7 +448,7 @@ supportjQuery.each(
 		var fn;
 		try {
 			fn = Function( "return " + source )();
-		} catch ( e ) {}
+		} catch ( _ ) {}
 
 		QUnit[ jQuery.isFunction && fn ? "test" : "skip" ]( "isFunction(" + subclass + ")",
 			function( assert ) {

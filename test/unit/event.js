@@ -12,12 +12,12 @@ QUnit.test( "null or undefined handler", function( assert ) {
 	try {
 		jQuery( "#firstp" ).on( "click", null );
 		assert.ok( true, "Passing a null handler will not throw an exception" );
-	} catch ( e ) {}
+	} catch ( _ ) {}
 
 	try {
 		jQuery( "#firstp" ).on( "click", undefined );
 		assert.ok( true, "Passing an undefined handler will not throw an exception" );
-	} catch ( e ) {}
+	} catch ( _ ) {}
 
 	var expectedElem = jQuery( "#firstp" );
 	var actualElem = expectedElem.on( "click", null );
@@ -1050,7 +1050,7 @@ QUnit.test( "trigger(type, [data], [fn])", function( assert ) {
 		elem2 = jQuery( "#form input" ).eq( 0 );
 		elem2.get( 0 ).style.display = "none";
 		elem2.trigger( "focus" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		pass = false;
 	}
 	assert.ok( pass, "Trigger focus on hidden element" );
@@ -1058,7 +1058,7 @@ QUnit.test( "trigger(type, [data], [fn])", function( assert ) {
 	pass = true;
 	try {
 		jQuery( "#qunit-fixture table" ).eq( 0 ).on( "test:test", function() {} ).trigger( "test:test" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		pass = false;
 	}
 	assert.ok( pass, "Trigger on a table with a colon in the even type, see trac-3533" );
@@ -1459,7 +1459,7 @@ QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
 				window.onmessage = null;
 				done();
 			}
-		} catch ( e ) {
+		} catch ( _ ) {
 
 			// Messages may come from other sources, like browser extensions;
 			// some may not be valid JSONs and thus cannot be `JSON.parse`d.
@@ -2307,7 +2307,7 @@ QUnit.test( "custom events with colons (trac-3533, trac-8272)", function( assert
 	try {
 		tab.trigger( "back:forth" );
 		assert.ok( true, "colon events don't throw" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		assert.ok( false, "colon events die" );
 	}
 	tab.remove();
@@ -2945,7 +2945,7 @@ QUnit.test( "String.prototype.namespace does not cause trigger() to throw (trac-
 
 	try {
 		jQuery( "<p>" ).trigger( "foo.bar" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		errored = true;
 	}
 	assert.equal( errored, false, "trigger() did not throw exception" );

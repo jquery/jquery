@@ -36,7 +36,7 @@ async function getCache( loc ) {
 	try {
 		const contents = await fs.readFile( loc, "utf8" );
 		cache = JSON.parse( contents );
-	} catch ( e ) {
+	} catch ( _ ) {
 		return {};
 	}
 

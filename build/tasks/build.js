@@ -57,7 +57,7 @@ async function readdirRecursive( dir, all = [] ) {
 		files = await fs.readdir( path.join( srcFolder, dir ), {
 			withFileTypes: true
 		} );
-	} catch ( e ) {
+	} catch ( _ ) {
 		return all;
 	}
 	for ( const file of files ) {

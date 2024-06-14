@@ -429,7 +429,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	thrown = true;
 	try {
 		jQuery( check ).attr( "type", "checkbox" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		thrown = false;
 	}
 	assert.ok( thrown, "Exception thrown when trying to change type property" );
@@ -439,7 +439,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	thrown = true;
 	try {
 		check.attr( "type", "checkbox" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		thrown = false;
 	}
 	assert.ok( thrown, "Exception thrown when trying to change type property" );
@@ -610,7 +610,7 @@ QUnit.test( "removeAttr(String)", function( assert ) {
 	try {
 		$first = jQuery( "#first" ).attr( "contenteditable", "true" ).removeAttr( "contenteditable" );
 		assert.equal( $first.attr( "contenteditable" ), undefined, "Remove the contenteditable attribute" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		assert.ok( false, "Removing contenteditable threw an error (trac-10429)" );
 	}
 
@@ -1006,7 +1006,7 @@ if ( "value" in document.createElement( "meter" ) &&
 			assert.equal( typeof $progress.val(), "number", "progress, returns a number and does not throw exception" );
 			assert.equal( $progress.val(), $progress[ 0 ].value, "progress, api matches host and does not throw exception" );
 
-		} catch ( e ) {}
+		} catch ( _ ) {}
 
 		$meter.remove();
 		$progress.remove();
@@ -1711,7 +1711,7 @@ QUnit.test( "should not throw at $(option).val() (trac-14686)", function( assert
 	try {
 		jQuery( "<option></option>" ).val();
 		assert.ok( true );
-	} catch ( e ) {
+	} catch ( _ ) {
 		assert.ok( false );
 	}
 } );
@@ -1780,7 +1780,7 @@ QUnit.test( "non-lowercase boolean attribute getters should not crash", function
 		try {
 			assert.strictEqual( elem.attr( original ), lowercased,
 				"The '" + this + "' attribute getter should return the lowercased name" );
-		} catch ( e ) {
+		} catch ( _ ) {
 			assert.ok( false, "The '" + this + "' attribute getter threw" );
 		}
 	} );
