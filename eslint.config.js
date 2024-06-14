@@ -12,7 +12,7 @@ module.exports = [
 		ignores: [
 			"external",
 			"test/data/json_obj.js",
-			"test/data/jquery-3.7.1.js"
+			"test/data/jquery-*.js"
 		]
 	},
 
