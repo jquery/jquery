@@ -12,7 +12,11 @@ module.exports = [
 		ignores: [
 			"external",
 			"test/data/json_obj.js",
-			"test/data/jquery-*.js"
+			"test/data/jquery-*.js",
+
+			// This avoids parsing local main branch builds
+			"dist/jquery.factory.*",
+			"dist-module"
 		]
 	},
 
