@@ -11,7 +11,8 @@ export default [
 		ignores: [
 			"external",
 			"**/tmp",
-			"test/data/json_obj.js"
+			"test/data/json_obj.js",
+			"test/data/jquery-*.js"
 		]
 	},
 
@@ -147,7 +148,6 @@ export default [
 			"test/unit/**"
 		],
 		ignores: [
-			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",
