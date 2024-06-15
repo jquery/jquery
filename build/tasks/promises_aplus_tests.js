@@ -24,7 +24,7 @@ async function runTests() {
 		spawn(
 			command,
 			[ test ].concat( args ),
-			{ stdio: "inherit" }
+			{ shell: true, stdio: "inherit" }
 		);
 	} );
 }

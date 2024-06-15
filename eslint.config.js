@@ -11,7 +11,8 @@ export default [
 		ignores: [
 			"external",
 			"**/tmp",
-			"test/data/json_obj.js"
+			"test/data/json_obj.js",
+			"test/data/jquery-*.js"
 		]
 	},
 
@@ -147,7 +148,6 @@ export default [
 			"test/unit/**"
 		],
 		ignores: [
-			"test/data/jquery-3.7.1.js",
 			"test/data/badcall.js",
 			"test/data/badjson.js",
 			"test/data/support/csp.js",
@@ -346,6 +346,28 @@ export default [
 			// can get large. Accept that in the built version.
 			"max-len": "off",
 			"one-var": "off"
+		}
+	},
+
+	{
+		files: [
+			"dist/jquery.slim.js",
+			"dist/jquery.factory.slim.js",
+			"dist-module/jquery.slim.module.js",
+			"dist-module/jquery.factory.slim.module.js"
+		],
+		rules: {
+
+			// Rollup is now smart enough to remove the use
+			// of parameters if the argument is not passed
+			// anywhere in the build.
+			// The removal of effects in the slim build
+			// results in some parameters not being used,
+			// which can be safely ignored.
+			"no-unused-vars": [
+				"error",
+				{ args: "none" }
+			]
 		}
 	},
 
