@@ -169,7 +169,7 @@ var i,
 function safeActiveElement() {
 	try {
 		return document.activeElement;
-	} catch ( err ) { }
+	} catch ( _ ) { }
 }
 
 // Optimize for push.apply( _, NodeList )
@@ -183,7 +183,7 @@ try {
 	// Detect silently failing push.apply
 	// eslint-disable-next-line no-unused-expressions
 	arr[ preferredDoc.childNodes.length ].nodeType;
-} catch ( e ) {
+} catch ( _ ) {
 	push = {
 		apply: function( target, els ) {
 			pushNative.apply( target, slice.call( els ) );
@@ -316,7 +316,7 @@ function find( selector, context, results, seed ) {
 						newContext.querySelectorAll( newSelector )
 					);
 					return results;
-				} catch ( qsaError ) {
+				} catch ( _ ) {
 					nonnativeSelectorCache( selector, true );
 				} finally {
 					if ( nid === expando ) {
@@ -372,7 +372,7 @@ function assert( fn ) {
 
 	try {
 		return !!fn( el );
-	} catch ( e ) {
+	} catch ( _ ) {
 		return false;
 	} finally {
 
@@ -576,7 +576,7 @@ function setDocument( node ) {
 		try {
 			document.querySelector( ":has(*,:jqfake)" );
 			return false;
-		} catch ( e ) {
+		} catch ( _ ) {
 			return true;
 		}
 	} );
@@ -828,7 +828,7 @@ find.matchesSelector = function( elem, expr ) {
 					elem.document && elem.document.nodeType !== 11 ) {
 				return ret;
 			}
-		} catch ( e ) {
+		} catch ( _ ) {
 			nonnativeSelectorCache( expr, true );
 		}
 	}
@@ -2110,7 +2110,6 @@ find.selectors = jQuery.expr;
 find.support = jQuery.support;
 find.uniqueSort = jQuery.uniqueSort;
 
-	/* eslint-enable */
 
 } )();
 

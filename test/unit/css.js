@@ -318,7 +318,7 @@ QUnit.test( "css(String, Object)", function( assert ) {
 	success = true;
 	try {
 		jQuery( "#foo" ).css( "backgroundColor", "rgba(0, 0, 0, 0.1)" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		success = false;
 	}
 	assert.ok( success, "Setting RGBA values does not throw Error (trac-5509)" );
@@ -1065,7 +1065,7 @@ QUnit.test( "internal ref to elem.runtimeStyle (bug trac-7608)", function( asser
 
 	try {
 		jQuery( "#foo" ).css( { "width": "0%" } ).css( "width" );
-	} catch ( e ) {
+	} catch ( _ ) {
 		result = false;
 	}
 

@@ -58,7 +58,7 @@ function dataAttr( elem, key, data ) {
 		if ( typeof data === "string" ) {
 			try {
 				data = getData( data );
-			} catch ( e ) {}
+			} catch ( _ ) {}
 
 			// Make sure we set the data so it isn't changed later
 			dataUser.set( elem, key, data );

@@ -96,11 +96,10 @@ jQuery.extend( {
 // when in an optgroup
 // eslint rule "no-unused-expressions" is disabled for this code
 // since it considers such accessions noop
+/* eslint-disable no-unused-expressions */
 if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
-
-			/* eslint no-unused-expressions: "off" */
 
 			var parent = elem.parentNode;
 			if ( parent && parent.parentNode ) {
@@ -109,8 +108,6 @@ if ( !support.optSelected ) {
 			return null;
 		},
 		set: function( elem ) {
-
-			/* eslint no-unused-expressions: "off" */
 
 			var parent = elem.parentNode;
 			if ( parent ) {
@@ -123,6 +120,7 @@ if ( !support.optSelected ) {
 		}
 	};
 }
+/* eslint-enable no-unused-expressions */
 
 jQuery.each( [
 	"tabIndex",

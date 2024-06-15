@@ -2001,9 +2001,7 @@ QUnit.module( "ajax", {
 			} );
 			success = true;
 			xhr.abort();
-		} catch ( e ) {
-
-		}
+		} catch ( _ ) {}
 		assert.ok( success, "document.location did not generate exception" );
 	} );
 
