@@ -140,7 +140,15 @@ async function checkExclude( exclude, include ) {
 	return [ unique( excluded ), unique( included ) ];
 }
 
+async function getLastModifiedDate() {
+	const { stdout } = await exec( "git log -1 --format='%at'" );
+	return new Date( parseInt( stdout, 10 ) * 1000 );
+}
+
 async function writeCompiled( { code, dir, filename, version } ) {
+
+	// Use the last modified date so builds are reproducible
+	const date = await getLastModifiedDate();
 	const compiledContents = code
 
 		// Embed Version
@@ -148,7 +156,7 @@ async function writeCompiled( { code, dir, filename, version } ) {
 
 		// Embed Date
 		// yyyy-mm-ddThh:mmZ
-		.replace( /@DATE/g, new Date().toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
+		.replace( /@DATE/g, date.toISOString().replace( /:\d+\.\d+Z$/, "Z" ) );
 
 	await fs.writeFile( path.join( dir, filename ), compiledContents );
 	console.log( `[${ getTimestamp() }] ${ filename } v${ version } created.` );
