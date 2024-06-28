@@ -63,6 +63,7 @@
     "release:changelog": "node build/release/changelog.js",
     "release:clean": "rimraf tmp --glob dist/*.{js,map} --glob dist-module/*.{js,map} --glob changelog.{md,html}",
     "release:dist": "node build/release/dist.js",
+    "release:verify": "node -e \"(async () => { const { verifyRelease } = await import('./build/release/verify.js'); verifyRelease() })()\"",
     "start": "node -e \"require('./build/tasks/build.js').buildDefaultFiles({ watch: true })\"",
     "test:bundlers": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js",
     "test:browser": "npm run pretest && npm run build:main && npm run test:unit -- -b chrome -b firefox -h",
