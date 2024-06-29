@@ -280,8 +280,9 @@ export default [
 
 	{
 		files: [
-			"build/**",
 			"eslint.config.js",
+			".release-it.cjs",
+			"build/**",
 			"test/node_smoke_tests/**",
 			"test/bundler_smoke_tests/**/*",
 			"test/promises_aplus_adapters/**",
@@ -303,15 +304,6 @@ export default [
 
 	{
 		files: [
-			"build/**/*.js"
-		],
-		languageOptions: {
-			sourceType: "commonjs"
-		}
-	},
-
-	{
-		files: [
 			"dist/jquery.js",
 			"dist/jquery.slim.js",
 			"dist/jquery.factory.js",
@@ -320,10 +312,8 @@ export default [
 			"dist-module/jquery.slim.module.js",
 			"dist-module/jquery.factory.module.js",
 			"dist-module/jquery.factory.slim.module.js",
-			"dist/jquery.bundler-require-wrapper.js",
-			"dist/jquery.bundler-require-wrapper.slim.js",
-			"dist-module/jquery.node-module-wrapper.js",
-			"dist-module/jquery.node-module-wrapper.slim.js"
+			"dist/wrappers/*.js",
+			"dist-module/wrappers/*.js"
 		],
 		languageOptions: {
 			ecmaVersion: 2015,
@@ -406,8 +396,7 @@ export default [
 
 	{
 		files: [
-			"dist/jquery.bundler-require-wrapper.js",
-			"dist/jquery.bundler-require-wrapper.slim.js"
+			"dist/wrappers/*.js"
 		],
 		languageOptions: {
 			ecmaVersion: 2015,

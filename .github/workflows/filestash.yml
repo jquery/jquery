@@ -10,11 +10,13 @@ permissions:
 
 jobs:
   update:
+    name: Update Filestash
     runs-on: ubuntu-latest
+    # skip on forks
+    if: ${{ github.repository == 'jquery/jquery' }}
     environment: filestash
     env:
       NODE_VERSION: 20.x
-    name: Update Filestash
     steps:
       - name: Checkout
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6

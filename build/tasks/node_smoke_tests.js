@@ -1,16 +1,12 @@
-"use strict";
+import fs from "node:fs/promises";
+import util from "node:util";
+import { exec as nodeExec } from "node:child_process";
+import verifyNodeVersion from "./lib/verifyNodeVersion.js";
 
-const fs = require( "node:fs/promises" );
-const util = require( "node:util" );
-const exec = util.promisify( require( "node:child_process" ).exec );
-const verifyNodeVersion = require( "./lib/verifyNodeVersion" );
+const exec = util.promisify( nodeExec );
 
 const allowedLibraryTypes = new Set( [ "regular", "factory" ] );
 const allowedSourceTypes = new Set( [ "commonjs", "module", "dual" ] );
-
-if ( !verifyNodeVersion() ) {
-	return;
-}
 
 // Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
 // All the files under test/node_smoke_tests/*.js are supposed to exit with 0 code
@@ -46,6 +42,10 @@ async function runTests( { libraryType, sourceType, module } ) {
 }
 
 async function runDefaultTests() {
+	if ( !verifyNodeVersion() ) {
+		return;
+	}
+
 	await Promise.all( [
 		runTests( {
 			libraryType: "regular",

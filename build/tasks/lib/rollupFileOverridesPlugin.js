@@ -1,5 +1,3 @@
-"use strict";
-
 /**
  * A Rollup plugin accepting a file overrides map and changing
  * module sources to the overridden ones where provided. Files
@@ -7,7 +5,7 @@
  *
  * @param {Map<string, string>} fileOverrides
  */
-module.exports = ( fileOverrides ) => {
+export default function rollupFileOverrides( fileOverrides ) {
 	return {
 		name: "jquery-file-overrides",
 		load( id ) {
@@ -21,4 +19,4 @@ module.exports = ( fileOverrides ) => {
 			return null;
 		}
 	};
-};
+}
