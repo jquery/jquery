@@ -371,3 +371,5 @@ Anders Kaseorg <andersk@mit.edu>
 Alex <aleksandrosansan@gmail.com>
 Gabriela Gutierrez <gabigutierrez@google.com>
 Dimitri Papadopoulos Orfanos <3234522+DimitriPapadopoulos@users.noreply.github.com>
+J.Son <x@x-wx.com>
+Liam James <liam@minimaximize.com>
