@@ -33,7 +33,9 @@ cd -
 npm run release:dist $1 $2
 cd $dist
 git add -A
-npm version $1
+git commit -m "Release: $1"
+# -s to sign and annotate tag (recommended for releases)
+git tag -s $1 -m "Release: $1"
 
 # Wait for confirmation from user to push changes to dist repo
 read -p "Press enter to push changes to dist repo"

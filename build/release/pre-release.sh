@@ -2,11 +2,17 @@
 
 set -euo pipefail
 
-# Cleans all release and build artifacts
+# Install dependencies
+npm ci
+
+# Clean all release and build artifacts
 npm run build:clean
 npm run release:clean
-npm ci
+
+# Check authors
 npm run authors:check
+
+# Run tests
 npm test
 
 # Clone dist and cdn repos to the tmp/release directory
