@@ -8,12 +8,12 @@ if ( !blogURL || !blogURL.startsWith( "https://blog.jquery.com/" ) ) {
 
 module.exports = {
 	hooks: {
-		"before:init": "sh ./build/release/pre-release.sh",
+		"before:init": "bash ./build/release/pre-release.sh",
 		"before:git:release": "git add -f dist/ dist-module/ changelog.md",
 		"after:version:bump":
 			"sed -i 's/main\\/AUTHORS.txt/${version}\\/AUTHORS.txt/' package.json",
 		"after:release":
-			`sh ./build/release/post-release.sh \${version} ${ blogURL }`
+			`bash ./build/release/post-release.sh \${version} ${ blogURL }`
 	},
 	git: {
 		changelog: "npm run release:changelog -- ${from} ${to}",
