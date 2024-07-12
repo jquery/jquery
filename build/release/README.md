@@ -53,7 +53,6 @@ The release script will not run without this token.
 1. Create draft blog post on blog.jquery.com; save the link before publishing. The link is required to run the release.
 
 	- Highlight major changes and reason for release.
-	- Add contributor list generated in the below release script.
 	- Add HTML from the `changelog.html` generated in the below release script.
 	- Use HTML from the `contributors.html` generated in the below release script in the "Thanks" section.
 
