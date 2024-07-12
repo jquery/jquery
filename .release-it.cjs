@@ -7,6 +7,7 @@ if ( !blogURL || !blogURL.startsWith( "https://blog.jquery.com/" ) ) {
 }
 
 module.exports = {
+	preReleaseBase: 1,
 	hooks: {
 		"before:init": "bash ./build/release/pre-release.sh",
 		"before:git:release": "git add -f dist/ dist-module/ changelog.md",

@@ -59,7 +59,7 @@
     "prepare": "husky",
     "pretest": "npm run qunit-fixture && npm run babel:tests && npm run npmcopy",
     "qunit-fixture": "node build/tasks/qunit-fixture.js",
-    "release": "release-it --preReleaseBase=1",
+    "release": "release-it",
     "release:cdn": "node build/release/cdn.js",
     "release:changelog": "node build/release/changelog.js",
     "release:clean": "rimraf tmp --glob changelog.{md,html} contributors.html",
