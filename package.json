@@ -119,6 +119,7 @@
     "commitplease": "3.2.0",
     "concurrently": "8.2.2",
     "core-js-bundle": "3.37.1",
+    "cross-env": "7.0.3",
     "diff": "5.2.0",
     "eslint": "8.57.0",
     "eslint-config-jquery": "3.0.2",
