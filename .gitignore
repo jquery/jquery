@@ -31,8 +31,8 @@ npm-debug.log*
 /test/data/qunit-fixture.js
 
 # Release artifacts
-changelog.*
-contributors.*
+changelog.html
+contributors.html
 
 # Ignore BrowserStack testing files
 local.log

@@ -148,7 +148,10 @@ async function getLastModifiedDate() {
 async function writeCompiled( { code, dir, filename, version } ) {
 
 	// Use the last modified date so builds are reproducible
-	const date = await getLastModifiedDate();
+	const date = process.env.RELEASE_DATE ?
+		new Date( process.env.RELEASE_DATE ) :
+		await getLastModifiedDate();
+
 	const compiledContents = code
 
 		// Embed Version
