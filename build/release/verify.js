@@ -24,12 +24,13 @@ const REGISTRY_URL = "https://registry.npmjs.org/jquery";
 
 const rstable = /^(\d+\.\d+\.\d+)$/;
 
-export async function verifyRelease( { version } = {} ) {
+async function verifyRelease( { version } = {} ) {
 	if ( !version ) {
 		version = process.env.VERSION || ( await getLatestVersion() );
 	}
-	console.log( `Checking jQuery ${ version }...` );
 	const release = await buildRelease( { version } );
+
+	console.log( `Verifying jQuery ${ version }...` );
 
 	let verified = true;
 
@@ -139,8 +140,8 @@ async function buildRelease( { version } ) {
 			.filter( ( dirent ) => dirent.isFile() )
 			.map( async( dirent ) => ( {
 				name: dirent.name,
-				path: path.basename( dirent.path ),
-				contents: await readFile( path.join( dirent.path, dirent.name ), "utf8" )
+				path: path.basename( dirent.parentPath ),
+				contents: await readFile( path.join( dirent.parentPath, dirent.name ), "utf8" )
 			} ) )
 	);
 
@@ -196,3 +197,5 @@ async function sumTarball( filepath ) {
 	const unzipped = await gunzip( contents );
 	return shasum( unzipped );
 }
+
+verifyRelease();
