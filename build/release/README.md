@@ -84,6 +84,14 @@ The release script will not run without this token.
 
 	**Note**: `preReleaseBase` is set in the npm script to `1` to ensure any pre-releases start at `.1` instead of `.0`. This does not interfere with stable releases.
 
+1. Run the post-release script:
+
+	```sh
+	./build/release/post-release.sh $VERSION $BLOG_URL
+	```
+
+	This will push the release files to the CDN and jquery-dist repos, and push the commit to the jQuery repo to remove the release files and update the AUTHORS.txt URL in the package.json.
+
 1. Once the release is complete, publish the blog post.
 
 ## Stable releases

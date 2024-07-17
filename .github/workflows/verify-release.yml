@@ -1,15 +1,16 @@
 name: Reproducible Builds
 on:
-  # On tags
   push:
+    # On tags
     tags:
       - '*'
   # Or manually
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to verify (>= 4.0.0-beta.2)'
+        description: 'Version to verify (>= 4.0.0-rc.1)'
         required: false
+
 
 jobs:
   run:
@@ -27,6 +28,9 @@ jobs:
         uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
 
       - run: npm run release:verify
         env:
