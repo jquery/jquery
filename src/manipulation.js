@@ -141,32 +141,32 @@ jQuery.extend( {
 	    // Convert elems to a native array if it is not already
 	    elems = jQuery.makeArray(elems);
 
-	    while ( i < elems.length ) {
-	        elem = elems[ i ];
+	    while (i < elems.length) {
+	        elem = elems[i];
 
-	        if ( acceptData( elem ) ) {
-	            if ( ( data = elem[ dataPriv.expando ] ) ) {
-	                if ( data.events ) {
-	                    for ( type in data.events ) {
-	                        if ( special[ type ] ) {
-	                            jQuery.event.remove( elem, type );
+	        if (acceptData(elem)) {
+	            if ((data = elem[dataPriv.expando])) {
+	                if (data.events) {
+	                    for (type in data.events) {
+	                        if (special[type]) {
+	                            jQuery.event.remove(elem, type);
 
 	                        // This is a shortcut to avoid jQuery.event.remove's overhead
 	                        } else {
-	                            jQuery.removeEvent( elem, type, data.handle );
+	                            jQuery.removeEvent(elem, type, data.handle);
 	                        }
 	                    }
 	                }
 
 	                // Support: Chrome <=35 - 45+
 	                // Assign undefined instead of using delete, see Data#remove
-	                elem[ dataPriv.expando ] = undefined;
+	                elem[dataPriv.expando] = undefined;
 	            }
-	            if ( elem[ dataUser.expando ] ) {
+	            if (elem[dataUser.expando]) {
 
 	                // Support: Chrome <=35 - 45+
 	                // Assign undefined instead of using delete, see Data#remove
-	                elem[ dataUser.expando ] = undefined;
+	                elem[dataUser.expando] = undefined;
 	            }
 
 	            // Remove the element from the array while preserving the index positions
@@ -176,6 +176,7 @@ jQuery.extend( {
 	        }
 	    }
 	}
+
 
 } );
 
