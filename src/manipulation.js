@@ -138,12 +138,7 @@ jQuery.extend( {
 			special = jQuery.event.special,
 			i = 0;
 
-		// Convert elems to a native array if it is not already
-		elems = jQuery.makeArray( elems );
-
-		while ( i < elems.length ) {
-			elem = elems[ i ];
-
+		for ( ; ( elem = elems[ i ] ) !== undefined; i++ ) {
 			if ( acceptData( elem ) ) {
 				if ( ( data = elem[ dataPriv.expando ] ) ) {
 					if ( data.events ) {
@@ -151,7 +146,7 @@ jQuery.extend( {
 							if ( special[ type ] ) {
 								jQuery.event.remove( elem, type );
 
-								// This is a shortcut to avoid jQuery.event.remove's overhead
+							// This is a shortcut to avoid jQuery.event.remove's overhead
 							} else {
 								jQuery.removeEvent( elem, type, data.handle );
 							}
@@ -168,11 +163,6 @@ jQuery.extend( {
 					// Assign undefined instead of using delete, see Data#remove
 					elem[ dataUser.expando ] = undefined;
 				}
-
-				// Remove the element from the array while preserving the index positions
-				elems.splice( i, 1 );
-			} else {
-				i++;
 			}
 		}
 	}
