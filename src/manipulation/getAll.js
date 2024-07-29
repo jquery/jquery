@@ -7,10 +7,7 @@ export function getAll( context, tag ) {
 	// Use typeof to avoid zero-argument method invocation on host objects (trac-15151)
 	var ret;
 
-	if ( typeof context.getElementsByTagName !== "undefined" ) {
-		ret = context.getElementsByTagName( tag || "*" );
-
-	} else if ( typeof context.querySelectorAll !== "undefined" ) {
+	if ( typeof context.querySelectorAll !== "undefined" ) {
 		ret = context.querySelectorAll( tag || "*" );
 
 	} else {
