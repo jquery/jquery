@@ -25,8 +25,10 @@ export async function createTestServer( report, { quiet } = {} ) {
 			};
 		}
 
+		// Add a parsed URL object to the request object
 		req.parsedUrl = new URL( `http://${ process.env.HOST ?? "localhost" }${ req.url }` );
 
+		// Add a simplified redirect helper to the response object
 		res.redirect = ( status, location ) => {
 			if ( !location ) {
 				location = status;
