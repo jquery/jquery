@@ -3099,3 +3099,66 @@ testIframe(
 		} );
 	}
 );
+
+
+// new test cases
+
+function nodeName( elem, name ) {
+	return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
+}
+
+function getAll( context, tag ) {
+
+	// Support: IE <=9 - 11+
+	// Use typeof to avoid zero-argument method invocation on host objects (trac-15151)
+	var ret;
+
+	if ( typeof context.querySelectorAll !== "undefined" ) {
+		ret = context.querySelectorAll( tag || "*" );
+
+	} else {
+		ret = [];
+	}
+
+	if ( tag === undefined || tag && nodeName( context, tag ) ) {
+		return jQuery.merge( [ context ], ret );
+	}
+
+	return ret;
+}
+
+QUnit.test( "should retrieve all elements with a specific tag", function( assert ) {
+    assert.expect( 1 );
+    var context = document.createElement( "div" );
+    context.innerHTML = "<span></span><span></span>";
+
+    var result = getAll( context, "span" );
+    assert.equal( result.length, 2, "Found two span elements" );
+} );
+
+QUnit.test( "should retrieve all elements if no tag is specified", function( assert ) {
+    assert.expect( 1 );
+    var context = document.createElement( "div" );
+    context.innerHTML = "<span></span><span></span>";
+
+    var result = getAll( context );
+    assert.equal( result.length, 3, "Found three elements including the context itself" );
+} );
+
+QUnit.test( "should retrieve elements including the context if it matches the tag", function( assert ) {
+    assert.expect( 1 );
+    var context = document.createElement( "div" );
+    context.innerHTML = "<div></div><span></span>";
+
+    var result = getAll( context, "div" );
+    assert.equal( result.length, 2, "Found two div elements including the context itself" );
+} );
+
+QUnit.test( "should return an empty array if no matching elements are found", function( assert ) {
+    assert.expect( 1 );
+    var context = document.createElement( "div" );
+    context.innerHTML = "<span></span><span></span>";
+
+    var result = getAll( context, "p" );
+    assert.equal( result.length, 0, "Found no p elements" );
+} );
