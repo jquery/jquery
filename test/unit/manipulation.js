@@ -3100,65 +3100,70 @@ testIframe(
 	}
 );
 
+// Custom event handler test case
 
-// new test cases
+QUnit.test( "should handle custom '_se-custom-destroy' event correctly", function( assert ) {
 
-function nodeName( elem, name ) {
-	return elem.nodeName && elem.nodeName.toLowerCase() === name.toLowerCase();
-}
+	// Set up the HTML structure using innerHTML within #qunit-fixture
 
-function getAll( context, tag ) {
+	assert.expect( 2 );
 
-	// Support: IE <=9 - 11+
-	// Use typeof to avoid zero-argument method invocation on host objects (trac-15151)
-	var ret;
+	var fixture = jQuery( "#qunit-fixture" );
 
-	if ( typeof context.querySelectorAll !== "undefined" ) {
-		ret = context.querySelectorAll( tag || "*" );
+	fixture.html( `
+    <div id="container">
+      <div class="guarded removeself" data-elt="one">
+        Guarded 1
+      </div>
+      <div class="guarded" data-elt="two">
+        Guarded 2
+      </div>
+      <div class="guarded" data-elt="three">
+        Guarded 3
+      </div>
+    </div>
+  ` );
 
-	} else {
-		ret = [];
-	}
+	// JavaScript code to be tested
 
-	if ( tag === undefined || tag && nodeName( context, tag ) ) {
-		return jQuery.merge( [ context ], ret );
-	}
+  jQuery.event.special[ "_se-custom-destroy" ] = {
+    remove: function( _handleObj ) {
+		var $t = jQuery( this );
+		console.log( $t.data( "elt" ) );
+		if ( $t.is( ".removeself" ) ) {
+			$t.remove();
+			}
+		}
+	};
 
-	return ret;
-}
+	// Attach the custom event handler
 
-QUnit.test( "should retrieve all elements with a specific tag", function( assert ) {
-    assert.expect( 1 );
-    var context = document.createElement( "div" );
-    context.innerHTML = "<span></span><span></span>";
+	jQuery( ".guarded" ).on( "_se-custom-destroy", function( ) { } );
 
-    var result = getAll( context, "span" );
-    assert.equal( result.length, 2, "Found two span elements" );
-} );
+	// Spy on console.log
 
-QUnit.test( "should retrieve all elements if no tag is specified", function( assert ) {
-    assert.expect( 1 );
-    var context = document.createElement( "div" );
-    context.innerHTML = "<span></span><span></span>";
+	var consoleLog = console.log;
 
-    var result = getAll( context );
-    assert.equal( result.length, 3, "Found three elements including the context itself" );
-} );
+	var logMessages = [];
 
-QUnit.test( "should retrieve elements including the context if it matches the tag", function( assert ) {
-    assert.expect( 1 );
-    var context = document.createElement( "div" );
-    context.innerHTML = "<div></div><span></span>";
+	console.log = function( message ) {
+	logMessages.push( message );
+	};
 
-    var result = getAll( context, "div" );
-    assert.equal( result.length, 2, "Found two div elements including the context itself" );
-} );
+	// Trigger the event by emptying the container
 
-QUnit.test( "should return an empty array if no matching elements are found", function( assert ) {
-    assert.expect( 1 );
-    var context = document.createElement( "div" );
-    context.innerHTML = "<span></span><span></span>";
+	jQuery( "#container" ).empty( );
 
-    var result = getAll( context, "p" );
-    assert.equal( result.length, 0, "Found no p elements" );
+	// Verify that the elements with class 'removeself' were removed
+
+	assert.equal( jQuery( ".removeself" ).length, 0, "Elements with class 'removeself' should be removed" );
+
+	// Verify console logs
+
+	assert.deepEqual( logMessages, [ "one", "two", "three" ], "Console logs should match the data-elt attributes" );
+
+	// Restore console.log
+
+	console.log = consoleLog;
+
 } );
