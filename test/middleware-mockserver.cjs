@@ -179,16 +179,7 @@ const mocks = {
 			"constructor": "prototype collision (constructor)"
 		};
 
-		// Use resp.append in express to
-		// avoid overwriting List-Header
-		if ( resp.append ) {
-
-			for ( const key in headers ) {
-				resp.append( key, headers[ key ] );
-			}
-		} else {
-			resp.writeHead( 200, headers );
-		}
+		resp.writeHead( 200, headers );
 		req.query.keys.split( "|" ).forEach( function( key ) {
 			if ( key.toLowerCase() in req.headers ) {
 				resp.write( `${ key }: ${ req.headers[ key.toLowerCase() ] }\n` );
@@ -348,11 +339,7 @@ const handlers = {
 
 /**
  * Connect-compatible middleware factory for mocking server responses.
- * Used by Ajax unit tests when run via Karma.
- *
- * Despite Karma using Express, it uses Connect to deal with custom middleware,
- * which passes the raw Node Request and Response objects instead of the
- * Express versions of these (e.g. no req.path, req.query, resp.set).
+ * Used by Ajax tests run in Node.
  */
 function MockserverMiddlewareFactory() {
 
