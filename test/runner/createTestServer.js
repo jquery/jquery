@@ -26,7 +26,9 @@ export async function createTestServer( report, { quiet } = {} ) {
 		}
 
 		// Add a parsed URL object to the request object
-		req.parsedUrl = new URL( `http://${ process.env.HOST ?? "localhost" }${ req.url }` );
+		req.parsedUrl = new URL(
+			`http://${ process.env.HOST ?? "localhost" }${ req.url }`
+		);
 
 		// Add a simplified redirect helper to the response object
 		res.redirect = ( status, location ) => {
@@ -80,7 +82,8 @@ export async function createTestServer( report, { quiet } = {} ) {
 	use( ( req, res, next ) => {
 		if (
 			( req.method === "GET" || req.method === "HEAD" ) &&
-			( req.parsedUrl.pathname === "/test/" || req.parsedUrl.pathname === "/test/index.html" )
+			( req.parsedUrl.pathname === "/test/" ||
+				req.parsedUrl.pathname === "/test/index.html" )
 		) {
 			res.writeHead( 200, { "Content-Type": "text/html" } );
 			res.end(
@@ -126,6 +129,8 @@ export async function createTestServer( report, { quiet } = {} ) {
 
 	// Serve static files
 	const validMimeTypes = {
+
+		// No .mjs or .cjs files are used in tests
 		".js": "application/javascript",
 		".css": "text/css",
 		".html": "text/html",
@@ -141,44 +146,45 @@ export async function createTestServer( report, { quiet } = {} ) {
 	};
 	use( async( req, res, next ) => {
 		if (
-			req.url.startsWith( "/dist/" ) ||
-			req.url.startsWith( "/src/" ) ||
-			req.url.startsWith( "/test/" ) ||
-			req.url.startsWith( "/external/" )
+			!req.url.startsWith( "/dist/" ) &&
+			!req.url.startsWith( "/src/" ) &&
+			!req.url.startsWith( "/test/" ) &&
+			!req.url.startsWith( "/external/" )
 		) {
-			const file = req.parsedUrl.pathname.slice( 1 );
-			const ext = file.slice( file.lastIndexOf( "." ) );
+			return next();
+		}
+		const file = req.parsedUrl.pathname.slice( 1 );
+		const ext = file.slice( file.lastIndexOf( "." ) );
 
-			// Allow POST to .html files in tests
-			if (
-				req.method !== "GET" &&
-				req.method !== "HEAD" &&
-				( ext !== ".html" || req.method !== "POST" )
-			) {
-				return next();
+		// Allow POST to .html files in tests
+		if (
+			req.method !== "GET" &&
+			req.method !== "HEAD" &&
+			( ext !== ".html" || req.method !== "POST" )
+		) {
+			return next();
+		}
+		const mimeType = validMimeTypes[ ext ];
+		if ( mimeType ) {
+			try {
+				await stat( file );
+			} catch ( error ) {
+				res.writeHead( 404 );
+				res.end();
+				return;
 			}
-			const mimeType = validMimeTypes[ ext ];
-			if ( mimeType ) {
-				try {
-					await stat( file );
-				} catch ( error ) {
-					res.writeHead( 404 );
-					res.end();
-					return;
-				}
-				res.writeHead( 200, { "Content-Type": mimeType } );
-				createReadStream( file ).pipe( res ).on( "error", ( error ) => {
+			res.writeHead( 200, { "Content-Type": mimeType } );
+			createReadStream( file )
+				.pipe( res )
+				.on( "error", ( error ) => {
 					console.error( error );
 					res.writeHead( 500 );
 					res.end();
 				} );
-			} else {
-				console.error( `Invalid file extension: ${ ext }` );
-				res.writeHead( 404 );
-				res.end();
-			}
 		} else {
-			next();
+			console.error( `Invalid file extension: ${ ext }` );
+			res.writeHead( 404 );
+			res.end();
 		}
 	} );
 
