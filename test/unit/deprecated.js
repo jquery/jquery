@@ -93,10 +93,10 @@ QUnit.test( "trigger() shortcuts", function( assert ) {
 	assert.equal( counter, 1, "Check that click, triggers onclick event handler also" );
 
 	clickCounter = 0;
-	jQuery( "#simon1" )[ 0 ].onclick = function() {
+	jQuery( "#john1" )[ 0 ].onclick = function() {
 		clickCounter++;
 	};
-	jQuery( "#simon1" ).click();
+	jQuery( "#john1" ).click();
 	assert.equal( clickCounter, 1, "Check that click, triggers onclick event handler on an a tag also" );
 } );
 

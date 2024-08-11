@@ -63,17 +63,17 @@ QUnit.test( "is(falsy|invalid)", function( assert ) {
 QUnit.test( "is(String)", function( assert ) {
 	assert.expect( 33 );
 
-	var link = document.getElementById( "simon1" ),
+	var link = document.getElementById( "john1" ),
 		input = document.getElementById( "text1" ),
 		option = document.getElementById( "option1a" ),
 		disconnected = document.createElement( "div" );
 
 	assert.ok( jQuery( "#form" ).is( "form" ), "Check for element: A form must be a form" );
 	assert.ok( !jQuery( "#form" ).is( "div" ), "Check for element: A form is not a div" );
-	assert.ok( jQuery( "#mark" ).is( ".blog" ), "Check for class: Expected class 'blog'" );
-	assert.ok( !jQuery( "#mark" ).is( ".link" ), "Check for class: Did not expect class 'link'" );
-	assert.ok( jQuery( "#simon" ).is( ".blog.link" ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
-	assert.ok( !jQuery( "#simon" ).is( ".blogTest" ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
+	assert.ok( jQuery( "#mozilla" ).is( ".blog" ), "Check for class: Expected class 'blog'" );
+	assert.ok( !jQuery( "#mozilla" ).is( ".link" ), "Check for class: Did not expect class 'link'" );
+	assert.ok( jQuery( "#timmy" ).is( ".blog.link" ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
+	assert.ok( !jQuery( "#timmy" ).is( ".blogTest" ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 	assert.ok( jQuery( "#en" ).is( "[lang=\"en\"]" ), "Check for attribute: Expected attribute lang to be 'en'" );
 	assert.ok( !jQuery( "#en" ).is( "[lang=\"de\"]" ), "Check for attribute: Expected attribute lang to be 'en', not 'de'" );
 	assert.ok( jQuery( "#text1" ).is( "[type=\"text\"]" ), "Check for attribute: Expected attribute type to be 'text'" );
@@ -164,10 +164,10 @@ QUnit.test( "is(jQuery)", function( assert ) {
 	assert.expect( 19 );
 	assert.ok( jQuery( "#form" ).is( jQuery( "form" ) ), "Check for element: A form is a form" );
 	assert.ok( !jQuery( "#form" ).is( jQuery( "div" ) ), "Check for element: A form is not a div" );
-	assert.ok( jQuery( "#mark" ).is( jQuery( ".blog" ) ), "Check for class: Expected class 'blog'" );
-	assert.ok( !jQuery( "#mark" ).is( jQuery( ".link" ) ), "Check for class: Did not expect class 'link'" );
-	assert.ok( jQuery( "#simon" ).is( jQuery( ".blog.link" ) ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
-	assert.ok( !jQuery( "#simon" ).is( jQuery( ".blogTest" ) ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
+	assert.ok( jQuery( "#mozilla" ).is( jQuery( ".blog" ) ), "Check for class: Expected class 'blog'" );
+	assert.ok( !jQuery( "#mozilla" ).is( jQuery( ".link" ) ), "Check for class: Did not expect class 'link'" );
+	assert.ok( jQuery( "#timmy" ).is( jQuery( ".blog.link" ) ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
+	assert.ok( !jQuery( "#timmy" ).is( jQuery( ".blogTest" ) ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 	assert.ok( jQuery( "#en" ).is( jQuery( "[lang=\"en\"]" ) ), "Check for attribute: Expected attribute lang to be 'en'" );
 	assert.ok( !jQuery( "#en" ).is( jQuery( "[lang=\"de\"]" ) ), "Check for attribute: Expected attribute lang to be 'en', not 'de'" );
 	assert.ok( jQuery( "#text1" ).is( jQuery( "[type=\"text\"]" ) ), "Check for attribute: Expected attribute type to be 'text'" );
@@ -179,10 +179,10 @@ QUnit.test( "is(jQuery)", function( assert ) {
 	// Some raw elements
 	assert.ok( jQuery( "#form" ).is( jQuery( "#qunit-fixture form" )[ 0 ] ), "Check for element: A form is a form" );
 	assert.ok( !jQuery( "#form" ).is( jQuery( "div" )[ 0 ] ), "Check for element: A form is not a div" );
-	assert.ok( jQuery( "#mark" ).is( jQuery( ".blog" )[ 0 ] ), "Check for class: Expected class 'blog'" );
-	assert.ok( !jQuery( "#mark" ).is( jQuery( ".link" )[ 0 ] ), "Check for class: Did not expect class 'link'" );
-	assert.ok( jQuery( "#simon" ).is( jQuery( ".blog.link" )[ 0 ] ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
-	assert.ok( !jQuery( "#simon" ).is( jQuery( ".blogTest" )[ 0 ] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
+	assert.ok( jQuery( "#mozilla" ).is( jQuery( ".blog" )[ 0 ] ), "Check for class: Expected class 'blog'" );
+	assert.ok( !jQuery( "#mozilla" ).is( jQuery( ".link" )[ 0 ] ), "Check for class: Did not expect class 'link'" );
+	assert.ok( jQuery( "#timmy" ).is( jQuery( ".blog.link" )[ 0 ] ), "Check for multiple classes: Expected classes 'blog' and 'link'" );
+	assert.ok( !jQuery( "#timmy" ).is( jQuery( ".blogTest" )[ 0 ] ), "Check for multiple classes: Expected classes 'blog' and 'link', but not 'blogTest'" );
 } );
 
 QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "is() with :has() selectors", function( assert ) {
@@ -476,9 +476,9 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "not(Selector)", function( ass
 		"not('selector, selector')"
 	);
 
-	assert.deepEqual( jQuery( "#ap *" ).not( "code" ).get(), q( "google", "groups", "anchor1", "mark" ), "not('tag selector')" );
-	assert.deepEqual( jQuery( "#ap *" ).not( "code, #mark" ).get(), q( "google", "groups", "anchor1" ), "not('tag, ID selector')" );
-	assert.deepEqual( jQuery( "#ap *" ).not( "#mark, code" ).get(), q( "google", "groups", "anchor1" ), "not('ID, tag selector')" );
+	assert.deepEqual( jQuery( "#ap *" ).not( "code" ).get(), q( "google", "groups", "anchor1", "mozilla" ), "not('tag selector')" );
+	assert.deepEqual( jQuery( "#ap *" ).not( "code, #mozilla" ).get(), q( "google", "groups", "anchor1" ), "not('tag, ID selector')" );
+	assert.deepEqual( jQuery( "#ap *" ).not( "#mozilla, code" ).get(), q( "google", "groups", "anchor1" ), "not('ID, tag selector')" );
 
 	assert.deepEqual(
 		jQuery( "#form option" ).not( "option.emptyopt:contains('Nothing'),optgroup *,[value='1']" ).get(),
