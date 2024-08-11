@@ -589,14 +589,14 @@ QUnit.test( "inArray()", function( assert ) {
 		p: q( "firstp", "sap", "ap", "first" ),
 		em: q( "siblingnext", "siblingfirst" ),
 		div: q( "qunit-testrunner-toolbar", "nothiddendiv", "nothiddendivchild", "foo" ),
-		a: q( "mark", "groups", "google", "simon1" ),
+		a: q( "mozilla", "groups", "google", "john1" ),
 		empty: []
 	},
 	tests = {
 		p: { elem: jQuery( "#ap" )[ 0 ], index: 2 },
 		em: { elem: jQuery( "#siblingfirst" )[ 0 ], index: 1 },
 		div: { elem: jQuery( "#nothiddendiv" )[ 0 ], index: 1 },
-		a: { elem: jQuery( "#simon1" )[ 0 ], index: 3 }
+		a: { elem: jQuery( "#john1" )[ 0 ], index: 3 }
 	},
 	falseTests = {
 		p: jQuery( "#liveSpan1" )[ 0 ],
@@ -654,13 +654,13 @@ QUnit.test( "slice()", function( assert ) {
 	var $links = jQuery( "#ap a" );
 
 	assert.deepEqual( $links.slice( 1, 2 ).get(), q( "groups" ), "slice(1,2)" );
-	assert.deepEqual( $links.slice( 1 ).get(), q( "groups", "anchor1", "mark" ), "slice(1)" );
+	assert.deepEqual( $links.slice( 1 ).get(), q( "groups", "anchor1", "mozilla" ), "slice(1)" );
 	assert.deepEqual( $links.slice( 0, 3 ).get(), q( "google", "groups", "anchor1" ), "slice(0,3)" );
-	assert.deepEqual( $links.slice( -1 ).get(), q( "mark" ), "slice(-1)" );
+	assert.deepEqual( $links.slice( -1 ).get(), q( "mozilla" ), "slice(-1)" );
 
 	assert.deepEqual( $links.eq( 1 ).get(), q( "groups" ), "eq(1)" );
 	assert.deepEqual( $links.eq( "2" ).get(), q( "anchor1" ), "eq('2')" );
-	assert.deepEqual( $links.eq( -1 ).get(), q( "mark" ), "eq(-1)" );
+	assert.deepEqual( $links.eq( -1 ).get(), q( "mozilla" ), "eq(-1)" );
 } );
 
 QUnit.test( "first()/last()", function( assert ) {
@@ -669,7 +669,7 @@ QUnit.test( "first()/last()", function( assert ) {
 	var $links = jQuery( "#ap a" ), $none = jQuery( "asdf" );
 
 	assert.deepEqual( $links.first().get(), q( "google" ), "first()" );
-	assert.deepEqual( $links.last().get(), q( "mark" ), "last()" );
+	assert.deepEqual( $links.last().get(), q( "mozilla" ), "last()" );
 
 	assert.deepEqual( $none.first().get(), [], "first() none" );
 	assert.deepEqual( $none.last().get(), [], "last() none" );
@@ -681,7 +681,7 @@ QUnit.test( "even()/odd()", function( assert ) {
 	var $links = jQuery( "#ap a" ), $none = jQuery( "asdf" );
 
 	assert.deepEqual( $links.even().get(), q( "google", "anchor1" ), "even()" );
-	assert.deepEqual( $links.odd().get(), q( "groups", "mark" ), "odd()" );
+	assert.deepEqual( $links.odd().get(), q( "groups", "mozilla" ), "odd()" );
 
 	assert.deepEqual( $none.even().get(), [], "even() none" );
 	assert.deepEqual( $none.odd().get(), [], "odd() none" );
@@ -694,7 +694,7 @@ QUnit.test( "map()", function( assert ) {
 		jQuery( "#ap" ).map( function() {
 			return jQuery( this ).find( "a" ).get();
 		} ).get(),
-		q( "google", "groups", "anchor1", "mark" ),
+		q( "google", "groups", "anchor1", "mozilla" ),
 		"Array Map"
 	);
 

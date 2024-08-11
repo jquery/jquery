@@ -1732,7 +1732,7 @@ QUnit.test( "hide, fadeOut and slideUp called on element width height and width 
 QUnit.test( "hide should not leave hidden inline elements visible (trac-14848)", function( assert ) {
 	assert.expect( 2 );
 
-	var el = jQuery( "#simon1" );
+	var el = jQuery( "#john1" );
 
 	el.hide( 1, function() {
 		assert.equal( el.css( "display" ), "none", "hidden" );
