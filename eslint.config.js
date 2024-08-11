@@ -205,7 +205,15 @@ module.exports = [
 		},
 		rules: {
 			...jqueryConfig.rules,
-			"no-implicit-globals": "error"
+			"no-implicit-globals": "error",
+			"no-unused-vars": [
+				"error",
+				{
+					args: "after-used",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_"
+				}
+			]
 		}
 	},
 
@@ -271,7 +279,7 @@ module.exports = [
 			"test/node_smoke_tests/**",
 			"test/bundler_smoke_tests/**/*",
 			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.js"
+			"test/middleware-mockserver.cjs"
 		],
 		languageOptions: {
 			ecmaVersion: "latest",
