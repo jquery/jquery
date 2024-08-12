@@ -63,11 +63,11 @@ QUnit.test( "attr(String)", function( assert ) {
 	assert.equal( jQuery( "#text1" ).attr( "type" ), "text", "Check for type attribute" );
 	assert.equal( jQuery( "#radio1" ).attr( "type" ), "radio", "Check for type attribute" );
 	assert.equal( jQuery( "#check1" ).attr( "type" ), "checkbox", "Check for type attribute" );
-	assert.equal( jQuery( "#simon1" ).attr( "rel" ), "bookmark", "Check for rel attribute" );
+	assert.equal( jQuery( "#john1" ).attr( "rel" ), "bookmark", "Check for rel attribute" );
 	assert.equal( jQuery( "#google" ).attr( "title" ), "Google!", "Check for title attribute" );
-	assert.equal( jQuery( "#mark" ).attr( "hreflang" ), "en", "Check for hreflang attribute" );
+	assert.equal( jQuery( "#mozilla" ).attr( "hreflang" ), "en", "Check for hreflang attribute" );
 	assert.equal( jQuery( "#en" ).attr( "lang" ), "en", "Check for lang attribute" );
-	assert.equal( jQuery( "#simon" ).attr( "class" ), "blog link", "Check for class attribute" );
+	assert.equal( jQuery( "#timmy" ).attr( "class" ), "blog link", "Check for class attribute" );
 	assert.equal( jQuery( "#name" ).attr( "name" ), "name", "Check for name attribute" );
 	assert.equal( jQuery( "#text1" ).attr( "name" ), "action", "Check for name attribute" );
 	assert.ok( jQuery( "#form" ).attr( "action" ).indexOf( "formaction" ) >= 0, "Check for action attribute" );

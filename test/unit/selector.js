@@ -109,8 +109,8 @@ QUnit.test( "element", function( assert ) {
 	}
 
 	assert.t( "Checking sort order", "#qunit-fixture p, #qunit-fixture p a",
-		[ "firstp", "simon1", "ap", "google", "groups", "anchor1", "mark", "sndp", "en", "yahoo",
-			"sap", "anchor2", "simon", "first" ] );
+		[ "firstp", "john1", "ap", "google", "groups", "anchor1", "mozilla", "sndp", "en", "yahoo",
+			"sap", "anchor2", "timmy", "first" ] );
 
 	// Test Conflict ID
 	lengthtest = document.getElementById( "lengthtest" );
@@ -233,7 +233,7 @@ QUnit.test( "id", function( assert ) {
 	assert.t( "ID Selector", "#body", [ "body" ] );
 	assert.t( "ID Selector w/ Element", "body#body", [ "body" ] );
 	assert.t( "ID Selector w/ Element", "ul#first", [] );
-	assert.t( "ID selector with existing ID descendant", "#firstp #simon1", [ "simon1" ] );
+	assert.t( "ID selector with existing ID descendant", "#firstp #john1", [ "john1" ] );
 	assert.t( "ID selector with non-existent descendant", "#firstp #foobar", [] );
 	assert.t( "ID selector using UTF8", "#台北Táiběi", [ "台北Táiběi" ] );
 	assert.t( "Multiple ID selectors using UTF8", "#台北Táiběi, #台北", [ "台北Táiběi", "台北" ] );
@@ -307,19 +307,19 @@ QUnit.test( "class", function( assert ) {
 	assert.expect( 32 );
 
 	assert.deepEqual( jQuery( ".blog", document.getElementsByTagName( "p" ) ).get(),
-		q( "mark", "simon" ), "Finding elements with a context." );
+		q( "mozilla", "timmy" ), "Finding elements with a context." );
 	assert.deepEqual( jQuery( ".blog", "p" ).get(),
-		q( "mark", "simon" ), "Finding elements with a context." );
+		q( "mozilla", "timmy" ), "Finding elements with a context." );
 	assert.deepEqual( jQuery( ".blog", jQuery( "p" ) ).get(),
-		q( "mark", "simon" ), "Finding elements with a context." );
+		q( "mozilla", "timmy" ), "Finding elements with a context." );
 	assert.deepEqual( jQuery( "p" ).find( ".blog" ).get(),
-		q( "mark", "simon" ), "Finding elements with a context." );
+		q( "mozilla", "timmy" ), "Finding elements with a context." );
 
-	assert.t( "Class Selector", ".blog", [ "mark", "simon" ] );
+	assert.t( "Class Selector", ".blog", [ "mozilla", "timmy" ] );
 	assert.t( "Class Selector", ".GROUPS", [ "groups" ] );
-	assert.t( "Class Selector", ".blog.link", [ "simon" ] );
-	assert.t( "Class Selector w/ Element", "a.blog", [ "mark", "simon" ] );
-	assert.t( "Parent Class Selector", "p .blog", [ "mark", "simon" ] );
+	assert.t( "Class Selector", ".blog.link", [ "timmy" ] );
+	assert.t( "Class Selector w/ Element", "a.blog", [ "mozilla", "timmy" ] );
+	assert.t( "Parent Class Selector", "p .blog", [ "mozilla", "timmy" ] );
 
 	assert.t( "Class selector using UTF8", ".台北Táiběi", [ "utf8class1" ] );
 	assert.t( "Class selector using UTF8", ".台北", [ "utf8class1", "utf8class2" ] );
@@ -438,11 +438,11 @@ QUnit.test( "child and adjacent", function( assert ) {
 
 	var siblingFirst, en, nothiddendiv;
 
-	assert.t( "Child", "p > a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
-	assert.t( "Child minus leading whitespace", "p> a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
-	assert.t( "Child minus trailing whitespace", "p >a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
-	assert.t( "Child minus whitespace", "p>a", [ "simon1", "google", "groups", "mark", "yahoo", "simon" ] );
-	assert.t( "Child w/ Class", "p > a.blog", [ "mark", "simon" ] );
+	assert.t( "Child", "p > a", [ "john1", "google", "groups", "mozilla", "yahoo", "timmy" ] );
+	assert.t( "Child minus leading whitespace", "p> a", [ "john1", "google", "groups", "mozilla", "yahoo", "timmy" ] );
+	assert.t( "Child minus trailing whitespace", "p >a", [ "john1", "google", "groups", "mozilla", "yahoo", "timmy" ] );
+	assert.t( "Child minus whitespace", "p>a", [ "john1", "google", "groups", "mozilla", "yahoo", "timmy" ] );
+	assert.t( "Child w/ Class", "p > a.blog", [ "mozilla", "timmy" ] );
 	assert.t( "All Children", "code > *", [ "anchor1", "anchor2" ] );
 	assert.selectInFixture( "All Grandchildren", "p > * > *", [ "anchor1", "anchor2" ] );
 
@@ -457,7 +457,7 @@ QUnit.test( "child and adjacent", function( assert ) {
 	assert.t( "#id adjacent", "#firstp + p", [ "ap" ] );
 	assert.t( "Tag#id adjacent", "p#firstp + p", [ "ap" ] );
 	assert.t( "Tag[attr] adjacent", "p[lang=en] + p", [ "sap" ] );
-	assert.t( "Tag.class adjacent", "a.GROUPS + code + a", [ "mark" ] );
+	assert.t( "Tag.class adjacent", "a.GROUPS + code + a", [ "mozilla" ] );
 	assert.t( "Comma, Child, and Adjacent", "#qunit-fixture a + a, code > a",
 		[ "groups", "anchor1", "anchor2", "tName2ID" ] );
 
@@ -465,7 +465,7 @@ QUnit.test( "child and adjacent", function( assert ) {
 		[ "foo", "nothiddendiv", "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ] );
 	assert.t( "Element Preceded By", "#first ~ div",
 		[ "moretests", "tabindex-tests", "liveHandlerOrder", "siblingTest", "fx-test-group" ] );
-	assert.t( "Element Preceded By", "#groups ~ a", [ "mark" ] );
+	assert.t( "Element Preceded By", "#groups ~ a", [ "mozilla" ] );
 	assert.t( "Element Preceded By", "#length ~ input", [ "idTest" ] );
 	assert.t( "Element Preceded By", "#siblingfirst ~ em", [ "siblingnext", "siblingthird" ] );
 	assert.t( "Element Preceded By (multiple)", "#siblingTest em ~ em ~ em ~ span", [ "siblingspan" ] );
@@ -545,10 +545,10 @@ QUnit.test( "attributes - equals", function( assert ) {
 
 	var withScript;
 
-	assert.t( "Identifier", "#qunit-fixture a[rel=bookmark]", [ "simon1" ] );
+	assert.t( "Identifier", "#qunit-fixture a[rel=bookmark]", [ "john1" ] );
 	assert.t( "Identifier with underscore", "input[id=types_all]", [ "types_all" ] );
-	assert.t( "String", "#qunit-fixture a[rel='bookmark']", [ "simon1" ] );
-	assert.t( "String (whitespace ignored)", "#qunit-fixture a[ rel = 'bookmark' ]", [ "simon1" ] );
+	assert.t( "String", "#qunit-fixture a[rel='bookmark']", [ "john1" ] );
+	assert.t( "String (whitespace ignored)", "#qunit-fixture a[ rel = 'bookmark' ]", [ "john1" ] );
 	assert.t( "Non-identifier string", "#qunit-fixture a[href='https://www.google.com/']", [ "google" ] );
 	assert.t( "Empty string", "#select1 option[value='']", [ "option1a" ] );
 
@@ -616,13 +616,13 @@ QUnit.test( "attributes - contains", function( assert ) {
 	assert.t( "string (whitespace ignored)", "a[href *= 'google']", [ "google", "groups" ] );
 	assert.t( "string like '[' ... ']']", "input[name*='[bar]']", [ "hidden2" ] );
 	assert.t( "string containing '['...']", "input[name*='foo[bar]']", [ "hidden2" ] );
-	assert.t( "href contains hash", "p a[href*='#']", [ "simon1", "anchor2" ] );
+	assert.t( "href contains hash", "p a[href*='#']", [ "john1", "anchor2" ] );
 } );
 
 QUnit.test( "attributes - ends with", function( assert ) {
 	assert.expect( 4 );
 
-	assert.t( "string (whitespace ignored)", "a[href $= 'org/']", [ "mark" ] );
+	assert.t( "string (whitespace ignored)", "a[href $= 'org/']", [ "mozilla" ] );
 	assert.t( "string ending with ']'", "input[name$='bar]']", [ "hidden2" ] );
 	assert.t( "string like '[' ... ']'", "input[name$='[bar]']", [ "hidden2" ] );
 	assert.t( "Attribute containing []", "input[name$='foo[bar]']", [ "hidden2" ] );
@@ -797,9 +797,9 @@ QUnit.test( "pseudo - (first|last|only)-(child|of-type)", function( assert ) {
 	assert.t( "First Child (case-insensitive)", "#qunit-fixture p:FIRST-CHILD", [ "firstp", "sndp" ] );
 
 	assert.t( "Last Child", "#qunit-fixture p:last-child", [ "sap" ] );
-	assert.t( "Last Child (leading id)", "#qunit-fixture a:last-child", [ "simon1", "anchor1", "mark", "yahoo", "anchor2", "simon", "liveLink1", "liveLink2" ] );
+	assert.t( "Last Child (leading id)", "#qunit-fixture a:last-child", [ "john1", "anchor1", "mozilla", "yahoo", "anchor2", "timmy", "liveLink1", "liveLink2" ] );
 
-	assert.t( "Only Child", "#qunit-fixture a:only-child", [ "simon1", "anchor1", "yahoo", "anchor2", "liveLink1", "liveLink2" ] );
+	assert.t( "Only Child", "#qunit-fixture a:only-child", [ "john1", "anchor1", "yahoo", "anchor2", "liveLink1", "liveLink2" ] );
 
 	assert.t( "First-of-type", "#qunit-fixture > p:first-of-type", [ "firstp" ] );
 	assert.t( "Last-of-type", "#qunit-fixture > p:last-of-type", [ "first" ] );
@@ -922,13 +922,13 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 QUnit.test( "pseudo - nth-of-type", function( assert ) {
 	assert.expect( 9 );
 	assert.t( "Nth-of-type(-1)", ":nth-of-type(-1)", [] );
-	assert.t( "Nth-of-type(3)", "#ap :nth-of-type(3)", [ "mark" ] );
-	assert.t( "Nth-of-type(n)", "#ap :nth-of-type(n)", [ "google", "groups", "code1", "anchor1", "mark" ] );
-	assert.t( "Nth-of-type(0n+3)", "#ap :nth-of-type(0n+3)", [ "mark" ] );
+	assert.t( "Nth-of-type(3)", "#ap :nth-of-type(3)", [ "mozilla" ] );
+	assert.t( "Nth-of-type(n)", "#ap :nth-of-type(n)", [ "google", "groups", "code1", "anchor1", "mozilla" ] );
+	assert.t( "Nth-of-type(0n+3)", "#ap :nth-of-type(0n+3)", [ "mozilla" ] );
 	assert.t( "Nth-of-type(2n)", "#ap :nth-of-type(2n)", [ "groups" ] );
 	assert.t( "Nth-of-type(even)", "#ap :nth-of-type(even)", [ "groups" ] );
-	assert.t( "Nth-of-type(2n+1)", "#ap :nth-of-type(2n+1)", [ "google", "code1", "anchor1", "mark" ] );
-	assert.t( "Nth-of-type(odd)", "#ap :nth-of-type(odd)", [ "google", "code1", "anchor1", "mark" ] );
+	assert.t( "Nth-of-type(2n+1)", "#ap :nth-of-type(2n+1)", [ "google", "code1", "anchor1", "mozilla" ] );
+	assert.t( "Nth-of-type(odd)", "#ap :nth-of-type(odd)", [ "google", "code1", "anchor1", "mozilla" ] );
 	assert.t( "Nth-of-type(-n+2)", "#qunit-fixture > :nth-of-type(-n+2)", [ "firstp", "ap", "foo", "nothiddendiv", "name+value", "firstUL", "empty", "form", "floatTest", "iframe", "lengthtest", "table", "last" ] );
 } );
 
@@ -936,12 +936,12 @@ QUnit.test( "pseudo - nth-last-of-type", function( assert ) {
 	assert.expect( 9 );
 	assert.t( "Nth-last-of-type(-1)", ":nth-last-of-type(-1)", [] );
 	assert.t( "Nth-last-of-type(3)", "#ap :nth-last-of-type(3)", [ "google" ] );
-	assert.t( "Nth-last-of-type(n)", "#ap :nth-last-of-type(n)", [ "google", "groups", "code1", "anchor1", "mark" ] );
+	assert.t( "Nth-last-of-type(n)", "#ap :nth-last-of-type(n)", [ "google", "groups", "code1", "anchor1", "mozilla" ] );
 	assert.t( "Nth-last-of-type(0n+3)", "#ap :nth-last-of-type(0n+3)", [ "google" ] );
 	assert.t( "Nth-last-of-type(2n)", "#ap :nth-last-of-type(2n)", [ "groups" ] );
 	assert.t( "Nth-last-of-type(even)", "#ap :nth-last-of-type(even)", [ "groups" ] );
-	assert.t( "Nth-last-of-type(2n+1)", "#ap :nth-last-of-type(2n+1)", [ "google", "code1", "anchor1", "mark" ] );
-	assert.t( "Nth-last-of-type(odd)", "#ap :nth-last-of-type(odd)", [ "google", "code1", "anchor1", "mark" ] );
+	assert.t( "Nth-last-of-type(2n+1)", "#ap :nth-last-of-type(2n+1)", [ "google", "code1", "anchor1", "mozilla" ] );
+	assert.t( "Nth-last-of-type(odd)", "#ap :nth-last-of-type(odd)", [ "google", "code1", "anchor1", "mozilla" ] );
 	assert.t( "Nth-last-of-type(-n+2)", "#qunit-fixture > :nth-last-of-type(-n+2)", [ "ap", "name+value", "first", "firstUL", "empty", "floatTest", "iframe", "table", "testForm", "disabled-tests", "siblingTest", "fx-test-group", "last" ] );
 } );
 
@@ -969,7 +969,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - contains", function(
 	assert.expect( 9 );
 
 	var gh335 = document.getElementById( "qunit-fixture" ).appendChild(
-		document.createElement( "mark" ) );
+		document.createElement( "mozilla" ) );
 	gh335.id = "gh-335";
 	gh335.appendChild( document.createTextNode( "raw line 1\nline 2" ) );
 
@@ -987,7 +987,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - contains", function(
 		"span:contains(\"\\\"'\\53F0 \\5317 Ta\\301 ibe\\30C i\")",
 		[ "utf8class1" ] );
 
-	assert.t( "collapsed whitespace", "mark:contains('line 1\\A line')", [ "gh-335" ] );
+	assert.t( "collapsed whitespace", "mozilla:contains('line 1\\A line')", [ "gh-335" ] );
 } );
 
 QUnit.test( "pseudo - misc", function( assert ) {
@@ -1107,8 +1107,8 @@ QUnit.test( "pseudo - misc", function( assert ) {
 	if ( QUnit.jQuerySelectors ) {
 
 		// Tokenization edge cases
-		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code)", [ "ap" ] );
-		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mark)):has(code):contains(This link)", [ "ap" ] );
+		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mozilla)):has(code)", [ "ap" ] );
+		assert.t( "Sequential pseudos", "#qunit-fixture p:has(:contains(mozilla)):has(code):contains(This link)", [ "ap" ] );
 
 		assert.t( "Pseudo argument containing ')'", "p:has(>a.GROUPS[src!=')'])", [ "ap" ] );
 		assert.t( "Pseudo argument containing ')'", "p:has(>a.GROUPS[src!=')'])", [ "ap" ] );
@@ -1118,7 +1118,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 		assert.t( "Multi-pseudo", "#ap:has(*), #ap:has(*)", [ "ap" ] );
 		assert.t( "Multi-pseudo with leading nonexistent id", "#nonexistent:has(*), #ap:has(*)", [ "ap" ] );
 
-		assert.t( "Tokenization stressor", "a[class*=blog]:not(:has(*, :contains(!)), :contains(!)), br:contains(]), p:contains(]):not(.qunit-source), :not(:empty):not(:parent):not(.qunit-source)", [ "ap", "mark", "yahoo", "simon" ] );
+		assert.t( "Tokenization stressor", "a[class*=blog]:not(:has(*, :contains(!)), :contains(!)), br:contains(]), p:contains(]):not(.qunit-source), :not(:empty):not(:parent):not(.qunit-source)", [ "ap", "mozilla", "yahoo", "timmy" ] );
 	} else {
 		assert.ok( "skip", ":has not supported in selector-native" );
 		assert.ok( "skip", ":has not supported in selector-native" );
@@ -1146,7 +1146,7 @@ QUnit.test( "pseudo - misc", function( assert ) {
 QUnit.test( "pseudo - :not", function( assert ) {
 	assert.expect( 43 );
 
-	assert.t( "Not", "a.blog:not(.link)", [ "mark" ] );
+	assert.t( "Not", "a.blog:not(.link)", [ "mozilla" ] );
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.t( "Not - multiple", "#form option:not(:contains(Nothing),#option1b,:selected)", [ "option1c", "option1d", "option2b", "option2c", "option3d", "option3e", "option4e", "option5b", "option5c" ] );
@@ -1157,7 +1157,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	}
 
 	if ( QUnit.jQuerySelectorsPos ) {
-		assert.t( ":not() with :first", "#foo p:not(:first) .link", [ "simon" ] );
+		assert.t( ":not() with :first", "#foo p:not(:first) .link", [ "timmy" ] );
 	} else {
 		assert.ok( "skip", "Positional selectors are not supported" );
 	}
@@ -1607,7 +1607,7 @@ QUnit.test( "context", function( assert ) {
 
 	var context,
 		selector = ".blog",
-		expected = q( "mark", "simon" ),
+		expected = q( "mozilla", "timmy" ),
 		iframe = document.getElementById( "iframe" ),
 		iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
@@ -1725,15 +1725,15 @@ QUnit.test( "caching does not introduce bugs", function( assert ) {
 
 	jQuery( ":not(code)", document.getElementById( "ap" ) );
 	assert.deepEqual(
-		jQuery( ":not(code)", document.getElementById( "foo" ) ).get(),
-		q( "sndp", "en", "yahoo", "sap", "anchor2", "simon" ),
+		jQuery.find( ":not(code)", document.getElementById( "foo" ) ),
+		q( "sndp", "en", "yahoo", "sap", "anchor2", "timmy" ),
 		"Reusing selector with new context"
 	);
 
 	if ( QUnit.jQuerySelectorsPos ) {
 		assert.t( "Deep ancestry caching in post-positional element matcher (jQuery trac-14657)",
 			"#qunit-fixture a:lt(3):parent",
-			[ "simon1", "google", "groups" ] );
+			[ "john1", "google", "groups" ] );
 	} else {
 		assert.ok( "skip", "Positional selectors are not supported" );
 	}
@@ -2186,7 +2186,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 				return !!elem.id;
 			};
 		} );
-		assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "simon" ] );
+		assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "timmy" ] );
 	} finally {
 		delete jQuery.expr.filters.aristotlean;
 	}
@@ -2240,7 +2240,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 QUnit.test( "jQuery.find.matchesSelector", function( assert ) {
 	assert.expect( 15 );
 
-	var link = document.getElementById( "simon1" ),
+	var link = document.getElementById( "john1" ),
 		input = document.getElementById( "text1" ),
 		option = document.getElementById( "option1a" ),
 		disconnected = document.createElement( "div" );
