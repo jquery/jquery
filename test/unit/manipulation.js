@@ -3104,66 +3104,50 @@ testIframe(
 
 QUnit.test( "should handle custom '_se-custom-destroy' event correctly", function( assert ) {
 
-	// Set up the HTML structure using innerHTML within #qunit-fixture
+	// Define the expected number of assertions
 
-	assert.expect( 2 );
+	assert.expect( 4 );
+
+	// Set up the HTML structure by appending to the existing fixture
 
 	var fixture = jQuery( "#qunit-fixture" );
 
-	fixture.html( `
-    <div id="container">
-      <div class="guarded removeself" data-elt="one">
-        Guarded 1
-      </div>
-      <div class="guarded" data-elt="two">
-        Guarded 2
-      </div>
-      <div class="guarded" data-elt="three">
-        Guarded 3
-      </div>
-    </div>
-  ` );
+	fixture.append( `
+	<div id="container">
+	  <div class="guarded removeself" data-elt="one">
+	    Guarded 1
+	  </div>
+	  <div class="guarded" data-elt="two">
+	    Guarded 2
+	  </div>
+	  <div class="guarded" data-elt="three">
+	    Guarded 3
+	  </div>
+	</div>
+	` );
 
-	// JavaScript code to be tested
-
-  jQuery.event.special[ "_se-custom-destroy" ] = {
-    remove: function( _handleObj ) {
+	// Define the custom event handler
+	jQuery.event.special[ "_se-custom-destroy" ] = {
+	remove: function( _handleObj ) {
 		var $t = jQuery( this );
-		console.log( $t.data( "elt" ) );
+		assert.step( $t.data( "elt" ) );
 		if ( $t.is( ".removeself" ) ) {
 			$t.remove();
-			}
 		}
+	}
 	};
 
-	// Attach the custom event handler
+	// Attach an empty handler to trigger the `remove`
+	// logic for the custom event when the element is removed.
 
 	jQuery( ".guarded" ).on( "_se-custom-destroy", function( ) { } );
 
-	// Spy on console.log
-
-	var consoleLog = console.log;
-
-	var logMessages = [];
-
-	console.log = function( message ) {
-	logMessages.push( message );
-	};
-
 	// Trigger the event by emptying the container
 
-	jQuery( "#container" ).empty( );
+	jQuery( "#container" ).empty();
 
-	// Verify that the elements with class 'removeself' were removed
+	// Verify the steps to ensure the expected elements were processed
 
-	assert.equal( jQuery( ".removeself" ).length, 0, "Elements with class 'removeself' should be removed" );
-
-	// Verify console logs
-
-	assert.deepEqual( logMessages, [ "one", "two", "three" ], "Console logs should match the data-elt attributes" );
-
-	// Restore console.log
-
-	console.log = consoleLog;
-
+	assert.verifySteps( [ "one", "two", "three" ], "Steps should match the data-elt attributes" );
 } );
+
