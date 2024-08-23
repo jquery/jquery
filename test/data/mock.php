@@ -59,7 +59,22 @@ class MockServer {
 		} else {
 			header( 'Content-type: text/html' );
 		}
-		echo 'QUnit.assert.ok( true, "mock executed" );';
+
+		if ( !empty( $req->query['cors'] ) ) {
+			header( "Access-Control-Allow-Origin: *" );
+		}
+
+		if ( !empty( $req->query['callback'] ) ) {
+			$headers = array_combine(
+				array_map( 'strtolower', array_keys( $req->headers ) ),
+				array_values( $req->headers )
+			);
+
+			echo cleanCallback( $req->query['callback'] ) .
+				"(" . json_encode( [ 'headers' => $headers ] ) . ")";
+		} else {
+			echo 'QUnit.assert.ok( true, "mock executed" );';
+		}
 	}
 
 	// Used to be in test.js, but was renamed to testbar.php
@@ -73,6 +88,10 @@ QUnit.assert.ok( true, "mock executed");';
 	protected function json( $req ) {
 		if ( isset( $req->query['header'] ) ) {
 			header( 'Content-type: application/json' );
+		}
+
+		if ( isset( $req->query['cors'] ) ) {
+			header( 'Access-Control-Allow-Origin: *' );
 		}
 
 		if ( isset( $req->query['array'] ) ) {
@@ -196,16 +215,12 @@ QUnit.assert.ok( true, "mock executed");';
 	}
 
 	protected function cspFrame( $req ) {
-		// This is CSP only for browsers with "Content-Security-Policy" header support
-		// i.e. no old WebKit or old Firefox
 		header( "Content-Security-Policy: default-src 'self'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
 		echo file_get_contents( __DIR__ . '/csp.include.html' );
 	}
 
 	protected function cspNonce( $req ) {
-		// This is CSP only for browsers with "Content-Security-Policy" header support
-		// i.e. no old WebKit or old Firefox
 		$test = $req->query['test'] ? '-' . $req->query['test'] : '';
 		header( "Content-Security-Policy: script-src 'nonce-jquery+hardcoded+nonce'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
