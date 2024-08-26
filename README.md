@@ -5,6 +5,19 @@ Meetings are currently held on the [matrix.org platform](https://matrix.to/#/#jq
 
 Meeting minutes can be found at [meetings.jquery.org](https://meetings.jquery.org/category/core/).
 
+# Support 
+
+We will continue to release bug and security fixes for the current versin (3) until version 4 is ready. The previous versions are end-of-life and will not receive and security or bug fixes.
+
+Our partner, HeroDevs, provides commercial security fixes for all unsupported versions [https://herodevs.com/nes](https://herodevs.com/nes).
+
+| Version  | Supported?                       | Commercial Support           |
+|----------|----------------------------------|----------------------------- |
+| 4        | :white_check_mark: Yes (in beta) |                              |
+| 3        | :white_check_mark: Yes           |                              |
+| 2        | :x: No                           | [Available here][avail-here] |
+| 1        | :x: No                           | [Available here][avail-here] |
+
 Contribution Guides
 --------------------------------------
 
@@ -382,3 +395,6 @@ Questions?
 
 If you have any questions, please feel free to ask on the
 [Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on [libera](https://web.libera.chat/).
+
+
+[avail-here]: https://www.herodevs.com/support/jquery-nes?utm_source=jQuery&utm_medium=link&utm_campaign=github_readme
