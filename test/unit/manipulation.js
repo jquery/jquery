@@ -3100,34 +3100,26 @@ testIframe(
 	}
 );
 
-// Custom event handler test case
-
-QUnit.test( "should handle custom '_se-custom-destroy' event correctly", function( assert ) {
-
-	// Define the expected number of assertions
+QUnit.test( "should handle custom 'removeondestroy' event correctly", function( assert ) {
 
 	assert.expect( 4 );
 
-	// Set up the HTML structure by appending to the existing fixture
-
-	var fixture = jQuery( "#qunit-fixture" );
-
-	fixture.append( `
+	jQuery( `
 	<div id="container">
-	  <div class="guarded removeself" data-elt="one">
-	    Guarded 1
-	  </div>
-	  <div class="guarded" data-elt="two">
-	    Guarded 2
-	  </div>
-	  <div class="guarded" data-elt="three">
-	    Guarded 3
-	  </div>
+		<div class="guarded removeself" data-elt="one">
+			Guarded 1
+		</div>
+		<div class="guarded" data-elt="two">
+			Guarded 2
+		</div>
+		<div class="guarded" data-elt="three">
+			Guarded 3
+		</div>
 	</div>
-	` );
+	` ).appendTo( "#qunit-fixture" );
 
 	// Define the custom event handler
-	jQuery.event.special[ "_se-custom-destroy" ] = {
+	jQuery.event.special.removeondestroy = {
 	remove: function( _handleObj ) {
 		var $t = jQuery( this );
 		assert.step( $t.data( "elt" ) );
@@ -3139,15 +3131,11 @@ QUnit.test( "should handle custom '_se-custom-destroy' event correctly", functio
 
 	// Attach an empty handler to trigger the `remove`
 	// logic for the custom event when the element is removed.
+	jQuery( ".guarded" ).on( "removeondestroy", function( ) { } );
 
-	jQuery( ".guarded" ).on( "_se-custom-destroy", function( ) { } );
-
-	// Trigger the event by emptying the container
-
+	// Trigger the event's removal logic by emptying the container
 	jQuery( "#container" ).empty();
 
-	// Verify the steps to ensure the expected elements were processed
-
-	assert.verifySteps( [ "one", "two", "three" ], "Steps should match the data-elt attributes" );
+	assert.verifySteps( [ "one", "two", "three" ], "All elements were processed in order" );
 } );
 
