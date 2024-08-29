@@ -3104,23 +3104,23 @@ QUnit.test( "should handle custom 'removeondestroy' event correctly", function( 
 
 	assert.expect( 4 );
 
-	jQuery( `
-	<div id="container">
-		<div class="guarded removeself" data-elt="one">
-			Guarded 1
-		</div>
-		<div class="guarded" data-elt="two">
-			Guarded 2
-		</div>
-		<div class="guarded" data-elt="three">
-			Guarded 3
-		</div>
-	</div>
-	` ).appendTo( "#qunit-fixture" );
+	jQuery(
+		"<div id='container'>" +
+			"<div class='guarded removeself' data-elt='one'>" +
+				"Guarded 1" +
+			"</div>" +
+			"<div class='guarded' data-elt='two'>" +
+				"Guarded 2" +
+			"</div>" +
+			"<div class='guarded' data-elt='three'>" +
+				"Guarded 3" +
+			"</div>" +
+		"</div>"
+	).appendTo( "#qunit-fixture" );
 
 	// Define the custom event handler
 	jQuery.event.special.removeondestroy = {
-	remove: function( _handleObj ) {
+	remove: function( ) {
 		var $t = jQuery( this );
 		assert.step( $t.data( "elt" ) );
 		if ( $t.is( ".removeself" ) ) {
