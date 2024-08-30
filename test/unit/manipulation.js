@@ -3100,7 +3100,7 @@ testIframe(
 	}
 );
 
-QUnit.test( "should handle custom 'removeondestroy' event correctly", function( assert ) {
+QUnit.test( "should handle node removal in event's remove hook (gh-5214)", function( assert ) {
 
 	assert.expect( 4 );
 
@@ -3120,13 +3120,13 @@ QUnit.test( "should handle custom 'removeondestroy' event correctly", function( 
 
 	// Define the custom event handler
 	jQuery.event.special.removeondestroy = {
-	remove: function( ) {
-		var $t = jQuery( this );
-		assert.step( $t.data( "elt" ) );
-		if ( $t.is( ".removeself" ) ) {
-			$t.remove();
+		remove: function( ) {
+			var $t = jQuery( this );
+			assert.step( $t.data( "elt" ) );
+			if ( $t.is( ".removeself" ) ) {
+				$t.remove();
+			}
 		}
-	}
 	};
 
 	// Attach an empty handler to trigger the `remove`
