@@ -31,7 +31,6 @@ jobs:
           - 'Edge_latest-1'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
-          - 'Firefox_115'
           - '__iOS_17'
           - '__iOS_16'
           - '__iOS_15'
