@@ -37,7 +37,10 @@ jobs:
           - NAME: "Chrome"
             NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:amd"
-          - NAME: "Firefox ESR"
+          - NAME: "Firefox ESR (new)"
+            NODE_VERSION: "20.x"
+            NPM_SCRIPT: "test:firefox"
+          - NAME: "Firefox ESR (old)"
             NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:firefox"
     steps:
@@ -57,10 +60,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
-      - name: Install firefox ESR
+      - name: Set download URL for Firefox ESR (old)
         run: |
-          export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64'
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (old)')
+
+      - name: Set download URL for Firefox ESR (new)
+        run: |
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-next-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (new)')
+
+      - name: Install Firefox ESR
+        run: |
           wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
+          echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
+          echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
         if: contains(matrix.NAME, 'Firefox ESR')
 
       - name: Install dependencies
@@ -71,10 +85,7 @@ jobs:
         if: contains(matrix.NPM_SCRIPT, 'lint')
 
       - name: Run tests
-        run: |
-          export PATH=${HOME}/firefox:$PATH
-          export FIREFOX_BIN=${HOME}/firefox/firefox
-          npm run ${{ matrix.NPM_SCRIPT }}
+        run: npm run ${{ matrix.NPM_SCRIPT }}
 
   safari:
     runs-on: macos-latest
