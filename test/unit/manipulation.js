@@ -3110,3 +3110,43 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 		test( "<noembed><noembed/><img src=url404 onerror=xss(12)>" );
 	}
 } );
+
+QUnit.test( "should handle node removal in event's remove hook (gh-5214)", function( assert ) {
+
+	assert.expect( 4 );
+
+	jQuery(
+		"<div id='container'>" +
+		"	<div class='guarded removeself' data-elt='one'>" +
+		"		Guarded 1" +
+		"	</div>" +
+		"	<div class='guarded' data-elt='two'>" +
+		"		Guarded 2" +
+		"	</div>" +
+		"	<div class='guarded' data-elt='three'>" +
+		"		Guarded 3" +
+		"	</div>" +
+		"</div>"
+	).appendTo( "#qunit-fixture" );
+
+	// Define the custom event handler
+	jQuery.event.special.removeondestroy = {
+		remove: function( ) {
+			var $t = jQuery( this );
+			assert.step( $t.data( "elt" ) );
+			if ( $t.is( ".removeself" ) ) {
+				$t.remove();
+			}
+		}
+	};
+
+	// Attach an empty handler to trigger the `remove`
+	// logic for the custom event when the element is removed.
+	jQuery( ".guarded" ).on( "removeondestroy", function( ) { } );
+
+	// Trigger the event's removal logic by emptying the container
+	jQuery( "#container" ).empty();
+
+	assert.verifySteps( [ "one", "two", "three" ], "All elements were processed in order" );
+} );
+

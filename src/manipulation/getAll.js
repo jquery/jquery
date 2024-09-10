@@ -1,7 +1,8 @@
 define( [
 	"../core",
-	"../core/nodeName"
-], function( jQuery, nodeName ) {
+	"../core/nodeName",
+	"../var/arr"
+], function( jQuery, nodeName, arr ) {
 
 "use strict";
 
@@ -12,7 +13,9 @@ function getAll( context, tag ) {
 	var ret;
 
 	if ( typeof context.getElementsByTagName !== "undefined" ) {
-		ret = context.getElementsByTagName( tag || "*" );
+
+		// Use slice to snapshot the live collection from gEBTN
+		ret = arr.slice.call( context.getElementsByTagName( tag || "*" ) );
 
 	} else if ( typeof context.querySelectorAll !== "undefined" ) {
 		ret = context.querySelectorAll( tag || "*" );
