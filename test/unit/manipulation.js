@@ -3106,15 +3106,15 @@ QUnit.test( "should handle node removal in event's remove hook (gh-5214)", funct
 
 	jQuery(
 		"<div id='container'>" +
-			"<div class='guarded removeself' data-elt='one'>" +
-				"Guarded 1" +
-			"</div>" +
-			"<div class='guarded' data-elt='two'>" +
-				"Guarded 2" +
-			"</div>" +
-			"<div class='guarded' data-elt='three'>" +
-				"Guarded 3" +
-			"</div>" +
+		"	<div class='guarded removeself' data-elt='one'>" +
+		"		Guarded 1" +
+		"	</div>" +
+		"	<div class='guarded' data-elt='two'>" +
+		"		Guarded 2" +
+		"	</div>" +
+		"	<div class='guarded' data-elt='three'>" +
+		"		Guarded 3" +
+		"	</div>" +
 		"</div>"
 	).appendTo( "#qunit-fixture" );
 
