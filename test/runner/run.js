@@ -137,7 +137,9 @@ export async function run( {
 			default:
 				console.warn( "Received unknown message type:", message.type );
 		}
-	} );
+
+	// Hide test server request logs in CLI output
+	}, { quiet: true } );
 
 	// Start up local test server
 	let server;

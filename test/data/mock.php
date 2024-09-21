@@ -95,9 +95,9 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 
 		if ( isset( $req->query['array'] ) ) {
-			echo '[{"name":"John","age":21},{"name":"Peter","age":25}]';
+			echo '[ {"name": "John", "age": 21}, {"name": "Peter", "age": 25 } ]';
 		} else {
-			echo '{"data":{"lang":"en","length":25}}';
+			echo '{ "data": {"lang": "en", "length": 25} }';
 		}
 	}
 
@@ -112,8 +112,8 @@ QUnit.assert.ok( true, "mock executed");';
 			$callback = $_POST['callback'];
 		}
 		$json = isset( $req->query['array'] ) ?
-			'[{"name":"John","age":21},{"name":"Peter","age":25}]' :
-			'{"data":{"lang":"en","length":25}}';
+			'[ { "name": "John", "age": 21 }, { "name": "Peter", "age": 25 } ]' :
+			'{ "data": { "lang": "en", "length": 25 } }';
 		echo cleanCallback( $callback ) . '(' . $json . ')';
 	}
 

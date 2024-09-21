@@ -24,6 +24,7 @@ const distRepoFolder = "tmp/release/dist";
 
 // Files to be included in the dist repo.
 // README.md and bower.json are generated.
+// package.json is a simplified version of the original.
 const files = [
 	"dist",
 	"dist-module",

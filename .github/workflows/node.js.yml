@@ -37,7 +37,10 @@ jobs:
           - NAME: "Chrome"
             NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:esm"
-          - NAME: "Firefox ESR"
+          - NAME: "Firefox ESR (new)"
+            NODE_VERSION: "20.x"
+            NPM_SCRIPT: "test:firefox"
+          - NAME: "Firefox ESR (old)"
             NODE_VERSION: "20.x"
             NPM_SCRIPT: "test:firefox"
     steps:
@@ -45,7 +48,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{ matrix.NODE_VERSION }}
 
@@ -57,10 +60,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-
 
-      - name: Install firefox ESR
+      - name: Set download URL for Firefox ESR (old)
         run: |
-          export FIREFOX_SOURCE_URL='https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64'
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (old)')
+
+      - name: Set download URL for Firefox ESR (new)
+        run: |
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-next-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (new)')
+
+      - name: Install Firefox ESR
+        run: |
           wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
+          echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
+          echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
         if: contains(matrix.NAME, 'Firefox ESR')
 
       - name: Install dependencies
@@ -71,10 +85,35 @@ jobs:
         if: contains(matrix.NPM_SCRIPT, 'lint')
 
       - name: Run tests
-        run: |
-          export PATH=${HOME}/firefox:$PATH
-          export FIREFOX_BIN=${HOME}/firefox/firefox
-          npm run ${{ matrix.NPM_SCRIPT }}
+        run: npm run ${{ matrix.NPM_SCRIPT }}
+
+  ie:
+    runs-on: windows-latest
+    env:
+      NODE_VERSION: 20.x
+    name: test:ie - IE
+    steps:
+      - name: Checkout
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Cache
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests in Edge in IE mode
+        run: npm run test:ie
 
   safari:
     runs-on: macos-latest
@@ -86,7 +125,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
         with:
           node-version: ${{ env.NODE_VERSION }}
 
