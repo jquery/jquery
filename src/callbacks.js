@@ -62,6 +62,8 @@ jQuery.Callbacks = function( options ) {
 		// Index of currently firing callback (modified by add/remove as needed)
 		firingIndex = -1,
 
+		self,
+
 		// Fire callbacks
 		fire = function( ) {
 			if ( locked ) {
@@ -108,7 +110,7 @@ jQuery.Callbacks = function( options ) {
 		};
 
 	// Actual Callbacks object
-	const self = {
+	self = {
 
 		// Add a callback or a collection of callbacks to the list
 		add: function( ) {
