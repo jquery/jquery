@@ -139,7 +139,7 @@
     "release-it": "17.6.0",
     "requirejs": "2.3.7",
     "rimraf": "6.0.1",
-    "rollup": "4.19.0",
+    "rollup": "4.22.4",
     "selenium-webdriver": "4.23.0",
     "sinon": "9.2.4",
     "webpack": "5.94.0",
