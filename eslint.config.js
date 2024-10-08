@@ -164,6 +164,8 @@ export default [
 			globals: {
 				...globals.browser,
 				require: false,
+				Promise: false,
+				Symbol: false,
 				trustedTypes: false,
 				QUnit: false,
 				ajaxTest: false,
@@ -187,9 +189,7 @@ export default [
 				originaljQuery: false,
 				original$: false,
 				baseURL: false,
-				externalHost: false,
-				Promise: false,
-				Symbol: false
+				externalHost: false
 			}
 		},
 		rules: {
