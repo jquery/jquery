@@ -122,11 +122,13 @@ module.exports = [
 			"test/data/core/jquery-iterability-transpiled.js"
 		],
 		languageOptions: {
-			ecmaVersion: 2015,
+			ecmaVersion: 5,
 			sourceType: "script",
 			globals: {
 				...globals.browser,
 				require: false,
+				Promise: false,
+				Symbol: false,
 				trustedTypes: false,
 				QUnit: false,
 				ajaxTest: false,
