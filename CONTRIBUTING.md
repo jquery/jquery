@@ -10,6 +10,7 @@ Note: This is the code development repository for *jQuery Core* only. Before ope
 * jQuery Core API documentation issues can be filed [at the API repo](https://github.com/jquery/api.jquery.com/issues).
 * Bugs or suggestions for other jQuery organization projects should be filed in [their respective repos](https://github.com/jquery/).
 
+
 ## Getting Involved
 
 [API design principles](https://github.com/jquery/jquery/wiki/API-design-guidelines)
@@ -20,19 +21,19 @@ More information on how to contribute to this and other jQuery organization proj
 
 When opening a pull request, you'll be asked to sign our Contributor License Agreement. Both the Corporate and Individual agreements can be [previewed on GitHub](https://github.com/openjs-foundation/easycla).
 
-If you're looking for some good issues to start with, [here are some issues labeled "help wanted" or "patch welcome"](https://github.com/jquery/jquery/issues?q=is%3Aissue+label%3A%22help+wanted%22%2C%22Patch+Welcome%22).
+If you're looking for some good issues to start with, [here are some issues labeled "help wanted" or "patch welcome"](https://github.com/jquery/jquery/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22%2C%22Patch+Welcome%22).
 
 ## Questions and Discussion
 
-### Forum and IRC
+### Looking for help?
 
 jQuery is so popular that many developers have knowledge of its capabilities and limitations. Most questions about using jQuery can be answered on popular forums such as [Stack Overflow](https://stackoverflow.com). Please start there when you have questions, even if you think you've found a bug.
 
-The jQuery Core team watches the [jQuery Development Forum](https://forum.jquery.com/developing-jquery-core). If you have longer posts or questions that can't be answered in places such as Stack Overflow, please feel free to post them there. If you think you've found a bug, please [file it in the bug tracker](#how-to-report-bugs). The Core team can be found in the [#jquery-dev](https://webchat.freenode.net/?channels=jquery-dev) IRC channel on irc.freenode.net.
+The jQuery Core team watches [jQuery GitHub Discussions](https://github.com/jquery/jquery/discussions). If you have longer posts or questions that can't be answered in places such as Stack Overflow, please feel free to post them there. If you think you've found a bug, please [file it in the bug tracker](#how-to-report-bugs). The Core team can be found in the [#jquery/dev](https://matrix.to/#/#jquery_dev:gitter.im) Matrix channel on gitter.im.
 
 ### Weekly Status Meetings
 
-The jQuery Core team has a weekly meeting to discuss the progress of current work. The meeting is held in the [#jquery-meeting](https://webchat.freenode.net/?channels=jquery-meeting) IRC channel on irc.freenode.net at [Noon EST](https://www.timeanddate.com/worldclock/fixedtime.html?month=1&day=17&year=2011&hour=12&min=0&sec=0&p1=43) on Mondays.
+The jQuery Core team has a weekly meeting to discuss the progress of current work. The meeting is held in the [#jquery/meeting](hhttps://matrix.to/#/#jquery_meeting:gitter.im) Matrix channel on gitter.im at [Noon EST](https://www.timeanddate.com/worldclock/fixedtime.html?month=10&day=7&year=2024&hour=12&min=0&sec=0&p1=43) on Mondays.
 
 [jQuery Core Meeting Notes](https://meetings.jquery.org/category/core/)
 
@@ -43,7 +44,7 @@ The jQuery Core team has a weekly meeting to discuss the progress of current wor
 
 Most bugs reported to our bug tracker are actually bugs in user code, not in jQuery code. Keep in mind that just because your code throws an error inside of jQuery, this does *not* mean the bug is a jQuery bug.
 
-Ask for help first in the [Using jQuery Forum](https://forum.jquery.com/using-jquery) or another discussion forum like [Stack Overflow](https://stackoverflow.com/). You will get much quicker support, and you will help avoid tying up the jQuery team with invalid bug reports.
+Ask for help first on a discussion forum like [Stack Overflow](https://stackoverflow.com/). You will get much quicker support, and you will help avoid tying up the jQuery team with invalid bug reports.
 
 ### Disable browser extensions
 
@@ -55,7 +56,7 @@ Bugs in old versions of jQuery may have already been fixed. In order to avoid re
 
 ### Simplify the test case
 
-When experiencing a problem, [reduce your code](https://webkit.org/quality/reduction.html) to the bare minimum required to reproduce the issue. This makes it *much* easier to isolate and fix the offending code. Bugs reported without reduced test cases take on average 9001% longer to fix than bugs that are submitted with them, so you really should try to do this if at all possible.
+When experiencing a problem, [reduce your code](https://webkit.org/test-case-reduction/) to the bare minimum required to reproduce the issue. This makes it *much* easier to isolate and fix the offending code. Bugs reported without reduced test cases take on average 9001% longer to fix than bugs that are submitted with them, so you really should try to do this if at all possible.
 
 ### Search for related or duplicate issues
 
@@ -68,7 +69,7 @@ We *love* when people contribute back to the project by patching the bugs they f
 
 ### Build a Local Copy of jQuery
 
-Create a fork of the jQuery repo on github at https://github.com/jquery/jquery
+Create a fork of the jQuery repo on GitHub at https://github.com/jquery/jquery
 
 Clone your jQuery fork to work locally
 
@@ -85,7 +86,7 @@ $ cd jquery
 Add the jQuery main as a remote. I label mine "upstream"
 
 ```bash
-$ git remote add upstream git://github.com/jquery/jquery.git
+$ git remote add upstream git@github.com:jquery/jquery.git
 ```
 
 Get in the habit of pulling in the "upstream" main to stay up to date as jQuery receives new commits
@@ -118,7 +119,7 @@ Success! You just built and tested jQuery!
 
 ### Test Suite Tips...
 
-During the process of writing your patch, you will run the test suite MANY times. You can speed up the process by narrowing the running test suite down to the module you are testing by either double clicking the title of the test or appending it to the url. The following examples assume you're working on a local repo, hosted on your localhost server.
+During the process of writing your patch, you will run the test suite MANY times. You can speed up the process by narrowing the running test suite down to the module you are testing by either double-clicking the title of the test or appending it to the url. The following examples assume you're working on a local repo, hosted on your localhost server.
 
 Example:
 
