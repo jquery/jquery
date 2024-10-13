@@ -1,158 +1,153 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Hover tests</title>
-<script src="jquery.js"></script>
-<style>
-/* Remove body dimensions so we can test enter/leave to surrounding browser chrome */
-body, html {
-	border: 0;
-	margin: 0;
-	padding: 0;
-}
-p {
-	margin: 2px 0;
-}
-.hover-box {
-	background: #f33;
-	padding: 3px;
-	margin: 10px 40px 20px 0;
-}
-.hover-status {
-	background: #f66;
-	padding: 1px;
-}
-.hover-inside {
-	background: #6f6;
-	padding: 1px;
-	margin: 8px auto;
-	width: 40%;
-	text-align: center;
-}
-</style>
- </head>
- <body>
-	<h2>Hover (mouse{over,out,enter,leave}) Tests</h2>
-	<p>Be sure to try moving the mouse out of the browser via the left side on each test.</p>
-	<div id="wrapper">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hover Tests</title>
+    <script src="jquery.js"></script>
+    <style>
+        /* Remove body dimensions so we can test enter/leave to surrounding browser chrome */
+        body, html {
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        p {
+            margin: 2px 0;
+        }
+        .hover-box {
+            background: #f33;
+            padding: 3px;
+            margin: 10px 40px 20px 0;
+        }
+        .hover-status {
+            background: #f66;
+            padding: 1px;
+        }
+        .hover-inside {
+            background: #6f6;
+            padding: 1px;
+            margin: 8px auto;
+            width: 40%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hover Tests</h1>
+        <p>Move the mouse in and out of the boxes to test hover events. Try moving the mouse out of the browser via the left side on each test.</p>
+    </header>
 
-	<div id="hoverbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			.hover() in/out: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here should NOT trigger the counter.
-		</div>
-	</div>
-	<div id="liveenterbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			Live enter/leave: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here should NOT trigger the counter.
-		</div>
-	</div>
-	<div id="delegateenterbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			Delegated enter/leave: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here should NOT trigger the counter.
-		</div>
-	</div>
+    <main id="wrapper">
+        <!-- Hover Test Sections -->
+        <section id="hoverbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Hover Test">Activate</button>
+                Hover in/out: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here should NOT trigger the counter.
+            </div>
+        </section>
 
-	<div id="overbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			Bind over/out: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here SHOULD trigger the counter.
-		</div>
-	</div>
-	<div id="liveoverbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			Live over/out: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here SHOULD trigger the counter.
-		</div>
-	</div>
-	<div id="delegateoverbox" class="hover-box">
-		<div class="hover-status">
-			<button>Activate</button>
-			Delegated over/out: <span class="ins">0</span> / <span class="outs">0</span>
-		</div>
-		<div class="hover-inside">
-			Mouse over here SHOULD trigger the counter.
-		</div>
-	</div>
+        <section id="liveenterbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Live Enter/Leave Test">Activate</button>
+                Live enter/leave: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here should NOT trigger the counter.
+            </div>
+        </section>
 
-	</div> <!-- wrapper -->
+        <section id="delegateenterbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Delegated Enter/Leave Test">Activate</button>
+                Delegated enter/leave: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here should NOT trigger the counter.
+            </div>
+        </section>
 
-<script>
+        <section id="overbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Bind Over/Out Test">Activate</button>
+                Bind over/out: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here SHOULD trigger the counter.
+            </div>
+        </section>
 
-$(function(){
+        <section id="liveoverbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Live Over/Out Test">Activate</button>
+                Live over/out: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here SHOULD trigger the counter.
+            </div>
+        </section>
 
-	var x,
-		countIns = function() {
-			var d = $(this).data();
-			$("span.ins", this).text(++d.ins);
-		},
-		countOuts = function() {
-			var d = $(this).data();
-			$("span.outs", this).text(++d.outs);
-		};
+        <section id="delegateoverbox" class="hover-box">
+            <div class="hover-status">
+                <button aria-label="Activate Delegated Over/Out Test">Activate</button>
+                Delegated over/out: <span class="ins">0</span> / <span class="outs">0</span>
+            </div>
+            <div class="hover-inside">
+                Mouse over here SHOULD trigger the counter.
+            </div>
+        </section>
+    </main>
 
-	// Tests can be activated separately or in combination to check for interference
+    <script>
+        $(function(){
+            var countIns = function() {
+                var d = $(this).data();
+                $("span.ins", this).text(++d.ins);
+            },
+            countOuts = function() {
+                var d = $(this).data();
+                $("span.outs", this).text(++d.outs);
+            };
 
-	$("#hoverbox button").click(function(){
-		$("#hoverbox")
-			.data({ ins: 0, outs: 0 })
-			.hover( countIns, countOuts );
-		$(this).remove();
-	});
-	$("#delegateenterbox button").click(function(){
-		$("html")
-			.find("#delegateenterbox").data({ ins: 0, outs: 0 }).end()
-			.delegate("#delegateenterbox", "mouseenter", countIns )
-			.delegate("#delegateenterbox", "mouseleave", countOuts );
-		$(this).remove();
-	});
-	$("#liveenterbox button").click(function(){
-		$("#liveenterbox")
-			.data({ ins: 0, outs: 0 })
-			.live("mouseenter", countIns )
-			.live("mouseleave", countOuts );
-		$(this).remove();
-	});
+            // Separate activation of each hover test
+            $("#hoverbox button").click(function(){
+                $("#hoverbox").data({ ins: 0, outs: 0 }).hover(countIns, countOuts);
+                $(this).remove();
+            });
 
-	$("#overbox button").click(function(){
-		$("#overbox")
-			.data({ ins: 0, outs: 0 })
-			.bind("mouseover", countIns )
-			.bind("mouseout", countOuts );
-		$(this).remove();
-	});
-	$("#liveoverbox button").click(function(){
-		$("#liveoverbox")
-			.data({ ins: 0, outs: 0 })
-			.live("mouseover", countIns )
-			.live("mouseout", countOuts );
-		$(this).remove();
-	});
-	$("#delegateoverbox button").click(function(){
-		$(document)
-			.find("#delegateoverbox").data({ ins: 0, outs: 0 }).end()
-			.delegate("#delegateoverbox", "mouseover", countIns )
-			.delegate("#delegateoverbox", "mouseout", countOuts );
-		$(this).remove();
-	});
-});
+            $("#liveenterbox button").click(function(){
+                $("#liveenterbox").data({ ins: 0, outs: 0 }).live("mouseenter", countIns).live("mouseleave", countOuts);
+                $(this).remove();
+            });
 
-</script>
+            $("#delegateenterbox button").click(function(){
+                $("html").find("#delegateenterbox").data({ ins: 0, outs: 0 })
+                    .delegate("#delegateenterbox", "mouseenter", countIns)
+                    .delegate("#delegateenterbox", "mouseleave", countOuts);
+                $(this).remove();
+            });
+
+            $("#overbox button").click(function(){
+                $("#overbox").data({ ins: 0, outs: 0 }).bind("mouseover", countIns).bind("mouseout", countOuts);
+                $(this).remove();
+            });
+
+            $("#liveoverbox button").click(function(){
+                $("#liveoverbox").data({ ins: 0, outs: 0 }).live("mouseover", countIns).live("mouseout", countOuts);
+                $(this).remove();
+            });
+
+            $("#delegateoverbox button").click(function(){
+                $(document).find("#delegateoverbox").data({ ins: 0, outs: 0 })
+                    .delegate("#delegateoverbox", "mouseover", countIns)
+                    .delegate("#delegateoverbox", "mouseout", countOuts);
+                $(this).remove();
+            });
+        });
+    </script>
 </body>
 </html>
