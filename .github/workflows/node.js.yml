@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         NAME: ["Node"]
-        NODE_VERSION: [18.x, 20.x]
+        NODE_VERSION: [18.x, 20.x, 22.x]
         NPM_SCRIPT: ["test:browserless"]
         include:
           - NAME: "Node"
