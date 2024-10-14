@@ -71,43 +71,43 @@ We *love* when people contribute back to the project by patching the bugs they f
 
 Create a fork of the jQuery repo on GitHub at https://github.com/jquery/jquery
 
-Clone your jQuery fork to work locally
+Clone your jQuery fork to work locally:
 
 ```bash
 $ git clone git@github.com:username/jquery.git
 ```
 
-Change directory to the newly created dir jquery/
+Change directory to the newly created dir `jquery/`:
 
 ```bash
 $ cd jquery
 ```
 
-Add the jQuery main as a remote. I label mine "upstream"
+Add the jQuery `main` as a remote. I label mine `upstream`:
 
 ```bash
 $ git remote add upstream git@github.com:jquery/jquery.git
 ```
 
-Get in the habit of pulling in the "upstream" main to stay up to date as jQuery receives new commits
+Get in the habit of pulling in the "upstream" main to stay up to date as jQuery receives new commits:
 
 ```bash
 $ git pull upstream main
 ```
 
-Install the necessary dependencies
+Install the necessary dependencies:
 
 ```bash
 $ npm install
 ```
 
-Build all jQuery files
+Build all jQuery files:
 
 ```bash
 $ npm run build:all
 ```
 
-Start a test server
+Start a test server:
 
 ```bash
 $ npm run test:server
