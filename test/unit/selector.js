@@ -2237,6 +2237,37 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 	}
 } );
 
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom attribute getters", function( assert ) {
+	assert.expect( 2 );
+
+	var original = jQuery.attrHooks.hreflang,
+		selector = "a:contains('mozilla')[hreflang='https://mozilla.org/en']";
+
+	try {
+		jQuery.attrHooks.hreflang = {
+			get: function( elem, name ) {
+				var href = elem.getAttribute( "href" ),
+					lang = elem.getAttribute( name );
+				return lang && ( href + lang );
+			}
+		};
+
+		assert.deepEqual(
+			jQuery.find( selector, createWithFriesXML() ),
+			[],
+			"Custom attrHooks (preferred document)"
+		);
+		assert.t( "Custom attrHooks (preferred document)", selector, [ "mozilla" ] );
+	} finally {
+		jQuery.attrHooks.hreflang = original;
+	}
+} );
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "Ensure no 'undefined' handler is added", function( assert ) {
+	assert.expect( 1 );
+	assert.ok( !jQuery.attrHooks.hasOwnProperty( "undefined" ),
+		"Extra attr handlers are not added to jQuery.attrHooks (https://github.com/jquery/sizzle/issues/353)" );
+} );
+
 QUnit.test( "jQuery.find.matchesSelector", function( assert ) {
 	assert.expect( 15 );
 
