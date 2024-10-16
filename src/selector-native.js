@@ -124,7 +124,6 @@ jQuery.extend( {
 	// elements in the full selector module. This will be a minor
 	// breaking change in 4.0.0.
 	uniqueSort: uniqueSort,
-	unique: uniqueSort,
 
 	find: function( selector, context, results, seed ) {
 		var elem, nodeType,
