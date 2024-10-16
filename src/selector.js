@@ -846,7 +846,7 @@ for ( i in { submit: true, reset: true } ) {
 
 // Easy API for creating new setFilters
 function setFilters() {}
-setFilters.prototype = jQuery.expr.filters = jQuery.expr.pseudos;
+setFilters.prototype = jQuery.expr.pseudos;
 jQuery.expr.setFilters = new setFilters();
 
 function addCombinator( matcher, combinator, base ) {
