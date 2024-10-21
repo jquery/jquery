@@ -2346,10 +2346,10 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 	assert.expect( 6 );
 
 	try {
-		jQuery.expr.filters.foundation = jQuery.expr.filters.root;
+		jQuery.expr.pseudos.foundation = jQuery.expr.pseudos.root;
 		assert.deepEqual( jQuery.find( ":foundation" ), [ document.documentElement ], "Copy element filter with new name" );
 	} finally {
-		delete jQuery.expr.filters.foundation;
+		delete jQuery.expr.pseudos.foundation;
 	}
 
 	try {
@@ -2360,25 +2360,25 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 	}
 
 	try {
-		jQuery.expr.filters.aristotlean = jQuery.expr.createPseudo( function() {
+		jQuery.expr.pseudos.aristotlean = jQuery.expr.createPseudo( function() {
 			return function( elem ) {
 				return !!elem.id;
 			};
 		} );
 		assert.t( "Custom element filter", "#foo :aristotlean", [ "sndp", "en", "yahoo", "sap", "anchor2", "timmy" ] );
 	} finally {
-		delete jQuery.expr.filters.aristotlean;
+		delete jQuery.expr.pseudos.aristotlean;
 	}
 
 	try {
-		jQuery.expr.filters.endswith = jQuery.expr.createPseudo( function( text ) {
+		jQuery.expr.pseudos.endswith = jQuery.expr.createPseudo( function( text ) {
 			return function( elem ) {
 				return jQuery.text( elem ).slice( -text.length ) === text;
 			};
 		} );
 		assert.t( "Custom element filter with argument", "a:endswith(ogle)", [ "google" ] );
 	} finally {
-		delete jQuery.expr.filters.endswith;
+		delete jQuery.expr.pseudos.endswith;
 	}
 
 	try {
@@ -2392,7 +2392,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 		} );
 		assert.t( "Custom set filter", "#qunit-fixture p:second", [ "ap" ] );
 	} finally {
-		delete jQuery.expr.filters.second;
+		delete jQuery.expr.setFilters.second;
 	}
 
 	try {
@@ -2412,7 +2412,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "custom pseudos", function( as
 		} );
 		assert.t( "Custom set filter with argument", "#qunit-fixture p:slice(1:3)", [ "ap", "sndp" ] );
 	} finally {
-		delete jQuery.expr.filters.slice;
+		delete jQuery.expr.setFilters.slice;
 	}
 } );
 
@@ -2420,12 +2420,12 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "backwards-compatible custom p
 	assert.expect( 3 );
 
 	try {
-		jQuery.expr.filters.icontains = function( elem, i, match ) {
+		jQuery.expr.pseudos.icontains = function( elem, i, match ) {
 			return jQuery.text( elem ).toLowerCase().indexOf( ( match[ 3 ] || "" ).toLowerCase() ) > -1;
 		};
 		assert.t( "Custom element filter with argument", "a:icontains(THIS BLOG ENTRY)", [ "john1" ] );
 	} finally {
-		delete jQuery.expr.filters.icontains;
+		delete jQuery.expr.pseudos.icontains;
 	}
 
 	try {
