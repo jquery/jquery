@@ -43,4 +43,6 @@ jQuery.holdReady = function( hold ) {
 	}
 };
 
+jQuery.expr[ ":" ] = jQuery.expr.filters = jQuery.expr.pseudos;
+
 export { jQuery, jQuery as $ };
