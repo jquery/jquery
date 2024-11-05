@@ -86,4 +86,8 @@ jQuery.trim = function( text ) {
 		"" :
 		( text + "" ).replace( rtrim, "$1" );
 };
+
+jQuery.expr[ ":" ] = jQuery.expr.filters = jQuery.expr.pseudos;
+jQuery.unique = jQuery.uniqueSort;
+
 } );
