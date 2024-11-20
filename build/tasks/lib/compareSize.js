@@ -5,7 +5,7 @@ import { exec as nodeExec } from "node:child_process";
 import chalk from "chalk";
 import isCleanWorkingDir from "./isCleanWorkingDir.js";
 
-const VERSION = 1;
+const VERSION = 2;
 const lastRunBranch = " last run";
 
 const gzip = promisify( zlib.gzip );
