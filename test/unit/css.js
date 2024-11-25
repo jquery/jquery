@@ -1705,7 +1705,7 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 ( function() {
 	var vendorPrefixes = [ "Webkit", "Moz", "ms" ];
 
-	QUnit.test( "Don't default to a cached previously used wrong prefixed name (gh-2015)", function( assert ) {
+	QUnit.test( "Don't default to a previously used wrong prefixed name (gh-2015)", function( assert ) {
 
 		// Note: this test needs a property we know is only supported in a prefixed version
 		// by at least one of our main supported browsers. This may get out of date so let's
@@ -1759,18 +1759,32 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 		assert.equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
 	} );
 
-	QUnit.test( "Don't detect fake set properties on a node when caching the prefixed version", function( assert ) {
-		assert.expect( 1 );
-
-		var elem = jQuery( "<div></div>" ),
-			style = elem[ 0 ].style;
-		style.MozFakeProperty = "old value";
-		elem.css( "fakeProperty", "new value" );
-
-		assert.equal( style.MozFakeProperty, "old value", "Fake prefixed property is not cached" );
-	} );
-
 } )();
+
+QUnit.test( "Don't update existing unsupported prefixed properties", function( assert ) {
+	assert.expect( 1 );
+
+	var elem = jQuery( "<div></div>" ),
+		style = elem[ 0 ].style;
+	style.MozFakeProperty = "old value";
+	elem.css( "fakeProperty", "new value" );
+
+	assert.equal( style.MozFakeProperty, "old value", "Fake prefixed property is not set" );
+} );
+
+QUnit.test( "Don't set fake prefixed properties when a regular one is missing", function( assert ) {
+	assert.expect( 5 );
+
+	var elem = jQuery( "<div></div>" ),
+		style = elem[ 0 ].style;
+	elem.css( "fakeProperty", "fake value" );
+
+	assert.strictEqual( style.fakeProperty, "fake value", "Fake unprefixed property is set" );
+	assert.strictEqual( style.webkitFakeProperty, undefined, "Fake prefixed property is not set (webkit)" );
+	assert.strictEqual( style.WebkitFakeProperty, undefined, "Fake prefixed property is not set (Webkit)" );
+	assert.strictEqual( style.MozFakeProperty, undefined, "Fake prefixed property is not set (Moz)" );
+	assert.strictEqual( style.msFakeProperty, undefined, "Fake prefixed property is not set (ms)" );
+} );
 
 // IE doesn't support CSS variables.
 QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
