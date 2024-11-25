@@ -21,7 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         BROWSER:
-          - 'IE_11'
           - 'Safari_latest'
           - 'Safari_latest-1'
           - 'Chrome_latest'

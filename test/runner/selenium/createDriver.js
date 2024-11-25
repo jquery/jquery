@@ -2,7 +2,6 @@ import { Builder, Capabilities, logging } from "selenium-webdriver";
 import Chrome from "selenium-webdriver/chrome.js";
 import Edge from "selenium-webdriver/edge.js";
 import Firefox from "selenium-webdriver/firefox.js";
-import IE from "selenium-webdriver/ie.js";
 import { browserSupportsHeadless } from "../lib/getBrowserString.js";
 
 // Set script timeout to 10min
@@ -11,15 +10,9 @@ const DRIVER_SCRIPT_TIMEOUT = 1000 * 60 * 10;
 export default async function createDriver( { browserName, headless, url, verbose } ) {
 	const capabilities = Capabilities[ browserName ]();
 
-	// Support: IE 11+
-	// When those are set for IE, the process crashes with an error:
-	// "Unable to match capability set 0: goog:loggingPrefs is an unknown
-	// extension capability for IE".
-	if ( browserName !== "ie" ) {
-		const prefs = new logging.Preferences();
-		prefs.setLevel( logging.Type.BROWSER, logging.Level.ALL );
-		capabilities.setLoggingPrefs( prefs );
-	}
+	const prefs = new logging.Preferences();
+	prefs.setLevel( logging.Type.BROWSER, logging.Level.ALL );
+	capabilities.setLoggingPrefs( prefs );
 
 	let driver = new Builder().withCapabilities( capabilities );
 
@@ -57,10 +50,6 @@ export default async function createDriver( { browserName, headless, url, verbos
 		edgeOptions.setEdgeChromiumBinaryPath( process.env.EDGE_BIN );
 	}
 
-	const ieOptions = new IE.Options();
-	ieOptions.setEdgeChromium( true );
-	ieOptions.setEdgePath( "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe" );
-
 	if ( headless ) {
 		chromeOptions.addArguments( "--headless=new" );
 		firefoxOptions.addArguments( "--headless" );
@@ -77,7 +66,6 @@ export default async function createDriver( { browserName, headless, url, verbos
 		.setChromeOptions( chromeOptions )
 		.setFirefoxOptions( firefoxOptions )
 		.setEdgeOptions( edgeOptions )
-		.setIeOptions( ieOptions )
 		.build();
 
 	if ( verbose ) {
