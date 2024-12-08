@@ -40,6 +40,7 @@ jobs:
           - 'Firefox_78'
           - 'Firefox_60'
           - 'Firefox_48'
+          - '__iOS_18'
           - '__iOS_17'
           - '__iOS_16'
           - '__iOS_15'
