@@ -62,6 +62,11 @@ jQuery.param = function( a, traditional ) {
 				valueOrFunction() :
 				valueOrFunction;
 
+			// Skip undefined values
+			if (value === undefined) {
+					return;
+			}
+
 			s[ s.length ] = encodeURIComponent( key ) + "=" +
 				encodeURIComponent( value == null ? "" : value );
 		};
