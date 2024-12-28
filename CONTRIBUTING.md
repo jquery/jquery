@@ -131,10 +131,10 @@ This will only run the "css" module tests. This will significantly speed up your
 
 #### Change the test server port
 
-The default port for the test server is 3000. You can change the port by setting the `PORT` environment variable.
+The default port for the test server is 3000. You can change the port by setting the `--port` option.
 
 ```bash
-$ PORT=3001 npm run test:server
+$ npm run test:server -- --port 8000
 ```
 
 #### Loading changes on the test page
@@ -165,12 +165,32 @@ Make sure jQuery is built (`npm run build:all`) and run the tests:
 $ npm run test:unit
 ```
 
-This will run each module in its own browser instance and report the results in the terminal.
+This will run all tests and report the results in the terminal.
 
 View the full help for the test suite for more info on running the tests from the command line:
 
 ```bash
 $ npm run test:unit -- --help
+```
+
+#### Running a single module
+
+All test modules run by default. Run a single module by specifying the module in a "flag":
+
+```bash
+$ npm run test:unit -- --flag module=css
+```
+
+Or, run multiple modules with multiple flags (`-f` is shorthand for `--flag`):
+
+```bash
+$ npm run test:unit -- -f module=css -f module=effects
+```
+
+Anything passed to the `--flag` option is passed as query parameters on the QUnit test page. For instance, run tests with unminified code with the `dev` flag:
+
+```bash
+$ npm run test:unit -- -f dev
 ```
 
 ### Repo organization

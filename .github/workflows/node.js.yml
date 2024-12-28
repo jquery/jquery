@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build All for Linting
+      - name: Build all for linting
         run: npm run build:all
         if: contains(matrix.NPM_SCRIPT, 'lint')
 
