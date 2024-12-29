@@ -1,6 +1,6 @@
 version: 1
 
-baseUrl: /test/
+base-url: /test/
 
 middleware:
   - test/middleware-mockserver.cjs
