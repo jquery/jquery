@@ -3,7 +3,7 @@ name: Browserstack
 on:
   push:
     branches:
-      - main
+      - jtr
 
 jobs:
   test:
