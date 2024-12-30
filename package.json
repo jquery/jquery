@@ -67,7 +67,7 @@
     "start": "node --input-type=module -e \"import { buildDefaultFiles } from './build/tasks/build.js'; buildDefaultFiles({ watch: true })\"",
     "test:bundlers": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js",
     "test:browser": "npm run pretest && npm run build:main && npm run test:unit -- -b chrome -b firefox -h",
-    "test:browserless": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js && node build/tasks/node_smoke_tests.js && node build/tasks/promises_aplus_tests.js && npm run test:unit -- -b jsdom -m basic",
+    "test:browserless": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js && node build/tasks/node_smoke_tests.js && node build/tasks/promises_aplus_tests.js && npm run test:unit -- -b jsdom -f module=basic",
     "test:jsdom": "npm run pretest && npm run build:main && npm run test:unit -- -b jsdom -f module=basic",
     "test:node_smoke_tests": "npm run pretest && npm run build:all && node build/tasks/node_smoke_tests.js",
     "test:promises_aplus": "npm run build:main && node build/tasks/promises_aplus_tests.js",
@@ -81,7 +81,7 @@
     "test:no-deprecated": "npm run pretest && npm run build -- -e deprecated && npm run test:unit -- -h",
     "test:selector-native": "npm run pretest && npm run build -- -e selector && npm run test:unit -- -h",
     "test:slim": "npm run pretest && npm run build -- --slim && npm run test:unit -- -h",
-    "test:unit": "jtr run -c jtr.yml",
+    "test:unit": "jtr run -m test/middleware-mockserver.cjs",
     "test": "npm run build:all && npm run lint && npm run test:browserless && npm run test:browser && npm run test:esm && npm run test:slim && npm run test:no-deprecated && npm run test:selector-native"
   },
   "homepage": "https://jquery.com",
