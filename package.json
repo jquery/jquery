@@ -124,6 +124,7 @@
     "globals": "15.14.0",
     "husky": "9.1.1",
     "jquery-test-runner": "file:../jquery-test-runner",
+    "jsdom": "25.0.1",
     "marked": "13.0.2",
     "multiparty": "4.2.3",
     "native-promise-only": "0.8.1",
