@@ -25,3 +25,6 @@ runs:
     - support
     - traversing
     - tween
+
+retries: 3
+hard-retries: 1
