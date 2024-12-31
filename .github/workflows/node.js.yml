@@ -112,7 +112,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: run tests in edge in ie mode
+      - name: Run tests in Edge in IE mode
         run: npm run test:ie
 
   safari:
