@@ -123,7 +123,7 @@
     "eslint-plugin-import": "2.29.1",
     "globals": "15.14.0",
     "husky": "9.1.1",
-    "jquery-test-runner": "github:timmywil/jquery-test-runner",
+    "jquery-test-runner": "github:timmywil/jquery-test-runner#f812ccae",
     "jsdom": "25.0.1",
     "marked": "13.0.2",
     "multiparty": "4.2.3",

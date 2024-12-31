@@ -112,11 +112,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Debug with SSH
-        uses: mxschmitt/action-tmate@v3
-
-      # - name: run tests in edge in ie mode
-      #   run: npm run test:ie
+      - name: run tests in edge in ie mode
+        run: npm run test:ie
 
   safari:
     runs-on: macos-latest
