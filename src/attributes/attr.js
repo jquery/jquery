@@ -106,17 +106,19 @@ jQuery.extend( {
 // Hooks for boolean attributes
 boolHook = {
 	set: function( elem, value, name ) {
+		var strValue = String( value );
+
 		if ( value === false ) {
 
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
-		} else if (
-			name.toLowerCase() !== "hidden" ||
-				String( value ).toLowerCase() !== "until-found"
-		) {
-			elem.setAttribute( name, name );
 		} else {
-			elem.setAttribute( name, value );
+			elem.setAttribute( name,
+				name.toLowerCase() === "hidden" &&
+						strValue.toLowerCase() === "until-found" ?
+					strValue :
+					name
+			);
 		}
 		return name;
 	}
@@ -136,13 +138,10 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name )
 			attrHandle[ lowercaseName ] = ret;
 
 			ret = getter( elem, name, isXML );
-			if ( ret != null ) {
-				if ( lowercaseName !== "hidden" ||
-					ret.toLowerCase() !== "until-found"
-				) {
-					ret = lowercaseName;
-				}
-			}
+			ret = ret == null ||
+					( lowercaseName === "hidden" && ret.toLowerCase() === "until-found" ) ?
+				ret :
+				lowercaseName;
 
 			attrHandle[ lowercaseName ] = handle;
 		}
