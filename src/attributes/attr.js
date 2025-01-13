@@ -10,13 +10,7 @@ define( [
 "use strict";
 
 var boolHook,
-	attrHandle = jQuery.expr.attrHandle,
-
-	// Some formerly boolean attributes gained new values with special meaning.
-	// Skip the old boolean attr logic for those values.
-	extraBoolAttrValues = {
-		hidden: [ "until-found" ]
-	};
+	attrHandle = jQuery.expr.attrHandle;
 
 jQuery.fn.extend( {
 	attr: function( name, value ) {
@@ -117,8 +111,8 @@ boolHook = {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else if (
-			( extraBoolAttrValues[ name.toLowerCase() ] || [] )
-				.indexOf( String( value ).toLowerCase() ) === -1
+			name.toLowerCase() !== "hidden" ||
+				String( value ).toLowerCase() !== "until-found"
 		) {
 			elem.setAttribute( name, name );
 		} else {
@@ -143,8 +137,8 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name )
 
 			ret = getter( elem, name, isXML );
 			if ( ret != null ) {
-				if ( ( extraBoolAttrValues[ lowercaseName ] || [] )
-					.indexOf( ret.toLowerCase() ) === -1
+				if ( lowercaseName !== "hidden" ||
+					ret.toLowerCase() !== "until-found"
 				) {
 					ret = lowercaseName;
 				}
