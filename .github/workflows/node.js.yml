@@ -20,28 +20,28 @@ jobs:
         NPM_SCRIPT: ["test:browserless"]
         include:
           - NAME: "Node"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "lint"
           - NAME: "Chrome/Firefox"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:browser"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:slim"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:no-deprecated"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:selector-native"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:amd"
           - NAME: "Firefox ESR (new)"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:firefox"
           - NAME: "Firefox ESR (old)"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:firefox"
     steps:
       - name: Checkout
@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build All for Linting
+      - name: Build all for linting
         run: npm run build:all
         if: contains(matrix.NPM_SCRIPT, 'lint')
 
@@ -90,7 +90,7 @@ jobs:
   ie:
     runs-on: windows-latest
     env:
-      NODE_VERSION: 20.x
+      NODE_VERSION: 22.x
     name: test:ie - IE
     steps:
       - name: Checkout
@@ -118,7 +118,7 @@ jobs:
   safari:
     runs-on: macos-latest
     env:
-      NODE_VERSION: 20.x
+      NODE_VERSION: 22.x
     name: test:safari - Safari
     steps:
       - name: Checkout
