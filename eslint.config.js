@@ -197,45 +197,6 @@ module.exports = [
 
 	{
 		files: [
-			"test/runner/**/*.js"
-		],
-		languageOptions: {
-			ecmaVersion: "latest",
-			globals: {
-				...globals.node
-			}
-		},
-		rules: {
-			...jqueryConfig.rules,
-			"no-implicit-globals": "error",
-			"no-unused-vars": [
-				"error",
-				{
-					args: "after-used",
-					argsIgnorePattern: "^_",
-					caughtErrorsIgnorePattern: "^_"
-				}
-			]
-		}
-	},
-
-	{
-		files: [
-			"test/runner/listeners.js"
-		],
-		languageOptions: {
-			ecmaVersion: 5,
-			sourceType: "script",
-			globals: {
-				...globals.browser,
-				QUnit: false,
-				Symbol: false
-			}
-		}
-	},
-
-	{
-		files: [
 			"test/data/testinit.js",
 			"test/data/testrunner.js",
 			"test/data/core/jquery-iterability-transpiled-es6.js"
