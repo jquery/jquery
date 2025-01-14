@@ -48,9 +48,19 @@ jobs:
           - '__iOS_13'
           - '__iOS_12'
           - '__iOS_11'
-          - '__iOS_10'
+
+          # iOS 10 is a tier 4 device as of January 2025 and its availability
+          # is poor, leading to frequent test timeouts. Skip testing on it.
+          # See https://www.browserstack.com/device-tiers
+          # - '__iOS_10'
+
+          # Versions below are not officially supported by BrowserStack as
+          # they use emulators instead of real devices. We include them as
+          # long as they still work.
           - '__iOS_9'
           - '__iOS_8'
+          # iOS 7 emulators no longer work properly
+          # - '__iOS_7'
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
