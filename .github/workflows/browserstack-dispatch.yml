@@ -59,4 +59,6 @@ jobs:
         run: npm run pretest
 
       - name: Run tests
-        run: npm run test:unit -- -v --browserstack ${{ inputs.browser }} -m ${{ inputs.module }}
+        run: npm run test:unit -- \
+          -v --browserstack ${{ inputs.browser }} \
+          -f module=${{ inputs.module }}

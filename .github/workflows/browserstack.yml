@@ -12,7 +12,7 @@ jobs:
     env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      NODE_VERSION: 20.x
+      NODE_VERSION: 22.x
     name: ${{ matrix.BROWSER }}
     concurrency:
       group: ${{ github.workflow }}-${{ matrix.BROWSER }}
@@ -61,4 +61,7 @@ jobs:
         run: npm run pretest
 
       - name: Run tests
-        run: npm run test:unit -- -v --browserstack "${{ matrix.BROWSER }}" --run-id ${{ github.run_id }} --isolate --retries 3 --hard-retries 1
+        run: |
+          npm run test:unit -- -v -c jtr-isolate.yml \
+            --browserstack "${{ matrix.BROWSER }}" \
+            --run-id ${{ github.run_id }}
