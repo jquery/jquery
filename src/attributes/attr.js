@@ -106,12 +106,19 @@ jQuery.extend( {
 // Hooks for boolean attributes
 boolHook = {
 	set: function( elem, value, name ) {
+		var strValue = String( value );
+
 		if ( value === false ) {
 
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
 		} else {
-			elem.setAttribute( name, name );
+			elem.setAttribute( name,
+				name.toLowerCase() === "hidden" &&
+						strValue.toLowerCase() === "until-found" ?
+					strValue :
+					name
+			);
 		}
 		return name;
 	}
@@ -129,9 +136,13 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( _i, name )
 			// Avoid an infinite loop by temporarily removing this function from the getter
 			handle = attrHandle[ lowercaseName ];
 			attrHandle[ lowercaseName ] = ret;
-			ret = getter( elem, name, isXML ) != null ?
-				lowercaseName :
-				null;
+
+			ret = getter( elem, name, isXML );
+			ret = ret == null ||
+					( lowercaseName === "hidden" && ret.toLowerCase() === "until-found" ) ?
+				ret :
+				lowercaseName;
+
 			attrHandle[ lowercaseName ] = handle;
 		}
 		return ret;
