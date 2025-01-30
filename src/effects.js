@@ -1,11 +1,11 @@
 import { jQuery } from "./core.js";
+import { camelCase } from "./core/camelCase.js";
 import { document } from "./var/document.js";
 import { rcssNum } from "./var/rcssNum.js";
 import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 import { cssExpand } from "./css/var/cssExpand.js";
 import { isHiddenWithinTree } from "./css/var/isHiddenWithinTree.js";
 import { adjustCSS } from "./css/adjustCSS.js";
-import { cssCamelCase } from "./css/cssCamelCase.js";
 import { dataPriv } from "./data/var/dataPriv.js";
 import { showHide } from "./css/showHide.js";
 
@@ -143,10 +143,7 @@ function defaultPrefilter( elem, props, opts ) {
 	// Restrict "overflow" and "display" styles during box animations
 	if ( isBox && elem.nodeType === 1 ) {
 
-		// Support: IE <=9 - 11+
-		// Record all 3 overflow attributes because IE does not infer the shorthand
-		// from identically-valued overflowX and overflowY.
-		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
+		opts.overflow = style.overflow;
 
 		// Identify a display type, preferring old show/hide data over the CSS cascade
 		restoreDisplay = dataShow && dataShow.display;
@@ -189,9 +186,7 @@ function defaultPrefilter( elem, props, opts ) {
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
 		anim.always( function() {
-			style.overflow = opts.overflow[ 0 ];
-			style.overflowX = opts.overflow[ 1 ];
-			style.overflowY = opts.overflow[ 2 ];
+			style.overflow = opts.overflow;
 		} );
 	}
 
@@ -250,7 +245,7 @@ function propFilter( props, specialEasing ) {
 
 	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
-		name = cssCamelCase( index );
+		name = camelCase( index );
 		easing = specialEasing[ name ];
 		value = props[ index ];
 		if ( Array.isArray( value ) ) {
