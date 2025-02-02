@@ -117,6 +117,9 @@ jQuery.extend( {
 
 			try {
 				jQuery.merge( results, newContext.querySelectorAll( newSelector ) );
+			} catch (e) {
+				console.error("Selector error:", e);
+				return [];
 			} finally {
 				if ( nid === jQuery.expando ) {
 					context.removeAttribute( "id" );
