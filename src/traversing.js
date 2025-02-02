@@ -156,7 +156,8 @@ jQuery.each( {
 		// Treat the template element as a regular one in browsers that
 		// don't support it.
 		if ( nodeName( elem, "template" ) ) {
-			elem = elem.content || elem;
+			// Safe access to content
+			elem = ("content" in elem) ? elem.content : elem;
 		}
 
 		return jQuery.merge( [], elem.childNodes );
