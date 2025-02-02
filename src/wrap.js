@@ -14,7 +14,11 @@ jQuery.fn.extend( {
 			}
 
 			// The elements to wrap the target around
-			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+			wrapper = jQuery( html, this[ 0 ].ownerDocument );
+			// No elements to wrapper
+			if ( wrapper.length === 0 ) return this; 
+			
+			const wrap = wrapper.eq( 0 ).clone( true );
 
 			if ( this[ 0 ].parentNode ) {
 				wrap.insertBefore( this[ 0 ] );
