@@ -105,6 +105,8 @@ jQuery.extend( {
 
 				// Prefix every selector in the list
 				groups = tokenize( selector );
+				// Guard against empty selectors
+				if ( groups.length === 0 ) return results; 
 				i = groups.length;
 				while ( i-- ) {
 					groups[ i ] = ( nid ? "#" + nid : ":scope" ) + " " +
