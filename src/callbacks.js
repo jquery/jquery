@@ -62,169 +62,167 @@ jQuery.Callbacks = function( options ) {
 		// Index of currently firing callback (modified by add/remove as needed)
 		firingIndex = -1,
 
-		self,
-
 		// Fire callbacks
-		fire = function( ) {
-			if ( locked ) {
-				return;
-			}
-
-			// Prevent firing if locked
+		fire = function() {
 
 			// Enforce single-firing
 			locked = locked || options.once;
 
-			// Execute callbacks
+			// Execute callbacks for all pending executions,
+			// respecting firingIndex overrides and runtime changes
 			fired = firing = true;
-
 			for ( ; queue.length; firingIndex = -1 ) {
 				memory = queue.shift();
 				while ( ++firingIndex < list.length ) {
 
-					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) ===
-						false && options.stopOnFalse ) {
+					// Run callback and check for early termination
+					if ( list[ firingIndex ].apply( memory[ 0 ], memory[ 1 ] ) === false &&
+						options.stopOnFalse ) {
 
-						// Jump to end and forget the data
+						// Jump to end and forget the data so .add doesn't re-fire
 						firingIndex = list.length;
 						memory = false;
 					}
 				}
 			}
 
-			// Forget data if done
+			// Forget the data if we're done with it
 			if ( !options.memory ) {
 				memory = false;
 			}
 
 			firing = false;
 
-			// Clean up if done
+			// Clean up if we're done firing for good
 			if ( locked ) {
+
+				// Keep an empty list if we have data for future add calls
 				if ( memory ) {
 					list = [];
+
+				// Otherwise, this object is spent
 				} else {
 					list = "";
 				}
 			}
-		};
-
-	// Actual Callbacks object
-	self = {
-
-		// Add a callback or a collection of callbacks to the list
-		add: function( ) {
-			if ( list ) {
-				if ( memory && !firing ) {
-					firingIndex = list.length - 1;
-					queue.push( memory );
-				}
-
-				( function add( args ) {
-					jQuery.each( args, function( _, arg ) {
-						if ( typeof arg === "function" ) {
-							if ( !options.unique || !self.has( arg ) ) {
-								list.push( arg );
-							}
-						} else if ( arg && arg.length && toType( arg ) !== "string" ) {
-
-							// Inspect recursively
-							add( arg );
-						}
-					} );
-				} )( arguments );
-
-				// Check if we need to fire after adding
-				if ( memory && !firing ) {
-					fire();
-				}
-			}
-			return this;
 		},
 
+		// Actual Callbacks object
+		self = {
 
-		// Remove a callback from the list
-		remove: function() {
-			jQuery.each( arguments, function( _, arg ) {
-				var index;
-				while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
-					list.splice( index, 1 );
+			// Add a callback or a collection of callbacks to the list
+			add: function() {
+				if ( list ) {
 
-					// Handle firing indexes
-					if ( index <= firingIndex ) {
-						firingIndex--;
+					// If we have memory from a past run, we should fire after adding
+					if ( memory && !firing ) {
+						firingIndex = list.length - 1;
+						queue.push( memory );
+					}
+
+					( function add( args ) {
+						jQuery.each( args, function( _, arg ) {
+							if ( typeof arg === "function" ) {
+								if ( !options.unique || !self.has( arg ) ) {
+									list.push( arg );
+								}
+							} else if ( arg && arg.length && toType( arg ) !== "string" ) {
+
+								// Inspect recursively
+								add( arg );
+							}
+						} );
+					} )( arguments );
+
+					if ( memory && !firing ) {
+						fire();
 					}
 				}
-			} );
-			return this;
-		},
+				return this;
+			},
 
-		// Check if a given callback is in the list.
-		// If no argument is given, return whether or not list has callbacks attached.
-		has: function( fn ) {
-			return fn ?
-				jQuery.inArray( fn, list ) > -1 :
-				list.length > 0;
-		},
+			// Remove a callback from the list
+			remove: function() {
+				jQuery.each( arguments, function( _, arg ) {
+					var index;
+					while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
+						list.splice( index, 1 );
 
-		// Remove all callbacks from the list
-		empty: function() {
-			if ( list ) {
-				list = [];
-			}
-			return this;
-		},
+						// Handle firing indexes
+						if ( index <= firingIndex ) {
+							firingIndex--;
+						}
+					}
+				} );
+				return this;
+			},
 
-		// Disable .fire and .add
-		// Abort any current/pending executions
-		// Clear all callbacks and values
-		disable: function() {
-			locked = queue = [];
-			list = memory = "";
-			return this;
-		},
-		disabled: function() {
-			return !list;
-		},
+			// Check if a given callback is in the list.
+			// If no argument is given, return whether or not list has callbacks attached.
+			has: function( fn ) {
+				return fn ?
+					jQuery.inArray( fn, list ) > -1 :
+					list.length > 0;
+			},
 
-		// Disable .fire
-		// Also disable .add unless we have memory (since it would have no effect)
-		// Abort any pending executions
-		lock: function() {
-			locked = queue = [];
-			if ( !memory && !firing ) {
-				list = memory = "";
-			}
-			return this;
-		},
-		locked: function() {
-			return !!locked;
-		},
-
-		// Call all callbacks with the given context and arguments
-		fireWith: function( context, args ) {
-			if ( !locked ) {
-				args = args || [];
-				args = [ context, args.slice ? args.slice() : args ];
-				queue.push( args );
-				if ( !firing ) {
-					fire();
+			// Remove all callbacks from the list
+			empty: function() {
+				if ( list ) {
+					list = [];
 				}
+				return this;
+			},
+
+			// Disable .fire and .add
+			// Abort any current/pending executions
+			// Clear all callbacks and values
+			disable: function() {
+				locked = queue = [];
+				list = memory = "";
+				return this;
+			},
+			disabled: function() {
+				return !list;
+			},
+
+			// Disable .fire
+			// Also disable .add unless we have memory (since it would have no effect)
+			// Abort any pending executions
+			lock: function() {
+				locked = queue = [];
+				if ( !memory && !firing ) {
+					list = memory = "";
+				}
+				return this;
+			},
+			locked: function() {
+				return !!locked;
+			},
+
+			// Call all callbacks with the given context and arguments
+			fireWith: function( context, args ) {
+				if ( !locked ) {
+					args = args || [];
+					args = [ context, args.slice ? args.slice() : args ];
+					queue.push( args );
+					if ( !firing ) {
+						fire();
+					}
+				}
+				return this;
+			},
+
+			// Call all the callbacks with the given arguments
+			fire: function() {
+				self.fireWith( this, arguments );
+				return this;
+			},
+
+			// To know if the callbacks have already been called at least once
+			fired: function() {
+				return !!fired;
 			}
-			return this;
-		},
-
-		// Call all the callbacks with the given arguments
-		fire: function() {
-			self.fireWith( this, arguments );
-			return this;
-		},
-
-		// To know if the callbacks have already been called at least once
-		fired: function() {
-			return !!fired;
-		}
-	};
+		};
 
 	return self;
 };
