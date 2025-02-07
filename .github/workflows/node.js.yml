@@ -16,44 +16,44 @@ jobs:
       fail-fast: false
       matrix:
         NAME: ["Node"]
-        NODE_VERSION: [18.x, 20.x]
+        NODE_VERSION: [18.x, 20.x, 22.x, 23.x]
         NPM_SCRIPT: ["test:browserless"]
         include:
           - NAME: "Node"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "lint"
           - NAME: "Chrome/Firefox"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:browser"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:slim"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:no-deprecated"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:selector-native"
           - NAME: "Chrome"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:esm"
           - NAME: "Firefox ESR (new)"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:firefox"
           - NAME: "Firefox ESR (old)"
-            NODE_VERSION: "20.x"
+            NODE_VERSION: "22.x"
             NPM_SCRIPT: "test:firefox"
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Use Node.js ${{ matrix.NODE_VERSION }}
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: ${{ matrix.NODE_VERSION }}
 
       - name: Cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ matrix.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
@@ -80,7 +80,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build All for Linting
+      - name: Build all for linting
         run: npm run build:all
         if: contains(matrix.NPM_SCRIPT, 'lint')
 
@@ -90,19 +90,19 @@ jobs:
   ie:
     runs-on: windows-latest
     env:
-      NODE_VERSION: 20.x
+      NODE_VERSION: 22.x
     name: test:ie - IE
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}
@@ -118,19 +118,19 @@ jobs:
   safari:
     runs-on: macos-latest
     env:
-      NODE_VERSION: 20.x
+      NODE_VERSION: 22.x
     name: test:safari - Safari
     steps:
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
-        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a # v4.2.0
         with:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache
-        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+        uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-npm-lock-${{ hashFiles('**/package-lock.json') }}

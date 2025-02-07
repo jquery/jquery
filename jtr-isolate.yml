@@ -1,0 +1,30 @@
+version: 1
+
+base-url: /test/
+
+runs:
+  module:
+    - basic
+    - ajax
+    - animation
+    - attributes
+    - callbacks
+    - core
+    - css
+    - data
+    - deferred
+    - deprecated
+    - dimensions
+    - effects
+    - event
+    - manipulation
+    - offset
+    - queue
+    - selector
+    - serialize
+    - support
+    - traversing
+    - tween
+
+retries: 3
+hard-retries: 1

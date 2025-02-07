@@ -205,4 +205,17 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	cb.call( thisObject, "arg3" );
 } );
 
+if ( includesModule( "selector" ) ) {
+	QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ](
+		"jQuery.expr[ \":\" ], jQuery.expr.filters",
+		function( assert ) {
+			assert.expect( 2 );
+
+			assert.strictEqual( jQuery.expr[ ":" ], jQuery.expr.pseudos,
+				"jQuery.expr[ \":\" ] is an alias of jQuery.expr.pseudos" );
+			assert.strictEqual( jQuery.expr.filters, jQuery.expr.pseudos,
+				"jQuery.expr.filters is an alias of jQuery.expr.pseudos" );
+		} );
+}
+
 }
