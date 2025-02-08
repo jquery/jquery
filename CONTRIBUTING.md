@@ -69,7 +69,7 @@ We *love* when people contribute back to the project by patching the bugs they f
 
 ### Build a Local Copy of jQuery
 
-Create a fork of the jQuery repo on GitHub at https://github.com/jquery/jquery
+Create a fork of the jQuery repo on GitHub at https://github.com/jquery/jquery.
 
 Clone your jQuery fork to work locally:
 
