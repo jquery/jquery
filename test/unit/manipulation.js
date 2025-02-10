@@ -3020,8 +3020,7 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 
 	var container,
 		counter = 0,
-		oldIos = /iphone os (?:8|9|10|11|12)_/i.test( navigator.userAgent ),
-		assertCount = oldIos ? 12 : 13,
+		assertCount = 13,
 		done = assert.async( assertCount );
 
 	assert.expect( assertCount );
@@ -3065,12 +3064,7 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 
 	test( "<option><style></option></select><img src=url404 onerror=xss(11)></style>" );
 
-	// Support: iOS 8 - 12 only.
-	// Old iOS parses `<noembed>` tags differently, executing this code. This is no
-	// different to native behavior on that OS, though, so just accept it.
-	if ( !oldIos ) {
-		test( "<noembed><noembed/><img src=url404 onerror=xss(12)>" );
-	}
+	test( "<noembed><noembed/><img src=url404 onerror=xss(12)>" );
 } );
 
 QUnit.test( "Works with invalid attempts to close the table wrapper", function( assert ) {

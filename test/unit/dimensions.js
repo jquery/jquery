@@ -345,29 +345,6 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	$divNormal.remove();
 } );
 
-QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", function( assert ) {
-	assert.expect( 1 );
-
-	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		div = $div.get( 0 ),
-		runtimeStyle = div.runtimeStyle;
-
-	if ( runtimeStyle ) {
-		div.runtimeStyle.marginLeft = "12em";
-		div.runtimeStyle.left = "11em";
-	}
-
-	$div.outerWidth( true );
-
-	if ( runtimeStyle ) {
-		assert.equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see trac-9233" );
-	} else {
-		assert.ok( true, "this browser doesn't support runtimeStyle, see trac-9233" );
-	}
-
-	$div.remove();
-} );
-
 QUnit.test( "table dimensions", function( assert ) {
 	assert.expect( 2 );
 
