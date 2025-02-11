@@ -275,57 +275,56 @@ jQuery.extend( {
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
 			var list = tuple[ 2 ],
-				stateString = tuple[ 5 ];
+				stateString = tuple[ 5 ],
+
+				// Add a flag to track if the state has been resolved/rejected
+				isResolvedOrRejected = false;
 
 			// promise.progress = list.add
 			// promise.done = list.add
 			// promise.fail = list.add
 			promise[ tuple[ 1 ] ] = list.add;
 
-			// Handle state
+			// Handle state only once to prevent infinite loop
 			if ( stateString ) {
 				list.add(
 					function() {
+						if ( !isResolvedOrRejected && state !== stateString ) {
 
-						// state = "resolved" (i.e., fulfilled)
-						// state = "rejected"
-						state = stateString;
+							// Set the state only if it's not resolved already
+							state = stateString;
+							isResolvedOrRejected = true;  // Mark as resolved/rejected
+						}
 					},
 
-					// rejected_callbacks.disable
-					// fulfilled_callbacks.disable
+					// Disable rejection and fulfillment handlers once state is set
 					tuples[ 3 - i ][ 2 ].disable,
-
-					// rejected_handlers.disable
-					// fulfilled_handlers.disable
 					tuples[ 3 - i ][ 3 ].disable,
-
-					// progress_callbacks.lock
 					tuples[ 0 ][ 2 ].lock,
-
-					// progress_handlers.lock
 					tuples[ 0 ][ 3 ].lock
 				);
 			}
 
-			// progress_handlers.fire
-			// fulfilled_handlers.fire
-			// rejected_handlers.fire
+			// Only fire when it should happen
 			list.add( tuple[ 3 ].fire );
 
-			// deferred.notify = function() { deferred.notifyWith(...) }
-			// deferred.resolve = function() { deferred.resolveWith(...) }
-			// deferred.reject = function() { deferred.rejectWith(...) }
+			// Use the correct handlers for each state
 			deferred[ tuple[ 0 ] ] = function() {
-				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? undefined : this, arguments );
+				if ( !isResolvedOrRejected ) {
+					deferred[ tuple[ 0 ] + "With" ]( this === deferred ?
+						undefined : this, arguments );
+				}
 				return this;
 			};
 
-			// deferred.notifyWith = list.fireWith
-			// deferred.resolveWith = list.fireWith
-			// deferred.rejectWith = list.fireWith
-			deferred[ tuple[ 0 ] + "With" ] = list.fireWith;
+			// Ensure resolve and reject fire only once
+			deferred[ tuple[ 0 ] + "With" ] = function() {
+				if ( !isResolvedOrRejected ) {
+					list.fireWith( this === deferred ? undefined : this, arguments );
+				}
+			};
 		} );
+
 
 		// Make the deferred a promise
 		promise.promise( deferred );
