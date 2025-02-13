@@ -9,6 +9,21 @@ define( [
 
 ( function() {
 
+	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
+		reliableMarginLeftVal, reliableTrDimensionsVal, reliableColDimensionsVal,
+		container = document.createElement( "div" ),
+		div = document.createElement( "div" ),
+		table = document.createElement( "table" );
+
+	// Finish early in limited (non-browser) environments
+	if ( !div.style ) {
+		return;
+	}
+
+	function roundPixelMeasures( measure ) {
+		return Math.round( parseFloat( measure ) );
+	}
+
 	// Executing both pixelPosition & boxSizingReliable tests require only one layout
 	// so they're executed at the same time to save the second computation.
 	function computeStyleTests() {
@@ -59,23 +74,83 @@ define( [
 
 		documentElement.removeChild( container );
 
-		// Nullify the div so it wouldn't be stored in the memory and
-		// it will also be a sign that checks already performed
+		// Nullify the table so it wouldn't be stored in the memory;
+		// it will also be a sign that checks were already performed.
 		div = null;
 	}
 
-	function roundPixelMeasures( measure ) {
-		return Math.round( parseFloat( measure ) );
-	}
+	// Executing table tests requires only one layout, so they're executed
+	// at the same time to save the second computation.
+	function computeTableStyleTests() {
 
-	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelBoxStylesVal,
-		reliableTrDimensionsVal, reliableMarginLeftVal,
-		container = document.createElement( "div" ),
-		div = document.createElement( "div" );
+		// This is a singleton, we need to execute it only once
+		if ( !table ) {
+			return;
+		}
 
-	// Finish early in limited (non-browser) environments
-	if ( !div.style ) {
-		return;
+		var trStyle,
+			col = document.createElement( "col" ),
+			tr = document.createElement( "tr" ),
+			td = document.createElement( "td" );
+
+		table.style.cssText = "position:absolute;left:-11111px;" +
+			"border-collapse:separate;border-spacing:0";
+		tr.style.cssText = "box-sizing:content-box;border:1px solid;height:1px";
+		td.style.cssText = "height:9px;width:9px;padding:0";
+
+		col.span = 2;
+
+		documentElement
+			.appendChild( table )
+			.appendChild( col )
+			.parentNode
+			.appendChild( tr )
+			.appendChild( td )
+			.parentNode
+			.appendChild( td.cloneNode( true ) );
+
+		// Don't run until window is visible
+		if ( table.offsetWidth === 0 ) {
+			documentElement.removeChild( table );
+			return;
+		}
+
+		trStyle = window.getComputedStyle( tr );
+
+		// Support: Firefox 135+
+		// Firefox always reports computed width as if `span` was 1.
+		// Support: Safari 18.3+
+		// In Safari, computed width for columns is always 0.
+		// In both these browsers, using `offsetWidth` solves the issue.
+		// Support: IE 11+, Edge 15 - 18+
+		// In IE/Edge, `<col>` computed width is `"auto"` unless `width` is set
+		// explicitly via CSS so measurements there remain incorrect. Because of
+		// the lack of a proper workaround, we accept this limitation, treating
+		// IE/Edge as passing the test. Detect them by checking for
+		// `msMatchesSelector`; despite Edge 15+ implementing `matches`, all
+		// IE 9+ and Edge Legacy versions implement `msMatchesSelector` as well.
+		reliableColDimensionsVal = !!documentElement.msMatchesSelector || Math.round( parseFloat(
+			window.getComputedStyle( col ).width )
+		) === 18;
+
+		// Support: IE 9 - 11+, Edge 15 - 18+
+		// IE/Edge misreport `getComputedStyle` of table rows with width/height
+		// set in CSS while `offset*` properties report correct values.
+		// Behavior in IE 9 is more subtle than in newer versions & it passes
+		// some versions of this test; make sure not to make it pass there!
+		//
+		// Support: Firefox 70+
+		// Only Firefox includes border widths
+		// in computed dimensions for table rows. (gh-4529)
+		reliableTrDimensionsVal = Math.round( parseFloat( trStyle.height ) +
+			parseFloat( trStyle.borderTopWidth ) +
+			parseFloat( trStyle.borderBottomWidth ) ) === tr.offsetHeight;
+
+		documentElement.removeChild( table );
+
+		// Nullify the table so it wouldn't be stored in the memory;
+		// it will also be a sign that checks were already performed.
+		table = null;
 	}
 
 	// Support: IE <=9 - 11 only
@@ -106,58 +181,13 @@ define( [
 			return scrollboxSizeVal;
 		},
 
-		// Support: IE 9 - 11+, Edge 15 - 18+
-		// IE/Edge misreport `getComputedStyle` of table rows with width/height
-		// set in CSS while `offset*` properties report correct values.
-		// Behavior in IE 9 is more subtle than in newer versions & it passes
-		// some versions of this test; make sure not to make it pass there!
-		//
-		// Support: Firefox 70+
-		// Only Firefox includes border widths
-		// in computed dimensions. (gh-4529)
 		reliableTrDimensions: function() {
-			var table, tr, trChild, trStyle;
-			if ( reliableTrDimensionsVal == null ) {
-				table = document.createElement( "table" );
-				tr = document.createElement( "tr" );
-				trChild = document.createElement( "div" );
-
-				table.style.cssText = "position:absolute;left:-11111px;border-collapse:separate";
-				tr.style.cssText = "box-sizing:content-box;border:1px solid";
-
-				// Support: Chrome 86+
-				// Height set through cssText does not get applied.
-				// Computed height then comes back as 0.
-				tr.style.height = "1px";
-				trChild.style.height = "9px";
-
-				// Support: Android 8 Chrome 86+
-				// In our bodyBackground.html iframe,
-				// display for all div elements is set to "inline",
-				// which causes a problem only in Android 8 Chrome 86.
-				// Ensuring the div is `display: block`
-				// gets around this issue.
-				trChild.style.display = "block";
-
-				documentElement
-					.appendChild( table )
-					.appendChild( tr )
-					.appendChild( trChild );
-
-				// Don't run until window is visible
-				if ( table.offsetWidth === 0 ) {
-					documentElement.removeChild( table );
-					return;
-				}
-
-				trStyle = window.getComputedStyle( tr );
-				reliableTrDimensionsVal = ( Math.round( parseFloat( trStyle.height ) ) +
-					Math.round( parseFloat( trStyle.borderTopWidth ) ) +
-					Math.round( parseFloat( trStyle.borderBottomWidth ) ) ) === tr.offsetHeight;
-
-				documentElement.removeChild( table );
-			}
+			computeTableStyleTests();
 			return reliableTrDimensionsVal;
+		},
+		reliableColDimensions: function() {
+			computeTableStyleTests();
+			return reliableColDimensionsVal;
 		}
 	} );
 } )();
