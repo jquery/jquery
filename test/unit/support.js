@@ -82,26 +82,32 @@ testIframe(
 		expectedMap = {
 			ie_11: {
 				cssHas: true,
+				reliableColDimensions: 11,
 				reliableTrDimensions: false
 			},
 			chrome: {
 				cssHas: true,
+				reliableColDimensions: true,
 				reliableTrDimensions: true
 			},
 			safari: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			},
 			firefox: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: false
 			},
 			ios_16_3: {
 				cssHas: false,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			},
 			ios: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			}
 		};
@@ -113,7 +119,7 @@ testIframe(
 		}
 	}
 
-	if ( document.documentMode ) {
+	if ( QUnit.isIE ) {
 		expected = expectedMap.ie_11;
 	} else if ( /\b(?:headless)?chrome\//i.test( userAgent ) ) {
 
