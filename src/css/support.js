@@ -30,13 +30,14 @@ function computeTableStyleTests() {
 
 	col.span = 2;
 
-	table.appendChild( col );
-	tr.appendChild( td.cloneNode( true ) );
-
 	documentElement
 		.appendChild( table )
+		.appendChild( col )
+		.parentNode
 		.appendChild( tr )
-		.appendChild( td );
+		.appendChild( td )
+		.parentNode
+		.appendChild( td.cloneNode( true ) );
 
 	// Don't run until window is visible
 	if ( table.offsetWidth === 0 ) {
