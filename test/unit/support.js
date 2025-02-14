@@ -82,38 +82,32 @@ testIframe(
 		expectedMap = {
 			ie_11: {
 				cssHas: true,
+				reliableColDimensions: 11,
 				reliableTrDimensions: false
-			},
-			chrome_111: {
-				cssHas: false,
-				reliableTrDimensions: true
 			},
 			chrome: {
 				cssHas: true,
-				reliableTrDimensions: true
-			},
-			safari_16_3: {
-				cssHas: false,
+				reliableColDimensions: true,
 				reliableTrDimensions: true
 			},
 			safari: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			},
 			firefox: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: false
 			},
-			ios_14_15_3: {
-				cssHas: true,
-				reliableTrDimensions: true
-			},
-			ios_15_4_16_3: {
+			ios_16_3: {
 				cssHas: false,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			},
 			ios: {
 				cssHas: true,
+				reliableColDimensions: false,
 				reliableTrDimensions: true
 			}
 		};
@@ -125,24 +119,18 @@ testIframe(
 		}
 	}
 
-	if ( document.documentMode ) {
+	if ( QUnit.isIE ) {
 		expected = expectedMap.ie_11;
-	} else if ( /\b(?:headless)?chrome\/(?:10\d|11[01])\b/i.test( userAgent ) ) {
-		expected = expectedMap.chrome_111;
 	} else if ( /\b(?:headless)?chrome\//i.test( userAgent ) ) {
 
 		// Catches Edge, Chrome on Android & Opera as well.
 		expected = expectedMap.chrome;
 	} else if ( /\bfirefox\//i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /\biphone os (?:14_|15_[0123])/i.test( userAgent ) ) {
-		expected = expectedMap.ios_14_15_3;
-	} else if ( /\biphone os (?:15_|16_[0123])/i.test( userAgent ) ) {
-		expected = expectedMap.ios_15_4_16_3;
+	} else if ( /\biphone os 16_[0123]/i.test( userAgent ) ) {
+		expected = expectedMap.ios_16_3;
 	} else if ( /\b(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
-	} else if ( /\bversion\/(?:15|16\.[0123])(?:\.\d+)* safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari_16_3;
 	} else if ( /\bversion\/\d+(?:\.\d+)+ safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari;
 	}

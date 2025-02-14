@@ -369,16 +369,53 @@ QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", fu
 } );
 
 QUnit.test( "table dimensions", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
-	var table = jQuery( "<table><colgroup><col></col><col></col></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>" ).appendTo( "#qunit-fixture" ),
+	var table = jQuery( "" +
+			"<table style='border-spacing: 0'>" +
+			"	<colgroup>" +
+			"		<col />" +
+			"		<col span='2' class='col-double' />" +
+			"	</colgroup>" +
+			"	<tbody>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td class='td-a-1'>a</td>" +
+			"			<td class='td-b-1'>b</td>" +
+			"		</tr>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td>a</td>" +
+			"			<td>b</td>" +
+			"		</tr>" +
+			"	</tbody>" +
+			"</table>"
+		).appendTo( "#qunit-fixture" ),
 		tdElem = table.find( "td" ).first(),
-		colElem = table.find( "col" ).first().width( 300 );
+		colElem = table.find( "col" ).first(),
+		doubleColElem = table.find( ".col-double" );
 
-	table.find( "td" ).css( { "margin": 0, "padding": 0 } );
+	table.find( "td" ).css( { margin: 0, padding: 0, border: 0 } );
+
+	colElem.width( 300 );
+
+	table.find( ".td-a-1" ).width( 200 );
+	table.find( ".td-b-1" ).width( 400 );
 
 	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see trac-11293" );
-	assert.equal( colElem.width(), 300, "col elements have width(), see trac-12243" );
+	assert.equal( colElem.width(), 300, "col elements have width(), (trac-12243)" );
+
+	// Support: IE 11+
+	// In IE, `<col>` computed width is `"auto"` unless `width` is set
+	// explicitly via CSS so measurements there remain incorrect. Because of
+	// the lack of a proper workaround, we accept this limitation.
+	// To make IE pass the test, set the width explicitly.
+	if ( QUnit.isIE ) {
+		doubleColElem.width( 600 );
+	}
+
+	assert.equal( doubleColElem.width(), 600,
+		"col with span measured correctly (gh-5628)" );
 } );
 
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
@@ -691,7 +728,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.appendTo( "#qunit-fixture" ),
 
 		// Workarounds for IE kill fractional output here.
-		fraction = document.documentMode ? 0 : 0.5,
+		fraction = QUnit.isIE ? 0 : 0.5,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
