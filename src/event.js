@@ -485,12 +485,17 @@ jQuery.event = {
 
 		beforeunload: {
 			postDispatch: function( event ) {
+				if ( event.result !== undefined ) {
 
-				// Support: Chrome <=73+
-				// Chrome doesn't alert on `event.preventDefault()`
-				// as the standard mandates.
-				if ( event.result !== undefined && event.originalEvent ) {
-					event.originalEvent.returnValue = event.result;
+					// Setting `event.originalEvent.returnValue` in modern
+					// browsers does the same as just calling `preventDefault()`,
+					// the browsers ignore the value anyway.
+					// Incidentally, IE 11 is the only browser from our supported
+					// ones which respects the value returned from a `beforeunload`
+					// handler attached by `addEventListener`; other browsers do
+					// so only for inline handlers, so not setting the value
+					// directly shouldn't reduce any functionality.
+					event.preventDefault();
 				}
 			}
 		}
