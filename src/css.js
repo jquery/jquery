@@ -9,6 +9,7 @@ import { cssExpand } from "./css/var/cssExpand.js";
 import { isAutoPx } from "./css/isAutoPx.js";
 import { cssCamelCase } from "./css/cssCamelCase.js";
 import { getStyles } from "./css/var/getStyles.js";
+import { swap } from "./css/var/swap.js";
 import { curCSS } from "./css/curCSS.js";
 import { adjustCSS } from "./css/adjustCSS.js";
 import { finalPropName } from "./css/finalPropName.js";
@@ -17,10 +18,11 @@ import { support } from "./css/support.js";
 import "./core/init.js";
 import "./core/ready.js";
 
-var cssNormalTransform = {
-	letterSpacing: "0",
-	fontWeight: "400"
-};
+var cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+	cssNormalTransform = {
+		letterSpacing: "0",
+		fontWeight: "400"
+	};
 
 function setPositiveNumber( _elem, value, subtract ) {
 
@@ -305,7 +307,14 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 	jQuery.cssHooks[ dimension ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
-				return getWidthOrHeight( elem, dimension, extra );
+
+				// Elements with `display: none` can have dimension info if
+				// we invisibly show them.
+				return jQuery.css( elem, "display" ) === "none" ?
+					swap( elem, cssShow, function() {
+						return getWidthOrHeight( elem, dimension, extra );
+					} ) :
+					getWidthOrHeight( elem, dimension, extra );
 			}
 		},
 

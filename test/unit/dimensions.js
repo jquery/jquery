@@ -368,6 +368,46 @@ QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", fu
 	$div.remove();
 } );
 
+QUnit.test( "hidden element with dimensions from a stylesheet", function( assert ) {
+	assert.expect( 2 );
+
+	var div = jQuery( "" +
+		"<div class='display-none-style'>" +
+		"	<style>" +
+		"		.display-none-style {" +
+		"			display: none;" +
+		"			width: 111px;" +
+		"			height: 123px;" +
+		"		}" +
+		"	</style>" +
+		"</div>" +
+		"" )
+		.appendTo( "#qunit-fixture" );
+
+	assert.strictEqual( div.width(), 111, "width of a hidden element" );
+	assert.strictEqual( div.height(), 123, "height of a hidden element" );
+} );
+
+QUnit.test( "hidden element with implicit content-based dimensions", function( assert ) {
+	assert.expect( 2 );
+
+	var container = jQuery( "" +
+
+			// font-size affects the child dimensions implicitly
+			"<div style='font-size: 20px'>" +
+			"	<div style='padding: 10px; display: none'>" +
+			"		<div style='width: 3em; height: 2em'></div>" +
+			"	</div>" +
+			"</div>" +
+			"" ),
+		div = container.children().first();
+
+	container.appendTo( "#qunit-fixture" );
+
+	assert.strictEqual( div.width(), 60, "width of a hidden element" );
+	assert.strictEqual( div.height(), 40, "height of a hidden element" );
+} );
+
 QUnit.test( "table dimensions", function( assert ) {
 	assert.expect( 3 );
 
