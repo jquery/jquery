@@ -858,7 +858,7 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 		);
 	} else {
 
-		// Support: Chrome 75+, Firefox 67+
+		// Support: Chrome 75 - 133+, Firefox 67 - 135+
 		// Some browsers mark disconnected elements as matching `:nth-child(n)`
 		// so let's skip the test.
 		assert.ok( "skip", "disconnected elements match ':nth-child(n)' in Chrome/Firefox" );
@@ -912,7 +912,7 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 		);
 	} else {
 
-		// Support: Chrome 75+, Firefox 67+
+		// Support: Chrome 75 - 133+, Firefox 67 - 135+
 		// Some browsers mark disconnected elements as matching `:nth-last-child(n)`
 		// so let's skip the test.
 		assert.ok( "skip", "disconnected elements match ':nth-last-child(n)' in Chrome/Firefox" );
@@ -954,7 +954,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - has", function( asse
 		"div:has(div:has(div:not([id])))",
 		[ "moretests", "t2037", "fx-test-group", "fx-queue" ] );
 
-	// Support: Safari 15.4+, Chrome 105+
+	// Support: Chrome 105 - 111 only, Safari 15.4 - 16.3 only
 	// `qSA` in Safari/Chrome throws for `:has()` with only unsupported arguments
 	// but if you add a supported arg to the list, it will run and just potentially
 	// return no results. Make sure this is accounted for. (gh-5098)

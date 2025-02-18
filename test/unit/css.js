@@ -1379,7 +1379,7 @@ testIframe(
 	function( assert, jQuery, window, document, widthBeforeSet, widthAfterSet ) {
 		assert.expect( 2 );
 
-		// Support: Firefox 126+
+		// Support: Firefox 126 - 135+
 		// Newer Firefox implements CSS zoom in a way it affects
 		// those values slightly.
 		assert.ok( /^100(?:|\.0\d*)px$/.test( widthBeforeSet ), "elem.css('width') works correctly with browser zoom" );
@@ -1812,14 +1812,9 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
-			.appendTo( "#qunit-fixture" ),
-		webkitOrBlink = /webkit\b/i.test( navigator.userAgent ),
-		expected = 20;
+			.appendTo( "#qunit-fixture" );
 
-	if ( webkitOrBlink ) {
-		expected -= 2;
-	}
-	assert.expect( expected );
+	assert.expect( 20 );
 
 	div.css( "--color", "blue" );
 	assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );
@@ -1848,13 +1843,15 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 	assert.equal( $elem.css( "--prop5" ), "val5", "Multiple Following whitespace trimmed" );
 	assert.equal( $elem.css( "--prop6" ), "val6", "Preceding and Following whitespace trimmed" );
 	assert.equal( $elem.css( "--prop7" ), "val7", "Multiple preceding and following whitespace trimmed" );
+	assert.equal( $elem.css( "--prop8" ), "\"val8\"", "Works with double quotes" );
 
-	// Support: Chrome <=49 - 73+, Safari <=9.1 - 12.1+
-	// Chrome treats single quotes as double ones.
-	// Safari treats double quotes as single ones.
-	if ( !webkitOrBlink ) {
-		assert.equal( $elem.css( "--prop8" ), "\"val8\"", "Works with double quotes" );
+	// Support: Safari <=9.1 - 18.1+
+	// Safari converts single quotes to double ones.
+	if ( !/\bapplewebkit\/605\.1\.15\b/i.test( navigator.userAgent ) ) {
 		assert.equal( $elem.css( "--prop9" ), "'val9'", "Works with single quotes" );
+	} else {
+		assert.equal( $elem.css( "--prop9" ).replace( /"/g, "'" ), "'val9'",
+			"Works with single quotes, but they may be changed to double ones" );
 	}
 
 	assert.equal( $elem.css( "--prop10" ), "val10", "Multiple preceding and following escaped unicode whitespace trimmed" );
