@@ -1532,7 +1532,37 @@ testIframe(
 	}
 );
 
-QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.readyException (original)", function( assert ) {
+QUnit[ includesModule( "deferred" ) && window.queueMicrotask ? "test" : "skip" ]( "jQuery.readyException (microtask)", function( assert ) {
+	assert.expect( 2 );
+
+	var done = assert.async();
+	var expected = "Error in jQuery ready #" + Math.random().toString( 36 ).slice( -7 );
+
+	this.sandbox.stub( jQuery, "readyException" ).callsFake( function( error ) {
+		assert.strictEqual( error.message, expected, "jQuery.readyException called with unexpected error" );
+		window.setTimeout( function() {
+			throw error;
+		} );
+	} );
+
+	this.sandbox.stub( window, "setTimeout" ).callsFake( function( fn ) {
+		var message;
+		try {
+			fn();
+		} catch ( error ) {
+			message = error.message;
+		}
+
+		assert.strictEqual( message, expected, "The error should have been caught" );
+		done();
+	} );
+
+	jQuery( function() {
+		throw new Error( expected );
+	} );
+} );
+
+QUnit[ includesModule( "deferred" ) && !window.queueMicrotask ? "test" : "skip" ]( "jQuery.readyException (timer)", function( assert ) {
 	assert.expect( 1 );
 
 	var message;
