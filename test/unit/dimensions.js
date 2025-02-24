@@ -368,17 +368,97 @@ QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", fu
 	$div.remove();
 } );
 
-QUnit.test( "table dimensions", function( assert ) {
+QUnit.test( "hidden element with dimensions from a stylesheet", function( assert ) {
 	assert.expect( 2 );
 
-	var table = jQuery( "<table><colgroup><col></col><col></col></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>" ).appendTo( "#qunit-fixture" ),
-		tdElem = table.find( "td" ).first(),
-		colElem = table.find( "col" ).first().width( 300 );
+	var div = jQuery( "" +
+		"<div class='display-none-style'>" +
+		"	<style>" +
+		"		.display-none-style {" +
+		"			display: none;" +
+		"			width: 111px;" +
+		"			height: 123px;" +
+		"		}" +
+		"	</style>" +
+		"</div>" +
+		"" )
+		.appendTo( "#qunit-fixture" );
 
-	table.find( "td" ).css( { "margin": 0, "padding": 0 } );
+	assert.strictEqual( div.width(), 111, "width of a hidden element" );
+	assert.strictEqual( div.height(), 123, "height of a hidden element" );
+} );
+
+QUnit.test( "hidden element with implicit content-based dimensions", function( assert ) {
+	assert.expect( 2 );
+
+	var container = jQuery( "" +
+
+			// font-size affects the child dimensions implicitly
+			"<div style='font-size: 20px'>" +
+			"	<div style='padding: 10px; display: none'>" +
+			"		<div style='width: 3em; height: 2em'></div>" +
+			"	</div>" +
+			"</div>" +
+			"" ),
+		div = container.children().first();
+
+	container.appendTo( "#qunit-fixture" );
+
+	assert.strictEqual( div.width(), 60, "width of a hidden element" );
+	assert.strictEqual( div.height(), 40, "height of a hidden element" );
+} );
+
+QUnit.test( "table dimensions", function( assert ) {
+	assert.expect( 3 );
+
+	var table = jQuery( "" +
+			"<table style='border-spacing: 0'>" +
+			"	<colgroup>" +
+			"		<col />" +
+			"		<col span='2' class='col-double' />" +
+			"	</colgroup>" +
+			"	<tbody>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td class='td-a-1'>a</td>" +
+			"			<td class='td-b-1'>b</td>" +
+			"		</tr>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td>a</td>" +
+			"			<td>b</td>" +
+			"		</tr>" +
+			"	</tbody>" +
+			"</table>"
+		).appendTo( "#qunit-fixture" ),
+		tdElem = table.find( "td" ).first(),
+		colElem = table.find( "col" ).first(),
+		doubleColElem = table.find( ".col-double" );
+
+	table.find( "td" ).css( { margin: 0, padding: 0, border: 0 } );
+
+	colElem.width( 300 );
+
+	table.find( ".td-a-1" ).width( 200 );
+	table.find( ".td-b-1" ).width( 400 );
 
 	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see trac-11293" );
-	assert.equal( colElem.width(), 300, "col elements have width(), see trac-12243" );
+	assert.equal( colElem.width(), 300, "col elements have width(), (trac-12243)" );
+
+	// Support: IE 9 - 11+, Edge 15 - 18+
+	// In IE/Edge, `<col>` computed width is `"auto"` unless `width` is set
+	// explicitly via CSS so measurements there remain incorrect. Because of
+	// the lack of a proper workaround, we accept this limitation.
+	// To make IE/Edge pass the test, set the width explicitly. Detect them by
+	// checking for `msMatchesSelector`; despite Edge 15+ implementing
+	// `matches`, all IE 9+ and Edge Legacy versions implement
+	// `msMatchesSelector` as well.
+	if ( document.documentElement.msMatchesSelector ) {
+		doubleColElem.width( 600 );
+	}
+
+	assert.equal( doubleColElem.width(), 600,
+		"col with span measured correctly (gh-5628)" );
 } );
 
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
