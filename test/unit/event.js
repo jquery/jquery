@@ -2707,7 +2707,7 @@ testIframe(
 			// IE does propagate the event to the parent document. In this test
 			// we mainly care about the inner element so we'll just skip this one
 			// assertion in IE.
-			if ( !document.documentMode ) {
+			if ( !QUnit.isIE ) {
 				assert.ok( false, "fired a focusin event in the parent document" );
 			}
 		} );
