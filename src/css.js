@@ -151,7 +151,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 		// Support: IE 10 - 11+
 		// IE misreports `getComputedStyle` of table rows with width/height
 		// set in CSS while `offset*` properties report correct values.
-		// Support: Firefox 70+
+		// Support: Firefox 70 - 135+
 		// Firefox includes border widths
 		// in computed dimensions for table rows. (gh-4529)
 		( !support.reliableTrDimensions() && nodeName( elem, "tr" ) ) ) &&

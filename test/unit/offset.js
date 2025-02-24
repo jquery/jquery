@@ -752,25 +752,15 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
 
-	// Support: iOS <=8 - 12+
-	// Mobile Safari resizes the iframe by its content meaning it's not possible to scroll
-	// the iframe but only its parent element.
-	if ( /iphone os|ipad/i.test( navigator.userAgent ) ) {
-		assert.equal( true, true, "Can't scroll iframes in this environment" );
-		assert.equal( true, true, "Can't scroll iframes in this environment" );
+	// Tests scrollTop/Left with iframes
+	jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
+	ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
 
-	} else {
+	jQuery( ifDoc ).scrollTop( 200 );
+	jQuery( ifDoc ).scrollLeft( 500 );
 
-		// Tests scrollTop/Left with iframes
-		jQuery( "#iframe" ).css( "width", "50px" ).css( "height", "50px" );
-		ifDoc.write( "<div style='width: 1000px; height: 1000px;'></div>" );
-
-		jQuery( ifDoc ).scrollTop( 200 );
-		jQuery( ifDoc ).scrollLeft( 500 );
-
-		assert.equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
-		assert.equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
-	}
+	assert.equal( jQuery( ifDoc ).scrollTop(), 200, "$($('#iframe')[0].contentDocument).scrollTop()" );
+	assert.equal( jQuery( ifDoc ).scrollLeft(), 500, "$($('#iframe')[0].contentDocument).scrollLeft()" );
 } );
 
 } )();
