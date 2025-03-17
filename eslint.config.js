@@ -59,13 +59,7 @@ export default [
 			// 		ignoreExports: [ "{src/,}*.js" ]
 			// 	}
 			// ],
-			indent: [
-				"error",
-				"tab",
-				{
-					outerIIFEBody: 0
-				}
-			],
+			indent: [ "error", "tab" ],
 			"no-implicit-globals": "error",
 			"no-unused-vars": [
 				"error",
