@@ -2823,7 +2823,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 					done();
 				} );
 
-			jQuery.get( url( "mock.php?action=json&header" ), null, "text" )
+			jQuery.get( url( "mock.php?action=json&header" ), data, success, "text" )
 				.then( function( text ) {
 					assert.strictEqual( text, "{\"data\":{\"lang\":\"en\",\"length\":25}}",
 						"`dataType: \"text\"` applied with `" + data + "` data & `" +
