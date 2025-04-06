@@ -22,5 +22,5 @@ body:
       label: Have you read the wiki?
       description: Before submitting this issue, please read our wiki page about [Adding New Features](https://github.com/jquery/jquery/wiki/Adding-new-features). 
       options:
-        - label: I have read the wiki
+        - label: I have read the wiki page: [Adding New Features](https://github.com/jquery/jquery/wiki/Adding-new-features)
           required: true
