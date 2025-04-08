@@ -3,13 +3,16 @@ define( [
 	"./core/nodeName",
 	"./core/camelCase",
 	"./core/toType",
+	"./var/arr",
 	"./var/isFunction",
 	"./var/isWindow",
+	"./var/push",
 	"./var/slice",
 
 	"./deprecated/ajax-event-alias",
 	"./deprecated/event"
-], function( jQuery, nodeName, camelCase, toType, isFunction, isWindow, slice ) {
+], function( jQuery, nodeName, camelCase, toType, arr, isFunction, isWindow,
+	push, slice ) {
 
 "use strict";
 
@@ -89,5 +92,12 @@ jQuery.trim = function( text ) {
 
 jQuery.expr[ ":" ] = jQuery.expr.filters = jQuery.expr.pseudos;
 jQuery.unique = jQuery.uniqueSort;
+
+// Those methods behave like an Array's methods, not like jQuery ones.
+jQuery.fn.extend( {
+	push: push,
+	sort: arr.sort,
+	splice: arr.splice
+} );
 
 } );

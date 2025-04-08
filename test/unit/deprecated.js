@@ -724,4 +724,33 @@ QUnit.test( "jQuery.unique", function( assert ) {
 		"jQuery.unique is an alias of jQuery.uniqueSort" );
 } );
 
+QUnit.test( "push/sort/splice", function( assert ) {
+	assert.expect( 4 );
+
+	var elem = jQuery( "<div id='2'></div>" ),
+		div1 = document.createElement( "div" ),
+		div3 = document.createElement( "div" ),
+		div4 = document.createElement( "div" );
+
+	div1.id = "1";
+	div3.id = "3";
+	div4.id = "4";
+
+	elem.push( div1 );
+	assert.strictEqual( elem.length, 2, "push works" );
+
+	elem.sort( function( a, b ) {
+		return Number( a.id ) - Number( b.id );
+	} );
+	assert.strictEqual( elem[ 0 ].id + "," + elem[ 1 ].id, "1,2", "sort works" );
+
+	elem.splice( 1, 1, div4, div3 );
+	assert.strictEqual( elem.length, 3, "splice works (length)" );
+	assert.strictEqual( [
+		elem[ 0 ].id,
+		elem[ 1 ].id,
+		elem[ 2 ].id
+	].join( "," ), "1,4,3", "splice works" );
+} );
+
 }
