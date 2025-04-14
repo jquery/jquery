@@ -95,9 +95,9 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 
 		if ( isset( $req->query['array'] ) ) {
-			echo '[ {"name": "John", "age": 21}, {"name": "Peter", "age": 25 } ]';
+			echo '[{"name":"John","age":21},{"name":"Peter","age":25}]';
 		} else {
-			echo '{ "data": {"lang": "en", "length": 25} }';
+			echo '{"data":{"lang":"en","length":25}}';
 		}
 	}
 
