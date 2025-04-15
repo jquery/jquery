@@ -1,5 +1,5 @@
 name: Bug Report
-description: Request a bug encountered in JQuery.
+description: Report a bug encountered in JQuery.
 title: "[BUG]: "
 labels: ["bug", "triage"]
 body:
