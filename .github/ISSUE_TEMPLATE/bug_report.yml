@@ -1,0 +1,26 @@
+name: Bug Report
+description: Request a bug encountered in JQuery.
+title: "[BUG]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: report-details
+    attributes:
+      label: Please explain the encountered bug in detail
+      description: Also tell us, what configuration are you using?
+      placeholder: Share details about the issue
+      value: "I was working on..."
+    validations:
+      required: true
+  - type: checkboxes
+    id: wiki
+    attributes:
+      label: Have you checked existing issues?
+      description: Before submitting this issue, please check if a similar issue has been raised in the repository [here](https://github.com/jquery/jquery/issues?q=is%3Aissue%20label%3ABug%20). 
+      options:
+        - label: I have checked the *Existing Issues*
+          required: true
