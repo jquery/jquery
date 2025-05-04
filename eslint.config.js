@@ -286,7 +286,7 @@ export default [
 			"test/node_smoke_tests/**",
 			"test/bundler_smoke_tests/**/*",
 			"test/promises_aplus_adapters/**",
-			"test/middleware-mockserver.cjs"
+			"test/middleware-*.js"
 		],
 		languageOptions: {
 			ecmaVersion: "latest",
@@ -376,10 +376,20 @@ export default [
 			"src/wrapper-factory.js",
 			"dist/jquery.factory.js",
 			"dist/jquery.factory.slim.js",
-			"test/middleware-mockserver.cjs"
+			"test/middleware-*.js"
 		],
 		rules: {
 			"no-implicit-globals": "off"
+		}
+	},
+
+	{
+		files: [
+			"test/middleware-*.js"
+		],
+		languageOptions: {
+			ecmaVersion: "latest",
+			sourceType: "module"
 		}
 	},
 

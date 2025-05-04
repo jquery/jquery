@@ -13,7 +13,7 @@ var oldActive = 0,
  */
 
 // Max time for done() to fire in an async test.
-QUnit.config.testTimeout = 60e3; // 1 minute
+QUnit.config.testTimeout = 60e2; // 6 seconds
 
 // Enforce an "expect" argument or expect() call in all test bodies.
 QUnit.config.requireExpects = true;
