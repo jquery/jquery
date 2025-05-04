@@ -1771,9 +1771,7 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-// Support: IE 9 - 11+
-// IE doesn't support modules.
-QUnit.testUnlessIE( "html(script type module)", function( assert ) {
+QUnit.test( "html(script type module)", function( assert ) {
 	assert.expect( 4 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
@@ -1797,17 +1795,17 @@ QUnit.testUnlessIE( "html(script type module)", function( assert ) {
 
 QUnit.test( "html(script nomodule)", function( assert ) {
 
-	// `nomodule` scripts should be executed by legacy browsers only.
-	assert.expect( QUnit.isIE ? 4 : 0 );
+	// `nomodule` scripts should not be executed.
+	assert.expect( 0 );
 	var done = assert.async(),
 		$fixture = jQuery( "#qunit-fixture" );
 
 	$fixture.html(
 		[
-			"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: nomodule script' );</script>",
+			"<script nomodule>QUnit.assert.ok( false, 'not evaluated: nomodule script' );</script>",
 			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
 			"<div>",
-				"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: inner nomodule script' );</script>",
+				"<script nomodule>QUnit.assert.ok( false, 'not evaluated: inner nomodule script' );</script>",
 				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
 			"</div>"
 		].join( "" )
@@ -2189,11 +2187,11 @@ QUnit.test( "jQuery.cleanData", function( assert ) {
 			assert.ok( false, type + " " + pos + " Focus event fired." );
 		} ).end().appendTo( "body" );
 
-		div[ 0 ].detachEvent = div[ 0 ].removeEventListener = function( t ) {
+		div[ 0 ].removeEventListener = function( t ) {
 			assert.ok( true, type + " Outer " + t + " event unbound" );
 		};
 
-		div[ 0 ].firstChild.detachEvent = div[ 0 ].firstChild.removeEventListener = function( t ) {
+		div[ 0 ].firstChild.removeEventListener = function( t ) {
 			assert.ok( true, type + " Inner " + t + " event unbound" );
 		};
 
@@ -2866,7 +2864,7 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 } );
 
 [ true, false ].forEach( function( adoptedCase ) {
-	QUnit.testUnlessIE(
+	QUnit.test(
 		"Manip within <template /> content moved back & forth doesn't throw - " + (
 			adoptedCase ? "explicitly adopted" : "not explicitly adopted"
 		) + " (gh-5147)",

@@ -447,9 +447,7 @@ QUnit.test( "closest(jQuery)", function( assert ) {
 	assert.ok( $child.closest( $body.add( $parent ) ).is( "#nothiddendiv" ), "Closest ancestor retrieved." );
 } );
 
-// Support: IE 11+
-// IE doesn't support complex selectors inside `:not()`.
-QUnit.testUnlessIE( "not(Selector)", function( assert ) {
+QUnit.test( "not(Selector)", function( assert ) {
 	assert.expect( 7 );
 	assert.equal( jQuery( "#qunit-fixture > p#ap > a" ).not( "#google" ).length, 2, "not('selector')" );
 
@@ -535,9 +533,7 @@ QUnit.test( "not(jQuery)", function( assert ) {
 	);
 } );
 
-// Support: IE 11+
-// IE doesn't support complex selectors inside `:not()`.
-QUnit.testUnlessIE( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
+QUnit.test( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
 	assert.expect( 3 );
 
 	var mixedContents = jQuery( "#nonnodes" ).contents(),
@@ -844,7 +840,7 @@ QUnit.test( "contents() for <template />", function( assert ) {
 	assert.equal( contents.filter( "div" ).length, 3, "Count cloned elements from template" );
 } );
 
-QUnit.testUnlessIE( "contents() for <template /> remains inert", function( assert ) {
+QUnit.test( "contents() for <template /> remains inert", function( assert ) {
 	assert.expect( 2 );
 
 	Globals.register( "testScript" );
