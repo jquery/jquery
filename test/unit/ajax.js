@@ -2648,6 +2648,37 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
+	QUnit.test( "jQuery.get( String, null-ish, null-ish, String ) - dataType with null/undefined  data & callback",
+			function( assert ) {
+		assert.expect( 8 );
+		var done = assert.async( 8 );
+
+		[
+			{ data: null, success: null },
+			{ data: null, success: undefined },
+			{ data: undefined, success: null },
+			{ data: undefined, success: undefined }
+		].forEach( function( options ) {
+			var data = options.data,
+				success = options.success;
+			jQuery.get( url( "mock.php?action=json&header" ), data, success, "json" )
+				.then( function( json ) {
+					assert.deepEqual( json, { data: { lang: "en", length: 25 } },
+						"`dataType: \"json\"` applied with `" + data + "` data & `" +
+						success + "` success callback" );
+					done();
+				} );
+
+			jQuery.get( url( "mock.php?action=json&header" ), data, success, "text" )
+				.then( function( text ) {
+					assert.strictEqual( text, "{\"data\":{\"lang\":\"en\",\"length\":25}}",
+						"`dataType: \"text\"` applied with `" + data + "` data & `" +
+						success + "` success callback" );
+					done();
+				} );
+		} );
+	} );
+
 //----------- jQuery.getJSON()
 
 	QUnit.test( "jQuery.getJSON( String, Hash, Function ) - JSON array", function( assert ) {
