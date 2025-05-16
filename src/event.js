@@ -3,7 +3,6 @@ import { documentElement } from "./var/documentElement.js";
 import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 import { rcheckableType } from "./var/rcheckableType.js";
 import { slice } from "./var/slice.js";
-import { isIE } from "./var/isIE.js";
 import { acceptData } from "./data/var/acceptData.js";
 import { dataPriv } from "./data/var/dataPriv.js";
 import { nodeName } from "./core/nodeName.js";
@@ -353,8 +352,6 @@ jQuery.event = {
 			// Support: Firefox <=42 - 66+
 			// Suppress spec-violating clicks indicating a non-primary pointer button (trac-3861)
 			// https://www.w3.org/TR/DOM-Level-3-Events/#event-type-click
-			// Support: IE 11+
-			// ...but not arrow key "clicks" of radio inputs, which can have `button` -1 (gh-2343)
 			!( event.type === "click" && event.button >= 1 ) ) {
 
 			for ( ; cur !== this; cur = cur.parentNode || this ) {
@@ -490,11 +487,6 @@ jQuery.event = {
 					// Setting `event.originalEvent.returnValue` in modern
 					// browsers does the same as just calling `preventDefault()`,
 					// the browsers ignore the value anyway.
-					// Incidentally, IE 11 is the only browser from our supported
-					// ones which respects the value returned from a `beforeunload`
-					// handler attached by `addEventListener`; other browsers do
-					// so only for inline handlers, so not setting the value
-					// directly shouldn't reduce any functionality.
 					event.preventDefault();
 				}
 			}
@@ -731,28 +723,6 @@ jQuery.each( {
 
 jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
 
-	// Support: IE 11+
-	// Attach a single focusin/focusout handler on the document while someone wants focus/blur.
-	// This is because the former are synchronous in IE while the latter are async. In other
-	// browsers, all those handlers are invoked synchronously.
-	function focusMappedHandler( nativeEvent ) {
-
-		// `eventHandle` would already wrap the event, but we need to change the `type` here.
-		var event = jQuery.event.fix( nativeEvent );
-		event.type = nativeEvent.type === "focusin" ? "focus" : "blur";
-		event.isSimulated = true;
-
-		// focus/blur don't bubble while focusin/focusout do; simulate the former by only
-		// invoking the handler at the lower level.
-		if ( event.target === event.currentTarget ) {
-
-			// The setup part calls `leverageNative`, which, in turn, calls
-			// `jQuery.event.add`, so event handle will already have been set
-			// by this point.
-			dataPriv.get( this, "handle" )( event );
-		}
-	}
-
 	jQuery.event.special[ type ] = {
 
 		// Utilize native event if possible so blur/focus sequence is correct
@@ -763,13 +733,8 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 			// dataPriv.set( this, "blur", ... )
 			leverageNative( this, type, true );
 
-			if ( isIE ) {
-				this.addEventListener( delegateType, focusMappedHandler );
-			} else {
-
-				// Return false to allow normal processing in the caller
-				return false;
-			}
+			// Return false to allow normal processing in the caller
+			return false;
 		},
 		trigger: function() {
 
@@ -781,13 +746,9 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 		},
 
 		teardown: function() {
-			if ( isIE ) {
-				this.removeEventListener( delegateType, focusMappedHandler );
-			} else {
 
-				// Return false to indicate standard teardown should be applied
-				return false;
-			}
+			// Return false to indicate standard teardown should be applied
+			return false;
 		},
 
 		// Suppress native focus or blur if we're currently inside
