@@ -20,6 +20,13 @@ export function DOMEval( code, node, doc ) {
 		}
 	}
 
+	if (!script.nonce) {
+		const currentNonce = doc.querySelector("script[nonce]")?.getAttribute("nonce");
+		if (currentNonce) {
+			script.setAttribute("nonce", currentNonce);
+		}
+	}
+
 	if ( doc.head.appendChild( script ).parentNode ) {
 		script.parentNode.removeChild( script );
 	}
