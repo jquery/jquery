@@ -1672,9 +1672,9 @@ QUnit.test( ".on()/.off()", function( assert ) {
 
 	// Test binding with different this object, event data, and trigger data
 	jQuery( "#body" ).on( "click", "#foo", true, function( e, data ) {
-		assert.equal( e.data, true, "on with with different this object, event data, and trigger data" );
-		assert.equal( this.foo, "bar", "on with with different this object, event data, and trigger data" );
-		assert.equal( data, true, "on with with different this object, event data, and trigger data" );
+		assert.equal( e.data, true, "on with different this object, event data, and trigger data" );
+		assert.equal( this.foo, "bar", "on with different this object, event data, and trigger data" );
+		assert.equal( data, true, "on with different this object, event data, and trigger data" );
 	}.bind( { "foo": "bar" } ) );
 	jQuery( "#foo" ).trigger( "click", true );
 	jQuery( "#body" ).off( "click", "#foo" );

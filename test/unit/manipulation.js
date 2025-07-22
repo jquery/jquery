@@ -2343,8 +2343,7 @@ testIframe(
 
 // We need to simulate cross-domain requests with the feature that
 // both 127.0.0.1 and localhost point to the mock http server.
-// Skip the the test if we are not in localhost but make sure we run
-// it in Karma.
+// Skip the test if we are not in localhost.
 QUnit[
 	includesModule( "ajax" ) && location.hostname === "localhost" ?
 		"test" :
