@@ -72,7 +72,13 @@ jobs:
 
       - name: Install Firefox ESR
         run: |
-          wget --no-verbose $FIREFOX_SOURCE_URL -O - | tar -jx -C ${HOME}
+          # Support: Firefox <135 only
+          # Older Firefox used to be compressed using bzip2, newer using xz. Try
+          # to uncompress using xz, fall back to bzip2 if that fails.
+          # Note: this will download the old Firefox ESR twice, but it will still work
+          # when the current ESR version starts to use xz with no changes to the code.
+          wget --no-verbose "$FIREFOX_SOURCE_URL" -O - | tar -Jx -C "$HOME" || \
+          wget --no-verbose "$FIREFOX_SOURCE_URL" -O - | tar -jx -C "$HOME"
           echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
           echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
         if: contains(matrix.NAME, 'Firefox ESR')
