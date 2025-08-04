@@ -34,6 +34,7 @@ module.exports = {
 		tokenRef: "JQUERY_GITHUB_TOKEN"
 	},
 	npm: {
-		publish: true
+		publish: true,
+		publishPath: "tmp/release/dist"
 	}
 };
