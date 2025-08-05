@@ -12,7 +12,7 @@ export default async function minify( { dir, filename } ) {
 	const version = /jQuery JavaScript Library ([^\n]+)/.exec( contents )[ 1 ];
 	const banner = `/*! jQuery ${ version }` +
 		" | (c) OpenJS Foundation and other contributors" +
-		" | jquery.org/license */";
+		" | jquery.com/license */";
 
 	const minFilename = filename.replace( rjs, ".min.js" );
 	const mapFilename = filename.replace( rjs, ".min.map" );
