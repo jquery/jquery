@@ -22,11 +22,7 @@ function sortOrder( a, b ) {
 	}
 
 	// Calculate position if both inputs belong to the same document
-	// Support: IE 11+
-	// IE sometimes throws a "Permission denied" error when strict-comparing
-	// two documents; shallow comparisons work.
-	// eslint-disable-next-line eqeqeq
-	compare = ( a.ownerDocument || a ) == ( b.ownerDocument || b ) ?
+	compare = ( a.ownerDocument || a ) === ( b.ownerDocument || b ) ?
 		a.compareDocumentPosition( b ) :
 
 		// Otherwise we know they are disconnected
@@ -36,20 +32,12 @@ function sortOrder( a, b ) {
 	if ( compare & 1 ) {
 
 		// Choose the first element that is related to the document
-		// Support: IE 11+
-		// IE sometimes throws a "Permission denied" error when strict-comparing
-		// two documents; shallow comparisons work.
-		// eslint-disable-next-line eqeqeq
-		if ( a == document || a.ownerDocument == document &&
+		if ( a === document || a.ownerDocument === document &&
 			jQuery.contains( document, a ) ) {
 			return -1;
 		}
 
-		// Support: IE 11+
-		// IE sometimes throws a "Permission denied" error when strict-comparing
-		// two documents; shallow comparisons work.
-		// eslint-disable-next-line eqeqeq
-		if ( b == document || b.ownerDocument == document &&
+		if ( b === document || b.ownerDocument === document &&
 			jQuery.contains( document, b ) ) {
 			return 1;
 		}
