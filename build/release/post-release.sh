@@ -43,7 +43,7 @@ git push --follow-tags
 cd -
 
 # Restore AUTHORS URL
-sed -i "s/$1\/AUTHORS.txt/main\/AUTHORS.txt/" package.json
+sed -i '' -e "s|$1/AUTHORS.txt|main/AUTHORS.txt|" package.json
 git add package.json
 
 # Remove built files from tracking.

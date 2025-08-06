@@ -16,7 +16,7 @@ module.exports = {
 	hooks: {
 		"before:init": "bash ./build/release/pre-release.sh",
 		"after:version:bump":
-			"sed -i 's/main\\/AUTHORS.txt/${version}\\/AUTHORS.txt/' package.json",
+			"sed -i '' -e 's|main/AUTHORS.txt|${version}/AUTHORS.txt|' package.json",
 		"after:bump": "cross-env VERSION=${version} npm run build:all",
 		"before:git:release": "git add -f dist/ dist-module/ changelog.md",
 		"after:release": "echo 'Run the following to complete the release:' && " +
