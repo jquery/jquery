@@ -38,8 +38,9 @@ git commit -m "Release: $1"
 git tag -s $1 -m "Release: $1"
 
 # Wait for confirmation from user to push changes to dist repo
-read -p "Press enter to push changes to dist repo"
+read -p "Press enter to push changes to dist repo & publish to npm"
 git push --follow-tags
+npm publish
 cd -
 
 # Restore AUTHORS URL
