@@ -25,7 +25,13 @@ jobs:
           - 'IE_10'
           - 'IE_9'
           - 'Safari_latest'
-          - 'Safari_latest-1'
+          # JTR doesn't take into account the jump from Safari 18 to 26,
+          # so we need to specify versions explicitly. Also, while BrowserStack
+          # already added macOS Tahoe with Safari 26, it's not a stable release
+          # yet, so we need to test on Safari 17 as well.
+          # See https://github.com/jquery/jquery-test-runner/issues/17
+          - 'Safari_18'
+          - 'Safari_17'
           - 'Chrome_latest'
           - 'Chrome_latest-1'
           - 'Opera_latest'
