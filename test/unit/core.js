@@ -1611,7 +1611,7 @@ QUnit.test( "jQuery.contains in SVG (jQuery trac-10832)", function( assert ) {
 
 	assert.ok( jQuery.contains( svg, svg.firstChild ), "root child" );
 	assert.ok( jQuery.contains( svg.firstChild, svg.firstChild.firstChild ), "element child" );
-	assert.ok( jQuery.contains( svg, svg.firstChild.firstChild ), "root granchild" );
+	assert.ok( jQuery.contains( svg, svg.firstChild.firstChild ), "root grandchild" );
 	assert.ok( !jQuery.contains( svg.firstChild.firstChild, svg.firstChild ),
 		"parent (negative)" );
 } );
