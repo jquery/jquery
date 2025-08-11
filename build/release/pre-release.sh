@@ -12,9 +12,10 @@ npm run release:clean
 # Check authors
 npm run authors:check
 
-# Run tests
-# Temporarily disable running tests on release due to flakiness in Chrome
-# npm test
+# Run browserless tests
+npm run build:all
+npm run lint
+npm run test:browserless
 
 # Clone dist and cdn repos to the tmp/release directory
 mkdir -p tmp/release
