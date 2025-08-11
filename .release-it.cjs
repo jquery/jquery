@@ -34,6 +34,10 @@ module.exports = {
 		tokenRef: "JQUERY_GITHUB_TOKEN"
 	},
 	npm: {
-		publish: true
+
+		// We're publishing from a dist folder generated in the post-release
+		// step, so we also need to publish by ourselves; release-it would
+		// do it too early.
+		publish: false
 	}
 };
