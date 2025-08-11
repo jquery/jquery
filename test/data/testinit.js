@@ -9,9 +9,7 @@ var parentUrl = window.location.protocol + "//" + window.location.host,
 	// but also to ensure that urls without prefix fail.
 	baseURL = parentUrl + "/test/data/",
 	supportjQuery = this.jQuery,
-
-	// see RFC 2606
-	externalHost = "example.com";
+	externalHost = "releases.jquery.com";
 
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
