@@ -1,1 +1,3 @@
-QUnit.assert.ok( QUnit.isIE, "evaluated: inner nomodule script with src" );
+/* global innerExternalCallback */
+
+innerExternalCallback( "evaluated: inner nomodule script with src" );
