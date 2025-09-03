@@ -1,1 +1,3 @@
-QUnit.assert.ok( QUnit.isIE, "evaluated: nomodule script with src" );
+/* global outerExternalCallback */
+
+outerExternalCallback( "evaluated: nomodule script with src" );
