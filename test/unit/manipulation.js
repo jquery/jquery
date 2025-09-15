@@ -1787,7 +1787,6 @@ QUnit.test( "html(Function)", function( assert ) {
 			};
 
 		function verify( force ) {
-			console.warn( "m_gol verify", force );
 			var i;
 			if ( verified ) {
 				return;
@@ -1806,7 +1805,6 @@ QUnit.test( "html(Function)", function( assert ) {
 			}
 
 			verified = true;
-			console.warn( "m_gol verify: proceeding", force );
 
 			assert.strictEqual( calls.outerExternal, expectedCount,
 				"Expected number of outer external calls: " + expectedCount );
@@ -1854,7 +1852,6 @@ QUnit.test( "html(Function)", function( assert ) {
 			calls.innerInline++;
 			verify();
 		};
-		console.warn( "m_gol window.outerExternalCallback", window.outerExternalCallback );
 
 		// Give some time for async script execution before forcing verification.
 		timeoutId = setTimeout( function() {

@@ -79,7 +79,6 @@ window.Globals = ( function() {
 		},
 
 		cleanup: function() {
-			console.warn( "m_gol Globals.cleanup", globals );
 			var name;
 
 			for ( name in globals ) {
