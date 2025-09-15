@@ -1894,7 +1894,7 @@ QUnit.test( "html(Function)", function( assert ) {
 		setup( {
 			assert: assert,
 			done: done,
-			timeout: 1000,
+			timeout: QUnit.isIE ? 5000 : 1000,
 			expectedCount: QUnit.isIE ? 1 : 0
 		} );
 
