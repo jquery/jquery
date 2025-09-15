@@ -1771,53 +1771,145 @@ QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
 } );
 
-// Support: IE 9 - 11+
-// IE doesn't support modules.
-QUnit.testUnlessIE( "html(script type module)", function( assert ) {
-	assert.expect( 4 );
-	var done = assert.async(),
-		$fixture = jQuery( "#qunit-fixture" );
+( function() {
+	function setup( options ) {
+		var timeoutId,
+			assert = options.assert,
+			done = options.done,
+			expectedCount = options.expectedCount == null ? 1 : options.expectedCount,
+			timeout = options.timeout,
+			verified = false,
+			calls = {
+				outerExternal: 0,
+				innerExternal: 0,
+				outerInline: 0,
+				innerInline: 0
+			};
 
-	$fixture.html(
-		[
-			"<script type='module'>QUnit.assert.ok( true, 'evaluated: module' );</script>",
-			"<script type='module' src='" + url( "module.js" ) + "'></script>",
-			"<div>",
-				"<script type='module'>QUnit.assert.ok( true, 'evaluated: inner module' );</script>",
-				"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
-			"</div>"
-		].join( "" )
-	);
+		function verify( force ) {
+			var i;
+			if ( verified ) {
+				return;
+			}
 
-	// Allow asynchronous script execution to generate assertions
-	setTimeout( function() {
-		done();
-	}, 1000 );
-} );
+			if ( !force ) {
+				for ( i in calls ) {
 
-QUnit.test( "html(script nomodule)", function( assert ) {
+					// Not ready yet, we'll check later.
+					// If we're checking for 0, we don't know when to check, so
+					// wait until we force it.
+					if ( calls[ i ] !== expectedCount || calls[ i ] === 0 ) {
+						return;
+					}
+				}
+			}
 
-	// `nomodule` scripts should be executed by legacy browsers only.
-	assert.expect( QUnit.isIE ? 4 : 0 );
-	var done = assert.async(),
-		$fixture = jQuery( "#qunit-fixture" );
+			verified = true;
 
-	$fixture.html(
-		[
-			"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: nomodule script' );</script>",
-			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
-			"<div>",
-				"<script nomodule>QUnit.assert.ok( QUnit.isIE, 'evaluated: inner nomodule script' );</script>",
-				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
-			"</div>"
-		].join( "" )
-	);
+			assert.strictEqual( calls.outerExternal, expectedCount,
+				"Expected number of outer external calls: " + expectedCount );
+			assert.strictEqual( calls.innerExternal, expectedCount,
+				"Expected number of inner external calls: " + expectedCount );
+			assert.strictEqual( calls.outerInline, expectedCount,
+				"Expected number of outer inline calls: " + expectedCount );
+			assert.strictEqual( calls.innerInline, expectedCount,
+			"Expected number of inner inline calls: " + expectedCount );
 
-	// Allow asynchronous script execution to generate assertions
-	setTimeout( function() {
-		done();
-	}, 1000 );
-} );
+			clearInterval( timeoutId );
+			done();
+		}
+
+		Globals.register( "outerExternalCallback" );
+		Globals.register( "innerExternalCallback" );
+		Globals.register( "outerInlineCallback" );
+		Globals.register( "innerInlineCallback" );
+
+		window.outerExternalCallback = function( message ) {
+			if ( message ) {
+				assert.ok( true, message );
+			}
+			calls.outerExternal++;
+			verify();
+		};
+		window.innerExternalCallback = function( message ) {
+			if ( message ) {
+				assert.ok( true, message );
+			}
+			calls.innerExternal++;
+			verify();
+		};
+		window.outerInlineCallback = function( message ) {
+			if ( message ) {
+				assert.ok( true, message );
+			}
+			calls.outerInline++;
+			verify();
+		};
+		window.innerInlineCallback = function( message ) {
+			if ( message ) {
+				assert.ok( true, message );
+			}
+			calls.innerInline++;
+			verify();
+		};
+
+		// Give some time for async script execution before forcing verification.
+		timeoutId = setTimeout( function() {
+			verify( true );
+		}, timeout );
+	}
+
+	// Support: IE 9 - 11+
+	// IE doesn't support modules.
+	QUnit.testUnlessIE( "html(script type module)", function( assert ) {
+		assert.expect( 8 );
+		var done = assert.async(),
+			$fixture = jQuery( "#qunit-fixture" );
+
+		setup( {
+			assert: assert,
+			done: done,
+			timeout: 5000
+		} );
+
+		$fixture.html(
+			[
+				"<script type='module'>outerInlineCallback( 'evaluated: module' );</script>",
+				"<script type='module' src='" + url( "module.js" ) + "'></script>",
+				"<div>",
+					"<script type='module'>innerInlineCallback( 'evaluated: inner module' );</script>",
+					"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
+				"</div>"
+			].join( "" )
+		);
+	} );
+
+	QUnit.test( "html(script nomodule)", function( assert ) {
+
+		// `nomodule` scripts should be executed by legacy browsers only.
+		assert.expect( QUnit.isIE ? 8 : 4 );
+		var done = assert.async(),
+			$fixture = jQuery( "#qunit-fixture" );
+
+		setup( {
+			assert: assert,
+			done: done,
+			timeout: 1000,
+			expectedCount: QUnit.isIE ? 1 : 0
+		} );
+
+		$fixture.html(
+			[
+				"<script nomodule>outerInlineCallback( 'evaluated: nomodule script' );</script>",
+				"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
+				"<div>",
+					"<script nomodule>innerInlineCallback( 'evaluated: inner nomodule script' );</script>",
+					"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
+				"</div>"
+			].join( "" )
+		);
+	} );
+} )();
 
 QUnit.test( "html(self-removing script) (gh-5377)", function( assert ) {
 	assert.expect( 2 );
