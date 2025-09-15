@@ -1,1 +1,3 @@
-QUnit.assert.ok( true, "evaluated: inner module with src" );
+/* global innerExternalCallback */
+
+innerExternalCallback( "evaluated: inner module with src" );
