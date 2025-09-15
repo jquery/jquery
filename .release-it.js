@@ -14,7 +14,7 @@ const from = process.env.FROM_VERSION;
 module.exports = {
 	preReleaseBase: 1,
 	hooks: {
-		"before:init": "bash ./build/release/pre-release.sh",
+		"before:init": "./build/release/pre-release.sh",
 		"after:version:bump":
 			"sed -i '' -e 's|main/AUTHORS.txt|${version}/AUTHORS.txt|' package.json",
 		"after:bump": "cross-env VERSION=${version} npm run build:all",
