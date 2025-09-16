@@ -136,9 +136,11 @@ jQuery.extend( {
 	cleanData: function( elems ) {
 		var data, elem, type,
 			special = jQuery.event.special,
+			length = elems.length,
 			i = 0;
 
-		for ( ; ( elem = elems[ i ] ) !== undefined; i++ ) {
+		for ( ; i < length; i++ ) {
+			elem = elems[ i ];
 			if ( acceptData( elem ) ) {
 				if ( ( data = elem[ dataPriv.expando ] ) ) {
 					if ( data.events ) {
