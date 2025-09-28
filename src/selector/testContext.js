@@ -4,5 +4,5 @@
  * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
  */
 export function testContext( context ) {
-	return context && typeof context.getElementsByTagName !== "undefined" && context;
+	return context && typeof context.getElementsByTagName !== "undefined";
 }
