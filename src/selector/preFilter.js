@@ -57,7 +57,7 @@ export var preFilter = {
 
 	PSEUDO: function( match ) {
 		var excess,
-			unquoted = !match[ 6 ] && match[ 2 ];
+			unquoted;
 
 		if ( filterMatchExpr.CHILD.test( match[ 0 ] ) ) {
 			return null;
@@ -68,7 +68,7 @@ export var preFilter = {
 			match[ 2 ] = match[ 4 ] || match[ 5 ] || "";
 
 		// Strip excess characters from unquoted arguments
-		} else if ( unquoted && rpseudo.test( unquoted ) &&
+		} else if ( (unquoted = !match[ 6 ] && match[ 2 ]) && rpseudo.test( unquoted ) &&
 
 			// Get excess from tokenize (recursively)
 			( excess = tokenize( unquoted, true ) ) &&
