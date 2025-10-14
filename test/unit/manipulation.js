@@ -3152,7 +3152,7 @@ QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 
 	var container,
 		counter = 0,
-		oldIos = /iphone os (?:8|9|10|11|12)_/i.test( navigator.userAgent ),
+		oldIos = /(?:ipad.* os|iphone os) (?:8|9|10|11|12)_/i.test( navigator.userAgent ),
 		assertCount = oldIos ? 12 : 13,
 		done = assert.async( assertCount );
 
