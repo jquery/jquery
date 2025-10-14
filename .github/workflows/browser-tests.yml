@@ -1,0 +1,102 @@
+name: Browser Tests
+
+on:
+  pull_request:
+  push:
+    branches-ignore: "dependabot/**"
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  NODE_VERSION: 22.x
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.NPM_SCRIPT }} - ${{ matrix.NAME }}
+    strategy:
+      fail-fast: false
+      matrix:
+        NAME: ["Chrome"]
+        NPM_SCRIPT: ["test:slim", "test:no-deprecated", "test:selector-native", "test:esm"]
+        include:
+          - NAME: "Chrome/Firefox"
+            NPM_SCRIPT: "test:browser"
+          - NAME: "Firefox ESR (new)"
+            NPM_SCRIPT: "test:firefox"
+          - NAME: "Firefox ESR (old)"
+            NPM_SCRIPT: "test:firefox"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Set download URL for Firefox ESR (old)
+        run: |
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (old)')
+
+      - name: Set download URL for Firefox ESR (new)
+        run: |
+          echo "FIREFOX_SOURCE_URL=https://download.mozilla.org/?product=firefox-esr-next-latest-ssl&lang=en-US&os=linux64" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR (new)')
+
+      - name: Install Firefox ESR
+        run: |
+          wget --no-verbose "$FIREFOX_SOURCE_URL" -O - | tar -Jx -C "$HOME"
+          echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
+          echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
+        if: contains(matrix.NAME, 'Firefox ESR')
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run ${{ matrix.NPM_SCRIPT }}
+
+  ie:
+    runs-on: windows-latest
+    name: test:ie - IE
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests in Edge in IE mode
+        run: npm run test:ie
+
+  safari:
+    runs-on: macos-latest
+    name: test:safari - Safari
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:safari
