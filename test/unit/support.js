@@ -77,47 +77,30 @@ testIframe(
 );
 
 ( function() {
-	var expected, browserKey,
+	var expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			ie_11: {
-				cssHas: true,
 				reliableColDimensions: 11,
 				reliableTrDimensions: false
 			},
 			chrome: {
-				cssHas: true,
 				reliableColDimensions: true,
 				reliableTrDimensions: true
 			},
 			safari: {
-				cssHas: true,
 				reliableColDimensions: false,
 				reliableTrDimensions: true
 			},
 			firefox: {
-				cssHas: true,
 				reliableColDimensions: false,
 				reliableTrDimensions: false
 			},
-			ios_16_3: {
-				cssHas: false,
-				reliableColDimensions: false,
-				reliableTrDimensions: true
-			},
 			ios: {
-				cssHas: true,
 				reliableColDimensions: false,
 				reliableTrDimensions: true
 			}
 		};
-
-	// Make the selector-native build pass tests.
-	for ( browserKey in expectedMap ) {
-		if ( !includesModule( "selector" ) ) {
-			delete expectedMap[ browserKey ].cssHas;
-		}
-	}
 
 	if ( QUnit.isIE ) {
 		expected = expectedMap.ie_11;
@@ -127,12 +110,14 @@ testIframe(
 		expected = expectedMap.chrome;
 	} else if ( /\bfirefox\//i.test( userAgent ) ) {
 		expected = expectedMap.firefox;
-	} else if ( /\biphone os 16_[0123]/i.test( userAgent ) ) {
-		expected = expectedMap.ios_16_3;
-	} else if ( /\b(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
+	} else if ( /\biphone os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	} else if ( /\bversion\/\d+(?:\.\d+)+ safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari;
+		if ( navigator.maxTouchPoints > 1 ) {
+			expected = expectedMap.ios;
+		} else {
+			expected = expectedMap.safari;
+		}
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {

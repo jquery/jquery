@@ -34,9 +34,11 @@ jobs:
           - 'Edge_latest-1'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
-          - '__iOS_26'
-          - '__iOS_18'
-          - '__iOS_17'
+          - '_:iPhone 17_iOS_26'
+          - '_:iPhone 16_iOS_18'
+          - '_:iPhone 15 Pro_iOS_17'
+          - '_:iPad Air 13 2025_iOS_26'
+          - '_:iPad Air 13 2025_iOS_18'
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
