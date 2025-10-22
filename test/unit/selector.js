@@ -1581,7 +1581,17 @@ QUnit.test( "pseudo - :lang", function( assert ) {
 			assert.ok( jQuery( elem ).is( selector ), text + " match " + selector );
 		},
 		assertNoMatch = function( text, elem, selector ) {
-			assert.ok( !jQuery( elem ).is( selector ), text + " fail " + selector );
+
+			// Support: Chrome 141 only
+			// Chrome 141 incorrectly matches `:lang()` selectors with values with a trailing `-`.
+			// This is fixed in Chrome 142, so just skip these tests in v141.
+			// See https://issues.chromium.org/issues/451355198
+			if ( /\b(?:headless)?chrome\/141\./i.test( navigator.userAgent ) &&
+					selector.slice( -2 ) === "-)" ) {
+				assert.ok( true, "Broken handling in Chrome 141: " + text + " fail " + selector );
+			} else {
+				assert.ok( !jQuery( elem ).is( selector ), text + " fail " + selector );
+			}
 		};
 
 	// Prefixing and inheritance
