@@ -1438,10 +1438,17 @@ QUnit.test( "Submit event can be stopped (trac-11049)", function( assert ) {
 	form.remove();
 } );
 
-// Support: iOS <=7 - 18+
+// Support: iOS <=7 - 26+
 // iOS has the window.onbeforeunload field but doesn't support the beforeunload
 // handler making it impossible to feature-detect the support.
-QUnit[ /(ipad|iphone|ipod)/i.test( navigator.userAgent ) ? "skip" : "test" ](
+QUnit[
+	/iphone os/i.test( navigator.userAgent ) || (
+		/\bversion\/\d+(?:\.\d+)+ safari/i.test( navigator.userAgent ) &&
+			navigator.maxTouchPoints > 1
+	) ?
+		"skip" :
+		"test"
+](
 	"on(beforeunload)", function( assert ) {
 	assert.expect( 1 );
 	var iframe = jQuery( jQuery.parseHTML( "<iframe src='" + baseURL + "event/onbeforeunload.html'><iframe>" ) );
