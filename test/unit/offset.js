@@ -818,11 +818,13 @@ QUnit.test( "iframe scrollTop/Left (see gh-1945)", function( assert ) {
 
 	var ifDoc = jQuery( "#iframe" )[ 0 ].contentDocument;
 
+	// Support: iOS 7 - 12 only
 	// Mobile Safari resize the iframe by its content meaning it's not possible to scroll
 	// the iframe but only its parent element.
+	// Support: Android 4.0 only
 	// It seems (not confirmed) in android 4.0 it's not possible to scroll iframes from the code.
 	if (
-		/iphone os|ipad/i.test( navigator.userAgent ) ||
+		/iphone os (?:7|8|9|10|11|12)_/i.test( navigator.userAgent ) ||
 		/android 4\.0/i.test( navigator.userAgent )
 	) {
 		assert.equal( true, true, "Can't scroll iframes in this environment" );

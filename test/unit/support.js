@@ -541,12 +541,16 @@ testIframe(
 		expected = expectedMap.ios_11_15_3;
 	} else if ( /\biphone os (?:15_|16_[0123])/i.test( userAgent ) ) {
 		expected = expectedMap.ios_15_4_16_3;
-	} else if ( /\b(?:iphone|ipad);.*(?:iphone)? os \d+_/i.test( userAgent ) ) {
+	} else if ( /\biphone os \d+_/i.test( userAgent ) ) {
 		expected = expectedMap.ios;
 	} else if ( /\bversion\/(?:15|16\.[0123])(?:\.\d+)* safari/i.test( userAgent ) ) {
 		expected = expectedMap.safari_16_3;
 	} else if ( /\bversion\/\d+(?:\.\d+)+ safari/i.test( userAgent ) ) {
-		expected = expectedMap.safari;
+		if ( navigator.maxTouchPoints && navigator.maxTouchPoints > 1 ) {
+			expected = expectedMap.ios;
+		} else {
+			expected = expectedMap.safari;
+		}
 	}
 
 	QUnit.test( "Verify that support tests resolve as expected per browser", function( assert ) {
