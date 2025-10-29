@@ -323,14 +323,7 @@ jQuery.extend( {
 	contains: function( a, b ) {
 		var bup = b && b.parentNode;
 
-		return a === bup || !!( bup && bup.nodeType === 1 && (
-
-			// Support: IE 9 - 11+
-			// IE doesn't have `contains` on SVG.
-			a.contains ?
-				a.contains( bup ) :
-				a.compareDocumentPosition && a.compareDocumentPosition( bup ) & 16
-		) );
+		return a === bup || !!( bup && bup.nodeType === 1 && a.contains( bup ) );
 	},
 
 	merge: function( first, second ) {
@@ -395,7 +388,7 @@ jQuery.extend( {
 		}
 
 		// Flatten any nested arrays
-		return flat( ret );
+		return flat.call( ret );
 	},
 
 	// A global GUID counter for objects
