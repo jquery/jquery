@@ -26,7 +26,13 @@ module.exports = {
 		getLatestTagFromAllRefs: true,
 		pushRepo: "git@github.com:jquery/jquery.git",
 		requireBranch: "main",
-		requireCleanWorkingDir: true
+		requireCleanWorkingDir: true,
+		commit: true,
+		commitArgs: [ "-S" ],
+		tag: true,
+		tagName: "${version}",
+		tagAnnotation: "Release: ${version}",
+		tagArgs: [ "-s" ]
 	},
 	github: {
 		pushRepo: "git@github.com:jquery/jquery.git",
