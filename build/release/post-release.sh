@@ -32,7 +32,7 @@ is_prerelease() {
 npm run release:cdn "$1"
 cd $cdn
 git add -A
-git commit -m "jquery: Add version $1"
+git commit -S -m "jquery: Add version $1"
 
 # Wait for confirmation from user to push changes to cdn repo
 read -p "Press enter to push changes to cdn repo"
@@ -44,7 +44,7 @@ cd -
 npm run release:dist "$1" "$2"
 cd $dist
 git add -A
-git commit -m "Release: $1"
+git commit -S -m "Release: $1"
 # -s to sign and annotate tag (recommended for releases)
 git tag -s "$1" -m "Release: $1"
 
@@ -69,7 +69,7 @@ git add package.json
 npm run build:clean
 git rm --cached -r dist/ dist-module/
 git add dist/package.json dist/wrappers dist-module/package.json dist-module/wrappers
-git commit -m "Release: remove dist files from main branch"
+git commit -S -m "Release: remove dist files from main branch"
 
 # Wait for confirmation from user to push changes
 read -p "Press enter to push changes to main branch"
