@@ -9,7 +9,7 @@ permissions:
   contents: read # to fetch code (actions/checkout)
 
 env:
-  NODE_VERSION: 22.x
+  NODE_VERSION: 24.x
 
 jobs:
   build-and-test:
