@@ -156,7 +156,22 @@ async function buildRelease( { version } ) {
 	} );
 	console.log( buildOutput );
 
-	const blogUrl = await getBlogUrl( { distFolder, version } );
+	// Clone the dist repo
+	console.log( `Cloning jquery-dist ${ version }...` );
+	await rimraf( distFolder );
+	await mkdir( distFolder, { recursive: true } );
+
+	// Try to clone the specific tag, but fall back to latest if the tag doesn't exist yet
+	// (race condition: workflow may run before tag is pushed to dist repo)
+	try {
+		await exec( `git clone -q -b ${ version } ${ DIST_REPO } ${ distFolder }` );
+	} catch ( _e ) {
+		console.log( `Tag ${ version } not found in dist repo, falling back to latest commit...` );
+		await exec( `git clone -q ${ DIST_REPO } ${ distFolder }` );
+	}
+
+	// Get the blog URL from the dist README
+	const blogUrl = await getBlogUrl( { distFolder } );
 
 	// Run the dist script to prepare files for packing
 	console.log( `Preparing jQuery ${ version } for packaging...` );
@@ -216,13 +231,7 @@ async function buildRelease( { version } ) {
 	};
 }
 
-async function getBlogUrl( { distFolder, version } ) {
-
-	// Clone the dist repo
-	console.log( `Cloning jquery-dist ${ version }...` );
-	await rimraf( distFolder );
-	await mkdir( distFolder, { recursive: true } );
-	await exec( `git clone -q -b ${ version } ${ DIST_REPO } ${ distFolder }` );
+async function getBlogUrl( { distFolder } ) {
 
 	// Read the README.md file
 	console.log( "Getting blog URL from README.md..." );
