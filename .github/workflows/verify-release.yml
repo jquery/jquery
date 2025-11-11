@@ -32,6 +32,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - run: npm run release:verify
+      - name: Verify release
+        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_on: error
+          retry_wait_seconds: 60
+          command: npm run release:verify
         env:
           VERSION: ${{ github.event.inputs.version || github.ref_name }}

@@ -161,14 +161,9 @@ async function buildRelease( { version } ) {
 	await rimraf( distFolder );
 	await mkdir( distFolder, { recursive: true } );
 
-	// Try to clone the specific tag, but fall back to latest if the tag doesn't exist yet
-	// (race condition: workflow may run before tag is pushed to dist repo)
-	try {
-		await exec( `git clone -q -b ${ version } ${ DIST_REPO } ${ distFolder }` );
-	} catch ( _e ) {
-		console.log( `Tag ${ version } not found in dist repo, falling back to latest commit...` );
-		await exec( `git clone -q ${ DIST_REPO } ${ distFolder }` );
-	}
+	// NOTE: the tag may not have been pushed to the dist repo yet;
+	// retries have been added to the verify GH workflow.
+	await exec( `git clone -q -b ${ version } ${ DIST_REPO } ${ distFolder }` );
 
 	// Get the blog URL from the dist README
 	const blogUrl = await getBlogUrl( { distFolder } );
@@ -179,6 +174,15 @@ async function buildRelease( { version } ) {
 		cwd: releaseFolder
 	} );
 	console.log( distOutput );
+
+	// Verify that the git status is clean
+	const { stdout: gitStatus } = await exec( "git status --porcelain", {
+		cwd: distFolder
+	} );
+	if ( gitStatus.trim() ) {
+		console.log( gitStatus );
+		throw new Error( "Dist repo has uncommitted changes after dist!" );
+	}
 
 	// Pack the npm tarball
 	console.log( `Packing jQuery ${ version }...` );
