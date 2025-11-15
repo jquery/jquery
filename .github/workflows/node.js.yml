@@ -20,7 +20,7 @@ jobs:
         NPM_SCRIPT: ["test:browserless"]
         include:
           - NAME: "Node"
-            NODE_VERSION: "22.x"
+            NODE_VERSION: "24.x"
             NPM_SCRIPT: "lint"
     steps:
       - name: Checkout
