@@ -15,6 +15,7 @@ import { rimraf } from "rimraf";
 const exec = util.promisify( nodeExec );
 const gunzip = util.promisify( nodeGunzip );
 
+const DIST_REPO = "https://github.com/jquery/jquery-dist.git";
 const SRC_REPO = "https://github.com/jquery/jquery.git";
 const CDN_URL = "https://code.jquery.com";
 const REGISTRY_URL = "https://registry.npmjs.org/jquery";
@@ -25,11 +26,10 @@ const excludeFromCDN = [
 ];
 
 const rjquery = /^jquery/;
+const rblogUrl = /https:\/\/blog\.jquery\.com\/[^)]+/;
 
-async function verifyRelease( { version } = {} ) {
-	if ( !version ) {
-		version = process.env.VERSION || ( await getLatestVersion() );
-	}
+async function verifyRelease() {
+	const version = process.env.VERSION || ( await getLatestVersion() );
 	const release = await buildRelease( { version } );
 
 	console.log( `Verifying jQuery ${ version }...` );
@@ -119,6 +119,7 @@ async function verifyRelease( { version } = {} ) {
 
 async function buildRelease( { version } ) {
 	const releaseFolder = path.join( "tmp/verify", version );
+	const distFolder = path.join( releaseFolder, "tmp/release/dist" );
 
 	// Clone the release repo
 	console.log( `Cloning jQuery ${ version }...` );
@@ -155,9 +156,37 @@ async function buildRelease( { version } ) {
 	} );
 	console.log( buildOutput );
 
+	// Clone the dist repo
+	console.log( `Cloning jquery-dist ${ version }...` );
+	await rimraf( distFolder );
+	await mkdir( distFolder, { recursive: true } );
+
+	// NOTE: the tag may not have been pushed to the dist repo yet;
+	// retries have been added to the verify GH workflow.
+	await exec( `git clone -q -b ${ version } ${ DIST_REPO } ${ distFolder }` );
+
+	// Get the blog URL from the dist README
+	const blogUrl = await getBlogUrl( { distFolder } );
+
+	// Run the dist script to prepare files for packing
+	console.log( `Preparing jQuery ${ version } for packaging...` );
+	const { stdout: distOutput } = await exec( `npm run release:dist ${ version } ${ blogUrl }`, {
+		cwd: releaseFolder
+	} );
+	console.log( distOutput );
+
+	// Verify that the git status is clean
+	const { stdout: gitStatus } = await exec( "git status --porcelain", {
+		cwd: distFolder
+	} );
+	if ( gitStatus.trim() ) {
+		console.log( gitStatus );
+		throw new Error( "Dist repo has uncommitted changes after dist!" );
+	}
+
 	// Pack the npm tarball
 	console.log( `Packing jQuery ${ version }...` );
-	const { stdout: packOutput } = await exec( "npm pack", { cwd: releaseFolder } );
+	const { stdout: packOutput } = await exec( "npm pack", { cwd: distFolder } );
 	console.log( packOutput );
 
 	// Get all top-level /dist and /dist-module files
@@ -194,7 +223,7 @@ async function buildRelease( { version } ) {
 
 	// Get checksum of the tarball
 	const tgzFilename = `jquery-${ version }.tgz`;
-	const sum = await sumTarball( path.join( releaseFolder, tgzFilename ) );
+	const sum = await sumTarball( path.join( distFolder, tgzFilename ) );
 
 	return {
 		files,
@@ -204,6 +233,24 @@ async function buildRelease( { version } ) {
 		},
 		version
 	};
+}
+
+async function getBlogUrl( { distFolder } ) {
+
+	// Read the README.md file
+	console.log( "Getting blog URL from README.md..." );
+	const readme = await readFile(
+		path.join( distFolder, "README.md" ),
+		"utf8"
+	);
+
+	const blogUrl = rblogUrl.exec( readme );
+	if ( !blogUrl ) {
+		throw new Error( "Invalid blog post URL" );
+	}
+
+	console.log( `Blog URL: ${ blogUrl[ 0 ] }` );
+	return blogUrl[ 0 ];
 }
 
 async function downloadFile( url, dest ) {
