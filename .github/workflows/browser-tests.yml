@@ -78,6 +78,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Add IE Driver to PATH
+        run: echo "C:\SeleniumWebDrivers\IEDriver" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        shell: pwsh
+
       - name: Run tests in Edge in IE mode
         run: npm run test:ie
 
