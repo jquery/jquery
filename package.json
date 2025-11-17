@@ -78,7 +78,7 @@
     "globals": "15.15.0",
     "husky": "9.1.7",
     "jsdom": "26.0.0",
-    "jquery-test-runner": "0.2.5",
+    "jquery-test-runner": "0.2.8",
     "marked": "15.0.7",
     "native-promise-only": "0.8.1",
     "nodemon": "3.1.9",
