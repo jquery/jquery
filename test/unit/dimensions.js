@@ -663,7 +663,7 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	// This test ported from gh-2836 example
 	assert.expect( 1 );
 
-	var parent,
+	var parent, pos,
 		html = [
 		"<div id=div-gh-2836>",
 			"<div></div>",
@@ -672,20 +672,15 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 			"<div></div>",
 			"<div></div>",
 		"</div>"
-	].join( "" ),
-	stop = assert.async();
+	].join( "" );
 
 	parent = jQuery( html );
 	parent.appendTo( "#qunit-fixture" );
 
-	parent.one( "scroll", function() {
-		var pos = parent.find( "div" ).eq( 3 ).position();
-
-		assert.strictEqual( pos.top, -100 );
-		stop();
-	} );
-
 	parent.scrollTop( 400 );
+
+	pos = parent.find( "div" ).eq( 3 ).position();
+	assert.strictEqual( pos.top, -100 );
 } );
 
 QUnit.test( "width/height on element with transform (gh-3193)", function( assert ) {
