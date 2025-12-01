@@ -76,7 +76,6 @@
     "test:firefox": "npm run pretest && npm run build:main && npm run test:unit -- -v -b firefox --headless",
     "test:ie": "npm run pretest && npm run build:main && npm run test:unit -- -v -b ie",
     "test:safari": "npm run pretest && npm run build:main && npm run test:unit -- -b safari",
-    "test:safari_tp": "npm run pretest && npm run build:main && npm run test:unit -- -b safari_tp",
     "test:server": "jtr serve -m test/middleware-mockserver.cjs",
     "test:esm": "npm run pretest && npm run build:main && npm run test:unit -- -f esmodules --headless",
     "test:no-deprecated": "npm run pretest && npm run build -- -e deprecated && npm run test:unit -- --headless",

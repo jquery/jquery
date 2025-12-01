@@ -117,5 +117,5 @@ jobs:
 
       - name: Run Safari Technology Preview tests
         id: run-safari-tests
-        run: npm run test:safari_tp
+        run: npm run test:safari -- --safari-tp
         continue-on-error: true # Beta browsers may have bugs
