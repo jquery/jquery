@@ -1,0 +1,121 @@
+name: Browser Tests (Beta)
+
+on:
+  schedule:
+    # Run weekly on Sunday at 3 AM UTC to catch beta browser updates
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    # Allow manual triggering from the Actions tab
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  NODE_VERSION: 24.x
+
+jobs:
+  chrome-beta:
+    runs-on: ubuntu-latest
+    name: Chrome Beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Chrome Beta
+        run: |
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-beta
+
+      - name: Set Chrome Beta as default
+        run: |
+          echo "CHROME_BIN=$(which google-chrome-beta)" >> "$GITHUB_ENV"
+          google-chrome-beta --version
+          echo "Chrome Beta installed at: $(which google-chrome-beta)"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Chrome Beta tests
+        id: run-chrome-tests
+        run: npm run test:chrome
+        continue-on-error: true # Beta browsers may have bugs
+
+  firefox-beta:
+    runs-on: ubuntu-latest
+    name: Firefox Beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Firefox Beta
+        run: |
+          wget --no-verbose "https://download.mozilla.org/?product=firefox-beta-latest-ssl&lang=en-US&os=linux64" -O - | tar -Jx -C "$HOME"
+
+      - name: Set Firefox Beta as default
+        run: |
+          echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
+          echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
+          "$HOME/firefox/firefox" --version
+          echo "Firefox Beta installed at: $HOME/firefox/firefox"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Firefox Beta tests
+        id: run-firefox-tests
+        run: npm run test:firefox
+        continue-on-error: true # Beta browsers may have bugs
+
+  safari-tp:
+    runs-on: macos-latest
+    name: Safari Technology Preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Safari Technology Preview
+        run: |
+          # Install Safari Technology Preview via Homebrew Cask
+          brew install --cask safari-technology-preview
+
+          # Verify installation
+          if [ -d "/Applications/Safari Technology Preview.app" ]; then
+            echo "Safari Technology Preview installed successfully"
+          else
+            echo "Safari TP installation verification failed"
+            exit 1
+          fi
+
+      - name: Enable Safari Technology Preview driver
+        run: sudo /Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver --enable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Safari Technology Preview tests
+        id: run-safari-tests
+        run: npm run test:safari -- --safari-tp
+        continue-on-error: true # Beta browsers may have bugs
