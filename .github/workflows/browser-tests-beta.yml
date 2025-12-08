@@ -30,16 +30,38 @@ jobs:
 
       - name: Install Chrome Beta
         run: |
+          # Chrome Beta from `@puppeteer/browsers` is a Chrome for Testing build.
+          # This version lacks the sandbox setup that the APT-packaged Chrome has,
+          # causing crashes on Ubuntu 23.10+ due to AppArmor restrictions.
+          # Because of that, install Chrome Beta from Google's official APT repo.
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
           sudo apt-get update
           sudo apt-get install -y google-chrome-beta
 
-      - name: Set Chrome Beta as default
+      - name: Install ChromeDriver Beta
         run: |
+          # ChromeDriver is not available in the APT repo, so let's install
+          # it using `@puppeteer/browsers`.
+          CHROME_VERSION=$(google-chrome-beta --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          echo "Chrome Beta version: $CHROME_VERSION"
+
+          # Install matching ChromeDriver using @puppeteer/browsers
+          # The output format is: "chromedriver@<version> <path>"
+          INSTALL_OUTPUT=$(npx @puppeteer/browsers install chromedriver@$CHROME_VERSION)
+          CHROMEDRIVER_PATH=$(echo "$INSTALL_OUTPUT" | grep "^chromedriver@" | cut -d' ' -f2)
+          echo "ChromeDriver installed at: $CHROMEDRIVER_PATH"
+
+          # Add ChromeDriver directory to PATH (prepend to override system chromedriver)
+          CHROMEDRIVER_DIR=$(dirname "$CHROMEDRIVER_PATH")
+          echo "PATH=$CHROMEDRIVER_DIR:$PATH" >> "$GITHUB_ENV"
+
+          # Set Chrome binary
           echo "CHROME_BIN=$(which google-chrome-beta)" >> "$GITHUB_ENV"
+
+          # Verify installations
           google-chrome-beta --version
-          echo "Chrome Beta installed at: $(which google-chrome-beta)"
+          "$CHROMEDRIVER_PATH" --version
 
       - name: Install dependencies
         run: npm ci
