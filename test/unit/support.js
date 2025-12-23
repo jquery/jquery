@@ -86,11 +86,11 @@ testIframe(
 			},
 			chrome: {
 				reliableColDimensions: true,
-				reliableTrDimensions: true
+				reliableTrDimensions: false
 			},
 			safari: {
 				reliableColDimensions: false,
-				reliableTrDimensions: true
+				reliableTrDimensions: false
 			},
 			firefox: {
 				reliableColDimensions: false,
