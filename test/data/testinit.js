@@ -292,12 +292,6 @@ QUnit.config.autostart = false;
 // Leverage QUnit URL parsing to detect "basic" testing mode
 QUnit.basicTests = ( QUnit.urlParams.module + "" ) === "basic";
 
-// Support: IE 11+
-// A variable to make it easier to skip specific tests in IE, mostly
-// testing integrations with newer Web features not supported by it.
-QUnit.isIE = !!window.document.documentMode;
-QUnit.testUnlessIE = QUnit.isIE ? QUnit.skip : QUnit.test;
-
 // Returns whether a particular module like "ajax" or "deprecated"
 // is included in the current jQuery build; it handles the slim build
 // as well. The util was created so that we don't treat presence of
