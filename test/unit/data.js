@@ -875,6 +875,19 @@ QUnit.test( "data-* with JSON value can have newlines", function( assert ) {
 	x.remove();
 } );
 
+QUnit.test( "element attributes are repopulated after calling .removeData", function( assert ) {
+	assert.expect( 1 );
+
+	var testing = {
+		"test": "testing"
+		},
+		element = jQuery( "<div data-test='testing'>" );
+
+	element.data();
+	element.removeData();
+	assert.deepEqual( element.data(), testing, "data- attributes not repopulated" );
+} );
+
 QUnit.test( ".data doesn't throw when calling selection is empty. trac-13551", function( assert ) {
 	assert.expect( 1 );
 
