@@ -209,6 +209,7 @@ jobs:
               password: $password
             }')
 
+          # See https://spec.matrix.org/latest/client-server-api/#post_matrixclientv3login
           LOGIN_RESPONSE=$(curl -sf -X POST \
             -H "Content-Type: application/json" \
             --data "$LOGIN_DATA" \
