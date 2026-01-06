@@ -57,13 +57,11 @@ jobs:
           # those versions as long as they still work.
           - '_:iPhone XS_iOS_12'
           - '_:iPhone X_iOS_11'
-          # iOS 10 real device is in tier 4 as of January 2025 and its
-          # availability is poor, leading to frequent test timeouts. Emulators
-          # don't work either. Skip testing on this version.
-          # See https://www.browserstack.com/device-tiers
+          # There's no longer any iPhone device or emulator running iOS 8-10
+          # available on BrowserStack. Skip testing on these versions.
           # - '_:iPhone 7_iOS_10'
-          - '_:iPhone 6S_iOS_9'
-          - '_:iPhone 6_iOS_8'
+          # - '_:iPhone 6S_iOS_9'
+          # - '_:iPhone 6_iOS_8'
           # iOS 7 emulators no longer work properly
           # - '_:iPhone 5S_iOS_7'
 
