@@ -71,6 +71,9 @@ jobs:
         run: npm run test:chrome
         continue-on-error: true # Beta browsers may have bugs
 
+    outputs:
+      test-result: ${{ steps.run-chrome-tests.outcome }}
+
   firefox-beta:
     runs-on: ubuntu-latest
     name: Firefox Beta
@@ -103,6 +106,9 @@ jobs:
         id: run-firefox-tests
         run: npm run test:firefox
         continue-on-error: true # Beta browsers may have bugs
+
+    outputs:
+      test-result: ${{ steps.run-firefox-tests.outcome }}
 
   safari-tp:
     runs-on: macos-latest
@@ -141,3 +147,107 @@ jobs:
         id: run-safari-tests
         run: npm run test:safari -- --safari-tp
         continue-on-error: true # Beta browsers may have bugs
+
+    outputs:
+      test-result: ${{ steps.run-safari-tests.outcome }}
+
+  notify:
+    runs-on: ubuntu-latest
+    name: Notify on Failure
+    needs: [chrome-beta, firefox-beta, safari-tp]
+    environment: matrix-notifications
+
+    # `always()` is needed because jobs with `needs` are skipped if any
+    # dependency fails - and we need it exactly in such cases.
+    if: >-
+      always() && (
+        needs.chrome-beta.outputs.test-result == 'failure' ||
+        needs.firefox-beta.outputs.test-result == 'failure' ||
+        needs.safari-tp.outputs.test-result == 'failure'
+      )
+    steps:
+      - name: Prepare failure message
+        id: prepare-message
+        run: |
+          FAILED_BROWSERS=()
+          if [ "${{ needs.chrome-beta.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Chrome Beta")
+          fi
+          if [ "${{ needs.firefox-beta.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Firefox Beta")
+          fi
+          if [ "${{ needs.safari-tp.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Safari Technology Preview")
+          fi
+          # Join array elements with ", "
+          printf -v FAILED_BROWSERS_STR '%s, ' "${FAILED_BROWSERS[@]}"
+          FAILED_BROWSERS_STR="${FAILED_BROWSERS_STR%, }"
+          echo "failed_browsers=$FAILED_BROWSERS_STR" >> "$GITHUB_OUTPUT"
+
+      - name: Send Matrix notification
+        env:
+          MATRIX_USER: jquerybot
+          MATRIX_PASSWORD: ${{ secrets.MATRIX_PASSWORD }}
+          MATRIX_ROOM_ID: ${{ secrets.MATRIX_ROOM_ID }}
+        run: |
+          # Skip if credentials are not configured (e.g., on forks)
+          if [ -z "$MATRIX_PASSWORD" ] || [ -z "$MATRIX_ROOM_ID" ]; then
+            echo "Matrix credentials not configured, skipping notification"
+            exit 0
+          fi
+
+          # Log in to Matrix to get an access token
+          LOGIN_DATA=$(jq -n \
+            --arg user "$MATRIX_USER" \
+            --arg password "$MATRIX_PASSWORD" \
+            '{
+              type: "m.login.password",
+              identifier: {
+                type: "m.id.user",
+                user: $user
+              },
+              password: $password
+            }')
+
+          # See https://spec.matrix.org/latest/client-server-api/#post_matrixclientv3login
+          LOGIN_RESPONSE=$(curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            --data "$LOGIN_DATA" \
+            "https://matrix.org/_matrix/client/v3/login")
+
+          ACCESS_TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.access_token')
+
+          if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" == "null" ]; then
+            echo "Failed to log in to Matrix"
+            echo "$LOGIN_RESPONSE"
+            exit 1
+          fi
+
+          MESSAGE="⚠️ jQuery tests failed in beta browser(s): ${{ steps.prepare-message.outputs.failed_browsers }}
+
+          View workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          MESSAGE_HTML="⚠️ <strong>jQuery tests failed in beta browser(s)</strong>: ${{ steps.prepare-message.outputs.failed_browsers }}</p><p><a href=\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\">View workflow run</a></p>"
+
+          MESSAGE_DATA=$(jq -n \
+            --arg body "$MESSAGE" \
+            --arg formatted_body "$MESSAGE_HTML" \
+            '{
+              msgtype: "m.text",
+              body: $body,
+              format: "org.matrix.custom.html",
+              formatted_body: $formatted_body
+            }')
+
+          # Send message to Matrix room
+          curl -sf -X PUT \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$MESSAGE_DATA" \
+            "https://matrix.org/_matrix/client/v3/rooms/$MATRIX_ROOM_ID/send/m.room.message/$(date +%s%N)"
+
+          # Log out to invalidate the access token
+          curl -sf -X POST \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            "https://matrix.org/_matrix/client/v3/logout"
+
