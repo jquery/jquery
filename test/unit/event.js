@@ -2624,7 +2624,6 @@ QUnit.test( "event object properties on natively-triggered event", function( ass
 		$link = jQuery( link ),
 		evt = document.createEvent( "MouseEvents" );
 
-	// Support: IE <=9 - 11+
 	// IE requires element to be in the body before it will dispatch
 	$link.appendTo( "body" ).on( "click", function( e ) {
 
@@ -2709,14 +2708,7 @@ testIframe(
 
 		// Create a focusin handler on the parent; shouldn't affect the iframe's fate
 		jQuery( "body" ).on( "focusin.iframeTest", function() {
-
-			// Support: IE 9 - 11+
-			// IE does propagate the event to the parent document. In this test
-			// we mainly care about the inner element so we'll just skip this one
-			// assertion in IE.
-			if ( !QUnit.isIE ) {
-				assert.ok( false, "fired a focusin event in the parent document" );
-			}
+			assert.ok( false, "fired a focusin event in the parent document" );
 		} );
 
 		input.on( "focusin", function() {
@@ -3290,17 +3282,6 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 			if ( remaining > 0 ) {
 				input.trigger( "blur" );
 			} else {
-
-				if ( QUnit.isIE ) {
-
-					// Support: <=IE 11+
-					// In IE, one of the blurs sometimes triggers a focus on body
-					// which in turn restores focus to the input, leading to 4 assertions
-					// firing instead of three. This only happens if other tests are
-					// running on the same test page. Avoid this issue in tests by removing
-					// the handler early.
-					input.off( "focus" );
-				}
 				done();
 			}
 		} )
@@ -3314,8 +3295,6 @@ QUnit.test( "Event handling works with multiple async focus events (gh-4350)", f
 	input.trigger( "focus" );
 } );
 
-// Support: IE <=9 - 11+
-// focus and blur events are asynchronous.
 // The browser window must be topmost for this to work properly!!
 QUnit.test( "async focus queues properly (gh-4859)", function( assert ) {
 	assert.expect( 1 );
@@ -3334,8 +3313,6 @@ QUnit.test( "async focus queues properly (gh-4859)", function( assert ) {
 	}, 500 );
 } );
 
-// Support: IE <=9 - 11+
-// focus and blur events are asynchronous.
 // The browser window must be topmost for this to work properly!!
 QUnit.test( "async focus queues properly with blur (gh-4856)", function( assert ) {
 	assert.expect( 1 );
@@ -3388,17 +3365,6 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 		var type = event.type;
 		assert.deepEqual( slice.call( arguments, 1 ), data,
 			type + " handler received correct data" );
-
-		if ( QUnit.isIE && type === "focus" ) {
-
-			// Support: <=IE 11+
-			// In IE, one of the blurs sometimes triggers a focus on body
-			// which in turn restores focus to the input, leading to 4 assertions
-			// firing instead of three. This only happens if other tests are
-			// running on the same test page. Avoid this issue in tests by removing
-			// the handler early.
-			checkbox.off( "focus" );
-		}
 	} );
 	checkbox.trigger( "focus", data );
 
@@ -3425,15 +3391,8 @@ QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) 
 		button.trigger( "focus" );
 	} );
 
-	jQuery( document ).on( "focusin.focusTests", function( ev ) {
-
-		// Support: IE 11+
-		// In IE focus is async so focusin on document is fired multiple times,
-		// for each of the elements. In other browsers it's fired just once, for
-		// the last one.
-		if ( ev.target === button[ 0 ] ) {
-			assert.ok( true, "focusin propagated to document from the button" );
-		}
+	jQuery( document ).on( "focusin.focusTests", function() {
+		assert.ok( true, "focusin propagated to document from the button" );
 	} );
 
 	select.trigger( "focus" );
@@ -3480,28 +3439,20 @@ QUnit.test( "trigger(focus) works after focusing when hidden (gh-4950)", functio
 QUnit.test( "trigger(focus) fires native & jQuery handlers (gh-5015)", function( assert ) {
 	assert.expect( 3 );
 
-	var input = jQuery( "<input />" ),
-
-		// Support: IE 9 - 11+
-		// focus is async in IE; we now emulate it via sync focusin in jQuery
-		// but this test also attaches native handlers.
-		done = assert.async( 3 );
+	var input = jQuery( "<input />" );
 
 	input.appendTo( "#qunit-fixture" );
 
 	input[ 0 ].addEventListener( "focus", function() {
 		assert.ok( true, "1st native handler fired" );
-		done();
 	} );
 
 	input.on( "focus", function() {
 		assert.ok( true, "jQuery handler fired" );
-		done();
 	} );
 
 	input[ 0 ].addEventListener( "focus", function() {
 		assert.ok( true, "2nd native handler fired" );
-		done();
 	} );
 
 	input.trigger( "focus" );

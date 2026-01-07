@@ -1089,11 +1089,6 @@ QUnit.test( "pseudo - misc", function( assert ) {
 
 	input.blur();
 
-	// When IE is out of focus, blur does not work. Force it here.
-	if ( document.activeElement === input ) {
-		document.body.focus();
-	}
-
 	assert.ok( !jQuery( input ).is( ":focus" ), ":focus doesn't match" );
 	document.body.removeChild( input );
 
@@ -1165,42 +1160,21 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( ":not() failing interior", "#qunit-fixture p:not(.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	assert.t( ":not() failing interior", "#qunit-fixture p:not(#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 
-	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
-		assert.t( ":not() failing interior", "#qunit-fixture p:not(div.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-		assert.t( ":not() failing interior", "#qunit-fixture p:not(p.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-		assert.t( ":not() failing interior", "#qunit-fixture p:not(div#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-		assert.t( ":not() failing interior", "#qunit-fixture p:not(p#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-	} else {
-
-		// Support: IE 11+
-		// IE doesn't support `:not(complex selector)`.
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-	}
+	assert.t( ":not() failing interior", "#qunit-fixture p:not(div.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
+	assert.t( ":not() failing interior", "#qunit-fixture p:not(p.foo)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
+	assert.t( ":not() failing interior", "#qunit-fixture p:not(div#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
+	assert.t( ":not() failing interior", "#qunit-fixture p:not(p#blargh)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 
 	assert.t( ":not Multiple", "#qunit-fixture p:not(a)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	assert.t( ":not Multiple", "#qunit-fixture p:not( a )", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
 	assert.t( ":not Multiple", "#qunit-fixture p:not( p )", [] );
 	assert.t( ":not Multiple", "p:not(p)", [] );
 
-	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
-		assert.t( ":not Multiple", "#qunit-fixture p:not(a, b)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-		assert.t( ":not Multiple", "#qunit-fixture p:not(a, b, div)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
-		assert.t( ":not Multiple", "p:not(a,p)", [] );
-		assert.t( ":not Multiple", "p:not(p,a)", [] );
-		assert.t( ":not Multiple", "p:not(a,p,b)", [] );
-	} else {
-
-		// Support: IE 11+
-		// IE doesn't support `:not(complex selector)`.
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-	}
+	assert.t( ":not Multiple", "#qunit-fixture p:not(a, b)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
+	assert.t( ":not Multiple", "#qunit-fixture p:not(a, b, div)", [ "firstp", "ap", "sndp", "en", "sap", "first" ] );
+	assert.t( ":not Multiple", "p:not(a,p)", [] );
+	assert.t( ":not Multiple", "p:not(p,a)", [] );
+	assert.t( ":not Multiple", "p:not(a,p,b)", [] );
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.t( ":not Multiple", ":input:not(:image,:input,:submit)", [] );
@@ -1219,14 +1193,7 @@ QUnit.test( "pseudo - :not", function( assert ) {
 	assert.t( ":not() Multiple Class", "#foo a:not(.blog)", [ "yahoo", "anchor2" ] );
 	assert.t( ":not() Multiple Class", "#foo a:not(.link)", [ "yahoo", "anchor2" ] );
 
-	if ( QUnit.jQuerySelectors || !QUnit.isIE ) {
-		assert.t( ":not() Multiple Class", "#foo a:not(.blog.link)", [ "yahoo", "anchor2" ] );
-	} else {
-
-		// Support: IE 11+
-		// IE doesn't support `:not(complex selector)`.
-		assert.ok( "skip", ":not(complex selector) not supported in selector-native" );
-	}
+	assert.t( ":not() Multiple Class", "#foo a:not(.blog.link)", [ "yahoo", "anchor2" ] );
 
 	if ( QUnit.jQuerySelectors ) {
 		assert.t( ":not chaining (compound)", "#qunit-fixture div[id]:not(:has(div, span)):not(:has(*))", [ "nothiddendivchild", "divWithNoTabIndex", "fx-tests" ] );
@@ -1395,12 +1362,6 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 	var container = document.getElementById( "disabled-tests" );
 	container.disabled = true;
 
-	// Support: IE 6 - 11
-	// Unset the property where it is not meaningless
-	if ( document.getElementById( "enabled-input" ).isDisabled ) {
-		container.disabled = undefined;
-	}
-
 	assert.t(
 		"Explicitly disabled elements",
 		"#enabled-fieldset :disabled",
@@ -1447,7 +1408,7 @@ QUnit.test( "pseudo - :disabled by ancestry", function( assert ) {
 		"Inputs inherit disabled from fieldset",
 		"#disabled-fieldset :disabled",
 		[ "disabled-fieldset-input", "disabled-fieldset-textarea",
-			"disabled-fieldset-button" ]
+			"disabled-fieldset-button", "disabled-fieldset-select" ]
 	);
 } );
 
@@ -1697,10 +1658,7 @@ QUnit.test( "context", function( assert ) {
 	}
 } );
 
-// Support: IE 11+
-// IE doesn't support the :scope pseudo-class so it will trigger MutationObservers.
-// The test is skipped there.
-QUnit.testUnlessIE( "selectors maintaining context don't trigger mutation observers", function( assert ) {
+QUnit.test( "selectors maintaining context don't trigger mutation observers", function( assert ) {
 	assert.expect( 1 );
 
 	var timeout,
@@ -1774,9 +1732,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "disconnected nodes", function
 	assert.equal( $opt.is( ":selected" ), true, "selected option" );
 } );
 
-// Support: IE 11+
-// IE doesn't support Shadow DOM.
-QUnit.testUnlessIE( "Shadow DOM nodes supported as root", function( assert ) {
+QUnit.test( "Shadow DOM nodes supported as root", function( assert ) {
 	assert.expect( 2 );
 
 	var shadowHost = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" )[ 0 ],

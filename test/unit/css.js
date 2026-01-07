@@ -634,11 +634,7 @@ QUnit.test( "show/hide detached nodes", function( assert ) {
 	span.remove();
 } );
 
-// Support: IE 11+
-// IE doesn't support Shadow DOM.
-QUnit.testUnlessIE(
-	"show/hide shadow child nodes", function( assert ) {
-
+QUnit.test( "show/hide shadow child nodes", function( assert ) {
 	assert.expect( 28 );
 	jQuery( "<div id='shadowHost'></div>" ).appendTo( "#qunit-fixture" );
 	var shadowHost = document.querySelector( "#shadowHost" );
@@ -1018,7 +1014,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "detached toggle()", function(
 		"cascade-hidden element in detached tree" );
 } );
 
-QUnit[ QUnit.jQuerySelectors && !QUnit.isIE ? "test" : "skip" ](
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ](
 	"shadow toggle()", function( assert ) {
 
 	assert.expect( 4 );
@@ -1209,8 +1205,7 @@ QUnit.test( "Do not append px (trac-9548, trac-12990, gh-2792)", function( asser
 } );
 
 
-// IE doesn't support the standard version of CSS Grid.
-QUnit.testUnlessIE( "Do not append px to CSS Grid-related properties (gh-4007)",
+QUnit.test( "Do not append px to CSS Grid-related properties (gh-4007)",
 	function( assert ) {
 
 	assert.expect( 12 );
@@ -1428,7 +1423,7 @@ testIframe(
 	);
 } )();
 
-QUnit.testUnlessIE( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
+QUnit.test( "css('width') and css('height') should return fractional values for nodes in the document", function( assert ) {
 	assert.expect( 2 );
 
 	var el = jQuery( "<div class='test-div'></div>" ).appendTo( "#qunit-fixture" );
@@ -1440,7 +1435,7 @@ QUnit.testUnlessIE( "css('width') and css('height') should return fractional val
 		"css('height') should return fractional values" );
 } );
 
-QUnit.testUnlessIE( "css('width') and css('height') should return fractional values for disconnected nodes", function( assert ) {
+QUnit.test( "css('width') and css('height') should return fractional values for disconnected nodes", function( assert ) {
 	assert.expect( 2 );
 
 	var el = jQuery( "<div style='width: 33.3px; height: 88.8px;'></div>" );
@@ -1702,64 +1697,29 @@ QUnit.test( "Do not throw on frame elements from css method (trac-15098)", funct
 	}
 } );
 
-( function() {
-	var vendorPrefixes = [ "Webkit", "Moz", "ms" ];
+QUnit.test( "Don't default to a previously used wrong prefixed name (gh-2015)", function( assert ) {
 
-	QUnit.test( "Don't default to a previously used wrong prefixed name (gh-2015)", function( assert ) {
+	// Note: this test needs a property we know is only supported in a `-webkit`-prefixed version
+	// by at least one of our main supported browsers. Past "obvious" choices like
+	// `-webkit-appearance` or `-webkit-line-clamp` got their unprefixed versions so
+	// instead let's use a legacy flexbox property which will never get an unprefixed version.
+	// See https://compat.spec.whatwg.org/#css-property-mappings
 
-		// Note: this test needs a property we know is only supported in a prefixed version
-		// by at least one of our main supported browsers. This may get out of date so let's
-		// use -(webkit|moz)-appearance as well as those two are not on a standards track.
-		var appearanceName, transformName, elem, elemStyle,
-			transformVal = "translate(5px, 2px)",
-			emptyStyle = document.createElement( "div" ).style;
+	assert.expect( 2 );
 
-		if ( "appearance" in emptyStyle ) {
-			appearanceName = "appearance";
-		} else {
-			jQuery.each( vendorPrefixes, function( index, prefix ) {
-				var prefixedProp = prefix + "Appearance";
-				if ( prefixedProp in emptyStyle ) {
-					appearanceName = prefixedProp;
-				}
-			} );
-		}
+	var elem = jQuery( "<div></div>" )
 
-		if ( "transform" in emptyStyle ) {
-			transformName = "transform";
-		} else {
-			jQuery.each( vendorPrefixes, function( index, prefix ) {
-				var prefixedProp = prefix + "Transform";
-				if ( prefixedProp in emptyStyle ) {
-					transformName = prefixedProp;
-				}
-			} );
-		}
-
-		assert.expect( !!appearanceName + !!transformName + 1 );
-
-		elem = jQuery( "<div></div>" )
-			.css( {
-				msAppearance: "none",
-				appearance: "none",
-
-				// Only the ms prefix is used to make sure we haven't e.g. set
-				// webkitTransform ourselves in the test.
-				msTransform: transformVal,
-				transform: transformVal
-			} );
+			// Only the moz prefix is used to make sure we haven't e.g. set
+			// `-webkit-box-flex` ourselves in the test.
+			.css( "-moz-box-flex", "1" )
+			.css( "box-flex", "1" ),
 		elemStyle = elem[ 0 ].style;
 
-		if ( appearanceName ) {
-			assert.equal( elemStyle[ appearanceName ], "none", "setting properly-prefixed appearance" );
-		}
-		if ( transformName ) {
-			assert.equal( elemStyle[ transformName ], transformVal, "setting properly-prefixed transform" );
-		}
-		assert.equal( elemStyle.undefined, undefined, "Nothing writes to node.style.undefined" );
-	} );
-
-} )();
+	assert.equal( elemStyle.WebkitBoxFlex, "1",
+		"setting properly-prefixed -webkit-box-flex" );
+	assert.equal( elemStyle.undefined, undefined,
+		"Nothing writes to node.style.undefined" );
+} );
 
 QUnit.test( "Don't update existing unsupported prefixed properties", function( assert ) {
 	assert.expect( 1 );
@@ -1786,8 +1746,7 @@ QUnit.test( "Don't set fake prefixed properties when a regular one is missing", 
 	assert.strictEqual( style.msFakeProperty, undefined, "Fake prefixed property is not set (ms)" );
 } );
 
-// IE doesn't support CSS variables.
-QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
+QUnit.test( "css(--customProperty)", function( assert ) {
 
 	jQuery( "#qunit-fixture" ).append(
 		"<style>\n" +
@@ -1862,8 +1821,7 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 	assert.equal( $elem.css( "--nonexistent" ), undefined );
 } );
 
-// IE doesn't support CSS variables.
-QUnit.testUnlessIE( "Don't append px to CSS vars", function( assert ) {
+QUnit.test( "Don't append px to CSS vars", function( assert ) {
 
 	assert.expect( 3 );
 
@@ -1878,22 +1836,5 @@ QUnit.testUnlessIE( "Don't append px to CSS vars", function( assert ) {
 	assert.equal( $div.css( "--line-height" ), "4", "--line-height: 4" );
 	assert.equal( $div.css( "--lineHeight" ), "5", "--lineHeight: 5" );
 } );
-
-// Support: IE 11+
-// This test requires Grid to be *not supported* to work.
-if ( QUnit.isIE ) {
-
-	// Make sure explicitly provided IE vendor prefix (`-ms-`) is not converted
-	// to a non-working `Ms` prefix in JavaScript.
-	QUnit.test( "IE vendor prefixes are not mangled", function( assert ) {
-		assert.expect( 1 );
-
-		var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" );
-
-		div.css( "-ms-grid-row", "1" );
-
-		assert.strictEqual( div.css( "-ms-grid-row" ), "1", "IE vendor prefixing" );
-	} );
-}
 
 }
