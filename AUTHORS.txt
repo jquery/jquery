@@ -185,7 +185,6 @@ Sebastian Burkhard <sebi.burkhard@gmail.com>
 Zachary Adam Kaplan <razic@viralkitty.com>
 Adam Coulombe <me@adam.co>
 nanto_vi <nanto@moon.email.ne.jp>
-nanto <nanto@moon.email.ne.jp>
 Danil Somsikov <danilasomsikov@gmail.com>
 Ryunosuke SATO <tricknotes.rs@gmail.com>
 Diego Tres <diegotres@gmail.com>
@@ -203,7 +202,6 @@ Michał Gołębiowski-Owczarek <m.goleb@gmail.com>
 Renato Oliveira dos Santos <ros3@cin.ufpe.br>
 Frederic Junod <frederic.junod@camptocamp.com>
 Mitch Foley <mitch@thefoley.net>
-ros3cin <ros3@cin.ufpe.br>
 Kyle Robinson Young <kyle@dontkry.com>
 John Paul <john@johnkpaul.com>
 Jason Bedard <jason+jquery@jbedard.ca>
@@ -337,7 +335,7 @@ Saptak Sengupta <saptak013@gmail.com>
 Andrey Meshkov <ay.meshkov@gmail.com>
 tmybr11 <tomas.perone@gmail.com>
 Luis Emilio Velasco Sanchez <emibloque@gmail.com>
-Ed S <ejsanders@gmail.com>
+Ed Sanders <ejsanders@gmail.com>
 Bert Zhang <enbo@users.noreply.github.com>
 Sébastien Règne <regseb@users.noreply.github.com>
 wartmanm <3869625+wartmanm@users.noreply.github.com>
@@ -355,7 +353,6 @@ Ahmed.S.ElAfifi <ahmed.s.elafifi@gmail.com>
 Christian Oliff <christianoliff@pm.me>
 Christian Wenz <christian@wenz.org>
 Jonathan <vanillajonathan@users.noreply.github.com>
-Ed Sanders <ejsanders@gmail.com>
 Pierre Grimaud <grimaud.pierre@gmail.com>
 Beatriz Rezener <beatrizrezener@users.noreply.github.com>
 Necmettin Karakaya <necmettin.karakaya@gmail.com>
