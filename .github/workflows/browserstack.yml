@@ -37,6 +37,7 @@ jobs:
           - 'Edge_18'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
+          - 'Firefox_140'
           - 'Firefox_128'
           - 'Firefox_115'
           - 'Firefox_102'
