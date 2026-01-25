@@ -63,23 +63,20 @@ jQuery.ajaxTransport( function( options ) {
 						if ( type === "abort" ) {
 							xhr.abort();
 						} else if ( type === "error" ) {
-							complete(
 
-								// File: protocol always yields status 0; see trac-8605, trac-14207
-								xhr.status,
-								xhr.statusText
-							);
+							// File: protocol always yields status 0; see trac-8605, trac-14207
+							complete( xhr );
 						} else {
-							complete(
-								xhrSuccessStatus[ xhr.status ] || xhr.status,
-								xhr.statusText,
+							complete( {
+								status: xhrSuccessStatus[ xhr.status ] || xhr.status,
+								statusText: xhr.statusText,
 
 								// For XHR2 non-text, let the caller handle it (gh-2498)
-								( xhr.responseType || "text" ) === "text" ?
+								responses: ( xhr.responseType || "text" ) === "text" ?
 									{ text: xhr.responseText } :
 									{ binary: xhr.response },
-								xhr.getAllResponseHeaders()
-							);
+								headers: xhr.getAllResponseHeaders()
+							} );
 						}
 					}
 				};
