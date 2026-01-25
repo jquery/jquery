@@ -107,6 +107,11 @@ jQuery.event = {
 			selector = handleObjIn.selector;
 		}
 
+		// Support objects implementing the EventListener interface.
+		if ( handler && typeof handler.handleEvent === "function" ) {
+			handler = handler.handleEvent.bind( handler );
+		}
+
 		// Ensure that invalid selectors throw exceptions at attach time
 		// Evaluate against documentElement in case elem is a non-element node (e.g., document)
 		if ( selector ) {
