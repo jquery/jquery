@@ -7,21 +7,15 @@ jQuery.parseXML = function( data ) {
 		return null;
 	}
 
-	// Support: IE 9 - 11+
-	// IE throws on parseFromString with invalid input.
-	try {
-		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
-	} catch ( e ) {}
+	xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
 
-	parserErrorElem = xml && xml.getElementsByTagName( "parsererror" )[ 0 ];
-	if ( !xml || parserErrorElem ) {
-		jQuery.error( "Invalid XML: " + (
-			parserErrorElem ?
-				jQuery.map( parserErrorElem.childNodes, function( el ) {
-					return el.textContent;
-				} ).join( "\n" ) :
-				data
-		) );
+	parserErrorElem = xml.getElementsByTagName( "parsererror" )[ 0 ];
+	if ( parserErrorElem ) {
+		jQuery.error( "Invalid XML: " +
+			jQuery.map( parserErrorElem.childNodes, function( el ) {
+				return el.textContent;
+			} ).join( "\n" )
+		);
 	}
 	return xml;
 };
