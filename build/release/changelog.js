@@ -172,6 +172,8 @@ function addHeaders( commits ) {
 }
 
 async function getContributors() {
+
+	// https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits
 	const response = await fetch(
 		`https://api.github.com/repos/jquery/jquery/compare/${ prevVersion }...${ nextVersion }`,
 		{
