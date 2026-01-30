@@ -80,6 +80,9 @@ jQuery.extend( {
 
 	removeData: function( elem, name ) {
 		dataUser.remove( elem, name );
+		if ( name === undefined ) {
+			dataPriv.remove( elem, "hasDataAttrs" );
+		}
 	},
 
 	// TODO: Now that all calls to _data and _removeData have been replaced
@@ -172,6 +175,9 @@ jQuery.fn.extend( {
 	removeData: function( key ) {
 		return this.each( function() {
 			dataUser.remove( this, key );
+			if ( key === undefined ) {
+				dataPriv.remove( this, "hasDataAttrs" );
+			}
 		} );
 	}
 } );
