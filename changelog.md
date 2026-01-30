@@ -1,5 +1,7 @@
 # Changelog
 
+https://blog.jquery.com/2026/01/17/jquery-4-0-0/
+
 ## Ajax
 
 - Don't treat array data as binary ([992a1911](https://github.com/jquery/jquery/commit/992a1911d0b6195012edc25fd5a48810d4be64b5))
@@ -25,25 +27,6 @@
 - Drop the `toggleClass(boolean|undefined)` signature ([#3388](https://github.com/jquery/jquery/issues/3388), [a4421101](https://github.com/jquery/jquery/commit/a4421101fd6d9d7b0550210f8e8690641733dd9a))
 - Refactor val(): don't strip carriage return, isolate IE workarounds ([ff281991](https://github.com/jquery/jquery/commit/ff2819911da6cbbed5ee42c35d695240f06e65e3))
 - Don't set the type attr hook at all outside of IE ([9e66fe9a](https://github.com/jquery/jquery/commit/9e66fe9acf0ef27681f5a21149fc61678f791641))
-
-## CSS
-
-- Fix dimensions of table `<col>` elements ([#5628](https://github.com/jquery/jquery/issues/5628), [eca2a564](https://github.com/jquery/jquery/commit/eca2a56457e1c40c071aeb3ac87efeb8bbb8013e))
-- Drop the cache in finalPropName ([640d5825](https://github.com/jquery/jquery/commit/640d5825df5ff223560c5690f1a268681c32f9fa))
-- Tests: Fix tests & support tests under CSS Zoom ([#5489](https://github.com/jquery/jquery/issues/5489), [071f6dba](https://github.com/jquery/jquery/commit/071f6dba6bd1d8db3f36ce4694aab5ff437b9e36))
-- Fix reliableTrDimensions support test for initially hidden iframes ([b1e66a5f](https://github.com/jquery/jquery/commit/b1e66a5faaf46ffcbcc27c79a9a224aaf851a987))
-- Selector: Align with 3.x, remove the outer `selector.js` wrapper ([53cf7244](https://github.com/jquery/jquery/commit/53cf7244da2a2040333335c36e435b1c12efdff9))
-- Make the reliableTrDimensions support test work with Bootstrap CSS ([#5270](https://github.com/jquery/jquery/issues/5270), [65b85031](https://github.com/jquery/jquery/commit/65b85031fb5688361c077bc04e641e4b502671e1))
-- Make `offsetHeight( true )`, etc. include negative margins ([#3982](https://github.com/jquery/jquery/issues/3982), [bce13b72](https://github.com/jquery/jquery/commit/bce13b72c1753e16cc0db53ebf0f0456bdcf6b48))
-- Return `undefined` for whitespace-only CSS variable values (#5120) ([7eb00196](https://github.com/jquery/jquery/commit/7eb0019640a5856c42b451551eb7f995d913eba9))
-- Don’t trim whitespace of undefined custom property ([#5105](https://github.com/jquery/jquery/issues/5105), [ed306c02](https://github.com/jquery/jquery/commit/ed306c0261ab63746040e5d58bb4477c3069a427))
-- Skip falsy values in `addClass( array )`, compress code ([#4998](https://github.com/jquery/jquery/issues/4998), [a338b407](https://github.com/jquery/jquery/commit/a338b407f2479f82df40635055effc163835183f))
-- Justify use of rtrim on CSS property values ([655c0ed5](https://github.com/jquery/jquery/commit/655c0ed5e204b1f6427e09d615a49586a7bc84eb))
-- Trim whitespace surrounding CSS Custom Properties values ([#4926](https://github.com/jquery/jquery/issues/4926), [efadfe99](https://github.com/jquery/jquery/commit/efadfe991a5c287af561a9326bf1427d726c91c1))
-- Include `show`, `hide` & `toggle` methods in the jQuery slim build ([297d18dd](https://github.com/jquery/jquery/commit/297d18dd13f7b810ea5a4afeefa4cb15d9e16e16))
-- Remove the opacity CSS hook ([865469f5](https://github.com/jquery/jquery/commit/865469f5e60f55feb28469bb0a7526dd22f04b4e))
-- Workaround buggy getComputedStyle on table rows in IE/Edge ([#4490](https://github.com/jquery/jquery/issues/4490), [26415e08](https://github.com/jquery/jquery/commit/26415e081b318dbe1d46d2b7c30e05f14c339b75))
-- Don't automatically add "px" to properties with a few exceptions ([#2795](https://github.com/jquery/jquery/issues/2795), [00a9c2e5](https://github.com/jquery/jquery/commit/00a9c2e5f4c855382435cec6b3908eb9bd5a53b7))
 
 ## Core
 
@@ -73,6 +56,25 @@
 - Drop support for IE <11, iOS <11, Firefox <65, Android Browser & PhantomJS ([#3950](https://github.com/jquery/jquery/issues/3950), [#4299](https://github.com/jquery/jquery/issues/4299), [cf84696f](https://github.com/jquery/jquery/commit/cf84696fd1d7fe314a11492606529b5a658ee9e3))
 - Remove deprecated jQuery APIs ([#4056](https://github.com/jquery/jquery/issues/4056), [58f0c00b](https://github.com/jquery/jquery/commit/58f0c00bed695f934bb205c6115e5fe99dd5c27b))
 
+## CSS
+
+- Fix dimensions of table `<col>` elements ([#5628](https://github.com/jquery/jquery/issues/5628), [eca2a564](https://github.com/jquery/jquery/commit/eca2a56457e1c40c071aeb3ac87efeb8bbb8013e))
+- Drop the cache in finalPropName ([640d5825](https://github.com/jquery/jquery/commit/640d5825df5ff223560c5690f1a268681c32f9fa))
+- Tests: Fix tests & support tests under CSS Zoom ([#5489](https://github.com/jquery/jquery/issues/5489), [071f6dba](https://github.com/jquery/jquery/commit/071f6dba6bd1d8db3f36ce4694aab5ff437b9e36))
+- Fix reliableTrDimensions support test for initially hidden iframes ([b1e66a5f](https://github.com/jquery/jquery/commit/b1e66a5faaf46ffcbcc27c79a9a224aaf851a987))
+- Selector: Align with 3.x, remove the outer `selector.js` wrapper ([53cf7244](https://github.com/jquery/jquery/commit/53cf7244da2a2040333335c36e435b1c12efdff9))
+- Make the reliableTrDimensions support test work with Bootstrap CSS ([#5270](https://github.com/jquery/jquery/issues/5270), [65b85031](https://github.com/jquery/jquery/commit/65b85031fb5688361c077bc04e641e4b502671e1))
+- Make `offsetHeight( true )`, etc. include negative margins ([#3982](https://github.com/jquery/jquery/issues/3982), [bce13b72](https://github.com/jquery/jquery/commit/bce13b72c1753e16cc0db53ebf0f0456bdcf6b48))
+- Return `undefined` for whitespace-only CSS variable values (#5120) ([7eb00196](https://github.com/jquery/jquery/commit/7eb0019640a5856c42b451551eb7f995d913eba9))
+- Don’t trim whitespace of undefined custom property ([#5105](https://github.com/jquery/jquery/issues/5105), [ed306c02](https://github.com/jquery/jquery/commit/ed306c0261ab63746040e5d58bb4477c3069a427))
+- Skip falsy values in `addClass( array )`, compress code ([#4998](https://github.com/jquery/jquery/issues/4998), [a338b407](https://github.com/jquery/jquery/commit/a338b407f2479f82df40635055effc163835183f))
+- Justify use of rtrim on CSS property values ([655c0ed5](https://github.com/jquery/jquery/commit/655c0ed5e204b1f6427e09d615a49586a7bc84eb))
+- Trim whitespace surrounding CSS Custom Properties values ([#4926](https://github.com/jquery/jquery/issues/4926), [efadfe99](https://github.com/jquery/jquery/commit/efadfe991a5c287af561a9326bf1427d726c91c1))
+- Include `show`, `hide` & `toggle` methods in the jQuery slim build ([297d18dd](https://github.com/jquery/jquery/commit/297d18dd13f7b810ea5a4afeefa4cb15d9e16e16))
+- Remove the opacity CSS hook ([865469f5](https://github.com/jquery/jquery/commit/865469f5e60f55feb28469bb0a7526dd22f04b4e))
+- Workaround buggy getComputedStyle on table rows in IE/Edge ([#4490](https://github.com/jquery/jquery/issues/4490), [26415e08](https://github.com/jquery/jquery/commit/26415e081b318dbe1d46d2b7c30e05f14c339b75))
+- Don't automatically add "px" to properties with a few exceptions ([#2795](https://github.com/jquery/jquery/issues/2795), [00a9c2e5](https://github.com/jquery/jquery/commit/00a9c2e5f4c855382435cec6b3908eb9bd5a53b7))
+
 ## Data
 
 - Refactor to reduce size ([805cdb43](https://github.com/jquery/jquery/commit/805cdb43fd02c3a5783c06b5ec2c9519be0682ab))
@@ -97,6 +99,7 @@
 
 ## Docs
 
+- updated the vulnerability reporting process and added escalation steps ([02cf4ee0](https://github.com/jquery/jquery/commit/02cf4ee090debded3da4b0e3f59bd33f516125ea))
 - Fix some minor issues in comments ([e4d4dd81](https://github.com/jquery/jquery/commit/e4d4dd81bfb0c27a9c557746035738319253a30c))
 - update herodevs link in README ([#5695](https://github.com/jquery/jquery/issues/5695), [093e63f9](https://github.com/jquery/jquery/commit/093e63f92a5843c2d73fd953454cc6307fe8025c))
 - Align CONTRIBUTING.md with `3.x-stable` ([d9281061](https://github.com/jquery/jquery/commit/d92810614b53270a8f014db14022887ee3383fd5))
@@ -175,41 +178,6 @@
 ## Offset
 
 - Increase search depth when finding the 'real' offset parent ([556eaf4a](https://github.com/jquery/jquery/commit/556eaf4a193287c306d163635cbb5f5c95a22a84))
-
-## Release
-
-- 4.0.0 ([4f2fae08](https://github.com/jquery/jquery/commit/4f2fae08f23b54ce09322e62e73cce6161b8d3cb))
-- remove dist files from main branch ([c838cfb5](https://github.com/jquery/jquery/commit/c838cfb5bb0c6cd17cfaa1dd83aca8d20589de99))
-- 4.0.0-rc.2 ([97525193](https://github.com/jquery/jquery/commit/97525193735ed32c332f0dbaf2f782df8b1b949b))
-- Update AUTHORS.txt ([c128d5d8](https://github.com/jquery/jquery/commit/c128d5d8a8fd9e9b3dcd3efa493e71f6a1649bd8))
-- Fix release issues uncovered during the 4.0.0-rc.1 release ([a5b0c431](https://github.com/jquery/jquery/commit/a5b0c4318df748e5a0fe27d23820c60029d26b90))
-- remove dist files from main branch ([9d06c6dd](https://github.com/jquery/jquery/commit/9d06c6dd6f84bb0ae49e7c7445282ebb93b7b226))
-- 4.0.0-rc.1 ([586182f3](https://github.com/jquery/jquery/commit/586182f35e818c318046dac1cbaa31ee7a07ee21))
-- Run `npm publish` in the post-release phase ([ff1f0eaa](https://github.com/jquery/jquery/commit/ff1f0eaafd0dbcd4c063c3c557d9cee0a461f89d))
-- Only run browserless tests during the release ([fb5ab0f5](https://github.com/jquery/jquery/commit/fb5ab0f546e0e25ccb5feb3d51ca2ea743b06efc))
-- Temporarily disable running tests on release ([3f79644b](https://github.com/jquery/jquery/commit/3f79644b72e928c529febc1aaee081a6c4b96be3))
-- publish tmp/release/dist folder when releasing ([#5658](https://github.com/jquery/jquery/issues/5658), [a865212d](https://github.com/jquery/jquery/commit/a865212dea22d44bf2bea3e2c618c4a25c63c6a6))
-- correct build date in verification; other improvements ([53ad94f3](https://github.com/jquery/jquery/commit/53ad94f319930a5bf8cb9bd935ebd4e028741903))
-- remove dist files from main branch ([be048a02](https://github.com/jquery/jquery/commit/be048a027d0581746f71df7c8eb3ce1d9bd10a40))
-- 4.0.0-beta.2 ([51fffe9f](https://github.com/jquery/jquery/commit/51fffe9f7395f86fb24c59115c9b98855c39fc07))
-- ensure builds have the proper version ([3e612aee](https://github.com/jquery/jquery/commit/3e612aeeb3821c657989e67b43c9b715f5cd32e2))
-- set preReleaseBase in config file ([1fa8df5d](https://github.com/jquery/jquery/commit/1fa8df5dbd5d84cf55882a38eb6e571abd0aa938))
-- fix running pre/post release scripts in windows ([5518b2da](https://github.com/jquery/jquery/commit/5518b2da1816b379b573abc55ba92f02776a3486))
-- update AUTHORS.txt ([862e7a18](https://github.com/jquery/jquery/commit/862e7a1882f3f737db7dde1b5ecda9766d61694a))
-- migrate release process to release-it ([jquery/jquery-release#114](https://github.com/jquery/jquery-release/issues/114), [2646a8b0](https://github.com/jquery/jquery/commit/2646a8b07fcc2cf7cf384724f622eb0c27f9166c))
-- add factory files to release distribution ([#5411](https://github.com/jquery/jquery/issues/5411), [1a324b07](https://github.com/jquery/jquery/commit/1a324b0792ba8d032b89dd8bf78bbf5caa535367))
-- use buildDefaultFiles directly and pass version ([b507c864](https://github.com/jquery/jquery/commit/b507c8648f701acd1c48b3c38054ad38d76fd1ca))
-- copy dist-module folder as well ([63767650](https://github.com/jquery/jquery/commit/63767650b5b171b4671304fd2bb2f2890431929f))
-- only published versioned files to cdn ([3a0ca684](https://github.com/jquery/jquery/commit/3a0ca684eb21d64a13d7591ce1891b1990e0339c))
-- remove scripts and dev deps from dist package.json ([7eac932d](https://github.com/jquery/jquery/commit/7eac932da7177104546abef595adf4429eb829b3))
-- update build command in Release.generateArtifacts ([3b963a21](https://github.com/jquery/jquery/commit/3b963a21662061e0f39ad90f146e73e2223c2b86))
-- add support for md5 sums in windows ([f088c366](https://github.com/jquery/jquery/commit/f088c36631df3d5dc98408debd147ea5d3618557))
-- remove the need to install grunt globally ([b2bbaa36](https://github.com/jquery/jquery/commit/b2bbaa36d4d37bd48f954ed3cdbd50d3461a523d))
-- upgrade release dependencies ([967af732](https://github.com/jquery/jquery/commit/967af73203378db0cc3637adee85c442e246e05a))
-- Remove an unused chalk dependency ([bfb6897c](https://github.com/jquery/jquery/commit/bfb6897c558dfdccff7ac5fc377b08e806525be3))
-- Use an in-repository dist README fixture ([358b769a](https://github.com/jquery/jquery/commit/358b769a00c3a09a8ec621b8dcb2d5e31b7da69a))
-- Update AUTHORS.txt ([1b74660f](https://github.com/jquery/jquery/commit/1b74660f730d34bf728094c33080ff406427f41e))
-- update AUTHORS.txt ([cf9fe0f6](https://github.com/jquery/jquery/commit/cf9fe0f6a104a0f527c7c3f441485c19e2b19c69))
 
 ## Selector
 
@@ -320,9 +288,3 @@
 
 - Fix `contents()` on `<object>`s with children in IE ([ccbd6b93](https://github.com/jquery/jquery/commit/ccbd6b93424cbdbf86f07a86c2e55cbab497d7a3))
 - Fix `contents()` on `<object>`s with children ([#4384](https://github.com/jquery/jquery/issues/4384), [4d865d96](https://github.com/jquery/jquery/commit/4d865d96aa5aae91823c50020b5c19da79566811))
-
-## Upgrade
-
-- Bump actions/setup-node from 3.3.0 to 3.4.1 ([78321f07](https://github.com/jquery/jquery/commit/78321f078ce04ce78aeade8e2860ac41d05fae54))
-- set up periodic code scanning analysis ([39c5778c](https://github.com/jquery/jquery/commit/39c5778c649ad387dac834832799c0087b11d5fe))
-- updated the vulnerability reporting process and added escalation steps ([02cf4ee0](https://github.com/jquery/jquery/commit/02cf4ee090debded3da4b0e3f59bd33f516125ea))
