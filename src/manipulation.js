@@ -1,6 +1,5 @@
 import { jQuery } from "./core.js";
 import { isAttached } from "./core/isAttached.js";
-import { isIE } from "./var/isIE.js";
 import { push } from "./var/push.js";
 import { access } from "./core/access.js";
 import { rtagName } from "./manipulation/var/rtagName.js";
@@ -17,11 +16,7 @@ import "./core/init.js";
 import "./traversing.js";
 import "./event.js";
 
-var
-
-	// Support: IE <=10 - 11+
-	// In IE using regex groups here causes severe slowdowns.
-	rnoInnerhtml = /<script|<style|<link/i;
+var rnoInnerhtml = /<script|<style|<link/i;
 
 // Prefer a tbody over its parent table for containing new rows
 function manipulationTarget( elem, content ) {
@@ -89,31 +84,11 @@ jQuery.extend( {
 			clone = elem.cloneNode( true ),
 			inPage = isAttached( elem );
 
-		// Fix IE cloning issues
-		if ( isIE && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
-				!jQuery.isXMLDoc( elem ) ) {
-
-			// We eschew jQuery#find here for performance reasons:
-			// https://jsperf.com/getall-vs-sizzle/2
-			destElements = getAll( clone );
-			srcElements = getAll( elem );
-
-			for ( i = 0, l = srcElements.length; i < l; i++ ) {
-
-				// Support: IE <=11+
-				// IE fails to set the defaultValue to the correct value when
-				// cloning textareas.
-				if ( nodeName( destElements[ i ], "textarea" ) ) {
-					destElements[ i ].defaultValue = srcElements[ i ].defaultValue;
-				}
-			}
-		}
-
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {
 			if ( deepDataAndEvents ) {
-				srcElements = srcElements || getAll( elem );
-				destElements = destElements || getAll( clone );
+				srcElements = getAll( elem );
+				destElements = getAll( clone );
 
 				for ( i = 0, l = srcElements.length; i < l; i++ ) {
 					cloneCopyEvent( srcElements[ i ], destElements[ i ] );

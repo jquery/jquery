@@ -1,13 +1,12 @@
 import { jQuery } from "./core.js";
 import { access } from "./core/access.js";
+import { camelCase } from "./core/camelCase.js";
 import { nodeName } from "./core/nodeName.js";
 import { rcssNum } from "./var/rcssNum.js";
-import { isIE } from "./var/isIE.js";
 import { rnumnonpx } from "./css/var/rnumnonpx.js";
 import { rcustomProp } from "./css/var/rcustomProp.js";
 import { cssExpand } from "./css/var/cssExpand.js";
 import { isAutoPx } from "./css/isAutoPx.js";
-import { cssCamelCase } from "./css/cssCamelCase.js";
 import { getStyles } from "./css/var/getStyles.js";
 import { swap } from "./css/var/swap.js";
 import { curCSS } from "./css/curCSS.js";
@@ -114,8 +113,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
 		// Fake content-box until we know it's needed to know the true value.
-		boxSizingNeeded = isIE || extra,
-		isBorderBox = boxSizingNeeded &&
+		isBorderBox = extra &&
 			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox,
 
@@ -137,11 +135,6 @@ function getWidthOrHeight( elem, dimension, extra ) {
 			// Fall back to offsetWidth/offsetHeight when value is "auto"
 			// This happens for inline elements with no explicit setting (gh-3571)
 			val === "auto" ||
-
-			// Support: IE 9 - 11+
-			// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-			// In those cases, the computed value can be trusted to be border-box.
-			( isIE && isBorderBox ) ||
 
 			( !support.reliableColDimensions() && nodeName( elem, "col" ) ) ||
 
@@ -196,7 +189,7 @@ jQuery.extend( {
 
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
-			origName = cssCamelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name ),
 			style = elem.style;
 
@@ -232,12 +225,6 @@ jQuery.extend( {
 				value += ret && ret[ 3 ] || ( isAutoPx( origName ) ? "px" : "" );
 			}
 
-			// Support: IE <=9 - 11+
-			// background-* props of a cloned element affect the source element (trac-8908)
-			if ( isIE && value === "" && name.indexOf( "background" ) === 0 ) {
-				style[ name ] = "inherit";
-			}
-
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
@@ -265,7 +252,7 @@ jQuery.extend( {
 
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
-			origName = cssCamelCase( name ),
+			origName = camelCase( name ),
 			isCustomProp = rcustomProp.test( name );
 
 		// Make sure that we're working with the right name. We don't

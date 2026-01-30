@@ -422,15 +422,6 @@ QUnit.test( "table dimensions", function( assert ) {
 	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see trac-11293" );
 	assert.equal( colElem.width(), 300, "col elements have width(), (trac-12243)" );
 
-	// Support: IE 11+
-	// In IE, `<col>` computed width is `"auto"` unless `width` is set
-	// explicitly via CSS so measurements there remain incorrect. Because of
-	// the lack of a proper workaround, we accept this limitation.
-	// To make IE pass the test, set the width explicitly.
-	if ( QUnit.isIE ) {
-		doubleColElem.width( 600 );
-	}
-
 	assert.equal( doubleColElem.width(), 600,
 		"col with span measured correctly (gh-5628)" );
 } );
@@ -739,8 +730,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.css( { position: "absolute", width: "1000px", height: "1000px" } )
 			.appendTo( "#qunit-fixture" ),
 
-		// Workarounds for IE kill fractional output here.
-		fraction = QUnit.isIE ? 0 : 0.5,
+		fraction = 0.5,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,
