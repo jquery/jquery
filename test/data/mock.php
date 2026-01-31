@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Keep in sync with /test/middleware-mockserver.cjs
+ * Keep in sync with /test/middleware-mockserver.js
  */
 function cleanCallback( $callback ) {
 	return preg_replace( '/[^a-z0-9_]/i', '', $callback );
