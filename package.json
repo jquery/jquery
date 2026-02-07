@@ -136,7 +136,7 @@
     "rimraf": "6.1.0",
     "rollup": "4.53.2",
     "sinon": "9.2.4",
-    "webpack": "5.102.1"
+    "webpack": "5.104.1"
   },
   "commitplease": {
     "nohook": true,
