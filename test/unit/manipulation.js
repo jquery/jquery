@@ -521,7 +521,7 @@ QUnit.test( "Tag name processing respects the HTML Standard (gh-2005)", function
 
 		// Support: Android 4.4 only
 		// Chromium < 35 incorrectly upper-cases µ; Android 4.4 uses such a version by default
-		// (and its WebView, being un-updatable, will use it for eternity) so we need to blacklist
+		// (and its WebView, being un-updatable, will use it for eternity) so we need to blocklist
 		// that one for the tests to pass.
 		if ( characters === "µ" && /chrome/i.test( navigator.userAgent ) &&
 			navigator.userAgent.match( /chrome\/(\d+)/i )[ 1 ] < 35 ) {

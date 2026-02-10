@@ -596,7 +596,7 @@ testIframe(
 			i = 0,
 			supportProps = {},
 			failingSupportProps = {},
-			whitelist = {
+			allowlist = {
 				ajax: true
 			};
 
@@ -616,7 +616,7 @@ testIframe(
 		assert.expect( i );
 
 		// Record all support props and the failing ones and ensure everyone
-		// except a few on a whitelist are failing at least once.
+		// except a few on an allowlist are failing at least once.
 		for ( browserKey in expectedMap ) {
 			for ( supportTestName in expectedMap[ browserKey ] ) {
 				supportProps[ supportTestName ] = true;
@@ -627,7 +627,7 @@ testIframe(
 		}
 
 		for ( supportTestName in supportProps ) {
-			assert.ok( whitelist[ supportTestName ] || failingSupportProps[ supportTestName ],
+			assert.ok( allowlist[ supportTestName ] || failingSupportProps[ supportTestName ],
 				"jQuery.support['" + supportTestName + "'] always succeeds; remove it?" );
 		}
 	} );

@@ -1497,7 +1497,7 @@ testIframe(
 );
 
 // iOS7 doesn't fire the load event if the long-loading iframe gets its source reset to about:blank.
-// This makes this test fail but it doesn't seem to cause any real-life problems so blacklisting
+// This makes this test fail but it doesn't seem to cause any real-life problems so blocklisting
 // this test there is preferred to complicating the hard-to-test core/ready code further.
 if ( !/iphone os 7_/i.test( navigator.userAgent ) ) {
 	testIframe(
