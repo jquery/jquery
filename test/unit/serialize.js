@@ -117,8 +117,10 @@ QUnit.test( "jQuery.param() Constructed prop values", function( assert ) {
 	assert.equal( jQuery.param( params, false ), jQuery.param( { "test": { "prop": "val" } } ), "Allow non-native constructed objects" );
 } );
 
-QUnit.test( "serialize()", function( assert ) {
-	assert.expect( 6 );
+QUnit.test( "serialize/serializeArray()", function( assert ) {
+	assert.expect( 12 );
+
+	var formArrayExpected, testFormArrayExpected, bothArrayExpected;
 
 	// Add html5 elements only for serialize because selector can't yet find them on non-html5 browsers
 	jQuery( "#search" ).after(
@@ -127,29 +129,118 @@ QUnit.test( "serialize()", function( assert ) {
 		"<input type='file' name='fileupload' />"
 	);
 
+	formArrayExpected = [
+		{ name: "action", value: "Test" },
+		{ name: "radio2", value: "on" },
+		{ name: "check", value: "on" },
+		{ name: "hidden", value: "" },
+		{ name: "foo[bar]", value: "" },
+		{ name: "name", value: "name" },
+		{ name: "search", value: "search" },
+		{ name: "email", value: "dave@jquery.com" },
+		{ name: "number", value: "43" },
+		{ name: "select1", value: "" },
+		{ name: "select2", value: "3" },
+		{ name: "select3", value: "1" },
+		{ name: "select3", value: "2" },
+		{ name: "select5", value: "3" }
+	];
+
+	testFormArrayExpected = [
+		{ name: "T3", value: "?\r\nZ" },
+		{ name: "H1", value: "x" },
+		{ name: "H2", value: "" },
+		{ name: "PWD", value: "" },
+		{ name: "T1", value: "" },
+		{ name: "T2", value: "YES" },
+		{ name: "My Name", value: "me" },
+		{ name: "S1", value: "abc" },
+		{ name: "S3", value: "YES" },
+		{ name: "S4", value: "" }
+	];
+
+	bothArrayExpected = formArrayExpected.concat( testFormArrayExpected );
+
+	assert.deepEqual( jQuery( "#form" ).serializeArray(),
+		formArrayExpected,
+		"Check form serialization as array" );
+
 	assert.equal( jQuery( "#form" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		"Check form serialization as query string" );
+
+	assert.deepEqual( jQuery( "input,select,textarea,button", "#form" ).serializeArray(),
+		formArrayExpected,
+		"Check input serialization as array" );
 
 	assert.equal( jQuery( "input,select,textarea,button", "#form" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3",
 		"Check input serialization as query string" );
 
+	assert.deepEqual( jQuery( "#testForm" ).serializeArray(),
+		testFormArrayExpected,
+		"Check form serialization as array" );
+
 	assert.equal( jQuery( "#testForm" ).serialize(),
 		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Check form serialization as query string" );
+
+	assert.deepEqual( jQuery( "input,select,textarea,button", "#testForm" ).serializeArray(),
+		testFormArrayExpected,
+		"Check input serialization as array" );
 
 	assert.equal( jQuery( "input,select,textarea,button", "#testForm" ).serialize(),
 		"T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Check input serialization as query string" );
 
+	assert.deepEqual( jQuery( "#form, #testForm" ).serializeArray(),
+		bothArrayExpected,
+		"Multiple form serialization as array" );
+
 	assert.equal( jQuery( "#form, #testForm" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Multiple form serialization as query string" );
+
+	assert.deepEqual( jQuery( "#form, #testForm input, #testForm select, #testForm textarea, #testForm button" ).serializeArray(),
+		bothArrayExpected,
+		"Mixed form/input serialization as array" );
 
 	assert.equal( jQuery( "#form, #testForm input, #testForm select, #testForm textarea, #testForm button" ).serialize(),
 		"action=Test&radio2=on&check=on&hidden=&foo%5Bbar%5D=&name=name&search=search&email=dave%40jquery.com&number=43&select1=&select2=3&select3=1&select3=2&select5=3&T3=%3F%0D%0AZ&H1=x&H2=&PWD=&T1=&T2=YES&My%20Name=me&S1=abc&S3=YES&S4=",
 		"Mixed form/input serialization as query string" );
 
 	jQuery( "#html5email, #html5number" ).remove();
+} );
+
+QUnit.test( "serialize/serializeArray() - excludes non-submittable elements by nodeName", function( assert ) {
+	assert.expect( 2 );
+
+	var form = jQuery(
+			"<form>" +
+			"	<input type='text' name='regular' value='val'>" +
+			"	<div></div>" +
+			"	<span></span>" +
+			"</form>"
+		),
+		div = form.find( "div" )[ 0 ],
+		span = form.find( "span" )[ 0 ];
+
+	form.appendTo( "#qunit-fixture" );
+
+	div.name = "divEl";
+	div.value = "divVal";
+
+	span.name = "spanEl";
+	span.value = "spanVal";
+
+	// Serialize elements directly (not the form) to bypass form.elements
+	assert.deepEqual( jQuery( "input, div, span", form ).serializeArray(), [
+		{ name: "regular", value: "val" }
+	], "serializeArray: Only submittable elements (input/select/textarea/keygen) are included" );
+
+	assert.equal( jQuery( "input, div, span", form ).serialize(),
+		"regular=val",
+		"serialize: Only submittable elements (input/select/textarea/keygen) are included" );
+
+	form.remove();
 } );
