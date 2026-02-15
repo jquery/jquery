@@ -244,3 +244,54 @@ QUnit.test( "serialize/serializeArray() - excludes non-submittable elements by n
 
 	form.remove();
 } );
+
+QUnit.testUnlessIE( "serialize/serializeArray() - form-associated custom elements (gh-5245)", function( assert ) {
+	assert.expect( 2 );
+
+	var form;
+
+	// Support: IE 11+
+	// Uses eval to avoid syntax errors in IE (which doesn't support `class`).
+	if ( !customElements.get( "test-control" ) ) {
+
+		eval(
+			"class TestControl extends HTMLElement {\n" +
+			"	static formAssociated = true;\n" +
+			"	constructor() {\n" +
+			"		super();\n" +
+			"		this._internals = this.attachInternals();\n" +
+			"	}\n" +
+			"	connectedCallback() {\n" +
+			"		this._internals.setFormValue( this.getAttribute( 'value' ) || '' );\n" +
+			"	}\n" +
+			"	get name() {\n" +
+			"		return this.getAttribute( 'name' );\n" +
+			"	}\n" +
+			"	get value() {\n" +
+			"		return this.getAttribute( 'value' ) || '';\n" +
+			"	}\n" +
+			"}\n" +
+			"customElements.define( 'test-control', TestControl );"
+		);
+	}
+
+	form = jQuery(
+		"<form>" +
+		"	<input type='text' name='regular' value='textVal'>" +
+		"	<test-control name='custom' value='customVal'></test-control>" +
+		"</form>"
+	);
+
+	form.appendTo( "#qunit-fixture" );
+
+	assert.deepEqual( form.serializeArray(), [
+		{ name: "regular", value: "textVal" },
+		{ name: "custom", value: "customVal" }
+	], "serializeArray: Form-associated custom elements should be included" );
+
+	assert.equal( form.serialize(),
+		"regular=textVal&custom=customVal",
+		"serialize: Form-associated custom elements should be included" );
+
+	form.remove();
+} );
