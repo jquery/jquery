@@ -1390,8 +1390,10 @@ testIframe(
 testIframe(
 	"css() should work correctly in XML documents (gh-4730)",
 	"mock.php?action=xmlCss",
-	function( assert, jQuery, window, document, hasStyleFromCreateElement, width ) {
-		assert.expect( 2 );
+	function( assert, jQuery, window, document, threw, hasStyleFromCreateElement, width ) {
+		assert.expect( 3 );
+		assert.strictEqual( threw, false,
+			"jQuery did not throw in XML document" );
 		assert.strictEqual( hasStyleFromCreateElement, false,
 			"document.createElement('div').style is undefined in XML context" );
 		assert.strictEqual( width, "100px",

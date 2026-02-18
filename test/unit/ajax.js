@@ -525,6 +525,20 @@ QUnit.module( "ajax", {
 		];
 	} );
 
+	testIframe(
+		"jQuery.ajax() - cross-domain detection in XML documents (gh-4730)",
+		"mock.php?action=xmlAjax",
+		function( assert, jQuery, window, document, threw, sameOriginCrossDomain, crossOriginCrossDomain ) {
+			assert.expect( 3 );
+			assert.strictEqual( threw, false,
+				"jQuery did not throw in XML document" );
+			assert.strictEqual( sameOriginCrossDomain, false,
+				"Same-origin request is not detected as cross-domain in XML document" );
+			assert.strictEqual( crossOriginCrossDomain, true,
+				"Cross-origin request is detected as cross-domain in XML document" );
+		}
+	);
+
 	ajaxTest( "jQuery.ajax() - cross-domain detection", 8, function( assert ) {
 		function request( url, title, crossDomainOrOptions ) {
 			return jQuery.extend( {

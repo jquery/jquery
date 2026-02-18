@@ -324,6 +324,11 @@ const mocks = {
 		const body = readFileSync( `${ __dirname }/data/css/xmlDocument.xhtml` ).toString();
 		resp.end( body );
 	},
+	xmlAjax: function( _req, resp ) {
+		resp.writeHead( 200, { "Content-Type": "application/xml" } );
+		const body = readFileSync( `${ __dirname }/data/ajax/xmlDocument.xhtml` ).toString();
+		resp.end( body );
+	},
 	errorWithScript: function( req, resp ) {
 		if ( req.query.withScriptContentType ) {
 			resp.writeHead( 404, { "Content-Type": "application/javascript" } );
