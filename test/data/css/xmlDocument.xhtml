@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Served via mock.php?action=xmlCss with Content-Type: application/xml.
+     In XML documents, document.createElement creates elements in the null
+     namespace, so .style is undefined. This tests that jQuery handles that. -->
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>XML Document CSS Test</title>
+</head>
+<body>
+	<div id="test" style="width:100px;position:absolute;">test</div>
+	<script src="../../dist/jquery.js"> </script>
+	<script src="iframeTest.js"> </script>
+	<script>
+		var xmlDiv = document.createElement( "div" );
+		var hasStyleFromCreateElement = typeof xmlDiv.style !== "undefined";
+
+		var $test = jQuery( "#test" );
+		var width = $test.css( "width" );
+
+		startIframeTest( hasStyleFromCreateElement, width );
+	</script>
+</body>
+</html>

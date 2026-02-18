@@ -319,6 +319,11 @@ const mocks = {
 			`${ __dirname }/data/trusted-types-attributes.html` ).toString();
 		resp.end( body );
 	},
+	xmlCss: function( _req, resp ) {
+		resp.writeHead( 200, { "Content-Type": "application/xml" } );
+		const body = readFileSync( `${ __dirname }/data/css/xmlDocument.xhtml` ).toString();
+		resp.end( body );
+	},
 	errorWithScript: function( req, resp ) {
 		if ( req.query.withScriptContentType ) {
 			resp.writeHead( 404, { "Content-Type": "application/javascript" } );

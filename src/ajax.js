@@ -1,5 +1,5 @@
 import { jQuery } from "./core.js";
-import { document } from "./var/document.js";
+import { createElement } from "./var/createElement.js";
 import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 import { location } from "./ajax/var/location.js";
 import { nonce } from "./ajax/var/nonce.js";
@@ -44,7 +44,7 @@ var
 	allTypes = "*/".concat( "*" ),
 
 	// Anchor tag for parsing the document origin
-	originAnchor = document.createElement( "a" );
+	originAnchor = createElement( "a" );
 
 originAnchor.href = location.href;
 
@@ -541,7 +541,7 @@ jQuery.extend( {
 
 		// A cross-domain request is in order when the origin doesn't match the current origin.
 		if ( s.crossDomain == null ) {
-			urlAnchor = document.createElement( "a" );
+			urlAnchor = createElement( "a" );
 
 			// Support: IE <=8 - 11+
 			// IE throws exception on accessing the href property if url is malformed,

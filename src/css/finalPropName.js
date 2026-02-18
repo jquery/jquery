@@ -1,7 +1,7 @@
-import { document } from "../var/document.js";
+import { createElement } from "../var/createElement.js";
 
 var cssPrefixes = [ "Webkit", "Moz", "ms" ],
-	emptyStyle = document.createElementNS( "http://www.w3.org/1999/xhtml", "div" ).style;
+	emptyStyle = createElement( "div" ).style;
 
 // Return a vendor-prefixed property or undefined
 function vendorPropName( name ) {
