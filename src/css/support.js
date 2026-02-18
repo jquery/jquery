@@ -5,7 +5,7 @@ import { support } from "../var/support.js";
 import { isIE } from "../var/isIE.js";
 
 var reliableTrDimensionsVal, reliableColDimensionsVal,
-	table = document.createElement( "table" );
+	table = document.createElementNS( "http://www.w3.org/1999/xhtml", "table" );
 
 // Executing table tests requires only one layout, so they're executed
 // at the same time to save the second computation.
@@ -22,9 +22,9 @@ function computeTableStyleTests() {
 	}
 
 	var trStyle,
-		col = document.createElement( "col" ),
-		tr = document.createElement( "tr" ),
-		td = document.createElement( "td" );
+		col = document.createElementNS( "http://www.w3.org/1999/xhtml", "col" ),
+		tr = document.createElementNS( "http://www.w3.org/1999/xhtml", "tr" ),
+		td = document.createElementNS( "http://www.w3.org/1999/xhtml", "td" );
 
 	table.style.cssText = "position:absolute;left:-11111px;" +
 		"border-collapse:separate;border-spacing:0";
