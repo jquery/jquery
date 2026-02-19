@@ -321,12 +321,13 @@ const mocks = {
 	},
 	xmlCss: function( _req, resp ) {
 		resp.writeHead( 200, { "Content-Type": "application/xml" } );
-		const body = readFileSync( `${ __dirname }/data/css/xmlDocument.xhtml` ).toString();
+		const body = readFileSync( `${ __dirname }/data/css/xmlDocCss.xhtml` ).toString();
 		resp.end( body );
 	},
 	xmlAjax: function( _req, resp ) {
 		resp.writeHead( 200, { "Content-Type": "application/xml" } );
-		const body = readFileSync( `${ __dirname }/data/ajax/xmlDocument.xhtml` ).toString();
+		const body = readFileSync(
+			`${ __dirname }/data/ajax/xmlDocCrossDomainDetection.xhtml` ).toString();
 		resp.end( body );
 	},
 	errorWithScript: function( req, resp ) {

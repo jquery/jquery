@@ -8,12 +8,11 @@
 	<script src="../../dist/jquery.js"> </script>
 	<script src="iframeTest.js"> </script>
 	<script>
-		var threw = false,
-			hasStyleFromCreateElement, width;
+		var hasStyleFromCreateElement, width,
+			threw = false;
 
 		try {
 			hasStyleFromCreateElement = typeof document.createElement( "div" ).style !== "undefined";
-
 			width = jQuery( "#test" ).css( "width" );
 		} catch ( e ) {
 			threw = true;
