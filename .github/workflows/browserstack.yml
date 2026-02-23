@@ -50,7 +50,9 @@ jobs:
           - '_:iPhone 16_iOS_18'
           - '_:iPhone 15 Pro_iOS_17'
           - '_:iPhone 14_iOS_16'
-          - '_:iPhone 13_iOS_15'
+          # None of the iOS 15 devices currently work; the browser
+          # doesn't even start.
+          # - '_:iPhone 13_iOS_15'
           - '_:iPhone 12_iOS_14'
           - '_:iPhone 11_iOS_13'
           # iOS 12 & older is not officially supported by BrowserStack as
