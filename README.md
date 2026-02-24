@@ -15,7 +15,7 @@ The latest version of jQuery is available at [https://jquery.com/download/](http
 | 2.x     | 2.x-stable | Inactive |
 | 1.x     | 1.x-stable | Inactive |
 
-Once 4.0.0 final is released, the 3.x branch will continue to receive updates for a limited time. The 2.x and 1.x branches are no longer supported.
+[jQuery 4.0.0 has been released!](https://blog.jquery.com/2026/01/17/jquery-4-0-0/) The 3.x branch will now only receive critical updates. The 2.x and 1.x branches are no longer supported.
 
 Commercial support for inactive versions is available from [HeroDevs](https://herodevs.com/support/jquery-nes).
 
