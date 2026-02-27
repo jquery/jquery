@@ -1000,8 +1000,7 @@ QUnit.test( "val() respects numbers without exception (Bug trac-9319) - progress
 	$progress.remove();
 } );
 
-// IE doesn't support <meter>
-QUnit.testUnlessIE( "val() respects numbers without exception (Bug trac-9319) - meter",
+QUnit.test( "val() respects numbers without exception (Bug trac-9319) - meter",
 	function( assert ) {
 
 	assert.expect( 2 );

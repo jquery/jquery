@@ -314,18 +314,14 @@ QUnit.module( "ajax", {
 				} );
 			},
 			url: url( "mock.php?action=headers&keys=siMPle|SometHing-elsE|OthEr|Nullable|undefined|Empty|ajax-send" ),
-			headers: supportjQuery.extend( {
+			headers: {
 				"siMPle": "value",
 				"SometHing-elsE": "other value",
 				"OthEr": "something else",
 				"Nullable": null,
-				"undefined": undefined
-
-				// Support: IE 9 - 11+
-				// IE can receive empty headers but not send them.
-			}, QUnit.isIE ? {} : {
+				"undefined": undefined,
 				"Empty": ""
-			} ),
+			},
 			success: function( data, _, xhr ) {
 				var i,
 					requestHeaders = jQuery.extend( this.headers, {
@@ -3311,7 +3307,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 				assert.strictEqual( data, "pan", "URLSearchParams sent correctly" );
 			}
 		};
-	}, QUnit.testUnlessIE );
+	} );
 
 	ajaxTest( "jQuery.ajax() - Blob", 1, function( assert ) {
 		var blob = new Blob( [ "name=peter" ], { type: "text/plain" } );
