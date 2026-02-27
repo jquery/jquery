@@ -11,6 +11,8 @@ on:
         description: 'Version to verify (>= 4.0.0-rc.1)'
         required: false
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
 
 jobs:
   run:

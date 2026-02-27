@@ -35,6 +35,9 @@ on:
         type: string
         default: 'chrome__windows_11'
 
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
 jobs:
   test:
     runs-on: ubuntu-latest
