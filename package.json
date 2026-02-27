@@ -134,7 +134,7 @@
     "release-it": "19.0.6",
     "requirejs": "2.3.7",
     "rimraf": "6.1.0",
-    "rollup": "4.53.2",
+    "rollup": "4.59.0",
     "sinon": "9.2.4",
     "webpack": "5.104.1"
   },
