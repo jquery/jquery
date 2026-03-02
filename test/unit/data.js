@@ -998,3 +998,54 @@ QUnit.test( "keys matching Object.prototype properties  (gh-3256)", function( as
 	assert.strictEqual( div.data( "hasOwnProperty" ), undefined,
 		"hasOwnProperty not matched (after forced data creation)" );
 } );
+
+QUnit.test( "data-* attributes on SVG elements", function( assert ) {
+	assert.expect( 6 );
+
+	var svg = jQuery(
+			"<svg data-foo='svg-value'>" +
+			"	<rect data-bar='rect-value'" +
+			"		data-num='42' data-bool='true'" +
+			"		data-null='null' data-json='{\"a\":1}'></rect>" +
+			"	<g data-baz='g-value' data-one='1' data-two='two'></g>" +
+			"</svg>"
+		),
+		rect = svg.find( "rect" ),
+		g = svg.find( "g" );
+
+	svg.appendTo( "#qunit-fixture" );
+
+	// Basic string retrieval from data-* attributes
+	assert.strictEqual( svg.data( "foo" ), "svg-value",
+		"Read data-* attribute from SVG element" );
+
+	// Type coercion works on SVG elements the same as HTML
+	assert.deepEqual( rect.data(), {
+		bar: "rect-value",
+		num: 42,
+		bool: true,
+		"null": null,
+		json: { "a": 1 }
+	}, "Type coercion on rect data-* attributes" );
+
+	// .data() with no args returns all data-* attributes from SVG
+	assert.deepEqual( g.data(), {
+		baz: "g-value",
+		one: 1,
+		two: "two"
+	}, "All data-* attributes returned from SVG g element" );
+
+	// .data(key, value) sets data on SVG elements
+	svg.data( "custom", "stored" );
+	assert.strictEqual( svg.data( "custom" ), "stored",
+		"Setting and reading .data() on SVG element works" );
+
+	// .data(key) prefers cached value over attribute
+	svg.data( "foo", "updated" );
+	assert.strictEqual( svg.data( "foo" ), "updated",
+		"Cached data takes precedence over data-* attribute on SVG element" );
+
+	// Non-existing data-* attribute
+	assert.strictEqual( svg.data( "nonexistent" ), undefined,
+		"Non-existing data-* attribute returns undefined on SVG element" );
+} );
