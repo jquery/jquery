@@ -749,7 +749,11 @@ function setDocument( node ) {
 	sortOrder = function( a, b ) {
 
 		// Flag for duplicate removal
-		if ( a === b ) {
+		// Support: IE 11+, Edge 17 - 18+
+		// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
+		// two documents; shallow comparisons work.
+		// eslint-disable-next-line eqeqeq
+		if ( a == b ) {
 			hasDuplicate = true;
 			return 0;
 		}
@@ -780,7 +784,7 @@ function setDocument( node ) {
 			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
 			// two documents; shallow comparisons work.
 			// eslint-disable-next-line eqeqeq
-			if ( a === document || a.ownerDocument == preferredDoc &&
+			if ( a == document || a.ownerDocument == preferredDoc &&
 				find.contains( preferredDoc, a ) ) {
 				return -1;
 			}
@@ -789,7 +793,7 @@ function setDocument( node ) {
 			// IE/Edge sometimes throw a "Permission denied" error when strict-comparing
 			// two documents; shallow comparisons work.
 			// eslint-disable-next-line eqeqeq
-			if ( b === document || b.ownerDocument == preferredDoc &&
+			if ( b == document || b.ownerDocument == preferredDoc &&
 				find.contains( preferredDoc, b ) ) {
 				return 1;
 			}
