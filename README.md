@@ -10,8 +10,8 @@ The latest version of jQuery is available at [https://jquery.com/download/](http
 
 | Version | Branch     | Status   |
 | ------- | ---------- | -------- |
-| 4.x     | main       | Beta     |
-| 3.x     | 3.x-stable | Active   |
+| 4.x     | main       | Active   |
+| 3.x     | 3.x-stable | Inactive |
 | 2.x     | 2.x-stable | Inactive |
 | 1.x     | 1.x-stable | Inactive |
 
