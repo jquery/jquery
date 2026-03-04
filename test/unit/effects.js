@@ -800,6 +800,97 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "toggle()", function( assert )
 	assert.ok( x.is( ":visible" ), "is visible again" );
 } );
 
+QUnit.test( "show/hide/toggle(callback) - animate with default duration (gh-1738)", function( assert ) {
+	assert.expect( 9 );
+
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
+		hideCb = this.sandbox.spy(),
+		showCb = this.sandbox.spy(),
+		toggleCb = this.sandbox.spy();
+
+	div.show();
+	div.hide( hideCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( hideCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( hideCb.callCount, 1, "hide(callback) invokes the callback" );
+	assert.ok( div.is( ":hidden" ), "Element is hidden after hide(callback)" );
+
+	div.show( showCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( showCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( showCb.callCount, 1, "show(callback) invokes the callback" );
+	assert.ok( div.is( ":visible" ), "Element is visible after show(callback)" );
+
+	div.toggle( toggleCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( toggleCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( toggleCb.callCount, 1, "toggle(callback) invokes the callback" );
+	assert.ok( div.is( ":hidden" ), "Element is hidden after toggle(callback) from visible" );
+
+	div.remove();
+} );
+
+QUnit.test( "slideDown/slideUp/slideToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
+	assert.expect( 6 );
+
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
+		slideDownCb = this.sandbox.spy(),
+		slideUpCb = this.sandbox.spy(),
+		slideToggleCb = this.sandbox.spy();
+
+	div.slideDown( slideDownCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( slideDownCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( slideDownCb.callCount, 1, "slideDown(callback) invokes the callback" );
+
+	div.slideUp( slideUpCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( slideUpCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( slideUpCb.callCount, 1, "slideUp(callback) invokes the callback" );
+
+	div.slideToggle( slideToggleCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( slideToggleCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( slideToggleCb.callCount, 1, "slideToggle(callback) invokes the callback" );
+
+	div.remove();
+} );
+
+QUnit.test( "fadeIn/fadeOut/fadeToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
+	assert.expect( 6 );
+
+	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
+		fadeInCb = this.sandbox.spy(),
+		fadeOutCb = this.sandbox.spy(),
+		fadeToggleCb = this.sandbox.spy();
+
+	div.fadeIn( fadeInCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( fadeInCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( fadeInCb.callCount, 1, "fadeIn(callback) invokes the callback" );
+
+	div.fadeOut( fadeOutCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( fadeOutCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( fadeOutCb.callCount, 1, "fadeOut(callback) invokes the callback" );
+
+	div.fadeToggle( fadeToggleCb );
+	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
+	assert.strictEqual( fadeToggleCb.callCount, 0, "callback not invoked too early" );
+	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
+	assert.strictEqual( fadeToggleCb.callCount, 1, "fadeToggle(callback) invokes the callback" );
+
+	div.remove();
+} );
+
 QUnit.test( "jQuery.fx.prototype.cur() - <1.8 Back Compat", function( assert ) {
 	assert.expect( 7 );
 
