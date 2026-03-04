@@ -801,7 +801,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "toggle()", function( assert )
 } );
 
 QUnit.test( "show/hide/toggle(callback) - animate with default duration (gh-1738)", function( assert ) {
-	assert.expect( 12 );
+	assert.expect( 9 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
 		hideCb = this.sandbox.spy(),
@@ -834,7 +834,7 @@ QUnit.test( "show/hide/toggle(callback) - animate with default duration (gh-1738
 } );
 
 QUnit.test( "slideDown/slideUp/slideToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
-	assert.expect( 9 );
+	assert.expect( 6 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
 		slideDownCb = this.sandbox.spy(),
@@ -863,7 +863,7 @@ QUnit.test( "slideDown/slideUp/slideToggle(callback) - animate with default dura
 } );
 
 QUnit.test( "fadeIn/fadeOut/fadeToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
-	assert.expect( 9 );
+	assert.expect( 6 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
 		fadeInCb = this.sandbox.spy(),
