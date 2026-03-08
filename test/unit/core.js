@@ -1629,3 +1629,40 @@ QUnit.testUnlessIE( "jQuery.contains within <template/> doesn't throw (gh-5147)"
 	assert.ok( true, "Didn't throw" );
 } );
 
+QUnit.test( "jQuery.text", function( assert ) {
+	assert.expect( 12 );
+
+	var xml, tabs;
+
+	assert.strictEqual( jQuery.text( jQuery( "<div>Hello</div>" )[ 0 ] ),
+		"Hello", "Element node" );
+	assert.strictEqual( jQuery.text( jQuery( "<div><span>Hello</span> <b>World</b></div>" )[ 0 ] ),
+		"Hello World", "Element with nested children" );
+	assert.strictEqual( jQuery.text( document.createTextNode( "foo" ) ),
+		"foo", "Text node" );
+	assert.notEqual( jQuery.text( document ), "",
+		"Document node is non-empty" );
+	assert.strictEqual(
+		jQuery.text( new DOMParser().parseFromString( "<span>example</span>", "text/html" ) ),
+		"example", "DOMParser document node" );
+	assert.strictEqual( jQuery.text( jQuery( document.createDocumentFragment() )
+		.append( document.createTextNode( "foo" ) )[ 0 ] ),
+		"foo", "Document fragment" );
+	assert.strictEqual( jQuery.text( document.createComment( "comment text" ) ),
+		"", "Comment node returns empty string" );
+	assert.strictEqual(
+		jQuery.text( jQuery( "<div>Hello</div><div>World</div>" ).toArray() ),
+		"HelloWorld", "Array of elements concatenates text" );
+	assert.strictEqual(
+		jQuery.text( [ jQuery( "<div>Hello</div>" )[ 0 ], document.createTextNode( "Bar" ) ] ),
+		"HelloBar", "Array with mixed node types" );
+	assert.strictEqual( jQuery.text( jQuery( "<div></div>" )[ 0 ] ),
+		"", "Empty element" );
+	assert.strictEqual( jQuery.text( [] ), "", "Empty array" );
+
+	xml = createDashboardXML();
+	tabs = xml.getElementsByTagName( "tab" );
+	assert.strictEqual( jQuery.text( tabs[ 0 ].firstChild ),
+		"blabla", "CDATA section node" );
+} );
+
