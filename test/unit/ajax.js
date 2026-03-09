@@ -2335,7 +2335,7 @@ QUnit.module( "ajax", {
 				assert.ok( jqxhr.response instanceof window.ArrayBuffer, "data in jQXHR" );
 			}
 		};
-	}, QUnit.isIE ? QUnit.skip : QUnit.test );
+	} );
 
 	QUnit.test( "trac-11743 - jQuery.ajax() - script, throws exception", function( assert ) {
 		assert.expect( 1 );
