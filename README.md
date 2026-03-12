@@ -8,16 +8,18 @@ The latest version of jQuery is available at [https://jquery.com/download/](http
 
 ## Version support
 
-| Version | Branch     | Status   |
-| ------- | ---------- | -------- |
-| 4.x     | main       | Beta     |
-| 3.x     | 3.x-stable | Active   |
-| 2.x     | 2.x-stable | Inactive |
-| 1.x     | 1.x-stable | Inactive |
+| Version | Branch     | Support       |
+| ------- | ---------- | ------------- |
+| 4.x     | main       | Full          |
+| 3.x     | 3.x-stable | Critical-only |
+| 2.x     | 2.x-stable | None          |
+| 1.x     | 1.x-stable | None          |
 
-[jQuery 4.0.0 has been released!](https://blog.jquery.com/2026/01/17/jquery-4-0-0/) The 3.x branch will now only receive critical updates. The 2.x and 1.x branches are no longer supported.
+[jQuery 4.0.0 has been released!](https://blog.jquery.com/2026/01/17/jquery-4-0-0/)
 
-Commercial support for inactive versions is available from [HeroDevs](https://herodevs.com/support/jquery-nes).
+The 3.x branch will now only receive critical updates. The 2.x and 1.x branches are no longer supported. We recommend that all users upgrade to the latest version of jQuery to ensure that they have the best performance, security, and features.
+
+Commercial support for previous versions is available from [HeroDevs](https://herodevs.com/support/jquery-nes).
 
 Learn more about our [version support](https://jquery.com/support/).
 
