@@ -11,8 +11,6 @@ const files = {
 	"core-js-bundle/core-js-bundle.js": "core-js-bundle/minified.js",
 	"core-js-bundle/LICENSE": "core-js-bundle/LICENSE",
 
-	"npo/npo.js": "native-promise-only/lib/npo.src.js",
-
 	"qunit/qunit.js": "qunit/qunit/qunit.js",
 	"qunit/qunit.css": "qunit/qunit/qunit.css",
 	"qunit/LICENSE.txt": "qunit/LICENSE.txt",
