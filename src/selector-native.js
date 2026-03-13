@@ -93,7 +93,11 @@ jQuery.extend( {
 
 				// Outside of IE, if we're not changing the context we can
 				// use :scope instead of an ID.
-				if ( newContext !== context || isIE ) {
+				// Support: IE 11+
+				// IE sometimes throws a "Permission denied" error when strict-comparing
+				// two documents; shallow comparisons work.
+				// eslint-disable-next-line eqeqeq
+				if ( newContext != context || isIE ) {
 
 					// Capture the context ID, setting it first if necessary
 					if ( ( nid = context.getAttribute( "id" ) ) ) {
