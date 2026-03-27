@@ -10,22 +10,18 @@ export function curCSS( elem, name, computed ) {
 
 	computed = computed || getStyles( elem );
 
-	// getPropertyValue is needed for `.css('--customProperty')` (gh-3144)
 	if ( computed ) {
 
+		// getPropertyValue is needed for `.css('--customProperty')` (gh-3144)
+		// Some regular properties - if their camelCased form is identical to
+		// the kebab-cased one - would return the value from `getPropertyValue`
+		// instead of directly from a property of `computed`. The value from
+		// direct property access would be identical, though, so this is not
+		// an issue.
+		//
 		// A fallback to direct property access is needed as `computed`, being
 		// the output of `getComputedStyle`, contains camelCased keys and
 		// `getPropertyValue` requires kebab-case ones.
-		//
-		// Support: IE <=9 - 11+
-		// IE only supports `"float"` in `getPropertyValue`; in computed styles
-		// it's only available as `"cssFloat"`. We no longer modify properties
-		// sent to `.css()` apart from camelCasing, so we need to check both.
-		// Normally, this would create difference in behavior: if
-		// `getPropertyValue` returns an empty string, the value returned
-		// by `.css()` would be `undefined`. This is usually the case for
-		// disconnected elements. However, in IE even disconnected elements
-		// with no styles return `"none"` for `getPropertyValue( "float" )`
 		ret = computed.getPropertyValue( name ) || computed[ name ];
 
 		if ( isCustomProp && ret ) {
@@ -53,10 +49,5 @@ export function curCSS( elem, name, computed ) {
 		}
 	}
 
-	return ret !== undefined ?
-
-		// Support: IE <=9 - 11+
-		// IE returns zIndex value as an integer.
-		ret + "" :
-		ret;
+	return ret;
 }

@@ -55,11 +55,9 @@
 		} );
 	} else {
 
-		// No TrustedHTML support so let's at least run tests with object wrappers
-		// with a proper `toString` function. This also shows that jQuery support
-		// of TrustedHTML is generic and would work with similar APIs out of the box
-		// as well. Ideally, we'd run these tests in browsers with TrustedHTML support
-		// as well but due to the CSP TrustedHTML enforcement these tests would fail.
+		// Support: iOS <26 only, Safari <26 only, Firefox <148 only
+		// No TrustedHTML support so let's at least run tests with object
+		// wrappers with a proper `toString` function.
 		runTests( "Object wrapper", function( input ) {
 			return {
 				toString: function toString() {
