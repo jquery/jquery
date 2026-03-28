@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 3.x-stable
+      - 3.x-ios-15-browserstack-test
 
 permissions:
   contents: read # to fetch code (actions/checkout)
