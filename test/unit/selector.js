@@ -243,6 +243,52 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Attribute equals bad string", "input[name='apostrophe'd']" );
 } );
 
+QUnit.test( "identifier ReDoS", function( assert ) {
+	assert.expect( 1 );
+
+	// 30 \a hex escapes followed by ! (invalid attr selector syntax).
+	// Naive implementations of the `<ident-token>` symbol:
+	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
+	// could cause catastrophic backtracking, hanging the browser
+	// for over a minute.
+	//
+	// Support: IE 9 - 11+ only
+	// IE doesn't have String.prototype.repeat.
+	// 31 empty elements will produce 30 occurrences of the `join` parameter.
+	var selector = "[" + Array( 31 ).join( "\\a" ) + "!]",
+		start, elapsed;
+
+	start = Date.now();
+	try {
+		jQuery( selector );
+	} catch ( _e ) {}
+	elapsed = Date.now() - start;
+
+	assert.ok( elapsed < 1000,
+		"Pathological hex escape selector should not hang (took " + elapsed + "ms)" );
+} );
+
+QUnit.test( "double-dash identifier prefix", function( assert ) {
+	assert.expect( 5 );
+
+	var elem = jQuery( "<div id='--dd-id' class='--dd-class' --dd-attr='val'></div>" )
+		.appendTo( "#qunit-fixture" );
+
+	assert.equal( jQuery( "#--dd-id" ).length, 1,
+		"ID selector with -- prefix" );
+	assert.equal( jQuery( ".--dd-class" ).length, 1,
+		"Class selector with -- prefix" );
+	assert.equal( jQuery( "[--dd-attr]" ).length, 1,
+		"Attribute existence selector with -- prefix" );
+	assert.equal( jQuery( "[--dd-attr='val']" ).length, 1,
+		"Attribute equals selector with -- prefix" );
+
+	assert.equal( jQuery( "#qunit-fixture" ).find( "[--dd-attr]" ).length, 1,
+		"Attribute selector with -- prefix in .find()" );
+
+	elem.remove();
+} );
+
 QUnit.test( "id", function( assert ) {
 	assert.expect( 35 );
 

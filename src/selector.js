@@ -56,14 +56,21 @@ var i,
 		return 0;
 	},
 
+	// Regular expressions
+
 	booleans = "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|" +
 		"loop|multiple|open|readonly|required|scoped",
 
-	// Regular expressions
+	// https://www.w3.org/TR/css-syntax-3/#escape-diagram
+	escape = "\\\\[\\da-fA-F]{1,6}" + whitespace + "?|" +
+		"\\\\[^\\da-fA-F\\r\\n\\f]",
 
 	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
-	identifier = "(?:\\\\[\\da-fA-F]{1,6}" + whitespace +
-		"?|\\\\[^\\r\\n\\f]|[\\w-]|[^\0-\\x7f])+",
+	//
+	// Note: we are not 100% aligned with the spec here; the regex
+	// below e.g. accepts leading digits. We'll consider increasing
+	// the alignment in a future major version bump.
+	identifier = "(?:" + escape + "|[\\w-]|[^\\0-\\x7f])+",
 
 	// Attribute selectors: https://www.w3.org/TR/selectors/#attribute-selectors
 	attributes = "\\[" + whitespace + "*(" + identifier + ")(?:" + whitespace +
