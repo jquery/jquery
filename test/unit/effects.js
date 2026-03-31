@@ -834,7 +834,7 @@ QUnit.test( "show/hide/toggle(callback) - animate with default duration (gh-1738
 } );
 
 QUnit.test( "slideDown/slideUp/slideToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 9 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
 		slideDownCb = this.sandbox.spy(),
@@ -846,24 +846,27 @@ QUnit.test( "slideDown/slideUp/slideToggle(callback) - animate with default dura
 	assert.strictEqual( slideDownCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( slideDownCb.callCount, 1, "slideDown(callback) invokes the callback" );
+	assert.ok( div.is( ":visible" ), "Element is visible after slideDown(callback)" );
 
 	div.slideUp( slideUpCb );
 	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
 	assert.strictEqual( slideUpCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( slideUpCb.callCount, 1, "slideUp(callback) invokes the callback" );
+	assert.ok( div.is( ":hidden" ), "Element is hidden after slideUp(callback)" );
 
 	div.slideToggle( slideToggleCb );
 	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
 	assert.strictEqual( slideToggleCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( slideToggleCb.callCount, 1, "slideToggle(callback) invokes the callback" );
+	assert.ok( div.is( ":visible" ), "Element is visible after slideToggle(callback) from hidden" );
 
 	div.remove();
 } );
 
 QUnit.test( "fadeIn/fadeOut/fadeToggle(callback) - animate with default duration (gh-1738)", function( assert ) {
-	assert.expect( 6 );
+	assert.expect( 9 );
 
 	var div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ).hide(),
 		fadeInCb = this.sandbox.spy(),
@@ -875,18 +878,21 @@ QUnit.test( "fadeIn/fadeOut/fadeToggle(callback) - animate with default duration
 	assert.strictEqual( fadeInCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( fadeInCb.callCount, 1, "fadeIn(callback) invokes the callback" );
+	assert.ok( div.is( ":visible" ), "Element is visible after fadeIn(callback)" );
 
 	div.fadeOut( fadeOutCb );
 	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
 	assert.strictEqual( fadeOutCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( fadeOutCb.callCount, 1, "fadeOut(callback) invokes the callback" );
+	assert.ok( div.is( ":hidden" ), "Element is hidden after fadeOut(callback)" );
 
 	div.fadeToggle( fadeToggleCb );
 	this.clock.tick( jQuery.fx.speeds._default * 0.8 );
 	assert.strictEqual( fadeToggleCb.callCount, 0, "callback not invoked too early" );
 	this.clock.tick( jQuery.fx.speeds._default * 0.2 + 1 );
 	assert.strictEqual( fadeToggleCb.callCount, 1, "fadeToggle(callback) invokes the callback" );
+	assert.ok( div.is( ":visible" ), "Element is visible after fadeToggle(callback) from hidden" );
 
 	div.remove();
 } );
