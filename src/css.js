@@ -3,8 +3,8 @@ import { access } from "./core/access.js";
 import { nodeName } from "./core/nodeName.js";
 import { rcssNum } from "./var/rcssNum.js";
 import { isIE } from "./var/isIE.js";
+import { rdoubleDash } from "./var/rdoubleDash.js";
 import { rnumnonpx } from "./css/var/rnumnonpx.js";
-import { rcustomProp } from "./css/var/rcustomProp.js";
 import { cssExpand } from "./css/var/cssExpand.js";
 import { isAutoPx } from "./css/isAutoPx.js";
 import { cssCamelCase } from "./css/cssCamelCase.js";
@@ -197,7 +197,7 @@ jQuery.extend( {
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
 			origName = cssCamelCase( name ),
-			isCustomProp = rcustomProp.test( name ),
+			isCustomProp = rdoubleDash.test( name ),
 			style = elem.style;
 
 		// Make sure that we're working with the right name. We don't
@@ -266,7 +266,7 @@ jQuery.extend( {
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
 			origName = cssCamelCase( name ),
-			isCustomProp = rcustomProp.test( name );
+			isCustomProp = rdoubleDash.test( name );
 
 		// Make sure that we're working with the right name. We don't
 		// want to modify the value if it is a CSS custom property

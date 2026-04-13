@@ -267,6 +267,31 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Attribute equals bad string", "input[name='apostrophe'd']" );
 } );
 
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ](
+	"lenient identifier parsing", function( assert ) {
+
+	// Test that jQuery identifier parsing is more lenient than
+	// querySelectorAll's. Note: this may change in a jQuery major
+	// version bump.
+
+	assert.expect( 9 );
+
+	// ID
+	assert.ok( jQuery( "#-0abc" ), "$( \"#-0abc\" ) did not throw" );
+	assert.ok( jQuery( "#0abc" ), "$( \"#0abc\" ) did not throw" );
+	assert.ok( jQuery( "#--0abc" ), "$( \"#--0abc\" ) did not throw" );
+
+	// Type
+	assert.ok( jQuery( "-0abc" ), "$( \"-0abc\" ) did not throw" );
+	assert.ok( jQuery( "0abc" ), "$( \"0abc\" ) did not throw" );
+	assert.ok( jQuery( "--0abc" ), "$( \"--0abc\" ) did not throw" );
+
+	// Class
+	assert.ok( jQuery( ".-0abc" ), "$( \".-0abc\" ) did not throw" );
+	assert.ok( jQuery( ".0abc" ), "$( \".0abc\" ) did not throw" );
+	assert.ok( jQuery( ".--0abc" ), "$( \".--0abc\" ) did not throw" );
+} );
+
 QUnit.test( "identifier ReDoS", function( assert ) {
 	assert.expect( 1 );
 

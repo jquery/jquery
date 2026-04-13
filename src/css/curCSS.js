@@ -1,12 +1,12 @@
 import { jQuery } from "../core.js";
 import { isAttached } from "../core/isAttached.js";
 import { getStyles } from "./var/getStyles.js";
-import { rcustomProp } from "./var/rcustomProp.js";
+import { rdoubleDash } from "../var/rdoubleDash.js";
 import { rtrimCSS } from "../var/rtrimCSS.js";
 
 export function curCSS( elem, name, computed ) {
 	var ret,
-		isCustomProp = rcustomProp.test( name );
+		isCustomProp = rdoubleDash.test( name );
 
 	computed = computed || getStyles( elem );
 

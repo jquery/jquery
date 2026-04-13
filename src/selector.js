@@ -5,6 +5,7 @@ import { indexOf } from "./var/indexOf.js";
 import { pop } from "./var/pop.js";
 import { push } from "./var/push.js";
 import { whitespace } from "./var/whitespace.js";
+import { rdoubleDash } from "./var/rdoubleDash.js";
 import { rbuggyQSA } from "./selector/rbuggyQSA.js";
 import { rtrimCSS } from "./var/rtrimCSS.js";
 import { isIE } from "./var/isIE.js";
@@ -62,7 +63,7 @@ var i,
 	rheader = /^h\d$/i,
 
 	// Easily-parseable/retrievable ID or TAG or CLASS selectors
-	rquickExpr = /^(?:#([\w-]+)|(\.?[\w-]+))$/,
+	rquickExpr = /^(?:#([\w-]+)|(\.?[a-z][\w-]*))$/i,
 
 	// Used for iframes; see `setDocument`.
 	// Support: IE 9 - 11+
@@ -132,9 +133,9 @@ function find( selector, context, results, seed ) {
 					// `querySelectorAll` is, depending on the browser, either on par
 					// perf-wise with `getElementsByTagName` & `getElementsByClassName`
 					// or even faster, so we don't use `gEBTN` & `gEBCN` anymore.
-					// Note: we can only get tags & classes matching `[\w-]+` here thanks
-					// to `rquickExpr`, so there's no need to wrap them with
-					// `jQuery.escapeSelector`.
+					// Note: we can only get tags & classes matching `/[a-z][\w-]*/i`
+					// here thanks to `rquickExpr`, so there's no need to wrap them
+					// with `jQuery.escapeSelector`.
 					push.apply( results, context.querySelectorAll( selector ) );
 					return results;
 				}
@@ -388,6 +389,17 @@ jQuery.expr = {
 		},
 
 		TAG: function( tag, context ) {
+
+			// Support: IE <=11+
+			// IE doesn't recognize identifiers starting with a dash,
+			// and identifiers starting with a double dash are not
+			// escaped via jQuery.escapeSelector. Such identifiers
+			// are not valid tag names, but the selection should not
+			// throw when they're used. Fallback to an empty collection.
+			if ( isIE && rdoubleDash.test( tag ) ) {
+				return [];
+			}
+
 			return context.querySelectorAll(
 				tag === "*" ? tag : jQuery.escapeSelector( tag )
 			);
@@ -395,6 +407,15 @@ jQuery.expr = {
 
 		CLASS: function( className, context ) {
 			if ( documentIsHTML ) {
+
+				// Support: IE <=11+
+				// IE doesn't recognize identifiers starting with a dash,
+				// and identifiers starting with a double dash are not
+				// escaped via jQuery.escapeSelector. Fallback to
+				// getElementsByClassName.
+				if ( isIE && rdoubleDash.test( className ) ) {
+					return context.getElementsByClassName( className );
+				}
 				return context.querySelectorAll(
 					"." + jQuery.escapeSelector( className )
 				);
