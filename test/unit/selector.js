@@ -292,6 +292,7 @@ QUnit.test( "identifier ReDoS", function( assert ) {
 		"Pathological hex escape selector should not hang (took " + elapsed + "ms)" );
 } );
 
+// Testing
 QUnit.test( "double-dash identifier prefix", function( assert ) {
 	assert.expect( 5 );
 
