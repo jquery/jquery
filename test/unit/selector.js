@@ -217,6 +217,14 @@ QUnit.test( "XML Document Selectors", function( assert ) {
 	}
 } );
 
+QUnit.test( "WIP FAILURE TESTING", function( assert ) {
+	assert.expect( 1 );
+
+	eval( "class C {}" );
+
+	assert.ok( true );
+} );
+
 QUnit.test( "broken selectors throw", function( assert ) {
 	assert.expect( 33 );
 
