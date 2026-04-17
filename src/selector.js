@@ -133,9 +133,8 @@ function find( selector, context, results, seed ) {
 					// `querySelectorAll` is, depending on the browser, either on par
 					// perf-wise with `getElementsByTagName` & `getElementsByClassName`
 					// or even faster, so we don't use `gEBTN` & `gEBCN` anymore.
-					// Note: we can only get tags & classes matching `/[a-z][\w-]*/i`
-					// here thanks to `rquickExpr`, so there's no need to wrap them
-					// with `jQuery.escapeSelector`.
+					// Note: thanks to the restrictions of `rquickExpr`, there's no
+					// need to wrap them with `jQuery.escapeSelector`.
 					push.apply( results, context.querySelectorAll( selector ) );
 					return results;
 				}
