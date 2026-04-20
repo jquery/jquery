@@ -193,7 +193,7 @@ function find( selector, context, results, seed ) {
 						newContext.querySelectorAll( newSelector )
 					);
 					return results;
-				} catch ( qsaError ) {
+				} catch ( _qsaError ) {
 					nonnativeSelectorCache( selector, true );
 				} finally {
 					if ( nid === jQuery.expando ) {
