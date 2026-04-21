@@ -191,7 +191,11 @@ export default [
 
 			"no-unused-vars": [
 				"error",
-				{ args: "after-used", argsIgnorePattern: "^_", caughtErrorsIgnorePattern: "^_|^e$" }
+				{
+					args: "after-used",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_|^e$"
+				}
 			],
 
 			// Too many errors
