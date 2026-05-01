@@ -90,7 +90,7 @@ export function domManip( collection, args, callback, ignored ) {
 							// Optional AJAX dependency, but won't run scripts if not present
 							if ( jQuery._evalUrl && !node.noModule ) {
 								jQuery._evalUrl( node.src, {
-									nonce: node.nonce,
+									nonce: node.getAttribute ? node.getAttribute( "nonce" ) || node.nonce : node.nonce,
 									crossOrigin: node.crossOrigin
 								}, doc );
 							}

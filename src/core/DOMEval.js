@@ -11,12 +11,20 @@ export function DOMEval( code, node, doc ) {
 	doc = doc || document;
 
 	var i,
+		val,
 		script = doc.createElement( "script" );
 
 	script.text = code;
 	for ( i in preservedScriptAttributes ) {
-		if ( node && node[ i ] ) {
-			script[ i ] = node[ i ];
+		if ( node ) {
+			if ( i === "nonce" ) {
+				val = node.getAttribute ? node.getAttribute( i ) : node[ i ];
+				if ( val ) {
+					script.setAttribute( i, val );
+				}
+			} else if ( node[ i ] ) {
+				script[ i ] = node[ i ];
+			}
 		}
 	}
 

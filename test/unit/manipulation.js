@@ -3137,6 +3137,33 @@ testIframe(
 	}
 );
 
+QUnit.test( "DOMEval preserves nonce from script elements", function( assert ) {
+	assert.expect( 2 );
+
+	Globals.register( "globalEvalNonceTest" );
+
+	var oldAppend = document.head.appendChild,
+		script = document.createElement( "script" );
+
+	script.setAttribute( "nonce", "test-nonce" );
+	script.textContent = "window.globalEvalNonceTest = 1;";
+
+	document.head.appendChild = function( node ) {
+		assert.strictEqual( node.getAttribute( "nonce" ), "test-nonce",
+			"Injected script carries the original nonce attribute" );
+		return oldAppend.call( this, node );
+	};
+
+	try {
+		jQuery( "#qunit-fixture" ).append( script );
+	} finally {
+		document.head.appendChild = oldAppend;
+	}
+
+	assert.strictEqual( window.globalEvalNonceTest, 1,
+		"Script executed after nonce preservation" );
+} );
+
 QUnit.test( "Sanitized HTML doesn't get unsanitized", function( assert ) {
 
 	var container,
