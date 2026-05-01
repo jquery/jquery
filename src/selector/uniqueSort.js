@@ -70,9 +70,7 @@ function sortOrder( a, b ) {
  * @param {ArrayLike} results
  */
 jQuery.uniqueSort = function( results ) {
-	var elem,
-		duplicates = [],
-		j = 0,
+	var j = 0,
 		i = 0;
 
 	hasDuplicate = false;
@@ -80,14 +78,13 @@ jQuery.uniqueSort = function( results ) {
 	sort.call( results, sortOrder );
 
 	if ( hasDuplicate ) {
-		while ( ( elem = results[ i++ ] ) ) {
-			if ( elem === results[ i ] ) {
-				j = duplicates.push( i );
+		j = 1;
+		for ( i = 1; i < results.length; i++ ) {
+			if ( results[ i ] !== results[ i - 1 ] ) {
+				results[ j++ ] = results[ i ];
 			}
 		}
-		while ( j-- ) {
-			splice.call( results, duplicates[ j ], 1 );
-		}
+		splice.call( results, j, results.length - j );
 	}
 
 	return results;
