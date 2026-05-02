@@ -10,7 +10,7 @@
  */
 ( function( global, factory ) {
 
-	"use strict";
+	// "use strict" — not needed in ES modules (kept for compatibility)
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
 
@@ -24,7 +24,7 @@
 // Pass this if window is not defined yet
 } )( typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
-"use strict";
+// "use strict" — not needed in ES modules (kept for compatibility)
 
 if ( !window.document ) {
 	throw new Error( "jQuery requires a window with a document" );
