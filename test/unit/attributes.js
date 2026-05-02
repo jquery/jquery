@@ -7,7 +7,7 @@ function bareObj( value ) {
 }
 
 function functionReturningObj( value ) {
-	return function() {
+	return () => {
 		return value;
 	};
 }
@@ -35,7 +35,7 @@ QUnit.test( "jQuery.propFix integrity test", function( assert ) {
 	//  Ensure that accidental or erroneous property
 	//  overwrites don't occur
 	//  This is simply for better code coverage and future proofing.
-	var props = {
+	let props = {
 		"tabindex": "tabIndex",
 		"readonly": "readOnly",
 		"for": "htmlFor",
@@ -56,7 +56,7 @@ QUnit.test( "jQuery.propFix integrity test", function( assert ) {
 QUnit.test( "attr(String)", function( assert ) {
 	assert.expect( 50 );
 
-	var extras, body, $body,
+	let extras, body, $body,
 		select, optgroup, option, $img, styleElem,
 		$button, $form, $a;
 
@@ -173,7 +173,7 @@ QUnit.test( "attr(String)", function( assert ) {
 QUnit.test( "attr(String) on cloned elements, trac-9646", function( assert ) {
 	assert.expect( 4 );
 
-	var div,
+	let div,
 		input = jQuery( "<input name='tester' />" );
 
 	input.attr( "name" );
@@ -195,7 +195,7 @@ QUnit.test( "attr(String) on cloned elements, trac-9646", function( assert ) {
 
 QUnit.test( "attr(String) in XML Files", function( assert ) {
 	assert.expect( 3 );
-	var xml = createDashboardXML();
+	let xml = createDashboardXML();
 	assert.equal( jQuery( "locations", xml ).attr( "class" ), "foo", "Check class attribute in XML document" );
 	assert.equal( jQuery( "location", xml ).attr( "for" ), "bar", "Check for attribute in XML document" );
 	assert.equal( jQuery( "location", xml ).attr( "checked" ), "different", "Check that hooks are not attached in XML document" );
@@ -205,7 +205,7 @@ QUnit.test( "attr(String, Function)", function( assert ) {
 	assert.expect( 2 );
 
 	assert.equal(
-		jQuery( "#text1" ).attr( "value", function() {
+		jQuery( "#text1" ).attr( "value", () => {
 			return this.id;
 		} ).attr( "value" ),
 		"text1",
@@ -223,12 +223,12 @@ QUnit.test( "attr(String, Function)", function( assert ) {
 
 QUnit.test( "attr(Hash)", function( assert ) {
 	assert.expect( 3 );
-	var pass = true;
+	let pass = true;
 
 	jQuery( "#qunit-fixture div" ).attr( {
 		"foo": "baz",
 		"zoo": "ping"
-	} ).each( function() {
+	} ).each( () => {
 		if ( this.getAttribute( "foo" ) !== "baz" && this.getAttribute( "zoo" ) !== "ping" ) {
 			pass = false;
 		}
@@ -238,7 +238,7 @@ QUnit.test( "attr(Hash)", function( assert ) {
 
 	assert.equal(
 		jQuery( "#text1" ).attr( {
-			"value": function() {
+			"value": () => {
 				return this.id;
 			} } ).attr( "value" ),
 		"text1",
@@ -381,7 +381,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	} );
 
 	jQuery.each( [ window, document, obj, "#firstp" ], function( i, elem ) {
-		var oldVal = elem.nonexisting,
+		let oldVal = elem.nonexisting,
 			$elem = jQuery( elem );
 		assert.strictEqual( $elem.attr( "nonexisting" ), undefined, "attr works correctly for non existing attributes (bug trac-7500)." );
 		assert.equal( $elem.attr( "nonexisting", "foo" ).attr( "nonexisting" ), "foo", "attr falls back to prop on unsupported arguments" );
@@ -482,7 +482,7 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 QUnit.test( "attr( previously-boolean-attr, non-boolean-value)", function( assert ) {
 	assert.expect( 3 );
 
-	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
+	let div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	div.attr( "hidden", "foo" );
 	assert.strictEqual( div.attr( "hidden" ), "foo",
@@ -508,9 +508,9 @@ QUnit.test( "attr(non-ASCII)", function( assert ) {
 
 QUnit.test( "attr(String, Object) - Loaded via XML document", function( assert ) {
 	assert.expect( 2 );
-	var xml = createDashboardXML(),
+	let xml = createDashboardXML(),
 		titles = [];
-	jQuery( "tab", xml ).each( function() {
+	jQuery( "tab", xml ).each( () => {
 		titles.push( jQuery( this ).attr( "title" ) );
 	} );
 	assert.equal( titles[ 0 ], "Location", "attr() in XML context: Check first title" );
@@ -519,7 +519,7 @@ QUnit.test( "attr(String, Object) - Loaded via XML document", function( assert )
 
 QUnit.test( "attr(String, Object) - Loaded via XML fragment", function( assert ) {
 	assert.expect( 2 );
-	var frag = createXMLFragment(),
+	let frag = createXMLFragment(),
 		$frag = jQuery( frag );
 
 	$frag.attr( "test", "some value" );
@@ -549,7 +549,7 @@ QUnit.test( "attr('tabindex')", function( assert ) {
 QUnit.test( "attr('tabindex', value)", function( assert ) {
 	assert.expect( 9 );
 
-	var element = jQuery( "#divWithNoTabIndex" );
+	let element = jQuery( "#divWithNoTabIndex" );
 	assert.equal( element.attr( "tabindex" ), undefined, "start with no tabindex" );
 
 	// set a positive string
@@ -617,7 +617,7 @@ QUnit.test( "removeAttr(String)", function( assert ) {
 
 QUnit.test( "removeAttr(String) in XML", function( assert ) {
 	assert.expect( 7 );
-	var xml = createDashboardXML(),
+	let xml = createDashboardXML(),
 		iwt = jQuery( "infowindowtab", xml );
 
 	assert.equal( iwt.attr( "normal" ), "ab", "Check initial value" );
@@ -637,7 +637,7 @@ QUnit.test( "removeAttr(String) in XML", function( assert ) {
 QUnit.test( "removeAttr(Multi String, variable space width)", function( assert ) {
 	assert.expect( 8 );
 
-	var div = jQuery( "<div id='a' alt='b' title='c' rel='d'></div>" ),
+	let div = jQuery( "<div id='a' alt='b' title='c' rel='d'></div>" ),
 		tests = {
 			id: "a",
 			alt: "b",
@@ -659,8 +659,8 @@ QUnit.test( "removeAttr(Multi String, variable space width)", function( assert )
 QUnit.test( "removeAttr(Multi String, non-HTML whitespace is valid in attribute names (gh-3003)", function( assert ) {
 	assert.expect( 8 );
 
-	var div = jQuery( "<div id='a' data-\xA0='b' title='c' rel='d'></div>" );
-	var tests = {
+	let div = jQuery( "<div id='a' data-\xA0='b' title='c' rel='d'></div>" );
+	let tests = {
 		id: "a",
 		"data-\xA0": "b",
 		title: "c",
@@ -714,7 +714,7 @@ QUnit.test( "prop(String, Object) on null/undefined", function( assert ) {
 
   assert.expect( 14 );
 
-	var select, optgroup, option, attributeNode, commentNode, textNode, obj, $form,
+	let select, optgroup, option, attributeNode, commentNode, textNode, obj, $form,
 		body = document.body,
 		$body = jQuery( body );
 
@@ -779,7 +779,7 @@ QUnit.test( "prop('tabindex')", function( assert ) {
 
 QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 	assert.expect( 1 );
-	var image = jQuery( "<img src='" + baseURL + "1x1.jpg' />" )
+	let image = jQuery( "<img src='" + baseURL + "1x1.jpg' />" )
 		.appendTo( "#qunit-fixture" );
 	assert.equal( image.prop( "tabIndex" ), -1, "tabIndex on image" );
 } );
@@ -787,7 +787,7 @@ QUnit.test( "image.prop( 'tabIndex' )", function( assert ) {
 QUnit.test( "prop('tabindex', value)", function( assert ) {
 	assert.expect( 10 );
 
-	var clone,
+	let clone,
 		element = jQuery( "#divWithNoTabIndex" );
 
 	assert.equal( element.prop( "tabindex" ), -1, "start with no tabindex" );
@@ -860,7 +860,7 @@ QUnit.test( "option.prop('selected', true) affects select.selectedIndex (gh-2732
 
 QUnit.test( "removeProp(String)", function( assert ) {
 	assert.expect( 6 );
-	var attributeNode = document.createAttribute( "irrelevant" ),
+	let attributeNode = document.createAttribute( "irrelevant" ),
 		commentNode = document.createComment( "some comment" ),
 		textNode = document.createTextNode( "some text" ),
 		obj = {};
@@ -895,7 +895,7 @@ QUnit.test( "val()", function( assert ) {
 
 	assert.expect( 20 + ( jQuery.fn.serialize ? 6 : 0 ) );
 
-	var checks, $button;
+	let checks, $button;
 	assert.equal( jQuery( "#text1" ).val(), "Test", "Check for value of input element" );
 
 	// ticket trac-1714 this caused a JS error in IE
@@ -974,7 +974,7 @@ QUnit.test( "val() with non-matching values on dropdown list", function( assert 
 	jQuery( "#select5" ).val( "" );
 	assert.equal( jQuery( "#select5" ).val(), null, "Non-matching set on select-one" );
 
-	var select6 = jQuery( "<select multiple id=\"select6\"><option value=\"1\">A</option><option value=\"2\">B</option></select>" ).appendTo( "#form" );
+	let select6 = jQuery( "<select multiple id=\"select6\"><option value=\"1\">A</option><option value=\"2\">B</option></select>" ).appendTo( "#form" );
 	jQuery( select6 ).val( "nothing" );
 	assert.deepEqual( jQuery( select6 ).val(), [], "Non-matching set (single value) on select-multiple" );
 
@@ -1016,7 +1016,7 @@ QUnit.testUnlessIE( "val() respects numbers without exception (Bug trac-9319) - 
 	$meter.remove();
 } );
 
-var testVal = function( valueObj, assert ) {
+let testVal = function( valueObj, assert ) {
 	assert.expect( 9 );
 
 	jQuery( "#text1" ).val( valueObj( "test" ) );
@@ -1031,7 +1031,7 @@ var testVal = function( valueObj, assert ) {
 	jQuery( "#text1" ).val( valueObj( null ) );
 	assert.equal( document.getElementById( "text1" ).value, "", "Check for modified (via val(null)) value of input element" );
 
-	var j,
+	let j,
 		$select = jQuery( "<select multiple><option value='1'></option><option value='2'></option></select>" ),
 		$select1 = jQuery( "#select1" );
 
@@ -1066,7 +1066,7 @@ QUnit.test( "val(Function)", function( assert ) {
 QUnit.test( "val(Array of Numbers) (Bug trac-7123)", function( assert ) {
 	assert.expect( 4 );
 	jQuery( "#form" ).append( "<input type='checkbox' name='arrayTest' value='1' /><input type='checkbox' name='arrayTest' value='2' /><input type='checkbox' name='arrayTest' value='3' checked='checked' /><input type='checkbox' name='arrayTest' value='4' />" );
-	var elements = jQuery( "#form input[name=arrayTest]" ).val( [ 1, 2 ] );
+	let elements = jQuery( "#form input[name=arrayTest]" ).val( [ 1, 2 ] );
 	assert.ok( elements[ 0 ].checked, "First element was checked" );
 	assert.ok( elements[ 1 ].checked, "Second element was checked" );
 	assert.ok( !elements[ 2 ].checked, "Third element was unchecked" );
@@ -1078,7 +1078,7 @@ QUnit.test( "val(Array of Numbers) (Bug trac-7123)", function( assert ) {
 QUnit.test( "val(Function) with incoming value", function( assert ) {
 	assert.expect( 10 );
 
-	var oldVal = jQuery( "#text1" ).val();
+	let oldVal = jQuery( "#text1" ).val();
 
 	jQuery( "#text1" ).val( function( i, val ) {
 		assert.equal( val, oldVal, "Make sure the incoming value is correct." );
@@ -1169,7 +1169,7 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 		},
 		html = "";
 	jQuery.each( spaces, function( key, obj ) {
-		var value = obj.html || obj;
+		let value = obj.html || obj;
 		html += "<option value='attr" + value + "'></option>";
 		html += "<option value='at" + value + "tr'></option>";
 		html += "<option value='" + value + "attr'></option>";
@@ -1177,7 +1177,7 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 	$select.html( html );
 
 	jQuery.each( spaces, function( key, obj ) {
-		var val = obj.val || obj;
+		let val = obj.val || obj;
 		$select.val( "attr" + val );
 		assert.equal( $select.val(), "attr" + val, "Value ending with space character (" + key + ") selected (attr)" );
 
@@ -1189,7 +1189,7 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 	} );
 
 	jQuery.each( spaces, function( key, obj ) {
-		var value = obj.html || obj,
+		let value = obj.html || obj,
 			val = obj.val || obj;
 		html = "";
 		html += "<option>text" + value + "</option>";
@@ -1217,7 +1217,7 @@ QUnit.test( "select.val(space characters) (gh-2978)", function( assert ) {
 QUnit.test( "radio.val(space characters)", function( assert ) {
 	assert.expect( 42 );
 
-	var radio = jQuery( "<input type='radio'/>" ).appendTo( "#qunit-fixture" ),
+	let radio = jQuery( "<input type='radio'/>" ).appendTo( "#qunit-fixture" ),
 		spaces = {
 			"\\t": {
 				html: "&#09;",
@@ -1238,7 +1238,7 @@ QUnit.test( "radio.val(space characters)", function( assert ) {
 		};
 
 	jQuery.each( spaces, function( key, obj ) {
-		var val = obj.val || obj;
+		let val = obj.val || obj;
 
 		radio.val( "attr" + val );
 		assert.equal( radio.val(), "attr" + val, "Value ending with space character (" + key + ") returned (set via val())" );
@@ -1251,7 +1251,7 @@ QUnit.test( "radio.val(space characters)", function( assert ) {
 	} );
 
 	jQuery.each( spaces, function( key, obj ) {
-		var val = obj.val || obj,
+		let val = obj.val || obj,
 			htmlVal = obj.html || obj;
 
 		radio = jQuery( "<input type='radio' value='attr" + htmlVal + "'/>" ).appendTo( "#qunit-fixture" );
@@ -1265,10 +1265,10 @@ QUnit.test( "radio.val(space characters)", function( assert ) {
 	} );
 } );
 
-var testAddClass = function( valueObj, assert ) {
+let testAddClass = function( valueObj, assert ) {
 	assert.expect( 9 );
 
-	var pass, j, i,
+	let pass, j, i,
 		div = jQuery( "#qunit-fixture div" );
 	div.addClass( valueObj( "test" ) );
 	pass = true;
@@ -1325,9 +1325,9 @@ QUnit.test( "addClass(Array)", function( assert ) {
 
 QUnit.test( "addClass(Function) with incoming value", function( assert ) {
 	assert.expect( 59 );
-	var pass, i,
+	let pass, i,
 		div = jQuery( "#qunit-fixture div" ),
-		old = div.map( function() {
+		old = div.map( () => {
 			return jQuery( this ).attr( "class" ) || "";
 		} );
 
@@ -1345,7 +1345,7 @@ QUnit.test( "addClass(Function) with incoming value", function( assert ) {
 	assert.ok( pass, "Add Class" );
 } );
 
-var testRemoveClass = function( valueObj, assert ) {
+let testRemoveClass = function( valueObj, assert ) {
 	assert.expect( 8 );
 
 	var $set = jQuery( "#qunit-fixture div" ),
@@ -1401,7 +1401,7 @@ QUnit.test( "removeClass(Array) - simple", function( assert ) {
 QUnit.test( "removeClass(Function) with incoming value", function( assert ) {
 	assert.expect( 59 );
 
-	var $divs = jQuery( "#qunit-fixture div" ).addClass( "test" ), old = $divs.map( function() {
+	var $divs = jQuery( "#qunit-fixture div" ).addClass( "test" ), old = $divs.map( () => {
 		return jQuery( this ).attr( "class" );
 	} );
 
@@ -1432,10 +1432,10 @@ QUnit.test( "removeClass(undefined) is a no-op", function( assert ) {
 	assert.ok( $div.hasClass( "base" ) && $div.hasClass( "second" ), "Element still has classes after removeClass(undefined)" );
 } );
 
-var testToggleClass = function( valueObj, assert ) {
+let testToggleClass = function( valueObj, assert ) {
 	assert.expect( 11 );
 
-	var e = jQuery( "#firstp" );
+	let e = jQuery( "#firstp" );
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
 	e.toggleClass( valueObj( "test" ) );
 	assert.ok( e.is( ".test" ), "Assert class present" );
@@ -1478,7 +1478,7 @@ QUnit.test( "toggleClass(Array[, boolean])", function( assert ) {
 QUnit.test( "toggleClass(Function[, boolean]) with incoming value", function( assert ) {
 	assert.expect( 14 );
 
-	var e = jQuery( "#firstp" ),
+	let e = jQuery( "#firstp" ),
 		old = e.attr( "class" ) || "";
 
 	assert.ok( !e.is( ".test" ), "Assert class not present" );
@@ -1529,7 +1529,7 @@ QUnit.test( "toggleClass(Function[, boolean]) with incoming value", function( as
 QUnit.test( "addClass, removeClass, hasClass", function( assert ) {
 	assert.expect( 17 );
 
-	var jq = jQuery( "<p>Hi</p>" ), x = jq[ 0 ];
+	let jq = jQuery( "<p>Hi</p>" ), x = jq[ 0 ];
 
 	jq.addClass( "hi" );
 	assert.equal( x.className, "hi", "Check single added class" );
@@ -1570,7 +1570,7 @@ QUnit.test( "addClass, removeClass, hasClass", function( assert ) {
 QUnit.test( "addClass, removeClass, hasClass on many elements", function( assert ) {
 	assert.expect( 19 );
 
-	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
+	let elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
 
 	elem.addClass( "hi" );
 	assert.equal( elem[ 0 ].className, "hi", "Check single added class" );
@@ -1613,7 +1613,7 @@ QUnit.test( "addClass, removeClass, hasClass on many elements", function( assert
 QUnit.test( "addClass, removeClass, hasClass on many elements - Array", function( assert ) {
 	assert.expect( 16 );
 
-	var elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
+	let elem = jQuery( "<p>p0</p><p>p1</p><p>p2</p>" );
 
 	elem.addClass( [ "hi" ] );
 	assert.equal( elem[ 0 ].className, "hi", "Check single added class" );
@@ -1662,13 +1662,13 @@ QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-H
 	testMatches();
 } );
 
-( function() {
-	var rnothtmlwhite = /[^\x20\t\r\n\f]+/g;
+( () => {
+	let rnothtmlwhite = /[^\x20\t\r\n\f]+/g;
 
 	function expectClasses( assert, elem, classes ) {
-		var actualClassesSorted = ( elem.attr( "class" ).match( rnothtmlwhite ) || [] )
+		let actualClassesSorted = ( elem.attr( "class" ).match( rnothtmlwhite ) || [] )
 			.sort().join( " " );
-		var classesSorted = classes.slice()
+		let classesSorted = classes.slice()
 			.sort().join( " " );
 		assert.equal( actualClassesSorted, classesSorted, "Expected classes present" );
 	}
@@ -1676,7 +1676,7 @@ QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-H
 	QUnit.test( "addClass on arrays with falsy elements (gh-4998)", function( assert ) {
 		assert.expect( 3 );
 
-		var elem = jQuery( "<div class='a'></div>" );
+		let elem = jQuery( "<div class='a'></div>" );
 
 		elem.addClass( [ "b", "", "c" ] );
 		expectClasses( assert, elem, [ "a", "b", "c" ] );
@@ -1689,7 +1689,7 @@ QUnit.test( "addClass, removeClass, hasClass on elements with classes with non-H
 	QUnit.test( "removeClass on arrays with falsy elements (gh-4998)", function( assert ) {
 		assert.expect( 3 );
 
-		var elem = jQuery( "<div class='a b c d e'></div>" );
+		let elem = jQuery( "<div class='a b c d e'></div>" );
 
 		elem.removeClass( [ "e", "" ] );
 		expectClasses( assert, elem, [ "a", "b", "c", "d" ] );
@@ -1733,7 +1733,7 @@ QUnit.test( "hasClass correctly interprets non-space separators (trac-13835)", f
 QUnit.test( "coords returns correct values in IE6/IE7, see trac-10828", function( assert ) {
 	assert.expect( 1 );
 
-	var area,
+	let area,
 		map = jQuery( "<map></map>" );
 
 	area = map.html( "<area shape='rect' coords='0,0,0,0' href='#' alt='a'></area>" ).find( "area" );
@@ -1759,11 +1759,11 @@ QUnit.test( "option value not trimmed when setting via parent select", function(
 QUnit.test( "Insignificant white space returned for $(option).val() (trac-14858, gh-2978)", function( assert ) {
 	assert.expect( 16 );
 
-	var val = jQuery( "<option></option>" ).val();
+	let val = jQuery( "<option></option>" ).val();
 	assert.equal( val.length, 0, "Empty option should have no value" );
 
 	jQuery.each( [ " ", "\n", "\t", "\f", "\r" ], function( i, character ) {
-		var val = jQuery( "<option>" + character + "</option>" ).val();
+		let val = jQuery( "<option>" + character + "</option>" ).val();
 		assert.equal( val.length, 0, "insignificant white-space returned for value" );
 
 		val = jQuery( "<option>" + character + "test" + character + "</option>" ).val();
@@ -1785,8 +1785,8 @@ QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {
 		"svg",
 		"rect",
 		"g"
-	], function() {
-		var elem = jQuery( createSVGElement( this ) );
+	], () => {
+		let elem = jQuery( createSVGElement( this ) );
 
 		elem.addClass( "awesome" );
 		assert.ok( elem.hasClass( "awesome" ), "SVG element (" + this + ") has added class" );
@@ -1805,7 +1805,7 @@ QUnit.test( "SVG class manipulation (gh-2199)", function( assert ) {
 QUnit.test( "non-lowercase boolean attribute getters should not crash", function( assert ) {
 	assert.expect( 3 );
 
-	var elem = jQuery( "<input checked required autofocus type='checkbox'>" );
+	let elem = jQuery( "<input checked required autofocus type='checkbox'>" );
 
 	[
 		"Checked", "requiRed", "AUTOFOCUS"
@@ -1823,7 +1823,7 @@ QUnit.test( "non-lowercase boolean attribute getters should not crash", function
 QUnit.test( "false setter removes non-ARIA attrs (gh-5388)", function( assert ) {
 	assert.expect( 24 );
 
-	var elem = jQuery( "<input" +
+	let elem = jQuery( "<input" +
 		"	checked required autofocus" +
 		"	type='checkbox'" +
 		"	title='Example title'" +
@@ -1838,7 +1838,7 @@ QUnit.test( "false setter removes non-ARIA attrs (gh-5388)", function( assert ) 
 		">" );
 
 	function testFalseSetter( attributes, options ) {
-		var removal = options.removal;
+		let removal = options.removal;
 
 		attributes.forEach( function( attrName ) {
 			assert.ok( elem.attr( attrName ) != null,
@@ -1887,7 +1887,7 @@ testIframe(
 	"Basic TrustedScriptURL support (gh-4948)",
 	"mock.php?action=trustedTypesAttributes",
 	function( assert, jQuery, window, document, test ) {
-		var done = assert.async();
+		let done = assert.async();
 
 		assert.expect( 1 );
 
