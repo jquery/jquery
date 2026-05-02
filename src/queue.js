@@ -6,7 +6,7 @@ import "./callbacks.js";
 
 jQuery.extend( {
 	queue: function( elem, type, data ) {
-		var queue;
+		let queue;
 
 		if ( elem ) {
 			type = ( type || "fx" ) + "queue";
@@ -27,11 +27,11 @@ jQuery.extend( {
 	dequeue: function( elem, type ) {
 		type = type || "fx";
 
-		var queue = jQuery.queue( elem, type ),
+		let queue = jQuery.queue( elem, type ),
 			startLength = queue.length,
 			fn = queue.shift(),
 			hooks = jQuery._queueHooks( elem, type ),
-			next = function() {
+			next = () => {
 				jQuery.dequeue( elem, type );
 			};
 
@@ -61,9 +61,9 @@ jQuery.extend( {
 
 	// Not public - generate a queueHooks object, or return the current one
 	_queueHooks: function( elem, type ) {
-		var key = type + "queueHooks";
+		let key = type + "queueHooks";
 		return dataPriv.get( elem, key ) || dataPriv.set( elem, key, {
-			empty: jQuery.Callbacks( "once memory" ).add( function() {
+			empty: jQuery.Callbacks( "once memory" ).add( () => {
 				dataPriv.remove( elem, [ type + "queue", key ] );
 			} )
 		} );
@@ -72,7 +72,7 @@ jQuery.extend( {
 
 jQuery.fn.extend( {
 	queue: function( type, data ) {
-		var setter = 2;
+		let setter = 2;
 
 		if ( typeof type !== "string" ) {
 			data = type;
@@ -86,8 +86,8 @@ jQuery.fn.extend( {
 
 		return data === undefined ?
 			this :
-			this.each( function() {
-				var queue = jQuery.queue( this, type, data );
+			this.each( () => {
+				let queue = jQuery.queue( this, type, data );
 
 				// Ensure a hooks for this queue
 				jQuery._queueHooks( this, type );
@@ -98,7 +98,7 @@ jQuery.fn.extend( {
 			} );
 	},
 	dequeue: function( type ) {
-		return this.each( function() {
+		return this.each( () => {
 			jQuery.dequeue( this, type );
 		} );
 	},
@@ -109,12 +109,12 @@ jQuery.fn.extend( {
 	// Get a promise resolved when queues of a certain type
 	// are emptied (fx is the type by default)
 	promise: function( type, obj ) {
-		var tmp,
+		let tmp,
 			count = 1,
 			defer = jQuery.Deferred(),
 			elements = this,
 			i = this.length,
-			resolve = function() {
+			resolve = () => {
 				if ( !( --count ) ) {
 					defer.resolveWith( elements, [ elements ] );
 				}
