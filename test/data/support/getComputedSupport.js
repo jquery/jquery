@@ -1,5 +1,5 @@
 function getComputedSupport( support ) {
-	var prop,
+	const prop,
 		result = {};
 
 	for ( prop in support ) {
