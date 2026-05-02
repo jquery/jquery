@@ -6,7 +6,7 @@ import "./traversing.js"; // parent, contents
 
 jQuery.fn.extend( {
 	wrapAll: function( html ) {
-		var wrap;
+		let wrap;
 
 		if ( this[ 0 ] ) {
 			if ( typeof html === "function" ) {
@@ -20,8 +20,8 @@ jQuery.fn.extend( {
 				wrap.insertBefore( this[ 0 ] );
 			}
 
-			wrap.map( function() {
-				var elem = this;
+			wrap.map( () => {
+				let elem = this;
 
 				while ( elem.firstElementChild ) {
 					elem = elem.firstElementChild;
@@ -41,8 +41,8 @@ jQuery.fn.extend( {
 			} );
 		}
 
-		return this.each( function() {
-			var self = jQuery( this ),
+		return this.each( () => {
+			let self = jQuery( this ),
 				contents = self.contents();
 
 			if ( contents.length ) {
@@ -55,7 +55,7 @@ jQuery.fn.extend( {
 	},
 
 	wrap: function( html ) {
-		var htmlIsFunction = typeof html === "function";
+		let htmlIsFunction = typeof html === "function";
 
 		return this.each( function( i ) {
 			jQuery( this ).wrapAll( htmlIsFunction ? html.call( this, i ) : html );
@@ -63,7 +63,7 @@ jQuery.fn.extend( {
 	},
 
 	unwrap: function( selector ) {
-		this.parent( selector ).not( "body" ).each( function() {
+		this.parent( selector ).not( "body" ).each( () => {
 			jQuery( this ).replaceWith( this.childNodes );
 		} );
 		return this;
