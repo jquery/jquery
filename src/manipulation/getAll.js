@@ -5,7 +5,7 @@ export function getAll( context, tag ) {
 
 	// Support: IE <=9 - 11+
 	// Use typeof to avoid zero-argument method invocation on host objects (trac-15151)
-	var ret;
+	let ret;
 
 	if ( typeof context.querySelectorAll !== "undefined" ) {
 
