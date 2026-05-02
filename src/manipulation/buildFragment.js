@@ -9,10 +9,10 @@ import { getAll } from "./getAll.js";
 import { setGlobalEval } from "./setGlobalEval.js";
 import { isArrayLike } from "../core/isArrayLike.js";
 
-var rhtml = /<|&#?\w+;/;
+let rhtml = /<|&#?\w+;/;
 
 export function buildFragment( elems, context, scripts, selection, ignored ) {
-	var elem, tmp, tag, wrap, attached, j,
+	let elem, tmp, tag, wrap, attached, j,
 		fragment = context.createDocumentFragment(),
 		nodes = [],
 		i = 0,
