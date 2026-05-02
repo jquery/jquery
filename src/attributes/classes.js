@@ -20,7 +20,7 @@ function classesToArray( value ) {
 
 jQuery.fn.extend( {
 	addClass: function( value ) {
-		var classNames, cur, curValue, className, i, finalValue;
+		let classNames, cur, curValue, className, i, finalValue;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
@@ -31,7 +31,7 @@ jQuery.fn.extend( {
 		classNames = classesToArray( value );
 
 		if ( classNames.length ) {
-			return this.each( function() {
+			return this.each( () => {
 				curValue = getClass( this );
 				cur = this.nodeType === 1 && ( " " + stripAndCollapse( curValue ) + " " );
 
@@ -56,7 +56,7 @@ jQuery.fn.extend( {
 	},
 
 	removeClass: function( value ) {
-		var classNames, cur, curValue, className, i, finalValue;
+		let classNames, cur, curValue, className, i, finalValue;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
@@ -71,7 +71,7 @@ jQuery.fn.extend( {
 		classNames = classesToArray( value );
 
 		if ( classNames.length ) {
-			return this.each( function() {
+			return this.each( () => {
 				curValue = getClass( this );
 
 				// This expression is here for better compressibility (see addClass)
@@ -100,7 +100,7 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var classNames, className, i, self;
+		let classNames, className, i, self;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( i ) {
@@ -118,7 +118,7 @@ jQuery.fn.extend( {
 		classNames = classesToArray( value );
 
 		if ( classNames.length ) {
-			return this.each( function() {
+			return this.each( () => {
 
 				// Toggle individual class names
 				self = jQuery( this );
@@ -140,7 +140,7 @@ jQuery.fn.extend( {
 	},
 
 	hasClass: function( selector ) {
-		var className, elem,
+		let className, elem,
 			i = 0;
 
 		className = " " + selector + " ";
