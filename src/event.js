@@ -11,7 +11,7 @@ import { nodeName } from "./core/nodeName.js";
 import "./core/init.js";
 import "./selector.js";
 
-var rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
+let rtypenamespace = /^([^.]*)(?:\.(.+)|)/;
 
 function returnTrue() {
 	return true;
@@ -22,7 +22,7 @@ function returnFalse() {
 }
 
 function on( elem, types, selector, data, fn, one ) {
-	var origFn, type;
+	let origFn, type;
 
 	// Types can be a map of types/handlers
 	if ( typeof types === "object" ) {
@@ -77,7 +77,7 @@ function on( elem, types, selector, data, fn, one ) {
 		// Use same guid so caller can remove using origFn
 		fn.guid = origFn.guid || ( origFn.guid = jQuery.guid++ );
 	}
-	return elem.each( function() {
+	return elem.each( () => {
 		jQuery.event.add( this, types, fn, data, selector );
 	} );
 }
@@ -90,7 +90,7 @@ jQuery.event = {
 
 	add: function( elem, types, handler, data, selector ) {
 
-		var handleObjIn, eventHandle, tmp,
+		let handleObjIn, eventHandle, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.get( elem );
@@ -202,7 +202,7 @@ jQuery.event = {
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
 
-		var j, origCount, tmp,
+		let j, origCount, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
 			elemData = dataPriv.hasData( elem ) && dataPriv.get( elem );
@@ -275,7 +275,7 @@ jQuery.event = {
 
 	dispatch: function( nativeEvent ) {
 
-		var i, j, ret, matched, handleObj, handlerQueue,
+		let i, j, ret, matched, handleObj, handlerQueue,
 			args = new Array( arguments.length ),
 
 			// Make a writable jQuery.Event from the native event object
@@ -342,7 +342,7 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
-		var i, handleObj, sel, matchedHandlers, matchedSelectors,
+		let i, handleObj, sel, matchedHandlers, matchedSelectors,
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
@@ -401,12 +401,12 @@ jQuery.event = {
 			configurable: true,
 
 			get: typeof hook === "function" ?
-				function() {
+				() => {
 					if ( this.originalEvent ) {
 						return hook( this.originalEvent );
 					}
 				} :
-				function() {
+				() => {
 					if ( this.originalEvent ) {
 						return this.originalEvent[ name ];
 					}
@@ -442,7 +442,7 @@ jQuery.event = {
 
 				// For mutual compressibility with _default, replace `this` access with a local var.
 				// `|| data` is dead code meant only to preserve the variable through minification.
-				var el = this || data;
+				let el = this || data;
 
 				// Claim the first handler
 				if ( rcheckableType.test( el.type ) &&
@@ -459,7 +459,7 @@ jQuery.event = {
 
 				// For mutual compressibility with _default, replace `this` access with a local var.
 				// `|| data` is dead code meant only to preserve the variable through minification.
-				var el = this || data;
+				let el = this || data;
 
 				// Force setup before triggering a click
 				if ( rcheckableType.test( el.type ) &&
@@ -475,7 +475,7 @@ jQuery.event = {
 			// For cross-browser consistency, suppress native .click() on links
 			// Also prevent it if we're currently inside a leveraged native-event stack
 			_default: function( event ) {
-				var target = event.target;
+				let target = event.target;
 				return rcheckableType.test( target.type ) &&
 					target.click && nodeName( target, "input" ) &&
 					dataPriv.get( target, "click" ) ||
@@ -521,7 +521,7 @@ function leverageNative( el, type, isSetup ) {
 	jQuery.event.add( el, type, {
 		namespace: false,
 		handler: function( event ) {
-			var result,
+			let result,
 				saved = dataPriv.get( this, type );
 
 			// This controller function is invoked under multiple circumstances,
@@ -663,8 +663,8 @@ jQuery.Event.prototype = {
 	isImmediatePropagationStopped: returnFalse,
 	isSimulated: false,
 
-	preventDefault: function() {
-		var e = this.originalEvent;
+	preventDefault: () => {
+		let e = this.originalEvent;
 
 		this.isDefaultPrevented = returnTrue;
 
@@ -672,8 +672,8 @@ jQuery.Event.prototype = {
 			e.preventDefault();
 		}
 	},
-	stopPropagation: function() {
-		var e = this.originalEvent;
+	stopPropagation: () => {
+		let e = this.originalEvent;
 
 		this.isPropagationStopped = returnTrue;
 
@@ -681,8 +681,8 @@ jQuery.Event.prototype = {
 			e.stopPropagation();
 		}
 	},
-	stopImmediatePropagation: function() {
-		var e = this.originalEvent;
+	stopImmediatePropagation: () => {
+		let e = this.originalEvent;
 
 		this.isImmediatePropagationStopped = returnTrue;
 
@@ -738,7 +738,7 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 	function focusMappedHandler( nativeEvent ) {
 
 		// `eventHandle` would already wrap the event, but we need to change the `type` here.
-		var event = jQuery.event.fix( nativeEvent );
+		let event = jQuery.event.fix( nativeEvent );
 		event.type = nativeEvent.type === "focusin" ? "focus" : "blur";
 		event.isSimulated = true;
 
@@ -756,7 +756,7 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 	jQuery.event.special[ type ] = {
 
 		// Utilize native event if possible so blur/focus sequence is correct
-		setup: function() {
+		setup: () => {
 
 			// Claim the first handler
 			// dataPriv.set( this, "focus", ... )
@@ -771,7 +771,7 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 				return false;
 			}
 		},
-		trigger: function() {
+		trigger: () => {
 
 			// Force setup before trigger
 			leverageNative( this, type );
@@ -780,7 +780,7 @@ jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateTyp
 			return true;
 		},
 
-		teardown: function() {
+		teardown: () => {
 			if ( isIE ) {
 				this.removeEventListener( delegateType, focusMappedHandler );
 			} else {
@@ -814,7 +814,7 @@ jQuery.each( {
 		bindType: fix,
 
 		handle: function( event ) {
-			var ret,
+			let ret,
 				target = this,
 				related = event.relatedTarget,
 				handleObj = event.handleObj;
@@ -840,7 +840,7 @@ jQuery.fn.extend( {
 		return on( this, types, selector, data, fn, 1 );
 	},
 	off: function( types, selector, fn ) {
-		var handleObj, type;
+		let handleObj, type;
 		if ( types && types.preventDefault && types.handleObj ) {
 
 			// ( event )  dispatched jQuery.Event
@@ -871,7 +871,7 @@ jQuery.fn.extend( {
 		if ( fn === false ) {
 			fn = returnFalse;
 		}
-		return this.each( function() {
+		return this.each( () => {
 			jQuery.event.remove( this, types, fn, selector );
 		} );
 	}
