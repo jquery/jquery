@@ -1,20 +1,20 @@
-( function() {
+( () => {
 
 // Can't test what ain't there
 if ( !includesModule( "effects" ) ) {
 	return;
 }
 
-var oldRaf = window.requestAnimationFrame;
+let oldRaf = window.requestAnimationFrame;
 
 QUnit.module( "tween", {
-	beforeEach: function() {
+	beforeEach: () => {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
 		window.requestAnimationFrame = null;
 		jQuery.fx.step = {};
 	},
-	afterEach: function() {
+	afterEach: () => {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		window.requestAnimationFrame = oldRaf;
@@ -24,7 +24,7 @@ QUnit.module( "tween", {
 
 QUnit.test( "jQuery.Tween - Default propHooks on plain objects", function( assert ) {
 	assert.expect( 8 );
-	var propHooks, defaultHook, testObject, fakeTween, stepSpy;
+	let propHooks, defaultHook, testObject, fakeTween, stepSpy;
 
 	propHooks = jQuery.Tween.propHooks;
 	assert.equal( typeof propHooks, "object", "jQuery.Tween.propHooks exists" );
@@ -57,7 +57,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on plain objects", function( asser
 
 QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 	assert.expect( 19 );
-	var propHooks, defaultHook, testElement, fakeTween, cssStub, styleStub, stepSpy;
+	let propHooks, defaultHook, testElement, fakeTween, cssStub, styleStub, stepSpy;
 
 	propHooks = jQuery.Tween.propHooks;
 	assert.equal( typeof propHooks, "object", "jQuery.Tween.propHooks exists" );
@@ -134,7 +134,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 
 QUnit.test( "jQuery.Tween - Plain Object", function( assert ) {
 	assert.expect( 13 );
-	var testObject = { test: 100 },
+	let testObject = { test: 100 },
 		testOptions = { duration: 100 },
 		tween, easingSpy;
 
@@ -168,7 +168,7 @@ QUnit.test( "jQuery.Tween - Plain Object", function( assert ) {
 
 QUnit.test( "jQuery.Tween - Element", function( assert ) {
 	assert.expect( 15 );
-	var testElement = jQuery( "<div>" ).css( "height", 100 )[ 0 ],
+	let testElement = jQuery( "<div>" ).css( "height", 100 )[ 0 ],
 		testOptions = { duration: 100 },
 		tween, easingSpy, eased;
 
@@ -214,7 +214,7 @@ QUnit.test( "jQuery.Tween - Element", function( assert ) {
 QUnit.test( "jQuery.Tween - No duration", function( assert ) {
 	assert.expect( 3 );
 
-	var testObject = { test: 100 },
+	let testObject = { test: 100 },
 		testOptions = { duration: 0 },
 		tween, easingSpy;
 
@@ -230,7 +230,7 @@ QUnit.test( "jQuery.Tween - No duration", function( assert ) {
 QUnit.test( "jQuery.Tween - step function option", function( assert ) {
 	assert.expect( 4 );
 
-	var testObject = { test: 100 },
+	let testObject = { test: 100 },
 		testOptions = { duration: 100, step: this.sandbox.spy() },
 		tween, propHookSpy;
 
@@ -258,7 +258,7 @@ QUnit.test( "jQuery.Tween - step function option", function( assert ) {
 QUnit.test( "jQuery.Tween - custom propHooks", function( assert ) {
 	assert.expect( 3 );
 
-	var testObject = {},
+	let testObject = {},
 		testOptions = { duration: 100, step: this.sandbox.spy() },
 		propHook = {
 			get: sinon.stub().returns( 100 ),
@@ -284,7 +284,7 @@ QUnit.test( "jQuery.Tween - custom propHooks", function( assert ) {
 QUnit.test( "jQuery.Tween - custom propHooks - advanced values", function( assert ) {
 	assert.expect( 5 );
 
-	var testObject = {},
+	let testObject = {},
 		testOptions = { duration: 100, step: this.sandbox.spy() },
 		propHook = {
 			get: sinon.stub().returns( [ 0, 0 ] ),
