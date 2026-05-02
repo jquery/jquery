@@ -1,4 +1,4 @@
-var ralphaStart = /^[a-z]/,
+let ralphaStart = /^[a-z]/,
 
 	// The regex visualized:
 	//
