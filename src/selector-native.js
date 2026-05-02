@@ -39,13 +39,13 @@ import { toSelector } from "./selector/toSelector.js";
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
-var matchExpr = jQuery.extend( {
+let matchExpr = jQuery.extend( {
 	needsContext: new RegExp( "^" + whitespace + "*[>+~]" )
 }, filterMatchExpr );
 
 jQuery.extend( {
 	find: function( selector, context, results, seed ) {
-		var elem, nid, groups, newSelector,
+		let elem, nid, groups, newSelector,
 			newContext = context && context.ownerDocument,
 
 			// nodeType defaults to 9, since context defaults to document
