@@ -2,7 +2,7 @@ import { jQuery } from "../core.js";
 import { access } from "../core/access.js";
 import { isIE } from "../var/isIE.js";
 
-var rfocusable = /^(?:input|select|textarea|button)$/i,
+let rfocusable = /^(?:input|select|textarea|button)$/i,
 	rclickable = /^(?:a|area)$/i;
 
 jQuery.fn.extend( {
@@ -11,7 +11,7 @@ jQuery.fn.extend( {
 	},
 
 	removeProp: function( name ) {
-		return this.each( function() {
+		return this.each( () => {
 			delete this[ jQuery.propFix[ name ] || name ];
 		} );
 	}
@@ -19,7 +19,7 @@ jQuery.fn.extend( {
 
 jQuery.extend( {
 	prop: function( elem, name, value ) {
-		var ret, hooks,
+		let ret, hooks,
 			nType = elem.nodeType;
 
 		// Don't get/set properties on text, comment and attribute nodes
@@ -58,7 +58,7 @@ jQuery.extend( {
 				// elem.tabIndex doesn't always return the
 				// correct value when it hasn't been explicitly set
 				// Use proper attribute retrieval (trac-12072)
-				var tabindex = elem.getAttribute( "tabindex" );
+				let tabindex = elem.getAttribute( "tabindex" );
 
 				if ( tabindex ) {
 					return parseInt( tabindex, 10 );
@@ -94,7 +94,7 @@ if ( isIE ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 
-			var parent = elem.parentNode;
+			let parent = elem.parentNode;
 			if ( parent && parent.parentNode ) {
 				// eslint-disable-next-line no-unused-expressions
 				parent.parentNode.selectedIndex;
@@ -104,7 +104,7 @@ if ( isIE ) {
 		set: function( elem ) {
 
 
-			var parent = elem.parentNode;
+			let parent = elem.parentNode;
 			if ( parent ) {
 				// eslint-disable-next-line no-unused-expressions
 				parent.selectedIndex;
@@ -129,6 +129,6 @@ jQuery.each( [
 	"useMap",
 	"frameBorder",
 	"contentEditable"
-], function() {
+], () => {
 	jQuery.propFix[ this.toLowerCase() ] = this;
 } );
