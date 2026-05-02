@@ -7,7 +7,7 @@ import { jQuery } from "../core.js";
  *	deleting the oldest entry
  */
 export function createCache() {
-	var keys = [];
+	let keys = [];
 
 	function cache( key, value ) {
 
