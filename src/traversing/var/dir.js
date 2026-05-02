@@ -1,7 +1,7 @@
 import { jQuery } from "../../core.js";
 
 export function dir( elem, dir, until ) {
-	var matched = [],
+	let matched = [],
 		truncate = until !== undefined;
 
 	while ( ( elem = elem[ dir ] ) && elem.nodeType !== 9 ) {
