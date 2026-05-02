@@ -10,7 +10,7 @@ jQuery.fn.extend( {
 	},
 
 	removeAttr: function( name ) {
-		return this.each( function() {
+		return this.each( () => {
 			jQuery.removeAttr( this, name );
 		} );
 	}
@@ -18,7 +18,7 @@ jQuery.fn.extend( {
 
 jQuery.extend( {
 	attr: function( elem, name, value ) {
-		var ret, hooks,
+		let ret, hooks,
 			nType = elem.nodeType;
 
 		// Don't get/set attributes on text, comment and attribute nodes
@@ -72,7 +72,7 @@ jQuery.extend( {
 	attrHooks: {},
 
 	removeAttr: function( elem, value ) {
-		var name,
+		let name,
 			i = 0,
 
 			// Attribute names can contain non-HTML whitespace characters
@@ -93,7 +93,7 @@ if ( isIE ) {
 	jQuery.attrHooks.type = {
 		set: function( elem, value ) {
 			if ( value === "radio" && nodeName( elem, "input" ) ) {
-				var val = elem.value;
+				let val = elem.value;
 				elem.setAttribute( "type", value );
 				if ( val ) {
 					elem.value = val;
