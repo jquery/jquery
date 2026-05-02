@@ -4,7 +4,7 @@ if ( includesModule( "ajax" ) ) {
 QUnit.test( "ajax", function( assert ) {
 	assert.expect( 4 );
 
-	var done = assert.async( 3 );
+	let done = assert.async( 3 );
 
 	jQuery.ajax( {
 		type: "GET",
@@ -25,7 +25,7 @@ QUnit.test( "ajax", function( assert ) {
 		}
 	} );
 
-	jQuery( "#first" ).load( url( "name.html" ), function() {
+	jQuery( "#first" ).load( url( "name.html" ), () => {
 		assert.ok( /^ERROR/.test( jQuery( "#first" ).text() ),
 			"Check if content was injected into the DOM" );
 		done();
@@ -37,7 +37,7 @@ if ( includesModule( "attributes" ) ) {
 QUnit.test( "attributes", function( assert ) {
 	assert.expect( 6 );
 
-	var a = jQuery( "<a></a>" ).appendTo( "#qunit-fixture" ),
+	let a = jQuery( "<a></a>" ).appendTo( "#qunit-fixture" ),
 		input = jQuery( "<input/>" ).appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( a.attr( "foo", "bar" ).attr( "foo" ), "bar", ".attr getter/setter" );
@@ -58,7 +58,7 @@ if ( includesModule( "css" ) ) {
 QUnit.test( "css", function( assert ) {
 	assert.expect( 1 );
 
-	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
+	let div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( div.css( "width", "50px" ).css( "width" ), "50px", ".css getter/setter" );
 } );
@@ -68,7 +68,7 @@ if ( includesModule( "css" ) ) {
 QUnit.test( "show/hide", function( assert ) {
 	assert.expect( 2 );
 
-	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
+	let div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	div.hide();
 	assert.strictEqual( div.css( "display" ), "none", "div hidden" );
@@ -80,7 +80,7 @@ QUnit.test( "show/hide", function( assert ) {
 QUnit.test( "core", function( assert ) {
 	assert.expect( 17 );
 
-	var elem = jQuery( "<div></div><span></span>" );
+	let elem = jQuery( "<div></div><span></span>" );
 
 	assert.strictEqual( elem.length, 2, "Correct number of elements" );
 
@@ -129,7 +129,7 @@ if ( includesModule( "data" ) ) {
 QUnit.test( "data", function( assert ) {
 	assert.expect( 4 );
 
-	var elem = jQuery( "<div data-c='d'></div>" ).appendTo( "#qunit-fixture" );
+	let elem = jQuery( "<div data-c='d'></div>" ).appendTo( "#qunit-fixture" );
 
 	assert.ok( !jQuery.hasData( elem[ 0 ] ), "jQuery.hasData - false" );
 	assert.strictEqual( elem.data( "a", "b" ).data( "a" ), "b", ".data getter/setter" );
@@ -142,7 +142,7 @@ if ( includesModule( "dimensions" ) ) {
 QUnit.test( "dimensions", function( assert ) {
 	assert.expect( 3 );
 
-	var elem = jQuery(
+	let elem = jQuery(
 		"<div style='margin: 10px; padding: 7px; border: 2px solid black;'></div> "
 	).appendTo( "#qunit-fixture" );
 
@@ -156,15 +156,15 @@ if ( includesModule( "event" ) ) {
 QUnit.test( "event", function( assert ) {
 	assert.expect( 1 );
 
-	var elem = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
+	let elem = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	elem
-		.on( "click", function() {
+		.on( "click", () => {
 			assert.ok( false, "click should not fire" );
 		} )
 		.off( "click" )
 		.trigger( "click" )
-		.on( "click", function() {
+		.on( "click", () => {
 			assert.ok( true, "click should fire" );
 		} )
 		.trigger( "click" );
@@ -175,7 +175,7 @@ if ( includesModule( "manipulation" ) ) {
 QUnit.test( "manipulation", function( assert ) {
 	assert.expect( 5 );
 
-	var child,
+	let child,
 		elem1 = jQuery( "<div><span></span></div>" ).appendTo( "#qunit-fixture" ),
 		elem2 = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
@@ -213,7 +213,7 @@ if ( includesModule( "offset" ) ) {
 QUnit[ /jsdom\//.test( navigator.userAgent ) ? "skip" : "test" ]( "offset", function( assert ) {
 	assert.expect( 3 );
 
-	var parent = jQuery( "<div style='position:fixed;top:20px;'></div>" ).appendTo( "#qunit-fixture" ),
+	let parent = jQuery( "<div style='position:fixed;top:20px;'></div>" ).appendTo( "#qunit-fixture" ),
 		elem = jQuery( "<div style='position:absolute;top:5px;'></div>" ).appendTo( parent );
 
 	assert.strictEqual( elem.offset().top, 25, ".offset getter" );
@@ -225,7 +225,7 @@ QUnit[ /jsdom\//.test( navigator.userAgent ) ? "skip" : "test" ]( "offset", func
 QUnit.test( "selector", function( assert ) {
 	assert.expect( 2 );
 
-	var elem = jQuery( "<div><span class='a'></span><span class='b'><a></a></span></div>" )
+	let elem = jQuery( "<div><span class='a'></span><span class='b'><a></a></span></div>" )
 		.appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( elem.find( ".a a" ).length, 0, ".find - no result" );
@@ -236,7 +236,7 @@ if ( includesModule( "serialize" ) ) {
 QUnit.test( "serialize", function( assert ) {
 	assert.expect( 2 );
 
-	var params = { "someName": [ 1, 2, 3 ], "regularThing": "blah" };
+	let params = { "someName": [ 1, 2, 3 ], "regularThing": "blah" };
 	assert.strictEqual( jQuery.param( params ),
 		"someName%5B%5D=1&someName%5B%5D=2&someName%5B%5D=3&regularThing=blah",
 		"jQuery.param" );
@@ -251,7 +251,7 @@ QUnit.test( "serialize", function( assert ) {
 QUnit.test( "traversing", function( assert ) {
 	assert.expect( 12 );
 
-	var elem = jQuery( "<div><a><b><em></em></b></a><i></i><span></span>foo</div>" )
+	let elem = jQuery( "<div><a><b><em></em></b></a><i></i><span></span>foo</div>" )
 		.appendTo( "#qunit-fixture" );
 
 	assert.strictEqual( elem.find( "em" ).parent()[ 0 ].nodeName, "B", ".parent" );
@@ -272,7 +272,7 @@ if ( includesModule( "wrap" ) ) {
 QUnit.test( "wrap", function( assert ) {
 	assert.expect( 3 );
 
-	var elem = jQuery( "<div><a><b></b></a><a></a></div>" );
+	let elem = jQuery( "<div><a><b></b></a><a></a></div>" );
 
 	elem.find( "b" ).wrap( "<span>" );
 
