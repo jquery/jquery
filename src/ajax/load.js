@@ -11,7 +11,7 @@ import "../selector.js";
  * Load a url into a page
  */
 jQuery.fn.load = function( url, params, callback ) {
-	var selector, type, response,
+	let selector, type, response,
 		self = this,
 		off = url.indexOf( " " );
 
@@ -61,7 +61,7 @@ jQuery.fn.load = function( url, params, callback ) {
 		// but they are ignored because response was set above.
 		// If it fails, this function gets "jqXHR", "status", "error"
 		} ).always( callback && function( jqXHR, status ) {
-			self.each( function() {
+			self.each( () => {
 				callback.apply( this, response || [ jqXHR.responseText, status, jqXHR ] );
 			} );
 		} );
