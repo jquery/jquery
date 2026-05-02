@@ -4,14 +4,14 @@ import { rquery } from "./var/rquery.js";
 
 import "../ajax.js";
 
-var oldCallbacks = [],
+let oldCallbacks = [],
 	rjsonp = /(=)\?(?=&|$)|\?\?/;
 
 // Default jsonp settings
 jQuery.ajaxSetup( {
 	jsonp: "callback",
-	jsonpCallback: function() {
-		var callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce.guid++ ) );
+	jsonpCallback: () => {
+		let callback = oldCallbacks.pop() || ( jQuery.expando + "_" + ( nonce.guid++ ) );
 		this[ callback ] = true;
 		return callback;
 	}
@@ -20,7 +20,7 @@ jQuery.ajaxSetup( {
 // Detect, normalize options and install callbacks for jsonp requests
 jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 
-	var callbackName, overwritten, responseContainer,
+	let callbackName, overwritten, responseContainer,
 		jsonProp = s.jsonp !== false && ( rjsonp.test( s.url ) ?
 			"url" :
 			typeof s.data === "string" &&
@@ -42,7 +42,7 @@ jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 	}
 
 	// Use data converter to retrieve json after script execution
-	s.converters[ "script json" ] = function() {
+	s.converters[ "script json" ] = () => {
 		if ( !responseContainer ) {
 			jQuery.error( callbackName + " was not called" );
 		}
@@ -54,12 +54,12 @@ jQuery.ajaxPrefilter( "jsonp", function( s, originalSettings, jqXHR ) {
 
 	// Install callback
 	overwritten = window[ callbackName ];
-	window[ callbackName ] = function() {
+	window[ callbackName ] = () => {
 		responseContainer = arguments;
 	};
 
 	// Clean-up function (fires after converters)
-	jqXHR.always( function() {
+	jqXHR.always( () => {
 
 		// If previous value didn't exist - remove it
 		if ( overwritten === undefined ) {
