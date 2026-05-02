@@ -13,7 +13,7 @@ import { support } from "./var/support.js";
 import { isArrayLike } from "./core/isArrayLike.js";
 import { DOMEval } from "./core/DOMEval.js";
 
-var version = "@VERSION",
+let version = "@VERSION",
 
 	rhtmlSuffix = /HTML$/i,
 
@@ -35,7 +35,7 @@ jQuery.fn = jQuery.prototype = {
 	// The default length of a jQuery object is 0
 	length: 0,
 
-	toArray: function() {
+	toArray: () => {
 		return slice.call( this );
 	},
 
@@ -57,7 +57,7 @@ jQuery.fn = jQuery.prototype = {
 	pushStack: function( elems ) {
 
 		// Build a new jQuery matched element set
-		var ret = jQuery.merge( this.constructor(), elems );
+		let ret = jQuery.merge( this.constructor(), elems );
 
 		// Add the old object onto the stack (as a reference)
 		ret.prevObject = this;
@@ -77,43 +77,43 @@ jQuery.fn = jQuery.prototype = {
 		} ) );
 	},
 
-	slice: function() {
+	slice: () => {
 		return this.pushStack( slice.apply( this, arguments ) );
 	},
 
-	first: function() {
+	first: () => {
 		return this.eq( 0 );
 	},
 
-	last: function() {
+	last: () => {
 		return this.eq( -1 );
 	},
 
-	even: function() {
+	even: () => {
 		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
 			return ( i + 1 ) % 2;
 		} ) );
 	},
 
-	odd: function() {
+	odd: () => {
 		return this.pushStack( jQuery.grep( this, function( _elem, i ) {
 			return i % 2;
 		} ) );
 	},
 
 	eq: function( i ) {
-		var len = this.length,
+		let len = this.length,
 			j = +i + ( i < 0 ? len : 0 );
 		return this.pushStack( j >= 0 && j < len ? [ this[ j ] ] : [] );
 	},
 
-	end: function() {
+	end: () => {
 		return this.prevObject || this.constructor();
 	}
 };
 
-jQuery.extend = jQuery.fn.extend = function() {
-	var options, name, src, copy, copyIsArray, clone,
+jQuery.extend = jQuery.fn.extend = () => {
+	let options, name, src, copy, copyIsArray, clone,
 		target = arguments[ 0 ] || {},
 		i = 1,
 		length = arguments.length,
@@ -196,10 +196,10 @@ jQuery.extend( {
 		throw new Error( msg );
 	},
 
-	noop: function() {},
+	noop: () => {},
 
 	isPlainObject: function( obj ) {
-		var proto, Ctor;
+		let proto, Ctor;
 
 		// Detect obvious negatives
 		// Use toString instead of jQuery.type to catch host objects
@@ -220,7 +220,7 @@ jQuery.extend( {
 	},
 
 	isEmptyObject: function( obj ) {
-		var name;
+		const name;
 
 		for ( name in obj ) {
 			return false;
@@ -235,7 +235,7 @@ jQuery.extend( {
 	},
 
 	each: function( obj, callback ) {
-		var length, i = 0;
+		let length, i = 0;
 
 		if ( isArrayLike( obj ) ) {
 			length = obj.length;
@@ -258,7 +258,7 @@ jQuery.extend( {
 
 	// Retrieve the text value of an array of DOM nodes
 	text: function( elem ) {
-		var node,
+		let node,
 			ret = "",
 			i = 0,
 			nodeType = elem.nodeType;
@@ -290,7 +290,7 @@ jQuery.extend( {
 
 	// results is for internal usage only
 	makeArray: function( arr, results ) {
-		var ret = results || [];
+		let ret = results || [];
 
 		if ( arr != null ) {
 			if ( isArrayLike( Object( arr ) ) ) {
@@ -311,7 +311,7 @@ jQuery.extend( {
 	},
 
 	isXMLDoc: function( elem ) {
-		var namespace = elem && elem.namespaceURI,
+		let namespace = elem && elem.namespaceURI,
 			docElem = elem && ( elem.ownerDocument || elem ).documentElement;
 
 		// Assume HTML when documentElement doesn't yet exist, such as inside
@@ -321,7 +321,7 @@ jQuery.extend( {
 
 	// Note: an element does not contain itself
 	contains: function( a, b ) {
-		var bup = b && b.parentNode;
+		let bup = b && b.parentNode;
 
 		return a === bup || !!( bup && bup.nodeType === 1 && (
 
@@ -334,7 +334,7 @@ jQuery.extend( {
 	},
 
 	merge: function( first, second ) {
-		var len = +second.length,
+		let len = +second.length,
 			j = 0,
 			i = first.length;
 
@@ -348,7 +348,7 @@ jQuery.extend( {
 	},
 
 	grep: function( elems, callback, invert ) {
-		var callbackInverse,
+		let callbackInverse,
 			matches = [],
 			i = 0,
 			length = elems.length,
@@ -368,7 +368,7 @@ jQuery.extend( {
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var length, value,
+		let length, value,
 			i = 0,
 			ret = [];
 
