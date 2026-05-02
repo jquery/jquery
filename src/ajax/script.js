@@ -58,7 +58,7 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function( s ) {
 	if ( canUseScriptTag( s ) ) {
-		var script, callback;
+		let script, callback;
 		return {
 			send: function( _, complete ) {
 				script = jQuery( "<script>" )
@@ -75,7 +75,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 				// Use native DOM manipulation to avoid our domManip AJAX trickery
 				document.head.appendChild( script[ 0 ] );
 			},
-			abort: function() {
+			abort: () => {
 				if ( callback ) {
 					callback();
 				}
