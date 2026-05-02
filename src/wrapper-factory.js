@@ -16,7 +16,7 @@
 // See ticket trac-14549 for more info.
 function jQueryFactoryWrapper( window, noGlobal ) {
 
-"use strict";
+// "use strict" — not needed in ES modules (kept for compatibility)
 
 if ( !window.document ) {
 	throw new Error( "jQuery requires a window with a document" );
@@ -30,7 +30,7 @@ return jQuery;
 }
 
 function jQueryFactory( window ) {
-	"use strict";
+	// "use strict" — not needed in ES modules (kept for compatibility)
 
 	return jQueryFactoryWrapper( window, true );
 }
