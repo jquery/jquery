@@ -1,6 +1,6 @@
 // A method for quickly swapping in/out CSS properties to get correct calculations.
 export function swap( elem, options, callback ) {
-	var ret, name,
+	let ret, name,
 		old = {};
 
 	// Remember the old values, and insert the new ones
