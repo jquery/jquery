@@ -4,7 +4,7 @@ import { documentElement } from "../var/documentElement.js";
 import { support } from "../var/support.js";
 import { isIE } from "../var/isIE.js";
 
-var reliableTrDimensionsVal, reliableColDimensionsVal,
+let reliableTrDimensionsVal, reliableColDimensionsVal,
 	table = createElement( "table" );
 
 // Executing table tests requires only one layout, so they're executed
@@ -21,7 +21,7 @@ function computeTableStyleTests() {
 		return;
 	}
 
-	var trStyle,
+	let trStyle,
 		col = createElement( "col" ),
 		tr = createElement( "tr" ),
 		td = createElement( "td" );
@@ -82,12 +82,12 @@ function computeTableStyleTests() {
 }
 
 jQuery.extend( support, {
-	reliableTrDimensions: function() {
+	reliableTrDimensions: () => {
 		computeTableStyleTests();
 		return reliableTrDimensionsVal;
 	},
 
-	reliableColDimensions: function() {
+	reliableColDimensions: () => {
 		computeTableStyleTests();
 		return reliableColDimensionsVal;
 	}
