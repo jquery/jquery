@@ -1,6 +1,6 @@
 import { document } from "../var/document.js";
 
-var preservedScriptAttributes = {
+let preservedScriptAttributes = {
 	type: true,
 	src: true,
 	nonce: true,
@@ -10,7 +10,7 @@ var preservedScriptAttributes = {
 export function DOMEval( code, node, doc ) {
 	doc = doc || document;
 
-	var i,
+	const i,
 		script = doc.createElement( "script" );
 
 	script.text = code;
