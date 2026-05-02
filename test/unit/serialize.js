@@ -3,7 +3,7 @@ QUnit.module( "serialize", { afterEach: moduleTeardown } );
 QUnit.test( "jQuery.param()", function( assert ) {
 	assert.expect( 24 );
 
-	var params;
+	let params;
 
 	params = { "foo": "bar", "baz": 42, "quux": "All your base are belong to us" };
 	assert.equal( jQuery.param( params ), "foo=bar&baz=42&quux=All%20your%20base%20are%20belong%20to%20us", "simple" );
@@ -64,7 +64,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 	params = { "param1": null };
 	assert.equal( jQuery.param( params ), "param1=", "Make sure that null params aren't traversed." );
 
-	params = { "param1": function() {}, "param2": function() {
+	params = { "param1": () => {}, "param2": () => {
 		return null;
 	} };
 	assert.equal( jQuery.param( params, false ), "param1=&param2=", "object with function property that returns null value" );
@@ -82,7 +82,7 @@ QUnit.test( "jQuery.param()", function( assert ) {
 QUnit[ includesModule( "ajax" ) ? "test" : "skip" ]( "jQuery.param() not affected by ajaxSettings", function( assert ) {
 	assert.expect( 1 );
 
-	var oldTraditional = jQuery.ajaxSettings.traditional;
+	let oldTraditional = jQuery.ajaxSettings.traditional;
 	jQuery.ajaxSettings.traditional = true;
 	assert.equal(
 		jQuery.param( { "foo": [ "a", "b", "c" ] } ),
@@ -100,7 +100,7 @@ QUnit.test( "jQuery.param() Constructed prop values", function( assert ) {
 		this.prop = "val";
 	}
 
-	var MyString = String,
+	let MyString = String,
 			MyNumber = Number,
 			params = { "test": new MyString( "foo" ) };
 
@@ -120,7 +120,7 @@ QUnit.test( "jQuery.param() Constructed prop values", function( assert ) {
 QUnit.test( "serialize/serializeArray()", function( assert ) {
 	assert.expect( 12 );
 
-	var formArrayExpected, testFormArrayExpected, bothArrayExpected;
+	let formArrayExpected, testFormArrayExpected, bothArrayExpected;
 
 	// Add html5 elements only for serialize because selector can't yet find them on non-html5 browsers
 	jQuery( "#search" ).after(
@@ -215,7 +215,7 @@ QUnit.test( "serialize/serializeArray()", function( assert ) {
 QUnit.test( "serialize/serializeArray() - excludes non-submittable elements by nodeName", function( assert ) {
 	assert.expect( 2 );
 
-	var form = jQuery(
+	let form = jQuery(
 			"<form>" +
 			"	<input type='text' name='regular' value='val'>" +
 			"	<div></div>" +
@@ -248,7 +248,7 @@ QUnit.test( "serialize/serializeArray() - excludes non-submittable elements by n
 QUnit.testUnlessIE( "serialize/serializeArray() - form-associated custom elements (gh-5245)", function( assert ) {
 	assert.expect( 2 );
 
-	var form;
+	let form;
 
 	// Support: IE 11+
 	// Uses eval to avoid syntax errors in IE (which doesn't support `class`).
