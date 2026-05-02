@@ -1,7 +1,7 @@
 QUnit.module( "ready" );
 
-( function() {
-	var notYetReady, noEarlyExecution,
+( () => {
+	let notYetReady, noEarlyExecution,
 		whenified = jQuery.when && jQuery.when( jQuery.ready ),
 		promisified = Promise.resolve( jQuery.ready ),
 		start = new Date(),
@@ -32,8 +32,8 @@ QUnit.module( "ready" );
 	function throwError( num ) {
 
 		// Not a global QUnit failure
-		var onerror = window.onerror;
-		window.onerror = function() {
+		let onerror = window.onerror;
+		window.onerror = () => {
 			window.onerror = onerror;
 		};
 
@@ -46,10 +46,10 @@ QUnit.module( "ready" );
 	jQuery.ready.then( makeHandler( "c" ) );
 
 	// Throw in some errors
-	jQuery( function() {
+	jQuery( () => {
 		throwError( 1 );
 	} );
-	jQuery( function() {
+	jQuery( () => {
 		throwError( 2 );
 	} );
 
@@ -81,11 +81,11 @@ QUnit.module( "ready" );
 
 		// Now that the ready event has fired, again bind to the ready event.
 		// These ready handlers should execute asynchronously.
-		var done = assert.async();
+		let done = assert.async();
 		jQuery( makeHandler( "g" ) );
 		jQuery( document ).ready( makeHandler( "h" ) );
 		jQuery.ready.then( makeHandler( "i" ) );
-		window.setTimeout( function() {
+		window.setTimeout( () => {
 			assert.equal( order.shift(), "g",
 				"Event handler should execute immediately, but async" );
 			assert.equal( args.g, jQuery,
@@ -107,14 +107,14 @@ QUnit.module( "ready" );
 
 	QUnit[ includesModule( "deferred" ) ? "test" : "skip" ]( "jQuery.when(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
-		var done = assert.async( 2 );
+		let done = assert.async( 2 );
 
-		whenified.then( function() {
+		whenified.then( () => {
 			assert.ok( jQuery.isReady, "jQuery.when Deferred resolved" );
 			done();
 		} );
 
-		jQuery.when( jQuery.ready ).then( function() {
+		jQuery.when( jQuery.ready ).then( () => {
 			assert.ok( jQuery.isReady, "jQuery.when Deferred resolved" );
 			done();
 		} );
@@ -122,14 +122,14 @@ QUnit.module( "ready" );
 
 	QUnit.test( "Promise.resolve(jQuery.ready)", function( assert ) {
 		assert.expect( 2 );
-		var done = assert.async( 2 );
+		let done = assert.async( 2 );
 
-		promisified.then( function() {
+		promisified.then( () => {
 			assert.ok( jQuery.isReady, "Native promised resolved" );
 			done();
 		} );
 
-		Promise.resolve( jQuery.ready ).then( function() {
+		Promise.resolve( jQuery.ready ).then( () => {
 			assert.ok( jQuery.isReady, "Native promised resolved" );
 			done();
 		} );
@@ -137,13 +137,13 @@ QUnit.module( "ready" );
 
 	QUnit.test( "Error in ready callback does not halt all future executions (gh-1823)", function( assert ) {
 		assert.expect( 1 );
-		var done = assert.async();
+		let done = assert.async();
 
-		jQuery( function() {
+		jQuery( () => {
 			throwError( 3 );
 		} );
 
-		jQuery( function() {
+		jQuery( () => {
 			assert.ok( true, "Subsequent handler called" );
 			done();
 		} );
@@ -156,7 +156,7 @@ QUnit.module( "ready" );
 			"readywait.html",
 			function( assert, jQuery, window, document, releaseCalled ) {
 				assert.expect( 2 );
-				var now = new Date();
+				let now = new Date();
 				assert.ok( now - start >= 300, "Needs to have waited at least half a second" );
 				assert.ok( releaseCalled, "The release function was called, which resulted in ready" );
 			}
