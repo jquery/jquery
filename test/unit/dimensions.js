@@ -1,4 +1,4 @@
-( function() {
+( () => {
 
 if ( !includesModule( "dimensions" ) ) {
 	return;
@@ -11,7 +11,7 @@ function pass( val ) {
 }
 
 function fn( val ) {
-	return function() {
+	return () => {
 		return val;
 	};
 }
@@ -287,7 +287,7 @@ QUnit.test( "outerHeight()", function( assert ) {
 QUnit.test( "fractional getters", function( assert ) {
 	assert.expect( 8 );
 
-	var elem = jQuery( "<div>" ).css( {
+	let elem = jQuery( "<div>" ).css( {
 		width: "10.5px",
 		height: "20.5px",
 		border: "10px solid white",
@@ -348,7 +348,7 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 QUnit.test( "hidden element with dimensions from a stylesheet", function( assert ) {
 	assert.expect( 2 );
 
-	var div = jQuery( "" +
+	let div = jQuery( "" +
 		"<div class='display-none-style'>" +
 		"	<style>" +
 		"		.display-none-style {" +
@@ -368,7 +368,7 @@ QUnit.test( "hidden element with dimensions from a stylesheet", function( assert
 QUnit.test( "hidden element with implicit content-based dimensions", function( assert ) {
 	assert.expect( 2 );
 
-	var container = jQuery( "" +
+	let container = jQuery( "" +
 
 			// font-size affects the child dimensions implicitly
 			"<div style='font-size: 20px'>" +
@@ -388,7 +388,7 @@ QUnit.test( "hidden element with implicit content-based dimensions", function( a
 QUnit.test( "table dimensions", function( assert ) {
 	assert.expect( 3 );
 
-	var table = jQuery( "" +
+	let table = jQuery( "" +
 			"<table style='border-spacing: 0'>" +
 			"	<colgroup>" +
 			"		<col />" +
@@ -438,7 +438,7 @@ QUnit.test( "table dimensions", function( assert ) {
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg style='width: 100px; height: 100px;'></svg>" ).appendTo( "#qunit-fixture" );
+	let svg = jQuery( "<svg style='width: 100px; height: 100px;'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 100 );
 	assert.equal( svg.height(), 100 );
@@ -458,7 +458,7 @@ QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
 QUnit.test( "SVG dimensions (content-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: content-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+	let svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: content-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 100 );
 	assert.equal( svg.height(), 100 );
@@ -478,7 +478,7 @@ QUnit.test( "SVG dimensions (content-box)", function( assert ) {
 QUnit.test( "SVG dimensions (border-box)", function( assert ) {
 	assert.expect( 8 );
 
-	var svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
+	let svg = jQuery( "<svg style='width: 100px; height: 100px; box-sizing: border-box; border: 1px solid white; padding: 2px; margin: 3px'></svg>" ).appendTo( "#qunit-fixture" );
 
 	assert.equal( svg.width(), 94, "width" );
 	assert.equal( svg.height(), 94, "height" );
@@ -543,7 +543,7 @@ QUnit.test( "passing undefined is a setter trac-5571", function( assert ) {
 QUnit.test( "setters with and without box-sizing:border-box", function( assert ) {
 	assert.expect( 120 );
 
-	var parent = jQuery( "#foo" ).css( { width: "200px", height: "200px", "font-size": "16px" } ),
+	let parent = jQuery( "#foo" ).css( { width: "200px", height: "200px", "font-size": "16px" } ),
 		el_bb = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;box-sizing:border-box;'></div>" ).appendTo( parent ),
 		el = jQuery( "<div style='margin:5px;padding:1px;border:2px solid black;'></div>" ).appendTo( parent ),
 		el_bb_np = jQuery( "<div style='margin:5px; padding:0px; border:0px solid green;box-sizing:border-box;'></div>" ).appendTo( parent ),
@@ -618,7 +618,7 @@ testIframe(
 QUnit.test( "allow modification of coordinates argument (gh-1848)", function( assert ) {
 	assert.expect( 1 );
 
-	var offsetTop,
+	let offsetTop,
 		element = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
 
 	element.offset( function( index, coords ) {
@@ -637,7 +637,7 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	// This test ported from gh-2836 example
 	assert.expect( 1 );
 
-	var parent, pos,
+	let parent, pos,
 		html = [
 		"<div id=div-gh-2836>",
 			"<div></div>",
@@ -674,7 +674,7 @@ QUnit.test( "width/height on an inline element with no explicitly-set dimensions
 	var $elem = jQuery( "<span style='border: 2px solid black;padding: 1px;margin: 3px;'>Hello, I'm some text.</span>" ).appendTo( "#qunit-fixture" );
 
 	jQuery.each( [ "Width", "Height" ], function( i, method ) {
-		var val = $elem[ method.toLowerCase() ]();
+		let val = $elem[ method.toLowerCase() ]();
 		assert.notEqual( val, 0, method + " should not be zero on inline element." );
 		assert.equal( $elem[ "inner" + method ](), val + 2, "inner" + method + " should include padding" );
 		assert.equal( $elem[ "outer" + method ](), val + 6, "outer" + method + " should include padding and border" );
@@ -728,7 +728,7 @@ QUnit.test(
 QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 	assert.expect( 48 );
 
-	var i,
+	let i,
 		suffix = "",
 		updater = function( adjustment ) {
 			return function( i, old ) {
