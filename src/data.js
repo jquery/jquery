@@ -14,7 +14,7 @@ import { dataUser } from "./data/var/dataUser.js";
 //	5. Avoid exposing implementation details on user objects (eg. expando properties)
 //	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 
-var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
+let rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /[A-Z]/g;
 
 function getData( data ) {
@@ -43,7 +43,7 @@ function getData( data ) {
 }
 
 function dataAttr( elem, key, data ) {
-	var name;
+	let name;
 
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
@@ -91,7 +91,7 @@ jQuery.extend( {
 
 jQuery.fn.extend( {
 	data: function( key, value ) {
-		var i, name, data,
+		let i, name, data,
 			elem = this[ 0 ],
 			attrs = elem && elem.attributes;
 
@@ -123,7 +123,7 @@ jQuery.fn.extend( {
 
 		// Sets multiple values
 		if ( typeof key === "object" ) {
-			return this.each( function() {
+			return this.each( () => {
 				dataUser.set( this, key );
 			} );
 		}
@@ -147,7 +147,7 @@ jQuery.fn.extend( {
 			}
 
 			// Set the data...
-			this.each( function() {
+			this.each( () => {
 
 				// We always store the camelCased key
 				dataUser.set( this, key, value );
@@ -156,7 +156,7 @@ jQuery.fn.extend( {
 	},
 
 	removeData: function( key ) {
-		return this.each( function() {
+		return this.each( () => {
 			dataUser.remove( this, key );
 		} );
 	}
