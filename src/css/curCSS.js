@@ -5,7 +5,7 @@ import { rdoubleDash } from "../var/rdoubleDash.js";
 import { rtrimCSS } from "../var/rtrimCSS.js";
 
 export function curCSS( elem, name, computed ) {
-	var ret,
+	let ret,
 		isCustomProp = rdoubleDash.test( name );
 
 	computed = computed || getStyles( elem );
