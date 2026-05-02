@@ -1,7 +1,7 @@
 import { camelCase } from "../core/camelCase.js";
 
 // Matches dashed string for camelizing
-var rmsPrefix = /^-ms-/;
+let rmsPrefix = /^-ms-/;
 
 // Convert dashed to camelCase, handle vendor prefixes.
 // Used by the css & effects modules.
