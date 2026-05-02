@@ -2,17 +2,17 @@ QUnit.module( "callbacks", {
 	afterEach: moduleTeardown
 } );
 
-( function() {
+( () => {
 
 if ( !includesModule( "callbacks" ) ) {
 	return;
 }
 
-( function() {
+( () => {
 
-var output,
+let output,
 	addToOutput = function( string ) {
-		return function() {
+		return () => {
 			output += string;
 		};
 	},
@@ -36,7 +36,7 @@ var output,
 	filters = {
 		"no filter": undefined,
 		"filter": function( fn ) {
-			return function() {
+			return () => {
 				return fn.apply( this, arguments );
 			};
 		}
@@ -46,7 +46,7 @@ var output,
 		if ( typeof flags === "string" ) {
 			return "'" + flags + "'";
 		}
-		var output = [], key;
+		let output = [], key;
 		for ( key in flags ) {
 			output.push( "'" + key + "': " + flags[ key ] );
 		}
@@ -55,9 +55,9 @@ var output,
 
 jQuery.each( tests, function( strFlags, resultString ) {
 
-		var objectFlags = {};
+		let objectFlags = {};
 
-		jQuery.each( strFlags.split( " " ), function() {
+		jQuery.each( strFlags.split( " " ), () => {
 			if ( this.length ) {
 				objectFlags[ this ] = true;
 			}
@@ -74,7 +74,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 					assert.expect( 29 );
 
-					var cblist,
+					let cblist,
 						results = resultString.split( /\s+/ );
 
 					// Basic binding and firing
@@ -104,7 +104,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Emptying while firing (trac-13517)
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.empty );
-					cblist.add( function() {
+					cblist.add( () => {
 						assert.ok( false, "not emptied" );
 					} );
 					cblist.fire();
@@ -112,7 +112,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Disabling while firing
 					cblist = jQuery.Callbacks( flags );
 					cblist.add( cblist.disable );
-					cblist.add( function() {
+					cblist.add( () => {
 						assert.ok( false, "not disabled" );
 					} );
 					cblist.fire();
@@ -120,7 +120,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Basic binding and firing (context, arguments)
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function() {
+					cblist.add( () => {
 						assert.equal( this, window, "Basic binding and firing (context)" );
 						output += Array.prototype.join.call( arguments, "" );
 					} );
@@ -130,7 +130,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// fireWith with no arguments
 					output = "";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function() {
+					cblist.add( () => {
 						assert.equal( this, window, "fireWith with no arguments (context is window)" );
 						assert.strictEqual( arguments.length, 0, "fireWith with no arguments (no arguments)" );
 					} );
@@ -184,7 +184,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Ordering
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( function() {
+					cblist.add( () => {
 						cblist.add( outputC );
 						outputA();
 					}, outputB );
@@ -193,7 +193,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 
 					// Add and fire again
 					output = "X";
-					cblist.add( function() {
+					cblist.add( () => {
 						cblist.add( outputC );
 						outputA();
 					}, outputB );
@@ -228,7 +228,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					// Return false
 					output = "X";
 					cblist = jQuery.Callbacks( flags );
-					cblist.add( outputA, function() {
+					cblist.add( outputA, () => {
 						return false;
 					}, outputB );
 					cblist.add( outputA );
@@ -245,7 +245,7 @@ jQuery.each( tests, function( strFlags, resultString ) {
 					function handler() {
 						output += "X";
 					}
-					handler.method = function() {
+					handler.method = () => {
 						output += "!";
 					};
 					cblist = jQuery.Callbacks( flags );
@@ -264,12 +264,12 @@ QUnit.test( "jQuery.Callbacks( options ) - options are copied", function( assert
 
 	assert.expect( 1 );
 
-	var options = {
+	let options = {
 			"unique": true
 		},
 		cb = jQuery.Callbacks( options ),
 		count = 0,
-		fn = function() {
+		fn = () => {
 			assert.ok( !( count++ ), "called once" );
 		};
 	options.unique = false;
@@ -281,7 +281,7 @@ QUnit.test( "jQuery.Callbacks.fireWith - arguments are copied", function( assert
 
 	assert.expect( 1 );
 
-	var cb = jQuery.Callbacks( "memory" ),
+	let cb = jQuery.Callbacks( "memory" ),
 		args = [ "hello" ];
 
 	cb.fireWith( null, args );
@@ -296,13 +296,13 @@ QUnit.test( "jQuery.Callbacks.remove - should remove all instances", function( a
 
 	assert.expect( 1 );
 
-	var cb = jQuery.Callbacks();
+	let cb = jQuery.Callbacks();
 
 	function fn() {
 		assert.ok( false, "function wasn't removed" );
 	}
 
-	cb.add( fn, fn, function() {
+	cb.add( fn, fn, () => {
 		assert.ok( true, "end of test" );
 	} ).remove( fn ).fire();
 } );
@@ -311,7 +311,7 @@ QUnit.test( "jQuery.Callbacks.has", function( assert ) {
 
 	assert.expect( 13 );
 
-	var cb = jQuery.Callbacks();
+	let cb = jQuery.Callbacks();
 	function getA() {
 		return "A";
 	}
@@ -333,7 +333,7 @@ QUnit.test( "jQuery.Callbacks.has", function( assert ) {
 	assert.strictEqual( cb.has(), false, "Empty list and make sure there are no callback function(s)" );
 	assert.strictEqual( cb.has( getA ), false, "Check for a specific function in an empty() list" );
 
-	cb.add( getA, getB, function() {
+	cb.add( getA, getB, () => {
 		assert.strictEqual( cb.has(), true, "Check if list has callback function(s) from within a callback function" );
 		assert.strictEqual( cb.has( getA ), true, "Check if list has a specific callback from within a callback function" );
 	} ).fire();
@@ -365,9 +365,9 @@ QUnit.test( "jQuery.Callbacks() - disabled callback doesn't fire (gh-1790)", fun
 
 	assert.expect( 1 );
 
-	var cb = jQuery.Callbacks(),
+	let cb = jQuery.Callbacks(),
 		fired = false,
-		shot = function() {
+		shot = () => {
 			fired = true;
 		};
 
@@ -382,12 +382,12 @@ QUnit.test( "jQuery.Callbacks() - list with memory stays locked (gh-3469)", func
 
 	assert.expect( 3 );
 
-	var cb = jQuery.Callbacks( "memory" ),
+	let cb = jQuery.Callbacks( "memory" ),
 		fired = 0,
-		count1 = function() {
+		count1 = () => {
 			fired += 1;
 		},
-		count2 = function() {
+		count2 = () => {
 			fired += 10;
 		};
 
