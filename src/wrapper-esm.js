@@ -23,7 +23,7 @@ return jQuery;
 
 }
 
-var jQuery = jQueryFactory( window, true );
+let jQuery = jQueryFactory( window, true );
 
 export { jQuery, jQuery as $ };
 
