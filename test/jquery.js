@@ -1,11 +1,11 @@
 // Use the right jQuery source on the test page (and iframes)
-( function() {
-	var dynamicImportSource, config, src,
+( () => {
+	let dynamicImportSource, config, src,
 		parentUrl = window.location.protocol + "//" + window.location.host,
 		QUnit = window.QUnit;
 
 	function getQUnitConfig() {
-		var config = Object.create( null );
+		let config = Object.create( null );
 
 		// Default to unminified jQuery for directly-opened iframes
 		if ( !QUnit ) {
