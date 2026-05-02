@@ -2,7 +2,7 @@ import { dataPriv } from "../data/var/dataPriv.js";
 
 // Mark scripts as having already been evaluated
 export function setGlobalEval( elems, refElements ) {
-	var i = 0,
+	let i = 0,
 		l = elems.length;
 
 	for ( ; i < l; i++ ) {
