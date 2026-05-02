@@ -35,7 +35,7 @@ function manipulationTarget( elem, content ) {
 }
 
 function cloneCopyEvent( src, dest ) {
-	var type, i, l,
+	const type, i, l,
 		events = dataPriv.get( src, "events" );
 
 	if ( dest.nodeType !== 1 ) {
@@ -59,7 +59,7 @@ function cloneCopyEvent( src, dest ) {
 }
 
 function remove( elem, selector, keepData ) {
-	var node,
+	let node,
 		nodes = selector ? jQuery.filter( selector, elem ) : elem,
 		i = 0;
 
@@ -85,7 +85,7 @@ jQuery.extend( {
 	},
 
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var i, l, srcElements, destElements,
+		let i, l, srcElements, destElements,
 			clone = elem.cloneNode( true ),
 			inPage = isAttached( elem );
 
@@ -134,7 +134,7 @@ jQuery.extend( {
 	},
 
 	cleanData: function( elems ) {
-		var data, elem, type,
+		let data, elem, type,
 			special = jQuery.event.special,
 			i = 0;
 
@@ -181,7 +181,7 @@ jQuery.fn.extend( {
 		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
-				this.empty().each( function() {
+				this.empty().each( () => {
 					if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 						this.textContent = value;
 					}
@@ -189,25 +189,25 @@ jQuery.fn.extend( {
 		}, null, value, arguments.length );
 	},
 
-	append: function() {
+	append: () => {
 		return domManip( this, arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-				var target = manipulationTarget( this, elem );
+				let target = manipulationTarget( this, elem );
 				target.appendChild( elem );
 			}
 		} );
 	},
 
-	prepend: function() {
+	prepend: () => {
 		return domManip( this, arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-				var target = manipulationTarget( this, elem );
+				let target = manipulationTarget( this, elem );
 				target.insertBefore( elem, target.firstChild );
 			}
 		} );
 	},
 
-	before: function() {
+	before: () => {
 		return domManip( this, arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
@@ -215,7 +215,7 @@ jQuery.fn.extend( {
 		} );
 	},
 
-	after: function() {
+	after: () => {
 		return domManip( this, arguments, function( elem ) {
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this.nextSibling );
@@ -223,8 +223,8 @@ jQuery.fn.extend( {
 		} );
 	},
 
-	empty: function() {
-		var elem,
+	empty: () => {
+		let elem,
 			i = 0;
 
 		for ( ; ( elem = this[ i ] ) != null; i++ ) {
@@ -245,14 +245,14 @@ jQuery.fn.extend( {
 		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 
-		return this.map( function() {
+		return this.map( () => {
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		} );
 	},
 
 	html: function( value ) {
 		return access( this, function( value ) {
-			var elem = this[ 0 ] || {},
+			let elem = this[ 0 ] || {},
 				i = 0,
 				l = this.length;
 
@@ -289,12 +289,12 @@ jQuery.fn.extend( {
 		}, null, value, arguments.length );
 	},
 
-	replaceWith: function() {
-		var ignored = [];
+	replaceWith: () => {
+		let ignored = [];
 
 		// Make the changes, replacing each non-ignored context element with the new content
 		return domManip( this, arguments, function( elem ) {
-			var parent = this.parentNode;
+			let parent = this.parentNode;
 
 			if ( jQuery.inArray( this, ignored ) < 0 ) {
 				jQuery.cleanData( getAll( this ) );
@@ -316,7 +316,7 @@ jQuery.each( {
 	replaceAll: "replaceWith"
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
-		var elems,
+		let elems,
 			ret = [],
 			insert = jQuery( selector ),
 			last = insert.length - 1,
