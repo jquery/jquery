@@ -1,9 +1,9 @@
-( function() {
-"use strict";
+( () => {
+// "use strict" — not needed in ES modules (kept for compatibility)
 
 // Store the old count so that we only assert on tests that have actually leaked,
 // instead of asserting every time a test has leaked sometime in the past
-var oldActive = 0,
+let oldActive = 0,
 
 	splice = [].splice,
 	ajaxSettings = jQuery.ajaxSettings;
@@ -41,13 +41,13 @@ window.moduleTeardown = function( assert ) {
 	Globals.cleanup();
 };
 
-QUnit.done( function() {
+QUnit.done( () => {
 
 	// Remove our own fixtures outside #qunit-fixture
 	supportjQuery( "#qunit ~ *" ).remove();
 } );
 
-QUnit.testDone( function() {
+QUnit.testDone( () => {
 
 	// Ensure jQuery events and data on the fixture are properly removed
 	jQuery( "#qunit-fixture" ).empty();
@@ -70,16 +70,16 @@ QUnit.testDone( function() {
 } );
 
 // Register globals for cleanup and the cleanup code itself
-window.Globals = ( function() {
-	var globals = {};
+window.Globals = ( () => {
+	let globals = {};
 
 	return {
 		register: function( name ) {
 			window[ name ] = globals[ name ] = true;
 		},
 
-		cleanup: function() {
-			var name;
+		cleanup: () => {
+			const name;
 
 			for ( name in globals ) {
 				delete window[ name ];
