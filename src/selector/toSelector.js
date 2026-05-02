@@ -1,5 +1,5 @@
 export function toSelector( tokens ) {
-	var i = 0,
+	let i = 0,
 		len = tokens.length,
 		selector = "";
 	for ( ; i < len; i++ ) {
