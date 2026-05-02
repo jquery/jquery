@@ -16,7 +16,7 @@ jQuery._evalUrl = function( url, options, doc ) {
 		// dataFilter is not invoked for failure responses, so using it instead
 		// of the default converter is kludgy but it works.
 		converters: {
-			"text script": function() {}
+			"text script": () => {}
 		},
 		dataFilter: function( response ) {
 			jQuery.globalEval( response, options, doc );
