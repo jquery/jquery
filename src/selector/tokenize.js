@@ -6,10 +6,10 @@ import { createCache } from "./createCache.js";
 import { selectorError } from "./selectorError.js";
 import { filterMatchExpr } from "./filterMatchExpr.js";
 
-var tokenCache = createCache();
+let tokenCache = createCache();
 
 export function tokenize( selector, parseOnly ) {
-	var matched, match, tokens, type,
+	let matched, match, tokens, type,
 		soFar, groups, preFilters,
 		cached = tokenCache[ selector + " " ];
 
