@@ -5,7 +5,7 @@ if ( includesModule( "deprecated" ) ) {
 QUnit.test( "bind/unbind", function( assert ) {
 	assert.expect( 4 );
 
-	var markup = jQuery(
+	let markup = jQuery(
 		"<div><p><span><b>b</b></span></p></div>"
 	);
 
@@ -26,7 +26,7 @@ QUnit.test( "bind/unbind", function( assert ) {
 QUnit.test( "delegate/undelegate", function( assert ) {
 	assert.expect( 2 );
 
-	var markup = jQuery(
+	let markup = jQuery(
 		"<div><p><span><b>b</b></span></p></div>"
 	);
 
@@ -45,11 +45,11 @@ QUnit.test( "delegate/undelegate", function( assert ) {
 QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
 	assert.expect( 1 );
 
-	var times = 0,
-		handler1 = function() {
+	let times = 0,
+		handler1 = () => {
  ++times;
 },
-		handler2 = function() {
+		handler2 = () => {
  ++times;
 };
 
@@ -69,10 +69,10 @@ QUnit.test( "hover() mouseenter mouseleave", function( assert ) {
 QUnit.test( "trigger() shortcuts", function( assert ) {
 	assert.expect( 5 );
 
-	var counter, clickCounter,
+	let counter, clickCounter,
 		elem = jQuery( "<li><a href='#'>Change location</a></li>" ).prependTo( "#firstUL" );
-	elem.find( "a" ).on( "click", function() {
-		var close = jQuery( "spanx", this ); // same with jQuery(this).find("span");
+	elem.find( "a" ).on( "click", () => {
+		let close = jQuery( "spanx", this ); // same with jQuery(this).find("span");
 		assert.equal( close.length, 0, "Context element does not exist, length must be zero" );
 		assert.ok( !close[ 0 ], "Context element does not exist, direct access to element must return undefined" );
 		return false;
@@ -81,19 +81,19 @@ QUnit.test( "trigger() shortcuts", function( assert ) {
 	// manually clean up detached elements
 	elem.remove();
 
-	jQuery( "#check1" ).click( function() {
+	jQuery( "#check1" ).click( () => {
 		assert.ok( true, "click event handler for checkbox gets fired twice, see trac-815" );
 	} ).click();
 
 	counter = 0;
-	jQuery( "#firstp" )[ 0 ].onclick = function() {
+	jQuery( "#firstp" )[ 0 ].onclick = () => {
 		counter++;
 	};
 	jQuery( "#firstp" ).click();
 	assert.equal( counter, 1, "Check that click, triggers onclick event handler also" );
 
 	clickCounter = 0;
-	jQuery( "#john1" )[ 0 ].onclick = function() {
+	jQuery( "#john1" )[ 0 ].onclick = () => {
 		clickCounter++;
 	};
 	jQuery( "#john1" ).click();
@@ -102,20 +102,20 @@ QUnit.test( "trigger() shortcuts", function( assert ) {
 
 if ( includesModule( "ajax" ) ) {
 	ajaxTest( "Ajax events aliases (with context)", 12, function( assert ) {
-		var context = document.createElement( "div" );
+		let context = document.createElement( "div" );
 
 		function event( e ) {
 			assert.equal( this, context, e.type );
 		}
 
 		function callback( msg ) {
-			return function() {
+			return () => {
 				assert.equal( this, context, "context is preserved on callback " + msg );
 			};
 		}
 
 		return {
-			setup: function() {
+			setup: () => {
 				jQuery( context ).appendTo( "#foo" )
 					.ajaxSend( event )
 					.ajaxComplete( event )
@@ -160,8 +160,8 @@ QUnit.test( "Event aliases", function( assert ) {
 QUnit.test( "jQuery.proxy", function( assert ) {
 	assert.expect( 9 );
 
-	var test2, test3, test4, fn, cb,
-		test = function() {
+	let test2, test3, test4, fn, cb,
+		test = () => {
 			assert.equal( this, thisObject, "Make sure that scope is set properly." );
 		},
 		thisObject = { foo: "bar", method: test };
@@ -197,7 +197,7 @@ QUnit.test( "jQuery.proxy", function( assert ) {
 	jQuery.proxy( test4, "meth" )( "boom" );
 
 	// jQuery 1.9 improved currying with `this` object
-	fn = function() {
+	fn = () => {
 		assert.equal( Array.prototype.join.call( arguments, "," ), "arg1,arg2,arg3", "args passed" );
 		assert.equal( this.foo, "bar", "this-object passed" );
 	};
