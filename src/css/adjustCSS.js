@@ -3,13 +3,13 @@ import { isAutoPx } from "./isAutoPx.js";
 import { rcssNum } from "../var/rcssNum.js";
 
 export function adjustCSS( elem, prop, valueParts, tween ) {
-	var adjusted, scale,
+	let adjusted, scale,
 		maxIterations = 20,
 		currentValue = tween ?
-			function() {
+			() => {
 				return tween.cur();
 			} :
-			function() {
+			() => {
 				return jQuery.css( elem, prop, "" );
 			},
 		initial = currentValue(),
