@@ -1,7 +1,7 @@
 import { jQuery } from "../core.js";
 import { documentElement } from "../var/documentElement.js";
 
-var isAttached = function( elem ) {
+let isAttached = function( elem ) {
 		return jQuery.contains( elem.ownerDocument, elem ) ||
 			elem.getRootNode( composed ) === elem.ownerDocument;
 	},
