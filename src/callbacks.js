@@ -4,7 +4,7 @@ import { rnothtmlwhite } from "./var/rnothtmlwhite.js";
 
 // Convert String-formatted options into Object-formatted ones
 function createOptions( options ) {
-	var object = {};
+	let object = {};
 	jQuery.each( options.match( rnothtmlwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
 	} );
@@ -63,7 +63,7 @@ jQuery.Callbacks = function( options ) {
 		firingIndex = -1,
 
 		// Fire callbacks
-		fire = function() {
+		fire = () => {
 
 			// Enforce single-firing
 			locked = locked || options.once;
@@ -111,7 +111,7 @@ jQuery.Callbacks = function( options ) {
 		self = {
 
 			// Add a callback or a collection of callbacks to the list
-			add: function() {
+			add: () => {
 				if ( list ) {
 
 					// If we have memory from a past run, we should fire after adding
@@ -142,9 +142,9 @@ jQuery.Callbacks = function( options ) {
 			},
 
 			// Remove a callback from the list
-			remove: function() {
+			remove: () => {
 				jQuery.each( arguments, function( _, arg ) {
-					var index;
+					let index;
 					while ( ( index = jQuery.inArray( arg, list, index ) ) > -1 ) {
 						list.splice( index, 1 );
 
@@ -166,7 +166,7 @@ jQuery.Callbacks = function( options ) {
 			},
 
 			// Remove all callbacks from the list
-			empty: function() {
+			empty: () => {
 				if ( list ) {
 					list = [];
 				}
@@ -176,26 +176,26 @@ jQuery.Callbacks = function( options ) {
 			// Disable .fire and .add
 			// Abort any current/pending executions
 			// Clear all callbacks and values
-			disable: function() {
+			disable: () => {
 				locked = queue = [];
 				list = memory = "";
 				return this;
 			},
-			disabled: function() {
+			disabled: () => {
 				return !list;
 			},
 
 			// Disable .fire
 			// Also disable .add unless we have memory (since it would have no effect)
 			// Abort any pending executions
-			lock: function() {
+			lock: () => {
 				locked = queue = [];
 				if ( !memory && !firing ) {
 					list = memory = "";
 				}
 				return this;
 			},
-			locked: function() {
+			locked: () => {
 				return !!locked;
 			},
 
@@ -213,13 +213,13 @@ jQuery.Callbacks = function( options ) {
 			},
 
 			// Call all the callbacks with the given arguments
-			fire: function() {
+			fire: () => {
 				self.fireWith( this, arguments );
 				return this;
 			},
 
 			// To know if the callbacks have already been called at least once
-			fired: function() {
+			fired: () => {
 				return !!fired;
 			}
 		};
