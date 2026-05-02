@@ -1,4 +1,5 @@
 import { jQuery } from "../core.js";
+import { getScriptNonce } from "../core/getScriptNonce.js";
 import { document } from "../var/document.js";
 
 import "../ajax.js";
@@ -48,9 +49,18 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 		s.cache = false;
 	}
 
+	var useScriptTag = canUseScriptTag( s );
+
+	if ( useScriptTag && ( !s.scriptAttrs || !s.scriptAttrs.nonce ) ) {
+		var nonce = getScriptNonce( document );
+		if ( nonce ) {
+			s.scriptAttrs = jQuery.extend( {}, s.scriptAttrs, { nonce: nonce } );
+		}
+	}
+
 	// These types of requests are handled via a script tag
 	// so force their methods to GET.
-	if ( canUseScriptTag( s ) ) {
+	if ( useScriptTag ) {
 		s.type = "GET";
 	}
 } );

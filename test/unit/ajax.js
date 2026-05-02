@@ -1470,6 +1470,22 @@ QUnit.module( "ajax", {
 		}
 	);
 
+	testIframe(
+		"jQuery.getScript() supports CSP nonce",
+		"mock.php?action=cspNonce&test=ajax",
+		function( assert, jQuery, window, document, scriptCalled ) {
+			var done = assert.async();
+
+			assert.expect( 2 );
+
+			assert.strictEqual( scriptCalled, true, "Downloaded script called" );
+			supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
+				assert.equal( data, "", "No log request should be sent" );
+				supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
+			} );
+		}
+	);
+
 	ajaxTest( "jQuery.ajax() - script, Remote", 2, function( assert ) {
 		return {
 			setup: function() {
