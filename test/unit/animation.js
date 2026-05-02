@@ -1,11 +1,11 @@
-( function() {
+( () => {
 
 // Can't test what ain't there
 if ( !includesModule( "effects" ) ) {
 	return;
 }
 
-var fxInterval = 13,
+let fxInterval = 13,
 	oldRaf = window.requestAnimationFrame,
 	defaultPrefilter = jQuery.Animation.prefilters[ 0 ],
 	defaultTweener = jQuery.Animation.tweeners[ "*" ][ 0 ],
@@ -13,7 +13,7 @@ var fxInterval = 13,
 
 // This module tests jQuery.Animation and the corresponding 1.8+ effects APIs
 QUnit.module( "animation", {
-	beforeEach: function() {
+	beforeEach: () => {
 		this.sandbox = sinon.createSandbox();
 		this.clock = this.sandbox.useFakeTimers( startTime );
 		window.requestAnimationFrame = null;
@@ -21,7 +21,7 @@ QUnit.module( "animation", {
 		jQuery.Animation.prefilters = [ defaultPrefilter ];
 		jQuery.Animation.tweeners = { "*": [ defaultTweener ] };
 	},
-	afterEach: function() {
+	afterEach: () => {
 		this.sandbox.restore();
 		jQuery.fx.stop();
 		window.requestAnimationFrame = oldRaf;
@@ -32,7 +32,7 @@ QUnit.module( "animation", {
 QUnit.test( "Animation( subject, props, opts ) - shape", function( assert ) {
 	assert.expect( 20 );
 
-	var subject = { test: 0 },
+	let subject = { test: 0 },
 		props = { test: 1 },
 		opts = { queue: "fx", duration: fxInterval * 10 },
 		animation = jQuery.Animation( subject, props, opts );
@@ -90,7 +90,7 @@ QUnit.test( "Animation.prefilter( fn ) - calls prefilter after defaultPrefilter"
 	function( assert ) {
 		assert.expect( 1 );
 
-		var prefilter = this.sandbox.stub(),
+		let prefilter = this.sandbox.stub(),
 			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, "0" );
 
 		jQuery.Animation.prefilter( prefilter );
@@ -104,7 +104,7 @@ QUnit.test( "Animation.prefilter( fn, true ) - calls prefilter before defaultPre
 	function( assert ) {
 		assert.expect( 1 );
 
-		var prefilter = this.sandbox.stub(),
+		let prefilter = this.sandbox.stub(),
 			defaultSpy = this.sandbox.spy( jQuery.Animation.prefilters, "0" );
 
 		jQuery.Animation.prefilter( prefilter, true );
@@ -117,13 +117,13 @@ QUnit.test( "Animation.prefilter( fn, true ) - calls prefilter before defaultPre
 QUnit.test( "Animation.prefilter - prefilter return hooks", function( assert ) {
 	assert.expect( 34 );
 
-	var animation, realAnimation, element,
+	let animation, realAnimation, element,
 		sandbox = this.sandbox,
 		ourAnimation = { stop: this.sandbox.spy() },
 		target = { height: 50 },
 		props = { height: 100 },
 		opts = { duration: 100 },
-		prefilter = this.sandbox.spy( function() {
+		prefilter = this.sandbox.spy( () => {
 			realAnimation = this;
 			sandbox.spy( realAnimation, "createTween" );
 
@@ -209,7 +209,7 @@ QUnit.test( "Animation.prefilter - prefilter return hooks", function( assert ) {
 
 QUnit.test( "Animation.tweener( fn ) - unshifts a * tweener", function( assert ) {
 	assert.expect( 2 );
-	var starTweeners = jQuery.Animation.tweeners[ "*" ];
+	let starTweeners = jQuery.Animation.tweeners[ "*" ];
 
 	jQuery.Animation.tweener( jQuery.noop );
 	assert.equal( starTweeners.length, 2 );
@@ -218,8 +218,8 @@ QUnit.test( "Animation.tweener( fn ) - unshifts a * tweener", function( assert )
 
 QUnit.test( "Animation.tweener( 'prop', fn ) - unshifts a 'prop' tweener", function( assert ) {
 	assert.expect( 4 );
-	var tweeners = jQuery.Animation.tweeners,
-		fn = function() {};
+	let tweeners = jQuery.Animation.tweeners,
+		fn = () => {};
 
 	jQuery.Animation.tweener( "prop", jQuery.noop );
 	assert.equal( tweeners.prop.length, 1 );
@@ -234,8 +234,8 @@ QUnit.test(
 	"Animation.tweener( 'list of props', fn ) - unshifts a tweener to each prop",
 	function( assert ) {
 		assert.expect( 2 );
-		var tweeners = jQuery.Animation.tweeners,
-			fn = function() {};
+		let tweeners = jQuery.Animation.tweeners,
+			fn = () => {};
 
 		jQuery.Animation.tweener( "list of props", jQuery.noop );
 		assert.deepEqual( tweeners, {
