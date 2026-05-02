@@ -7,7 +7,7 @@ import { isObviousHtml } from "./isObviousHtml.js";
 import "../traversing/findFilter.js";
 
 // A central reference to the root jQuery(document)
-var rootjQuery,
+let rootjQuery,
 
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (trac-9521)
@@ -16,7 +16,7 @@ var rootjQuery,
 	rhtmlOrId = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
 	init = jQuery.fn.init = function( selector, context ) {
-		var match, elem;
+		let match, elem;
 
 		// HANDLE: $(""), $(null), $(undefined), $(false)
 		if ( !selector ) {
