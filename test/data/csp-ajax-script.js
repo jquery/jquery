@@ -1,12 +1,12 @@
 /* global startIframeTest */
 
-var timeoutId, type;
+let timeoutId, type;
 
 function finalize() {
 	startIframeTest( type, window.downloadedScriptCalled );
 }
 
-timeoutId = setTimeout( function() {
+timeoutId = setTimeout( () => {
 	finalize();
 }, 1000 );
 
@@ -19,7 +19,7 @@ jQuery
 			type = settings.type;
 		}
 	} )
-	.then( function() {
+	.then( () => {
 		clearTimeout( timeoutId );
 		finalize();
 	} );
