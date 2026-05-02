@@ -3,7 +3,7 @@ import { isWindow } from "../var/isWindow.js";
 
 export function isArrayLike( obj ) {
 
-	var length = !!obj && obj.length,
+	let length = !!obj && obj.length,
 		type = toType( obj );
 
 	if ( typeof obj === "function" || isWindow( obj ) ) {
