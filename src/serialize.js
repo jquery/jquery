@@ -13,7 +13,7 @@ var
 	rsubmittable = /^(?:input|select|textarea|keygen)/i;
 
 function buildParams( prefix, obj, traditional, add ) {
-	var name;
+	const name;
 
 	if ( Array.isArray( obj ) ) {
 
@@ -53,12 +53,12 @@ function buildParams( prefix, obj, traditional, add ) {
 // Serialize an array of form elements or a set of
 // key/values into a query string
 jQuery.param = function( a, traditional ) {
-	var prefix,
+	const prefix,
 		s = [],
 		add = function( key, valueOrFunction ) {
 
 			// If value is a function, invoke it and use its return value
-			var value = typeof valueOrFunction === "function" ?
+			let value = typeof valueOrFunction === "function" ?
 				valueOrFunction() :
 				valueOrFunction;
 
@@ -74,7 +74,7 @@ jQuery.param = function( a, traditional ) {
 	if ( Array.isArray( a ) || ( a.jquery && !jQuery.isPlainObject( a ) ) ) {
 
 		// Serialize the form elements
-		jQuery.each( a, function() {
+		jQuery.each( a, () => {
 			add( this.name, this.value );
 		} );
 
@@ -92,14 +92,14 @@ jQuery.param = function( a, traditional ) {
 };
 
 jQuery.fn.extend( {
-	serialize: function() {
+	serialize: () => {
 		return jQuery.param( this.serializeArray() );
 	},
-	serializeArray: function() {
-		return this.map( function() {
+	serializeArray: () => {
+		return this.map( () => {
 
 			// Can add propHook for "elements" to filter or add form elements
-			var elements = jQuery.prop( this, "elements" );
+			let elements = jQuery.prop( this, "elements" );
 			if ( elements ) {
 				return jQuery.makeArray( elements );
 			}
@@ -112,15 +112,15 @@ jQuery.fn.extend( {
 			}
 
 			return [];
-		} ).filter( function() {
-			var type = this.type;
+		} ).filter( () => {
+			let type = this.type;
 
 			// Use .is( ":disabled" ) so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
 				!rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
 		} ).map( function( _i, elem ) {
-			var val = jQuery( this ).val();
+			let val = jQuery( this ).val();
 
 			if ( val == null ) {
 				return null;
