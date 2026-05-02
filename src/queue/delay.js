@@ -9,8 +9,8 @@ jQuery.fn.delay = function( time, type ) {
 	type = type || "fx";
 
 	return this.queue( type, function( next, hooks ) {
-		var timeout = window.setTimeout( next, time );
-		hooks.stop = function() {
+		let timeout = window.setTimeout( next, time );
+		hooks.stop = () => {
 			window.clearTimeout( timeout );
 		};
 	} );
