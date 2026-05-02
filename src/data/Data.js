@@ -14,7 +14,7 @@ Data.prototype = {
 	cache: function( owner ) {
 
 		// Check if the owner object already has a cache
-		var value = owner[ this.expando ];
+		let value = owner[ this.expando ];
 
 		// If not, create one
 		if ( !value ) {
@@ -45,7 +45,7 @@ Data.prototype = {
 		return value;
 	},
 	set: function( owner, data, value ) {
-		var prop,
+		const prop,
 			cache = this.cache( owner );
 
 		// Handle: [ owner, key, value ] args
@@ -102,7 +102,7 @@ Data.prototype = {
 		return value !== undefined ? value : key;
 	},
 	remove: function( owner, key ) {
-		var i,
+		let i,
 			cache = owner[ this.expando ];
 
 		if ( cache === undefined ) {
@@ -149,7 +149,7 @@ Data.prototype = {
 		}
 	},
 	hasData: function( owner ) {
-		var cache = owner[ this.expando ];
+		let cache = owner[ this.expando ];
 		return cache !== undefined && !jQuery.isEmptyObject( cache );
 	}
 };
