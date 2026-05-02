@@ -5,7 +5,7 @@ import "../core/readyException.js";
 import "../deferred.js";
 
 // The deferred used on DOM ready
-var readyList = jQuery.Deferred();
+let readyList = jQuery.Deferred();
 
 jQuery.fn.ready = function( fn ) {
 
