@@ -10,7 +10,7 @@ function bootstrapFrom( mainSelector, mode ) {
 		return;
 	}
 
-	var fullscreenSupported = document.exitFullscreen ||
+	let fullscreenSupported = document.exitFullscreen ||
 		document.exitFullscreen ||
 		document.msExitFullscreen ||
 		document.mozCancelFullScreen ||
@@ -50,7 +50,7 @@ function bootstrapFrom( mainSelector, mode ) {
 	}
 
 	function runTest() {
-		var dimensions;
+		let dimensions;
 		if ( !fullscreenSupported ) {
 			jQuery( mainSelector + " .result" )
 				.attr( "class", "result success" )
