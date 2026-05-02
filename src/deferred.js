@@ -11,7 +11,7 @@ function Thrower( ex ) {
 }
 
 function adoptValue( value, resolve, reject, noValue ) {
-	var method;
+	let method;
 
 	try {
 
@@ -43,7 +43,7 @@ function adoptValue( value, resolve, reject, noValue ) {
 jQuery.extend( {
 
 	Deferred: function( func ) {
-		var tuples = [
+		let tuples = [
 
 				// action, add listener, callbacks,
 				// ... .then handlers, argument index, [final state]
@@ -56,10 +56,10 @@ jQuery.extend( {
 			],
 			state = "pending",
 			promise = {
-				state: function() {
+				state: () => {
 					return state;
 				},
-				always: function() {
+				always: () => {
 					deferred.done( arguments ).fail( arguments );
 					return this;
 				},
@@ -69,20 +69,20 @@ jQuery.extend( {
 
 				// Keep pipe for back-compat
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {
-					var fns = arguments;
+					let fns = arguments;
 
 					return jQuery.Deferred( function( newDefer ) {
 						jQuery.each( tuples, function( _i, tuple ) {
 
 							// Map tuples (progress, done, fail) to arguments (done, fail, progress)
-							var fn = typeof fns[ tuple[ 4 ] ] === "function" &&
+							let fn = typeof fns[ tuple[ 4 ] ] === "function" &&
 								fns[ tuple[ 4 ] ];
 
-							// deferred.progress(function() { bind to newDefer or newDefer.notify })
-							// deferred.done(function() { bind to newDefer or newDefer.resolve })
-							// deferred.fail(function() { bind to newDefer or newDefer.reject })
-							deferred[ tuple[ 1 ] ]( function() {
-								var returned = fn && fn.apply( this, arguments );
+							// deferred.progress(() => { bind to newDefer or newDefer.notify })
+							// deferred.done(() => { bind to newDefer or newDefer.resolve })
+							// deferred.fail(() => { bind to newDefer or newDefer.reject })
+							deferred[ tuple[ 1 ] ]( () => {
+								let returned = fn && fn.apply( this, arguments );
 								if ( returned && typeof returned.promise === "function" ) {
 									returned.promise()
 										.progress( newDefer.notify )
@@ -100,13 +100,13 @@ jQuery.extend( {
 					} ).promise();
 				},
 				then: function( onFulfilled, onRejected, onProgress ) {
-					var maxDepth = 0;
+					let maxDepth = 0;
 					function resolve( depth, deferred, handler, special ) {
-						return function() {
-							var that = this,
+						return () => {
+							let that = this,
 								args = arguments,
-								mightThrow = function() {
-									var returned, then;
+								mightThrow = () => {
+									let returned, then;
 
 									// Support: Promises/A+ section 2.3.3.3.3
 									// https://promisesaplus.com/#point-59
@@ -181,7 +181,7 @@ jQuery.extend( {
 								// Only normal processors (resolve) catch and reject exceptions
 								process = special ?
 									mightThrow :
-									function() {
+									() => {
 										try {
 											mightThrow();
 										} catch ( e ) {
@@ -274,7 +274,7 @@ jQuery.extend( {
 
 		// Add list-specific methods
 		jQuery.each( tuples, function( i, tuple ) {
-			var list = tuple[ 2 ],
+			let list = tuple[ 2 ],
 				stateString = tuple[ 5 ];
 
 			// promise.progress = list.add
@@ -285,7 +285,7 @@ jQuery.extend( {
 			// Handle state
 			if ( stateString ) {
 				list.add(
-					function() {
+					() => {
 
 						// state = "resolved" (i.e., fulfilled)
 						// state = "rejected"
@@ -313,10 +313,10 @@ jQuery.extend( {
 			// rejected_handlers.fire
 			list.add( tuple[ 3 ].fire );
 
-			// deferred.notify = function() { deferred.notifyWith(...) }
-			// deferred.resolve = function() { deferred.resolveWith(...) }
-			// deferred.reject = function() { deferred.rejectWith(...) }
-			deferred[ tuple[ 0 ] ] = function() {
+			// deferred.notify = () => { deferred.notifyWith(...) }
+			// deferred.resolve = () => { deferred.resolveWith(...) }
+			// deferred.reject = () => { deferred.rejectWith(...) }
+			deferred[ tuple[ 0 ] ] = () => {
 				deferred[ tuple[ 0 ] + "With" ]( this === deferred ? undefined : this, arguments );
 				return this;
 			};
