@@ -1,11 +1,11 @@
 /* global startIframeTest */
 
-jQuery( function() {
-	"use strict";
+jQuery( () => {
+	// "use strict" — not needed in ES modules (kept for compatibility)
 
-	var elem = jQuery( "<div></div><span></span><a></a>" );
-	var result = "";
-	var i;
+	let elem = jQuery( "<div></div><span></span><a></a>" );
+	let result = "";
+	const i;
 	for ( i of elem ) {
 		result += i.nodeName;
 	}
