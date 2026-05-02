@@ -4,7 +4,7 @@ import { sort } from "../var/sort.js";
 import { splice } from "../var/splice.js";
 import { slice } from "../var/slice.js";
 
-var hasDuplicate;
+let hasDuplicate;
 
 // Document order sorting
 function sortOrder( a, b ) {
@@ -20,7 +20,7 @@ function sortOrder( a, b ) {
 	}
 
 	// Sort on method existence if only one input has compareDocumentPosition
-	var compare = !a.compareDocumentPosition - !b.compareDocumentPosition;
+	let compare = !a.compareDocumentPosition - !b.compareDocumentPosition;
 	if ( compare ) {
 		return compare;
 	}
@@ -70,7 +70,7 @@ function sortOrder( a, b ) {
  * @param {ArrayLike} results
  */
 jQuery.uniqueSort = function( results ) {
-	var elem,
+	let elem,
 		duplicates = [],
 		j = 0,
 		i = 0;
@@ -93,6 +93,6 @@ jQuery.uniqueSort = function( results ) {
 	return results;
 };
 
-jQuery.fn.uniqueSort = function() {
+jQuery.fn.uniqueSort = () => {
 	return this.pushStack( jQuery.uniqueSort( slice.apply( this ) ) );
 };
