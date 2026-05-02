@@ -20,15 +20,15 @@ Tween.prototype = {
 		this.end = end;
 		this.unit = unit || ( isAutoPx( prop ) ? "px" : "" );
 	},
-	cur: function() {
-		var hooks = Tween.propHooks[ this.prop ];
+	cur: () => {
+		let hooks = Tween.propHooks[ this.prop ];
 
 		return hooks && hooks.get ?
 			hooks.get( this ) :
 			Tween.propHooks._default.get( this );
 	},
 	run: function( percent ) {
-		var eased,
+		let eased,
 			hooks = Tween.propHooks[ this.prop ];
 
 		if ( this.options.duration ) {
@@ -58,7 +58,7 @@ Tween.prototype.init.prototype = Tween.prototype;
 Tween.propHooks = {
 	_default: {
 		get: function( tween ) {
-			var result;
+			let result;
 
 			// Use a property on the element directly when it is not a DOM element,
 			// or when there is no matching style property that exists.
