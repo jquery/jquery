@@ -8,7 +8,7 @@ QUnit.test( "find(String)", function( assert ) {
 QUnit.test( "find(String) under non-elements", function( assert ) {
 	assert.expect( 2 );
 
-	var j = jQuery( "#nonnodes" ).contents();
+	let j = jQuery( "#nonnodes" ).contents();
 	assert.equal( j.find( "div" ).length, 0, "Check node,textnode,comment to find zero divs" );
 	assert.equal( j.find( "div" ).addBack().length, 3, "Check node,textnode,comment to find zero divs, but preserves pushStack" );
 } );
@@ -63,7 +63,7 @@ QUnit.test( "is(falsy|invalid)", function( assert ) {
 QUnit.test( "is(String)", function( assert ) {
 	assert.expect( 33 );
 
-	var link = document.getElementById( "john1" ),
+	let link = document.getElementById( "john1" ),
 		input = document.getElementById( "text1" ),
 		option = document.getElementById( "option1a" ),
 		disconnected = document.createElement( "div" );
@@ -138,7 +138,7 @@ QUnit.test( "is(String)", function( assert ) {
 QUnit.test( "is() against non-elements (trac-10178)", function( assert ) {
 	assert.expect( 14 );
 
-	var label, i, test,
+	const label, i, test,
 		collection = jQuery( document ),
 		tests = [ "a", "*" ],
 		nonelements = {
@@ -148,7 +148,7 @@ QUnit.test( "is() against non-elements (trac-10178)", function( assert ) {
 			window: window,
 			array: [],
 			"plain object": {},
-			"function": function() {}
+			"function": () => {}
 		};
 
 	for ( label in nonelements ) {
@@ -258,7 +258,7 @@ QUnit.test( "index()", function( assert ) {
 QUnit.test( "index(Object|String|undefined)", function( assert ) {
 	assert.expect( 16 );
 
-	var elements = jQuery( [ window, document ] ),
+	let elements = jQuery( [ window, document ] ),
 		inputElements = jQuery( "#radio1,#radio2,#check1,#check2" );
 
 	// Passing a node
@@ -298,7 +298,7 @@ QUnit.test( "filter(Selector|undefined)", function( assert ) {
 	assert.deepEqual( jQuery( "p" ).filter( "" ).get(),        [], "filter('') should return an empty jQuery object" );
 
 	// using contents will get comments regular, text, and comment nodes
-	var j = jQuery( "#nonnodes" ).contents();
+	let j = jQuery( "#nonnodes" ).contents();
 	assert.equal( j.filter( "span" ).length, 1, "Check node,textnode,comment to filter the one span" );
 	assert.equal( j.filter( "[name]" ).length, 0, "Check node,textnode,comment to filter the one span" );
 } );
@@ -306,7 +306,7 @@ QUnit.test( "filter(Selector|undefined)", function( assert ) {
 QUnit.test( "filter(Function)", function( assert ) {
 	assert.expect( 2 );
 
-	assert.deepEqual( jQuery( "#qunit-fixture p" ).filter( function() {
+	assert.deepEqual( jQuery( "#qunit-fixture p" ).filter( () => {
 		return !jQuery( "a", this ).length;
 	} ).get(), q( "sndp", "first" ), "filter(Function)" );
 
@@ -318,28 +318,28 @@ QUnit.test( "filter(Function)", function( assert ) {
 QUnit.test( "filter(Element)", function( assert ) {
 	assert.expect( 1 );
 
-	var element = document.getElementById( "text1" );
+	let element = document.getElementById( "text1" );
 	assert.deepEqual( jQuery( "#form input" ).filter( element ).get(), q( "text1" ), "filter(Element)" );
 } );
 
 QUnit.test( "filter(Array)", function( assert ) {
 	assert.expect( 1 );
 
-	var elements = [ document.getElementById( "text1" ) ];
+	let elements = [ document.getElementById( "text1" ) ];
 	assert.deepEqual( jQuery( "#form input" ).filter( elements ).get(), q( "text1" ), "filter(Element)" );
 } );
 
 QUnit.test( "filter(jQuery)", function( assert ) {
 	assert.expect( 1 );
 
-	var elements = jQuery( "#text1" );
+	let elements = jQuery( "#text1" );
 	assert.deepEqual( jQuery( "#form input" ).filter( elements ).get(), q( "text1" ), "filter(Element)" );
 } );
 
 QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "filter() with positional selectors", function( assert ) {
 	assert.expect( 19 );
 
-	var filterit = function( sel, filter, length ) {
+	let filterit = function( sel, filter, length ) {
 		assert.equal( jQuery( sel ).filter( filter ).length, length, "jQuery( " + sel + " ).filter( " + filter + " )" );
 	};
 
@@ -382,7 +382,7 @@ QUnit[ QUnit.jQuerySelectorsPos ? "test" : "skip" ]( "filter() with positional s
 QUnit.test( "closest()", function( assert ) {
 	assert.expect( 14 );
 
-	var jq;
+	let jq;
 
 	assert.deepEqual( jQuery( "body" ).closest( "body" ).get(), q( "body" ), "closest(body)" );
 	assert.deepEqual( jQuery( "body" ).closest( "html" ).get(), q( "html" ), "closest(html)" );
@@ -496,7 +496,7 @@ QUnit.testUnlessIE( "not(Selector)", function( assert ) {
 QUnit.test( "not(undefined)", function( assert ) {
 	assert.expect( 4 );
 
-	var all = jQuery( "p" ).get();
+	let all = jQuery( "p" ).get();
 	assert.deepEqual( jQuery( "p" ).not( null ).get(),      all, "not(null) should have no effect" );
 	assert.deepEqual( jQuery( "p" ).not( undefined ).get(), all, "not(undefined) should have no effect" );
 	assert.deepEqual( jQuery( "p" ).not( 0 ).get(),         all, "not(0) should have no effect" );
@@ -506,14 +506,14 @@ QUnit.test( "not(undefined)", function( assert ) {
 QUnit.test( "not(Element)", function( assert ) {
 	assert.expect( 1 );
 
-	var selects = jQuery( "#form select" );
+	let selects = jQuery( "#form select" );
 	assert.deepEqual( selects.not( selects[ 1 ] ).get(), q( "select1", "select3", "select4", "select5" ), "filter out DOM element" );
 } );
 
 QUnit.test( "not(Function)", function( assert ) {
 	assert.expect( 1 );
 
-	assert.deepEqual( jQuery( "#qunit-fixture p" ).not( function() {
+	assert.deepEqual( jQuery( "#qunit-fixture p" ).not( () => {
 		return jQuery( "a", this ).length;
 	} ).get(), q( "sndp", "first" ), "not(Function)" );
 } );
@@ -540,7 +540,7 @@ QUnit.test( "not(jQuery)", function( assert ) {
 QUnit.testUnlessIE( "not(Selector) excludes non-element nodes (gh-2808)", function( assert ) {
 	assert.expect( 3 );
 
-	var mixedContents = jQuery( "#nonnodes" ).contents(),
+	let mixedContents = jQuery( "#nonnodes" ).contents(),
 		childElements = q( "nonnodesElement" );
 
 	assert.deepEqual( mixedContents.not( "*" ).get(), [], "not *" );
@@ -551,7 +551,7 @@ QUnit.testUnlessIE( "not(Selector) excludes non-element nodes (gh-2808)", functi
 QUnit.test( "not(arraylike) passes non-element nodes (gh-3226)", function( assert ) {
 	assert.expect( 5 );
 
-	var mixedContents = jQuery( "<span id='nonnodesElement'>hi</span> there <!-- mon ami -->" ),
+	let mixedContents = jQuery( "<span id='nonnodesElement'>hi</span> there <!-- mon ami -->" ),
 		mixedLength = mixedContents.length,
 		firstElement = mixedContents.first();
 
@@ -564,7 +564,7 @@ QUnit.test( "not(arraylike) passes non-element nodes (gh-3226)", function( asser
 
 QUnit.test( "has(Element)", function( assert ) {
 	assert.expect( 3 );
-	var obj, detached, multipleParent;
+	let obj, detached, multipleParent;
 
 	obj = jQuery( "#qunit-fixture" ).has( jQuery( "#sndp" )[ 0 ] );
 	assert.deepEqual( obj.get(), q( "qunit-fixture" ), "Keeps elements that have the element as a descendant" );
@@ -579,7 +579,7 @@ QUnit.test( "has(Element)", function( assert ) {
 QUnit.test( "has(Selector)", function( assert ) {
 	assert.expect( 5 );
 
-	var obj, detached, multipleParent, multipleHas;
+	let obj, detached, multipleParent, multipleHas;
 
 	obj = jQuery( "#qunit-fixture" ).has( "#sndp" );
 	assert.deepEqual( obj.get(), q( "qunit-fixture" ), "Keeps elements that have any element matching the selector as a descendant" );
@@ -600,7 +600,7 @@ QUnit.test( "has(Selector)", function( assert ) {
 QUnit.test( "has(Arrayish)", function( assert ) {
 	assert.expect( 4 );
 
-	var simple, detached, multipleParent, multipleHas;
+	let simple, detached, multipleParent, multipleHas;
 
 	simple = jQuery( "#qunit-fixture" ).has( jQuery( "#sndp" ) );
 	assert.deepEqual( simple.get(), q( "qunit-fixture" ), "Keeps elements that have any element in the jQuery list as a descendant" );
@@ -634,7 +634,7 @@ QUnit.test( "siblings([String])", function( assert ) {
 		"Check for multiple filters"
 	);
 
-	var set = q( "sndp", "en", "sap" );
+	let set = q( "sndp", "en", "sap" );
 	assert.deepEqual( jQuery( "#en, #sndp" ).siblings().get(), set, "Check for unique results from siblings" );
 	assert.deepEqual( jQuery( "#option5a" ).siblings( "option[data-attr]" ).get(), q( "option5c" ), "Has attribute selector in siblings (trac-9261)" );
 	assert.equal( jQuery( "<a></a>" ).siblings().length, 0, "Detached elements have no siblings (trac-11370)" );
@@ -685,7 +685,7 @@ QUnit.test( "parents([String])", function( assert ) {
 QUnit.test( "parentsUntil([String])", function( assert ) {
 	assert.expect( 10 );
 
-	var parents = jQuery( "#groups" ).parents();
+	let parents = jQuery( "#groups" ).parents();
 
 	assert.deepEqual( jQuery( "#groups" ).parentsUntil().get(), parents.get(), "parentsUntil with no selector (nextAll)" );
 	assert.deepEqual( jQuery( "#groups" ).parentsUntil( ".foo" ).get(), parents.get(), "parentsUntil with invalid selector (nextAll)" );
@@ -721,7 +721,7 @@ QUnit.test( "prev([String])", function( assert ) {
 QUnit.test( "nextAll([String])", function( assert ) {
 	assert.expect( 5 );
 
-	var elems = jQuery( "#form" ).children();
+	let elems = jQuery( "#form" ).children();
 
 	assert.deepEqual( jQuery( "#label-for" ).nextAll().get(), elems.slice( 1 ).get(), "Simple nextAll check" );
 	assert.equal( jQuery( "<div>text<a id='element'></a></div>" ).contents().eq( 0 ).nextAll().attr( "id" ), "element", "Text node nextAll check" );
@@ -733,7 +733,7 @@ QUnit.test( "nextAll([String])", function( assert ) {
 QUnit.test( "prevAll([String])", function( assert ) {
 	assert.expect( 5 );
 
-	var elems = jQuery( jQuery( "#form" ).children().slice( 0, 12 ).get().reverse() );
+	let elems = jQuery( jQuery( "#form" ).children().slice( 0, 12 ).get().reverse() );
 
 	assert.deepEqual( jQuery( "#area1" ).prevAll().get(), elems.get(), "Simple prevAll check" );
 	assert.deepEqual( jQuery( "#nonnodes" ).contents().eq( 1 ).prevAll().get(), q( "nonnodesElement" ), "Text node prevAll check" );
@@ -745,7 +745,7 @@ QUnit.test( "prevAll([String])", function( assert ) {
 QUnit.test( "nextUntil([String])", function( assert ) {
 	assert.expect( 12 );
 
-	var elems = jQuery( "#form" ).children().slice( 2, 12 );
+	let elems = jQuery( "#form" ).children().slice( 2, 12 );
 
 	assert.deepEqual( jQuery( "#text1" ).nextUntil().get(), jQuery( "#text1" ).nextAll().get(), "nextUntil with no selector (nextAll)" );
 	assert.equal( jQuery( "<div>text<a id='element'></a></div>" ).contents().eq( 0 ).nextUntil().attr( "id" ), "element", "Text node nextUntil with no selector (nextAll)" );
@@ -765,7 +765,7 @@ QUnit.test( "nextUntil([String])", function( assert ) {
 QUnit.test( "prevUntil([String])", function( assert ) {
 	assert.expect( 11 );
 
-	var elems = jQuery( "#area1" ).prevAll();
+	let elems = jQuery( "#area1" ).prevAll();
 
 	assert.deepEqual( jQuery( "#area1" ).prevUntil().get(), elems.get(), "prevUntil with no selector (prevAll)" );
 	assert.deepEqual( jQuery( "#nonnodes" ).contents().eq( 1 ).prevUntil().get(), q( "nonnodesElement" ), "Text node prevUntil with no selector (prevAll)" );
@@ -782,7 +782,7 @@ QUnit.test( "prevUntil([String])", function( assert ) {
 
 QUnit.test( "contents()", function( assert ) {
 	assert.expect( 12 );
-	var ibody, c;
+	let ibody, c;
 
 	assert.equal( jQuery( "#ap" ).contents().length, 9, "Check element contents" );
 	assert.ok( jQuery( "#iframe" ).contents()[ 0 ], "Check existence of IFrame document" );
@@ -827,7 +827,7 @@ QUnit.test( "contents() for <template />", function( assert ) {
 		"</template>"
 	);
 
-	var contents = jQuery( "#template" ).contents();
+	let contents = jQuery( "#template" ).contents();
 	assert.equal( contents.length, 6, "Check template element contents" );
 
 	assert.equal( contents.find( "span" ).text(), "Hello, Web Component!", "Find span in template and check its text" );
@@ -866,11 +866,11 @@ QUnit.testUnlessIE( "contents() for <template /> remains inert", function( asser
 QUnit.test( "contents() for <object />", function( assert ) {
 	assert.expect( 2 );
 
-	var svgObject = jQuery( "<object id='svg-object' data='" + baseURL + "1x1.svg'></object>" );
-	var done = assert.async();
+	let svgObject = jQuery( "<object id='svg-object' data='" + baseURL + "1x1.svg'></object>" );
+	let done = assert.async();
 
-	svgObject.on( "load", function() {
-		var contents = jQuery( "#svg-object" ).contents();
+	svgObject.on( "load", () => {
+		let contents = jQuery( "#svg-object" ).contents();
 		assert.equal( contents.length, 1, "Check object contents" );
 		assert.equal( contents.find( "svg" ).length, 1, "Find svg within object" );
 		done();
@@ -882,25 +882,25 @@ QUnit.test( "contents() for <object />", function( assert ) {
 QUnit.test( "contents() for <object /> with children", function( assert ) {
 	assert.expect( 1 );
 
-	var object = "<object type='application/x-shockwave-flash' width='200' height='300' id='penguin'>" +
+	let object = "<object type='application/x-shockwave-flash' width='200' height='300' id='penguin'>" +
 		"<param name='movie' value='flash/penguin.swf'>" +
 		"<param name='quality' value='high'>" +
 		"<img src='images/penguin.jpg' width='200' height='300' alt='Penguin'>" +
 	"</object>";
 
-	var contents = jQuery( object ).contents();
+	let contents = jQuery( object ).contents();
 	assert.equal( contents.length, 3, "Check object contents children are correct" );
 } );
 
 QUnit.test( "contents() for <frame />", function( assert ) {
 	assert.expect( 2 );
 
-	var iframe = jQuery( "<iframe id='frame-contents' src='" + baseURL + "frame.html'></iframe>" );
-	var done = assert.async();
+	let iframe = jQuery( "<iframe id='frame-contents' src='" + baseURL + "frame.html'></iframe>" );
+	let done = assert.async();
 
-	iframe.on( "load", function() {
-		var container = jQuery( "#frame-contents" ).contents();
-		var contents = container.find( "#test-frame" ).contents();
+	iframe.on( "load", () => {
+		let container = jQuery( "#frame-contents" ).contents();
+		let contents = container.find( "#test-frame" ).contents();
 		assert.equal( contents.length, 1, "Check frame contents" );
 		assert.equal( contents.find( "body" ).length, 1, "Find body within frame" );
 		done();
@@ -912,7 +912,7 @@ QUnit.test( "contents() for <frame />", function( assert ) {
 QUnit.test( "sort direction", function( assert ) {
 	assert.expect( 12 );
 
-	var elems = jQuery( "#ap, #select1 > *, #moretests > form" ),
+	let elems = jQuery( "#ap, #select1 > *, #moretests > form" ),
 		methodDirections = {
 			parent: false,
 			parents: true,
@@ -929,7 +929,7 @@ QUnit.test( "sort direction", function( assert ) {
 		};
 
 	jQuery.each( methodDirections, function( method, reversed ) {
-		var actual = elems[ method ]().get(),
+		let actual = elems[ method ]().get(),
 			forward = jQuery.uniqueSort( [].concat( actual ) );
 		assert.deepEqual( actual, reversed ? forward.reverse() : forward, "Correct sort direction for " + method );
 	} );
@@ -938,7 +938,7 @@ QUnit.test( "sort direction", function( assert ) {
 QUnit.test( "add(String selector)", function( assert ) {
 	assert.expect( 2 );
 
-	var divs;
+	let divs;
 
 	assert.deepEqual(
 		jQuery( "#sndp" ).add( "#en" ).add( "#sap" ).toArray(),
@@ -963,7 +963,7 @@ QUnit.test( "add(String selector, String context)", function( assert ) {
 QUnit.test( "add(String html)", function( assert ) {
 	assert.expect( 3 );
 
-	var x,
+	let x,
 		divs = jQuery( "#sndp" ).add( "<div></div>" );
 
 	assert.ok( !divs[ 1 ].parentNode, "Sort with the disconnected node last." );
@@ -976,7 +976,7 @@ QUnit.test( "add(String html)", function( assert ) {
 QUnit.test( "add(jQuery)", function( assert ) {
 	assert.expect( 4 );
 
-	var x,
+	let x,
 		tmp = jQuery( "<div></div>" );
 
 	x = jQuery( [] )
@@ -1005,7 +1005,7 @@ QUnit.test( "add(jQuery)", function( assert ) {
 QUnit.test( "add(Element)", function( assert ) {
 	assert.expect( 2 );
 
-	var x,
+	let x,
 		tmp = jQuery( "<div></div>" );
 
 	x = jQuery( [] ).add( jQuery( "<p id='x1'>xxx</p>" ).appendTo( tmp )[ 0 ] ).add( jQuery( "<p id='x2'>xxx</p>" ).appendTo( tmp )[ 0 ] );
@@ -1026,7 +1026,7 @@ QUnit.test( "add(Array elements)", function( assert ) {
 QUnit.test( "add(Window)", function( assert ) {
 	assert.expect( 1 );
 
-	var frame1 = document.createElement( "iframe" ),
+	let frame1 = document.createElement( "iframe" ),
 		frame2 = document.createElement( "iframe" );
 
 	// This increases window.length and sets window[i] available
@@ -1044,7 +1044,7 @@ QUnit.test( "add(Window)", function( assert ) {
 QUnit.test( "add(NodeList|undefined|HTMLFormElement|HTMLSelectElement)", function( assert ) {
 	assert.expect( 4 );
 
-	var ps, notDefined;
+	let ps, notDefined;
 
 	ps = document.getElementsByTagName( "p" );
 
@@ -1073,7 +1073,7 @@ QUnit.test( "add(String, Context)", function( assert ) {
 	assert.deepEqual( jQuery( document.getElementById( "firstp" ) ).add( "#ap" ).get(), q( "firstp", "ap" ), "Add gEBId to selector" );
 	assert.deepEqual( jQuery( document.getElementById( "firstp" ) ).add( document.getElementById( "ap" ) ).get(), q( "firstp", "ap" ), "Add gEBId to gEBId" );
 
-	var ctx = document.getElementById( "firstp" );
+	let ctx = document.getElementById( "firstp" );
 	assert.deepEqual( jQuery( "#firstp" ).add( "#ap", ctx ).get(), q( "firstp" ), "Add selector to selector " );
 	assert.deepEqual( jQuery( document.getElementById( "firstp" ) ).add( "#ap", ctx ).get(), q( "firstp" ), "Add gEBId to selector, not in context" );
 	assert.deepEqual( jQuery( document.getElementById( "firstp" ) ).add( "#ap", document.getElementsByTagName( "body" )[ 0 ] ).get(), q( "firstp", "ap" ), "Add gEBId to selector, in context" );
@@ -1106,7 +1106,7 @@ QUnit.test( "index(no arg) trac-10977", function( assert ) {
 QUnit.test( "traversing non-elements with attribute filters (trac-12523)", function( assert ) {
 	assert.expect( 5 );
 
-	var nonnodes = jQuery( "#nonnodes" ).contents();
+	let nonnodes = jQuery( "#nonnodes" ).contents();
 
 	assert.equal( nonnodes.filter( "[id]" ).length, 1, ".filter" );
 	assert.equal( nonnodes.find( "[id]" ).length, 0, ".find" );
