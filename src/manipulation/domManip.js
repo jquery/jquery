@@ -26,7 +26,7 @@ export function domManip( collection, args, callback, ignored ) {
 	// Flatten any nested arrays
 	args = flat( args );
 
-	var fragment, first, scripts, hasScripts, node, doc,
+	let fragment, first, scripts, hasScripts, node, doc,
 		i = 0,
 		l = collection.length,
 		iNoClone = l - 1,
@@ -35,7 +35,7 @@ export function domManip( collection, args, callback, ignored ) {
 
 	if ( valueIsFunction ) {
 		return collection.each( function( index ) {
-			var self = collection.eq( index );
+			let self = collection.eq( index );
 			args[ 0 ] = value.call( this, index, self.html() );
 			domManip( self, args, callback, ignored );
 		} );
