@@ -1,9 +1,9 @@
 QUnit.module( "support", { afterEach: moduleTeardown } );
 
-var computedSupport = getComputedSupport( jQuery.support );
+let computedSupport = getComputedSupport( jQuery.support );
 
 function getComputedSupport( support ) {
-	var prop,
+	const prop,
 		result = {};
 
 	for ( prop in support ) {
@@ -23,7 +23,7 @@ if ( includesModule( "css" ) ) {
 		"support/bodyBackground.html",
 		function( assert, jQuery, window, document, color, support ) {
 			assert.expect( 2 );
-			var okValue = {
+			let okValue = {
 				"#000000": true,
 				"rgb(0, 0, 0)": true
 			};
@@ -41,7 +41,7 @@ testIframe(
 	"Check CSP (https://developer.mozilla.org/en-US/docs/Security/CSP) restrictions",
 	"mock.php?action=cspFrame",
 	function( assert, jQuery, window, document, support ) {
-		var done = assert.async();
+		let done = assert.async();
 
 		assert.expect( 2 );
 		assert.deepEqual( jQuery.extend( {}, support ), computedSupport,
@@ -76,8 +76,8 @@ testIframe(
 	}
 );
 
-( function() {
-	var expected,
+( () => {
+	let expected,
 		userAgent = window.navigator.userAgent,
 		expectedMap = {
 			ie_11: {
@@ -126,7 +126,7 @@ testIframe(
 			assert.ok( false, "Known client: " + userAgent );
 		}
 
-		var i, prop,
+		let i, prop,
 			j = 0;
 
 		for ( prop in computedSupport ) {
@@ -155,7 +155,7 @@ testIframe(
 	QUnit.test( "Verify support tests are failing in one of tested browsers",
 		function( assert ) {
 
-		var prop, browserKey, supportTestName,
+		const prop, browserKey, supportTestName,
 			i = 0,
 			supportProps = {},
 			failingSupportProps = {};
