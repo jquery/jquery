@@ -28,7 +28,7 @@ import "./attributes/attr.js"; // jQuery.attr
 import "./selector/escapeSelector.js";
 import "./selector/uniqueSort.js";
 
-var i,
+let i,
 	outermostContext,
 
 	// Local document vars
@@ -69,7 +69,7 @@ var i,
 	// Support: IE 9 - 11+
 	// Removing the function wrapper causes a "Permission Denied"
 	// error in IE.
-	unloadHandler = function() {
+	unloadHandler = () => {
 		setDocument();
 	},
 
@@ -81,7 +81,7 @@ var i,
 	);
 
 function find( selector, context, results, seed ) {
-	var m, i, elem, nid, match, groups, newSelector,
+	let m, i, elem, nid, match, groups, newSelector,
 		newContext = context && context.ownerDocument,
 
 		// nodeType defaults to 9, since context defaults to document
@@ -301,7 +301,7 @@ function createPositionalPseudo( fn ) {
 	return markFunction( function( argument ) {
 		argument = +argument;
 		return markFunction( function( seed, matches ) {
-			var j,
+			let j,
 				matchIndexes = fn( [], seed.length, argument ),
 				i = matchIndexes.length;
 
@@ -320,7 +320,7 @@ function createPositionalPseudo( fn ) {
  * @param {Element|Object} [node] An element or document object to use to set the document
  */
 function setDocument( node ) {
-	var subWindow,
+	let subWindow,
 		doc = node ? node.ownerDocument || node : preferredDoc;
 
 	// Return early if doc is invalid or already selected
@@ -382,7 +382,7 @@ jQuery.expr = {
 	find: {
 		ID: function( id, context ) {
 			if ( typeof context.getElementById !== "undefined" && documentIsHTML ) {
-				var elem = context.getElementById( id );
+				let elem = context.getElementById( id );
 				return elem ? [ elem ] : [];
 			}
 		},
@@ -433,17 +433,17 @@ jQuery.expr = {
 
 	filter: {
 		ID: function( id ) {
-			var attrId = unescapeSelector( id );
+			let attrId = unescapeSelector( id );
 			return function( elem ) {
 				return elem.getAttribute( "id" ) === attrId;
 			};
 		},
 
 		TAG: function( nodeNameSelector ) {
-			var expectedNodeName = unescapeSelector( nodeNameSelector ).toLowerCase();
+			let expectedNodeName = unescapeSelector( nodeNameSelector ).toLowerCase();
 			return nodeNameSelector === "*" ?
 
-				function() {
+				() => {
 					return true;
 				} :
 
@@ -453,7 +453,7 @@ jQuery.expr = {
 		},
 
 		CLASS: function( className ) {
-			var pattern = classCache[ className + " " ];
+			let pattern = classCache[ className + " " ];
 
 			return pattern ||
 				( pattern = new RegExp( "(^|" + whitespace + ")" + className +
@@ -470,7 +470,7 @@ jQuery.expr = {
 
 		ATTR: function( name, operator, check ) {
 			return function( elem ) {
-				var result = jQuery.attr( elem, name );
+				let result = jQuery.attr( elem, name );
 
 				if ( result == null ) {
 					return operator === "!=";
@@ -509,7 +509,7 @@ jQuery.expr = {
 		},
 
 		CHILD: function( type, what, _argument, first, last ) {
-			var simple = type.slice( 0, 3 ) !== "nth",
+			let simple = type.slice( 0, 3 ) !== "nth",
 				forward = type.slice( -4 ) !== "last",
 				ofType = what === "of-type";
 
@@ -521,7 +521,7 @@ jQuery.expr = {
 				} :
 
 				function( elem, _context, xml ) {
-					var cache, outerCache, node, nodeIndex, start,
+					let cache, outerCache, node, nodeIndex, start,
 						dir = simple !== forward ? "nextSibling" : "previousSibling",
 						parent = elem.parentNode,
 						name = ofType && elem.nodeName.toLowerCase(),
@@ -626,7 +626,7 @@ jQuery.expr = {
 			// https://www.w3.org/TR/selectors/#pseudo-classes
 			// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
 			// Remember that setFilters inherits from pseudos
-			var fn = jQuery.expr.pseudos[ pseudo ] ||
+			let fn = jQuery.expr.pseudos[ pseudo ] ||
 				jQuery.expr.setFilters[ pseudo.toLowerCase() ] ||
 				selectorError( "unsupported pseudo: " + pseudo );
 
@@ -649,13 +649,13 @@ jQuery.expr = {
 			// Trim the selector passed to compile
 			// to avoid treating leading and trailing
 			// spaces as combinators
-			var input = [],
+			let input = [],
 				results = [],
 				matcher = compile( selector.replace( rtrimCSS, "$1" ) );
 
 			return matcher[ jQuery.expando ] ?
 				markFunction( function( seed, matches, _context, xml ) {
-					var elem,
+					let elem,
 						unmatched = matcher( seed, null, xml, [] ),
 						i = seed.length;
 
@@ -705,7 +705,7 @@ jQuery.expr = {
 			}
 			lang = unescapeSelector( lang ).toLowerCase();
 			return function( elem ) {
-				var elemLang;
+				let elemLang;
 				do {
 					if ( ( elemLang = documentIsHTML ?
 						elem.lang :
@@ -721,7 +721,7 @@ jQuery.expr = {
 
 		// Miscellaneous
 		target: function( elem ) {
-			var hash = window.location && window.location.hash;
+			let hash = window.location && window.location.hash;
 			return hash && hash.slice( 1 ) === elem.id;
 		},
 
@@ -799,7 +799,7 @@ jQuery.expr = {
 		},
 
 		// Position-in-collection
-		first: createPositionalPseudo( function() {
+		first: createPositionalPseudo( () => {
 			return [ 0 ];
 		} ),
 
@@ -812,7 +812,7 @@ jQuery.expr = {
 		} ),
 
 		even: createPositionalPseudo( function( matchIndexes, length ) {
-			var i = 0;
+			let i = 0;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
@@ -820,7 +820,7 @@ jQuery.expr = {
 		} ),
 
 		odd: createPositionalPseudo( function( matchIndexes, length ) {
-			var i = 1;
+			let i = 1;
 			for ( ; i < length; i += 2 ) {
 				matchIndexes.push( i );
 			}
@@ -828,7 +828,7 @@ jQuery.expr = {
 		} ),
 
 		lt: createPositionalPseudo( function( matchIndexes, length, argument ) {
-			var i;
+			let i;
 
 			if ( argument < 0 ) {
 				i = argument + length;
@@ -845,7 +845,7 @@ jQuery.expr = {
 		} ),
 
 		gt: createPositionalPseudo( function( matchIndexes, length, argument ) {
-			var i = argument < 0 ? argument + length : argument;
+			let i = argument < 0 ? argument + length : argument;
 			for ( ; ++i < length; ) {
 				matchIndexes.push( i );
 			}
@@ -870,7 +870,7 @@ setFilters.prototype = jQuery.expr.pseudos;
 jQuery.expr.setFilters = new setFilters();
 
 function addCombinator( matcher, combinator, base ) {
-	var dir = combinator.dir,
+	let dir = combinator.dir,
 		skip = combinator.next,
 		key = skip || dir,
 		checkNonElements = base && key === "parentNode",
@@ -890,7 +890,7 @@ function addCombinator( matcher, combinator, base ) {
 
 		// Check against all ancestor/preceding elements
 		function( elem, context, xml ) {
-			var oldCache, outerCache,
+			let oldCache, outerCache,
 				newCache = [ dirruns, doneName ];
 
 			// We can't set arbitrary data on XML nodes, so they don't benefit from combinator caching
@@ -934,7 +934,7 @@ function addCombinator( matcher, combinator, base ) {
 function elementMatcher( matchers ) {
 	return matchers.length > 1 ?
 		function( elem, context, xml ) {
-			var i = matchers.length;
+			let i = matchers.length;
 			while ( i-- ) {
 				if ( !matchers[ i ]( elem, context, xml ) ) {
 					return false;
@@ -946,7 +946,7 @@ function elementMatcher( matchers ) {
 }
 
 function multipleContexts( selector, contexts, results ) {
-	var i = 0,
+	let i = 0,
 		len = contexts.length;
 	for ( ; i < len; i++ ) {
 		find( selector, contexts[ i ], results );
@@ -955,7 +955,7 @@ function multipleContexts( selector, contexts, results ) {
 }
 
 function condense( unmatched, map, filter, context, xml ) {
-	var elem,
+	let elem,
 		newUnmatched = [],
 		i = 0,
 		len = unmatched.length,
@@ -983,7 +983,7 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 		postFinder = setMatcher( postFinder, postSelector );
 	}
 	return markFunction( function( seed, results, context, xml ) {
-		var temp, i, elem, matcherOut,
+		let temp, i, elem, matcherOut,
 			preMap = [],
 			postMap = [],
 			preexisting = results.length,
@@ -1075,7 +1075,7 @@ function setMatcher( preFilter, selector, matcher, postFilter, postFinder, postS
 }
 
 function matcherFromTokens( tokens ) {
-	var checkContext, matcher, j,
+	let checkContext, matcher, j,
 		len = tokens.length,
 		leadingRelative = jQuery.expr.relative[ tokens[ 0 ].type ],
 		implicitRelative = leadingRelative || jQuery.expr.relative[ " " ],
@@ -1094,7 +1094,7 @@ function matcherFromTokens( tokens ) {
 			// IE sometimes throws a "Permission denied" error when strict-comparing
 			// two documents; shallow comparisons work.
 			// eslint-disable-next-line eqeqeq
-			var ret = ( !leadingRelative && ( xml || context != outermostContext ) ) || (
+			let ret = ( !leadingRelative && ( xml || context != outermostContext ) ) || (
 				( checkContext = context ).nodeType ?
 					matchContext( elem, context, xml ) :
 					matchAnyContext( elem, context, xml ) );
@@ -1143,10 +1143,10 @@ function matcherFromTokens( tokens ) {
 }
 
 function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
-	var bySet = setMatchers.length > 0,
+	let bySet = setMatchers.length > 0,
 		byElement = elementMatchers.length > 0,
 		superMatcher = function( seed, context, xml, results, outermost ) {
-			var elem, j, matcher,
+			let elem, j, matcher,
 				matchedCount = 0,
 				i = "0",
 				unmatched = seed && [],
@@ -1265,7 +1265,7 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 }
 
 function compile( selector, match /* Internal Use Only */ ) {
-	var i,
+	let i,
 		setMatchers = [],
 		elementMatchers = [],
 		cached = compilerCache[ selector + " " ];
@@ -1306,7 +1306,7 @@ function compile( selector, match /* Internal Use Only */ ) {
  * @param {Array} [seed] A set of elements to match against
  */
 function select( selector, context, results, seed ) {
-	var i, tokens, token, type, find,
+	let i, tokens, token, type, find,
 		compiled = typeof selector === "function" && selector,
 		match = !seed && tokenize( ( selector = compiled.selector || selector ) );
 
