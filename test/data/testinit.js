@@ -1,7 +1,7 @@
 /* eslint no-multi-str: "off" */
-"use strict";
+// "use strict" — not needed in ES modules (kept for compatibility)
 
-var parentUrl = window.location.protocol + "//" + window.location.host,
+let parentUrl = window.location.protocol + "//" + window.location.host,
 
 	// baseURL is intentionally set to "data/" instead of "".
 	// This is not just for convenience (since most files are in data/)
@@ -33,8 +33,8 @@ window.original$ = this.$ = "replaced";
  * @example q( "main", "foo", "bar" )
  * @result [<div id="main">, <span id="foo">, <input id="bar">]
  */
-this.q = function() {
-	var r = [],
+this.q = () => {
+	let r = [],
 		i = 0;
 
 	for ( ; i < arguments.length; i++ ) {
@@ -52,7 +52,7 @@ this.q = function() {
  * @example match("Check for something", "p", ["foo", "bar"]);
  */
 function match( message, selector, expectedIds, context, assert ) {
-	var elems = jQuery( selector, context ).get();
+	let elems = jQuery( selector, context ).get();
 
 	assert.deepEqual( elems, q.apply( q, expectedIds ), message + " (" + selector + ")" );
 }
@@ -81,8 +81,8 @@ QUnit.assert.selectInFixture = function( message, selector, expectedIds ) {
 	match( message, selector, expectedIds, "#qunit-fixture", QUnit.assert );
 };
 
-this.createDashboardXML = function() {
-	var string = "<?xml version='1.0' encoding='UTF-8'?> \
+this.createDashboardXML = () => {
+	let string = "<?xml version='1.0' encoding='UTF-8'?> \
 	<dashboard> \
 		<locations class='foo'> \
 			<location for='bar' checked='different'> \
@@ -97,8 +97,8 @@ this.createDashboardXML = function() {
 	return jQuery.parseXML( string );
 };
 
-this.createWithFriesXML = function() {
-	var string = "<?xml version='1.0' encoding='UTF-8'?> \
+this.createWithFriesXML = () => {
+	let string = "<?xml version='1.0' encoding='UTF-8'?> \
 	<soap:Envelope xmlns:soap='http://schemas.xmlsoap.org/soap/envelope/' \
 		xmlns:xsd='http://www.w3.org/2001/XMLSchema' \
 		xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'> \
@@ -128,8 +128,8 @@ this.createWithFriesXML = function() {
 	return jQuery.parseXML( string );
 };
 
-this.createXMLFragment = function() {
-	var frag,
+this.createXMLFragment = () => {
+	let frag,
 		xml = document.implementation.createDocument( "", "", null );
 
 	if ( xml ) {
@@ -140,7 +140,7 @@ this.createXMLFragment = function() {
 };
 
 window.fireNative = function( node, type ) {
-	var event = document.createEvent( "HTMLEvents" );
+	let event = document.createEvent( "HTMLEvents" );
 
 	event.initEvent( type, true, true );
 	node.dispatchEvent( event );
@@ -169,7 +169,7 @@ this.ajaxTest = function( title, expect, options, wrapper ) {
 	}
 	wrapper.call( QUnit, title, function( assert ) {
 		assert.expect( expect );
-		var requestOptions;
+		let requestOptions;
 
 		if ( typeof options === "function" ) {
 			options = options( assert );
@@ -180,15 +180,15 @@ this.ajaxTest = function( title, expect, options, wrapper ) {
 			requestOptions = [ requestOptions ];
 		}
 
-		var done = assert.async();
+		let done = assert.async();
 
 		if ( options.setup ) {
 			options.setup();
 		}
 
-		var completed = false,
+		let completed = false,
 			remaining = requestOptions.length,
-			complete = function() {
+			complete = () => {
 				if ( !completed && --remaining === 0 ) {
 					completed = true;
 					delete ajaxTest.abort;
@@ -201,9 +201,9 @@ this.ajaxTest = function( title, expect, options, wrapper ) {
 				}
 			},
 			requests = jQuery.map( requestOptions, function( options ) {
-				var request = ( options.create || jQuery.ajax )( options ),
+				let request = ( options.create || jQuery.ajax )( options ),
 					callIfDefined = function( deferType, optionType ) {
-						var handler = options[ deferType ] || !!options[ optionType ];
+						let handler = options[ deferType ] || !!options[ optionType ];
 						return function( _, status ) {
 							if ( !completed ) {
 								if ( !handler ) {
@@ -243,7 +243,7 @@ this.testIframe = function( title, fileName, func, wrapper, iframeStyles ) {
 		wrapper = QUnit.test;
 	}
 	wrapper.call( QUnit, title, function( assert ) {
-		var done = assert.async(),
+		let done = assert.async(),
 			$iframe = supportjQuery( "<iframe></iframe>" )
 				.css( { position: "absolute", top: "0", left: "-600px", width: "500px" } )
 				.attr( { id: "qunit-fixture-iframe", src: url( fileName ) } );
@@ -254,20 +254,20 @@ this.testIframe = function( title, fileName, func, wrapper, iframeStyles ) {
 		}
 
 		// Test iframes are expected to invoke this via startIframeTest (cf. iframeTest.js)
-		window.iframeCallback = function() {
-			var args = Array.prototype.slice.call( arguments );
+		window.iframeCallback = () => {
+			let args = Array.prototype.slice.call( arguments );
 
 			args.unshift( assert );
 
-			setTimeout( function() {
-				var result;
+			setTimeout( () => {
+				let result;
 
 				this.iframeCallback = undefined;
 
 				result = func.apply( this, args );
 
 				function finish() {
-					func = function() {};
+					func = () => {};
 					$iframe.remove();
 					done();
 				}
@@ -306,7 +306,7 @@ QUnit.testUnlessIE = QUnit.isIE ? QUnit.skip : QUnit.test;
 // accidentally remove an API, the tests would still not fail.
 this.includesModule = function( moduleName ) {
 
-	var excludedModulesPart, excludedModules;
+	let excludedModulesPart, excludedModules;
 
 	// A short-cut for the slim build, e.g. "4.0.0-pre+slim"
 	if ( jQuery.fn.jquery.indexOf( "+slim" ) > -1 ) {
@@ -351,12 +351,12 @@ this.includesModule = function( moduleName ) {
 	return excludedModules.indexOf( moduleName ) === -1;
 };
 
-this.loadTests = function() {
+this.loadTests = () => {
 
 	// QUnit.config is populated from QUnit.urlParams but only at the beginning
 	// of the test run. We need to read both.
-	var esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
-	var jsdom = QUnit.config.jsdom || QUnit.urlParams.jsdom;
+	let esmodules = QUnit.config.esmodules || QUnit.urlParams.esmodules;
+	let jsdom = QUnit.config.jsdom || QUnit.urlParams.jsdom;
 
 	if ( jsdom ) {
 
@@ -368,13 +368,13 @@ this.loadTests = function() {
 	if ( !jsdom && ( !esmodules || document.readyState === "loading" ) ) {
 		document.write( "<script src='" + parentUrl + "/test/unit/ready.js'><\x2Fscript>" );
 	} else {
-		QUnit.module( "ready", function() {
-			QUnit.skip( "jQuery ready tests skipped in async mode", function() {} );
+		QUnit.module( "ready", () => {
+			QUnit.skip( "jQuery ready tests skipped in async mode", () => {} );
 		} );
 	}
 
 	// Get testSubproject from testrunner first
-	require( [ parentUrl + "/test/data/testrunner.js" ], function() {
+	require( [ parentUrl + "/test/data/testrunner.js" ], () => {
 
 		// Says whether jQuery positional selector extensions are supported.
 		// A full selector engine is required to support them as they need to
@@ -387,7 +387,7 @@ this.loadTests = function() {
 		// This doesn't include support for positional selectors (see above).
 		QUnit.jQuerySelectors = includesModule( "selector" );
 
-		var i = 0,
+		let i = 0,
 			tests = [
 
 				// A special module with basic tests, meant for not fully
@@ -420,7 +420,7 @@ this.loadTests = function() {
 
 		// Ensure load order (to preserve test numbers)
 		( function loadDep() {
-			var dep = tests[ i++ ];
+			let dep = tests[ i++ ];
 
 			if ( dep ) {
 				if ( !QUnit.basicTests || i === 1 ) {
