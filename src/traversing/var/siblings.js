@@ -1,5 +1,5 @@
 export function siblings( n, elem ) {
-	var matched = [];
+	let matched = [];
 
 	for ( ; n; n = n.nextSibling ) {
 		if ( n.nodeType === 1 && n !== elem ) {
