@@ -1,3 +1,3 @@
-jQuery( function() {
+jQuery( () => {
 	$.globalEval( "startIframeTest()", { nonce: "jquery+hardcoded+nonce" } );
 } );
