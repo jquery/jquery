@@ -1,7 +1,7 @@
 import { jQuery } from "../core.js";
 import { document } from "../var/document.js";
 
-var readyCallbacks = [],
+let readyCallbacks = [],
 	whenReady = function( fn ) {
 		readyCallbacks.push( fn );
 	},
@@ -9,7 +9,7 @@ var readyCallbacks = [],
 
 		// Prevent errors from freezing future callback execution (gh-1823)
 		// Not backwards-compatible as this does not execute sync
-		window.setTimeout( function() {
+		window.setTimeout( () => {
 			fn.call( document, jQuery );
 		} );
 	};
