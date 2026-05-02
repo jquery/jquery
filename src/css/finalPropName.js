@@ -1,13 +1,13 @@
 import { createElement } from "../var/createElement.js";
 
-var cssPrefixes = [ "Webkit", "Moz", "ms" ],
+let cssPrefixes = [ "Webkit", "Moz", "ms" ],
 	emptyStyle = createElement( "div" ).style;
 
 // Return a vendor-prefixed property or undefined
 function vendorPropName( name ) {
 
 	// Check for vendor prefixed names
-	var capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
+	let capName = name[ 0 ].toUpperCase() + name.slice( 1 ),
 		i = cssPrefixes.length;
 
 	while ( i-- ) {
