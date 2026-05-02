@@ -16,7 +16,7 @@ jQuery.parseHTML = function( data, context, keepScripts ) {
 		context = false;
 	}
 
-	var parsed, scripts;
+	let parsed, scripts;
 
 	if ( !context ) {
 
