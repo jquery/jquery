@@ -2,7 +2,7 @@ import { jQuery } from "../core.js";
 
 // Cross-browser xml parsing
 jQuery.parseXML = function( data ) {
-	var xml, parserErrorElem;
+	let xml, parserErrorElem;
 	if ( !data || typeof data !== "string" ) {
 		return null;
 	}
