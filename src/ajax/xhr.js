@@ -2,22 +2,22 @@ import { jQuery } from "../core.js";
 
 import "../ajax.js";
 
-jQuery.ajaxSettings.xhr = function() {
+jQuery.ajaxSettings.xhr = () => {
 	return new window.XMLHttpRequest();
 };
 
-var xhrSuccessStatus = {
+let xhrSuccessStatus = {
 
 	// File protocol always yields status code 0, assume 200
 	0: 200
 };
 
 jQuery.ajaxTransport( function( options ) {
-	var callback;
+	let callback;
 
 	return {
 		send: function( headers, complete ) {
-			var i,
+			const i,
 				xhr = options.xhr();
 
 			xhr.open(
@@ -56,7 +56,7 @@ jQuery.ajaxTransport( function( options ) {
 
 			// Callback
 			callback = function( type ) {
-				return function() {
+				return () => {
 					if ( callback ) {
 						callback = xhr.onload = xhr.onerror = xhr.onabort = xhr.ontimeout = null;
 
@@ -105,7 +105,7 @@ jQuery.ajaxTransport( function( options ) {
 			}
 		},
 
-		abort: function() {
+		abort: () => {
 			if ( callback ) {
 				callback();
 			}
