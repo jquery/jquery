@@ -49,10 +49,11 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 		s.cache = false;
 	}
 
-	var useScriptTag = canUseScriptTag( s );
+	var useScriptTag = canUseScriptTag( s ),
+		nonce;
 
 	if ( useScriptTag && ( !s.scriptAttrs || !s.scriptAttrs.nonce ) ) {
-		var nonce = getScriptNonce( document );
+		nonce = getScriptNonce( document );
 		if ( nonce ) {
 			s.scriptAttrs = jQuery.extend( {}, s.scriptAttrs, { nonce: nonce } );
 		}
