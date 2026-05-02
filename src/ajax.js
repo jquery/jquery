@@ -59,7 +59,7 @@ function addToPrefiltersOrTransports( structure ) {
 			dataTypeExpression = "*";
 		}
 
-		var dataType,
+		let dataType,
 			i = 0,
 			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
 
@@ -85,14 +85,14 @@ function addToPrefiltersOrTransports( structure ) {
 // Base inspection function for prefilters and transports
 function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR ) {
 
-	var inspected = {},
+	let inspected = {},
 		seekingTransport = ( structure === transports );
 
 	function inspect( dataType ) {
-		var selected;
+		let selected;
 		inspected[ dataType ] = true;
 		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) {
-			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
+			let dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
 			if ( typeof dataTypeOrTransport === "string" &&
 				!seekingTransport && !inspected[ dataTypeOrTransport ] ) {
 
@@ -113,7 +113,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 // that takes "flat" options (not to be deep extended)
 // Fixes trac-9887
 function ajaxExtend( target, src ) {
-	var key, deep,
+	const key, deep,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
 
 	for ( key in src ) {
@@ -134,7 +134,7 @@ function ajaxExtend( target, src ) {
  */
 function ajaxHandleResponses( s, jqXHR, responses ) {
 
-	var ct, type, finalDataType, firstDataType,
+	let ct, type, finalDataType, firstDataType,
 		contents = s.contents,
 		dataTypes = s.dataTypes;
 
@@ -191,7 +191,7 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
  * Also sets the responseXXX fields on the jqXHR instance
  */
 function ajaxConvert( s, response, jqXHR, isSuccess ) {
-	var conv2, current, conv, tmp, prev,
+	const conv2, current, conv, tmp, prev,
 		converters = {},
 
 		// Work with a copy of dataTypes in case we need to modify it for conversion
@@ -391,7 +391,7 @@ jQuery.extend( {
 		// Force options to be an object
 		options = options || {};
 
-		var transport,
+		let transport,
 
 			// URL without anti-cache param
 			cacheURL,
@@ -450,7 +450,7 @@ jQuery.extend( {
 
 				// Builds headers hashtable if needed
 				getResponseHeader: function( key ) {
-					var match;
+					let match;
 					if ( completed ) {
 						if ( !responseHeaders ) {
 							responseHeaders = {};
@@ -472,7 +472,7 @@ jQuery.extend( {
 				},
 
 				// Raw string
-				getAllResponseHeaders: function() {
+				getAllResponseHeaders: () => {
 					return completed ? responseHeadersString : null;
 				},
 
@@ -496,7 +496,7 @@ jQuery.extend( {
 
 				// Status-dependent callbacks
 				statusCode: function( map ) {
-					var code;
+					const code;
 					if ( map ) {
 						if ( completed ) {
 
@@ -515,7 +515,7 @@ jQuery.extend( {
 
 				// Cancel the request
 				abort: function( statusText ) {
-					var finalText = statusText || strAbort;
+					let finalText = statusText || strAbort;
 					if ( transport ) {
 						transport.abort( finalText );
 					}
@@ -691,7 +691,7 @@ jQuery.extend( {
 
 			// Timeout
 			if ( s.async && s.timeout > 0 ) {
-				timeoutTimer = window.setTimeout( function() {
+				timeoutTimer = window.setTimeout( () => {
 					jqXHR.abort( "timeout" );
 				}, s.timeout );
 			}
@@ -713,7 +713,7 @@ jQuery.extend( {
 
 		// Callback for when everything is done
 		function done( status, nativeStatusText, responses, headers ) {
-			var isSuccess, success, error, response, modified, statusText;
+			let isSuccess, success, error, response, modified, statusText;
 
 			if ( typeof status === "object" ) {
 
@@ -761,7 +761,7 @@ jQuery.extend( {
 			if ( !isSuccess &&
 				jQuery.inArray( "script", s.dataTypes ) > -1 &&
 				jQuery.inArray( "json", s.dataTypes ) < 0 ) {
-				s.converters[ "text script" ] = function() {};
+				s.converters[ "text script" ] = () => {};
 			}
 
 			// Convert no matter what (that way responseXXX fields are always set)
@@ -877,7 +877,7 @@ jQuery.each( [ "get", "post" ], function( _i, method ) {
 } );
 
 jQuery.ajaxPrefilter( function( s ) {
-	var i;
+	let i;
 	for ( i in s.headers ) {
 		if ( i.toLowerCase() === "content-type" ) {
 			s.contentType = s.headers[ i ] || "";
