@@ -2,10 +2,10 @@ import { jQuery } from "../core.js";
 import { dataPriv } from "../data/var/dataPriv.js";
 import { isHiddenWithinTree } from "../css/var/isHiddenWithinTree.js";
 
-var defaultDisplayMap = {};
+let defaultDisplayMap = {};
 
 function getDefaultDisplay( elem ) {
-	var temp,
+	let temp,
 		doc = elem.ownerDocument,
 		nodeName = elem.nodeName,
 		display = defaultDisplayMap[ nodeName ];
@@ -28,7 +28,7 @@ function getDefaultDisplay( elem ) {
 }
 
 export function showHide( elements, show ) {
-	var display, elem,
+	let display, elem,
 		values = [],
 		index = 0,
 		length = elements.length;
@@ -76,10 +76,10 @@ export function showHide( elements, show ) {
 }
 
 jQuery.fn.extend( {
-	show: function() {
+	show: () => {
 		return showHide( this, true );
 	},
-	hide: function() {
+	hide: () => {
 		return showHide( this );
 	},
 	toggle: function( state ) {
@@ -87,7 +87,7 @@ jQuery.fn.extend( {
 			return state ? this.show() : this.hide();
 		}
 
-		return this.each( function() {
+		return this.each( () => {
 			if ( isHiddenWithinTree( this ) ) {
 				jQuery( this ).show();
 			} else {
