@@ -150,7 +150,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 				// Prevent Object.prototype pollution
 				// Prevent never-ending loop
-				if ( name === "__proto__" || target === copy ) {
+				if ( name === "__proto__" || name === "constructor" || target === copy ) {
 					continue;
 				}
 
