@@ -176,6 +176,30 @@ QUnit.test( "globalEval", function( assert ) {
 	assert.equal( window.globalEvalTest, 3, "Test context (this) is the window object" );
 } );
 
+QUnit.test( "globalEval - nonce fallback reads from page script element (gh-5835)", function( assert ) {
+	assert.expect( 1 );
+	Globals.register( "cspNonceFallbackTest" );
+
+	var script = document.createElement( "script" );
+	script.setAttribute( "nonce", "test-nonce-1234" );
+	document.head.appendChild( script );
+
+	jQuery.globalEval( "cspNonceFallbackTest = 1;" );
+
+	assert.strictEqual( window.cspNonceFallbackTest, 1, "globalEval used nonce from existing script element" );
+
+	script.remove();
+} );
+
+QUnit.test( "globalEval with explicit nonce option", function( assert ) {
+	assert.expect( 1 );
+	Globals.register( "cspNonceExplicitTest" );
+
+	jQuery.globalEval( "cspNonceExplicitTest = 1;", { nonce: "explicit-nonce-5678" } );
+
+	assert.strictEqual( window.cspNonceExplicitTest, 1, "globalEval used explicit nonce option" );
+} );
+
 QUnit.test( "globalEval with 'use strict'", function( assert ) {
 	assert.expect( 1 );
 	Globals.register( "strictEvalTest" );

@@ -231,7 +231,12 @@ jQuery.extend( {
 	// Evaluates a script in a provided context; falls back to the global one
 	// if not specified.
 	globalEval: function( code, options, doc ) {
-		DOMEval( code, { nonce: options && options.nonce }, doc );
+		DOMEval( code, {
+			nonce: ( options && options.nonce ) ||
+				// Fallback: read the nonce from the first script element on the page with a nonce attribute.
+				// This is needed because the nonce may not be available through ajaxSettings (gh-5835).
+				document.querySelector( "script[nonce]" )?.nonce
+		}, doc );
 	},
 
 	each: function( obj, callback ) {

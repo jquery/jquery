@@ -36,7 +36,7 @@ jQuery.ajaxSetup( {
 	},
 	converters: {
 		"text script": function( text ) {
-			jQuery.globalEval( text );
+			jQuery.globalEval( text, { nonce: s.scriptAttrs && s.scriptAttrs.nonce } );
 			return text;
 		}
 	}
