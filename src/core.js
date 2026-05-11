@@ -258,15 +258,15 @@ jQuery.extend( {
 
 	// Retrieve the text value of an array of DOM nodes
 	text: function( elem ) {
-		var node,
+		var i, node,
 			ret = "",
-			i = 0,
 			nodeType = elem.nodeType;
 
 		if ( !nodeType ) {
 
 			// If no nodeType, this is expected to be an array
-			while ( ( node = elem[ i++ ] ) ) {
+			for ( i = 0; i < elem.length; i++ ) {
+				node = elem[ i ];
 
 				// Do not traverse comment nodes
 				ret += jQuery.text( node );

@@ -140,11 +140,11 @@ jQuery.fn.extend( {
 	},
 
 	hasClass: function( selector ) {
-		var className, elem,
-			i = 0;
+		var className, elem, i;
 
 		className = " " + selector + " ";
-		while ( ( elem = this[ i++ ] ) ) {
+		for ( i = 0; i < this.length; i++ ) {
+			elem = this[ i ];
 			if ( elem.nodeType === 1 &&
 				( " " + stripAndCollapse( getClass( elem ) ) + " " ).indexOf( className ) > -1 ) {
 				return true;
