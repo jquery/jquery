@@ -16,12 +16,12 @@ jQuery.extend( jQuery.event, {
 
 	trigger: function( event, data, elem, onlyHandlers ) {
 
-		var i, cur, tmp, bubbleType, ontype, handle, special, lastElement,
-			eventPath = [ elem || document ],
+		var i, cur, tmp, eventPath, bubbleType, ontype, handle, special, lastElement,
 			type = hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split( "." ) : [];
 
 		cur = lastElement = tmp = elem = elem || document;
+		eventPath = [ cur ];
 
 		// Don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -94,7 +94,7 @@ jQuery.extend( jQuery.event, {
 		for ( i = 0; i < eventPath.length && !event.isPropagationStopped(); i++ ) {
 			cur = eventPath[ i ];
 			lastElement = cur;
-			event.type = i > 0 ?
+			event.type = i ?
 				bubbleType :
 				special.bindType || type;
 

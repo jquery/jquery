@@ -20,7 +20,7 @@ function classesToArray( value ) {
 
 jQuery.fn.extend( {
 	addClass: function( value ) {
-		var classNames, cur, curValue, className, i, finalValue;
+		var classNames, cur, curValue, i, finalValue;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
@@ -37,9 +37,8 @@ jQuery.fn.extend( {
 
 				if ( cur ) {
 					for ( i = 0; i < classNames.length; i++ ) {
-						className = classNames[ i ];
-						if ( cur.indexOf( " " + className + " " ) < 0 ) {
-							cur += className + " ";
+						if ( cur.indexOf( " " + classNames[ i ] + " " ) < 0 ) {
+							cur += classNames[ i ] + " ";
 						}
 					}
 
@@ -56,7 +55,7 @@ jQuery.fn.extend( {
 	},
 
 	removeClass: function( value ) {
-		var classNames, cur, curValue, className, i, finalValue;
+		var classNames, cur, curValue, i, finalValue;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( j ) {
@@ -79,11 +78,10 @@ jQuery.fn.extend( {
 
 				if ( cur ) {
 					for ( i = 0; i < classNames.length; i++ ) {
-						className = classNames[ i ];
 
 						// Remove *all* instances
-						while ( cur.indexOf( " " + className + " " ) > -1 ) {
-							cur = cur.replace( " " + className + " ", " " );
+						while ( cur.indexOf( " " + classNames[ i ] + " " ) > -1 ) {
+							cur = cur.replace( " " + classNames[ i ] + " ", " " );
 						}
 					}
 
@@ -100,7 +98,7 @@ jQuery.fn.extend( {
 	},
 
 	toggleClass: function( value, stateVal ) {
-		var classNames, className, i, self;
+		var classNames, i, self;
 
 		if ( typeof value === "function" ) {
 			return this.each( function( i ) {
@@ -124,13 +122,12 @@ jQuery.fn.extend( {
 				self = jQuery( this );
 
 				for ( i = 0; i < classNames.length; i++ ) {
-					className = classNames[ i ];
 
 					// Check each className given, space separated list
-					if ( self.hasClass( className ) ) {
-						self.removeClass( className );
+					if ( self.hasClass( classNames[ i ] ) ) {
+						self.removeClass( classNames[ i ] );
 					} else {
-						self.addClass( className );
+						self.addClass( classNames[ i ] );
 					}
 				}
 			} );
@@ -140,13 +137,13 @@ jQuery.fn.extend( {
 	},
 
 	hasClass: function( selector ) {
-		var className, elem, i;
+		var className, i;
 
 		className = " " + selector + " ";
 		for ( i = 0; i < this.length; i++ ) {
-			elem = this[ i ];
-			if ( elem.nodeType === 1 &&
-				( " " + stripAndCollapse( getClass( elem ) ) + " " ).indexOf( className ) > -1 ) {
+			if ( this[ i ].nodeType === 1 &&
+				( " " + stripAndCollapse( getClass( this[ i ] ) ) + " " )
+					.indexOf( className ) > -1 ) {
 				return true;
 			}
 		}

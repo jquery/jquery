@@ -275,23 +275,24 @@ jQuery.event = {
 
 	dispatch: function( nativeEvent ) {
 
-		var i, j, ret, matched, handleObj, handlerQueue,
-			args = new Array( arguments.length ),
+		var event, ret, matched, handleObj, i, j, special, handlerQueue, handlers,
+			args = new Array( arguments.length );
 
-			// Make a writable jQuery.Event from the native event object
-			event = jQuery.event.fix( nativeEvent ),
+		// Make a writable jQuery.Event from the native event object
+		event = jQuery.event.fix( nativeEvent );
 
-			handlers = (
-				dataPriv.get( this, "events" ) || Object.create( null )
-			)[ event.type ] || [],
-			special = jQuery.event.special[ event.type ] || {};
+		handlers = (
+			dataPriv.get( this, "events" ) || Object.create( null )
+		)[ event.type ] || [];
+
+		special = jQuery.event.special[ event.type ] || {};
+
+		for ( i = 0; i < arguments.length; i++ ) {
+			args[ i ] = arguments[ i ];
+		}
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
 		args[ 0 ] = event;
-
-		for ( i = 1; i < arguments.length; i++ ) {
-			args[ i ] = arguments[ i ];
-		}
 
 		event.delegateTarget = this;
 

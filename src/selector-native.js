@@ -45,7 +45,7 @@ var matchExpr = jQuery.extend( {
 
 jQuery.extend( {
 	find: function( selector, context, results, seed ) {
-		var elem, nid, groups, newSelector, i,
+		var i, elem, nid, groups, newSelector,
 			newContext = context && context.ownerDocument,
 
 			// nodeType defaults to 9, since context defaults to document

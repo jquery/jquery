@@ -59,11 +59,11 @@ function cloneCopyEvent( src, dest ) {
 }
 
 function remove( elem, selector, keepData ) {
-	var node,
-		nodes = selector ? jQuery.filter( selector, elem ) : elem,
-		i = 0;
+	var node, i,
+		nodes = selector ? jQuery.filter( selector, elem ) : elem;
 
-	for ( ; ( node = nodes[ i ] ) != null; i++ ) {
+	for ( i = 0; i < nodes.length; i++ ) {
+		node = nodes[ i ];
 		if ( !keepData && node.nodeType === 1 ) {
 			jQuery.cleanData( getAll( node ) );
 		}
@@ -134,11 +134,11 @@ jQuery.extend( {
 	},
 
 	cleanData: function( elems ) {
-		var data, elem, type,
-			special = jQuery.event.special,
-			i = 0;
+		var data, elem, type, i,
+			special = jQuery.event.special;
 
-		for ( ; ( elem = elems[ i ] ) !== undefined; i++ ) {
+		for ( i = 0; i < elems.length; i++ ) {
+			elem = elems[ i ];
 			if ( acceptData( elem ) ) {
 				if ( ( data = elem[ dataPriv.expando ] ) ) {
 					if ( data.events ) {
@@ -224,10 +224,10 @@ jQuery.fn.extend( {
 	},
 
 	empty: function() {
-		var elem,
-			i = 0;
+		var elem, i;
 
-		for ( ; ( elem = this[ i ] ) != null; i++ ) {
+		for ( i = 0; i < this.length; i++ ) {
+			elem = this[ i ];
 			if ( elem.nodeType === 1 ) {
 
 				// Prevent memory leaks

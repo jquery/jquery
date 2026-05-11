@@ -72,7 +72,7 @@ jQuery.extend( {
 	attrHooks: {},
 
 	removeAttr: function( elem, value ) {
-		var i, name,
+		var i,
 
 			// Attribute names can contain non-HTML whitespace characters
 			// https://html.spec.whatwg.org/multipage/syntax.html#attributes-2
@@ -80,8 +80,7 @@ jQuery.extend( {
 
 		if ( attrNames && elem.nodeType === 1 ) {
 			for ( i = 0; i < attrNames.length; i++ ) {
-				name = attrNames[ i ];
-				elem.removeAttribute( name );
+				elem.removeAttribute( attrNames[ i ] );
 			}
 		}
 	}
