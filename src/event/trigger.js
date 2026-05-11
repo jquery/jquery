@@ -91,10 +91,10 @@ jQuery.extend( jQuery.event, {
 		}
 
 		// Fire handlers on the event path
-		i = 0;
-		while ( ( cur = eventPath[ i++ ] ) && !event.isPropagationStopped() ) {
+		for ( i = 0; i < eventPath.length && !event.isPropagationStopped(); i++ ) {
+			cur = eventPath[ i ];
 			lastElement = cur;
-			event.type = i > 1 ?
+			event.type = i > 0 ?
 				bubbleType :
 				special.bindType || type;
 

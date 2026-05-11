@@ -45,12 +45,11 @@ var matchExpr = jQuery.extend( {
 
 jQuery.extend( {
 	find: function( selector, context, results, seed ) {
-		var elem, nid, groups, newSelector,
+		var elem, nid, groups, newSelector, i,
 			newContext = context && context.ownerDocument,
 
 			// nodeType defaults to 9, since context defaults to document
-			nodeType = context ? context.nodeType : 9,
-			i = 0;
+			nodeType = context ? context.nodeType : 9;
 
 		results = results || [];
 		context = context || document;
@@ -66,7 +65,8 @@ jQuery.extend( {
 		}
 
 		if ( seed ) {
-			while ( ( elem = seed[ i++ ] ) ) {
+			for ( i = 0; i < seed.length; i++ ) {
+				elem = seed[ i ];
 				if ( jQuery.find.matchesSelector( elem, selector ) ) {
 					results.push( elem );
 				}

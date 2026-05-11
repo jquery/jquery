@@ -12,13 +12,12 @@ import { isArrayLike } from "../core/isArrayLike.js";
 var rhtml = /<|&#?\w+;/;
 
 export function buildFragment( elems, context, scripts, selection, ignored ) {
-	var elem, tmp, tag, wrap, attached, j,
+	var elem, tmp, tag, wrap, attached, i, j,
 		fragment = context.createDocumentFragment(),
 		nodes = [],
-		i = 0,
 		l = elems.length;
 
-	for ( ; i < l; i++ ) {
+	for ( i = 0; i < l; i++ ) {
 		elem = elems[ i ];
 
 		if ( elem || elem === 0 ) {
@@ -61,8 +60,8 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 	// Remove wrapper from fragment
 	fragment.textContent = "";
 
-	i = 0;
-	while ( ( elem = nodes[ i++ ] ) ) {
+	for ( i = 0; i < nodes.length; i++ ) {
+		elem = nodes[ i ];
 
 		// Skip elements already in the context collection (trac-4087)
 		if ( selection && jQuery.inArray( elem, selection ) > -1 ) {
@@ -84,8 +83,8 @@ export function buildFragment( elems, context, scripts, selection, ignored ) {
 
 		// Capture executables
 		if ( scripts ) {
-			j = 0;
-			while ( ( elem = tmp[ j++ ] ) ) {
+			for ( j = 0; j < tmp.length; j++ ) {
+				elem = tmp[ j ];
 				if ( rscriptType.test( elem.type || "" ) ) {
 					scripts.push( elem );
 				}

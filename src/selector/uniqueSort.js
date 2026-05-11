@@ -70,8 +70,8 @@ function sortOrder( a, b ) {
  * @param {ArrayLike} results
  */
 jQuery.uniqueSort = function( results ) {
-	var j = 1,
-		i = 1;
+	var i,
+		j = 1;
 
 	hasDuplicate = false;
 
@@ -82,7 +82,7 @@ jQuery.uniqueSort = function( results ) {
 		// Pack the first instance of each unique element into the start of
 		// results (starting at index 1 because index 0 is always kept), then
 		// splice away the tail of duplicates.
-		for ( ; i < results.length; i++ ) {
+		for ( i = 1; i < results.length; i++ ) {
 			if ( results[ i ] !== results[ i - 1 ] ) {
 				results[ j++ ] = results[ i ];
 			}

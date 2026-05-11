@@ -1171,7 +1171,6 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 			// Add elements passing elementMatchers directly to results
 			for ( ; ( elem = elems[ i ] ) != null; i++ ) {
 				if ( byElement && elem ) {
-					j = 0;
 
 					// Support: IE 11+
 					// IE sometimes throws a "Permission denied" error when strict-comparing
@@ -1181,8 +1180,10 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 						setDocument( elem );
 						xml = !documentIsHTML;
 					}
-					while ( ( matcher = elementMatchers[ j++ ] ) ) {
-						if ( matcher( elem, context || document, xml ) ) {
+					matcher = undefined;
+					for ( j = 0; j < elementMatchers.length; j++ ) {
+						if ( elementMatchers[ j ]( elem, context || document, xml ) ) {
+							matcher = elementMatchers[ j ];
 							push.call( results, elem );
 							break;
 						}
@@ -1219,8 +1220,8 @@ function matcherFromGroupMatchers( elementMatchers, setMatchers ) {
 			// case, which will result in a "00" `matchedCount` that differs from `i` but is also
 			// numerically zero.
 			if ( bySet && i !== matchedCount ) {
-				j = 0;
-				while ( ( matcher = setMatchers[ j++ ] ) ) {
+				for ( j = 0; j < setMatchers.length; j++ ) {
+					matcher = setMatchers[ j ];
 					matcher( unmatched, setMatched, context, xml );
 				}
 
