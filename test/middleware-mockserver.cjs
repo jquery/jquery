@@ -249,6 +249,13 @@ const mocks = {
 		resp.writeHead( Number( req.query.code ) );
 		resp.end();
 	},
+	redirect: function( req, resp ) {
+		const target = req.query.target ||
+			"/test/data/mock.php?action=name&name=foo";
+		const code = Number( req.query.code ) || 302;
+		resp.writeHead( code, { "Location": target } );
+		resp.end();
+	},
 	testHTML: function( req, resp ) {
 		resp.writeHead( 200, { "Content-Type": "text/html" } );
 		const body = readFileSync(

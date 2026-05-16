@@ -273,6 +273,85 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - jqXHR.responseURL (gh-4339)", 9, function( assert ) {
+
+		// Support: IE 11+
+		// Some versions of IE 11 don't support location.origin
+		var origin = window.location.protocol + "//" + window.location.host,
+			redirectTarget = "/test/data/mock.php?action=name&name=foo&_=" + Date.now(),
+			expectedRedirectUrl = origin + redirectTarget;
+
+		// Support: IE 11+
+		// IE does not implement XMLHttpRequest.responseURL.
+		// `jqXHR.responseURL` is set to `undefined` in such a case
+		// as jQuery is not polyfilling support.
+		function expectedXhrUrl( absoluteUrl ) {
+			return QUnit.isIE ? undefined : absoluteUrl;
+		}
+
+		return [
+			{
+				url: url( "mock.php?action=name&name=foo" ),
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL is undefined before the request is sent" );
+				},
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( this.url ),
+						"responseURL equals request URL for non-redirected requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=redirect&target=" +
+					encodeURIComponent( redirectTarget ) ),
+				success: function( data, _textStatus, jqXHR ) {
+					assert.strictEqual( data, "bar",
+						"Redirect followed and final response returned" );
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( expectedRedirectUrl ),
+						"responseURL reflects the final URL after a redirect" );
+				}
+			},
+			{
+				url: url( "mock.php?action=error" ),
+				error: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( this.url ),
+						"responseURL is populated for HTTP errors" );
+				}
+			},
+			{
+				url: url( "mock.php?action=jsonp&callback=?" ),
+				dataType: "jsonp",
+				crossDomain: true,
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for JSONP requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=script&header" ),
+				dataType: "script",
+				crossDomain: true,
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for cross-domain script requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=wait&wait=5" ),
+				afterSend: function( request ) {
+					request.abort();
+				},
+				error: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for aborted requests" );
+				}
+			}
+		];
+	} );
+
 	QUnit.test( "jQuery.ajax() - retry with jQuery.ajax( this )", function( assert ) {
 		assert.expect( 2 );
 		var previousUrl,
@@ -3425,6 +3504,41 @@ QUnit.module( "ajax", {
 					}
 				}
 			]
+		};
+	} );
+
+	ajaxTest(
+		"jQuery.ajaxTransport() - completeCallback object with responseURL (gh-4339)",
+		2, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-obj-url-" + testId,
+			resp = {},
+			customUrl = "https://example.test/redirected";
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 200,
+								statusText: "OK",
+								responses: resp,
+								responseURL: customUrl
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( _, __, jqXHR ) {
+				assert.strictEqual( jqXHR.responseURL, customUrl,
+					"responseURL is set from the object-form completeCallback" );
+				assert.strictEqual( jqXHR.status, 200,
+					"jqXHR.status is 200" );
+			}
 		};
 	} );
 

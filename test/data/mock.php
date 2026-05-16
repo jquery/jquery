@@ -218,6 +218,14 @@ QUnit.assert.ok( true, "mock executed");';
 		header( "HTTP/1.0 {$req->query['code']} {$req->query['text']}" );
 	}
 
+	protected function redirect( $req ) {
+		$target = isset( $req->query['target'] ) ?
+			$req->query['target'] :
+			'/test/data/mock.php?action=name&name=foo';
+		$code = isset( $req->query['code'] ) ? (int) $req->query['code'] : 302;
+		header( "Location: $target", true, $code );
+	}
+
 	protected function testHTML( $req ) {
 		header( 'Content-type: text/html' );
 		$html = file_get_contents( __DIR__ . '/test.include.html' );

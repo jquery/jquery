@@ -67,7 +67,8 @@ jQuery.ajaxTransport( function( options ) {
 
 								// File: protocol always yields status 0; see trac-8605, trac-14207
 								status: xhr.status,
-								statusText: xhr.statusText
+								statusText: xhr.statusText,
+								responseURL: xhr.responseURL
 							} );
 						} else {
 							complete( {
@@ -78,7 +79,9 @@ jQuery.ajaxTransport( function( options ) {
 								responses: ( xhr.responseType || "text" ) === "text" ?
 									{ text: xhr.responseText } :
 									{ binary: xhr.response },
-								headers: xhr.getAllResponseHeaders()
+
+								headers: xhr.getAllResponseHeaders(),
+								responseURL: xhr.responseURL
 							} );
 						}
 					}
