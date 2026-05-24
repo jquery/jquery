@@ -381,3 +381,4 @@ they follow the `document` argument.
 
 If you have any questions, please feel free to ask on the
 [Developing jQuery Core forum](https://forum.jquery.com/developing-jquery-core) or in #jquery on [libera](https://web.libera.chat/).
+<!-- F59: Fix typo comment -->
