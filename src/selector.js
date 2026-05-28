@@ -453,19 +453,20 @@ jQuery.expr = {
 		},
 
 		CLASS: function( className ) {
-			var pattern = classCache[ className + " " ];
+			var pattern,
+				unescapedClass = unescapeSelector( className );
 
-			return pattern ||
-				( pattern = new RegExp( "(^|" + whitespace + ")" + className +
-					"(" + whitespace + "|$)" ) ) &&
-				classCache( className, function( elem ) {
-					return pattern.test(
-						typeof elem.className === "string" && elem.className ||
-							typeof elem.getAttribute !== "undefined" &&
-								elem.getAttribute( "class" ) ||
-							""
-					);
-				} );
+			if ( ( pattern = classCache[ unescapedClass + " " ] ) ) {
+				return pattern;
+			}
+			return classCache( unescapedClass, function( elem ) {
+				var classAttr = typeof elem.className === "string" && elem.className ||
+					typeof elem.getAttribute !== "undefined" &&
+						elem.getAttribute( "class" ) ||
+					"";
+				return ( " " + classAttr.replace( rwhitespace, " " ) + " " )
+					.indexOf( " " + unescapedClass + " " ) > -1;
+			} );
 		},
 
 		ATTR: function( name, operator, check ) {
