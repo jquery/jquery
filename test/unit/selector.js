@@ -844,6 +844,26 @@ QUnit.test( "attributes - special characters", function( assert ) {
 		"Long numeric escape (non-BMP)" );
 } );
 
+QUnit.test( "attributes - invalid escaped code points", function( assert ) {
+	assert.expect( 4 );
+
+	// Per the CSS spec, NULL, surrogate, and out-of-range escapes decode to the
+	// REPLACEMENT CHARACTER (U+FFFD). Use a seeded set to exercise the matcher
+	// rather than `querySelectorAll`.
+	var match = jQuery( "<input/>" ).attr( "data-attr", "\uFFFD" ),
+		noMatch = jQuery( "<input/>" ).attr( "data-attr", "\0" ),
+		els = match.add( noMatch );
+
+	assert.deepEqual( els.filter( "[data-attr='\\0']" ).get(), match.get(),
+		"NULL escape decodes to U+FFFD, not U+0000" );
+	assert.deepEqual( els.filter( "[data-attr='\\D800']" ).get(), match.get(),
+		"surrogate escape decodes to U+FFFD" );
+	assert.deepEqual( els.filter( "[data-attr='\\110000']" ).get(), match.get(),
+		"out-of-range escape decodes to U+FFFD" );
+	assert.deepEqual( els.filter( "[data-attr='\\FFFFFF']" ).get(), match.get(),
+		"escape above the Unicode maximum decodes to U+FFFD" );
+} );
+
 QUnit.test( "attributes - others", function( assert ) {
 	assert.expect( 14 );
 
