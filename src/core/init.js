@@ -1,6 +1,7 @@
 // Initialize a jQuery object
 import { jQuery } from "../core.js";
 import { document } from "../var/document.js";
+import { hasOwn } from "../var/hasOwn.js";
 import { rsingleTag } from "./var/rsingleTag.js";
 import { isObviousHtml } from "./isObviousHtml.js";
 
@@ -75,6 +76,12 @@ var rootjQuery,
 					// HANDLE: $(html, props)
 					if ( rsingleTag.test( match[ 1 ] ) && jQuery.isPlainObject( context ) ) {
 						for ( match in context ) {
+
+							// Don't apply inherited properties (e.g. from a
+							// polluted Object.prototype) as methods or attributes
+							if ( !hasOwn.call( context, match ) ) {
+								continue;
+							}
 
 							// Properties of context are called as methods if possible
 							if ( typeof this[ match ] === "function" ) {

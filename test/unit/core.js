@@ -1145,6 +1145,20 @@ QUnit.test( "jQuery.extend( true, ... ) Object.prototype pollution", function( a
 	assert.ok( !( "devMode" in {} ), "Object.prototype not polluted" );
 } );
 
+QUnit.test( "jQuery( html, props ) ignores inherited properties", function( assert ) {
+	assert.expect( 2 );
+
+	Object.prototype.evilProp = "INJECTED";
+	try {
+		var el = jQuery( "<div></div>", { "data-own": "kept" } )[ 0 ];
+		assert.equal( el.getAttribute( "data-own" ), "kept", "Own property is applied" );
+		assert.strictEqual( el.getAttribute( "evilProp" ), null,
+			"Inherited property is not applied" );
+	} finally {
+		delete Object.prototype.evilProp;
+	}
+} );
+
 QUnit.test( "jQuery.each(Object,Function)", function( assert ) {
 	assert.expect( 23 );
 
