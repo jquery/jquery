@@ -126,7 +126,7 @@
     "jquery-test-runner": "0.3.0",
     "jsdom": "29.0.2",
     "marked": "18.0.2",
-    "multiparty": "4.2.3",
+    "multiparty": "4.3.0",
     "native-promise-only": "0.8.1",
     "promises-aplus-tests": "npm:@mgol/promises-aplus-tests@2.1.2-mgol.2",
     "qunit": "2.25.0",
