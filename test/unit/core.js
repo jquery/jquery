@@ -1613,9 +1613,15 @@ QUnit.test( "jQuery.text", function( assert ) {
 		"foo", "Text node" );
 	assert.notEqual( jQuery.text( document ), "",
 		"Document node is non-empty" );
-	assert.strictEqual(
-		jQuery.text( new DOMParser().parseFromString( "<span>example</span>", "text/html" ) ),
-		"example", "DOMParser document node" );
+
+	if ( !document.documentMode || document.documentMode > 9 ) {
+		assert.strictEqual(
+			jQuery.text( new DOMParser().parseFromString( "<span>example</span>", "text/html" ) ),
+			"example", "DOMParser document node" );
+	} else {
+		assert.ok( true, "IE 9 doesn't support DOMParser's parseFromString with text/html" );
+	}
+
 	assert.strictEqual( jQuery.text( jQuery( document.createDocumentFragment() )
 		.append( document.createTextNode( "foo" ) )[ 0 ] ),
 		"foo", "Document fragment" );
