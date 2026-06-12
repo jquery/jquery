@@ -507,6 +507,16 @@ QUnit.test( ".removeData()", function( assert ) {
 	assert.equal( div.data( "test.foo" ), undefined, "Make sure data is intact" );
 } );
 
+QUnit.test( ".removeData() clears hasDataAttrs so data-* attributes are re-read (gh-5751)", function( assert ) {
+	assert.expect( 2 );
+
+	var div = jQuery( "<div data-test='123'></div>" );
+	assert.equal( div.data( "test" ), "123", "data-* attribute read initially" );
+
+	div.removeData();
+	assert.equal( div.data( "test" ), "123", "data-* attribute re-read after removeData()" );
+} );
+
 QUnit.test( "JSON serialization (trac-8108)", function( assert ) {
 	assert.expect( 1 );
 

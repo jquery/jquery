@@ -158,6 +158,12 @@ jQuery.fn.extend( {
 	removeData: function( key ) {
 		return this.each( function() {
 			dataUser.remove( this, key );
+
+			// When all user data is removed, clear the hasDataAttrs flag
+			// so that a later data() call re-reads data-* attributes.
+			if ( key === undefined ) {
+				dataPriv.remove( this, "hasDataAttrs" );
+			}
 		} );
 	}
 } );
