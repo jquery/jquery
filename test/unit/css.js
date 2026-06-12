@@ -343,6 +343,36 @@ QUnit.test( "css(String, Object) with negative values", function( assert ) {
 	assert.equal( jQuery( "#nothiddendiv" ).css( "left" ), "-20px", "Ensure negative left values work." );
 } );
 
+QUnit.test( "css(String, Object) with negative padding and borderWidth", function( assert ) {
+	assert.expect( 12 );
+
+	jQuery( "#nothiddendiv" ).css( "position", "static" );
+
+	jQuery( "#nothiddendiv" ).css( "padding", "10px" );
+	jQuery( "#nothiddendiv" ).css( "padding-top", "-10px" );
+	assert.equal( jQuery( "#nothiddendiv" ).css( "padding-top" ), "0px",
+		"Negative padding-top clipped to 0" );
+
+	jQuery( "#nothiddendiv" ).css( "padding-right", "-5px" );
+	assert.equal( jQuery( "#nothiddendiv" ).css( "padding-right" ), "0px",
+		"Negative padding-right clipped to 0" );
+
+	jQuery( "#nothiddendiv" ).css( "padding-bottom", "-1em" );
+	assert.equal( jQuery( "#nothiddendiv" ).css( "padding-bottom" ), "0px",
+		"Negative padding-bottom clipped to 0" );
+
+	jQuery( "#nothiddendiv" ).css( "padding-left", -20 );
+	assert.equal( parseFloat( jQuery( "#nothiddendiv" ).css( "padding-left" ) ), 0,
+		"Negative numeric padding-left clipped to 0" );
+
+	jQuery.each( [ "Top", "Right", "Bottom", "Left" ], function( _i, side ) {
+		jQuery( "#nothiddendiv" ).css( "border-" + side.toLowerCase(), "1px solid black" );
+		jQuery( "#nothiddendiv" ).css( "border" + side + "Width", "-5px" );
+		assert.equal( jQuery( "#nothiddendiv" ).css( "border" + side + "Width" ), "0px",
+			"Negative border-" + side.toLowerCase() + "-width clipped to 0" );
+	} );
+} );
+
 QUnit.test( "css(Array)", function( assert ) {
 	assert.expect( 2 );
 
