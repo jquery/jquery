@@ -1530,19 +1530,76 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 } );
 
 QUnit.test( "pseudo - :(dis|en)abled, optgroup and option", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 4 );
+
+	var elems = jQuery( "#disabled-select-inherit, #enabled-select-inherit" )
+			.find( "optgroup, option" ),
+		disabledResultsNew = [
+			"dis_disabled-optgroup-inherit", "dis_disabled-optgroup-option",
+			"dis_enabled-optgroup-inherit", "dis_enabled-optgroup-option",
+			"dis_disabled-option", "dis_enabled-option",
+			"en_disabled-optgroup-inherit", "en_disabled-optgroup-option",
+			"en_disabled-option"
+		],
+		enabledResultsNew = [
+			"en_enabled-optgroup-inherit", "en_enabled-optgroup-option",
+			"en_enabled-option"
+		],
+		disabledResultsOld = [
+			"dis_disabled-optgroup-inherit", "dis_disabled-optgroup-option",
+			"dis_disabled-option",
+			"en_disabled-optgroup-inherit", "en_disabled-optgroup-option",
+			"en_disabled-option"
+		],
+		enabledResultsOld = [
+			"dis_enabled-optgroup-inherit", "dis_enabled-optgroup-option",
+			"dis_enabled-option",
+			"en_enabled-optgroup-inherit", "en_enabled-optgroup-option",
+			"en_enabled-option"
+		],
+
+		// Support: Chrome 149+
+		// The HTML spec change at https://github.com/whatwg/html/pull/12205
+		// makes options & optgroups inside a disabled `<select>` match
+		// `:disabled` as well. This change isn't implemented everywhere yet
+		// and for now we accept both behaviors.
+		optionInheritsSelectDisabled =
+			jQuery( "#dis_enabled-option" ).is( ":disabled" );
 
 	assert.t(
 		":disabled",
 		"#disabled-select-inherit :disabled, #enabled-select-inherit :disabled",
-		[ "disabled-optgroup-inherit", "disabled-optgroup-option", "en_disabled-optgroup-inherit",
-			"en_disabled-optgroup-option" ]
+		optionInheritsSelectDisabled ? disabledResultsNew : disabledResultsOld
 	);
 
 	assert.t(
 		":enabled",
 		"#disabled-select-inherit :enabled, #enabled-select-inherit :enabled",
-		[ "enabled-optgroup-inherit", "enabled-optgroup-option", "enabled-select-option" ]
+		optionInheritsSelectDisabled ? enabledResultsNew : enabledResultsOld
+	);
+
+	// Check `:disabled` & `:enabled` matching via `.filter()` which uses
+	// the jQuery built-in selector engine - except when the selector-native
+	// module is used. The jQuery selector engine implements old
+	// semantics inside disabled selects.
+	assert.deepEqual(
+		elems.filter( ":disabled" ).toArray().map( function( node ) {
+			return node.id;
+		} ),
+		optionInheritsSelectDisabled && !QUnit.jQuerySelectors ?
+			disabledResultsNew :
+			disabledResultsOld,
+		":disabled (via .filter())"
+	);
+
+	assert.deepEqual(
+		elems.filter( ":enabled" ).toArray().map( function( node ) {
+			return node.id;
+		} ),
+		optionInheritsSelectDisabled && !QUnit.jQuerySelectors ?
+			enabledResultsNew :
+			enabledResultsOld,
+		":enabled (via .filter())"
 	);
 } );
 
