@@ -19,7 +19,7 @@ The latest version of jQuery is available at [https://jquery.com/download/](http
 
 The 3.x branch will now only receive critical updates. The 2.x and 1.x branches are no longer supported. We recommend that all users upgrade to the latest version of jQuery to ensure that they have the best performance, security, and features.
 
-Commercial support for previous versions is available from [HeroDevs](https://herodevs.com/support/jquery-nes).
+Commercial support for previous versions is available from [HeroDevs](https://www.herodevs.com/support/jquery-nes?utm_source=jQuery&utm_medium=link&utm_campaign=eol_support_jQuery).
 
 Learn more about our [version support](https://jquery.com/support/).
 
