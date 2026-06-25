@@ -1,6 +1,7 @@
 
 
 import fs from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import util from "node:util";
 import { exec as nodeExec } from "node:child_process";
 
@@ -99,4 +100,12 @@ export async function updateAuthors() {
 	await fs.writeFile( "AUTHORS.txt", authorsTxt );
 
 	console.log( "AUTHORS.txt updated" );
+}
+
+if ( process.argv[ 1 ] === fileURLToPath( import.meta.url ) ) {
+	if ( process.argv[ 2 ] === "update" ) {
+		updateAuthors();
+	} else {
+		checkAuthors();
+	}
 }
