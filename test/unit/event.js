@@ -3507,6 +3507,54 @@ QUnit.test( "trigger(focus) fires native & jQuery handlers (gh-5015)", function(
 	input.trigger( "focus" );
 } );
 
+QUnit.test( "trigger(focus) and trigger(blur) do not fire on disabled controls (gh-5623)", function( assert ) {
+	assert.expect( 3 );
+
+	var input = jQuery( "#disabled-input" ),
+		count = 0;
+
+	input.on( "focus blur", function() {
+		count++;
+	} );
+
+	jQuery( "#text1" )[ 0 ].focus();
+
+	input.trigger( "focus" );
+	assert.equal( count, 0, "trigger(focus)" );
+
+	count = 0;
+	input.trigger( "blur" );
+	assert.equal( count, 0, "trigger(blur)" );
+
+	count = 0;
+	input.triggerHandler( "blur" );
+	assert.equal( count, 0, "triggerHandler(blur)" );
+
+	input.off( "focus blur" );
+} );
+
+QUnit.test( "trigger(focus) and trigger(blur) do not fire on disabled fieldset controls (gh-5623)", function( assert ) {
+	assert.expect( 2 );
+
+	var input = jQuery( "#disabled-fieldset-input" ),
+		count = 0;
+
+	input.on( "focus blur", function() {
+		count++;
+	} );
+
+	jQuery( "#text1" )[ 0 ].focus();
+
+	input.trigger( "focus" );
+	assert.equal( count, 0, "trigger(focus)" );
+
+	count = 0;
+	input.trigger( "blur" );
+	assert.equal( count, 0, "trigger(blur)" );
+
+	input.off( "focus blur" );
+} );
+
 QUnit.test( "duplicate native blur doesn't crash (gh-5459)", function( assert ) {
 	assert.expect( 4 );
 

@@ -28,10 +28,8 @@ jQuery.extend( jQuery.event, {
 			return;
 		}
 
-		// Prevent focus event on disabled elements
-		if ( type === "focus" && jQuery( elem ).prop( "disabled" ) ) {
-
-			// Skip triggering focus event for disabled elements
+		// Prevent focus/blur events on disabled elements
+		if ( ( type === "focus" || type === "blur" ) && jQuery( elem ).is( ":disabled" ) ) {
 			return;
 		}
 
