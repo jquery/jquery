@@ -25,10 +25,12 @@ jobs:
       matrix:
         BROWSER:
           - 'IE_11'
-          - 'Safari_latest'
-          # JTR doesn't take into account the jump from Safari 18 to 26,
-          # so we need to specify versions explicitly.
-          # See https://github.com/jquery/jquery-test-runner/issues/17
+          # BrowserStack makes Safari on beta macOS versions available without marking
+          # either the OS or the browser as beta, so we have no way to resolve "latest"
+          # to the lastest stable version. Given that major Safari version updates
+          # only come once a year, we'll just keep updating them each year, together
+          # with related iOS versions.
+          - 'Safari_26'
           - 'Safari_18'
           - 'Chrome_latest'
           - 'Chrome_latest-1'
