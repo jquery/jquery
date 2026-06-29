@@ -10,7 +10,11 @@ var hasDuplicate;
 function sortOrder( a, b ) {
 
 	// Flag for duplicate removal
-	if ( a === b ) {
+	// Support: IE 11+
+	// IE sometimes throws a "Permission denied" error when strict-comparing
+	// two documents; shallow comparisons work.
+	// eslint-disable-next-line eqeqeq
+	if ( a == b ) {
 		hasDuplicate = true;
 		return 0;
 	}
@@ -66,23 +70,28 @@ function sortOrder( a, b ) {
  * @param {ArrayLike} results
  */
 jQuery.uniqueSort = function( results ) {
-	var elem,
-		duplicates = [],
-		j = 0,
-		i = 0;
+	var j = 1,
+		i = 1;
 
 	hasDuplicate = false;
 
 	sort.call( results, sortOrder );
 
 	if ( hasDuplicate ) {
-		while ( ( elem = results[ i++ ] ) ) {
-			if ( elem === results[ i ] ) {
-				j = duplicates.push( i );
+
+		// Pack the first instance of each unique element into the start of
+		// results (starting at index 1 because index 0 is always kept), then
+		// splice away the tail of duplicates.
+		for ( ; i < results.length; i++ ) {
+			if ( results[ i ] !== results[ i - 1 ] ) {
+				results[ j++ ] = results[ i ];
 			}
 		}
-		while ( j-- ) {
-			splice.call( results, duplicates[ j ], 1 );
+
+		if ( Array.isArray( results ) ) {
+			results.length = j;
+		} else {
+			splice.call( results, j );
 		}
 	}
 

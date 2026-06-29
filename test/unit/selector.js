@@ -146,11 +146,53 @@ QUnit.test( "element", function( assert ) {
 	assert.t( "Element name matches Object.prototype property", "toString#toString", [ "toString" ] );
 } );
 
+QUnit.test( "element - custom tag names (gh-3642)", function( assert ) {
+
+	assert.expect( QUnit.jQuerySelectors ? 8 : 4 );
+
+	var container,
+		tagData = [
+			{ name: "span", selector: "span" },
+			{ name: "my-component", selector: "my-component" },
+			{ name: "my-component.v2", selector: "my-component\\.v2" },
+			{
+				name: "a-\u00B7._.\u00B7-b\u0300\u0371\u2070\u2100" +
+					"\u2C00\u2F00\u3401\uF900\uFDF0\uD800\uDC00",
+
+				// Only the two dots need CSS escaping; all other characters
+				// are alphanumeric, `-`, `_`, or non-ASCII (>= U+0080).
+				selector: "a-\u00B7\\._\\.\u00B7-b\u0300\u0371\u2070\u2100" +
+					"\u2C00\u2F00\u3401\uF900\uFDF0\uD800\uDC00"
+			}
+		];
+
+	jQuery.each( tagData, function( _, tag ) {
+		container = jQuery(
+			"<div><" + tag.name + ">hello</" + tag.name + "></div>"
+		).appendTo( "#qunit-fixture" );
+
+		assert.strictEqual(
+			container.find( tag.selector ).length,
+			1,
+			"Tag name \"" + tag.name + "\": simple selector"
+		);
+
+		if ( QUnit.jQuerySelectors ) {
+			assert.strictEqual(
+				container.find( tag.selector + ":contains('')" ).length,
+				1,
+				"Tag name \"" + tag.name + "\": selector with a jQuery pseudo"
+			);
+		}
+	} );
+} );
+
 QUnit.test( "XML Document Selectors", function( assert ) {
-	assert.expect( 11 );
+	assert.expect( 12 );
 
 	var xml = createWithFriesXML();
 
+	assert.equal( jQuery( "qwerty", xml ).length, 1, "Element Selector (simple)" );
 	assert.equal( jQuery( "foo_bar", xml ).length, 1, "Element Selector with underscore" );
 	assert.equal( jQuery( ".component", xml ).length, 1, "Class selector" );
 	assert.equal( jQuery( "[class*=component]", xml ).length, 1, "Attribute selector for class" );
@@ -223,6 +265,77 @@ QUnit.test( "broken selectors throw", function( assert ) {
 	broken( "Attribute equals unquoted non-identifier", "input[name=foo[baz]]" );
 	broken( "Attribute equals bad string", "input[name=''double-quoted'']" );
 	broken( "Attribute equals bad string", "input[name='apostrophe'd']" );
+} );
+
+QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ](
+	"lenient identifier parsing", function( assert ) {
+
+	// Test that jQuery identifier parsing is more lenient than
+	// querySelectorAll's. Note: this may change in a jQuery major
+	// version bump.
+
+	assert.expect( 9 );
+
+	// ID
+	assert.ok( jQuery( "#-0abc" ), "$( \"#-0abc\" ) did not throw" );
+	assert.ok( jQuery( "#0abc" ), "$( \"#0abc\" ) did not throw" );
+	assert.ok( jQuery( "#--0abc" ), "$( \"#--0abc\" ) did not throw" );
+
+	// Type
+	assert.ok( jQuery( "-0abc" ), "$( \"-0abc\" ) did not throw" );
+	assert.ok( jQuery( "0abc" ), "$( \"0abc\" ) did not throw" );
+	assert.ok( jQuery( "--0abc" ), "$( \"--0abc\" ) did not throw" );
+
+	// Class
+	assert.ok( jQuery( ".-0abc" ), "$( \".-0abc\" ) did not throw" );
+	assert.ok( jQuery( ".0abc" ), "$( \".0abc\" ) did not throw" );
+	assert.ok( jQuery( ".--0abc" ), "$( \".--0abc\" ) did not throw" );
+} );
+
+QUnit.test( "identifier ReDoS", function( assert ) {
+	assert.expect( 1 );
+
+	// 30 \a hex escapes followed by ! (invalid attr selector syntax).
+	// Naive implementations of the `<ident-token>` symbol:
+	// https://www.w3.org/TR/css-syntax-3/#ident-token-diagram
+	// could cause catastrophic backtracking, hanging the browser
+	// for over a minute.
+	//
+	// Support: IE 9 - 11+ only
+	// IE doesn't have String.prototype.repeat.
+	// 31 empty elements will produce 30 occurrences of the `join` parameter.
+	var selector = "[" + Array( 31 ).join( "\\a" ) + "!]",
+		start, elapsed;
+
+	start = Date.now();
+	try {
+		jQuery( selector );
+	} catch ( _e ) {}
+	elapsed = Date.now() - start;
+
+	assert.ok( elapsed < 1000,
+		"Pathological hex escape selector should not hang (took " + elapsed + "ms)" );
+} );
+
+QUnit.test( "double-dash identifier prefix", function( assert ) {
+	assert.expect( 5 );
+
+	var elem = jQuery( "<div id='--dd-id' class='--dd-class' --dd-attr='val'></div>" )
+		.appendTo( "#qunit-fixture" );
+
+	assert.equal( jQuery( "#--dd-id" ).length, 1,
+		"ID selector with -- prefix" );
+	assert.equal( jQuery( ".--dd-class" ).length, 1,
+		"Class selector with -- prefix" );
+	assert.equal( jQuery( "[--dd-attr]" ).length, 1,
+		"Attribute existence selector with -- prefix" );
+	assert.equal( jQuery( "[--dd-attr='val']" ).length, 1,
+		"Attribute equals selector with -- prefix" );
+
+	assert.equal( jQuery( "#qunit-fixture" ).find( "[--dd-attr]" ).length, 1,
+		"Attribute selector with -- prefix in .find()" );
+
+	elem.remove();
 } );
 
 QUnit.test( "id", function( assert ) {
@@ -858,7 +971,7 @@ QUnit.test( "pseudo - nth-child", function( assert ) {
 		);
 	} else {
 
-		// Support: Chrome 75+, Firefox 67+
+		// Support: Chrome 75 - 133+, Firefox 67 - 135+
 		// Some browsers mark disconnected elements as matching `:nth-child(n)`
 		// so let's skip the test.
 		assert.ok( "skip", "disconnected elements match ':nth-child(n)' in Chrome/Firefox" );
@@ -912,7 +1025,7 @@ QUnit.test( "pseudo - nth-last-child", function( assert ) {
 		);
 	} else {
 
-		// Support: Chrome 75+, Firefox 67+
+		// Support: Chrome 75 - 133+, Firefox 67 - 135+
 		// Some browsers mark disconnected elements as matching `:nth-last-child(n)`
 		// so let's skip the test.
 		assert.ok( "skip", "disconnected elements match ':nth-last-child(n)' in Chrome/Firefox" );
@@ -954,7 +1067,7 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "pseudo - has", function( asse
 		"div:has(div:has(div:not([id])))",
 		[ "moretests", "t2037", "fx-test-group", "fx-queue" ] );
 
-	// Support: Safari 15.4+, Chrome 105+
+	// Support: Chrome 105 - 111 only, Safari 15.4 - 16.3 only
 	// `qSA` in Safari/Chrome throws for `:has()` with only unsupported arguments
 	// but if you add a supported arg to the list, it will run and just potentially
 	// return no results. Make sure this is accounted for. (gh-5098)
@@ -1417,19 +1530,76 @@ QUnit.test( "pseudo - :(dis|en)abled, explicitly disabled", function( assert ) {
 } );
 
 QUnit.test( "pseudo - :(dis|en)abled, optgroup and option", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 4 );
+
+	var elems = jQuery( "#disabled-select-inherit, #enabled-select-inherit" )
+			.find( "optgroup, option" ),
+		disabledResultsNew = [
+			"dis_disabled-optgroup-inherit", "dis_disabled-optgroup-option",
+			"dis_enabled-optgroup-inherit", "dis_enabled-optgroup-option",
+			"dis_disabled-option", "dis_enabled-option",
+			"en_disabled-optgroup-inherit", "en_disabled-optgroup-option",
+			"en_disabled-option"
+		],
+		enabledResultsNew = [
+			"en_enabled-optgroup-inherit", "en_enabled-optgroup-option",
+			"en_enabled-option"
+		],
+		disabledResultsOld = [
+			"dis_disabled-optgroup-inherit", "dis_disabled-optgroup-option",
+			"dis_disabled-option",
+			"en_disabled-optgroup-inherit", "en_disabled-optgroup-option",
+			"en_disabled-option"
+		],
+		enabledResultsOld = [
+			"dis_enabled-optgroup-inherit", "dis_enabled-optgroup-option",
+			"dis_enabled-option",
+			"en_enabled-optgroup-inherit", "en_enabled-optgroup-option",
+			"en_enabled-option"
+		],
+
+		// Support: Chrome 149+
+		// The HTML spec change at https://github.com/whatwg/html/pull/12205
+		// makes options & optgroups inside a disabled `<select>` match
+		// `:disabled` as well. This change isn't implemented everywhere yet
+		// and for now we accept both behaviors.
+		optionInheritsSelectDisabled =
+			jQuery( "#dis_enabled-option" ).is( ":disabled" );
 
 	assert.t(
 		":disabled",
 		"#disabled-select-inherit :disabled, #enabled-select-inherit :disabled",
-		[ "disabled-optgroup-inherit", "disabled-optgroup-option", "en_disabled-optgroup-inherit",
-			"en_disabled-optgroup-option" ]
+		optionInheritsSelectDisabled ? disabledResultsNew : disabledResultsOld
 	);
 
 	assert.t(
 		":enabled",
 		"#disabled-select-inherit :enabled, #enabled-select-inherit :enabled",
-		[ "enabled-optgroup-inherit", "enabled-optgroup-option", "enabled-select-option" ]
+		optionInheritsSelectDisabled ? enabledResultsNew : enabledResultsOld
+	);
+
+	// Check `:disabled` & `:enabled` matching via `.filter()` which uses
+	// the jQuery built-in selector engine - except when the selector-native
+	// module is used. The jQuery selector engine implements old
+	// semantics inside disabled selects.
+	assert.deepEqual(
+		elems.filter( ":disabled" ).toArray().map( function( node ) {
+			return node.id;
+		} ),
+		optionInheritsSelectDisabled && !QUnit.jQuerySelectors ?
+			disabledResultsNew :
+			disabledResultsOld,
+		":disabled (via .filter())"
+	);
+
+	assert.deepEqual(
+		elems.filter( ":enabled" ).toArray().map( function( node ) {
+			return node.id;
+		} ),
+		optionInheritsSelectDisabled && !QUnit.jQuerySelectors ?
+			enabledResultsNew :
+			enabledResultsOld,
+		":enabled (via .filter())"
 	);
 } );
 
@@ -1537,7 +1707,17 @@ QUnit.test( "pseudo - :lang", function( assert ) {
 			assert.ok( jQuery( elem ).is( selector ), text + " match " + selector );
 		},
 		assertNoMatch = function( text, elem, selector ) {
-			assert.ok( !jQuery( elem ).is( selector ), text + " fail " + selector );
+
+			// Support: Chrome 141 only
+			// Chrome 141 incorrectly matches `:lang()` selectors with values with a trailing `-`.
+			// This is fixed in Chrome 142, so just skip these tests in v141.
+			// See https://issues.chromium.org/issues/451355198
+			if ( /\b(?:headless)?chrome\/141\./i.test( navigator.userAgent ) &&
+				selector.slice( -2 ) === "-)" ) {
+				assert.ok( true, "Broken handling in Chrome 141: " + text + " fail " + selector );
+			} else {
+				assert.ok( !jQuery( elem ).is( selector ), text + " fail " + selector );
+			}
 		};
 
 	// Prefixing and inheritance
@@ -1603,7 +1783,7 @@ QUnit.test( "pseudo - :lang", function( assert ) {
 } );
 
 QUnit.test( "context", function( assert ) {
-	assert.expect( 21 );
+	assert.expect( 22 );
 
 	var context,
 		selector = ".blog",
@@ -1685,6 +1865,16 @@ QUnit.test( "context", function( assert ) {
 	} else {
 		assert.ok( "skip", ":has not supported in selector-native" );
 	}
+
+	context = document.createDocumentFragment();
+	context.appendChild( document.createElement( "em" ) );
+	context.appendChild( document.createElement( "span" ) );
+
+	assert.deepEqual(
+		jQuery( "~ span", context.firstChild ).get(),
+		[ context.lastChild ],
+		"DocumentFragment context: leading sibling combinator expands context to fragment"
+	);
 } );
 
 // Support: IE 11+

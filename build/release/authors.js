@@ -14,8 +14,8 @@ const ignore = [
 ];
 
 function compareAuthors( a, b ) {
-	const aName = a.replace( rdate, "" ).replace( / <.*>/, "" );
-	const bName = b.replace( rdate, "" ).replace( / <.*>/, "" );
+	const aName = a.normalize( "NFC" ).replace( rdate, "" ).replace( / <.*>/, "" );
+	const bName = b.normalize( "NFC" ).replace( rdate, "" ).replace( / <.*>/, "" );
 	return aName === bName;
 }
 

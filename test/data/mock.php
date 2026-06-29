@@ -95,9 +95,9 @@ QUnit.assert.ok( true, "mock executed");';
 		}
 
 		if ( isset( $req->query['array'] ) ) {
-			echo '[ {"name": "John", "age": 21}, {"name": "Peter", "age": 25 } ]';
+			echo '[{"name":"John","age":21},{"name":"Peter","age":25}]';
 		} else {
-			echo '{ "data": {"lang": "en", "length": 25} }';
+			echo '{"data":{"lang":"en","length":25}}';
 		}
 	}
 
@@ -218,6 +218,14 @@ QUnit.assert.ok( true, "mock executed");';
 		header( "HTTP/1.0 {$req->query['code']} {$req->query['text']}" );
 	}
 
+	protected function redirect( $req ) {
+		$target = isset( $req->query['target'] ) ?
+			$req->query['target'] :
+			'/test/data/mock.php?action=name&name=foo';
+		$code = isset( $req->query['code'] ) ? (int) $req->query['code'] : 302;
+		header( "Location: $target", true, $code );
+	}
+
 	protected function testHTML( $req ) {
 		header( 'Content-type: text/html' );
 		$html = file_get_contents( __DIR__ . '/test.include.html' );
@@ -262,6 +270,16 @@ QUnit.assert.ok( true, "mock executed");';
 		header( "Content-Security-Policy: require-trusted-types-for 'script'; report-uri ./mock.php?action=cspLog" );
 		header( 'Content-type: text/html' );
 		echo file_get_contents( __DIR__ . '/trusted-types-attributes.html' );
+	}
+
+	protected function xmlCss( $req ) {
+		header( 'Content-type: application/xml' );
+		echo file_get_contents( __DIR__ . '/css/xmlDocCss.xhtml' );
+	}
+
+	protected function xmlAjax( $req ) {
+		header( 'Content-type: application/xml' );
+		echo file_get_contents( __DIR__ . '/ajax/xmlDocCrossDomainDetection.xhtml' );
 	}
 
 	protected function errorWithScript( $req ) {

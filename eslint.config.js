@@ -59,17 +59,11 @@ export default [
 			// 		ignoreExports: [ "{src/,}*.js" ]
 			// 	}
 			// ],
-			indent: [
-				"error",
-				"tab",
-				{
-					outerIIFEBody: 0
-				}
-			],
+			indent: [ "error", "tab" ],
 			"no-implicit-globals": "error",
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^_" }
+				{ caughtErrorsIgnorePattern: "^_|^e$" }
 			],
 			"one-var": [ "error", { var: "always" } ],
 			strict: [ "error", "function" ]
@@ -197,7 +191,11 @@ export default [
 
 			"no-unused-vars": [
 				"error",
-				{ args: "after-used", argsIgnorePattern: "^_" }
+				{
+					args: "after-used",
+					argsIgnorePattern: "^_",
+					caughtErrorsIgnorePattern: "^_|^e$"
+				}
 			],
 
 			// Too many errors
@@ -214,34 +212,6 @@ export default [
 
 			// Core has several cases where unused vars are expected
 			"no-unused-vars": "off"
-		}
-	},
-
-	{
-		files: [
-			"test/runner/**/*.js"
-		],
-		languageOptions: {
-			ecmaVersion: "latest",
-			globals: {
-				...globals.node
-			}
-		},
-		rules: {
-			...jqueryConfig.rules
-		}
-	},
-
-	{
-		files: [ "test/runner/listeners.js" ],
-		languageOptions: {
-			ecmaVersion: 5,
-			sourceType: "script",
-			globals: {
-				...globals.browser,
-				QUnit: false,
-				Symbol: false
-			}
 		}
 	},
 
@@ -306,7 +276,7 @@ export default [
 			"no-implicit-globals": "error",
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^_" }
+				{ caughtErrorsIgnorePattern: "^_|^e$" }
 			],
 			strict: [ "error", "global" ]
 		}
@@ -344,7 +314,7 @@ export default [
 
 			"no-unused-vars": [
 				"error",
-				{ caughtErrorsIgnorePattern: "^_" }
+				{ caughtErrorsIgnorePattern: "^_|^e$" }
 			],
 
 			// When custom compilation is used, the version string
@@ -371,7 +341,7 @@ export default [
 			// which can be safely ignored.
 			"no-unused-vars": [
 				"error",
-				{ args: "none" }
+				{ args: "none", caughtErrorsIgnorePattern: "^_|^e$" }
 			]
 		}
 	},

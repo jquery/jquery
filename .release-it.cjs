@@ -9,9 +9,9 @@ if ( !blogURL || !blogURL.startsWith( "https://blog.jquery.com/" ) ) {
 module.exports = {
 	preReleaseBase: 1,
 	hooks: {
-		"before:init": "bash ./build/release/pre-release.sh",
+		"before:init": "./build/release/pre-release.sh",
 		"after:version:bump":
-			"sed -i 's/main\\/AUTHORS.txt/${version}\\/AUTHORS.txt/' package.json",
+			"sed -i '' -e 's|main/AUTHORS.txt|${version}/AUTHORS.txt|' package.json",
 		"after:bump": "cross-env VERSION=${version} npm run build:all",
 		"before:git:release": "git add -f dist/ dist-module/ changelog.md",
 		"after:release": "echo 'Run the following to complete the release:' && " +
@@ -26,7 +26,13 @@ module.exports = {
 		getLatestTagFromAllRefs: true,
 		pushRepo: "git@github.com:jquery/jquery.git",
 		requireBranch: "main",
-		requireCleanWorkingDir: true
+		requireCleanWorkingDir: true,
+		commit: true,
+		commitArgs: [ "-S" ],
+		tag: true,
+		tagName: "${version}",
+		tagAnnotation: "Release: ${version}",
+		tagArgs: [ "-s" ]
 	},
 	github: {
 		pushRepo: "git@github.com:jquery/jquery.git",
@@ -34,6 +40,10 @@ module.exports = {
 		tokenRef: "JQUERY_GITHUB_TOKEN"
 	},
 	npm: {
-		publish: true
+
+		// We're publishing from a dist folder generated in the post-release
+		// step, so we also need to publish by ourselves; release-it would
+		// do it too early.
+		publish: false
 	}
 };

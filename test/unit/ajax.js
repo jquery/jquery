@@ -273,6 +273,85 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajax() - jqXHR.responseURL (gh-4339)", 9, function( assert ) {
+
+		// Support: IE 11+
+		// Some versions of IE 11 don't support location.origin
+		var origin = window.location.protocol + "//" + window.location.host,
+			redirectTarget = "/test/data/mock.php?action=name&name=foo&_=" + Date.now(),
+			expectedRedirectUrl = origin + redirectTarget;
+
+		// Support: IE 11+
+		// IE does not implement XMLHttpRequest.responseURL.
+		// `jqXHR.responseURL` is set to `undefined` in such a case
+		// as jQuery is not polyfilling support.
+		function expectedXhrUrl( absoluteUrl ) {
+			return QUnit.isIE ? undefined : absoluteUrl;
+		}
+
+		return [
+			{
+				url: url( "mock.php?action=name&name=foo" ),
+				beforeSend: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL is undefined before the request is sent" );
+				},
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( this.url ),
+						"responseURL equals request URL for non-redirected requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=redirect&target=" +
+					encodeURIComponent( redirectTarget ) ),
+				success: function( data, _textStatus, jqXHR ) {
+					assert.strictEqual( data, "bar",
+						"Redirect followed and final response returned" );
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( expectedRedirectUrl ),
+						"responseURL reflects the final URL after a redirect" );
+				}
+			},
+			{
+				url: url( "mock.php?action=error" ),
+				error: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL,
+						expectedXhrUrl( this.url ),
+						"responseURL is populated for HTTP errors" );
+				}
+			},
+			{
+				url: url( "mock.php?action=jsonp&callback=?" ),
+				dataType: "jsonp",
+				crossDomain: true,
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for JSONP requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=script&header" ),
+				dataType: "script",
+				crossDomain: true,
+				success: function( _data, _textStatus, jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for cross-domain script requests" );
+				}
+			},
+			{
+				url: url( "mock.php?action=wait&wait=5" ),
+				afterSend: function( request ) {
+					request.abort();
+				},
+				error: function( jqXHR ) {
+					assert.strictEqual( jqXHR.responseURL, undefined,
+						"responseURL stays undefined for aborted requests" );
+				}
+			}
+		];
+	} );
+
 	QUnit.test( "jQuery.ajax() - retry with jQuery.ajax( this )", function( assert ) {
 		assert.expect( 2 );
 		var previousUrl,
@@ -524,6 +603,20 @@ QUnit.module( "ajax", {
 			}
 		];
 	} );
+
+	testIframe(
+		"jQuery.ajax() - cross-domain detection in XML documents (gh-4730)",
+		"mock.php?action=xmlAjax",
+		function( assert, jQuery, window, document, threw, sameOriginCrossDomain, crossOriginCrossDomain ) {
+			assert.expect( 3 );
+			assert.strictEqual( threw, false,
+				"jQuery did not throw in XML document" );
+			assert.strictEqual( sameOriginCrossDomain, false,
+				"Same-origin request is not detected as cross-domain in XML document" );
+			assert.strictEqual( crossOriginCrossDomain, true,
+				"Cross-origin request is detected as cross-domain in XML document" );
+		}
+	);
 
 	ajaxTest( "jQuery.ajax() - cross-domain detection", 8, function( assert ) {
 		function request( url, title, crossDomainOrOptions ) {
@@ -2300,29 +2393,28 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().responseType !== "string" ) {
-
-	QUnit.skip( "No ArrayBuffer support in XHR", jQuery.noop );
-} else {
-
-	// No built-in support for binary data, but it's easy to add via a prefilter
-	jQuery.ajaxPrefilter( "arraybuffer", function( s ) {
-		s.xhrFields = { responseType: "arraybuffer" };
-		s.responseFields.arraybuffer = "response";
-		s.converters[ "binary arraybuffer" ] = true;
-	} );
-
 	ajaxTest( "gh-2498 - jQuery.ajax() - binary data shouldn't throw an exception", 2, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-arraybuffer-" + testId;
 		return {
+			setup: function() {
+
+				// No built-in support for binary data, but it's easy
+				// to add via a prefilter.
+				jQuery.ajaxPrefilter( dataType, function( s ) {
+					s.xhrFields = { responseType: "arraybuffer" };
+					s.responseFields[ dataType ] = "response";
+					s.converters[ "binary " + dataType ] = true;
+				} );
+			},
 			url: url( "1x1.jpg" ),
-			dataType: "arraybuffer",
+			dataType: dataType,
 			success: function( data, s, jqxhr ) {
 				assert.ok( data instanceof window.ArrayBuffer, "correct data type" );
 				assert.ok( jqxhr.response instanceof window.ArrayBuffer, "data in jQXHR" );
 			}
 		};
 	} );
-}
 
 	QUnit.test( "trac-11743 - jQuery.ajax() - script, throws exception", function( assert ) {
 		assert.expect( 1 );
@@ -2603,24 +2695,849 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 
 //----------- jQuery.ajaxPrefilter()
 
-	ajaxTest( "jQuery.ajaxPrefilter() - abort", 1, function( assert ) {
+	ajaxTest( "jQuery.ajaxPrefilter() - dataType matching", 2, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-specific-" + testId,
+			dataTypeOther = "test-other-" + testId;
 		return {
-			dataType: "prefix",
 			setup: function() {
-
-				// Ensure prefix does not throw an error
-				jQuery.ajaxPrefilter( "+prefix", function( options, _, jqXHR ) {
-					if ( options.abortInPrefilter ) {
-						jqXHR.abort();
-					}
+				jQuery.ajaxPrefilter( dataType, function( options ) {
+					assert.strictEqual( options.dataTypes[ 0 ], dataType,
+						"Prefilter ran for the matching dataType" );
+					assert.strictEqual( options._whichRequest, "matching",
+						"Prefilter received the correct request options" );
 				} );
 			},
-			abortInPrefilter: true,
-			error: function() {
-				assert.ok( false, "error callback called" );
+			requests: [
+				{
+					_whichRequest: "matching",
+					url: url( "name.html" ),
+					dataType: dataType,
+					beforeSend: function() {
+						return false;
+					},
+					error: true
+				},
+				{
+					_whichRequest: "other",
+					url: url( "name.html" ),
+					dataType: dataTypeOther,
+					beforeSend: function() {
+						return false;
+					},
+					error: true
+				}
+			]
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - default dataType is '*'", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-default-" + testId;
+		return {
+			_pfTestId: testId,
+			setup: function() {
+				jQuery.ajaxPrefilter( function( options ) {
+					if ( options._pfTestId !== testId ) {
+						return;
+					}
+					assert.ok( true,
+						"Prefilter registered without dataType arg was called" );
+				} );
 			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function() {
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - handler receives (options, originalOptions, jqXHR)", 5,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-pf-args-" + testId;
+		return {
+			customOpt: "yes",
+			setup: function() {
+				jQuery.ajaxPrefilter( dataType, function( options, originalOptions, jqXHR ) {
+					assert.ok( jQuery.isPlainObject( options ),
+						"First argument is a plain object (options)" );
+					assert.ok( jQuery.isPlainObject( originalOptions ),
+						"Second argument is a plain object (originalOptions)" );
+					assert.ok( typeof jqXHR.abort === "function",
+						"Third argument has abort method (jqXHR)" );
+					assert.ok( typeof jqXHR.setRequestHeader === "function",
+						"Third argument has setRequestHeader method (jqXHR)" );
+					assert.strictEqual( originalOptions.customOpt, "yes",
+						"originalOptions contains the custom option" );
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function() {
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - can modify options for transport", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-header-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataType, function( options ) {
+					options.headers = options.headers || {};
+					options.headers[ "X-Prefilter-Test" ] = "modified";
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function( _, settings ) {
+				assert.strictEqual( settings.headers[ "X-Prefilter-Test" ], "modified",
+					"Prefilter modified the request headers" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - abort in prefilter", 2, function( assert ) {
+		var testId = assert.test.testId,
+			errorSpy = sinon.spy(),
+			dataType = "test-abort-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataType, function( options, _, jqXHR ) {
+					jqXHR.abort();
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			error: errorSpy,
 			fail: function( _, reason ) {
-				assert.strictEqual( reason, "canceled", "Request aborted by the prefilter must fail with 'canceled' status text" );
+				assert.ok( !errorSpy.called,
+					"Error callback was not called for aborted prefilter" );
+				assert.strictEqual( reason, "canceled",
+					"Abort in prefilter fails with 'canceled' status text" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - returning a string redirects dataType", 4,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataTypeSrc = "test-redir-src-" + testId,
+			dataTypeDst = "test-redir-dst-" + testId,
+			converters = {};
+		converters[ dataTypeDst + " " + dataTypeSrc ] = true;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataTypeSrc, function() {
+					assert.step( "src" );
+					return dataTypeDst;
+				} );
+				jQuery.ajaxPrefilter( dataTypeDst, function() {
+					assert.step( "dst" );
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataTypeSrc,
+			converters: converters,
+			beforeSend: function( _, settings ) {
+				assert.verifySteps( [ "src", "dst" ],
+					"Both prefilters ran in correct order after dataType redirect" );
+				assert.strictEqual( settings.dataTypes[ 0 ], dataTypeDst,
+					"Redirected dataType was prepended to dataTypes" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - space-separated dataTypes", 2, function( assert ) {
+		var testId = assert.test.testId,
+			dataTypeA = "test-multi-a-" + testId,
+			dataTypeB = "test-multi-b-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataTypeA + " " + dataTypeB, function( options ) {
+					assert.ok( true,
+						"Prefilter ran for dataType '" + options.dataTypes[ 0 ] + "'" );
+				} );
+			},
+			requests: [
+				{
+					url: url( "name.html" ),
+					dataType: dataTypeA,
+					beforeSend: function() {
+						return false;
+					},
+					error: true
+				},
+				{
+					url: url( "name.html" ),
+					dataType: dataTypeB,
+					beforeSend: function() {
+						return false;
+					},
+					error: true
+				}
+			]
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - options has ajaxSettings defaults, originalOptions does not",
+			4, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-opts-diff-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxSetup( { _customTestSetting: "from-ajaxSettings" } );
+				jQuery.ajaxPrefilter( dataType, function( options, originalOptions ) {
+					assert.ok( "type" in options,
+						"options has 'type' (built-in ajaxSettings default)" );
+					assert.ok( !( "type" in originalOptions ),
+						"originalOptions does NOT have 'type'" );
+					assert.strictEqual( options._customTestSetting, "from-ajaxSettings",
+						"options has custom ajaxSetup value" );
+					assert.ok( !( "_customTestSetting" in originalOptions ),
+						"originalOptions does NOT have custom ajaxSetup value" );
+				} );
+			},
+			teardown: function() {
+				delete jQuery.ajaxSettings._customTestSetting;
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function() {
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - wildcard runs after specific handler", 3,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-wc-order-" + testId;
+		return {
+			_pfTestId: testId,
+			setup: function() {
+
+				// Register wildcard first to prove ordering is by type,
+				// not registration order.
+				jQuery.ajaxPrefilter( function( options ) {
+					if ( options._pfTestId !== testId ) {
+						return;
+					}
+					assert.step( "wildcard" );
+				} );
+				jQuery.ajaxPrefilter( dataType, function() {
+					assert.step( "specific" );
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function() {
+				assert.verifySteps( [ "specific", "wildcard" ],
+					"Specific prefilter ran before wildcard" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxPrefilter() - '+' prefix prepends handler", 3, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-prepend-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataType, function() {
+					assert.step( "appended" );
+				} );
+				jQuery.ajaxPrefilter( "+" + dataType, function() {
+					assert.step( "prepended" );
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			beforeSend: function() {
+				assert.verifySteps( [ "prepended", "appended" ],
+					"'+' prefixed prefilter ran before normally registered one" );
+				return false;
+			},
+			error: true
+		};
+	} );
+
+//----------- jQuery.ajaxTransport()
+
+	ajaxTest( "jQuery.ajaxTransport() - custom transport for specific dataType", 1,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-custom-" + testId,
+			resp = {};
+		resp[ dataType ] = "custom response";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data ) {
+				assert.strictEqual( data, "custom response",
+					"Success callback received the custom transport response" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - factory receives (options, originalOptions, jqXHR)", 4,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-tp-args-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			customOpt: "yes",
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function( options, originalOptions, jqXHR ) {
+					assert.ok( jQuery.isPlainObject( options ),
+						"Factory first argument is a plain object (options)" );
+					assert.ok( jQuery.isPlainObject( originalOptions ),
+						"Factory second argument is a plain object (originalOptions)" );
+					assert.ok( typeof jqXHR.abort === "function",
+						"Factory third argument has abort method (jqXHR)" );
+					assert.strictEqual( originalOptions.customOpt, "yes",
+						"Factory originalOptions contains the custom option" );
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - send receives (headers, completeCallback)", 3,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-send-args-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( headers, completeCallback ) {
+							assert.ok( jQuery.isPlainObject( headers ),
+								"First argument to send is a plain object (headers)" );
+							assert.ok( typeof completeCallback === "function",
+								"Second argument to send is a function (completeCallback)" );
+							assert.ok( "Accept" in headers,
+								"Headers object contains the Accept header" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - completeCallback with custom status", 3,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-status-" + testId,
+			resp = {};
+		resp[ dataType ] = "created";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback(
+								201,
+								"Created",
+								resp,
+								"X-Custom: test-value"
+							);
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data, _, jqXHR ) {
+				assert.strictEqual( jqXHR.status, 201,
+					"jqXHR.status is the custom status code" );
+				assert.strictEqual( data, "created",
+					"Response data was received" );
+				assert.strictEqual( jqXHR.getResponseHeader( "X-Custom" ), "test-value",
+					"Custom response header is accessible" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - abort called on jqXHR.abort()", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-tp-abort-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: jQuery.noop,
+						abort: function() {
+							assert.ok( true,
+								"Transport abort() was called on jqXHR.abort()" );
+						}
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			afterSend: function( request ) {
+				request.abort();
+			},
+			fail: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - non-matching dataType not called", 1,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataTypeUnused = "test-no-match-" + testId,
+			dataTypeUsed = "test-used-" + testId,
+			resp = {};
+		resp[ dataTypeUsed ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataTypeUnused, function() {
+					assert.ok( false,
+						"Transport factory for non-matching dataType should NOT be called" );
+				} );
+				jQuery.ajaxTransport( dataTypeUsed, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataTypeUsed,
+			success: function() {
+				assert.ok( true,
+					"Request succeeded without invoking non-matching transport" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - first truthy factory wins", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-first-wins-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( true,
+								"First transport's send was called" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( false,
+								"Second transport's send should NOT be called" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - factory returning falsy skips to next", 1,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-falsy-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+
+					// First factory: returns undefined to skip
+				} );
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( true,
+								"Second transport handled the request when first returned falsy" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: true
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - specific before wildcard", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-type-order-" + testId,
+			respSpecific = {},
+			respWildcard = {};
+		respSpecific[ dataType ] = "specific";
+		respWildcard[ dataType ] = "wildcard";
+		return {
+			setup: function() {
+
+				// Register wildcard first to prove ordering is by type,
+				// not registration order.
+				jQuery.ajaxTransport( "*", function( options ) {
+					if ( options.dataTypes[ 0 ] === dataType ) {
+						return {
+							send: function( _, completeCallback ) {
+								completeCallback( 200, "OK", respWildcard );
+							},
+							abort: jQuery.noop
+						};
+					}
+				} );
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( 200, "OK", respSpecific );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data ) {
+				assert.strictEqual( data, "specific",
+					"Specific transport won over wildcard despite being registered second" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - '+' prefix prepends factory", 1, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-tp-prepend-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( false,
+								"Appended transport should not handle the request" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+				jQuery.ajaxTransport( "+" + dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( true,
+								"Prepended transport handled the request" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: true
+		};
+	} );
+
+//----------- jQuery.ajaxPrefilter()/jQuery.ajaxTransport() interaction
+
+	ajaxTest(
+		"jQuery.ajaxPrefilter()/jQuery.ajaxTransport() - prefilter redirect to transport", 1,
+		function( assert ) {
+		var testId = assert.test.testId,
+			dataTypeSrc = "test-interact-src-" + testId,
+			dataTypeDst = "test-interact-dst-" + testId,
+			resp = {},
+			converters = {};
+		resp[ dataTypeDst ] = "redirected";
+		converters[ dataTypeDst + " " + dataTypeSrc ] = true;
+		return {
+			setup: function() {
+				jQuery.ajaxPrefilter( dataTypeSrc, function() {
+					return dataTypeDst;
+				} );
+				jQuery.ajaxTransport( dataTypeDst, function() {
+					return {
+						send: function( _, completeCallback ) {
+							assert.ok( true,
+								"Prefilter redirect caused the matching transport to handle the request" );
+							completeCallback( 200, "OK", resp );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataTypeSrc,
+			converters: converters,
+			success: true
+		};
+	} );
+
+//----------- jQuery.ajaxTransport() completeCallback object API
+
+	ajaxTest( "jQuery.ajaxTransport() - completeCallback with object argument", 4,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-obj-cb-" + testId,
+			resp = {};
+		resp[ dataType ] = "custom response";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 200,
+								statusText: "OK",
+								responses: resp
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data, textStatus, jqXHR ) {
+				assert.strictEqual( data, "custom response",
+					"Success callback received the custom transport response" );
+				assert.strictEqual( textStatus, "success",
+					"textStatus is 'success'" );
+				assert.strictEqual( jqXHR.status, 200,
+					"jqXHR.status is 200" );
+				assert.strictEqual( jqXHR.statusText, "OK",
+					"jqXHR.statusText is 'OK'" );
+			}
+		};
+	} );
+
+	ajaxTest( "jQuery.ajaxTransport() - completeCallback object with status and statusText only",
+			2, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-obj-err-" + testId;
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 404,
+								statusText: "Not Found"
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			error: function( jqXHR, textStatus ) {
+				assert.strictEqual( jqXHR.status, 404,
+					"jqXHR.status is 404" );
+				assert.strictEqual( textStatus, "error",
+					"textStatus is 'error'" );
+			}
+		};
+	} );
+
+	ajaxTest(
+		"jQuery.ajaxTransport() - completeCallback object with custom status and response headers",
+		4, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-obj-hdr-" + testId,
+			resp = {};
+		resp[ dataType ] = "created";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 201,
+								statusText: "Created",
+								responses: resp,
+								headers: "X-Custom: test-value"
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data, textStatus, jqXHR ) {
+				assert.strictEqual( jqXHR.status, 201,
+					"jqXHR.status is the custom status code" );
+				assert.strictEqual( textStatus, "success",
+					"textStatus is 'success'" );
+				assert.strictEqual( data, "created",
+					"Response data was received" );
+				assert.strictEqual( jqXHR.getResponseHeader( "X-Custom" ), "test-value",
+					"Custom response header is accessible" );
+			}
+		};
+	} );
+
+	ajaxTest(
+		"jQuery.ajaxTransport() - completeCallback object produces same result as positional args",
+		10, function( assert ) {
+		var testId = assert.test.testId,
+			dataTypePositional = "test-pos-" + testId,
+			dataTypeObject = "test-obj-" + testId,
+			respPositional = {},
+			respObject = {};
+		respPositional[ dataTypePositional ] = "response data";
+		respObject[ dataTypeObject ] = "response data";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataTypePositional, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback(
+								201,
+								"Created",
+								respPositional,
+								"X-Custom: test-value"
+							);
+						},
+						abort: jQuery.noop
+					};
+				} );
+				jQuery.ajaxTransport( dataTypeObject, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 201,
+								statusText: "Created",
+								responses: respObject,
+								headers: "X-Custom: test-value"
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			requests: [
+				{
+					url: url( "name.html" ),
+					dataType: dataTypePositional,
+					success: function( data, textStatus, jqXHR ) {
+						assert.strictEqual( jqXHR.status, 201,
+							"Positional: jqXHR.status" );
+						assert.strictEqual( jqXHR.statusText, "Created",
+							"Positional: jqXHR.statusText" );
+						assert.strictEqual( textStatus, "success",
+							"Positional: textStatus" );
+						assert.strictEqual( data, "response data",
+							"Positional: response data" );
+						assert.strictEqual(
+							jqXHR.getResponseHeader( "X-Custom" ), "test-value",
+							"Positional: response header" );
+					}
+				},
+				{
+					url: url( "name.html" ),
+					dataType: dataTypeObject,
+					success: function( data, textStatus, jqXHR ) {
+						assert.strictEqual( jqXHR.status, 201,
+							"Object: jqXHR.status" );
+						assert.strictEqual( jqXHR.statusText, "Created",
+							"Object: jqXHR.statusText" );
+						assert.strictEqual( textStatus, "success",
+							"Object: textStatus" );
+						assert.strictEqual( data, "response data",
+							"Object: response data" );
+						assert.strictEqual(
+							jqXHR.getResponseHeader( "X-Custom" ), "test-value",
+							"Object: response header" );
+					}
+				}
+			]
+		};
+	} );
+
+	ajaxTest(
+		"jQuery.ajaxTransport() - completeCallback object with responseURL (gh-4339)",
+		2, function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-obj-url-" + testId,
+			resp = {},
+			customUrl = "https://example.test/redirected";
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback( {
+								status: 200,
+								statusText: "OK",
+								responses: resp,
+								responseURL: customUrl
+							} );
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( _, __, jqXHR ) {
+				assert.strictEqual( jqXHR.responseURL, customUrl,
+					"responseURL is set from the object-form completeCallback" );
+				assert.strictEqual( jqXHR.status, 200,
+					"jqXHR.status is 200" );
 			}
 		};
 	} );
@@ -2782,7 +3699,7 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 		} );
 	} );
 
-	QUnit.test( "jQuery.get( String, null-ish, String ) - dataType with null callback (gh-4989)",
+	QUnit.test( "jQuery.get( String, null, String ) - dataType with null callback (gh-4989)",
 			function( assert ) {
 		assert.expect( 2 );
 		var done = assert.async( 2 );
@@ -2800,6 +3717,37 @@ if ( typeof window.ArrayBuffer === "undefined" || typeof new XMLHttpRequest().re
 					"`dataType: \"text\"` applied with a `null` callback" );
 				done();
 			} );
+	} );
+
+	QUnit.test( "jQuery.get( String, null-ish, null-ish, String ) - dataType with null/undefined  data & callback",
+			function( assert ) {
+		assert.expect( 8 );
+		var done = assert.async( 8 );
+
+		[
+			{ data: null, success: null },
+			{ data: null, success: undefined },
+			{ data: undefined, success: null },
+			{ data: undefined, success: undefined }
+		].forEach( function( options ) {
+			var data = options.data,
+				success = options.success;
+			jQuery.get( url( "mock.php?action=json&header" ), data, success, "json" )
+				.then( function( json ) {
+					assert.deepEqual( json, { data: { lang: "en", length: 25 } },
+						"`dataType: \"json\"` applied with `" + data + "` data & `" +
+						success + "` success callback" );
+					done();
+				} );
+
+			jQuery.get( url( "mock.php?action=json&header" ), data, success, "text" )
+				.then( function( text ) {
+					assert.strictEqual( text, "{\"data\":{\"lang\":\"en\",\"length\":25}}",
+						"`dataType: \"text\"` applied with `" + data + "` data & `" +
+						success + "` success callback" );
+					done();
+				} );
+		} );
 	} );
 
 //----------- jQuery.getJSON()

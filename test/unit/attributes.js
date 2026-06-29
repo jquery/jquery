@@ -479,6 +479,24 @@ QUnit.test( "attr(String, Object)", function( assert ) {
 	assert.equal( jQuery( "#name" ).attr( "nonexisting", undefined ).attr( "nonexisting" ), undefined, ".attr('attribute', undefined) does not create attribute (trac-5571)" );
 } );
 
+QUnit.test( "attr( previously-boolean-attr, non-boolean-value)", function( assert ) {
+	assert.expect( 3 );
+
+	var div = jQuery( "<div></div>" ).appendTo( "#qunit-fixture" );
+
+	div.attr( "hidden", "foo" );
+	assert.strictEqual( div.attr( "hidden" ), "foo",
+		"Values not normalized for previously-boolean hidden attribute" );
+
+	div.attr( "hidden", "until-found" );
+	assert.strictEqual( div.attr( "hidden" ), "until-found",
+		"`until-found` value preserved for hidden attribute" );
+
+	div.attr( "hiDdeN", "uNtil-fOund" );
+	assert.strictEqual( div.attr( "hidden" ), "uNtil-fOund",
+		"`uNtil-fOund` different casing preserved" );
+} );
+
 QUnit.test( "attr(non-ASCII)", function( assert ) {
 	assert.expect( 2 );
 

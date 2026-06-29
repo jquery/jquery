@@ -13,7 +13,7 @@ var rootjQuery,
 	// Prioritize #id over <tag> to avoid XSS via location.hash (trac-9521)
 	// Strict HTML recognition (trac-11290: must start with <)
 	// Shortcut simple #id case for speed
-	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
+	rhtmlOrId = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]+))$/,
 
 	init = jQuery.fn.init = function( selector, context ) {
 		var match, elem;
@@ -51,7 +51,7 @@ var rootjQuery,
 
 			// Handle HTML strings or selectors
 			} else if ( typeof selector === "string" ) {
-				match = rquickExpr.exec( selector );
+				match = rhtmlOrId.exec( selector );
 			} else {
 				return jQuery.makeArray( selector, this );
 			}

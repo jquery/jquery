@@ -1,0 +1,253 @@
+name: Browser Tests (Beta)
+
+on:
+  schedule:
+    # Run weekly on Sunday at 3 AM UTC to catch beta browser updates
+    - cron: '0 3 * * 0'
+  workflow_dispatch:
+    # Allow manual triggering from the Actions tab
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  NODE_VERSION: 24.x
+
+jobs:
+  chrome-beta:
+    runs-on: ubuntu-latest
+    name: Chrome Beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Chrome Beta
+        run: |
+          # Chrome Beta from `@puppeteer/browsers` is a Chrome for Testing build.
+          # This version lacks the sandbox setup that the APT-packaged Chrome has,
+          # causing crashes on Ubuntu 23.10+ due to AppArmor restrictions.
+          # Because of that, install Chrome Beta from Google's official APT repo.
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-beta
+
+      - name: Install ChromeDriver Beta
+        run: |
+          # ChromeDriver is not available in the APT repo, so let's install
+          # it using `@puppeteer/browsers`.
+          CHROME_VERSION=$(google-chrome-beta --version | grep -oP '\d+\.\d+\.\d+\.\d+')
+          echo "Chrome Beta version: $CHROME_VERSION"
+
+          # Install matching ChromeDriver using @puppeteer/browsers
+          # The output format is: "chromedriver@<version> <path>"
+          INSTALL_OUTPUT=$(npx @puppeteer/browsers install chromedriver@$CHROME_VERSION)
+          CHROMEDRIVER_PATH=$(echo "$INSTALL_OUTPUT" | grep "^chromedriver@" | cut -d' ' -f2)
+          echo "ChromeDriver installed at: $CHROMEDRIVER_PATH"
+
+          # Add ChromeDriver directory to PATH (prepend to override system chromedriver)
+          CHROMEDRIVER_DIR=$(dirname "$CHROMEDRIVER_PATH")
+          echo "PATH=$CHROMEDRIVER_DIR:$PATH" >> "$GITHUB_ENV"
+
+          # Set Chrome binary
+          echo "CHROME_BIN=$(which google-chrome-beta)" >> "$GITHUB_ENV"
+
+          # Verify installations
+          google-chrome-beta --version
+          "$CHROMEDRIVER_PATH" --version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Chrome Beta tests
+        id: run-chrome-tests
+        run: npm run test:chrome
+        continue-on-error: true # Beta browsers may have bugs
+
+    outputs:
+      test-result: ${{ steps.run-chrome-tests.outcome }}
+
+  firefox-beta:
+    runs-on: ubuntu-latest
+    name: Firefox Beta
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Firefox Beta
+        run: |
+          wget --no-verbose "https://download.mozilla.org/?product=firefox-beta-latest-ssl&lang=en-US&os=linux64" -O - | tar -Jx -C "$HOME"
+
+      - name: Set Firefox Beta as default
+        run: |
+          echo "PATH=${HOME}/firefox:$PATH" >> "$GITHUB_ENV"
+          echo "FIREFOX_BIN=${HOME}/firefox/firefox" >> "$GITHUB_ENV"
+          "$HOME/firefox/firefox" --version
+          echo "Firefox Beta installed at: $HOME/firefox/firefox"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Firefox Beta tests
+        id: run-firefox-tests
+        run: npm run test:firefox
+        continue-on-error: true # Beta browsers may have bugs
+
+    outputs:
+      test-result: ${{ steps.run-firefox-tests.outcome }}
+
+  safari-tp:
+    runs-on: macos-latest
+    name: Safari Technology Preview
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install Safari Technology Preview
+        run: |
+          # Install Safari Technology Preview via Homebrew Cask
+          brew install --cask safari-technology-preview
+
+          # Verify installation
+          if [ -d "/Applications/Safari Technology Preview.app" ]; then
+            echo "Safari Technology Preview installed successfully"
+          else
+            echo "Safari TP installation verification failed"
+            exit 1
+          fi
+
+      - name: Enable Safari Technology Preview driver
+        run: sudo /Applications/Safari\ Technology\ Preview.app/Contents/MacOS/safaridriver --enable
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Safari Technology Preview tests
+        id: run-safari-tests
+        run: npm run test:safari -- --safari-tp
+        continue-on-error: true # Beta browsers may have bugs
+
+    outputs:
+      test-result: ${{ steps.run-safari-tests.outcome }}
+
+  notify:
+    runs-on: ubuntu-latest
+    name: Notify on Failure
+    needs: [chrome-beta, firefox-beta, safari-tp]
+    environment: matrix-notifications
+
+    # `always()` is needed because jobs with `needs` are skipped if any
+    # dependency fails - and we need it exactly in such cases.
+    if: >-
+      always() && (
+        needs.chrome-beta.outputs.test-result == 'failure' ||
+        needs.firefox-beta.outputs.test-result == 'failure' ||
+        needs.safari-tp.outputs.test-result == 'failure'
+      )
+    steps:
+      - name: Prepare failure message
+        id: prepare-message
+        run: |
+          FAILED_BROWSERS=()
+          if [ "${{ needs.chrome-beta.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Chrome Beta")
+          fi
+          if [ "${{ needs.firefox-beta.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Firefox Beta")
+          fi
+          if [ "${{ needs.safari-tp.outputs.test-result }}" == "failure" ]; then
+            FAILED_BROWSERS+=("Safari Technology Preview")
+          fi
+          # Join array elements with ", "
+          printf -v FAILED_BROWSERS_STR '%s, ' "${FAILED_BROWSERS[@]}"
+          FAILED_BROWSERS_STR="${FAILED_BROWSERS_STR%, }"
+          echo "failed_browsers=$FAILED_BROWSERS_STR" >> "$GITHUB_OUTPUT"
+
+      - name: Send Matrix notification
+        env:
+          MATRIX_USER: jquerybot
+          MATRIX_PASSWORD: ${{ secrets.MATRIX_PASSWORD }}
+          MATRIX_ROOM_ID: ${{ secrets.MATRIX_ROOM_ID }}
+        run: |
+          # Skip if credentials are not configured (e.g., on forks)
+          if [ -z "$MATRIX_PASSWORD" ] || [ -z "$MATRIX_ROOM_ID" ]; then
+            echo "Matrix credentials not configured, skipping notification"
+            exit 0
+          fi
+
+          # Log in to Matrix to get an access token
+          LOGIN_DATA=$(jq -n \
+            --arg user "$MATRIX_USER" \
+            --arg password "$MATRIX_PASSWORD" \
+            '{
+              type: "m.login.password",
+              identifier: {
+                type: "m.id.user",
+                user: $user
+              },
+              password: $password
+            }')
+
+          # See https://spec.matrix.org/latest/client-server-api/#post_matrixclientv3login
+          LOGIN_RESPONSE=$(curl -sf -X POST \
+            -H "Content-Type: application/json" \
+            --data "$LOGIN_DATA" \
+            "https://matrix.org/_matrix/client/v3/login")
+
+          ACCESS_TOKEN=$(echo "$LOGIN_RESPONSE" | jq -r '.access_token')
+
+          if [ -z "$ACCESS_TOKEN" ] || [ "$ACCESS_TOKEN" == "null" ]; then
+            echo "Failed to log in to Matrix"
+            echo "$LOGIN_RESPONSE"
+            exit 1
+          fi
+
+          MESSAGE="⚠️ jQuery tests failed in beta browser(s): ${{ steps.prepare-message.outputs.failed_browsers }}
+
+          View workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          MESSAGE_HTML="⚠️ <strong>jQuery tests failed in beta browser(s)</strong>: ${{ steps.prepare-message.outputs.failed_browsers }}</p><p><a href=\"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\">View workflow run</a></p>"
+
+          MESSAGE_DATA=$(jq -n \
+            --arg body "$MESSAGE" \
+            --arg formatted_body "$MESSAGE_HTML" \
+            '{
+              msgtype: "m.text",
+              body: $body,
+              format: "org.matrix.custom.html",
+              formatted_body: $formatted_body
+            }')
+
+          # Send message to Matrix room
+          curl -sf -X PUT \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data "$MESSAGE_DATA" \
+            "https://matrix.org/_matrix/client/v3/rooms/$MATRIX_ROOM_ID/send/m.room.message/$(date +%s%N)"
+
+          # Log out to invalidate the access token
+          curl -sf -X POST \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            "https://matrix.org/_matrix/client/v3/logout"
+

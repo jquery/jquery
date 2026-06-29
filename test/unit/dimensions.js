@@ -345,40 +345,94 @@ QUnit.test( "child of a hidden elem (or unconnected node) has accurate inner/out
 	$divNormal.remove();
 } );
 
-QUnit.test( "getting dimensions shouldn't modify runtimeStyle see trac-9233", function( assert ) {
-	assert.expect( 1 );
+QUnit.test( "hidden element with dimensions from a stylesheet", function( assert ) {
+	assert.expect( 2 );
 
-	var $div = jQuery( "<div>" ).appendTo( "#qunit-fixture" ),
-		div = $div.get( 0 ),
-		runtimeStyle = div.runtimeStyle;
+	var div = jQuery( "" +
+		"<div class='display-none-style'>" +
+		"	<style>" +
+		"		.display-none-style {" +
+		"			display: none;" +
+		"			width: 111px;" +
+		"			height: 123px;" +
+		"		}" +
+		"	</style>" +
+		"</div>" +
+		"" )
+		.appendTo( "#qunit-fixture" );
 
-	if ( runtimeStyle ) {
-		div.runtimeStyle.marginLeft = "12em";
-		div.runtimeStyle.left = "11em";
-	}
+	assert.strictEqual( div.width(), 111, "width of a hidden element" );
+	assert.strictEqual( div.height(), 123, "height of a hidden element" );
+} );
 
-	$div.outerWidth( true );
+QUnit.test( "hidden element with implicit content-based dimensions", function( assert ) {
+	assert.expect( 2 );
 
-	if ( runtimeStyle ) {
-		assert.equal( div.runtimeStyle.left, "11em", "getting dimensions modifies runtimeStyle, see trac-9233" );
-	} else {
-		assert.ok( true, "this browser doesn't support runtimeStyle, see trac-9233" );
-	}
+	var container = jQuery( "" +
 
-	$div.remove();
+			// font-size affects the child dimensions implicitly
+			"<div style='font-size: 20px'>" +
+			"	<div style='padding: 10px; display: none'>" +
+			"		<div style='width: 3em; height: 2em'></div>" +
+			"	</div>" +
+			"</div>" +
+			"" ),
+		div = container.children().first();
+
+	container.appendTo( "#qunit-fixture" );
+
+	assert.strictEqual( div.width(), 60, "width of a hidden element" );
+	assert.strictEqual( div.height(), 40, "height of a hidden element" );
 } );
 
 QUnit.test( "table dimensions", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
-	var table = jQuery( "<table><colgroup><col></col><col></col></colgroup><tbody><tr><td></td><td>a</td></tr><tr><td></td><td>a</td></tr></tbody></table>" ).appendTo( "#qunit-fixture" ),
+	var table = jQuery( "" +
+			"<table style='border-spacing: 0'>" +
+			"	<colgroup>" +
+			"		<col />" +
+			"		<col span='2' class='col-double' />" +
+			"	</colgroup>" +
+			"	<tbody>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td class='td-a-1'>a</td>" +
+			"			<td class='td-b-1'>b</td>" +
+			"		</tr>" +
+			"		<tr>" +
+			"			<td></td>" +
+			"			<td>a</td>" +
+			"			<td>b</td>" +
+			"		</tr>" +
+			"	</tbody>" +
+			"</table>"
+		).appendTo( "#qunit-fixture" ),
 		tdElem = table.find( "td" ).first(),
-		colElem = table.find( "col" ).first().width( 300 );
+		colElem = table.find( "col" ).first(),
+		doubleColElem = table.find( ".col-double" );
 
-	table.find( "td" ).css( { "margin": 0, "padding": 0 } );
+	table.find( "td" ).css( { margin: 0, padding: 0, border: 0 } );
+
+	colElem.width( 300 );
+
+	table.find( ".td-a-1" ).width( 200 );
+	table.find( ".td-b-1" ).width( 400 );
 
 	assert.equal( tdElem.width(), tdElem.width(), "width() doesn't alter dimension values of empty cells, see trac-11293" );
-	assert.equal( colElem.width(), 300, "col elements have width(), see trac-12243" );
+	assert.equal( colElem.width(), 300, "col elements have width(), (trac-12243)" );
+
+	// Support: IE 11+
+	// In IE, `<col>` computed width is `"auto"` unless `width` is set
+	// explicitly via CSS so measurements there remain incorrect. Because of
+	// the lack of a proper workaround, we accept this limitation.
+	// To make IE pass the test, set the width explicitly.
+	if ( QUnit.isIE ) {
+		doubleColElem.width( 600 );
+	}
+
+	assert.equal( doubleColElem.width(), 600,
+		"col with span measured correctly (gh-5628)" );
 } );
 
 QUnit.test( "SVG dimensions (basic content-box)", function( assert ) {
@@ -583,7 +637,7 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 	// This test ported from gh-2836 example
 	assert.expect( 1 );
 
-	var parent,
+	var parent, pos,
 		html = [
 		"<div id=div-gh-2836>",
 			"<div></div>",
@@ -592,20 +646,15 @@ QUnit.test( "outside view position (gh-2836)", function( assert ) {
 			"<div></div>",
 			"<div></div>",
 		"</div>"
-	].join( "" ),
-	stop = assert.async();
+	].join( "" );
 
 	parent = jQuery( html );
 	parent.appendTo( "#qunit-fixture" );
 
-	parent.one( "scroll", function() {
-		var pos = parent.find( "div" ).eq( 3 ).position();
-
-		assert.strictEqual( pos.top, -100 );
-		stop();
-	} );
-
 	parent.scrollTop( 400 );
+
+	pos = parent.find( "div" ).eq( 3 ).position();
+	assert.strictEqual( pos.top, -100 );
 } );
 
 QUnit.test( "width/height on element with transform (gh-3193)", function( assert ) {
@@ -691,7 +740,7 @@ QUnit.test( "interaction with scrollbars (gh-3589)", function( assert ) {
 			.appendTo( "#qunit-fixture" ),
 
 		// Workarounds for IE kill fractional output here.
-		fraction = document.documentMode ? 0 : 0.5,
+		fraction = QUnit.isIE ? 0 : 0.5,
 		borderWidth = 1,
 		padding = 2,
 		size = 100 + fraction,

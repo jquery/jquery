@@ -5,6 +5,7 @@ import { indexOf } from "./var/indexOf.js";
 import { pop } from "./var/pop.js";
 import { push } from "./var/push.js";
 import { whitespace } from "./var/whitespace.js";
+import { rdoubleDash } from "./var/rdoubleDash.js";
 import { rbuggyQSA } from "./selector/rbuggyQSA.js";
 import { rtrimCSS } from "./var/rtrimCSS.js";
 import { isIE } from "./var/isIE.js";
@@ -62,7 +63,7 @@ var i,
 	rheader = /^h\d$/i,
 
 	// Easily-parseable/retrievable ID or TAG or CLASS selectors
-	rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/,
+	rquickExpr = /^(?:#([\w-]+)|(\.?[a-z][\w-]*))$/i,
 
 	// Used for iframes; see `setDocument`.
 	// Support: IE 9 - 11+
@@ -126,14 +127,15 @@ function find( selector, context, results, seed ) {
 						}
 					}
 
-				// Type selector
+				// Type or class selector
 				} else if ( match[ 2 ] ) {
-					push.apply( results, context.getElementsByTagName( selector ) );
-					return results;
 
-				// Class selector
-				} else if ( ( m = match[ 3 ] ) && context.getElementsByClassName ) {
-					push.apply( results, context.getElementsByClassName( m ) );
+					// `querySelectorAll` is, depending on the browser, either on par
+					// perf-wise with `getElementsByTagName` & `getElementsByClassName`
+					// or even faster, so we don't use `gEBTN` & `gEBCN` anymore.
+					// Note: thanks to the restrictions of `rquickExpr`, there's no
+					// need to wrap them with `jQuery.escapeSelector`.
+					push.apply( results, context.querySelectorAll( selector ) );
 					return results;
 				}
 			}
@@ -191,7 +193,7 @@ function find( selector, context, results, seed ) {
 						newContext.querySelectorAll( newSelector )
 					);
 					return results;
-				} catch ( qsaError ) {
+				} catch ( _qsaError ) {
 					nonnativeSelectorCache( selector, true );
 				} finally {
 					if ( nid === jQuery.expando ) {
@@ -386,18 +388,36 @@ jQuery.expr = {
 		},
 
 		TAG: function( tag, context ) {
-			if ( typeof context.getElementsByTagName !== "undefined" ) {
-				return context.getElementsByTagName( tag );
 
-				// DocumentFragment nodes don't have gEBTN
-			} else {
-				return context.querySelectorAll( tag );
+			// Support: IE <=11+
+			// IE doesn't recognize identifiers starting with a dash,
+			// and identifiers starting with a double dash are not
+			// escaped via jQuery.escapeSelector. Such identifiers
+			// are not valid tag names, but the selection should not
+			// throw when they're used. Fallback to an empty collection.
+			if ( isIE && rdoubleDash.test( tag ) ) {
+				return [];
 			}
+
+			return context.querySelectorAll(
+				tag === "*" ? tag : jQuery.escapeSelector( tag )
+			);
 		},
 
 		CLASS: function( className, context ) {
-			if ( typeof context.getElementsByClassName !== "undefined" && documentIsHTML ) {
-				return context.getElementsByClassName( className );
+			if ( documentIsHTML ) {
+
+				// Support: IE <=11+
+				// IE doesn't recognize identifiers starting with a dash,
+				// and identifiers starting with a double dash are not
+				// escaped via jQuery.escapeSelector. Fallback to
+				// getElementsByClassName.
+				if ( isIE && rdoubleDash.test( className ) ) {
+					return context.getElementsByClassName( className );
+				}
+				return context.querySelectorAll(
+					"." + jQuery.escapeSelector( className )
+				);
 			}
 		}
 	},

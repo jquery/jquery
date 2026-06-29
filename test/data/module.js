@@ -1,1 +1,3 @@
-QUnit.assert.ok( true, "evaluated: module with src" );
+/* global outerExternalCallback */
+
+outerExternalCallback( "evaluated: module with src" );

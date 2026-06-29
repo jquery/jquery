@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>XML Document Ajax Test</title>
+</head>
+<body>
+	<script src="../../dist/jquery.js"> </script>
+	<script src="iframeTest.js"> </script>
+	<script>
+		var sameOriginCrossDomain, crossOriginCrossDomain,
+			threw = false;
+
+		try {
+			jQuery.ajax( {
+				url: document.location.href,
+				beforeSend: function( _, s ) {
+					sameOriginCrossDomain = s.crossDomain;
+					return false;
+				}
+			} );
+
+			jQuery.ajax( {
+				url: "http://example.com/",
+				beforeSend: function( _, s ) {
+					crossOriginCrossDomain = s.crossDomain;
+					return false;
+				}
+			} );
+		} catch ( e ) {
+			threw = true;
+		}
+
+		startIframeTest( threw, sameOriginCrossDomain, crossOriginCrossDomain );
+	</script>
+</body>
+</html>

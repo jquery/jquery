@@ -3,8 +3,8 @@ import { access } from "./core/access.js";
 import { nodeName } from "./core/nodeName.js";
 import { rcssNum } from "./var/rcssNum.js";
 import { isIE } from "./var/isIE.js";
+import { rdoubleDash } from "./var/rdoubleDash.js";
 import { rnumnonpx } from "./css/var/rnumnonpx.js";
-import { rcustomProp } from "./css/var/rcustomProp.js";
 import { cssExpand } from "./css/var/cssExpand.js";
 import { isAutoPx } from "./css/isAutoPx.js";
 import { cssCamelCase } from "./css/cssCamelCase.js";
@@ -18,13 +18,7 @@ import { support } from "./css/support.js";
 import "./core/init.js";
 import "./core/ready.js";
 
-var
-
-	// Swappable if display is none or starts with table
-	// except "table", "table-cell", or "table-caption"
-	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
-	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+var cssShow = { position: "absolute", visibility: "hidden", display: "block" },
 	cssNormalTransform = {
 		letterSpacing: "0",
 		fontWeight: "400"
@@ -137,24 +131,22 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	}
 
 
-	if ( (
+	if (
+		(
 
-		// Fall back to offsetWidth/offsetHeight when value is "auto"
-		// This happens for inline elements with no explicit setting (gh-3571)
-		val === "auto" ||
+			// Fall back to offsetWidth/offsetHeight when value is "auto"
+			// This happens for inline elements with no explicit setting (gh-3571)
+			val === "auto" ||
 
-		// Support: IE 9 - 11+
-		// Use offsetWidth/offsetHeight for when box sizing is unreliable.
-		// In those cases, the computed value can be trusted to be border-box.
-		( isIE && isBorderBox ) ||
+			// Support: IE 9 - 11+
+			// Use offsetWidth/offsetHeight for when box sizing is unreliable.
+			// In those cases, the computed value can be trusted to be border-box.
+			( isIE && isBorderBox ) ||
 
-		// Support: IE 10 - 11+
-		// IE misreports `getComputedStyle` of table rows with width/height
-		// set in CSS while `offset*` properties report correct values.
-		// Support: Firefox 70+
-		// Firefox includes border widths
-		// in computed dimensions for table rows. (gh-4529)
-		( !support.reliableTrDimensions() && nodeName( elem, "tr" ) ) ) &&
+			( !support.reliableColDimensions() && nodeName( elem, "col" ) ) ||
+
+			( !support.reliableTrDimensions() && nodeName( elem, "tr" ) )
+		) &&
 
 		// Make sure the element is visible & connected
 		elem.getClientRects().length ) {
@@ -205,7 +197,7 @@ jQuery.extend( {
 		// Make sure that we're working with the right name
 		var ret, type, hooks,
 			origName = cssCamelCase( name ),
-			isCustomProp = rcustomProp.test( name ),
+			isCustomProp = rdoubleDash.test( name ),
 			style = elem.style;
 
 		// Make sure that we're working with the right name. We don't
@@ -274,7 +266,7 @@ jQuery.extend( {
 	css: function( elem, name, extra, styles ) {
 		var val, num, hooks,
 			origName = cssCamelCase( name ),
-			isCustomProp = rcustomProp.test( name );
+			isCustomProp = rdoubleDash.test( name );
 
 		// Make sure that we're working with the right name. We don't
 		// want to modify the value if it is a CSS custom property
@@ -316,17 +308,9 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 
-				// Certain elements can have dimension info if we invisibly show them
-				// but it must have a current display style that would benefit
-				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
-
-					// Support: Safari <=8 - 12+, Chrome <=73+
-					// Table columns in WebKit/Blink have non-zero offsetWidth & zero
-					// getBoundingClientRect().width unless display is changed.
-					// Support: IE <=11+
-					// Running getBoundingClientRect on a disconnected node
-					// in IE throws an error.
-					( !elem.getClientRects().length || !elem.getBoundingClientRect().width ) ?
+				// Elements with `display: none` can have dimension info if
+				// we invisibly show them.
+				return jQuery.css( elem, "display" ) === "none" ?
 					swap( elem, cssShow, function() {
 						return getWidthOrHeight( elem, dimension, extra );
 					} ) :

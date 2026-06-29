@@ -24,7 +24,7 @@ export default async function minify( { filename, dir, esm } ) {
 				comments: false,
 				preamble: `/*! jQuery ${ version }` +
 					" | (c) OpenJS Foundation and other contributors" +
-					" | jquery.org/license */\n"
+					" | jquery.com/license */\n"
 			},
 			inlineSourcesContent: false,
 			mangle: true,

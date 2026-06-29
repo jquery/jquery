@@ -1,12 +1,12 @@
 import { jQuery } from "../core.js";
 import { isAttached } from "../core/isAttached.js";
 import { getStyles } from "./var/getStyles.js";
-import { rcustomProp } from "./var/rcustomProp.js";
+import { rdoubleDash } from "../var/rdoubleDash.js";
 import { rtrimCSS } from "../var/rtrimCSS.js";
 
 export function curCSS( elem, name, computed ) {
 	var ret,
-		isCustomProp = rcustomProp.test( name );
+		isCustomProp = rdoubleDash.test( name );
 
 	computed = computed || getStyles( elem );
 
@@ -30,10 +30,9 @@ export function curCSS( elem, name, computed ) {
 
 		if ( isCustomProp && ret ) {
 
-			// Support: Firefox 105+, Chrome <=105+
+			// Support: Firefox 105 - 135+
 			// Spec requires trimming whitespace for custom properties (gh-4926).
-			// Firefox only trims leading whitespace. Chrome just collapses
-			// both leading & trailing whitespace to a single space.
+			// Firefox only trims leading whitespace.
 			//
 			// Fall back to `undefined` if empty string returned.
 			// This collapses a missing definition with property defined

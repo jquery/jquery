@@ -13,7 +13,7 @@ jQuery.parseXML = function( data ) {
 		xml = ( new window.DOMParser() ).parseFromString( data, "text/xml" );
 	} catch ( e ) {}
 
-	parserErrorElem = xml && xml.getElementsByTagName( "parsererror" )[ 0 ];
+	parserErrorElem = xml && xml.querySelector( "parsererror" );
 	if ( !xml || parserErrorElem ) {
 		jQuery.error( "Invalid XML: " + (
 			parserErrorElem ?

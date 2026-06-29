@@ -19,7 +19,7 @@ var parentUrl = window.location.protocol + "//" + window.location.host,
 	];
 
 // see RFC 2606
-this.externalHost = "example.com";
+this.externalHost = "releases.jquery.com";
 this.hasPHP = true;
 this.isLocal = window.location.protocol === "file:";
 
@@ -116,6 +116,7 @@ this.createWithFriesXML = function() {
 									<thing att='something' /> \
 								</property> \
 								<foo_bar>foo</foo_bar> \
+								<qwerty>qqq</qwerty> \
 							</properties> \
 						</component> \
 					</meta> \

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>XML Document CSS Test</title>
+</head>
+<body>
+	<div id="test" style="width:100px;position:absolute;">test</div>
+	<script src="../../dist/jquery.js"> </script>
+	<script src="iframeTest.js"> </script>
+	<script>
+		var hasStyleFromCreateElement, width,
+			threw = false;
+
+		try {
+			hasStyleFromCreateElement = typeof document.createElement( "div" ).style !== "undefined";
+			width = jQuery( "#test" ).css( "width" );
+		} catch ( e ) {
+			threw = true;
+		}
+
+		startIframeTest( threw, hasStyleFromCreateElement, width );
+	</script>
+</body>
+</html>

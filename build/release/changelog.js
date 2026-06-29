@@ -17,6 +17,9 @@ const prevVersion = argv[ 2 ];
 const nextVersion = argv[ 3 ];
 const blogUrl = process.env.BLOG_URL;
 
+// Dependabot used "Upgrade:" for some commits
+const omitScopes = [ "build", "release", "upgrade" ];
+
 if ( !prevVersion || !nextVersion ) {
 	throw new Error( "Usage: `node changelog.js PREV_VERSION NEXT_VERSION`" );
 }
@@ -49,6 +52,13 @@ function getTicketsForCommit( commit ) {
 	return tickets;
 }
 
+function filterOmittedScopes( commits ) {
+	return commits.filter( ( commit ) => {
+		const match = rcomponent.exec( commit );
+		return !match || !omitScopes.includes( match[ 1 ].toLowerCase() );
+	} );
+}
+
 async function getCommits() {
 	const format =
 		"__COMMIT__%n%s (__TICKETREF__[%h](https://github.com/jquery/jquery/commit/%H))%n%b";
@@ -57,7 +67,11 @@ async function getCommits() {
 	);
 	const commits = stdout.split( "__COMMIT__" ).slice( 1 );
 
-	return removeReverts( commits.map( parseCommit ).sort( sortCommits ) );
+	return removeReverts(
+		filterOmittedScopes(
+			commits.map( parseCommit )
+		).sort( sortCommits )
+	);
 }
 
 function parseCommit( commit ) {
@@ -84,10 +98,12 @@ function sortCommits( a, b ) {
 	const bComponent = rcomponent.exec( b );
 
 	if ( aComponent && bComponent ) {
-		if ( aComponent[ 1 ] < bComponent[ 1 ] ) {
+		const aLower = aComponent[ 1 ].toLowerCase();
+		const bLower = bComponent[ 1 ].toLowerCase();
+		if ( aLower < bLower ) {
 			return -1;
 		}
-		if ( aComponent[ 1 ] > bComponent[ 1 ] ) {
+		if ( aLower > bLower ) {
 			return 1;
 		}
 		return 0;
@@ -155,9 +171,11 @@ function addHeaders( commits ) {
 	return markdown;
 }
 
-async function getGitHubContributor( sha ) {
+async function getContributors() {
+
+	// https://docs.github.com/en/rest/commits/commits?apiVersion=2022-11-28#compare-two-commits
 	const response = await fetch(
-		`https://api.github.com/repos/jquery/jquery/commits/${ sha }`,
+		`https://api.github.com/repos/jquery/jquery/compare/${ prevVersion }...${ nextVersion }`,
 		{
 			headers: {
 				Accept: "application/vnd.github+json",
@@ -168,33 +186,27 @@ async function getGitHubContributor( sha ) {
 	);
 	const data = await response.json();
 
-	if ( !data.commit || !data.author ) {
+	if ( !data.commits ) {
 
 		// The data may contain multiple helpful fields
 		throw new Error( JSON.stringify( data ) );
 	}
-	return { name: data.commit.author.name, url: data.author.html_url };
-}
 
-function uniqueContributors( contributors ) {
-	const seen = {};
+	const contributors = data.commits.map( ( commit ) => ( {
+
+		// Normalize to avoid duplicates due to different Unicode forms
+		name: commit.commit.author.name.normalize( "NFC" ),
+		url: commit.author ? commit.author.html_url : null
+	} ) );
+
+	const seen = new Set();
 	return contributors.filter( ( contributor ) => {
-		if ( seen[ contributor.name ] ) {
+		if ( seen.has( contributor.name ) ) {
 			return false;
 		}
-		seen[ contributor.name ] = true;
+		seen.add( contributor.name );
 		return true;
-	} );
-}
-
-async function getContributors() {
-	const { stdout } = await exec(
-		`git log --format="%H" ${ prevVersion }..${ nextVersion }`
-	);
-	const shas = stdout.split( rnewline ).filter( Boolean );
-	const contributors = await Promise.all( shas.map( getGitHubContributor ) );
-
-	return uniqueContributors( contributors )
+	} )
 
 		// Sort by last name
 		.sort( ( a, b ) => {
@@ -208,27 +220,33 @@ async function getContributors() {
 			}
 			return `<a href="${ url }">${ name }</a>`;
 		} )
-		.filter( Boolean ).join( "\n" );
+		.filter( Boolean ).join( ", " );
 }
 
 async function generate() {
 	const commits = await getCommits();
 	const contributors = await getContributors();
 
-	let changelog = "# Changelog\n";
-	if ( blogUrl ) {
-		changelog += `\n${ blogUrl }\n`;
-	}
-	changelog += addHeaders( commits );
+	const changelog = addHeaders( commits );
 
 	// Write markdown to changelog.md
-	await writeFile( "changelog.md", changelog );
+	await writeFile( "changelog.md", [
+		"# Changelog\n",
+		blogUrl ? `\n${ blogUrl }\n` : "",
+		changelog
+	].join( "" ) );
 
 	// Write HTML to changelog.html for blog post
+	// No headers needed in HTML version
 	await writeFile( "changelog.html", marked.parse( changelog ) );
 
 	// Write contributors HTML for blog post
-	await writeFile( "contributors.html", contributors );
+	await writeFile( "contributors.html",
+		"Thank you to all of you who participated in this release by submitting patches, " +
+		"reporting bugs, or testing, including " +
+		contributors +
+		", and the whole jQuery team.\n"
+	);
 
 	// Log regular changelog for release-it
 	console.log( changelog );

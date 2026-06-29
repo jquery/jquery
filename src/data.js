@@ -129,7 +129,6 @@ jQuery.fn.extend( {
 		}
 
 		return access( this, function( value ) {
-			var data;
 
 			// The calling jQuery object (element matches) is not empty
 			// (and therefore has an element appears at this[ 0 ]) and the
@@ -138,22 +137,13 @@ jQuery.fn.extend( {
 			// throw an exception if an attempt to read a data cache is made.
 			if ( elem && value === undefined ) {
 
-				// Attempt to get data from the cache
-				// The key will always be camelCased in Data
-				data = dataUser.get( elem, key );
-				if ( data !== undefined ) {
-					return data;
-				}
-
-				// Attempt to "discover" the data in
-				// HTML5 custom data-* attrs
-				data = dataAttr( elem, key );
-				if ( data !== undefined ) {
-					return data;
-				}
-
-				// We tried really hard, but the data doesn't exist.
-				return;
+				// Attempt to get data from the `dataUser` cache.
+				// The key will always be camelCased in Data.
+				// Otherwise, attempt to "discover" the data in
+				// HTML5 custom data-* attrs.
+				// If this fails as well, data doesn't exist, and
+				// we get `undefined`.
+				return dataAttr( elem, key, dataUser.get( elem, key ) );
 			}
 
 			// Set the data...
