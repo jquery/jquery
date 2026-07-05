@@ -44,8 +44,9 @@
 		} );
 	} else {
 
-		// No TrustedScriptURL support so let's at least run tests with object wrappers
-		// with a proper `toString` function. See trusted-html.html for more context.
+		// Support: iOS <26 only, Safari <26 only, Firefox <148 only
+		// No TrustedHTML support so let's at least run tests with object
+		// wrappers with a proper `toString` function.
 		runTests( "Object wrapper", function( input ) {
 			return {
 				toString: function toString() {

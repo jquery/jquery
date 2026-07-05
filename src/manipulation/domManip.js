@@ -24,7 +24,7 @@ function restoreScript( elem ) {
 export function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
-	args = flat( args );
+	args = flat.call( args );
 
 	var fragment, first, scripts, hasScripts, node, doc,
 		i = 0,

@@ -275,19 +275,8 @@ QUnit.module( "ajax", {
 
 	ajaxTest( "jQuery.ajax() - jqXHR.responseURL (gh-4339)", 9, function( assert ) {
 
-		// Support: IE 11+
-		// Some versions of IE 11 don't support location.origin
-		var origin = window.location.protocol + "//" + window.location.host,
-			redirectTarget = "/test/data/mock.php?action=name&name=foo&_=" + Date.now(),
-			expectedRedirectUrl = origin + redirectTarget;
-
-		// Support: IE 11+
-		// IE does not implement XMLHttpRequest.responseURL.
-		// `jqXHR.responseURL` is set to `undefined` in such a case
-		// as jQuery is not polyfilling support.
-		function expectedXhrUrl( absoluteUrl ) {
-			return QUnit.isIE ? undefined : absoluteUrl;
-		}
+		var redirectTarget = "/test/data/mock.php?action=name&name=foo&_=" + Date.now(),
+			expectedRedirectUrl = window.location.origin + redirectTarget;
 
 		return [
 			{
@@ -298,7 +287,7 @@ QUnit.module( "ajax", {
 				},
 				success: function( _data, _textStatus, jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL,
-						expectedXhrUrl( this.url ),
+						this.url,
 						"responseURL equals request URL for non-redirected requests" );
 				}
 			},
@@ -309,7 +298,7 @@ QUnit.module( "ajax", {
 					assert.strictEqual( data, "bar",
 						"Redirect followed and final response returned" );
 					assert.strictEqual( jqXHR.responseURL,
-						expectedXhrUrl( expectedRedirectUrl ),
+						expectedRedirectUrl,
 						"responseURL reflects the final URL after a redirect" );
 				}
 			},
@@ -317,7 +306,7 @@ QUnit.module( "ajax", {
 				url: url( "mock.php?action=error" ),
 				error: function( jqXHR ) {
 					assert.strictEqual( jqXHR.responseURL,
-						expectedXhrUrl( this.url ),
+						this.url,
 						"responseURL is populated for HTTP errors" );
 				}
 			},
@@ -393,18 +382,14 @@ QUnit.module( "ajax", {
 				} );
 			},
 			url: url( "mock.php?action=headers&keys=siMPle|SometHing-elsE|OthEr|Nullable|undefined|Empty|ajax-send" ),
-			headers: supportjQuery.extend( {
+			headers: {
 				"siMPle": "value",
 				"SometHing-elsE": "other value",
 				"OthEr": "something else",
 				"Nullable": null,
-				"undefined": undefined
-
-				// Support: IE 9 - 11+
-				// IE can receive empty headers but not send them.
-			}, QUnit.isIE ? {} : {
+				"undefined": undefined,
 				"Empty": ""
-			} ),
+			},
 			success: function( data, _, xhr ) {
 				var i,
 					requestHeaders = jQuery.extend( this.headers, {
@@ -4214,7 +4199,7 @@ QUnit.module( "ajax", {
 				assert.strictEqual( data, "pan", "URLSearchParams sent correctly" );
 			}
 		};
-	}, QUnit.testUnlessIE );
+	} );
 
 	ajaxTest( "jQuery.ajax() - Blob", 1, function( assert ) {
 		var blob = new Blob( [ "name=peter" ], { type: "text/plain" } );

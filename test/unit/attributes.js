@@ -1000,8 +1000,7 @@ QUnit.test( "val() respects numbers without exception (Bug trac-9319) - progress
 	$progress.remove();
 } );
 
-// IE doesn't support <meter>
-QUnit.testUnlessIE( "val() respects numbers without exception (Bug trac-9319) - meter",
+QUnit.test( "val() respects numbers without exception (Bug trac-9319) - meter",
 	function( assert ) {
 
 	assert.expect( 2 );
@@ -1880,9 +1879,6 @@ QUnit.test( "false setter removes non-ARIA attrs (gh-5388)", function( assert ) 
 	);
 } );
 
-// Test trustedTypes support in browsers where they're supported (currently Chrome 83+).
-// Browsers with no TrustedScriptURL support still run tests on object wrappers with
-// a proper `toString` function.
 testIframe(
 	"Basic TrustedScriptURL support (gh-4948)",
 	"mock.php?action=trustedTypesAttributes",
