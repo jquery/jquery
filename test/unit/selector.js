@@ -764,7 +764,7 @@ QUnit.test( "attributes - hyphen-prefix matches", function( assert ) {
 } );
 
 QUnit.test( "attributes - special characters", function( assert ) {
-	assert.expect( 16 );
+	assert.expect( 19 );
 
 	var attrbad;
 	var div = document.createElement( "div" );
@@ -842,6 +842,19 @@ QUnit.test( "attributes - special characters", function( assert ) {
 	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\01D306A']" ).get(),
 		q( "attrbad_unicode" ),
 		"Long numeric escape (non-BMP)" );
+
+	// A zero, a surrogate half, and an out-of-range code point all decode to the
+	// replacement character U+FFFD, matching the native CSS parser.
+	document.getElementById( "attrbad_unicode" ).setAttribute( "data-attr", "\uFFFD" );
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\0']" ).get(),
+		q( "attrbad_unicode" ),
+		"Null escape decodes to the replacement character" );
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\D800']" ).get(),
+		q( "attrbad_unicode" ),
+		"Surrogate escape decodes to the replacement character" );
+	assert.deepEqual( jQuery( attrbad ).filter( "input[data-attr='\\110000']" ).get(),
+		q( "attrbad_unicode" ),
+		"Out-of-range escape decodes to the replacement character" );
 } );
 
 QUnit.test( "attributes - others", function( assert ) {
