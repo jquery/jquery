@@ -455,16 +455,20 @@ jQuery.expr = {
 		CLASS: function( className ) {
 			var pattern = classCache[ className + " " ];
 
+			// Decode the class name and match whitespace-delimited tokens directly.
+			// Sibling matchers (ID, TAG, ATTR) all unescape their argument; splicing
+			// the still-escaped class name into a RegExp here mis-decoded CSS escapes
+			// such as `\66` (0x66 -> "f") into a regex octal escape, so the jQuery
+			// engine matched a different class than native querySelectorAll.
 			return pattern ||
-				( pattern = new RegExp( "(^|" + whitespace + ")" + className +
-					"(" + whitespace + "|$)" ) ) &&
+				( pattern = " " + unescapeSelector( className ) + " " ) &&
 				classCache( className, function( elem ) {
-					return pattern.test(
+					return ( " " + (
 						typeof elem.className === "string" && elem.className ||
 							typeof elem.getAttribute !== "undefined" &&
 								elem.getAttribute( "class" ) ||
 							""
-					);
+					).replace( rwhitespace, " " ) + " " ).indexOf( pattern ) > -1;
 				} );
 		},
 

@@ -417,7 +417,7 @@ QUnit.test( "id", function( assert ) {
 } );
 
 QUnit.test( "class", function( assert ) {
-	assert.expect( 32 );
+	assert.expect( 33 );
 
 	assert.deepEqual( jQuery( ".blog", document.getElementsByTagName( "p" ) ).get(),
 		q( "mozilla", "timmy" ), "Finding elements with a context." );
@@ -447,6 +447,13 @@ QUnit.test( "class", function( assert ) {
 	assert.t( "Descendant escaped Class", "div .test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
 	assert.t( "Child escaped Class", "form > .foo\\:bar", [ "foo:bar" ] );
 	assert.t( "Child escaped Class", "form > .test\\.foo\\[5\\]bar", [ "test.foo[5]bar" ] );
+
+	// The jQuery matcher (reached via `.filter()`) must decode hex CSS escapes
+	// like the native querySelectorAll path does; `\66` is the letter "f".
+	var hexClassNodes = jQuery( "<div class='foo'></div><div class='bar'></div>" );
+	assert.deepEqual( hexClassNodes.filter( ".\\66oo" ).get(),
+		hexClassNodes.filter( ".foo" ).get(),
+		"Class selector with a hex escape matches the unescaped form" );
 
 	var div = document.createElement( "div" );
 	div.innerHTML = "<div class='test e'></div><div class='test'></div>";
