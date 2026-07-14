@@ -3097,6 +3097,40 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	ajaxTest( "jQuery.ajaxTransport() - getResponseHeader trims surrounding whitespace", 2,
+			function( assert ) {
+		var testId = assert.test.testId,
+			dataType = "test-header-ows-" + testId,
+			resp = {};
+		resp[ dataType ] = "done";
+		return {
+			setup: function() {
+				jQuery.ajaxTransport( dataType, function() {
+					return {
+						send: function( _, completeCallback ) {
+							completeCallback(
+								200,
+								"OK",
+								resp,
+								"X-Custom: test-value   \r\n" +
+									"X-Tabbed:\t\tspaced value\t"
+							);
+						},
+						abort: jQuery.noop
+					};
+				} );
+			},
+			url: url( "name.html" ),
+			dataType: dataType,
+			success: function( data, _, jqXHR ) {
+				assert.strictEqual( jqXHR.getResponseHeader( "X-Custom" ), "test-value",
+					"Trailing whitespace trimmed from response header value" );
+				assert.strictEqual( jqXHR.getResponseHeader( "X-Tabbed" ), "spaced value",
+					"Surrounding tabs trimmed from response header value" );
+			}
+		};
+	} );
+
 	ajaxTest( "jQuery.ajaxTransport() - abort called on jqXHR.abort()", 1, function( assert ) {
 		var testId = assert.test.testId,
 			dataType = "test-tp-abort-" + testId;

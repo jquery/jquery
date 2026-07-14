@@ -15,7 +15,7 @@ var
 	r20 = /%20/g,
 	rhash = /#.*$/,
 	rantiCache = /([?&])_=[^&]*/,
-	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
+	rheaders = /^(.*?):[ \t]*((?:[^\r\n]*[^ \t\r\n])?)[ \t]*$/mg,
 
 	// trac-7653, trac-8125, trac-8152: local protocol detection
 	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
