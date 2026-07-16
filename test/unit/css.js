@@ -1828,7 +1828,13 @@ QUnit.testUnlessIE( "css(--customProperty)", function( assert ) {
 		$elem = jQuery( "<div>" ).addClass( "test__customProperties" )
 			.appendTo( "#qunit-fixture" );
 
-	assert.expect( 20 );
+	assert.expect( 21 );
+
+	assert.equal(
+		jQuery( "<div>" ).css( "--color", "blue" ).css( "--color" ),
+		"blue",
+		"Read CSS custom property on detached element"
+	);
 
 	div.css( "--color", "blue" );
 	assert.equal( div.css( "--color" ), "blue", "Modified CSS custom property using string" );

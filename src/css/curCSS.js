@@ -48,7 +48,7 @@ export function curCSS( elem, name, computed ) {
 			ret = ret.replace( rtrimCSS, "$1" ) || undefined;
 		}
 
-		if ( ret === "" && !isAttached( elem ) ) {
+		if ( ( ret === "" || ( isCustomProp && ret === undefined ) ) && !isAttached( elem ) ) {
 			ret = jQuery.style( elem, name );
 		}
 	}

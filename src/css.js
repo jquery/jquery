@@ -259,7 +259,7 @@ jQuery.extend( {
 			}
 
 			// Otherwise just get the value from the style object
-			return style[ name ];
+			return isCustomProp ? style.getPropertyValue( name ) : style[ name ];
 		}
 	},
 
