@@ -930,6 +930,41 @@ QUnit.module( "ajax", {
 		};
 	} );
 
+	QUnit.test( "jQuery.ajax() - beforeSend exception restores global state (gh-5878)",
+		function( assert ) {
+		assert.expect( 3 );
+
+		var activeAfterThrow,
+			active = jQuery.active,
+			events = [],
+			namespace = ".beforeSendException";
+
+		jQuery( document ).on( "ajaxStart" + namespace + " ajaxStop" + namespace,
+			function( event ) {
+				events.push( event.type );
+			}
+		);
+
+		try {
+			assert.throws( function() {
+				jQuery.ajax( {
+					url: url( "name.html" ),
+					beforeSend: function() {
+						throw new Error( "beforeSend error" );
+					}
+				} );
+			}, /beforeSend error/, "Exception is propagated" );
+		} finally {
+			activeAfterThrow = jQuery.active;
+			jQuery.active = active;
+			jQuery( document ).off( namespace );
+		}
+
+		assert.strictEqual( activeAfterThrow, active, "Global active counter is restored" );
+		assert.deepEqual( events, [ "ajaxStart", "ajaxStop" ],
+			"Global lifecycle is completed" );
+	} );
+
 	ajaxTest( "jQuery.ajax() - beforeSend, cancel request manually", 2, function( assert ) {
 		return {
 			create: function() {
