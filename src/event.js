@@ -551,9 +551,12 @@ function leverageNative( el, type, isSetup ) {
 					dataPriv.set( this, type, saved );
 
 					// Trigger the native event and capture its result
-					this[ type ]();
-					result = dataPriv.get( this, type );
-					dataPriv.set( this, type, false );
+					try {
+						this[ type ]();
+						result = dataPriv.get( this, type );
+					} finally {
+						dataPriv.set( this, type, false );
+					}
 
 					if ( saved !== result ) {
 

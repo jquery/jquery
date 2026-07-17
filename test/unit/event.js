@@ -3410,6 +3410,27 @@ QUnit.test( "native-backed events preserve trigger data (gh-1741, gh-4139)", fun
 		"element not focused after blur event (default action)" );
 } );
 
+QUnit.test( "native-backed click recovers after the native method throws", function( assert ) {
+	assert.expect( 3 );
+
+	var input = jQuery( "<input type='checkbox'>" ).appendTo( "#qunit-fixture" ),
+		nativeClick = input[ 0 ].click;
+
+	input[ 0 ].click = function() {
+		throw new Error( "native click failed" );
+	};
+
+	assert.throws( function() {
+		input.trigger( "click" );
+	}, /native click failed/, "Native error propagates" );
+	assert.strictEqual( input[ 0 ].checked, false, "Failed click does not toggle the input" );
+
+	input[ 0 ].click = nativeClick;
+	input.trigger( "click" );
+
+	assert.strictEqual( input[ 0 ].checked, true, "A later click still uses the native method" );
+} );
+
 QUnit.test( "focus change during a focus handler (gh-4382)", function( assert ) {
 	assert.expect( 2 );
 
