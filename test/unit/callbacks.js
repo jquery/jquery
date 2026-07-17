@@ -403,4 +403,27 @@ QUnit.test( "jQuery.Callbacks() - list with memory stays locked (gh-3469)", func
 	assert.equal( fired, 11, "Post-lock() fire ignored" );
 } );
 
+QUnit.test( "jQuery.Callbacks() - firing state is restored after an exception (gh-5874)", function( assert ) {
+
+	assert.expect( 3 );
+
+	var cb = jQuery.Callbacks( "memory" ),
+		message = "not called";
+
+	cb.add( function() {
+		throw new Error( "callback error" );
+	} );
+
+	assert.throws( function() {
+		cb.fire( "remembered" );
+	}, /callback error/, "Exception is propagated" );
+
+	cb.add( function( value ) {
+		message = value;
+		assert.strictEqual( value, "remembered", "Memory is retained" );
+	} );
+
+	assert.strictEqual( message, "remembered", "Callback added after the exception fires" );
+} );
+
 } )();
