@@ -54,29 +54,35 @@ export function domManip( collection, args, callback, ignored ) {
 			scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
 			hasScripts = scripts.length;
 
-			// Use the original fragment for the last item
-			// instead of the first because it can end up
-			// being emptied incorrectly in certain situations (trac-8070).
-			for ( ; i < l; i++ ) {
-				node = fragment;
+			try {
 
-				if ( i !== iNoClone ) {
-					node = jQuery.clone( node, true, true );
+				// Use the original fragment for the last item
+				// instead of the first because it can end up
+				// being emptied incorrectly in certain situations (trac-8070).
+				for ( ; i < l; i++ ) {
+					node = fragment;
 
-					// Keep references to cloned scripts for later restoration
-					if ( hasScripts ) {
-						jQuery.merge( scripts, getAll( node, "script" ) );
+					if ( i !== iNoClone ) {
+						node = jQuery.clone( node, true, true );
+
+						// Keep references to cloned scripts for later restoration
+						if ( hasScripts ) {
+							jQuery.merge( scripts, getAll( node, "script" ) );
+						}
 					}
-				}
 
-				callback.call( collection[ i ], node, i );
+					callback.call( collection[ i ], node, i );
+				}
+			} finally {
+
+				// Re-enable scripts
+				if ( hasScripts ) {
+					jQuery.map( scripts, restoreScript );
+				}
 			}
 
 			if ( hasScripts ) {
 				doc = scripts[ scripts.length - 1 ].ownerDocument;
-
-				// Re-enable scripts
-				jQuery.map( scripts, restoreScript );
 
 				// Evaluate executable scripts on first document insertion
 				for ( i = 0; i < hasScripts; i++ ) {

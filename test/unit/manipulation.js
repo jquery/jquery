@@ -870,6 +870,25 @@ QUnit.test( "before(Element)", function( assert ) {
 	assert.equal( jQuery( "#en" ).text(), expected, "Insert element before" );
 } );
 
+QUnit.test( "script type is restored when insertion throws", function( assert ) {
+
+	assert.expect( 2 );
+
+	var script = document.createElement( "script" );
+
+	script.setAttribute( "type", "application/json" );
+
+	assert.throws( function() {
+		jQuery( document.documentElement ).before( script );
+	}, "Invalid insertion throws" );
+
+	assert.strictEqual(
+		script.getAttribute( "type" ),
+		"application/json",
+		"Script type is restored"
+	);
+} );
+
 QUnit.test( "before(Array<Element>)", function( assert ) {
 
 	assert.expect( 1 );
