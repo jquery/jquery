@@ -460,6 +460,34 @@ QUnit.test( "triggered events stopPropagation() for natively-bound events", func
 	$button.off( "click", stopPropagationCallback );
 } );
 
+QUnit.test( "trigger() restores state after a native method throws", function( assert ) {
+	assert.expect( 3 );
+
+	var elem = document.createElement( "div" ),
+		handlerCalls = 0,
+		inlineHandler = function() {};
+
+	elem.boom = function() {
+		throw new Error( "native method failed" );
+	};
+	elem.onboom = inlineHandler;
+
+	jQuery( elem ).on( "boom", function() {
+		handlerCalls++;
+	} );
+
+	assert.throws( function() {
+		jQuery( elem ).trigger( "boom" );
+	}, /native method failed/, "native error was propagated" );
+	assert.strictEqual( elem.onboom, inlineHandler, "inline handler was restored" );
+
+	var nativeEvent = document.createEvent( "Event" );
+	nativeEvent.initEvent( "boom", true, true );
+	elem.dispatchEvent( nativeEvent );
+
+	assert.strictEqual( handlerCalls, 2, "handler ran for the later native event" );
+} );
+
 QUnit.test( "trigger() works with events that were previously stopped", function( assert ) {
 	assert.expect( 0 );
 
