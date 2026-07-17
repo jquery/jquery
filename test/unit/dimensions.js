@@ -385,6 +385,42 @@ QUnit.test( "hidden element with implicit content-based dimensions", function( a
 	assert.strictEqual( div.height(), 40, "height of a hidden element" );
 } );
 
+QUnit.test(
+	"temporary styles are restored when dimension measurement throws (gh-5876)", function( assert ) {
+	assert.expect( 4 );
+
+	var oldBoxSizingHook = jQuery.cssHooks.boxSizing,
+		div = jQuery( "<div>" )
+			.css( {
+				display: "none",
+				position: "relative",
+				visibility: "visible"
+			} )
+			.appendTo( "#qunit-fixture" );
+
+	jQuery.cssHooks.boxSizing = {
+		get: function() {
+			throw new Error( "measurement error" );
+		}
+	};
+
+	try {
+		assert.throws( function() {
+			div.width();
+		}, /measurement error/, "Exception is propagated" );
+	} finally {
+		if ( oldBoxSizingHook ) {
+			jQuery.cssHooks.boxSizing = oldBoxSizingHook;
+		} else {
+			delete jQuery.cssHooks.boxSizing;
+		}
+	}
+
+	assert.strictEqual( div[ 0 ].style.display, "none", "Display is restored" );
+	assert.strictEqual( div[ 0 ].style.position, "relative", "Position is restored" );
+	assert.strictEqual( div[ 0 ].style.visibility, "visible", "Visibility is restored" );
+} );
+
 QUnit.test( "table dimensions", function( assert ) {
 	assert.expect( 3 );
 

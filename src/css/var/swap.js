@@ -1,6 +1,6 @@
 // A method for quickly swapping in/out CSS properties to get correct calculations.
 export function swap( elem, options, callback ) {
-	var ret, name,
+	var name,
 		old = {};
 
 	// Remember the old values, and insert the new ones
@@ -9,12 +9,13 @@ export function swap( elem, options, callback ) {
 		elem.style[ name ] = options[ name ];
 	}
 
-	ret = callback.call( elem );
+	try {
+		return callback.call( elem );
+	} finally {
 
-	// Revert the old values
-	for ( name in options ) {
-		elem.style[ name ] = old[ name ];
+		// Revert the old values
+		for ( name in options ) {
+			elem.style[ name ] = old[ name ];
+		}
 	}
-
-	return ret;
 }
