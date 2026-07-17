@@ -33,7 +33,7 @@ The jQuery Core team watches [jQuery GitHub Discussions](https://github.com/jque
 
 ### Weekly Status Meetings
 
-The jQuery Core team has a weekly meeting to discuss the progress of current work. The meeting is held in the [#jquery/meeting](hhttps://matrix.to/#/#jquery_meeting:gitter.im) Matrix channel on gitter.im at [Noon EST](https://www.timeanddate.com/worldclock/fixedtime.html?month=10&day=7&year=2024&hour=12&min=0&sec=0&p1=43) on Mondays.
+The jQuery Core team has a weekly meeting to discuss the progress of current work. The meeting is held in the [#jquery/meeting](https://matrix.to/#/#jquery_meeting:gitter.im) Matrix channel on gitter.im at [Noon EST](https://www.timeanddate.com/worldclock/fixedtime.html?month=10&day=7&year=2024&hour=12&min=0&sec=0&p1=43) on Mondays.
 
 [jQuery Core Meeting Notes](https://meetings.jquery.org/category/core/)
 
