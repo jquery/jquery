@@ -614,6 +614,26 @@ QUnit.test( "jQuery.Deferred.exceptionHook", function( assert ) {
 	defer.resolve();
 } );
 
+QUnit.test( "jQuery.Deferred.exceptionHook warns on AggregateError", function( assert ) {
+
+	assert.expect( 1 );
+
+	var warned,
+		error = new Error( "Make me a sandwich" ),
+		oldWarn = window.console.warn;
+
+	error.name = "AggregateError";
+
+	window.console.warn = function( _intro, warnedError ) {
+		warned = warnedError === error;
+	};
+
+	jQuery.Deferred.exceptionHook( error );
+	window.console.warn = oldWarn;
+
+	assert.ok( warned, "AggregateError is reported" );
+} );
+
 QUnit.test( "jQuery.Deferred.exceptionHook with error hooks", function( assert ) {
 
 	assert.expect( 2 );

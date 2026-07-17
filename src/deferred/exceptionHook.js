@@ -4,7 +4,7 @@ import "../deferred.js";
 
 // These usually indicate a programmer mistake during development,
 // warn about them ASAP rather than swallowing them by default.
-var rerrorNames = /^(Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
+var rerrorNames = /^(Aggregate|Eval|Internal|Range|Reference|Syntax|Type|URI)Error$/;
 
 // If `jQuery.Deferred.getErrorHook` is defined, `asyncError` is an error
 // captured before the async barrier to get the original error cause
