@@ -1419,7 +1419,7 @@ QUnit.test( "jQuery.parseHTML error handling", function( assert ) {
 } );
 
 QUnit.test( "jQuery.parseXML", function( assert ) {
-	assert.expect( 8 );
+	assert.expect( 9 );
 
 	var xml, tmp;
 	try {
@@ -1429,6 +1429,8 @@ QUnit.test( "jQuery.parseXML", function( assert ) {
 		tmp = tmp.getElementsByTagName( "b" )[ 0 ];
 		assert.ok( !!tmp, "<b> present in document" );
 		assert.strictEqual( tmp.childNodes[ 0 ].nodeValue, "well-formed", "<b> text is as expected" );
+		xml = jQuery.parseXML( "<root><parsererror/></root>" );
+		assert.ok( xml.querySelector( "parsererror" ), "<parsererror> present in valid document" );
 	} catch ( e ) {
 		assert.strictEqual( e, undefined, "unexpected error" );
 	}
