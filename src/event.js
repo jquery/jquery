@@ -732,7 +732,7 @@ jQuery.each( {
 jQuery.each( { focus: "focusin", blur: "focusout" }, function( type, delegateType ) {
 
 	// Support: IE 11+
-	// Attach a single focusin/focusout handler on the document while someone wants focus/blur.
+	// Attach a focusin/focusout handler to each element with a direct focus/blur handler.
 	// This is because the former are synchronous in IE while the latter are async. In other
 	// browsers, all those handlers are invoked synchronously.
 	function focusMappedHandler( nativeEvent ) {
