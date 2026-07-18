@@ -35,7 +35,7 @@ In the spirit of open source software development, jQuery always encourages comm
 
 GitHub issues/PRs are usually referenced via `gh-NUMBER`, where `NUMBER` is the numerical ID of the issue/PR. You can find such an issue/PR under `https://github.com/jquery/jquery/issues/NUMBER`.
 
-jQuery has used a different bug tracker - based on Trac - in the past, available under [bugs.jquery.com](https://bugs.jquery.com/). It is being kept in read only mode so that referring to past discussions is possible. When jQuery source references one of those issues, it uses the pattern `trac-NUMBER`, where `NUMBER` is the numerical ID of the issue. You can find such an issue under `https://bugs.jquery.com/ticket/NUMBER`.
+jQuery has used a different bug tracker - based on Trac - in the past, available under [bugs.jquery.com](https://bugs.jquery.com/). It is being kept in read-only mode so that referring to past discussions is possible. When jQuery source references one of those issues, it uses the pattern `trac-NUMBER`, where `NUMBER` is the numerical ID of the issue. You can find such an issue under `https://bugs.jquery.com/ticket/NUMBER`.
 
 ## Environments in which to use jQuery
 
