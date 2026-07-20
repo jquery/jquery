@@ -202,3 +202,15 @@ jQuery also contains some special modules we call "var modules", which are place
 ### Browser support
 
 Remember that jQuery supports multiple browsers and their versions; any contributed code must work in all of them. You can refer to the [browser support page](https://jquery.com/browser-support/) for the current list of supported browsers.
+
+## Unsolicited and Machine-Generated Contributions
+
+jQuery is a mature, stability-focused project. Changes carry real compatibility risk, and every pull request costs maintainer time to review. To keep that time focused on work that benefits actual users, we require the following:
+
+**Contributions must address a real, demonstrated need.** Pull requests should correspond to an existing reported issue, a problem you personally encountered in real usage, or a change previously discussed with the maintainers. PRs that fix hypothetical problems, restyle working code, or make speculative "improvements" no user has asked for will be closed without review.
+
+**You must be able to engage with review as the author.** Whatever tools you use to write code, you are responsible for understanding and defending every line you submit. If you cannot explain why a change was made, answer questions about its approach, or revise it based on feedback, the PR will be closed.
+
+**Do not submit auto-generated issues or pull requests.** Issues and PRs produced by pointing an automated tool at this repository — rather than originating from genuine use of jQuery — are not welcome, whether you submit one or many. These will be closed without review, and repeat submissions may result in a ban from the project.
+
+Opening an issue describing a problem you actually hit, and discussing it before writing code, is always the best path to a merged contribution.
