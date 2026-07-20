@@ -3,7 +3,7 @@
 import { whitespace } from "../var/whitespace.js";
 
 var runescape = new RegExp( "\\\\[\\da-fA-F]{1,6}" + whitespace +
-	"?|\\\\([^\\r\\n\\f])", "g" ),
+	"?|\\\\([^\\da-fA-F\\r\\n\\f])", "g" ),
 	funescape = function( escape, nonHex ) {
 		var codePoint = "0x" + escape.slice( 1 ) - 0;
 
