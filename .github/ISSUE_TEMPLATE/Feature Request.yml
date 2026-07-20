@@ -1,0 +1,26 @@
+name: Feature Request
+description: Request a feature to be added to JQuery.
+title: "[FEAT]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: request-details
+    attributes:
+      label: Please explain the requested feature in detail
+      description: Also tell us, are there other ways to achieve this?
+      placeholder: Tell us what you want!
+      value: "I have an idea!"
+    validations:
+      required: true
+  - type: checkboxes
+    id: wiki
+    attributes:
+      label: Have you read the wiki?
+      description: Before submitting this issue, please read our wiki page about [Adding New Features](https://github.com/jquery/jquery/wiki/Adding-new-features). 
+      options:
+        - label: I have read the *Adding New Features* wiki page
+          required: true

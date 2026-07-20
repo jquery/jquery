@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: jQuery Contribution Guide
+    url: https://github.com/jquery/jquery?tab=readme-ov-file#contribution-guides
+    about: Please check out the Contribution guide.
