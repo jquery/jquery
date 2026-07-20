@@ -356,6 +356,9 @@ jQuery.extend( {
 			// the primary Deferred
 			primary = jQuery.Deferred(),
 
+			// Deferred used to synchronously pipe single-Deferred values (gh-4798)
+			subordinate,
+
 			// subordinate callback factory
 			updateFunc = function( i ) {
 				return function( value ) {
@@ -375,6 +378,19 @@ jQuery.extend( {
 			// Use .then() to unwrap secondary thenables (cf. gh-3000)
 			if ( primary.state() === "pending" ||
 				typeof( resolveValues[ i ] && resolveValues[ i ].then ) === "function" ) {
+
+				// Privilege jQuery Deferreds to preserve synchronous resolution
+				// when possible (cf. gh-4798). Pipe through a subordinate Deferred
+				// using .done()/.fail() (which are synchronous) and re-adopt the
+				// resolved value to handle secondary thenables.
+				if ( singleValue && typeof singleValue.promise === "function" ) {
+					subordinate = jQuery.Deferred();
+					primary.done( function() {
+						adoptValue( resolveValues[ i ], subordinate.resolve,
+							subordinate.reject );
+					} ).fail( subordinate.reject );
+					return subordinate.promise();
+				}
 
 				return primary.then();
 			}
