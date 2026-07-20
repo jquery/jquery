@@ -59,14 +59,14 @@ function addToPrefiltersOrTransports( structure ) {
 			dataTypeExpression = "*";
 		}
 
-		var dataType,
-			i = 0,
+		var dataType, i,
 			dataTypes = dataTypeExpression.toLowerCase().match( rnothtmlwhite ) || [];
 
 		if ( typeof func === "function" ) {
 
 			// For each dataType in the dataTypeExpression
-			while ( ( dataType = dataTypes[ i++ ] ) ) {
+			for ( i = 0; i < dataTypes.length; i++ ) {
+				dataType = dataTypes[ i ];
 
 				// Prepend if requested
 				if ( dataType[ 0 ] === "+" ) {
