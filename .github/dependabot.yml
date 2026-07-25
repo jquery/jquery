@@ -4,6 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+    cooldown:
+      default-days: 7
 
     # Group all dependabot version update PRs into one
     groups:
