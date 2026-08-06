@@ -2,7 +2,7 @@
 
 const url = require( "node:url" );
 const fs = require( "node:fs" );
-const getRawBody = require( "raw-body" );
+const getRawBody = require( "raw-body" ).default;
 const multiparty = require( "multiparty" );
 
 let cspLog = "";
