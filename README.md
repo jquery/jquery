@@ -101,7 +101,7 @@ To exclude a module, pass its path relative to the `src` folder (without the `.j
 Some example modules that can be excluded or included are:
 
 - **ajax**: All AJAX functionality: `$.ajax()`, `$.get()`, `$.post()`, `$.ajaxSetup()`, `.load()`, transports, and ajax event shorthands such as `.ajaxStart()`.
-- **ajax/xhr**: The XMLHTTPRequest AJAX transport only.
+- **ajax/xhr**: The XMLHttpRequest AJAX transport only.
 - **ajax/script**: The `<script>` AJAX transport only; used to retrieve scripts.
 - **ajax/jsonp**: The JSONP AJAX transport only; depends on the ajax/script transport.
 - **css**: The `.css()` method. Also removes **all** modules depending on css (including **effects**, **dimensions**, and **offset**).
