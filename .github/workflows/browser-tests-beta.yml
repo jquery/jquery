@@ -127,6 +127,7 @@ jobs:
       - name: Install Safari Technology Preview
         run: |
           # Install Safari Technology Preview via Homebrew Cask
+          brew update
           brew install --cask safari-technology-preview
 
           # Verify installation
