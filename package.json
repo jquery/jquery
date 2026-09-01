@@ -131,7 +131,7 @@
     "promises-aplus-tests": "npm:@mgol/promises-aplus-tests@2.1.2-mgol.2",
     "qunit": "2.26.0",
     "raw-body": "3.0.2",
-    "release-it": "20.2.0",
+    "release-it": "21.0.1",
     "requirejs": "2.3.8",
     "rimraf": "6.1.3",
     "rollup": "4.62.0",
