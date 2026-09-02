@@ -629,7 +629,7 @@ QUnit.test( "chaining", function( assert ) {
 					scrollLeft = win.pageXOffset,
 					expectations = getExpectations( htmlPos, bodyPos, scrollTop, scrollLeft );
 
-				assert.expect( 3 * Object.keys( expectations ).length );
+				assert.expect( 6 * Object.keys( expectations ).length );
 
 				// Setup documentElement and body styles, preserving scroll position
 				doc.documentElement.style.position = htmlPos;
@@ -656,7 +656,9 @@ QUnit.test( "chaining", function( assert ) {
 
 				// Verify that values round-trip
 				supportjQuery.each( Object.keys( expectations ).reverse(), function( _, id ) {
-					var $el = $( "#" + id ),
+					var $new, adjustedOffset,
+						$el = $( "#" + id ),
+						offset = expectations[ id ].offset,
 						pos = supportjQuery.extend( {}, $el.position() );
 
 					$el.css( { top: pos.top, left: pos.left } );
@@ -669,10 +671,21 @@ QUnit.test( "chaining", function( assert ) {
 					assert.deepEqual( supportjQuery.extend( {}, $el.position() ), pos,
 						"jQuery('#" + id + "').position() round-trips" );
 
-					// TODO Verify .offset(...)
-					// assert.deepEqual( $el.offset( offset ).offset(), offset )
-					// assert.deepEqual( $el.offset( adjustedOffset ).offset(), adjustedOffset )
-					// assert.deepEqual( $new.offset( offset ).offset(), offset )
+					// Verify .offset(...) round-trips back to the value just set
+					assert.deepEqual( supportjQuery.extend( {}, $el.offset( offset ).offset() ), offset,
+						"jQuery('#" + id + "').offset(offset) round-trips" );
+
+					// ...even when the target offset differs from the current one
+					adjustedOffset = { top: offset.top + 11, left: offset.left + 17 };
+					assert.deepEqual(
+						supportjQuery.extend( {}, $el.offset( adjustedOffset ).offset() ),
+						adjustedOffset,
+						"jQuery('#" + id + "').offset(adjustedOffset) round-trips" );
+
+					// ...and for a freshly queried jQuery object wrapping the same element
+					$new = $( "#" + id );
+					assert.deepEqual( supportjQuery.extend( {}, $new.offset( offset ).offset() ), offset,
+						"jQuery('#" + id + "').offset(offset) round-trips via a new query" );
 				} );
 			} );
 		} );
