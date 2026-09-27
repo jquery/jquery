@@ -2488,6 +2488,31 @@ QUnit[ QUnit.jQuerySelectors ? "test" : "skip" ]( "Ensure no 'undefined' handler
 		"Extra attr handlers are not added to jQuery.attrHooks (https://github.com/jquery/sizzle/issues/353)" );
 } );
 
+QUnit.test( "jQuery.escapeSelector: control characters", function( assert ) {
+	assert.expect( 198 );
+
+	jQuery.each( [
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+		16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127
+	], function( _, codePoint ) {
+		var character = String.fromCharCode( codePoint ),
+			escaped = codePoint === 0 ? "\uFFFD" : "\\" + codePoint.toString( 16 ) + " ",
+			label = "Control character " + codePoint + ": ";
+
+		assert.equal( jQuery.escapeSelector( character ), escaped, label + "standalone" );
+		assert.equal( jQuery.escapeSelector( character + "a" ), escaped + "a",
+			label + "leading" );
+		assert.equal( jQuery.escapeSelector( "a" + character ), "a" + escaped,
+			label + "trailing" );
+		assert.equal( jQuery.escapeSelector( "a" + character + "b" ), "a" + escaped + "b",
+			label + "embedded" );
+		assert.equal( jQuery.escapeSelector( "a" + character + character + "b" ),
+			"a" + escaped + escaped + "b", label + "consecutive" );
+		assert.equal( jQuery.escapeSelector( "a" + character + "b" + character ),
+			"a" + escaped + "b" + escaped, label + "separated" );
+	} );
+} );
+
 QUnit.test( "jQuery.find.matchesSelector", function( assert ) {
 	assert.expect( 15 );
 
