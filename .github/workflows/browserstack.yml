@@ -30,8 +30,8 @@ jobs:
           # to the lastest stable version. Given that major Safari version updates
           # only come once a year, we'll just keep updating them each year, together
           # with related iOS versions.
+          - 'Safari_27'
           - 'Safari_26'
-          - 'Safari_18'
           - 'Chrome_latest'
           - 'Chrome_latest-1'
           - 'Opera_latest'
@@ -39,11 +39,11 @@ jobs:
           - 'Edge_latest-1'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
+          - '_:iPhone 18 Pro_iOS_27'
           - '_:iPhone 17_iOS_26'
           - '_:iPhone 16_iOS_18'
-          - '_:iPhone 15 Pro_iOS_17'
-          - '_:iPad Air 13 2025_iOS_26'
-          - '_:iPad Air 13 2025_iOS_18'
+          - '_:iPad 10th_iOS_27'
+          - '_:iPad Pro 11 2025_iOS_26'
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
