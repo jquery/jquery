@@ -29,9 +29,11 @@ jobs:
           - 'IE_9'
           # BrowserStack makes Safari on beta macOS versions available without marking
           # either the OS or the browser as beta, so we have no way to resolve "latest"
-          # to the lastest stable version.
+          # to the lastest stable version. Given that major Safari version updates
+          # only come once a year, we'll just keep updating them each year, together
+          # with related iOS versions.
+          - 'Safari_27'
           - 'Safari_26'
-          - 'Safari_18'
           - 'Chrome_latest'
           - 'Chrome_latest-1'
           - 'Opera_latest'
@@ -49,6 +51,7 @@ jobs:
           - 'Firefox_60'
           - 'Firefox_48'
 
+          - '_:iPhone 18 Pro_iOS_27'
           - '_:iPhone 17_iOS_26'
           - '_:iPhone 16_iOS_18'
           - '_:iPhone 15 Pro_iOS_17'
@@ -69,8 +72,8 @@ jobs:
           # iOS 7 emulators no longer work properly
           # - '_:iPhone 5S_iOS_7'
 
-          - '_:iPad Air 13 2025_iOS_26'
-          - '_:iPad Air 13 2025_iOS_18'
+          - '_:iPad 10th_iOS_27'
+          - '_:iPad Pro 11 2025_iOS_26'
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
