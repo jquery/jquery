@@ -45,6 +45,28 @@ QUnit.test( "on() with non-null,defined data", function( assert ) {
 
 } );
 
+QUnit.test( "on() with EventListener interface object", function( assert ) {
+
+	assert.expect( 4 );
+
+	var handler = {
+		eventDelegateData: "can be found",
+		handleEvent: function( event, data ) {
+			assert.equal( data, 0, "non-null, defined data (zero) is correctly passed" );
+			assert.equal( this.eventDelegateData, "can be found", "event delegate is accessible via this" );
+		}
+	};
+
+	jQuery( "#foo" ).on( "foo.on", handler );
+	jQuery( "div" ).on( "foo.delegate", "#foo", handler );
+
+	jQuery( "#foo" ).trigger( "foo", 0 );
+
+	jQuery( "#foo" ).off( "foo.on", handler );
+	jQuery( "div" ).off( "foo.delegate", "#foo" );
+
+} );
+
 QUnit.test( "Handler changes and .trigger() order", function( assert ) {
 	assert.expect( 1 );
 
