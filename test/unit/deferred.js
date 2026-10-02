@@ -1142,4 +1142,79 @@ QUnit.test( "jQuery.when(...) - opportunistically synchronous", function( assert
 	when = "after";
 } );
 
+QUnit.test( "jQuery.when(pendingDeferred) - synchronous resolution (gh-4798)", function( assert ) {
+
+	assert.expect( 8 );
+
+	var done = assert.async( 4 );
+
+	// Test 1: .done() handler fires synchronously when the deferred resolves
+	var deferred1 = jQuery.Deferred(),
+		promise1 = jQuery.when( deferred1 ),
+		order1 = [];
+
+	promise1.done( function( val ) {
+		order1.push( "handler:" + val );
+	} ).always( done );
+
+	order1.push( "before" );
+	deferred1.resolve( 42 );
+	order1.push( "after" );
+
+	assert.deepEqual( order1, [ "before", "handler:42", "after" ],
+		"jQuery.when(pendingDeferred) .done handler fires synchronously on resolve" );
+
+	// Test 2: .fail() handler fires synchronously when the deferred rejects
+	var deferred2 = jQuery.Deferred(),
+		promise2 = jQuery.when( deferred2 ),
+		order2 = [];
+
+	promise2.fail( function( val ) {
+		order2.push( "handler:" + val );
+	} ).always( done );
+
+	order2.push( "before" );
+	deferred2.reject( "err" );
+	order2.push( "after" );
+
+	assert.deepEqual( order2, [ "before", "handler:err", "after" ],
+		"jQuery.when(pendingDeferred) .fail handler fires synchronously on reject" );
+
+	// Test 3: resolved value is correctly propagated
+	var deferred3 = jQuery.Deferred();
+
+	jQuery.when( deferred3 ).done( function( val ) {
+		assert.strictEqual( val, "hello",
+			"jQuery.when(pendingDeferred) propagates resolved value" );
+		done();
+	} );
+
+	deferred3.resolve( "hello" );
+
+	// Test 4: multi-value resolution preserves values
+	var deferred4 = jQuery.Deferred();
+
+	jQuery.when( deferred4 ).done( function( a, b ) {
+		assert.strictEqual( a, "foo",
+			"jQuery.when(pendingDeferred) multi-value first arg" );
+		assert.strictEqual( b, "bar",
+			"jQuery.when(pendingDeferred) multi-value second arg" );
+		done();
+	} );
+
+	deferred4.resolve( "foo", "bar" );
+
+	// Test 5: promise state is synchronously updated
+	var deferred5 = jQuery.Deferred(),
+		promise5 = jQuery.when( deferred5 );
+
+	assert.strictEqual( promise5.state(), "pending",
+		"jQuery.when(pendingDeferred) state is pending before resolve" );
+
+	deferred5.resolve( true );
+
+	assert.strictEqual( promise5.state(), "resolved",
+		"jQuery.when(pendingDeferred) state is synchronously resolved" );
+} );
+
 } )();
