@@ -317,6 +317,30 @@ QUnit.test( "identifier ReDoS", function( assert ) {
 		"Pathological hex escape selector should not hang (took " + elapsed + "ms)" );
 } );
 
+QUnit.test( "identifier ReDoS with full hex escape runs", function( assert ) {
+	assert.expect( 1 );
+
+	// A run of full 6-digit hex escapes ends with a char that also matches
+	// `[\w-]`, so a hex escape and the identifier's `[\w-]` branch compete for
+	// the same digits. Followed by an invalid character this backtracks
+	// exponentially (the gh-5807 fix only covered single-character escapes).
+	//
+	// Support: IE 9 - 11+ only
+	// IE doesn't have String.prototype.repeat.
+	// 21 empty elements will produce 20 occurrences of the `join` parameter.
+	var selector = "[a=" + Array( 21 ).join( "\\aaaaaa" ) + "%",
+		start, elapsed;
+
+	start = Date.now();
+	try {
+		jQuery( selector );
+	} catch ( _e ) {}
+	elapsed = Date.now() - start;
+
+	assert.ok( elapsed < 1000,
+		"Full hex escape run selector should not hang (took " + elapsed + "ms)" );
+} );
+
 QUnit.test( "double-dash identifier prefix", function( assert ) {
 	assert.expect( 5 );
 
