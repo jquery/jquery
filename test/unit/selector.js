@@ -317,6 +317,32 @@ QUnit.test( "identifier ReDoS", function( assert ) {
 		"Pathological hex escape selector should not hang (took " + elapsed + "ms)" );
 } );
 
+QUnit.test( "trailing-whitespace ReDoS", function( assert ) {
+	assert.expect( 1 );
+
+	// A long run of "\ " escape sequences followed by a non-whitespace
+	// character. The string never ends in whitespace, so the trailing-whitespace
+	// branch of `rtrimCSS` fails at every offset. A naive pattern re-scans the
+	// escape run from each start position, causing quadratic backtracking that
+	// blocks for seconds on large input.
+	//
+	// Support: IE 9 - 11+ only
+	// IE doesn't have String.prototype.repeat.
+	// 100001 empty elements produce 100000 occurrences of the `join` parameter.
+	var selector = "x" + Array( 100001 ).join( "\\ " ) + "!",
+		start, elapsed;
+
+	start = Date.now();
+	try {
+		jQuery( selector );
+	} catch ( _e ) {}
+	elapsed = Date.now() - start;
+
+	assert.ok( elapsed < 1000,
+		"Pathological trailing-whitespace selector should not hang (took " +
+			elapsed + "ms)" );
+} );
+
 QUnit.test( "double-dash identifier prefix", function( assert ) {
 	assert.expect( 5 );
 
