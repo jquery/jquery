@@ -417,7 +417,7 @@ QUnit.test( "id", function( assert ) {
 } );
 
 QUnit.test( "class", function( assert ) {
-	assert.expect( 32 );
+	assert.expect( 34 );
 
 	assert.deepEqual( jQuery( ".blog", document.getElementsByTagName( "p" ) ).get(),
 		q( "mozilla", "timmy" ), "Finding elements with a context." );
@@ -472,6 +472,16 @@ QUnit.test( "class", function( assert ) {
 	div.lastChild.className += " hasOwnProperty toString";
 	assert.deepEqual( jQuery( ".e.hasOwnProperty.toString", div ).get(), [ div.lastChild ],
 		"Classes match Object.prototype properties" );
+
+	// Exercise filter.CLASS (no qSA): the seed-based path through `.filter()`
+	// on multiple elements, with CSS escapes in the class name.
+	div.innerHTML = "<i class='fooAbar'></i><i class='foo!bar'></i><i class='my.dotted'></i>";
+	assert.deepEqual( jQuery( "i", div ).filter( ".foo\\41 bar" ).get(),
+		[ div.firstChild ],
+		"Hex escape in filter.CLASS (\\41 = 'A')" );
+	assert.deepEqual( jQuery( "i", div ).filter( ".my\\.dotted" ).get(),
+		[ div.lastChild ],
+		"Char escape with regex-special in filter.CLASS" );
 
 	div = jQuery( "<div><svg width='200' height='250' version='1.1'" +
 		" xmlns='http://www.w3.org/2000/svg'><rect x='10' y='10' width='30' height='30'" +

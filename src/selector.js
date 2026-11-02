@@ -39,7 +39,6 @@ var i,
 	// Instance-specific data
 	dirruns = 0,
 	done = 0,
-	classCache = createCache(),
 	compilerCache = createCache(),
 	nonnativeSelectorCache = createCache(),
 
@@ -453,19 +452,16 @@ jQuery.expr = {
 		},
 
 		CLASS: function( className ) {
-			var pattern = classCache[ className + " " ];
+			var unescapedClass = " " + unescapeSelector( className ) + " ";
 
-			return pattern ||
-				( pattern = new RegExp( "(^|" + whitespace + ")" + className +
-					"(" + whitespace + "|$)" ) ) &&
-				classCache( className, function( elem ) {
-					return pattern.test(
-						typeof elem.className === "string" && elem.className ||
-							typeof elem.getAttribute !== "undefined" &&
-								elem.getAttribute( "class" ) ||
-							""
-					);
-				} );
+			return function( elem ) {
+				var classAttr = typeof elem.className === "string" && elem.className ||
+					typeof elem.getAttribute !== "undefined" &&
+						elem.getAttribute( "class" ) ||
+					"";
+				return ( " " + classAttr.replace( rwhitespace, " " ) + " " )
+					.indexOf( unescapedClass ) > -1;
+			};
 		},
 
 		ATTR: function( name, operator, check ) {
