@@ -42,6 +42,7 @@ jobs:
           - 'Edge_18'
           - 'Firefox_latest'
           - 'Firefox_latest-1'
+          - 'Firefox_153'
           - 'Firefox_140'
           - 'Firefox_128'
           - 'Firefox_115'
@@ -58,7 +59,9 @@ jobs:
           - '_:iPhone 14_iOS_16'
           - '_:iPhone 13_iOS_15'
           - '_:iPhone 12_iOS_14'
-          - '_:iPhone 11_iOS_13'
+          # There's no longer any iPhone device or emulator running iOS 13
+          # available on BrowserStack. Skip testing on this version.
+          # - '_:iPhone 11_iOS_13'
           # iOS 12 & older is not officially supported by BrowserStack as
           # it mostly runs on emulators instead of real devices. We include
           # those versions as long as they still work.
