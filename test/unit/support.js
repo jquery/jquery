@@ -209,7 +209,7 @@ testIframe(
 				radioValue: true,
 				reliableColDimensions: true,
 				reliableMarginLeft: true,
-				reliableTrDimensions: true,
+				reliableTrDimensions: false,
 				scope: true,
 				scrollboxSize: true,
 				sortDetached: true,
