@@ -136,8 +136,11 @@ jQuery.extend( {
 											typeof returned === "function" ) &&
 										returned.then;
 
-									// Handle a returned thenable
-									if ( typeof then === "function" ) {
+									// Handle a returned thenable, but not this promise.
+									// Unwrapping this promise via `.then()` re-attaches
+									// handlers and, with progress memory, loops (gh-5534).
+									if ( typeof then === "function" &&
+										then !== promise.then ) {
 
 										// Special processors (notify) just wait for resolution
 										if ( special ) {

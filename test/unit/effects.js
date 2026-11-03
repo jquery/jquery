@@ -2040,6 +2040,28 @@ QUnit.test( "Animation callbacks (trac-11797)", function( assert ) {
 	this.clock.tick( fxInterval );
 } );
 
+QUnit.test( "animate then() in start does not loop (gh-5534)", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async();
+
+	assert.timeout( 2000 );
+
+	jQuery( "#foo" ).animate( { opacity: 0.5 }, {
+		duration: 1,
+		queue: false,
+		start: function( animation ) {
+			animation.then( function() {
+				assert.ok( true, "animation then() resolved" );
+				done();
+			} );
+		}
+	} );
+
+	// Flush the animation tick and Deferred.then's setTimeout( process )
+	this.clock.tick( fxInterval + 1 );
+} );
+
 QUnit.test( "Animation callbacks in order (gh-2283)", function( assert ) {
 	assert.expect( 9 );
 
