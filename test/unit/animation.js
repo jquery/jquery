@@ -256,4 +256,30 @@ QUnit.test(
 	}
 );
 
+QUnit.test( "Animation( subject, {}, opts ) does not finish empty animations early (gh-3498)",
+	function( assert ) {
+		assert.expect( 5 );
+
+		var done = false,
+			duration = fxInterval * 10,
+			subject = {},
+			animation = jQuery.Animation( subject, {}, {
+				duration: duration,
+				done: function() {
+					done = true;
+				}
+			} );
+
+		assert.equal( animation.tweens.length, 0, "empty props create no tweens" );
+		assert.equal( jQuery.timers.length, 1, "empty animation is scheduled" );
+		assert.strictEqual( done, false, "does not complete synchronously" );
+
+		this.clock.tick( duration / 2 );
+		assert.strictEqual( done, false, "still running at mid-duration" );
+
+		this.clock.tick( duration / 2 );
+		assert.strictEqual( done, true, "completes after the intended duration" );
+	}
+);
+
 } )();
