@@ -44,7 +44,7 @@ function computeTableStyleTests() {
 
 	// Don't run until window is visible
 	if ( table.offsetWidth === 0 ) {
-		documentElement.removeChild( table );
+		documentElement.removeChild( table ).textContent = "";
 		return;
 	}
 
