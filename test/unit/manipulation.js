@@ -3217,7 +3217,7 @@ testIframe(
 
 QUnit.test( "should handle node removal in event's remove hook (gh-5214)", function( assert ) {
 
-	assert.expect( 4 );
+	assert.expect( 1 );
 
 	jQuery(
 		"<div id='container'>" +

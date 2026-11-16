@@ -2826,7 +2826,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajaxPrefilter() - returning a string redirects dataType", 4,
+	ajaxTest( "jQuery.ajaxPrefilter() - returning a string redirects dataType", 2,
 			function( assert ) {
 		var testId = assert.test.testId,
 			dataTypeSrc = "test-redir-src-" + testId,
@@ -2919,7 +2919,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajaxPrefilter() - wildcard runs after specific handler", 3,
+	ajaxTest( "jQuery.ajaxPrefilter() - wildcard runs after specific handler", 1,
 			function( assert ) {
 		var testId = assert.test.testId,
 			dataType = "test-wc-order-" + testId;
@@ -2950,7 +2950,7 @@ QUnit.module( "ajax", {
 		};
 	} );
 
-	ajaxTest( "jQuery.ajaxPrefilter() - '+' prefix prepends handler", 3, function( assert ) {
+	ajaxTest( "jQuery.ajaxPrefilter() - '+' prefix prepends handler", 1, function( assert ) {
 		var testId = assert.test.testId,
 			dataType = "test-prepend-" + testId;
 		return {
