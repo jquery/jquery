@@ -51,10 +51,11 @@ git tag -s "$1" -m "Release: $1"
 # Wait for confirmation from user to push changes to dist repo
 read -p "Press enter to push changes to dist repo & publish to npm"
 git push --follow-tags
+# 4.x owns the `latest` and `beta` tags
 if is_prerelease "$1"; then
-	npm publish --tag beta
+	npm publish --tag v3-beta
 else
-	npm publish
+	npm publish --tag v3-latest
 fi
 cd -
 

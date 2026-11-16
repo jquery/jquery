@@ -29,6 +29,9 @@ module.exports = {
 		changelog: `node build/release/changelog.js ${ from ? from : "${from}" } $\{to}`,
 		commitMessage: "Release: ${version}",
 		getLatestTagFromAllRefs: true,
+
+		// Ignore 4.x tags when resolving the previous version
+		tagMatch: "3.*",
 		pushRepo: "git@github.com:jquery/jquery.git",
 		requireBranch: "3.x-stable",
 		requireCleanWorkingDir: true,
@@ -40,6 +43,7 @@ module.exports = {
 		tagArgs: [ "-s" ]
 	},
 	github: {
+		makeLatest: false,
 		pushRepo: "git@github.com:jquery/jquery.git",
 		release: true,
 		tokenRef: "JQUERY_GITHUB_TOKEN"
