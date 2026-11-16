@@ -18,15 +18,17 @@ module.exports = {
 		"after:version:bump":
 			"sed -i '' -e 's|3.x-stable/AUTHORS.txt|${version}/AUTHORS.txt|' package.json",
 		"after:bump": "cross-env VERSION=${version} npm run build:all",
-		"before:git:release": "git add -f dist/ dist-module/ changelog.md",
+		"before:git:release": "git add -f dist/ changelog.md",
 		"after:release": "echo 'Run the following to complete the release:' && " +
 			`echo './build/release/post-release.sh $\{version} ${ blogURL }'`
 	},
 	git: {
 
 		// Use the node script directly to avoid an npm script
-		// command log entry in the GH release notes
-		changelog: `node build/release/changelog.js ${ from ? from : "${from}" } $\{to}`,
+		// command log entry in the GH release notes.
+		// Pass the branch instead of ${to} (HEAD), which the
+		// GitHub compare API resolves to the default branch.
+		changelog: `node build/release/changelog.js ${ from ? from : "${from}" } 3.x-stable`,
 		commitMessage: "Release: ${version}",
 		getLatestTagFromAllRefs: true,
 

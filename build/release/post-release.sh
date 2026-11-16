@@ -68,8 +68,7 @@ git add package.json
 # Leave the tmp folder as some files are needed
 # after the release (such as for emailing archives).
 npm run build:clean
-git rm --cached -r dist/ dist-module/
-git add dist/package.json dist/wrappers dist-module/package.json dist-module/wrappers
+git rm --cached -r dist/
 git commit -S -m "Release: remove dist files from 3.x-stable branch"
 
 # Wait for confirmation from user to push changes
