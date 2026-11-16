@@ -43,18 +43,24 @@ jobs:
 
       - name: Upload to Filestash
         run: |
-          rsync dist/jquery.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.js
-          rsync dist/jquery.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.min.js
-          rsync dist/jquery.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.min.map
+          # rrsync 3.5 can't overwrite a file named as the destination, so upload to the directory
+          # https://github.com/RsyncProject/rsync/issues/1107
+          mkdir filestash
 
-          rsync dist/jquery.slim.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.js
-          rsync dist/jquery.slim.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.min.js
-          rsync dist/jquery.slim.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.min.map
+          cp dist/jquery.js filestash/jquery-git.js
+          cp dist/jquery.min.js filestash/jquery-git.min.js
+          cp dist/jquery.min.map filestash/jquery-git.min.map
 
-          rsync dist-module/jquery.module.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.module.js
-          rsync dist-module/jquery.module.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.module.min.js
-          rsync dist-module/jquery.module.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.module.min.map
+          cp dist/jquery.slim.js filestash/jquery-git.slim.js
+          cp dist/jquery.slim.min.js filestash/jquery-git.slim.min.js
+          cp dist/jquery.slim.min.map filestash/jquery-git.slim.min.map
 
-          rsync dist-module/jquery.slim.module.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.module.js
-          rsync dist-module/jquery.slim.module.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.module.min.js
-          rsync dist-module/jquery.slim.module.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-git.slim.module.min.map
+          cp dist-module/jquery.module.js filestash/jquery-git.module.js
+          cp dist-module/jquery.module.min.js filestash/jquery-git.module.min.js
+          cp dist-module/jquery.module.min.map filestash/jquery-git.module.min.map
+
+          cp dist-module/jquery.slim.module.js filestash/jquery-git.slim.module.js
+          cp dist-module/jquery.slim.module.min.js filestash/jquery-git.slim.module.min.js
+          cp dist-module/jquery.slim.module.min.map filestash/jquery-git.slim.module.min.map
+
+          rsync filestash/* filestash@"${{ secrets.FILESTASH_SERVER }}":./
