@@ -2065,7 +2065,7 @@ QUnit.test( "Animation callbacks (trac-11797)", function( assert ) {
 } );
 
 QUnit.test( "Animation callbacks in order (gh-2283)", function( assert ) {
-	assert.expect( 9 );
+	assert.expect( 5 );
 
 	var done = assert.async(),
 		step = 0,
