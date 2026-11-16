@@ -43,10 +43,16 @@ jobs:
 
       - name: Upload to Filestash
         run: |
-          rsync dist/jquery.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.js
-          rsync dist/jquery.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.min.js
-          rsync dist/jquery.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.min.map
+          # rrsync 3.5 can't overwrite a file named as the destination, so upload to the directory
+          # https://github.com/RsyncProject/rsync/issues/1107
+          mkdir filestash
 
-          rsync dist/jquery.slim.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.slim.js
-          rsync dist/jquery.slim.min.js filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.slim.min.js
-          rsync dist/jquery.slim.min.map filestash@"${{ secrets.FILESTASH_SERVER }}":jquery-3.x-git.slim.min.map
+          cp dist/jquery.js filestash/jquery-3.x-git.js
+          cp dist/jquery.min.js filestash/jquery-3.x-git.min.js
+          cp dist/jquery.min.map filestash/jquery-3.x-git.min.map
+
+          cp dist/jquery.slim.js filestash/jquery-3.x-git.slim.js
+          cp dist/jquery.slim.min.js filestash/jquery-3.x-git.slim.min.js
+          cp dist/jquery.slim.min.map filestash/jquery-3.x-git.slim.min.map
+
+          rsync filestash/* filestash@"${{ secrets.FILESTASH_SERVER }}":./
