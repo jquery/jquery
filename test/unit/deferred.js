@@ -729,6 +729,30 @@ QUnit.test( "jQuery.Deferred.then - progress and thenables", function( assert ) 
 	trigger.notify();
 } );
 
+QUnit.test( "jQuery.Deferred.then - notify with own promise (gh-5534)", function( assert ) {
+
+	assert.expect( 2 );
+
+	var done = assert.async(),
+		defer = jQuery.Deferred(),
+		promise = defer.promise(),
+		seen;
+
+	// `.then()` (unlike `.done()`) forwards progress through Identity, which
+	// used to unwrap this same promise and recurse forever (gh-5534).
+	promise.then( function( value ) {
+		assert.strictEqual( value, "ok", "then fulfillment still runs" );
+		assert.strictEqual( seen, promise,
+			"progress forwards the promise as a value" );
+		done();
+	} ).progress( function( value ) {
+		seen = value;
+	} );
+
+	defer.notify( promise );
+	defer.resolve( "ok" );
+} );
+
 QUnit.test( "jQuery.Deferred - notify and resolve", function( assert ) {
 
 	assert.expect( 7 );

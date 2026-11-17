@@ -86,6 +86,28 @@ QUnit.test( "Animation( subject, props, opts ) - shape", function( assert ) {
 	this.clock.tick( fxInterval * 10 );
 } );
 
+QUnit.test( "Animation.then() after notify does not loop (gh-5534)", function( assert ) {
+	assert.expect( 1 );
+
+	var done = assert.async(),
+		subject = { test: 0 };
+
+	assert.timeout( 2000 );
+
+	jQuery.Animation( subject, { test: 1 }, {
+		duration: 1,
+		start: function( animation ) {
+			animation.then( function() {
+				assert.ok( true, "Animation.then() resolved" );
+				done();
+			} );
+		}
+	} );
+
+	// Flush the animation tick and Deferred.then's setTimeout( process )
+	this.clock.tick( fxInterval + 1 );
+} );
+
 QUnit.test( "Animation.prefilter( fn ) - calls prefilter after defaultPrefilter",
 	function( assert ) {
 		assert.expect( 1 );
