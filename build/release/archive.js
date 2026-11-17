@@ -4,7 +4,7 @@ import path from "node:path";
 import util from "node:util";
 import os from "node:os";
 import { exec as nodeExec } from "node:child_process";
-import archiver from "archiver";
+import { ZipArchive } from "archiver";
 
 const exec = util.promisify( nodeExec );
 
@@ -39,7 +39,7 @@ export default function archive( { cdn, folder, version } ) {
 		output.on( "close", resolve );
 		output.on( "error", reject );
 
-		const archive = archiver( "zip" );
+		const archive = new ZipArchive();
 		archive.pipe( output );
 
 		const files = await readdir( folder );
