@@ -111,6 +111,7 @@ async function copyFiles() {
 				scripts: undefined,
 				dependencies: undefined,
 				devDependencies: undefined,
+				allowScripts: undefined,
 				commitplease: undefined
 			},
 			null,
