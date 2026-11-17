@@ -519,7 +519,7 @@ QUnit.test( "animate option { queue: 'name' }", function( assert ) {
 } );
 
 QUnit.test( "animate with no properties", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
 	var foo,
 		divs = jQuery( "div" ),
@@ -534,6 +534,7 @@ QUnit.test( "animate with no properties", function( assert ) {
 	foo = jQuery( "#foo" );
 
 	foo.animate( {} );
+	assert.equal( jQuery.timers.length, 0, "empty .animate({}) leaves no timer (gh-3498)" );
 	foo.animate( { top: 10 }, fxInterval * 10, function() {
 		assert.ok( true, "Animation was properly dequeued." );
 	} );
