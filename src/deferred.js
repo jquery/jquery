@@ -66,6 +66,28 @@ jQuery.extend( {
 				catch: function( fn ) {
 					return promise.then( null, fn );
 				},
+				finally: function( fn ) {
+					function passThrough( method ) {
+						return function() {
+							var args = arguments;
+
+							// Wait for the callback result (like `Promise.resolve`) and then
+							// settle with the original outcome unless it threw or rejected.
+							return jQuery.when( fn.call( this ) ).then( function() {
+								var settled = jQuery.Deferred();
+								settled[ method ].apply( settled, args );
+								return settled.promise();
+							} );
+						};
+					}
+
+					// Like native promises, non-function arguments are passed on as is
+					if ( typeof fn !== "function" ) {
+						return promise.then( fn, fn );
+					}
+
+					return promise.then( passThrough( "resolve" ), passThrough( "reject" ) );
+				},
 
 				// Keep pipe for back-compat
 				pipe: function( /* fnDone, fnFail, fnProgress */ ) {

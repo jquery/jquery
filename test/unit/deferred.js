@@ -215,6 +215,75 @@ QUnit.test( "jQuery.Deferred.catch", function( assert ) {
 	} );
 } );
 
+QUnit.test( "jQuery.Deferred.finally", function( assert ) {
+	assert.expect( 11 );
+
+	var order = [],
+		pending = jQuery.Deferred(),
+		done = jQuery.map( new Array( 7 ), function() {
+			return assert.async();
+		} );
+
+	// Fulfillment values are passed through and the callback receives no arguments
+	jQuery.Deferred().resolve( 1, 2 ).finally( function() {
+		assert.strictEqual( arguments.length, 0, "callback called without arguments (resolved)" );
+		return "ignored";
+	} ).done( function( a, b ) {
+		assert.deepEqual( [ a, b ], [ 1, 2 ], "resolve values passed through" );
+		done.pop().call();
+	} );
+
+	// Rejection values are passed through and the callback receives no arguments
+	jQuery.Deferred().reject( 3, 4 ).finally( function() {
+		assert.strictEqual( arguments.length, 0, "callback called without arguments (rejected)" );
+		return "ignored";
+	} ).fail( function( a, b ) {
+		assert.deepEqual( [ a, b ], [ 3, 4 ], "reject values passed through" );
+		done.pop().call();
+	} );
+
+	// A throwing callback rejects the returned promise
+	jQuery.Deferred().resolve( 5 ).finally( function() {
+		throw "boom";
+	} ).fail( function( error ) {
+		assert.strictEqual( error, "boom", "thrown value rejects the returned promise" );
+		done.pop().call();
+	} );
+
+	// A returned rejected thenable overrides the original outcome
+	jQuery.Deferred().resolve( 6 ).finally( function() {
+		return jQuery.Deferred().reject( "late" );
+	} ).fail( function( error ) {
+		assert.strictEqual( error, "late", "rejected thenable overrides a fulfillment" );
+		done.pop().call();
+	} );
+
+	// A returned thenable is awaited before the original outcome is passed on
+	jQuery.Deferred().reject( "orig" ).finally( function() {
+		order.push( "callback" );
+		return pending;
+	} ).fail( function( error ) {
+		order.push( "fail" );
+		assert.strictEqual( error, "orig", "original rejection kept after thenable resolves" );
+		assert.deepEqual( order, [ "callback", "resolve", "fail" ], "waits for returned thenable" );
+		done.pop().call();
+	} );
+	window.setTimeout( function() {
+		order.push( "resolve" );
+		pending.resolve( "ignored" );
+	}, 20 );
+
+	// Non-function arguments are ignored like in native promises
+	jQuery.Deferred().resolve( 7 ).finally( undefined ).done( function( value ) {
+		assert.strictEqual( value, 7, "non-function argument passes fulfillment through" );
+		done.pop().call();
+	} );
+	jQuery.Deferred().reject( 8 ).finally( null ).fail( function( value ) {
+		assert.strictEqual( value, 8, "non-function argument passes rejection through" );
+		done.pop().call();
+	} );
+} );
+
 QUnit.test( "[PIPE ONLY] jQuery.Deferred.pipe - filtering (fail)", function( assert ) {
 
 	assert.expect( 4 );
