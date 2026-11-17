@@ -28,6 +28,11 @@ jQuery.extend( jQuery.event, {
 			return;
 		}
 
+		// Prevent focus/blur events on disabled elements
+		if ( ( type === "focus" || type === "blur" ) && jQuery( elem ).is( ":disabled" ) ) {
+			return;
+		}
+
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
 		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
 			return;
