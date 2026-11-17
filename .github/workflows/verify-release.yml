@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version to verify (>= 4.0.0-rc.1)'
+        description: 'Version to verify (>= 3.8.0 and < 4.0.0)'
         required: false
 
 permissions:

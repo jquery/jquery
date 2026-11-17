@@ -189,18 +189,14 @@ async function buildRelease( { version } ) {
 	const { stdout: packOutput } = await exec( "npm pack", { cwd: distFolder } );
 	console.log( packOutput );
 
-	// Get all top-level /dist and /dist-module files
+	// Get all top-level /dist files
 	const distFiles = await readdir(
 		path.join( releaseFolder, "dist" ),
 		{ withFileTypes: true }
 	);
-	const distModuleFiles = await readdir(
-		path.join( releaseFolder, "dist-module" ),
-		{ withFileTypes: true }
-	);
 
 	const files = await Promise.all(
-		[ ...distFiles, ...distModuleFiles ]
+		distFiles
 			.filter( ( dirent ) => dirent.isFile() )
 			.map( async( dirent ) => {
 				const contents = await readFile(
