@@ -51,10 +51,11 @@ git tag -s "$1" -m "Release: $1"
 # Wait for confirmation from user to push changes to dist repo
 read -p "Press enter to push changes to dist repo & publish to npm"
 git push --follow-tags
+# 4.x owns the `latest` and `beta` tags
 if is_prerelease "$1"; then
-	npm publish --tag beta
+	npm publish --tag v3-beta
 else
-	npm publish
+	npm publish --tag v3-latest
 fi
 cd -
 
@@ -67,8 +68,7 @@ git add package.json
 # Leave the tmp folder as some files are needed
 # after the release (such as for emailing archives).
 npm run build:clean
-git rm --cached -r dist/ dist-module/
-git add dist/package.json dist/wrappers dist-module/package.json dist-module/wrappers
+git rm --cached -r dist/
 git commit -S -m "Release: remove dist files from 3.x-stable branch"
 
 # Wait for confirmation from user to push changes
