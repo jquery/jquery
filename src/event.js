@@ -230,8 +230,27 @@ jQuery.event = {
 			special = jQuery.event.special[ type ] || {};
 			type = ( selector ? special.delegateType : special.bindType ) || type;
 			handlers = events[ type ] || [];
-			tmp = tmp[ 2 ] &&
-				new RegExp( "(^|\\.)" + namespaces.join( "\\.(?:.*\\.|)" ) + "(\\.|$)" );
+
+			// Avoid building a regexp from dynamic input (ReDoS risk); match the
+			// required namespaces as an ordered subsequence instead.
+			tmp = tmp[ 2 ] && {
+				test: function( namespace ) {
+					var ni = 0,
+						pi = 0,
+						parts = namespace ? namespace.split( "." ) : [];
+
+					for ( ; ni < namespaces.length; ni++ ) {
+						while ( pi < parts.length && parts[ pi ] !== namespaces[ ni ] ) {
+							pi++;
+						}
+						if ( pi === parts.length ) {
+							return false;
+						}
+						pi++;
+					}
+					return true;
+				}
+			};
 
 			// Remove matching events
 			origCount = j = handlers.length;
