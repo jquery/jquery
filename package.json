@@ -70,7 +70,7 @@
     "test:browserless": "npm run pretest && npm run build:all && node test/bundler_smoke_tests/run-jsdom-tests.js && node build/tasks/node_smoke_tests.js && node build/tasks/promises_aplus_tests.js && npm run test:unit -- -b jsdom -f module=basic",
     "test:jsdom": "npm run pretest && npm run build:main && npm run test:unit -- -b jsdom -f module=basic",
     "test:node_smoke_tests": "npm run pretest && npm run build:all && node build/tasks/node_smoke_tests.js",
-    "test:promises_aplus": "npm run build:main && node build/tasks/promises_aplus_tests.js",
+    "test:promises_aplus": "npm run build:main && node build/tasks/promises_aplus_tests.js && node test/promises_aplus_adapters/runner-exit-code.mjs",
     "test:chrome": "npm run pretest && npm run build:main && npm run test:unit -- -v -b chrome --headless",
     "test:edge": "npm run pretest && npm run build:main && npm run test:unit -- -v -b edge --headless",
     "test:firefox": "npm run pretest && npm run build:main && npm run test:unit -- -v -b firefox --headless",
