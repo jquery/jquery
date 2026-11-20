@@ -9,6 +9,7 @@ import "./attributes/prop.js";
 var
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
+	rnotsubmittable = /^(?:fieldset|object|output)$/i,
 	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
 	rsubmittable = /^(?:input|select|textarea|keygen)/i;
 
@@ -117,6 +118,7 @@ jQuery.fn.extend( {
 
 			// Use .is( ":disabled" ) so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
+				!rnotsubmittable.test( this.nodeName ) &&
 				!rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
 		} ).map( function( _i, elem ) {

@@ -245,6 +245,37 @@ QUnit.test( "serialize/serializeArray() - excludes non-submittable elements by n
 	form.remove();
 } );
 
+QUnit.test( "serialize/serializeArray() - excludes non-submittable listed elements", function( assert ) {
+	assert.expect( 2 );
+
+	// `fieldset`, `output` and `object` are listed elements, so they show up in
+	// `form.elements`, but none of them is submittable. Native form submission
+	// skips them; `serializeArray` must as well.
+	var form = jQuery(
+			"<form>" +
+			"	<input type='text' name='regular' value='val'>" +
+			"	<fieldset name='fieldset'>" +
+			"		<input type='text' name='nested' value='nestedVal'>" +
+			"	</fieldset>" +
+			"	<output name='output'>outVal</output>" +
+			"	<object name='object'></object>" +
+			"</form>"
+		);
+
+	form.appendTo( "#qunit-fixture" );
+
+	assert.deepEqual( form.serializeArray(), [
+		{ name: "regular", value: "val" },
+		{ name: "nested", value: "nestedVal" }
+	], "serializeArray: Only submittable listed elements are included" );
+
+	assert.equal( form.serialize(),
+		"regular=val&nested=nestedVal",
+		"serialize: Only submittable listed elements are included" );
+
+	form.remove();
+} );
+
 QUnit.testUnlessIE( "serialize/serializeArray() - form-associated custom elements (gh-5245)", function( assert ) {
 	assert.expect( 2 );
 
