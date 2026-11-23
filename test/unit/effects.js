@@ -519,7 +519,7 @@ QUnit.test( "animate option { queue: 'name' }", function( assert ) {
 } );
 
 QUnit.test( "animate with no properties", function( assert ) {
-	assert.expect( 2 );
+	assert.expect( 3 );
 
 	var foo,
 		divs = jQuery( "div" ),
@@ -534,10 +534,43 @@ QUnit.test( "animate with no properties", function( assert ) {
 	foo = jQuery( "#foo" );
 
 	foo.animate( {} );
+	assert.equal( jQuery.timers.length, 0, "empty .animate({}) leaves no timer (gh-3498)" );
 	foo.animate( { top: 10 }, fxInterval * 10, function() {
 		assert.ok( true, "Animation was properly dequeued." );
 	} );
 	this.clock.tick( fxInterval * 10 );
+} );
+
+QUnit.test( "queued empty show step waits for its duration before the next queued step (gh-3498)", function( assert ) {
+	assert.expect( 3 );
+
+	var duration = fxInterval * 10,
+		elem = jQuery( "#foo" ),
+		starts = [];
+
+	// #foo is visible, so .show() animates no properties and only holds the fx queue
+	elem.show( {
+		duration: duration,
+		start: function( animation ) {
+			starts.push( animation.startTime );
+		}
+	} );
+	elem.animate( { top: 10 }, {
+		duration: duration,
+		start: function( animation ) {
+			starts.push( animation.startTime );
+		}
+	} );
+
+	this.clock.tick( duration - 1 );
+	assert.equal( starts.length, 1, "empty show step still holds the queue before its duration" );
+
+	this.clock.tick( fxInterval * 2 );
+	assert.equal( starts.length, 2, "next queued step starts once the empty show step completes" );
+	assert.equal( starts[ 1 ] - starts[ 0 ], duration, "next queued step starts one full duration later" );
+
+	// Finish the second step so no timer is left running
+	this.clock.tick( duration );
 } );
 
 QUnit.test( "animate duration 0", function( assert ) {
