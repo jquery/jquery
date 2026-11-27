@@ -507,6 +507,24 @@ QUnit.test( ".removeData()", function( assert ) {
 	assert.equal( div.data( "test.foo" ), undefined, "Make sure data is intact" );
 } );
 
+QUnit.test( ".removeData() re-reads data-* attributes on the next .data() call (gh-5751)", function( assert ) {
+	assert.expect( 3 );
+
+	var elem = jQuery( "<div data-test='123' data-foo='bar'></div>" );
+
+	assert.deepEqual( elem.data(), { test: 123, foo: "bar" },
+		"data-* attributes are read initially" );
+
+	elem.removeData();
+	assert.deepEqual( elem.data(), { test: 123, foo: "bar" },
+		".data() re-reads data-* attributes after .removeData()" );
+
+	elem.data( "test", "updated" );
+	elem.removeData();
+	assert.deepEqual( elem.data(), { test: 123, foo: "bar" },
+		"data-* attribute values take precedence over removed user data" );
+} );
+
 QUnit.test( "JSON serialization (trac-8108)", function( assert ) {
 	assert.expect( 1 );
 

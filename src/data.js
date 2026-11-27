@@ -76,6 +76,14 @@ jQuery.extend( {
 
 	removeData: function( elem, name ) {
 		dataUser.remove( elem, name );
+
+		// If all data is being removed, also reset the flag marking that
+		// data-* attributes have already been scanned. Otherwise a later
+		// `.data()` call would return an empty object instead of
+		// re-retrieving values from data-* attributes (gh-5751).
+		if ( name === undefined ) {
+			dataPriv.remove( elem, "hasDataAttrs" );
+		}
 	},
 
 	// TODO: Now that all calls to _data and _removeData have been replaced
@@ -157,7 +165,7 @@ jQuery.fn.extend( {
 
 	removeData: function( key ) {
 		return this.each( function() {
-			dataUser.remove( this, key );
+			jQuery.removeData( this, key );
 		} );
 	}
 } );
